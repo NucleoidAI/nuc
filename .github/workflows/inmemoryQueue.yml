@@ -1,0 +1,21 @@
+name: InMemoryQueue
+on:
+  push:
+    branches: [main]
+    paths:
+      - "inMemoryEventListener/**"
+      - ".github/workflows/inmemoryQueue.yml"
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  inmemoryQueue:
+    uses: ./.github/workflows/deploy.yml
+    with:
+      service_name: inmemoryQueue
+      environment: "land"
+      context_path: ./inMemoryEventListener
+    secrets:
+      DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+      DOCKER_USERNAME: canmingir

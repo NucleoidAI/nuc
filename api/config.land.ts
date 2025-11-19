@@ -19,9 +19,10 @@ const config = {
     region: "us-east-1",
   },
   event: {
-    type: "inMemory",
-    host: "event.gentleflower-99ef02e0.eastus.azurecontainerapps.io",
-    protocol: "https",
+    type: "inMemory" as const,
+    host: "98.88.24.46",
+    protocol: "http" as const,
+    port: 8080,
   },
   metrics: {
     enabled: true,

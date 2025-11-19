@@ -3,20 +3,20 @@ on:
   push:
     branches: [main]
     paths:
-      - 'communication/**'
-      - '.github/workflows/communication.yml'
+      - "communication/**"
+      - ".github/workflows/communication.yml"
     tags:
-      - 'v*'
+      - "v*"
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment to deploy'
+        description: "Environment to deploy"
         required: true
         type: choice
         options:
           - land
           - live
-        default: 'land'
+        default: "land"
 jobs:
   communication:
     uses: ./.github/workflows/deploy.yml
@@ -26,6 +26,7 @@ jobs:
       context_path: ./communication
       install_dependencies: true
       dependency_path: communication
+      config_paths: "./communication"
       setup_config: true
     secrets:
       DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}

@@ -6,45 +6,45 @@ on:
       service_name:
         required: true
         type: string
-        description: 'Service name (e.g., greycollar, communication, prometheus, grafana)'
+        description: "Service name (e.g., greycollar, communication, prometheus, grafana)"
       environment:
         required: true
         type: string
-        description: 'Environment: live or land'
+        description: "Environment: live or land"
       context_path:
         required: false
         type: string
-        default: '.'
-        description: 'Docker build context path'
+        default: "."
+        description: "Docker build context path"
       install_dependencies:
         required: false
         type: boolean
         default: false
-        description: 'Whether to run npm ci'
+        description: "Whether to run npm ci"
       dependency_path:
         required: false
         type: string
-        default: '.'
-        description: 'Path where to run npm ci'
+        default: "."
+        description: "Path where to run npm ci"
       run_lint:
         required: false
         type: boolean
         default: false
-        description: 'Whether to run linting'
+        description: "Whether to run linting"
       run_build:
         required: false
         type: boolean
         default: false
-        description: 'Whether to run npm build'
+        description: "Whether to run npm build"
       setup_config:
         required: false
         type: boolean
         default: false
-        description: 'Whether to setup config files for the environment'
+        description: "Whether to setup config files for the environment"
       docker_username:
         required: false
         type: string
-        description: 'Docker username'
+        description: "Docker username"
         default: canmingir
       config_paths:
         required: false
@@ -54,7 +54,7 @@ on:
         required: false
         type: boolean
         default: false
-        description: 'Whether to setup version.json'
+        description: "Whether to setup version.json"
     secrets:
       DOCKER_ACCESS_TOKEN:
         required: false
@@ -72,11 +72,11 @@ jobs:
         if: ${{ inputs.setup_config }}
         run: |
           CONFIG_PATHS="${{ inputs.config_paths }}"
-          
+
           if [ -z "$CONFIG_PATHS" ]; then
             CONFIG_PATHS="."
           fi
-          
+
           IFS=',' read -ra PATHS <<< "$CONFIG_PATHS"
           for path in "${PATHS[@]}"; do
             path=$(echo "$path" | xargs)  # Trim whitespace
@@ -96,11 +96,11 @@ jobs:
         if: ${{ inputs.setup_version }}
         run: |
           CONFIG_PATHS="${{ inputs.config_paths }}"
-          
+
           if [ -z "$CONFIG_PATHS" ]; then
             CONFIG_PATHS="."
           fi
-          
+
           IFS=',' read -ra PATHS <<< "$CONFIG_PATHS"
           FIRST_PATH=$(echo "${PATHS[0]}" | xargs)
 

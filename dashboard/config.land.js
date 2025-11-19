@@ -3,7 +3,7 @@ const config = {
   name: "GreyCollar",
   base: "/dashboard",
   beta: true,
-  api: "http://localhost:3000/api",
+  api: "https://dashboard.land.greycollar.ai/api",
   socket: {
     host: "https://communication.land.greycollar.ai",
     path: "/socket.io",

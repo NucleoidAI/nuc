@@ -13,7 +13,7 @@ jobs:
   inmemoryQueue:
     uses: ./.github/workflows/deploy.yml
     with:
-      service_name: inmemoryQueue
+      service_name: inmemory-queue
       environment: "land"
       context_path: ./inMemoryEventListener
     secrets:

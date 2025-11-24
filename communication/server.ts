@@ -42,7 +42,10 @@ const startServer = async () => {
   const io = new Server(server, {
     cors: {
       origin: "*",
+      methods: ["GET", "POST"],
+      credentials: true,
     },
+    path: "/socket.io/",
   });
 
   session.setup(io);

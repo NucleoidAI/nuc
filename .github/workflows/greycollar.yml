@@ -1,0 +1,37 @@
+name: GreyCollar
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'dashboard/**'
+      - 'api/**'
+      - '.github/workflows/greycollar.yml'
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        type: choice
+        options:
+          - land
+          - live
+        default: 'land'
+jobs:
+  greycollar:
+    uses: ./.github/workflows/deploy.yml
+    with:
+      service_name: greycollar
+      environment: ${{ startsWith(github.ref, 'refs/tags/') && 'live' || github.event.inputs.environment || 'land' }}
+      context_path: .
+      config_paths: './dashboard,./api'
+      install_dependencies: true
+      dependency_path: .
+      run_lint: true
+      run_build: true
+      setup_config: true
+      setup_version: true
+    secrets:
+      DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+      DOCKER_USERNAME: canmingir

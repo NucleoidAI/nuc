@@ -1,3 +1,5 @@
+import "./src/instrumentation";
+
 import * as platform from "@canmingir/link-express";
 
 import config from "./config";
@@ -5,6 +7,9 @@ import dotenv from "dotenv";
 import { event } from "node-event-test-package/client";
 import http from "http";
 import models from "./src/models";
+
+//import kafkaConfig from "./config.kafka";
+//import txqConfig from "./config.txq";
 
 dotenv.config();
 
@@ -23,16 +28,16 @@ platform.init(config).then(async () => {
 
   models.init();
 
-  await event.init({
-    type: "kafka",
-    clientId: "greycollar",
-    brokers: ["20.55.19.45:9092"],
-    groupId: "greycollar",
-    // type: "inMemory",
-    // host: "localhost",
-    //protocol: "http",
-    //port: 8080,
-  });
+  await event.init(config.event);
+
+  if (config.metrics.enabled) {
+    event.startPushgateway({
+      url: config.metrics.url,
+      jobName: config.metrics.pushGatewayNodeEvents.jobName,
+      instance: config.metrics.pushGatewayNodeEvents.instance,
+      interval: config.metrics.interval,
+    });
+  }
 
   server.listen(process.env.PORT || 4000, () => {
     console.log(`Server is running on port ${process.env.PORT || 4000}`);

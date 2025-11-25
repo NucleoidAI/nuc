@@ -1,4 +1,5 @@
 import { Server } from "socket.io";
+import config from "./config";
 import { createApp } from "./app";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import dotenv from "dotenv";
@@ -8,16 +9,13 @@ import http from "http";
 import session from "./test_chat/session";
 import testChat from "./test_chat/testChat";
 
+//import kafkaConfig from "./config.kafka";
+//import txqConfig from "./config.txq";
+
 dotenv.config();
 
 const startServer = async () => {
-  await event.init({
-    type: "kafka",
-    clientId: "greycollar-communication",
-    brokers: ["20.55.19.45:9092"],
-    groupId: "greycollar-communication",
-  });
-
+  await event.init(config.event);
   const mainApp = express();
 
   const testApp = express();
@@ -44,7 +42,10 @@ const startServer = async () => {
   const io = new Server(server, {
     cors: {
       origin: "*",
+      methods: ["GET", "POST"],
+      credentials: true,
     },
+    path: "/socket.io/",
   });
 
   session.setup(io);
@@ -62,7 +63,6 @@ const startServer = async () => {
   server.listen(scoketIoPort, () => {
     console.log(`⚡️ Socket.io server running on port ${scoketIoPort}`);
   });
-
 };
 
 startServer().catch(console.error);

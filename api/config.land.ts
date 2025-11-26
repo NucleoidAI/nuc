@@ -1,5 +1,7 @@
 const config = {
   project: {
+    name: "greycollar-api",
+    version: "0.0.1",
     label: "Team",
     oauth: {
       jwt: {
@@ -28,6 +30,15 @@ const config = {
   },
   dynamodb: {
     region: "us-east-1",
+  },
+  logger: {
+    elasticsearch: {
+      node: "http://98.88.24.46:9200",
+      esVersion: 8,
+      flushBytes: 1000,
+      index: "greycollar-logs",
+      consistency: "one",
+    },
   },
   event: {
     type: "inMemory" as const,

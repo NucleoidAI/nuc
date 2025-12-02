@@ -104,13 +104,22 @@ export function telemetryMiddleware() {
   }
 
   return (req: Request, res: Response, next: NextFunction) => {
+    if (!req || !res) {
+      next();
+      return;
+    }
+
     const startTime = Date.now();
     httpMetrics!.activeRequestsGauge.add(1);
 
     res.on("finish", () => {
+      if (!req) {
+        return;
+      }
+
       const duration = Date.now() - startTime;
       const attributes = {
-        method: req.method,
+        method: req?.method,
         endpoint: req.route?.path ?? req.path,
         status_code: res.statusCode.toString(),
       };

@@ -16,11 +16,13 @@ const apiProxy = createProxyMiddleware({
     console.error("Proxy Error:", {
       error: err.message,
       stack: err.stack,
-      path: req.path,
-      method: req.method,
-      headers: req.headers,
+      path: req?.path,
+      method: req?.method,
+      headers: req?.headers,
     });
-    res.status(500).send("Proxy Error: " + err.message);
+    if (res && !res.headersSent) {
+      res.status(500).send("Proxy Error: " + err.message);
+    }
   },
   logLevel: "debug",
   logProvider: (provider) => ({
@@ -42,10 +44,12 @@ const dashboardProxy = createProxyMiddleware({
     console.error("Dashboard Proxy Error:", {
       error: err.message,
       stack: err.stack,
-      path: req.path,
-      method: req.method,
+      path: req?.path,
+      method: req?.method,
     });
-    res.status(500).send("Dashboard Proxy Error: " + err.message);
+    if (res && !res.headersSent) {
+      res.status(500).send("Dashboard Proxy Error: " + err.message);
+    }
   },
 });
 
@@ -53,10 +57,12 @@ app.use((err, req, res, next) => {
   console.error("Global Error:", {
     error: err.message,
     stack: err.stack,
-    path: req.path,
-    method: req.method,
+    path: req?.path,
+    method: req?.method,
   });
-  res.status(500).send("Server Error: " + err.message);
+  if (res && !res.headersSent) {
+    res.status(500).send("Server Error: " + err.message);
+  }
 });
 
 app.get("/", (req, res) => {

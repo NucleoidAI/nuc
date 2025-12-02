@@ -11,6 +11,7 @@ async function create({
   colleagueId: string;
 }) {
   const sessionId = uuid();
+  cd;
 
   const session = await Session.create({
     id: sessionId,

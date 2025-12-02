@@ -1,5 +1,7 @@
 const config = {
   project: {
+    name: "greycollar-api",
+    version: "0.0.1",
     label: "Team",
     oauth: {
       jwt: {

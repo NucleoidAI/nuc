@@ -1,20 +1,6 @@
 const express = require("express");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 const cors = require("cors");
-const { ecsFormat } = require("@elastic/ecs-pino-format");
-const pino = require("pino");
-
-const log = pino(
-  ecsFormat({
-    service: {
-      name: "greycollar",
-      version: "1.0.0",
-    },
-  })
-);
-
-log.info("pino test log");
-log.error({ err: new Error("pino test error") }, "pino test error");
 
 const app = express();
 

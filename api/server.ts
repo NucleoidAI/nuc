@@ -30,6 +30,10 @@ platform.init(config).then(async () => {
 
   await event.init(config.event);
 
+  const logger = platform.logger;
+
+  logger.info("Platform Logger Initialized");
+
   if (config.metrics.enabled) {
     event.startPushgateway({
       url: config.metrics.url,

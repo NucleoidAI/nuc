@@ -38,8 +38,19 @@
             "label": "Create Order",
             "icon": "mdi:cart-plus"
           },
-          "next": null,
+          "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
           "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "2a69ce9c-32e9-49c9-ad7c-b631d890359b",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:send_email",
+            "label": "Send Email",
+            "icon": "mdi:email"
+          },
+          "next": null,
+          "createdAt": "2025-06-19T06:03:00Z"
         },
         {
           "id": "5be22de7-9673-448d-a1b5-dc23a8789b5c",
@@ -56,4 +67,3 @@
     }
   ]
 }
-

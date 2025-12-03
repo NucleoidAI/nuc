@@ -176,5 +176,31 @@ const Integrations = [
       required: ["productId", "quantity"],
     },
   },
+  {
+    id: "019ae325-2257-77df-97fa-e8808943634f",
+    action: "GREY:send_email",
+    provider: "GREY",
+    description: "Send an email",
+    direction: "OUTGOING",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        to: {
+          type: "string",
+          description: "The email address of the recipient.",
+        },
+        subject: {
+          type: "string",
+          description: "The subject of the email.",
+        },
+        text: {
+          type: "string",
+          description: "The body of the email.",
+        },
+      },
+      required: ["to", "subject", "text"],
+    },
+  },
 ];
 export default Integrations;

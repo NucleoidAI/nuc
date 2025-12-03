@@ -11,8 +11,22 @@ import {
 } from "@mui/material";
 import { formatKey, getAllKeys } from "../../utils/formatters";
 
+const renderValue = (value) => {
+  if (value === null || value === undefined) {
+    return "-";
+  }
+  if (typeof value === "object") {
+    return JSON.stringify(value, null, 2);
+  }
+  return String(value);
+};
+
 export const ResultTable = ({ data }) => {
-  const keys = getAllKeys(data);
+  console.log("data", data);
+  const content = data?.content || data[0];
+  console.log("content", content);
+  const keys = getAllKeys(content);
+  console.log("keys", keys);
 
   return (
     <TableContainer component={Paper}>
@@ -31,8 +45,10 @@ export const ResultTable = ({ data }) => {
                     <TableCell sx={{ lineHeight: ".8rem" }}>
                       {formatKey(key)}
                     </TableCell>
-                    <TableCell sx={{ lineHeight: ".8rem" }}>
-                      {item.values[keyIndex]}
+                    <TableCell
+                      sx={{ lineHeight: ".8rem", whiteSpace: "pre-wrap" }}
+                    >
+                      {renderValue(item.values[keyIndex])}
                     </TableCell>
                   </TableRow>
                 ))
@@ -41,7 +57,11 @@ export const ResultTable = ({ data }) => {
                     <TableCell sx={{ lineHeight: ".8rem" }}>
                       Value {item.index}
                     </TableCell>
-                    <TableCell sx={{ lineHeight: ".8rem" }}>{value}</TableCell>
+                    <TableCell
+                      sx={{ lineHeight: ".8rem", whiteSpace: "pre-wrap" }}
+                    >
+                      {renderValue(value)}
+                    </TableCell>
                   </TableRow>
                 ))
           )}

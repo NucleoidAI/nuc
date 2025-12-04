@@ -418,7 +418,7 @@ async function evaluateSupervisionAnswer({
     context,
     content: `${content.question}\n\nAnswer: ${content.answer}`,
     json_format: `{
-      "is_answer_known": <true|false>,
+      "is_answer_enough": <true|false>,
     }`,
   });
 

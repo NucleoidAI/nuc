@@ -189,7 +189,7 @@ router.post("/:supervisingId/evaluate", async (req, res) => {
     },
   });
 
-  if (evaluation.is_answer_known) {
+  if (evaluation.is_answer_enough) {
     const updatedSupervising = await supervising.update({
       teamId,
       supervisingId,

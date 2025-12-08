@@ -1,5 +1,3 @@
-import * as platform from "@canmingir/link-express";
-
 import { AuthenticationError } from "@canmingir/link-express/error";
 import Colleague from "../models/Colleague";
 import Joi from "joi";

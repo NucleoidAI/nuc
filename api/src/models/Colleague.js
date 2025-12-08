@@ -21,15 +21,15 @@ const Colleague = sequelize.define("Colleague", {
   },
   character: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   title: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   role: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   teamId: {
     type: DataTypes.UUID,
@@ -38,6 +38,10 @@ const Colleague = sequelize.define("Colleague", {
       model: "Project",
       key: "id",
     },
+  },
+  description: {
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   aiEngineId: {
     type: DataTypes.UUID,

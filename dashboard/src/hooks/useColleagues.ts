@@ -36,13 +36,11 @@ function useColleagues() {
     console.log("colleague", colleague);
 
     const response = await http.post(`/colleagues`, {
-      title: colleague.name,
       name: colleague.name,
       avatar: colleague.avatar,
-      character: colleague.character,
-      role: colleague.role,
       teamId: colleague.teamId,
       aiEngineId: colleague.aiEngineId,
+      description: colleague.description,
     });
 
     publish("COLLEAGUE_ADDED", { colleagueId: response.data.id });

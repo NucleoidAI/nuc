@@ -7,7 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 function useColleague(colleagueId) {
   const [colleague, setColleague] = useState({
     name: "",
-    avatar: "",
+    icon: "",
     teamId: "",
     AIEngine: "",
   });
@@ -43,7 +43,7 @@ function useColleague(colleagueId) {
     handleResponse(
       http.put(`/colleagues/${colleague.id}`, {
         name: colleague.name,
-        avatar: colleague.avatar,
+        icon: colleague.icon,
         projectId: colleague.projectId,
         teamId: colleague.teamId,
       }),

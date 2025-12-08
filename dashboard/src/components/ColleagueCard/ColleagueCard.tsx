@@ -56,7 +56,7 @@ export default function ColleagueCard({ colleague, onView, onEdit, onDelete }) {
         data-cy="colleague-card"
       >
         <Box sx={{ position: "relative" }}>
-          {colleague.avatar ? (
+          {colleague.icon ? (
             <Box
               sx={{
                 width: 64,
@@ -70,7 +70,7 @@ export default function ColleagueCard({ colleague, onView, onEdit, onDelete }) {
               }}
             >
               <Iconify
-                icon={cleanIconName(colleague.avatar)}
+                icon={cleanIconName(colleague.icon)}
                 width="70%"
                 height="70%"
                 style={{ objectFit: "contain" }}

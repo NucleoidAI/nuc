@@ -236,7 +236,7 @@ function AddItemDialog({
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <SourcedAvatar
                     source={"MINIMAL"}
-                    avatarUrl={colleague.avatar}
+                    avatarUrl={colleague.icon}
                     name={colleague.name}
                   />
                   <Box sx={{ ml: 1 }}>{colleague.name}</Box>

@@ -37,7 +37,7 @@ function useColleagues() {
 
     const response = await http.post(`/colleagues`, {
       name: colleague.name,
-      avatar: colleague.avatar,
+      icon: colleague.icon,
       teamId: colleague.teamId,
       aiEngineId: colleague.aiEngineId,
       description: colleague.description,

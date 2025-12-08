@@ -124,7 +124,7 @@ function Summary({ organization, team, colleague }) {
                         }}
                       >
                         <Iconify
-                          icon={cleanIconName(colleague.avatar)}
+                          icon={cleanIconName(colleague.icon)}
                           width="70%"
                           height="70%"
                           style={{ objectFit: "contain" }}

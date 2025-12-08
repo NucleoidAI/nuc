@@ -29,7 +29,7 @@ function ColleagueWizard({
   const sampleColleagues = [
     {
       name: "system_agent",
-      avatar: "mingcute:bank-card-line",
+      icon: "mingcute:bank-card-line",
       src: `https://cdn.nucleoid.com/greycollar/avatars/2.jpg`,
       aiEngineId: "289a3c9a-f23b-421a-ac6e-f14052a2d57c",
       engineName: "OpenAI",
@@ -38,7 +38,7 @@ function ColleagueWizard({
     },
     {
       name: "insight_agent",
-      avatar: "ph:coffee-bean-duotone",
+      icon: "ph:coffee-bean-duotone",
       src: `https://cdn.nucleoid.com/greycollar/avatars/5.jpg`,
       aiEngineId: "d9c93323-3baf-4623-a96c-b85db99b4441",
       engineName: "Claude",
@@ -47,7 +47,7 @@ function ColleagueWizard({
     },
     {
       name: "coordination_agent",
-      avatar: "ph:fire-simple-duotone",
+      icon: "ph:fire-simple-duotone",
       src: `https://cdn.nucleoid.com/greycollar/avatars/8.jpg`,
       aiEngineId: "123a3c9a-b23b-421a-ac6e-f14052a2d57c",
       engineName: "DeepMind",
@@ -132,7 +132,7 @@ function ColleagueWizard({
     setNewItem((prevItem) => {
       return {
         ...prevItem,
-        avatar: `:${emoji.id}:`,
+        icon: `:${emoji.id}:`,
         src: `${emoji.src}`,
       };
     });
@@ -173,7 +173,7 @@ function ColleagueWizard({
           <SelectAvatar
             handleEmojiSelect={handleEmojiSelect}
             avatarSrc={newItem.src}
-            avatar={newItem?.avatar?.replace(/:/g, "")}
+            avatar={newItem?.icon?.replace(/:/g, "")}
           />
         </div>
 
@@ -216,7 +216,7 @@ function ColleagueWizard({
                       }}
                     >
                       <Iconify
-                        icon={colleague.avatar}
+                        icon={colleague.icon}
                         width="20%"
                         height="20%"
                         style={{ objectFit: "contain" }}

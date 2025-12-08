@@ -33,7 +33,7 @@ import * as Yup from "yup";
 const sampleColleagues = [
   {
     name: "system_agent",
-    avatar: "mingcute:bank-card-line",
+    icon: "mingcute:bank-card-line",
     src: `https://cdn.nucleoid.com/greycollar/avatars/2.jpg`,
     aiEngineId: "289a3c9a-f23b-421a-ac6e-f14052a2d57c",
     engineName: "OpenAI",
@@ -42,21 +42,21 @@ const sampleColleagues = [
   },
   {
     name: "insight_agent",
-    avatar: "ph:coffee-bean-duotone",
+    icon: "ph:coffee-bean-duotone",
     src: `https://cdn.nucleoid.com/greycollar/avatars/5.jpg`,
     aiEngineId: "d9c93323-3baf-4623-a96c-b85db99b4441",
     engineName: "Claude",
     description:
-      "An insight-driven agent that analyzes information, identifies patterns, and provides clear, data-backed guidance for decision-making.",
+      "An insight-driven agent that analyzes information, identifies patterns, and provides clear, data-backed guidance for decision-making and problem-solving.",
   },
   {
-    name: "coordination_agent",
-    avatar: "ph:fire-simple-duotone",
+    name: "order_agent",
+    icon: "ph:atom-duotone",
     src: `https://cdn.nucleoid.com/greycollar/avatars/8.jpg`,
     aiEngineId: "123a3c9a-b23b-421a-ac6e-f14052a2d57c",
     engineName: "DeepMind",
     description:
-      "A coordination agent built to streamline communication, align processes, and manage multi-step workflows across teams and systems.",
+      "A coordination agent built to streamline communication, align processes, and manage multi-step workflows across teams, systems and projects for optimal efficiency.",
   },
 ];
 
@@ -154,7 +154,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
     };
     colleague: {
       name: string;
-      avatar?: string;
+      icon?: string;
       description: string;
       teamId?: string;
       aiEngineId: string;
@@ -176,7 +176,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
     colleague: Yup.object().shape({
       name: Yup.string().required("Colleague name is required"),
       description: Yup.string().required("Colleague description is required"),
-      avatar: Yup.string().optional(),
+      icon: Yup.string().optional(),
       teamId: Yup.string().optional(),
       aiEngineId: Yup.string().required("AI Engine is required"),
       engineName: Yup.string().optional(),
@@ -196,7 +196,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
     },
     colleague: {
       name: "",
-      avatar: "",
+      icon: "",
       description: "",
       teamId: "",
       aiEngineId: "",
@@ -276,7 +276,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
       if (errors.colleague) {
         if (errors.colleague.name) {
           setActiveStep(2);
-        } else if (errors.colleague.avatar) {
+        } else if (errors.colleague.icon) {
           setActiveStep(3);
         } else if (errors.colleague.description) {
           setActiveStep(4);
@@ -376,7 +376,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
       return;
     }
 
-    if (errors.colleague?.avatar) {
+    if (errors.colleague?.icon) {
       setActiveStep(3);
       return;
     }
@@ -401,7 +401,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
   };
 
   const handleAvatarSelect = (emoji: { id: string; src: string }) => {
-    setValue("colleague.avatar", `:${emoji.id}:`, { shouldValidate: true });
+    setValue("colleague.icon", `:${emoji.id}:`, { shouldValidate: true });
     setValue("colleague.src", `${emoji.src}`, { shouldValidate: true });
   };
 
@@ -445,7 +445,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
 
   const handleTemplateSelect = (colleagueTpl: (typeof sampleColleagues)[0]) => {
     setValue("colleague.name", colleagueTpl.name, { shouldValidate: true });
-    setValue("colleague.avatar", colleagueTpl.avatar, { shouldValidate: true });
+    setValue("colleague.icon", colleagueTpl.icon, { shouldValidate: true });
     setValue("colleague.description", colleagueTpl.description, {
       shouldValidate: true,
     });
@@ -455,7 +455,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
     setValue("colleague.engineName", colleagueTpl.engineName, {
       shouldValidate: true,
     });
-    setActiveStep(7);
+    setActiveStep(6);
   };
 
   const handleOrganizationSelect = (organization: {
@@ -643,7 +643,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
                       }}
                     >
                       <Iconify
-                        icon={cleanIconName(colleague.avatar)}
+                        icon={cleanIconName(colleague.icon)}
                         width="20%"
                         height="20%"
                         style={{ objectFit: "contain" }}
@@ -714,7 +714,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
           <SelectAvatar
             handleEmojiSelect={handleAvatarSelect}
             avatarSrc={getValues("colleague.src")}
-            avatar={getValues("colleague.avatar")?.replace(/:/g, "")}
+            avatar={getValues("colleague.icon")?.replace(/:/g, "")}
           />
         );
       case 4:

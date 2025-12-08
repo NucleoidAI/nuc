@@ -42,7 +42,7 @@ export default function ItemSummary({ newItem }) {
                     }}
                   >
                     <Iconify
-                      icon={cleanIconName(newItem.avatar)}
+                      icon={cleanIconName(newItem.icon)}
                       width="30%"
                       height="30%"
                       style={{ objectFit: "contain" }}

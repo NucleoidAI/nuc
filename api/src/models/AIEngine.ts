@@ -6,7 +6,6 @@ import {
   Default,
   PrimaryKey,
   AllowNull,
-  ForeignKey,
 } from "@canmingir/link-express/sequelize";
 
 @Table({

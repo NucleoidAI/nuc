@@ -1,5 +1,3 @@
-import platform from "@canmingir/link-express";
-
 import Colleague from "../models/Colleague";
 import Joi from "joi";
 import Responsibility from "../schemas/Responsibility";

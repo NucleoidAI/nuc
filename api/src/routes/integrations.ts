@@ -1,5 +1,3 @@
-import platform from "@canmingir/link-express";
-
 import { AuthenticationError } from "@canmingir/link-express/error";
 import Integration from "../models/Integration";
 import colleague from "../functions/colleague";

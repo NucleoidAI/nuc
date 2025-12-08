@@ -17,13 +17,7 @@ async function init() {
   // Project <-> Colleague
   models.Project.hasMany(models.Colleague, {
     foreignKey: "teamId",
-  });
-  models.Project.hasMany(models.Colleague, {
-    foreignKey: "teamId",
     as: "colleagues",
-  });
-  models.Colleague.belongsTo(models.Project, {
-    foreignKey: "teamId",
   });
   models.Colleague.belongsTo(models.Project, {
     foreignKey: "teamId",
@@ -83,18 +77,21 @@ async function init() {
   models.ColleagueKnowledge.belongsTo(models.Project, {
     foreignKey: "teamId",
   });
+
   models.ColleagueKnowledge.belongsTo(models.Colleague, {
     foreignKey: "colleagueId",
   });
-  models.Project.belongsToMany(models.ColleagueKnowledge, {
-    through: "ColleagueKnowledge",
+
+  models.Project.belongsToMany(models.Colleague, {
+    through: models.ColleagueKnowledge,
+    foreignKey: "projectId",
   });
-  models.ColleagueKnowledge.belongsToMany(models.Project, {
-    through: "ColleagueKnowledge",
+
+  models.Colleague.belongsToMany(models.Project, {
+    through: models.ColleagueKnowledge,
+    foreignKey: "colleagueId",
   });
-  models.Colleague.belongsToMany(models.ColleagueKnowledge, {
-    through: "ColleagueKnowledge",
-  });
+
   models.Colleague.hasMany(models.ColleagueKnowledge, {
     foreignKey: "colleagueId",
   });
@@ -128,10 +125,6 @@ async function init() {
     foreignKey: "id",
   });
 
-  // Session associations
-  models.Session.belongsTo(models.Project, {
-    foreignKey: "teamId",
-  });
   models.Session.hasMany(models.Supervising, {
     foreignKey: "sessionId",
     as: "supervisings",

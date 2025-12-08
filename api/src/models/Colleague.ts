@@ -15,9 +15,6 @@ export interface ColleagueAttributes {
   id: string;
   name: string;
   avatar: string;
-  character: string;
-  title: string;
-  role: string;
   aiEngineId: string;
   teamId: string;
 }
@@ -39,19 +36,11 @@ class Colleague extends Model<ColleagueAttributes> {
 
   @AllowNull(false)
   @Column(DataType.STRING)
+  declare description: string;
+
+  @AllowNull(false)
+  @Column(DataType.STRING)
   declare avatar: string;
-
-  @AllowNull(false)
-  @Column(DataType.STRING)
-  declare character: string;
-
-  @AllowNull(false)
-  @Column(DataType.STRING)
-  declare title: string;
-
-  @AllowNull(false)
-  @Column(DataType.STRING)
-  declare role: string;
 
   @ForeignKey(() => AIEngine)
   @Column(DataType.UUID)

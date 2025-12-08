@@ -6,9 +6,8 @@ import {
   Default,
   PrimaryKey,
   AllowNull,
-  HasMany,
-} from "sequelize-typescript";
-import Colleague from "./Colleague";
+  ForeignKey,
+} from "@canmingir/link-express/sequelize";
 
 @Table({
   tableName: "AIEngine",
@@ -45,9 +44,6 @@ class AIEngine extends Model {
   @Default(DataType.NOW)
   @Column(DataType.DATE)
   declare createdAt: Date;
-
-  @HasMany(() => Colleague, "aiEngineId")
-  declare colleagues: Colleague[];
 }
 
 export default AIEngine;

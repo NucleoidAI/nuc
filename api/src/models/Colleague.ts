@@ -7,17 +7,27 @@ import {
   PrimaryKey,
   AllowNull,
   ForeignKey,
-  BelongsTo,
-} from "sequelize-typescript";
+} from "@canmingir/link-express/sequelize";
+
 import AIEngine from "./AIEngine";
-import { Project } from "@canmingir/link-express/models";
+
+export interface ColleagueAttributes {
+  id: string;
+  name: string;
+  avatar: string;
+  character: string;
+  title: string;
+  role: string;
+  aiEngineId: string;
+  teamId: string;
+}
 
 @Table({
   tableName: "Colleague",
   timestamps: false,
   underscored: true,
 })
-class Colleague extends Model {
+class Colleague extends Model<ColleagueAttributes> {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)
@@ -47,15 +57,8 @@ class Colleague extends Model {
   @Column(DataType.UUID)
   declare aiEngineId: string;
 
-  @BelongsTo(() => AIEngine)
-  declare AIEngine: AIEngine;
-
-  @ForeignKey(() => Project)
   @Column(DataType.UUID)
   declare teamId: string;
-
-  @BelongsTo(() => Project)
-  declare project: Project;
 }
 
 export default Colleague;

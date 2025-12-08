@@ -5,7 +5,7 @@ import {
   DataType,
   PrimaryKey,
   AllowNull,
-} from "sequelize-typescript";
+} from "@canmingir/link-express/sequelize";
 
 @Table({
   tableName: "TeamDetails",

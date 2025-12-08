@@ -3,7 +3,6 @@ import Conversation from "../models/Conversation";
 import Joi from "joi";
 import Session from "../models/Session";
 import express from "express";
-import schemas from "../schemas";
 import session from "../functions/session";
 
 const router = express.Router();
@@ -54,7 +53,7 @@ router.post("/:sessionId", async (req, res) => {
     sessionInstance.colleagueId
   );
 
-  if (colleagueInstance.teamId !== teamId) {
+  if (colleagueInstance && colleagueInstance.teamId !== teamId) {
     return res.status(401).end();
   }
 
@@ -80,7 +79,7 @@ router.get("/:id", async (req, res) => {
 
   const colleague = await Colleague.findByPk(session.colleagueId);
 
-  if (colleague.teamId !== teamId) {
+  if (colleague && colleague.teamId !== teamId) {
     return res.status(401).end();
   }
 

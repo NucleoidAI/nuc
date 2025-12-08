@@ -7,7 +7,7 @@ import {
   PrimaryKey,
   AllowNull,
   IsIn,
-} from "sequelize-typescript";
+} from "@canmingir/link-express/sequelize";
 
 @Table({
   tableName: "Knowledge",

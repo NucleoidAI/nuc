@@ -1,65 +1,129 @@
 import platform from "@canmingir/link-express";
 
 async function init() {
-  /*
   const {
     Postgres: { sequelize },
-  } = platform.getModules();
-
+  } = await platform.getModules();
   const models = sequelize.models;
- 
-  // Use models directly from the object instead of destructuring
-  // This ensures we're using the exact references Sequelize has
 
-  // AIEngine <-> Colleague
-  models.AIEngine.hasMany(models.Colleague, {
-    foreignKey: "aiEngineId",
-    as: "colleagues",
+  // Responsibility <-> Communication
+  models.Responsibility.hasMany(models.Communication, {
+    foreignKey: "responsibilityId",
   });
-  models.Colleague.belongsTo(models.AIEngine, {
-    foreignKey: "aiEngineId",
-    as: "AIEngine",
+  models.Communication.belongsTo(models.Responsibility, {
+    foreignKey: "responsibilityId",
   });
 
   // Project <-> Colleague
+  models.Project.hasMany(models.Colleague, {
+    foreignKey: "teamId",
+  });
   models.Project.hasMany(models.Colleague, {
     foreignKey: "teamId",
     as: "colleagues",
   });
   models.Colleague.belongsTo(models.Project, {
     foreignKey: "teamId",
-    as: "project",
+  });
+  models.Colleague.belongsTo(models.Project, {
+    foreignKey: "teamId",
+    as: "colleagues",
   });
 
-  // Command -> Project
+  // Colleague <-> Responsibility
+  models.Colleague.hasMany(models.Responsibility, {
+    foreignKey: "colleagueId",
+  });
+  models.Responsibility.belongsTo(models.Colleague, {
+    foreignKey: "colleagueId",
+  });
+
+  // AIEngine <-> Colleague
+  models.AIEngine.hasMany(models.Colleague, {
+    foreignKey: "aiEngineId",
+  });
+  models.Colleague.belongsTo(models.AIEngine, {
+    foreignKey: "aiEngineId",
+  });
+
+  // Project <-> Command
+  models.Project.hasMany(models.Command, {
+    foreignKey: "teamId",
+  });
   models.Command.belongsTo(models.Project, {
     foreignKey: "teamId",
   });
 
-  // Message -> Colleague
+  // Message <-> Colleague
   models.Message.belongsTo(models.Colleague, {
     foreignKey: "colleagueId",
   });
 
-  // Integration -> Project
+  // Integration <-> Project (many-to-many)
+  models.Integration.belongsToMany(models.Project, {
+    through: "Integration",
+    foreignKey: "id",
+  });
+  models.Project.belongsToMany(models.Integration, {
+    through: "Integration",
+    foreignKey: "teamId",
+  });
+
+  // Integration <-> Colleague
+  models.Integration.belongsTo(models.Colleague, {
+    foreignKey: "colleagueId",
+  });
+
+  // Integration <-> Project (belongsTo)
   models.Integration.belongsTo(models.Project, {
     foreignKey: "teamId",
   });
 
-  // ColleagueKnowledge -> Project & Colleague
+  // ColleagueKnowledge associations
   models.ColleagueKnowledge.belongsTo(models.Project, {
     foreignKey: "teamId",
   });
   models.ColleagueKnowledge.belongsTo(models.Colleague, {
     foreignKey: "colleagueId",
   });
+  models.Project.belongsToMany(models.ColleagueKnowledge, {
+    through: "ColleagueKnowledge",
+  });
+  models.ColleagueKnowledge.belongsToMany(models.Project, {
+    through: "ColleagueKnowledge",
+  });
+  models.Colleague.belongsToMany(models.ColleagueKnowledge, {
+    through: "ColleagueKnowledge",
+  });
+  models.Colleague.hasMany(models.ColleagueKnowledge, {
+    foreignKey: "colleagueId",
+  });
 
-  // Statistics -> Project
+  // Knowledge <-> ColleagueKnowledge
+  models.Knowledge.hasOne(models.ColleagueKnowledge, {
+    foreignKey: "knowledgeId",
+  });
+  models.ColleagueKnowledge.belongsTo(models.Knowledge, {
+    foreignKey: "knowledgeId",
+  });
+
+  // Knowledge <-> Task
+  models.Knowledge.belongsTo(models.Task, {
+    foreignKey: "taskId",
+  });
+  models.Task.hasOne(models.Knowledge, {
+    foreignKey: "taskId",
+  });
+
+  // Statistics <-> Project
   models.Statistics.belongsTo(models.Project, {
     foreignKey: "teamId",
   });
 
-  // TeamDetails -> Project
+  // TeamDetails <-> Project
+  models.Project.hasOne(models.TeamDetails, {
+    foreignKey: "id",
+  });
   models.TeamDetails.belongsTo(models.Project, {
     foreignKey: "id",
   });
@@ -76,18 +140,58 @@ async function init() {
     foreignKey: "sessionId",
     as: "conversations",
   });
-
-  // Supervising -> Session
-  models.Supervising.belongsTo(models.Session, {
+  models.Session.belongsToMany(models.Supervising, {
+    through: "SessionSupervising",
     foreignKey: "sessionId",
   });
 
-  // Conversation -> Session
+  // Supervising associations
+  models.Supervising.belongsTo(models.Session, {
+    foreignKey: "sessionId",
+  });
+  models.Supervising.belongsTo(models.Conversation, {
+    foreignKey: "conversationId",
+  });
+  models.Supervising.belongsTo(models.Colleague, {
+    foreignKey: "colleagueId",
+  });
+  models.Colleague.hasMany(models.Supervising, {
+    foreignKey: "colleagueId",
+  });
+
+  // Conversation <-> Session
   models.Conversation.belongsTo(models.Session, {
     foreignKey: "sessionId",
     as: "session",
   });
-  */
+
+  // Task <-> Colleague
+  models.Task.belongsTo(models.Colleague, {
+    foreignKey: "colleagueId",
+    onDelete: "CASCADE",
+  });
+  models.Colleague.hasMany(models.Task, {
+    foreignKey: "colleagueId",
+    onDelete: "CASCADE",
+  });
+
+  // Task <-> Step
+  models.Task.hasMany(models.Step, {
+    foreignKey: "taskId",
+    as: "steps",
+  });
+  models.Step.belongsTo(models.Task, {
+    foreignKey: "taskId",
+    as: "task",
+  });
+
+  // Task <-> Responsibility
+  models.Task.hasOne(models.Responsibility, {
+    foreignKey: "responsibilityId",
+  });
+  models.Responsibility.belongsTo(models.Task, {
+    foreignKey: "responsibilityId",
+  });
 
   // Hooks
   models.Project.addHook("beforeDestroy", async (project: any) => {

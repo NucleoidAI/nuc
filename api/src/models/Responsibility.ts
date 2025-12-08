@@ -6,7 +6,7 @@ import {
   Default,
   PrimaryKey,
   AllowNull,
-} from "sequelize-typescript";
+} from "@canmingir/link-express/sequelize";
 
 import Node from "../schemas/Node";
 

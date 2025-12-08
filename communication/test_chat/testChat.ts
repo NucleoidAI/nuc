@@ -1,9 +1,6 @@
 import { createSession } from "../api/createSession";
-import { event } from "node-event-test-package/client";
 import express from "express";
 import { getColleague } from "../api/getColleague";
-import { io } from "socket.io-client";
-import jwt from "jsonwebtoken";
 import { sendMessageToSession } from "../api/sendMessageSession";
 
 const router = express.Router();
@@ -14,7 +11,6 @@ router.post("/", async (req, res) => {
   let stringResponse;
 
   try {
-
     const authorization = req.headers.authorization;
 
     let token = authorization?.split(" ")[1];

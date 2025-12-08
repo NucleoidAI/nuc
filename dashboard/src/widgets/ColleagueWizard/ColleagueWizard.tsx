@@ -28,40 +28,31 @@ function ColleagueWizard({
 }) {
   const sampleColleagues = [
     {
-      name: "Alex Thompson",
+      name: "system_agent",
       avatar: "mingcute:bank-card-line",
       src: `https://cdn.nucleoid.com/greycollar/avatars/2.jpg`,
-      character: "Quick-Witted",
-      title: "Engineer",
-      role: "Software Engineer",
       aiEngineId: "289a3c9a-f23b-421a-ac6e-f14052a2d57c",
       engineName: "OpenAI",
       description:
-        "Alex is a quick-witted software engineer who thrives on solving complex problems with innovative solutions.",
+        "A system-focused agent designed to support technical workflows, optimize architecture decisions, and improve reliability across operations.",
     },
     {
-      name: "Sarah Chen",
+      name: "insight_agent",
       avatar: "ph:coffee-bean-duotone",
       src: `https://cdn.nucleoid.com/greycollar/avatars/5.jpg`,
-      character: "Ambitious",
-      title: "Scientist",
-      role: "Data Scientist",
       aiEngineId: "d9c93323-3baf-4623-a96c-b85db99b4441",
       engineName: "Claude",
       description:
-        "Sarah is an ambitious data scientist with a passion for uncovering insights from complex datasets to drive informed decision-making.",
+        "An insight-driven agent that analyzes information, identifies patterns, and provides clear, data-backed guidance for decision-making.",
     },
     {
-      name: "Marcus Williams",
+      name: "coordination_agent",
       avatar: "ph:fire-simple-duotone",
       src: `https://cdn.nucleoid.com/greycollar/avatars/8.jpg`,
-      character: "Natural Leader",
-      title: "Designer",
-      role: "Product Manager",
       aiEngineId: "123a3c9a-b23b-421a-ac6e-f14052a2d57c",
       engineName: "DeepMind",
       description:
-        "Marcus is a natural leader and product manager who excels at guiding cross-functional teams to deliver user-centric products that exceed expectations.",
+        "A coordination agent built to streamline communication, align processes, and manage multi-step workflows across teams and systems.",
     },
   ];
 
@@ -75,62 +66,24 @@ function ColleagueWizard({
   ];
 
   const names = [
-    "Liam",
-    "Olivia",
-    "Noah",
-    "Emma",
-    "Ava",
-    "Elijah",
-    "Sophia",
-    "James",
-    "Isabella",
-    "Mason",
+    "core_agent",
+    "logic_agent",
+    "ops_agent",
+    "task_agent",
+    "flow_agent",
+    "insight_agent",
+    "system_agent",
+    "service_agent",
+    "assist_agent",
+    "analysis_agent",
   ];
 
   const descriptions = [
-    "A dedicated professional with a passion for excellence.",
-    "An innovative thinker who thrives on challenges.",
-    "A team player committed to achieving collective goals.",
-    "A creative individual with a knack for problem-solving.",
-    "A detail-oriented expert focused on delivering quality results.",
-  ];
-
-  const characters = [
-    "Brave",
-    "Quick-Witted",
-    "Mysterious",
-    "Loyal Companion",
-    "Charismatic",
-    "Deep Thinker",
-    "Strong-Willed",
-    "Ambitious",
-    "Free Spirit",
-    "Natural Leader",
-  ];
-  const roles = [
-    "Explores and discovers new scientific knowledge.",
-    "Investigates and solves complex cases.",
-    "Writes and reports news stories.",
-    "Designs innovative and functional buildings.",
-    "Creates delicious meals and culinary experiences.",
-    "Educates and inspires students to achieve their potential.",
-    "Develops solutions to technical challenges.",
-    "Operates aircraft and ensures safe travel.",
-    "Expresses creativity through visual or performing arts.",
-    "Provides emergency medical care and assistance.",
-  ];
-
-  const titles = [
-    "Scientist",
-    "Detective",
-    "Journalist",
-    "Architect",
-    "Chef",
-    "Teacher",
-    "Engineer",
-    "Pilot",
-    "Artist",
-    "Paramedic",
+    "A core automation agent designed for general workflow execution.",
+    "A logic-driven agent that assists with decision steps and rule-based operations.",
+    "An operations-focused agent optimized for task handling and process stability.",
+    "An analysis agent that interprets data, identifies patterns, and provides insights.",
+    "A service-oriented agent built to support requests, coordination, and communication.",
   ];
 
   const [activeStep, setActiveStep] = React.useState(0);
@@ -146,8 +99,6 @@ function ColleagueWizard({
   const [newItem, setNewItem] = useState(
     itemProperties.reduce((obj, property) => ({ ...obj, [property]: "" }), {})
   );
-
-  console.log("NewItem in ColleagueWizard:", newItem);
 
   const handleTemplateSelect = (colleague) => {
     setNewItem(colleague);
@@ -197,18 +148,9 @@ function ColleagueWizard({
       case "name":
         randomValue = names[Math.floor(Math.random() * names.length)];
         break;
-      case "character":
-        randomValue = characters[Math.floor(Math.random() * characters.length)];
-        break;
-      case "role":
-        randomValue = roles[Math.floor(Math.random() * roles.length)];
-        break;
       case "description":
         randomValue =
           descriptions[Math.floor(Math.random() * descriptions.length)];
-        break;
-      case "title":
-        randomValue = titles[Math.floor(Math.random() * titles.length)];
         break;
       default:
         randomValue = "";
@@ -284,10 +226,7 @@ function ColleagueWizard({
                       </Typography>
                     </Box>
                     <Typography variant="body2" color="textSecondary">
-                      {colleague.role}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      {colleague.character}
+                      {colleague.description}
                     </Typography>
                   </CardContent>
                 </CardActionArea>

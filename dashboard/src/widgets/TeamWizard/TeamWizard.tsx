@@ -1,12 +1,14 @@
 import DialogTitle from "@mui/material/DialogTitle";
 import EnginesChart from "../AIMarketplace/AIMarketplaceCard";
 import IconSelector from "../../components/IconSelector/IconSelector";
+import { Iconify } from "@canmingir/link/platform/components";
 import type { Resolver } from "react-hook-form";
 import SelectAvatar from "../../components/AvatarSelector/AvatarSelector";
 import SparkleInput from "../../components/SparkleInput/SparkleInput";
 import { Stack } from "@mui/material";
 import StepComponent from "../../components/StepComponent/StepComponent";
 import { Summary } from "../../components/ItemSummary/TeamSummary";
+import { cleanIconName } from "../../utils/cleanIconName";
 import { storage } from "@nucleoidjs/webstorage";
 import useColleagues from "../../hooks/useColleagues";
 import useOrganizations from ".././../hooks/useOrganziationsV2";
@@ -30,74 +32,106 @@ import * as Yup from "yup";
 
 const sampleColleagues = [
   {
-    name: "Alex Thompson",
-    avatar: ":2:",
+    name: "system_agent",
+    avatar: "mingcute:bank-card-line",
     src: `https://cdn.nucleoid.com/greycollar/avatars/2.jpg`,
-    character: "Quick-Witted",
-    role: "Software Engineer",
     aiEngineId: "289a3c9a-f23b-421a-ac6e-f14052a2d57c",
     engineName: "OpenAI",
+    description:
+      "A system-focused agent designed to support technical workflows, optimize architecture decisions, and improve reliability across operations.",
   },
   {
-    name: "Sarah Chen",
-    avatar: ":5:",
+    name: "insight_agent",
+    avatar: "ph:coffee-bean-duotone",
     src: `https://cdn.nucleoid.com/greycollar/avatars/5.jpg`,
-    character: "Ambitious",
-    role: "Data Scientist",
     aiEngineId: "d9c93323-3baf-4623-a96c-b85db99b4441",
     engineName: "Claude",
+    description:
+      "An insight-driven agent that analyzes information, identifies patterns, and provides clear, data-backed guidance for decision-making.",
   },
   {
-    name: "Marcus Williams",
-    avatar: ":8:",
+    name: "coordination_agent",
+    avatar: "ph:fire-simple-duotone",
     src: `https://cdn.nucleoid.com/greycollar/avatars/8.jpg`,
-    character: "Natural Leader",
-    role: "Product Manager",
     aiEngineId: "123a3c9a-b23b-421a-ac6e-f14052a2d57c",
     engineName: "DeepMind",
+    description:
+      "A coordination agent built to streamline communication, align processes, and manage multi-step workflows across teams and systems.",
   },
 ];
 
 const names = [
-  "Liam",
-  "Olivia",
-  "Noah",
-  "Emma",
-  "Ava",
-  "Elijah",
-  "Sophia",
-  "James",
-  "Isabella",
-  "Mason",
+  "core_agent",
+  "logic_agent",
+  "ops_agent",
+  "task_agent",
+  "flow_agent",
+  "insight_agent",
+  "system_agent",
+  "service_agent",
+  "assist_agent",
+  "analysis_agent",
 ];
 
-const characters = [
-  "Brave",
-  "Quick-Witted",
-  "Mysterious",
-  "Loyal Companion",
-  "Charismatic",
-  "Deep Thinker",
-  "Strong-Willed",
-  "Ambitious",
-  "Free Spirit",
-  "Natural Leader",
+const teamNames = [
+  "Core Systems",
+  "Operations",
+  "Data Intelligence",
+  "Automation",
+  "Service Desk",
+  "Product Ops",
+  "Engineering",
+  "Workflow Control",
+  "AI Services",
+  "Platform Support",
+  "Orchestration",
+  "Integration",
+  "Infrastructure",
+  "Quality Assurance",
+  "User Support",
+  "Strategy & Insights",
+  "Process Management",
+  "Dev Tools",
+  "Knowledge Systems",
+  "Execution Layer",
 ];
 
-const roles = [
-  "Scientist",
-  "Detective",
-  "Journalist",
-  "Architect",
-  "Chef",
-  "Teacher",
-  "Engineer",
-  "Pilot",
-  "Artist",
-  "Paramedic",
+const descriptions = [
+  "A core automation agent designed for general workflow execution.",
+  "A logic-driven agent that assists with decision steps and rule-based operations.",
+  "An operations-focused agent optimized for task handling and process stability.",
+  "An analysis agent that interprets data, identifies patterns, and provides insights.",
+  "A service-oriented agent built to support requests, coordination, and communication.",
 ];
 
-type PropertyOptionType = "name" | "character" | "role";
+const organizationNames = [
+  "Northstar Labs",
+  "Prime Systems",
+  "EdgeWorks",
+  "Apex Dynamics",
+  "NextLayer",
+  "CoreShift",
+  "BlueWave Technologies",
+  "Skyline Operations",
+  "Quantum Forge",
+  "Unity Solutions",
+  "BrightPath",
+  "Silverline Corp",
+  "Vertex Group",
+  "FlowLogic",
+  "Gridspace",
+  "Nimbus Tech",
+  "OpenSphere",
+  "Everlink Systems",
+  "PulseWorks",
+  "Circuit Collective",
+];
+
+type PropertyOptionType =
+  | "name"
+  | "description"
+  | "teamName"
+  | "organizationName";
 
 function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
   const projectId = storage.get("projectId");
@@ -119,11 +153,9 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
       src?: string;
     };
     colleague: {
-      title?: string;
       name: string;
       avatar?: string;
-      character: string;
-      role: string;
+      description: string;
       teamId?: string;
       aiEngineId: string;
       engineName?: string;
@@ -141,11 +173,9 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
       src: Yup.string().optional(),
     }),
     colleague: Yup.object().shape({
-      title: Yup.string().optional(),
       name: Yup.string().required("Colleague name is required"),
+      description: Yup.string().required("Colleague description is required"),
       avatar: Yup.string().optional(),
-      character: Yup.string().required("Character is required"),
-      role: Yup.string().required("Role is required"),
       teamId: Yup.string().optional(),
       aiEngineId: Yup.string().required("AI Engine is required"),
       engineName: Yup.string().optional(),
@@ -163,11 +193,9 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
       src: "",
     },
     colleague: {
-      title: "",
       name: "",
       avatar: "",
-      character: "",
-      role: "",
+      description: "",
       teamId: "",
       aiEngineId: "",
       engineName: "",
@@ -197,8 +225,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
     "Team",
     "AI Colleague",
     "Avatar",
-    "Character",
-    "Role",
+    "Description",
     "Engine",
     "Summary",
   ];
@@ -208,8 +235,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
     "Create Team",
     "Give colleague a name.",
     "Select an avatar that reflects your colleague.",
-    "Write down your colleague's eole. this will determine your colleague's behavior.",
-    "Write your colleague's role. this will determine your colleague's role.",
+    "Write down your colleague's description. this will determine your colleague's behavior.",
     "Select your colleague's engine. this will determine your colleague's engine.",
   ];
 
@@ -249,12 +275,10 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
           setActiveStep(2);
         } else if (errors.colleague.avatar) {
           setActiveStep(3);
-        } else if (errors.colleague.character) {
+        } else if (errors.colleague.description) {
           setActiveStep(4);
-        } else if (errors.colleague.role) {
-          setActiveStep(5);
         } else if (errors.colleague.aiEngineId) {
-          setActiveStep(6);
+          setActiveStep(5);
         }
       }
     }
@@ -305,7 +329,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
         break;
 
       case 4:
-        methods.trigger("colleague.character").then((isValid) => {
+        methods.trigger("colleague.description").then((isValid) => {
           if (isValid) {
             setActiveStep((prevStep) => prevStep + 1);
           }
@@ -313,14 +337,6 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
         return;
 
       case 5:
-        methods.trigger("colleague.role").then((isValid) => {
-          if (isValid) {
-            setActiveStep((prevStep) => prevStep + 1);
-          }
-        });
-        return;
-
-      case 6:
         methods.trigger("colleague.aiEngineId").then((isValid) => {
           if (isValid) {
             setActiveStep((prevStep) => prevStep + 1);
@@ -362,18 +378,13 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
       return;
     }
 
-    if (errors.colleague?.character) {
+    if (errors.colleague?.description) {
       setActiveStep(4);
       return;
     }
 
-    if (errors.colleague?.role) {
-      setActiveStep(5);
-      return;
-    }
-
     if (errors.colleague?.aiEngineId) {
-      setActiveStep(6);
+      setActiveStep(5);
       return;
     }
 
@@ -402,30 +413,38 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
       case "name":
         randomValue = names[Math.floor(Math.random() * names.length)];
         break;
-      case "character":
-        randomValue = characters[Math.floor(Math.random() * characters.length)];
+      case "description":
+        randomValue =
+          descriptions[Math.floor(Math.random() * descriptions.length)];
         break;
-      case "role":
-        randomValue = roles[Math.floor(Math.random() * roles.length)];
+      case "teamName":
+        randomValue = teamNames[Math.floor(Math.random() * teamNames.length)];
+        break;
+      case "organizationName":
+        randomValue =
+          organizationNames[
+            Math.floor(Math.random() * organizationNames.length)
+          ];
         break;
     }
 
     if (property === "name") {
       setValue("colleague.name", randomValue, { shouldValidate: true });
-    } else if (property === "character") {
-      setValue("colleague.character", randomValue, { shouldValidate: true });
-    } else if (property === "role") {
-      setValue("colleague.role", randomValue, { shouldValidate: true });
+    } else if (property === "description") {
+      setValue("colleague.description", randomValue, { shouldValidate: true });
+    } else if (property === "teamName") {
+      setValue("team.name", randomValue, { shouldValidate: true });
+    } else if (property === "organizationName") {
+      setValue("organization.name", randomValue, { shouldValidate: true });
     }
   };
 
   const handleTemplateSelect = (colleagueTpl: (typeof sampleColleagues)[0]) => {
     setValue("colleague.name", colleagueTpl.name, { shouldValidate: true });
     setValue("colleague.avatar", colleagueTpl.avatar, { shouldValidate: true });
-    setValue("colleague.character", colleagueTpl.character, {
+    setValue("colleague.description", colleagueTpl.description, {
       shouldValidate: true,
     });
-    setValue("colleague.role", colleagueTpl.role, { shouldValidate: true });
     setValue("colleague.aiEngineId", colleagueTpl.aiEngineId, {
       shouldValidate: true,
     });
@@ -467,7 +486,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
                 prop="Organization Name"
                 value={field.value}
                 onChange={(e) => field.onChange(e.target.value)}
-                onRandomValue={""}
+                onRandomValue={() => handleRandomValue("organizationName")}
                 multiline={""}
               />
             )}
@@ -543,7 +562,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
                 prop="Team Name"
                 value={field.value}
                 onChange={(e) => field.onChange(e.target.value)}
-                onRandomValue={""}
+                onRandomValue={() => handleRandomValue("teamName")}
                 multiline={""}
               />
             )}
@@ -571,7 +590,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
                 prop="name"
                 value={field.value}
                 onChange={(e) => field.onChange(e.target.value)}
-                onRandomValue={""}
+                onRandomValue={() => handleRandomValue("name")}
                 multiline={""}
               />
             )}
@@ -619,24 +638,18 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
                         marginBottom: "8px",
                       }}
                     >
-                      <img
-                        src={colleague.src}
-                        alt={colleague.name}
-                        style={{
-                          width: "32px",
-                          height: "32px",
-                          borderRadius: "50%",
-                        }}
+                      <Iconify
+                        icon={cleanIconName(colleague.avatar)}
+                        width="20%"
+                        height="20%"
+                        style={{ objectFit: "contain" }}
                       />
                       <Typography variant="h6" component="div">
                         {colleague.name}
                       </Typography>
                     </Box>
                     <Typography variant="body2" color="textSecondary">
-                      {colleague.role}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      {colleague.character}
+                      {colleague.description}
                     </Typography>
                   </CardContent>
                 </CardActionArea>
@@ -652,50 +665,23 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
     return (
       <>
         <Controller
-          name="colleague.character"
+          name="colleague.description"
           control={control}
           render={({ field }) => (
             <SparkleInput
-              data-cy="colleague-wizard-character-input"
-              prop="character"
+              data-cy="colleague-wizard-description-input"
+              prop="description"
               onChange={(e) => field.onChange(e.target.value)}
-              onRandomValue={() => handleRandomValue("character")}
+              onRandomValue={() => handleRandomValue("description")}
               value={field.value}
               multiline
               rows={11}
             />
           )}
         />
-        {errors.colleague?.character && (
+        {errors.colleague?.description && (
           <Typography color="error" variant="caption">
-            {errors.colleague.character.message}
-          </Typography>
-        )}
-      </>
-    );
-  };
-
-  const Responsibility = () => {
-    return (
-      <>
-        <Controller
-          name="colleague.role"
-          control={control}
-          render={({ field }) => (
-            <SparkleInput
-              data-cy="colleague-wizard-role-input"
-              prop="role"
-              onChange={(e) => field.onChange(e.target.value)}
-              onRandomValue={() => handleRandomValue("role")}
-              value={getValues("colleague.role")}
-              multiline
-              rows={11}
-            />
-          )}
-        />
-        {errors.colleague?.role && (
-          <Typography color="error" variant="caption">
-            {errors.colleague.role.message}
+            {errors.colleague.description.message}
           </Typography>
         )}
       </>
@@ -736,8 +722,6 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
       case 4:
         return <Personality />;
       case 5:
-        return <Responsibility />;
-      case 6:
         return (
           <EnginesChart
             handleEngineSelect={handleEngineSelect}
@@ -746,7 +730,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
             setOpen={""}
           />
         );
-      case 7:
+      case 6:
         return (
           <Summary
             team={getValues("team")}

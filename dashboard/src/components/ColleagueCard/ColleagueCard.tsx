@@ -2,7 +2,6 @@ import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Divider from "@mui/material/Divider";
-import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
 import Stack from "@mui/material/Stack";
 import { getBackgroundUrl } from "../../utils/background";
 
@@ -20,6 +19,11 @@ import { alpha, useTheme } from "@mui/material/styles";
 export default function ColleagueCard({ colleague, onView, onEdit, onDelete }) {
   const theme = useTheme();
   const popover = usePopover();
+
+  const cleanIconName = (icon?: string) => {
+    if (!icon) return "";
+    return icon.replace(/^:+|:+$/g, "");
+  };
 
   return (
     <Card sx={{ width: "255px" }}>
@@ -57,11 +61,7 @@ export default function ColleagueCard({ colleague, onView, onEdit, onDelete }) {
       >
         <Box sx={{ position: "relative" }}>
           {colleague.avatar ? (
-            <SourcedAvatar
-              data-cy="colleague-card-avatar"
-              name={colleague.name}
-              source={"MINIMAL"}
-              avatarUrl={colleague.avatar}
+            <Box
               sx={{
                 width: 64,
                 height: 64,
@@ -73,8 +73,13 @@ export default function ColleagueCard({ colleague, onView, onEdit, onDelete }) {
                 position: "absolute",
               }}
             >
-              {colleague.name}
-            </SourcedAvatar>
+              <Iconify
+                icon={cleanIconName(colleague.avatar)}
+                width="70%"
+                height="70%"
+                style={{ objectFit: "contain" }}
+              />
+            </Box>
           ) : (
             <Avatar />
           )}
@@ -130,7 +135,7 @@ export default function ColleagueCard({ colleague, onView, onEdit, onDelete }) {
               sx={{ paddingY: "0.5rem" }}
             >
               <Iconify icon={"ph:note-pencil-duotone"} width={24} />
-              <Typography variant="subtitle1">Role</Typography>
+              <Typography variant="subtitle1">Description</Typography>
             </Stack>
             <Stack
               sx={{
@@ -155,55 +160,7 @@ export default function ColleagueCard({ colleague, onView, onEdit, onDelete }) {
                   maxHeight: 45,
                 }}
               >
-                {colleague.role}
-              </Typography>
-            </Stack>
-          </Stack>
-          <Stack
-            direction="column"
-            sx={{
-              typography: "body2",
-              padding: 2,
-              borderRadius: 1,
-              border: "dotted 1px gray",
-              width: "100%",
-            }}
-          >
-            <Stack
-              direction="row"
-              alignItems="center"
-              spacing={1}
-              sx={{ paddingY: "0.5rem" }}
-            >
-              <Iconify icon={"ph:note-pencil-duotone"} width={24} />
-              <Typography variant="subtitle1" fontSize={15}>
-                Character
-              </Typography>
-            </Stack>
-            <Stack
-              sx={{
-                flexDirection: "row",
-                justifyContent: "flex-start",
-                alignContent: "center",
-                overflow: "hidden",
-                height: 45,
-              }}
-            >
-              <Typography
-                color={"inherit"}
-                variant={"body2"}
-                data-cy="colleague-card-character-area"
-                textAlign={"start"}
-                sx={{
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  display: "-webkit-box",
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: "vertical",
-                  maxHeight: 45,
-                }}
-              >
-                {colleague.character}
+                {colleague.description}
               </Typography>
             </Stack>
           </Stack>

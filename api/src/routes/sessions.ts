@@ -20,7 +20,7 @@ router.post("/", async (req, res) => {
 
   const colleague = await Colleague.findByPk(colleagueId);
 
-  if (!colleague || colleague.teamId !== teamId) {
+  if (colleague?.teamId !== teamId) {
     return res.status(401).end();
   }
 
@@ -53,7 +53,7 @@ router.post("/:sessionId", async (req, res) => {
     sessionInstance.colleagueId
   );
 
-  if (colleagueInstance && colleagueInstance.teamId !== teamId) {
+  if (colleagueInstance?.teamId !== teamId) {
     return res.status(401).end();
   }
 

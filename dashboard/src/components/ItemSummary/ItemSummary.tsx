@@ -1,17 +1,11 @@
 import DialogContentText from "@mui/material/DialogContentText";
 import Grid from "@mui/material/Grid";
 import { Iconify } from "@canmingir/link/platform/components";
+import { cleanIconName } from "../../utils/cleanIconName";
 
 import { Box, Card, CardContent, CardHeader, Typography } from "@mui/material";
 
 export default function ItemSummary({ newItem }) {
-  console.log("ItemSummary newItem:", newItem);
-
-  const cleanIconName = (icon?: string) => {
-    if (!icon) return "";
-    return icon.replace(/^:+|:+$/g, "");
-  };
-
   return (
     <>
       <DialogContentText sx={{ textAlign: "center", mb: 2 }}>

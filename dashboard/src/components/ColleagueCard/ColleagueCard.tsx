@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
+import { cleanIconName } from "../../utils/cleanIconName";
 import { getBackgroundUrl } from "../../utils/background";
 
 import {
@@ -19,11 +20,6 @@ import { alpha, useTheme } from "@mui/material/styles";
 export default function ColleagueCard({ colleague, onView, onEdit, onDelete }) {
   const theme = useTheme();
   const popover = usePopover();
-
-  const cleanIconName = (icon?: string) => {
-    if (!icon) return "";
-    return icon.replace(/^:+|:+$/g, "");
-  };
 
   return (
     <Card sx={{ width: "255px" }}>
@@ -150,7 +146,7 @@ export default function ColleagueCard({ colleague, onView, onEdit, onDelete }) {
                 color={"inherit"}
                 variant={"body2"}
                 textAlign={"start"}
-                data-cy="colleague-card-role-area"
+                data-cy="colleague-card-description-area"
                 sx={{
                   textOverflow: "ellipsis",
                   overflow: "hidden",

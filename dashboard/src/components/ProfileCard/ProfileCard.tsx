@@ -13,7 +13,7 @@ function ProfileCard({
   loading,
 }) {
   return (
-    <Card variant="profile-card" sx={{ position: "relative" }}>
+    <Card variant="profile-card" sx={{ position: "relative", height: 200 }}>
       <ProfileCover
         loading={loading}
         role={role}

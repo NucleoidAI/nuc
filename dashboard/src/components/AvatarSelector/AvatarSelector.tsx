@@ -70,7 +70,7 @@ export default function AvatarSelector({
             handleEmojiSelect(emoji), setEmojiDialogOpen(false);
           }}
           custom={ColleagueAndTeamAvatars}
-          categories={["team_icons"]}
+          categories={["colleague_avatars"]}
           searchPosition={"none"}
           navPosition="none"
           emojiButtonSize={90}

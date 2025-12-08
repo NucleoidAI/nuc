@@ -1,5 +1,5 @@
+import { Iconify } from "@canmingir/link/platform/components";
 import { Skeleton } from "@mui/material";
-import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
 
 import { Box, ListItemText, Stack, alpha, useTheme } from "@mui/material";
 
@@ -54,17 +54,27 @@ function ProfileCover({ name, avatarUrl, role, coverUrl, loading }) {
           <Skeleton variant="circular" height={90} />
         ) : (
           <>
-            <SourcedAvatar
-              source={"MINIMAL"}
-              name={name}
-              avatarUrl={avatarUrl}
+            <Box
               sx={{
                 mx: "auto",
-                width: { xs: 64, md: 128 },
-                height: { xs: 64, md: 128 },
-                border: `solid 2px ${theme.palette.common.white}`,
+                width: { xs: 32, md: 64 },
+                height: { xs: 32, md: 64 },
+                borderRadius: "50%",
+                border: `2px solid ${theme.palette.common.white}`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                overflow: "hidden",
               }}
-            />
+            >
+              <Iconify
+                icon={avatarUrl}
+                width="70%"
+                height="70%"
+                style={{ objectFit: "contain" }}
+              />
+            </Box>
+
             <ListItemText
               sx={{
                 mt: 3,

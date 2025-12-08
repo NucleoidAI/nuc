@@ -159,6 +159,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
       teamId?: string;
       aiEngineId: string;
       engineName?: string;
+      src?: string;
     };
   };
 
@@ -179,6 +180,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
       teamId: Yup.string().optional(),
       aiEngineId: Yup.string().required("AI Engine is required"),
       engineName: Yup.string().optional(),
+      src: Yup.string().optional(),
     }),
   });
 
@@ -199,6 +201,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
       teamId: "",
       aiEngineId: "",
       engineName: "",
+      src: "",
     },
   };
 
@@ -399,6 +402,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
 
   const handleAvatarSelect = (emoji: { id: string; src: string }) => {
     setValue("colleague.avatar", `:${emoji.id}:`, { shouldValidate: true });
+    setValue("colleague.src", `${emoji.src}`, { shouldValidate: true });
   };
 
   const handleEngineSelect = (engine: { id: string; vendor: string }) => {
@@ -709,13 +713,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
         return (
           <SelectAvatar
             handleEmojiSelect={handleAvatarSelect}
-            avatarSrc={
-              getValues("colleague.avatar")?.includes(":")
-                ? `https://cdn.nucleoid.com/greycollar/avatars/${getValues(
-                    "colleague.avatar"
-                  ).replace(/:/g, "")}.jpg`
-                : ""
-            }
+            avatarSrc={getValues("colleague.src")}
             avatar={getValues("colleague.avatar")?.replace(/:/g, "")}
           />
         );

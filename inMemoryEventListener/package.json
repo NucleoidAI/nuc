@@ -4,9 +4,9 @@
   "description": "",
   "author": "GreyCollar Team",
   "scripts": {
-    "dev": "event-listener"
+    "dev": "npx @canmingir/link-express start"
   },
   "dependencies": {
-    "@canmingir/link-express": "^1.7.0"
+    "@canmingir/link-express": "^1.7.3"
   }
 }

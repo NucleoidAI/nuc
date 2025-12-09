@@ -46,7 +46,7 @@ function ColleagueWizard({
         "An insight-driven agent that analyzes information, identifies patterns, and provides clear, data-backed guidance for decision-making.",
     },
     {
-      name: "coordination_agent",
+      name: "order_agent",
       icon: "ph:fire-simple-duotone",
       src: `https://cdn.nucleoid.com/greycollar/avatars/8.jpg`,
       aiEngineId: "123a3c9a-b23b-421a-ac6e-f14052a2d57c",

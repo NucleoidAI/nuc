@@ -117,8 +117,8 @@ function ColleagueLayout({ colleague, loading }) {
             <Stack
               sx={{
                 position: "absolute",
-                bottom: mdDown ? "auto" : 44,
-                left: mdDown ? "auto" : 120,
+                bottom: mdDown ? "auto" : 50,
+                left: mdDown ? "auto" : 60,
                 top: mdDown ? 25 : "auto",
                 right: mdDown ? 25 : "auto",
                 zIndex: 1000,

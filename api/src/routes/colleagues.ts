@@ -1,5 +1,3 @@
-import * as platform from "@canmingir/link-express";
-
 import Colleague from "../models/Colleague";
 import Joi from "joi";
 import Responsibility from "../schemas/Responsibility";
@@ -30,8 +28,6 @@ router.get("/", async (req, res) => {
 
   const colleagues = await Colleague.findAll({
     where: { teamId },
-    attributes: { exclude: ["aiEngineId"] },
-    include: ["AIEngine"],
   });
 
   res.json(colleagues);
@@ -75,7 +71,7 @@ router.get("/:colleagueId", async (req, res) => {
     res.status(404);
   }
 
-  if (colleague.teamId !== teamId) {
+  if (colleague && colleague.teamId !== teamId) {
     res.status(401);
   }
 
@@ -94,11 +90,11 @@ router.delete("/:id", async (req, res) => {
     res.status(404);
   }
 
-  if (colleague.teamId !== teamId) {
+  if (colleague && colleague.teamId !== teamId) {
     res.status(401);
   }
 
-  await colleague.destroy();
+  await colleague?.destroy();
 
   res.status(204).end();
 });
@@ -116,7 +112,7 @@ router.get("/:colleagueId/sessions", async (req, res) => {
     res.status(404);
   }
 
-  if (colleague.teamId !== teamId) {
+  if (colleague && colleague.teamId !== teamId) {
     res.status(401);
   }
 
@@ -142,7 +138,7 @@ router.get("/:colleagueId/supervisings", async (req, res) => {
     res.status(404);
   }
 
-  if (colleague.teamId !== teamId) {
+  if (colleague && colleague.teamId !== teamId) {
     res.status(401);
   }
 

@@ -1,5 +1,5 @@
 import React from "react";
-import WrappedResponsibilityFlow from "./ResponsibilityFlow";
+import ResponsibilityFlow from "./ResponsibilityFlow";
 
 import {
   Button,
@@ -32,7 +32,7 @@ const ResponsibilityFlowDialog = ({
         }}
       >
         {selectedItem && (
-          <WrappedResponsibilityFlow
+          <ResponsibilityFlow
             aiResponse={aiResponse}
             responsibility={selectedItem}
           />

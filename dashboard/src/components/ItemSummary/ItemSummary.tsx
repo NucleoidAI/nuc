@@ -1,11 +1,16 @@
 import DialogContentText from "@mui/material/DialogContentText";
 import Grid from "@mui/material/Grid";
-import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
+import { Iconify } from "@canmingir/link/platform/components";
 
-import { Card, CardContent, CardHeader, Typography } from "@mui/material";
+import { Box, Card, CardContent, CardHeader, Typography } from "@mui/material";
 
 export default function ItemSummary({ newItem }) {
   console.log("ItemSummary newItem:", newItem);
+
+  const cleanIconName = (icon?: string) => {
+    if (!icon) return "";
+    return icon.replace(/^:+|:+$/g, "");
+  };
 
   return (
     <>
@@ -15,7 +20,7 @@ export default function ItemSummary({ newItem }) {
       <Grid container spacing={2}>
         <Grid
           item
-          xs={4}
+          xs={6}
           sx={{
             justifyContent: "center",
             alignContent: "center",
@@ -28,11 +33,27 @@ export default function ItemSummary({ newItem }) {
               boxShadow: (theme) => theme.customShadows.card,
               alignContent: "center",
               justifyContent: "center",
+              width: "100%",
             }}
           >
             <CardContent
               children={
                 <>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      mb: 1,
+                    }}
+                  >
+                    <Iconify
+                      icon={cleanIconName(newItem.avatar)}
+                      width="30%"
+                      height="30%"
+                      style={{ objectFit: "contain" }}
+                    />
+                  </Box>
                   <Typography
                     variant="h6"
                     textAlign={"center"}
@@ -41,54 +62,12 @@ export default function ItemSummary({ newItem }) {
                   >
                     {newItem.name}
                   </Typography>
-                  <SourcedAvatar
-                    name={newItem.name}
-                    source={
-                      newItem.src ||
-                      `https://cdn.nucleoid.com/greycollar/avatars/${newItem?.avatar?.replace(
-                        /:/g,
-                        ""
-                      )}.jpg`
-                    }
-                    avatarUrl={newItem.avatarUrl}
-                    sx={{
-                      display: "flex",
-                      alignSelf: "center",
-                      justifySelf: "center",
-                      width: { xs: 40, md: 104 },
-                      height: { xs: 40, md: 104 },
-                      border: `solid 2px ${(theme) =>
-                        theme.palette.common.white}`,
-                    }}
-                  >
-                    {newItem.children}
-                  </SourcedAvatar>
                 </>
               }
             />
           </Card>
         </Grid>
-        <Grid item xs={4}>
-          <Card>
-            <CardHeader title="Character" />
-            <CardContent>
-              <Typography data-cy="item-summary-character-area">
-                {newItem.character}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={4}>
-          <Card>
-            <CardHeader title="Title" />
-            <CardContent>
-              <Typography data-cy="item-summary-title-area">
-                {newItem.title}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={6}>
           <Card>
             <CardHeader title="Engine" />
             <CardContent>
@@ -100,10 +79,10 @@ export default function ItemSummary({ newItem }) {
         </Grid>
         <Grid item xs={8}>
           <Card>
-            <CardHeader title="Role" />
+            <CardHeader title="Description" />
             <CardContent>
-              <Typography data-cy="item-summary-role-area">
-                {newItem.role}
+              <Typography data-cy="item-summary-description-area">
+                {newItem.description}
               </Typography>
             </CardContent>
           </Card>

@@ -1,7 +1,10 @@
 //eslint-disable-next-line
 const { startDevServer } = require("@cypress/vite-dev-server");
 
-module.exports = (on, config) => {
+export default (
+  on: Cypress.PluginEvents,
+  config: Cypress.PluginConfigOptions
+) => {
   on("dev-server:start", (options) => {
     return startDevServer({ options });
   });

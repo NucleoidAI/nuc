@@ -1,4 +1,3 @@
-import SourcedAvatar from "../../components/SourcedAvatar/SourcedAvatar";
 import { getBackgroundUrl } from "../../utils/background";
 
 import { Avatar, Box, Card, Stack, Typography } from "@mui/material";
@@ -17,18 +16,9 @@ function AIMarketplaceItem({ engine, isWizardEngine, handleEngineSelect }) {
       ? "lineicons:claude"
       : engine?.vendor === "Meta"
       ? "hugeicons:meta"
-      : engine?.vendor === "DeepMing"
-      ? "mingcute:ai-fill"
+      : engine?.vendor === "DeepMind"
+      ? "simple-icons:deepmind"
       : "tabler:ai";
-
-  const avatars =
-    engine?.avatar === ":1:"
-      ? "https://www.creativefabrica.com/wp-content/uploads/2023/02/15/Robot-scifi-avatar-SVG-Graphics-61318342-1-1-580x390.jpg"
-      : engine?.avatar === ":2:"
-      ? "https://www.creativefabrica.com/wp-content/uploads/2023/02/15/Robotic-avatar-illustration-Graphics-61317919-1-1-580x390.jpg"
-      : engine?.avatar === ":3:"
-      ? "https://www.creativefabrica.com/wp-content/uploads/2023/02/15/Robotic-avatar-illustration-Graphics-61317919-1-1-580x390.jpg"
-      : "https://www.creativefabrica.com/wp-content/uploads/2023/02/15/Robot-scifi-avatar-SVG-Graphics-61318342-1-1-580x390.jpg";
 
   return (
     <>
@@ -57,32 +47,56 @@ function AIMarketplaceItem({ engine, isWizardEngine, handleEngineSelect }) {
         >
           {/* bg and avatar */}
           <Box sx={{ position: "relative" }}>
-            {engine?.avatar ? (
-              <SourcedAvatar
-                name={engine?.vendor}
-                source={avatars}
-                sx={{
-                  width: 56,
-                  height: 56,
-                  zIndex: 11,
-                  left: 0,
-                  right: 0,
-                  top: 15,
-                  mx: "auto",
-                  position: "absolute",
-                }}
-              />
-            ) : (
-              <Avatar />
-            )}
-
             <Image
               src={getBackgroundUrl(engine?.id)}
               alt={engine?.vendor}
               ratio="16/9"
-              sx={{ width: 100, height: "100%" }}
+              sx={{
+                width: 100,
+                height: "100%",
+                display: "block",
+                borderRadius: 2,
+              }}
               overlay={alpha(theme.palette.grey[900], 0.48)}
             />
+
+            {engine?.avatar ? (
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: 8,
+                  left: "50%",
+                  transform: "translate(-50%)",
+                  width: 48,
+                  height: 48,
+                  borderRadius: "50%",
+                  border: `2px solid ${theme.palette.common.white}`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  overflow: "hidden",
+                  zIndex: 10,
+                }}
+              >
+                <Iconify
+                  icon={engine.avatar}
+                  width="70%"
+                  height="70%"
+                  style={{ objectFit: "contain" }}
+                />
+              </Box>
+            ) : (
+              <Avatar
+                sx={{
+                  position: "absolute",
+                  top: 8,
+                  left: 8,
+                  width: 32,
+                  height: 32,
+                  zIndex: 10,
+                }}
+              />
+            )}
           </Box>
           {/* // vendor and model */}
           <Stack

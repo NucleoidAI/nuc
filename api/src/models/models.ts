@@ -1,142 +1,206 @@
+import platform from "@canmingir/link-express";
+
 async function init() {
-  const { Project } = require("@canmingir/link-express/models");
+  const {
+    Postgres: { sequelize },
+  } = await platform.getModules();
+  const models = sequelize.models;
 
-  const Task = require("./Task");
-  const Command = require("./Command");
-  const Colleague = require("./Colleague");
-  const ColleagueKnowledge = require("./ColleagueKnowledge");
-  const TeamDetails = require("./TeamDetails");
-  const Message = require("./Message");
-  const Session = require("./Session");
-  const Conversation = require("./Conversation");
-  const Supervising = require("./Supervising");
-  const Knowledge = require("./Knowledge");
-  const AIEngine = require("./AIEngine");
-  const Step = require("./Step");
-  const Statistics = require("./Statistics");
-  const Responsibility = require("./Responsibility");
-  const Integration = require("./Integration");
-  const Communication = require("./Communication");
-
-  Responsibility.hasMany(Communication, {
+  // Responsibility <-> Communication
+  models.Responsibility.hasMany(models.Communication, {
     foreignKey: "responsibilityId",
   });
-  Communication.belongsTo(Responsibility, {
+  models.Communication.belongsTo(models.Responsibility, {
     foreignKey: "responsibilityId",
   });
 
-  Project.hasMany(Colleague, {
+  // Project <-> Colleague
+  models.Project.hasMany(models.Colleague, {
+    foreignKey: "teamId",
+    as: "colleagues",
+  });
+  models.Colleague.belongsTo(models.Project, {
+    foreignKey: "teamId",
+    as: "colleagues",
+  });
+
+  // Colleague <-> Responsibility
+  models.Colleague.hasMany(models.Responsibility, {
+    foreignKey: "colleagueId",
+  });
+  models.Responsibility.belongsTo(models.Colleague, {
+    foreignKey: "colleagueId",
+  });
+
+  // AIEngine <-> Colleague
+  models.AIEngine.hasMany(models.Colleague, {
+    foreignKey: "aiEngineId",
+  });
+  models.Colleague.belongsTo(models.AIEngine, {
+    foreignKey: "aiEngineId",
+  });
+
+  // Project <-> Command
+  models.Project.hasMany(models.Command, {
+    foreignKey: "teamId",
+  });
+  models.Command.belongsTo(models.Project, {
     foreignKey: "teamId",
   });
 
-  Colleague.belongsTo(Project, {
-    foreignKey: "teamId",
+  // Message <-> Colleague
+  models.Message.belongsTo(models.Colleague, {
+    foreignKey: "colleagueId",
   });
 
-  Colleague.hasMany(Responsibility, { foreignKey: "colleagueId" });
-  Responsibility.belongsTo(Colleague, { foreignKey: "colleagueId" });
-
-  Integration.belongsToMany(Project, {
+  // Integration <-> Project (many-to-many)
+  models.Integration.belongsToMany(models.Project, {
     through: "Integration",
     foreignKey: "id",
   });
-
-  Project.belongsToMany(Integration, {
+  models.Project.belongsToMany(models.Integration, {
     through: "Integration",
     foreignKey: "teamId",
   });
 
-  Integration.belongsTo(Colleague, { foreignKey: "colleagueId" });
+  // Integration <-> Colleague
+  models.Integration.belongsTo(models.Colleague, {
+    foreignKey: "colleagueId",
+  });
 
-  Statistics.belongsTo(Project, { foreignKey: "teamId" });
+  // Integration <-> Project (belongsTo)
+  models.Integration.belongsTo(models.Project, {
+    foreignKey: "teamId",
+  });
 
-  Project.hasMany(Colleague, { foreignKey: "teamId", as: "colleagues" });
-  Colleague.belongsTo(Project, { foreignKey: "teamId", as: "colleagues" });
+  // ColleagueKnowledge associations
+  models.ColleagueKnowledge.belongsTo(models.Project, {
+    foreignKey: "teamId",
+  });
 
-  Project.hasMany(Command, { foreignKey: "teamId" });
-  Command.belongsTo(Project, { foreignKey: "teamId" });
+  models.ColleagueKnowledge.belongsTo(models.Colleague, {
+    foreignKey: "colleagueId",
+  });
 
-  Project.belongsToMany(ColleagueKnowledge, { through: "ColleagueKnowledge" });
-  ColleagueKnowledge.belongsToMany(Project, { through: "ColleagueKnowledge" });
+  models.Project.belongsToMany(models.Colleague, {
+    through: models.ColleagueKnowledge,
+    foreignKey: "projectId",
+  });
 
-  Session.hasMany(Conversation, { foreignKey: "sessionId" });
-  Conversation.belongsTo(Session, { foreignKey: "sessionId" });
+  models.Colleague.belongsToMany(models.Project, {
+    through: models.ColleagueKnowledge,
+    foreignKey: "colleagueId",
+  });
 
-  Session.belongsToMany(Supervising, {
+  models.Colleague.hasMany(models.ColleagueKnowledge, {
+    foreignKey: "colleagueId",
+  });
+
+  // Knowledge <-> ColleagueKnowledge
+  models.Knowledge.hasOne(models.ColleagueKnowledge, {
+    foreignKey: "knowledgeId",
+  });
+  models.ColleagueKnowledge.belongsTo(models.Knowledge, {
+    foreignKey: "knowledgeId",
+  });
+
+  // Knowledge <-> Task
+  models.Knowledge.belongsTo(models.Task, {
+    foreignKey: "taskId",
+  });
+  models.Task.hasOne(models.Knowledge, {
+    foreignKey: "taskId",
+  });
+
+  // Statistics <-> Project
+  models.Statistics.belongsTo(models.Project, {
+    foreignKey: "teamId",
+  });
+
+  // TeamDetails <-> Project
+  models.Project.hasOne(models.TeamDetails, {
+    foreignKey: "id",
+  });
+  models.TeamDetails.belongsTo(models.Project, {
+    foreignKey: "id",
+  });
+
+  models.Session.hasMany(models.Supervising, {
+    foreignKey: "sessionId",
+    as: "supervisings",
+  });
+  models.Session.hasMany(models.Conversation, {
+    foreignKey: "sessionId",
+    as: "conversations",
+  });
+  models.Session.belongsToMany(models.Supervising, {
     through: "SessionSupervising",
     foreignKey: "sessionId",
   });
 
-  Supervising.belongsTo(Conversation, { foreignKey: "conversationId" });
-
-  Supervising.belongsTo(Colleague, { foreignKey: "colleagueId" });
-
-  Colleague.hasMany(Supervising, { foreignKey: "colleagueId" });
-
-  Task.belongsTo(Colleague, { foreignKey: "colleagueId", onDelete: "CASCADE" });
-
-  Colleague.hasMany(Task, { foreignKey: "colleagueId", onDelete: "CASCADE" });
-
-  Project.hasMany(Colleague, { foreignKey: "teamId" });
-  Colleague.belongsTo(Project, { foreignKey: "teamId" });
-
-  Colleague.belongsToMany(ColleagueKnowledge, {
-    through: "ColleagueKnowledge",
+  // Supervising associations
+  models.Supervising.belongsTo(models.Session, {
+    foreignKey: "sessionId",
+  });
+  models.Supervising.belongsTo(models.Conversation, {
+    foreignKey: "conversationId",
+  });
+  models.Supervising.belongsTo(models.Colleague, {
+    foreignKey: "colleagueId",
+  });
+  models.Colleague.hasMany(models.Supervising, {
+    foreignKey: "colleagueId",
   });
 
-  ColleagueKnowledge.belongsTo(Colleague, { foreignKey: "colleagueId" });
-  Colleague.hasMany(ColleagueKnowledge, { foreignKey: "colleagueId" });
-
-  Knowledge.hasOne(ColleagueKnowledge, { foreignKey: "knowledgeId" });
-  ColleagueKnowledge.belongsTo(Knowledge, { foreignKey: "knowledgeId" });
-
-  Knowledge.belongsTo(Task, { foreignKey: "taskId" });
-  Task.hasOne(Knowledge, { foreignKey: "taskId" });
-
-  AIEngine.hasMany(Colleague, { foreignKey: "aiEngineId" });
-  Colleague.belongsTo(AIEngine, { foreignKey: "aiEngineId" });
-
-  Task.hasMany(Step, { foreignKey: "taskId", as: "steps" });
-  Step.belongsTo(Task, { foreignKey: "taskId", as: "task" });
-
-  Project.hasOne(TeamDetails, { foreignKey: "id" });
-  TeamDetails.belongsTo(Project, { foreignKey: "id" });
-
-  Task.hasOne(Responsibility, { foreignKey: "responsibilityId" });
-  Responsibility.belongsTo(Task, { foreignKey: "responsibilityId" });
-
-  Project.addHook("beforeDestroy", async (project) => {
-    await Colleague.destroy({
-      where: {
-        teamId: project.id,
-      },
-    });
-    await ColleagueKnowledge.destroy({
-      where: {
-        teamId: project.id,
-      },
-    });
-    await TeamDetails.destroy({
-      where: {
-        teamId: project.id,
-      },
-    });
+  // Conversation <-> Session
+  models.Conversation.belongsTo(models.Session, {
+    foreignKey: "sessionId",
+    as: "session",
   });
 
-  Colleague.addHook("beforeDestroy", async (colleague) => {
-    await Supervising.destroy({
-      where: {
-        colleagueId: colleague.id,
-      },
-    });
-    await ColleagueKnowledge.destroy({
-      where: {
-        colleagueId: colleague.id,
-      },
+  // Task <-> Colleague
+  models.Task.belongsTo(models.Colleague, {
+    foreignKey: "colleagueId",
+    onDelete: "CASCADE",
+  });
+  models.Colleague.hasMany(models.Task, {
+    foreignKey: "colleagueId",
+    onDelete: "CASCADE",
+  });
+
+  // Task <-> Step
+  models.Task.hasMany(models.Step, {
+    foreignKey: "taskId",
+    as: "steps",
+  });
+  models.Step.belongsTo(models.Task, {
+    foreignKey: "taskId",
+    as: "task",
+  });
+
+  // Task <-> Responsibility
+  models.Task.hasOne(models.Responsibility, {
+    foreignKey: "responsibilityId",
+  });
+  models.Responsibility.belongsTo(models.Task, {
+    foreignKey: "responsibilityId",
+  });
+
+  // Hooks
+  models.Project.addHook("beforeDestroy", async (project: any) => {
+    await models.Colleague.destroy({ where: { teamId: project.id } });
+    await models.ColleagueKnowledge.destroy({ where: { teamId: project.id } });
+    await models.TeamDetails.destroy({ where: { id: project.id } });
+  });
+
+  models.Colleague.addHook("beforeDestroy", async (colleague: any) => {
+    await models.Supervising.destroy({ where: { colleagueId: colleague.id } });
+    await models.ColleagueKnowledge.destroy({
+      where: { colleagueId: colleague.id },
     });
   });
 
-  Message.addHook("beforeCreate", async (message) => {
+  models.Message.addHook("beforeCreate", async (message: any) => {
     if (message.role === "USER") {
       message.status = "READ";
     } else if (message.role === "ASSISTANT") {

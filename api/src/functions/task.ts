@@ -1,7 +1,7 @@
 import Colleague from "../models/Colleague";
 import Step from "../models/Step";
 import Task from "../models/Task";
-import { event } from "node-event-test-package/client";
+import { event } from "@canmingir/link-express/event/client";
 
 async function create({
   colleagueId,

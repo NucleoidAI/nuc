@@ -24,7 +24,7 @@ const Team = () => {
             <Iconify icon={"ri:node-tree"} width={24} />
           </IconButton>
         </Box>
-        <TeamChart sx={{ margin: 0.2, lineHeight: "15px" }} />
+        <TeamChart />
       </Box>
       <OrganizationChart open={isOldChartOpen} setOpen={setIsOldChartOpen} />
     </>

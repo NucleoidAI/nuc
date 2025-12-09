@@ -2,6 +2,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import EnginesChart from "../AIMarketplace/AIMarketplaceCard";
+import { Iconify } from "@canmingir/link/platform/components";
 import ItemSummary from "../../components/ItemSummary/ItemSummary";
 import React from "react";
 import SelectAvatar from "../../components/AvatarSelector/AvatarSelector";
@@ -28,44 +29,49 @@ function ColleagueWizard({
   const sampleColleagues = [
     {
       name: "Alex Thompson",
-      avatar: ":2:",
+      avatar: "mingcute:bank-card-line",
       src: `https://cdn.nucleoid.com/greycollar/avatars/2.jpg`,
       character: "Quick-Witted",
       title: "Engineer",
       role: "Software Engineer",
       aiEngineId: "289a3c9a-f23b-421a-ac6e-f14052a2d57c",
       engineName: "OpenAI",
+      description:
+        "Alex is a quick-witted software engineer who thrives on solving complex problems with innovative solutions.",
     },
     {
       name: "Sarah Chen",
-      avatar: ":5:",
+      avatar: "ph:coffee-bean-duotone",
       src: `https://cdn.nucleoid.com/greycollar/avatars/5.jpg`,
       character: "Ambitious",
       title: "Scientist",
       role: "Data Scientist",
       aiEngineId: "d9c93323-3baf-4623-a96c-b85db99b4441",
       engineName: "Claude",
+      description:
+        "Sarah is an ambitious data scientist with a passion for uncovering insights from complex datasets to drive informed decision-making.",
     },
     {
       name: "Marcus Williams",
-      avatar: ":8:",
+      avatar: "ph:fire-simple-duotone",
       src: `https://cdn.nucleoid.com/greycollar/avatars/8.jpg`,
       character: "Natural Leader",
       title: "Designer",
       role: "Product Manager",
       aiEngineId: "123a3c9a-b23b-421a-ac6e-f14052a2d57c",
       engineName: "DeepMind",
+      description:
+        "Marcus is a natural leader and product manager who excels at guiding cross-functional teams to deliver user-centric products that exceed expectations.",
     },
   ];
 
-  const steps = ["Name", "Title", "Character", "Engine", "Summary"];
+  const steps = ["Name", "Description", "Engine", "Summary"];
 
   const stepExp = [
-    "Give colleague a name.",
-    "Select an avatar that reflects your colleague.",
-    "Write down your colleague's eole. this will determine your colleague's behavior.",
-    "Write your colleague's role. this will determine your colleague's role.",
+    "Give colleague a name and select an avatar that reflects your colleague",
+    "Define your colleague's description and responsibilities.",
     "Select your colleague's engine. this will determine your colleague's engine.",
+    "Review and confirm the details of your new colleague.",
   ];
 
   const names = [
@@ -80,6 +86,15 @@ function ColleagueWizard({
     "Isabella",
     "Mason",
   ];
+
+  const descriptions = [
+    "A dedicated professional with a passion for excellence.",
+    "An innovative thinker who thrives on challenges.",
+    "A team player committed to achieving collective goals.",
+    "A creative individual with a knack for problem-solving.",
+    "A detail-oriented expert focused on delivering quality results.",
+  ];
+
   const characters = [
     "Brave",
     "Quick-Witted",
@@ -132,9 +147,11 @@ function ColleagueWizard({
     itemProperties.reduce((obj, property) => ({ ...obj, [property]: "" }), {})
   );
 
+  console.log("NewItem in ColleagueWizard:", newItem);
+
   const handleTemplateSelect = (colleague) => {
     setNewItem(colleague);
-    setActiveStep(4);
+    setActiveStep(3);
   };
 
   useEffect(() => {
@@ -185,6 +202,10 @@ function ColleagueWizard({
         break;
       case "role":
         randomValue = roles[Math.floor(Math.random() * roles.length)];
+        break;
+      case "description":
+        randomValue =
+          descriptions[Math.floor(Math.random() * descriptions.length)];
         break;
       case "title":
         randomValue = titles[Math.floor(Math.random() * titles.length)];
@@ -252,14 +273,11 @@ function ColleagueWizard({
                         marginBottom: "8px",
                       }}
                     >
-                      <img
-                        src={colleague.src}
-                        alt={colleague.name}
-                        style={{
-                          width: "32px",
-                          height: "32px",
-                          borderRadius: "50%",
-                        }}
+                      <Iconify
+                        icon={colleague.avatar}
+                        width="20%"
+                        height="20%"
+                        style={{ objectFit: "contain" }}
                       />
                       <Typography variant="h6" component="div">
                         {colleague.name}
@@ -284,39 +302,14 @@ function ColleagueWizard({
   const Personality = () => {
     return (
       <SparkleInput
-        data-cy="colleague-wizard-character-input"
-        prop="character"
-        onChange={handleInputChange("character")}
-        onRandomValue={() => handleRandomValue("character")}
-        value={newItem["character"]}
+        data-cy="colleague-wizard-description-input"
+        prop="description"
+        onChange={handleInputChange("description")}
+        onRandomValue={() => handleRandomValue("description")}
+        value={newItem["description"]}
         multiline
         rows={11}
       />
-    );
-  };
-
-  const Responsibility = () => {
-    return (
-      <>
-        <SparkleInput
-          data-cy="colleague-wizard-title-input"
-          prop="title"
-          onChange={handleInputChange("title")}
-          onRandomValue={() => handleRandomValue("title")}
-          value={newItem["title"]}
-          multiline
-          rows={1}
-        />
-        <SparkleInput
-          data-cy="colleague-wizard-role-input"
-          prop="role"
-          onChange={handleInputChange("role")}
-          onRandomValue={() => handleRandomValue("role")}
-          value={newItem["role"]}
-          multiline
-          rows={11}
-        />
-      </>
     );
   };
 
@@ -334,10 +327,8 @@ function ColleagueWizard({
       case 0:
         return Name();
       case 1:
-        return Responsibility();
-      case 2:
         return Personality();
-      case 3:
+      case 2:
         return (
           <EnginesChart
             handleEngineSelect={handleEngineSelect}
@@ -346,7 +337,7 @@ function ColleagueWizard({
             setOpen={""}
           />
         );
-      case 4:
+      case 3:
         return <ItemSummary newItem={newItem} />;
     }
   };
@@ -354,7 +345,7 @@ function ColleagueWizard({
     <Dialog
       data-cy="colleague-dialog"
       fullWidth
-      maxWidth={activeStep === 4 ? "xl" : "sm"}
+      maxWidth={activeStep === 2 ? "xl" : "sm"}
       open={open}
       onClose={() => {
         onClose();

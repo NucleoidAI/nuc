@@ -1,6 +1,6 @@
 import Conversation from "../models/Conversation";
 import Session from "../models/Session";
-import { event } from "node-event-test-package/client";
+import { event } from "@canmingir/link-express/event/client";
 import { v4 as uuid } from "uuid";
 
 async function create({

@@ -4,7 +4,7 @@ import platform from "@canmingir/link-express";
 
 import config from "./config";
 import dotenv from "dotenv";
-import { event } from "node-event-test-package/client";
+import { event } from "@canmingir/link-express/event/client";
 import http from "http";
 import models from "./src/models";
 

@@ -135,7 +135,7 @@ function TeamChatNav({ loading, colleagues, collapsed, setCollapsed }) {
                 key={id}
                 name={name}
                 source={"MINIMAL"}
-                avatarUrl={avatar}
+                iconUrl={avatar}
                 sx={{ width: 36, height: 36 }}
               />
             );

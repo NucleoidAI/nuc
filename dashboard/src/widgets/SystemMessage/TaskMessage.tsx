@@ -81,7 +81,7 @@ function TaskMessage({ id, handleClick, onDateFetched }) {
                   <SourcedAvatar
                     name={colleague.name}
                     source={"MINIMAL"}
-                    avatarUrl={colleague.icon}
+                    iconUrl={colleague.icon}
                     sx={{ ml: 1, width: 18, height: 18 }}
                   />
                 }

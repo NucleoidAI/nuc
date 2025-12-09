@@ -172,8 +172,8 @@ function ColleagueWizard({
           />
           <SelectAvatar
             handleEmojiSelect={handleEmojiSelect}
-            avatarSrc={newItem.src}
-            avatar={newItem?.icon?.replace(/:/g, "")}
+            iconSrc={newItem.src}
+            icon={newItem?.icon?.replace(/:/g, "")}
           />
         </div>
 

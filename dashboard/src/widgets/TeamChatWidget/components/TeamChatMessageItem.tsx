@@ -197,7 +197,7 @@ function TeamChatMessageItem({
                 ) : (
                   <SourcedAvatar
                     source="MINIMAL"
-                    avatarUrl={teamDetails.coachAvatar}
+                    iconUrl={teamDetails.coachAvatar}
                   />
                 )}
                 {renderSender}
@@ -288,7 +288,7 @@ function TeamChatMessageItem({
               ) : (
                 <SourcedAvatar
                   source="MINIMAL"
-                  avatarUrl={teamDetails.coachAvatar}
+                  iconUrl={teamDetails.coachAvatar}
                 />
               )}
               {renderSender}

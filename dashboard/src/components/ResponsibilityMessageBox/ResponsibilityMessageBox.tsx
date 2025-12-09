@@ -89,7 +89,7 @@ function ResponsibilityMessageBox({ message }) {
                 return (
                   <MentionElement key={index}>
                     <SourcedAvatar
-                      avatarUrl={loading ? "L" : colleague.icon}
+                      iconUrl={loading ? "L" : colleague.icon}
                       name="Colleague"
                       source="MINIMAL"
                       sx={{ mr: 1 }}

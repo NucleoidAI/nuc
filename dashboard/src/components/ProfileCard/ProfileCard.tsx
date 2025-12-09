@@ -4,7 +4,7 @@ import TabBar from "../Tabs/Tabs";
 
 function ProfileCard({
   name,
-  avatarUrl,
+  iconUrl,
   coverUrl,
   role,
   currentTab,
@@ -18,7 +18,7 @@ function ProfileCard({
         loading={loading}
         role={role}
         name={name}
-        avatarUrl={avatarUrl}
+        iconUrl={iconUrl}
         coverUrl={coverUrl}
       />
 

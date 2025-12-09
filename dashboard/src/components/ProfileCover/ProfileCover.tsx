@@ -27,7 +27,7 @@ function bgGradient(props) {
   };
 }
 
-function ProfileCover({ name, avatarUrl, role, coverUrl, loading }) {
+function ProfileCover({ name, iconUrl, role, coverUrl, loading }) {
   const theme = useTheme();
 
   return (
@@ -69,7 +69,7 @@ function ProfileCover({ name, avatarUrl, role, coverUrl, loading }) {
               }}
             >
               <Iconify
-                icon={cleanIconName(avatarUrl)}
+                icon={cleanIconName(iconUrl)}
                 width="70%"
                 height="70%"
                 style={{ objectFit: "contain" }}

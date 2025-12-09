@@ -184,7 +184,7 @@ const InputComponent = ({
                     style={{ marginTop: "5px" }}
                   />
                 ) : (
-                  <SourcedAvatar source={"MINIMAL"} avatarUrl={option.avatar} />
+                  <SourcedAvatar source={"MINIMAL"} iconUrl={option.avatar} />
                 )}
               </ListItemAvatar>
               <ListItemText

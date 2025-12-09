@@ -202,7 +202,7 @@ const SkillDialog = ({
                       <Box sx={{ display: "flex", alignItems: "center" }}>
                         <SourcedAvatar
                           source={"MINIMAL"}
-                          avatarUrl={colleague.icon}
+                          iconUrl={colleague.icon}
                           name={colleague.name}
                         />
                         <Box sx={{ ml: 1 }}>{colleague.name}</Box>

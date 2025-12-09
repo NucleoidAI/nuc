@@ -1,7 +1,7 @@
 const ColleagueAndTeamAvatars = [
   {
-    id: "colleague_avatars",
-    name: "Colleague Avatars",
+    id: "colleague_icons",
+    name: "Colleague Icons",
     emojis: [
       "ph:coffee-bean-duotone",
       "ph:apple-logo-duotone",

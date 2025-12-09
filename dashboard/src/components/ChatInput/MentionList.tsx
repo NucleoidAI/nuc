@@ -91,7 +91,7 @@ const MentionList = ({ colleagues, onSelect, editor }) => {
           <SourcedAvatar
             name={colleague.name}
             source={"MINIMAL"}
-            avatarUrl={colleague.icon}
+            iconUrl={colleague.icon}
             sx={{ mr: 2 }}
           />
           <ListItemText

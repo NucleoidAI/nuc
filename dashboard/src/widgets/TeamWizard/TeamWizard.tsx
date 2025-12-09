@@ -149,7 +149,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
     };
     team: {
       name: string;
-      avatar?: string;
+      icon?: string;
       src?: string;
     };
     colleague: {
@@ -170,7 +170,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
     }),
     team: Yup.object().shape({
       name: Yup.string().required("Team name is required"),
-      avatar: Yup.string().optional(),
+      icon: Yup.string().optional(),
       src: Yup.string().optional(),
     }),
     colleague: Yup.object().shape({
@@ -191,7 +191,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
     },
     team: {
       name: "",
-      avatar: "",
+      icon: "",
       src: "",
     },
     colleague: {
@@ -396,7 +396,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
   };
 
   const handleEmojiSelect = (emoji: { id: string; src: string }) => {
-    setValue("team.avatar", `:${emoji.id}:`, { shouldValidate: true });
+    setValue("team.icon", `:${emoji.id}:`, { shouldValidate: true });
     setValue("team.src", `${emoji.src}`, { shouldValidate: true });
   };
 
@@ -702,8 +702,8 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
             <Name />
             <IconSelector
               handleEmojiSelect={handleEmojiSelect}
-              avatarSrc={getValues("team.src")}
-              avatar={getValues("team.avatar")?.replace(/:/g, "")}
+              iconSrc={getValues("team.src")}
+              icon={getValues("team.icon")?.replace(/:/g, "")}
             />
           </Stack>
         );
@@ -713,8 +713,8 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
         return (
           <SelectAvatar
             handleEmojiSelect={handleAvatarSelect}
-            avatarSrc={getValues("colleague.src")}
-            avatar={getValues("colleague.icon")?.replace(/:/g, "")}
+            iconSrc={getValues("colleague.src")}
+            icon={getValues("colleague.icon")?.replace(/:/g, "")}
           />
         );
       case 4:

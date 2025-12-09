@@ -17,6 +17,7 @@ export interface ColleagueAttributes {
   icon: string;
   aiEngineId: string;
   teamId: string;
+  description: string;
 }
 
 @Table({

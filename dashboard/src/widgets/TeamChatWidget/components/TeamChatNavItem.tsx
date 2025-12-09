@@ -28,7 +28,7 @@ function TeamChatNavItem({ member, selected, collapse, onClick }) {
           <SourcedAvatar
             name={name}
             source={"MINIMAL"}
-            avatarUrl={avatar}
+            iconUrl={avatar}
             sx={{ width: 36, height: 36 }}
           />
           <ListItemText

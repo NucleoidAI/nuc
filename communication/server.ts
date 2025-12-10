@@ -3,7 +3,7 @@ import config from "./config";
 import { createApp } from "./app";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import dotenv from "dotenv";
-import { event } from "node-event-test-package/client";
+import { event } from "@canmingir/link-express/event/client";
 import express from "express";
 import http from "http";
 import session from "./test_chat/session";

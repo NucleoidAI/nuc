@@ -1,7 +1,7 @@
 import { Server } from "socket.io";
 import { createSession } from "../api/createSession";
 import dotenv from "dotenv";
-import { event } from "node-event-test-package/client";
+import { event } from "@canmingir/link-express/event/client";
 import { getColleague } from "../api/getColleague";
 import jwt from "jsonwebtoken";
 import { sendMessageToSession } from "../api/sendMessageSession";
@@ -31,7 +31,7 @@ const setup = async (io: Server) => {
       let token;
       let colleagueId;
       let decoded;
-      
+
       if (env !== "TEST") {
         token = socket.handshake.auth.token;
         colleagueId = socket.handshake.query.colleagueId as string;
@@ -65,7 +65,6 @@ const setup = async (io: Server) => {
 
       console.log("Session:", session);
       console.log("Colleague:", colleague);
-    
 
       if (!colleague || colleague.teamId !== decoded.aud) {
         console.log("Colleague not found or team ID does not match");
@@ -98,15 +97,18 @@ const setup = async (io: Server) => {
     console.error("Socket error:", err);
   });
 
-  await event.subscribe<{ sessionId: string; content: string }>("AI_ASSISTANT_MESSAGED", ({ sessionId, content }) => {
-    console.log("subscribed AI_MESSAGED", sessionId, content);
-    const socketId = sockets[sessionId];
-    if (socketId) {
-      io.to(socketId).emit("ai_message", {
-        content,
-      });
+  await event.subscribe<{ sessionId: string; content: string }>(
+    "AI_ASSISTANT_MESSAGED",
+    ({ sessionId, content }) => {
+      console.log("subscribed AI_MESSAGED", sessionId, content);
+      const socketId = sockets[sessionId];
+      if (socketId) {
+        io.to(socketId).emit("ai_message", {
+          content,
+        });
+      }
     }
-  });
+  );
 };
 
 export default { setup };

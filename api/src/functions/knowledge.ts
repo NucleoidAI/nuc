@@ -5,7 +5,7 @@ import { NotFoundError } from "@canmingir/link-express/error";
 import { Op } from "sequelize";
 import Step from "../models/Step";
 import Task from "../models/Task";
-import { event } from "node-event-test-package/client";
+import { event } from "@canmingir/link-express/event/client";
 import scrapper from "../actions/scrapper";
 
 async function create({
@@ -82,7 +82,7 @@ async function create({
     taskId: knowledgeJson.taskId || null,
   };
 
-  await event.publish("KNOWLEDGE","CREATED", knowledgeData);
+  await event.publish("KNOWLEDGE", "CREATED", knowledgeData);
 
   return knowledgeInstance;
 }

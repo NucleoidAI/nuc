@@ -76,7 +76,7 @@ function StandardNode({ node, sx }) {
             <SourcedAvatar
               name={node.name}
               source={"MINIMAL"}
-              iconUrl={node.avatar ? node.avatar : null}
+              iconUrl={node.icon ? node.icon : null}
               sx={{ mr: 2, mb: 1, width: 48, height: 48 }}
             >
               {null}

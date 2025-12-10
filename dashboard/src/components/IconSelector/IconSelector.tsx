@@ -7,7 +7,7 @@ import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
 
 import { Dialog, Stack } from "@mui/material";
 
-export default function IconSelector({ handleEmojiSelect, avatarSrc, avatar }) {
+export default function IconSelector({ handleEmojiSelect, iconSrc, icon }) {
   const [emojiDialogOpen, setEmojiDialogOpen] = React.useState(false);
   const handleEmojiButtonClick = () => {
     setEmojiDialogOpen(true);
@@ -30,13 +30,13 @@ export default function IconSelector({ handleEmojiSelect, avatarSrc, avatar }) {
         >
           <SourcedAvatar
             name="avatar"
-            avatarUrl={
-              avatarSrc ||
-              `https://api-dev-minimal-v510.vercel.app/assets/images/avatar/avatar_${avatar}.jpg`
+            iconUrl={
+              iconSrc ||
+              `https://api-dev-minimal-v510.vercel.app/assets/images/avatar/avatar_${icon}.jpg`
             }
             source={
-              avatarSrc ||
-              `https://api-dev-minimal-v510.vercel.app/assets/images/avatar/avatar_${avatar}.jpg`
+              iconSrc ||
+              `https://api-dev-minimal-v510.vercel.app/assets/images/avatar/avatar_${icon}.jpg`
             }
             sx={{
               display: "flex",

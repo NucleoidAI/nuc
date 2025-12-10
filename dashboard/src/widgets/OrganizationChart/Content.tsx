@@ -98,7 +98,7 @@ function ManagerNode({ node, sx }) {
         <SourcedAvatar
           name={node.name}
           source={node.coach ? node.icon : "MINIMAL"}
-          avatarUrl={node.avatar}
+          iconUrl={node.icon}
           sx={{ mr: 2, mb: 1, width: 48, height: 48 }}
         />
         <Stack>

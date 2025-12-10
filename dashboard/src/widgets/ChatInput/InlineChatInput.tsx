@@ -54,7 +54,7 @@ type CustomElement = {
   colleague?: {
     id: string;
     name: string;
-    avatar: string;
+    icon: string;
   };
 };
 
@@ -402,7 +402,7 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
         colleague: {
           id: colleague.id,
           name: colleague.name,
-          avatar: colleague.avatar,
+          icon: colleague.icon,
         },
         children: [{ text: "" }],
       };
@@ -555,7 +555,7 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
             <SourcedAvatar
               name={element.colleague?.name}
               source={"MINIMAL"}
-              avatarUrl={element.colleague?.avatar}
+              iconUrl={element.colleague?.icon}
               sx={{ mr: 0.5, width: 20, height: 20 }}
             />
             {element.colleague?.name}
@@ -808,13 +808,13 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
                 <SourcedAvatar
                   name={colleague.name}
                   source={"MINIMAL"}
-                  avatarUrl={colleague.avatar}
+                  iconUrl={colleague.icon}
                   sx={{ width: 32, height: 32 }}
                 />
               </ListItemIcon>
               <ListItemText
                 primary={colleague.name}
-                secondary={colleague.role}
+                secondary={colleague.description}
                 primaryTypographyProps={{
                   fontSize: "0.875rem",
                   fontWeight: 500,

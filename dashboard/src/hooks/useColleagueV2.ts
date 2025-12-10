@@ -6,12 +6,9 @@ import { publish, useEvent } from "@nucleoidai/react-event";
 export type Colleague = {
   id: string;
   name: string;
-  avatar: string;
-  character: string;
-  role: string;
+  icon: string;
   teamId: string;
   AIEngine: string;
-  title?: string;
   projectId?: string;
 };
 
@@ -67,11 +64,8 @@ function useColleague() {
 
   const updateColleague = async (colleague: Colleague) => {
     const response = await http.put(`/colleagues/${colleague.id}`, {
-      title: colleague.title,
       name: colleague.name,
-      avatar: colleague.avatar,
-      character: colleague.character,
-      role: colleague.role,
+      icon: colleague.icon,
       projectId: colleague.projectId,
       teamId: colleague.teamId,
     });

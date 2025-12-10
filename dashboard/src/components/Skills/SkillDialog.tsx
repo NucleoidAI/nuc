@@ -61,7 +61,7 @@ const SkillDialog = ({
     };
   } | null;
   team?: { name: string; icon: string; id: string };
-  colleagues?: Array<{ id: string; name: string; avatar: string }>;
+  colleagues?: Array<{ id: string; name: string; icon: string }>;
 }) => {
   const matchingIntegration = acquiredIntegrations?.find(
     (integration) => integration.mcpId === skill?.id
@@ -202,7 +202,7 @@ const SkillDialog = ({
                       <Box sx={{ display: "flex", alignItems: "center" }}>
                         <SourcedAvatar
                           source={"MINIMAL"}
-                          avatarUrl={colleague.avatar}
+                          iconUrl={colleague.icon}
                           name={colleague.name}
                         />
                         <Box sx={{ ml: 1 }}>{colleague.name}</Box>

@@ -1,12 +1,12 @@
 import {
-  Table,
+  AllowNull,
   Column,
-  Model,
   DataType,
   Default,
-  PrimaryKey,
-  AllowNull,
   ForeignKey,
+  Model,
+  PrimaryKey,
+  Table,
 } from "@canmingir/link-express/sequelize";
 
 import AIEngine from "./AIEngine";
@@ -14,12 +14,10 @@ import AIEngine from "./AIEngine";
 export interface ColleagueAttributes {
   id: string;
   name: string;
-  avatar: string;
-  character: string;
-  title: string;
-  role: string;
+  icon: string;
   aiEngineId: string;
   teamId: string;
+  description: string;
 }
 
 @Table({
@@ -39,19 +37,11 @@ class Colleague extends Model<ColleagueAttributes> {
 
   @AllowNull(false)
   @Column(DataType.STRING)
-  declare avatar: string;
+  declare description: string;
 
   @AllowNull(false)
   @Column(DataType.STRING)
-  declare character: string;
-
-  @AllowNull(false)
-  @Column(DataType.STRING)
-  declare title: string;
-
-  @AllowNull(false)
-  @Column(DataType.STRING)
-  declare role: string;
+  declare icon: string;
 
   @ForeignKey(() => AIEngine)
   @Column(DataType.UUID)

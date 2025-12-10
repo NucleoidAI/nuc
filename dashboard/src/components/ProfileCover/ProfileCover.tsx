@@ -1,5 +1,6 @@
 import { Iconify } from "@canmingir/link/platform/components";
 import { Skeleton } from "@mui/material";
+import { cleanIconName } from "../../utils/cleanIconName";
 
 import { Box, ListItemText, Stack, alpha, useTheme } from "@mui/material";
 
@@ -26,7 +27,7 @@ function bgGradient(props) {
   };
 }
 
-function ProfileCover({ name, avatarUrl, role, coverUrl, loading }) {
+function ProfileCover({ name, iconUrl, coverUrl, loading }) {
   const theme = useTheme();
 
   return (
@@ -68,7 +69,7 @@ function ProfileCover({ name, avatarUrl, role, coverUrl, loading }) {
               }}
             >
               <Iconify
-                icon={avatarUrl}
+                icon={cleanIconName(iconUrl)}
                 width="70%"
                 height="70%"
                 style={{ objectFit: "contain" }}
@@ -82,7 +83,6 @@ function ProfileCover({ name, avatarUrl, role, coverUrl, loading }) {
                 textAlign: { xs: "center", md: "unset" },
               }}
               primary={name}
-              secondary={role}
               primaryTypographyProps={{
                 typography: "h4",
               }}

@@ -87,7 +87,7 @@ export const teamChartPlugin = {
         <SourcedAvatar
           name={node.name}
           source={node.coach ? node.icon : "MINIMAL"}
-          avatarUrl={node.avatar}
+          iconUrl={node.icon}
           sx={{ width: 48, height: 48, borderRadius: "50%", zIndex: 1 }}
         />
       );
@@ -107,7 +107,7 @@ export const teamChartPlugin = {
             <SourcedAvatar
               name={node.name}
               source={node.icon || "MINIMAL"}
-              avatarUrl={node.avatar}
+              iconUrl={node.icon}
               sx={{
                 width: 48,
                 height: 48,

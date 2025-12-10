@@ -159,7 +159,7 @@ function AIMarketplaceItem({ engine, isWizardEngine, handleEngineSelect }) {
                     color={"inherit"}
                     variant={"body2"}
                     textAlign={"start"}
-                    data-cy="colleague-card-role-area"
+                    data-cy="engine-card-vendor-area"
                     sx={{
                       textOverflow: "ellipsis",
                       overflow: "hidden",

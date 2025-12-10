@@ -109,9 +109,8 @@ function ColleagueLayout({ colleague, loading }) {
               currentTab={currentTab}
               setCurrentTab={handleTabChange}
               name={colleague.name}
-              avatarUrl={colleague.avatar}
+              iconUrl={colleague.icon}
               coverUrl={getBackgroundUrl(colleague.id)}
-              role={colleague.role}
               loading={loading}
             />
             <Stack

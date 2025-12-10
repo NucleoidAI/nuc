@@ -6,20 +6,20 @@ function SourcedAvatar({
   source,
   sx,
   children,
-  avatarUrl,
+  iconUrl,
 }: {
   name?: string;
   source?: string;
   sx?: object;
   children?: React.ReactNode;
-  avatarUrl?: string;
+  iconUrl?: string;
 }) {
   return (
     <Avatar
       alt={name}
       src={
         source === "MINIMAL"
-          ? `https://cdn.nucleoid.com/greycollar/avatars/${avatarUrl?.replace(
+          ? `https://cdn.nucleoid.com/greycollar/avatars/${iconUrl?.replace(
               /:/g,
               ""
             )}.jpg`

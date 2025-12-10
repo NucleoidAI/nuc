@@ -52,7 +52,7 @@ function ColleagueWizard({
       aiEngineId: "123a3c9a-b23b-421a-ac6e-f14052a2d57c",
       engineName: "DeepMind",
       description:
-        "A coordination agent built to streamline communication, align processes, and manage multi-step workflows across teams and systems.",
+        "An order agent built to streamline communication, align processes, and manage multi-step workflows across teams and systems.",
     },
   ];
 

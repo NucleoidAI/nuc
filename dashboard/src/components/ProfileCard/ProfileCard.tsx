@@ -6,7 +6,6 @@ function ProfileCard({
   name,
   iconUrl,
   coverUrl,
-  role,
   currentTab,
   setCurrentTab,
   TABS,
@@ -16,7 +15,6 @@ function ProfileCard({
     <Card variant="profile-card" sx={{ position: "relative", height: 200 }}>
       <ProfileCover
         loading={loading}
-        role={role}
         name={name}
         iconUrl={iconUrl}
         coverUrl={coverUrl}

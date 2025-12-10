@@ -184,13 +184,12 @@ const InputComponent = ({
                     style={{ marginTop: "5px" }}
                   />
                 ) : (
-                  <SourcedAvatar source={"MINIMAL"} iconUrl={option.avatar} />
+                  <SourcedAvatar source={"MINIMAL"} iconUrl={option.icon} />
                 )}
               </ListItemAvatar>
               <ListItemText
                 primary={option.name}
                 primaryTypographyProps={{ fontWeight: "bold" }}
-                secondary={option.role}
                 secondaryTypographyProps={{
                   fontSize: "14px",
                   fontWeight: "bold",

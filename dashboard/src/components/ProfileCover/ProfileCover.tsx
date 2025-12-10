@@ -27,7 +27,7 @@ function bgGradient(props) {
   };
 }
 
-function ProfileCover({ name, iconUrl, role, coverUrl, loading }) {
+function ProfileCover({ name, iconUrl, coverUrl, loading }) {
   const theme = useTheme();
 
   return (
@@ -83,7 +83,6 @@ function ProfileCover({ name, iconUrl, role, coverUrl, loading }) {
                 textAlign: { xs: "center", md: "unset" },
               }}
               primary={name}
-              secondary={role}
               primaryTypographyProps={{
                 typography: "h4",
               }}

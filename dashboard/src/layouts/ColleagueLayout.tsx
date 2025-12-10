@@ -111,7 +111,6 @@ function ColleagueLayout({ colleague, loading }) {
               name={colleague.name}
               iconUrl={colleague.icon}
               coverUrl={getBackgroundUrl(colleague.id)}
-              role={colleague.role}
               loading={loading}
             />
             <Stack

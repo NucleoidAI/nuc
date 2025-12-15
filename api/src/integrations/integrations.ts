@@ -202,5 +202,81 @@ const Integrations = [
       required: ["to", "subject", "text"],
     },
   },
+  {
+    id: "b7f3d8e9-4c5a-4b2d-9e8f-7a6b5c4d3e2f",
+    action: "TURK_TELEKOM:get_address",
+    provider: "TURK_TELEKOM",
+    description: "Get address information by BBK number",
+    direction: "OUTGOING",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        bbk_no: {
+          type: "string",
+          description: "The BBK number to look up the address for.",
+        },
+      },
+      required: ["bbk_no"],
+    },
+  },
+  {
+    id: "e0h6g1f2-7f8d-6e5g-2h1i-0d9e8f7g6h5c",
+    action: "TURK_TELEKOM:get_bbk_by_address",
+    provider: "TURK_TELEKOM",
+    description:
+      "Get BBK number by address. Supports partial address matching.",
+    direction: "OUTGOING",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        acik_adres: {
+          type: "string",
+          description:
+            "The address to look up the BBK number for. Can be a partial address.",
+        },
+      },
+      required: ["acik_adres"],
+    },
+  },
+  {
+    id: "c8f4e9d0-5d6b-4c3e-0f9g-8b7c6d5e4f3a",
+    action: "TURK_TELEKOM:get_inventory",
+    provider: "TURK_TELEKOM",
+    description: "Get infrastructure inventory information by BBK number",
+    direction: "OUTGOING",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        bbk_no: {
+          type: "string",
+          description:
+            "The BBK number to look up the infrastructure inventory for.",
+        },
+      },
+      required: ["bbk_no"],
+    },
+  },
+  {
+    id: "d9g5f0e1-6e7c-5d4f-1g0h-9c8d7e6f5g4b",
+    action: "TURK_TELEKOM:get_product_by_speed",
+    provider: "TURK_TELEKOM",
+    description: "Get product information by speed limit",
+    direction: "OUTGOING",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        hiz_limiti: {
+          type: "string",
+          description:
+            "The speed limit to look up the product for (e.g., '1gbps', '100mbps', '50mbps').",
+        },
+      },
+      required: ["hiz_limiti"],
+    },
+  },
 ];
 export default Integrations;

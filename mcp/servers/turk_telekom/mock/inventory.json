@@ -1,0 +1,38 @@
+[
+  {
+    "bbk_no": "987",
+    "altyapi_tipi": "Fiber",
+    "topoloji": "FTTH",
+    "ust_cihaz_ismi": "A",
+    "ust_cihaz_kart_no": "1",
+    "ust_cihaz_port_no": "1",
+    "cihaz_seri_no": "123",
+    "port_var_yok": "Var",
+    "hgw_seri_no": "ABC",
+    "hiz_limiti": "1gbps"
+  },
+  {
+    "bbk_no": "988",
+    "altyapi_tipi": "Fiber",
+    "topoloji": "FTTB",
+    "ust_cihaz_ismi": "B",
+    "ust_cihaz_kart_no": "2",
+    "ust_cihaz_port_no": "3",
+    "cihaz_seri_no": "456",
+    "port_var_yok": "Var",
+    "hgw_seri_no": "DEF",
+    "hiz_limiti": "100mbps"
+  },
+  {
+    "bbk_no": "989",
+    "altyapi_tipi": "VDSL",
+    "topoloji": "FTTC",
+    "ust_cihaz_ismi": "C",
+    "ust_cihaz_kart_no": "3",
+    "ust_cihaz_port_no": "5",
+    "cihaz_seri_no": "789",
+    "port_var_yok": "Yok",
+    "hgw_seri_no": "GHI",
+    "hiz_limiti": "50mbps"
+  }
+]

@@ -1,0 +1,78 @@
+import { Tool, AddressToBBKInput } from "./types";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export const addressToBBKTool: Tool<AddressToBBKInput> = {
+  name: "TURK_TELEKOM:get_bbk_by_address",
+  description:
+    "Get BBK number by address (acik_adres). Returns the BBK number associated with the given address. Supports partial address matching.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      acik_adres: {
+        type: "string",
+        description: "The address to look up the BBK number for. Can be a partial address.",
+      },
+    },
+    required: ["acik_adres"],
+  },
+  handler: async (args: AddressToBBKInput) => {
+    try {
+      const mockDataPath = path.join(__dirname, "..", "mock", "addresses.json");
+      const data = JSON.parse(fs.readFileSync(mockDataPath, "utf-8"));
+
+      // Try exact match first
+      let result = data.find(
+        (item: any) => item.acik_adres === args.acik_adres
+      );
+
+      // If no exact match, try partial match (case-insensitive)
+      if (!result) {
+        const searchTerm = args.acik_adres.toLowerCase();
+        result = data.find((item: any) =>
+          item.acik_adres.toLowerCase().includes(searchTerm)
+        );
+      }
+
+      if (!result) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify({
+                error: `BBK number not found for address: ${args.acik_adres}`,
+              }),
+            },
+          ],
+          isError: true,
+        };
+      }
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(result),
+          },
+        ],
+        isError: false,
+      };
+    } catch (error) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify({
+              error: error instanceof Error ? error.message : "Unknown error",
+            }),
+          },
+        ],
+        isError: true,
+      };
+    }
+  },
+};

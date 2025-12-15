@@ -224,6 +224,8 @@ async function step({
     actionType = "MCP";
   } else if (action === "SUPERVISED") {
     actionType = "SUPERVISED";
+  } else if (action === "HUMAN_IN_THE_LOOP") {
+    actionType = "HUMAN_IN_THE_LOOP";
   } else {
     actionType = "ACTION";
   }

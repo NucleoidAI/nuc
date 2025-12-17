@@ -4,7 +4,7 @@ import StatusToolbar from "../../components/StatusToolbar/StatusToolbar";
 import TaskCard from "../../components/TaskCard/TaskCard";
 import useTasks from "../../hooks/useTasks";
 
-import { Box, Container, Fab, Stack } from "@mui/material";
+import { Box, Fab, Stack } from "@mui/material";
 import React, { useState } from "react";
 
 function TasksWidget({ colleagueId }) {
@@ -29,7 +29,14 @@ function TasksWidget({ colleagueId }) {
   };
 
   return (
-    <Container>
+    <Box
+      sx={{
+        width: "100%",
+        px: 2,
+        pb: 2,
+        minHeight: "calc(100vh - 240px)",
+      }}
+    >
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         <StatusToolbar
           statuses={["All", "DONE", "IN_PROGRESS"]}
@@ -83,10 +90,10 @@ function TasksWidget({ colleagueId }) {
           open={open}
           setOpen={setOpen}
           createTask={createTask}
-          colleagueId={colleagueId}
+          agentId={colleagueId}
         />
       </Box>
-    </Container>
+    </Box>
   );
 }
 

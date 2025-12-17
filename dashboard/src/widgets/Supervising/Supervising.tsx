@@ -4,7 +4,7 @@ import SupervisingCard from "../../components/SupervisingCard/SupervisingCard";
 import { useState } from "react";
 import useSupervisings from "../../hooks/useSupervisingsV2";
 
-import { Container, Skeleton, Stack } from "@mui/material";
+import { Skeleton, Stack } from "@mui/material";
 
 const Supervising = ({ colleagueId }) => {
   const [selectedStatus, setSelectedStatus] = useState("All");
@@ -21,7 +21,14 @@ const Supervising = ({ colleagueId }) => {
   };
 
   return (
-    <Container>
+    <Box
+      sx={{
+        width: "100%",
+        px: 2,
+        pb: 2,
+        minHeight: "calc(100vh - 240px)",
+      }}
+    >
       <Box
         sx={{
           display: "flex",
@@ -34,6 +41,7 @@ const Supervising = ({ colleagueId }) => {
           handleChange={handleChange}
           selectedStatus={selectedStatus}
         />
+
         {loading ? (
           <Stack
             spacing={2}
@@ -44,9 +52,7 @@ const Supervising = ({ colleagueId }) => {
                 key={item}
                 variant="rectangular"
                 height={180}
-                sx={{
-                  borderRadius: 2,
-                }}
+                sx={{ borderRadius: 2 }}
               />
             ))}
           </Stack>
@@ -60,7 +66,7 @@ const Supervising = ({ colleagueId }) => {
           </Stack>
         )}
       </Box>
-    </Container>
+    </Box>
   );
 };
 

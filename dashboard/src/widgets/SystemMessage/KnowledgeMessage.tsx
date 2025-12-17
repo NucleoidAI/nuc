@@ -1,12 +1,12 @@
-import { Label } from "@canmingir/link/platform/components";
 import ReplyIcon from "@mui/icons-material/Reply";
-import SourcedAvatar from "../../components/SourcedAvatar/SourcedAvatar";
+import { cleanIconName } from "../../utils/cleanIconName";
 import { fDateTime } from "../../utils/formatTime";
 import useColleague from "../../hooks/useColleague";
 import { useEffect } from "react";
 import useKnowledge from "../../hooks/useKnowledge";
 
 import { Chip, IconButton, Stack, Typography, alpha } from "@mui/material";
+import { Iconify, Label } from "@canmingir/link/platform/components";
 
 function KnowledgeMessage({ id, handleClick, onDateFetched }) {
   const { getKnowledge } = useKnowledge();
@@ -65,11 +65,11 @@ function KnowledgeMessage({ id, handleClick, onDateFetched }) {
           >
             <Chip
               avatar={
-                <SourcedAvatar
-                  name={colleague.name}
-                  source={"MINIMAL"}
-                  iconUrl={colleague.icon}
-                  sx={{ ml: 1, width: 18, height: 18 }}
+                <Iconify
+                  icon={cleanIconName(colleague.icon)}
+                  width="40%"
+                  height="40%"
+                  style={{ objectFit: "contain", background: "none" }}
                 />
               }
               label={colleague.name}

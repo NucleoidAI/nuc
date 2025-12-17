@@ -1,6 +1,5 @@
-import { Label } from "@canmingir/link/platform/components";
 import ReplyIcon from "@mui/icons-material/Reply";
-import SourcedAvatar from "../../components/SourcedAvatar/SourcedAvatar";
+import { cleanIconName } from "../../utils/cleanIconName";
 import { fDateTime } from "../../utils/formatTime";
 import useColleague from "../../hooks/useColleague";
 import { useEffect } from "react";
@@ -15,6 +14,7 @@ import {
   alpha,
   useMediaQuery,
 } from "@mui/material";
+import { Iconify, Label } from "@canmingir/link/platform/components";
 
 function TaskMessage({ id, handleClick, onDateFetched }) {
   const { task } = useTask(id);
@@ -78,11 +78,11 @@ function TaskMessage({ id, handleClick, onDateFetched }) {
             >
               <Chip
                 avatar={
-                  <SourcedAvatar
-                    name={colleague.name}
-                    source={"MINIMAL"}
-                    iconUrl={colleague.icon}
-                    sx={{ ml: 1, width: 18, height: 18 }}
+                  <Iconify
+                    icon={cleanIconName(colleague.icon)}
+                    width="40%"
+                    height="40%"
+                    style={{ objectFit: "contain", background: "none" }}
                   />
                 }
                 label={colleague.name}

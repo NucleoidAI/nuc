@@ -1,12 +1,12 @@
-import { Label } from "@canmingir/link/platform/components";
 import ReplyIcon from "@mui/icons-material/Reply";
-import SourcedAvatar from "../../components/SourcedAvatar/SourcedAvatar";
+import { cleanIconName } from "../../utils/cleanIconName";
 import { fDateTime } from "../../utils/formatTime";
 import useColleague from "../../hooks/useColleague";
 import { useEffect } from "react";
 import useSupervise from "../../hooks/useSupervise";
 
 import { Chip, IconButton, Stack, Typography, alpha } from "@mui/material";
+import { Iconify, Label } from "@canmingir/link/platform/components";
 
 function SupervisingMessage({ id, handleClick, onDateFetched }) {
   const { supervising } = useSupervise(id);
@@ -60,11 +60,11 @@ function SupervisingMessage({ id, handleClick, onDateFetched }) {
             >
               <Chip
                 avatar={
-                  <SourcedAvatar
-                    name={colleague.name}
-                    source={"MINIMAL"}
-                    iconUrl={colleague.icon}
-                    sx={{ ml: 1, width: 18, height: 18 }}
+                  <Iconify
+                    icon={cleanIconName(colleague.icon)}
+                    width="30%"
+                    height="30%"
+                    style={{ objectFit: "contain", background: "none" }}
                   />
                 }
                 label={colleague.name}

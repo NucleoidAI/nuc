@@ -8,8 +8,14 @@ export type Colleague = {
   name: string;
   icon: string;
   teamId: string;
-  AIEngine: string;
+  AIEngine: {
+    id: string;
+    name: string;
+    description: string;
+    icon: string;
+  };
   projectId?: string;
+  description?: string;
 };
 
 type DependencyArray = object[];
@@ -68,6 +74,8 @@ function useColleague() {
       icon: colleague.icon,
       projectId: colleague.projectId,
       teamId: colleague.teamId,
+      aiEngineId: colleague.AIEngine.id,
+      description: colleague.description,
     });
 
     if (response && response.data) {

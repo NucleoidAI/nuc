@@ -1,17 +1,15 @@
 import EditIcon from "@mui/icons-material/Edit";
 import React from "react";
-import SourcedAvatar from "../../components/SourcedAvatar/SourcedAvatar";
-import WorkIcon from "@mui/icons-material/Work";
-import { alpha } from "@mui/material";
+import { getAgentGradients } from "../../utils/gradient";
 
+import { Box, Button, Chip, Stack, Typography } from "@mui/material";
+import { Fab, alpha } from "@mui/material";
 import {
-  AvatarRoleCard,
   HeaderCard,
   Iconify,
   MediaAvatarCard,
   SideStripeCard,
 } from "@canmingir/link/platform/components";
-import { Box, Button, Chip, Stack, Typography } from "@mui/material";
 
 export const teamChartPlugin = {
   id: "teamChart",
@@ -21,9 +19,8 @@ export const teamChartPlugin = {
 
     return {
       ...nodeStyle,
-
-      nodeWidth: 300,
-      nodeHeight: 120,
+      nodeWidth: 350,
+      nodeHeight: 125,
 
       lineColor: nodeStyle.teamLineColor ?? nodeStyle.lineColor ?? "#D0D7E2",
       lineWidth: nodeStyle.teamLineWidth ?? nodeStyle.lineWidth ?? 1.5,
@@ -35,18 +32,10 @@ export const teamChartPlugin = {
     };
   },
 
-  renderNode: ({ node, title, subtitle, nodeStyle }) => {
+  renderNode: ({ node, title, nodeStyle }) => {
     const nodeSx = nodeStyle.nodeSx || {};
-    const baseWidth = nodeStyle.nodeWidth ?? 260;
-    const baseHeight = nodeStyle.nodeHeight ?? 120;
-
-    let width = baseWidth;
-    let height = baseHeight;
-
-    if (node?.nodeKind === "team") {
-      width = baseWidth;
-      height = baseHeight + 20;
-    }
+    const width = nodeStyle.nodeWidth ?? 350;
+    const height = nodeStyle.nodeHeight ?? 125;
 
     const isTeam = node.nodeKind === "team";
     const isColleague = node.nodeKind === "colleague";
@@ -57,95 +46,59 @@ export const teamChartPlugin = {
       (isTeam ? "gradient" : isResponsibility ? "sideStripe" : "media");
 
     const onTeamAddColleague = nodeStyle.onTeamAddColleague;
-    const onColleagueGoToPage = nodeStyle.onColleagueGoToPage;
+    const onAgentOpen = nodeStyle.onAgentOpen;
     const onResponsibilityOpen = nodeStyle.onResponsibilityOpen;
 
     const renderInitialAvatar = () => {
       if (!isColleague) {
-        const initial = (title || node?.name || "?").charAt(0).toUpperCase();
         return (
           <Box
             sx={{
-              width: 48,
-              height: 48,
-              borderRadius: "50%",
-              bgcolor: "primary.main",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "primary.contrastText",
-              fontWeight: 700,
-              fontSize: 18,
+              position: "relative",
+              height: "100%",
+              width: "100%",
             }}
           >
-            {initial}
+            {["logos:slack-icon", "logos:whatsapp-icon"].map((icon, index) => (
+              <Fab
+                key={icon}
+                color="default"
+                size="small"
+                sx={{
+                  width: 32,
+                  height: 32,
+                  minHeight: "auto",
+                  boxShadow: 2,
+                  position: "absolute",
+                  top: "40%",
+                  left: "65%",
+                  transform: `translate(-65%, calc(-40% + ${index * 20}px))`,
+                }}
+              >
+                <Iconify icon={icon} />
+              </Fab>
+            ))}
           </Box>
         );
       }
 
       return (
-        <SourcedAvatar
-          name={node.name}
-          source={node.coach ? node.icon : "MINIMAL"}
-          iconUrl={node.icon}
-          sx={{ width: 48, height: 48, borderRadius: "50%", zIndex: 1 }}
+        <Iconify
+          icon={node?.icon?.replace(/^:|:$/g, "")}
+          width="40%"
+          height="40%"
+          style={{ objectFit: "contain" }}
         />
       );
     };
 
-    const isManager = node.nodeKind === "manager" || node.id === "manager-root";
+    if (teamLayout === "media" && isColleague) {
+      const handleCardClick = () => {
+        if (onAgentOpen) {
+          onAgentOpen(node, "profile");
+        }
+      };
 
-    if (isManager) {
-      return (
-        <AvatarRoleCard
-          sx={{
-            width,
-            height,
-            ...nodeSx,
-          }}
-          leftContent={
-            <SourcedAvatar
-              name={node.name}
-              source={node.icon || "MINIMAL"}
-              iconUrl={node.icon}
-              sx={{
-                width: 48,
-                height: 48,
-                borderRadius: "50%",
-              }}
-            />
-          }
-          topRightContent={
-            node.role ? (
-              <Chip
-                label={node.role}
-                size="small"
-                sx={(theme) => ({
-                  bgcolor: alpha(theme.palette.primary.main, 0.1),
-                  color: "white",
-                  fontWeight: "bold",
-                  fontSize: "0.75rem",
-                  cursor: "pointer",
-                  "&:hover": {
-                    color: theme.palette.background.paper,
-                  },
-                })}
-              />
-            ) : null
-          }
-          bottomContent={
-            <Typography sx={{ fontWeight: 600, fontSize: 14 }}>
-              {node.name}
-            </Typography>
-          }
-        />
-      );
-    }
-
-    if (
-      teamLayout === "media" &&
-      (isColleague || (!isTeam && !isResponsibility))
-    ) {
       return (
         <MediaAvatarCard
           sx={{
@@ -153,10 +106,24 @@ export const teamChartPlugin = {
             maxWidth: width,
             height,
             ...nodeSx,
+            "&:hover": {
+              boxShadow: (theme) => theme.shadows[3],
+            },
+            "&::before": (theme) => ({
+              content: '""',
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: 100,
+              height: "100%",
+              zIndex: 0,
+              background: getAgentGradients(node.id, theme),
+            }),
           }}
           leftContent={renderInitialAvatar()}
           rightContent={
             <Stack
+              onClick={handleCardClick}
               direction="column"
               sx={{
                 flex: 1,
@@ -167,12 +134,7 @@ export const teamChartPlugin = {
               }}
             >
               <Stack spacing={1}>
-                <Stack
-                  direction="row"
-                  gap={1}
-                  alignItems="center"
-                  sx={{ mt: 0.5 }}
-                >
+                <Stack direction="row" gap={1} alignItems="center">
                   <Chip
                     label={title || node?.name}
                     icon={<Iconify icon="mingcute:location-fill" width={20} />}
@@ -188,51 +150,24 @@ export const teamChartPlugin = {
                         color: "white",
                       },
                       "&:hover": {
-                        color: (theme) => theme.palette.background.paper,
+                        bgcolor: (theme) =>
+                          alpha(theme.palette.primary.main, 0.1),
                         "& .MuiChip-icon": {
-                          color: (theme) => theme.palette.background.paper,
+                          color: "white",
                         },
                       },
                     }}
                   />
                 </Stack>
-
-                {node?.role && (
-                  <Stack direction="row" gap={1} alignItems="center">
-                    <Chip
-                      label={node.role}
-                      icon={
-                        <Iconify icon="ic:round-business-center" width={20} />
-                      }
-                      size="small"
-                      sx={{
-                        bgcolor: (theme) =>
-                          alpha(theme.palette.primary.main, 0.1),
-                        color: "white",
-                        fontWeight: "bold",
-                        fontSize: "0.75rem",
-                        cursor: "pointer",
-                        "& .MuiChip-icon": {
-                          color: "white",
-                        },
-                        "&:hover": {
-                          color: (theme) => theme.palette.background.paper,
-                          "& .MuiChip-icon": {
-                            color: (theme) => theme.palette.background.paper,
-                          },
-                        },
-                      }}
-                    />
-                  </Stack>
-                )}
               </Stack>
 
-              {isColleague && onColleagueGoToPage && (
+              {onAgentOpen && (
                 <Box
                   sx={{
-                    mt: 0.5,
                     display: "flex",
                     justifyContent: "flex-end",
+                    gap: 0.5,
+                    mb: -1.5,
                   }}
                 >
                   <Button
@@ -240,25 +175,67 @@ export const teamChartPlugin = {
                     variant="outlined"
                     onClick={(e) => {
                       e.stopPropagation();
-                      onColleagueGoToPage(node);
+                      onAgentOpen(node, "responsibilities");
                     }}
+                    sx={{ minWidth: 36, width: 36, height: 36, p: 0 }}
                   >
-                    <WorkIcon />
+                    <Iconify icon="healthicons:crisis-response-center-person-outline" />
+                  </Button>
+
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onAgentOpen(node, "knowledge-base");
+                    }}
+                    sx={{ minWidth: 36, width: 36, height: 36, p: 0 }}
+                  >
+                    <Iconify icon="carbon:ibm-watson-knowledge-studio" />
+                  </Button>
+
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onAgentOpen(node, "tasks");
+                    }}
+                    sx={{ minWidth: 36, width: 36, height: 36, p: 0 }}
+                  >
+                    <Iconify icon="material-symbols:task" />
                   </Button>
                 </Box>
               )}
             </Stack>
           }
-          background={nodeStyle.teamBackground || node.background}
-          overlayColor={nodeStyle.teamOverlayColor}
+          background={undefined}
         />
       );
     }
 
     if (teamLayout === "sideStripe" && isResponsibility) {
+      const stripeWidth = 100;
+
       return (
         <SideStripeCard
-          sx={nodeSx}
+          sx={{
+            width,
+            ...nodeSx,
+            borderRadius: 1.5,
+            "&:hover": {
+              transform: "none",
+              boxShadow: "none",
+            },
+
+            "& .animated-background-selector": (theme) => ({
+              background: `linear-gradient(
+                135deg,
+                ${alpha(theme.palette.grey[600], 0.4)},
+                ${alpha(theme.palette.grey[900], 0.6)}
+              )`,
+            }),
+          }}
           stripeContent={renderInitialAvatar()}
           mainContent={
             <Box
@@ -267,41 +244,22 @@ export const teamChartPlugin = {
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
-                py: 1,
+                pl: 2,
               }}
             >
               <Box>
-                <Typography
-                  className="responsibility-title"
-                  variant="subtitle2"
-                  sx={{
-                    fontWeight: 600,
-                    fontSize: 13,
-                    mb: subtitle ? 0.5 : 0,
-                  }}
-                >
+                <Typography variant="subtitle2" fontWeight={600}>
                   {title || node?.name}
                 </Typography>
-
                 {node?.description && (
-                  <Typography
-                    className="responsibility-description"
-                    variant="caption"
-                    sx={{ opacity: 0.8 }}
-                  >
+                  <Typography variant="caption" sx={{ opacity: 0.8 }}>
                     {node.description}
                   </Typography>
                 )}
               </Box>
 
               {onResponsibilityOpen && (
-                <Box
-                  sx={{
-                    mt: 0.5,
-                    display: "flex",
-                    justifyContent: "flex-end",
-                  }}
-                >
+                <Box display="flex" justifyContent="flex-end">
                   <Button
                     size="small"
                     variant="outlined"
@@ -309,6 +267,7 @@ export const teamChartPlugin = {
                       e.stopPropagation();
                       onResponsibilityOpen(node);
                     }}
+                    sx={{ minWidth: 36, width: 36, height: 36, p: 0 }}
                   >
                     <EditIcon />
                   </Button>
@@ -319,71 +278,77 @@ export const teamChartPlugin = {
           minWidth={width}
           maxWidth={width}
           height={height}
-          stripeWidth={nodeStyle.teamStripeWidth || 65}
+          stripeWidth={stripeWidth}
         />
       );
     }
 
     const teamName = node?.name || title || "";
-    const coachName = node?.coach || "";
-    const icon = node?.icon;
-
     return (
       <HeaderCard
         sx={{
           width,
           ...nodeSx,
+          borderRadius: 1.5,
+          "&:hover": {
+            transform: "none",
+            boxShadow: "none",
+            "&:before": { height: "40%" },
+          },
         }}
         height={height}
         padding={nodeStyle.teamPadding || 2}
         header={
-          <Stack
-            spacing={2}
-            sx={{
-              height: "100%",
-              justifyContent: "space-between",
-            }}
-          >
-            <Stack
-              direction="row"
-              spacing={2}
-              alignItems="center"
-              justifyContent="space-between"
+          <Stack sx={{ height: "100%" }} spacing={1.5}>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "36px 1fr 36px",
+                alignItems: "center",
+              }}
             >
-              {icon ? (
+              {node.icon ? (
                 <Iconify
                   sx={{
-                    mr: 2,
-                    mb: 1,
-                    width: 36,
-                    height: 36,
+                    width: 32,
+                    height: 32,
                     color: "info.main",
+                    position: "relative",
+                    top: -5,
                   }}
-                  icon={icon.replace(/^:|:$/g, "")}
+                  icon={node.icon.replace(/^:|:$/g, "")}
                 />
               ) : (
                 <Box sx={{ width: 36, height: 36 }} />
               )}
 
-              <Stack direction="row" spacing={1} alignItems="center">
-                {coachName && (
-                  <Chip
-                    label={`Team Leader: ${coachName}`}
-                    size="small"
-                    sx={{
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  position: "relative",
+                  top: -5,
+                }}
+              >
+                <Chip
+                  label="Team Leader"
+                  size="small"
+                  sx={{
+                    backgroundColor: (theme) =>
+                      alpha(theme.palette.primary.main, 0.1),
+                    color: "white",
+                    cursor: "pointer",
+                    fontWeight: "bold",
+                    "&:hover": {
                       backgroundColor: (theme) =>
                         alpha(theme.palette.primary.main, 0.1),
-                      color: "white",
-                      cursor: "pointer",
-                      fontWeight: "bold",
-                      "&:hover": {
-                        color: (theme) => theme.palette.background.paper,
-                      },
-                    }}
-                  />
-                )}
+                    },
+                  }}
+                />
+              </Box>
 
-                {isTeam && onTeamAddColleague && (
+              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                {isTeam && onTeamAddColleague ? (
                   <Button
                     size="small"
                     variant="outlined"
@@ -391,24 +356,42 @@ export const teamChartPlugin = {
                       e.stopPropagation();
                       onTeamAddColleague(node);
                     }}
+                    sx={{
+                      minWidth: 36,
+                      width: 36,
+                      height: 36,
+                      position: "relative",
+                      top: -5,
+                    }}
                   >
                     <Iconify icon="ri:user-add-line" />
                   </Button>
+                ) : (
+                  <Box sx={{ width: 36, height: 36 }} />
                 )}
-              </Stack>
-            </Stack>
+              </Box>
+            </Box>
 
-            <Stack spacing={1} alignItems="center">
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                position: "relative",
+                top: 10,
+              }}
+            >
               <Typography
                 sx={{
                   color: "text.primary",
                   fontWeight: "bold",
                   lineHeight: 1.2,
+                  textAlign: "center",
                 }}
+                noWrap
               >
                 {teamName}
               </Typography>
-            </Stack>
+            </Box>
           </Stack>
         }
       />

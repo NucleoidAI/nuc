@@ -19,14 +19,8 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 
-function ColleagueWizard({
-  itemProperties,
-  onSubmit,
-  open,
-  onClose,
-  itemToEdit,
-}) {
-  const sampleColleagues = [
+function AgentWizard({ itemProperties, onSubmit, open, onClose, itemToEdit }) {
+  const sampleAgents = [
     {
       name: "system_agent",
       icon: "mingcute:bank-card-line",
@@ -59,10 +53,10 @@ function ColleagueWizard({
   const steps = ["Name", "Description", "Engine", "Summary"];
 
   const stepExp = [
-    "Give colleague a name and select an avatar that reflects your colleague",
-    "Define your colleague's description and responsibilities.",
-    "Select your colleague's engine. this will determine your colleague's engine.",
-    "Review and confirm the details of your new colleague.",
+    "Give agent a name and select an avatar that reflects your agent",
+    "Define your agent's description and responsibilities.",
+    "Select your agent's engine. this will determine your agent's engine.",
+    "Review and confirm the details of your new agent.",
   ];
 
   const names = [
@@ -100,8 +94,8 @@ function ColleagueWizard({
     itemProperties.reduce((obj, property) => ({ ...obj, [property]: "" }), {})
   );
 
-  const handleTemplateSelect = (colleague) => {
-    setNewItem(colleague);
+  const handleTemplateSelect = (agent) => {
+    setNewItem(agent);
     setActiveStep(3);
   };
 
@@ -163,7 +157,7 @@ function ColleagueWizard({
       <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           <SparkleInput
-            data-cy="colleague-wizard-name-input"
+            data-cy="agent-wizard-name-input"
             prop="name"
             value={newItem["name"]}
             onChange={handleInputChange("name")}
@@ -191,11 +185,11 @@ function ColleagueWizard({
               marginTop: "16px",
             }}
           >
-            {sampleColleagues.map((colleague, index) => (
+            {sampleAgents.map((agent, index) => (
               <Card
-                data-cy="sample-colleague"
+                data-cy="sample-agent"
                 key={index}
-                onClick={() => handleTemplateSelect(colleague)}
+                onClick={() => handleTemplateSelect(agent)}
                 sx={{
                   cursor: "pointer",
                   transition: "all 0.2s ease",
@@ -216,17 +210,17 @@ function ColleagueWizard({
                       }}
                     >
                       <Iconify
-                        icon={colleague.icon}
+                        icon={agent.icon}
                         width="20%"
                         height="20%"
                         style={{ objectFit: "contain" }}
                       />
                       <Typography variant="h6" component="div">
-                        {colleague.name}
+                        {agent.name}
                       </Typography>
                     </Box>
                     <Typography variant="body2" color="textSecondary">
-                      {colleague.description}
+                      {agent.description}
                     </Typography>
                   </CardContent>
                 </CardActionArea>
@@ -241,7 +235,7 @@ function ColleagueWizard({
   const Personality = () => {
     return (
       <SparkleInput
-        data-cy="colleague-wizard-description-input"
+        data-cy="agent-wizard-description-input"
         prop="description"
         onChange={handleInputChange("description")}
         onRandomValue={() => handleRandomValue("description")}
@@ -282,7 +276,7 @@ function ColleagueWizard({
   };
   return (
     <Dialog
-      data-cy="colleague-dialog"
+      data-cy="agent-dialog"
       fullWidth
       maxWidth={activeStep === 2 ? "xl" : "sm"}
       open={open}
@@ -321,4 +315,4 @@ function ColleagueWizard({
   );
 }
 
-export default ColleagueWizard;
+export default AgentWizard;

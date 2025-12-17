@@ -4,7 +4,7 @@ import React from "react";
 
 import { Box, Button, Dialog, DialogContent } from "@mui/material";
 
-const AgentDrawer = ({ open, onClose, colleague, initialTab }) => {
+const AgentDrawer = ({ open, onClose, agent, initialTab }) => {
   return (
     <Dialog
       open={open}
@@ -44,11 +44,7 @@ const AgentDrawer = ({ open, onClose, colleague, initialTab }) => {
         dividers
         sx={{ p: 1, mt: 3, width: "80vw", height: "80vh" }}
       >
-        <AgentLayout
-          colleague={colleague}
-          loading={false}
-          initialTab={initialTab}
-        />
+        <AgentLayout agent={agent} loading={false} initialTab={initialTab} />
       </DialogContent>
     </Dialog>
   );

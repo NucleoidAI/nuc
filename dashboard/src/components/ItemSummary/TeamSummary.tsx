@@ -6,7 +6,7 @@ import { cleanIconName } from "../../utils/cleanIconName";
 
 import { Box, Card, CardContent, Typography } from "@mui/material";
 
-function Summary({ organization, team, colleague }) {
+function Summary({ organization, team, agent }) {
   return (
     <>
       {organization && (
@@ -85,10 +85,10 @@ function Summary({ organization, team, colleague }) {
         </Grid>
       </Grid>
 
-      {colleague && (
+      {agent && (
         <>
           <DialogContentText sx={{ textAlign: "center", mb: 2, mt: 3 }}>
-            Colleague
+            Agent
           </DialogContentText>
           <Grid container spacing={2}>
             <Grid
@@ -124,7 +124,7 @@ function Summary({ organization, team, colleague }) {
                         }}
                       >
                         <Iconify
-                          icon={cleanIconName(colleague.icon)}
+                          icon={cleanIconName(agent.icon)}
                           width="70%"
                           height="70%"
                           style={{ objectFit: "contain" }}
@@ -134,16 +134,16 @@ function Summary({ organization, team, colleague }) {
                     <Grid item xs={8}>
                       <Typography
                         variant="h6"
-                        data-cy="colleague-summary-name-area"
+                        data-cy="agent-summary-name-area"
                       >
-                        {colleague.name}
+                        {agent.name}
                       </Typography>
                       <>
                         <Typography variant="body2" color="text.secondary">
-                          Description: {colleague.description}
+                          Description: {agent.description}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                          Engine: {colleague.engineName}
+                          Engine: {agent.engineName}
                         </Typography>
                       </>
                     </Grid>

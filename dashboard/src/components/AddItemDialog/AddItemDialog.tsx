@@ -30,10 +30,10 @@ function AddItemDialog({
   open,
   setOpen,
   addItem,
-  colleagueId,
+  agentId,
   teamId,
   teamById,
-  colleagues,
+  agents,
   organizations,
 }) {
   //TODO - Refactor here
@@ -43,14 +43,14 @@ function AddItemDialog({
   const [selectedOptionType, setSelectedOptionType] = useState("");
 
   useEffect(() => {
-    if (colleagueId) {
-      setSelectedOptionId(colleagueId);
+    if (agentId) {
+      setSelectedOptionId(agentId);
       setSelectedOptionType("colleague");
     } else if (organizations.length > 0) {
       setSelectedOptionId(organizations[0].id);
       setSelectedOptionType("organization");
     }
-  }, [colleagueId, organizations]);
+  }, [agentId, organizations]);
 
   const handleOptionChange = (event) => {
     const selectedOptionName = event.target.value;
@@ -58,7 +58,7 @@ function AddItemDialog({
       organizations.find(
         (organization) => organization.name === selectedOptionName
       ) ||
-      colleagues.find((colleague) => colleague.name === selectedOptionName) ||
+      agents.find((colleague) => colleague.name === selectedOptionName) ||
       (teamById.name === selectedOptionName ? teamById : null);
 
     setSelectedOptionId(selectedOption?.id || "");
@@ -69,7 +69,7 @@ function AddItemDialog({
     ) {
       setSelectedOptionType("organization");
     } else if (
-      colleagues.find((colleague) => colleague.name === selectedOptionName)
+      agents.find((colleague) => colleague.name === selectedOptionName)
     ) {
       setSelectedOptionType("colleague");
     } else if (teamById.name === selectedOptionName) {
@@ -148,12 +148,11 @@ function AddItemDialog({
       ...item,
       ...(selectedOptionType === "organization" && { orgId: selectedOptionId }),
       teamId: selectedOptionType === "team" ? selectedOptionId : teamId,
-      colleagueId:
-        selectedOptionType === "colleague" ? selectedOptionId : colleagueId,
+      agentId: selectedOptionType === "colleague" ? selectedOptionId : agentId,
     };
 
     try {
-      await addItem(payload, payload.colleagueId);
+      await addItem(payload, payload.agentId);
       setOpen(false);
     } catch (error) {
       setOpen(false);
@@ -196,14 +195,14 @@ function AddItemDialog({
           backgroundColor: (theme) => theme.palette.background.default,
         }}
       >
-        {!colleagueId && (
+        {!agentId && (
           <Select
             fullWidth
             value={
               organizations.find(
                 (organization) => organization.id === selectedOptionId
               )?.name ||
-              colleagues.find((colleague) => colleague.id === selectedOptionId)
+              agents.find((colleague) => colleague.id === selectedOptionId)
                 ?.name ||
               (teamById.id === selectedOptionId ? teamById.name : "")
             }
@@ -231,7 +230,7 @@ function AddItemDialog({
               </Box>
             </MenuItem>
 
-            {colleagues.map((colleague) => (
+            {agents.map((colleague) => (
               <MenuItem key={colleague.id} value={colleague.name}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <SourcedAvatar

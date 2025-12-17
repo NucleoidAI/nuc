@@ -1,7 +1,7 @@
 import { Iconify } from "@canmingir/link/platform/components";
 import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
 import { findIntegrationById } from "../ChatInput/chat.config";
-import useColleagueV2 from "../../hooks/useColleagueV2";
+import useAgentV2 from "../../hooks/useAgentV2";
 
 import { Box, Card, CardContent, Typography, useTheme } from "@mui/material";
 import {
@@ -11,7 +11,7 @@ import {
 } from "../ResponsibilityChat/IntegrationElement";
 
 function ResponsibilityMessageBox({ message }) {
-  const { getColleague } = useColleagueV2();
+  const { getAgent } = useAgentV2();
   const theme = useTheme();
 
   const renderContent = () => {
@@ -84,18 +84,18 @@ function ResponsibilityMessageBox({ message }) {
                   </>
                 );
               } else if (parsedContent.type === "COLLEAGUE") {
-                const { colleague, loading } = getColleague(parsedContent.id);
+                const { agent, loading } = getAgent(parsedContent.id);
 
                 return (
                   <MentionElement key={index}>
                     <SourcedAvatar
-                      iconUrl={loading ? "L" : colleague.icon}
+                      iconUrl={loading ? "L" : agent.icon}
                       name="Colleague"
                       source="MINIMAL"
                       sx={{ mr: 1 }}
                     />
                     <Typography>
-                      {loading ? "Loading..." : colleague.name}
+                      {loading ? "Loading..." : agent.name}
                     </Typography>
                   </MentionElement>
                 );

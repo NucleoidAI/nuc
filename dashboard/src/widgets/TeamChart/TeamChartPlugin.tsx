@@ -45,7 +45,7 @@ export const teamChartPlugin = {
       nodeStyle.teamLayout ||
       (isTeam ? "gradient" : isResponsibility ? "sideStripe" : "media");
 
-    const onTeamAddColleague = nodeStyle.onTeamAddColleague;
+    const onTeamAddAgent = nodeStyle.onTeamAddAgent;
     const onAgentOpen = nodeStyle.onAgentOpen;
     const onResponsibilityOpen = nodeStyle.onResponsibilityOpen;
 
@@ -348,13 +348,13 @@ export const teamChartPlugin = {
               </Box>
 
               <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                {isTeam && onTeamAddColleague ? (
+                {isTeam && onTeamAddAgent ? (
                   <Button
                     size="small"
                     variant="outlined"
                     onClick={(e) => {
                       e.stopPropagation();
-                      onTeamAddColleague(node);
+                      onTeamAddAgent(node);
                     }}
                     sx={{
                       minWidth: 36,

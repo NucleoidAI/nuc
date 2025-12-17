@@ -7,8 +7,8 @@ import useTasks from "../../hooks/useTasks";
 import { Box, Fab, Stack } from "@mui/material";
 import React, { useState } from "react";
 
-function TasksWidget({ colleagueId }) {
-  const { tasks, getSteps, steps, createTask } = useTasks(colleagueId);
+function TasksWidget({ agentId }) {
+  const { tasks, getSteps, steps, createTask } = useTasks(agentId);
   const [expandedTaskId, setExpandedTaskId] = useState(null);
 
   const [selectedStatus, setSelectedStatus] = useState("All");
@@ -46,7 +46,7 @@ function TasksWidget({ colleagueId }) {
         {task.length > 0 ? (
           task.map((t, i) => (
             <TaskCard
-              colleagueId={colleagueId}
+              agentId={agentId}
               task={t}
               key={i}
               getSteps={() => getSteps(t.id)}
@@ -90,7 +90,7 @@ function TasksWidget({ colleagueId }) {
           open={open}
           setOpen={setOpen}
           createTask={createTask}
-          agentId={colleagueId}
+          agentId={agentId}
         />
       </Box>
     </Box>

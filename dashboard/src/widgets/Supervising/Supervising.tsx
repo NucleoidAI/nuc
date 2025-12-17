@@ -6,13 +6,13 @@ import useSupervisings from "../../hooks/useSupervisingsV2";
 
 import { Skeleton, Stack } from "@mui/material";
 
-const Supervising = ({ colleagueId }) => {
+const Supervising = ({ agentId }) => {
   const [selectedStatus, setSelectedStatus] = useState("All");
 
   const { getColleagueSupervisingByStatus } = useSupervisings();
 
   const { supervisings, loading } = getColleagueSupervisingByStatus(
-    colleagueId,
+    agentId,
     selectedStatus
   );
 

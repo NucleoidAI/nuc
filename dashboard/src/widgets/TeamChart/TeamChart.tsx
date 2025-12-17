@@ -1,11 +1,11 @@
 import AgentDrawer from "../../components/AgentDrawer/AgentDrawer";
-import ColleagueWizard from "../AgentWizard/AgentWizard";
+import AgentWizard from "../AgentWizard/AgentWizard";
 import { Flow } from "@canmingir/link/platform/components";
 import ResponsibilityDrawer from "../../components/ResponsbilityDrawer/ResponsibilityDrawer";
 import { TeamChartRenderer } from "./TeamChartRenderer";
 import { storage } from "@nucleoidjs/webstorage";
 import { teamChartPlugin } from "./TeamChartPlugin";
-import useColleagues from "../../hooks/useColleagues";
+import useAgents from "../../hooks/useAgents";
 import useOrganizations from "../../hooks/useOrganziationsV2";
 import useResponsibility from "../../hooks/useResponsibility";
 import useTeam from "../../hooks/useTeam";
@@ -25,7 +25,7 @@ function TeamChart() {
   const { getResponsibility } = useResponsibility();
   const { responsibility: allResponsibilitiesRaw } = getResponsibility();
 
-  const { createColleague } = useColleagues();
+  const { createAgent } = useAgents();
 
   const orgArray = Array.isArray(organization)
     ? organization
@@ -37,6 +37,8 @@ function TeamChart() {
     (org) => org.colleagues && org.colleagues.length > 0 && org.id === projectId
   );
 
+  console.log("filteredOrganizations", filteredOrganizations);
+
   const teamTree = useMemo(
     () => toTeamTree(filteredOrganizations, allResponsibilitiesRaw || []),
     [filteredOrganizations, allResponsibilitiesRaw]
@@ -47,9 +49,9 @@ function TeamChart() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
 
-  const [colleagueDrawer, setColleagueDrawer] = useState(false);
-  const [selectedColleague, setSelectedColleague] = useState(null);
-  const [selectedColleagueTab, setSelectedColleagueTab] = useState<
+  const [agentDrawer, setAgentDrawer] = useState(false);
+  const [selectedAgent, setSelectedAgent] = useState(null);
+  const [selectedAgentTab, setSelectedAgentTab] = useState<
     | "profile"
     | "knowledge-base"
     | "tasks"
@@ -62,7 +64,7 @@ function TeamChart() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
-  const handleAddColleague = (teamId: string) => {
+  const handleAddAgent = (teamId: string) => {
     setSelectedTeamId(teamId);
     setDialogOpen(true);
   };
@@ -82,16 +84,16 @@ function TeamChart() {
     setSelectedItem(null);
   };
 
-  const handleAgentDrawerOpen = (colleagueNode, tab) => {
-    setSelectedColleague(colleagueNode);
-    setSelectedColleagueTab(tab);
-    setColleagueDrawer(true);
+  const handleAgentDrawerOpen = (agentNode, tab) => {
+    setSelectedAgent(agentNode);
+    setSelectedAgentTab(tab);
+    setAgentDrawer(true);
   };
 
   const handleAgentDrawerClose = () => {
-    setColleagueDrawer(false);
-    setSelectedColleague(null);
-    setSelectedColleagueTab("profile");
+    setAgentDrawer(false);
+    setSelectedAgent(null);
+    setSelectedAgentTab("profile");
   };
 
   if (loading) {
@@ -114,7 +116,7 @@ function TeamChart() {
 
     return {
       ...base,
-      onTeamAddColleague: (teamNode) => handleAddColleague(teamNode.id),
+      onTeamAddAgent: (teamNode) => handleAddAgent(teamNode.id),
       onAgentOpen: (colNode, tab) => handleAgentDrawerOpen(colNode, tab),
       onResponsibilityOpen: (respNode) => handleDrawerOpen(respNode),
     };
@@ -145,13 +147,13 @@ function TeamChart() {
       </Box>
 
       {dialogOpen && (
-        <ColleagueWizard
+        <AgentWizard
           open={dialogOpen}
           onClose={handleCloseDialog}
-          itemProperties={["name", "character", "role"]}
-          onSubmit={(newColleague) => {
+          itemProperties={["name", "description"]}
+          onSubmit={(newAgent) => {
             if (!selectedTeamId) return;
-            createColleague(newColleague, selectedTeamId);
+            createAgent(newAgent, selectedTeamId);
           }}
           itemToEdit={null}
         />
@@ -165,12 +167,12 @@ function TeamChart() {
         />
       )}
 
-      {colleagueDrawer && (
+      {agentDrawer && (
         <AgentDrawer
-          open={colleagueDrawer}
+          open={agentDrawer}
           onClose={handleAgentDrawerClose}
-          colleague={selectedColleague}
-          initialTab={selectedColleagueTab}
+          agent={selectedAgent}
+          initialTab={selectedAgentTab}
         />
       )}
     </>

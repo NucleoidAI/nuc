@@ -4,8 +4,8 @@ import useApi from "./useApi";
 
 import { useCallback, useEffect, useState } from "react";
 
-function useColleague(colleagueId) {
-  const [colleague, setColleague] = useState({
+function useAgent(agentId) {
+  const [agent, setAgent] = useState({
     name: "",
     icon: "",
     teamId: "",
@@ -17,21 +17,21 @@ function useColleague(colleagueId) {
   // TODO - Research self-call events
 
   useEffect(() => {
-    if (colleagueId) {
-      getColleague(colleagueId);
+    if (agentId) {
+      getAgent(agentId);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [colleagueId]);
+  }, [agentId]);
 
-  const getColleague = useCallback((colleagueId) => {
-    if (!colleagueId) {
+  const getAgent = useCallback((agentId) => {
+    if (!agentId) {
       return;
     }
 
     handleResponse(
-      http.get(`/colleagues/${colleagueId}`),
-      (response) => setColleague(response.data),
+      http.get(`/colleagues/${agentId}`),
+      (response) => setAgent(response.data),
       (error) => {
         console.error(error);
       }
@@ -39,16 +39,18 @@ function useColleague(colleagueId) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const updateColleague = useCallback((colleague) => {
+  const updateAgent = useCallback((agent) => {
     handleResponse(
-      http.put(`/colleagues/${colleague.id}`, {
-        name: colleague.name,
-        icon: colleague.icon,
-        projectId: colleague.projectId,
-        teamId: colleague.teamId,
+      http.put(`/colleagues/${agent.id}`, {
+        name: agent.name,
+        icon: agent.icon,
+        projectId: agent.projectId,
+        teamId: agent.teamId,
+        aiEngineId: agent.aiEngineId,
+        description: agent.description,
       }),
       () => {
-        publish("COLLEAGUE_UPDATED", { colleagueId: colleague.id });
+        publish("AGENT_UPDATED", { agentId: agent.id });
       },
       (error) => {
         console.error(error);
@@ -58,12 +60,12 @@ function useColleague(colleagueId) {
   }, []);
 
   return {
-    colleague,
+    agent,
     loading,
     error,
-    getColleague,
-    updateColleague,
+    getAgent,
+    updateAgent,
   };
 }
 
-export default useColleague;
+export default useAgent;

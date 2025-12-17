@@ -1,5 +1,5 @@
+import TalkToCAIOButton from "./src/widgets/TalkToCAIO/index.ts";
 import TeamChartButton from "./src/widgets/TeamChartButton/index.ts";
-
 const menuConfig = {
   topMenu: [],
   sideMenu: [
@@ -7,12 +7,7 @@ const menuConfig = {
       subheader: "Dashboard",
       items: [
         {
-          title: "Dashboard",
-          icon: "ic:outline-dashboard",
-          path: "/",
-        },
-        {
-          title: "Colleagues",
+          title: "Agents",
           icon: "solar:chart-line-duotone",
           path: "/colleagues",
         },
@@ -30,6 +25,11 @@ const menuConfig = {
           title: "Integrations",
           icon: "carbon:ibm-cloud-pak-integration",
           path: "/integrations",
+        },
+        {
+          title: "Monitoring",
+          icon: "ic:outline-dashboard",
+          path: "/monitoring",
         },
         {
           title: "Documentation",
@@ -54,7 +54,7 @@ const menuConfig = {
       linkTo: "/",
     },
   ],
-  actionButtons: [TeamChartButton],
+  actionButtons: [TeamChartButton, TalkToCAIOButton],
   fullScreenLayout: "left",
 };
 

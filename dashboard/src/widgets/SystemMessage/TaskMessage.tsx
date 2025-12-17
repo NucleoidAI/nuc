@@ -1,7 +1,7 @@
 import ReplyIcon from "@mui/icons-material/Reply";
 import { cleanIconName } from "../../utils/cleanIconName";
 import { fDateTime } from "../../utils/formatTime";
-import useColleague from "../../hooks/useColleague";
+import useAgent from "../../hooks/useAgent";
 import { useEffect } from "react";
 import useTask from "../../hooks/useTask";
 import { useTheme } from "@mui/material/styles";
@@ -19,7 +19,7 @@ import { Iconify, Label } from "@canmingir/link/platform/components";
 function TaskMessage({ id, handleClick, onDateFetched }) {
   const { task } = useTask(id);
 
-  const { colleague } = useColleague(task.colleagueId);
+  const { agent } = useAgent(task.colleagueId);
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down(600));
@@ -79,13 +79,13 @@ function TaskMessage({ id, handleClick, onDateFetched }) {
               <Chip
                 avatar={
                   <Iconify
-                    icon={cleanIconName(colleague.icon)}
+                    icon={cleanIconName(agent.icon)}
                     width="40%"
                     height="40%"
                     style={{ objectFit: "contain", background: "none" }}
                   />
                 }
-                label={colleague.name}
+                label={agent.name}
                 size="small"
                 color="primary"
                 variant="filled"

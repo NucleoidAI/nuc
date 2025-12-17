@@ -1,7 +1,7 @@
 import ReplyIcon from "@mui/icons-material/Reply";
 import { cleanIconName } from "../../utils/cleanIconName";
 import { fDateTime } from "../../utils/formatTime";
-import useColleague from "../../hooks/useColleague";
+import useAgent from "../../hooks/useAgent";
 import { useEffect } from "react";
 import useSupervise from "../../hooks/useSupervise";
 
@@ -11,7 +11,7 @@ import { Iconify, Label } from "@canmingir/link/platform/components";
 function SupervisingMessage({ id, handleClick, onDateFetched }) {
   const { supervising } = useSupervise(id);
 
-  const { colleague } = useColleague(supervising.colleagueId);
+  const { agent } = useAgent(supervising.colleagueId);
 
   useEffect(() => {
     if (supervising) {
@@ -61,13 +61,13 @@ function SupervisingMessage({ id, handleClick, onDateFetched }) {
               <Chip
                 avatar={
                   <Iconify
-                    icon={cleanIconName(colleague.icon)}
+                    icon={cleanIconName(agent.icon)}
                     width="30%"
                     height="30%"
                     style={{ objectFit: "contain", background: "none" }}
                   />
                 }
-                label={colleague.name}
+                label={agent.name}
                 size="small"
                 color="primary"
                 variant="filled"

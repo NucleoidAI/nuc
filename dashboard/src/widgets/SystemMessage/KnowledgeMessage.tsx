@@ -1,7 +1,7 @@
 import ReplyIcon from "@mui/icons-material/Reply";
 import { cleanIconName } from "../../utils/cleanIconName";
 import { fDateTime } from "../../utils/formatTime";
-import useColleague from "../../hooks/useColleague";
+import useAgent from "../../hooks/useAgent";
 import { useEffect } from "react";
 import useKnowledge from "../../hooks/useKnowledge";
 
@@ -13,7 +13,7 @@ function KnowledgeMessage({ id, handleClick, onDateFetched }) {
 
   const { knowledge, loading } = getKnowledge(id);
 
-  const { colleague } = useColleague(loading ? null : knowledge.colleagueId);
+  const { agent } = useAgent(loading ? null : knowledge.colleagueId);
 
   useEffect(() => {
     if (knowledge) {
@@ -66,13 +66,13 @@ function KnowledgeMessage({ id, handleClick, onDateFetched }) {
             <Chip
               avatar={
                 <Iconify
-                  icon={cleanIconName(colleague.icon)}
+                  icon={cleanIconName(agent.icon)}
                   width="40%"
                   height="40%"
                   style={{ objectFit: "contain", background: "none" }}
                 />
               }
-              label={colleague.name}
+              label={agent.name}
               size="small"
               color="primary"
               variant="filled"

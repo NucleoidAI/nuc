@@ -1,41 +1,42 @@
 import { alpha } from "@mui/material/styles";
 
 const agentGradients = [
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (theme) =>
     `linear-gradient(
       135deg,
       ${alpha("#ff6fb1", 0.85)},
       ${alpha("#ffb36b", 0.9)}
     )`,
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (theme) =>
     `linear-gradient(
       135deg,
       ${alpha("#7b5cff", 0.85)},
       ${alpha("#3cefff", 0.9)}
     )`,
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (theme) =>
     `linear-gradient(
       135deg,
       ${alpha("#ff8a00", 0.9)},
       ${alpha("#ff4d8d", 0.85)}
     )`,
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (theme) =>
     `linear-gradient(
       135deg,
       ${alpha("#3b82f6", 0.85)},
       ${alpha("#34f5c5", 0.9)}
     )`,
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (theme) =>
     `linear-gradient(
       135deg,
       ${alpha("#facc15", 0.9)},
       ${alpha("#4ade80", 0.85)}
     )`,
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (theme) =>
     `linear-gradient(
       135deg,

@@ -7,8 +7,8 @@ import TeamChatHeaderDetail from "./components/TeamChatHeaderDetail.js";
 import TeamChatMessageContent from "./components/TeamChatMessageContent.js";
 import TeamChatNav from "./components/TeamChatNav.js";
 import { createEditor } from "slate";
+import useAgents from "../../hooks/useAgents.js";
 import useChat from "../../hooks/useChat.js";
-import useColleagues from "../../hooks/useColleagues.js";
 import { useMediaQuery } from "@mui/material";
 import useMessage from "../../hooks/useMessage.js";
 import { useSocket } from "../../hooks/useSocket.js";
@@ -29,7 +29,7 @@ const TeamChatWidget = memo(function ChatWidget({
   const socket = useSocket();
 
   const { team, loading: teamLoading } = useTeam(projectId);
-  const { colleagues, loading } = useColleagues();
+  const { agents, loading } = useAgents();
 
   const { updateSupervising } = useSupervisings();
 
@@ -187,7 +187,7 @@ const TeamChatWidget = memo(function ChatWidget({
           <TeamChatNav
             collapsed={collapsed}
             setCollapsed={setCollapsed}
-            colleagues={colleagues}
+            agents={agents}
             loading={loading}
           />
         )}

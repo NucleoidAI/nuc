@@ -1,11 +1,13 @@
+import { Box } from "@mui/material";
+import { Iconify } from "@canmingir/link/platform/components";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import React from "react";
-import SourcedAvatar from "../../../components/SourcedAvatar/SourcedAvatar";
 import Stack from "@mui/material/Stack";
+import { cleanIconName } from "../../../utils/cleanIconName";
 
 function TeamChatNavItem({ member, selected, collapse, onClick }) {
-  const { name, avatar, role } = member;
+  const { name, icon, role } = member;
 
   const handleClickMember = () => {
     onClick(member);
@@ -18,19 +20,32 @@ function TeamChatNavItem({ member, selected, collapse, onClick }) {
           disableGutters
           onClick={handleClickMember}
           sx={{
-            py: 1.5,
-            px: 2.5,
+            py: 1,
+            px: 2,
             ...(selected && {
               bgcolor: "action.selected",
             }),
           }}
         >
-          <SourcedAvatar
-            name={name}
-            source={"MINIMAL"}
-            iconUrl={avatar}
-            sx={{ width: 36, height: 36 }}
-          />
+          <Box
+            sx={{
+              mx: "auto",
+              width: { xs: 32, md: 64 },
+              height: { xs: 32, md: 64 },
+              borderRadius: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              overflow: "hidden",
+            }}
+          >
+            <Iconify
+              icon={cleanIconName(icon)}
+              width="40%"
+              height="40%"
+              style={{ objectFit: "contain" }}
+            />
+          </Box>
           <ListItemText
             sx={{ ml: 2 }}
             primary={name}

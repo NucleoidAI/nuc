@@ -1,13 +1,13 @@
-import ColleaguesWidget from "../widgets/ColleaguesWidget/ColleaguesWidget";
+import AgentsWidget from "../widgets/AgentsWidget/AgentsWidget";
 import Page from "../components/Page/Page";
-import SingleScorllableLayout from "../layouts/SingleScrollableLayout";
+import SingleScrollableLayout from "../layouts/SingleScrollableLayout";
 import { storage } from "@nucleoidjs/webstorage";
 import { useEffect } from "react";
 import { useEvent } from "@nucleoidai/react-event";
 import { useParams } from "react-router-dom";
 import useTeam from "../hooks/useTeam";
 
-function Colleagues() {
+function Agents() {
   const teamId = storage.get("itemId");
 
   const { team, loading } = useTeam(teamId);
@@ -25,10 +25,10 @@ function Colleagues() {
   return (
     <>
       <Page name={"Colleague"} />
-      <SingleScorllableLayout title={team.name}>
-        <ColleaguesWidget colleagueId={colleagueId} teamId={teamId} />
-      </SingleScorllableLayout>
+      <SingleScrollableLayout title={team.name}>
+        <AgentsWidget colleagueId={colleagueId} teamId={teamId} />
+      </SingleScrollableLayout>
     </>
   );
 }
-export default Colleagues;
+export default Agents;

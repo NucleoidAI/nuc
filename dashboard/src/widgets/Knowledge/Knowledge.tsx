@@ -4,7 +4,7 @@ import DeleteConfirmation from "../../components/DeleteConfirmation/DeleteConfir
 import KnowledgeTable from "../../components/KnowledgeTable/KnowledgeTable";
 import { Theme } from "@mui/material/styles";
 import TypeToolbar from "../../components/TypeToolbar/TypeToolbar";
-import useColleague from "../../hooks/useColleagueV2";
+import useAgent from "../../hooks/useAgentV2";
 import useKnowledge from "../../hooks/useKnowledge";
 import useOrganizations from "../../hooks/useOrganziationsV2";
 import { useTable } from "@canmingir/link/platform/components";
@@ -13,13 +13,7 @@ import useTeams from "../../hooks/useTeamsV2";
 import { Box, Fab, Stack, useMediaQuery } from "@mui/material";
 import { useEffect, useState } from "react";
 
-function Knowledge({
-  colleagueId,
-  teamId,
-}: {
-  colleagueId?: string;
-  teamId?: string;
-}) {
+function Knowledge({ agentId, teamId }: { agentId?: string; teamId?: string }) {
   const {
     getColleagueKnowledges,
     deleteKnowledge,
@@ -27,7 +21,7 @@ function Knowledge({
     getTeamKnowledges,
   } = useKnowledge();
 
-  const { knowledges } = getColleagueKnowledges(colleagueId);
+  const { knowledges } = getColleagueKnowledges(agentId);
   const { knowledges: teamKnowledges } = getTeamKnowledges(teamId);
 
   const { getTeamById } = useTeams();
@@ -39,8 +33,8 @@ function Knowledge({
   const { organizations: filteredOrganizations, loading: organizationLoading } =
     getOrganizations();
 
-  const { getColleagues } = useColleague();
-  const { colleagues } = getColleagues();
+  const { getAgents } = useAgent();
+  const { agents } = getAgents();
 
   const table = useTable();
 
@@ -67,10 +61,10 @@ function Knowledge({
 
   const filteredKnowledges =
     selectedType === "ALL"
-      ? colleagueId
+      ? agentId
         ? knowledges
         : teamKnowledges
-      : (colleagueId ? knowledges : teamKnowledges).filter(
+      : (agentId ? knowledges : teamKnowledges).filter(
           (knowledge) => knowledge && knowledge.type === selectedType
         );
 
@@ -171,10 +165,10 @@ function Knowledge({
           open={open}
           setOpen={setOpen}
           addItem={createKnowledge}
-          agentId={colleagueId}
+          agentId={agentId}
           teamId={teamId}
           teamById={team}
-          agents={colleagues}
+          agents={agents}
           organizations={filteredOrganizations}
         />
       ) : null}

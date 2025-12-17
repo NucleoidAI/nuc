@@ -18,11 +18,11 @@ import {
 } from "@canmingir/link/platform/components";
 import React, { useState } from "react";
 
-const SupervisingTask = ({ open, setOpen, taskId, colleagueId }) => {
+const SupervisingTask = ({ open, setOpen, taskId, agentId }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [addToKnowledge, setAddToKnowledge] = useState(false);
 
-  const { createTaskSupervising } = useTasks(colleagueId);
+  const { createTaskSupervising } = useTasks(agentId);
 
   const handleSwitchChange = (event) => {
     setAddToKnowledge(event.target.checked);

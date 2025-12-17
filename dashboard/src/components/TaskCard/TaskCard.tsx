@@ -26,14 +26,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
-const TaskCard = ({
-  task,
-  getSteps,
-  steps,
-  colleagueId,
-  onExpand,
-  expanded,
-}) => {
+const TaskCard = ({ task, getSteps, steps, agentId, onExpand, expanded }) => {
   const [open, setOpen] = useState(false);
   const [stepResult, setStepResult] = useState(false);
   const [taskResult, setTaskResult] = useState(false);
@@ -364,7 +357,7 @@ const TaskCard = ({
         taskId={task.id}
         open={supervisingTask}
         setOpen={setSupervisingTask}
-        colleagueId={colleagueId}
+        agentId={agentId}
       />
 
       <TaskResultDialog open={taskResult} setOpen={setTaskResult} task={task} />

@@ -30,7 +30,7 @@ const SkillDialog = ({
   handleClose,
   skill,
   team,
-  colleagues,
+  agents,
   acquiredIntegrations,
   getTokens,
 }: {
@@ -61,7 +61,7 @@ const SkillDialog = ({
     };
   } | null;
   team?: { name: string; icon: string; id: string };
-  colleagues?: Array<{ id: string; name: string; icon: string }>;
+  agents?: Array<{ id: string; name: string; icon: string }>;
 }) => {
   const matchingIntegration = acquiredIntegrations?.find(
     (integration) => integration.mcpId === skill?.id
@@ -88,11 +88,11 @@ const SkillDialog = ({
     if (team) {
       setSelectedOption(team.name);
       setSelectedOptionId(team.id);
-    } else if (colleagues && colleagues.length > 0) {
-      setSelectedOption(colleagues[0].name);
-      setSelectedOptionId(colleagues[0].id);
+    } else if (agents && agents.length > 0) {
+      setSelectedOption(agents[0].name);
+      setSelectedOptionId(agents[0].id);
     }
-  }, [team, colleagues]);
+  }, [team, agents]);
 
   const handleChange = (event) => {
     const selectedName = event.target.value;
@@ -100,8 +100,8 @@ const SkillDialog = ({
 
     if (team && selectedName === team.name) {
       setSelectedOptionId(team.id);
-    } else if (colleagues) {
-      const selectedColleague = colleagues.find(
+    } else if (agents) {
+      const selectedColleague = agents.find(
         (colleague) => colleague.name === selectedName
       );
       setSelectedOptionId(selectedColleague?.id || "");
@@ -196,8 +196,8 @@ const SkillDialog = ({
                   </MenuItem>
                 )}
 
-                {colleagues &&
-                  colleagues.map((colleague) => (
+                {agents &&
+                  agents.map((colleague) => (
                     <MenuItem key={colleague.id} value={colleague.name}>
                       <Box sx={{ display: "flex", alignItems: "center" }}>
                         <SourcedAvatar

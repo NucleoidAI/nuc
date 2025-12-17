@@ -3,7 +3,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import EditIcon from "@mui/icons-material/Edit";
 import Stack from "@mui/material/Stack";
 import WidgetSummaryWidget from "../WidgetSummary/WidgetSummary";
-import useColleague from "../../hooks/useColleagueV2";
+import useAgent from "../../hooks/useAgentV2";
 import useStatistics from "../../hooks/useStatistics";
 
 import {
@@ -19,26 +19,24 @@ import { useEffect, useState } from "react";
 
 // ----------------------------------------------------------------------
 
-function Profile({ colleagueId }) {
+function Profile({ agentId }) {
   //TODO - Refactor here
-  const { getColleague, updateColleague } = useColleague();
-  const { colleague } = getColleague(colleagueId);
+  const { getAgent, updateAgent } = useAgent();
+  const { agent } = getAgent(agentId);
   const { statistics } = useStatistics();
 
-  const [description, setDescription] = useState(colleague?.description);
-  const [tempDescription, setTempDescription] = useState(
-    colleague?.description
-  );
+  const [description, setDescription] = useState(agent?.description);
+  const [tempDescription, setTempDescription] = useState(agent?.description);
 
   const [isUpdated, setIsUpdated] = useState(true);
-  const engine = colleague?.AIEngine;
+  const engine = agent?.AIEngine;
 
   useEffect(() => {
-    if (colleague) {
-      setDescription(colleague.description);
-      setTempDescription(colleague.description);
+    if (agent) {
+      setDescription(agent.description);
+      setTempDescription(agent.description);
     }
-  }, [colleague]);
+  }, [agent]);
 
   const handleUpdate = async () => {
     if (isUpdated) {
@@ -48,8 +46,8 @@ function Profile({ colleagueId }) {
 
     setDescription(tempDescription);
 
-    await updateColleague({
-      ...colleague,
+    await updateAgent({
+      ...agent,
       description: tempDescription,
     });
 
@@ -67,7 +65,7 @@ function Profile({ colleagueId }) {
   const renderAbout = (
     <Card sx={{ p: 1, height: 220 }}>
       <CardHeader title="Name" sx={{ pl: 2 }} />
-      <Typography sx={{ pl: 2 }}>{colleague?.name}</Typography>
+      <Typography sx={{ pl: 2 }}>{agent?.name}</Typography>
 
       <CardHeader
         title="Description"

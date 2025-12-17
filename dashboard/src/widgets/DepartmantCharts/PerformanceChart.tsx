@@ -3,24 +3,21 @@ import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import Chart from "react-apexcharts";
 import React from "react";
+import useAgents from "../../hooks/useAgents";
 import { useChart } from "@canmingir/link/platform/components";
-import useColleagues from "../../hooks/useColleagues";
 import { useMediaQuery } from "@mui/material";
 
 function PerformanceChart() {
-  const { colleagues } = useColleagues();
+  const { agents } = useAgents();
   const isSmallScreen = useMediaQuery("(max-width:600px)");
 
-  const names = [
-    ...colleagues.map((colleague) => colleague.name),
-    "No Activity",
-  ];
+  const names = [...agents.map((colleague) => colleague.name), "No Activity"];
 
-  const series = new Array(colleagues.length).fill(1).concat(100);
+  const series = new Array(agents.length).fill(1).concat(100);
 
   const chartOptions = useChart({
     labels: names,
-    colors: [...new Array(colleagues.length).fill(undefined), "#344055"],
+    colors: [...new Array(agents.length).fill(undefined), "#344055"],
     legend: {
       position: "right",
       offsetX: -20,

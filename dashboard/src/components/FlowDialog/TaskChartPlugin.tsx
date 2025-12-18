@@ -5,7 +5,7 @@ import { getActionIcon } from "./helper";
 export const taskChartPlugin = {
   id: "taskChart",
 
-  resolveStyle: ({ node, style }) => {
+  style: ({ node, style }) => {
     const statusRaw = node.status || node.state;
     const status =
       typeof statusRaw === "string" ? statusRaw.toUpperCase() : statusRaw;
@@ -47,7 +47,7 @@ export const taskChartPlugin = {
     };
   },
 
-  renderNode: ({ node, nodeStyle }) => {
+  node: ({ node, nodeStyle }) => {
     const { visible = true, delay = 0, isLoading = false } = nodeStyle;
 
     const action = node.action || node.title || node.label || node.id || "Task";

@@ -14,7 +14,7 @@ import {
 export const teamChartPlugin = {
   id: "teamChart",
 
-  resolveStyle: ({ style }) => {
+  style: ({ style }) => {
     const nodeStyle = style || {};
 
     return {
@@ -32,7 +32,7 @@ export const teamChartPlugin = {
     };
   },
 
-  renderNode: ({ node, title, nodeStyle }) => {
+  node: ({ node, title, nodeStyle }) => {
     const nodeSx = nodeStyle.nodeSx || {};
     const width = nodeStyle.nodeWidth ?? 350;
     const height = nodeStyle.nodeHeight ?? 125;
@@ -129,23 +129,29 @@ export const teamChartPlugin = {
                 flex: 1,
                 width: "100%",
                 height: "100%",
-                py: 1,
+                mt: -1,
                 justifyContent: "space-between",
               }}
             >
-              <Stack spacing={1}>
-                <Stack direction="row" gap={1} alignItems="center">
+              <Stack spacing={1} sx={{ width: "100%" }}>
+                <Stack
+                  direction="column"
+                  gap={1}
+                  alignItems="flex-start"
+                  sx={{ width: "100%" }}
+                >
                   <Chip
                     label={title || node?.name}
-                    icon={<Iconify icon="mingcute:location-fill" width={20} />}
+                    icon={<Iconify icon="mingcute:location-fill" width={18} />}
                     size="small"
                     sx={{
+                      alignSelf: "flex-start",
                       bgcolor: (theme) =>
-                        alpha(theme.palette.primary.main, 0.1),
+                        alpha(theme.palette.primary.main, 0.12),
                       color: "white",
-                      fontWeight: "bold",
-                      fontSize: "0.75rem",
-                      cursor: "pointer",
+                      fontWeight: 600,
+                      fontSize: "0.72rem",
+                      height: 22,
                       "& .MuiChip-icon": {
                         color: "white",
                       },
@@ -158,6 +164,24 @@ export const teamChartPlugin = {
                       },
                     }}
                   />
+
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      width: "100%",
+                      color: "rgba(255,255,255,0.82)",
+                      lineHeight: 1.3,
+                      fontSize: "0.78rem",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      wordBreak: "break-word",
+                    }}
+                  >
+                    {node?.description}
+                  </Typography>
                 </Stack>
               </Stack>
 
@@ -248,11 +272,23 @@ export const teamChartPlugin = {
               }}
             >
               <Box>
-                <Typography variant="subtitle2" fontWeight={600}>
+                <Typography
+                  variant="subtitle2"
+                  fontWeight={600}
+                  sx={{ mt: -2, ml: -2 }}
+                >
                   {title || node?.name}
                 </Typography>
                 {node?.description && (
-                  <Typography variant="caption" sx={{ opacity: 0.8 }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      opacity: 0.8,
+                      lineHeight: 1.3,
+                      fontSize: "0.78rem",
+                      ml: -2,
+                    }}
+                  >
                     {node.description}
                   </Typography>
                 )}

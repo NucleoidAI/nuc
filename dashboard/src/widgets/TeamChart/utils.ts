@@ -59,6 +59,7 @@ export const toTeamTree = (teams, responsibilities) => {
         name: c.name,
         icon: c.icon,
         teamId: c.teamId,
+        description: c.description,
         aiEngineId: c.aiEngineId,
         children: colleagueResponsibilities.map((r) => ({
           id: r.id,

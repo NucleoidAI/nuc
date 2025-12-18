@@ -59,7 +59,7 @@ function AgentsWidget({ teamId, colleagueId }) {
       >
         <AddNewButton
           type={"wideButton"}
-          addNew={"Colleague"}
+          addNew={"Agent"}
           onClickFunction={() => {
             openForm();
             publish("COLLEAGUE_WIZARD_OPENED", { type: "ADD" });

@@ -289,8 +289,6 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
 
   useEffect(() => {
     const projectId = storage.get("projectId");
-    console.log("projectId", projectId);
-    console.log("name", getValues("agent.name"));
     if (teamSelected.projectId === projectId && getValues("agent.name")) {
       const agent = getValues("agent");
       agent.teamId = teamSelected.projectId;

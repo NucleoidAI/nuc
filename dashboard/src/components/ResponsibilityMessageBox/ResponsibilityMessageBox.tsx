@@ -1,7 +1,7 @@
 import { Iconify } from "@canmingir/link/platform/components";
 import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
 import { findIntegrationById } from "../ChatInput/chat.config";
-import useAgentV2 from "../../hooks/useAgentV2";
+import useAgent from "../../hooks/useAgentV2";
 
 import { Box, Card, CardContent, Typography, useTheme } from "@mui/material";
 import {
@@ -11,7 +11,7 @@ import {
 } from "../ResponsibilityChat/IntegrationElement";
 
 function ResponsibilityMessageBox({ message }) {
-  const { getAgent } = useAgentV2();
+  const { getAgent } = useAgent();
   const theme = useTheme();
 
   const renderContent = () => {

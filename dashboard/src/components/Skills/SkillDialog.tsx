@@ -101,9 +101,7 @@ const SkillDialog = ({
     if (team && selectedName === team.name) {
       setSelectedOptionId(team.id);
     } else if (agents) {
-      const selectedAgent = agents.find(
-        (agent) => agent.name === selectedName
-      );
+      const selectedAgent = agents.find((agent) => agent.name === selectedName);
       setSelectedOptionId(selectedAgent?.id || "");
     }
   };

@@ -4,7 +4,7 @@ import Skills from "../../components/Skills/Skills";
 import { getProviderLogo } from "../../utils/icon";
 import { storage } from "@nucleoidjs/webstorage";
 import useAcquiredIntegrations from "../../hooks/useAcquiredIntegrations";
-import useTeam from "../../hooks/useTeam";
+import useTeam from "../../hooks/useTeams";
 
 import {
   Box,
@@ -95,7 +95,9 @@ const IntegrationsWidget = () => {
   } | null>(null);
   const [skillDialogOpen, setSkillDialogOpen] = useState(false);
 
-  const { teamById } = useTeam(teamId);
+  const { getTeamById } = useTeam();
+
+  const { team } = getTeamById(teamId);
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -203,7 +205,7 @@ const IntegrationsWidget = () => {
         open={skillDialogOpen}
         handleClose={handleSkillDialogClose}
         skill={selectedSkill}
-        team={teamById}
+        team={team}
         acquiredIntegrations={acquiredIntegrations}
         getTokens={getTokens}
       />

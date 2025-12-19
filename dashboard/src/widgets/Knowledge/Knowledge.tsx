@@ -8,7 +8,7 @@ import useAgent from "../../hooks/useAgent";
 import useKnowledge from "../../hooks/useKnowledge";
 import useOrganizations from "../../hooks/useOrganziationsV2";
 import { useTable } from "@canmingir/link/platform/components";
-import useTeams from "../../hooks/useTeamsV2";
+import useTeams from "../../hooks/useTeams";
 
 import { Box, Fab, Stack, useMediaQuery } from "@mui/material";
 import { useEffect, useState } from "react";

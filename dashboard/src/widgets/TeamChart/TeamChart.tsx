@@ -8,7 +8,7 @@ import { teamChartPlugin } from "./TeamChartPlugin";
 import useAgents from "../../hooks/useAgents";
 import useOrganizations from "../../hooks/useOrganziationsV2";
 import useResponsibility from "../../hooks/useResponsibility";
-import useTeam from "../../hooks/useTeam";
+import useTeam from "../../hooks/useTeams";
 
 import { Box, CircularProgress, Stack } from "@mui/material";
 import React, { useMemo, useState } from "react";
@@ -16,8 +16,9 @@ import { toTeamTree, treeToLinked } from "./utils";
 
 function TeamChart() {
   const projectId = storage.get("projectId");
-  const { teamById } = useTeam(projectId);
-  const organizationId = teamById?.organizationId;
+  const { getTeamById } = useTeam();
+  const { team } = getTeamById(projectId);
+  const organizationId = team?.organizationId;
 
   const { organization, loading } =
     useOrganizations().getOrganizationById(organizationId);

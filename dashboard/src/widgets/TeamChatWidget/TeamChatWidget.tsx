@@ -13,7 +13,7 @@ import { useMediaQuery } from "@mui/material";
 import useMessage from "../../hooks/useMessage.js";
 import { useSocket } from "../../hooks/useSocket.js";
 import useSupervisings from "../../hooks/useSupervisings.js";
-import useTeam from "../../hooks/useTeam.js";
+import useTeam from "../../hooks/useTeams.js";
 import { useTheme } from "@mui/material/styles";
 import useUser from "../../hooks/useUser.js";
 import { withHistory } from "slate-history";
@@ -28,7 +28,9 @@ const TeamChatWidget = memo(function ChatWidget({
 }) {
   const socket = useSocket();
 
-  const { team, loading: teamLoading } = useTeam(projectId);
+  const { getTeamById } = useTeam();
+
+  const { team, loading: teamLoading } = getTeamById(projectId);
   const { agents, loading } = useAgents();
 
   const { updateSupervising } = useSupervisings();
@@ -123,7 +125,7 @@ const TeamChatWidget = memo(function ChatWidget({
       {teamLoading ? null : (
         <>
           {details && (
-            <TeamChatHeaderDetail mdDown={mdDown} title={team.name} />
+            <TeamChatHeaderDetail mdDown={mdDown} title={team?.name} />
           )}
         </>
       )}

@@ -2,7 +2,7 @@ import SourcedAvatar from "../../components/SourcedAvatar/SourcedAvatar";
 import StandardNode from "./common/standard-node";
 import { storage } from "@nucleoidjs/webstorage";
 import useOrganizations from "../../hooks/useOrganziationsV2";
-import useTeam from "../../hooks/useTeam";
+import useTeam from "../../hooks/useTeams";
 import { useTheme } from "@mui/material/styles";
 
 import { Card, CircularProgress, Stack, Typography } from "@mui/material";
@@ -19,9 +19,11 @@ function OrganizationalChart({ variant = "simple", sx }) {
 
   const projectId = storage.get("projectId");
 
-  const { teamById } = useTeam(projectId);
+  const { getTeamById } = useTeam();
 
-  const organizationId = teamById?.organizationId;
+  const { team } = getTeamById(projectId);
+
+  const organizationId = team?.organizationId;
 
   const { organization, loading } =
     useOrganizations().getOrganizationById(organizationId);

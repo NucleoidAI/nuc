@@ -26,11 +26,11 @@ export default function AIEngineChart({
           md: "repeat(3, 1fr)",
         }}
       >
-        {data.map((engine) => (
+        {data?.map((engine) => (
           <AIMarketplaceItem
             handleEngineSelect={handleEngineSelect}
             isWizardEngine={isWizardEngine}
-            key={engine.id}
+            key={engine?.id}
             engine={engine}
           />
         ))}

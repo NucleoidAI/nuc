@@ -23,7 +23,9 @@ function AgentsWidget({ teamId }) {
     useUIState();
 
   const { deleteTeam } = useTeams();
-  const { agents, loading, deleteAgent, createAgent } = useAgents();
+  const { getTeamAgents, deleteAgent, createAgent } = useAgents();
+
+  const { agents, loading } = getTeamAgents();
 
   const { updateAgent } = useAgent();
 

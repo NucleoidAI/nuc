@@ -122,7 +122,7 @@ function Profile({ agentId }) {
             key={5}
             title="Response Rate"
             chartType={"bar"}
-            size={statistics.responseRate}
+            size={statistics?.responseRate}
           />
         </Grid>
         <Grid item xs={12} md={3}>
@@ -130,7 +130,7 @@ function Profile({ agentId }) {
             key={5}
             title="Supervising Rate"
             chartType={"bar"}
-            size={statistics.supervisingRate}
+            size={statistics?.supervisingRate}
           />
         </Grid>
         <Grid item xs={12} md={3}>
@@ -138,7 +138,7 @@ function Profile({ agentId }) {
             key={5}
             title="Knowledge Size"
             chartType={"bar"}
-            size={statistics.knowledgeSize}
+            size={statistics?.knowledgeSize}
           />
         </Grid>
         <Grid item xs={12} md={3}>
@@ -146,7 +146,7 @@ function Profile({ agentId }) {
             key={5}
             title="Task Count"
             chartType={"bar"}
-            size={statistics.taskCount}
+            size={statistics?.taskCount}
           />
         </Grid>
       </Grid>

@@ -21,7 +21,7 @@ function TaskMessage({ id, handleClick, onDateFetched }) {
 
   const { getAgent } = useAgent();
 
-  const { agent } = getAgent(task.colleagueId);
+  const { agent } = getAgent(task?.colleagueId);
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down(600));
@@ -93,9 +93,9 @@ function TaskMessage({ id, handleClick, onDateFetched }) {
                 variant="filled"
               />
               <Typography variant="body2" color="grey.500" sx={{ m: 1 }}>
-                {task.status === "DONE"
+                {task?.status === "DONE"
                   ? "finished"
-                  : task.status === "IN_PROGRESS"
+                  : task?.status === "IN_PROGRESS"
                   ? "is in progress with"
                   : ""}
               </Typography>
@@ -109,11 +109,13 @@ function TaskMessage({ id, handleClick, onDateFetched }) {
                   my: 0.2,
                 }}
               >
-                {task.description ? truncateContent(task.description) : "task"}
+                {task?.description
+                  ? truncateContent(task?.description)
+                  : "task"}
               </Label>
             </Stack>
           </Stack>
-          {task.status === "IN_PROGRESS" ? (
+          {task?.status === "IN_PROGRESS" ? (
             <IconButton
               onClick={() => handleClick(task)}
               data-cy="reply-button"
@@ -131,13 +133,13 @@ function TaskMessage({ id, handleClick, onDateFetched }) {
           }}
         >
           {(() => {
-            switch (task.status) {
+            switch (task?.status) {
               case "IN_PROGRESS":
                 return "In Progress";
               case "COMPLETED":
                 return "Completed";
               default:
-                return task.status;
+                return task?.status;
             }
           })()}
         </Typography>

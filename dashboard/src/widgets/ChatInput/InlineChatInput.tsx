@@ -204,7 +204,9 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
     (typeof ResponsibilityCommands)[0]["next"]["list"][number] | null
   >(null);
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(0);
-  const { agents } = useAgents();
+  const { getTeamAgents } = useAgents();
+
+  const { agents } = getTeamAgents();
 
   const editor = useMemo(
     () => withCommands(withHistory(withReact(createEditor()))),
@@ -797,7 +799,7 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
         }}
       >
         <CommandList>
-          {agents.map((agent, index) => (
+          {agents?.map((agent, index) => (
             <ListItem
               key={agent.id}
               button

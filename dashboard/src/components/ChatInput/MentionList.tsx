@@ -13,7 +13,7 @@ const MentionList = ({ agents, onSelect, editor }) => {
   const [focusedIndex, setFocusedIndex] = useState(-1);
 
   useEffect(() => {
-    if (agents.length > 0 && itemRefs.current[0]) {
+    if (agents?.length > 0 && itemRefs.current[0]) {
       itemRefs.current[0].focus();
       setFocusedIndex(0);
     }
@@ -23,14 +23,14 @@ const MentionList = ({ agents, onSelect, editor }) => {
     let newIndex;
     switch (event.key) {
       case "ArrowDown":
-        newIndex = (focusedIndex + 1) % agents.length;
+        newIndex = (focusedIndex + 1) % agents?.length;
         setFocusedIndex(newIndex);
         if (itemRefs.current[newIndex]) {
           itemRefs.current[newIndex].focus();
         }
         break;
       case "ArrowUp":
-        newIndex = (focusedIndex - 1 + agents.length) % agents.length;
+        newIndex = (focusedIndex - 1 + agents?.length) % agents?.length;
         setFocusedIndex(newIndex);
         if (itemRefs.current[newIndex]) {
           itemRefs.current[newIndex].focus();
@@ -47,7 +47,7 @@ const MentionList = ({ agents, onSelect, editor }) => {
   };
 
   useEffect(() => {
-    itemRefs.current = itemRefs.current.slice(0, agents.length);
+    itemRefs.current = itemRefs.current.slice(0, agents?.length);
   }, [agents]);
 
   return (
@@ -69,7 +69,7 @@ const MentionList = ({ agents, onSelect, editor }) => {
         boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
       }}
     >
-      {agents.map((agent, index) => (
+      {agents?.map((agent, index) => (
         <ListItem
           data-cy={`command-item-${agent.name.split("/")[1]}`}
           key={agent.name}

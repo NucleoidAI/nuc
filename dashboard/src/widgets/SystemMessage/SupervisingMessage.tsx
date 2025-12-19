@@ -13,11 +13,11 @@ function SupervisingMessage({ id, handleClick, onDateFetched }) {
 
   const { getAgent } = useAgent();
 
-  const { agent } = getAgent(supervising.colleagueId);
+  const { agent } = getAgent(supervising?.colleagueId);
 
   useEffect(() => {
     if (supervising) {
-      onDateFetched(fDateTime(supervising.createdAt, "MMM DD, YYYY"));
+      onDateFetched(fDateTime(supervising?.createdAt, "MMM DD, YYYY"));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [supervising]);
@@ -75,7 +75,7 @@ function SupervisingMessage({ id, handleClick, onDateFetched }) {
                 variant="filled"
               />
               <Typography variant="body2" color="grey.500" sx={{ m: 1 }}>
-                {supervising.status === "ANSWERED"
+                {supervising?.status === "ANSWERED"
                   ? "learned"
                   : "wants to learn"}
               </Typography>
@@ -89,13 +89,13 @@ function SupervisingMessage({ id, handleClick, onDateFetched }) {
                   my: 0.2,
                 }}
               >
-                {supervising.status === "ANSWERED"
-                  ? supervising.answer
-                  : supervising.question}
+                {supervising?.status === "ANSWERED"
+                  ? supervising?.answer
+                  : supervising?.question}
               </Label>
             </Stack>
           </Stack>
-          {supervising.status === "IN_PROGRESS" ? (
+          {supervising?.status === "IN_PROGRESS" ? (
             <IconButton
               onClick={() => handleClick(supervising)}
               data-cy="reply-button"
@@ -113,13 +113,13 @@ function SupervisingMessage({ id, handleClick, onDateFetched }) {
           }}
         >
           {(() => {
-            switch (supervising.status) {
+            switch (supervising?.status) {
               case "IN_PROGRESS":
                 return "In Progress";
               case "COMPLETED":
                 return "Completed";
               default:
-                return supervising.status;
+                return supervising?.status;
             }
           })()}
         </Typography>

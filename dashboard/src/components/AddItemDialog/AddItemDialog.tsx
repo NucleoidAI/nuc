@@ -202,9 +202,8 @@ function AddItemDialog({
               organizations.find(
                 (organization) => organization.id === selectedOptionId
               )?.name ||
-              agents.find((colleague) => colleague.id === selectedOptionId)
-                ?.name ||
-              (teamById.id === selectedOptionId ? teamById.name : "")
+              agents?.find((agent) => agent?.id === selectedOptionId)?.name ||
+              (teamById?.id === selectedOptionId ? teamById?.name : "")
             }
             onChange={handleOptionChange}
           >
@@ -220,25 +219,25 @@ function AddItemDialog({
               </MenuItem>
             ))}
 
-            <MenuItem value={teamById.name}>
+            <MenuItem value={teamById?.name}>
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 <Iconify
-                  icon={teamById.icon.replace(/^:|:$/g, "")}
+                  icon={teamById?.icon.replace(/^:|:$/g, "")}
                   sx={{ width: 40, height: 40 }}
                 />
-                <Box sx={{ ml: 1 }}>{teamById.name}</Box>
+                <Box sx={{ ml: 1 }}>{teamById?.name}</Box>
               </Box>
             </MenuItem>
 
-            {agents.map((colleague) => (
-              <MenuItem key={colleague.id} value={colleague.name}>
+            {agents?.map((agent) => (
+              <MenuItem key={agent.id} value={agent.name}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <SourcedAvatar
                     source={"MINIMAL"}
-                    iconUrl={colleague.icon}
-                    name={colleague.name}
+                    iconUrl={agent.icon}
+                    name={agent.name}
                   />
-                  <Box sx={{ ml: 1 }}>{colleague.name}</Box>
+                  <Box sx={{ ml: 1 }}>{agent.name}</Box>
                 </Box>
               </MenuItem>
             ))}

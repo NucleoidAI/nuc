@@ -31,7 +31,9 @@ const TeamChatWidget = memo(function ChatWidget({
   const { getTeamById } = useTeam();
 
   const { team, loading: teamLoading } = getTeamById(projectId);
-  const { agents, loading } = useAgents();
+  const { getTeamAgents } = useAgents();
+
+  const { agents, loading } = getTeamAgents();
 
   const { updateSupervising } = useSupervisings();
 
@@ -151,7 +153,7 @@ const TeamChatWidget = memo(function ChatWidget({
           )}
           <ChatInput
             createMessage={createMessage}
-            userId={user.id}
+            userId={user?.id}
             replied={replied}
             selectedMessage={selectedMessage}
             editor={editor}

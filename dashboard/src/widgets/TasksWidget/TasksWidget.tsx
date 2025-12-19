@@ -8,13 +8,14 @@ import { Box, Fab, Stack } from "@mui/material";
 import React, { useState } from "react";
 
 function TasksWidget({ agentId }) {
-  const { tasks, getSteps, steps, createTask } = useTasks(agentId);
+  const { tasks, steps, getSteps, createTask } = useTasks(agentId);
+
   const [expandedTaskId, setExpandedTaskId] = useState(null);
 
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [open, setOpen] = useState(false);
 
-  const task = tasks.filter(
+  const task = tasks?.filter(
     (task) =>
       selectedStatus === "All" || (task && task.status === selectedStatus)
   );
@@ -43,7 +44,7 @@ function TasksWidget({ agentId }) {
           handleChange={handleChange}
           selectedStatus={selectedStatus}
         />
-        {task.length > 0 ? (
+        {task?.length > 0 ? (
           task.map((t, i) => (
             <TaskCard
               agentId={agentId}
@@ -74,7 +75,7 @@ function TasksWidget({ agentId }) {
             size="medium"
             sx={{
               mt: 2,
-              zIndex: 0,
+              zIndex: 1000,
             }}
             data-cy="add-task-button"
             onClick={() => {

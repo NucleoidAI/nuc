@@ -78,7 +78,7 @@ function TeamChatNav({ loading, agents, collapsed, setCollapsed }) {
       }));
 
       if (inputValue) {
-        const results = agents.filter((colleague) =>
+        const results = agents?.filter((colleague) =>
           colleague.name.toLowerCase().includes(inputValue)
         );
 
@@ -116,7 +116,7 @@ function TeamChatNav({ loading, agents, collapsed, setCollapsed }) {
 
   const renderList = (
     <Stack flexDirection={collapsed && mdDown ? "row" : "column"}>
-      {agents.map((member) => (
+      {agents?.map((member) => (
         <TeamChatNavItem
           key={member.id}
           member={member}
@@ -128,7 +128,7 @@ function TeamChatNav({ loading, agents, collapsed, setCollapsed }) {
 
       {collapsed && mdDown && (
         <AvatarGroup max={4} sx={{ ml: 1 }}>
-          {agents.map((member) => {
+          {agents?.map((member) => {
             const { id, name, avatar } = member;
             return (
               <SourcedAvatar
@@ -159,7 +159,7 @@ function TeamChatNav({ loading, agents, collapsed, setCollapsed }) {
         fullWidth
         value={searchContacts.query}
         onChange={(event) => handleSearchContacts(event.target.value)}
-        placeholder="Search agents..."
+        placeholder="Search agents?..."
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">

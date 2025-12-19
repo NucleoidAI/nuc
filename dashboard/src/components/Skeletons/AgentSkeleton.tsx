@@ -3,7 +3,7 @@ import { Skeleton } from "@mui/material";
 
 import { Box, Card, Divider, Stack } from "@mui/material";
 
-const ColleagueSkeleton = () => {
+const AgentSkeleton = () => {
   return (
     <Card sx={{ textAlign: "center", width: "300px", height: "550px" }}>
       <Box sx={{ position: "relative" }}>
@@ -79,4 +79,4 @@ const ColleagueSkeleton = () => {
   );
 };
 
-export default ColleagueSkeleton;
+export default AgentSkeleton;

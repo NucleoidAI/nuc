@@ -4,49 +4,60 @@ import { useLocation } from "react-router-dom";
 import useMessage from "./useMessage";
 
 import { publish, useEvent } from "@nucleoidai/react-event";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+type DependencyArray = object[];
 
 function useChat() {
-  const [messages, setMessages] = useState<
-    Array<{
-      role: string;
-      content: string;
-      colleagueId: string;
-      createdAt: string;
-      userId: string;
-      command: string;
-      knowledgeId: string;
-      status?: string;
-      id: string;
-    }>
-  >([]);
-
+  const { Api } = useApi();
   const location = useLocation();
 
   const onChatPage = location.pathname === "/chat";
 
   const { getMessagesByDate, updateMessageStatus } = useMessage();
 
-  const { loading, error, handleResponse } = useApi();
-
   const [messageCreated] = useEvent("MESSAGE_CREATED", null);
   const [supervisingAnswered] = useEvent("SUPERVISING_ANSWERED", null);
   const [taskStatus] = useEvent("TASK_STATUS_CHANGED", null);
   const [taskCreated] = useEvent("TASK_CREATED", null);
   const [knowledgeStatusChanged] = useEvent("KNOWLEDGE_STATUS_CHANGED", null);
-  // TODO - Research self-call events
+
+  const getMessages = (fetchState: DependencyArray = []) => {
+    const eventDependencies = [
+      messageCreated,
+      supervisingAnswered,
+      taskStatus,
+      taskCreated,
+      knowledgeStatusChanged,
+    ];
+
+    const { data, loading, error, fetch } = Api(
+      () => http.get(`/messages`),
+      [...eventDependencies, ...fetchState]
+    );
+
+    if (data) {
+      const sortedMessages = [...data].sort(
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      );
+      publish("MESSAGES_LOADED", { messages: sortedMessages });
+    }
+
+    return {
+      messages: data || [],
+      loading,
+      error,
+      fetch,
+    };
+  };
+
+  const result = getMessages();
+  const [messages, setMessages] = useState(result.messages);
 
   useEffect(() => {
-    getMessages();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    messageCreated,
-    supervisingAnswered,
-    taskStatus,
-    taskCreated,
-    knowledgeStatusChanged,
-  ]);
+    setMessages(result.messages);
+  }, [result.messages]);
 
   const intervalId = useRef<NodeJS.Timeout>();
 
@@ -100,31 +111,10 @@ function useChat() {
     return () => clearInterval(intervalId.current);
   });
 
-  const getMessages = useCallback(() => {
-    handleResponse(
-      http.get(`/messages`),
-      (response) => {
-        const sortedMessages = response.data.sort(
-          (a, b) =>
-            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-        );
-        setMessages(sortedMessages);
-        publish("MESSAGES_LOADED", { messages: sortedMessages }),
-          (error) => {
-            console.error(error);
-          };
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   return {
     messages,
-    loading,
-    error,
+    loading: result.loading,
+    error: result.error,
   };
 }
 

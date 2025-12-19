@@ -7,11 +7,7 @@ import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
 
 import { Dialog, Stack } from "@mui/material";
 
-export default function AvatarSelector({
-  handleEmojiSelect,
-  avatarSrc,
-  avatar,
-}) {
+export default function AvatarSelector({ handleEmojiSelect, iconSrc, icon }) {
   const [emojiDialogOpen, setEmojiDialogOpen] = React.useState(false);
   const handleEmojiButtonClick = () => {
     setEmojiDialogOpen(true);
@@ -32,17 +28,17 @@ export default function AvatarSelector({
           }}
         >
           <SourcedAvatar
-            name={avatar}
+            name={icon}
             source={
-              avatarSrc ||
-              `https://cdn.nucleoid.com/greycollar/avatars/${avatar?.replace(
+              iconSrc ||
+              `https://cdn.nucleoid.com/greycollar/avatars/${icon?.replace(
                 /:/g,
                 ""
               )}.jpg`
             }
-            avatarUrl={
-              avatarSrc ||
-              `https://cdn.nucleoid.com/greycollar/avatars/${avatar?.replace(
+            iconUrl={
+              iconSrc ||
+              `https://cdn.nucleoid.com/greycollar/avatars/${icon?.replace(
                 /:/g,
                 ""
               )}.jpg`
@@ -70,7 +66,7 @@ export default function AvatarSelector({
             handleEmojiSelect(emoji), setEmojiDialogOpen(false);
           }}
           custom={ColleagueAndTeamAvatars}
-          categories={["team_icons"]}
+          categories={["colleague_icons"]}
           searchPosition={"none"}
           navPosition="none"
           emojiButtonSize={90}

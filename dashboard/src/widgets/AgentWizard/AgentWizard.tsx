@@ -19,118 +19,65 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 
-function ColleagueWizard({
-  itemProperties,
-  onSubmit,
-  open,
-  onClose,
-  itemToEdit,
-}) {
-  const sampleColleagues = [
+function AgentWizard({ itemProperties, onSubmit, open, onClose, itemToEdit }) {
+  const sampleAgents = [
     {
-      name: "Alex Thompson",
-      avatar: "mingcute:bank-card-line",
+      name: "system_agent",
+      icon: "mingcute:bank-card-line",
       src: `https://cdn.nucleoid.com/greycollar/avatars/2.jpg`,
-      character: "Quick-Witted",
-      title: "Engineer",
-      role: "Software Engineer",
       aiEngineId: "289a3c9a-f23b-421a-ac6e-f14052a2d57c",
       engineName: "OpenAI",
       description:
-        "Alex is a quick-witted software engineer who thrives on solving complex problems with innovative solutions.",
+        "A system-focused agent designed to support technical workflows, optimize architecture decisions, and improve reliability across operations.",
     },
     {
-      name: "Sarah Chen",
-      avatar: "ph:coffee-bean-duotone",
+      name: "insight_agent",
+      icon: "ph:coffee-bean-duotone",
       src: `https://cdn.nucleoid.com/greycollar/avatars/5.jpg`,
-      character: "Ambitious",
-      title: "Scientist",
-      role: "Data Scientist",
       aiEngineId: "d9c93323-3baf-4623-a96c-b85db99b4441",
       engineName: "Claude",
       description:
-        "Sarah is an ambitious data scientist with a passion for uncovering insights from complex datasets to drive informed decision-making.",
+        "An insight-driven agent that analyzes information, identifies patterns, and provides clear, data-backed guidance for decision-making.",
     },
     {
-      name: "Marcus Williams",
-      avatar: "ph:fire-simple-duotone",
+      name: "order_agent",
+      icon: "ph:fire-simple-duotone",
       src: `https://cdn.nucleoid.com/greycollar/avatars/8.jpg`,
-      character: "Natural Leader",
-      title: "Designer",
-      role: "Product Manager",
       aiEngineId: "123a3c9a-b23b-421a-ac6e-f14052a2d57c",
       engineName: "DeepMind",
       description:
-        "Marcus is a natural leader and product manager who excels at guiding cross-functional teams to deliver user-centric products that exceed expectations.",
+        "An order agent built to streamline communication, align processes, and manage multi-step workflows across teams and systems.",
     },
   ];
 
   const steps = ["Name", "Description", "Engine", "Summary"];
 
   const stepExp = [
-    "Give colleague a name and select an avatar that reflects your colleague",
-    "Define your colleague's description and responsibilities.",
-    "Select your colleague's engine. this will determine your colleague's engine.",
-    "Review and confirm the details of your new colleague.",
+    "Give agent a name and select an avatar that reflects your agent",
+    "Define your agent's description and responsibilities.",
+    "Select your agent's engine. this will determine your agent's engine.",
+    "Review and confirm the details of your new agent.",
   ];
 
   const names = [
-    "Liam",
-    "Olivia",
-    "Noah",
-    "Emma",
-    "Ava",
-    "Elijah",
-    "Sophia",
-    "James",
-    "Isabella",
-    "Mason",
+    "core_agent",
+    "logic_agent",
+    "ops_agent",
+    "task_agent",
+    "flow_agent",
+    "insight_agent",
+    "system_agent",
+    "service_agent",
+    "assist_agent",
+    "analysis_agent",
   ];
 
   const descriptions = [
-    "A dedicated professional with a passion for excellence.",
-    "An innovative thinker who thrives on challenges.",
-    "A team player committed to achieving collective goals.",
-    "A creative individual with a knack for problem-solving.",
-    "A detail-oriented expert focused on delivering quality results.",
-  ];
-
-  const characters = [
-    "Brave",
-    "Quick-Witted",
-    "Mysterious",
-    "Loyal Companion",
-    "Charismatic",
-    "Deep Thinker",
-    "Strong-Willed",
-    "Ambitious",
-    "Free Spirit",
-    "Natural Leader",
-  ];
-  const roles = [
-    "Explores and discovers new scientific knowledge.",
-    "Investigates and solves complex cases.",
-    "Writes and reports news stories.",
-    "Designs innovative and functional buildings.",
-    "Creates delicious meals and culinary experiences.",
-    "Educates and inspires students to achieve their potential.",
-    "Develops solutions to technical challenges.",
-    "Operates aircraft and ensures safe travel.",
-    "Expresses creativity through visual or performing arts.",
-    "Provides emergency medical care and assistance.",
-  ];
-
-  const titles = [
-    "Scientist",
-    "Detective",
-    "Journalist",
-    "Architect",
-    "Chef",
-    "Teacher",
-    "Engineer",
-    "Pilot",
-    "Artist",
-    "Paramedic",
+    "A core automation agent designed for general workflow execution.",
+    "A logic-driven agent that assists with decision steps and rule-based operations.",
+    "An operations-focused agent optimized for task handling and process stability.",
+    "An analysis agent that interprets data, identifies patterns, and provides insights.",
+    "A service-oriented agent built to support requests, coordination, and communication.",
   ];
 
   const [activeStep, setActiveStep] = React.useState(0);
@@ -147,10 +94,8 @@ function ColleagueWizard({
     itemProperties.reduce((obj, property) => ({ ...obj, [property]: "" }), {})
   );
 
-  console.log("NewItem in ColleagueWizard:", newItem);
-
-  const handleTemplateSelect = (colleague) => {
-    setNewItem(colleague);
+  const handleTemplateSelect = (agent) => {
+    setNewItem(agent);
     setActiveStep(3);
   };
 
@@ -181,7 +126,7 @@ function ColleagueWizard({
     setNewItem((prevItem) => {
       return {
         ...prevItem,
-        avatar: `:${emoji.id}:`,
+        icon: `:${emoji.id}:`,
         src: `${emoji.src}`,
       };
     });
@@ -197,18 +142,9 @@ function ColleagueWizard({
       case "name":
         randomValue = names[Math.floor(Math.random() * names.length)];
         break;
-      case "character":
-        randomValue = characters[Math.floor(Math.random() * characters.length)];
-        break;
-      case "role":
-        randomValue = roles[Math.floor(Math.random() * roles.length)];
-        break;
       case "description":
         randomValue =
           descriptions[Math.floor(Math.random() * descriptions.length)];
-        break;
-      case "title":
-        randomValue = titles[Math.floor(Math.random() * titles.length)];
         break;
       default:
         randomValue = "";
@@ -221,7 +157,7 @@ function ColleagueWizard({
       <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           <SparkleInput
-            data-cy="colleague-wizard-name-input"
+            data-cy="agent-wizard-name-input"
             prop="name"
             value={newItem["name"]}
             onChange={handleInputChange("name")}
@@ -230,8 +166,8 @@ function ColleagueWizard({
           />
           <SelectAvatar
             handleEmojiSelect={handleEmojiSelect}
-            avatarSrc={newItem.src}
-            avatar={newItem?.avatar?.replace(/:/g, "")}
+            iconSrc={newItem.src}
+            icon={newItem?.icon?.replace(/:/g, "")}
           />
         </div>
 
@@ -249,11 +185,11 @@ function ColleagueWizard({
               marginTop: "16px",
             }}
           >
-            {sampleColleagues.map((colleague, index) => (
+            {sampleAgents.map((agent, index) => (
               <Card
-                data-cy="sample-colleague"
+                data-cy="sample-agent"
                 key={index}
-                onClick={() => handleTemplateSelect(colleague)}
+                onClick={() => handleTemplateSelect(agent)}
                 sx={{
                   cursor: "pointer",
                   transition: "all 0.2s ease",
@@ -274,20 +210,17 @@ function ColleagueWizard({
                       }}
                     >
                       <Iconify
-                        icon={colleague.avatar}
+                        icon={agent.icon}
                         width="20%"
                         height="20%"
                         style={{ objectFit: "contain" }}
                       />
                       <Typography variant="h6" component="div">
-                        {colleague.name}
+                        {agent.name}
                       </Typography>
                     </Box>
                     <Typography variant="body2" color="textSecondary">
-                      {colleague.role}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      {colleague.character}
+                      {agent.description}
                     </Typography>
                   </CardContent>
                 </CardActionArea>
@@ -302,7 +235,7 @@ function ColleagueWizard({
   const Personality = () => {
     return (
       <SparkleInput
-        data-cy="colleague-wizard-description-input"
+        data-cy="agent-wizard-description-input"
         prop="description"
         onChange={handleInputChange("description")}
         onRandomValue={() => handleRandomValue("description")}
@@ -343,7 +276,7 @@ function ColleagueWizard({
   };
   return (
     <Dialog
-      data-cy="colleague-dialog"
+      data-cy="agent-dialog"
       fullWidth
       maxWidth={activeStep === 2 ? "xl" : "sm"}
       open={open}
@@ -382,4 +315,4 @@ function ColleagueWizard({
   );
 }
 
-export default ColleagueWizard;
+export default AgentWizard;

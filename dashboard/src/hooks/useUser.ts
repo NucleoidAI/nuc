@@ -1,36 +1,33 @@
 import useApi from "./useApi";
 import userInstance from "../http/user";
 
-import { useCallback, useEffect, useState } from "react";
+type DependencyArray = object[];
 
 function useUser() {
-  const [user, setUser] = useState({
-    name: "",
-    avatarUrl: "",
-    id: "",
-    role: "",
-  });
-  const { loading, error, handleResponse } = useApi();
+  const { Api } = useApi();
 
-  useEffect(() => {
-    getUser();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const getUser = (fetchState: DependencyArray = []) => {
+    const { data, loading, error, fetch } = Api(async () => {
+      const userData = await userInstance.getUserDetails();
+      // Wrap the data in the expected format for Api
+      return { data: userData };
+    }, [...fetchState]);
 
-  const getUser = useCallback(() => {
-    handleResponse(
-      userInstance.getUserDetails(),
-      (response) => {
-        setUser(response);
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    return {
+      user: data,
+      loading,
+      error,
+      fetch,
+    };
+  };
 
-  return { user, loading, error };
+  const result = getUser();
+
+  return {
+    user: result.user,
+    loading: result.loading,
+    error: result.error,
+  };
 }
 
 export default useUser;

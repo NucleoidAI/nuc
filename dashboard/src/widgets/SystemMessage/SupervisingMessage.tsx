@@ -1,21 +1,23 @@
-import { Label } from "@canmingir/link/platform/components";
 import ReplyIcon from "@mui/icons-material/Reply";
-import SourcedAvatar from "../../components/SourcedAvatar/SourcedAvatar";
+import { cleanIconName } from "../../utils/cleanIconName";
 import { fDateTime } from "../../utils/formatTime";
-import useColleague from "../../hooks/useColleague";
+import useAgent from "../../hooks/useAgent";
 import { useEffect } from "react";
 import useSupervise from "../../hooks/useSupervise";
 
 import { Chip, IconButton, Stack, Typography, alpha } from "@mui/material";
+import { Iconify, Label } from "@canmingir/link/platform/components";
 
 function SupervisingMessage({ id, handleClick, onDateFetched }) {
   const { supervising } = useSupervise(id);
 
-  const { colleague } = useColleague(supervising.colleagueId);
+  const { getAgent } = useAgent();
+
+  const { agent } = getAgent(supervising?.colleagueId);
 
   useEffect(() => {
     if (supervising) {
-      onDateFetched(fDateTime(supervising.createdAt, "MMM DD, YYYY"));
+      onDateFetched(fDateTime(supervising?.createdAt, "MMM DD, YYYY"));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [supervising]);
@@ -60,20 +62,20 @@ function SupervisingMessage({ id, handleClick, onDateFetched }) {
             >
               <Chip
                 avatar={
-                  <SourcedAvatar
-                    name={colleague.name}
-                    source={"MINIMAL"}
-                    avatarUrl={colleague.avatar}
-                    sx={{ ml: 1, width: 18, height: 18 }}
+                  <Iconify
+                    icon={cleanIconName(agent?.icon)}
+                    width="30%"
+                    height="30%"
+                    style={{ objectFit: "contain", background: "none" }}
                   />
                 }
-                label={colleague.name}
+                label={agent?.name}
                 size="small"
                 color="primary"
                 variant="filled"
               />
               <Typography variant="body2" color="grey.500" sx={{ m: 1 }}>
-                {supervising.status === "ANSWERED"
+                {supervising?.status === "ANSWERED"
                   ? "learned"
                   : "wants to learn"}
               </Typography>
@@ -87,13 +89,13 @@ function SupervisingMessage({ id, handleClick, onDateFetched }) {
                   my: 0.2,
                 }}
               >
-                {supervising.status === "ANSWERED"
-                  ? supervising.answer
-                  : supervising.question}
+                {supervising?.status === "ANSWERED"
+                  ? supervising?.answer
+                  : supervising?.question}
               </Label>
             </Stack>
           </Stack>
-          {supervising.status === "IN_PROGRESS" ? (
+          {supervising?.status === "IN_PROGRESS" ? (
             <IconButton
               onClick={() => handleClick(supervising)}
               data-cy="reply-button"
@@ -111,13 +113,13 @@ function SupervisingMessage({ id, handleClick, onDateFetched }) {
           }}
         >
           {(() => {
-            switch (supervising.status) {
+            switch (supervising?.status) {
               case "IN_PROGRESS":
                 return "In Progress";
               case "COMPLETED":
                 return "Completed";
               default:
-                return supervising.status;
+                return supervising?.status;
             }
           })()}
         </Typography>

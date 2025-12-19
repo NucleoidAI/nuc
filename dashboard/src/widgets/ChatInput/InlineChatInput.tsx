@@ -8,7 +8,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Popover from "@mui/material/Popover";
 import { ResponsibilityCommands } from "../../components/ChatInput/chat.config";
 import SourcedAvatar from "../../components/SourcedAvatar/SourcedAvatar";
-import useColleagues from "../../hooks/useColleagues";
+import useAgents from "../../hooks/useAgents";
 import { withHistory } from "slate-history";
 
 import {
@@ -54,7 +54,7 @@ type CustomElement = {
   colleague?: {
     id: string;
     name: string;
-    avatar: string;
+    icon: string;
   };
 };
 
@@ -204,7 +204,9 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
     (typeof ResponsibilityCommands)[0]["next"]["list"][number] | null
   >(null);
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(0);
-  const { colleagues } = useColleagues();
+  const { getTeamAgents } = useAgents();
+
+  const { agents } = getTeamAgents();
 
   const editor = useMemo(
     () => withCommands(withHistory(withReact(createEditor()))),
@@ -402,7 +404,7 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
         colleague: {
           id: colleague.id,
           name: colleague.name,
-          avatar: colleague.avatar,
+          icon: colleague.icon,
         },
         children: [{ text: "" }],
       };
@@ -457,8 +459,8 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
             handleScopeSelect(scope);
           }
           return;
-        } else if (showMentions && colleagues[selectedOptionIndex]) {
-          handleMentionSelect(colleagues[selectedOptionIndex]);
+        } else if (showMentions && agents[selectedOptionIndex]) {
+          handleMentionSelect(agents[selectedOptionIndex]);
           return;
         }
 
@@ -488,7 +490,7 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
             ? selectedIntegration.next.list.length - 1
             : 0;
         } else if (showMentions) {
-          maxIndex = colleagues.length - 1;
+          maxIndex = agents.length - 1;
         }
 
         if (event.key === "ArrowUp") {
@@ -505,7 +507,7 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
       showScopes,
       handleSend,
       selectedOptionIndex,
-      colleagues,
+      agents,
       selectedCommand,
       selectedIntegration,
       handleCommandSelect,
@@ -555,7 +557,7 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
             <SourcedAvatar
               name={element.colleague?.name}
               source={"MINIMAL"}
-              avatarUrl={element.colleague?.avatar}
+              iconUrl={element.colleague?.icon}
               sx={{ mr: 0.5, width: 20, height: 20 }}
             />
             {element.colleague?.name}
@@ -797,24 +799,24 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
         }}
       >
         <CommandList>
-          {colleagues.map((colleague, index) => (
+          {agents?.map((agent, index) => (
             <ListItem
-              key={colleague.id}
+              key={agent.id}
               button
               selected={index === selectedOptionIndex}
-              onClick={() => handleMentionSelect(colleague)}
+              onClick={() => handleMentionSelect(agent)}
             >
               <ListItemIcon>
                 <SourcedAvatar
-                  name={colleague.name}
+                  name={agent.name}
                   source={"MINIMAL"}
-                  avatarUrl={colleague.avatar}
+                  iconUrl={agent.icon}
                   sx={{ width: 32, height: 32 }}
                 />
               </ListItemIcon>
               <ListItemText
-                primary={colleague.name}
-                secondary={colleague.role}
+                primary={agent.name}
+                secondary={agent.description}
                 primaryTypographyProps={{
                   fontSize: "0.875rem",
                   fontWeight: 500,

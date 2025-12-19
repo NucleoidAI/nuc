@@ -23,15 +23,13 @@ async function messages({ teamId }: { teamId: string }) {
 }
 
 async function info({ colleagueId }) {
-  const { name, title, character, role } = await colleague.get({ colleagueId });
+  const { name, description } = await colleague.get({ colleagueId });
   return {
     role: "system",
     content: {
       ai_assistant_info: {
         name,
-        character,
-        title,
-        role,
+        description,
         job: "GreyCollar AI Assistant",
       },
     },

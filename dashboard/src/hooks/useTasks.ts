@@ -1,110 +1,107 @@
 import http from "@canmingir/link/platform/http";
 import useApi from "./useApi";
+import { useState } from "react";
 
 import { publish, useEvent } from "@nucleoidai/react-event";
-import { useCallback, useEffect, useState } from "react";
 
-function useTasks(colleagueId) {
-  const [tasks, setTasks] = useState([
-    {
-      description: "",
-      colleagueId: "",
-      status: "",
-      commandId: "",
-      id: "",
-      createdAt: "",
-    },
-  ]);
+type DependencyArray = object[];
 
-  const [steps, setSteps] = useState([
-    {
-      description: "",
-      id: "",
-      type: "",
-      createdAt: "",
-      referenceId: "",
-    },
-  ]);
-
-  const { loading, error, handleResponse } = useApi();
+function useTasks(agentId: string) {
+  const { Api } = useApi();
 
   const [taskStatus] = useEvent("TASK_STATUS_CHANGED", null);
   const [taskCreated] = useEvent("TASK_CREATED", null);
   const [taskStepLoading] = useEvent("TASK_STEP_LOADED", null);
 
-  useEffect(() => {
-    getTasks(colleagueId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [taskStatus, taskCreated, taskStepLoading]);
+  const [currentSteps, setCurrentSteps] = useState([]);
+  const [stepsLoading, setStepsLoading] = useState(false);
 
-  const createTask = useCallback((task, colleagueId) => {
-    handleResponse(
-      http.post(`/tasks`, {
+  const getTasks = (fetchState: DependencyArray = []) => {
+    const eventDependencies = [taskStatus, taskCreated, taskStepLoading];
+
+    const { data, loading, error, fetch } = Api(
+      () =>
+        agentId
+          ? http.get(`/tasks?colleagueId=${agentId}`)
+          : Promise.resolve({ data: [] }),
+      [agentId, ...eventDependencies, ...fetchState]
+    );
+
+    if (data) {
+      publish("TASK_LOADED", data);
+    }
+
+    return {
+      tasks: data,
+      loading,
+      error,
+      fetch,
+    };
+  };
+
+  const result = getTasks();
+
+  const getSteps = async (id: string) => {
+    if (!id) return;
+
+    setStepsLoading(true);
+    try {
+      const response = await http.get(`/tasks/${id}/steps`);
+      setCurrentSteps(response.data);
+      publish("TASK_STEP_LOADED", response.data);
+      setStepsLoading(false);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching steps:", error);
+      setStepsLoading(false);
+      return [];
+    }
+  };
+
+  const createTask = async (task: string, colleagueId: string) => {
+    try {
+      const response = await http.post(`/tasks`, {
         description: task,
         colleagueId: colleagueId,
-      }),
-      (response) => {
+      });
+
+      if (response && response.data) {
         publish("TASK_CREATED", response.data);
-        return response.data;
-      },
-      (error) => {
-        console.error(error);
       }
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
-  const getTasks = useCallback((colleagueId) => {
-    handleResponse(
-      http.get(`/tasks?colleagueId=${colleagueId}`),
-      (response) => {
-        setTasks(response.data);
-        publish("TASK_LOADED", response.data);
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      return response?.data;
+    } catch (error) {
+      console.error("Error creating task:", error);
+      return null;
+    }
+  };
 
-  const getSteps = useCallback((id) => {
-    handleResponse(
-      http.get(`/tasks/${id}/steps`),
-      (response) => {
-        setSteps(response.data);
-        publish("TASK_STEP_LOADED", response.data);
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const createTaskSupervising = useCallback((id, text, addToKnowledgeBase) => {
-    handleResponse(
-      http.post(`/tasks/${id}/supervising`, {
-        colleagueId,
+  const createTaskSupervising = async (
+    id: string,
+    text: string,
+    addToKnowledgeBase: boolean
+  ) => {
+    try {
+      const response = await http.post(`/tasks/${id}/supervising`, {
+        agentId,
         text,
         addToKnowledgeBase,
-      }),
-      (response) => {
-        return response.data;
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      });
+
+      return response?.data;
+    } catch (error) {
+      console.error("Error creating task supervising:", error);
+      return null;
+    }
+  };
 
   return {
-    loading,
-    error,
-    tasks,
+    tasks: result.tasks,
+    loading: result.loading,
+    error: result.error,
+    steps: currentSteps,
+    stepsLoading,
     getSteps,
-    steps,
     createTask,
     createTaskSupervising,
   };

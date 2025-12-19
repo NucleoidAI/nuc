@@ -25,29 +25,29 @@ function Dashboard() {
               key={5}
               title="Response Rate"
               chartType={"bar"}
-              size={statistics.responseRate}
+              size={statistics?.responseRate}
             />,
             <WidgetSummaryWidget
               key={6}
               title="Supervising Rate"
               chartType={"line"}
-              size={statistics.supervisingRate}
+              size={statistics?.supervisingRate}
             />,
             <WidgetSummaryWidget
               key={7}
               title="Knowledge Size"
               chartType={"line"}
-              size={statistics.knowledgeSize}
+              size={statistics?.knowledgeSize}
             />,
             <WidgetSummaryWidget
               key={8}
               title="Task Rate"
               chartType={"bar"}
-              size={statistics.taskCount}
+              size={statistics?.taskCount}
             />,
           ],
           secondRow: [<UsageChart key={2} />, <PerformanceChart key={3} />],
-          thirdRow: [<TotalIncomes size={statistics.totalMessages} key={4} />],
+          thirdRow: [<TotalIncomes size={statistics?.totalMessages} key={4} />],
         }}
       />
     </>

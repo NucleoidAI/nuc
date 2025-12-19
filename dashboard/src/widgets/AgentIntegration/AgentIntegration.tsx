@@ -5,19 +5,17 @@ import React from "react";
 import SkillDialog from "../../components/Skills/SkillDialog";
 import { getProviderLogo } from "../../utils/icon";
 import useAcquiredIntegrations from "../../hooks/useAcquiredIntegrations";
-import useColleagues from "../../hooks/useColleagueV2";
+import useAgent from "../../hooks/useAgent";
 
-import { Box, Container, Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 
-const ColleagueIntegration = ({ colleague }) => {
+const AgentIntegration = ({ agent }) => {
   const { getIntegrations, getColleagueAcquiredIntegrations, getTokens } =
     useAcquiredIntegrations();
 
   const { integrations } = getIntegrations();
 
-  const { acquiredIntegrations } = getColleagueAcquiredIntegrations(
-    colleague.id
-  );
+  const { acquiredIntegrations } = getColleagueAcquiredIntegrations(agent.id);
 
   const instructions = [
     {
@@ -43,8 +41,8 @@ const ColleagueIntegration = ({ colleague }) => {
     { id: "7a8b9c0d-1e2f-3g4h-5i6j-7k8l9m0n1o2p", title: "Outgoing" },
   ];
 
-  const { getColleagues } = useColleagues();
-  const { colleagues } = getColleagues();
+  const { getAgents } = useAgent();
+  const { agents } = getAgents();
 
   const [selectedTab, setSelectedTab] = React.useState(0);
   const [skillDialogOpen, setSkillDialogOpen] = React.useState(false);
@@ -88,7 +86,14 @@ const ColleagueIntegration = ({ colleague }) => {
   };
 
   return (
-    <Container>
+    <Box
+      sx={{
+        width: "100%",
+        px: 2,
+        pb: 2,
+        minHeight: "calc(100vh - 240px)",
+      }}
+    >
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         <IntegrationTabs
           selectedTab={selectedTab}
@@ -136,7 +141,7 @@ const ColleagueIntegration = ({ colleague }) => {
           open={skillDialogOpen}
           handleClose={handleSkillDialogClose}
           skill={selectedSkill}
-          colleagues={colleagues}
+          agents={agents}
           acquiredIntegrations={acquiredIntegrations}
           getTokens={getTokens}
         />
@@ -146,11 +151,11 @@ const ColleagueIntegration = ({ colleague }) => {
           instructions={instructions}
           drawerOpen={drawerOpen}
           handleDrawerClose={handleDrawerClose}
-          colleague={colleague}
+          agent={agent}
         />
       </Box>
-    </Container>
+    </Box>
   );
 };
 
-export default ColleagueIntegration;
+export default AgentIntegration;

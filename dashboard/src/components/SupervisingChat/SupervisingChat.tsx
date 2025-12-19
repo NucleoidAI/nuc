@@ -2,7 +2,7 @@ import { Iconify } from "@canmingir/link/platform/components";
 import InlineChatInput from "../../widgets/ChatInput/InlineChatInput";
 import PopupChatWidget from "../../widgets/PopupChatWidget/PopupChatWidget";
 import ResponsibilityChatContent from "../ResponsibilityChat/ResponsibilityChatContent";
-import useSupervisings from "../../hooks/useSupervisingsV2";
+import useSupervisings from "../../hooks/useSupervisings";
 
 import {
   Backdrop,

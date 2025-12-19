@@ -1,4 +1,4 @@
-import ColleagueIntegration from "../widgets/ColleagueIntegration/ColleagueIntegration";
+import AgentIntegration from "../widgets/AgentIntegration/AgentIntegration";
 import Communication from "../widgets/Communication/Communication";
 import { Iconify } from "@canmingir/link/platform/components";
 import Knowledge from "../widgets/Knowledge/Knowledge";
@@ -10,9 +10,9 @@ import ResponsibilitiesWidget from "../widgets/ResponsibilitiesWidget/Responsibi
 import Stack from "@mui/material/Stack";
 import Supervising from "../widgets/Supervising/Supervising";
 import TasksWidget from "../widgets/TasksWidget/TasksWidget";
-import { getBackgroundUrl } from "../utils/background";
+import { getAgentGradients } from "../utils/gradient";
 
-import { Skeleton, Theme, useMediaQuery } from "@mui/material";
+import { Skeleton, Theme, useMediaQuery, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -25,7 +25,7 @@ const TABS = [
   {
     value: "knowledge-base",
     label: "Knowledge Base",
-    icon: <Iconify icon="solar:heart-bold" width={24} />,
+    icon: <Iconify icon="carbon:ibm-watson-knowledge-studio" width={24} />,
   },
   {
     value: "responsibilities",
@@ -59,15 +59,35 @@ const TABS = [
   },
 ];
 
-function ColleagueLayout({ colleague, loading }) {
+function AgentLayout({
+  agent,
+  loading,
+  initialTab,
+}: {
+  agent: {
+    id: string;
+    name: string;
+    icon: string;
+  };
+  loading: boolean;
+  initialTab?: string;
+}) {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const theme = useTheme();
 
   const queryParams = new URLSearchParams(location.search);
   const tabFromQuery = queryParams.get("tab");
 
+  const safeInitial =
+    initialTab && TABS.some((t) => t.value === initialTab) ? initialTab : null;
+
   const [currentTab, setCurrentTab] = useState(
-    TABS.some((tab) => tab.value === tabFromQuery) ? tabFromQuery : "profile"
+    safeInitial ||
+      (TABS.some((tab) => tab.value === tabFromQuery)
+        ? tabFromQuery
+        : "profile")
   );
 
   const mdDown = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"));
@@ -86,6 +106,20 @@ function ColleagueLayout({ colleague, loading }) {
       { replace: true }
     );
   };
+
+  useEffect(() => {
+    if (safeInitial && safeInitial !== currentTab) {
+      setCurrentTab(safeInitial);
+
+      const newQueryParams = new URLSearchParams(location.search);
+      newQueryParams.set("tab", safeInitial);
+      navigate(
+        { pathname: location.pathname, search: newQueryParams.toString() },
+        { replace: true }
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [safeInitial]);
 
   useEffect(() => {
     if (
@@ -108,10 +142,9 @@ function ColleagueLayout({ colleague, loading }) {
               TABS={TABS}
               currentTab={currentTab}
               setCurrentTab={handleTabChange}
-              name={colleague.name}
-              avatarUrl={colleague.avatar}
-              coverUrl={getBackgroundUrl(colleague.id)}
-              role={colleague.role}
+              name={agent.name}
+              iconUrl={agent.icon}
+              coverUrl={getAgentGradients(agent.id, theme)}
               loading={loading}
             />
             <Stack
@@ -129,21 +162,15 @@ function ColleagueLayout({ colleague, loading }) {
           </>
         )}
       </Stack>
-      {currentTab === "profile" && <Profile colleagueId={colleague.id} />}
-      {currentTab === "knowledge-base" && (
-        <Knowledge colleagueId={colleague.id} />
-      )}
+      {currentTab === "profile" && <Profile agentId={agent.id} />}
+      {currentTab === "knowledge-base" && <Knowledge agentId={agent.id} />}
       {currentTab === "responsibilities" && <ResponsibilitiesWidget />}
-      {currentTab === "supervisings" && (
-        <Supervising colleagueId={colleague.id} />
-      )}
-      {currentTab === "tasks" && <TasksWidget colleagueId={colleague.id} />}
-      {currentTab === "integrations" && (
-        <ColleagueIntegration colleague={colleague} />
-      )}
+      {currentTab === "supervisings" && <Supervising agentId={agent.id} />}
+      {currentTab === "tasks" && <TasksWidget agentId={agent.id} />}
+      {currentTab === "integrations" && <AgentIntegration agent={agent} />}
       {currentTab === "communication" && <Communication />}
     </>
   );
 }
 
-export default ColleagueLayout;
+export default AgentLayout;

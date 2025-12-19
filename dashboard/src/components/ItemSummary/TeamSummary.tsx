@@ -1,10 +1,12 @@
 import DialogContentText from "@mui/material/DialogContentText";
 import Grid from "@mui/material/Grid";
+import { Iconify } from "@canmingir/link/platform/components";
 import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
+import { cleanIconName } from "../../utils/cleanIconName";
 
-import { Card, CardContent, Typography } from "@mui/material";
+import { Box, Card, CardContent, Typography } from "@mui/material";
 
-function Summary({ organization, team, colleague }) {
+function Summary({ organization, team, agent }) {
   return (
     <>
       {organization && (
@@ -83,10 +85,10 @@ function Summary({ organization, team, colleague }) {
         </Grid>
       </Grid>
 
-      {colleague && (
+      {agent && (
         <>
           <DialogContentText sx={{ textAlign: "center", mb: 2, mt: 3 }}>
-            Colleague
+            Agent
           </DialogContentText>
           <Grid container spacing={2}>
             <Grid
@@ -108,34 +110,40 @@ function Summary({ organization, team, colleague }) {
                 <CardContent>
                   <Grid container alignItems="center" spacing={2}>
                     <Grid item xs={4}>
-                      <SourcedAvatar
-                        source={`https://cdn.nucleoid.com/greycollar/avatars/${colleague?.avatar?.replace(
-                          /:/g,
-                          ""
-                        )}.jpg`}
+                      <Box
                         sx={{
-                          display: "block",
-                          margin: "0 auto",
-                          width: { xs: 40, md: 104 },
-                          height: { xs: 40, md: 104 },
-                          border: `solid 2px ${(theme) =>
-                            theme.palette.common.white}`,
+                          mx: "auto",
+                          width: { xs: 32, md: 64 },
+                          height: { xs: 32, md: 64 },
+                          borderRadius: "50%",
+
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          overflow: "hidden",
                         }}
-                      />
+                      >
+                        <Iconify
+                          icon={cleanIconName(agent.icon)}
+                          width="70%"
+                          height="70%"
+                          style={{ objectFit: "contain" }}
+                        />
+                      </Box>
                     </Grid>
                     <Grid item xs={8}>
                       <Typography
                         variant="h6"
-                        data-cy="colleague-summary-name-area"
+                        data-cy="agent-summary-name-area"
                       >
-                        {colleague.name}
+                        {agent.name}
                       </Typography>
                       <>
                         <Typography variant="body2" color="text.secondary">
-                          Role: {colleague.role}
+                          Description: {agent.description}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                          Engine: {colleague.engineName}
+                          Engine: {agent.engineName}
                         </Typography>
                       </>
                     </Grid>

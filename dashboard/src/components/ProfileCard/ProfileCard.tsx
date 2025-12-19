@@ -4,9 +4,8 @@ import TabBar from "../Tabs/Tabs";
 
 function ProfileCard({
   name,
-  avatarUrl,
+  iconUrl,
   coverUrl,
-  role,
   currentTab,
   setCurrentTab,
   TABS,
@@ -16,9 +15,8 @@ function ProfileCard({
     <Card variant="profile-card" sx={{ position: "relative", height: 200 }}>
       <ProfileCover
         loading={loading}
-        role={role}
         name={name}
-        avatarUrl={avatarUrl}
+        iconUrl={iconUrl}
         coverUrl={coverUrl}
       />
 

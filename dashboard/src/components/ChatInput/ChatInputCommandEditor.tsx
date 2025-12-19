@@ -6,7 +6,7 @@ import { Iconify } from "@canmingir/link/platform/components";
 import MentionList from "./MentionList";
 import MentionText from "./MentiontText";
 import { isKeyHotkey } from "is-hotkey";
-import useColleagues from "../../hooks/useColleagues";
+import useAgents from "../../hooks/useAgents";
 import { useEvent } from "@nucleoidai/react-event";
 import { useLocation } from "react-router-dom";
 
@@ -68,7 +68,9 @@ const ChatInputCommandEditor = ({
   const [filteredCommands, setFilteredCommands] = useState([]);
   const [mentionOpen, setMentionOpen] = useState(true);
   const [showAlert, setShowAlert] = useState(false);
-  const { colleagues } = useColleagues();
+  const { getTeamAgents } = useAgents();
+
+  const { agents } = getTeamAgents();
 
   const [readOnly, setReadOnly] = useState(false);
 
@@ -358,7 +360,7 @@ const ChatInputCommandEditor = ({
         if (firstInput.type === "COLLEAGUE") {
           Transforms.insertNodes(editor, {
             type: "input",
-            options: colleagues,
+            options: agents,
             onSelect: (colleague) => {
               handleInputSubmit("COLLEAGUE", colleague);
               setCurrentInput(firstInput.next);
@@ -470,7 +472,7 @@ const ChatInputCommandEditor = ({
 
             {mentionOpen && (
               <MentionList
-                colleagues={colleagues}
+                agents={agents}
                 onSelect={handleMentionSelect}
                 editor={editor}
               />

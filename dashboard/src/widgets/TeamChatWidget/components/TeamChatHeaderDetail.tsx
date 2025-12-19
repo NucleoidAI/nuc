@@ -12,7 +12,7 @@ function TeamChatHeaderDetail({ title, mdDown }) {
       width="100%"
       data-cy="chat-header-detail"
     >
-      <Box display="flex" alignItems="center">
+      <Box display="flex" alignItems="center" justifyContent="center">
         <Typography variant="h6" component="div">
           {title}
         </Typography>

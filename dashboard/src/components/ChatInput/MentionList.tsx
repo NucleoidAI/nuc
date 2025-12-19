@@ -7,30 +7,30 @@ import { alpha } from "@mui/material";
 
 import React, { useEffect, useRef, useState } from "react";
 
-const MentionList = ({ colleagues, onSelect, editor }) => {
+const MentionList = ({ agents, onSelect, editor }) => {
   const listRef = useRef(null);
   const itemRefs = useRef([]);
   const [focusedIndex, setFocusedIndex] = useState(-1);
 
   useEffect(() => {
-    if (colleagues.length > 0 && itemRefs.current[0]) {
+    if (agents?.length > 0 && itemRefs.current[0]) {
       itemRefs.current[0].focus();
       setFocusedIndex(0);
     }
-  }, [colleagues]);
+  }, [agents]);
 
   const handleKeyDown = (event) => {
     let newIndex;
     switch (event.key) {
       case "ArrowDown":
-        newIndex = (focusedIndex + 1) % colleagues.length;
+        newIndex = (focusedIndex + 1) % agents?.length;
         setFocusedIndex(newIndex);
         if (itemRefs.current[newIndex]) {
           itemRefs.current[newIndex].focus();
         }
         break;
       case "ArrowUp":
-        newIndex = (focusedIndex - 1 + colleagues.length) % colleagues.length;
+        newIndex = (focusedIndex - 1 + agents?.length) % agents?.length;
         setFocusedIndex(newIndex);
         if (itemRefs.current[newIndex]) {
           itemRefs.current[newIndex].focus();
@@ -38,7 +38,7 @@ const MentionList = ({ colleagues, onSelect, editor }) => {
         break;
       case "Enter":
         event.preventDefault();
-        onSelect(colleagues[focusedIndex]);
+        onSelect(agents[focusedIndex]);
         break;
       default:
         ReactEditor.focus(editor);
@@ -47,12 +47,12 @@ const MentionList = ({ colleagues, onSelect, editor }) => {
   };
 
   useEffect(() => {
-    itemRefs.current = itemRefs.current.slice(0, colleagues.length);
-  }, [colleagues]);
+    itemRefs.current = itemRefs.current.slice(0, agents?.length);
+  }, [agents]);
 
   return (
     <List
-      data-cy="colleague-mention-dropdown"
+      data-cy="agent-mention-dropdown"
       disablePadding
       ref={listRef}
       tabIndex={-1}
@@ -69,10 +69,10 @@ const MentionList = ({ colleagues, onSelect, editor }) => {
         boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
       }}
     >
-      {colleagues.map((colleague, index) => (
+      {agents?.map((agent, index) => (
         <ListItem
-          data-cy={`command-item-${colleague.name.split("/")[1]}`}
-          key={colleague.name}
+          data-cy={`command-item-${agent.name.split("/")[1]}`}
+          key={agent.name}
           ref={(el) => (itemRefs.current[index] = el)}
           tabIndex={-1}
           sx={{
@@ -86,17 +86,17 @@ const MentionList = ({ colleagues, onSelect, editor }) => {
               color: "black",
             },
           }}
-          onClick={() => onSelect(colleague)}
+          onClick={() => onSelect(agent)}
         >
           <SourcedAvatar
-            name={colleague.name}
+            name={agent.name}
             source={"MINIMAL"}
-            avatarUrl={colleague.avatar}
+            iconUrl={agent.icon}
             sx={{ mr: 2 }}
           />
           <ListItemText
-            primary={colleague.name}
-            secondary={colleague.role}
+            primary={agent.name}
+            secondary={agent.role}
             primaryTypographyProps={{ fontWeight: "bold" }}
             secondaryTypographyProps={{
               fontSize: "14px",

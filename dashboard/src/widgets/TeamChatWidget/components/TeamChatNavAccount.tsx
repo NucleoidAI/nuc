@@ -11,11 +11,11 @@ function TeamChatNavAccount() {
         name={"Nucleous Nucleotide avatar"}
         sx={{ cursor: "pointer", width: 48, height: 48, ml: 2 }}
         source={"MINIMAL"}
-        avatarUrl={teamDetails.coachAvatar}
+        iconUrl={teamDetails?.coachAvatar}
       />
       <ListItemText
         sx={{ ml: 2 }}
-        primary={teamDetails.coach}
+        primary={teamDetails?.coach}
         primaryTypographyProps={{
           noWrap: true,
           variant: "subtitle2",

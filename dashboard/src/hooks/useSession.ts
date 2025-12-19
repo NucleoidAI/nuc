@@ -14,7 +14,7 @@ function useSession(colleagueId) {
 
   const { host, path } = config.socket;
 
-  const token = storage.get(config.name, "accessToken");
+  const token = storage.get("link", "accessToken");
 
   useEffect(
     () => {

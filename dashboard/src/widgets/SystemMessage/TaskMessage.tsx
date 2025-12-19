@@ -1,8 +1,7 @@
-import { Label } from "@canmingir/link/platform/components";
 import ReplyIcon from "@mui/icons-material/Reply";
-import SourcedAvatar from "../../components/SourcedAvatar/SourcedAvatar";
+import { cleanIconName } from "../../utils/cleanIconName";
 import { fDateTime } from "../../utils/formatTime";
-import useColleague from "../../hooks/useColleague";
+import useAgent from "../../hooks/useAgent";
 import { useEffect } from "react";
 import useTask from "../../hooks/useTask";
 import { useTheme } from "@mui/material/styles";
@@ -15,11 +14,14 @@ import {
   alpha,
   useMediaQuery,
 } from "@mui/material";
+import { Iconify, Label } from "@canmingir/link/platform/components";
 
 function TaskMessage({ id, handleClick, onDateFetched }) {
   const { task } = useTask(id);
 
-  const { colleague } = useColleague(task.colleagueId);
+  const { getAgent } = useAgent();
+
+  const { agent } = getAgent(task?.colleagueId);
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down(600));
@@ -78,22 +80,22 @@ function TaskMessage({ id, handleClick, onDateFetched }) {
             >
               <Chip
                 avatar={
-                  <SourcedAvatar
-                    name={colleague.name}
-                    source={"MINIMAL"}
-                    avatarUrl={colleague.avatar}
-                    sx={{ ml: 1, width: 18, height: 18 }}
+                  <Iconify
+                    icon={cleanIconName(agent?.icon)}
+                    width="40%"
+                    height="40%"
+                    style={{ objectFit: "contain", background: "none" }}
                   />
                 }
-                label={colleague.name}
+                label={agent?.name}
                 size="small"
                 color="primary"
                 variant="filled"
               />
               <Typography variant="body2" color="grey.500" sx={{ m: 1 }}>
-                {task.status === "DONE"
+                {task?.status === "DONE"
                   ? "finished"
-                  : task.status === "IN_PROGRESS"
+                  : task?.status === "IN_PROGRESS"
                   ? "is in progress with"
                   : ""}
               </Typography>
@@ -107,11 +109,13 @@ function TaskMessage({ id, handleClick, onDateFetched }) {
                   my: 0.2,
                 }}
               >
-                {task.description ? truncateContent(task.description) : "task"}
+                {task?.description
+                  ? truncateContent(task?.description)
+                  : "task"}
               </Label>
             </Stack>
           </Stack>
-          {task.status === "IN_PROGRESS" ? (
+          {task?.status === "IN_PROGRESS" ? (
             <IconButton
               onClick={() => handleClick(task)}
               data-cy="reply-button"
@@ -129,13 +133,13 @@ function TaskMessage({ id, handleClick, onDateFetched }) {
           }}
         >
           {(() => {
-            switch (task.status) {
+            switch (task?.status) {
               case "IN_PROGRESS":
                 return "In Progress";
               case "COMPLETED":
                 return "Completed";
               default:
-                return task.status;
+                return task?.status;
             }
           })()}
         </Typography>

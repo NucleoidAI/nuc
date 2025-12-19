@@ -19,7 +19,7 @@ export const TeamChartRenderer = (node) => {
         teamBackground: bg,
         teamOverlayColor: "rgba(0,0,0,0.3)",
         teamHeight: 160,
-        nodeSx: { minWidth: 300 },
+        nodeSx: { minWidth: 400, minHeight: 130 },
       };
 
     case "colleague":
@@ -29,7 +29,7 @@ export const TeamChartRenderer = (node) => {
         teamBackground: bg,
         teamOverlayColor: "rgba(0,0,0,0.45)",
         teamHeight: 140,
-        nodeSx: { maxWidth: 420 },
+        nodeSx: { minWidth: 400, minHeight: 130 },
       };
 
     case "responsibility":
@@ -40,6 +40,7 @@ export const TeamChartRenderer = (node) => {
         teamOverlayColor: "rgba(0,0,0,0.4)",
         teamHeight: 110,
         teamStripeWidth: 70,
+        nodeSx: { minWidth: 400, minHeight: 130 },
       };
 
     default:

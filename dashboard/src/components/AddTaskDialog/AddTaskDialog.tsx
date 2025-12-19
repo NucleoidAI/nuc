@@ -18,7 +18,7 @@ import {
 } from "@canmingir/link/platform/components";
 import React, { useEffect, useState } from "react";
 
-function AddTaskDialog({ open, setOpen, createTask, colleagueId }) {
+function AddTaskDialog({ open, setOpen, createTask, agentId }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [taskLoaded] = useEvent("TASK_LOADED", null);
 
@@ -46,7 +46,7 @@ function AddTaskDialog({ open, setOpen, createTask, colleagueId }) {
 
   const onSubmit = handleSubmit(async (data) => {
     setIsSubmitting(true);
-    await createTask(data.description, colleagueId);
+    await createTask(data.description, agentId);
   });
 
   useEffect(() => {

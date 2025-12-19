@@ -21,7 +21,7 @@ const IncomingDrawer = ({
   handleDrawerClose,
   selectedSkill,
   instructions,
-  colleague,
+  agent,
 }) => {
   const [open, setOpen] = React.useState(false);
 
@@ -112,7 +112,7 @@ const IncomingDrawer = ({
           <AddTaskDialog
             open={open}
             setOpen={setOpen}
-            colleagueId={colleague.id}
+            agentId={agent.id}
             createTask={() => {}}
           />
         </Box>

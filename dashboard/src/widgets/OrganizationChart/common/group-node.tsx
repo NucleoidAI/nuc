@@ -41,7 +41,7 @@ export default function GroupNode({ node, depth, length, sx }) {
       {!isLabel && (
         <Avatar
           alt={node.name}
-          src={node.avatarUrl || ""}
+          src={node.iconUrl || ""}
           sx={{
             mt: -3.5,
             zIndex: 9,

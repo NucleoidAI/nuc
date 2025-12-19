@@ -4,22 +4,16 @@ import DeleteConfirmation from "../../components/DeleteConfirmation/DeleteConfir
 import KnowledgeTable from "../../components/KnowledgeTable/KnowledgeTable";
 import { Theme } from "@mui/material/styles";
 import TypeToolbar from "../../components/TypeToolbar/TypeToolbar";
-import useColleague from "../../hooks/useColleagueV2";
+import useAgent from "../../hooks/useAgent";
 import useKnowledge from "../../hooks/useKnowledge";
-import useOrganizations from "../../hooks/useOrganziationsV2";
+import useOrganizations from "../../hooks/useOrganizations";
 import { useTable } from "@canmingir/link/platform/components";
-import useTeams from "../../hooks/useTeamsV2";
+import useTeams from "../../hooks/useTeams";
 
-import { Box, Container, Fab, Stack, useMediaQuery } from "@mui/material";
+import { Box, Fab, Stack, useMediaQuery } from "@mui/material";
 import { useEffect, useState } from "react";
 
-function Knowledge({
-  colleagueId,
-  teamId,
-}: {
-  colleagueId?: string;
-  teamId?: string;
-}) {
+function Knowledge({ agentId, teamId }: { agentId?: string; teamId?: string }) {
   const {
     getColleagueKnowledges,
     deleteKnowledge,
@@ -27,7 +21,7 @@ function Knowledge({
     getTeamKnowledges,
   } = useKnowledge();
 
-  const { knowledges } = getColleagueKnowledges(colleagueId);
+  const { knowledges } = getColleagueKnowledges(agentId);
   const { knowledges: teamKnowledges } = getTeamKnowledges(teamId);
 
   const { getTeamById } = useTeams();
@@ -39,8 +33,8 @@ function Knowledge({
   const { organizations: filteredOrganizations, loading: organizationLoading } =
     getOrganizations();
 
-  const { getColleagues } = useColleague();
-  const { colleagues } = getColleagues();
+  const { getAgents } = useAgent();
+  const { agents } = getAgents();
 
   const table = useTable();
 
@@ -67,10 +61,10 @@ function Knowledge({
 
   const filteredKnowledges =
     selectedType === "ALL"
-      ? colleagueId
+      ? agentId
         ? knowledges
         : teamKnowledges
-      : (colleagueId ? knowledges : teamKnowledges).filter(
+      : (agentId ? knowledges : teamKnowledges).filter(
           (knowledge) => knowledge && knowledge.type === selectedType
         );
 
@@ -103,77 +97,82 @@ function Knowledge({
   }, [selectedType]);
 
   return (
-    <>
-      <Container>
-        <TypeToolbar
-          types={ALL_KNOWLEDGE_TYPES}
-          selectedType={selectedType}
-          handleChange={handleChange}
-        />
+    <Box
+      sx={{
+        width: "100%",
+        px: 2,
+        pb: 2,
+        minHeight: "calc(100vh - 240px)",
+      }}
+    >
+      <TypeToolbar
+        types={ALL_KNOWLEDGE_TYPES}
+        selectedType={selectedType}
+        handleChange={handleChange}
+      />
 
-        <Box
+      <Box
+        sx={{
+          position: "relative",
+        }}
+      >
+        {filteredKnowledges?.length > 0 ? (
+          <KnowledgeTable
+            table={table}
+            selectedType={selectedType}
+            knowledges={filteredKnowledges}
+            handleDeleteClick={handleDeleteClick}
+          />
+        ) : (
+          <Stack sx={{ textAlign: "center", my: 4, color: "text.secondary" }}>
+            No data available for {selectedType} type
+          </Stack>
+        )}
+
+        <Stack
           sx={{
-            position: "relative",
+            position: lgScreen ? "absolute" : "fixed",
+            bottom: lgScreen ? -60 : 10,
+            right: lgScreen ? 0 : 5,
           }}
         >
-          {filteredKnowledges?.length > 0 ? (
-            <KnowledgeTable
-              table={table}
-              selectedType={selectedType}
-              knowledges={filteredKnowledges}
-              handleDeleteClick={handleDeleteClick}
-            />
-          ) : (
-            <Stack sx={{ textAlign: "center", my: 4, color: "text.secondary" }}>
-              No data available for {selectedType} type
-            </Stack>
-          )}
-
-          <Stack
-            sx={{
-              position: lgScreen ? "absolute" : "fixed",
-              bottom: lgScreen ? -60 : 10,
-              right: lgScreen ? 0 : 5,
+          <Fab
+            variant="button"
+            color="default"
+            size="medium"
+            sx={{ mt: 2, zIndex: 0 }}
+            data-cy="add-knowledge-button"
+            onClick={() => {
+              setOpen(true);
             }}
           >
-            <Fab
-              variant="button"
-              color="default"
-              size="medium"
-              sx={{ mt: 2, zIndex: 0 }}
-              data-cy="add-knowledge-button"
-              onClick={() => {
-                setOpen(true);
-              }}
-            >
-              <AddIcon />
-            </Fab>
-          </Stack>
-        </Box>
+            <AddIcon />
+          </Fab>
+        </Stack>
+      </Box>
 
-        <DeleteConfirmation
-          openDeleteDialog={openDeleteDialog}
-          setOpenDeleteDialog={setOpenDeleteDialog}
-          handleDelete={handleDelete}
-          selectedItem={selectedItem}
+      <DeleteConfirmation
+        openDeleteDialog={openDeleteDialog}
+        setOpenDeleteDialog={setOpenDeleteDialog}
+        handleDelete={handleDelete}
+        selectedItem={selectedItem}
+      />
+      {!organizationLoading ? (
+        <AddItemDialog
+          types={ADD_ITEM_TYPES}
+          selectedType={selectedType === "ALL" ? "URL" : selectedType}
+          setSelectedType={setSelectedType}
+          open={open}
+          setOpen={setOpen}
+          addItem={createKnowledge}
+          agentId={agentId}
+          teamId={teamId}
+          teamById={team}
+          agents={agents}
+          organizations={filteredOrganizations}
         />
-        {!organizationLoading ? (
-          <AddItemDialog
-            types={ADD_ITEM_TYPES}
-            selectedType={selectedType === "ALL" ? "URL" : selectedType}
-            setSelectedType={setSelectedType}
-            open={open}
-            setOpen={setOpen}
-            addItem={createKnowledge}
-            colleagueId={colleagueId}
-            teamId={teamId}
-            teamById={team}
-            colleagues={colleagues}
-            organizations={filteredOrganizations}
-          />
-        ) : null}
-      </Container>
-    </>
+      ) : null}
+    </Box>
   );
 }
 export default Knowledge;

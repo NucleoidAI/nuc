@@ -30,7 +30,7 @@ const SkillDialog = ({
   handleClose,
   skill,
   team,
-  colleagues,
+  agents,
   acquiredIntegrations,
   getTokens,
 }: {
@@ -61,7 +61,7 @@ const SkillDialog = ({
     };
   } | null;
   team?: { name: string; icon: string; id: string };
-  colleagues?: Array<{ id: string; name: string; avatar: string }>;
+  agents?: Array<{ id: string; name: string; icon: string }>;
 }) => {
   const matchingIntegration = acquiredIntegrations?.find(
     (integration) => integration.mcpId === skill?.id
@@ -88,11 +88,11 @@ const SkillDialog = ({
     if (team) {
       setSelectedOption(team.name);
       setSelectedOptionId(team.id);
-    } else if (colleagues && colleagues.length > 0) {
-      setSelectedOption(colleagues[0].name);
-      setSelectedOptionId(colleagues[0].id);
+    } else if (agents && agents.length > 0) {
+      setSelectedOption(agents[0].name);
+      setSelectedOptionId(agents[0].id);
     }
-  }, [team, colleagues]);
+  }, [team, agents]);
 
   const handleChange = (event) => {
     const selectedName = event.target.value;
@@ -100,11 +100,9 @@ const SkillDialog = ({
 
     if (team && selectedName === team.name) {
       setSelectedOptionId(team.id);
-    } else if (colleagues) {
-      const selectedColleague = colleagues.find(
-        (colleague) => colleague.name === selectedName
-      );
-      setSelectedOptionId(selectedColleague?.id || "");
+    } else if (agents) {
+      const selectedAgent = agents.find((agent) => agent.name === selectedName);
+      setSelectedOptionId(selectedAgent?.id || "");
     }
   };
 
@@ -196,16 +194,16 @@ const SkillDialog = ({
                   </MenuItem>
                 )}
 
-                {colleagues &&
-                  colleagues.map((colleague) => (
-                    <MenuItem key={colleague.id} value={colleague.name}>
+                {agents &&
+                  agents.map((agent) => (
+                    <MenuItem key={agent.id} value={agent.name}>
                       <Box sx={{ display: "flex", alignItems: "center" }}>
                         <SourcedAvatar
                           source={"MINIMAL"}
-                          avatarUrl={colleague.avatar}
-                          name={colleague.name}
+                          iconUrl={agent.icon}
+                          name={agent.name}
                         />
-                        <Box sx={{ ml: 1 }}>{colleague.name}</Box>
+                        <Box sx={{ ml: 1 }}>{agent.name}</Box>
                       </Box>
                     </MenuItem>
                   ))}

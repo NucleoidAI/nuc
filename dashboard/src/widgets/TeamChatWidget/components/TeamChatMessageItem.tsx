@@ -124,7 +124,7 @@ function TeamChatMessageItem({
         color: "text.disabled",
       }}
     >
-      {isAI ? teamDetails.coach : user?.name}
+      {isAI ? teamDetails?.coach : user?.name}
     </Typography>
   );
 
@@ -193,11 +193,11 @@ function TeamChatMessageItem({
             >
               <Stack direction="row" spacing={1} alignItems="center">
                 {!isAI ? (
-                  <Avatar src={user.avatarUrl} />
+                  <Avatar src={user?.avatarUrl} />
                 ) : (
                   <SourcedAvatar
                     source="MINIMAL"
-                    avatarUrl={teamDetails.coachAvatar}
+                    iconUrl={teamDetails?.coachAvatar}
                   />
                 )}
                 {renderSender}
@@ -284,11 +284,11 @@ function TeamChatMessageItem({
           >
             <Stack direction="row" spacing={1} alignItems="center">
               {!isAI ? (
-                <Avatar src={user.avatarUrl} />
+                <Avatar src={user?.avatarUrl} />
               ) : (
                 <SourcedAvatar
                   source="MINIMAL"
-                  avatarUrl={teamDetails.coachAvatar}
+                  iconUrl={teamDetails?.coachAvatar}
                 />
               )}
               {renderSender}

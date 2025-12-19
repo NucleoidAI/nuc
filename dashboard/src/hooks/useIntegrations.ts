@@ -1,81 +1,54 @@
 import http from "@canmingir/link/platform/http";
+import { publish } from "@nucleoidai/react-event";
 import useApi from "./useApi";
+import { useCallback } from "react";
 
-import { useCallback, useEffect, useState } from "react";
-
-function useIntegrations(colleagueId?: string) {
-  const [integrations, setIntegrations] = useState([
-    {
-      id: "",
-      provider: "",
-      icon: "",
-      scope: "",
-      description: "",
-      accessToken: "",
-      colleagueId: "",
-      teamId: "",
-      acquired: false,
-    },
-  ]);
-
-  const [colleagueIntegrations, setColleagueIntegrations] = useState([
-    {
-      id: "",
-      provider: "",
-      icon: "",
-      scope: "",
-      description: "",
-      direction: "",
-      accessToken: "",
-      colleagueId: "",
-      teamId: "",
-      acquired: false,
-    },
-  ]);
-
-  const { loading, error, handleResponse } = useApi();
-
-  useEffect(() => {
-    if (colleagueId) {
-      getColleagueIntegration(colleagueId);
-    }
-
-    getIntegrations();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+function useIntegrations() {
+  const { Api } = useApi();
 
   const getIntegrations = useCallback(() => {
-    handleResponse(
-      http.get(`/integrations`),
-      (response) => {
-        setIntegrations(response.data);
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
+    const { data, loading, error } = Api(() => http.get(`/integrations`), []);
+
+    if (data) {
+      publish("INTEGRATIONS_LOADED", {
+        integrations: data,
+      });
+    }
+
+    return {
+      integrations: data,
+      loading,
+      error,
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getColleagueIntegration = useCallback((colleagueId) => {
-    handleResponse(
-      http.get(`/integrations?colleagueId=${colleagueId}`),
-      (response) => {
-        setColleagueIntegrations(response.data);
-      },
-      (error) => {
-        console.error(error);
+  const getColleagueIntegration = useCallback(
+    (colleagueId: string) => {
+      const { data, loading, error } = Api(
+        () => http.get(`/integrations?colleagueId=${colleagueId}`),
+        [colleagueId]
+      );
+
+      if (data) {
+        publish("COLLEAGUE_INTEGRATIONS_LOADED", {
+          colleagueIntegrations: data,
+        });
       }
-    );
+
+      return {
+        colleagueIntegrations: data,
+        loading,
+        error,
+      };
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    []
+  );
 
   return {
-    loading,
-    error,
-    integrations,
-    colleagueIntegrations,
+    getIntegrations,
+    getColleagueIntegration,
   };
 }
 

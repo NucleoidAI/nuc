@@ -4,17 +4,18 @@ import StatusToolbar from "../../components/StatusToolbar/StatusToolbar";
 import TaskCard from "../../components/TaskCard/TaskCard";
 import useTasks from "../../hooks/useTasks";
 
-import { Box, Container, Fab, Stack } from "@mui/material";
+import { Box, Fab, Stack } from "@mui/material";
 import React, { useState } from "react";
 
-function TasksWidget({ colleagueId }) {
-  const { tasks, getSteps, steps, createTask } = useTasks(colleagueId);
+function TasksWidget({ agentId }) {
+  const { tasks, steps, getSteps, createTask } = useTasks(agentId);
+
   const [expandedTaskId, setExpandedTaskId] = useState(null);
 
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [open, setOpen] = useState(false);
 
-  const task = tasks.filter(
+  const task = tasks?.filter(
     (task) =>
       selectedStatus === "All" || (task && task.status === selectedStatus)
   );
@@ -29,17 +30,24 @@ function TasksWidget({ colleagueId }) {
   };
 
   return (
-    <Container>
+    <Box
+      sx={{
+        width: "100%",
+        px: 2,
+        pb: 2,
+        minHeight: "calc(100vh - 240px)",
+      }}
+    >
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         <StatusToolbar
           statuses={["All", "DONE", "IN_PROGRESS"]}
           handleChange={handleChange}
           selectedStatus={selectedStatus}
         />
-        {task.length > 0 ? (
+        {task?.length > 0 ? (
           task.map((t, i) => (
             <TaskCard
-              colleagueId={colleagueId}
+              agentId={agentId}
               task={t}
               key={i}
               getSteps={() => getSteps(t.id)}
@@ -67,7 +75,7 @@ function TasksWidget({ colleagueId }) {
             size="medium"
             sx={{
               mt: 2,
-              zIndex: 0,
+              zIndex: 1000,
             }}
             data-cy="add-task-button"
             onClick={() => {
@@ -83,10 +91,10 @@ function TasksWidget({ colleagueId }) {
           open={open}
           setOpen={setOpen}
           createTask={createTask}
-          colleagueId={colleagueId}
+          agentId={agentId}
         />
       </Box>
-    </Container>
+    </Box>
   );
 }
 

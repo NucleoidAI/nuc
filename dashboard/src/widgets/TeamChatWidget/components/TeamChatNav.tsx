@@ -1,7 +1,7 @@
+import AgentCard from "../../../components/AgentCard";
 import { AvatarGroup } from "@mui/material";
 import Box from "@mui/material/Box";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
-import ColleagueCard from "../../../components/ColleagueCard";
 import Dialog from "@mui/material/Dialog";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
@@ -23,7 +23,7 @@ import { useCallback, useEffect, useState } from "react";
 
 const NAV_COLLAPSE_WIDTH = 96;
 
-function TeamChatNav({ loading, colleagues, collapsed, setCollapsed }) {
+function TeamChatNav({ loading, agents, collapsed, setCollapsed }) {
   const theme = useTheme();
   const lgUp = useMediaQuery(theme.breakpoints.up("lg"));
   const mdDown = useMediaQuery(theme.breakpoints.down("md"));
@@ -78,7 +78,7 @@ function TeamChatNav({ loading, colleagues, collapsed, setCollapsed }) {
       }));
 
       if (inputValue) {
-        const results = colleagues.filter((colleague) =>
+        const results = agents?.filter((colleague) =>
           colleague.name.toLowerCase().includes(inputValue)
         );
 
@@ -88,7 +88,7 @@ function TeamChatNav({ loading, colleagues, collapsed, setCollapsed }) {
         }));
       }
     },
-    [colleagues]
+    [agents]
   );
 
   const handleClickAwaySearch = useCallback(() => {
@@ -116,7 +116,7 @@ function TeamChatNav({ loading, colleagues, collapsed, setCollapsed }) {
 
   const renderList = (
     <Stack flexDirection={collapsed && mdDown ? "row" : "column"}>
-      {colleagues.map((member) => (
+      {agents?.map((member) => (
         <TeamChatNavItem
           key={member.id}
           member={member}
@@ -128,14 +128,14 @@ function TeamChatNav({ loading, colleagues, collapsed, setCollapsed }) {
 
       {collapsed && mdDown && (
         <AvatarGroup max={4} sx={{ ml: 1 }}>
-          {colleagues.map((member) => {
+          {agents?.map((member) => {
             const { id, name, avatar } = member;
             return (
               <SourcedAvatar
                 key={id}
                 name={name}
                 source={"MINIMAL"}
-                avatarUrl={avatar}
+                iconUrl={avatar}
                 sx={{ width: 36, height: 36 }}
               />
             );
@@ -159,7 +159,7 @@ function TeamChatNav({ loading, colleagues, collapsed, setCollapsed }) {
         fullWidth
         value={searchContacts.query}
         onChange={(event) => handleSearchContacts(event.target.value)}
-        placeholder="Search Colleagues..."
+        placeholder="Search agents..."
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
@@ -268,8 +268,8 @@ function TeamChatNav({ loading, colleagues, collapsed, setCollapsed }) {
         open={colleagueCardDialogOpen}
         onClose={() => setColleagueCardDialogOpen(false)}
       >
-        <ColleagueCard
-          colleague={selectedMember}
+        <AgentCard
+          agent={selectedMember}
           onView={() => handleColleagueView(selectedMember)}
           onEdit={() => {}}
           onDelete={() => {}}

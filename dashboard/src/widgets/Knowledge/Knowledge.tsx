@@ -4,7 +4,7 @@ import DeleteConfirmation from "../../components/DeleteConfirmation/DeleteConfir
 import KnowledgeTable from "../../components/KnowledgeTable/KnowledgeTable";
 import { Theme } from "@mui/material/styles";
 import TypeToolbar from "../../components/TypeToolbar/TypeToolbar";
-import useAgent from "../../hooks/useAgentV2";
+import useAgent from "../../hooks/useAgent";
 import useKnowledge from "../../hooks/useKnowledge";
 import useOrganizations from "../../hooks/useOrganziationsV2";
 import { useTable } from "@canmingir/link/platform/components";

@@ -3,7 +3,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import EditIcon from "@mui/icons-material/Edit";
 import Stack from "@mui/material/Stack";
 import WidgetSummaryWidget from "../WidgetSummary/WidgetSummary";
-import useAgent from "../../hooks/useAgentV2";
+import useAgent from "../../hooks/useAgent";
 import useStatistics from "../../hooks/useStatistics";
 
 import {

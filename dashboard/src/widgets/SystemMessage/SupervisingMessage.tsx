@@ -11,7 +11,9 @@ import { Iconify, Label } from "@canmingir/link/platform/components";
 function SupervisingMessage({ id, handleClick, onDateFetched }) {
   const { supervising } = useSupervise(id);
 
-  const { agent } = useAgent(supervising.colleagueId);
+  const { getAgent } = useAgent();
+
+  const { agent } = getAgent(supervising.colleagueId);
 
   useEffect(() => {
     if (supervising) {
@@ -61,13 +63,13 @@ function SupervisingMessage({ id, handleClick, onDateFetched }) {
               <Chip
                 avatar={
                   <Iconify
-                    icon={cleanIconName(agent.icon)}
+                    icon={cleanIconName(agent?.icon)}
                     width="30%"
                     height="30%"
                     style={{ objectFit: "contain", background: "none" }}
                   />
                 }
-                label={agent.name}
+                label={agent?.name}
                 size="small"
                 color="primary"
                 variant="filled"

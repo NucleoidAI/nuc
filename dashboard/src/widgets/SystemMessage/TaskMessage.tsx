@@ -19,7 +19,9 @@ import { Iconify, Label } from "@canmingir/link/platform/components";
 function TaskMessage({ id, handleClick, onDateFetched }) {
   const { task } = useTask(id);
 
-  const { agent } = useAgent(task.colleagueId);
+  const { getAgent } = useAgent();
+
+  const { agent } = getAgent(task.colleagueId);
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down(600));
@@ -79,13 +81,13 @@ function TaskMessage({ id, handleClick, onDateFetched }) {
               <Chip
                 avatar={
                   <Iconify
-                    icon={cleanIconName(agent.icon)}
+                    icon={cleanIconName(agent?.icon)}
                     width="40%"
                     height="40%"
                     style={{ objectFit: "contain", background: "none" }}
                   />
                 }
-                label={agent.name}
+                label={agent?.name}
                 size="small"
                 color="primary"
                 variant="filled"

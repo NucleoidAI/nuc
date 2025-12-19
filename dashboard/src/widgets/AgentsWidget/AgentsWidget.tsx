@@ -25,7 +25,7 @@ function AgentsWidget({ teamId, colleagueId }) {
   const { deleteTeam } = useTeams();
   const { agents, loading, deleteAgent, createAgent } = useAgents();
 
-  const { updateAgent } = useAgent(colleagueId);
+  const { updateAgent } = useAgent();
 
   function deleteTeams() {
     //dispatch({ type: "TEAM_DELETE" });

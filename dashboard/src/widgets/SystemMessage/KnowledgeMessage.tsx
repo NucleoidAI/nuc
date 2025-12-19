@@ -13,7 +13,9 @@ function KnowledgeMessage({ id, handleClick, onDateFetched }) {
 
   const { knowledge, loading } = getKnowledge(id);
 
-  const { agent } = useAgent(loading ? null : knowledge.colleagueId);
+  const { getAgent } = useAgent();
+
+  const { agent } = getAgent(loading ? null : knowledge.colleagueId);
 
   useEffect(() => {
     if (knowledge) {
@@ -66,13 +68,13 @@ function KnowledgeMessage({ id, handleClick, onDateFetched }) {
             <Chip
               avatar={
                 <Iconify
-                  icon={cleanIconName(agent.icon)}
+                  icon={cleanIconName(agent?.icon)}
                   width="40%"
                   height="40%"
                   style={{ objectFit: "contain", background: "none" }}
                 />
               }
-              label={agent.name}
+              label={agent?.name}
               size="small"
               color="primary"
               variant="filled"

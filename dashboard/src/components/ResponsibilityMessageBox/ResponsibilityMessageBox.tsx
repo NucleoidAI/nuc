@@ -1,7 +1,7 @@
 import { Iconify } from "@canmingir/link/platform/components";
 import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
 import { findIntegrationById } from "../ChatInput/chat.config";
-import useAgent from "../../hooks/useAgentV2";
+import useAgent from "../../hooks/useAgent";
 
 import { Box, Card, CardContent, Typography, useTheme } from "@mui/material";
 import {

@@ -1,6 +1,6 @@
 import AgentLayout from "../layouts/AgentLayout";
 import Page from "../components/Page/Page";
-import useAgent from "../hooks/useAgentV2";
+import useAgent from "../hooks/useAgent";
 import { useParams } from "react-router-dom";
 
 function Agent() {

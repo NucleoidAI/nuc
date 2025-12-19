@@ -1,68 +1,84 @@
 import http from "@canmingir/link/platform/http";
-import { publish } from "@nucleoidai/react-event";
-import useApi from "./useApi";
+import useApi from "./useApiV2";
 
-import { useCallback, useEffect, useState } from "react";
+import { publish, useEvent } from "@nucleoidai/react-event";
 
-function useAgent(agentId) {
-  const [agent, setAgent] = useState({
-    name: "",
-    icon: "",
-    teamId: "",
-    AIEngine: "",
-  });
+export type Agent = {
+  id: string;
+  name: string;
+  icon: string;
+  teamId: string;
+  aiEngineId: string;
+  projectId?: string;
+  description?: string;
+};
 
-  const { loading, error, handleResponse } = useApi();
+type DependencyArray = object[];
 
-  // TODO - Research self-call events
+function useAgent() {
+  const { Api } = useApi();
 
-  useEffect(() => {
-    if (agentId) {
-      getAgent(agentId);
+  const [agentUpdated] = useEvent("AGENT_UPDATED", null);
+
+  const getAgent = (agentId: string, fetchState: DependencyArray = []) => {
+    const eventDependencies = [agentUpdated];
+
+    const { data, loading, error, fetch } = Api(
+      () => (agentId ? http.get(`/colleagues/${agentId}`) : null),
+      [agentId, ...eventDependencies, ...fetchState]
+    );
+
+    if (data) {
+      publish("AGENT_LOADED", { data });
     }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [agentId]);
+    return {
+      agent: data,
+      loading,
+      error,
+      fetch,
+    };
+  };
 
-  const getAgent = useCallback((agentId) => {
-    if (!agentId) {
-      return;
+  const getAgents = (fetchState: DependencyArray = []) => {
+    const eventDependencies = [agentUpdated];
+
+    const { data, loading, error, fetch } = Api(
+      () => http.get("/colleagues"),
+      [...eventDependencies, ...fetchState]
+    );
+
+    if (data) {
+      publish("AGENTS_LOADED", { agents: data });
     }
 
-    handleResponse(
-      http.get(`/colleagues/${agentId}`),
-      (response) => setAgent(response.data),
-      (error) => {
-        console.error(error);
-      }
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    return {
+      agents: data,
+      loading,
+      error,
+      fetch,
+    };
+  };
 
-  const updateAgent = useCallback((agent) => {
-    handleResponse(
-      http.put(`/colleagues/${agent.id}`, {
-        name: agent.name,
-        icon: agent.icon,
-        projectId: agent.projectId,
-        teamId: agent.teamId,
-        aiEngineId: agent.aiEngineId,
-        description: agent.description,
-      }),
-      () => {
-        publish("AGENT_UPDATED", { agentId: agent.id });
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const updateAgent = async (agent: Agent) => {
+    const response = await http.put(`/colleagues/${agent.id}`, {
+      name: agent.name,
+      icon: agent.icon,
+      projectId: agent.projectId,
+      teamId: agent.teamId,
+      aiEngineId: agent.aiEngineId,
+      description: agent.description,
+    });
+
+    if (response && response.data) {
+      publish("AGENT_UPDATED", { agentId: agent.id });
+    }
+
+    return response.data;
+  };
 
   return {
-    agent,
-    loading,
-    error,
+    getAgents,
     getAgent,
     updateAgent,
   };

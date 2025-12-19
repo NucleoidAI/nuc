@@ -5,7 +5,7 @@ import React from "react";
 import SkillDialog from "../../components/Skills/SkillDialog";
 import { getProviderLogo } from "../../utils/icon";
 import useAcquiredIntegrations from "../../hooks/useAcquiredIntegrations";
-import useAgent from "../../hooks/useAgentV2";
+import useAgent from "../../hooks/useAgent";
 
 import { Box, Grid } from "@mui/material";
 

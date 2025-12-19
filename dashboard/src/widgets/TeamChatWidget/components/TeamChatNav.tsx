@@ -159,7 +159,7 @@ function TeamChatNav({ loading, agents, collapsed, setCollapsed }) {
         fullWidth
         value={searchContacts.query}
         onChange={(event) => handleSearchContacts(event.target.value)}
-        placeholder="Search agents?..."
+        placeholder="Search agents..."
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">

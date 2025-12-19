@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import StatusToolbar from "../../components/StatusToolbar/StatusToolbar";
 import SupervisingCard from "../../components/SupervisingCard/SupervisingCard";
 import { useState } from "react";
-import useSupervisings from "../../hooks/useSupervisingsV2";
+import useSupervisings from "../../hooks/useSupervisings";
 
 import { Skeleton, Stack } from "@mui/material";
 

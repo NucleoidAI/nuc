@@ -68,7 +68,9 @@ const ChatInputCommandEditor = ({
   const [filteredCommands, setFilteredCommands] = useState([]);
   const [mentionOpen, setMentionOpen] = useState(true);
   const [showAlert, setShowAlert] = useState(false);
-  const { agents } = useAgents();
+  const { getTeamAgents } = useAgents();
+
+  const { agents } = getTeamAgents();
 
   const [readOnly, setReadOnly] = useState(false);
 

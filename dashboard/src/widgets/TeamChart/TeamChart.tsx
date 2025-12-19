@@ -6,7 +6,7 @@ import { TeamChartRenderer } from "./TeamChartRenderer";
 import { storage } from "@nucleoidjs/webstorage";
 import { teamChartPlugin } from "./TeamChartPlugin";
 import useAgents from "../../hooks/useAgents";
-import useOrganizations from "../../hooks/useOrganziationsV2";
+import useOrganizations from "../../hooks/useOrganizations";
 import useResponsibility from "../../hooks/useResponsibility";
 import useTeam from "../../hooks/useTeams";
 

@@ -6,7 +6,7 @@ import { Theme } from "@mui/material/styles";
 import TypeToolbar from "../../components/TypeToolbar/TypeToolbar";
 import useAgent from "../../hooks/useAgent";
 import useKnowledge from "../../hooks/useKnowledge";
-import useOrganizations from "../../hooks/useOrganziationsV2";
+import useOrganizations from "../../hooks/useOrganizations";
 import { useTable } from "@canmingir/link/platform/components";
 import useTeams from "../../hooks/useTeams";
 

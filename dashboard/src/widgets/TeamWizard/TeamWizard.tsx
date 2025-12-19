@@ -11,7 +11,7 @@ import { Summary } from "../../components/ItemSummary/TeamSummary";
 import { cleanIconName } from "../../utils/cleanIconName";
 import { storage } from "@nucleoidjs/webstorage";
 import useAgents from "../../hooks/useAgents";
-import useOrganizations from ".././../hooks/useOrganziationsV2";
+import useOrganizations from "../../hooks/useOrganizations";
 import useTeams from "../../hooks/useTeams";
 import { yupResolver } from "@hookform/resolvers/yup";
 

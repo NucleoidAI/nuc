@@ -1,57 +1,114 @@
 import http from "@canmingir/link/platform/http";
-import useApi from "./useApi";
-import { useEvent } from "@nucleoidai/react-event";
+import useApi from "./useApiV2";
 
-import { useCallback, useEffect, useState } from "react";
+import { publish, useEvent } from "@nucleoidai/react-event";
+
+export type Organization = {
+  id: string;
+  name: string;
+  description: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type OrganizationInput = {
+  name: string;
+  description?: string;
+};
+
+type DependencyArray = object[];
 
 function useOrganizations() {
-  const [organizations, setOrganizations] = useState<
-    {
-      id: string;
-      name: string;
-      description: string;
-      created_at: string;
-      updated_at: string;
-    }[]
-  >([
-    {
-      id: "",
-      name: "",
-      description: "",
-      created_at: "",
-      updated_at: "",
-    },
-  ]);
+  const { Api } = useApi();
 
-  const { loading, error, handleResponse } = useApi();
+  const [organizationCreated] = useEvent("ORGANIZATION_CREATED", null);
+  const [agentAdded] = useEvent("AGENT_ADDED", null);
 
-  const [teamSelected] = useEvent("TEAM_SELECTED", null);
-  const [organizationCreated] = useEvent("ORGANIZATION_CREATED", {
-    organization: null,
-  });
+  const getOrganizations = (fetchState: DependencyArray = []) => {
+    const eventDependencies = [organizationCreated];
 
-  useEffect(() => {
-    getOrganizations();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [teamSelected, organizationCreated]);
-
-  const getOrganizations = useCallback(() => {
-    handleResponse(
-      http.get(`/organizations`),
-      (response) => setOrganizations(response.data),
-      (error) => {
-        console.error(error);
-      }
+    const { data, loading, error, fetch } = Api(
+      () => http.get("/organizations"),
+      [...eventDependencies, ...fetchState]
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
+    if (data) {
+      publish("ORGANIZATIONS_LOADED", { organizations: data });
+    }
+
+    return {
+      organizations: data,
+      loading,
+      error,
+      fetch,
+    };
+  };
+
+  const getOrganizationById = (
+    id: string,
+    fetchState: DependencyArray = []
+  ) => {
+    const eventDependencies = [organizationCreated, agentAdded];
+
+    const { data, loading, error, fetch } = Api(
+      () => (id ? http.get(`/organizations/${id}`) : null),
+      [id, ...eventDependencies, ...fetchState]
+    );
+
+    if (data) {
+      publish("ORGANIZATION_LOADED", { data });
+    }
+
+    return {
+      organization: data,
+      loading,
+      error,
+      fetch,
+    };
+  };
+
+  const createOrganization = async (organization: OrganizationInput) => {
+    if (!organization) {
+      console.error("Cannot create organization: Missing organization input");
+      return null;
+    }
+
+    const response = await http.post("/organizations", {
+      name: organization.name,
+      description: organization.description,
+    });
+
+    if (response && response.data) {
+      publish("ORGANIZATION_CREATED", { organization: response.data });
+    }
+
+    return response.data;
+  };
+
+  const updateOrganization = async (organization: Organization) => {
+    if (!organization || !organization.id) {
+      console.error("Cannot update organization: Missing ID");
+      return null;
+    }
+
+    const response = await http.put(`/organizations/${organization.id}`, {
+      name: organization.name,
+      description: organization.description,
+    });
+
+    if (response && response.data) {
+      publish("ORGANIZATION_UPDATED", { organizationId: organization.id });
+    }
+
+    return response.data;
+  };
 
   return {
-    organizations,
-    loading,
-    error,
+    getOrganizations,
+    getOrganizationById,
+    createOrganization,
+    updateOrganization,
   };
 }
 
-export { useOrganizations };
+export default useOrganizations;

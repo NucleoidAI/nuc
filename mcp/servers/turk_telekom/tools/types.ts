@@ -29,9 +29,21 @@ export interface InventoryToolInput {
 }
 
 export interface ProductManagementSystemInput {
-  hiz_limiti: string;
+  speed: string;
 }
 
 export interface AddressToBBKInput {
-  acik_adres: string;
+  address: string;
+}
+
+export interface PortTahsisInput {
+  serial_number: string; // Device serial number
+}
+
+export interface PortBaglantiInput {
+  assignment_id: string; // Port assignment ID
+}
+
+export interface ConfigurationInput {
+  serial_number: string; // Device serial number
 }

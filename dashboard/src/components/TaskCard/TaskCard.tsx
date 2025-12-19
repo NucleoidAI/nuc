@@ -189,12 +189,21 @@ const TaskCard = ({
                 alignItems="center"
                 sx={{
                   color:
-                    task.status === "READ" ? "primary.main" : "success.main",
+                    task.status === "FAILED"
+                      ? "error.main"
+                      : task.status === "IN_PROGRESS"
+                      ? "primary.main"
+                      : "success.main",
                   typography: "caption",
                 }}
               >
                 <Iconify width={16} icon="solar:users-group-rounded-bold" />
-                Status: {task.status === "IN_PROGRESS" ? "In Progress" : "Done"}
+                Status:{" "}
+                {task.status === "IN_PROGRESS"
+                  ? "In Progress"
+                  : task.status === "FAILED"
+                  ? "Failed"
+                  : "Done"}
               </Stack>
             </Box>
 
@@ -311,6 +320,40 @@ const TaskCard = ({
                                   },
                                 },
                               }}
+                            />
+                          </Fab>
+                        ) : step.status === "FAILED" ? (
+                          <Fab
+                            sx={{
+                              bgcolor: "error.main",
+                              "&:hover": {
+                                bgcolor: "error.main",
+                              },
+                            }}
+                            size="small"
+                          >
+                            <Iconify
+                              color="white"
+                              width={24}
+                              height={24}
+                              icon="material-symbols:error-outline"
+                            />
+                          </Fab>
+                        ) : step.status === "WAITING_FOR_USER" ? (
+                          <Fab
+                            sx={{
+                              bgcolor: "warning.main",
+                              "&:hover": {
+                                bgcolor: "warning.main",
+                              },
+                            }}
+                            size="small"
+                          >
+                            <Iconify
+                              color="white"
+                              width={24}
+                              height={24}
+                              icon="material-symbols:schedule"
                             />
                           </Fab>
                         ) : (

@@ -13,22 +13,20 @@ export const productManagementSystemTool: Tool<ProductManagementSystemInput> = {
   inputSchema: {
     type: "object",
     properties: {
-      hiz_limiti: {
+      spped: {
         type: "string",
         description:
           "The speed limit to look up the product for (e.g., '1gbps', '100mbps', '50mbps').",
       },
     },
-    required: ["hiz_limiti"],
+    required: ["speed"],
   },
   handler: async (args: ProductManagementSystemInput) => {
     try {
       const mockDataPath = path.join(__dirname, "..", "mock", "products.json");
       const data = JSON.parse(fs.readFileSync(mockDataPath, "utf-8"));
 
-      const product = data.find(
-        (item: any) => item.hiz_limit === args.hiz_limiti
-      );
+      const product = data.find((item: any) => item.speed === args.speed);
 
       if (!product) {
         return {
@@ -36,7 +34,7 @@ export const productManagementSystemTool: Tool<ProductManagementSystemInput> = {
             {
               type: "text",
               text: JSON.stringify({
-                error: `Product not found for speed limit: ${args.hiz_limiti}`,
+                error: `Product not found for speed limit: ${args.speed}`,
               }),
             },
           ],

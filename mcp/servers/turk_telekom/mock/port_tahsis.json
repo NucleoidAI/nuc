@@ -1,0 +1,32 @@
+[
+  {
+    "serial_number": "123",
+    "assignment_id": "TH001",
+    "bbk_no": "987",
+    "customer_no": "M12345",
+    "port_no": "1/1/1",
+    "status": "Assigned",
+    "assignment_date": "2025-12-15T10:30:00Z",
+    "speed": "1gbps"
+  },
+  {
+    "serial_number": "456",
+    "assignment_id": "TH002",
+    "bbk_no": "988",
+    "customer_no": "M12346",
+    "port_no": "2/3/1",
+    "status": "Assigned",
+    "assignment_date": "2025-12-16T14:20:00Z",
+    "speed": "100mbps"
+  },
+  {
+    "serial_number": "789",
+    "assignment_id": "TH003",
+    "bbk_no": "989",
+    "customer_no": "M12347",
+    "port_no": "3/5/1",
+    "status": "Pending",
+    "assignment_date": "2025-12-17T09:15:00Z",
+    "speed": "50mbps"
+  }
+]

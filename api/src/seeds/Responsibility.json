@@ -4,7 +4,8 @@
     {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
-      "description": "Get address from user and set up the subscription.",
+      "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+      "pseudo": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    CreateOrder(selectedProduct, User.Address)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -71,6 +72,17 @@
             "label": "User selected product",
             "icon": "mdi:user"
           },
+          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:port_tahsis",
+            "label": "Assign Port",
+            "icon": "mdi:link"
+          },
           "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
@@ -78,9 +90,32 @@
           "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:create_order",
-            "label": "Create Order",
-            "icon": "mdi:cart-plus"
+            "action": "TURK_TELEKOM:configuration",
+            "label": "Configure Port",
+            "icon": "mdi:settings"
+          },
+          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b32f6-5878-73fb-8411-55916778d9a4",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:port_baglanti",
+            "label": "Connect Port",
+            "icon": "mdi:check"
+          },
+          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+
+        {
+          "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "label": "Complete",
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"

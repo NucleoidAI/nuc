@@ -1,21 +1,21 @@
 [
   {
-    "hiz_limit": "1gbps",
+    "speed": "1gbps",
     "urun_kodu": "1000_mbps_12",
     "urun_aciklamasi": "1000 Mbps İnternet 12 Ay Limitsiz"
   },
   {
-    "hiz_limit": "100mbps",
+    "speed": "100mbps",
     "urun_kodu": "100_mbps_12",
     "urun_aciklamasi": "100 Mbps İnternet 12 Ay Limitsiz"
   },
   {
-    "hiz_limit": "50mbps",
+    "speed": "50mbps",
     "urun_kodu": "50_mbps_12",
     "urun_aciklamasi": "50 Mbps İnternet 12 Ay Limitsiz"
   },
   {
-    "hiz_limit": "25mbps",
+    "speed": "25mbps",
     "urun_kodu": "25_mbps_12",
     "urun_aciklamasi": "25 Mbps İnternet 12 Ay Limitsiz"
   }

@@ -1,0 +1,170 @@
+[
+  {
+    "history": [
+      {
+        "role": "user",
+        "content": "I want to order a new product"
+      },
+      {
+        "role": "assistant",
+        "content": "Please wait while I am working on your request."
+      }
+    ],
+    "content": "I want the blue laptop",
+    "is_useful_for_session": true
+  },
+  {
+    "history": [
+      {
+        "role": "user",
+        "content": "Update my shipping address"
+      },
+      {
+        "role": "assistant",
+        "content": "Please wait while I am working on your request."
+      }
+    ],
+    "content": "123 Main Street, New York, NY 10001",
+    "is_useful_for_session": true
+  },
+  {
+    "history": [
+      {
+        "role": "user",
+        "content": "Check product availability"
+      },
+      {
+        "role": "assistant",
+        "content": "Please wait while I am working on your request."
+      }
+    ],
+    "content": "Product SKU: XYZ-123",
+    "is_useful_for_session": true
+  },
+  {
+    "history": [
+      {
+        "role": "user",
+        "content": "I need to return a product"
+      },
+      {
+        "role": "assistant",
+        "content": "Please wait while I am working on your request."
+      }
+    ],
+    "content": "Order number ORD-456, the red shoes size 10",
+    "is_useful_for_session": true
+  },
+  {
+    "history": [
+      {
+        "role": "user",
+        "content": "Schedule a meeting"
+      },
+      {
+        "role": "assistant",
+        "content": "Please wait while I am working on your request."
+      }
+    ],
+    "content": "Tomorrow at 3 PM works for me",
+    "is_useful_for_session": true
+  },
+  {
+    "history": [
+      {
+        "role": "user",
+        "content": "Create a new account"
+      },
+      {
+        "role": "assistant",
+        "content": "Please wait while I am working on your request."
+      }
+    ],
+    "content": "My email is john@example.com and phone is 555-1234",
+    "is_useful_for_session": true
+  },
+  {
+    "history": [
+      {
+        "role": "user",
+        "content": "Process my payment"
+      },
+      {
+        "role": "assistant",
+        "content": "Please wait while I am working on your request."
+      }
+    ],
+    "content": "Use my credit card ending in 4567",
+    "is_useful_for_session": true
+  },
+  {
+    "history": [
+      {
+        "role": "user",
+        "content": "Check product availability"
+      },
+      {
+        "role": "assistant",
+        "content": "Please wait while I am working on your request."
+      }
+    ],
+    "content": "What's the weather today?",
+    "is_useful_for_session": false
+  },
+  {
+    "history": [
+      {
+        "role": "user",
+        "content": "I want to order a product"
+      },
+      {
+        "role": "assistant",
+        "content": "Please wait while I am working on your request."
+      }
+    ],
+    "content": "Never mind, show me my order history instead",
+    "is_useful_for_session": false
+  },
+  {
+    "history": [
+      {
+        "role": "user",
+        "content": "Update my profile"
+      },
+      {
+        "role": "assistant",
+        "content": "Please wait while I am working on your request."
+      }
+    ],
+    "content": "Can you help me with something else?",
+    "is_useful_for_session": false
+  },
+  {
+    "history": [
+      {
+        "role": "user",
+        "content": "Schedule delivery"
+      },
+      {
+        "role": "assistant",
+        "content": "Please wait while I am working on your request."
+      }
+    ],
+    "content": "Actually, I want to cancel my order",
+    "is_useful_for_session": false
+  },
+  {
+    "history": [
+      {
+        "role": "user",
+        "content": "Check my account balance"
+      },
+      {
+        "role": "assistant",
+        "content": "Please wait while I am working on your request."
+      }
+    ],
+    "content": "How do I reset my password?",
+    "is_useful_for_session": false
+  }
+]

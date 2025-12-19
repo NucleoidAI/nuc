@@ -31,10 +31,16 @@ export const taskChartPlugin = {
         bg = "info.light";
       }
       shadowLevel = shadowLevel ?? 2;
-    } else if (status === "BLOCKED") {
+    } else if (status === "FAILED" || status === "BLOCKED") {
       borderColor = borderColor || "error.light";
       if (!styleTokens.bg) {
         bg = "error.light";
+      }
+      shadowLevel = shadowLevel ?? 2;
+    } else if (status === "WAITING_FOR_USER") {
+      borderColor = borderColor || "warning.light";
+      if (!styleTokens.bg) {
+        bg = "warning.light";
       }
       shadowLevel = shadowLevel ?? 2;
     }

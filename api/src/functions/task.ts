@@ -7,16 +7,19 @@ async function create({
   colleagueId,
   description,
   responsibilityId,
+  sessionId,
 }: {
   colleagueId: string;
   description: string;
   responsibilityId?: string;
+  sessionId?: string;
 }) {
   const task = await Task.create({
     colleagueId,
     description,
     status: "IN_PROGRESS",
     responsibilityId,
+    sessionId,
   });
 
   await event.publish("TASK_CREATED", {
@@ -24,6 +27,7 @@ async function create({
     colleagueId,
     description,
     responsibilityId,
+    sessionId,
   });
 
   return task;
@@ -65,14 +69,19 @@ async function list({
   teamId,
   colleagueId,
   status,
+  sessionId,
+  includeSteps,
 }: {
   teamId: string;
   colleagueId?: string;
   status?: "IN_PROGRESS" | "COMPLETED" | "FAILED";
+  sessionId?: string;
+  includeSteps?: boolean;
 }) {
   const where: {
     colleagueId?: string;
     status?: "IN_PROGRESS" | "COMPLETED" | "FAILED";
+    sessionId?: string;
   } = {};
 
   if (colleagueId) {
@@ -83,15 +92,25 @@ async function list({
     where.status = status;
   }
 
+  if (sessionId) {
+    where.sessionId = sessionId;
+  }
+
   const taskInstances = await Task.findAll({
-    include: [
-      {
-        model: Colleague,
-        attributes: [],
-        where: { teamId },
-        required: true,
-      },
-    ],
+    include: includeSteps
+      ? [
+          {
+            model: Colleague,
+            attributes: [],
+            where: { teamId },
+            required: true,
+          },
+          {
+            model: Step,
+            as: "steps",
+          },
+        ]
+      : [],
     where,
   });
 
@@ -139,7 +158,12 @@ async function updateStep({
 }: {
   stepId: string;
   result: string;
-  status: "IN_PROGRESS" | "SUPERVISED_NEEDED" | "COMPLETED" | "FAILED";
+  status:
+    | "IN_PROGRESS"
+    | "SUPERVISED_NEEDED"
+    | "COMPLETED"
+    | "FAILED"
+    | "WAITING_FOR_USER";
 }) {
   const { taskId, action, parameters } = await Step.findOne({
     where: { id: stepId },

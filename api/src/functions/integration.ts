@@ -99,17 +99,19 @@ async function create({
   });
 }
 
-async function list() {
+function list() {
   if (!Integrations || Integrations.length === 0) {
     throw new NotFoundError();
   }
 
-  return Integrations.map((provider) => ({
+  const integrations = Integrations.map((provider) => ({
     id: provider.id,
     provider: provider.provider,
     description: provider.description,
     action: provider.action,
     direction: provider.direction,
+    lib: provider.lib,
+    inputSchema: provider.inputSchema,
     oauth: provider.oauth
       ? {
           scope: provider.oauth.scope,
@@ -121,6 +123,14 @@ async function list() {
         }
       : null,
   }));
+
+  return {
+    role: "system",
+    content: { integrations },
+  } as {
+    role: "user" | "system" | "assistant";
+    content: object;
+  };
 }
 
 async function get({ integrationId }: { integrationId: string }) {

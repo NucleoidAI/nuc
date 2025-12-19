@@ -231,13 +231,13 @@ const Integrations = [
     inputSchema: {
       type: "object",
       properties: {
-        acik_adres: {
+        address: {
           type: "string",
           description:
             "The address to look up the BBK number for. Can be a partial address.",
         },
       },
-      required: ["acik_adres"],
+      required: ["address"],
     },
   },
   {
@@ -269,13 +269,67 @@ const Integrations = [
     inputSchema: {
       type: "object",
       properties: {
-        hiz_limiti: {
+        speed: {
           type: "string",
           description:
             "The speed limit to look up the product for (e.g., '1gbps', '100mbps', '50mbps').",
         },
       },
       required: ["hiz_limiti"],
+    },
+  },
+  {
+    id: "a1h7g2f3-8g9e-7f6h-3i2j-1e0f9g8h7i6d",
+    action: "TURK_TELEKOM:port_tahsis",
+    provider: "TURK_TELEKOM",
+    description: "Assign a port to a customer using device serial number",
+    direction: "OUTGOING",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        serial_number: {
+          type: "string",
+          description: "The device serial number to assign a port for.",
+        },
+      },
+      required: ["serial_number"],
+    },
+  },
+  {
+    id: "b2i8h3g4-9h0f-8g7i-4j3k-2f1g0h9i8j7e",
+    action: "TURK_TELEKOM:port_baglanti",
+    provider: "TURK_TELEKOM",
+    description: "Connect/activate a port using port assignment ID",
+    direction: "OUTGOING",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        assignment_id: {
+          type: "string",
+          description: "The port assignment ID to connect/activate.",
+        },
+      },
+      required: ["assignment_id"],
+    },
+  },
+  {
+    id: "c3j9i4h5-0i1g-9h8j-5k4l-3g2h1i0j9k8f",
+    action: "TURK_TELEKOM:configuration",
+    provider: "TURK_TELEKOM",
+    description: "Configure port settings using device serial number",
+    direction: "OUTGOING",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        serial_number: {
+          type: "string",
+          description: "The device serial number to configure.",
+        },
+      },
+      required: ["serial_number"],
     },
   },
 ];

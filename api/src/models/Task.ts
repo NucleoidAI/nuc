@@ -51,6 +51,10 @@ class Task extends Model {
   @Column(DataType.UUID)
   declare responsibilityId: string | null;
 
+  @AllowNull(true)
+  @Column(DataType.UUID)
+  declare sessionId: string | null;
+
   declare colleague?: any;
 
   declare responsibility?: any;

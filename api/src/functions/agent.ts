@@ -10,6 +10,7 @@ import responsibilityFn from "../functions/responsibility";
 import session from "./session";
 import supervising from "./supervising";
 import taskFn from "./task";
+import integrationsFn from "./integration";
 
 async function messages({ teamId }: { teamId: string }) {
   const messageInstances = await messagesFunc.listMessages({ teamId });
@@ -70,6 +71,19 @@ async function knowledge({
     role: "system",
     content: {
       knowledge_base,
+    },
+  } as {
+    role: "user" | "system" | "assistant";
+    content: object;
+  };
+}
+
+async function steps({ taskId }) {
+  const steps = await taskFn.listSteps({ taskId });
+  return {
+    role: "system",
+    content: {
+      steps,
     },
   } as {
     role: "user" | "system" | "assistant";
@@ -147,7 +161,7 @@ async function teamChat({
 }
 
 async function task({ taskId }: { taskId: string }) {
-  const { colleagueId, description } = await taskFn.get({ taskId });
+  const { colleagueId, description, sessionId } = await taskFn.get({ taskId });
   const currentTask = {
     description,
     steps: await taskFn.listSteps({ taskId }),
@@ -167,9 +181,11 @@ async function task({ taskId }: { taskId: string }) {
         info({ colleagueId }),
         knowledge({ colleagueId, taskId }),
         responsibilities({ colleagueId }),
+        steps({ taskId }),
       ])
     ).flat(),
     actions.list(),
+    integrationsFn.list(),
   ];
 
   const {
@@ -196,6 +212,14 @@ async function task({ taskId }: { taskId: string }) {
       result,
       comment,
       status: "COMPLETED",
+    });
+  } else if (action === "PLATFORM:get_human_answser") {
+    parameters.sessionId = sessionId;
+    return await taskFn.addStep({
+      taskId,
+      action,
+      parameters,
+      comment,
     });
   }
 
@@ -224,8 +248,8 @@ async function step({
     actionType = "MCP";
   } else if (action === "SUPERVISED") {
     actionType = "SUPERVISED";
-  } else if (action === "HUMAN_IN_THE_LOOP") {
-    actionType = "HUMAN_IN_THE_LOOP";
+  } else if (action === "PLATFORM:get_human_answser") {
+    actionType = "INTERACTION";
   } else {
     actionType = "ACTION";
   }
@@ -248,9 +272,15 @@ async function step({
       const tool = action.split(":")[1];
 
       mcpClient = await mcp.connect({ name: provider, tool });
+    } else if (actionType === "INTERACTION") {
+      actionFn = require("../actions/interaction").default;
     }
 
-    if (actionType === "ACTION" || actionType === "SUPERVISED") {
+    if (
+      actionType === "ACTION" ||
+      actionType === "SUPERVISED" ||
+      actionType === "INTERACTION"
+    ) {
       const { taskId } = await taskFn.getStep({ stepId });
       const steps = await taskFn.listSteps({ taskId });
 
@@ -275,11 +305,19 @@ async function step({
       resultString = result;
     }
 
-    await taskFn.updateStep({
-      stepId,
-      result: resultString,
-      status: "COMPLETED",
-    });
+    if (actionType === "INTERACTION") {
+      await taskFn.updateStep({
+        stepId,
+        result: resultString,
+        status: "WAITING_FOR_USER",
+      });
+    } else {
+      await taskFn.updateStep({
+        stepId,
+        result: resultString,
+        status: "COMPLETED",
+      });
+    }
   } catch (err: unknown) {
     if (err instanceof Error) {
       await taskFn.updateStep({
@@ -443,12 +481,66 @@ async function chat({
   const conversationsData = await conversations({ sessionId });
   const responsibilitiesData = await responsibilityFn.list({ colleagueId });
 
+  const colleagueData = await colleague.get({ colleagueId });
+
+  if (!colleagueData) {
+    throw new Error("Colleague not found");
+  }
+
+  const task = await taskFn.list({
+    teamId: colleagueData.teamId,
+    colleagueId,
+    status: "IN_PROGRESS",
+    sessionId,
+    includeSteps: true,
+  });
+
+  const waitingTask = task.find((task) =>
+    task.steps.some((step) => step.status === "WAITING_FOR_USER")
+  );
+
+  if (waitingTask) {
+    const waitingStep = waitingTask.steps.find(
+      (step) => step.status === "WAITING_FOR_USER"
+    );
+    if (!waitingStep) {
+      return;
+    }
+
+    const { is_useful_for_session } = await generate({
+      dataset: dataset.train.humanInLoop,
+      context: conversationsData,
+      content,
+      json_format: "{ is_useful_for_session: <true|false> }",
+    });
+
+    if (is_useful_for_session) {
+      await taskFn.updateStep({
+        stepId: waitingStep.id,
+        result: content,
+        status: "COMPLETED",
+      });
+
+      await session.addConversation({
+        sessionId,
+        colleagueId,
+        role: "USER",
+        content,
+      });
+
+      return;
+    }
+  }
+
   const responsibilityDecision = await responsibilityDiamond({
     content: content,
     responsibilities: responsibilitiesData,
   });
 
-  if (responsibilityDecision.decision === "RESPONSIBILITY") {
+  if (
+    responsibilityDecision.decision === "RESPONSIBILITY" &&
+    task.length === 0
+  ) {
     const responsibilityData = await responsibilityFn.get({
       responsibilityId: responsibilityDecision.responsibilityId,
     });
@@ -462,8 +554,9 @@ async function chat({
 
     await taskFn.create({
       colleagueId,
-      description: responsibilityToTaskResponse.task,
+      description: responsibilityToTaskResponse.task.description,
       responsibilityId: responsibilityDecision.responsibilityId,
+      sessionId,
     });
 
     await session.addConversation({

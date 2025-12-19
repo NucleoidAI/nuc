@@ -51,7 +51,7 @@
   },
   {
     "action": "PLATFORM:get_human_answser",
-    "lib": "human_in_the_loop",
+    "lib": "interaction",
     "inputSchema": {
       "type": "object",
       "properties": {

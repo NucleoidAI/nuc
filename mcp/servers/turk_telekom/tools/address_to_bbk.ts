@@ -9,16 +9,17 @@ const __dirname = path.dirname(__filename);
 export const addressToBBKTool: Tool<AddressToBBKInput> = {
   name: "TURK_TELEKOM:get_bbk_by_address",
   description:
-    "Get BBK number by address (acik_adres). Returns the BBK number associated with the given address. Supports partial address matching.",
+    "Get BBK number by address (address). Returns the BBK number associated with the given address. Supports partial address matching.",
   inputSchema: {
     type: "object",
     properties: {
-      acik_adres: {
+      address: {
         type: "string",
-        description: "The address to look up the BBK number for. Can be a partial address.",
+        description:
+          "The address to look up the BBK number for. Can be a partial address.",
       },
     },
-    required: ["acik_adres"],
+    required: ["address"],
   },
   handler: async (args: AddressToBBKInput) => {
     try {
@@ -26,15 +27,13 @@ export const addressToBBKTool: Tool<AddressToBBKInput> = {
       const data = JSON.parse(fs.readFileSync(mockDataPath, "utf-8"));
 
       // Try exact match first
-      let result = data.find(
-        (item: any) => item.acik_adres === args.acik_adres
-      );
+      let result = data.find((item: any) => item.address === args.address);
 
       // If no exact match, try partial match (case-insensitive)
       if (!result) {
-        const searchTerm = args.acik_adres.toLowerCase();
+        const searchTerm = args.address?.toLowerCase();
         result = data.find((item: any) =>
-          item.acik_adres.toLowerCase().includes(searchTerm)
+          item.address?.toLowerCase().includes(searchTerm)
         );
       }
 
@@ -44,7 +43,7 @@ export const addressToBBKTool: Tool<AddressToBBKInput> = {
             {
               type: "text",
               text: JSON.stringify({
-                error: `BBK number not found for address: ${args.acik_adres}`,
+                error: `BBK number not found for address: ${args.address}`,
               }),
             },
           ],

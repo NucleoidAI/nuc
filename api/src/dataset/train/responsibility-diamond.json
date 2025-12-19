@@ -68,5 +68,120 @@
       ]
     },
     "existing": false
+  },
+  {
+    "content": "I want to get internet subscription for my home.",
+    "decision": "RESPONSIBILITY",
+    "responsibility": {
+      "id": "ca7g8022-f343-570e-a171-3992963g7f70",
+      "title": "Basic Internet Subscription Setup",
+      "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+      "pseudo": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "nodes": [
+        {
+          "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:get_bbk_by_address",
+            "label": "Get BBK No by Address",
+            "icon": "mdi:map-marker"
+          },
+          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:get_inventory",
+            "label": "Get Inventory",
+            "icon": "mdi:server"
+          },
+          "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b209c-2e5a-777f-a04a-11960363fb25",
+          "type": "CONDITION",
+          "properties": {
+            "action": "PLATFORM:decision",
+            "label": "Check if product is available",
+            "icon": "mdi:decision"
+          },
+          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+          "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:get_product_by_speed",
+            "label": "Get Product by Speed",
+            "icon": "mdi:speedometer"
+          },
+          "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b0270-c493-7072-9d50-87952c5dc547",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:get_human_answser",
+            "label": "User selected product",
+            "icon": "mdi:user"
+          },
+          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:port_tahsis",
+            "label": "Assign Port",
+            "icon": "mdi:link"
+          },
+          "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:configuration",
+            "label": "Configure Port",
+            "icon": "mdi:settings"
+          },
+          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b32f6-5878-73fb-8411-55916778d9a4",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:port_baglanti",
+            "label": "Connect Port",
+            "icon": "mdi:check"
+          },
+          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+
+        {
+          "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "label": "Complete",
+            "icon": "mdi:check"
+          },
+          "next": null,
+          "createdAt": "2025-06-19T06:02:00Z"
+        }
+      ]
+    },
+    "existing": false
   }
 ]

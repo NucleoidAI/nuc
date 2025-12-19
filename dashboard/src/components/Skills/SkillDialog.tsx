@@ -197,15 +197,15 @@ const SkillDialog = ({
                 )}
 
                 {agents &&
-                  agents.map((colleague) => (
-                    <MenuItem key={colleague.id} value={colleague.name}>
+                  agents.map((agent) => (
+                    <MenuItem key={agent.id} value={agent.name}>
                       <Box sx={{ display: "flex", alignItems: "center" }}>
                         <SourcedAvatar
                           source={"MINIMAL"}
-                          iconUrl={colleague.icon}
-                          name={colleague.name}
+                          iconUrl={agent.icon}
+                          name={agent.name}
                         />
-                        <Box sx={{ ml: 1 }}>{colleague.name}</Box>
+                        <Box sx={{ ml: 1 }}>{agent.name}</Box>
                       </Box>
                     </MenuItem>
                   ))}

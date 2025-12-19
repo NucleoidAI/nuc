@@ -38,8 +38,6 @@ function TeamChart() {
     (org) => org.colleagues && org.colleagues.length > 0 && org.id === projectId
   );
 
-  console.log("filteredOrganizations", filteredOrganizations);
-
   const teamTree = useMemo(
     () => toTeamTree(filteredOrganizations, allResponsibilitiesRaw || []),
     [filteredOrganizations, allResponsibilitiesRaw]

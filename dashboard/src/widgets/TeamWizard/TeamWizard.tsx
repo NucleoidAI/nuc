@@ -226,7 +226,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
   const steps = [
     "Organization",
     "Team",
-    "AI agent",
+    "AI Agent",
     "Avatar",
     "Description",
     "Engine",

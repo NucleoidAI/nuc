@@ -102,7 +102,7 @@ const SkillDialog = ({
       setSelectedOptionId(team.id);
     } else if (agents) {
       const selectedAgent = agents.find(
-        (colleague) => colleague.name === selectedName
+        (agent) => agent.name === selectedName
       );
       setSelectedOptionId(selectedAgent?.id || "");
     }

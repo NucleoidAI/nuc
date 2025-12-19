@@ -566,6 +566,9 @@ async function chat({
       content: responsibilityToTaskResponse.answer,
     });
   } else {
+    if (task.length > 0) {
+      return;
+    }
     const context = [
       ...(
         await Promise.all([

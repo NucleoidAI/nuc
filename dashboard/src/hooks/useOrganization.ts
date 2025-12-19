@@ -2,52 +2,53 @@ import http from "@canmingir/link/platform/http";
 import useApi from "./useApi";
 
 import { publish, useEvent } from "@nucleoidai/react-event";
-import { useCallback, useEffect, useState } from "react";
+
+type DependencyArray = object[];
 
 function useOrganization(id?: string) {
-  const [organizations, setOrganizations] = useState([]);
-
-  const { loading, error, handleResponse } = useApi();
-
-  // TODO - Research self-call events
+  const { Api } = useApi();
 
   const [teamSelected] = useEvent("TEAM_SELECTED", null);
 
-  useEffect(() => {
-    if (id) {
-      getOrganizationsById(id);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [teamSelected, id]);
+  const getOrganizationsById = (fetchState: DependencyArray = []) => {
+    const eventDependencies = [teamSelected];
 
-  const createOrganization = useCallback(async (organization) => {
-    const response = await http.post("/organizations", organization);
-    publish("ORGANIZATION_CREATED", { organization: response.data });
-
-    return response.data;
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const getOrganizationsById = useCallback((id) => {
-    if (!id) {
-      return;
-    }
-    handleResponse(
-      http.get(`/organizations/${id}`),
-      (response) => setOrganizations(response.data),
-      (error) => {
-        console.error(error);
-      }
+    const { data, loading, error, fetch } = Api(
+      () =>
+        id ? http.get(`/organizations/${id}`) : Promise.resolve({ data: [] }),
+      [id, ...eventDependencies, ...fetchState]
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
+    return {
+      organizations: data,
+      loading,
+      error,
+      fetch,
+    };
+  };
+
+  const createOrganization = async (organization) => {
+    try {
+      const response = await http.post("/organizations", organization);
+
+      if (response && response.data) {
+        publish("ORGANIZATION_CREATED", { organization: response.data });
+      }
+
+      return response?.data;
+    } catch (error) {
+      console.error("Error creating organization:", error);
+      return null;
+    }
+  };
+
+  const result = getOrganizationsById();
 
   return {
     createOrganization,
-    organizations,
-    loading,
-    error,
+    organizations: result.organizations,
+    loading: result.loading,
+    error: result.error,
   };
 }
 

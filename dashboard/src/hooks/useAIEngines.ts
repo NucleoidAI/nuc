@@ -1,45 +1,31 @@
 import http from "@canmingir/link/platform/http";
 import useApi from "./useApi";
 
-import { useCallback, useEffect, useState } from "react";
+type DependencyArray = object[];
 
 function useAIEngines() {
-  const [engines, setEngines] = useState([
-    {
-      id: "",
-      vendor: "",
-      model: "",
-      avatar: "",
-      createdAt: "",
-      description: "",
-      price: "",
-    },
-  ]);
+  const { Api } = useApi();
 
-  const { loading, error, handleResponse } = useApi();
-
-  useEffect(() => {
-    getEngines();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const getEngines = useCallback(() => {
-    handleResponse(
-      http.get(`/engines`),
-      (response) => {
-        setEngines(response.data);
-      },
-      (error) => {
-        console.error(error);
-      }
+  const getEngines = (fetchState: DependencyArray = []) => {
+    const { data, loading, error, fetch } = Api(
+      () => http.get(`/engines`),
+      [...fetchState]
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
+    return {
+      engines: data,
+      loading,
+      error,
+      fetch,
+    };
+  };
+
+  const result = getEngines();
 
   return {
-    loading,
-    error,
-    engines,
+    loading: result.loading,
+    error: result.error,
+    engines: result.engines,
   };
 }
 

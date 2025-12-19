@@ -3,71 +3,86 @@ import { storage } from "@nucleoidjs/webstorage";
 import useApi from "./useApi";
 
 import { publish, useEvent } from "@nucleoidai/react-event";
-import { useCallback, useEffect, useState } from "react";
+
+type DependencyArray = object[];
 
 function useAgents() {
-  const [agents, setAgents] = useState([]);
-  const { loading, error, handleResponse } = useApi();
+  const { Api } = useApi();
+
   const [agentUpdated] = useEvent("AGENT_UPDATED", null);
   const [agentDeleted] = useEvent("AGENT_DELETED", null);
   const [agentAdded] = useEvent("AGENT_ADDED", null);
-
   const [teamSelected] = useEvent("PROJECT_SELECTED", { projectId: null });
 
-  useEffect(() => {
-    getTeamAgents();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [agentUpdated, agentDeleted, agentAdded, teamSelected]);
+  const getTeamAgents = (fetchState: DependencyArray = []) => {
+    const eventDependencies = [
+      agentUpdated,
+      agentDeleted,
+      agentAdded,
+      teamSelected,
+    ];
 
-  const getTeamAgents = useCallback(() => {
-    handleResponse(
-      http.get(`/colleagues`),
-      (response) => setAgents(response.data),
-      (error) => {
-        console.error(error);
-      }
+    const { data, loading, error, fetch } = Api(
+      () => http.get(`/colleagues`),
+      [...eventDependencies, ...fetchState]
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
-  const createAgent = useCallback(async (agent, teamId) => {
-    agent.teamId = teamId || storage.get("projectId");
+    if (data) {
+      publish("AGENTS_LOADED", { agents: data });
+    }
 
-    console.log("agent", agent);
+    return {
+      agents: data,
+      loading,
+      error,
+      fetch,
+    };
+  };
 
-    const response = await http.post(`/colleagues`, {
-      name: agent.name,
-      icon: agent.icon,
-      teamId: agent.teamId,
-      aiEngineId: agent.aiEngineId,
-      description: agent.description,
-    });
+  const createAgent = async (agent, teamId) => {
+    try {
+      agent.teamId = teamId || storage.get("projectId");
 
-    publish("AGENT_ADDED", { agentId: response.data.id });
+      console.log("agent", agent);
 
-    return response.data;
+      const response = await http.post(`/colleagues`, {
+        name: agent.name,
+        icon: agent.icon,
+        teamId: agent.teamId,
+        aiEngineId: agent.aiEngineId,
+        description: agent.description,
+      });
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const deleteAgent = useCallback((agentId) => {
-    handleResponse(
-      http.delete(`/colleagues/${agentId}`),
-      publish("AGENT_DELETED", { agentId }),
-      (error) => {
-        console.error(error);
+      if (response && response.data) {
+        publish("AGENT_ADDED", { agentId: response.data.id });
       }
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
+      return response?.data;
+    } catch (error) {
+      console.error("Error creating agent:", error);
+      return null;
+    }
+  };
+
+  const deleteAgent = async (agentId) => {
+    try {
+      const response = await http.delete(`/colleagues/${agentId}`);
+
+      if (response) {
+        publish("AGENT_DELETED", { agentId });
+      }
+
+      return response?.data;
+    } catch (error) {
+      console.error("Error deleting agent:", error);
+      return null;
+    }
+  };
 
   return {
-    agents,
-    loading,
-    error,
+    getTeamAgents,
     createAgent,
     deleteAgent,
-    getTeamAgents,
   };
 }
 

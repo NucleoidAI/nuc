@@ -4,7 +4,7 @@ import React from "react";
 export const responsibilityChartPlugin = {
   id: "responsibilityChart",
 
-  resolveStyle: ({ style }) => {
+  style: ({ style }) => {
     const styleTokens = style || {};
 
     const bgFrom = undefined;
@@ -34,7 +34,7 @@ export const responsibilityChartPlugin = {
     };
   },
 
-  renderNode: ({ node, nodeStyle }) => {
+  node: ({ node, nodeStyle }) => {
     return <InfoNode node={node} nodeStyle={nodeStyle} />;
   },
 };

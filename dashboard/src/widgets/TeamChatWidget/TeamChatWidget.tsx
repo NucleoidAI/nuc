@@ -7,13 +7,13 @@ import TeamChatHeaderDetail from "./components/TeamChatHeaderDetail.js";
 import TeamChatMessageContent from "./components/TeamChatMessageContent.js";
 import TeamChatNav from "./components/TeamChatNav.js";
 import { createEditor } from "slate";
+import useAgents from "../../hooks/useAgents.js";
 import useChat from "../../hooks/useChat.js";
-import useColleagues from "../../hooks/useColleagues.js";
 import { useMediaQuery } from "@mui/material";
 import useMessage from "../../hooks/useMessage.js";
 import { useSocket } from "../../hooks/useSocket.js";
 import useSupervisings from "../../hooks/useSupervisings.js";
-import useTeam from "../../hooks/useTeam.js";
+import useTeam from "../../hooks/useTeams.js";
 import { useTheme } from "@mui/material/styles";
 import useUser from "../../hooks/useUser.js";
 import { withHistory } from "slate-history";
@@ -28,8 +28,12 @@ const TeamChatWidget = memo(function ChatWidget({
 }) {
   const socket = useSocket();
 
-  const { team, loading: teamLoading } = useTeam(projectId);
-  const { colleagues, loading } = useColleagues();
+  const { getTeamById } = useTeam();
+
+  const { team, loading: teamLoading } = getTeamById(projectId);
+  const { getTeamAgents } = useAgents();
+
+  const { agents, loading } = getTeamAgents();
 
   const { updateSupervising } = useSupervisings();
 
@@ -123,7 +127,7 @@ const TeamChatWidget = memo(function ChatWidget({
       {teamLoading ? null : (
         <>
           {details && (
-            <TeamChatHeaderDetail mdDown={mdDown} title={team.name} />
+            <TeamChatHeaderDetail mdDown={mdDown} title={team?.name} />
           )}
         </>
       )}
@@ -149,7 +153,7 @@ const TeamChatWidget = memo(function ChatWidget({
           )}
           <ChatInput
             createMessage={createMessage}
-            userId={user.id}
+            userId={user?.id}
             replied={replied}
             selectedMessage={selectedMessage}
             editor={editor}
@@ -187,7 +191,7 @@ const TeamChatWidget = memo(function ChatWidget({
           <TeamChatNav
             collapsed={collapsed}
             setCollapsed={setCollapsed}
-            colleagues={colleagues}
+            agents={agents}
             loading={loading}
           />
         )}

@@ -135,7 +135,7 @@ const ResponsibilityDrawer = ({
                 padding: {
                   xs: 1,
                   sm: 1.5,
-                  md: 2,
+                  md: 3,
                 },
                 display: "flex",
                 flexDirection: "column",

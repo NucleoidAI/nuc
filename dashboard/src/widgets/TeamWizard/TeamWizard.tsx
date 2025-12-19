@@ -10,8 +10,8 @@ import StepComponent from "../../components/StepComponent/StepComponent";
 import { Summary } from "../../components/ItemSummary/TeamSummary";
 import { cleanIconName } from "../../utils/cleanIconName";
 import { storage } from "@nucleoidjs/webstorage";
-import useColleagues from "../../hooks/useColleagues";
-import useOrganizations from ".././../hooks/useOrganziationsV2";
+import useAgents from "../../hooks/useAgents";
+import useOrganizations from "../../hooks/useOrganizations";
 import useTeams from "../../hooks/useTeams";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -30,7 +30,7 @@ import { publish, useEvent } from "@nucleoidai/react-event";
 
 import * as Yup from "yup";
 
-const sampleColleagues = [
+const sampleAgents = [
   {
     name: "system_agent",
     icon: "mingcute:bank-card-line",
@@ -139,7 +139,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { organizations, loading } = useOrganizations().getOrganizations([]);
   const [activeStep, setActiveStep] = React.useState(0);
   const { createOrganization } = useOrganizations();
-  const { createColleague } = useColleagues();
+  const { createAgent } = useAgents();
   const { createTeam } = useTeams();
 
   type FormValues = {
@@ -152,7 +152,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
       icon?: string;
       src?: string;
     };
-    colleague: {
+    agent: {
       name: string;
       icon?: string;
       description: string;
@@ -173,9 +173,9 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
       icon: Yup.string().optional(),
       src: Yup.string().optional(),
     }),
-    colleague: Yup.object().shape({
-      name: Yup.string().required("Colleague name is required"),
-      description: Yup.string().required("Colleague description is required"),
+    agent: Yup.object().shape({
+      name: Yup.string().required("Agent name is required"),
+      description: Yup.string().required("Agent description is required"),
       icon: Yup.string().optional(),
       teamId: Yup.string().optional(),
       aiEngineId: Yup.string().required("AI Engine is required"),
@@ -194,7 +194,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
       icon: "",
       src: "",
     },
-    colleague: {
+    agent: {
       name: "",
       icon: "",
       description: "",
@@ -226,7 +226,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
   const steps = [
     "Organization",
     "Team",
-    "AI Colleague",
+    "AI Agent",
     "Avatar",
     "Description",
     "Engine",
@@ -236,10 +236,10 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
   const stepExp = [
     "Create Organization",
     "Create Team",
-    "Give colleague a name.",
-    "Select an avatar that reflects your colleague.",
-    "Write down your colleague's description. this will determine your colleague's behavior.",
-    "Select your colleague's engine. this will determine your colleague's engine.",
+    "Give agent a name.",
+    "Select an avatar that reflects your agent.",
+    "Write down your agent's description. this will determine your agent's behavior.",
+    "Select your agent's engine. this will determine your agent's engine.",
   ];
 
   const onSubmit = handleSubmit(
@@ -273,14 +273,14 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
         return;
       }
 
-      if (errors.colleague) {
-        if (errors.colleague.name) {
+      if (errors.agent) {
+        if (errors.agent.name) {
           setActiveStep(2);
-        } else if (errors.colleague.icon) {
+        } else if (errors.agent.icon) {
           setActiveStep(3);
-        } else if (errors.colleague.description) {
+        } else if (errors.agent.description) {
           setActiveStep(4);
-        } else if (errors.colleague.aiEngineId) {
+        } else if (errors.agent.aiEngineId) {
           setActiveStep(5);
         }
       }
@@ -289,12 +289,10 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
 
   useEffect(() => {
     const projectId = storage.get("projectId");
-    console.log("projectId", projectId);
-    console.log("name", getValues("colleague.name"));
-    if (teamSelected.projectId === projectId && getValues("colleague.name")) {
-      const colleague = getValues("colleague");
-      colleague.teamId = teamSelected.projectId;
-      createColleague(colleague, projectId);
+    if (teamSelected.projectId === projectId && getValues("agent.name")) {
+      const agent = getValues("agent");
+      agent.teamId = teamSelected.projectId;
+      createAgent(agent, projectId);
       reset(defaultValues);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -321,7 +319,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
         return;
 
       case 2:
-        methods.trigger("colleague.name").then((isValid) => {
+        methods.trigger("agent.name").then((isValid) => {
           if (isValid) {
             setActiveStep((prevStep) => prevStep + 1);
           }
@@ -332,7 +330,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
         break;
 
       case 4:
-        methods.trigger("colleague.description").then((isValid) => {
+        methods.trigger("agent.description").then((isValid) => {
           if (isValid) {
             setActiveStep((prevStep) => prevStep + 1);
           }
@@ -340,7 +338,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
         return;
 
       case 5:
-        methods.trigger("colleague.aiEngineId").then((isValid) => {
+        methods.trigger("agent.aiEngineId").then((isValid) => {
           if (isValid) {
             setActiveStep((prevStep) => prevStep + 1);
           }
@@ -371,22 +369,22 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
       return;
     }
 
-    if (errors.colleague?.name) {
+    if (errors.agent?.name) {
       setActiveStep(2);
       return;
     }
 
-    if (errors.colleague?.icon) {
+    if (errors.agent?.icon) {
       setActiveStep(3);
       return;
     }
 
-    if (errors.colleague?.description) {
+    if (errors.agent?.description) {
       setActiveStep(4);
       return;
     }
 
-    if (errors.colleague?.aiEngineId) {
+    if (errors.agent?.aiEngineId) {
       setActiveStep(5);
       return;
     }
@@ -401,13 +399,13 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
   };
 
   const handleAvatarSelect = (emoji: { id: string; src: string }) => {
-    setValue("colleague.icon", `:${emoji.id}:`, { shouldValidate: true });
-    setValue("colleague.src", `${emoji.src}`, { shouldValidate: true });
+    setValue("agent.icon", `:${emoji.id}:`, { shouldValidate: true });
+    setValue("agent.src", `${emoji.src}`, { shouldValidate: true });
   };
 
   const handleEngineSelect = (engine: { id: string; vendor: string }) => {
-    setValue("colleague.aiEngineId", engine.id, { shouldValidate: true });
-    setValue("colleague.engineName", engine.vendor, { shouldValidate: true });
+    setValue("agent.aiEngineId", engine.id, { shouldValidate: true });
+    setValue("agent.engineName", engine.vendor, { shouldValidate: true });
     handleNext();
   };
 
@@ -433,9 +431,9 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
     }
 
     if (property === "name") {
-      setValue("colleague.name", randomValue, { shouldValidate: true });
+      setValue("agent.name", randomValue, { shouldValidate: true });
     } else if (property === "description") {
-      setValue("colleague.description", randomValue, { shouldValidate: true });
+      setValue("agent.description", randomValue, { shouldValidate: true });
     } else if (property === "teamName") {
       setValue("team.name", randomValue, { shouldValidate: true });
     } else if (property === "organizationName") {
@@ -443,16 +441,16 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
     }
   };
 
-  const handleTemplateSelect = (colleagueTpl: (typeof sampleColleagues)[0]) => {
-    setValue("colleague.name", colleagueTpl.name, { shouldValidate: true });
-    setValue("colleague.icon", colleagueTpl.icon, { shouldValidate: true });
-    setValue("colleague.description", colleagueTpl.description, {
+  const handleTemplateSelect = (agentTpl: (typeof sampleAgents)[0]) => {
+    setValue("agent.name", agentTpl.name, { shouldValidate: true });
+    setValue("agent.icon", agentTpl.icon, { shouldValidate: true });
+    setValue("agent.description", agentTpl.description, {
       shouldValidate: true,
     });
-    setValue("colleague.aiEngineId", colleagueTpl.aiEngineId, {
+    setValue("agent.aiEngineId", agentTpl.aiEngineId, {
       shouldValidate: true,
     });
-    setValue("colleague.engineName", colleagueTpl.engineName, {
+    setValue("agent.engineName", agentTpl.engineName, {
       shouldValidate: true,
     });
     setActiveStep(6);
@@ -562,7 +560,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
             control={control}
             render={({ field }) => (
               <SparkleInput
-                data-cy="colleague-wizard-name-input"
+                data-cy="agent-wizard-name-input"
                 prop="Team Name"
                 value={field.value}
                 onChange={(e) => field.onChange(e.target.value)}
@@ -581,16 +579,16 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
     );
   };
 
-  const ColleagueName = () => {
+  const AgentName = () => {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
         <div>
           <Controller
-            name="colleague.name"
+            name="agent.name"
             control={control}
             render={({ field }) => (
               <SparkleInput
-                data-cy="colleague-wizard-name-input"
+                data-cy="agent-wizard-name-input"
                 prop="name"
                 value={field.value}
                 onChange={(e) => field.onChange(e.target.value)}
@@ -599,9 +597,9 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
               />
             )}
           />
-          {errors.colleague?.name && (
+          {errors.agent?.name && (
             <Typography color="error" variant="caption">
-              {errors.colleague.name.message}
+              {errors.agent.name.message}
             </Typography>
           )}
         </div>
@@ -619,10 +617,10 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
               marginTop: "16px",
             }}
           >
-            {sampleColleagues.map((colleague, index) => (
+            {sampleAgents.map((agent, index) => (
               <Card
                 key={index}
-                onClick={() => handleTemplateSelect(colleague)}
+                onClick={() => handleTemplateSelect(agent)}
                 sx={{
                   cursor: "pointer",
                   transition: "all 0.2s ease",
@@ -643,17 +641,17 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
                       }}
                     >
                       <Iconify
-                        icon={cleanIconName(colleague.icon)}
+                        icon={cleanIconName(agent.icon)}
                         width="20%"
                         height="20%"
                         style={{ objectFit: "contain" }}
                       />
                       <Typography variant="h6" component="div">
-                        {colleague.name}
+                        {agent.name}
                       </Typography>
                     </Box>
                     <Typography variant="body2" color="textSecondary">
-                      {colleague.description}
+                      {agent.description}
                     </Typography>
                   </CardContent>
                 </CardActionArea>
@@ -669,11 +667,11 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
     return (
       <>
         <Controller
-          name="colleague.description"
+          name="agent.description"
           control={control}
           render={({ field }) => (
             <SparkleInput
-              data-cy="colleague-wizard-description-input"
+              data-cy="agent-wizard-description-input"
               prop="description"
               onChange={(e) => field.onChange(e.target.value)}
               onRandomValue={() => handleRandomValue("description")}
@@ -683,9 +681,9 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
             />
           )}
         />
-        {errors.colleague?.description && (
+        {errors.agent?.description && (
           <Typography color="error" variant="caption">
-            {errors.colleague.description.message}
+            {errors.agent.description.message}
           </Typography>
         )}
       </>
@@ -708,13 +706,13 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
           </Stack>
         );
       case 2:
-        return <ColleagueName />;
+        return <AgentName />;
       case 3:
         return (
           <SelectAvatar
             handleEmojiSelect={handleAvatarSelect}
-            iconSrc={getValues("colleague.src")}
-            icon={getValues("colleague.icon")?.replace(/:/g, "")}
+            iconSrc={getValues("agent.src")}
+            icon={getValues("agent.icon")?.replace(/:/g, "")}
           />
         );
       case 4:
@@ -733,7 +731,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
           <Summary
             team={getValues("team")}
             organization={getValues("organization")}
-            colleague={getValues("colleague")}
+            agent={getValues("agent")}
           />
         );
       default:

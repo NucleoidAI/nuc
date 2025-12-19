@@ -2,7 +2,7 @@ import React from "react";
 
 import { Box, Grid, Typography } from "@mui/material";
 
-function SingleScorllableLayout({ title, children }) {
+function SingleScrollableLayout({ title, children }) {
   return (
     <>
       <Typography sx={{ textAlign: "center", fontSize: "3rem", marginTop: 4 }}>
@@ -17,4 +17,4 @@ function SingleScorllableLayout({ title, children }) {
   );
 }
 
-export default SingleScorllableLayout;
+export default SingleScrollableLayout;

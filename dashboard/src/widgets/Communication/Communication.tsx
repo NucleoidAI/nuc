@@ -4,7 +4,7 @@ import CommunicationWizard from "../CommunicationWizard/CommunicationWizard";
 import useCommunications from "../../hooks/useCommunications";
 import useResponsibility from "../../hooks/useResponsibility";
 
-import { Box, Container, Fab } from "@mui/material";
+import { Box, Fab } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
 const availableChannels = [
@@ -108,7 +108,14 @@ const Communication = () => {
     })) || [];
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+    <Box
+      sx={{
+        width: "100%",
+        px: 2,
+        pb: 2,
+        minHeight: "calc(100vh - 240px)",
+      }}
+    >
       <Box position="relative">
         <CommunicationDiagram
           channels={channels}
@@ -149,7 +156,7 @@ const Communication = () => {
           responsibilityIcon="healthicons:crisis-response-center-person-outline"
         />
       </Box>
-    </Container>
+    </Box>
   );
 };
 

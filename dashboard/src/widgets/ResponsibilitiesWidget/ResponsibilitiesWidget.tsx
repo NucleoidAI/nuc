@@ -6,7 +6,7 @@ import { Theme } from "@mui/material/styles";
 import { useEvent } from "@nucleoidai/react-event";
 import useResponsibility from "../../hooks/useResponsibility";
 
-import { Box, Container, Fab, Stack, useMediaQuery } from "@mui/material";
+import { Box, Fab, Stack, useMediaQuery } from "@mui/material";
 import React, { useState } from "react";
 
 function ResponsibilitiesWidget() {
@@ -54,7 +54,14 @@ function ResponsibilitiesWidget() {
   );
 
   return (
-    <Container>
+    <Box
+      sx={{
+        width: "100%",
+        px: 2,
+        pb: 2,
+        minHeight: "calc(100vh - 240px)",
+      }}
+    >
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         <Box sx={{ mt: 2 }}>
           {responsibility?.map((item) => (
@@ -100,7 +107,7 @@ function ResponsibilitiesWidget() {
           <AddIcon />
         </Fab>
       </Stack>
-    </Container>
+    </Box>
   );
 }
 

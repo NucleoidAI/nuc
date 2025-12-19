@@ -1,42 +1,31 @@
 import http from "@canmingir/link/platform/http";
 import useApi from "./useApi";
 
-import { useCallback, useEffect, useState } from "react";
+type DependencyArray = object[];
 
-function useTask(id) {
-  const [task, setTask] = useState({
-    description: "",
-    colleagueId: "",
-    status: "",
-    commandId: "",
-    id: "",
-    createdAt: "",
-  });
+function useTask(id: string) {
+  const { Api } = useApi();
 
-  const { loading, error, handleResponse } = useApi();
-
-  useEffect(() => {
-    getTask(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const getTask = useCallback((id) => {
-    handleResponse(
-      http.get(`/tasks/${id}`),
-      (response) => {
-        setTask(response.data);
-      },
-      (error) => {
-        console.error(error);
-      }
+  const getTask = (fetchState: DependencyArray = []) => {
+    const { data, loading, error, fetch } = Api(
+      () => (id ? http.get(`/tasks/${id}`) : Promise.resolve({ data: null })),
+      [id, ...fetchState]
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
+    return {
+      task: data,
+      loading,
+      error,
+      fetch,
+    };
+  };
+
+  const result = getTask();
 
   return {
-    loading,
-    error,
-    task,
+    loading: result.loading,
+    error: result.error,
+    task: result.task,
   };
 }
 

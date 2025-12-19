@@ -1,25 +1,24 @@
-import ColleagueWizard from "../ColleagueWizard/ColleagueWizard";
+import AgentDrawer from "../../components/AgentDrawer/AgentDrawer";
+import AgentWizard from "../AgentWizard/AgentWizard";
 import { Flow } from "@canmingir/link/platform/components";
 import ResponsibilityDrawer from "../../components/ResponsbilityDrawer/ResponsibilityDrawer";
 import { TeamChartRenderer } from "./TeamChartRenderer";
 import { storage } from "@nucleoidjs/webstorage";
 import { teamChartPlugin } from "./TeamChartPlugin";
-import useColleagues from "../../hooks/useColleagues";
-import { useNavigate } from "react-router-dom";
-import useOrganizations from "../../hooks/useOrganziationsV2";
+import useAgents from "../../hooks/useAgents";
+import useOrganizations from "../../hooks/useOrganizations";
 import useResponsibility from "../../hooks/useResponsibility";
-import useTeam from "../../hooks/useTeam";
+import useTeam from "../../hooks/useTeams";
 
 import { Box, CircularProgress, Stack } from "@mui/material";
 import React, { useMemo, useState } from "react";
 import { toTeamTree, treeToLinked } from "./utils";
 
 function TeamChart() {
-  const navigate = useNavigate();
-
   const projectId = storage.get("projectId");
-  const { teamById } = useTeam(projectId);
-  const organizationId = teamById?.organizationId;
+  const { getTeamById } = useTeam();
+  const { team } = getTeamById(projectId);
+  const organizationId = team?.organizationId;
 
   const { organization, loading } =
     useOrganizations().getOrganizationById(organizationId);
@@ -27,7 +26,7 @@ function TeamChart() {
   const { getResponsibility } = useResponsibility();
   const { responsibility: allResponsibilitiesRaw } = getResponsibility();
 
-  const { createColleague } = useColleagues();
+  const { createAgent } = useAgents();
 
   const orgArray = Array.isArray(organization)
     ? organization
@@ -44,30 +43,27 @@ function TeamChart() {
     [filteredOrganizations, allResponsibilitiesRaw]
   );
 
-  const managerTree = useMemo(() => {
-    if (!teamTree) return null;
-
-    return {
-      id: "manager-root",
-      nodeKind: "manager",
-      name: "Jack Shepherd",
-      role: "CAO - Chief AI Officer",
-      avatar: ":5:",
-      children: [teamTree],
-    };
-  }, [teamTree]);
-
-  const data = managerTree
-    ? treeToLinked(managerTree)
-    : { nodes: {}, roots: [] };
+  const data = teamTree ? treeToLinked(teamTree) : { nodes: {}, roots: [] };
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
 
+  const [agentDrawer, setAgentDrawer] = useState(false);
+  const [selectedAgent, setSelectedAgent] = useState(null);
+  const [selectedAgentTab, setSelectedAgentTab] = useState<
+    | "profile"
+    | "knowledge-base"
+    | "tasks"
+    | "responsibilities"
+    | "supervisings"
+    | "communication"
+    | "integrations"
+  >("profile");
+
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
-  const handleAddColleague = (teamId: string) => {
+  const handleAddAgent = (teamId: string) => {
     setSelectedTeamId(teamId);
     setDialogOpen(true);
   };
@@ -87,8 +83,16 @@ function TeamChart() {
     setSelectedItem(null);
   };
 
-  const handleGoToColleaguePage = (colleagueNode) => {
-    navigate(`/colleagues/${colleagueNode.id}`);
+  const handleAgentDrawerOpen = (agentNode, tab) => {
+    setSelectedAgent(agentNode);
+    setSelectedAgentTab(tab);
+    setAgentDrawer(true);
+  };
+
+  const handleAgentDrawerClose = () => {
+    setAgentDrawer(false);
+    setSelectedAgent(null);
+    setSelectedAgentTab("profile");
   };
 
   if (loading) {
@@ -111,8 +115,8 @@ function TeamChart() {
 
     return {
       ...base,
-      onTeamAddColleague: (teamNode) => handleAddColleague(teamNode.id),
-      onColleagueGoToPage: (colNode) => handleGoToColleaguePage(colNode),
+      onTeamAddAgent: (teamNode) => handleAddAgent(teamNode.id),
+      onAgentOpen: (colNode, tab) => handleAgentDrawerOpen(colNode, tab),
       onResponsibilityOpen: (respNode) => handleDrawerOpen(respNode),
     };
   };
@@ -127,19 +131,28 @@ function TeamChart() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+
+          backgroundColor: (theme) => theme.palette.background.default,
+          backgroundImage: (theme) => `
+      radial-gradient(
+        ${theme.palette.divider} 1px,
+        transparent 1px
+      )
+    `,
+          backgroundSize: "16px 16px",
         }}
       >
         <Flow data={data} style={style} plugin={teamChartPlugin} />
       </Box>
 
       {dialogOpen && (
-        <ColleagueWizard
+        <AgentWizard
           open={dialogOpen}
           onClose={handleCloseDialog}
-          itemProperties={["name", "character", "role"]}
-          onSubmit={(newColleague) => {
+          itemProperties={["name", "description"]}
+          onSubmit={(newAgent) => {
             if (!selectedTeamId) return;
-            createColleague(newColleague, selectedTeamId);
+            createAgent(newAgent, selectedTeamId);
           }}
           itemToEdit={null}
         />
@@ -150,6 +163,15 @@ function TeamChart() {
           drawerOpen={drawerOpen}
           handleDrawerClose={handleDrawerClose}
           selectedItem={selectedItem}
+        />
+      )}
+
+      {agentDrawer && (
+        <AgentDrawer
+          open={agentDrawer}
+          onClose={handleAgentDrawerClose}
+          agent={selectedAgent}
+          initialTab={selectedAgentTab}
         />
       )}
     </>

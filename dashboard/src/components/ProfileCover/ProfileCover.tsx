@@ -2,30 +2,7 @@ import { Iconify } from "@canmingir/link/platform/components";
 import { Skeleton } from "@mui/material";
 import { cleanIconName } from "../../utils/cleanIconName";
 
-import { Box, ListItemText, Stack, alpha, useTheme } from "@mui/material";
-
-function bgGradient(props) {
-  const direction = props?.direction || "to bottom";
-  const startColor = props?.startColor;
-  const endColor = props?.endColor;
-  const imgUrl = props?.imgUrl;
-  const color = props?.color;
-
-  if (imgUrl) {
-    return {
-      background: `linear-gradient(${direction}, ${startColor || color}, ${
-        endColor || color
-      }), url(${imgUrl})`,
-      backgroundSize: "cover",
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "center center",
-    };
-  }
-
-  return {
-    background: `linear-gradient(${direction}, ${startColor}, ${endColor})`,
-  };
-}
+import { Box, ListItemText, Stack, useTheme } from "@mui/material";
 
 function ProfileCover({ name, iconUrl, coverUrl, loading }) {
   const theme = useTheme();
@@ -33,10 +10,7 @@ function ProfileCover({ name, iconUrl, coverUrl, loading }) {
   return (
     <Box
       sx={{
-        ...bgGradient({
-          color: alpha(theme.palette.primary.dark, 0.3),
-          imgUrl: coverUrl,
-        }),
+        background: coverUrl,
         height: 1,
         color: "common.white",
       }}

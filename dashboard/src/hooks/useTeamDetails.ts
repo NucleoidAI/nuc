@@ -1,37 +1,31 @@
 import http from "@canmingir/link/platform/http";
 import useApi from "./useApi";
 
-import { useCallback, useEffect, useState } from "react";
+type DependencyArray = object[];
 
 function useTeamDetails() {
-  const [teamDetails, setTeamDetails] = useState({
-    id: "",
-    coach: "",
-    coachAvatar: "",
-  });
+  const { Api } = useApi();
 
-  useEffect(() => {
-    getTeamDetails();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const { loading, error, handleResponse } = useApi();
-
-  const getTeamDetails = useCallback(() => {
-    handleResponse(
-      http.get("/teams/details"),
-      (response) => setTeamDetails(response.data),
-      (error) => {
-        console.error(error);
-      }
+  const getTeamDetails = (fetchState: DependencyArray = []) => {
+    const { data, loading, error, fetch } = Api(
+      () => http.get("/teams/details"),
+      [...fetchState]
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
+    return {
+      teamDetails: data,
+      loading,
+      error,
+      fetch,
+    };
+  };
+
+  const result = getTeamDetails();
 
   return {
-    teamDetails,
-    loading,
-    error,
+    teamDetails: result.teamDetails,
+    loading: result.loading,
+    error: result.error,
   };
 }
 

@@ -1,40 +1,41 @@
 import AddNewButton from "../../components/AddNewButton";
+import AgentCard from "../../components/AgentCard";
+import AgentSkeleton from "../../components/Skeletons/AgentSkeleton";
+import AgentWizard from "../AgentWizard/AgentWizard";
 import Box from "@mui/material/Box";
-import ColleagueCard from "../../components/ColleagueCard";
-import ColleagueSkeleton from "../../components/Skeletons/ColleagueSkeleton";
-import ColleagueWizard from "../ColleagueWizard/ColleagueWizard";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
 import DeleteButton from "../../components/DeleteButton/DeleteButton";
 import { Grid } from "@mui/material";
 import { publish } from "@nucleoidai/react-event";
-import useColleague from "../../hooks/useColleague";
-import useColleagues from "../../hooks/useColleagues";
+import useAgent from "../../hooks/useAgent";
+import useAgents from "../../hooks/useAgents";
 import { useNavigate } from "react-router-dom";
 import useTeams from "../../hooks/useTeams";
 import useUIState from "../../hooks/useUIState";
 
 import React, { useState } from "react";
 
-function ColleaguesWidget({ teamId, colleagueId }) {
-  const [updatedColleague, setUpdatedColleague] = useState(null);
+function AgentsWidget({ teamId }) {
+  const [updatedAgent, setUpdatedAgent] = useState(null);
   const [deleteFunction, setDeleteFunction] = useState(null);
   const navigate = useNavigate();
   const { uiState, openForm, closeForm, openDialog, closeDialog } =
     useUIState();
 
   const { deleteTeam } = useTeams();
-  const { colleagues, loading, deleteColleague, createColleague } =
-    useColleagues();
+  const { getTeamAgents, deleteAgent, createAgent } = useAgents();
 
-  const { updateColleague } = useColleague(colleagueId);
+  const { agents, loading } = getTeamAgents();
+
+  const { updateAgent } = useAgent();
 
   function deleteTeams() {
     //dispatch({ type: "TEAM_DELETE" });
     navigate("/teams");
   }
 
-  const handleColleagueClick = (colleagueid) => {
-    navigate(`/colleagues/${colleagueid}`);
+  const handleAgentClick = (colleagueId) => {
+    navigate(`/colleagues/${colleagueId}`);
   };
 
   return (
@@ -60,7 +61,7 @@ function ColleaguesWidget({ teamId, colleagueId }) {
       >
         <AddNewButton
           type={"wideButton"}
-          addNew={"Colleague"}
+          addNew={"Agent"}
           onClickFunction={() => {
             openForm();
             publish("COLLEAGUE_WIZARD_OPENED", { type: "ADD" });
@@ -70,35 +71,35 @@ function ColleaguesWidget({ teamId, colleagueId }) {
         {loading
           ? Array.from({ length: 1 }).map((_, index) => (
               <Grid item xs={12} sm={12} md={6} lg={4} key={index}>
-                <ColleagueSkeleton key={index} />
+                <AgentSkeleton key={index} />
               </Grid>
             ))
-          : colleagues.map((colleague) => (
-              <ColleagueCard
-                key={colleague.id}
-                colleague={colleague}
-                onView={() => handleColleagueClick(colleague.id)}
+          : agents.map((agent) => (
+              <AgentCard
+                key={agent.id}
+                agent={agent}
+                onView={() => handleAgentClick(agent.id)}
                 onDelete={() => {
-                  setDeleteFunction(() => () => deleteColleague(colleague.id));
+                  setDeleteFunction(() => () => deleteAgent(agent.id));
                   openDialog();
                 }}
                 onEdit={() => {
-                  setUpdatedColleague(colleague);
+                  setUpdatedAgent(agent);
                   openForm();
                 }}
               />
             ))}
       </Box>
       <Grid container justifyContent="center" mt={0} spacing={2}>
-        <ColleagueWizard
+        <AgentWizard
           open={uiState.formOpen}
           onClose={() => {
             closeForm();
-            setUpdatedColleague(null);
+            setUpdatedAgent(null);
           }}
           itemProperties={["name", "description"]}
-          onSubmit={updatedColleague ? updateColleague : createColleague}
-          itemToEdit={updatedColleague}
+          onSubmit={updatedAgent ? updateAgent : createAgent}
+          itemToEdit={updatedAgent}
         />
         <ConfirmationDialog
           open={uiState.dialogOpen}
@@ -124,4 +125,4 @@ function ColleaguesWidget({ teamId, colleagueId }) {
   );
 }
 
-export default ColleaguesWidget;
+export default AgentsWidget;

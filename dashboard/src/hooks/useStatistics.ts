@@ -2,46 +2,36 @@ import http from "@canmingir/link/platform/http";
 import useApi from "./useApi";
 import { useEvent } from "@nucleoidai/react-event";
 
-import { useCallback, useEffect, useState } from "react";
+type DependencyArray = object[];
 
 function useStatistics() {
-  const [statistics, setStatisticks] = useState({
-    responseRate: "",
-    knowledgeSize: "",
-    taskCount: "",
-    totalMessages: "",
-    id: "",
-    supervisingRate: "",
-  });
-
-  const { loading, error, handleResponse } = useApi();
+  const { Api } = useApi();
 
   const [teamSelected] = useEvent("PROJECT_SELECTED", null);
-
   const [configInitialized] = useEvent("CONFIG_INITIALIZED", null);
 
-  useEffect(() => {
-    getStatistics();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [teamSelected, configInitialized]);
+  const getStatistics = (fetchState: DependencyArray = []) => {
+    const eventDependencies = [teamSelected, configInitialized];
 
-  const getStatistics = useCallback(() => {
-    handleResponse(
-      http.get(`/statistics`),
-      (response) => {
-        setStatisticks(response.data);
-      },
-      (error) => {
-        console.error(error);
-      }
+    const { data, loading, error, fetch } = Api(
+      () => http.get(`/statistics`),
+      [...eventDependencies, ...fetchState]
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
+    return {
+      statistics: data,
+      loading,
+      error,
+      fetch,
+    };
+  };
+
+  const result = getStatistics();
 
   return {
-    loading,
-    error,
-    statistics,
+    loading: result.loading,
+    error: result.error,
+    statistics: result.statistics,
   };
 }
 

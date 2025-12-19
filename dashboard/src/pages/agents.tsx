@@ -4,7 +4,6 @@ import SingleScrollableLayout from "../layouts/SingleScrollableLayout";
 import { storage } from "@nucleoidjs/webstorage";
 import { useEffect } from "react";
 import { useEvent } from "@nucleoidai/react-event";
-import { useParams } from "react-router-dom";
 import useTeam from "../hooks/useTeams";
 
 function Agents() {
@@ -13,7 +12,6 @@ function Agents() {
   const { getTeamById } = useTeam();
 
   const { team, loading } = getTeamById(teamId);
-  const { colleagueId } = useParams();
 
   const [teamSelected] = useEvent("ITEM_SELECTED", { itemId: teamId });
 
@@ -28,7 +26,7 @@ function Agents() {
     <>
       <Page name={"Colleague"} />
       <SingleScrollableLayout title={team?.name}>
-        <AgentsWidget colleagueId={colleagueId} teamId={teamId} />
+        <AgentsWidget teamId={teamId} />
       </SingleScrollableLayout>
     </>
   );

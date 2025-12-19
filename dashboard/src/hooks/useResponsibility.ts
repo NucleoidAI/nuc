@@ -1,7 +1,7 @@
 import { convertToNodesAndEdges } from "../components/ResponsibilityFlow/flowAdapter";
 import http from "@canmingir/link/platform/http";
 import { publish } from "@nucleoidai/react-event";
-import useApi from "./useApiV2";
+import useApi from "./useApis";
 import { v4 as uuidv4 } from "uuid";
 
 type DependencyArray = object[];

@@ -15,7 +15,7 @@ import useUIState from "../../hooks/useUIState";
 
 import React, { useState } from "react";
 
-function AgentsWidget({ teamId, colleagueId }) {
+function AgentsWidget({ teamId }) {
   const [updatedAgent, setUpdatedAgent] = useState(null);
   const [deleteFunction, setDeleteFunction] = useState(null);
   const navigate = useNavigate();

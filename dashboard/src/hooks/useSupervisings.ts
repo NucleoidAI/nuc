@@ -1,5 +1,5 @@
 import http from "@canmingir/link/platform/http";
-import useApi from "./useApiV2";
+import useApi from "./useApis";
 import { useCallback } from "react";
 
 import { publish, useEvent } from "@nucleoidai/react-event";

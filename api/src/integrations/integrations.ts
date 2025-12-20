@@ -176,5 +176,161 @@ const Integrations = [
       required: ["productId", "quantity"],
     },
   },
+  {
+    id: "019ae325-2257-77df-97fa-e8808943634f",
+    action: "GREY:send_email",
+    provider: "GREY",
+    description: "Send an email",
+    direction: "OUTGOING",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        to: {
+          type: "string",
+          description: "The email address of the recipient.",
+        },
+        subject: {
+          type: "string",
+          description: "The subject of the email.",
+        },
+        text: {
+          type: "string",
+          description: "The body of the email.",
+        },
+      },
+      required: ["to", "subject", "text"],
+    },
+  },
+  {
+    id: "b7f3d8e9-4c5a-4b2d-9e8f-7a6b5c4d3e2f",
+    action: "TURK_TELEKOM:get_address",
+    provider: "TURK_TELEKOM",
+    description: "Get address information by BBK number",
+    direction: "OUTGOING",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        bbk_no: {
+          type: "string",
+          description: "The BBK number to look up the address for.",
+        },
+      },
+      required: ["bbk_no"],
+    },
+  },
+  {
+    id: "e0h6g1f2-7f8d-6e5g-2h1i-0d9e8f7g6h5c",
+    action: "TURK_TELEKOM:get_bbk_by_address",
+    provider: "TURK_TELEKOM",
+    description:
+      "Get BBK number by address. Supports partial address matching.",
+    direction: "OUTGOING",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        address: {
+          type: "string",
+          description:
+            "The address to look up the BBK number for. Can be a partial address.",
+        },
+      },
+      required: ["address"],
+    },
+  },
+  {
+    id: "c8f4e9d0-5d6b-4c3e-0f9g-8b7c6d5e4f3a",
+    action: "TURK_TELEKOM:get_inventory",
+    provider: "TURK_TELEKOM",
+    description: "Get infrastructure inventory information by BBK number",
+    direction: "OUTGOING",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        bbk_no: {
+          type: "string",
+          description:
+            "The BBK number to look up the infrastructure inventory for.",
+        },
+      },
+      required: ["bbk_no"],
+    },
+  },
+  {
+    id: "d9g5f0e1-6e7c-5d4f-1g0h-9c8d7e6f5g4b",
+    action: "TURK_TELEKOM:get_product_by_speed",
+    provider: "TURK_TELEKOM",
+    description: "Get product information by speed limit",
+    direction: "OUTGOING",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        speed: {
+          type: "string",
+          description:
+            "The speed limit to look up the product for (e.g., '1gbps', '100mbps', '50mbps').",
+        },
+      },
+      required: ["hiz_limiti"],
+    },
+  },
+  {
+    id: "a1h7g2f3-8g9e-7f6h-3i2j-1e0f9g8h7i6d",
+    action: "TURK_TELEKOM:port_tahsis",
+    provider: "TURK_TELEKOM",
+    description: "Assign a port to a customer using device serial number",
+    direction: "OUTGOING",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        serial_number: {
+          type: "string",
+          description: "The device serial number to assign a port for.",
+        },
+      },
+      required: ["serial_number"],
+    },
+  },
+  {
+    id: "b2i8h3g4-9h0f-8g7i-4j3k-2f1g0h9i8j7e",
+    action: "TURK_TELEKOM:port_baglanti",
+    provider: "TURK_TELEKOM",
+    description: "Connect/activate a port using port assignment ID",
+    direction: "OUTGOING",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        assignment_id: {
+          type: "string",
+          description: "The port assignment ID to connect/activate.",
+        },
+      },
+      required: ["assignment_id"],
+    },
+  },
+  {
+    id: "c3j9i4h5-0i1g-9h8j-5k4l-3g2h1i0j9k8f",
+    action: "TURK_TELEKOM:configuration",
+    provider: "TURK_TELEKOM",
+    description: "Configure port settings using device serial number",
+    direction: "OUTGOING",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        serial_number: {
+          type: "string",
+          description: "The device serial number to configure.",
+        },
+      },
+      required: ["serial_number"],
+    },
+  },
 ];
 export default Integrations;

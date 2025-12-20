@@ -1,5 +1,7 @@
 import chat from "./train/chat.json";
+import humanInLoop from "./train/human-in-loop.json";
 import policy from "./policy.json";
+import pseudocode from "./train/pseudocode.json";
 import responsibility from "./train/responsibility.json";
 import responsibilityChat from "./train/responsibility-chat.json";
 import responsibilityChatEvaluation from "./train/responsibility-chat-evaluation.json";
@@ -24,6 +26,18 @@ export default {
       role: "system" as const,
       content: JSON.stringify({
         train: chat,
+      }),
+    },
+    humanInLoop: {
+      role: "system" as const,
+      content: JSON.stringify({
+        train: humanInLoop,
+      }),
+    },
+    pseudocode: {
+      role: "system" as const,
+      content: JSON.stringify({
+        train: pseudocode,
       }),
     },
     taskDiamond: {

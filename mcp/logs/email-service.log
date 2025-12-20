@@ -1,0 +1,67 @@
+[2025-12-03T06:58:01.328Z] [INFO] Email send attempt initiated
+{
+  "to": "halilibrahimcengel7@gmail.com",
+  "subject": "Test Email from MCP Server",
+  "hasHtml": true
+}
+[2025-12-03T06:58:01.330Z] [DEBUG] Creating nodemailer transporter
+[2025-12-03T06:58:01.332Z] [DEBUG] Sending email via SMTP
+[2025-12-03T06:58:01.701Z] [ERROR] Email send: Failed
+{
+  "action": "send",
+  "to": "halilibrahimcengel7@gmail.com",
+  "subject": "Test Email from MCP Server",
+  "success": false,
+  "error": "Missing credentials for \"PLAIN\""
+}
+[2025-12-03T06:58:01.704Z] [ERROR] Email send failed
+{
+  "error": "Missing credentials for \"PLAIN\"",
+  "to": "halilibrahimcengel7@gmail.com",
+  "subject": "Test Email from MCP Server",
+  "stack": "Error: Missing credentials for \"PLAIN\"\n    at SMTPConnection._formatError (/Users/halilcengel/Developer/GreyCollar/mcp/node_modules/nodemailer/lib/smtp-connection/index.js:809:19)\n    at SMTPConnection.login (/Users/halilcengel/Developer/GreyCollar/mcp/node_modules/nodemailer/lib/smtp-connection/index.js:454:38)\n    at /Users/halilcengel/Developer/GreyCollar/mcp/node_modules/nodemailer/lib/smtp-transport/index.js:272:32\n    at SMTPConnection.<anonymous> (/Users/halilcengel/Developer/GreyCollar/mcp/node_modules/nodemailer/lib/smtp-connection/index.js:215:17)\n    at Object.onceWrapper (node:events:638:28)\n    at SMTPConnection.emit (node:events:524:28)\n    at SMTPConnection.emit (node:domain:489:12)\n    at SMTPConnection._actionEHLO (/Users/halilcengel/Developer/GreyCollar/mcp/node_modules/nodemailer/lib/smtp-connection/index.js:1371:14)\n    at SMTPConnection._processResponse (/Users/halilcengel/Developer/GreyCollar/mcp/node_modules/nodemailer/lib/smtp-connection/index.js:993:20)\n    at SMTPConnection._onData (/Users/halilcengel/Developer/GreyCollar/mcp/node_modules/nodemailer/lib/smtp-connection/index.js:774:14)"
+}
+[2025-12-03T06:58:55.555Z] [INFO] Email send attempt initiated
+{
+  "to": "halilibrahimcengel7@gmail.com",
+  "subject": "Test Email from MCP Server",
+  "hasHtml": true
+}
+[2025-12-03T06:58:55.556Z] [DEBUG] Creating nodemailer transporter
+[2025-12-03T06:58:55.558Z] [DEBUG] Sending email via SMTP
+[2025-12-03T06:58:55.877Z] [ERROR] Email send: Failed
+{
+  "action": "send",
+  "to": "halilibrahimcengel7@gmail.com",
+  "subject": "Test Email from MCP Server",
+  "success": false,
+  "error": "Missing credentials for \"PLAIN\""
+}
+[2025-12-03T06:58:55.880Z] [ERROR] Email send failed
+{
+  "error": "Missing credentials for \"PLAIN\"",
+  "to": "halilibrahimcengel7@gmail.com",
+  "subject": "Test Email from MCP Server",
+  "stack": "Error: Missing credentials for \"PLAIN\"\n    at SMTPConnection._formatError (/Users/halilcengel/Developer/GreyCollar/mcp/node_modules/nodemailer/lib/smtp-connection/index.js:809:19)\n    at SMTPConnection.login (/Users/halilcengel/Developer/GreyCollar/mcp/node_modules/nodemailer/lib/smtp-connection/index.js:454:38)\n    at /Users/halilcengel/Developer/GreyCollar/mcp/node_modules/nodemailer/lib/smtp-transport/index.js:272:32\n    at SMTPConnection.<anonymous> (/Users/halilcengel/Developer/GreyCollar/mcp/node_modules/nodemailer/lib/smtp-connection/index.js:215:17)\n    at Object.onceWrapper (node:events:638:28)\n    at SMTPConnection.emit (node:events:524:28)\n    at SMTPConnection.emit (node:domain:489:12)\n    at SMTPConnection._actionEHLO (/Users/halilcengel/Developer/GreyCollar/mcp/node_modules/nodemailer/lib/smtp-connection/index.js:1371:14)\n    at SMTPConnection._processResponse (/Users/halilcengel/Developer/GreyCollar/mcp/node_modules/nodemailer/lib/smtp-connection/index.js:993:20)\n    at SMTPConnection._onData (/Users/halilcengel/Developer/GreyCollar/mcp/node_modules/nodemailer/lib/smtp-connection/index.js:774:14)"
+}
+[2025-12-03T06:59:43.666Z] [INFO] Email send attempt initiated
+{
+  "to": "halilibrahimcengel7@gmail.com",
+  "subject": "Test Email from MCP Server",
+  "hasHtml": true
+}
+[2025-12-03T06:59:43.668Z] [DEBUG] Creating nodemailer transporter
+[2025-12-03T06:59:43.670Z] [DEBUG] Sending email via SMTP
+[2025-12-03T06:59:44.911Z] [INFO] Email send: Success
+{
+  "action": "send",
+  "to": "halilibrahimcengel7@gmail.com",
+  "subject": "Test Email from MCP Server",
+  "success": true,
+  "messageId": "<9136f3d7-10c4-95df-55ff-046391f4c46b@gmail.com>"
+}
+[2025-12-03T06:59:44.911Z] [INFO] Email sent successfully
+{
+  "messageId": "<9136f3d7-10c4-95df-55ff-046391f4c46b@gmail.com>",
+  "to": "halilibrahimcengel7@gmail.com"
+}

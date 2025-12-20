@@ -108,6 +108,13 @@
       "text": "If Battery is not available, order 10 Battery",
       "status": "COMPLETED",
       "createdAt": "1970-01-20T22:08:14.337Z"
+    },
+    {
+      "id": "019ae3fb-df10-70e1-9575-06860872a022",
+      "type": "TEXT",
+      "text": "Manager email address is halilibrahimcengel7@gmail.com.",
+      "status": "COMPLETED",
+      "createdAt": "1970-01-20T22:08:14.337Z"
     }
   ]
 }

@@ -3,6 +3,7 @@ import Responsibility from "../models/Responsibility";
 import ResponsibilitySchema from "../schemas/Responsibility";
 import agent from "../functions/agent";
 import colleague from "../functions/colleague";
+import { event } from "node-event-test-package/client";
 import express from "express";
 import responsibility from "../functions/responsibility";
 
@@ -56,6 +57,19 @@ router.put("/:responsibilityId", async (req, res) => {
     responsibilityId,
     nodes
   );
+
+  const pseudocode = await agent.toPseudo({
+    content: result.description,
+  });
+
+  await responsibility.patch({
+    responsibilityId,
+    pseudocode,
+  });
+
+  await event.publish("RESPONSIBILITY_CREATED", {
+    responsibility: { ...result, pseudocode },
+  });
 
   res.status(200).json(result);
 });

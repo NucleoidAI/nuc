@@ -9,9 +9,7 @@
           "label": "Check Product Availability",
           "icon": "mdi:check"
         },
-        "next": [
-          "51dca395-1d90-4a28-9bbc-233de9c1a207"
-        ],
+        "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -22,12 +20,8 @@
           "label": "Make Decision",
           "icon": "mdi:decision"
         },
-        "true": [
-          "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-        ],
-        "false": [
-          "5be22de7-9673-448d-a1b5-dc23a8789b5c"
-        ],
+        "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+        "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -38,8 +32,19 @@
           "label": "Create Order",
           "icon": "mdi:cart-plus"
         },
-        "next": null,
+        "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
         "createdAt": "2025-06-19T06:02:00Z"
+      },
+      {
+        "id": "2a69ce9c-32e9-49c9-ad7c-b631d890359b",
+        "type": "NORMAL",
+        "properties": {
+          "action": "GREY:send_email",
+          "label": "Send Email",
+          "icon": "mdi:email"
+        },
+        "next": null,
+        "createdAt": "2025-06-19T06:03:00Z"
       },
       {
         "id": "5be22de7-9673-448d-a1b5-dc23a8789b5c",
@@ -54,6 +59,7 @@
       }
     ],
     "response": "Here’s the flow for your request.",
-    "content": "If product is not available, create order. if available reduce product count."
+    "content": "If product is not available, create order. if available reduce product count and send email.",
+    "pseudocode": "BEGIN_CONTEXT\n\nIF Product.Available == FALSE THEN\nOrder.Create()\nELSE\nProduct.Count = Product.Count - 1\nEmail.Send()\nEND_IF\nEND_CONTEXT"
   }
 ]

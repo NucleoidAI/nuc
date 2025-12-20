@@ -169,7 +169,7 @@ async function list({
       },
     }));
 
-  await event.publish("KNOWLEDGES_LOADED", knowledgesInstances);
+  // await event.publish("KNOWLEDGES_LOADED", knowledgesInstances);
 
   return knowledgesInstances;
 }

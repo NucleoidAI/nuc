@@ -15,8 +15,6 @@ const ResponsibilityFlowDialog = ({
   selectedItem,
   aiResponse,
 }) => {
-  const DEFAULT_DIALOG_HEIGHT = "600px";
-
   return (
     <Dialog
       open={flowDialogOpen}
@@ -28,7 +26,6 @@ const ResponsibilityFlowDialog = ({
       <DialogContent
         sx={{
           width: "100%",
-          height: DEFAULT_DIALOG_HEIGHT,
         }}
       >
         {selectedItem && (

@@ -1,0 +1,63 @@
+[2025-12-03T07:39:05.239Z] [INFO] Email send attempt initiated
+{
+  "to": "halilibrahimcengel7@gmail.com",
+  "subject": "Product Order Created",
+  "hasHtml": false
+}
+[2025-12-03T07:39:05.241Z] [DEBUG] Creating nodemailer transporter
+[2025-12-03T07:39:05.243Z] [DEBUG] Sending email via SMTP
+[2025-12-03T07:39:06.309Z] [INFO] Email send: Success
+{
+  "action": "send",
+  "to": "halilibrahimcengel7@gmail.com",
+  "subject": "Product Order Created",
+  "success": true,
+  "messageId": "<24ab6260-fca9-9460-0122-76f674243ce3@gmail.com>"
+}
+[2025-12-03T07:39:06.309Z] [INFO] Email sent successfully
+{
+  "messageId": "<24ab6260-fca9-9460-0122-76f674243ce3@gmail.com>",
+  "to": "halilibrahimcengel7@gmail.com"
+}
+[2025-12-03T07:42:27.007Z] [INFO] Email send attempt initiated
+{
+  "to": "halilibrahimcengel7@gmail.com",
+  "subject": "Product Order Created - Battery Stock Replenishment",
+  "hasHtml": false
+}
+[2025-12-03T07:42:27.009Z] [DEBUG] Creating nodemailer transporter
+[2025-12-03T07:42:27.011Z] [DEBUG] Sending email via SMTP
+[2025-12-03T07:42:28.185Z] [INFO] Email send: Success
+{
+  "action": "send",
+  "to": "halilibrahimcengel7@gmail.com",
+  "subject": "Product Order Created - Battery Stock Replenishment",
+  "success": true,
+  "messageId": "<c6d69c73-ef67-5e1f-eaea-aea27ffe6b67@gmail.com>"
+}
+[2025-12-03T07:42:28.185Z] [INFO] Email sent successfully
+{
+  "messageId": "<c6d69c73-ef67-5e1f-eaea-aea27ffe6b67@gmail.com>",
+  "to": "halilibrahimcengel7@gmail.com"
+}
+[2025-12-03T11:53:25.027Z] [INFO] Email send attempt initiated
+{
+  "to": "halilibrahimcengel7@gmail.com",
+  "subject": "Product Order Created - Battery Stock Replenishment",
+  "hasHtml": false
+}
+[2025-12-03T11:53:25.030Z] [DEBUG] Creating nodemailer transporter
+[2025-12-03T11:53:25.032Z] [DEBUG] Sending email via SMTP
+[2025-12-03T11:53:26.158Z] [INFO] Email send: Success
+{
+  "action": "send",
+  "to": "halilibrahimcengel7@gmail.com",
+  "subject": "Product Order Created - Battery Stock Replenishment",
+  "success": true,
+  "messageId": "<8a067164-bc0c-bfb1-2679-f0eda686fbae@gmail.com>"
+}
+[2025-12-03T11:53:26.158Z] [INFO] Email sent successfully
+{
+  "messageId": "<8a067164-bc0c-bfb1-2679-f0eda686fbae@gmail.com>",
+  "to": "halilibrahimcengel7@gmail.com"
+}

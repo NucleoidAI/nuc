@@ -38,9 +38,22 @@ class Step extends Model {
 
   @AllowNull(false)
   @Default("IN_PROGRESS")
-  @IsIn([["IN_PROGRESS", "SUPERVISED_NEEDED", "COMPLETED", "FAILED"]])
+  @IsIn([
+    [
+      "IN_PROGRESS",
+      "SUPERVISED_NEEDED",
+      "COMPLETED",
+      "FAILED",
+      "WAITING_FOR_USER",
+    ],
+  ])
   @Column(DataType.STRING)
-  declare status: "IN_PROGRESS" | "SUPERVISED_NEEDED" | "COMPLETED" | "FAILED";
+  declare status:
+    | "IN_PROGRESS"
+    | "SUPERVISED_NEEDED"
+    | "COMPLETED"
+    | "FAILED"
+    | "WAITING_FOR_USER";
 
   @AllowNull(false)
   @Column(DataType.UUID)

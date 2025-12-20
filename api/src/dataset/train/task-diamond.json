@@ -2,10 +2,12 @@
   {
     "id": "0cbfbecd-5e0d-4924-b5fd-6de262285936",
     "description": "Check product availability, if not exist, create order.",
+    "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n    Order.Create()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "responsibility": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Product Order",
       "description": "Check product availability, if not exist, create order.",
+      "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n    Order.Create()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -16,9 +18,7 @@
             "label": "Check Product Availability",
             "icon": "mdi:check"
           },
-          "next": [
-            "51dca395-1d90-4a28-9bbc-233de9c1a207"
-          ],
+          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -29,12 +29,8 @@
             "label": "Make Decision",
             "icon": "mdi:decision"
           },
-          "true": [
-            "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-          ],
-          "false": [
-            "5be22de7-9673-448d-a1b5-dc23a8789b5c"
-          ],
+          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+          "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -71,6 +67,17 @@
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
+          "id": "2a69ce9c-32e9-49c9-ad7c-b631d890359b",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:send_email",
+            "label": "Send Email",
+            "icon": "mdi:email"
+          },
+          "next": "2a69ce9c-32e9-49c9-ad7c-b631d890359b",
+          "createdAt": "2025-06-19T06:03:00Z"
+        },
+        {
           "id": "f5987e15-d014-4e45-bc3b-7b1f53c4472b",
           "type": "NORMAL",
           "properties": {
@@ -95,6 +102,13 @@
         "id": "94e582fd-9190-4fb8-936a-327424ac6c77",
         "type": "TEXT",
         "text": "If Battery is not available, order 10 Battery",
+        "status": "COMPLETED",
+        "createdAt": "1970-01-20T22:08:14.337Z"
+      },
+      {
+        "id": "18a6dc62-9c58-49db-ae61-eef9042102b2",
+        "type": "TEXT",
+        "text": "Manager email address is halilibrahimcengel7@gmail.com.",
         "status": "COMPLETED",
         "createdAt": "1970-01-20T22:08:14.337Z"
       }
@@ -126,6 +140,17 @@
                 "quantity": 10
               },
               "comment": "Creating order"
+            },
+            {
+              "taskId": "a777ff167-c4f2-44dc-9e8f-e9e645682446",
+              "action": "GREY:send_email",
+              "status": "COMPLETED",
+              "parameters": {
+                "subject": "Product Order",
+                "text": "Product order created",
+                "to": "halilibrahimcengel7@gmail.com"
+              },
+              "comment": "Sending email"
             },
             {
               "taskId": "a77ff167-c4f2-44dc-9e8f-e9e645682446",

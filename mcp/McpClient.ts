@@ -36,10 +36,10 @@ class McpClient {
     };
   }) {
     try {
-      const serverPath = path.join(path.dirname(process.cwd()), 'mcp', 'servers', this.name);
+      const serverPath = path.join(path.dirname(process.cwd()), 'mcp', 'servers', this.name, 'index.ts');
       this.transport = new StdioClientTransport({
-        command: "ts-node",
-        args: [serverPath, `'${JSON.stringify({ credentials })}'`],
+        command: "npx",
+        args: ["tsx", serverPath, `'${JSON.stringify({ credentials })}'`],
       });
 
       this.mcp = new Client({ name: this.name, version: this.version });

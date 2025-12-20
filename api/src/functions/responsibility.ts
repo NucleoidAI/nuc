@@ -93,12 +93,12 @@ async function get({ responsibilityId }: { responsibilityId: string }) {
 
 async function patch({
   responsibilityId,
-  pseudo,
+  pseudocode,
   title,
   description,
 }: {
   responsibilityId: string;
-  pseudo?: string;
+  pseudocode?: string;
   title?: string;
   description?: string;
 }) {
@@ -109,7 +109,7 @@ async function patch({
   }
 
   await responsibility.update({
-    ...(pseudo && { pseudo }),
+    ...(pseudocode && { pseudocode }),
     ...(title && { title }),
     ...(description && { description }),
   });

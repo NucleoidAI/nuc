@@ -6,7 +6,7 @@
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Product Order",
       "description": "Check product availability, if not exist, create order.",
-      "pseudo": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n    Order.Create()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n    Order.Create()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -76,7 +76,7 @@
       "id": "ca7g8022-f343-570e-a171-3992963g7f70",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "pseudo": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -128,7 +128,7 @@
           "id": "019b0270-c493-7072-9d50-87952c5dc547",
           "type": "NORMAL",
           "properties": {
-            "action": "PLATFORM:get_human_answser",
+            "action": "PLATFORM:user_interaction",
             "label": "User selected product",
             "icon": "mdi:user"
           },

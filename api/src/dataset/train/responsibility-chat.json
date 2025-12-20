@@ -60,6 +60,6 @@
     ],
     "response": "Here’s the flow for your request.",
     "content": "If product is not available, create order. if available reduce product count and send email.",
-    "pseudo": "BEGIN_CONTEXT\n\nIF Product.Available == FALSE THEN\nOrder.Create()\nELSE\nProduct.Count = Product.Count - 1\nEmail.Send()\nEND_IF\nEND_CONTEXT"
+    "pseudocode": "BEGIN_CONTEXT\n\nIF Product.Available == FALSE THEN\nOrder.Create()\nELSE\nProduct.Count = Product.Count - 1\nEmail.Send()\nEND_IF\nEND_CONTEXT"
   }
 ]

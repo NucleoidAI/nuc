@@ -50,7 +50,7 @@
     }
   },
   {
-    "action": "PLATFORM:get_human_answser",
+    "action": "PLATFORM:user_interaction",
     "lib": "interaction",
     "inputSchema": {
       "type": "object",

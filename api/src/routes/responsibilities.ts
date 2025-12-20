@@ -58,17 +58,17 @@ router.put("/:responsibilityId", async (req, res) => {
     nodes
   );
 
-  const pseudo = await agent.toPseudo({
+  const pseudocode = await agent.toPseudo({
     content: result.description,
   });
 
   await responsibility.patch({
     responsibilityId,
-    pseudo,
+    pseudocode,
   });
 
   await event.publish("RESPONSIBILITY_CREATED", {
-    responsibility: { ...result, pseudo },
+    responsibility: { ...result, pseudocode },
   });
 
   res.status(200).json(result);
@@ -96,4 +96,3 @@ router.delete("/:responsibilityId", async (req, res) => {
 });
 
 export default router;
-

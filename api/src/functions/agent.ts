@@ -211,7 +211,7 @@ async function task({ taskId }: { taskId: string }) {
       comment,
       status: "COMPLETED",
     });
-  } else if (action === "PLATFORM:get_human_answser") {
+  } else if (action === "PLATFORM:user_interaction") {
     parameters.sessionId = sessionId;
     return await taskFn.addStep({
       taskId,
@@ -246,7 +246,7 @@ async function step({
     actionType = "MCP";
   } else if (action === "SUPERVISED") {
     actionType = "SUPERVISED";
-  } else if (action === "PLATFORM:get_human_answser") {
+  } else if (action === "PLATFORM:user_interaction") {
     actionType = "INTERACTION";
   } else {
     actionType = "ACTION";
@@ -505,29 +505,20 @@ async function chat({
       return;
     }
 
-    const { is_useful_for_session } = await generate({
-      dataset: dataset.train.humanInLoop,
-      context: conversationsData,
-      content,
-      json_format: "{ is_useful_for_session: <true|false> }",
+    await taskFn.updateStep({
+      stepId: waitingStep.id,
+      result: content,
+      status: "COMPLETED",
     });
 
-    if (is_useful_for_session) {
-      await taskFn.updateStep({
-        stepId: waitingStep.id,
-        result: content,
-        status: "COMPLETED",
-      });
+    await session.addConversation({
+      sessionId,
+      colleagueId,
+      role: "USER",
+      content,
+    });
 
-      await session.addConversation({
-        sessionId,
-        colleagueId,
-        role: "USER",
-        content,
-      });
-
-      return;
-    }
+    return;
   }
 
   const responsibilityDecision = await responsibilityDiamond({
@@ -552,7 +543,9 @@ async function chat({
 
     await taskFn.create({
       colleagueId,
-      description: responsibilityToTaskResponse.task.description,
+      description:
+        responsibilityToTaskResponse.task?.description ||
+        responsibilityToTaskResponse.task,
       responsibilityId: responsibilityDecision.responsibilityId,
       sessionId,
     });
@@ -621,13 +614,13 @@ async function chat({
 
 async function toPseudo({ content }: { content: string }) {
   const response = await generate({
-    dataset: dataset.train.pseudo,
+    dataset: dataset.train.pseudocode,
     context: [],
     content,
-    json_format: "{ pseudo: <PSEUDO> }",
+    json_format: "{ pseudocode: <PSEUDO> }",
   });
 
-  return response.pseudo;
+  return response.pseudocode;
 }
 
 export default {

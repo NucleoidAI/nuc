@@ -15,7 +15,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 
 const mockIntegrations = [
   {
@@ -74,6 +74,31 @@ const IntegrationsWidget = () => {
   const { getIntegrations, getAcquiredIntegrations, getTokens } =
     useAcquiredIntegrations();
   const { integrations } = getIntegrations();
+  const integrationsArr = useMemo(() => {
+    if (Array.isArray(integrations)) return integrations;
+
+    const nested = (integrations as any)?.content?.integrations;
+    if (Array.isArray(nested)) return nested;
+
+    const direct = (integrations as any)?.integrations;
+    if (Array.isArray(direct)) return direct;
+
+    if (typeof integrations === "string") {
+      try {
+        const parsed = JSON.parse(integrations);
+        const parsedArr =
+          (parsed as any)?.content?.integrations ??
+          (parsed as any)?.integrations ??
+          parsed;
+        return Array.isArray(parsedArr) ? parsedArr : [];
+      } catch {
+        return [];
+      }
+    }
+
+    return [];
+  }, [integrations]);
+
   const { acquiredIntegrations } = getAcquiredIntegrations(teamId);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -105,8 +130,10 @@ const IntegrationsWidget = () => {
 
   const handleOpen = (integration) => {
     setSelectedIntegration(integration);
-    const matchingSkills = integrations.filter(
-      (skill) => skill.provider === integration.provider
+    const matchingSkills = integrationsArr.filter(
+      (skill) =>
+        (skill.provider || "").toLowerCase() ===
+        (integration.provider || "").toLowerCase()
     );
     setRelatedSkills(matchingSkills);
     setOpen(true);
@@ -114,12 +141,12 @@ const IntegrationsWidget = () => {
 
   const handleClose = () => {
     setOpen(false);
-    setSelectedIntegration([]);
+    setSelectedIntegration(null);
     setRelatedSkills([]);
   };
 
-  const filteredData = integrations?.filter((skill) =>
-    skill.provider.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredData = integrationsArr.filter((skill) =>
+    (skill.provider || "").toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const filteredIntegrations = mockIntegrations.filter((skill) =>

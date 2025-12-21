@@ -13,7 +13,7 @@ import {
   alpha,
 } from "@mui/material";
 
-const CompactTaskList = ({
+const TaskList = ({
   tasks,
   selectedTask,
   onTaskSelect,
@@ -185,4 +185,4 @@ const CompactTaskList = ({
   );
 };
 
-export default CompactTaskList;
+export default TaskList;

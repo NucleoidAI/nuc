@@ -15,21 +15,38 @@ const AgentIntegration = ({ agent }) => {
 
   const { integrations } = getIntegrations();
 
+  const integrationsArr = React.useMemo(() => {
+    if (Array.isArray(integrations)) return integrations;
+
+    const nested = integrations?.content?.integrations;
+    if (Array.isArray(nested)) return nested;
+
+    const direct = integrations?.integrations;
+    if (Array.isArray(direct)) return direct;
+
+    if (typeof integrations === "string") {
+      try {
+        const parsed = JSON.parse(integrations);
+        const parsedArr =
+          parsed?.content?.integrations ?? parsed?.integrations ?? parsed;
+        return Array.isArray(parsedArr) ? parsedArr : [];
+      } catch {
+        return [];
+      }
+    }
+
+    return [];
+  }, [integrations]);
+
   const { acquiredIntegrations } = getColleagueAcquiredIntegrations(agent.id);
 
   const instructions = [
-    {
-      id: "1",
-      instruction: "Clone the repository from GitHub.",
-    },
+    { id: "1", instruction: "Clone the repository from GitHub." },
     {
       id: "2",
       instruction: "Install the necessary dependencies using `npm install`.",
     },
-    {
-      id: "3",
-      instruction: "Run the project using `npm start`.",
-    },
+    { id: "3", instruction: "Run the project using `npm start`." },
     {
       id: "4",
       instruction: "Follow the documentation for further integration steps.",
@@ -103,9 +120,9 @@ const AgentIntegration = ({ agent }) => {
 
         {selectedTab === 0 && (
           <Grid container spacing={2}>
-            {integrations
-              ?.filter((skill) => skill.direction === "INCOMING")
-              ?.map((skill) => (
+            {integrationsArr
+              .filter((skill) => skill.direction === "INCOMING")
+              .map((skill) => (
                 <Integrations
                   key={skill.id}
                   title={skill.provider}
@@ -121,9 +138,9 @@ const AgentIntegration = ({ agent }) => {
 
         {selectedTab === 1 && (
           <Grid container spacing={2}>
-            {integrations
-              ?.filter((skill) => skill.direction === "OUTGOING")
-              ?.map((skill) => (
+            {integrationsArr
+              .filter((skill) => skill.direction === "OUTGOING")
+              .map((skill) => (
                 <Integrations
                   key={skill.id}
                   title={skill.provider}

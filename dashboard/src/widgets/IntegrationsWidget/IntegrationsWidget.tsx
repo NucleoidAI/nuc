@@ -77,19 +77,17 @@ const IntegrationsWidget = () => {
   const integrationsArr = useMemo(() => {
     if (Array.isArray(integrations)) return integrations;
 
-    const nested = (integrations as any)?.content?.integrations;
+    const nested = integrations?.content?.integrations;
     if (Array.isArray(nested)) return nested;
 
-    const direct = (integrations as any)?.integrations;
+    const direct = integrations?.integrations;
     if (Array.isArray(direct)) return direct;
 
     if (typeof integrations === "string") {
       try {
         const parsed = JSON.parse(integrations);
         const parsedArr =
-          (parsed as any)?.content?.integrations ??
-          (parsed as any)?.integrations ??
-          parsed;
+          parsed?.content?.integrations ?? parsed?.integrations ?? parsed;
         return Array.isArray(parsedArr) ? parsedArr : [];
       } catch {
         return [];

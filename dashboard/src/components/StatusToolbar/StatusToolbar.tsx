@@ -34,7 +34,7 @@ function StatusToolbar({ handleChange, selectedStatus, statuses }) {
             {statuses.map((option) => {
               let displayOption = option;
               if (option === "ANSWERED") displayOption = "Answered";
-              if (option === "DONE") displayOption = "Done";
+              if (option === "COMPLETED") displayOption = "Done";
               if (option === "IN_PROGRESS") displayOption = "In Progress";
 
               return (

@@ -45,7 +45,7 @@ const TaskResultDialog = ({ open, setOpen, task }) => {
           textAlign: "center",
         }}
       >
-        Task details
+        Task Details
       </DialogTitle>
       <DialogContent
         sx={{

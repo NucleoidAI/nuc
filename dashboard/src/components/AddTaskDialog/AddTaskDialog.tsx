@@ -20,7 +20,7 @@ import React, { useEffect, useState } from "react";
 
 function AddTaskDialog({ open, setOpen, createTask, agentId }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [taskLoaded] = useEvent("TASK_LOADED", null);
+  const [taskCreated] = useEvent("TASK_CREATED", null);
 
   const initialValues = {
     description: "",
@@ -50,11 +50,13 @@ function AddTaskDialog({ open, setOpen, createTask, agentId }) {
   });
 
   useEffect(() => {
-    setOpen(false);
-    reset();
-    setIsSubmitting(false);
+    if (taskCreated) {
+      setOpen(false);
+      reset();
+      setIsSubmitting(false);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [taskLoaded]);
+  }, [taskCreated]);
 
   return (
     <Dialog

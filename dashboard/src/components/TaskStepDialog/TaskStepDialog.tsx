@@ -15,7 +15,13 @@ import React, { useCallback, useState } from "react";
 
 const TaskStepDialog = ({ open, setOpen, results }) => {
   const [viewMode, setViewMode] = useState("table");
-  const { isJson, parsedResult } = parseJsonResult(results.result);
+
+  const result = results?.result ?? "";
+  const comment = results?.comment ?? "-";
+  const status = results?.status ?? "-";
+  const createdAt = results?.createdAt ?? null;
+
+  const { isJson, parsedResult } = parseJsonResult(result);
 
   const handleClose = useCallback(() => {
     setOpen(false);
@@ -26,9 +32,10 @@ const TaskStepDialog = ({ open, setOpen, results }) => {
   }, []);
 
   const renderResult = () => {
-    if (!isJson) {
-      return <Typography variant="body1">{parsedResult}</Typography>;
-    }
+    if (!isJson)
+      return (
+        <Typography variant="body1">{String(parsedResult ?? "")}</Typography>
+      );
 
     return viewMode === "table" ? (
       <ResultTable data={parsedResult} />
@@ -47,6 +54,7 @@ const TaskStepDialog = ({ open, setOpen, results }) => {
       >
         Step details
       </DialogTitle>
+
       <DialogContent
         sx={{
           display: "flex",
@@ -57,14 +65,20 @@ const TaskStepDialog = ({ open, setOpen, results }) => {
         }}
       >
         <Box>
-          <InfoCard label="Comment" value={results.comment} />
+          <InfoCard label="Comment" value={comment} />
           <InfoCard
             label="Status"
-            value={results.status === "IN_PROGRESS" ? "In Progress" : "Done"}
+            value={
+              status === "IN_PROGRESS"
+                ? "In Progress"
+                : status === "DONE"
+                ? "Done"
+                : "-"
+            }
           />
           <InfoCard
             label="Created At"
-            value={new Date(results.createdAt).toLocaleTimeString()}
+            value={createdAt ? new Date(createdAt).toLocaleTimeString() : "-"}
           />
           <InfoCard
             label="Result"

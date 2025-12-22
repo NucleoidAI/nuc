@@ -70,7 +70,11 @@ const TaskDetails = ({
   }
 
   const statusLabel =
-    task.status === "IN_PROGRESS" ? "In Progress" : "Completed";
+    task.status === "IN_PROGRESS"
+      ? "In Progress"
+      : task.status === "COMPLETED"
+      ? "Completed"
+      : "Waiting for user";
 
   return (
     <Stack spacing={2}>
@@ -202,7 +206,11 @@ const TaskDetails = ({
                         label={
                           step.status === "IN_PROGRESS"
                             ? "In Progress"
-                            : "Completed"
+                            : step.status === "COMPLETED"
+                            ? "Completed"
+                            : step.status === "WAITING_FOR_USER"
+                            ? "Waiting for user"
+                            : "-"
                         }
                         sx={{
                           fontWeight: 800,
@@ -210,13 +218,17 @@ const TaskDetails = ({
                           bgcolor:
                             step.status === "IN_PROGRESS"
                               ? "primary.main"
-                              : "success.main",
+                              : step.status === "COMPLETED"
+                              ? "success.main"
+                              : "warning.main",
                           color: "common.white",
                           "&:hover": {
                             bgcolor:
                               step.status === "IN_PROGRESS"
                                 ? "primary.main"
-                                : "success.main",
+                                : step.status === "COMPLETED"
+                                ? "success.main"
+                                : "warning.main",
                           },
                         }}
                       />

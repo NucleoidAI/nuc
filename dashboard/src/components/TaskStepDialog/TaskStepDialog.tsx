@@ -81,8 +81,10 @@ const TaskStepDialog = ({
             value={
               status === "IN_PROGRESS"
                 ? "In Progress"
-                : status === "DONE"
-                ? "Done"
+                : status === "COMPLETED"
+                ? "Completed"
+                : status === "WAITING_FOR_USER"
+                ? "Waiting for user"
                 : "-"
             }
           />

@@ -9,6 +9,21 @@ export type Integration = {
   refreshToken: string;
 };
 
+export type IntegrationSkill = {
+  id: string;
+  provider: string;
+  title?: string;
+  description?: string;
+  direction: "INCOMING" | "OUTGOING";
+  logo?: string;
+  oauth?: {
+    scope: string;
+    tokenUrl: string;
+    clientId: string;
+    redirectUri: string;
+  };
+};
+
 function useIntegrations() {
   const { Api } = useApi();
 
@@ -45,6 +60,8 @@ function useIntegrations() {
   const getIntegrations = useCallback(() => {
     const { data, loading, error } = Api(() => http.get(`/integrations`), []);
 
+    const integrations: IntegrationSkill[] = data?.content?.integrations ?? [];
+
     if (data) {
       publish("INTEGRATIONS_LOADED", {
         integrations: data,
@@ -52,7 +69,7 @@ function useIntegrations() {
     }
 
     return {
-      integrations: data,
+      integrations,
       loading,
       error,
     };

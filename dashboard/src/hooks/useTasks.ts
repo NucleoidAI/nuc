@@ -1,4 +1,5 @@
 import http from "@canmingir/link/platform/http";
+import { normalizeResult } from "../utils/formatters";
 import useApi from "./useApi";
 import { useState } from "react";
 
@@ -27,16 +28,16 @@ function useTasks(agentId: string) {
       [agentId, ...eventDependencies, ...fetchState]
     );
 
-    if (data) {
-      publish("TASK_LOADED", data);
-    }
+    const tasks = Array.isArray(data)
+      ? data.map((t) => ({
+          ...t,
+          result: normalizeResult(t.result),
+        }))
+      : [];
 
-    return {
-      tasks: data,
-      loading,
-      error,
-      fetch,
-    };
+    if (data) publish("TASK_LOADED", data);
+
+    return { tasks, loading, error, fetch };
   };
 
   const result = getTasks();

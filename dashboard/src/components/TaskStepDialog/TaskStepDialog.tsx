@@ -13,9 +13,25 @@ import {
 } from "@mui/material";
 import React, { useCallback, useState } from "react";
 
-const TaskStepDialog = ({ open, setOpen, results }) => {
+const TaskStepDialog = ({
+  open,
+  setOpen,
+  step,
+}: {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  step: {
+    comment: string;
+    createdAt: string;
+    status: string;
+    result: string | object | object[];
+  };
+}) => {
   const [viewMode, setViewMode] = useState("table");
-  const { isJson, parsedResult } = parseJsonResult(results.result);
+
+  const { result, comment, status, createdAt } = step;
+
+  const { isJson, parsedResult } = parseJsonResult(result);
 
   const handleClose = useCallback(() => {
     setOpen(false);
@@ -26,9 +42,10 @@ const TaskStepDialog = ({ open, setOpen, results }) => {
   }, []);
 
   const renderResult = () => {
-    if (!isJson) {
-      return <Typography variant="body1">{parsedResult}</Typography>;
-    }
+    if (!isJson)
+      return (
+        <Typography variant="body1">{String(parsedResult ?? "")}</Typography>
+      );
 
     return viewMode === "table" ? (
       <ResultTable data={parsedResult} />
@@ -47,6 +64,7 @@ const TaskStepDialog = ({ open, setOpen, results }) => {
       >
         Step details
       </DialogTitle>
+
       <DialogContent
         sx={{
           display: "flex",
@@ -57,14 +75,22 @@ const TaskStepDialog = ({ open, setOpen, results }) => {
         }}
       >
         <Box>
-          <InfoCard label="Comment" value={results.comment} />
+          <InfoCard label="Comment" value={comment} />
           <InfoCard
             label="Status"
-            value={results.status === "IN_PROGRESS" ? "In Progress" : "Done"}
+            value={
+              status === "IN_PROGRESS"
+                ? "In Progress"
+                : status === "COMPLETED"
+                ? "Completed"
+                : status === "WAITING_FOR_USER"
+                ? "Waiting for user"
+                : "-"
+            }
           />
           <InfoCard
             label="Created At"
-            value={new Date(results.createdAt).toLocaleTimeString()}
+            value={createdAt ? new Date(createdAt).toLocaleTimeString() : "-"}
           />
           <InfoCard
             label="Result"

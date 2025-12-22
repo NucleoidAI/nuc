@@ -9,7 +9,11 @@ import useAgent from "../../hooks/useAgent";
 
 import { Box, Grid } from "@mui/material";
 
-const AgentIntegration = ({ agent }) => {
+const AgentIntegration = ({
+  agent,
+}: {
+  agent: { id: string; name: string };
+}) => {
   const { getIntegrations, getColleagueAcquiredIntegrations, getTokens } =
     useAcquiredIntegrations();
 
@@ -18,18 +22,12 @@ const AgentIntegration = ({ agent }) => {
   const { acquiredIntegrations } = getColleagueAcquiredIntegrations(agent.id);
 
   const instructions = [
-    {
-      id: "1",
-      instruction: "Clone the repository from GitHub.",
-    },
+    { id: "1", instruction: "Clone the repository from GitHub." },
     {
       id: "2",
       instruction: "Install the necessary dependencies using `npm install`.",
     },
-    {
-      id: "3",
-      instruction: "Run the project using `npm start`.",
-    },
+    { id: "3", instruction: "Run the project using `npm start`." },
     {
       id: "4",
       instruction: "Follow the documentation for further integration steps.",
@@ -104,8 +102,8 @@ const AgentIntegration = ({ agent }) => {
         {selectedTab === 0 && (
           <Grid container spacing={2}>
             {integrations
-              ?.filter((skill) => skill.direction === "INCOMING")
-              ?.map((skill) => (
+              .filter((skill) => skill.direction === "INCOMING")
+              .map((skill) => (
                 <Integrations
                   key={skill.id}
                   title={skill.provider}
@@ -122,8 +120,8 @@ const AgentIntegration = ({ agent }) => {
         {selectedTab === 1 && (
           <Grid container spacing={2}>
             {integrations
-              ?.filter((skill) => skill.direction === "OUTGOING")
-              ?.map((skill) => (
+              .filter((skill) => skill.direction === "OUTGOING")
+              .map((skill) => (
                 <Integrations
                   key={skill.id}
                   title={skill.provider}

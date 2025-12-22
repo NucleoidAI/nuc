@@ -74,6 +74,7 @@ const IntegrationsWidget = () => {
   const { getIntegrations, getAcquiredIntegrations, getTokens } =
     useAcquiredIntegrations();
   const { integrations } = getIntegrations();
+
   const { acquiredIntegrations } = getAcquiredIntegrations(teamId);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -106,7 +107,9 @@ const IntegrationsWidget = () => {
   const handleOpen = (integration) => {
     setSelectedIntegration(integration);
     const matchingSkills = integrations.filter(
-      (skill) => skill.provider === integration.provider
+      (skill) =>
+        (skill.provider || "").toLowerCase() ===
+        (integration.provider || "").toLowerCase()
     );
     setRelatedSkills(matchingSkills);
     setOpen(true);
@@ -114,12 +117,12 @@ const IntegrationsWidget = () => {
 
   const handleClose = () => {
     setOpen(false);
-    setSelectedIntegration([]);
+    setSelectedIntegration(null);
     setRelatedSkills([]);
   };
 
-  const filteredData = integrations?.filter((skill) =>
-    skill.provider.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredData = integrations.filter((skill) =>
+    (skill.provider || "").toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const filteredIntegrations = mockIntegrations.filter((skill) =>

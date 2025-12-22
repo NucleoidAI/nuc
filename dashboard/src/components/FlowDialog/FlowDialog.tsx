@@ -1,7 +1,20 @@
 import TaskTree from "./TaskTree";
 import { useMemo } from "react";
 
-const FlowDialog = ({ open, setOpen, steps }) => {
+const FlowDialog = ({
+  open,
+  setOpen,
+  steps,
+}: {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  steps: Array<{
+    comment: string;
+    createdAt: string;
+    status: string;
+    result: string | object | object[];
+  }>;
+}) => {
   const treeData = useMemo(() => {
     if (!steps || steps.length === 0) return null;
 

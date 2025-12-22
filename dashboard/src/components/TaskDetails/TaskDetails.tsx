@@ -32,7 +32,7 @@ const TaskDetails = ({
     status: string;
     createdAt: string;
     comment: string;
-    result: string | object | unknown[];
+    result: string | object | object[];
     description: string;
     id: string;
   };
@@ -40,7 +40,7 @@ const TaskDetails = ({
     comment: string;
     createdAt: string;
     status: string;
-    result: string | object | unknown[];
+    result: string | object | object[];
   }>;
   agentId: string;
   getSteps: (taskId: string) => void;
@@ -53,7 +53,7 @@ const TaskDetails = ({
     comment: string;
     createdAt: string;
     status: string;
-    result: string | object | unknown[];
+    result: string | object | object[];
   }>({
     comment: "",
     createdAt: "",

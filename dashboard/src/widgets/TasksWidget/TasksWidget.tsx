@@ -33,7 +33,7 @@ function TasksWidget({ agentId }: { agentId: string }) {
     status: string;
     createdAt: string;
     comment: string;
-    result: string | object | unknown[];
+    result: string | object | object[];
   }>({
     id: "",
     description: "",

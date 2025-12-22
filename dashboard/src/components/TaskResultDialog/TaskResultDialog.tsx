@@ -23,7 +23,7 @@ const TaskResultDialog = ({
     comment: string;
     createdAt: string;
     status: string;
-    result: string | object | unknown[];
+    result: string | object | object[];
   };
 }) => {
   const [viewMode, setViewMode] = useState("table");

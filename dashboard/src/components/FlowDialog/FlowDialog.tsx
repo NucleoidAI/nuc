@@ -12,7 +12,7 @@ const FlowDialog = ({
     comment: string;
     createdAt: string;
     status: string;
-    result: string | object | unknown[];
+    result: string | object | object[];
   }>;
 }) => {
   const treeData = useMemo(() => {

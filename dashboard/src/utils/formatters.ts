@@ -24,7 +24,7 @@ export const normalizeResult = (result) => {
   if (result === null) return null;
 
   if (typeof result === "object")
-    return result as Record<string, unknown> | unknown[];
+    return result as Record<string, unknown> | object[];
 
   if (typeof result === "string") {
     const s = result.trim();

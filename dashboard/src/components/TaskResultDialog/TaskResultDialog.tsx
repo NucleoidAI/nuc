@@ -1,7 +1,6 @@
 import CodeBlock from "../CodeBlock/CodeBlock";
 import InfoCard from "../InfoCard/InfoCard";
 import { ResultTable } from "../ResultTable/ResultTable";
-import { parseJsonResult } from "../../utils/formatters";
 
 import {
   Box,
@@ -24,11 +23,10 @@ const TaskResultDialog = ({
     comment: string;
     createdAt: string;
     status: string;
-    result: string | object | null;
+    result: string | object | unknown[];
   };
 }) => {
   const [viewMode, setViewMode] = useState("table");
-  const { isJson, parsedResult } = parseJsonResult(task.result);
 
   const handleClose = useCallback(() => {
     setOpen(false);
@@ -39,16 +37,22 @@ const TaskResultDialog = ({
   }, []);
 
   const renderResult = () => {
-    if (!isJson) {
-      return <Typography variant="body1">{parsedResult}</Typography>;
+    const result = task.result;
+    if (result === null)
+      return <Typography variant="body1">No result available</Typography>;
+
+    if (typeof result === "string") {
+      return <Typography variant="body1">{result}</Typography>;
     }
 
     return viewMode === "table" ? (
-      <ResultTable data={parsedResult} />
+      <ResultTable data={result} />
     ) : (
-      <CodeBlock>{JSON.stringify(parsedResult, null, 2)}</CodeBlock>
+      <CodeBlock>{JSON.stringify(result, null, 2)}</CodeBlock>
     );
   };
+
+  const isJson = typeof task.result === "object" && task.result !== null;
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">

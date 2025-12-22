@@ -20,6 +20,30 @@ export const parseJsonResult = (result) => {
   }
 };
 
+export const normalizeResult = (result) => {
+  if (result === null) return null;
+
+  if (typeof result === "object")
+    return result as Record<string, unknown> | unknown[];
+
+  if (typeof result === "string") {
+    const s = result.trim();
+    const looksJson =
+      (s.startsWith("{") && s.endsWith("}")) ||
+      (s.startsWith("[") && s.endsWith("]"));
+
+    if (!looksJson) return result;
+
+    try {
+      return JSON.parse(s);
+    } catch {
+      return result;
+    }
+  }
+
+  return String(result);
+};
+
 export const getAllKeys = (data) => {
   if (Array.isArray(data)) {
     if (data.every((item) => typeof item === "object" && item !== null)) {

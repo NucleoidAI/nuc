@@ -27,7 +27,14 @@ function TasksWidget({ agentId }: { agentId: string }) {
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [openCreate, setOpenCreate] = useState(false);
   const [query, setQuery] = useState("");
-  const [selectedTask, setSelectedTask] = useState({
+  const [selectedTask, setSelectedTask] = useState<{
+    id: string;
+    description: string;
+    status: string;
+    createdAt: string;
+    comment: string;
+    result: string | object | unknown[];
+  }>({
     id: "",
     description: "",
     status: "",

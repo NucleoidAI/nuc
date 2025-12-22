@@ -45,10 +45,10 @@ const TaskDetails = ({
   agentId: string;
   getSteps: (taskId: string) => void;
 }) => {
-  const [openFlow, setOpenFlow] = useState(false);
-  const [stepResult, setStepResult] = useState(false);
-  const [taskResult, setTaskResult] = useState(false);
-  const [supervisingTask, setSupervisingTask] = useState(false);
+  const [openFlow, setOpenFlow] = useState<boolean>(false);
+  const [stepResult, setStepResult] = useState<boolean>(false);
+  const [taskResult, setTaskResult] = useState<boolean>(false);
+  const [supervisingTask, setSupervisingTask] = useState<boolean>(false);
   const [step, setStep] = useState<{
     comment: string;
     createdAt: string;

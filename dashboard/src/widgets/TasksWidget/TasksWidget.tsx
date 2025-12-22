@@ -24,9 +24,11 @@ import React, { useEffect, useMemo, useState } from "react";
 function TasksWidget({ agentId }: { agentId: string }) {
   const { tasks, steps, getSteps, createTask } = useTasks(agentId);
 
-  const [selectedStatus, setSelectedStatus] = useState("All");
-  const [openCreate, setOpenCreate] = useState(false);
-  const [query, setQuery] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState<
+    "All" | "COMPLETED" | "IN_PROGRESS"
+  >("All");
+  const [openCreate, setOpenCreate] = useState<boolean>(false);
+  const [query, setQuery] = useState<string>("");
   const [selectedTask, setSelectedTask] = useState<{
     id: string;
     description: string;

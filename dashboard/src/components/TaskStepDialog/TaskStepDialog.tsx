@@ -13,13 +13,23 @@ import {
 } from "@mui/material";
 import React, { useCallback, useState } from "react";
 
-const TaskStepDialog = ({ open, setOpen, results }) => {
+const TaskStepDialog = ({
+  open,
+  setOpen,
+  step,
+}: {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  step: {
+    comment: string;
+    createdAt: string;
+    status: string;
+    result: string | object | null;
+  };
+}) => {
   const [viewMode, setViewMode] = useState("table");
 
-  const result = results?.result ?? "";
-  const comment = results?.comment ?? "-";
-  const status = results?.status ?? "-";
-  const createdAt = results?.createdAt ?? null;
+  const { result, comment, status, createdAt } = step;
 
   const { isJson, parsedResult } = parseJsonResult(result);
 

@@ -9,7 +9,11 @@ import useAgent from "../../hooks/useAgent";
 
 import { Box, Grid } from "@mui/material";
 
-const AgentIntegration = ({ agent }) => {
+const AgentIntegration = ({
+  agent,
+}: {
+  agent: { id: string; name: string };
+}) => {
   const { getIntegrations, getColleagueAcquiredIntegrations, getTokens } =
     useAcquiredIntegrations();
 

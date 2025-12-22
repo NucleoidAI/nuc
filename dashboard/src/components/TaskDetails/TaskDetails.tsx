@@ -22,12 +22,41 @@ import {
 } from "@mui/material";
 import React, { useMemo, useState } from "react";
 
-const TaskDetails = ({ task, steps, agentId, getSteps }) => {
+const TaskDetails = ({
+  task,
+  steps,
+  agentId,
+  getSteps,
+}: {
+  task: {
+    status: string;
+    createdAt: string;
+    comment: string;
+    result: string | object | null;
+    description: string;
+    id: string;
+  } | null;
+  steps: Array<{
+    comment: string;
+    createdAt: string;
+    status: string;
+    result: string | object | null;
+  }> | null;
+  agentId: string;
+  getSteps: (taskId: string) => void;
+}) => {
   const [openFlow, setOpenFlow] = useState(false);
   const [stepResult, setStepResult] = useState(false);
   const [taskResult, setTaskResult] = useState(false);
   const [supervisingTask, setSupervisingTask] = useState(false);
-  const [results, setResults] = useState(null);
+  const [step, setStep] = useState({
+    comment: "",
+    createdAt: "",
+    status: "",
+    result: null,
+  });
+
+  console.log("results", step);
 
   const safeSteps = useMemo(() => (Array.isArray(steps) ? steps : []), [steps]);
 
@@ -197,7 +226,7 @@ const TaskDetails = ({ task, steps, agentId, getSteps }) => {
                         size="small"
                         color="default"
                         onClick={() => {
-                          setResults(step);
+                          setStep(step);
                           setStepResult(true);
                         }}
                         disabled={step.status === "IN_PROGRESS"}
@@ -221,11 +250,7 @@ const TaskDetails = ({ task, steps, agentId, getSteps }) => {
 
       <TaskResultDialog open={taskResult} setOpen={setTaskResult} task={task} />
 
-      <TaskStepDialog
-        open={stepResult}
-        setOpen={setStepResult}
-        results={results}
-      />
+      <TaskStepDialog open={stepResult} setOpen={setStepResult} step={step} />
 
       <FlowDialog open={openFlow} setOpen={setOpenFlow} steps={steps} />
     </Stack>

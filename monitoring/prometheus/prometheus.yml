@@ -9,7 +9,7 @@ storage:
 scrape_configs:
   - job_name: "prometheus"
     static_configs:
-      - targets: ["http://98.88.24.46:9090"]
+      - targets: ["98.88.24.46:9090"]
 
   - job_name: "greycollar-land"
     static_configs:

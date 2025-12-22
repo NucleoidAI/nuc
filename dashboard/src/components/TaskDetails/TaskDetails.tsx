@@ -39,7 +39,8 @@ const TaskDetails = ({ task, steps, agentId, getSteps }) => {
     );
   }
 
-  const statusLabel = task.status === "IN_PROGRESS" ? "In Progress" : "Done";
+  const statusLabel =
+    task.status === "IN_PROGRESS" ? "In Progress" : "Completed";
 
   return (
     <Stack spacing={2}>
@@ -169,7 +170,9 @@ const TaskDetails = ({ task, steps, agentId, getSteps }) => {
                       <Chip
                         size="small"
                         label={
-                          step.status === "IN_PROGRESS" ? "Running" : "Done"
+                          step.status === "IN_PROGRESS"
+                            ? "In Progress"
+                            : "Completed"
                         }
                         sx={{
                           fontWeight: 800,

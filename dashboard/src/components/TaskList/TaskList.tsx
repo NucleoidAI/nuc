@@ -135,7 +135,7 @@ const TaskList = ({
                   >
                     <Chip
                       size="small"
-                      label={isInProgress ? "In Progress" : "Done"}
+                      label={isInProgress ? "In Progress" : "Completed"}
                       sx={{
                         mt: 1,
                         height: 20,

@@ -24,7 +24,7 @@ const TaskStepDialog = ({
     comment: string;
     createdAt: string;
     status: string;
-    result: string | object | null;
+    result: string | object | unknown[];
   };
 }) => {
   const [viewMode, setViewMode] = useState("table");

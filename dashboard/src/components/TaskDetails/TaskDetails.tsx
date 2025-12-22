@@ -20,7 +20,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 
 const TaskDetails = ({
   task,
@@ -32,16 +32,16 @@ const TaskDetails = ({
     status: string;
     createdAt: string;
     comment: string;
-    result: string | object | null;
+    result: string | object | unknown[];
     description: string;
     id: string;
-  } | null;
+  };
   steps: Array<{
     comment: string;
     createdAt: string;
     status: string;
-    result: string | object | null;
-  }> | null;
+    result: string | object | unknown[];
+  }>;
   agentId: string;
   getSteps: (taskId: string) => void;
 }) => {
@@ -49,16 +49,17 @@ const TaskDetails = ({
   const [stepResult, setStepResult] = useState(false);
   const [taskResult, setTaskResult] = useState(false);
   const [supervisingTask, setSupervisingTask] = useState(false);
-  const [step, setStep] = useState({
+  const [step, setStep] = useState<{
+    comment: string;
+    createdAt: string;
+    status: string;
+    result: string | object | unknown[];
+  }>({
     comment: "",
     createdAt: "",
     status: "",
-    result: null,
+    result: "",
   });
-
-  console.log("results", step);
-
-  const safeSteps = useMemo(() => (Array.isArray(steps) ? steps : []), [steps]);
 
   if (!task) {
     return (
@@ -171,8 +172,8 @@ const TaskDetails = ({
               </TableRow>
             </TableHead>
             <TableBody>
-              {safeSteps &&
-                safeSteps.map((step, i) => (
+              {steps &&
+                steps.map((step, i) => (
                   <TableRow key={i} hover>
                     <TableCell sx={{ maxWidth: 320 }}>
                       <Typography

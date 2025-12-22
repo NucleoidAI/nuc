@@ -12,8 +12,8 @@ const FlowDialog = ({
     comment: string;
     createdAt: string;
     status: string;
-    result: string | object | null;
-  }> | null;
+    result: string | object | unknown[];
+  }>;
 }) => {
   const treeData = useMemo(() => {
     if (!steps || steps.length === 0) return null;

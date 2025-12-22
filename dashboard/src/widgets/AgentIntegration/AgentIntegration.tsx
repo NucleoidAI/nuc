@@ -15,29 +15,6 @@ const AgentIntegration = ({ agent }) => {
 
   const { integrations } = getIntegrations();
 
-  const integrationsArr = React.useMemo(() => {
-    if (Array.isArray(integrations)) return integrations;
-
-    const nested = integrations?.content?.integrations;
-    if (Array.isArray(nested)) return nested;
-
-    const direct = integrations?.integrations;
-    if (Array.isArray(direct)) return direct;
-
-    if (typeof integrations === "string") {
-      try {
-        const parsed = JSON.parse(integrations);
-        const parsedArr =
-          parsed?.content?.integrations ?? parsed?.integrations ?? parsed;
-        return Array.isArray(parsedArr) ? parsedArr : [];
-      } catch {
-        return [];
-      }
-    }
-
-    return [];
-  }, [integrations]);
-
   const { acquiredIntegrations } = getColleagueAcquiredIntegrations(agent.id);
 
   const instructions = [
@@ -120,7 +97,7 @@ const AgentIntegration = ({ agent }) => {
 
         {selectedTab === 0 && (
           <Grid container spacing={2}>
-            {integrationsArr
+            {integrations
               .filter((skill) => skill.direction === "INCOMING")
               .map((skill) => (
                 <Integrations
@@ -138,7 +115,7 @@ const AgentIntegration = ({ agent }) => {
 
         {selectedTab === 1 && (
           <Grid container spacing={2}>
-            {integrationsArr
+            {integrations
               .filter((skill) => skill.direction === "OUTGOING")
               .map((skill) => (
                 <Integrations

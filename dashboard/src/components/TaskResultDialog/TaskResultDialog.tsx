@@ -13,7 +13,20 @@ import {
 } from "@mui/material";
 import React, { useCallback, useState } from "react";
 
-const TaskResultDialog = ({ open, setOpen, task }) => {
+const TaskResultDialog = ({
+  open,
+  setOpen,
+  task,
+}: {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  task: {
+    comment: string;
+    createdAt: string;
+    status: string;
+    result: string | object | null;
+  };
+}) => {
   const [viewMode, setViewMode] = useState("table");
   const { isJson, parsedResult } = parseJsonResult(task.result);
 

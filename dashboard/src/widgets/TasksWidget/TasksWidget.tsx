@@ -21,13 +21,20 @@ import {
 } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
 
-function TasksWidgetV2({ agentId }) {
+function TasksWidget({ agentId }: { agentId: string }) {
   const { tasks, steps, getSteps, createTask } = useTasks(agentId);
 
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [openCreate, setOpenCreate] = useState(false);
   const [query, setQuery] = useState("");
-  const [selectedTask, setSelectedTask] = useState(null);
+  const [selectedTask, setSelectedTask] = useState({
+    id: "",
+    description: "",
+    status: "",
+    createdAt: "",
+    comment: "",
+    result: "",
+  });
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -245,4 +252,4 @@ function TasksWidgetV2({ agentId }) {
   );
 }
 
-export default TasksWidgetV2;
+export default TasksWidget;

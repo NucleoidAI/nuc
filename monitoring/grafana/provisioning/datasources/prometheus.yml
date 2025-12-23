@@ -4,6 +4,6 @@ datasources:
   - name: Prometheus
     type: prometheus
     access: proxy
-    url: http://98.88.24.46:9090
+    url: https://prometheus.land.greycollar.ai
     isDefault: true
     editable: true

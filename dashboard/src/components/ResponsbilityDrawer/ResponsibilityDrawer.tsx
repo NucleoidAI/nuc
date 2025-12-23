@@ -83,7 +83,17 @@ const ResponsibilityDrawer = ({
   };
 
   return (
-    <Drawer anchor="right" open={drawerOpen} onClose={handleDrawerClose}>
+    <Drawer
+      anchor="right"
+      open={drawerOpen}
+      onClose={handleDrawerClose}
+      sx={{
+        zIndex: (theme) => theme.zIndex.modal + 2,
+        "& .MuiDrawer-paper": {
+          zIndex: (theme) => theme.zIndex.modal + 2,
+        },
+      }}
+    >
       <Box
         sx={{
           width: getDrawerWidth(),

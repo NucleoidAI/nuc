@@ -1,14 +1,24 @@
 import AgentLayout from "../../layouts/AgentLayout";
 import { Iconify } from "@canmingir/link/platform/components";
-import React from "react";
 
 import { Box, Button, Dialog, DialogContent } from "@mui/material";
+import React, { useCallback } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const AgentDrawer = ({ open, onClose, agent, initialTab }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleClose = useCallback(() => {
+    onClose?.();
+
+    navigate(location.pathname, { replace: true });
+  }, [navigate, location.pathname, onClose]);
+
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       maxWidth="xl"
       sx={{
         "& .MuiDialog-paper": {

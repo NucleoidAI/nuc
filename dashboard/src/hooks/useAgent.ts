@@ -8,7 +8,12 @@ export type Agent = {
   name: string;
   icon: string;
   teamId: string;
-  aiEngineId: string;
+  AIEngine: {
+    id: string;
+    name: string;
+    icon: string;
+    description: string;
+  };
   projectId?: string;
   description?: string;
 };
@@ -66,7 +71,7 @@ function useAgent() {
       icon: agent.icon,
       projectId: agent.projectId,
       teamId: agent.teamId,
-      aiEngineId: agent.aiEngineId,
+      aiEngineId: agent.AIEngine.id,
       description: agent.description,
     });
 

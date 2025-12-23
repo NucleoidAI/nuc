@@ -10,6 +10,7 @@ scrape_configs:
   - job_name: "prometheus"
     static_configs:
       - targets: ["pushgateway.land.greycollar.ai:443"]
+    scheme: https
 
   - job_name: "greycollar-land"
     static_configs:

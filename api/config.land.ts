@@ -49,7 +49,7 @@ const config = {
   metrics: {
     enabled: true,
     interval: 15000,
-    url: "pushgateway.land.greycollar.ai:443",
+    url: "https://pushgateway.land.greycollar.ai",
     pushGateway: {
       jobName: "greycollar-database",
       instance: "default",

@@ -44,9 +44,19 @@ export function buildDefinitionGraph(
 
   if (Array.isArray(definition)) {
     list = definition;
-  } else if ("nodes" in definition && Array.isArray(definition.nodes)) {
+  } else if (
+    definition &&
+    typeof definition === "object" &&
+    "nodes" in definition &&
+    Array.isArray(definition.nodes)
+  ) {
     list = definition.nodes;
-  } else if ("flowNodes" in definition && Array.isArray(definition.flowNodes)) {
+  } else if (
+    definition &&
+    typeof definition === "object" &&
+    "flowNodes" in definition &&
+    Array.isArray(definition.flowNodes)
+  ) {
     list = definition.flowNodes;
   }
 

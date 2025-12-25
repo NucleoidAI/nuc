@@ -71,8 +71,8 @@ function WidgetSummaryWidget({
             },
           },
         }}
-        width={60}
-        height={36}
+        width={80}
+        height={40}
       />
     );
   };

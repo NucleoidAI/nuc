@@ -33,7 +33,7 @@ const config = {
   },
   logger: {
     elasticsearch: {
-      node: "http://98.88.24.46:9200",
+      node: "http://docker.greycollar.ai:9200",
       esVersion: 8,
       flushBytes: 1000,
       index: "greycollar-logs",
@@ -42,7 +42,7 @@ const config = {
   },
   event: {
     type: "inMemory" as const,
-    host: "98.88.24.46",
+    host: "docker.greycollar.ai",
     protocol: "http" as const,
     port: 8080,
   },

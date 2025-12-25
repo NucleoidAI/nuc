@@ -9,10 +9,15 @@ export default function AIEngineChart({
 }: {
   sx?: object;
   data: {
-    id: string | number;
+    id: string;
+    vendor: string;
+    model: string;
+    price: number;
+    description: string;
+    avatar?: string;
   }[];
   isWizardEngine: boolean;
-  handleEngineSelect: (engine: { id: string | number }) => void;
+  handleEngineSelect: (engine: { id: string }) => void;
 }) {
   return (
     <>

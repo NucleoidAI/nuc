@@ -19,10 +19,20 @@ const Skills = ({
     description: string;
     logo: string;
     id: string;
-    oauth?: boolean;
+    oauth?: {
+      tokenUrl: string;
+      clientId: string;
+      scope: string;
+      redirectUri: string;
+    };
   }) => void;
   id: string;
-  oauth?: boolean;
+  oauth?: {
+    tokenUrl: string;
+    clientId: string;
+    scope: string;
+    redirectUri: string;
+  };
 }) => {
   return (
     <Card

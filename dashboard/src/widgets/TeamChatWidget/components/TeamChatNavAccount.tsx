@@ -1,5 +1,6 @@
+import { Iconify } from "@canmingir/link/platform/components";
 import { ListItemText } from "@mui/material";
-import SourcedAvatar from "../../../components/SourcedAvatar/SourcedAvatar";
+import { cleanIconName } from "../../../utils/cleanIconName";
 import useTeamDetails from "../../../hooks/useTeamDetails";
 
 function TeamChatNavAccount() {
@@ -7,11 +8,10 @@ function TeamChatNavAccount() {
 
   return (
     <>
-      <SourcedAvatar
-        name={"Nucleous Nucleotide avatar"}
-        sx={{ cursor: "pointer", width: 48, height: 48, ml: 2 }}
-        source={"MINIMAL"}
-        iconUrl={teamDetails?.coachAvatar}
+      <Iconify
+        icon={cleanIconName(teamDetails?.coachAvatar)}
+        width="30%"
+        height="30%"
       />
       <ListItemText
         sx={{ ml: 2 }}

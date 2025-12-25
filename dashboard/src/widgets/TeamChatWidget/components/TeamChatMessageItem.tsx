@@ -1,7 +1,8 @@
+import { Iconify } from "@canmingir/link/platform/components";
 import ReplyIcon from "@mui/icons-material/Reply";
-import SourcedAvatar from "../../../components/SourcedAvatar/SourcedAvatar";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import { cleanIconName } from "../../../utils/cleanIconName";
 import { fDateTime } from "../../../utils/formatTime";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import useTeamDetails from "../../../hooks/useTeamDetails";
@@ -195,10 +196,7 @@ function TeamChatMessageItem({
                 {!isAI ? (
                   <Avatar src={user?.avatarUrl} />
                 ) : (
-                  <SourcedAvatar
-                    source="MINIMAL"
-                    iconUrl={teamDetails?.coachAvatar}
-                  />
+                  <Iconify icon={cleanIconName(teamDetails?.coachAvatar)} />
                 )}
                 {renderSender}
                 {renderInfo}
@@ -286,10 +284,7 @@ function TeamChatMessageItem({
               {!isAI ? (
                 <Avatar src={user?.avatarUrl} />
               ) : (
-                <SourcedAvatar
-                  source="MINIMAL"
-                  iconUrl={teamDetails?.coachAvatar}
-                />
+                <Iconify icon={cleanIconName(teamDetails?.coachAvatar)} />
               )}
               {renderSender}
               {renderInfo}

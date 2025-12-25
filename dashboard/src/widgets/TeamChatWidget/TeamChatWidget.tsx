@@ -68,9 +68,13 @@ const TeamChatWidget = memo(function ChatWidget({
   const selectedMessage = useRef(null);
 
   const [collapsed, setCollapsed] = useState(true);
+  const [inputDisabled, setInputDisabled] = useState(false);
 
   const sendMessage = useCallback(
-    async (message) => {
+    (message) => {
+      if (inputDisabled) return;
+      setInputDisabled(true);
+      let promise;
       const { command } = message;
       if (command) {
         const name = command.get("NAME");
@@ -83,22 +87,23 @@ const TeamChatWidget = memo(function ChatWidget({
           createdAt: new Date(),
           from: "Greycollar",
         });
+        promise = Promise.resolve();
       } else if (selectedMessage.current) {
         if (selectedMessage.current?.mode === "SUPERVISING") {
-          await updateSupervising(selectedMessage.current.id, message);
+          promise = updateSupervising(selectedMessage.current.id, message);
         } else {
-          // Send message only if not in SUPERVISING mode
           const messageArray = {
             role: "USER",
             userId: user.id.toString(),
             content: message,
             replyTo: selectedMessage.current.id,
           };
-          await createMessage(messageArray);
-          setIsReplying(false);
-          selectedMessage.current = null;
+
+          promise = createMessage(messageArray).then(() => {
+            setIsReplying(false);
+            selectedMessage.current = null;
+          });
         }
-        setIsReplying(false);
       } else {
         const messageArray = {
           role: "USER",
@@ -106,11 +111,23 @@ const TeamChatWidget = memo(function ChatWidget({
           content: message,
         };
 
-        await createMessage(messageArray);
+        promise = createMessage(messageArray);
       }
+
+      Promise.resolve(promise)
+        .catch((err) => {
+          console.error("Send message failed:", err);
+
+          setTimeout(() => {
+            setInputDisabled(false);
+          }, 1500);
+        })
+        .finally(() => {
+          setInputDisabled(false);
+        });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [user, selectedMessage]
+    [user, selectedMessage, inputDisabled]
   );
 
   const theme = useTheme();
@@ -124,7 +141,7 @@ const TeamChatWidget = memo(function ChatWidget({
       flexShrink={0}
       sx={{ pr: 1, pl: 2.5, py: 1, height: mdDown ? 45 : 72 }}
     >
-      {teamLoading ? null : (
+      {teamLoading && (
         <>
           {details && (
             <TeamChatHeaderDetail mdDown={mdDown} title={team?.name} />
@@ -157,7 +174,7 @@ const TeamChatWidget = memo(function ChatWidget({
             replied={replied}
             selectedMessage={selectedMessage}
             editor={editor}
-            disabled={false}
+            disabled={inputDisabled}
             onSendMessage={sendMessage}
           />
         </Stack>

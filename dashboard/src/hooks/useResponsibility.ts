@@ -1,8 +1,9 @@
 import { convertToNodesAndEdges } from "../components/ResponsibilityFlow/flowAdapter";
 import http from "@canmingir/link/platform/http";
-import { publish } from "@nucleoidai/react-event";
 import useApi from "./useApi";
 import { v4 as uuidv4 } from "uuid";
+
+import { publish, useEvent } from "@nucleoidai/react-event";
 
 type DependencyArray = object[];
 
@@ -20,10 +21,14 @@ type NodeType = {
 function useResponsibility() {
   const { Api } = useApi();
 
+  const [responsibilityUpserted] = useEvent("RESPONSIBILITY_UPSERTED", null);
+
   const getResponsibility = (fetchState: DependencyArray = []) => {
+    const eventDependencies = [responsibilityUpserted];
+
     const { data, loading, error, fetch } = Api(
       () => http.get(`/responsibilities`),
-      [...fetchState]
+      [...eventDependencies, ...fetchState]
     );
 
     if (data) {

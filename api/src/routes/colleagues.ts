@@ -28,6 +28,8 @@ router.get("/", async (req, res) => {
 
   const colleagues = await Colleague.findAll({
     where: { teamId },
+    attributes: { exclude: ["aiEngineId"] },
+    include: ["AIEngine"],
   });
 
   res.json(colleagues);

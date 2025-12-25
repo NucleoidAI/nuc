@@ -56,50 +56,75 @@ function useChat() {
   const [messages, setMessages] = useState(result.messages);
 
   useEffect(() => {
-    setMessages(result.messages);
+    const sorted = [...(result.messages || [])].sort(
+      (a, b) =>
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    );
+    setMessages(sorted);
   }, [result.messages]);
+
+  const messagesRef = useRef(messages);
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
 
   const intervalId = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
     const fetchMessages = async () => {
-      if (messages.length > 0) {
+      const currentMessages = messagesRef.current;
+      if (currentMessages.length > 0) {
         let lastMessageDate = null;
-        for (let i = messages.length - 1; i >= 0; i--) {
-          if (messages[i].status === "READ") {
-            lastMessageDate = messages[i].createdAt;
+        for (let i = currentMessages.length - 1; i >= 0; i--) {
+          if (currentMessages[i].status === "READ") {
+            lastMessageDate = currentMessages[i].createdAt;
             break;
           }
         }
 
         const newMessages = await getMessagesByDate(lastMessageDate);
-        console.log("newMessages", newMessages);
         const filteredMessages = newMessages.filter(
           (newMessage) =>
-            !Array.isArray(messages) ||
-            !messages.some((message) => message.id === newMessage.id)
+            !Array.isArray(currentMessages) ||
+            !currentMessages.some((message) => message.id === newMessage.id)
         );
 
         if (filteredMessages.length > 0) {
-          setMessages((prevMessages) => [...prevMessages, ...filteredMessages]);
+          setMessages((prevMessages) =>
+            [...prevMessages, ...filteredMessages].sort(
+              (a, b) =>
+                new Date(a.createdAt).getTime() -
+                new Date(b.createdAt).getTime()
+            )
+          );
           publish("MESSAGE_LOADED", { message: filteredMessages });
         }
+
         if (onChatPage && !document.hidden) {
           updateMessageStatus(lastMessageDate);
+
           const updatedStatus = newMessages.filter(
             (message) => message.status === "READ"
           );
+
           if (updatedStatus.length > 0) {
-            setMessages((prevMessages) =>
-              prevMessages.map((message) => {
+            setMessages((prevMessages) => {
+              const updated = prevMessages.map((message) => {
                 const updatedMessage = updatedStatus.find(
                   (newMessage) => newMessage.id === message.id
                 );
                 return updatedMessage
                   ? { ...message, status: "READ" }
                   : message;
-              })
-            );
+              });
+
+              return [...updated].sort(
+                (a, b) =>
+                  new Date(a.createdAt).getTime() -
+                  new Date(b.createdAt).getTime()
+              );
+            });
+
             publish("MESSAGE_STATUS_UPDATED", { message: updatedStatus });
           }
         }
@@ -108,8 +133,10 @@ function useChat() {
 
     intervalId.current = setInterval(fetchMessages, 2000);
 
-    return () => clearInterval(intervalId.current);
-  });
+    return () => {
+      if (intervalId.current) clearInterval(intervalId.current);
+    };
+  }, [getMessagesByDate, onChatPage, updateMessageStatus]);
 
   return {
     messages,

@@ -1,4 +1,3 @@
-import TalkToCAIOButton from "./src/widgets/TalkToCAIO/index.ts";
 import TeamChartButton from "./src/widgets/TeamChartButton/index.ts";
 const menuConfig = {
   topMenu: [],
@@ -54,7 +53,7 @@ const menuConfig = {
       linkTo: "/",
     },
   ],
-  actionButtons: [TeamChartButton, TalkToCAIOButton],
+  actionButtons: [TeamChartButton],
   fullScreenLayout: "left",
 };
 

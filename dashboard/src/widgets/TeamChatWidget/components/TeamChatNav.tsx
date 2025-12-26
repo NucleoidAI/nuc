@@ -167,7 +167,6 @@ function TeamChatNav({ loading, agents, collapsed, setCollapsed }) {
             </InputAdornment>
           ),
         }}
-        sx={{ mt: 2.5 }}
       />
     </ClickAwayListener>
   );
@@ -214,7 +213,7 @@ function TeamChatNav({ loading, agents, collapsed, setCollapsed }) {
 
       <Box sx={{ p: 2.5, pt: 0 }}>{!collapsed && renderSearchInput}</Box>
 
-      <Scrollbar sx={{ pt: 2 }}>
+      <Scrollbar>
         {searchContacts.query && renderListResults}
 
         {loading && renderSkeleton}

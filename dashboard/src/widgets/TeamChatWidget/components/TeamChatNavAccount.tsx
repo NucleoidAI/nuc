@@ -20,7 +20,7 @@ function TeamChatNavAccount() {
           noWrap: true,
           variant: "subtitle2",
         }}
-        secondary={"Team Leader"}
+        secondary={"Team Leader Agent"}
         secondaryTypographyProps={{
           noWrap: true,
           component: "span",

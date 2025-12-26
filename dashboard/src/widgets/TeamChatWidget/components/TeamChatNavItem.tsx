@@ -29,10 +29,7 @@ function TeamChatNavItem({ member, selected, collapse, onClick }) {
         >
           <Box
             sx={{
-              mx: "auto",
               width: { xs: 32, md: 64 },
-              height: { xs: 32, md: 64 },
-              borderRadius: "50%",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -41,8 +38,8 @@ function TeamChatNavItem({ member, selected, collapse, onClick }) {
           >
             <Iconify
               icon={cleanIconName(icon)}
-              width="40%"
-              height="40%"
+              width="30%"
+              height="30%"
               style={{ objectFit: "contain" }}
             />
           </Box>

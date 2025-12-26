@@ -89,7 +89,6 @@ const AgentIntegration = ({
         width: "100%",
         px: 2,
         pb: 2,
-        minHeight: "calc(100vh - 240px)",
       }}
     >
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>

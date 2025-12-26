@@ -97,7 +97,7 @@ function AgentsWidget({ teamId }) {
             closeForm();
             setUpdatedAgent(null);
           }}
-          itemProperties={["name", "description"]}
+          itemProperties={["name", "description", "icon"]}
           onSubmit={updatedAgent ? updateAgent : createAgent}
           itemToEdit={updatedAgent}
         />

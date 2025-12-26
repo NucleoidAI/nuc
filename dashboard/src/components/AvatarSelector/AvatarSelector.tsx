@@ -1,13 +1,20 @@
 import AddIcon from "@mui/icons-material/Add";
 import ColleagueAndTeamAvatars from "../../lib/ColleagueAndTeamAvatars";
 import IconButton from "@mui/material/IconButton";
+import { Iconify } from "@canmingir/link/platform/components";
 import Picker from "@emoji-mart/react";
 import React from "react";
-import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
+import { cleanIconName } from "../../utils/cleanIconName";
 
 import { Dialog, Stack } from "@mui/material";
 
-export default function AvatarSelector({ handleEmojiSelect, iconSrc, icon }) {
+export default function AvatarSelector({
+  handleEmojiSelect,
+  newItem,
+}: {
+  handleEmojiSelect: (emoji) => void;
+  newItem: { icon?: string };
+}) {
   const [emojiDialogOpen, setEmojiDialogOpen] = React.useState(false);
   const handleEmojiButtonClick = () => {
     setEmojiDialogOpen(true);
@@ -23,37 +30,23 @@ export default function AvatarSelector({ handleEmojiSelect, iconSrc, icon }) {
             borderColor: "gray",
             borderWidth: "2px",
             mx: "auto",
-            width: { xs: 77, md: 140 },
-            height: { xs: 77, md: 140 },
+            width: { xs: 64, md: 88 },
+            height: { xs: 64, md: 88 },
           }}
         >
-          <SourcedAvatar
-            name={icon}
-            source={
-              iconSrc ||
-              `https://cdn.nucleoid.com/greycollar/avatars/${icon?.replace(
-                /:/g,
-                ""
-              )}.jpg`
-            }
-            iconUrl={
-              iconSrc ||
-              `https://cdn.nucleoid.com/greycollar/avatars/${icon?.replace(
-                /:/g,
-                ""
-              )}.jpg`
-            }
-            sx={{
-              display: "flex",
-              alignSelf: "center",
-              mx: "auto",
-              width: { xs: 64, md: 128 },
-              height: { xs: 64, md: 128 },
-              border: `solid 2px ${(theme) => theme.palette.common.white}`,
-            }}
-          >
-            <AddIcon fontSize="large" />
-          </SourcedAvatar>
+          {newItem.icon ? (
+            <Iconify
+              sx={{
+                width: { xs: 48, md: 64 },
+                height: { xs: 48, md: 64 },
+              }}
+              icon={cleanIconName(newItem.icon)}
+            />
+          ) : (
+            <AddIcon
+              sx={{ width: { xs: 32, md: 48 }, height: { xs: 32, md: 48 } }}
+            />
+          )}
         </IconButton>
       </Stack>
       <Dialog

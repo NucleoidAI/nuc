@@ -24,7 +24,6 @@ function AgentWizard({ itemProperties, onSubmit, open, onClose, itemToEdit }) {
     {
       name: "system_agent",
       icon: "mingcute:bank-card-line",
-      src: `https://cdn.nucleoid.com/greycollar/avatars/2.jpg`,
       aiEngineId: "289a3c9a-f23b-421a-ac6e-f14052a2d57c",
       engineName: "OpenAI",
       description:
@@ -33,7 +32,6 @@ function AgentWizard({ itemProperties, onSubmit, open, onClose, itemToEdit }) {
     {
       name: "insight_agent",
       icon: "ph:coffee-bean-duotone",
-      src: `https://cdn.nucleoid.com/greycollar/avatars/5.jpg`,
       aiEngineId: "d9c93323-3baf-4623-a96c-b85db99b4441",
       engineName: "Claude",
       description:
@@ -42,7 +40,6 @@ function AgentWizard({ itemProperties, onSubmit, open, onClose, itemToEdit }) {
     {
       name: "order_agent",
       icon: "ph:fire-simple-duotone",
-      src: `https://cdn.nucleoid.com/greycollar/avatars/8.jpg`,
       aiEngineId: "123a3c9a-b23b-421a-ac6e-f14052a2d57c",
       engineName: "DeepMind",
       description:
@@ -166,8 +163,7 @@ function AgentWizard({ itemProperties, onSubmit, open, onClose, itemToEdit }) {
           />
           <SelectAvatar
             handleEmojiSelect={handleEmojiSelect}
-            iconSrc={newItem.src}
-            icon={newItem?.icon?.replace(/:/g, "")}
+            newItem={newItem}
           />
         </div>
 

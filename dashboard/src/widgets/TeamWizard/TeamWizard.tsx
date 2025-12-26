@@ -711,8 +711,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
         return (
           <SelectAvatar
             handleEmojiSelect={handleAvatarSelect}
-            iconSrc={getValues("agent.src")}
-            icon={getValues("agent.icon")?.replace(/:/g, "")}
+            newItem={getValues("agent")}
           />
         );
       case 4:

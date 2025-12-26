@@ -2,6 +2,7 @@ import { Iconify } from "@canmingir/link/platform/components";
 import LoadingButton from "@mui/lab/LoadingButton";
 import type { Resolver } from "react-hook-form";
 import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import {
@@ -14,7 +15,6 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import { Controller, useForm } from "react-hook-form";
 import {
   FormProvider,
   RHFTextField,
@@ -24,7 +24,6 @@ import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 
 function AddItemDialog({
-  setSelectedType,
   selectedType,
   types,
   open,
@@ -36,11 +35,20 @@ function AddItemDialog({
   agents,
   organizations,
 }) {
-  //TODO - Refactor here
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [selectedOptionId, setSelectedOptionId] = useState("");
   const [selectedOptionType, setSelectedOptionType] = useState("");
+
+  const [currentType, setCurrentType] = useState(
+    selectedType === "ALL" ? "URL" : selectedType || "URL"
+  );
+
+  useEffect(() => {
+    if (open) {
+      setCurrentType(selectedType === "ALL" ? "URL" : selectedType);
+    }
+  }, [selectedType, open]);
 
   useEffect(() => {
     if (agentId) {
@@ -91,21 +99,21 @@ function AddItemDialog({
 
   const AddItemSchema = Yup.object().shape({
     inputValue:
-      selectedType === "URL"
+      currentType === "URL"
         ? Yup.string()
             .required("URL cannot be an empty field")
             .url("Enter a valid URL")
-        : selectedType !== "QA"
+        : currentType !== "QA"
         ? Yup.string()
-            .required(`${selectedType} cannot be an empty field`)
+            .required(`${currentType} cannot be an empty field`)
             .min(1)
         : Yup.string(),
     question:
-      selectedType === "QA"
+      currentType === "QA"
         ? Yup.string().required("Question cannot be an empty field").min(1)
         : Yup.string(),
     answer:
-      selectedType === "QA"
+      currentType === "QA"
         ? Yup.string().required("Answer cannot be an empty field").min(1)
         : Yup.string(),
   });
@@ -117,12 +125,12 @@ function AddItemDialog({
   const methods = useForm({
     defaultValues: initialValues,
     resolver,
+    mode: "onChange",
   });
 
   const {
     reset,
     handleSubmit,
-    control,
     formState: { isValid },
   } = methods;
 
@@ -134,12 +142,13 @@ function AddItemDialog({
       text?: string;
       question?: string;
       answer?: string;
-    } = { type: selectedType };
-    if (selectedType === "URL") {
+    } = { type: currentType };
+
+    if (currentType === "URL") {
       item.url = data.inputValue;
-    } else if (selectedType === "TEXT") {
+    } else if (currentType === "TEXT") {
       item.text = data.inputValue;
-    } else if (selectedType === "QA") {
+    } else if (currentType === "QA") {
       item.question = data.question;
       item.answer = data.answer;
     }
@@ -152,7 +161,7 @@ function AddItemDialog({
     };
 
     try {
-      await addItem(payload, payload.agentId);
+      await addItem(payload, payload.agentId, payload.teamId);
       setOpen(false);
     } catch (error) {
       setOpen(false);
@@ -163,7 +172,7 @@ function AddItemDialog({
   });
 
   const handleChangeType = (event) => {
-    setSelectedType(event.target.value);
+    setCurrentType(event.target.value);
     reset();
   };
 
@@ -184,7 +193,7 @@ function AddItemDialog({
           textAlign: "center",
         }}
       >
-        {`Add New ${selectedType}`}
+        {`Add New ${currentType}`}
       </DialogTitle>
       <DialogContent
         sx={{
@@ -203,7 +212,8 @@ function AddItemDialog({
                 (organization) => organization.id === selectedOptionId
               )?.name ||
               agents?.find((agent) => agent?.id === selectedOptionId)?.name ||
-              (teamById?.id === selectedOptionId ? teamById?.name : "")
+              (teamById?.id === selectedOptionId ? teamById?.name : "") ||
+              ""
             }
             onChange={handleOptionChange}
           >
@@ -247,7 +257,7 @@ function AddItemDialog({
         <Select
           fullWidth
           sx={{ mt: 2 }}
-          value={selectedType}
+          value={currentType}
           onChange={handleChangeType}
           data-cy="add-item-select"
         >
@@ -257,50 +267,27 @@ function AddItemDialog({
             </MenuItem>
           ))}
         </Select>
+
         <FormProvider methods={methods} onSubmit={onSubmit}>
-          {selectedType !== "QA" && (
-            <Controller
+          {currentType !== "QA" && (
+            <RHFTextField
               name="inputValue"
-              control={control}
-              render={({ field }) => (
-                <>
-                  <RHFTextField
-                    {...field}
-                    label={`Enter ${selectedType}`}
-                    data-cy="add-item-input"
-                  />
-                </>
-              )}
+              label={`Enter ${currentType}`}
+              data-cy="add-item-input"
             />
           )}
-          {selectedType === "QA" && (
+          {currentType === "QA" && (
             <Box>
-              <Controller
+              <RHFTextField
                 name="question"
-                control={control}
-                render={({ field }) => (
-                  <>
-                    <RHFTextField
-                      {...field}
-                      label="Enter Question"
-                      sx={{ marginBottom: "1rem" }}
-                      data-cy="add-item-question"
-                    />
-                  </>
-                )}
+                label="Enter Question"
+                sx={{ marginBottom: "1rem" }}
+                data-cy="add-item-question"
               />
-              <Controller
+              <RHFTextField
                 name="answer"
-                control={control}
-                render={({ field }) => (
-                  <>
-                    <RHFTextField
-                      {...field}
-                      label="Enter Answer"
-                      data-cy="add-item-answer"
-                    />
-                  </>
-                )}
+                label="Enter Answer"
+                data-cy="add-item-answer"
               />
             </Box>
           )}

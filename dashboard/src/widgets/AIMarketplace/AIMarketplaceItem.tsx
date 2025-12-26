@@ -18,14 +18,7 @@ function AIMarketplaceItem({
     avatar?: string;
   };
   isWizardEngine?: boolean;
-  handleEngineSelect?: (engine: {
-    id: string;
-    vendor: string;
-    model: string;
-    price: number;
-    description: string;
-    avatar?: string;
-  }) => void;
+  handleEngineSelect?: (engine) => void;
 }) {
   const theme = useTheme();
 
@@ -44,10 +37,13 @@ function AIMarketplaceItem({
 
   return (
     <Box
-      onClick={() => isWizardEngine && handleEngineSelect(engine)}
+      onClick={() =>
+        isWizardEngine && handleEngineSelect && handleEngineSelect(engine)
+      }
       sx={{
         cursor: "pointer",
         width: "100%",
+        height: "100%",
         "&:hover": {
           opacity: 0.9,
           transition: "opacity 0.3s ease-in-out",
@@ -60,7 +56,7 @@ function AIMarketplaceItem({
           textAlign: "center",
           display: "flex",
           flexDirection: { xs: "column", sm: "row" },
-          height: "auto",
+          height: "100%",
           minHeight: { sm: 180 },
           width: "100%",
           overflow: "hidden",
@@ -137,6 +133,7 @@ function AIMarketplaceItem({
             p: 2,
             width: "100%",
             textAlign: "left",
+            justifyContent: "space-between",
           }}
           spacing={2}
         >
@@ -160,6 +157,7 @@ function AIMarketplaceItem({
             sx={{
               width: "100%",
               alignItems: "center",
+              mt: "auto",
             }}
           >
             <InfoBox label="Vendor" icon={icons} value={engine?.vendor} />

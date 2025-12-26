@@ -47,10 +47,8 @@ function AgentAbout({
       setIsNameUpdated(false);
       return;
     }
-
     setName(tempName);
     setIsNameUpdated(true);
-
     await updateAgent({
       ...agent,
       name: tempName,
@@ -63,10 +61,8 @@ function AgentAbout({
       setIsDescUpdated(false);
       return;
     }
-
     setDescription(tempDescription);
     setIsDescUpdated(true);
-
     await updateAgent({
       ...agent,
       description: tempDescription,
@@ -76,7 +72,14 @@ function AgentAbout({
 
   return (
     <Card
-      sx={{ p: 2, height: "auto", display: "flex", flexDirection: "column" }}
+      sx={{
+        p: 2,
+        width: "100%",
+        height: "100%",
+        minHeight: { sm: 180 },
+        display: "flex",
+        flexDirection: "column",
+      }}
     >
       <Stack spacing={2} sx={{ height: "100%" }}>
         <Box>

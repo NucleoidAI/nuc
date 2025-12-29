@@ -1,4 +1,5 @@
 import AgentLayout from "../layouts/AgentLayout";
+import AgentSkeleton from "../components/Skeletons/AgentSkeleton";
 import Page from "../components/Page/Page";
 import useAgent from "../hooks/useAgent";
 import { useParams } from "react-router-dom";
@@ -10,7 +11,7 @@ function Agent() {
   const { agent, loading } = getAgent(colleagueId);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <AgentSkeleton />;
   }
 
   return (

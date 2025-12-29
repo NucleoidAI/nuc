@@ -37,7 +37,7 @@ const AgentDrawer = ({ open, onClose, agent, initialTab }) => {
         }}
       >
         <Button
-          onClick={onClose}
+          onClick={handleClose}
           sx={{
             minWidth: 0,
             width: 40,

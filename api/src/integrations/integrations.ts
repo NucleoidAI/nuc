@@ -332,5 +332,31 @@ const Integrations = [
       required: ["serial_number"],
     },
   },
+  {
+    id: "d4k0j5i6-1j2h-0i9k-6l5m-4h3i2j1k0l9g",
+    action: "PROJECT_NOTIFIER:notify_project_open",
+    provider: "PROJECT_NOTIFIER",
+    description: "Sends a notification to the configured endpoint when a project is opened (for testing)",
+    direction: "OUTGOING",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        projectId: {
+          type: "string",
+          description: "The ID of the project being opened.",
+        },
+        projectName: {
+          type: "string",
+          description: "The name of the project being opened.",
+        },
+        timestamp: {
+          type: "string",
+          description: "ISO timestamp when the project was opened.",
+        },
+      },
+      required: [],
+    },
+  },
 ];
 export default Integrations;

@@ -20,7 +20,6 @@ import supervisings from "./routes/supervisings";
 import tasks from "./routes/tasks";
 import teamDetails from "./routes/teamDetails";
 import { telemetryMiddleware } from "./instrumentation";
-import McpClient from "../../mcp/McpClient";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -102,37 +101,6 @@ function createApp() {
     await event.subscribe<{ taskId: string }>("STEP_COMPLETED", ({ taskId }) =>
       agent.task({ taskId })
     );
-
-    await event.subscribe<{
-      id: string;
-      type: string;
-      colleagueId: string;
-    }>("SESSION_INITIATED", async ({ id, type, colleagueId }) => {
-      try {
-        const mcpClient = new McpClient({
-          name: "project-notifier",
-          tool: "PROJECT_NOTIFIER:notify_project_open",
-          version: "1.0.0",
-        });
-
-        await mcpClient.connectToServer({});
-
-        const result = await mcpClient.callTool(
-          "PROJECT_NOTIFIER:notify_project_open",
-          {
-            projectId: id,
-            projectName: `Session ${type}`,
-            timestamp: new Date().toISOString(),
-          }
-        );
-
-        console.log("[PROJECT_NOTIFIER] Notification sent:", result);
-
-        await mcpClient.close();
-      } catch (error) {
-        console.error("[PROJECT_NOTIFIER] Failed to send notification:", error);
-      }
-    });
   })();
 
   return app;

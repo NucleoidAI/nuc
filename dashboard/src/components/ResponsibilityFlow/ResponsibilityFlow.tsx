@@ -9,7 +9,7 @@ import { v4 as uuid } from "uuid";
 import React, { useEffect, useState } from "react";
 
 function ResponsibilityFlow({ aiResponse, setAiResponse, responsibility }) {
-  const [graphData, setGraphData] = useState<any>(null);
+  const [graphData, setGraphData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const { getResponsibilityWithNode } = useResponsibility();
   const { loading } = getResponsibilityWithNode(responsibility?.id);
@@ -72,7 +72,6 @@ function ResponsibilityFlow({ aiResponse, setAiResponse, responsibility }) {
       if (!parentNode) return prevData;
 
       const existingNext = parentNode.next;
-      const existingRawNext = parentNode.raw?.next || [];
 
       const newNode = {
         id: newId,
@@ -130,14 +129,14 @@ function ResponsibilityFlow({ aiResponse, setAiResponse, responsibility }) {
     handleDrawerClose();
   };
 
-  const style = (node) => {
+  const style = () => {
     return {
       onAdd: (n) => handleAddNodeClick(n),
       direction: "horizontal",
     };
   };
 
-  if (isLoading || !graphData) return <div></div>;
+  if (isLoading || !graphData) return;
 
   const flowDimensions = getFlowDimensions();
 

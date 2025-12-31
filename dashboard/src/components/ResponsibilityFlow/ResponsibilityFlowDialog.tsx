@@ -19,7 +19,7 @@ const ResponsibilityFlowDialog = ({
     <Dialog
       open={flowDialogOpen}
       onClose={handleFlowDialogClose}
-      maxWidth="md"
+      maxWidth="xl"
       fullWidth
     >
       <DialogTitle>Flow Chart</DialogTitle>

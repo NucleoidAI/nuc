@@ -5,6 +5,7 @@ type DefinitionNode = {
     action?: string;
     label?: string;
     icon?: string;
+    description?: string;
     [key: string]: unknown;
   };
   next?: string[] | null;
@@ -23,6 +24,7 @@ type DefinitionGraphNode = {
   label: string;
   nodeType: DefinitionNode["type"];
   action?: string;
+  description?: string;
   icon?: string;
   createdAt?: string;
   raw: DefinitionNode;
@@ -82,6 +84,8 @@ export function buildDefinitionGraph(
       label,
       nodeType: node.type,
       action: typeof props.action === "string" ? props.action : undefined,
+      description:
+        typeof props.description === "string" ? props.description : undefined,
       icon: typeof props.icon === "string" ? props.icon : undefined,
       createdAt: node.createdAt,
       raw: node,

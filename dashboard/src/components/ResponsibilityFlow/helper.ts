@@ -14,7 +14,7 @@ type DefinitionNode = {
   createdAt?: string;
 };
 
-type FlowDefinition =
+export type FlowDefinition =
   | DefinitionNode[]
   | { nodes: DefinitionNode[] }
   | { flowNodes: DefinitionNode[] };
@@ -34,7 +34,7 @@ type DefinitionGraphNode = {
   falseNext?: string[];
 };
 
-type DefinitionGraph = {
+export type DefinitionGraph = {
   nodes: Record<string, DefinitionGraphNode>;
   roots: string[];
 };

@@ -89,6 +89,7 @@ function ResponsibilitiesWidget() {
         handleFlowDialogClose={handleFlowDialogClose}
         selectedItem={selectedItem}
         aiResponse={aiResponse}
+        setAiResponse={setAiResponse}
       />
 
       <Stack

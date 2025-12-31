@@ -14,6 +14,7 @@ const ResponsibilityFlowDialog = ({
   handleFlowDialogClose,
   selectedItem,
   aiResponse,
+  setAiResponse,
 }) => {
   return (
     <Dialog
@@ -32,6 +33,7 @@ const ResponsibilityFlowDialog = ({
           <ResponsibilityFlow
             aiResponse={aiResponse}
             responsibility={selectedItem}
+            setAiResponse={setAiResponse}
           />
         )}
       </DialogContent>

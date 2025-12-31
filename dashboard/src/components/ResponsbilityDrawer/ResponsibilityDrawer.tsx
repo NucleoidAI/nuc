@@ -1,3 +1,4 @@
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import CloseIcon from "@mui/icons-material/Close";
 import ResponsibilityChat from "../ResponsibilityChat/ResponsibilityChat";
 import ResponsibilityChatTitle from "../ResponsibilityChat/ResponsibilityChatTitle";
@@ -6,8 +7,10 @@ import ResponsibilityFlow from "../ResponsibilityFlow/ResponsibilityFlow";
 import {
   Box,
   Drawer,
+  Fab,
   Grid,
   IconButton,
+  Tooltip,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -49,6 +52,8 @@ const ResponsibilityDrawer = ({
     useState(null);
   const [messages, setMessages] = useState([]);
 
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
   useEffect(() => {
     setTitle(selectedItem?.title);
     setDescription(selectedItem?.description);
@@ -72,14 +77,8 @@ const ResponsibilityDrawer = ({
 
   const getDrawerWidth = () => {
     if (isMobile) return "100vw";
-    if (isTablet) return "90vw";
-    return Math.min(1200, window.innerWidth * 0.8);
-  };
-
-  const getSpacing = () => {
-    if (isMobile) return 1;
-    if (isTablet) return 1.5;
-    return 2;
+    if (isChatOpen && !isTablet) return "90vw";
+    return "85vw";
   };
 
   return (
@@ -91,27 +90,30 @@ const ResponsibilityDrawer = ({
         zIndex: (theme) => theme.zIndex.modal + 2,
         "& .MuiDrawer-paper": {
           zIndex: (theme) => theme.zIndex.modal + 2,
+          width: getDrawerWidth(),
+          maxWidth: "100vw",
+          transition: "width 0.3s ease-in-out",
         },
       }}
     >
       <Box
         sx={{
-          width: getDrawerWidth(),
           height: "100%",
           display: "flex",
           flexDirection: "column",
           position: "relative",
+          overflow: "hidden",
         }}
         role="presentation"
       >
-        {(isMobile || isTablet) && (
+        {!isChatOpen && (
           <IconButton
             onClick={handleDrawerClose}
             sx={{
               position: "absolute",
               top: 8,
               right: 8,
-              zIndex: 1000,
+              zIndex: 1100,
               backgroundColor: theme.palette.background.paper,
               boxShadow: theme.shadows[2],
               "&:hover": {
@@ -124,29 +126,36 @@ const ResponsibilityDrawer = ({
           </IconButton>
         )}
 
-        <Grid container sx={{ flex: 1, height: "100%" }} spacing={getSpacing()}>
+        <Grid container sx={{ flex: 1, height: "100%" }} spacing={0}>
           <Grid
             item
             xs={12}
-            sm={12}
-            md={7}
-            lg={7}
-            xl={7}
+            md={isChatOpen ? 7 : 12}
+            lg={isChatOpen ? 8 : 12}
+            xl={isChatOpen ? 9 : 12}
             sx={{
               display: "flex",
               flexDirection: "column",
               height: "100%",
               maxHeight: "100vh",
+              borderRight: isChatOpen
+                ? `1px solid ${theme.palette.divider}`
+                : "none",
+              backgroundColor: (theme) => theme.palette.background.default,
+              backgroundImage: (theme) => `
+            radial-gradient(
+              ${theme.palette.divider} 1px,
+              transparent 1px
+            )
+          `,
+              backgroundSize: "16px 16px",
+              position: "relative",
             }}
           >
             <Box
               sx={{
                 flex: 1,
-                padding: {
-                  xs: 1,
-                  sm: 1.5,
-                  md: 3,
-                },
+                padding: { xs: 1, sm: 1.5, md: 3 },
                 display: "flex",
                 flexDirection: "column",
                 height: "100%",
@@ -167,73 +176,98 @@ const ResponsibilityDrawer = ({
                   flex: 2,
                   minHeight: 0,
                   overflow: "hidden",
+                  position: "relative",
                 }}
               >
                 <ResponsibilityFlow
                   responsibility={selectedItem}
                   aiResponse={aiResponse}
+                  setAiResponse={setAiResponse}
                 />
+
+                {!isChatOpen && (
+                  <Tooltip title="Open Assistant Chat" placement="left">
+                    <Fab
+                      color="primary"
+                      aria-label="chat"
+                      onClick={() => setIsChatOpen(true)}
+                      sx={{
+                        position: "absolute",
+                        bottom: 24,
+                        right: 24,
+                        zIndex: 10,
+                      }}
+                    >
+                      <ChatBubbleOutlineIcon />
+                    </Fab>
+                  </Tooltip>
+                )}
               </Box>
             </Box>
           </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={12}
-            md={5}
-            lg={5}
-            xl={5}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              position: "relative",
-              height: "100%",
-              maxHeight: "100vh",
-            }}
-          >
-            <Box
+
+          {isChatOpen && (
+            <Grid
+              item
+              xs={12}
+              md={5}
+              lg={4}
+              xl={3}
               sx={{
-                flex: 1,
-                borderLeft: {
-                  xs: "none",
-                  sm: "none",
-                  md: `2px solid ${theme.palette.divider}`,
-                },
-                borderTop: {
-                  xs: `2px solid ${theme.palette.divider}`,
-                  sm: "2px solid ${theme.palette.divider}",
-                  md: "none",
-                },
-                padding: {
-                  xs: 1,
-                  sm: 1.5,
-                  md: 2,
-                },
+                display: "flex",
+                flexDirection: "column",
+                position: "relative",
                 height: "100%",
-                minHeight: 0,
+                maxHeight: "100vh",
               }}
             >
               <Box
                 sx={{
+                  flex: 1,
                   display: "flex",
-                  alignItems: "stretch",
-                  justifyContent: "center",
+                  flexDirection: "column",
                   height: "100%",
+                  minHeight: 0,
                 }}
               >
-                <ResponsibilityChat
-                  selectedItem={selectedItem}
-                  setAiResponse={setAiResponse}
-                  aiResponse={aiResponse}
-                  setSelectedItem={setSelectedItem}
-                  onTitleChange={handleTitleChange}
-                  onDescriptionChange={handleDescriptionChange}
-                  onCreateResponsibility={handleCreateResponsibility}
-                  onMessagesChange={handleMessagesChange}
-                />
+                <Box
+                  sx={{
+                    p: 2,
+                    borderBottom: `1px solid ${theme.palette.divider}`,
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    alignItems: "center",
+                  }}
+                >
+                  <IconButton size="small" onClick={() => setIsChatOpen(false)}>
+                    <CloseIcon fontSize="small" />
+                  </IconButton>
+                </Box>
+
+                <Box
+                  sx={{
+                    flex: 1,
+                    display: "flex",
+                    alignItems: "stretch",
+                    justifyContent: "center",
+                    overflow: "hidden",
+                    p: 2,
+                  }}
+                >
+                  <ResponsibilityChat
+                    selectedItem={selectedItem}
+                    setAiResponse={setAiResponse}
+                    aiResponse={aiResponse}
+                    setSelectedItem={setSelectedItem}
+                    onTitleChange={handleTitleChange}
+                    onDescriptionChange={handleDescriptionChange}
+                    onCreateResponsibility={handleCreateResponsibility}
+                    onMessagesChange={handleMessagesChange}
+                  />
+                </Box>
               </Box>
-            </Box>
-          </Grid>
+            </Grid>
+          )}
         </Grid>
       </Box>
     </Drawer>

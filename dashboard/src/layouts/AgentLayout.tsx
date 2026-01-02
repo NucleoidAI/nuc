@@ -6,9 +6,9 @@ import PopupChatWidget from "../widgets/PopupChatWidget";
 import Profile from "../widgets/Profile/Profile";
 import ProfileCard from "../components/ProfileCard/ProfileCard";
 import React from "react";
-import ResponsibilitiesWidget from "../widgets/ResponsibilitiesWidget/ResponsibilitiesWidget";
 import Stack from "@mui/material/Stack";
 import Supervising from "../widgets/Supervising/Supervising";
+import TaskBluePrintsWidget from "../widgets/TaskBluePrintsWidget/TaskBluePrintsWidget";
 import TasksWidget from "../widgets/TasksWidget/TasksWidget";
 import { getAgentGradients } from "../utils/gradient";
 
@@ -28,8 +28,8 @@ const TABS = [
     icon: <Iconify icon="carbon:ibm-watson-knowledge-studio" width={24} />,
   },
   {
-    value: "responsibilities",
-    label: "Responsibilities",
+    value: "task-blue-prints",
+    label: "Task BluePrints",
     icon: (
       <Iconify
         icon="healthicons:crisis-response-center-person-outline"
@@ -164,8 +164,8 @@ function AgentLayout({
       </Stack>
       {currentTab === "profile" && <Profile agentId={agent.id} />}
       {currentTab === "knowledge-base" && <Knowledge agentId={agent.id} />}
-      {currentTab === "responsibilities" && (
-        <ResponsibilitiesWidget agentId={agent.id} />
+      {currentTab === "task-blue-prints" && (
+        <TaskBluePrintsWidget agentId={agent.id} />
       )}
       {currentTab === "supervisings" && <Supervising agentId={agent.id} />}
       {currentTab === "tasks" && <TasksWidget agentId={agent.id} />}

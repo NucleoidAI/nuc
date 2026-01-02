@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 
-const ResponsibilitySelector = ({
+const TaskBluePrintSelector = ({
   responsibilities,
   selectedResponsibility,
   onResponsibilityChange,
@@ -109,4 +109,4 @@ const ResponsibilitySelector = ({
   );
 };
 
-export default ResponsibilitySelector;
+export default TaskBluePrintSelector;

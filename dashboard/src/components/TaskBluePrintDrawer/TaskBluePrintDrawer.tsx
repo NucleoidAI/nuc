@@ -1,8 +1,8 @@
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import CloseIcon from "@mui/icons-material/Close";
-import ResponsibilityChat from "../ResponsibilityChat/ResponsibilityChat";
-import ResponsibilityChatTitle from "../ResponsibilityChat/ResponsibilityChatTitle";
-import ResponsibilityFlow from "../ResponsibilityFlow/ResponsibilityFlow";
+import TaskBluePrintChat from "../TaskBluePrintChat/TaskBluePrintChat";
+import TaskBluePrintChatTitle from "../TaskBluePrintChat/TaskBluePrintChatTitle";
+import TaskBluePrintFlow from "../TaskBluePrintFlow/TaskBluePrintFlow";
 
 import {
   Box,
@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 
-const ResponsibilityDrawer = ({
+const TaskBluePrintDrawer = ({
   drawerOpen,
   handleDrawerClose,
   selectedItem,
@@ -165,7 +165,7 @@ const ResponsibilityDrawer = ({
               }}
             >
               <Box sx={{ flexShrink: 0 }}>
-                <ResponsibilityChatTitle
+                <TaskBluePrintChatTitle
                   title={title}
                   description={description}
                   messages={messages}
@@ -181,7 +181,7 @@ const ResponsibilityDrawer = ({
                   position: "relative",
                 }}
               >
-                <ResponsibilityFlow
+                <TaskBluePrintFlow
                   responsibility={selectedItem}
                   aiResponse={aiResponse}
                   setAiResponse={setAiResponse}
@@ -256,7 +256,7 @@ const ResponsibilityDrawer = ({
                     p: 2,
                   }}
                 >
-                  <ResponsibilityChat
+                  <TaskBluePrintChat
                     selectedItem={selectedItem}
                     setAiResponse={setAiResponse}
                     aiResponse={aiResponse}
@@ -277,4 +277,4 @@ const ResponsibilityDrawer = ({
   );
 };
 
-export default ResponsibilityDrawer;
+export default TaskBluePrintDrawer;

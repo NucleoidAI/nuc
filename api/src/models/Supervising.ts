@@ -24,7 +24,7 @@ class Supervising extends Model {
   @Column(DataType.UUID)
   declare sessionId: string;
 
-  @AllowNull(false)
+  @AllowNull(true)
   @Column(DataType.UUID)
   declare conversationId: string;
 

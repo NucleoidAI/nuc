@@ -182,5 +182,711 @@
         }
       }
     ]
+  },
+  {
+    "id": "1dcgcfde-6f1e-5a35-c6ge-7ef373396a47",
+    "description": "Setup internet subscription at user's address.",
+    "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
+    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "responsibility": {
+      "id": "ca7g8022-f343-570e-a171-3992963g7f70",
+      "title": "Basic Internet Subscription Setup",
+      "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "nodes": [
+        {
+          "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:get_bbk_by_address",
+            "label": "Get BBK No by Address",
+            "icon": "mdi:map-marker"
+          },
+          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:get_inventory",
+            "label": "Get Inventory",
+            "icon": "mdi:server"
+          },
+          "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b209c-2e5a-777f-a04a-11960363fb25",
+          "type": "CONDITION",
+          "properties": {
+            "action": "PLATFORM:decision",
+            "label": "Check if product is available",
+            "icon": "mdi:decision"
+          },
+          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+          "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "label": "Complete",
+            "icon": "mdi:check"
+          },
+          "next": null,
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:get_product_by_speed",
+            "label": "Get Product by Speed",
+            "icon": "mdi:speedometer"
+          },
+          "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b0270-c493-7072-9d50-87952c5dc547",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "label": "User selected product",
+            "icon": "mdi:user"
+          },
+          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:port_tahsis",
+            "label": "Assign Port",
+            "icon": "mdi:link"
+          },
+          "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:configuration",
+            "label": "Configure Port",
+            "icon": "mdi:settings"
+          },
+          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b32f6-5878-73fb-8411-55916778d9a4",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:port_baglanti",
+            "label": "Connect Port",
+            "icon": "mdi:check"
+          },
+          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "label": "Complete",
+            "icon": "mdi:check"
+          },
+          "next": null,
+          "createdAt": "2025-06-19T06:02:00Z"
+        }
+      ]
+    },
+    "knowledge": [
+      {
+        "id": "77g3f3f1-ee92-5b2d-a585-190669c54195",
+        "type": "TEXT",
+        "text": "User's address is 123 Main Street, Istanbul",
+        "status": "COMPLETED",
+        "createdAt": "1970-01-20T22:08:14.337Z"
+      },
+      {
+        "id": "85f693ge-a291-5gc9-a47b-438535bd7c88",
+        "type": "TEXT",
+        "text": "User wants 100 Mbps internet speed",
+        "status": "COMPLETED",
+        "createdAt": "1970-01-20T22:08:14.337Z"
+      }
+    ],
+    "steps": [
+      {
+        "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+        "action": "PLATFORM:user_interaction",
+        "status": "COMPLETED",
+        "parameters": {
+          "answer": "123 Main Street, Istanbul"
+        },
+        "comment": "User selected address"
+      },
+      {
+        "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+        "action": "TURK_TELEKOM:get_bbk_by_address",
+        "status": "COMPLETED",
+        "parameters": {
+          "address": "123 Main Street, Istanbul"
+        },
+        "comment": "Getting BBK number by address"
+      },
+      {
+        "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+        "action": "PLATFORM:ask_supervisor",
+        "status": "COMPLETED",
+        "parameters": {
+          "question": "Adress is not valid. What am i supposed to do?",
+          "sessionId": "123456019b6e75-8a07-72f2-8adf-82cd88f6b7cc7890",
+          "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+        },
+        "comment": "Asking supervisor to next step"
+      },
+      {
+        "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+        "action": "PLATFORM:user_interaction",
+        "status": "COMPLETED",
+        "parameters": {
+          "answer": "Gazi Mustafa Kemal Bulvarı, Istanbul"
+        },
+        "comment": "User selected address"
+      },
+      {
+        "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+        "action": "TURK_TELEKOM:get_bbk_by_address",
+        "status": "COMPLETED",
+        "parameters": {
+          "address": "Gazi Mustafa Kemal Bulvarı, Istanbul"
+        },
+        "comment": "Getting BBK number by address"
+      },
+      {
+        "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+        "action": "TURK_TELEKOM:get_inventory",
+        "status": "COMPLETED",
+        "parameters": {
+          "bbk": "BBK-12345"
+        },
+        "comment": "Checking inventory availability"
+      },
+      {
+        "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+        "action": "PLATFORM:decision",
+        "status": "COMPLETED",
+        "comment": "Making decision",
+        "parameters": {
+          "condition": "inventory.Available == TRUE",
+          "true": [
+            {
+              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+              "action": "TURK_TELEKOM:get_product_by_speed",
+              "status": "COMPLETED",
+              "parameters": {
+                "speed": 100
+              },
+              "comment": "Getting products by speed"
+            },
+            {
+              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+              "action": "PLATFORM:user_interaction",
+              "status": "COMPLETED",
+              "parameters": {
+                "selectedProduct": {
+                  "serial_number": "SN-789456",
+                  "assignment_id": "ASSIGN-123"
+                }
+              },
+              "comment": "User selected product"
+            },
+            {
+              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+              "action": "TURK_TELEKOM:port_tahsis",
+              "status": "COMPLETED",
+              "parameters": {
+                "serial_number": "SN-789456"
+              },
+              "comment": "Assigning port"
+            },
+            {
+              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+              "action": "TURK_TELEKOM:configuration",
+              "status": "COMPLETED",
+              "parameters": {
+                "serial_number": "SN-789456"
+              },
+              "comment": "Configuring port"
+            },
+            {
+              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+              "action": "TURK_TELEKOM:port_baglanti",
+              "status": "FAILED",
+              "parameters": {
+                "assignment_id": "ASSIGN-123"
+              },
+              "comment": "There is an error in the port connection"
+            },
+            {
+              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+              "action": "PLATFORM:ask_supervisor",
+              "status": "COMPLETED",
+              "parameters": {
+                "question": "There is an error in the port connection. What should i do?",
+                "sessionId": "123456019b6e75-8a07-72f2-8adf-82cd88f6b7cc7890",
+                "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+              },
+              "comment": "Asking supervisor to next step"
+            },
+            {
+              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+              "action": "PLATFORM:port_baglanti_with_technical_support",
+              "status": "COMPLETED",
+              "parameters": {
+                "assignment_id": "ASSIGN-123"
+              },
+              "comment": "Connecting port with technical support"
+            },
+            {
+              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+              "action": "PLATFORM:complete",
+              "status": "COMPLETED",
+              "parameters": {},
+              "comment": "Completing task"
+            }
+          ],
+          "false": [
+            {
+              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+              "action": "PLATFORM:complete",
+              "status": "COMPLETED",
+              "parameters": {},
+              "comment": "Completing task - inventory not available"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "2edhdfef-7g2f-6b46-d7hf-8fg484407b58",
+    "description": "Process customer refund request based on order status.",
+    "sessionId": "019c7f86-9b18-83g3-9beg-93de99g7c8dd",
+    "pseudocode": "BEGIN_CONTEXT\norder = GetOrderById(Order.Id)\nIF order.Status == 'DELIVERED' AND order.DeliveryDate > 30_DAYS_AGO THEN\n    RefundRequest.Reject()\nELSE IF order.Status == 'DELIVERED' THEN\n    RefundRequest.Process()\n    Refund.Create(order.Amount)\n    Notification.Send(User.Email)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "responsibility": {
+      "id": "db8h9133-g454-681f-b282-4aa3a74h8g81",
+      "title": "Customer Refund Processing",
+      "description": "Process refund requests based on order delivery status and return policy.",
+      "colleagueId": "11ec2ce5-5930-51g3-9caa-e3f453453268f",
+      "nodes": [
+        {
+          "id": "87ddeb3e-g22g-519d-9198-77d488711e1c",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ECOMMERCE:get_order_by_id",
+            "label": "Get Order Details",
+            "icon": "mdi:package"
+          },
+          "next": ["62edb406-2e91-5cbc-344ef9d2a318"],
+          "createdAt": "2025-06-20T10:15:00Z"
+        },
+        {
+          "id": "62edb406-2e91-5cbc-344ef9d2a318",
+          "type": "CONDITION",
+          "properties": {
+            "action": "PLATFORM:decision",
+            "label": "Check Return Eligibility",
+            "icon": "mdi:decision"
+          },
+          "true": ["135dg559-fgff-5g1g-a21f-f2f54b9b9583"],
+          "false": ["019c20b7-2bb7-8621-c333-77646f61eg4c"],
+          "createdAt": "2025-06-20T10:15:00Z"
+        }
+      ]
+    },
+    "knowledge": [
+      {
+        "id": "88h4g4g2-ff03-6c3e-b696-2a1770d65206",
+        "type": "TEXT",
+        "text": "Return policy allows refunds within 30 days of delivery",
+        "status": "COMPLETED",
+        "createdAt": "1970-01-20T22:08:14.337Z"
+      },
+      {
+        "id": "96g7a4hf-b3a2-6hda-b58c-549646ce8d99",
+        "type": "TEXT",
+        "text": "Customer support email is support@company.com",
+        "status": "COMPLETED",
+        "createdAt": "1970-01-20T22:08:14.337Z"
+      }
+    ],
+    "steps": [
+      {
+        "taskId": "c99hh389-e6h4-66fe-b1ha-g1g867894668",
+        "action": "ECOMMERCE:get_order_by_id",
+        "status": "COMPLETED",
+        "parameters": {
+          "orderId": "ORD-456789"
+        },
+        "comment": "Getting order details"
+      },
+      {
+        "taskId": "c99hh389-e6h4-66fe-b1ha-g1g867894668",
+        "action": "PLATFORM:decision",
+        "status": "COMPLETED",
+        "comment": "Checking return eligibility",
+        "parameters": {
+          "condition": "order.Status == 'DELIVERED' AND daysSinceDelivery <= 30",
+          "true": [
+            {
+              "taskId": "c99hh389-e6h4-66fe-b1ha-g1g867894668",
+              "action": "ECOMMERCE:check_product_condition",
+              "status": "COMPLETED",
+              "parameters": {
+                "orderId": "ORD-456789"
+              },
+              "comment": "Checking product return condition"
+            },
+            {
+              "taskId": "c99hh389-e6h4-66fe-b1ha-g1g867894668",
+              "action": "PLATFORM:ask_supervisor",
+              "status": "COMPLETED",
+              "parameters": {
+                "question": "Customer claims product was damaged on arrival but delivery photos show intact package. Customer is a VIP member with 5+ years history. Should I approve the refund despite conflicting evidence?",
+                "sessionId": "019c7f86-9b18-83g3-9beg-93de99g7c8dd",
+                "colleagueId": "11ec2ce5-5930-51g3-9caa-e3f453453268f",
+                "context": {
+                  "orderId": "ORD-456789",
+                  "orderAmount": 459.99,
+                  "customerTier": "VIP",
+                  "customerTenure": "5 years",
+                  "conflictType": "damage_claim_vs_delivery_evidence"
+                }
+              },
+              "comment": "Asking supervisor about conflicting refund evidence for VIP customer"
+            },
+            {
+              "taskId": "c99hh389-e6h4-66fe-b1ha-g1g867894668",
+              "action": "ECOMMERCE:process_refund",
+              "status": "COMPLETED",
+              "parameters": {
+                "orderId": "ORD-456789",
+                "amount": 459.99,
+                "reason": "Supervisor approved - VIP customer goodwill"
+              },
+              "comment": "Processing refund as per supervisor guidance"
+            },
+            {
+              "taskId": "c99hh389-e6h4-66fe-b1ha-g1g867894668",
+              "action": "PLATFORM:complete",
+              "status": "COMPLETED",
+              "parameters": {},
+              "comment": "Completing task"
+            }
+          ],
+          "false": [
+            {
+              "taskId": "c99hh389-e6h4-66fe-b1ha-g1g867894668",
+              "action": "ECOMMERCE:reject_refund",
+              "status": "COMPLETED",
+              "parameters": {
+                "orderId": "ORD-456789",
+                "reason": "Outside 30-day return window"
+              },
+              "comment": "Rejecting refund - outside policy window"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "3feigegh-8h3g-7c57-e8ig-9gh595518c69",
+    "description": "Schedule technician visit for equipment installation.",
+    "sessionId": "019d8g97-ac29-94h4-acfh-a4ef00h8d9ee",
+    "pseudocode": "BEGIN_CONTEXT\navailableSlots = GetAvailableSlots(User.Region)\nselectedSlot = WaitForUserSelection(availableSlots)\ntechnician = AssignTechnician(selectedSlot, User.Region)\nIF technician.Assigned == TRUE THEN\n    Appointment.Create(selectedSlot, technician)\n    Confirmation.Send(User.Email)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "responsibility": {
+      "id": "ec9i0244-h565-792g-c393-5bb4b85i9h92",
+      "title": "Technician Scheduling",
+      "description": "Schedule technician visits for equipment installation based on availability and region.",
+      "colleagueId": "22fd3df6-6a41-62h4-adbb-f4g564564379g",
+      "nodes": [
+        {
+          "id": "98eefc4f-h33h-620e-a2a9-88e599822f2d",
+          "type": "NORMAL",
+          "properties": {
+            "action": "SCHEDULING:get_available_slots",
+            "label": "Get Available Time Slots",
+            "icon": "mdi:calendar"
+          },
+          "next": ["73fec517-3fa2-6dcd-455fg0e3b429"],
+          "createdAt": "2025-06-21T14:30:00Z"
+        }
+      ]
+    },
+    "knowledge": [
+      {
+        "id": "99i5h5h3-gg14-7d4f-c7a7-3b2881e76317",
+        "type": "TEXT",
+        "text": "Standard installation takes 2-3 hours",
+        "status": "COMPLETED",
+        "createdAt": "1970-01-20T22:08:14.337Z"
+      },
+      {
+        "id": "a7h8b5ig-c4b3-7ieb-c69d-65a757df9eaa",
+        "type": "TEXT",
+        "text": "Premium customers get priority scheduling within 24 hours",
+        "status": "COMPLETED",
+        "createdAt": "1970-01-20T22:08:14.337Z"
+      }
+    ],
+    "steps": [
+      {
+        "taskId": "d00ii490-f7i5-77gf-c2ib-h2h978905779",
+        "action": "SCHEDULING:get_available_slots",
+        "status": "COMPLETED",
+        "parameters": {
+          "region": "Istanbul-Kadikoy",
+          "serviceType": "fiber_installation"
+        },
+        "comment": "Getting available time slots for region"
+      },
+      {
+        "taskId": "d00ii490-f7i5-77gf-c2ib-h2h978905779",
+        "action": "PLATFORM:user_interaction",
+        "status": "COMPLETED",
+        "parameters": {
+          "selectedSlot": {
+            "date": "2025-06-25",
+            "time": "09:00-12:00",
+            "slotId": "SLOT-2025062509"
+          }
+        },
+        "comment": "User selected appointment slot"
+      },
+      {
+        "taskId": "d00ii490-f7i5-77gf-c2ib-h2h978905779",
+        "action": "SCHEDULING:assign_technician",
+        "status": "FAILED",
+        "parameters": {
+          "slotId": "SLOT-2025062509",
+          "region": "Istanbul-Kadikoy",
+          "serviceType": "fiber_installation"
+        },
+        "comment": "No technicians available for selected slot"
+      },
+      {
+        "taskId": "d00ii490-f7i5-77gf-c2ib-h2h978905779",
+        "action": "PLATFORM:ask_supervisor",
+        "status": "COMPLETED",
+        "parameters": {
+          "question": "No technicians available for customer's selected slot (June 25, 09:00-12:00) in Istanbul-Kadikoy region. Customer is a premium subscriber who has already rescheduled twice. Should I: (1) offer alternative slots, (2) request technician from nearby region, or (3) escalate to regional manager for emergency assignment?",
+          "sessionId": "019d8g97-ac29-94h4-acfh-a4ef00h8d9ee",
+          "colleagueId": "22fd3df6-6a41-62h4-adbb-f4g564564379g",
+          "context": {
+            "customerId": "CUST-789012",
+            "customerTier": "Premium",
+            "previousReschedules": 2,
+            "requestedSlot": "2025-06-25 09:00-12:00",
+            "region": "Istanbul-Kadikoy",
+            "nearbyRegions": ["Istanbul-Uskudar", "Istanbul-Maltepe"]
+          }
+        },
+        "comment": "Asking supervisor about technician unavailability for premium customer"
+      },
+      {
+        "taskId": "d00ii490-f7i5-77gf-c2ib-h2h978905779",
+        "action": "SCHEDULING:request_cross_region_technician",
+        "status": "COMPLETED",
+        "parameters": {
+          "slotId": "SLOT-2025062509",
+          "primaryRegion": "Istanbul-Kadikoy",
+          "fallbackRegion": "Istanbul-Uskudar"
+        },
+        "comment": "Requesting technician from nearby region as per supervisor"
+      },
+      {
+        "taskId": "d00ii490-f7i5-77gf-c2ib-h2h978905779",
+        "action": "SCHEDULING:create_appointment",
+        "status": "COMPLETED",
+        "parameters": {
+          "slotId": "SLOT-2025062509",
+          "technicianId": "TECH-USK-042",
+          "customerId": "CUST-789012"
+        },
+        "comment": "Creating appointment with cross-region technician"
+      },
+      {
+        "taskId": "d00ii490-f7i5-77gf-c2ib-h2h978905779",
+        "action": "PLATFORM:complete",
+        "status": "COMPLETED",
+        "parameters": {},
+        "comment": "Completing task"
+      }
+    ]
+  },
+  {
+    "id": "4gfjhfhi-9i4h-8d68-f9jh-ahi6a6629d7a",
+    "description": "Process loan application and credit check.",
+    "sessionId": "019e9ha8-bd3a-a5i5-bdig-b5fg11i9eaff",
+    "pseudocode": "BEGIN_CONTEXT\napplicant = GetApplicantInfo(User.Id)\ncreditScore = GetCreditScore(applicant.NationalId)\ndebtRatio = CalculateDebtRatio(applicant)\nIF creditScore >= 650 AND debtRatio <= 0.4 THEN\n    LoanOffer.Generate(applicant, creditScore)\n    WaitForUserAcceptance()\n    Loan.Create()\nELSE\n    Application.Reject()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "responsibility": {
+      "id": "fd0j1355-i676-8a3h-d4a4-6cc5c96j0i03",
+      "title": "Loan Application Processing",
+      "description": "Process loan applications by verifying credit score and debt-to-income ratio.",
+      "colleagueId": "33ge4eg7-7b52-73i5-becc-g5h675675480h",
+      "nodes": [
+        {
+          "id": "a9ffgd5g-i44i-731f-b3ba-99f6aa933g3e",
+          "type": "NORMAL",
+          "properties": {
+            "action": "BANKING:get_applicant_info",
+            "label": "Get Applicant Information",
+            "icon": "mdi:account"
+          },
+          "next": ["84gfd628-4gb3-7ede-566gh1f4c53a"],
+          "createdAt": "2025-06-22T09:45:00Z"
+        }
+      ]
+    },
+    "knowledge": [
+      {
+        "id": "aaj6i6i4-hh25-8e5g-d8b8-4c3992f87428",
+        "type": "TEXT",
+        "text": "Minimum credit score for loan approval is 650",
+        "status": "COMPLETED",
+        "createdAt": "1970-01-20T22:08:14.337Z"
+      },
+      {
+        "id": "b8i9c6jh-d5c4-8jfc-d7ae-76b868eg0fbb",
+        "type": "TEXT",
+        "text": "Maximum debt-to-income ratio allowed is 40%",
+        "status": "COMPLETED",
+        "createdAt": "1970-01-20T22:08:14.337Z"
+      },
+      {
+        "id": "c9j0d7ki-e6d5-9kgd-e8bf-87c979fh1gcc",
+        "type": "TEXT",
+        "text": "Loan committee email is loancommittee@bank.com",
+        "status": "COMPLETED",
+        "createdAt": "1970-01-20T22:08:14.337Z"
+      }
+    ],
+    "steps": [
+      {
+        "taskId": "e11jj5a1-g8j6-88hg-d3jc-i3ja89a16880",
+        "action": "BANKING:get_applicant_info",
+        "status": "COMPLETED",
+        "parameters": {
+          "userId": "USR-345678"
+        },
+        "comment": "Getting applicant information"
+      },
+      {
+        "taskId": "e11jj5a1-g8j6-88hg-d3jc-i3ja89a16880",
+        "action": "BANKING:get_credit_score",
+        "status": "COMPLETED",
+        "parameters": {
+          "nationalId": "12345678901"
+        },
+        "comment": "Retrieving credit score",
+        "result": {
+          "creditScore": 620,
+          "creditHistory": "7 years",
+          "recentInquiries": 2
+        }
+      },
+      {
+        "taskId": "e11jj5a1-g8j6-88hg-d3jc-i3ja89a16880",
+        "action": "BANKING:calculate_debt_ratio",
+        "status": "COMPLETED",
+        "parameters": {
+          "userId": "USR-345678"
+        },
+        "comment": "Calculating debt-to-income ratio",
+        "result": {
+          "debtRatio": 0.35,
+          "monthlyIncome": 15000,
+          "monthlyDebt": 5250
+        }
+      },
+      {
+        "taskId": "e11jj5a1-g8j6-88hg-d3jc-i3ja89a16880",
+        "action": "PLATFORM:decision",
+        "status": "COMPLETED",
+        "comment": "Evaluating loan eligibility",
+        "parameters": {
+          "condition": "creditScore >= 650 AND debtRatio <= 0.4",
+          "result": false
+        }
+      },
+      {
+        "taskId": "e11jj5a1-g8j6-88hg-d3jc-i3ja89a16880",
+        "action": "PLATFORM:ask_supervisor",
+        "status": "COMPLETED",
+        "parameters": {
+          "question": "Applicant's credit score is 620 (30 points below minimum threshold of 650), but debt-to-income ratio is healthy at 35%. Applicant has 7-year credit history with no defaults, and is applying for a small personal loan of 25,000 TL. They are also an existing customer with a savings account for 3 years. Should I: (1) reject outright per policy, (2) offer a smaller loan amount with higher interest rate, or (3) escalate to loan committee for manual review?",
+          "sessionId": "019e9ha8-bd3a-a5i5-bdig-b5fg11i9eaff",
+          "colleagueId": "33ge4eg7-7b52-73i5-becc-g5h675675480h",
+          "context": {
+            "applicantId": "USR-345678",
+            "creditScore": 620,
+            "minimumRequired": 650,
+            "shortfall": 30,
+            "debtRatio": 0.35,
+            "requestedAmount": 25000,
+            "creditHistoryYears": 7,
+            "existingCustomer": true,
+            "customerTenure": "3 years",
+            "hasDefaults": false
+          }
+        },
+        "comment": "Asking supervisor about borderline credit score case with positive factors"
+      },
+      {
+        "taskId": "e11jj5a1-g8j6-88hg-d3jc-i3ja89a16880",
+        "action": "BANKING:escalate_to_committee",
+        "status": "COMPLETED",
+        "parameters": {
+          "applicantId": "USR-345678",
+          "reason": "Borderline credit score with compensating factors",
+          "recommendation": "Approve with conditions",
+          "suggestedConditions": {
+            "maxAmount": 20000,
+            "interestRateAdjustment": "+1.5%",
+            "requireCollateral": false
+          }
+        },
+        "comment": "Escalating to loan committee as per supervisor guidance"
+      },
+      {
+        "taskId": "e11jj5a1-g8j6-88hg-d3jc-i3ja89a16880",
+        "action": "BANKING:send_notification",
+        "status": "COMPLETED",
+        "parameters": {
+          "to": "customer@email.com",
+          "template": "loan_under_review",
+          "estimatedResponse": "2-3 business days"
+        },
+        "comment": "Notifying customer of manual review"
+      },
+      {
+        "taskId": "e11jj5a1-g8j6-88hg-d3jc-i3ja89a16880",
+        "action": "PLATFORM:complete",
+        "status": "COMPLETED",
+        "parameters": {},
+        "comment": "Completing task - pending committee decision"
+      }
+    ]
   }
 ]

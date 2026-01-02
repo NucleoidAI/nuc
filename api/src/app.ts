@@ -101,6 +101,11 @@ function createApp() {
     await event.subscribe<{ taskId: string }>("STEP_COMPLETED", ({ taskId }) =>
       agent.task({ taskId })
     );
+
+    await event.subscribe<{
+      taskId: string;
+      result: string;
+    }>("STEP_FAILED", ({ taskId, result }) => agent.task({ taskId }));
   })();
 
   return app;

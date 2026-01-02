@@ -65,5 +65,27 @@
   },
   {
     "action": "PLATFORM:complete"
+  },
+  {
+    "action": "PLATFORM:ask_supervisor",
+    "lib": "ask_supervisor",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "sessionId": {
+          "type": "string",
+          "description": "The session ID."
+        },
+        "colleagueId": {
+          "type": "string",
+          "description": "The colleague ID."
+        },
+        "question": {
+          "type": "string",
+          "description": "The question to ask the supervisor."
+        }
+      },
+      "required": ["question"]
+    }
   }
 ]

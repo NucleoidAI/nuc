@@ -69,12 +69,28 @@ const TaskDetails = ({
     );
   }
 
-  const statusLabel =
-    task.status === "IN_PROGRESS"
-      ? "In Progress"
-      : task.status === "COMPLETED"
-      ? "Completed"
-      : "Waiting for user";
+  const statusMap = {
+    IN_PROGRESS: {
+      label: "In Progress",
+      color: "primary.main",
+    },
+    COMPLETED: {
+      label: "Completed",
+      color: "success.main",
+    },
+    FAILED: {
+      label: "Failed",
+      color: "error.main",
+    },
+    WAITING_FOR_USER: {
+      label: "Waiting for user",
+      color: "warning.main",
+    },
+    SUPERVISED_NEEDED: {
+      label: "Supervised Needed",
+      color: "info.main",
+    },
+  };
 
   return (
     <Stack spacing={2}>
@@ -94,16 +110,14 @@ const TaskDetails = ({
 
         <Chip
           size="small"
-          label={statusLabel}
+          label={statusMap[task.status]?.label}
           sx={{
             fontWeight: 900,
             cursor: "default",
-            bgcolor:
-              task.status === "IN_PROGRESS" ? "primary.main" : "success.main",
+            bgcolor: statusMap[task.status]?.color,
             color: "common.white",
             "&:hover": {
-              bgcolor:
-                task.status === "IN_PROGRESS" ? "primary.main" : "success.main",
+              bgcolor: statusMap[task.status]?.color,
             },
           }}
         />
@@ -203,32 +217,14 @@ const TaskDetails = ({
                     <TableCell>
                       <Chip
                         size="small"
-                        label={
-                          step.status === "IN_PROGRESS"
-                            ? "In Progress"
-                            : step.status === "COMPLETED"
-                            ? "Completed"
-                            : step.status === "WAITING_FOR_USER"
-                            ? "Waiting for user"
-                            : "-"
-                        }
+                        label={statusMap[step.status]?.label}
                         sx={{
                           fontWeight: 800,
                           cursor: "default",
-                          bgcolor:
-                            step.status === "IN_PROGRESS"
-                              ? "primary.main"
-                              : step.status === "COMPLETED"
-                              ? "success.main"
-                              : "warning.main",
+                          bgcolor: statusMap[step.status]?.color,
                           color: "common.white",
                           "&:hover": {
-                            bgcolor:
-                              step.status === "IN_PROGRESS"
-                                ? "primary.main"
-                                : step.status === "COMPLETED"
-                                ? "success.main"
-                                : "warning.main",
+                            bgcolor: statusMap[step.status]?.color,
                           },
                         }}
                       />

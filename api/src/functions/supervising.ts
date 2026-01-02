@@ -10,7 +10,7 @@ async function create({
   colleagueId,
 }: {
   sessionId: string;
-  conversationId: string;
+  conversationId?: string;
   question: string;
   colleagueId: string;
 }) {

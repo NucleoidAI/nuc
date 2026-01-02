@@ -211,8 +211,12 @@ async function task({ taskId }: { taskId: string }) {
       comment,
       status: "COMPLETED",
     });
-  } else if (action === "PLATFORM:user_interaction") {
+  } else if (
+    action === "PLATFORM:user_interaction" ||
+    action === "PLATFORM:ask_supervisor"
+  ) {
     parameters.sessionId = sessionId;
+    parameters.colleagueId = colleagueId;
     return await taskFn.addStep({
       taskId,
       action,
@@ -244,7 +248,7 @@ async function step({
 
   if (Integrations.find((integration) => integration.action === action)) {
     actionType = "MCP";
-  } else if (action === "SUPERVISED") {
+  } else if (action === "PLATFORM:ask_supervisor") {
     actionType = "SUPERVISED";
   } else if (action === "PLATFORM:user_interaction") {
     actionType = "INTERACTION";
@@ -257,8 +261,8 @@ async function step({
     let result;
     let mcpClient;
 
-    if (action === "SUPERVISED") {
-      actionFn = require("../actions/supervised").default;
+    if (actionType === "SUPERVISED") {
+      actionFn = require("../actions/ask_supervisor").default;
     } else if (actionType === "ACTION") {
       // @ts-ignore
       const { lib } = actions.find(action);
@@ -309,11 +313,17 @@ async function step({
         result: resultString,
         status: "WAITING_FOR_USER",
       });
+    } else if (actionType === "SUPERVISED") {
+      await taskFn.updateStep({
+        stepId,
+        result: resultString,
+        status: "SUPERVISED_NEEDED",
+      });
     } else {
       await taskFn.updateStep({
         stepId,
         result: resultString,
-        status: "COMPLETED",
+        status: result && result.isError ? "FAILED" : "COMPLETED",
       });
     }
   } catch (err: unknown) {

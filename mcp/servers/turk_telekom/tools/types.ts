@@ -47,3 +47,7 @@ export interface PortBaglantiInput {
 export interface ConfigurationInput {
   serial_number: string; // Device serial number
 }
+
+export interface PortBaglantiWithTechnicalSupportInput {
+  assignment_id: string; // Port assignment ID
+}

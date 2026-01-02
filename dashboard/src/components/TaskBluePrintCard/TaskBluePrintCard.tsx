@@ -20,7 +20,7 @@ import {
   usePopover,
 } from "@canmingir/link/platform/components";
 
-const ResponsibilityCard = ({
+const TaskBluePrintCard = ({
   item,
   handleDrawerOpen,
   handleFlowDialogOpen,
@@ -193,4 +193,4 @@ const ResponsibilityCard = ({
   );
 };
 
-export default ResponsibilityCard;
+export default TaskBluePrintCard;

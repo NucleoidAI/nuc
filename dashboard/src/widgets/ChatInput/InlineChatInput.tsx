@@ -6,8 +6,8 @@ import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Popover from "@mui/material/Popover";
-import { ResponsibilityCommands } from "../../components/ChatInput/chat.config";
 import SourcedAvatar from "../../components/SourcedAvatar/SourcedAvatar";
+import { TaskBluePrintCommands } from "../../components/ChatInput/chat.config";
 import useAgents from "../../hooks/useAgents";
 import { withHistory } from "slate-history";
 
@@ -31,7 +31,7 @@ import {
 import {
   IntegrationElement,
   MentionElement,
-} from "../../components/ResponsibilityChat/IntegrationElement";
+} from "../../components/TaskBluePrintChat/IntegrationElement";
 import { styled, useTheme } from "@mui/material/styles";
 import { useCallback, useMemo, useState } from "react";
 
@@ -44,8 +44,8 @@ const ELEMENT_TYPES = {
 type CustomElement = {
   type: (typeof ELEMENT_TYPES)[keyof typeof ELEMENT_TYPES];
   children: CustomText[];
-  command?: (typeof ResponsibilityCommands)[number];
-  selectedIntegration?: (typeof ResponsibilityCommands)[0]["next"]["list"][number];
+  command?: (typeof TaskBluePrintCommands)[number];
+  selectedIntegration?: (typeof TaskBluePrintCommands)[0]["next"]["list"][number];
   selectedScope?: {
     id: string;
     name: string;
@@ -198,10 +198,10 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
   const [showScopes, setShowScopes] = useState(false);
   const [showMentions, setShowMentions] = useState(false);
   const [selectedCommand, setSelectedCommand] = useState<
-    (typeof ResponsibilityCommands)[number] | null
+    (typeof TaskBluePrintCommands)[number] | null
   >(null);
   const [selectedIntegration, setSelectedIntegration] = useState<
-    (typeof ResponsibilityCommands)[0]["next"]["list"][number] | null
+    (typeof TaskBluePrintCommands)[0]["next"]["list"][number] | null
   >(null);
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(0);
   const { getTeamAgents } = useAgents();
@@ -303,7 +303,7 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
   }, [value, onSend, resetEditor]);
 
   const handleCommandSelect = useCallback(
-    (command: (typeof ResponsibilityCommands)[number]) => {
+    (command: (typeof TaskBluePrintCommands)[number]) => {
       if (command.type === "integration") {
         setSelectedCommand(command);
         setShowCommands(false);
@@ -327,7 +327,7 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
 
   const handleIntegrationSelect = useCallback(
     (
-      integration: (typeof ResponsibilityCommands)[0]["next"]["list"][number]
+      integration: (typeof TaskBluePrintCommands)[0]["next"]["list"][number]
     ) => {
       setSelectedIntegration(integration);
 
@@ -431,7 +431,7 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
         event.preventDefault();
 
         if (showCommands && selectedOptionIndex !== null) {
-          handleCommandSelect(ResponsibilityCommands[selectedOptionIndex]);
+          handleCommandSelect(TaskBluePrintCommands[selectedOptionIndex]);
           return;
         } else if (
           showIntegrations &&
@@ -482,7 +482,7 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
         let maxIndex = 0;
 
         if (showCommands) {
-          maxIndex = ResponsibilityCommands.length - 1;
+          maxIndex = TaskBluePrintCommands.length - 1;
         } else if (showIntegrations && selectedCommand?.next?.list) {
           maxIndex = selectedCommand.next.list.length - 1;
         } else if (showScopes && selectedIntegration?.next?.list) {
@@ -644,7 +644,7 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
         }}
       >
         <CommandList>
-          {ResponsibilityCommands.map((command, index) => (
+          {TaskBluePrintCommands.map((command, index) => (
             <ListItem
               key={command.id}
               button

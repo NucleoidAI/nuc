@@ -176,7 +176,7 @@ const Commands = [
   },
 ];
 
-const ResponsibilityCommands = [
+const TaskBluePrintCommands = [
   {
     id: "integration",
     label: "Integration",
@@ -251,10 +251,10 @@ const Types = [
 ];
 
 const findIntegrationById = (id: string) => {
-  const integration = ResponsibilityCommands[0].next.list.find(
+  const integration = TaskBluePrintCommands[0].next.list.find(
     (integration) => integration.id === id
   );
   return integration || null;
 };
 
-export { Commands, Types, ResponsibilityCommands, findIntegrationById };
+export { Commands, Types, TaskBluePrintCommands, findIntegrationById };

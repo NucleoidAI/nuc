@@ -3,8 +3,8 @@ import { Commands } from "../../components/ChatInput/chat.config.js";
 /* eslint-disable */
 import IconButton from "@mui/material/IconButton";
 import { Iconify } from "@canmingir/link/platform/components";
-import { ResponsibilityCommands } from "../../components/ChatInput/chat.config.js";
 import Stack from "@mui/material/Stack";
+import { TaskBluePrintCommands } from "../../components/ChatInput/chat.config.js";
 import { Types } from "../../components/ChatInput/chat.config.js";
 import { sub } from "date-fns";
 import { v4 as uuid } from "uuid";
@@ -88,7 +88,7 @@ const ChatInput = memo(function ChatMessageInput({
     [onSendMessage]
   );
 
-  const commands = responsibilityChat ? ResponsibilityCommands : Commands;
+  const commands = responsibilityChat ? TaskBluePrintCommands : Commands;
 
   return (
     <>

@@ -8,9 +8,9 @@ import {
   IntegrationElement,
   IntegrationScopeElement,
   MentionElement,
-} from "../ResponsibilityChat/IntegrationElement";
+} from "../TaskBluePrintChat/IntegrationElement";
 
-function ResponsibilityMessageBox({ message }) {
+function TaskBluePrintMessageBox({ message }) {
   const { getAgent } = useAgent();
   const theme = useTheme();
 
@@ -203,4 +203,4 @@ function ResponsibilityMessageBox({ message }) {
   );
 }
 
-export default ResponsibilityMessageBox;
+export default TaskBluePrintMessageBox;

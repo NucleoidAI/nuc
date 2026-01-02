@@ -1,7 +1,7 @@
 import AddIcon from "@mui/icons-material/Add";
-import ResponsibilityCard from "../../components/ResponsibilityCard/ResponsibilityCard";
-import ResponsibilityDrawer from "../../components/ResponsbilityDrawer/ResponsibilityDrawer";
-import ResponsibilityFlowDialog from "../../components/ResponsibilityFlow/ResponsibilityFlowDialog";
+import TaskBluePrintCard from "../../components/TaskBluePrintCard/TaskBluePrintCard";
+import TaskBluePrintDrawer from "../../components/TaskBluePrintDrawer/TaskBluePrintDrawer";
+import TaskBluePrintFlowDialog from "../../components/TaskBluePrintFlow/TaskBluePrintFlowDialog";
 import { Theme } from "@mui/material/styles";
 import { useEvent } from "@nucleoidai/react-event";
 import useResponsibility from "../../hooks/useResponsibility";
@@ -9,7 +9,7 @@ import useResponsibility from "../../hooks/useResponsibility";
 import { Box, Fab, Stack, useMediaQuery } from "@mui/material";
 import React, { useState } from "react";
 
-function ResponsibilitiesWidget({ agentId }: { agentId: string }) {
+function TaskBluePrintsWidget({ agentId }: { agentId: string }) {
   const [responsibilityUpsertedEvent] = useEvent("RESPONSIBILITY_UPSERTED", {
     responsibility: null,
   });
@@ -64,7 +64,7 @@ function ResponsibilitiesWidget({ agentId }: { agentId: string }) {
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         <Box sx={{ mt: 2 }}>
           {responsibility?.map((item) => (
-            <ResponsibilityCard
+            <TaskBluePrintCard
               key={item.id}
               item={item}
               handleDrawerOpen={handleDrawerOpen}
@@ -75,7 +75,7 @@ function ResponsibilitiesWidget({ agentId }: { agentId: string }) {
           ))}
         </Box>
       </Box>
-      <ResponsibilityDrawer
+      <TaskBluePrintDrawer
         drawerOpen={drawerOpen}
         handleDrawerClose={handleDrawerClose}
         selectedItem={selectedItem}
@@ -84,7 +84,7 @@ function ResponsibilitiesWidget({ agentId }: { agentId: string }) {
         setSelectedItem={setSelectedItem}
         agentId={agentId}
       />
-      <ResponsibilityFlowDialog
+      <TaskBluePrintFlowDialog
         flowDialogOpen={flowDialogOpen}
         handleFlowDialogClose={handleFlowDialogClose}
         selectedItem={selectedItem}
@@ -112,4 +112,4 @@ function ResponsibilitiesWidget({ agentId }: { agentId: string }) {
   );
 }
 
-export default ResponsibilitiesWidget;
+export default TaskBluePrintsWidget;

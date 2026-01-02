@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 
-const ResponsibilityWelcomeMessage = () => {
+const TaskBluePrintWelcomeMessage = () => {
   return (
     <Box
       data-cy="chat-welcome-message"
@@ -22,4 +22,4 @@ const ResponsibilityWelcomeMessage = () => {
   );
 };
 
-export default ResponsibilityWelcomeMessage;
+export default TaskBluePrintWelcomeMessage;

@@ -1,9 +1,9 @@
-import ResponsibilityMessageBox from "../ResponsibilityMessageBox/ResponsibilityMessageBox";
-import ResponsibilityWelcomeMessage from "./ResponsibilityWelcomeMessage";
+import TaskBluePrintMessageBox from "../TaskBluePrintMessageBox/TaskBluePrintMessageBox";
+import TaskBluePrintWelcomeMessage from "./TaskBluePrintWelcomeMessage";
 
 import { Box, CircularProgress, useTheme } from "@mui/material";
 
-const ResponsibilityChatContent = ({ loading, messages }) => {
+const TaskBluePrintChatContent = ({ loading, messages }) => {
   const theme = useTheme();
 
   return (
@@ -34,10 +34,10 @@ const ResponsibilityChatContent = ({ loading, messages }) => {
         },
       }}
     >
-      {messages.length === 0 && <ResponsibilityWelcomeMessage />}
+      {messages.length === 0 && <TaskBluePrintWelcomeMessage />}
 
       {messages.map((message, index) => (
-        <ResponsibilityMessageBox key={index} message={message} />
+        <TaskBluePrintMessageBox key={index} message={message} />
       ))}
 
       {loading && (
@@ -62,4 +62,4 @@ const ResponsibilityChatContent = ({ loading, messages }) => {
   );
 };
 
-export default ResponsibilityChatContent;
+export default TaskBluePrintChatContent;

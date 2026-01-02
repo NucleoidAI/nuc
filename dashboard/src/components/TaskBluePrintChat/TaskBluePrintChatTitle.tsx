@@ -1,7 +1,7 @@
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import { Iconify } from "@canmingir/link/platform/components";
-import { ResponsibilityCommands } from "../ChatInput/chat.config";
+import { TaskBluePrintCommands } from "../ChatInput/chat.config";
 
 import {
   Box,
@@ -25,7 +25,7 @@ import {
 } from "./IntegrationElement";
 import React, { useState } from "react";
 
-const ResponsibilityChatTitle = ({
+const TaskBluePrintChatTitle = ({
   title,
   description,
   messages,
@@ -53,7 +53,7 @@ const ResponsibilityChatTitle = ({
 
     try {
       // TODO: Extract integrations and its scopes
-      const availableIntegrations = ResponsibilityCommands[0]?.next?.list || [];
+      const availableIntegrations = TaskBluePrintCommands[0]?.next?.list || [];
       const availableScopes = [];
 
       availableIntegrations.forEach((integration) => {
@@ -163,7 +163,7 @@ const ResponsibilityChatTitle = ({
     if (!title) return "Add Title";
 
     try {
-      const availableIntegrations = ResponsibilityCommands[0]?.next?.list || [];
+      const availableIntegrations = TaskBluePrintCommands[0]?.next?.list || [];
       const availableScopes = [];
 
       availableIntegrations.forEach((integration) => {
@@ -548,4 +548,4 @@ const ResponsibilityChatTitle = ({
   );
 };
 
-export default ResponsibilityChatTitle;
+export default TaskBluePrintChatTitle;

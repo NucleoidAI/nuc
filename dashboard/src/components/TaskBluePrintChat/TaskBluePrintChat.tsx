@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import InlineChatInput from "../../widgets/ChatInput/InlineChatInput";
 import React from "react";
-import ResponsibilityChatContent from "./ResponsibilityChatContent";
+import TaskBluePrintChatContent from "./TaskBluePrintChatContent";
 import http from "@canmingir/link/platform/http";
 import { publish } from "@nucleoidai/react-event";
 import useResponsibility from "../../hooks/useResponsibility";
@@ -9,7 +9,7 @@ import useResponsibility from "../../hooks/useResponsibility";
 import { Card, CardContent, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 
-function ResponsibilityChat({
+function TaskBluePrintChat({
   setAiResponse,
   selectedItem,
   aiResponse,
@@ -190,7 +190,7 @@ function ResponsibilityChat({
             minHeight: 0,
           }}
         >
-          <ResponsibilityChatContent loading={loading} messages={messages} />
+          <TaskBluePrintChatContent loading={loading} messages={messages} />
           {error && (
             <Box
               sx={{
@@ -224,4 +224,4 @@ function ResponsibilityChat({
   );
 }
 
-export default ResponsibilityChat;
+export default TaskBluePrintChat;

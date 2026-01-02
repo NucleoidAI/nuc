@@ -4,6 +4,7 @@ import {
   Card,
   IconButton,
   Pagination,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -62,21 +63,20 @@ function KnowledgeTable({
   };
 
   const statusLabel = (row, status) => {
-    return row.teamId !== null ? (
-      <>
-        {status}
-        <Label
-          sx={{
-            backgroundColor: "rgba(97, 97, 97, 0.2)",
-            color: "white",
-            ml: 0.5,
-          }}
-        >
-          TEAM
-        </Label>
-      </>
-    ) : (
-      <>{status}</>
+    return (
+      <Stack direction="row" alignItems="center" spacing={1}>
+        <span>{status}</span>
+        {row.teamId !== null && (
+          <Label
+            sx={{
+              backgroundColor: "rgba(97, 97, 97, 0.2)",
+              color: "white",
+            }}
+          >
+            TEAM
+          </Label>
+        )}
+      </Stack>
     );
   };
 
@@ -115,25 +115,37 @@ function KnowledgeTable({
                   <TableRow hover key={index} tabIndex={-1}>
                     {selectedType === "ALL" && (
                       <>
-                        <TableCell>{row.type}</TableCell>
-                        <TableCell>
-                          {row.type === "URL" && row.url}
-                          {row.type === "TEXT" && row.text}
-                          {row.type === "QA" &&
-                            `Q: ${row.question} A: ${row.answer}`}
-                          {row.type === "TASK" && row.Task.description}
+                        <TableCell sx={{ whiteSpace: "nowrap" }}>
+                          {row.type}
                         </TableCell>
-                        <TableCell>{getStatus(row)}</TableCell>
                         <TableCell>
+                          <div style={{ wordBreak: "break-word" }}>
+                            {row.type === "URL" && row.url}
+                            {row.type === "TEXT" && row.text}
+                            {row.type === "QA" &&
+                              `Q: ${row.question} A: ${row.answer}`}
+                            {row.type === "TASK" && row.Task.description}
+                          </div>
+                        </TableCell>
+                        <TableCell sx={{ whiteSpace: "nowrap" }}>
+                          {getStatus(row)}
+                        </TableCell>
+                        <TableCell sx={{ whiteSpace: "nowrap" }}>
                           {new Date(row.createdAt).toLocaleDateString()}
                         </TableCell>
                       </>
                     )}
                     {selectedType === "URL" && (
                       <>
-                        <TableCell>{row.url}</TableCell>
-                        <TableCell>{getStatus(row)}</TableCell>
                         <TableCell>
+                          <div style={{ wordBreak: "break-all" }}>
+                            {row.url}
+                          </div>
+                        </TableCell>
+                        <TableCell sx={{ whiteSpace: "nowrap" }}>
+                          {getStatus(row)}
+                        </TableCell>
+                        <TableCell sx={{ whiteSpace: "nowrap" }}>
                           {new Date(row.createdAt).toLocaleDateString()}
                         </TableCell>
                       </>
@@ -141,8 +153,10 @@ function KnowledgeTable({
                     {selectedType === "TEXT" && (
                       <>
                         <TableCell>{row.text}</TableCell>
-                        <TableCell>{getStatus(row)}</TableCell>
-                        <TableCell>
+                        <TableCell sx={{ whiteSpace: "nowrap" }}>
+                          {getStatus(row)}
+                        </TableCell>
+                        <TableCell sx={{ whiteSpace: "nowrap" }}>
                           {new Date(row.createdAt).toLocaleDateString()}
                         </TableCell>
                       </>
@@ -151,13 +165,15 @@ function KnowledgeTable({
                       <>
                         <TableCell>{row.question}</TableCell>
                         <TableCell>{row.answer}</TableCell>
-                        <TableCell>{getStatus(row)}</TableCell>
-                        <TableCell>
+                        <TableCell sx={{ whiteSpace: "nowrap" }}>
+                          {getStatus(row)}
+                        </TableCell>
+                        <TableCell sx={{ whiteSpace: "nowrap" }}>
                           {new Date(row.createdAt).toLocaleDateString()}
                         </TableCell>
                       </>
                     )}
-                    <TableCell sx={{ width: "5%" }}>
+                    <TableCell align="right" sx={{ width: "5%" }}>
                       <IconButton
                         data-cy="delete-knowledge-button"
                         onClick={() => handleDeleteClick(row)}
@@ -176,22 +192,22 @@ function KnowledgeTable({
                 ))}
             </TableBody>
           </Table>
-          {knowledges.length > rowsPerPage && (
-            <Pagination
-              count={Math.ceil(knowledges.length / rowsPerPage)}
-              page={page}
-              onChange={handleChangePage}
-              sx={{
-                mt: 2,
-                display: "flex",
-                justifyContent: "center",
-                padding: "10px",
-                borderRadius: "5px",
-              }}
-            />
-          )}
         </Scrollbar>
       </TableContainer>
+
+      {knowledges.length > rowsPerPage && (
+        <Pagination
+          count={Math.ceil(knowledges.length / rowsPerPage)}
+          page={page}
+          onChange={handleChangePage}
+          sx={{
+            mt: 2,
+            mb: 2,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        />
+      )}
     </Card>
   );
 }

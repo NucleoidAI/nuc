@@ -164,7 +164,9 @@ function AgentLayout({
       </Stack>
       {currentTab === "profile" && <Profile agentId={agent.id} />}
       {currentTab === "knowledge-base" && <Knowledge agentId={agent.id} />}
-      {currentTab === "responsibilities" && <ResponsibilitiesWidget />}
+      {currentTab === "responsibilities" && (
+        <ResponsibilitiesWidget agentId={agent.id} />
+      )}
       {currentTab === "supervisings" && <Supervising agentId={agent.id} />}
       {currentTab === "tasks" && <TasksWidget agentId={agent.id} />}
       {currentTab === "integrations" && <AgentIntegration agent={agent} />}

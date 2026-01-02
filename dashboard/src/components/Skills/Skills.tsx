@@ -3,7 +3,37 @@ import React from "react";
 
 import { Box, Card, CardContent, Typography } from "@mui/material";
 
-const Skills = ({ title, description, logo, onSkillClick, id, oauth }) => {
+const Skills = ({
+  title,
+  description,
+  logo,
+  onSkillClick,
+  id,
+  oauth,
+}: {
+  title: string;
+  description: string;
+  logo: string;
+  onSkillClick: (skill: {
+    title: string;
+    description: string;
+    logo: string;
+    id: string;
+    oauth?: {
+      tokenUrl: string;
+      clientId: string;
+      scope: string;
+      redirectUri: string;
+    };
+  }) => void;
+  id: string;
+  oauth?: {
+    tokenUrl: string;
+    clientId: string;
+    scope: string;
+    redirectUri: string;
+  };
+}) => {
   return (
     <Card
       sx={{
@@ -27,7 +57,7 @@ const Skills = ({ title, description, logo, onSkillClick, id, oauth }) => {
       <CardContent>
         <Typography variant="h4" sx={{ mb: 2 }}>
           {title
-            .split(" ")
+            ?.split(" ")
             .map(
               (word) =>
                 word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()

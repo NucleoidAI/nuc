@@ -1,70 +1,50 @@
-import { Box } from "@mui/material";
 import React from "react";
 
-import { Skeleton, Stack } from "@mui/material";
+import { Box, Skeleton } from "@mui/material";
 
 const TeamSkeleton = () => {
+  const ConnectorSkeleton = () => (
+    <Skeleton
+      variant="rectangular"
+      width={2}
+      height={40}
+      animation="wave"
+      sx={{ my: 0.5 }}
+    />
+  );
+
+  const NodeSkeleton = ({ height = 100 }) => (
+    <Skeleton
+      variant="rectangular"
+      width={380}
+      height={height}
+      animation="wave"
+      sx={{ borderRadius: 3 }}
+    />
+  );
+
   return (
-    <Stack
+    <Box
       sx={{
-        m: 4,
-        mt: 0,
-        p: 2,
-        boxShadow: 3,
-        borderColor: "divider",
-        borderRadius: "20px",
-        height: "25rem",
-        display: `flex`,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
         alignItems: "center",
-        justifyContent: "space-between",
+        width: "100%",
+        minHeight: "100vh",
+        p: 4,
       }}
     >
-      <Skeleton
-        animation="wave"
-        sx={{
-          margin: "5%",
-          marginRight: "20%",
-          width: "70%",
-          height: "7%",
-          display: "flex",
-        }}
-      />
-      <Skeleton
-        sx={{
-          display: "flex",
-          height: "45%",
-          width: "60%",
-          borderRadius: "20px",
-        }}
-      />
-      <Box sx={{ display: "flex", flexDirection: "row" }}>
-        <Skeleton
-          variant="circular"
-          sx={{
-            display: "flex",
-            width: "3rem",
-            height: "3rem",
-          }}
-        />
-        <Skeleton
-          variant="circular"
-          sx={{
-            display: "flex",
-            width: "3rem",
-            height: "3rem",
-          }}
-        />
-        <Skeleton
-          variant="circular"
-          sx={{
-            display: "flex",
-            width: "3rem",
-            height: "3rem",
-          }}
-        />
-      </Box>
-      <Skeleton variant="text" />
-    </Stack>
+      <NodeSkeleton height={120} />
+
+      <ConnectorSkeleton />
+
+      <NodeSkeleton height={120} />
+
+      <ConnectorSkeleton />
+
+      <NodeSkeleton height={120} />
+    </Box>
   );
 };
 

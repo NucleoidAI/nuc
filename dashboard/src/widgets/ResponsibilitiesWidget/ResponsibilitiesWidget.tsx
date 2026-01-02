@@ -9,7 +9,7 @@ import useResponsibility from "../../hooks/useResponsibility";
 import { Box, Fab, Stack, useMediaQuery } from "@mui/material";
 import React, { useState } from "react";
 
-function ResponsibilitiesWidget() {
+function ResponsibilitiesWidget({ agentId }: { agentId: string }) {
   const [responsibilityUpsertedEvent] = useEvent("RESPONSIBILITY_UPSERTED", {
     responsibility: null,
   });
@@ -59,7 +59,6 @@ function ResponsibilitiesWidget() {
         width: "100%",
         px: 2,
         pb: 2,
-        minHeight: "calc(100vh - 240px)",
       }}
     >
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -83,6 +82,7 @@ function ResponsibilitiesWidget() {
         setAiResponse={setAiResponse}
         aiResponse={aiResponse}
         setSelectedItem={setSelectedItem}
+        agentId={agentId}
       />
       <ResponsibilityFlowDialog
         flowDialogOpen={flowDialogOpen}

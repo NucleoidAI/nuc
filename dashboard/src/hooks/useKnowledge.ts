@@ -116,7 +116,8 @@ function useKnowledge() {
 
   const createKnowledge = async (
     knowledge: KnowledgeInput,
-    colleagueId: string
+    colleagueId: string,
+    teamId?: string
   ) => {
     const response = await http.post("/knowledge", {
       url: knowledge.url,
@@ -124,6 +125,7 @@ function useKnowledge() {
       question: knowledge.question,
       answer: knowledge.answer,
       colleagueId: colleagueId,
+      teamId: teamId,
       type: knowledge.type,
     });
 

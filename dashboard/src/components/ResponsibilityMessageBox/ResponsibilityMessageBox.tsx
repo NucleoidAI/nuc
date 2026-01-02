@@ -112,7 +112,7 @@ function ResponsibilityMessageBox({ message }) {
     }
   };
 
-  const isUser = message.role === "USER";
+  const isUser = message.role === "user";
 
   return (
     <Box

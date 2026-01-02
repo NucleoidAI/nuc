@@ -59,14 +59,12 @@ function Knowledge({ agentId, teamId }: { agentId?: string; teamId?: string }) {
   const [selectedItem, setSelectedItem] = useState([]);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
+  const source = agentId ? knowledges : teamKnowledges;
+
   const filteredKnowledges =
     selectedType === "ALL"
-      ? agentId
-        ? knowledges
-        : teamKnowledges
-      : (agentId ? knowledges : teamKnowledges).filter(
-          (knowledge) => knowledge && knowledge.type === selectedType
-        );
+      ? source
+      : source.filter((k) => k?.type === selectedType);
 
   const handleChange = (event) => {
     setSelectedType(event.target.value);
@@ -102,7 +100,6 @@ function Knowledge({ agentId, teamId }: { agentId?: string; teamId?: string }) {
         width: "100%",
         px: 2,
         pb: 2,
-        minHeight: "calc(100vh - 240px)",
       }}
     >
       <TypeToolbar
@@ -161,7 +158,6 @@ function Knowledge({ agentId, teamId }: { agentId?: string; teamId?: string }) {
         <AddItemDialog
           types={ADD_ITEM_TYPES}
           selectedType={selectedType === "ALL" ? "URL" : selectedType}
-          setSelectedType={setSelectedType}
           open={open}
           setOpen={setOpen}
           addItem={createKnowledge}

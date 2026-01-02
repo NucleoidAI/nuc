@@ -4,7 +4,22 @@ import { Avatar, Box, Card, Stack, Typography } from "@mui/material";
 import { Iconify, Image } from "@canmingir/link/platform/components";
 import { alpha, useTheme } from "@mui/material/styles";
 
-function AIMarketplaceItem({ engine, isWizardEngine, handleEngineSelect }) {
+function AIMarketplaceItem({
+  engine,
+  isWizardEngine,
+  handleEngineSelect,
+}: {
+  engine: {
+    id: string;
+    vendor: string;
+    model: string;
+    price: number;
+    description: string;
+    avatar?: string;
+  };
+  isWizardEngine?: boolean;
+  handleEngineSelect?: (engine) => void;
+}) {
   const theme = useTheme();
 
   const icons =
@@ -21,267 +36,199 @@ function AIMarketplaceItem({ engine, isWizardEngine, handleEngineSelect }) {
       : "tabler:ai";
 
   return (
-    <>
-      <Box
-        onClick={() => isWizardEngine && handleEngineSelect(engine)}
+    <Box
+      onClick={() =>
+        isWizardEngine && handleEngineSelect && handleEngineSelect(engine)
+      }
+      sx={{
+        cursor: "pointer",
+        width: "100%",
+        height: "100%",
+        "&:hover": {
+          opacity: 0.9,
+          transition: "opacity 0.3s ease-in-out",
+        },
+      }}
+    >
+      <Card
+        data-cy="ai-marketplace-item"
         sx={{
-          cursor: "pointer",
+          textAlign: "center",
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          height: "100%",
+          minHeight: { sm: 180 },
+          width: "100%",
+          overflow: "hidden",
           "&:hover": {
-            opacity: 0.7,
-            transition: "opacity 0.3s ease-in-out",
+            boxShadow: isWizardEngine ? 6 : 4,
           },
         }}
       >
-        <Card
-          data-cy="ai-marketplace-item"
+        <Box
           sx={{
-            textAlign: "center",
-            height: 220,
-            minWidth: 150,
+            position: "relative",
+            width: { xs: "100%", sm: 120 },
+            height: "auto",
+            minHeight: { xs: 140, sm: "100%" },
+            flexShrink: 0,
             display: "flex",
-            flexDirection: "row",
-            "&:hover": {
-              boxShadow: isWizardEngine ? 6 : 1,
-            },
           }}
         >
-          {/* bg and avatar */}
-          <Box sx={{ position: "relative" }}>
-            <Image
-              src={getBackgroundUrl(engine?.id)}
-              alt={engine?.vendor}
-              ratio="16/9"
-              sx={{
-                width: 100,
-                height: "100%",
-                display: "block",
-                borderRadius: 2,
-              }}
-              overlay={alpha(theme.palette.grey[900], 0.48)}
-            />
-
-            {engine?.avatar ? (
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: 8,
-                  left: "50%",
-                  transform: "translate(-50%)",
-                  width: 48,
-                  height: 48,
-                  borderRadius: "50%",
-                  border: `2px solid ${theme.palette.common.white}`,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  overflow: "hidden",
-                  zIndex: 10,
-                }}
-              >
-                <Iconify
-                  icon={engine.avatar}
-                  width="70%"
-                  height="70%"
-                  style={{ objectFit: "contain" }}
-                />
-              </Box>
-            ) : (
-              <Avatar
-                sx={{
-                  position: "absolute",
-                  top: 8,
-                  left: 8,
-                  width: 32,
-                  height: 32,
-                  zIndex: 10,
-                }}
-              />
-            )}
-          </Box>
-          {/* // vendor and model */}
-          <Stack
-            direction={"column"}
+          <Image
+            src={getBackgroundUrl(engine?.id)}
+            alt={engine?.vendor}
+            ratio={theme.breakpoints.up("sm") ? "1/1" : "16/9"}
             sx={{
-              m: 1,
+              width: "100%",
+              height: "100%",
+              display: "block",
+              objectFit: "cover",
+              minHeight: "100%",
+            }}
+            overlay={alpha(theme.palette.grey[900], 0.48)}
+          />
+
+          {engine?.avatar ? (
+            <Box
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: 48,
+                height: 48,
+                borderRadius: "50%",
+                border: `2px solid ${theme.palette.common.white}`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                zIndex: 10,
+              }}
+            >
+              <Iconify
+                icon={engine.avatar}
+                width="70%"
+                height="70%"
+                style={{ objectFit: "contain" }}
+              />
+            </Box>
+          ) : (
+            <Avatar
+              sx={{
+                position: "absolute",
+                top: 8,
+                left: 8,
+                width: 32,
+                height: 32,
+                zIndex: 10,
+              }}
+            />
+          )}
+        </Box>
+
+        <Stack
+          direction={"column"}
+          sx={{
+            p: 2,
+            width: "100%",
+            textAlign: "left",
+            justifyContent: "space-between",
+          }}
+          spacing={2}
+        >
+          <Box>
+            <Typography
+              variant="body2"
+              sx={{
+                display: "-webkit-box",
+                overflow: "hidden",
+                WebkitBoxOrient: "vertical",
+                WebkitLineClamp: 3,
+              }}
+            >
+              {engine?.description || "No description available."}
+            </Typography>
+          </Box>
+
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+              width: "100%",
+              alignItems: "center",
+              mt: "auto",
             }}
           >
-            <Stack
-              sx={{
-                height: 60,
-                marginBottom: 5,
-              }}
-            >
-              {engine?.description}
-            </Stack>
-
-            <Stack
-              direction={"row"}
-              sx={{
-                gap: 2,
-                m: "auto",
-                justifyContent: "center",
-                height: 70,
-                width: 280,
-              }}
-            >
-              <Stack
-                direction="column"
-                sx={{
-                  typography: "body2",
-                  padding: 1,
-                  borderRadius: 1,
-                  border: "dotted 1px gray",
-                  width: "100%",
-                }}
-              >
-                <Stack
-                  direction="row"
-                  spacing={1}
-                  sx={{
-                    paddingY: "0.5rem",
-                    m: "auto",
-                    width: 20,
-                    height: 30,
-                  }}
-                >
-                  <Iconify icon={icons} width={20} />
-                </Stack>
-                <Stack
-                  sx={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignContent: "center",
-                    overflow: "hidden",
-                    height: 20,
-                  }}
-                >
-                  <Typography
-                    color={"inherit"}
-                    variant={"body2"}
-                    textAlign={"start"}
-                    data-cy="engine-card-vendor-area"
-                    sx={{
-                      textOverflow: "ellipsis",
-                      overflow: "hidden",
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      maxHeight: 45,
-                    }}
-                  >
-                    {engine?.vendor}
-                  </Typography>
-                </Stack>
-              </Stack>
-              <Stack
-                direction="column"
-                sx={{
-                  typography: "body2",
-                  padding: 1,
-                  borderRadius: 1,
-                  border: "dotted 1px gray",
-                  width: "100%",
-                }}
-              >
-                <Stack
-                  direction="row"
-                  alignItems="center"
-                  spacing={1}
-                  sx={{
-                    paddingY: "0.5rem",
-                    justifyContent: "center",
-                    m: "auto",
-                    width: 20,
-                    height: 30,
-                  }}
-                >
-                  <Typography variant="subtitle1" fontSize={12}>
-                    Model
-                  </Typography>
-                </Stack>
-                <Stack
-                  sx={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignContent: "center",
-                    overflow: "hidden",
-                    m: "auto",
-                  }}
-                >
-                  <Typography
-                    color={"inherit"}
-                    variant={"body2"}
-                    textAlign={"start"}
-                    sx={{
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      maxHeight: 45,
-                    }}
-                  >
-                    {engine?.model}
-                  </Typography>
-                </Stack>
-              </Stack>
-              <Stack
-                direction="column"
-                sx={{
-                  typography: "body2",
-                  padding: 1,
-                  borderRadius: 1,
-                  border: "dotted 1px gray",
-                  width: "100%",
-                }}
-              >
-                <Stack
-                  direction="row"
-                  alignItems="center"
-                  spacing={1}
-                  sx={{
-                    paddingY: "0.5rem",
-                    justifyContent: "center",
-                    m: "auto",
-                    width: 20,
-                    height: 30,
-                  }}
-                >
-                  <Typography variant="subtitle1" fontSize={12}>
-                    Price
-                  </Typography>
-                </Stack>
-                <Stack
-                  sx={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignContent: "center",
-                    overflow: "hidden",
-                    height: 20,
-                  }}
-                >
-                  <Typography
-                    color={"inherit"}
-                    variant={"body2"}
-                    textAlign={"start"}
-                    sx={{
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      maxHeight: 45,
-                    }}
-                  >
-                    $ {engine?.price}
-                  </Typography>
-                </Stack>
-              </Stack>
-            </Stack>
+            <InfoBox label="Vendor" icon={icons} value={engine?.vendor} />
+            <InfoBox label="Model" value={engine?.model} />
+            <InfoBox label="Price" value={`$ ${engine?.price}`} />
           </Stack>
-        </Card>
-      </Box>
-    </>
+        </Stack>
+      </Card>
+    </Box>
+  );
+}
+
+function InfoBox({
+  label,
+  icon,
+  value,
+}: {
+  label: string;
+  icon?: string;
+  value: string | number;
+}) {
+  return (
+    <Stack
+      direction="column"
+      justifyContent="center"
+      alignItems="center"
+      sx={{
+        py: 0.5,
+        px: 0.5,
+        borderRadius: 1,
+        border: "1px dashed",
+        borderColor: "text.disabled",
+        width: "100%",
+        flex: 1,
+        minWidth: 0,
+      }}
+    >
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="center"
+        spacing={0.5}
+        sx={{ mb: 0.5, height: 20 }}
+      >
+        {icon ? (
+          <Iconify icon={icon} width={18} />
+        ) : (
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ fontWeight: "bold", fontSize: "0.7rem" }}
+          >
+            {label.toUpperCase()}
+          </Typography>
+        )}
+      </Stack>
+
+      <Typography
+        variant="caption"
+        sx={{
+          fontWeight: "bold",
+          width: "100%",
+          textAlign: "center",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {value}
+      </Typography>
+    </Stack>
   );
 }
 

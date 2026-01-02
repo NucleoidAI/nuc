@@ -1,5 +1,5 @@
 import React from "react";
-import ResponsibilityFlow from "./ResponsibilityFlow";
+import ResponsibilityFlow from "./TaskBluePrintFlow";
 
 import {
   Button,
@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 
-const ResponsibilityFlowDialog = ({
+const TaskBluePrintFlowDialog = ({
   flowDialogOpen,
   handleFlowDialogClose,
   selectedItem,
@@ -51,4 +51,4 @@ const ResponsibilityFlowDialog = ({
   );
 };
 
-export default ResponsibilityFlowDialog;
+export default TaskBluePrintFlowDialog;

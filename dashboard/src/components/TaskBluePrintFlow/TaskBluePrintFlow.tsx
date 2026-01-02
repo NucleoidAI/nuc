@@ -1,14 +1,14 @@
 import AddNodeDrawer from "../AddNode/AddNodeDrawer";
 import { Box } from "@mui/material";
 import { Flow } from "@canmingir/link/platform/components";
+import { TaskBluePrintFlowPlugin } from "./TaskBluePrintFlowPlugin";
 import { buildDefinitionGraph } from "./helper";
-import { responsibilityChartPlugin } from "./ResponsibilityFlowPlugin";
 import useResponsibility from "../../hooks/useResponsibility";
 import { v4 as uuid } from "uuid";
 
 import React, { useEffect, useState } from "react";
 
-function ResponsibilityFlow({ aiResponse, setAiResponse, responsibility }) {
+function TaskBluePrintFlow({ aiResponse, setAiResponse, responsibility }) {
   const [graphData, setGraphData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const { getResponsibilityWithNode } = useResponsibility();
@@ -153,7 +153,7 @@ function ResponsibilityFlow({ aiResponse, setAiResponse, responsibility }) {
         position: "relative",
       }}
     >
-      <Flow data={graphData} plugin={responsibilityChartPlugin} style={style} />
+      <Flow data={graphData} plugin={TaskBluePrintFlowPlugin} style={style} />
 
       <AddNodeDrawer
         drawerOpen={drawerOpen}
@@ -169,4 +169,4 @@ function ResponsibilityFlow({ aiResponse, setAiResponse, responsibility }) {
   );
 }
 
-export default ResponsibilityFlow;
+export default TaskBluePrintFlow;

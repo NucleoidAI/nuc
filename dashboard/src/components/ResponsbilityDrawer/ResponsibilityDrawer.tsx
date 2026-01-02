@@ -265,6 +265,7 @@ const ResponsibilityDrawer = ({
                     onDescriptionChange={handleDescriptionChange}
                     onCreateResponsibility={handleCreateResponsibility}
                     onMessagesChange={handleMessagesChange}
+                    agentId={agentId}
                   />
                 </Box>
               </Box>

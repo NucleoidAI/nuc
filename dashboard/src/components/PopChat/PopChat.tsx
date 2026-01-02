@@ -1,8 +1,8 @@
 import Draggable from "react-draggable";
 import { Iconify } from "@canmingir/link/platform/components";
-import ResponsibilitySelector from "../ResponsibilitySelector";
 import { Scrollbar } from "@canmingir/link/platform/components";
 import Stack from "@mui/material/Stack";
+import TaskBluePrintSelector from "../TaskBluePrintSelector";
 import { alpha } from "@mui/material/styles";
 import styles from "./styles";
 import { useEvent } from "@nucleoidai/react-event";
@@ -145,7 +145,7 @@ const PopChat = ({
         />
 
         {responsibilities.length > 0 && !readOnly && (
-          <ResponsibilitySelector
+          <TaskBluePrintSelector
             responsibilities={responsibilities}
             selectedResponsibility={selectedResponsibility}
             onResponsibilityChange={onResponsibilityChange}

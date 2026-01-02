@@ -1,7 +1,7 @@
 import AgentDrawer from "../../components/AgentDrawer/AgentDrawer";
 import AgentWizard from "../AgentWizard/AgentWizard";
 import { Flow } from "@canmingir/link/platform/components";
-import ResponsibilityDrawer from "../../components/ResponsbilityDrawer/ResponsibilityDrawer";
+import TaskBluePrintDrawer from "../../components/TaskBluePrintDrawer/TaskBluePrintDrawer";
 import { TeamChartRenderer } from "./TeamChartRenderer";
 import TeamSkeleton from "../../components/Skeletons/TeamSkeleton";
 import { storage } from "@nucleoidjs/webstorage";
@@ -160,7 +160,7 @@ function TeamChart() {
       )}
 
       {drawerOpen && (
-        <ResponsibilityDrawer
+        <TaskBluePrintDrawer
           drawerOpen={drawerOpen}
           handleDrawerClose={handleDrawerClose}
           selectedItem={selectedItem}

@@ -1,3 +1,9 @@
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
+import CloseIcon from "@mui/icons-material/Close";
+import ResponsibilityChat from "../ResponsibilityChat/ResponsibilityChat";
+import ResponsibilityChatTitle from "../ResponsibilityChat/ResponsibilityChatTitle";
+import ResponsibilityFlow from "../ResponsibilityFlow/ResponsibilityFlow";
+
 import {
   Box,
   Drawer,
@@ -9,12 +15,6 @@ import {
   useTheme,
 } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
-
-import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
-import CloseIcon from "@mui/icons-material/Close";
-import ResponsibilityChat from "../ResponsibilityChat/ResponsibilityChat";
-import ResponsibilityChatTitle from "../ResponsibilityChat/ResponsibilityChatTitle";
-import ResponsibilityFlow from "../ResponsibilityFlow/ResponsibilityFlow";
 
 const ResponsibilityDrawer = ({
   drawerOpen,

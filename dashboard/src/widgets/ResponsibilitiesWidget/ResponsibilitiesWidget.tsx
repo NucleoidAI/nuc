@@ -89,6 +89,7 @@ function ResponsibilitiesWidget({ agentId }: { agentId: string }) {
         handleFlowDialogClose={handleFlowDialogClose}
         selectedItem={selectedItem}
         aiResponse={aiResponse}
+        setAiResponse={setAiResponse}
       />
 
       <Stack

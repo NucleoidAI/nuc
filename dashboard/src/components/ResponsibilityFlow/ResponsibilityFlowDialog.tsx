@@ -14,12 +14,13 @@ const ResponsibilityFlowDialog = ({
   handleFlowDialogClose,
   selectedItem,
   aiResponse,
+  setAiResponse,
 }) => {
   return (
     <Dialog
       open={flowDialogOpen}
       onClose={handleFlowDialogClose}
-      maxWidth="md"
+      maxWidth="xl"
       fullWidth
     >
       <DialogTitle>Flow Chart</DialogTitle>
@@ -37,6 +38,7 @@ const ResponsibilityFlowDialog = ({
           <ResponsibilityFlow
             aiResponse={aiResponse}
             responsibility={selectedItem}
+            setAiResponse={setAiResponse}
           />
         )}
       </DialogContent>

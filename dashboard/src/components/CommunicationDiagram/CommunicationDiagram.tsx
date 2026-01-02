@@ -10,13 +10,13 @@ import {
 } from "@mui/material";
 import React, { useMemo } from "react";
 
-const DEFAULT_RESPONSIBILITY_ICON =
+const DEFAULT_TASK_BLUE_PRINT_ICON =
   "healthicons:crisis-response-center-person-outline";
 
 function CommunicationDiagram(props) {
   const {
     channels,
-    responsibilities,
+    taskBluePrints,
     connections,
     nodeWidth = 260,
     nodeHeight = 180,
@@ -28,9 +28,9 @@ function CommunicationDiagram(props) {
     containerProps,
     showRightIcons = true,
     showLeftIcons = true,
-    responsibilityIcon = DEFAULT_RESPONSIBILITY_ICON,
+    taskBluePrintIcon = DEFAULT_TASK_BLUE_PRINT_ICON,
     renderChannelNode,
-    renderResponsibilityNode,
+    renderTaskBluePrintNode,
   } = props;
 
   const theme = useTheme();
@@ -47,21 +47,21 @@ function CommunicationDiagram(props) {
 
   const rightNodes = useMemo(
     () =>
-      (responsibilities || []).map((resp, idx) => ({
+      (taskBluePrints || []).map((resp, idx) => ({
         ...resp,
         id: resp.id,
-        icon: resp.icon || responsibilityIcon,
+        icon: resp.icon || taskBluePrintIcon,
         x: leftX + horizontalGap,
         y: initialTop + idx * (nodeHeight + verticalGap),
       })),
     [
-      responsibilities,
+      taskBluePrints,
       leftX,
       horizontalGap,
       initialTop,
       nodeHeight,
       verticalGap,
-      responsibilityIcon,
+      taskBluePrintIcon,
     ]
   );
 
@@ -172,8 +172,8 @@ function CommunicationDiagram(props) {
                 (connections || []).some((c) => c.right === node.id)
               )
               .map((node) =>
-                renderResponsibilityNode ? (
-                  renderResponsibilityNode(node)
+                renderTaskBluePrintNode ? (
+                  renderTaskBluePrintNode(node)
                 ) : (
                   <Card
                     key={node.id}

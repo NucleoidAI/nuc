@@ -95,13 +95,13 @@ const Communication = () => {
   };
 
   if (loading) {
-    return <div>Loading responsibilities...</div>;
+    return <div>Loading task blueprints...</div>;
   }
   if (error) {
-    return <div>Error loading responsibilities: {error}</div>;
+    return <div>Error loading task blueprints: {error}</div>;
   }
 
-  const responsibilities =
+  const taskBluePrints =
     (respList || []).map((r) => ({
       id: `resp-${r.id}`,
       title: r.title,
@@ -118,7 +118,7 @@ const Communication = () => {
       <Box position="relative">
         <CommunicationDiagram
           channels={channels}
-          responsibilities={responsibilities}
+          taskBluePrints={taskBluePrints}
           connections={connections}
           availableChannels={availableChannels}
           onAddChannel={handleAddChannel}
@@ -137,7 +137,7 @@ const Communication = () => {
           size="medium"
           sx={{ position: "fixed", bottom: 16, right: 16 }}
           onClick={() => setDialogOpen(true)}
-          aria-label="Connect channel to responsibility"
+          aria-label="Connect channel to task blueprint"
         >
           <AddIcon />
         </Fab>
@@ -146,13 +146,13 @@ const Communication = () => {
           open={dialogOpen}
           onClose={() => setDialogOpen(false)}
           channels={channels}
-          responsibilities={responsibilities}
+          taskBluePrints={taskBluePrints}
           availableChannels={availableChannels}
           connections={connections}
           onAddChannel={handleAddChannel}
           onDeleteChannel={handleDeleteChannel}
           onConnect={handleConnect}
-          responsibilityIcon="healthicons:crisis-response-center-person-outline"
+          taskBluePrintIcon="healthicons:crisis-response-center-person-outline"
         />
       </Box>
     </Box>

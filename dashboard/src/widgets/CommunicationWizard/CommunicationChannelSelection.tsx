@@ -61,9 +61,9 @@ const CommunicationChannelSelection = ({
   return (
     <>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        Select a channel to connect to a responsibility. Channels marked as
+        Select a channel to connect to a task blueprint. Channels marked as
         &quot;Already Connected&quot; can only be disconnected, not connected to
-        additional responsibilities.
+        additional task blueprints.
       </Typography>
       {channels.map((node) => {
         const isConnected = isChannelConnected(node.id);

@@ -20,6 +20,7 @@ const ResponsibilityDrawer = ({
   setAiResponse,
   aiResponse,
   setSelectedItem,
+  agentId,
 }: {
   drawerOpen: boolean;
   handleDrawerClose: () => void;
@@ -38,6 +39,7 @@ const ResponsibilityDrawer = ({
     description: string;
     colleagueId: string;
   }) => void;
+  agentId?: string;
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -230,6 +232,7 @@ const ResponsibilityDrawer = ({
                   onDescriptionChange={handleDescriptionChange}
                   onCreateResponsibility={handleCreateResponsibility}
                   onMessagesChange={handleMessagesChange}
+                  agentId={agentId}
                 />
               </Box>
             </Box>

@@ -4,7 +4,6 @@ import React from "react";
 import ResponsibilityChatContent from "./ResponsibilityChatContent";
 import http from "@canmingir/link/platform/http";
 import { publish } from "@nucleoidai/react-event";
-import { useParams } from "react-router-dom";
 import useResponsibility from "../../hooks/useResponsibility";
 
 import { Card, CardContent, useTheme } from "@mui/material";
@@ -19,8 +18,8 @@ function ResponsibilityChat({
   onDescriptionChange,
   onCreateResponsibility,
   onMessagesChange,
+  agentId,
 }) {
-  const { colleagueId } = useParams();
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
   const [error, setError] = useState(null);
@@ -48,7 +47,7 @@ function ResponsibilityChat({
       selectedItem?.id,
       title,
       description,
-      colleagueId
+      agentId
     );
 
     setSelectedItem(response.responsibility);
@@ -117,7 +116,7 @@ function ResponsibilityChat({
           selectedItem?.id,
           responsibilityNameData.title,
           responsibilityNameData.description,
-          colleagueId,
+          agentId,
           data?.flow
         );
 

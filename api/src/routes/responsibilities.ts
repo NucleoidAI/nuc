@@ -3,7 +3,7 @@ import Responsibility from "../models/Responsibility";
 import ResponsibilitySchema from "../schemas/Responsibility";
 import agent from "../functions/agent";
 import colleague from "../functions/colleague";
-import { event } from "node-event-test-package/client";
+import { event } from "@canmingir/link-express/event/client";
 import express from "express";
 import responsibility from "../functions/responsibility";
 

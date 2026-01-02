@@ -3,6 +3,7 @@ import AgentWizard from "../AgentWizard/AgentWizard";
 import { Flow } from "@canmingir/link/platform/components";
 import ResponsibilityDrawer from "../../components/ResponsbilityDrawer/ResponsibilityDrawer";
 import { TeamChartRenderer } from "./TeamChartRenderer";
+import TeamSkeleton from "../../components/Skeletons/TeamSkeleton";
 import { storage } from "@nucleoidjs/webstorage";
 import { teamChartPlugin } from "./TeamChartPlugin";
 import useAgents from "../../hooks/useAgents";
@@ -104,7 +105,7 @@ function TeamChart() {
   }
 
   if (!teamTree) {
-    return <p>No team data found for this project.</p>;
+    return <TeamSkeleton />;
   }
 
   const style = (node) => {

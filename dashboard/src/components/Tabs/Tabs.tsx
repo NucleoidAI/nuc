@@ -1,34 +1,44 @@
 import Tab from "@mui/material/Tab";
 import { useCallback } from "react";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 import Tabs, { tabsClasses } from "@mui/material/Tabs";
 
 function TabBar({ TABS, currentTab, setCurrentTab }) {
+  const isWideScreen = useMediaQuery("(min-width:1450px)");
+
   const handleTabChange = useCallback(
     (event, newValue) => {
       setCurrentTab(newValue);
     },
     [setCurrentTab]
   );
+
   return (
     <Tabs
       value={currentTab}
       onChange={handleTabChange}
+      variant={isWideScreen ? "standard" : "scrollable"}
+      centered={isWideScreen}
       scrollButtons="auto"
-      variant="scrollable"
       allowScrollButtonsMobile
       sx={{
         width: 1,
+        maxWidth: "100vw",
         bottom: 0,
         zIndex: 9,
         position: "absolute",
         bgcolor: "background.paper",
+        boxShadow: 3,
         [`& .${tabsClasses.flexContainer}`]: {
           pr: { md: 3 },
-          justifyContent: { md: "flex-end" },
+        },
+        [`& .MuiTabs-indicator`]: {
+          height: 2,
         },
         [`& .MuiTabs-scrollButtons`]: {
           zIndex: 10,
+          "&.Mui-disabled": { opacity: 0.3 },
         },
       }}
     >

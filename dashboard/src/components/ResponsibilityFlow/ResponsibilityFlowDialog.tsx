@@ -26,6 +26,11 @@ const ResponsibilityFlowDialog = ({
       <DialogContent
         sx={{
           width: "100%",
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
+          msOverflowStyle: "none",
+          scrollbarWidth: "none",
         }}
       >
         {selectedItem && (

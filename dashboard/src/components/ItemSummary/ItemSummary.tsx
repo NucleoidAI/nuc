@@ -9,60 +9,52 @@ export default function ItemSummary({ newItem }) {
   return (
     <>
       <DialogContentText sx={{ textAlign: "center", mb: 2 }}>
-        Colleague Summary
+        Agent Summary
       </DialogContentText>
-      <Grid container spacing={2}>
-        <Grid
-          item
-          xs={6}
-          sx={{
-            justifyContent: "center",
-            alignContent: "center",
-            display: "flex",
-          }}
-        >
+
+      <Grid container spacing={2} alignItems="stretch">
+        <Grid item xs={6}>
           <Card
             sx={{
               bgcolor: (theme) => theme.palette.background.paper,
               boxShadow: (theme) => theme.customShadows.card,
-              alignContent: "center",
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
               justifyContent: "center",
+              alignItems: "center",
               width: "100%",
             }}
           >
-            <CardContent
-              children={
-                <>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      mb: 1,
-                    }}
-                  >
-                    <Iconify
-                      icon={cleanIconName(newItem.icon)}
-                      width="30%"
-                      height="30%"
-                      style={{ objectFit: "contain" }}
-                    />
-                  </Box>
-                  <Typography
-                    variant="h6"
-                    textAlign={"center"}
-                    mb={2}
-                    data-cy="item-summary-name-area"
-                  >
-                    {newItem.name}
-                  </Typography>
-                </>
-              }
-            />
+            <CardContent>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  mb: 1,
+                }}
+              >
+                <Iconify
+                  icon={cleanIconName(newItem.icon)}
+                  width={48}
+                  height={48}
+                  style={{ objectFit: "contain" }}
+                />
+              </Box>
+              <Typography
+                variant="h6"
+                textAlign={"center"}
+                mb={2}
+                data-cy="item-summary-name-area"
+              >
+                {newItem.name}
+              </Typography>
+            </CardContent>
           </Card>
         </Grid>
         <Grid item xs={6}>
-          <Card>
+          <Card sx={{ height: "100%" }}>
             <CardHeader title="Engine" />
             <CardContent>
               <Typography data-cy="item-summary-role-area">
@@ -71,7 +63,7 @@ export default function ItemSummary({ newItem }) {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={8}>
+        <Grid item xs={12}>
           <Card>
             <CardHeader title="Description" />
             <CardContent>

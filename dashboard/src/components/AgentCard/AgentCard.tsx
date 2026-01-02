@@ -1,7 +1,6 @@
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
-import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import { cleanIconName } from "../../utils/cleanIconName";
 import { getAgentGradients } from "../../utils/gradient";
@@ -11,181 +10,192 @@ import {
   Iconify,
   usePopover,
 } from "@canmingir/link/platform/components";
-import { Fab, IconButton, MenuItem, Typography } from "@mui/material";
+import { IconButton, MenuItem, Typography } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
 
 // ----------------------------------------------------------------------
 
-export default function AgentCard({ agent, onView, onEdit, onDelete }) {
+export default function AgentCard({
+  agent,
+  onView,
+  onEdit,
+  onDelete,
+}: {
+  agent: {
+    id: string;
+    name: string;
+    description: string;
+    icon?: string;
+    createdAt: string;
+    AIEngine?: {
+      vendor: string;
+      model: string;
+    };
+  };
+  onView: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
   const theme = useTheme();
   const popover = usePopover();
 
   return (
-    <Card sx={{ width: "255px" }}>
-      <Fab
-        data-cy="agent-card-more-vert"
-        color="default"
-        size="small"
+    <>
+      <Card
         sx={{
-          position: "absolute",
-          top: 8,
-          right: 8,
-          boxShadow: 2,
-          border: "1px solid",
-          borderColor: "rgba(0, 0, 0, 0.23)",
-          backgroundColor: "transparent",
-          "&:hover": {
-            backgroundColor: "rgba(0, 0, 0, 0.04)",
-          },
+          width: "255px",
+          position: "relative",
+          boxShadow: "none",
+          border: `1px solid ${alpha(theme.palette.grey[500], 0.2)}`,
+          borderRadius: 2,
+          transition: "border-color 0.3s",
         }}
       >
-        <IconButton onClick={popover.onOpen}>
+        <IconButton
+          onClick={popover.onOpen}
+          sx={{
+            position: "absolute",
+            top: 8,
+            right: 8,
+            zIndex: 10,
+            color: "common.white",
+            bgcolor: alpha(theme.palette.grey[900], 0.3),
+            "&:hover": {
+              bgcolor: alpha(theme.palette.grey[900], 0.5),
+            },
+          }}
+        >
           <Iconify icon="eva:more-vertical-fill" />
         </IconButton>
-      </Fab>
-      <Card
-        key={agent.name}
-        sx={{
-          textAlign: "center",
-          width: "255px",
-          minWidth: 255,
-          cursor: "pointer",
-        }}
-        onClick={onView}
-        data-cy="agent-card"
-      >
-        <Box sx={{ position: "relative" }}>
-          {agent.icon ? (
+
+        <Box
+          onClick={onView}
+          sx={{
+            cursor: "pointer",
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+          }}
+          data-cy="agent-card"
+        >
+          <Box sx={{ position: "relative" }}>
+            <Box
+              sx={{
+                width: "100%",
+                pt: "56.25%",
+                background: getAgentGradients(agent.id, theme),
+                overflow: "hidden",
+              }}
+            />
+
             <Box
               sx={{
                 width: 64,
                 height: 64,
-                zIndex: 11,
+                position: "absolute",
+                bottom: -32,
                 left: 0,
                 right: 0,
-                bottom: -32,
                 mx: "auto",
-                position: "absolute",
+                zIndex: 9,
+                borderRadius: "50%",
+                bgcolor: "background.paper",
+                border: `4px solid ${theme.palette.background.paper}`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              <Iconify
-                icon={cleanIconName(agent.icon)}
-                width="70%"
-                height="70%"
-                style={{ objectFit: "contain" }}
-              />
+              {agent.icon ? (
+                <Iconify
+                  icon={cleanIconName(agent.icon)}
+                  width={32}
+                  height={32}
+                />
+              ) : (
+                <Avatar sx={{ width: "100%", height: "100%" }} />
+              )}
             </Box>
-          ) : (
-            <Avatar />
-          )}
-
-          <Box
-            sx={{
-              position: "relative",
-              width: "100%",
-              pt: "56.25%",
-              background: getAgentGradients(agent.id, theme),
-              overflow: "hidden",
-            }}
-          >
-            <Box
-              sx={{
-                position: "absolute",
-                inset: 0,
-                backgroundColor: alpha(theme.palette.grey[900], 0.48),
-              }}
-            />
           </Box>
-        </Box>
-        <Stack
-          sx={{
-            mt: 5,
-            mb: 2,
-          }}
-          direction={"column"}
-        >
-          <Typography variant="subtitle1" data-cy="agent-card-name">
-            {agent.name}
-          </Typography>
-          <Typography
-            variant="caption"
-            sx={{ color: "gray", ml: 1, mt: 0.4 }}
-            component={"span"}
-          >
-            {agent.createdAt}
-          </Typography>
-        </Stack>
-        <Divider sx={{ borderStyle: "dashed" }} />
-        <Stack
-          direction={"column"}
-          sx={{
-            gap: 2,
-            margin: 2,
-            alignItems: "center",
-          }}
-        >
+
           <Stack
-            direction="column"
+            spacing={1.5}
             sx={{
-              typography: "body2",
-              padding: 2,
-              borderRadius: 1,
-              border: "dotted 1px gray",
-              width: "100%",
+              p: 2,
+              pt: 4.5,
+              flexGrow: 1,
+              alignItems: "center",
+              textAlign: "center",
             }}
           >
-            <Stack
-              direction="row"
-              alignItems="center"
-              spacing={1}
-              sx={{ paddingY: "0.5rem" }}
-            >
-              <Iconify icon={"ph:note-pencil-duotone"} width={24} />
-              <Typography variant="subtitle1">Description</Typography>
-            </Stack>
+            <Box>
+              <Typography variant="subtitle1" data-cy="agent-card-name">
+                {agent.name}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                {agent.createdAt}
+              </Typography>
+            </Box>
+
             <Stack
               sx={{
-                flexDirection: "row",
-                justifyContent: "flex-start",
-                alignContent: "center",
-                overflow: "hidden",
-                height: 45,
+                width: "100%",
+                p: 1.5,
+                bgcolor: alpha(theme.palette.grey[500], 0.08),
+                borderRadius: 1,
+                textAlign: "left",
               }}
             >
+              <Stack direction="row" alignItems="center" spacing={1} mb={0.5}>
+                <Iconify
+                  icon={"ph:note-pencil-duotone"}
+                  width={14}
+                  color="text.secondary"
+                />
+                <Typography
+                  variant="caption"
+                  fontWeight="bold"
+                  color="text.secondary"
+                >
+                  Description
+                </Typography>
+              </Stack>
+
               <Typography
-                color={"inherit"}
-                variant={"body2"}
-                textAlign={"start"}
+                variant="body2"
+                color="text.primary"
                 data-cy="agent-card-description-area"
                 sx={{
-                  textOverflow: "ellipsis",
-                  overflow: "hidden",
                   display: "-webkit-box",
                   WebkitLineClamp: 2,
                   WebkitBoxOrient: "vertical",
-                  maxHeight: 45,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  minHeight: 40,
+                  fontSize: "0.85rem",
                 }}
               >
-                {agent.description}
+                {agent.description || "No description provided."}
               </Typography>
             </Stack>
-          </Stack>
-        </Stack>
 
-        <Typography
-          data-cy="agent-card-generated-by"
-          variant="caption"
-          component="div"
-          noWrap
-          sx={{ color: "text.secondary", mb: 1 }}
-        >
-          Generated By {agent.AIEngine?.vendor} {agent.AIEngine?.model}
-        </Typography>
+            <Typography
+              data-cy="agent-card-generated-by"
+              variant="caption"
+              color="text.disabled"
+              noWrap
+              sx={{ maxWidth: "100%" }}
+            >
+              Generated By {agent.AIEngine?.vendor} {agent.AIEngine?.model}
+            </Typography>
+          </Stack>
+        </Box>
       </Card>
+
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
-        arrow="left-top"
+        arrow="right-top"
         sx={{ width: 140 }}
       >
         <MenuItem
@@ -222,6 +232,6 @@ export default function AgentCard({ agent, onView, onEdit, onDelete }) {
           Delete
         </MenuItem>
       </CustomPopover>
-    </Card>
+    </>
   );
 }

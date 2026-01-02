@@ -1,4 +1,4 @@
-import { convertToNodesAndEdges } from "../components/ResponsibilityFlow/flowAdapter";
+import { convertToNodesAndEdges } from "../components/TaskBluePrintFlow/flowAdapter";
 import http from "@canmingir/link/platform/http";
 import useApi from "./useApi";
 import { v4 as uuidv4 } from "uuid";

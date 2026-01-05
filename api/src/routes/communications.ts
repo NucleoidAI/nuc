@@ -16,7 +16,7 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { channelCode, channelType, responsibilityId } = Joi.attempt(
+  const { channelCode, channelType, taskBluePrintId } = Joi.attempt(
     req.body,
     schemas.Communication.create
   );
@@ -24,7 +24,7 @@ router.post("/", async (req, res) => {
   const comm = await communication.create({
     channelCode,
     channelType,
-    responsibilityId,
+    taskBluePrintId,
   });
   res.status(201).json(comm);
 });

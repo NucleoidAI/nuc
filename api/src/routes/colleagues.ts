@@ -1,8 +1,8 @@
 import Colleague from "../models/Colleague";
 import Joi from "joi";
-import Responsibility from "../schemas/Responsibility";
 import Session from "../models/Session";
 import Supervising from "../models/Supervising";
+import TaskBluePrint from "../schemas/TaskBluePrint";
 import agent from "../functions/agent";
 import { event } from "node-event-test-package/client";
 import express from "express";
@@ -158,12 +158,12 @@ router.get("/:colleagueId/supervisings", async (req, res) => {
   res.json(supervisings);
 });
 
-router.post("/responsibilities", async (req, res) => {
+router.post("/taskBluePrints", async (req, res) => {
   const { body } = req;
 
-  const { history, content } = Responsibility.create.parse(body);
+  const { history, content } = TaskBluePrint.create.parse(body);
 
-  const response = await agent.responsibility({
+  const response = await agent.taskBluePrint({
     history,
     content,
   });
@@ -174,12 +174,12 @@ router.post("/responsibilities", async (req, res) => {
   });
 });
 
-router.post("/responsibility-name", async (req, res) => {
+router.post("/taskBluePrint-name", async (req, res) => {
   const { body } = req;
   const { history, content } =
-    Responsibility.createResponsibilityName.parse(body);
+    TaskBluePrint.createTaskBluePrintName.parse(body);
 
-  const response = await agent.responsibilityName({ history, content });
+  const response = await agent.taskBluePrintName({ history, content });
 
   res.json(response);
 });

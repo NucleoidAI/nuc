@@ -85,7 +85,7 @@ const teamNames = [
   "AI Services",
   "Platform Support",
   "Orchestration",
-  "Integration",
+  "MCP",
   "Infrastructure",
   "Quality Assurance",
   "User Support",

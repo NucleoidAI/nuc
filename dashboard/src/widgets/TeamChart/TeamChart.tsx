@@ -58,7 +58,7 @@ function TeamChart() {
     | "taskBluePrints"
     | "supervisings"
     | "communication"
-    | "integrations"
+    | "mcps"
   >("profile");
 
   const [drawerOpen, setDrawerOpen] = useState(false);

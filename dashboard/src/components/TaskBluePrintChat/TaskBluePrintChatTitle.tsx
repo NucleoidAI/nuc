@@ -19,10 +19,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import {
-  IntegrationElement,
-  IntegrationScopeElement,
-} from "./IntegrationElement";
+import { MCPElement, MCPScopeElement } from "./MCPElement";
 import React, { useState } from "react";
 
 const TaskBluePrintChatTitle = ({
@@ -52,16 +49,16 @@ const TaskBluePrintChatTitle = ({
     if (!description) return null;
 
     try {
-      // TODO: Extract integrations and its scopes
-      const availableIntegrations = TaskBluePrintCommands[0]?.next?.list || [];
+      // TODO: Extract MCPs and its scopes
+      const availableMCPs = TaskBluePrintCommands[0]?.next?.list || [];
       const availableScopes = [];
 
-      availableIntegrations.forEach((integration) => {
-        if (integration.next?.list) {
-          integration.next.list.forEach((scope) => {
+      availableMCPs.forEach((mcp) => {
+        if (mcp.next?.list) {
+          mcp.next.list.forEach((scope) => {
             availableScopes.push({
               ...scope,
-              parentIntegration: integration,
+              parentMCP: mcp,
             });
           });
         }
@@ -70,15 +67,15 @@ const TaskBluePrintChatTitle = ({
       const matches = [];
       const modifiedDescription = description;
 
-      availableIntegrations.forEach((integration) => {
-        const regex = new RegExp(`\\b${integration.name}\\b`, "gi");
-        const integrationMatches = modifiedDescription.match(regex);
-        if (integrationMatches) {
-          integrationMatches.forEach((match) => {
+      availableMCPs.forEach((mcp) => {
+        const regex = new RegExp(`\\b${mcp.name}\\b`, "gi");
+        const mcpMatches = modifiedDescription.match(regex);
+        if (mcpMatches) {
+          mcpMatches.forEach((match) => {
             matches.push({
               text: match,
-              type: "integration",
-              data: integration,
+              type: "mcp",
+              data: mcp,
               index: modifiedDescription
                 .toLowerCase()
                 .indexOf(match.toLowerCase()),
@@ -131,19 +128,19 @@ const TaskBluePrintChatTitle = ({
         return (
           <>
             {parts.map((part, index) => {
-              if (typeof part === "object" && part.type === "integration") {
+              if (typeof part === "object" && part.type === "mcp") {
                 return (
-                  <IntegrationElement key={`desc-integration-${index}`}>
+                  <MCPElement key={`desc-mcp-${index}`}>
                     <Iconify icon={part.data.icon} sx={{ mr: 1 }} />
                     {part.data.name}
-                  </IntegrationElement>
+                  </MCPElement>
                 );
               } else if (typeof part === "object" && part.type === "scope") {
                 return (
-                  <IntegrationScopeElement key={`desc-scope-${index}`}>
+                  <MCPScopeElement key={`desc-scope-${index}`}>
                     <Iconify icon={part.data.icon} />
                     {part.data.name}
-                  </IntegrationScopeElement>
+                  </MCPScopeElement>
                 );
               }
               return <span key={index}>{part}</span>;
@@ -163,15 +160,15 @@ const TaskBluePrintChatTitle = ({
     if (!title) return "Add Title";
 
     try {
-      const availableIntegrations = TaskBluePrintCommands[0]?.next?.list || [];
+      const availableMCPs = TaskBluePrintCommands[0]?.next?.list || [];
       const availableScopes = [];
 
-      availableIntegrations.forEach((integration) => {
-        if (integration.next?.list) {
-          integration.next.list.forEach((scope) => {
+      availableMCPs.forEach((mcp) => {
+        if (mcp.next?.list) {
+          mcp.next.list.forEach((scope) => {
             availableScopes.push({
               ...scope,
-              parentIntegration: integration,
+              parentMCP: mcp,
             });
           });
         }
@@ -180,15 +177,15 @@ const TaskBluePrintChatTitle = ({
       const matches = [];
       const modifiedTitle = title;
 
-      availableIntegrations.forEach((integration) => {
-        const regex = new RegExp(`\\b${integration.name}\\b`, "gi");
-        const integrationMatches = modifiedTitle.match(regex);
-        if (integrationMatches) {
-          integrationMatches.forEach((match) => {
+      availableMCPs.forEach((mcp) => {
+        const regex = new RegExp(`\\b${mcp.name}\\b`, "gi");
+        const mcpMatches = modifiedTitle.match(regex);
+        if (mcpMatches) {
+          mcpMatches.forEach((match) => {
             matches.push({
               text: match,
-              type: "integration",
-              data: integration,
+              type: "mcp",
+              data: mcp,
               index: modifiedTitle.toLowerCase().indexOf(match.toLowerCase()),
             });
           });
@@ -237,19 +234,19 @@ const TaskBluePrintChatTitle = ({
         return (
           <>
             {parts.map((part, index) => {
-              if (typeof part === "object" && part.type === "integration") {
+              if (typeof part === "object" && part.type === "mcp") {
                 return (
-                  <IntegrationElement key={`title-integration-${index}`}>
+                  <MCPElement key={`title-mcp-${index}`}>
                     <Iconify icon={part.data.icon} sx={{ mr: 1 }} />
                     {part.data.name}
-                  </IntegrationElement>
+                  </MCPElement>
                 );
               } else if (typeof part === "object" && part.type === "scope") {
                 return (
-                  <IntegrationScopeElement key={`title-scope-${index}`}>
+                  <MCPScopeElement key={`title-scope-${index}`}>
                     <Iconify icon={part.data.icon} sx={{ mr: 1 }} />
                     {part.data.name}
-                  </IntegrationScopeElement>
+                  </MCPScopeElement>
                 );
               }
               return <span key={index}>{part}</span>;

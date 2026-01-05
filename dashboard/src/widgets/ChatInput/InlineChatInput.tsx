@@ -29,14 +29,14 @@ import {
   withReact,
 } from "slate-react";
 import {
-  IntegrationElement,
+  MCPElement,
   MentionElement,
-} from "../../components/TaskBluePrintChat/IntegrationElement";
+} from "../../components/TaskBluePrintChat/MCPElement";
 import { styled, useTheme } from "@mui/material/styles";
 import { useCallback, useMemo, useState } from "react";
 
 const ELEMENT_TYPES = {
-  INTEGRATION: "integration",
+  MCP: "mcp",
   PARAGRAPH: "paragraph",
   MENTION: "mention",
 } as const;
@@ -45,7 +45,7 @@ type CustomElement = {
   type: (typeof ELEMENT_TYPES)[keyof typeof ELEMENT_TYPES];
   children: CustomText[];
   command?: (typeof TaskBluePrintCommands)[number];
-  selectedIntegration?: (typeof TaskBluePrintCommands)[0]["next"]["list"][number];
+  selectedMCP?: (typeof TaskBluePrintCommands)[0]["next"]["list"][number];
   selectedScope?: {
     id: string;
     name: string;
@@ -141,7 +141,7 @@ const CommandList = styled(List)(({ theme }) => ({
   },
 }));
 
-const IntegrationScopeElement = styled(Box)(({ theme }) => ({
+const MCPScopeElement = styled(Box)(({ theme }) => ({
   display: "inline-flex",
   alignItems: "center",
   height: "20px",
@@ -162,14 +162,14 @@ const withCommands = (editor: BaseEditor & ReactEditor) => {
   const { isInline, isVoid } = editor;
 
   editor.isInline = (element) => {
-    return (element as CustomElement).type === ELEMENT_TYPES.INTEGRATION ||
+    return (element as CustomElement).type === ELEMENT_TYPES.MCP ||
       (element as CustomElement).type === ELEMENT_TYPES.MENTION
       ? true
       : isInline(element);
   };
 
   editor.isVoid = (element) => {
-    return (element as CustomElement).type === ELEMENT_TYPES.INTEGRATION ||
+    return (element as CustomElement).type === ELEMENT_TYPES.MCP ||
       (element as CustomElement).type === ELEMENT_TYPES.MENTION
       ? true
       : isVoid(element);
@@ -194,13 +194,13 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
   const [value, setValue] = useState<Descendant[]>(initialValue);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [showCommands, setShowCommands] = useState(false);
-  const [showIntegrations, setShowIntegrations] = useState(false);
+  const [showMCPs, setShowMCPs] = useState(false);
   const [showScopes, setShowScopes] = useState(false);
   const [showMentions, setShowMentions] = useState(false);
   const [selectedCommand, setSelectedCommand] = useState<
     (typeof TaskBluePrintCommands)[number] | null
   >(null);
-  const [selectedIntegration, setSelectedIntegration] = useState<
+  const [selectedMCP, setSelectedMCP] = useState<
     (typeof TaskBluePrintCommands)[0]["next"]["list"][number] | null
   >(null);
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(0);
@@ -240,11 +240,11 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
             .map((child) => {
               if (
                 Element.isElement(child) &&
-                (child as CustomElement).type === ELEMENT_TYPES.INTEGRATION
+                (child as CustomElement).type === ELEMENT_TYPES.MCP
               ) {
                 const customChild = child as CustomElement;
-                const integrationData: {
-                  type: "INTEGRATION";
+                const mcpData: {
+                  type: "MCP";
                   id: string | undefined;
                   name: string | undefined;
                   icon: string | undefined;
@@ -254,26 +254,22 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
                     icon: string;
                   };
                 } = {
-                  type: "INTEGRATION",
-                  id:
-                    customChild.selectedIntegration?.id ||
-                    customChild.command?.id,
+                  type: "MCP",
+                  id: customChild.selectedMCP?.id || customChild.command?.id,
                   name:
-                    customChild.selectedIntegration?.name ||
-                    customChild.command?.label,
+                    customChild.selectedMCP?.name || customChild.command?.label,
                   icon:
-                    customChild.selectedIntegration?.icon ||
-                    customChild.command?.icon,
+                    customChild.selectedMCP?.icon || customChild.command?.icon,
                 };
 
                 if (customChild.selectedScope) {
-                  integrationData.scope = {
+                  mcpData.scope = {
                     id: customChild.selectedScope.id,
                     name: customChild.selectedScope.name,
                     icon: customChild.selectedScope.icon,
                   };
                 }
-                return JSON.stringify(integrationData);
+                return JSON.stringify(mcpData);
               }
               if (
                 Element.isElement(child) &&
@@ -304,19 +300,19 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
 
   const handleCommandSelect = useCallback(
     (command: (typeof TaskBluePrintCommands)[number]) => {
-      if (command.type === "integration") {
+      if (command.type === "mcp") {
         setSelectedCommand(command);
         setShowCommands(false);
-        setShowIntegrations(true);
+        setShowMCPs(true);
         setSelectedOptionIndex(0);
       } else {
-        const integrationNode: CustomElement = {
-          type: ELEMENT_TYPES.INTEGRATION,
+        const mcpNode: CustomElement = {
+          type: ELEMENT_TYPES.MCP,
           command: command,
           children: [{ text: "" }],
         };
 
-        Transforms.insertNodes(editor, integrationNode as unknown as Node);
+        Transforms.insertNodes(editor, mcpNode as unknown as Node);
         setShowCommands(false);
         setAnchorEl(null);
         setSelectedOptionIndex(0);
@@ -325,34 +321,32 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
     [editor]
   );
 
-  const handleIntegrationSelect = useCallback(
-    (
-      integration: (typeof TaskBluePrintCommands)[0]["next"]["list"][number]
-    ) => {
-      setSelectedIntegration(integration);
+  const handleMCPSelect = useCallback(
+    (mcp: (typeof TaskBluePrintCommands)[0]["next"]["list"][number]) => {
+      setSelectedMCP(mcp);
 
-      const integrationNode: CustomElement = {
-        type: ELEMENT_TYPES.INTEGRATION,
+      const mcpNode: CustomElement = {
+        type: ELEMENT_TYPES.MCP,
         command: selectedCommand,
-        selectedIntegration: integration,
+        selectedMCP: mcp,
         children: [{ text: "" }],
       };
 
-      Transforms.insertNodes(editor, integrationNode as unknown as Node);
+      Transforms.insertNodes(editor, mcpNode as unknown as Node);
 
       Transforms.move(editor);
 
-      if (integration.next && integration.next.list) {
-        setShowIntegrations(false);
+      if (mcp.next && mcp.next.list) {
+        setShowMCPs(false);
         setShowScopes(true);
         setSelectedOptionIndex(0);
         return;
       }
 
-      setShowIntegrations(false);
+      setShowMCPs(false);
       setAnchorEl(null);
       setSelectedCommand(null);
-      setSelectedIntegration(null);
+      setSelectedMCP(null);
       setSelectedOptionIndex(0);
     },
     [editor, selectedCommand]
@@ -360,15 +354,14 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
 
   const handleScopeSelect = useCallback(
     (scope) => {
-      if (selectedIntegration) {
+      if (selectedMCP) {
         const { selection } = editor;
         if (selection) {
           const before = Editor.before(editor, selection.anchor);
           if (before) {
             const [match] = Editor.nodes(editor, {
               at: before,
-              match: (n) =>
-                (n as CustomElement).type === ELEMENT_TYPES.INTEGRATION,
+              match: (n) => (n as CustomElement).type === ELEMENT_TYPES.MCP,
             });
 
             if (match) {
@@ -387,14 +380,14 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
         setShowScopes(false);
         setAnchorEl(null);
         setSelectedCommand(null);
-        setSelectedIntegration(null);
+        setSelectedMCP(null);
         setSelectedOptionIndex(0);
         Transforms.move(editor);
         Transforms.insertText(editor, " ");
         ReactEditor.focus(editor);
       }
     },
-    [editor, selectedIntegration]
+    [editor, selectedMCP]
   );
 
   const handleMentionSelect = useCallback(
@@ -434,25 +427,23 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
           handleCommandSelect(TaskBluePrintCommands[selectedOptionIndex]);
           return;
         } else if (
-          showIntegrations &&
+          showMCPs &&
           selectedCommand?.next?.list[selectedOptionIndex]
         ) {
-          handleIntegrationSelect(
-            selectedCommand.next.list[selectedOptionIndex]
-          );
+          handleMCPSelect(selectedCommand.next.list[selectedOptionIndex]);
           return;
         } else if (
           showScopes &&
-          selectedIntegration?.next?.list &&
+          selectedMCP?.next?.list &&
           selectedOptionIndex !== null
         ) {
           // Handle the scope selection
           const scope =
-            typeof selectedIntegration.next.list === "object" &&
-            !Array.isArray(selectedIntegration.next.list)
-              ? selectedIntegration.next.list
-              : Array.isArray(selectedIntegration.next.list)
-              ? selectedIntegration.next.list[selectedOptionIndex]
+            typeof selectedMCP.next.list === "object" &&
+            !Array.isArray(selectedMCP.next.list)
+              ? selectedMCP.next.list
+              : Array.isArray(selectedMCP.next.list)
+              ? selectedMCP.next.list[selectedOptionIndex]
               : null;
 
           if (scope) {
@@ -467,27 +458,27 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
         handleSend();
       } else if (event.key === "Escape") {
         setShowCommands(false);
-        setShowIntegrations(false);
+        setShowMCPs(false);
         setShowScopes(false);
         setShowMentions(false);
         setAnchorEl(null);
         setSelectedCommand(null);
-        setSelectedIntegration(null);
+        setSelectedMCP(null);
         setSelectedOptionIndex(0);
       } else if (
         (event.key === "ArrowUp" || event.key === "ArrowDown") &&
-        (showCommands || showIntegrations || showScopes || showMentions)
+        (showCommands || showMCPs || showScopes || showMentions)
       ) {
         event.preventDefault();
         let maxIndex = 0;
 
         if (showCommands) {
           maxIndex = TaskBluePrintCommands.length - 1;
-        } else if (showIntegrations && selectedCommand?.next?.list) {
+        } else if (showMCPs && selectedCommand?.next?.list) {
           maxIndex = selectedCommand.next.list.length - 1;
-        } else if (showScopes && selectedIntegration?.next?.list) {
-          maxIndex = Array.isArray(selectedIntegration.next.list)
-            ? selectedIntegration.next.list.length - 1
+        } else if (showScopes && selectedMCP?.next?.list) {
+          maxIndex = Array.isArray(selectedMCP.next.list)
+            ? selectedMCP.next.list.length - 1
             : 0;
         } else if (showMentions) {
           maxIndex = agents.length - 1;
@@ -503,15 +494,15 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
     [
       showCommands,
       showMentions,
-      showIntegrations,
+      showMCPs,
       showScopes,
       handleSend,
       selectedOptionIndex,
       agents,
       selectedCommand,
-      selectedIntegration,
+      selectedMCP,
       handleCommandSelect,
-      handleIntegrationSelect,
+      handleMCPSelect,
       handleScopeSelect,
       handleMentionSelect,
     ]
@@ -525,16 +516,13 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
     };
 
     switch ((element as CustomElement).type) {
-      case ELEMENT_TYPES.INTEGRATION:
+      case ELEMENT_TYPES.MCP:
         return (
-          <IntegrationElement {...attributes} contentEditable={false}>
-            {element.selectedIntegration ? (
+          <MCPElement {...attributes} contentEditable={false}>
+            {element.selectedMCP ? (
               <>
-                <Iconify
-                  icon={element.selectedIntegration.icon}
-                  sx={{ mr: 1 }}
-                />
-                {element.selectedIntegration.name}
+                <Iconify icon={element.selectedMCP.icon} sx={{ mr: 1 }} />
+                {element.selectedMCP.name}
               </>
             ) : (
               <>
@@ -543,13 +531,13 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
               </>
             )}
             {element.selectedScope && (
-              <IntegrationScopeElement>
+              <MCPScopeElement>
                 <Iconify icon={element.selectedScope.icon} sx={{ mr: 1 }} />
                 {element.selectedScope.name}
-              </IntegrationScopeElement>
+              </MCPScopeElement>
             )}
             {children}
-          </IntegrationElement>
+          </MCPElement>
         );
       case ELEMENT_TYPES.MENTION:
         return (
@@ -671,10 +659,10 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
       </Popover>
 
       <Popover
-        open={showIntegrations}
+        open={showMCPs}
         anchorEl={anchorEl}
         onClose={() => {
-          setShowIntegrations(false);
+          setShowMCPs(false);
           setAnchorEl(null);
           setSelectedCommand(null);
           setSelectedOptionIndex(0);
@@ -699,18 +687,18 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
         }}
       >
         <CommandList>
-          {selectedCommand?.next?.list.map((integration, index) => (
+          {selectedCommand?.next?.list.map((mcp, index) => (
             <ListItem
-              key={integration.id}
+              key={mcp.id}
               button
               selected={index === selectedOptionIndex}
-              onClick={() => handleIntegrationSelect(integration)}
+              onClick={() => handleMCPSelect(mcp)}
             >
               <ListItemIcon>
-                <Iconify icon={integration.icon} />
+                <Iconify icon={mcp.icon} />
               </ListItemIcon>
               <ListItemText
-                primary={integration.name}
+                primary={mcp.name}
                 primaryTypographyProps={{
                   fontSize: "0.875rem",
                   fontWeight: 500,
@@ -728,7 +716,7 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
           setShowScopes(false);
           setAnchorEl(null);
           setSelectedCommand(null);
-          setSelectedIntegration(null);
+          setSelectedMCP(null);
           setSelectedOptionIndex(0);
         }}
         anchorOrigin={{
@@ -751,7 +739,7 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
         }}
       >
         <CommandList>
-          {selectedIntegration?.next?.list.map((scope, index) => (
+          {selectedMCP?.next?.list.map((scope, index) => (
             <ListItem
               key={scope.id}
               button

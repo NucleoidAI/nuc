@@ -1,14 +1,14 @@
 import { Iconify } from "@canmingir/link/platform/components";
 import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
-import { findIntegrationById } from "../ChatInput/chat.config";
+import { findMCPById } from "../ChatInput/chat.config";
 import useAgent from "../../hooks/useAgent";
 
 import { Box, Card, CardContent, Typography, useTheme } from "@mui/material";
 import {
-  IntegrationElement,
-  IntegrationScopeElement,
+  MCPElement,
+  MCPScopeElement,
   MentionElement,
-} from "../TaskBluePrintChat/IntegrationElement";
+} from "../TaskBluePrintChat/MCPElement";
 
 function TaskBluePrintMessageBox({ message }) {
   const { getAgent } = useAgent();
@@ -56,30 +56,30 @@ function TaskBluePrintMessageBox({ message }) {
             try {
               const parsedContent = JSON.parse(part);
 
-              if (parsedContent.type === "INTEGRATION") {
-                const integration = findIntegrationById(parsedContent.id);
+              if (parsedContent.type === "MCP") {
+                const mcp = findMCPById(parsedContent.id);
 
                 return (
                   <>
                     {parsedContent.scope ? (
                       <>
-                        <IntegrationElement key={part}>
-                          <Iconify icon={integration.icon} sx={{ mr: 1 }} />
-                          {integration.name}
-                          <IntegrationScopeElement key={`${part}-scope`}>
+                        <MCPElement key={part}>
+                          <Iconify icon={mcp.icon} sx={{ mr: 1 }} />
+                          {mcp.name}
+                          <MCPScopeElement key={`${part}-scope`}>
                             <Iconify
                               icon={parsedContent.scope.icon}
                               sx={{ mr: 1 }}
                             />
                             {parsedContent.scope.name}
-                          </IntegrationScopeElement>
-                        </IntegrationElement>
+                          </MCPScopeElement>
+                        </MCPElement>
                       </>
                     ) : (
-                      <IntegrationElement key={part}>
-                        <Iconify icon={integration.icon} sx={{ mr: 1 }} />
-                        {integration.name}
-                      </IntegrationElement>
+                      <MCPElement key={part}>
+                        <Iconify icon={mcp.icon} sx={{ mr: 1 }} />
+                        {mcp.name}
+                      </MCPElement>
                     )}
                   </>
                 );

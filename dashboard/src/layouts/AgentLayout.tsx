@@ -1,4 +1,4 @@
-import AgentIntegration from "../widgets/AgentIntegration/AgentIntegration";
+import AgentMCP from "../widgets/AgentMCP/AgentMCP";
 import Communication from "../widgets/Communication/Communication";
 import { Iconify } from "@canmingir/link/platform/components";
 import Knowledge from "../widgets/Knowledge/Knowledge";
@@ -29,7 +29,7 @@ const TABS = [
   },
   {
     value: "task-blue-prints",
-    label: "Task BluePrints",
+    label: "Task Blueprints",
     icon: (
       <Iconify
         icon="healthicons:crisis-response-center-person-outline"
@@ -53,8 +53,8 @@ const TABS = [
     icon: <Iconify icon="material-symbols:chat" width={24} />,
   },
   {
-    value: "integrations",
-    label: "Integrations",
+    value: "mcps",
+    label: "MCPs",
     icon: <Iconify icon="carbon:ibm-cloud-pak-integration" width={24} />,
   },
 ];
@@ -169,7 +169,7 @@ function AgentLayout({
       )}
       {currentTab === "supervisings" && <Supervising agentId={agent.id} />}
       {currentTab === "tasks" && <TasksWidget agentId={agent.id} />}
-      {currentTab === "integrations" && <AgentIntegration agent={agent} />}
+      {currentTab === "mcps" && <AgentMCP agent={agent} />}
       {currentTab === "communication" && <Communication />}
     </>
   );

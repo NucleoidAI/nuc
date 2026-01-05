@@ -6,8 +6,8 @@ import colleagues from "./routes/colleagues";
 import communications from "./routes/communications";
 import engines from "./routes/engines";
 import { event } from "@canmingir/link-express/event/client";
-import integrations from "./routes/integrations";
 import knowledge from "./routes/knowledge";
+import mcps from "./routes/mcps";
 import messages from "./routes/messages";
 import organizations from "./routes/organizations";
 import platform from "@canmingir/link-express";
@@ -52,7 +52,7 @@ function createApp() {
   app.use("/statistics", statistics);
   app.use("/colleagues", colleagues);
   app.use("/taskblueprints", taskBluePrints);
-  app.use("/integrations", integrations);
+  app.use("/mcps", mcps);
   app.use("/communications", communications);
 
   (async () => {

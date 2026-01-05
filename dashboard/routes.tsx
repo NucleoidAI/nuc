@@ -28,7 +28,7 @@ const routes = [
             element: <Dashboard />,
           },
           {
-            path: `/colleagues`,
+            path: `/agents`,
             element: <Agents />,
           },
           {
@@ -39,7 +39,7 @@ const routes = [
             path: `/knowledge`,
             element: <KnowledgeBase />,
           },
-          { path: "/colleagues/:colleagueId", element: <Agent /> },
+          { path: "/agents/:colleagueId", element: <Agent /> },
           { path: "/settings", element: <Settings /> },
           { path: "/teams/add", element: <AddTeam /> },
           { path: "/mcps/callback", element: <Callback /> },

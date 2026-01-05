@@ -8,7 +8,7 @@ const menuConfig = {
         {
           title: "Agents",
           icon: "solar:chart-line-duotone",
-          path: "/colleagues",
+          path: "/agents",
         },
         {
           title: "Team Chat",

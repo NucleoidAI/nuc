@@ -1,8 +1,8 @@
 import Colleague from "./Colleague";
 import Command from "./Command";
 import Communication from "./Communication";
-import Integration from "./Integration";
 import Knowledge from "./Knowledge";
+import MCP from "./MCP";
 import Message from "./Message";
 import Project from "./Project";
 import Session from "./Session";
@@ -20,6 +20,6 @@ export default {
   Supervising,
   Command,
   TaskBluePrint,
-  Integration,
+  MCP,
   Communication,
 };

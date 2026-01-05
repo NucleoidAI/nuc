@@ -6,12 +6,12 @@ async function init() {
   } = await platform.getModules();
   const models = sequelize.models;
 
-  // Responsibility <-> Communication
-  models.Responsibility.hasMany(models.Communication, {
-    foreignKey: "responsibilityId",
+  // TaskBluePrint <-> Communication
+  models.TaskBluePrint.hasMany(models.Communication, {
+    foreignKey: "taskBluePrintId",
   });
-  models.Communication.belongsTo(models.Responsibility, {
-    foreignKey: "responsibilityId",
+  models.Communication.belongsTo(models.TaskBluePrint, {
+    foreignKey: "taskBluePrintId",
   });
 
   // Project <-> Colleague
@@ -24,11 +24,11 @@ async function init() {
     as: "colleagues",
   });
 
-  // Colleague <-> Responsibility
-  models.Colleague.hasMany(models.Responsibility, {
+  // Colleague <-> TaskBluePrint
+  models.Colleague.hasMany(models.TaskBluePrint, {
     foreignKey: "colleagueId",
   });
-  models.Responsibility.belongsTo(models.Colleague, {
+  models.TaskBluePrint.belongsTo(models.Colleague, {
     foreignKey: "colleagueId",
   });
 
@@ -178,12 +178,12 @@ async function init() {
     as: "task",
   });
 
-  // Task <-> Responsibility
-  models.Task.hasOne(models.Responsibility, {
-    foreignKey: "responsibilityId",
+  // Task <-> TaskBluePrint
+  models.Task.hasOne(models.TaskBluePrint, {
+    foreignKey: "taskBluePrintId",
   });
-  models.Responsibility.belongsTo(models.Task, {
-    foreignKey: "responsibilityId",
+  models.TaskBluePrint.belongsTo(models.Task, {
+    foreignKey: "taskBluePrintId",
   });
 
   // Hooks

@@ -31,9 +31,9 @@ class Communication extends Model {
 
   @AllowNull(false)
   @Column(DataType.UUID)
-  declare responsibilityId: string;
+  declare taskBluePrintId: string;
 
-  declare responsibility?: any;
+  declare taskBluePrint?: any;
 }
 
 export default Communication;

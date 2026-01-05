@@ -49,7 +49,7 @@ class Task extends Model {
 
   @AllowNull(true)
   @Column(DataType.UUID)
-  declare responsibilityId: string | null;
+  declare taskBluePrintId: string | null;
 
   @AllowNull(true)
   @Column(DataType.UUID)
@@ -57,7 +57,7 @@ class Task extends Model {
 
   declare colleague?: any;
 
-  declare responsibility?: any;
+  declare taskBluePrint?: any;
 }
 
 export default Task;

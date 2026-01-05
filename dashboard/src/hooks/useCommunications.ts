@@ -6,7 +6,7 @@ import { publish, useEvent } from "@nucleoidai/react-event";
 export type CommunicationPayload = {
   channelType: string;
   channelCode: string;
-  responsibilityId: string;
+  taskBluePrintId: string;
 };
 
 function useCommunications() {

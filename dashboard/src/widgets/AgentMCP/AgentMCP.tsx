@@ -1,25 +1,20 @@
 import IncomingDrawer from "../../components/IncomingDrawer/IncomingDrawer";
-import IntegrationTabs from "../../components/IntegrationTabs/IntegrationTabs";
-import Integrations from "../../components/Integrations/Integrations";
+import MCPTabs from "../../components/MCPTabs/MCPTabs";
+import MCPs from "../../components/MCPs/MCPs";
 import React from "react";
 import SkillDialog from "../../components/Skills/SkillDialog";
 import { getProviderLogo } from "../../utils/icon";
-import useAcquiredIntegrations from "../../hooks/useAcquiredIntegrations";
+import useAcquiredMCPs from "../../hooks/useAcquiredMCPs";
 import useAgent from "../../hooks/useAgent";
 
 import { Box, Grid } from "@mui/material";
 
-const AgentIntegration = ({
-  agent,
-}: {
-  agent: { id: string; name: string };
-}) => {
-  const { getIntegrations, getColleagueAcquiredIntegrations, getTokens } =
-    useAcquiredIntegrations();
+const AgentMCP = ({ agent }: { agent: { id: string; name: string } }) => {
+  const { getMCPs, getColleagueAcquiredMCPs, getTokens } = useAcquiredMCPs();
 
-  const { integrations } = getIntegrations();
+  const { mcps } = getMCPs();
 
-  const { acquiredIntegrations } = getColleagueAcquiredIntegrations(agent.id);
+  const { acquiredMCPs } = getColleagueAcquiredMCPs(agent.id);
 
   const instructions = [
     { id: "1", instruction: "Clone the repository from GitHub." },
@@ -30,7 +25,7 @@ const AgentIntegration = ({
     { id: "3", instruction: "Run the project using `npm start`." },
     {
       id: "4",
-      instruction: "Follow the documentation for further integration steps.",
+      instruction: "Follow the documentation for further MCP steps.",
     },
   ];
 
@@ -92,7 +87,7 @@ const AgentIntegration = ({
       }}
     >
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        <IntegrationTabs
+        <MCPTabs
           selectedTab={selectedTab}
           handleTabChange={handleTabChange}
           tabs={tabs}
@@ -100,10 +95,10 @@ const AgentIntegration = ({
 
         {selectedTab === 0 && (
           <Grid container spacing={2}>
-            {integrations
+            {mcps
               .filter((skill) => skill.direction === "INCOMING")
               .map((skill) => (
-                <Integrations
+                <MCPs
                   key={skill.id}
                   title={skill.provider}
                   description={skill.description}
@@ -118,10 +113,10 @@ const AgentIntegration = ({
 
         {selectedTab === 1 && (
           <Grid container spacing={2}>
-            {integrations
+            {mcps
               .filter((skill) => skill.direction === "OUTGOING")
               .map((skill) => (
-                <Integrations
+                <MCPs
                   key={skill.id}
                   title={skill.provider}
                   description={skill.description}
@@ -139,7 +134,7 @@ const AgentIntegration = ({
           handleClose={handleSkillDialogClose}
           skill={selectedSkill}
           agents={agents}
-          acquiredIntegrations={acquiredIntegrations}
+          acquiredMCPs={acquiredMCPs}
           getTokens={getTokens}
         />
 
@@ -155,4 +150,4 @@ const AgentIntegration = ({
   );
 };
 
-export default AgentIntegration;
+export default AgentMCP;

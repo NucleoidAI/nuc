@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const Responsibility = {
+const TaskBluePrint = {
   upsert: z.object({
     title: z.string(),
     description: z.string(),
@@ -34,7 +34,7 @@ const Responsibility = {
       .optional(),
     content: z.string(),
   }),
-  createResponsibilityName: z.object({
+  createTaskBluePrintName: z.object({
     history: z.array(
       z.object({
         role: z.enum(["user", "system", "assistant"]),
@@ -48,4 +48,4 @@ const Responsibility = {
   }),
 };
 
-export default Responsibility;
+export default TaskBluePrint;

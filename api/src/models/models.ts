@@ -53,23 +53,23 @@ async function init() {
     foreignKey: "colleagueId",
   });
 
-  // Integration <-> Project (many-to-many)
-  models.Integration.belongsToMany(models.Project, {
-    through: "Integration",
+  // MCP <-> Project (many-to-many)
+  models.MCP.belongsToMany(models.Project, {
+    through: "MCP",
     foreignKey: "id",
   });
-  models.Project.belongsToMany(models.Integration, {
-    through: "Integration",
+  models.Project.belongsToMany(models.MCP, {
+    through: "MCP",
     foreignKey: "teamId",
   });
 
-  // Integration <-> Colleague
-  models.Integration.belongsTo(models.Colleague, {
+  // MCP <-> Colleague
+  models.MCP.belongsTo(models.Colleague, {
     foreignKey: "colleagueId",
   });
 
-  // Integration <-> Project (belongsTo)
-  models.Integration.belongsTo(models.Project, {
+  // MCP <-> Project (belongsTo)
+  models.MCP.belongsTo(models.Project, {
     foreignKey: "teamId",
   });
 

@@ -1,6 +1,6 @@
 import Colleague from "../models/Colleague";
-import Integration from "../models/Integration";
-import Integrations from "../integrations/integrations";
+import MCP from "../models/MCP";
+import MCPs from "../mcps/mcps";
 import { NotFoundError } from "@canmingir/link-express/error";
 import axios from "axios";
 
@@ -11,7 +11,7 @@ async function read({
   teamId?: string;
   colleagueId?: string;
 }) {
-  const integrationWhere: {
+  const mcpWhere: {
     colleagueId?: string;
     teamId?: string;
   } = {};
@@ -23,21 +23,21 @@ async function read({
       throw new Error("INVALID_COLLEAGUE");
     }
 
-    integrationWhere.colleagueId = colleagueId;
+    mcpWhere.colleagueId = colleagueId;
   } else if (teamId) {
-    integrationWhere.teamId = teamId;
+    mcpWhere.teamId = teamId;
   }
 
-  const integrationInstance = await Integration.findAll({
-    where: integrationWhere,
+  const mcpInstance = await MCP.findAll({
+    where: mcpWhere,
   });
 
-  return integrationInstance
-    .map((integration) => integration.toJSON())
-    .map(({ Colleague, ...integrationData }) => ({
-      ...integrationData,
-      colleagueId: integrationData.colleagueId,
-      teamId: integrationData.teamId,
+  return mcpInstance
+    .map((mcp) => mcp.toJSON())
+    .map(({ Colleague, ...mcpData }) => ({
+      ...mcpData,
+      colleagueId: mcpData.colleagueId,
+      teamId: mcpData.teamId,
     }));
 }
 
@@ -58,20 +58,17 @@ async function create({
 
   const params = new URLSearchParams();
 
-  const integrationAuth = Integrations.find(
-    (integration) => integration.id === mcpId
-  );
+  const mcpAuth = MCPs.find((mcp) => mcp.id === mcpId);
 
-  if (!integrationAuth) {
+  if (!mcpAuth) {
     throw new NotFoundError();
   }
 
-  if (!integrationAuth.oauth) {
+  if (!mcpAuth.oauth) {
     throw new Error("NO_OAUTH_CONFIG");
   }
 
-  const { clientId, clientSecret, redirectUri, tokenUrl } =
-    integrationAuth.oauth;
+  const { clientId, clientSecret, redirectUri, tokenUrl } = mcpAuth.oauth;
 
   if (clientId && clientSecret && redirectUri && tokenUrl) {
     params.append("code", authorizationCode);
@@ -91,7 +88,7 @@ async function create({
 
   const { refresh_token } = tokens;
 
-  await Integration.create({
+  await MCP.create({
     refreshToken: refresh_token,
     mcpId,
     teamId,
@@ -100,11 +97,11 @@ async function create({
 }
 
 function list() {
-  if (!Integrations || Integrations.length === 0) {
+  if (!MCPs || MCPs.length === 0) {
     throw new NotFoundError();
   }
 
-  const integrations = Integrations.map((provider) => ({
+  const mcps = MCPs.map((provider) => ({
     id: provider.id,
     provider: provider.provider,
     description: provider.description,
@@ -126,21 +123,21 @@ function list() {
 
   return {
     role: "system",
-    content: { integrations },
+    content: { mcps },
   } as {
     role: "user" | "system" | "assistant";
     content: object;
   };
 }
 
-async function get({ integrationId }: { integrationId: string }) {
-  const integrationItem = await Integration.findByPk(integrationId);
+async function get({ mcpId }: { mcpId: string }) {
+  const mcpItem = await MCP.findByPk(mcpId);
 
-  if (!integrationItem) {
+  if (!mcpItem) {
     throw new NotFoundError();
   }
 
-  return integrationItem.toJSON();
+  return mcpItem.toJSON();
 }
 
 export default { read, get, create, list };

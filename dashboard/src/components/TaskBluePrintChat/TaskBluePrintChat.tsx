@@ -4,7 +4,7 @@ import React from "react";
 import TaskBluePrintChatContent from "./TaskBluePrintChatContent";
 import http from "@canmingir/link/platform/http";
 import { publish } from "@nucleoidai/react-event";
-import useResponsibility from "../../hooks/useResponsibility";
+import useTaskBluePrint from "../../hooks/useTaskBluePrint";
 
 import { Card, CardContent, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -16,41 +16,40 @@ function TaskBluePrintChat({
   setSelectedItem,
   onTitleChange,
   onDescriptionChange,
-  onCreateResponsibility,
+  onCreateTaskBluePrint,
   onMessagesChange,
   agentId,
 }) {
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
   const [error, setError] = useState(null);
-  const { upsertResponsibility, getResponsibilityWithNode } =
-    useResponsibility();
-  const { responsibilityNodes } = getResponsibilityWithNode(selectedItem?.id);
+  const { upsertTaskBluePrint, getTaskBluePrintWithNode } = useTaskBluePrint();
+  const { taskBluePrintNodes } = getTaskBluePrintWithNode(selectedItem?.id);
   const theme = useTheme();
 
   useEffect(
     () => {
-      if (onCreateResponsibility) {
-        onCreateResponsibility(handleCreateResponsibility);
+      if (onCreateTaskBluePrint) {
+        onCreateTaskBluePrint(handleCreateTaskBluePrint);
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [onCreateResponsibility]
+    [onCreateTaskBluePrint]
   );
 
   useEffect(() => {
     if (onMessagesChange) onMessagesChange(messages);
   }, [messages, onMessagesChange]);
 
-  const handleCreateResponsibility = async (title, description) => {
-    const response = await upsertResponsibility(
+  const handleCreateTaskBluePrint = async (title, description) => {
+    const response = await upsertTaskBluePrint(
       selectedItem?.id,
       title,
       description,
       agentId
     );
 
-    setSelectedItem(response.responsibility);
+    setSelectedItem(response.taskBluePrint);
   };
 
   const addMessage = async (message, role = "user") => {
@@ -86,7 +85,7 @@ function TaskBluePrintChat({
             ? [
                 {
                   content: JSON.stringify(
-                    aiResponse.flow || responsibilityNodes
+                    aiResponse.flow || taskBluePrintNodes
                   ),
                   role: "assistant",
                 },
@@ -95,32 +94,32 @@ function TaskBluePrintChat({
           { content: parsedMessage, role: "user" },
         ];
 
-        const { data } = await http.post("/colleagues/responsibilities", {
+        const { data } = await http.post("/colleagues/taskBluePrints", {
           history,
           content: message,
         });
 
-        const { data: responsibilityNameData } = await http.post(
-          "/colleagues/responsibility-name",
+        const { data: taskBluePrintNameData } = await http.post(
+          "/colleagues/taskBluePrint-name",
           {
             history: messages,
             content: message,
           }
         );
 
-        if (onTitleChange) onTitleChange(responsibilityNameData.title);
+        if (onTitleChange) onTitleChange(taskBluePrintNameData.title);
         if (onDescriptionChange)
-          onDescriptionChange(responsibilityNameData.description);
+          onDescriptionChange(taskBluePrintNameData.description);
 
-        const response = await upsertResponsibility(
+        const response = await upsertTaskBluePrint(
           selectedItem?.id,
-          responsibilityNameData.title,
-          responsibilityNameData.description,
+          taskBluePrintNameData.title,
+          taskBluePrintNameData.description,
           agentId,
           data?.flow
         );
 
-        setSelectedItem(response.responsibility);
+        setSelectedItem(response.taskBluePrint);
 
         const aiMessage = data?.response;
 

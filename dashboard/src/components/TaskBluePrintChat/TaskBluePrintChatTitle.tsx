@@ -29,7 +29,7 @@ const TaskBluePrintChatTitle = ({
   title,
   description,
   messages,
-  handleCreateResponsibility,
+  handleCreateTaskBluePrint,
   setTitle,
 }) => {
   const theme = useTheme();
@@ -40,7 +40,7 @@ const TaskBluePrintChatTitle = ({
   };
 
   const handleSaveClick = () => {
-    handleCreateResponsibility(title, description);
+    handleCreateTaskBluePrint(title, description);
     setIsEditing(false);
   };
 
@@ -475,9 +475,7 @@ const TaskBluePrintChatTitle = ({
             WebkitTextFillColor: "transparent",
           }}
         >
-          {messages.length > 0
-            ? "Edit Responsibility"
-            : "Create Responsibility"}
+          {messages.length > 0 ? "Edit TaskBluePrint" : "Create TaskBluePrint"}
         </DialogTitle>
         <DialogContent sx={{ pt: 2 }}>
           <TextField

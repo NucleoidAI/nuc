@@ -1,4 +1,4 @@
-const Integrations = [
+const MCPs = [
   {
     id: "8f828016-dd2e-4f76-bad5-2a0ca9b71d6f",
     action: "GDRIVE:search",
@@ -336,7 +336,8 @@ const Integrations = [
     id: "d4k0j5i6-1j2h-0i9k-6l5m-4h3i2j1k0l9g",
     action: "PROJECT_NOTIFIER:notify_project_open",
     provider: "PROJECT_NOTIFIER",
-    description: "Sends a notification to the configured endpoint when a project is opened (for testing)",
+    description:
+      "Sends a notification to the configured endpoint when a project is opened (for testing)",
     direction: "OUTGOING",
     lib: "mcp",
     inputSchema: {
@@ -359,4 +360,4 @@ const Integrations = [
     },
   },
 ];
-export default Integrations;
+export default MCPs;

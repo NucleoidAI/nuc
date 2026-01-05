@@ -2,7 +2,7 @@ import React from "react";
 
 import { Box, Tab, Tabs } from "@mui/material";
 
-const IntegrationTabs = ({ selectedTab, handleTabChange, tabs }) => {
+const MCPTabs = ({ selectedTab, handleTabChange, tabs }) => {
   return (
     <Box sx={{ display: "flex", justifyContent: "center" }}>
       <Tabs
@@ -34,4 +34,4 @@ const IntegrationTabs = ({ selectedTab, handleTabChange, tabs }) => {
   );
 };
 
-export default IntegrationTabs;
+export default MCPTabs;

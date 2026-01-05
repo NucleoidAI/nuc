@@ -5,8 +5,8 @@ import Callback from "./src/pages/callback";
 import Chat from "./src/pages/chat";
 import Container from "./src/Container";
 import Dashboard from "./src/pages/dashboard";
-import Integrations from "./src/pages/integrations";
 import KnowledgeBase from "./src/pages/knowledgeBase";
+import MCPs from "./src/pages/mcps";
 import Settings from "./src/pages/settings";
 import Team from "./src/pages/team";
 
@@ -32,8 +32,8 @@ const routes = [
             element: <Agents />,
           },
           {
-            path: `/integrations`,
-            element: <Integrations />,
+            path: `/mcps`,
+            element: <MCPs />,
           },
           {
             path: `/knowledge`,
@@ -42,7 +42,7 @@ const routes = [
           { path: "/colleagues/:colleagueId", element: <Agent /> },
           { path: "/settings", element: <Settings /> },
           { path: "/teams/add", element: <AddTeam /> },
-          { path: "/integrations/callback", element: <Callback /> },
+          { path: "/mcps/callback", element: <Callback /> },
         ],
       },
       {

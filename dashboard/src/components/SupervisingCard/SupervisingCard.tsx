@@ -1,9 +1,13 @@
 import { Iconify } from "@canmingir/link/platform/components";
-import SupervisingChat from "../SupervisingChat";
+import ResponsibilityDrawer from "../ResponsbilityDrawer/ResponsibilityDrawer";
 
+import SupervisingChat from "../SupervisingChat";
+import useResponsibility from "../../hooks/useResponsibility";
+import { useState } from "react";
 import {
   Box,
   Card,
+  Chip,
   Divider,
   Fab,
   Table,
@@ -16,7 +20,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
 
 const SupervisingCard = ({
   supervise,
@@ -26,13 +29,93 @@ const SupervisingCard = ({
     question?: string;
     answer?: string;
     status: string;
+    type: "KNOWLEDGE" | "RESPONSIBILITY";
+    responsibilityId?: string;
   };
 }) => {
   const [open, setOpen] = useState(false);
+  const [responsibilityChatOpen, setResonsibilityChatOpen] = useState(false);
+  const { getResponsibilityById } = useResponsibility();
+
+  const { responsibility } = getResponsibilityById(
+    supervise.responsibilityId || ""
+  );
+
+  const getCardStyles = () => {
+    switch (supervise.type) {
+      case "KNOWLEDGE":
+        return {
+          borderLeft: "4px solid #2196f3",
+          backgroundColor: "background.paper",
+        };
+      case "RESPONSIBILITY":
+        return {
+          borderLeft: "4px solid #ff9800",
+          backgroundColor: "background.paper",
+        };
+      default:
+        return {
+          backgroundColor: "background.paper",
+        };
+    }
+  };
+
+  const renderTypeSpecificActions = () => {
+    switch (supervise.type) {
+      case "KNOWLEDGE":
+        return (
+          <Tooltip title="Go to sessions">
+            <Fab
+              size="medium"
+              sx={{
+                alignSelf: "center",
+                textAlign: "center",
+              }}
+              color="inherit"
+              onClick={() => {
+                setOpen(!open);
+              }}
+            >
+              <Iconify
+                icon={
+                  open
+                    ? "solar:chat-round-line-linear"
+                    : "solar:chat-round-line-bold"
+                }
+                sx={{ width: 26, height: 26 }}
+              />
+            </Fab>
+          </Tooltip>
+        );
+      case "RESPONSIBILITY":
+        return (
+          <Tooltip title="Go to responsibility">
+            <Fab
+              size="medium"
+              sx={{
+                alignSelf: "center",
+                textAlign: "center",
+              }}
+              color="inherit"
+              onClick={() => {
+                setResonsibilityChatOpen(responsibilityChatOpen);
+              }}
+            >
+              <Iconify
+                icon={"healthicons:crisis-response-center-person-outline"}
+                sx={{ width: 26, height: 26 }}
+              />
+            </Fab>
+          </Tooltip>
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <>
-      <Card data-cy="supervise-card">
+      <Card data-cy="supervise-card" sx={getCardStyles()}>
         <Box
           sx={{
             display: "flex",
@@ -63,6 +146,54 @@ const SupervisingCard = ({
             >
               <Box
                 sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: 1,
+                  alignItems: "center",
+                }}
+              >
+                <Box
+                  sx={{
+                    px: 1,
+                    py: 0.5,
+                    borderRadius: "4px",
+                    backgroundColor:
+                      supervise.type === "KNOWLEDGE"
+                        ? "rgba(33, 150, 243, 0.1)"
+                        : "rgba(255, 152, 0, 0.1)",
+                    color:
+                      supervise.type === "KNOWLEDGE" ? "#2196f3" : "#ff9800",
+                    fontSize: "0.75rem",
+                    fontWeight: 600,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {supervise.type}
+                </Box>
+                {supervise.type === "RESPONSIBILITY" &&
+                  responsibility?.title && (
+                    <Chip
+                      icon={
+                        <Iconify
+                          icon="healthicons:crisis-response-center-person-outline"
+                          sx={{ width: 16, height: 16 }}
+                          color="inherit"
+                          style={{ color: "#ff9800" }}
+                        />
+                      }
+                      label={responsibility.title}
+                      size="small"
+                      sx={{
+                        backgroundColor: "rgba(255, 152, 0, 0.1)",
+                        color: "#ff9800",
+                        fontWeight: 500,
+                        border: "1px solid rgba(255, 152, 0, 0.3)",
+                      }}
+                    />
+                  )}
+              </Box>
+              <Box
+                sx={{
                   borderRadius: "8px",
                   paddingLeft: 0.5,
                   backgroundColor: "background.paper",
@@ -78,7 +209,7 @@ const SupervisingCard = ({
               </Box>
 
               <TextField
-                data-cy="answer-supervising"
+                data-cy={`answer-${supervise.type}`}
                 variant="outlined"
                 label="Answer"
                 value={supervise.answer ? `${supervise.answer}` : ""}
@@ -141,28 +272,8 @@ const SupervisingCard = ({
                   </TableBody>
                 </Table>
               </TableContainer>
-              <Tooltip title="Go to sessions">
-                <Fab
-                  size="medium"
-                  sx={{
-                    alignSelf: "center",
-                    textAlign: "center",
-                  }}
-                  color="inherit"
-                  onClick={() => {
-                    setOpen(!open);
-                  }}
-                >
-                  <Iconify
-                    icon={
-                      open
-                        ? "solar:chat-round-line-linear"
-                        : "solar:chat-round-line-bold"
-                    }
-                    sx={{ width: 26, height: 26 }}
-                  />
-                </Fab>
-              </Tooltip>
+
+              {renderTypeSpecificActions()}
             </Box>
           </Box>
         </Box>
@@ -171,6 +282,11 @@ const SupervisingCard = ({
         open={open}
         handleClose={() => setOpen(false)}
         supervise={supervise}
+      />
+      <ResponsibilityDrawer
+        drawerOpen={responsibilityChatOpen}
+        handleDrawerClose={() => setResonsibilityChatOpen(false)}
+        selectedItem={responsibility || {}}
       />
     </>
   );

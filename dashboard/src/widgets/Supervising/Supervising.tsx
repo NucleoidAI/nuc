@@ -1,13 +1,21 @@
-import Box from "@mui/material/Box";
 import StatusToolbar from "../../components/StatusToolbar/StatusToolbar";
 import SupervisingCard from "../../components/SupervisingCard/SupervisingCard";
-import { useState } from "react";
 import useSupervisings from "../../hooks/useSupervisings";
 
-import { Skeleton, Stack } from "@mui/material";
+import {
+  Box,
+  Skeleton,
+  Stack,
+  ToggleButton,
+  ToggleButtonGroup,
+} from "@mui/material";
+import { useMemo, useState } from "react";
 
 const Supervising = ({ agentId }) => {
   const [selectedStatus, setSelectedStatus] = useState("All");
+  const [selectedType, setSelectedType] = useState<
+    "All" | "KNOWLEDGE" | "RESPONSIBILITY"
+  >("All");
 
   const { getColleagueSupervisingByStatus } = useSupervisings();
 
@@ -16,8 +24,20 @@ const Supervising = ({ agentId }) => {
     selectedStatus
   );
 
-  const handleChange = (event) => {
+  const filteredSupervisings = useMemo(() => {
+    if (!supervisings) return [];
+    if (selectedType === "All") return supervisings;
+    return supervisings.filter((s) => s.type === selectedType);
+  }, [supervisings, selectedType]);
+
+  const handleStatusChange = (event) => {
     setSelectedStatus(event.target.value);
+  };
+
+  const handleTypeChange = (event, newType) => {
+    if (newType !== null) {
+      setSelectedType(newType);
+    }
   };
 
   return (
@@ -38,9 +58,57 @@ const Supervising = ({ agentId }) => {
       >
         <StatusToolbar
           statuses={["All", "ANSWERED", "IN_PROGRESS"]}
-          handleChange={handleChange}
+          handleChange={handleStatusChange}
           selectedStatus={selectedStatus}
         />
+
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <ToggleButtonGroup
+            value={selectedType}
+            exclusive
+            onChange={handleTypeChange}
+            aria-label="supervising type filter"
+            size="small"
+            sx={{
+              backgroundColor: "background.paper",
+              borderRadius: 1,
+            }}
+          >
+            <ToggleButton value="All" aria-label="all types">
+              All Types
+            </ToggleButton>
+            <ToggleButton
+              value="KNOWLEDGE"
+              aria-label="knowledge"
+              sx={{
+                "&.Mui-selected": {
+                  backgroundColor: "rgba(33, 150, 243, 0.15)",
+                  color: "#2196f3",
+                  "&:hover": {
+                    backgroundColor: "rgba(33, 150, 243, 0.25)",
+                  },
+                },
+              }}
+            >
+              Knowledge
+            </ToggleButton>
+            <ToggleButton
+              value="RESPONSIBILITY"
+              aria-label="responsibility"
+              sx={{
+                "&.Mui-selected": {
+                  backgroundColor: "rgba(255, 152, 0, 0.15)",
+                  color: "#ff9800",
+                  "&:hover": {
+                    backgroundColor: "rgba(255, 152, 0, 0.25)",
+                  },
+                },
+              }}
+            >
+              Responsibility
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </Box>
 
         {loading ? (
           <Stack
@@ -56,13 +124,13 @@ const Supervising = ({ agentId }) => {
               />
             ))}
           </Stack>
-        ) : supervisings.length > 0 ? (
-          supervisings.map((supervise) => (
+        ) : filteredSupervisings.length > 0 ? (
+          filteredSupervisings.map((supervise) => (
             <SupervisingCard key={supervise.id} supervise={supervise} />
           ))
         ) : (
           <Stack sx={{ textAlign: "center", my: 4, color: "text.secondary" }}>
-            No supervising data available for the selected status
+            No supervising data available for the selected filters
           </Stack>
         )}
       </Box>

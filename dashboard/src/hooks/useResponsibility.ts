@@ -38,6 +38,23 @@ function useResponsibility() {
     };
   };
 
+  const getResponsibilityById = (
+    id: string,
+    fetchState: DependencyArray = []
+  ) => {
+    const { data, loading, error, fetch } = Api(
+      () => (id ? http.get(`/responsibilities/${id}`) : null),
+      [...fetchState]
+    );
+
+    return {
+      responsibility: data,
+      loading,
+      error,
+      fetch,
+    };
+  };
+
   const getResponsibilityWithNode = (
     id: string,
     fetchState: DependencyArray = []
@@ -123,6 +140,7 @@ function useResponsibility() {
 
   return {
     getResponsibility,
+    getResponsibilityById,
     getResponsibilityWithNode,
     createResponsibility,
     upsertResponsibility,

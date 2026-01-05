@@ -5,7 +5,6 @@ import Knowledge from "../widgets/Knowledge/Knowledge";
 import PopupChatWidget from "../widgets/PopupChatWidget";
 import Profile from "../widgets/Profile/Profile";
 import ProfileCard from "../components/ProfileCard/ProfileCard";
-import React from "react";
 import ResponsibilitiesWidget from "../widgets/ResponsibilitiesWidget/ResponsibilitiesWidget";
 import Stack from "@mui/material/Stack";
 import Supervising from "../widgets/Supervising/Supervising";

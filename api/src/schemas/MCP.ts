@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-const Integration = {
+const MCP = {
   create: Joi.object({
     provider: Joi.string().required(),
     description: Joi.string().required(),
@@ -15,4 +15,4 @@ const Integration = {
   }),
 };
 
-export default Integration;
+export default MCP;

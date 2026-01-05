@@ -1,8 +1,8 @@
 [
   {
     "content": "I wanna buy battery.",
-    "decision": "RESPONSIBILITY",
-    "responsibility": {
+    "decision": "TASKBLUEPRINT",
+    "taskBluePrint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Product Order",
       "description": "Check product availability, if not exist, create order.",
@@ -71,8 +71,8 @@
   },
   {
     "content": "I want to get internet subscription for my home.",
-    "decision": "RESPONSIBILITY",
-    "responsibility": {
+    "decision": "TASKBLUEPRINT",
+    "taskBluePrint": {
       "id": "ca7g8022-f343-570e-a171-3992963g7f70",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",

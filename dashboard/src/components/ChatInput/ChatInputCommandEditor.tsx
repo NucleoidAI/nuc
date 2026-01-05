@@ -367,7 +367,7 @@ const ChatInputCommandEditor = ({
             },
             children: [{ text: "Select a Colleague" }],
           });
-        } else if (firstInput.type === "INTEGRATION") {
+        } else if (firstInput.type === "MCP") {
           Transforms.insertNodes(editor, {
             type: "input",
             options: firstInput.list,

@@ -178,13 +178,13 @@ const Commands = [
 
 const TaskBluePrintCommands = [
   {
-    id: "integration",
-    label: "Integration",
-    type: "integration",
+    id: "MCP",
+    label: "MCP",
+    type: "MCP",
     icon: "carbon:ibm-cloud-pak-integration",
     description: "Integrate with other tools",
     next: {
-      label: "Select an Integration",
+      label: "Select a MCP",
       list: [
         {
           id: "g-drive-id",
@@ -250,11 +250,9 @@ const Types = [
   },
 ];
 
-const findIntegrationById = (id: string) => {
-  const integration = TaskBluePrintCommands[0].next.list.find(
-    (integration) => integration.id === id
-  );
-  return integration || null;
+const findMCPById = (id: string) => {
+  const mcp = TaskBluePrintCommands[0].next.list.find((mcp) => mcp.id === id);
+  return mcp || null;
 };
 
-export { Commands, Types, TaskBluePrintCommands, findIntegrationById };
+export { Commands, Types, TaskBluePrintCommands, findMCPById };

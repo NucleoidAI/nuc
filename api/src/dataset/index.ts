@@ -2,11 +2,11 @@ import chat from "./train/chat.json";
 import humanInLoop from "./train/human-in-loop.json";
 import policy from "./policy.json";
 import pseudocode from "./train/pseudocode.json";
-import responsibility from "./train/responsibility.json";
-import responsibilityChat from "./train/responsibility-chat.json";
-import responsibilityChatEvaluation from "./train/responsibility-chat-evaluation.json";
-import responsibilityDiamond from "./train/responsibility-diamond.json";
-import responsibilityName from "./train/responsibility-name.json";
+import taskBluePrint from "./train/task-blue-print.json";
+import taskBluePrintChat from "./train/task-blue-print-chat.json";
+import taskBluePrintChatEvaluation from "./train/task-blue-print-chat-evaluation.json";
+import taskBluePrintDiamond from "./train/task-blue-print-diamond.json";
+import taskBluePrintName from "./train/task-blue-print-name.json";
 import taskDiamond from "./train/task-diamond.json";
 import teamChat from "./train/team-chat.json";
 
@@ -16,10 +16,10 @@ export default {
     content: JSON.stringify({ policy }),
   },
   train: {
-    responsibility: {
+    taskBluePrint: {
       role: "system" as const,
       content: JSON.stringify({
-        train: responsibility,
+        train: taskBluePrint,
       }),
     },
     chat: {
@@ -52,28 +52,28 @@ export default {
         train: teamChat,
       }),
     },
-    responsibilityChat: {
+    taskBluePrintChat: {
       role: "system" as const,
       content: JSON.stringify({
-        train: responsibilityChat,
+        train: taskBluePrintChat,
       }),
     },
-    responsibilityChatEvaluation: {
+    taskBluePrintChatEvaluation: {
       role: "system" as const,
       content: JSON.stringify({
-        train: responsibilityChatEvaluation,
+        train: taskBluePrintChatEvaluation,
       }),
     },
-    responsibilityName: {
+    taskBluePrintName: {
       role: "system" as const,
       content: JSON.stringify({
-        train: responsibilityName,
+        train: taskBluePrintName,
       }),
     },
-    responsibilityDiamond: {
+    taskBluePrintDiamond: {
       role: "system" as const,
       content: JSON.stringify({
-        train: responsibilityDiamond,
+        train: taskBluePrintDiamond,
       }),
     },
   },

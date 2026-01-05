@@ -1,7 +1,6 @@
 import "express";
 
-import platform from "@canmingir/link-express";
-
+import McpClient from "../../mcp/McpClient";
 import agent from "./functions/agent";
 import colleagues from "./routes/colleagues";
 import communications from "./routes/communications";
@@ -11,16 +10,16 @@ import integrations from "./routes/integrations";
 import knowledge from "./routes/knowledge";
 import messages from "./routes/messages";
 import organizations from "./routes/organizations";
+import platform from "@canmingir/link-express";
 import projects from "./routes/projects";
-import responsibilities from "./routes/responsibilities";
-import responsibilityFn from "./functions/responsibility";
 import sessions from "./routes/sessions";
 import statistics from "./routes/statistics";
 import supervisings from "./routes/supervisings";
+import taskBluePrintFn from "./functions/taskBluePrint";
+import taskBluePrints from "./routes/taskBluePrints";
 import tasks from "./routes/tasks";
 import teamDetails from "./routes/teamDetails";
 import { telemetryMiddleware } from "./instrumentation";
-import McpClient from "../../mcp/McpClient";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -52,7 +51,7 @@ function createApp() {
   app.use("/organizations", organizations);
   app.use("/statistics", statistics);
   app.use("/colleagues", colleagues);
-  app.use("/responsibilities", responsibilities);
+  app.use("/taskblueprints", taskBluePrints);
   app.use("/integrations", integrations);
   app.use("/communications", communications);
 

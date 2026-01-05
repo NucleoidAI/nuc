@@ -1,21 +1,21 @@
 import {
-  Table,
+  AllowNull,
   Column,
-  Model,
   DataType,
   Default,
+  Model,
   PrimaryKey,
-  AllowNull,
+  Table,
 } from "@canmingir/link-express/sequelize";
 
 import Node from "../schemas/Node";
 
 @Table({
-  tableName: "Responsibility",
+  tableName: "TaskBluePrint",
   timestamps: false,
   underscored: true,
 })
-class Responsibility extends Model {
+class TaskBluePrint extends Model {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)
@@ -57,4 +57,4 @@ class Responsibility extends Model {
   declare communications?: any[];
 }
 
-export default Responsibility;
+export default TaskBluePrint;

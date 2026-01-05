@@ -24,7 +24,7 @@ const TaskBluePrintCard = ({
   item,
   handleDrawerOpen,
   handleFlowDialogOpen,
-  removeResponsibility,
+  removeTaskBluePrint,
   colleagueId,
 }) => {
   const popover = usePopover();
@@ -52,7 +52,7 @@ const TaskBluePrintCard = ({
           }}
         >
           <Fab
-            data-cy="responsibility-more-vert"
+            data-cy="taskBluePrint-more-vert"
             color="default"
             size="small"
             sx={{
@@ -156,7 +156,7 @@ const TaskBluePrintCard = ({
         sx={{ width: 140 }}
       >
         <MenuItem
-          data-cy="responsibility-menu-view"
+          data-cy="taskBluePrint-menu-view"
           onClick={() => {
             popover.onClose();
             handleFlowDialogOpen(item);
@@ -167,7 +167,7 @@ const TaskBluePrintCard = ({
         </MenuItem>
 
         <MenuItem
-          data-cy="responsibility-menu-edit"
+          data-cy="taskBluePrint-menu-edit"
           onClick={() => {
             popover.onClose();
             handleDrawerOpen(item);
@@ -178,9 +178,9 @@ const TaskBluePrintCard = ({
         </MenuItem>
 
         <MenuItem
-          data-cy="responsibility-menu-delete"
+          data-cy="taskBluePrint-menu-delete"
           onClick={() => {
-            removeResponsibility(item.id, colleagueId);
+            removeTaskBluePrint(item.id, colleagueId);
             popover.onClose();
           }}
           sx={{ color: "error.main" }}

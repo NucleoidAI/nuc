@@ -57,11 +57,11 @@ function useSupervisings() {
     return response?.data;
   };
 
-  const getColleagueSupervising = useCallback((colleagueId?: string) => {
+  const getAgentSupervising = useCallback((colleagueId?: string) => {
     if (!colleagueId) return;
 
     const { data, loading, error } = Api(
-      () => http.get(`/colleagues/${colleagueId}/supervisings`),
+      () => http.get(`/agents/${colleagueId}/supervisings`),
       [colleagueId, supervisingAnswered]
     );
 
@@ -73,14 +73,14 @@ function useSupervisings() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getColleagueSupervisingByStatus = useCallback(
+  const getAgentSupervisingByStatus = useCallback(
     (colleagueId?: string, status?: string) => {
       if (!colleagueId) return;
 
       const endpoint =
         !status || status === "All"
-          ? `/colleagues/${colleagueId}/supervisings`
-          : `/colleagues/${colleagueId}/supervisings?status=${status}`;
+          ? `/agents/${colleagueId}/supervisings`
+          : `/agents/${colleagueId}/supervisings?status=${status}`;
 
       const { data, loading, error, fetch } = Api(
         () => http.get(endpoint),
@@ -102,8 +102,8 @@ function useSupervisings() {
     createSupervising,
     updateSupervising,
     evaluateSupervising,
-    getColleagueSupervisingByStatus,
-    getColleagueSupervising,
+    getAgentSupervisingByStatus,
+    getAgentSupervising,
   };
 }
 

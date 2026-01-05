@@ -10,16 +10,16 @@ async function list() {
 async function create({
   channelType,
   channelCode,
-  responsibilityId,
+  taskBluePrintId,
 }: {
   channelType: string;
   channelCode: string;
-  responsibilityId: string;
+  taskBluePrintId: string;
 }) {
   const communication = await Communication.create({
     channelType,
     channelCode,
-    responsibilityId,
+    taskBluePrintId,
   });
 
   return communication.toJSON();

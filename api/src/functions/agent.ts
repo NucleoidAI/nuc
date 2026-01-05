@@ -3,14 +3,14 @@ import actions from "../actions";
 import colleague from "./colleague";
 import dataset from "../dataset";
 import { generate } from "../lib/llm";
+import integrationsFn from "./integration";
 import knowledgeFn from "./knowledge";
 import message from "./message";
 import messagesFunc from "./message";
-import responsibilityFn from "../functions/responsibility";
 import session from "./session";
 import supervising from "./supervising";
+import taskBluePrintFn from "./taskBluePrint";
 import taskFn from "./task";
-import integrationsFn from "./integration";
 
 async function messages({ teamId }: { teamId: string }) {
   const messageInstances = await messagesFunc.listMessages({ teamId });
@@ -89,13 +89,13 @@ async function steps({ taskId }) {
   };
 }
 
-async function responsibilities({ colleagueId }) {
-  const responsibilities = await responsibilityFn.list({ colleagueId });
+async function taskBluePrints({ colleagueId }) {
+  const taskBluePrints = await taskBluePrintFn.list({ colleagueId });
 
   return {
     role: "system",
     content: {
-      responsibilities,
+      taskBluePrints,
     },
   } as {
     role: "user" | "system" | "assistant";
@@ -178,7 +178,7 @@ async function task({ taskId }: { taskId: string }) {
       await Promise.all([
         info({ colleagueId }),
         knowledge({ colleagueId, taskId }),
-        responsibilities({ colleagueId }),
+        taskBluePrints({ colleagueId }),
         steps({ taskId }),
       ])
     ).flat(),
@@ -327,7 +327,7 @@ async function step({
   }
 }
 
-async function responsibility({
+async function taskBluePrint({
   history,
   content,
 }: {
@@ -338,7 +338,7 @@ async function responsibility({
   content: string;
 }) {
   const response = await generate({
-    dataset: dataset.train.responsibilityChat,
+    dataset: dataset.train.taskBluePrintChat,
     context: history,
     content,
     json_format: "{ response: <RESPONSE>, flow: [<FLOW>] }",
@@ -347,7 +347,7 @@ async function responsibility({
   return response;
 }
 
-async function responsibilityName({
+async function taskBluePrintName({
   history,
   content,
 }: {
@@ -358,7 +358,7 @@ async function responsibilityName({
   content: string;
 }) {
   const response = await generate({
-    dataset: dataset.train.responsibilityName,
+    dataset: dataset.train.taskBluePrintName,
     context: history,
     content,
     json_format: "{ title: <TITLE>, description: <DESCRIPTION> }",
@@ -366,11 +366,11 @@ async function responsibilityName({
   return response;
 }
 
-async function responsibilityToTask({
+async function taskBluePrintToTask({
   history,
   content,
   knowledge,
-  responsibility,
+  taskBluePrint,
 }: {
   history?: {
     role: "system" | "user" | "assistant";
@@ -378,13 +378,13 @@ async function responsibilityToTask({
   }[];
   content: string;
   knowledge: Array<[]>;
-  responsibility: object;
+  taskBluePrint: object;
 }) {
   const context = [
     {
       role: "system" as const,
       content: {
-        responsibility,
+        taskBluePrint,
         knowledge,
         history,
       },
@@ -392,7 +392,7 @@ async function responsibilityToTask({
   ];
 
   const response = await generate({
-    dataset: dataset.train.responsibility,
+    dataset: dataset.train.taskBluePrint,
     context,
     content,
     json_format: "{ task: <TASK> ,answer: <ANSWER> }",
@@ -401,28 +401,28 @@ async function responsibilityToTask({
   return response;
 }
 
-async function responsibilityDiamond({
+async function taskBluePrintDiamond({
   content,
-  responsibilities,
+  taskBluePrints,
 }: {
   content: string;
-  responsibilities: Array<[]>;
+  taskBluePrints: Array<[]>;
 }) {
   const context = [
     {
       role: "system" as const,
       content: {
-        responsibilities,
+        taskBluePrints,
       },
     },
   ];
 
   const response = await generate({
-    dataset: dataset.train.responsibilityDiamond,
+    dataset: dataset.train.taskBluePrintDiamond,
     context,
     content,
     json_format:
-      "{ decision: <DECISION>,existing: <EXISTING>,responsibilityId: <RESPONSIBILITY_ID> }",
+      "{ decision: <DECISION>,existing: <EXISTING>,taskBluePrintId: <taskBluePrint_ID> }",
   });
   return response;
 }
@@ -452,7 +452,7 @@ async function evaluateSupervisionAnswer({
   ];
 
   const evaluation = await generate({
-    dataset: dataset.train.responsibilityChatEvaluation,
+    dataset: dataset.train.taskBluePrintChatEvaluation,
     context,
     content: `${content.question}\n\nAnswer: ${content.answer}`,
     json_format: `{
@@ -477,7 +477,7 @@ async function chat({
   });
 
   const conversationsData = await conversations({ sessionId });
-  const responsibilitiesData = await responsibilityFn.list({ colleagueId });
+  const taskBluePrintsData = await taskBluePrintFn.list({ colleagueId });
 
   const colleagueData = await colleague.get({ colleagueId });
 
@@ -521,32 +521,29 @@ async function chat({
     return;
   }
 
-  const responsibilityDecision = await responsibilityDiamond({
+  const taskBluePrintDecision = await taskBluePrintDiamond({
     content: content,
-    responsibilities: responsibilitiesData,
+    taskBluePrints: taskBluePrintsData,
   });
 
-  if (
-    responsibilityDecision.decision === "RESPONSIBILITY" &&
-    task.length === 0
-  ) {
-    const responsibilityData = await responsibilityFn.get({
-      responsibilityId: responsibilityDecision.responsibilityId,
+  if (taskBluePrintDecision.decision === "taskBluePrint" && task.length === 0) {
+    const taskBluePrintData = await taskBluePrintFn.get({
+      taskBluePrintId: taskBluePrintDecision.taskBluePrintId,
     });
 
-    const responsibilityToTaskResponse = await responsibilityToTask({
+    const taskBluePrintToTaskResponse = await taskBluePrintToTask({
       history: conversationsData,
       knowledge: knowledgeData,
       content: content,
-      responsibility: responsibilityData,
+      taskBluePrint: taskBluePrintData,
     });
 
     await taskFn.create({
       colleagueId,
       description:
-        responsibilityToTaskResponse.task?.description ||
-        responsibilityToTaskResponse.task,
-      responsibilityId: responsibilityDecision.responsibilityId,
+        taskBluePrintToTaskResponse.task?.description ||
+        taskBluePrintToTaskResponse.task,
+      taskBluePrintId: taskBluePrintDecision.taskBluePrintId,
       sessionId,
     });
 
@@ -554,7 +551,7 @@ async function chat({
       sessionId,
       colleagueId,
       role: "ASSISTANT",
-      content: responsibilityToTaskResponse.answer,
+      content: taskBluePrintToTaskResponse.answer,
     });
   } else {
     if (task.length > 0) {
@@ -628,8 +625,8 @@ export default {
   chat,
   task,
   step,
-  responsibility,
-  responsibilityName,
+  taskBluePrint,
+  taskBluePrintName,
   evaluateSupervisionAnswer,
   toPseudo,
 };

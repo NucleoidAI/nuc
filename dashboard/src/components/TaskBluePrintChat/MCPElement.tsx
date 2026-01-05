@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import { styled } from "@mui/material";
 
-const IntegrationElement = styled(Box)(({ theme }) => ({
+const MCPElement = styled(Box)(({ theme }) => ({
   display: "inline-flex",
   alignItems: "center",
   height: "24px",
@@ -34,7 +34,7 @@ const MentionElement = styled(Box)(({ theme }) => ({
   },
 }));
 
-const IntegrationScopeElement = styled(Box)(({ theme }) => ({
+const MCPScopeElement = styled(Box)(({ theme }) => ({
   display: "inline-flex",
   alignItems: "center",
   height: "20px",
@@ -51,4 +51,4 @@ const IntegrationScopeElement = styled(Box)(({ theme }) => ({
   },
 }));
 
-export { IntegrationElement, MentionElement, IntegrationScopeElement };
+export { MCPElement, MentionElement, MCPScopeElement };

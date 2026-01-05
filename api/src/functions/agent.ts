@@ -1,10 +1,10 @@
-import Integrations from "../integrations/integrations";
+import MCPs from "../mcps/mcps";
 import actions from "../actions";
 import colleague from "./colleague";
 import dataset from "../dataset";
 import { generate } from "../lib/llm";
-import integrationsFn from "./integration";
 import knowledgeFn from "./knowledge";
+import mcpFn from "./mcp";
 import message from "./message";
 import messagesFunc from "./message";
 import session from "./session";
@@ -183,7 +183,7 @@ async function task({ taskId }: { taskId: string }) {
       ])
     ).flat(),
     actions.list(),
-    integrationsFn.list(),
+    mcpFn.list(),
   ];
 
   const {
@@ -242,7 +242,7 @@ async function step({
 }) {
   let actionType;
 
-  if (Integrations.find((integration) => integration.action === action)) {
+  if (MCPs.find((mcp) => mcp.action === action)) {
     actionType = "MCP";
   } else if (action === "SUPERVISED") {
     actionType = "SUPERVISED";

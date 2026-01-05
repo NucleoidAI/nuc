@@ -3,7 +3,7 @@ import SkillDialog from "../../components/Skills/SkillDialog";
 import Skills from "../../components/Skills/Skills";
 import { getProviderLogo } from "../../utils/icon";
 import { storage } from "@nucleoidjs/webstorage";
-import useAcquiredIntegrations from "../../hooks/useAcquiredIntegrations";
+import useAcquiredMCPs from "../../hooks/useAcquiredMCPs";
 import useTeam from "../../hooks/useTeams";
 
 import {
@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 
-const mockIntegrations = [
+const mockMCPs = [
   {
     id: "deb57fdb-4d92-4335-979c-edbce3bd6b00",
     title: "Slack",
@@ -68,18 +68,17 @@ const mockIntegrations = [
   },
 ];
 
-const IntegrationsWidget = () => {
+const MCPsWidget = () => {
   const teamId = storage.get("projectId");
 
-  const { getIntegrations, getAcquiredIntegrations, getTokens } =
-    useAcquiredIntegrations();
-  const { integrations } = getIntegrations();
+  const { getMCPs, getAcquiredMCPs, getTokens } = useAcquiredMCPs();
+  const { mcps } = getMCPs();
 
-  const { acquiredIntegrations } = getAcquiredIntegrations(teamId);
+  const { acquiredMCPs } = getAcquiredMCPs(teamId);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [open, setOpen] = useState(false);
-  const [selectedIntegration, setSelectedIntegration] = useState(null);
+  const [selectedMCP, setSelectedMCP] = useState(null);
   const [relatedSkills, setRelatedSkills] = useState([]);
   const [selectedSkill, setSelectedSkill] = useState<{
     id: string;
@@ -104,12 +103,12 @@ const IntegrationsWidget = () => {
     setSearchTerm(event.target.value);
   };
 
-  const handleOpen = (integration) => {
-    setSelectedIntegration(integration);
-    const matchingSkills = integrations.filter(
+  const handleOpen = (mcp) => {
+    setSelectedMCP(mcp);
+    const matchingSkills = mcps.filter(
       (skill) =>
         (skill.provider || "").toLowerCase() ===
-        (integration.provider || "").toLowerCase()
+        (mcp.provider || "").toLowerCase()
     );
     setRelatedSkills(matchingSkills);
     setOpen(true);
@@ -117,15 +116,15 @@ const IntegrationsWidget = () => {
 
   const handleClose = () => {
     setOpen(false);
-    setSelectedIntegration(null);
+    setSelectedMCP(null);
     setRelatedSkills([]);
   };
 
-  const filteredData = integrations.filter((skill) =>
+  const filteredData = mcps.filter((skill) =>
     (skill.provider || "").toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const filteredIntegrations = mockIntegrations.filter((skill) =>
+  const filteredMCPs = mockMCPs.filter((skill) =>
     skill.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -145,7 +144,7 @@ const IntegrationsWidget = () => {
         sx={{ mb: 3 }}
         fullWidth
         variant="outlined"
-        placeholder="Search integrations for team or colleagues"
+        placeholder="Search MCPs for team or colleagues"
         value={searchTerm}
         autoComplete="off"
         onChange={handleSearchChange}
@@ -153,8 +152,8 @@ const IntegrationsWidget = () => {
 
       <Grid container spacing={1} sx={{ mb: 2 }}>
         {searchTerm &&
-          filteredIntegrations.map((integration) => (
-            <Grid key={integration.id} item xs={12} sm={6} md={2}>
+          filteredMCPs.map((mcp) => (
+            <Grid key={mcp.id} item xs={12} sm={6} md={2}>
               <Card
                 sx={{
                   height: 160,
@@ -166,7 +165,7 @@ const IntegrationsWidget = () => {
                   transition: "transform 0.3s",
                   "&:hover": { transform: "scale(1.05)", cursor: "pointer" },
                 }}
-                onClick={() => handleOpen(integration)}
+                onClick={() => handleOpen(mcp)}
               >
                 <Box
                   sx={{
@@ -178,11 +177,11 @@ const IntegrationsWidget = () => {
                   }}
                 >
                   <Icon
-                    icon={integration.logo.replace(/^:|:$/g, "")}
+                    icon={mcp.logo.replace(/^:|:$/g, "")}
                     width="40"
                     height="40"
                   />
-                  <Typography variant="h6">{integration.title}</Typography>
+                  <Typography variant="h6">{mcp.title}</Typography>
                 </Box>
               </Card>
             </Grid>
@@ -209,7 +208,7 @@ const IntegrationsWidget = () => {
         handleClose={handleSkillDialogClose}
         skill={selectedSkill}
         team={team}
-        acquiredIntegrations={acquiredIntegrations}
+        acquiredMCPs={acquiredMCPs}
         getTokens={getTokens}
       />
 
@@ -229,7 +228,7 @@ const IntegrationsWidget = () => {
             overflow: "auto",
           }}
         >
-          {selectedIntegration && (
+          {selectedMCP && (
             <>
               <Box
                 sx={{
@@ -238,12 +237,12 @@ const IntegrationsWidget = () => {
                   mb: 3,
                 }}
               >
-                <Icon icon={selectedIntegration.logo} width="40" height="40" />
+                <Icon icon={selectedMCP.logo} width="40" height="40" />
                 <Typography variant="h5" component="h2" sx={{ ml: 2 }}>
-                  {selectedIntegration.title}
+                  {selectedMCP.title}
                 </Typography>
                 <Typography variant="h5" component="h2" sx={{ ml: 30 }}>
-                  {selectedIntegration.provider}
+                  {selectedMCP.provider}
                 </Typography>
               </Box>
               <Typography variant="h6" sx={{ mb: 2 }}>
@@ -271,4 +270,4 @@ const IntegrationsWidget = () => {
   );
 };
 
-export default IntegrationsWidget;
+export default MCPsWidget;

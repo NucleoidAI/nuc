@@ -50,7 +50,7 @@ function createApp() {
   app.use("/engines", engines);
   app.use("/organizations", organizations);
   app.use("/statistics", statistics);
-  app.use("/colleagues", colleagues);
+  app.use("/agents", colleagues);
   app.use("/taskblueprints", taskBluePrints);
   app.use("/mcps", mcps);
   app.use("/communications", communications);

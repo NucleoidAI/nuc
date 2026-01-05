@@ -9,11 +9,11 @@ import {
 } from "@canmingir/link-express/sequelize";
 
 @Table({
-  tableName: "Integration",
+  tableName: "MCP",
   timestamps: false,
   underscored: true,
 })
-class Integration extends Model {
+class MCP extends Model {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)
@@ -38,4 +38,4 @@ class Integration extends Model {
   declare colleague?: any;
 }
 
-export default Integration;
+export default MCP;

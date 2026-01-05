@@ -21,9 +21,9 @@ const menuConfig = {
           path: "/knowledge",
         },
         {
-          title: "Integrations",
+          title: "MCPs",
           icon: "carbon:ibm-cloud-pak-integration",
-          path: "/integrations",
+          path: "/mcps",
         },
         {
           title: "Monitoring",

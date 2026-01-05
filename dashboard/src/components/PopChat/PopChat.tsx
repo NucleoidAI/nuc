@@ -31,9 +31,9 @@ const PopChat = ({
   readOnly,
   closeButton,
   sound,
-  responsibilities,
-  selectedResponsibility,
-  onResponsibilityChange,
+  taskBluePrints,
+  selectedTaskBluePrint,
+  onTaskBluePrintChange,
   //eslint-disable-next-line
   sx,
 }) => {
@@ -144,11 +144,11 @@ const PopChat = ({
           readOnly={readOnly}
         />
 
-        {responsibilities.length > 0 && !readOnly && (
+        {taskBluePrints.length > 0 && !readOnly && (
           <TaskBluePrintSelector
-            responsibilities={responsibilities}
-            selectedResponsibility={selectedResponsibility}
-            onResponsibilityChange={onResponsibilityChange}
+            taskBluePrints={taskBluePrints}
+            selectedTaskBluePrint={selectedTaskBluePrint}
+            onTaskBluePrintChange={onTaskBluePrintChange}
           />
         )}
 

@@ -1,8 +1,8 @@
 import { AuthenticationError } from "@canmingir/link-express/error";
-import Integration from "../models/Integration";
+import MCP from "../models/MCP";
 import colleague from "../functions/colleague";
 import express from "express";
-import integration from "../functions/integration";
+import mcp from "../functions/mcp";
 
 const router = express.Router();
 
@@ -11,7 +11,7 @@ router.post("/", async (req, res) => {
   const {
     authorizationCode,
     mcpId,
-    teamId: integrationTeamId,
+    teamId: mcpTeamId,
     colleagueId,
   }: {
     authorizationCode: string;
@@ -20,7 +20,7 @@ router.post("/", async (req, res) => {
     colleagueId?: string;
   } = req.body;
 
-  if (integrationTeamId && integrationTeamId !== teamId) {
+  if (mcpTeamId && mcpTeamId !== teamId) {
     throw new AuthenticationError();
   }
 
@@ -29,13 +29,13 @@ router.post("/", async (req, res) => {
     mcpId,
   };
 
-  if (integrationTeamId) {
-    createData.teamId = integrationTeamId;
+  if (mcpTeamId) {
+    createData.teamId = mcpTeamId;
   } else if (colleagueId) {
     createData.colleagueId = colleagueId;
   }
 
-  const tokens = await integration.create(createData);
+  const tokens = await mcp.create(createData);
 
   res.json({ tokens });
 });
@@ -59,16 +59,16 @@ router.get("/", async (req, res) => {
       }
     }
 
-    const integrationList = await integration.read({
+    const mcpList = await mcp.read({
       colleagueId: colleagueId || undefined,
       teamId,
     });
 
-    res.json(integrationList);
+    res.json(mcpList);
   } else {
-    // TODO - split endpoint for all integrations
-    const allIntegrations = await integration.list();
-    res.json(allIntegrations);
+    // TODO - split endpoint for all MCPs
+    const allMCPs = await mcp.list();
+    res.json(allMCPs);
   }
 });
 
@@ -76,21 +76,20 @@ router.delete("/:id", async (req, res) => {
   const { projectId: teamId } = req.session;
   const { id } = req.params;
 
-  const integrationItem = await integration.get({
-    integrationId: id,
+  const mcpItem = await mcp.get({
+    mcpId: id,
   });
 
-  const { Colleague } = integrationItem;
+  const { Colleague } = mcpItem;
 
   const hasAccess =
-    (Colleague && Colleague.teamId === teamId) ||
-    integrationItem.teamId === teamId;
+    (Colleague && Colleague.teamId === teamId) || mcpItem.teamId === teamId;
 
   if (!hasAccess) {
     throw new AuthenticationError();
   }
 
-  await Integration.destroy({ where: { id } });
+  await MCP.destroy({ where: { id } });
 
   res.status(204).end();
 });

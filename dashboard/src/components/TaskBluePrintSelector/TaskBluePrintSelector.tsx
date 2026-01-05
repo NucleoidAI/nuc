@@ -12,17 +12,17 @@ import {
 } from "@mui/material";
 
 const TaskBluePrintSelector = ({
-  responsibilities,
-  selectedResponsibility,
-  onResponsibilityChange,
+  taskBluePrints,
+  selectedTaskBluePrint,
+  onTaskBluePrintChange,
 }: {
-  responsibilities: Array<{
+  taskBluePrints: Array<{
     id: string;
     title: string;
     description?: string;
   }>;
-  selectedResponsibility?: string;
-  onResponsibilityChange: (responsibilityId: string) => void;
+  selectedTaskBluePrint?: string;
+  onTaskBluePrintChange: (taskBluePrintId: string) => void;
 }) => {
   return (
     <Box
@@ -43,12 +43,12 @@ const TaskBluePrintSelector = ({
             },
           }}
         >
-          Responsibility
+          TaskBluePrint
         </InputLabel>
         <Select
-          value={selectedResponsibility || ""}
-          onChange={(e) => onResponsibilityChange(e.target.value)}
-          label="Responsibility"
+          value={selectedTaskBluePrint || ""}
+          onChange={(e) => onTaskBluePrintChange(e.target.value)}
+          label="TaskBluePrint"
           sx={{
             color: "white",
             "& .MuiOutlinedInput-notchedOutline": {
@@ -88,8 +88,8 @@ const TaskBluePrintSelector = ({
           <MenuItem value="">
             <em style={{ color: "rgba(255, 255, 255, 0.7)" }}>None selected</em>
           </MenuItem>
-          {responsibilities.map((responsibility) => (
-            <MenuItem key={responsibility.id} value={responsibility.id}>
+          {taskBluePrints.map((taskBluePrint) => (
+            <MenuItem key={taskBluePrint.id} value={taskBluePrint.id}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <Iconify
                   icon="healthicons:crisis-response-center-person-outline"
@@ -98,7 +98,7 @@ const TaskBluePrintSelector = ({
                   sx={{ color: "white" }}
                 />
                 <Typography sx={{ color: "white" }}>
-                  {responsibility.title}
+                  {taskBluePrint.title}
                 </Typography>
               </Box>
             </MenuItem>

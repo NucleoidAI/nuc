@@ -50,7 +50,7 @@ const TaskBluePrintDrawer = ({
 
   const [title, setTitle] = useState(selectedItem?.title);
   const [description, setDescription] = useState(selectedItem?.description);
-  const [createResponsibilityHandler, setCreateResponsibilityHandler] =
+  const [createTaskBluePrintHandler, setCreateTaskBluePrintHandler] =
     useState(null);
   const [messages, setMessages] = useState([]);
 
@@ -69,8 +69,8 @@ const TaskBluePrintDrawer = ({
     setDescription(newDescription);
   }, []);
 
-  const handleCreateResponsibility = useCallback((handler) => {
-    setCreateResponsibilityHandler(() => handler);
+  const handleCreateTaskBluePrint = useCallback((handler) => {
+    setCreateTaskBluePrintHandler(() => handler);
   }, []);
 
   const handleMessagesChange = useCallback((newMessages) => {
@@ -169,7 +169,7 @@ const TaskBluePrintDrawer = ({
                   title={title}
                   description={description}
                   messages={messages}
-                  handleCreateResponsibility={createResponsibilityHandler}
+                  handleCreateTaskBluePrint={createTaskBluePrintHandler}
                   setTitle={setTitle}
                 />
               </Box>
@@ -182,7 +182,7 @@ const TaskBluePrintDrawer = ({
                 }}
               >
                 <TaskBluePrintFlow
-                  responsibility={selectedItem}
+                  taskBluePrint={selectedItem}
                   aiResponse={aiResponse}
                   setAiResponse={setAiResponse}
                 />
@@ -263,7 +263,7 @@ const TaskBluePrintDrawer = ({
                     setSelectedItem={setSelectedItem}
                     onTitleChange={handleTitleChange}
                     onDescriptionChange={handleDescriptionChange}
-                    onCreateResponsibility={handleCreateResponsibility}
+                    onCreateTaskBluePrint={handleCreateTaskBluePrint}
                     onMessagesChange={handleMessagesChange}
                     agentId={agentId}
                   />

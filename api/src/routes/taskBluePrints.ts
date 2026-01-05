@@ -1,11 +1,12 @@
 import { AuthenticationError } from "@canmingir/link-express/error";
-import Responsibility from "../models/Responsibility";
-import ResponsibilitySchema from "../schemas/Responsibility";
+import Colleague from "../models/Colleague";
+import TaskBluePrint from "../models/TaskBluePrint";
+import TaskBluePrintSchema from "../schemas/TaskBluePrint";
 import agent from "../functions/agent";
 import colleague from "../functions/colleague";
 import { event } from "@canmingir/link-express/event/client";
 import express from "express";
-import responsibility from "../functions/responsibility";
+import taskBluePrint from "../functions/taskBluePrint";
 
 const router = express.Router();
 
@@ -16,9 +17,17 @@ router.get("/", async (req, res) => {
     return res.status(400);
   }
 
-  const responsibilities = await Responsibility.findAll();
+  const taskBluePrints = await TaskBluePrint.findAll({
+    include: [
+      {
+        model: Colleague,
+        where: { teamId },
+        attributes: [],
+      },
+    ],
+  });
 
-  res.status(200).json(responsibilities);
+  res.status(200).json(taskBluePrints);
 });
 
 router.get("/:id", async (req, res) => {
@@ -29,16 +38,16 @@ router.get("/:id", async (req, res) => {
     return res.status(400);
   }
 
-  const responsibilityWithNodes = await responsibility.getWithNodes(id);
+  const taskBluePrintWithNodes = await taskBluePrint.getWithNodes(id);
 
-  res.status(200).json(responsibilityWithNodes);
+  res.status(200).json(taskBluePrintWithNodes);
 });
 
-router.put("/:responsibilityId", async (req, res) => {
+router.put("/:taskBluePrintId", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { responsibilityId } = req.params;
+  const { taskBluePrintId } = req.params;
   const { title, description, colleagueId, nodes } =
-    ResponsibilitySchema.upsert.parse(req.body);
+    TaskBluePrintSchema.upsert.parse(req.body);
 
   if (colleagueId) {
     const { teamId: colleagueTeamId } = await colleague.get({
@@ -50,11 +59,11 @@ router.put("/:responsibilityId", async (req, res) => {
     }
   }
 
-  const result = await responsibility.upsert(
+  const result = await taskBluePrint.upsert(
     title,
     description,
     colleagueId,
-    responsibilityId,
+    taskBluePrintId,
     nodes
   );
 
@@ -62,23 +71,23 @@ router.put("/:responsibilityId", async (req, res) => {
     content: result.description,
   });
 
-  await responsibility.patch({
-    responsibilityId,
+  await taskBluePrint.patch({
+    taskBluePrintId,
     pseudocode,
   });
 
-  await event.publish("RESPONSIBILITY_CREATED", {
-    responsibility: { ...result, pseudocode },
+  await event.publish("TASK_BLUE_PRINT_CREATED", {
+    taskBluePrint: { ...result, pseudocode },
   });
 
   res.status(200).json(result);
 });
 
-router.delete("/:responsibilityId", async (req, res) => {
+router.delete("/:taskBluePrintId", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { responsibilityId } = req.params;
+  const { taskBluePrintId } = req.params;
 
-  const { colleagueId } = ResponsibilitySchema.delete.parse(req.body);
+  const { colleagueId } = TaskBluePrintSchema.delete.parse(req.body);
 
   if (colleagueId) {
     const { teamId: colleagueTeamId } = await colleague.get({
@@ -90,9 +99,9 @@ router.delete("/:responsibilityId", async (req, res) => {
     }
   }
 
-  await responsibility.remove({ responsibilityId });
+  await taskBluePrint.remove({ taskBluePrintId });
 
-  res.status(200).json({ message: "Responsibility deleted" });
+  res.status(200).json({ message: "TaskBluePrint deleted" });
 });
 
 export default router;

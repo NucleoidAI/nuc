@@ -3,41 +3,41 @@ import { publish } from "@nucleoidai/react-event";
 import useApi from "./useApi";
 import { useCallback } from "react";
 
-function useIntegrations() {
+function useMCPs() {
   const { Api } = useApi();
 
-  const getIntegrations = useCallback(() => {
-    const { data, loading, error } = Api(() => http.get(`/integrations`), []);
+  const getMCPs = useCallback(() => {
+    const { data, loading, error } = Api(() => http.get(`/mcps`), []);
 
     if (data) {
-      publish("INTEGRATIONS_LOADED", {
-        integrations: data,
+      publish("MCPS_LOADED", {
+        mcps: data,
       });
     }
 
     return {
-      integrations: data,
+      mcps: data,
       loading,
       error,
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getColleagueIntegration = useCallback(
+  const getColleagueMCP = useCallback(
     (colleagueId: string) => {
       const { data, loading, error } = Api(
-        () => http.get(`/integrations?colleagueId=${colleagueId}`),
+        () => http.get(`/mcps?colleagueId=${colleagueId}`),
         [colleagueId]
       );
 
       if (data) {
-        publish("COLLEAGUE_INTEGRATIONS_LOADED", {
-          colleagueIntegrations: data,
+        publish("COLLEAGUE_MCPS_LOADED", {
+          colleagueMCPs: data,
         });
       }
 
       return {
-        colleagueIntegrations: data,
+        colleagueMCPs: data,
         loading,
         error,
       };
@@ -47,9 +47,9 @@ function useIntegrations() {
   );
 
   return {
-    getIntegrations,
-    getColleagueIntegration,
+    getMCPs,
+    getColleagueMCP,
   };
 }
 
-export default useIntegrations;
+export default useMCPs;

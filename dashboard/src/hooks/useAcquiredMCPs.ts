@@ -4,12 +4,12 @@ import { useCallback } from "react";
 
 import { publish, useEvent } from "@nucleoidai/react-event";
 
-export type Integration = {
+export type MCP = {
   id: string;
   refreshToken: string;
 };
 
-export type IntegrationSkill = {
+export type MCPSkill = {
   id: string;
   provider: string;
   title?: string;
@@ -24,20 +24,15 @@ export type IntegrationSkill = {
   };
 };
 
-function useIntegrations() {
+function useAcquiredMCPs() {
   const { Api } = useApi();
 
-  const [authorized] = useEvent("INTEGRATION_UPDATED", null);
+  const [authorized] = useEvent("MCP_UPDATED", null);
 
-  const getTokens = async (
-    code: string,
-    integration,
-    id: string,
-    isTeam: boolean
-  ) => {
+  const getTokens = async (code: string, mcp, id: string, isTeam: boolean) => {
     const payload = {
       authorizationCode: code,
-      mcpId: integration.id,
+      mcpId: mcp.id,
       teamId: isTeam ? id : undefined,
       colleagueId: isTeam ? undefined : id,
     };
@@ -48,7 +43,7 @@ function useIntegrations() {
       payload.colleagueId = id;
     }
 
-    const response = await http.post(`/integrations`, payload);
+    const response = await http.post(`/mcps`, payload);
 
     console.log(response);
 
@@ -57,40 +52,40 @@ function useIntegrations() {
     return response.data;
   };
 
-  const getIntegrations = useCallback(() => {
-    const { data, loading, error } = Api(() => http.get(`/integrations`), []);
+  const getMCPs = useCallback(() => {
+    const { data, loading, error } = Api(() => http.get(`/mcps`), []);
 
-    const integrations: IntegrationSkill[] = data?.content?.integrations ?? [];
+    const mcps: MCPSkill[] = data?.content?.mcps ?? [];
 
     if (data) {
-      publish("INTEGRATIONS_LOADED", {
-        integrations: data,
+      publish("MCPS_LOADED", {
+        mcps: data,
       });
     }
 
     return {
-      integrations,
+      mcps,
       loading,
       error,
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getAcquiredIntegrations = useCallback(
+  const getAcquiredMCPs = useCallback(
     (teamId: string) => {
       const { data, loading, error } = Api(
-        () => http.get(`/integrations?teamId=${teamId}`),
+        () => http.get(`/mcps?teamId=${teamId}`),
         [authorized]
       );
 
       if (data) {
-        publish("ACQUIRED_INTEGRATIONS_LOADED", {
-          acquiredIntegrations: data,
+        publish("ACQUIRED_MCPS_LOADED", {
+          acquiredMCPs: data,
         });
       }
 
       return {
-        acquiredIntegrations: data,
+        acquiredMCPs: data,
         loading,
         error,
       };
@@ -99,21 +94,21 @@ function useIntegrations() {
     []
   );
 
-  const getColleagueAcquiredIntegrations = useCallback(
+  const getColleagueAcquiredMCPs = useCallback(
     (colleagueId: string) => {
       const { data, loading, error } = Api(
-        () => http.get(`/integrations?colleagueId=${colleagueId}`),
+        () => http.get(`/mcps?colleagueId=${colleagueId}`),
         []
       );
 
       if (data) {
-        publish("COLLEAGUE_ACQUIRED_INTEGRATIONS_LOADED", {
-          acquiredIntegrations: data,
+        publish("COLLEAGUE_ACQUIRED_MCPS_LOADED", {
+          acquiredMCPs: data,
         });
       }
 
       return {
-        acquiredIntegrations: data,
+        acquiredMCPs: data,
         loading,
         error,
       };
@@ -123,11 +118,11 @@ function useIntegrations() {
   );
 
   return {
-    getIntegrations,
-    getAcquiredIntegrations,
-    getColleagueAcquiredIntegrations,
+    getMCPs,
+    getAcquiredMCPs,
+    getColleagueAcquiredMCPs,
     getTokens,
   };
 }
 
-export default useIntegrations;
+export default useAcquiredMCPs;

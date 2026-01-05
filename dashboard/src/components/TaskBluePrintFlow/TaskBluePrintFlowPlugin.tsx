@@ -27,7 +27,7 @@ const AddButtonWrapper = styled("div")(({ theme }) => ({
 }));
 
 export const TaskBluePrintFlowPlugin = {
-  id: "responsibilityChart",
+  id: "taskBluePrintChart",
 
   style: ({ style }) => {
     const styleTokens = style || {};

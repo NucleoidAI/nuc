@@ -3,16 +3,16 @@ import { Box } from "@mui/material";
 import { Flow } from "@canmingir/link/platform/components";
 import { TaskBluePrintFlowPlugin } from "./TaskBluePrintFlowPlugin";
 import { buildDefinitionGraph } from "./helper";
-import useResponsibility from "../../hooks/useResponsibility";
+import useTaskBluePrint from "../../hooks/useTaskBluePrint";
 import { v4 as uuid } from "uuid";
 
 import React, { useEffect, useState } from "react";
 
-function TaskBluePrintFlow({ aiResponse, setAiResponse, responsibility }) {
+function TaskBluePrintFlow({ aiResponse, setAiResponse, taskBluePrint }) {
   const [graphData, setGraphData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { getResponsibilityWithNode } = useResponsibility();
-  const { loading } = getResponsibilityWithNode(responsibility?.id);
+  const { getTaskBluePrintWithNode } = useTaskBluePrint();
+  const { loading } = getTaskBluePrintWithNode(taskBluePrint?.id);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedParentNode, setSelectedParentNode] = useState(null);
@@ -25,13 +25,17 @@ function TaskBluePrintFlow({ aiResponse, setAiResponse, responsibility }) {
 
   useEffect(() => {
     if (aiResponse?.flow) {
-      const cleanData = buildDefinitionGraph(aiResponse.flow);
-      setGraphData(cleanData);
-    } else if (responsibility) {
-      const initialData = buildDefinitionGraph(responsibility);
+      if (aiResponse.flow.nodes) {
+        setGraphData(aiResponse.flow);
+      } else {
+        const cleanData = buildDefinitionGraph(aiResponse.flow);
+        setGraphData(cleanData);
+      }
+    } else if (taskBluePrint) {
+      const initialData = buildDefinitionGraph(taskBluePrint);
       setGraphData(initialData);
     }
-  }, [responsibility, aiResponse]);
+  }, [taskBluePrint, aiResponse]);
 
   useEffect(() => {
     if (loading) setIsLoading(false);

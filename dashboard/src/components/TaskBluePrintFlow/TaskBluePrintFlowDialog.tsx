@@ -1,5 +1,5 @@
 import React from "react";
-import ResponsibilityFlow from "./TaskBluePrintFlow";
+import TaskBluePrintFlow from "./TaskBluePrintFlow";
 
 import {
   Button,
@@ -35,9 +35,9 @@ const TaskBluePrintFlowDialog = ({
         }}
       >
         {selectedItem && (
-          <ResponsibilityFlow
+          <TaskBluePrintFlow
             aiResponse={aiResponse}
-            responsibility={selectedItem}
+            taskBluePrint={selectedItem}
             setAiResponse={setAiResponse}
           />
         )}

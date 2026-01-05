@@ -1,0 +1,25 @@
+{
+  "sequence": 14,
+  "seed": [
+    {
+      "id": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+      "taskId": "8c88d077-99f1-482a-8575-879187b11ec9",
+      "action": "PLATFORM:user_interaction",
+      "parameters": {
+        "answer": "123 Main St, Anytown, USA"
+      },
+      "status": "COMPLETED",
+      "createdAt": "2025-01-19T10:34:20.094Z"
+    },
+    {
+      "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+      "taskId": "8c88d077-99f1-482a-8575-879187b11ec9",
+      "action": "TURK_TELEKOM:get_bbk_by_address",
+      "parameters": {
+        "address": "123 Main St, Anytown, USA"
+      },
+      "status": "SUPERVISED_NEEDED",
+      "createdAt": "2025-01-19T10:34:20.094Z"
+    }
+  ]
+}

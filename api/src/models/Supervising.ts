@@ -28,9 +28,26 @@ class Supervising extends Model {
   @Column(DataType.UUID)
   declare conversationId: string;
 
+  @AllowNull(true)
+  @Column(DataType.UUID)
+  declare responsibilityId: string;
+
+  @AllowNull(true)
+  @Column(DataType.UUID)
+  declare taskId: string;
+
+  @AllowNull(true)
+  @Column(DataType.UUID)
+  declare stepId: string;
+
   @AllowNull(false)
   @Column(DataType.STRING(1000))
   declare question: string;
+
+  @AllowNull(false)
+  @IsIn([["KNOWLEDGE", "RESPONSIBILITY"]])
+  @Column(DataType.STRING)
+  declare type: "KNOWLEDGE" | "RESPONSIBILITY";
 
   @AllowNull(true)
   @Column(DataType.STRING(1000))
@@ -56,6 +73,8 @@ class Supervising extends Model {
   declare conversation?: any;
 
   declare colleague?: any;
+
+  declare responsibility?: any;
 }
 
 export default Supervising;

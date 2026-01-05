@@ -617,6 +617,7 @@ async function chat({
         conversationId: conversation.id,
         question: content,
         colleagueId,
+        type: "KNOWLEDGE",
       });
     }
   }

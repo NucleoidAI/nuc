@@ -8,17 +8,23 @@ async function create({
   conversationId,
   question,
   colleagueId,
+  type,
+  responsibilityId,
 }: {
   sessionId: string;
   conversationId?: string;
   question: string;
   colleagueId: string;
+  type: "KNOWLEDGE" | "RESPONSIBILITY";
+  responsibilityId?: string;
 }) {
   const supervising = await Supervising.create({
     sessionId,
     conversationId,
     question,
     colleagueId,
+    type,
+    responsibilityId,
   });
 
   await event.publish("SUPERVISING_RAISED", {
@@ -26,6 +32,8 @@ async function create({
     conversationId,
     question,
     colleagueId,
+    type: type,
+    responsibilityId,
   });
 
   return supervising;

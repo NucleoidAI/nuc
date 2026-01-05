@@ -19,7 +19,7 @@ const ChatInput = memo(function ChatMessageInput({
   replied,
   createMessage,
   userId,
-  responsibilityChat = false,
+  taskBluePrintChat = false,
 }: {
   disabled?: boolean;
   onSendMessage?: (message: string | { command: Event }) => void;
@@ -28,7 +28,7 @@ const ChatInput = memo(function ChatMessageInput({
   replied?: { current: boolean };
   createMessage?: (message: string) => void;
   userId?: string;
-  responsibilityChat?: boolean;
+  taskBluePrintChat?: boolean;
 }) {
   const fileRef = useRef(null);
 
@@ -51,7 +51,7 @@ const ChatInput = memo(function ChatMessageInput({
     async (event) => {
       if (event.key === "Enter") {
         try {
-          if (responsibilityChat) {
+          if (taskBluePrintChat) {
             const message = messageRef.current.trim();
             if (message) {
               onSendMessage(message);
@@ -77,7 +77,7 @@ const ChatInput = memo(function ChatMessageInput({
             onSendMessage(messageRef.current);
           }
 
-          if (!responsibilityChat) {
+          if (!taskBluePrintChat) {
             messageRef.current = "";
           }
         } catch (error) {
@@ -88,7 +88,7 @@ const ChatInput = memo(function ChatMessageInput({
     [onSendMessage]
   );
 
-  const commands = responsibilityChat ? TaskBluePrintCommands : Commands;
+  const commands = taskBluePrintChat ? TaskBluePrintCommands : Commands;
 
   return (
     <>

@@ -2,8 +2,8 @@ import { Iconify } from "@canmingir/link/platform/components";
 import PopChat from "../../components/PopChat";
 import { useEvent } from "@nucleoidai/react-event";
 import { useParams } from "react-router-dom";
-import useResponsibility from "../../hooks/useResponsibility";
 import useSession from "../../hooks/useSession";
+import useTaskBluePrint from "../../hooks/useTaskBluePrint";
 
 import { Badge, Fab } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -26,11 +26,11 @@ const PopupChatWidget = ({
   const { colleagueId } = useParams();
   const [open, setOpen] = useState(false);
   const [unreadMessages, setUnreadMessages] = useState(false);
-  const [selectedResponsibility, setSelectedResponsibility] = useState("");
+  const [selectedTaskBluePrint, setSelectedTaskBluePrint] = useState("");
 
   const { conversations, sendMessage, getSession } = useSession(colleagueId);
-  const { getResponsibility } = useResponsibility();
-  const { responsibility } = getResponsibility();
+  const { getTaskBluePrint } = useTaskBluePrint();
+  const { taskBluePrint } = getTaskBluePrint();
 
   const [aiResponded] = useEvent("AI_RESPONDED", null);
 
@@ -82,11 +82,11 @@ const PopupChatWidget = ({
         readOnly={readOnly}
         selectedConversationId={conversationId || null}
         sound={sound}
-        responsibilities={
-          Array.isArray(responsibility) ? responsibility : [responsibility]
+        taskBluePrints={
+          Array.isArray(taskBluePrint) ? taskBluePrint : [taskBluePrint]
         }
-        selectedResponsibility={selectedResponsibility}
-        onResponsibilityChange={setSelectedResponsibility}
+        selectedTaskBluePrint={selectedTaskBluePrint}
+        onTaskBluePrintChange={setSelectedTaskBluePrint}
         sx={{}}
       />
       {!open && !readOnly && (

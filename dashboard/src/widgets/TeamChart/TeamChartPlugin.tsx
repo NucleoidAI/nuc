@@ -39,15 +39,15 @@ export const teamChartPlugin = {
 
     const isTeam = node.nodeKind === "team";
     const isColleague = node.nodeKind === "colleague";
-    const isResponsibility = node.nodeKind === "responsibility";
+    const isTaskBluePrint = node.nodeKind === "taskBluePrint";
 
     const teamLayout =
       nodeStyle.teamLayout ||
-      (isTeam ? "gradient" : isResponsibility ? "sideStripe" : "media");
+      (isTeam ? "gradient" : isTaskBluePrint ? "sideStripe" : "media");
 
     const onTeamAddAgent = nodeStyle.onTeamAddAgent;
     const onAgentOpen = nodeStyle.onAgentOpen;
-    const onResponsibilityOpen = nodeStyle.onResponsibilityOpen;
+    const onTaskBluePrintOpen = nodeStyle.onTaskBluePrintOpen;
 
     const renderInitialAvatar = () => {
       if (!isColleague) {
@@ -188,7 +188,7 @@ export const teamChartPlugin = {
       );
     }
 
-    if (teamLayout === "sideStripe" && isResponsibility) {
+    if (teamLayout === "sideStripe" && isTaskBluePrint) {
       const stripeWidth = 100;
 
       return (
@@ -213,13 +213,13 @@ export const teamChartPlugin = {
           title={title || node?.name}
           description={node?.description}
           footer={
-            onResponsibilityOpen && (
+            onTaskBluePrintOpen && (
               <Button
                 size="small"
                 variant="outlined"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onResponsibilityOpen(node);
+                  onTaskBluePrintOpen(node);
                 }}
                 sx={{ minWidth: 30, width: 30, height: 30, p: 0 }}
               >

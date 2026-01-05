@@ -2,7 +2,7 @@ import AddIcon from "@mui/icons-material/Add";
 import CommunicationDiagram from "../../components/CommunicationDiagram/CommunicationDiagram";
 import CommunicationWizard from "../CommunicationWizard/CommunicationWizard";
 import useCommunications from "../../hooks/useCommunications";
-import useResponsibility from "../../hooks/useResponsibility";
+import useTaskBluePrint from "../../hooks/useTaskBluePrint";
 
 import { Box, Fab } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -20,8 +20,8 @@ const availableChannels = [
 ];
 
 const Communication = () => {
-  const { getResponsibility } = useResponsibility();
-  const { responsibility: respList, loading, error } = getResponsibility();
+  const { getTaskBluePrint } = useTaskBluePrint();
+  const { taskBluePrint: respList, loading, error } = getTaskBluePrint();
 
   const { getCommunications, createCommunication, deleteCommunication } =
     useCommunications();
@@ -58,7 +58,7 @@ const Communication = () => {
       setConnections(
         communications.map((comm) => ({
           left: `${comm.channelType.toLowerCase()}-${comm.channelCode}`,
-          right: `resp-${comm.responsibilityId}`,
+          right: `resp-${comm.taskBluePrintId}`,
         }))
       );
     }
@@ -81,14 +81,14 @@ const Communication = () => {
     }
   };
 
-  const handleConnect = async (channelId, responsibilityIds) => {
+  const handleConnect = async (channelId, taskBluePrintIds) => {
     const channel = channels.find((c) => c.id === channelId);
     if (channel) {
-      for (const rid of responsibilityIds) {
+      for (const rid of taskBluePrintIds) {
         await createCommunication({
           channelType: channel.type.toUpperCase(),
           channelCode: channel.code,
-          responsibilityId: rid.replace(/^resp-/, ""),
+          taskBluePrintId: rid.replace(/^resp-/, ""),
         });
       }
     }

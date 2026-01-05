@@ -8,7 +8,7 @@ import { storage } from "@nucleoidjs/webstorage";
 import { teamChartPlugin } from "./TeamChartPlugin";
 import useAgents from "../../hooks/useAgents";
 import useOrganizations from "../../hooks/useOrganizations";
-import useResponsibility from "../../hooks/useResponsibility";
+import useTaskBluePrint from "../../hooks/useTaskBluePrint";
 import useTeam from "../../hooks/useTeams";
 
 import { Box, CircularProgress, Stack } from "@mui/material";
@@ -24,8 +24,8 @@ function TeamChart() {
   const { organization, loading } =
     useOrganizations().getOrganizationById(organizationId);
 
-  const { getResponsibility } = useResponsibility();
-  const { responsibility: allResponsibilitiesRaw } = getResponsibility();
+  const { getTaskBluePrint } = useTaskBluePrint();
+  const { taskBluePrint: allTaskBluePrintsRaw } = getTaskBluePrint();
 
   const { createAgent } = useAgents();
 
@@ -40,8 +40,8 @@ function TeamChart() {
   );
 
   const teamTree = useMemo(
-    () => toTeamTree(filteredOrganizations, allResponsibilitiesRaw || []),
-    [filteredOrganizations, allResponsibilitiesRaw]
+    () => toTeamTree(filteredOrganizations, allTaskBluePrintsRaw || []),
+    [filteredOrganizations, allTaskBluePrintsRaw]
   );
 
   const data = teamTree ? treeToLinked(teamTree) : { nodes: {}, roots: [] };
@@ -55,7 +55,7 @@ function TeamChart() {
     | "profile"
     | "knowledge-base"
     | "tasks"
-    | "responsibilities"
+    | "taskBluePrints"
     | "supervisings"
     | "communication"
     | "integrations"
@@ -118,7 +118,7 @@ function TeamChart() {
       ...base,
       onTeamAddAgent: (teamNode) => handleAddAgent(teamNode.id),
       onAgentOpen: (colNode, tab) => handleAgentDrawerOpen(colNode, tab),
-      onResponsibilityOpen: (respNode) => handleDrawerOpen(respNode),
+      onTaskBluePrintOpen: (respNode) => handleDrawerOpen(respNode),
     };
   };
 

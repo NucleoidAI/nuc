@@ -51,7 +51,7 @@ function AgentWizard({ itemProperties, onSubmit, open, onClose, itemToEdit }) {
 
   const stepExp = [
     "Give agent a name and select an avatar that reflects your agent",
-    "Define your agent's description and responsibilities.",
+    "Define your agent's description and taskBluePrints.",
     "Select your agent's engine. this will determine your agent's engine.",
     "Review and confirm the details of your new agent.",
   ];

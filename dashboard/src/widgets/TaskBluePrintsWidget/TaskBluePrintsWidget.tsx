@@ -4,24 +4,24 @@ import TaskBluePrintDrawer from "../../components/TaskBluePrintDrawer/TaskBluePr
 import TaskBluePrintFlowDialog from "../../components/TaskBluePrintFlow/TaskBluePrintFlowDialog";
 import { Theme } from "@mui/material/styles";
 import { useEvent } from "@nucleoidai/react-event";
-import useResponsibility from "../../hooks/useResponsibility";
+import useTaskBluePrint from "../../hooks/useTaskBluePrint";
 
 import { Box, Fab, Stack, useMediaQuery } from "@mui/material";
 import React, { useState } from "react";
 
 function TaskBluePrintsWidget({ agentId }: { agentId: string }) {
-  const [responsibilityUpsertedEvent] = useEvent("RESPONSIBILITY_UPSERTED", {
-    responsibility: null,
+  const [taskBluePrintUpsertedEvent] = useEvent("TASK_BLUE_PRINT_UPSERTED", {
+    taskBluePrint: null,
   });
-  const [responsibilityRemovedEvent] = useEvent("RESPONSIBILITY_REMOVED", {
-    responsibility: null,
+  const [taskBluePrintRemovedEvent] = useEvent("TASK_BLUE_PRINT_REMOVED", {
+    taskBluePrint: null,
   });
 
-  const { getResponsibility, removeResponsibility } = useResponsibility();
+  const { getTaskBluePrint, removeTaskBluePrint } = useTaskBluePrint();
 
-  const { responsibility } = getResponsibility([
-    responsibilityUpsertedEvent.responsibility,
-    responsibilityRemovedEvent.responsibility,
+  const { taskBluePrint } = getTaskBluePrint([
+    taskBluePrintUpsertedEvent.taskBluePrint,
+    taskBluePrintRemovedEvent.taskBluePrint,
   ]);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -63,13 +63,13 @@ function TaskBluePrintsWidget({ agentId }: { agentId: string }) {
     >
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         <Box sx={{ mt: 2 }}>
-          {responsibility?.map((item) => (
+          {taskBluePrint?.map((item) => (
             <TaskBluePrintCard
               key={item.id}
               item={item}
               handleDrawerOpen={handleDrawerOpen}
               handleFlowDialogOpen={handleFlowDialogOpen}
-              removeResponsibility={removeResponsibility}
+              removeTaskBluePrint={removeTaskBluePrint}
               colleagueId={item.colleagueId}
             />
           ))}

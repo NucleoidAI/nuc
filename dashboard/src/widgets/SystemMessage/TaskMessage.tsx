@@ -21,7 +21,7 @@ function TaskMessage({ id, handleClick, onDateFetched }) {
 
   const { getAgent } = useAgent();
 
-  const { agent } = getAgent(task?.colleagueId);
+  const { agent } = getAgent(task?.agentId);
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down(600));

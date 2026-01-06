@@ -13,7 +13,7 @@ function SupervisingMessage({ id, handleClick, onDateFetched }) {
 
   const { getAgent } = useAgent();
 
-  const { agent } = getAgent(supervising?.colleagueId);
+  const { agent } = getAgent(supervising?.agentId);
 
   useEffect(() => {
     if (supervising) {

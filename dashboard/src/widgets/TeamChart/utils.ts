@@ -50,7 +50,7 @@ export const toTeamTree = (teams, taskBluePrints) => {
     coach: team.coach,
     children: (team.colleagues || []).map((c) => {
       const colleagueTaskBluePrints = (taskBluePrints || []).filter(
-        (r) => r.colleagueId === c.id
+        (r) => r.agentId === c.id
       );
 
       return {
@@ -66,7 +66,7 @@ export const toTeamTree = (teams, taskBluePrints) => {
           nodeKind: "taskBluePrint",
           title: r.title,
           description: r.description,
-          colleagueId: r.colleagueId,
+          agentId: r.agentId,
           flowNodes: r.nodes,
         })),
       };

@@ -70,7 +70,7 @@ function TaskBluePrintsWidget({ agentId }: { agentId: string }) {
               handleDrawerOpen={handleDrawerOpen}
               handleFlowDialogOpen={handleFlowDialogOpen}
               removeTaskBluePrint={removeTaskBluePrint}
-              colleagueId={item.colleagueId}
+              agentId={item.agentId}
             />
           ))}
         </Box>

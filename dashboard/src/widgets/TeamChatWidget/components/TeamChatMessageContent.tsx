@@ -23,7 +23,7 @@ const TeamChatMessageContent = memo(function ChatMessageList({
     id: string;
     role: string;
     content: string;
-    colleagueId: string;
+    agentId: string;
     knowledgeId: string;
     createdAt: string;
     userId: string;
@@ -36,7 +36,7 @@ const TeamChatMessageContent = memo(function ChatMessageList({
     id: string;
     role: string;
     content: string;
-    colleagueId: string;
+    agentId: string;
     knowledgeId: string;
     createdAt: string;
     userId: string;

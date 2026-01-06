@@ -6,7 +6,7 @@
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
       "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    CreateOrder(selectedProduct, User.Address)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-      "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
           "id": "76ccda2d-f11f-408c-8087-66c377600d0b",

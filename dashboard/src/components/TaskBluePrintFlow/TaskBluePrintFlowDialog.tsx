@@ -22,6 +22,14 @@ const TaskBluePrintFlowDialog = ({
       onClose={handleFlowDialogClose}
       maxWidth="xl"
       fullWidth
+      PaperProps={{
+        sx: {
+          backgroundColor: (theme) => theme.palette.background.default,
+          backgroundImage: (theme) =>
+            `radial-gradient(${theme.palette.divider} 1px, transparent 1px)`,
+          backgroundSize: "16px 16px",
+        },
+      }}
     >
       <DialogTitle>Flow Chart</DialogTitle>
       <DialogContent

@@ -1,7 +1,6 @@
 import { Iconify } from "@canmingir/link/platform/components";
 import PopChat from "../../components/PopChat";
 import { useEvent } from "@nucleoidai/react-event";
-import { useParams } from "react-router-dom";
 import useSession from "../../hooks/useSession";
 import useTaskBluePrint from "../../hooks/useTaskBluePrint";
 
@@ -15,6 +14,7 @@ const PopupChatWidget = ({
   setOpenPopChat,
   sessionId,
   sound,
+  agentId,
 }: {
   readOnly?: boolean;
   conversationId?: string;
@@ -22,13 +22,13 @@ const PopupChatWidget = ({
   setOpenPopChat?: (open: boolean) => void;
   sessionId?: string;
   sound?: boolean;
+  agentId?: string;
 }) => {
-  const { colleagueId } = useParams();
   const [open, setOpen] = useState(false);
   const [unreadMessages, setUnreadMessages] = useState(false);
   const [selectedTaskBluePrint, setSelectedTaskBluePrint] = useState("");
 
-  const { conversations, sendMessage, getSession } = useSession(colleagueId);
+  const { conversations, sendMessage, getSession } = useSession(agentId);
   const { getTaskBluePrint } = useTaskBluePrint();
   const { taskBluePrint } = getTaskBluePrint();
 

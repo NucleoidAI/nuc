@@ -157,7 +157,7 @@ function AgentLayout({
                 zIndex: 1000,
               }}
             >
-              <PopupChatWidget />
+              <PopupChatWidget agentId={agent.id} />
             </Stack>
           </>
         )}

@@ -29,7 +29,7 @@ class MCP extends Model {
 
   @AllowNull(true)
   @Column(DataType.UUID)
-  declare colleagueId: string | null;
+  declare agentId: string | null;
 
   @AllowNull(true)
   @Column(DataType.UUID)

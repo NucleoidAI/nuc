@@ -26,10 +26,10 @@ async function init() {
 
   // Colleague <-> TaskBluePrint
   models.Colleague.hasMany(models.TaskBluePrint, {
-    foreignKey: "colleagueId",
+    foreignKey: "agentId",
   });
   models.TaskBluePrint.belongsTo(models.Colleague, {
-    foreignKey: "colleagueId",
+    foreignKey: "agentId",
   });
 
   // AIEngine <-> Colleague
@@ -50,7 +50,7 @@ async function init() {
 
   // Message <-> Colleague
   models.Message.belongsTo(models.Colleague, {
-    foreignKey: "colleagueId",
+    foreignKey: "agentId",
   });
 
   // MCP <-> Project (many-to-many)
@@ -65,7 +65,7 @@ async function init() {
 
   // MCP <-> Colleague
   models.MCP.belongsTo(models.Colleague, {
-    foreignKey: "colleagueId",
+    foreignKey: "agentId",
   });
 
   // MCP <-> Project (belongsTo)
@@ -79,7 +79,7 @@ async function init() {
   });
 
   models.ColleagueKnowledge.belongsTo(models.Colleague, {
-    foreignKey: "colleagueId",
+    foreignKey: "agentId",
   });
 
   models.Project.belongsToMany(models.Colleague, {
@@ -89,11 +89,11 @@ async function init() {
 
   models.Colleague.belongsToMany(models.Project, {
     through: models.ColleagueKnowledge,
-    foreignKey: "colleagueId",
+    foreignKey: "agentId",
   });
 
   models.Colleague.hasMany(models.ColleagueKnowledge, {
-    foreignKey: "colleagueId",
+    foreignKey: "agentId",
   });
 
   // Knowledge <-> ColleagueKnowledge
@@ -146,10 +146,10 @@ async function init() {
     foreignKey: "conversationId",
   });
   models.Supervising.belongsTo(models.Colleague, {
-    foreignKey: "colleagueId",
+    foreignKey: "agentId",
   });
   models.Colleague.hasMany(models.Supervising, {
-    foreignKey: "colleagueId",
+    foreignKey: "agentId",
   });
 
   // Conversation <-> Session
@@ -160,11 +160,11 @@ async function init() {
 
   // Task <-> Colleague
   models.Task.belongsTo(models.Colleague, {
-    foreignKey: "colleagueId",
+    foreignKey: "agentId",
     onDelete: "CASCADE",
   });
   models.Colleague.hasMany(models.Task, {
-    foreignKey: "colleagueId",
+    foreignKey: "agentId",
     onDelete: "CASCADE",
   });
 
@@ -194,9 +194,9 @@ async function init() {
   });
 
   models.Colleague.addHook("beforeDestroy", async (colleague: any) => {
-    await models.Supervising.destroy({ where: { colleagueId: colleague.id } });
+    await models.Supervising.destroy({ where: { agentId: colleague.id } });
     await models.ColleagueKnowledge.destroy({
-      where: { colleagueId: colleague.id },
+      where: { agentId: colleague.id },
     });
   });
 

@@ -44,7 +44,7 @@ class Supervising extends Model {
 
   @AllowNull(false)
   @Column(DataType.UUID)
-  declare colleagueId: string;
+  declare agentId: string;
 
   @AllowNull(false)
   @Default(DataType.NOW)

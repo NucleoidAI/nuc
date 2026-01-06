@@ -3,7 +3,7 @@
   "type": "QA",
   "question": "How are you today?",
   "answer": "Nice, thank you!",
-  "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+  "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
   "status": "COMPLETED",
   "createdAt": 1721294337
 }

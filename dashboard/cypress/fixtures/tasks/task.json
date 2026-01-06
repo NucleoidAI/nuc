@@ -5,13 +5,13 @@
     "status": "IN_PROGRESS",
     "commandId": "4645db00-2b33-447f-a997-493c11459564",
     "createdAt": "2021-06-01T00:00:00.000Z",
-    "colleagueId": "72ef5b08-b4a9-42b7-bb0a-22d40e56798b"
+    "agentId": "72ef5b08-b4a9-42b7-bb0a-22d40e56798b"
   },
   {
     "id": "49590ebb-925c-4dc2-91bf-8dd993757e00",
     "description": "Order napoli coffee bean from our provider?",
     "status": "IN_PROGRESS",
     "createdAt": "2025-01-21T07:38:56.182Z",
-    "colleagueId": "72ef5b08-b4a9-42b7-bb0a-22d40e56798b"
+    "agentId": "72ef5b08-b4a9-42b7-bb0a-22d40e56798b"
   }
 ]

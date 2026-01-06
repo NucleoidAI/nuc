@@ -62,7 +62,7 @@ describe("Colleague page", () => {
 
     cy.intercept(
       "GET",
-      `/api/knowledge?colleagueId=00db1bd4-4829-40f2-8b99-d2e42342157e`,
+      `/api/knowledge?agentId=00db1bd4-4829-40f2-8b99-d2e42342157e`,
       {
         fixture: "knowledges/knowledges.json",
       }
@@ -108,7 +108,7 @@ describe("Colleague page", () => {
     cy.intercept("GET", `/api/colleagues/${this.colleague.id}`, this.colleague);
     cy.intercept(
       "GET",
-      `/api/knowledge?colleagueId=${this.colleague.id}`,
+      `/api/knowledge?agentId=${this.colleague.id}`,
       this.knowledges
     );
 
@@ -130,7 +130,7 @@ describe("Colleague page", () => {
     cy.intercept("POST", `/api/knowledge`, this.knowledgesUrl);
     cy.intercept(
       "GET",
-      `/api/knowledge?colleagueId=${this.colleague.id}`,
+      `/api/knowledge?agentId=${this.colleague.id}`,
       this.knowledgesPost
     );
 
@@ -165,7 +165,7 @@ describe("Colleague page", () => {
     cy.intercept("POST", `/api/knowledge`, this.knowledgesText);
     cy.intercept(
       "GET",
-      `/api/knowledge?colleagueId=${this.colleague.id}`,
+      `/api/knowledge?agentId=${this.colleague.id}`,
       this.knowledgesPost
     );
 
@@ -200,7 +200,7 @@ describe("Colleague page", () => {
     cy.intercept("POST", `/api/knowledge`, this.knowledgesQA);
     cy.intercept(
       "GET",
-      `/api/knowledge?colleagueId=${this.colleague.id}`,
+      `/api/knowledge?agentId=${this.colleague.id}`,
       this.knowledgesPost
     );
 
@@ -220,7 +220,7 @@ describe("Colleague page", () => {
 
     cy.intercept(
       "GET",
-      `/api/knowledge?colleagueId=${this.colleague.id}`,
+      `/api/knowledge?agentId=${this.colleague.id}`,
       this.knowledgesDelete
     );
 
@@ -240,7 +240,7 @@ describe("Colleague page", () => {
 
     cy.intercept(
       "GET",
-      `/api/knowledge?colleagueId=${this.colleague.id}`,
+      `/api/knowledge?agentId=${this.colleague.id}`,
       this.knowledges
     );
 
@@ -262,7 +262,7 @@ describe("Colleague page", () => {
 
     cy.intercept(
       "GET",
-      `/api/knowledge?colleagueId=${this.colleague.id}`,
+      `/api/knowledge?agentId=${this.colleague.id}`,
       this.knowledgesDelete
     );
 
@@ -282,7 +282,7 @@ describe("Colleague page", () => {
 
     cy.intercept(
       "GET",
-      `/api/knowledge?colleagueId=${this.colleague.id}`,
+      `/api/knowledge?agentId=${this.colleague.id}`,
       this.knowledges
     );
 
@@ -304,7 +304,7 @@ describe("Colleague page", () => {
 
     cy.intercept(
       "GET",
-      `/api/knowledge?colleagueId=${this.colleague.id}`,
+      `/api/knowledge?agentId=${this.colleague.id}`,
       this.knowledgesDelete
     );
 
@@ -324,7 +324,7 @@ describe("Colleague page", () => {
 
     cy.intercept(
       "GET",
-      `/api/knowledge?colleagueId=${this.colleague.id}`,
+      `/api/knowledge?agentId=${this.colleague.id}`,
       this.knowledges
     );
 
@@ -411,7 +411,7 @@ describe("Colleague page", () => {
 
     cy.intercept("GET", `/api/colleagues/${this.colleague.id}`, this.colleague);
 
-    cy.intercept("GET", `/api/tasks?colleagueId=${this.colleague.id}`, {
+    cy.intercept("GET", `/api/tasks?agentId=${this.colleague.id}`, {
       fixture: "tasks/task.single.json",
     });
 
@@ -427,7 +427,7 @@ describe("Colleague page", () => {
       fixture: "tasks/task.single.json",
     });
 
-    cy.intercept("GET", `/api/tasks?colleagueId=${this.colleague.id}`, {
+    cy.intercept("GET", `/api/tasks?agentId=${this.colleague.id}`, {
       fixture: "tasks/task.json",
     });
 
@@ -443,7 +443,7 @@ describe("Colleague page", () => {
 
     cy.intercept("GET", `/api/colleagues/${this.colleague.id}`, this.colleague);
 
-    cy.intercept("GET", `/api/tasks?colleagueId=${this.colleague.id}`, {
+    cy.intercept("GET", `/api/tasks?agentId=${this.colleague.id}`, {
       fixture: "tasks/task.single.json",
     });
 

@@ -14,6 +14,7 @@ import organizations from "./routes/organizations";
 import projects from "./routes/projects";
 import responsibilities from "./routes/responsibilities";
 import responsibilityFn from "./functions/responsibility";
+import taskFn from "./functions/task";
 import sessions from "./routes/sessions";
 import statistics from "./routes/statistics";
 import supervisings from "./routes/supervisings";
@@ -96,6 +97,28 @@ function createApp() {
       comment: string;
     }>("STEP_ADDED", ({ stepId, action, parameters, comment }) =>
       agent.step({ stepId, action, parameters, comment })
+    );
+
+    await event.subscribe<{ taskId: string }>(
+      "TASK_RESPONSIBILITY_UPDATED",
+      async ({ taskId }) => {
+        await agent.task({ taskId });
+
+        const steps = await taskFn.listSteps({ taskId });
+
+        const supervisedStep = steps.find(
+          (step) => step.status === "SUPERVISED_NEEDED"
+        );
+
+        if (supervisedStep) {
+          agent.step({
+            stepId: supervisedStep.id,
+            action: "SUPERVISOR_RESPONDED",
+            parameters: supervisedStep.parameters,
+            comment: supervisedStep.comment,
+          });
+        }
+      }
     );
 
     await event.subscribe<{ taskId: string }>("STEP_COMPLETED", ({ taskId }) =>

@@ -44,11 +44,6 @@ class Supervising extends Model {
   @Column(DataType.STRING(1000))
   declare question: string;
 
-  @AllowNull(false)
-  @IsIn([["KNOWLEDGE", "RESPONSIBILITY"]])
-  @Column(DataType.STRING)
-  declare type: "KNOWLEDGE" | "RESPONSIBILITY";
-
   @AllowNull(true)
   @Column(DataType.STRING(1000))
   declare answer: string | null;

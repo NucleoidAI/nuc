@@ -8,16 +8,18 @@ async function run({
     colleagueId: string;
     question: string;
     responsibilityId?: string;
+    taskId?: string;
   };
 }) {
-  const { sessionId, colleagueId, question, responsibilityId } = parameters;
+  const { sessionId, colleagueId, question, responsibilityId, taskId } =
+    parameters;
 
   return await supervising.create({
     sessionId,
     question,
     colleagueId,
-    type: "RESPONSIBILITY",
     responsibilityId,
+    taskId,
   });
 }
 

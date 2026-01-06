@@ -11,7 +11,6 @@ const Supervising = {
     colleagueId: Joi.string()
       .guid({ version: ["uuidv4"] })
       .required(),
-    type: Joi.string().valid("KNOWLEDGE", "RESPONSIBILITY").required(),
     responsibilityId: Joi.string()
       .guid({ version: ["uuidv4"] })
       .optional(),

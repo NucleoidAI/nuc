@@ -20,6 +20,7 @@ const ResponsibilityDrawer = ({
   setAiResponse,
   aiResponse,
   setSelectedItem,
+  taskId,
 }: {
   drawerOpen: boolean;
   handleDrawerClose: () => void;
@@ -38,7 +39,9 @@ const ResponsibilityDrawer = ({
     description: string;
     colleagueId: string;
   }) => void;
+  taskId?: string;
 }) => {
+  console.log("responsibility", selectedItem);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isTablet = useMediaQuery(theme.breakpoints.down("md"));
@@ -230,6 +233,7 @@ const ResponsibilityDrawer = ({
                   onDescriptionChange={handleDescriptionChange}
                   onCreateResponsibility={handleCreateResponsibility}
                   onMessagesChange={handleMessagesChange}
+                  taskId={taskId}
                 />
               </Box>
             </Box>

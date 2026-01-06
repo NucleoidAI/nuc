@@ -19,6 +19,7 @@ function ResponsibilityChat({
   onDescriptionChange,
   onCreateResponsibility,
   onMessagesChange,
+  taskId,
 }) {
   const { colleagueId } = useParams();
   const [loading, setLoading] = useState(false);
@@ -83,11 +84,11 @@ function ResponsibilityChat({
 
         const history = [
           ...messages,
-          ...(aiResponse?.flow
+          ...(aiResponse?.flow || responsibilityNodes
             ? [
                 {
                   content: JSON.stringify(
-                    aiResponse.flow || responsibilityNodes
+                    aiResponse?.flow || responsibilityNodes
                   ),
                   role: "assistant",
                 },
@@ -95,6 +96,8 @@ function ResponsibilityChat({
             : []),
           { content: parsedMessage, role: "user" },
         ];
+
+        console.log("history", history);
 
         const { data } = await http.post("/colleagues/responsibilities", {
           history,
@@ -109,16 +112,26 @@ function ResponsibilityChat({
           }
         );
 
-        if (onTitleChange) onTitleChange(responsibilityNameData.title);
+        if (onTitleChange)
+          onTitleChange(
+            responsibilityNameData.title ||
+              responsibilityNameData?.train[0]?.title
+          );
         if (onDescriptionChange)
-          onDescriptionChange(responsibilityNameData.description);
+          onDescriptionChange(
+            responsibilityNameData.description ||
+              responsibilityNameData?.train[0]?.description
+          );
 
         const response = await upsertResponsibility(
           selectedItem?.id,
-          responsibilityNameData.title,
-          responsibilityNameData.description,
+          responsibilityNameData.title ||
+            responsibilityNameData?.train[0]?.title,
+          responsibilityNameData.description ||
+            responsibilityNameData?.train[0]?.description,
           colleagueId,
-          data?.flow
+          data?.flow,
+          taskId
         );
 
         setSelectedItem(response.responsibility);

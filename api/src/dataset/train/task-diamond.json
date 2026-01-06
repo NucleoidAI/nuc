@@ -187,7 +187,7 @@
     "id": "1dcgcfde-6f1e-5a35-c6ge-7ef373396a47",
     "description": "Setup internet subscription at user's address.",
     "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
-    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "pseudocode": "BEGIN_CONTEXT \nUser.Address = GetUserAddress()\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "responsibility": {
       "id": "ca7g8022-f343-570e-a171-3992963g7f70",
       "title": "Basic Internet Subscription Setup",
@@ -195,6 +195,17 @@
       "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
+        {
+          "id": "019b9433-3de3-7545-a40a-854419ae8be1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "label": "Get User Address",
+            "icon": "mdi:map-marker"
+          },
+          "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
         {
           "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
           "type": "NORMAL",
@@ -308,22 +319,7 @@
         }
       ]
     },
-    "knowledge": [
-      {
-        "id": "77g3f3f1-ee92-5b2d-a585-190669c54195",
-        "type": "TEXT",
-        "text": "User's address is 123 Main Street, Istanbul",
-        "status": "COMPLETED",
-        "createdAt": "1970-01-20T22:08:14.337Z"
-      },
-      {
-        "id": "85f693ge-a291-5gc9-a47b-438535bd7c88",
-        "type": "TEXT",
-        "text": "User wants 100 Mbps internet speed",
-        "status": "COMPLETED",
-        "createdAt": "1970-01-20T22:08:14.337Z"
-      }
-    ],
+    "knowledge": [],
     "steps": [
       {
         "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
@@ -886,6 +882,246 @@
         "status": "COMPLETED",
         "parameters": {},
         "comment": "Completing task - pending committee decision"
+      }
+    ]
+  },
+  {
+    "id": "5hgkigij-0j5i-9e79-g0ki-bji7b7730e8b",
+    "description": "Handle address lookup failure and connect to support service.",
+    "sessionId": "019f0ib9-ce4b-b6j6-ceij-c6gh22j0fbgg",
+    "pseudocode": "BEGIN_CONTEXT\nUser.Address = GetUserAddress()\naddressResult = ValidateAddress(User.Address)\nIF addressResult.Found == FALSE THEN\n    UserRequest = WaitForUserInput()\n    IF UserRequest == 'CALL_SUPPORT' THEN\n        Support.InitiateCall(User.Phone)\n    END_IF\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "responsibility": {
+      "id": "ge1k2466-j787-9b4i-e5b5-7dd6d07k1j14",
+      "title": "Address Validation and Support Escalation",
+      "description": "Validate user address and escalate to support service when address cannot be found.",
+      "colleagueId": "44hf5fh8-8c63-84j6-cfdd-h6i786786591i",
+      "nodes": [
+        {
+          "id": "b0gghe6h-j55j-842g-c4cb-00g7bb044h4f",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "label": "Get User Address",
+            "icon": "mdi:map-marker"
+          },
+          "next": ["95hge739-5hc4-8fef-677hi2g5d64b"],
+          "createdAt": "2025-06-23T11:00:00Z"
+        },
+        {
+          "id": "95hge739-5hc4-8fef-677hi2g5d64b",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ADDRESS_SERVICE:validate_address",
+            "label": "Validate Address",
+            "icon": "mdi:check-circle"
+          },
+          "next": ["019d31a8-4cc8-8732-d444-88757g72fh5d"],
+          "createdAt": "2025-06-23T11:00:00Z"
+        },
+        {
+          "id": "019d31a8-4cc8-8732-d444-88757g72fh5d",
+          "type": "CONDITION",
+          "properties": {
+            "action": "PLATFORM:decision",
+            "label": "Check Address Found",
+            "icon": "mdi:decision"
+          },
+          "true": ["246eh66a-ghgg-6h2h-b32g-g3g65cac0694"],
+          "false": ["019d31b9-5dd9-9843-e555-99868h83gi6e"],
+          "createdAt": "2025-06-23T11:00:00Z"
+        },
+        {
+          "id": "019d31b9-5dd9-9843-e555-99868h83gi6e",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "label": "Ask User Preference",
+            "icon": "mdi:account-question"
+          },
+          "next": ["019d31ca-6eea-0954-f666-00979i94hj7f"],
+          "createdAt": "2025-06-23T11:00:00Z"
+        },
+        {
+          "id": "019d31ca-6eea-0954-f666-00979i94hj7f",
+          "type": "CONDITION",
+          "properties": {
+            "action": "PLATFORM:decision",
+            "label": "Check if User Wants Support Call",
+            "icon": "mdi:decision"
+          },
+          "true": ["357fi77b-higg-7i3i-c43h-h4h76dbd1705"],
+          "false": ["019d31db-7ffb-1065-g777-11080j05ik8g"],
+          "createdAt": "2025-06-23T11:00:00Z"
+        },
+        {
+          "id": "357fi77b-higg-7i3i-c43h-h4h76dbd1705",
+          "type": "NORMAL",
+          "properties": {
+            "action": "SUPPORT:initiate_call",
+            "label": "Connect to Support",
+            "icon": "mdi:phone"
+          },
+          "next": ["019d31db-7ffb-1065-g777-11080j05ik8g"],
+          "createdAt": "2025-06-23T11:00:00Z"
+        },
+        {
+          "id": "019d31db-7ffb-1065-g777-11080j05ik8g",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "label": "Complete",
+            "icon": "mdi:check"
+          },
+          "next": null,
+          "createdAt": "2025-06-23T11:00:00Z"
+        }
+      ]
+    },
+    "knowledge": [
+      {
+        "id": "bbk7j7j5-ii36-9f6h-e9c9-5d40a3g98539",
+        "type": "TEXT",
+        "text": "Support service hotline is 444 1 234",
+        "status": "COMPLETED",
+        "createdAt": "1970-01-20T22:08:14.337Z"
+      },
+      {
+        "id": "cck8k8k6-jj47-0g7i-f0d0-6e51b4h09640",
+        "type": "TEXT",
+        "text": "Support service operating hours are 08:00-22:00 every day",
+        "status": "COMPLETED",
+        "createdAt": "1970-01-20T22:08:14.337Z"
+      },
+      {
+        "id": "ddl9l9l7-kk58-1h8j-g1e1-7f62c5i10751",
+        "type": "TEXT",
+        "text": "Average wait time for support call is 3-5 minutes",
+        "status": "COMPLETED",
+        "createdAt": "1970-01-20T22:08:14.337Z"
+      }
+    ],
+    "steps": [
+      {
+        "taskId": "f22kk6b2-h9k7-99ih-e4kd-j4kb90b27991",
+        "action": "PLATFORM:user_interaction",
+        "status": "COMPLETED",
+        "parameters": {
+          "answer": "Cumhuriyet Mahallesi, No: 45, Izmir"
+        },
+        "comment": "User provided address"
+      },
+      {
+        "taskId": "f22kk6b2-h9k7-99ih-e4kd-j4kb90b27991",
+        "action": "ADDRESS_SERVICE:validate_address",
+        "status": "COMPLETED",
+        "parameters": {
+          "address": "Cumhuriyet Mahallesi, No: 45, Izmir"
+        },
+        "result": {
+          "found": false,
+          "errorCode": "ADDRESS_NOT_FOUND",
+          "message": "Address could not be located in the system"
+        },
+        "comment": "Validating user address"
+      },
+      {
+        "taskId": "f22kk6b2-h9k7-99ih-e4kd-j4kb90b27991",
+        "action": "PLATFORM:decision",
+        "status": "COMPLETED",
+        "comment": "Checking if address was found",
+        "parameters": {
+          "condition": "addressResult.Found == TRUE",
+          "result": false
+        }
+      },
+      {
+        "taskId": "f22kk6b2-h9k7-99ih-e4kd-j4kb90b27991",
+        "action": "PLATFORM:user_interaction",
+        "status": "COMPLETED",
+        "parameters": {
+          "question": "Your address could not be found in our system. Would you like to: (1) Enter a different address, (2) Call support service for assistance?",
+          "answer": "CALL_SUPPORT"
+        },
+        "comment": "User chose to call support service"
+      },
+      {
+        "taskId": "f22kk6b2-h9k7-99ih-e4kd-j4kb90b27991",
+        "action": "PLATFORM:decision",
+        "status": "COMPLETED",
+        "comment": "Checking user preference",
+        "parameters": {
+          "condition": "userChoice == 'CALL_SUPPORT'",
+          "result": true
+        }
+      },
+      {
+        "taskId": "f22kk6b2-h9k7-99ih-e4kd-j4kb90b27991",
+        "action": "SUPPORT:get_user_phone",
+        "status": "COMPLETED",
+        "parameters": {
+          "userId": "USR-567890"
+        },
+        "result": {
+          "phone": "+90 532 123 4567"
+        },
+        "comment": "Retrieving user phone number"
+      },
+      {
+        "taskId": "f22kk6b2-h9k7-99ih-e4kd-j4kb90b27991",
+        "action": "SUPPORT:check_availability",
+        "status": "COMPLETED",
+        "parameters": {
+          "serviceType": "address_support"
+        },
+        "result": {
+          "available": true,
+          "estimatedWaitTime": "4 minutes",
+          "agentsOnline": 12
+        },
+        "comment": "Checking support service availability"
+      },
+      {
+        "taskId": "f22kk6b2-h9k7-99ih-e4kd-j4kb90b27991",
+        "action": "SUPPORT:initiate_call",
+        "status": "COMPLETED",
+        "parameters": {
+          "userPhone": "+90 532 123 4567",
+          "callbackRequested": true,
+          "issueType": "ADDRESS_NOT_FOUND",
+          "context": {
+            "attemptedAddress": "Cumhuriyet Mahallesi, No: 45, Izmir",
+            "userId": "USR-567890",
+            "sessionId": "019f0ib9-ce4b-b6j6-ceij-c6gh22j0fbgg"
+          }
+        },
+        "result": {
+          "callId": "CALL-20250623-78901",
+          "status": "QUEUED",
+          "position": 3,
+          "estimatedCallback": "4 minutes"
+        },
+        "comment": "Initiating support call"
+      },
+      {
+        "taskId": "f22kk6b2-h9k7-99ih-e4kd-j4kb90b27991",
+        "action": "PLATFORM:send_notification",
+        "status": "COMPLETED",
+        "parameters": {
+          "type": "SMS",
+          "to": "+90 532 123 4567",
+          "message": "Your support request has been received. A support agent will call you within 4 minutes. Reference: CALL-20250623-78901"
+        },
+        "comment": "Sending confirmation SMS to user"
+      },
+      {
+        "taskId": "f22kk6b2-h9k7-99ih-e4kd-j4kb90b27991",
+        "action": "PLATFORM:complete",
+        "status": "COMPLETED",
+        "parameters": {
+          "resolution": "ESCALATED_TO_SUPPORT",
+          "callReference": "CALL-20250623-78901"
+        },
+        "comment": "Completing task - user connected to support queue"
       }
     ]
   }

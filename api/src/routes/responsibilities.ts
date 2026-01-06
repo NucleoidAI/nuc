@@ -3,7 +3,7 @@ import Responsibility from "../models/Responsibility";
 import ResponsibilitySchema from "../schemas/Responsibility";
 import agent from "../functions/agent";
 import colleague from "../functions/colleague";
-import { event } from "node-event-test-package/client";
+import { event } from "@canmingir/link-express/event/client";
 import express from "express";
 import responsibility from "../functions/responsibility";
 
@@ -37,7 +37,7 @@ router.get("/:id", async (req, res) => {
 router.put("/:responsibilityId", async (req, res) => {
   const { projectId: teamId } = req.session;
   const { responsibilityId } = req.params;
-  const { title, description, colleagueId, nodes } =
+  const { title, description, colleagueId, nodes, taskId } =
     ResponsibilitySchema.upsert.parse(req.body);
 
   if (colleagueId) {
@@ -70,6 +70,13 @@ router.put("/:responsibilityId", async (req, res) => {
   await event.publish("RESPONSIBILITY_CREATED", {
     responsibility: { ...result, pseudocode },
   });
+
+  if (taskId) {
+    await event.publish("TASK_RESPONSIBILITY_UPDATED", {
+      taskId,
+      responsibilityId,
+    });
+  }
 
   res.status(200).json(result);
 });

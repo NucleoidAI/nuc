@@ -159,9 +159,11 @@ async function teamChat({
 }
 
 async function task({ taskId }: { taskId: string }) {
-  const { colleagueId, description, sessionId } = await taskFn.get({ taskId });
+  const { colleagueId, description, sessionId, responsibilityId } =
+    await taskFn.get({ taskId });
   const currentTask = {
     description,
+    responsibilityId,
     steps: await taskFn.listSteps({ taskId }),
   };
 
@@ -215,6 +217,8 @@ async function task({ taskId }: { taskId: string }) {
     action === "PLATFORM:user_interaction" ||
     action === "PLATFORM:ask_supervisor"
   ) {
+    parameters.taskId = taskId;
+    parameters.responsibilityId = currentTask.responsibilityId;
     parameters.sessionId = sessionId;
     parameters.colleagueId = colleagueId;
     return await taskFn.addStep({
@@ -252,6 +256,8 @@ async function step({
     actionType = "SUPERVISED";
   } else if (action === "PLATFORM:user_interaction") {
     actionType = "INTERACTION";
+  } else if (action === "SUPERVISOR_RESPONDED") {
+    actionType = "SUPERVISED_RESPONDED";
   } else {
     actionType = "ACTION";
   }
@@ -322,7 +328,7 @@ async function step({
     } else {
       await taskFn.updateStep({
         stepId,
-        result: resultString,
+        result: resultString || "Completed",
         status: result && result.isError ? "FAILED" : "COMPLETED",
       });
     }
@@ -616,8 +622,8 @@ async function chat({
         sessionId,
         conversationId: conversation.id,
         question: content,
+        responsibilityId: responsibilityDecision.responsibilityId,
         colleagueId,
-        type: "KNOWLEDGE",
       });
     }
   }

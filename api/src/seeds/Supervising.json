@@ -22,20 +22,6 @@
       "status": "IN_PROGRESS",
       "type": "KNOWLEDGE",
       "question": "What time do you close?"
-    },
-    {
-      "id": "0188a20a-6430-441c-a56b-a0b1c2d3e4f5",
-      "conversationId": "93dcd933-9bd8-45c0-b347-2dc12a0b2658",
-      "sessionId": "b605ad87-fe47-4dc8-b1cd-23d783c0a547",
-      "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "answer": null,
-      "createdAt": "2023-08-06T12:00:00.000Z",
-      "status": "IN_PROGRESS",
-      "type": "RESPONSIBILITY",
-      "question": "Step failed what should I do?",
-      "responsibilityId": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "taskId": "8c88d077-99f1-482a-8575-879187b11ec9",
-      "nodeId": "51dca395-1d90-4a28-9bbc-233de9c1a207"
     }
   ]
 }

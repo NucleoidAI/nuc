@@ -17,7 +17,7 @@ export type Colleague = {
 
 export type Session = {
   id: string;
-  colleagueId: string;
+  agentId: string;
 };
 
 const setup = async (io: Server) => {
@@ -29,12 +29,12 @@ const setup = async (io: Server) => {
       console.log("New socket connection:", socket.id);
 
       let token;
-      let colleagueId;
+      let agentId;
       let decoded;
 
       if (env !== "TEST") {
         token = socket.handshake.auth.token;
-        colleagueId = socket.handshake.query.colleagueId as string;
+        agentId = socket.handshake.query.agentId as string;
 
         const jwtSecret = process.env.JWT_SECRET;
 
@@ -50,18 +50,18 @@ const setup = async (io: Server) => {
           );
         }
       } else {
-        colleagueId = process.env.COLLEAGUE_ID;
+        agentId = process.env.COLLEAGUE_ID;
         decoded = {
           aud: process.env.PROJECT_ID,
         };
       }
 
-      console.log("Colleague ID:", colleagueId);
+      console.log("Colleague ID:", agentId);
       console.log("Token:", token);
       console.log("Decoded:", decoded);
 
-      const session: Session = await createSession(token, colleagueId);
-      const colleague: Colleague = await getColleague(token, colleagueId);
+      const session: Session = await createSession(token, agentId);
+      const colleague: Colleague = await getColleague(token, agentId);
 
       console.log("Session:", session);
       console.log("Colleague:", colleague);

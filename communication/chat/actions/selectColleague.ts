@@ -8,7 +8,7 @@ const selectColleague = async ({ action, ack, body, say }) => {
 
   storage.set("selectedColleagueId", selectedColleagueId);
   const session = chat.get(userId);
-  chat.set(userId, { ...session, colleagueId: selectedColleagueId });
+  chat.set(userId, { ...session, agentId: selectedColleagueId });
 
   let messageText = "You can start chatting now.";
   if (session.source === "renew") {

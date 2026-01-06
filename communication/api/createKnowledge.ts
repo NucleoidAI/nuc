@@ -3,11 +3,11 @@ import http from "../http";
 const createKnowledge = async (
   session,
   learnType,
-  colleagueId,
+  agentId,
   learningInfo
 ) => {
-  let body = { colleagueId, type: learnType } as { 
-    colleagueId: string; 
+  let body = { agentId, type: learnType } as { 
+    agentId: string; 
     type: string; 
     url?: string; 
     answer?: string; 

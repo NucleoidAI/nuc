@@ -16,7 +16,7 @@ const submitLearnInfo = async ({ body, ack, client }) => {
     .split("*")[0]
     .trim();
 
-  const colleagueId = body.message.metadata.event_payload.colleagueId;
+  const agentId = body.message.metadata.event_payload.agentId;
 
   let learningInfo:
     | string
@@ -40,7 +40,7 @@ const submitLearnInfo = async ({ body, ack, client }) => {
   }
 
   try {
-    await createKnowledge(session, learnType, colleagueId, learningInfo);
+    await createKnowledge(session, learnType, agentId, learningInfo);
 
     const successMessage = `Learning Submission Successful! Colleague: ${colleague}, Type: ${learnType}, Information Provided: ${learningInfo}`;
 

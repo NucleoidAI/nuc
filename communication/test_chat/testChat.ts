@@ -27,20 +27,20 @@ router.post("/", async (req, res) => {
         .json({ error: "Invalid Authorization Bearer token" });
     }
 
-    const colleagueId = process.env.COLLEAGUE_ID;
+    const agentId = process.env.COLLEAGUE_ID;
     const decoded = { aud: process.env.PROJECT_ID };
 
-    if (!colleagueId) {
-      return res.status(400).json({ error: "Missing colleagueId" });
+    if (!agentId) {
+      return res.status(400).json({ error: "Missing agentId" });
     }
 
     stringResponse = "Creating session...";
 
-    const sessionData = await createSession(token, colleagueId);
+    const sessionData = await createSession(token, agentId);
     stringResponse = "Session created";
 
     stringResponse = "Getting colleague...";
-    const colleague = await getColleague(token, colleagueId);
+    const colleague = await getColleague(token, agentId);
     stringResponse = "Colleague found";
 
     if (!colleague || colleague.teamId !== decoded?.aud) {

@@ -8,7 +8,7 @@
       "title": "Product Order",
       "description": "Check product availability, if not exist, create order.",
       "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n    Order.Create()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-      "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
           "id": "76ccda2d-f11f-408c-8087-66c377600d0b",

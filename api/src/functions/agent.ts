@@ -422,7 +422,7 @@ async function taskBluePrintDiamond({
     context,
     content,
     json_format:
-      "{ decision: <DECISION>,existing: <EXISTING>,taskBluePrintId: <taskBluePrint_ID> }",
+      "{ decision: <DECISION>,existing: <EXISTING>,taskBluePrintId: <TASKBLUEPRINT_ID> }",
   });
   return response;
 }
@@ -526,7 +526,7 @@ async function chat({
     taskBluePrints: taskBluePrintsData,
   });
 
-  if (taskBluePrintDecision.decision === "taskBluePrint" && task.length === 0) {
+  if (taskBluePrintDecision.decision === "TASKBLUEPRINT" && task.length === 0) {
     const taskBluePrintData = await taskBluePrintFn.get({
       taskBluePrintId: taskBluePrintDecision.taskBluePrintId,
     });

@@ -21,7 +21,11 @@ const availableChannels = [
 
 const Communication = () => {
   const { getTaskBluePrint } = useTaskBluePrint();
-  const { taskBluePrint: respList, loading, error } = getTaskBluePrint();
+  const {
+    taskBluePrint: taskBlueprintList,
+    loading,
+    error,
+  } = getTaskBluePrint();
 
   const { getCommunications, createCommunication, deleteCommunication } =
     useCommunications();
@@ -58,7 +62,7 @@ const Communication = () => {
       setConnections(
         communications.map((comm) => ({
           left: `${comm.channelType.toLowerCase()}-${comm.channelCode}`,
-          right: `resp-${comm.taskBluePrintId}`,
+          right: `tbp-${comm.taskBluePrintId}`,
         }))
       );
     }
@@ -88,7 +92,7 @@ const Communication = () => {
         await createCommunication({
           channelType: channel.type.toUpperCase(),
           channelCode: channel.code,
-          taskBluePrintId: rid.replace(/^resp-/, ""),
+          taskBluePrintId: rid.replace(/^tbp-/, ""),
         });
       }
     }
@@ -102,8 +106,8 @@ const Communication = () => {
   }
 
   const taskBluePrints =
-    (respList || []).map((r) => ({
-      id: `resp-${r.id}`,
+    (taskBlueprintList || []).map((r) => ({
+      id: `tbp-${r.id}`,
       title: r.title,
     })) || [];
 

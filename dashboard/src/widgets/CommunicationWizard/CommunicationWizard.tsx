@@ -211,11 +211,11 @@ const CommunicationWizard = ({
                     sx={{ fontWeight: "bold" }}
                   >
                     {(() => {
-                      const connectedResp = taskBluePrints.find(
+                      const connectedTaskBlueprint = taskBluePrints.find(
                         (r) => r.id === existingConnection?.right
                       );
-                      return connectedResp
-                        ? connectedResp.title
+                      return connectedTaskBlueprint
+                        ? connectedTaskBlueprint.title
                         : "Unknown Task Blueprint";
                     })()}
                   </Typography>

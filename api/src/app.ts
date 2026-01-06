@@ -61,12 +61,12 @@ function createApp() {
     );
 
     await event.subscribe<{
-      colleagueId: string;
+      agentId: string;
       sessionId: string;
       content: string;
-    }>("SESSION_USER_MESSAGED", ({ colleagueId, sessionId, content }) =>
+    }>("SESSION_USER_MESSAGED", ({ agentId, sessionId, content }) =>
       agent.chat({
-        colleagueId,
+        agentId,
         sessionId,
         content,
       })
@@ -74,11 +74,11 @@ function createApp() {
 
     await event.subscribe<{
       sessionId: string;
-      colleagueId: string;
+      agentId: string;
       question: string;
-    }>("SUPERVISING_ANSWERED", ({ sessionId, colleagueId, question }) =>
+    }>("SUPERVISING_ANSWERED", ({ sessionId, agentId, question }) =>
       agent.chat({
-        colleagueId,
+        agentId,
         sessionId,
         content: question,
       })
@@ -104,8 +104,8 @@ function createApp() {
     await event.subscribe<{
       id: string;
       type: string;
-      colleagueId: string;
-    }>("SESSION_INITIATED", async ({ id, type, colleagueId }) => {
+      agentId: string;
+    }>("SESSION_INITIATED", async ({ id, type, agentId }) => {
       try {
         const mcpClient = new McpClient({
           name: "project-notifier",

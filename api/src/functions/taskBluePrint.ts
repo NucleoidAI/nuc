@@ -34,7 +34,7 @@ async function getWithNodes(id: string) {
 async function upsert(
   title: string,
   description: string,
-  colleagueId: string,
+  agentId: string,
   id: string,
   nodes?: NodeType[]
 ) {
@@ -46,7 +46,7 @@ async function upsert(
     await existingTaskBluePrint.update({
       title,
       description,
-      colleagueId,
+      agentId,
       nodes: nodes || null,
     });
 
@@ -56,7 +56,7 @@ async function upsert(
       id,
       title,
       description,
-      colleagueId,
+      agentId,
       nodes: nodes || null,
     });
   }
@@ -73,9 +73,9 @@ async function remove({ taskBluePrintId }: { taskBluePrintId: string }) {
   });
 }
 
-async function list({ colleagueId }: { colleagueId: string }) {
+async function list({ agentId }: { agentId: string }) {
   const taskBluePrints = await TaskBluePrint.findAll({
-    where: { colleagueId },
+    where: { agentId },
   });
 
   return taskBluePrints.map((taskBluePrint) => taskBluePrint.toJSON());

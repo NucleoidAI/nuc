@@ -5,25 +5,25 @@ import { NotFoundError } from "@canmingir/link-express/error";
 import axios from "axios";
 
 async function read({
-  colleagueId,
+  agentId,
   teamId,
 }: {
   teamId?: string;
-  colleagueId?: string;
+  agentId?: string;
 }) {
   const mcpWhere: {
-    colleagueId?: string;
+    agentId?: string;
     teamId?: string;
   } = {};
 
-  if (colleagueId) {
-    const colleagueInstance = await Colleague.findByPk(colleagueId);
+  if (agentId) {
+    const colleagueInstance = await Colleague.findByPk(agentId);
 
     if (!colleagueInstance) {
       throw new Error("INVALID_COLLEAGUE");
     }
 
-    mcpWhere.colleagueId = colleagueId;
+    mcpWhere.agentId = agentId;
   } else if (teamId) {
     mcpWhere.teamId = teamId;
   }
@@ -36,7 +36,7 @@ async function read({
     .map((mcp) => mcp.toJSON())
     .map(({ Colleague, ...mcpData }) => ({
       ...mcpData,
-      colleagueId: mcpData.colleagueId,
+      agentId: mcpData.agentId,
       teamId: mcpData.teamId,
     }));
 }
@@ -45,14 +45,14 @@ async function create({
   authorizationCode,
   mcpId,
   teamId,
-  colleagueId,
+  agentId,
 }: {
   authorizationCode: string;
   mcpId: string;
   teamId?: string;
-  colleagueId?: string;
+  agentId?: string;
 }) {
-  if ((colleagueId && teamId) || (!colleagueId && !teamId)) {
+  if ((agentId && teamId) || (!agentId && !teamId)) {
     throw new Error("EITHER_COLLEAGUE_ID_OR_TEAM_ID_REQUIRED");
   }
 
@@ -92,7 +92,7 @@ async function create({
     refreshToken: refresh_token,
     mcpId,
     teamId,
-    colleagueId,
+    agentId,
   });
 }
 

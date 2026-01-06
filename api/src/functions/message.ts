@@ -9,7 +9,7 @@ import { event } from "@canmingir/link-express/event/client";
 
 async function create({
   role,
-  colleagueId,
+  agentId,
   content,
   userId,
   command,
@@ -18,7 +18,7 @@ async function create({
   replyTo,
 }: {
   role: string;
-  colleagueId?: string;
+  agentId?: string;
   content?: string;
   userId?: string;
   command?: string;
@@ -28,7 +28,7 @@ async function create({
 }) {
   const messageInstance = await Message.create({
     role,
-    colleagueId,
+    agentId,
     content,
     userId,
     command,

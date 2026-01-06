@@ -22,8 +22,8 @@ async function messages({ teamId }: { teamId: string }) {
     .map(({ role, content }) => ({ role: role.toLowerCase(), content }));
 }
 
-async function info({ colleagueId }) {
-  const { name, description } = await colleague.get({ colleagueId });
+async function info({ agentId }) {
+  const { name, description } = await colleague.get({ agentId });
   return {
     role: "system",
     content: {
@@ -40,14 +40,14 @@ async function info({ colleagueId }) {
 }
 
 async function knowledge({
-  colleagueId,
+  agentId,
   taskId,
 }: {
-  colleagueId: string;
+  agentId: string;
   taskId?: string;
 }) {
   const knowledgeList = await knowledgeFn.list({
-    colleagueId,
+    agentId,
     options: { includeSteps: true },
   });
 
@@ -89,8 +89,8 @@ async function steps({ taskId }) {
   };
 }
 
-async function taskBluePrints({ colleagueId }) {
-  const taskBluePrints = await taskBluePrintFn.list({ colleagueId });
+async function taskBluePrints({ agentId }) {
+  const taskBluePrints = await taskBluePrintFn.list({ agentId });
 
   return {
     role: "system",
@@ -159,7 +159,7 @@ async function teamChat({
 }
 
 async function task({ taskId }: { taskId: string }) {
-  const { colleagueId, description, sessionId } = await taskFn.get({ taskId });
+  const { agentId, description, sessionId } = await taskFn.get({ taskId });
   const currentTask = {
     description,
     steps: await taskFn.listSteps({ taskId }),
@@ -176,9 +176,9 @@ async function task({ taskId }: { taskId: string }) {
   const context = [
     ...(
       await Promise.all([
-        info({ colleagueId }),
-        knowledge({ colleagueId, taskId }),
-        taskBluePrints({ colleagueId }),
+        info({ agentId }),
+        knowledge({ agentId, taskId }),
+        taskBluePrints({ agentId }),
         steps({ taskId }),
       ])
     ).flat(),
@@ -428,18 +428,18 @@ async function taskBluePrintDiamond({
 }
 
 async function evaluateSupervisionAnswer({
-  colleagueId,
+  agentId,
   content,
 }: {
-  colleagueId: string;
+  agentId: string;
   content: {
     question: string;
     answer: string;
   };
 }) {
   const context = [
-    await info({ colleagueId }),
-    await knowledge({ colleagueId }),
+    await info({ agentId }),
+    await knowledge({ agentId }),
     {
       role: "system" as const,
       content: {
@@ -464,22 +464,22 @@ async function evaluateSupervisionAnswer({
 }
 
 async function chat({
-  colleagueId,
+  agentId,
   sessionId,
   content,
 }: {
-  colleagueId: string;
+  agentId: string;
   sessionId: string;
   content: string;
 }) {
   const knowledgeData = await knowledgeFn.list({
-    colleagueId,
+    agentId,
   });
 
   const conversationsData = await conversations({ sessionId });
-  const taskBluePrintsData = await taskBluePrintFn.list({ colleagueId });
+  const taskBluePrintsData = await taskBluePrintFn.list({ agentId });
 
-  const colleagueData = await colleague.get({ colleagueId });
+  const colleagueData = await colleague.get({ agentId });
 
   if (!colleagueData) {
     throw new Error("Colleague not found");
@@ -487,7 +487,7 @@ async function chat({
 
   const task = await taskFn.list({
     teamId: colleagueData.teamId,
-    colleagueId,
+    agentId,
     status: "IN_PROGRESS",
     sessionId,
     includeSteps: true,
@@ -513,7 +513,7 @@ async function chat({
 
     await session.addConversation({
       sessionId,
-      colleagueId,
+      agentId,
       role: "USER",
       content,
     });
@@ -539,7 +539,7 @@ async function chat({
     });
 
     await taskFn.create({
-      colleagueId,
+      agentId,
       description:
         taskBluePrintToTaskResponse.task?.description ||
         taskBluePrintToTaskResponse.task,
@@ -549,7 +549,7 @@ async function chat({
 
     await session.addConversation({
       sessionId,
-      colleagueId,
+      agentId,
       role: "ASSISTANT",
       content: taskBluePrintToTaskResponse.answer,
     });
@@ -560,8 +560,8 @@ async function chat({
     const context = [
       ...(
         await Promise.all([
-          info({ colleagueId }),
-          knowledge({ colleagueId }),
+          info({ agentId }),
+          knowledge({ agentId }),
           conversations({ sessionId }),
         ])
       ).flat(),
@@ -587,14 +587,14 @@ async function chat({
 
       await session.addConversation({
         sessionId,
-        colleagueId,
+        agentId,
         role: "ASSISTANT",
         content: answer,
       });
     } else {
       const conversation = await session.addConversation({
         sessionId,
-        colleagueId,
+        agentId,
         role: "ASSISTANT",
         content: "Please wait while I am working on your request.",
       });
@@ -603,7 +603,7 @@ async function chat({
         sessionId,
         conversationId: conversation.id,
         question: content,
-        colleagueId,
+        agentId,
       });
     }
   }

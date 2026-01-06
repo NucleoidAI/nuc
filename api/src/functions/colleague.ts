@@ -1,7 +1,7 @@
 import Colleague from "../models/Colleague";
 
-async function get({ colleagueId }: { colleagueId: string }) {
-  return await Colleague.findByPk(colleagueId, {
+async function get({ agentId }: { agentId: string }) {
+  return await Colleague.findByPk(agentId, {
     attributes: { exclude: ["aiEngineId"] },
     include: ["AIEngine"],
   });

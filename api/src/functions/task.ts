@@ -4,18 +4,18 @@ import Task from "../models/Task";
 import { event } from "@canmingir/link-express/event/client";
 
 async function create({
-  colleagueId,
+  agentId,
   description,
   taskBluePrintId,
   sessionId,
 }: {
-  colleagueId: string;
+  agentId: string;
   description: string;
   taskBluePrintId?: string;
   sessionId?: string;
 }) {
   const task = await Task.create({
-    colleagueId,
+    agentId,
     description,
     status: "IN_PROGRESS",
     taskBluePrintId,
@@ -24,7 +24,7 @@ async function create({
 
   await event.publish("TASK_CREATED", {
     taskId: task.id,
-    colleagueId,
+    agentId,
     description,
     taskBluePrintId,
     sessionId,
@@ -67,25 +67,25 @@ async function getWithSteps({ taskId }: { taskId: string }) {
 
 async function list({
   teamId,
-  colleagueId,
+  agentId,
   status,
   sessionId,
   includeSteps,
 }: {
   teamId: string;
-  colleagueId?: string;
+  agentId?: string;
   status?: "IN_PROGRESS" | "COMPLETED" | "FAILED";
   sessionId?: string;
   includeSteps?: boolean;
 }) {
   const where: {
-    colleagueId?: string;
+    agentId?: string;
     status?: "IN_PROGRESS" | "COMPLETED" | "FAILED";
     sessionId?: string;
   } = {};
 
-  if (colleagueId) {
-    where.colleagueId = colleagueId;
+  if (agentId) {
+    where.agentId = agentId;
   }
 
   if (status) {

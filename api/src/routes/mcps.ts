@@ -12,12 +12,12 @@ router.post("/", async (req, res) => {
     authorizationCode,
     mcpId,
     teamId: mcpTeamId,
-    colleagueId,
+    agentId,
   }: {
     authorizationCode: string;
     mcpId: string;
     teamId?: string;
-    colleagueId?: string;
+    agentId?: string;
   } = req.body;
 
   if (mcpTeamId && mcpTeamId !== teamId) {
@@ -31,8 +31,8 @@ router.post("/", async (req, res) => {
 
   if (mcpTeamId) {
     createData.teamId = mcpTeamId;
-  } else if (colleagueId) {
-    createData.colleagueId = colleagueId;
+  } else if (agentId) {
+    createData.agentId = agentId;
   }
 
   const tokens = await mcp.create(createData);
@@ -41,18 +41,18 @@ router.post("/", async (req, res) => {
 });
 router.get("/", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { colleagueId, teamId: queryTeamId } = req.query as {
+  const { agentId, teamId: queryTeamId } = req.query as {
     teamId?: string;
-    colleagueId?: string;
+    agentId?: string;
   };
 
   if (queryTeamId && queryTeamId !== teamId) {
     throw new AuthenticationError();
   }
 
-  if (colleagueId || queryTeamId) {
-    if (colleagueId) {
-      const colleagueInstance = await colleague.get({ colleagueId });
+  if (agentId || queryTeamId) {
+    if (agentId) {
+      const colleagueInstance = await colleague.get({ agentId });
 
       if (colleagueInstance.teamId !== teamId) {
         throw new AuthenticationError();
@@ -60,7 +60,7 @@ router.get("/", async (req, res) => {
     }
 
     const mcpList = await mcp.read({
-      colleagueId: colleagueId || undefined,
+      agentId: agentId || undefined,
       teamId,
     });
 

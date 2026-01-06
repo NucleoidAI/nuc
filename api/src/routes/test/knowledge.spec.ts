@@ -17,7 +17,7 @@ describe("Knowledge service", () => {
         type: "QA",
         question: "What time does the store close in weekends?",
         answer: "The store closes 5pm in weekends",
-        colleagueId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
+        agentId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
       })
       .expect(201)
       .catch(done);
@@ -33,7 +33,7 @@ describe("Knowledge service", () => {
         content: null,
         status: "COMPLETED",
         createdAt: knowledge.createdAt,
-        colleagueId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
+        agentId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
         taskId: null,
         teamId: "e6d4744d-a11b-4c75-acad-e24a02903729",
       });
@@ -49,7 +49,7 @@ describe("Knowledge service", () => {
       .send({
         type: "URL",
         url: "https://www.selenium.dev/selenium/web/window_switching_tests/simple_page.html",
-        colleagueId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        agentId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
       })
       .expect(201)
       .catch(done);
@@ -64,7 +64,7 @@ describe("Knowledge service", () => {
           "\n        URL: https://www.selenium.dev/selenium/web/window_switching_tests/simple_page.html\n        Title: Simple Page\n        Content: Simple page with simple test.\n      ",
         status: "COMPLETED",
         createdAt: knowledge.createdAt,
-        colleagueId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        agentId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
         taskId: null,
         teamId: "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
       });
@@ -80,7 +80,7 @@ describe("Knowledge service", () => {
       .send({
         type: "TEXT",
         text: "Avaible Positions",
-        colleagueId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        agentId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
       })
       .expect(201)
       .catch(done);
@@ -94,7 +94,7 @@ describe("Knowledge service", () => {
         text: "Avaible Positions",
         status: "COMPLETED",
         createdAt: knowledge.createdAt,
-        colleagueId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        agentId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
         taskId: null,
         teamId: "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
       });
@@ -112,7 +112,7 @@ describe("Knowledge service", () => {
         {
           Task: null,
           answer: null,
-          colleagueId: null,
+          agentId: null,
           content: null,
           createdAt: new Date("1970-01-20T22:08:14.307Z"),
           id: "0b6e8e55-3d02-4f59-966f-e6339ba27095",
@@ -138,7 +138,7 @@ describe("Knowledge service", () => {
           status: "COMPLETED",
           createdAt: new Date("1970-01-20T22:08:14.307Z"),
           Task: null,
-          colleagueId: null,
+          agentId: null,
           teamId: "e6d4744d-a11b-4c75-acad-e24a02903729",
         },
         {
@@ -153,7 +153,7 @@ describe("Knowledge service", () => {
           status: "COMPLETED",
           createdAt: new Date("1970-01-20T22:08:14.324Z"),
           Task: null,
-          colleagueId: null,
+          agentId: null,
           teamId: "e6d4744d-a11b-4c75-acad-e24a02903729",
         },
         {
@@ -168,7 +168,7 @@ describe("Knowledge service", () => {
           status: "COMPLETED",
           createdAt: new Date("1970-01-20T22:08:14.324Z"),
           Task: null,
-          colleagueId: null,
+          agentId: null,
           teamId: "e6d4744d-a11b-4c75-acad-e24a02903729",
         },
       ]);
@@ -176,11 +176,11 @@ describe("Knowledge service", () => {
     });
   });
 
-  it("gets knowledge by colleagueId query", (done) => {
+  it("gets knowledge by agentId query", (done) => {
     test.project("e6d4744d-a11b-4c75-acad-e24a02903729");
 
     request(app)
-      .get("/knowledge?colleagueId=72ef5b08-b4a9-42b7-bb0a-22d40e56798b")
+      .get("/knowledge?agentId=72ef5b08-b4a9-42b7-bb0a-22d40e56798b")
       .expect(200)
       .catch(done);
 
@@ -198,7 +198,7 @@ describe("Knowledge service", () => {
           status: "COMPLETED",
           createdAt: new Date("1970-01-20T22:08:14.307Z"),
           Task: null,
-          colleagueId: null,
+          agentId: null,
           teamId: "e6d4744d-a11b-4c75-acad-e24a02903729",
         },
         {
@@ -213,7 +213,7 @@ describe("Knowledge service", () => {
           status: "COMPLETED",
           createdAt: new Date("1970-01-20T22:08:14.337Z"),
           Task: null,
-          colleagueId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
+          agentId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
           teamId: null,
         },
         {
@@ -230,7 +230,7 @@ describe("Knowledge service", () => {
           status: "COMPLETED",
           createdAt: new Date("1970-01-20T22:08:14.307Z"),
           Task: null,
-          colleagueId: null,
+          agentId: null,
           teamId: "e6d4744d-a11b-4c75-acad-e24a02903729",
         },
         {
@@ -245,7 +245,7 @@ describe("Knowledge service", () => {
           status: "COMPLETED",
           createdAt: new Date("1970-01-20T22:08:14.324Z"),
           Task: null,
-          colleagueId: null,
+          agentId: null,
           teamId: "e6d4744d-a11b-4c75-acad-e24a02903729",
         },
         {
@@ -260,7 +260,7 @@ describe("Knowledge service", () => {
           status: "COMPLETED",
           createdAt: new Date("1970-01-20T22:08:14.324Z"),
           Task: null,
-          colleagueId: null,
+          agentId: null,
           teamId: "e6d4744d-a11b-4c75-acad-e24a02903729",
         },
       ]);
@@ -284,7 +284,7 @@ describe("Knowledge service", () => {
       .send({
         type: "QA",
         answer: "The store closes at 5pm on weekends",
-        colleagueId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
+        agentId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
       })
       .expect(500);
   });
@@ -295,7 +295,7 @@ describe("Knowledge service", () => {
       .send({
         type: "QA",
         question: "What time does the store close on weekends?",
-        colleagueId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
+        agentId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
       })
       .expect(500);
   });
@@ -306,7 +306,7 @@ describe("Knowledge service", () => {
       .send({
         type: "TEXT",
         url: "The store closes at 5pm on weekends",
-        colleagueId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
+        agentId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
       })
       .expect(400);
   });
@@ -317,19 +317,19 @@ describe("Knowledge service", () => {
       .send({
         type: "URL",
         text: "The store closes at 5pm on weekends",
-        colleagueId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
+        agentId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
       })
       .expect(201);
   });
 
-  it("should return 400 when creating QA type knowledge with colleagueId and teamId", async () => {
+  it("should return 400 when creating QA type knowledge with agentId and teamId", async () => {
     await request(app)
       .post("/knowledge")
       .send({
         type: "QA",
         question: "What time does the store close on weekends?",
         answer: "The store closes at 5pm on weekends",
-        colleagueId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
+        agentId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
         teamId: "e6d4744d-a11b-4c75-acad-e24a02903729",
       })
       .expect(201);
@@ -343,7 +343,7 @@ describe("Knowledge service", () => {
         question: "What time does the store close on weekends?",
         answer: "The store closes at 5pm on weekends",
         text: "Avaible Positions",
-        colleagueId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
+        agentId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
       })
       .expect(201);
   });

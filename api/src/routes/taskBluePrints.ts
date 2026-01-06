@@ -46,12 +46,12 @@ router.get("/:id", async (req, res) => {
 router.put("/:taskBluePrintId", async (req, res) => {
   const { projectId: teamId } = req.session;
   const { taskBluePrintId } = req.params;
-  const { title, description, colleagueId, nodes } =
+  const { title, description, agentId, nodes } =
     TaskBluePrintSchema.upsert.parse(req.body);
 
-  if (colleagueId) {
+  if (agentId) {
     const { teamId: colleagueTeamId } = await colleague.get({
-      colleagueId,
+      agentId,
     });
 
     if (teamId !== colleagueTeamId) {
@@ -62,7 +62,7 @@ router.put("/:taskBluePrintId", async (req, res) => {
   const result = await taskBluePrint.upsert(
     title,
     description,
-    colleagueId,
+    agentId,
     taskBluePrintId,
     nodes
   );
@@ -87,11 +87,11 @@ router.delete("/:taskBluePrintId", async (req, res) => {
   const { projectId: teamId } = req.session;
   const { taskBluePrintId } = req.params;
 
-  const { colleagueId } = TaskBluePrintSchema.delete.parse(req.body);
+  const { agentId } = TaskBluePrintSchema.delete.parse(req.body);
 
-  if (colleagueId) {
+  if (agentId) {
     const { teamId: colleagueTeamId } = await colleague.get({
-      colleagueId,
+      agentId,
     });
 
     if (teamId !== colleagueTeamId) {

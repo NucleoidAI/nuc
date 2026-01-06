@@ -18,7 +18,7 @@ describe("Messages service", () => {
         {
           id: "ffd6dfa4-45ba-4da2-bc5c-5a529610b52f",
           role: "ASSISTANT",
-          colleagueId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
+          agentId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
           content: "Hi! I'm here to assist you with your coffee needs.",
           userId: null,
           command: null,
@@ -31,7 +31,7 @@ describe("Messages service", () => {
         {
           id: "eef6dfa4-45ba-4da2-bc5c-5a529610b52f",
           role: "USER",
-          colleagueId: null,
+          agentId: null,
           content: "How do I make a great iced Americano ?",
           userId: "1001",
           command: null,
@@ -44,7 +44,7 @@ describe("Messages service", () => {
         {
           id: "bbf6dfa4-45ba-4da2-bc5c-5a529610b52f",
           role: "ASSISTANT",
-          colleagueId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
+          agentId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
           createdAt: "2023-08-05T12:00:20.000Z",
           content:
             "To make a great iced Americano, follow these steps:\n\n1. Brew a double shot of espresso.\n2. Fill a glass with ice cubes.\n3. Pour the hot espresso over the ice.\n4. Add cold water to taste, typically about equal to the amount of espresso.\n5. Stir and enjoy!",
@@ -58,7 +58,7 @@ describe("Messages service", () => {
         {
           id: "ccf6dfa4-45ba-4da2-bc5c-5a529610b52f",
           role: "SYSTEM",
-          colleagueId: null,
+          agentId: null,
           content: null,
           userId: null,
           command: "/learn-text",
@@ -72,7 +72,7 @@ describe("Messages service", () => {
         {
           id: "e2256e48-3a97-4bed-941c-aa9266044935",
           role: "ASSISTANT",
-          colleagueId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
+          agentId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
           content:
             "The Philips 5400 LatteGo is a great choice for making iced Americano. You can prepare great Americanos by setting the coffee intensity to the 3rd degree. Here are a few additional tips specific to your machine:\n\n1. Use freshly ground coffee beans.\n2. Use filtered water.\n3. Pre-chill your glass.\n4. Adjust water for stronger flavor.\n5. Try adding a splash of syrup or milk.",
           userId: null,
@@ -91,7 +91,7 @@ describe("Messages service", () => {
           createdAt: "2023-08-05T12:00:45.000Z",
           status: "READ",
           teamId: "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
-          colleagueId: null,
+          agentId: null,
           command: null,
           knowledgeId: null,
           replyTo: "e2256e48-3a97-4bed-941c-aa9266044935",
@@ -105,7 +105,7 @@ describe("Messages service", () => {
           question: "What time do you close?",
           answer: "We are 7/24 coffee shop",
           status: "ANSWERED",
-          colleagueId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
+          agentId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
           createdAt: "2024-08-04T09:00:25.000Z",
         },
         {
@@ -117,7 +117,7 @@ describe("Messages service", () => {
           result: null,
           createdAt: "2025-01-19T10:34:20.094Z",
           status: "IN_PROGRESS",
-          colleagueId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
+          agentId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
         },
         {
           type: "TEXT",
@@ -135,7 +135,7 @@ describe("Messages service", () => {
           ColleagueKnowledge: {
             id: "ea0bc7d4-8e0e-4118-9279-f9beaddd18f9",
             knowledgeId: "8bc99c86-59f2-48d6-ab3f-4e9129b53814",
-            colleagueId: null,
+            agentId: null,
             teamId: "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
             ProjectId: null,
             ColleagueKnowledgeId: null,
@@ -162,7 +162,7 @@ describe("Messages service", () => {
         {
           id: "ccf6dfa4-45ba-4da2-bc5c-5a529610b52f",
           role: "SYSTEM",
-          colleagueId: null,
+          agentId: null,
           content: null,
           userId: null,
           command: "/learn-text",
@@ -175,7 +175,7 @@ describe("Messages service", () => {
         {
           id: "e2256e48-3a97-4bed-941c-aa9266044935",
           role: "ASSISTANT",
-          colleagueId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
+          agentId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
           content:
             "The Philips 5400 LatteGo is a great choice for making iced Americano. You can prepare great Americanos by setting the coffee intensity to the 3rd degree. Here are a few additional tips specific to your machine:\n\n1. Use freshly ground coffee beans.\n2. Use filtered water.\n3. Pre-chill your glass.\n4. Adjust water for stronger flavor.\n5. Try adding a splash of syrup or milk.",
           userId: null,
@@ -189,7 +189,7 @@ describe("Messages service", () => {
         {
           id: "a5423326-9c64-4413-b6c7-5abbb3da6001",
           role: "USER",
-          colleagueId: null,
+          agentId: null,
           content: "Thanks for the tips!",
           userId: "1001",
           command: null,
@@ -208,7 +208,7 @@ describe("Messages service", () => {
           question: "What time do you close?",
           answer: "We are 7/24 coffee shop",
           status: "ANSWERED",
-          colleagueId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
+          agentId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
           createdAt: "2024-08-04T09:00:25.000Z",
         },
         {
@@ -220,7 +220,7 @@ describe("Messages service", () => {
           result: null,
           createdAt: "2025-01-19T10:34:20.094Z",
           status: "IN_PROGRESS",
-          colleagueId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
+          agentId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
         },
         {
           type: "TEXT",
@@ -238,7 +238,7 @@ describe("Messages service", () => {
           ColleagueKnowledge: {
             id: "ea0bc7d4-8e0e-4118-9279-f9beaddd18f9",
             knowledgeId: "8bc99c86-59f2-48d6-ab3f-4e9129b53814",
-            colleagueId: null,
+            agentId: null,
             teamId: "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
             ProjectId: null,
             ColleagueKnowledgeId: null,
@@ -265,7 +265,7 @@ describe("Messages service", () => {
         {
           id: "ccf6dfa4-45ba-4da2-bc5c-5a529610b52f",
           role: "SYSTEM",
-          colleagueId: null,
+          agentId: null,
           content: null,
           userId: null,
           command: "/learn-text",
@@ -278,7 +278,7 @@ describe("Messages service", () => {
         {
           id: "e2256e48-3a97-4bed-941c-aa9266044935",
           role: "ASSISTANT",
-          colleagueId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
+          agentId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
           content:
             "The Philips 5400 LatteGo is a great choice for making iced Americano. You can prepare great Americanos by setting the coffee intensity to the 3rd degree. Here are a few additional tips specific to your machine:\n\n1. Use freshly ground coffee beans.\n2. Use filtered water.\n3. Pre-chill your glass.\n4. Adjust water for stronger flavor.\n5. Try adding a splash of syrup or milk.",
           userId: null,
@@ -292,7 +292,7 @@ describe("Messages service", () => {
         {
           id: "a5423326-9c64-4413-b6c7-5abbb3da6001",
           role: "USER",
-          colleagueId: null,
+          agentId: null,
           content: "Thanks for the tips!",
           userId: "1001",
           command: null,
@@ -311,7 +311,7 @@ describe("Messages service", () => {
           question: "What time do you close?",
           answer: "We are 7/24 coffee shop",
           status: "ANSWERED",
-          colleagueId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
+          agentId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
           createdAt: "2024-08-04T09:00:25.000Z",
         },
         {
@@ -323,7 +323,7 @@ describe("Messages service", () => {
           result: null,
           createdAt: "2025-01-19T10:34:20.094Z",
           status: "IN_PROGRESS",
-          colleagueId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
+          agentId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
         },
         {
           type: "TEXT",
@@ -341,7 +341,7 @@ describe("Messages service", () => {
           ColleagueKnowledge: {
             id: "ea0bc7d4-8e0e-4118-9279-f9beaddd18f9",
             knowledgeId: "8bc99c86-59f2-48d6-ab3f-4e9129b53814",
-            colleagueId: null,
+            agentId: null,
             teamId: "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
             ProjectId: null,
             ColleagueKnowledgeId: null,
@@ -387,7 +387,7 @@ describe("Messages service", () => {
         status: "READ",
         teamId: "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
         knowledgeId: null,
-        colleagueId: null,
+        agentId: null,
         command: null,
         replyTo: null,
       });
@@ -399,7 +399,7 @@ describe("Messages service", () => {
         id: message.id,
         createdAt: message.createdAt,
         role: "ASSISTANT",
-        colleagueId: undefined,
+        agentId: undefined,
         content: "Hi there! How can I assist you today?",
         userId: undefined,
         command: undefined,

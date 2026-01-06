@@ -39,7 +39,7 @@ const routes = [
             path: `/knowledge`,
             element: <KnowledgeBase />,
           },
-          { path: "/agents/:colleagueId", element: <Agent /> },
+          { path: "/agents/:agentId", element: <Agent /> },
           { path: "/settings", element: <Settings /> },
           { path: "/teams/add", element: <AddTeam /> },
           { path: "/mcps/callback", element: <Callback /> },

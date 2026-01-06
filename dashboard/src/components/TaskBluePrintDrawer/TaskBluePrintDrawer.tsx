@@ -31,7 +31,7 @@ const TaskBluePrintDrawer = ({
     id: string;
     title: string;
     description: string;
-    colleagueId: string;
+    agentId: string;
   };
   handleAiResponse?: (response) => void;
   aiResponse?: string;
@@ -40,7 +40,7 @@ const TaskBluePrintDrawer = ({
     id: string;
     title: string;
     description: string;
-    colleagueId: string;
+    agentId: string;
   }) => void;
   agentId?: string;
 }) => {

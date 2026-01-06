@@ -27,7 +27,7 @@ const learnAction = async (command) => {
     answer,
     url,
     text,
-    colleagueId: colleague.id,
+    agentId: colleague.id,
   });
 
   publish("KNOWLEDGE_STATUS_CHANGED", {
@@ -58,7 +58,7 @@ const taskAction = async (command) => {
 
   const { data: createdTask } = await http.post(`/tasks`, {
     description: task,
-    colleagueId: colleague.id,
+    agentId: colleague.id,
   });
 
   publish("TASK_STATUS_CHANGED", {

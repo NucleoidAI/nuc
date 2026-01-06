@@ -34,7 +34,7 @@ type CustomElement = {
     | "paragraph";
   children: {
     text: string;
-    colleagueId?: string;
+    agentId?: string;
     type?: string;
     children?: { text: string }[];
   }[];
@@ -99,13 +99,13 @@ const ChatInputCommandEditor = ({
     Transforms.insertNodes(editor, command);
   };
 
-  const insertMention = (mentionName, colleagueId) => {
+  const insertMention = (mentionName, agentId) => {
     const mention: CustomElement = {
       type: "mention",
       children: [
         {
           text: `@${mentionName}`,
-          colleagueId: colleagueId,
+          agentId: agentId,
         },
       ],
     };
@@ -226,7 +226,7 @@ const ChatInputCommandEditor = ({
             {
               text: `@${selectedColleague}`,
               type: "mention",
-              colleagueId: selectedColleague,
+              agentId: selectedColleague,
             },
           ],
         },
@@ -297,7 +297,7 @@ const ChatInputCommandEditor = ({
       const messageContent = content
         .map((node) => {
           if (node.type === "mention") {
-            return `@{ colleagueId: '${node.children[0].colleagueId}', name: '${node.children[0].text}' }`;
+            return `@{ agentId: '${node.children[0].agentId}', name: '${node.children[0].text}' }`;
           }
           return node.text;
         })

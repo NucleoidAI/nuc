@@ -25,7 +25,7 @@ const TaskBluePrintCard = ({
   handleDrawerOpen,
   handleFlowDialogOpen,
   removeTaskBluePrint,
-  colleagueId,
+  agentId,
 }) => {
   const popover = usePopover();
 
@@ -180,7 +180,7 @@ const TaskBluePrintCard = ({
         <MenuItem
           data-cy="taskBluePrint-menu-delete"
           onClick={() => {
-            removeTaskBluePrint(item.id, colleagueId);
+            removeTaskBluePrint(item.id, agentId);
             popover.onClose();
           }}
           sx={{ color: "error.main" }}

@@ -15,7 +15,6 @@ import projects from "./routes/projects";
 import sessions from "./routes/sessions";
 import statistics from "./routes/statistics";
 import supervisings from "./routes/supervisings";
-import taskBluePrintFn from "./functions/taskBluePrint";
 import taskBluePrints from "./routes/taskBluePrints";
 import tasks from "./routes/tasks";
 import teamDetails from "./routes/teamDetails";

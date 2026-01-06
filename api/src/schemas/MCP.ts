@@ -6,7 +6,7 @@ const MCP = {
     description: Joi.string().required(),
     scope: Joi.string().required(),
     direction: Joi.string().required(),
-    colleagueId: Joi.string()
+    agentId: Joi.string()
       .guid({ version: ["uuidv4"] })
       .optional(),
     teamId: Joi.string()

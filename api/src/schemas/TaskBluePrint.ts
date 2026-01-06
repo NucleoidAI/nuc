@@ -4,7 +4,7 @@ const TaskBluePrint = {
   upsert: z.object({
     title: z.string(),
     description: z.string(),
-    colleagueId: z.string().uuid(),
+    agentId: z.string().uuid(),
     nodes: z
       .array(
         z.object({
@@ -44,7 +44,7 @@ const TaskBluePrint = {
     content: z.string(),
   }),
   delete: z.object({
-    colleagueId: z.string().uuid(),
+    agentId: z.string().uuid(),
   }),
 };
 

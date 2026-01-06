@@ -3,7 +3,7 @@ import Joi from "joi";
 const Message = {
   create: Joi.object({
     role: Joi.string().valid("SYSTEM", "USER", "ASSISTANT").required(),
-    colleagueId: Joi.string()
+    agentId: Joi.string()
       .guid({ version: ["uuidv4"] })
       .optional(),
     content: Joi.string().max(1000).optional(),

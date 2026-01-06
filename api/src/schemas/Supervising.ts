@@ -8,7 +8,7 @@ const Supervising = {
     conversationId: Joi.string()
       .guid({ version: ["uuidv4"] })
       .required(),
-    colleagueId: Joi.string()
+    agentId: Joi.string()
       .guid({ version: ["uuidv4"] })
       .required(),
   }),

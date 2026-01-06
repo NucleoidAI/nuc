@@ -72,12 +72,12 @@ function useTaskBluePrint() {
   const createTaskBluePrint = async (
     title: string,
     description: string,
-    colleagueId: string
+    agentId: string
   ) => {
     const response = await http.post("/taskblueprints", {
       title,
       description,
-      colleagueId,
+      agentId,
     });
     if (response?.data) {
       publish("TASK_BLUE_PRINT_CREATED", { taskBluePrint: response.data });
@@ -89,7 +89,7 @@ function useTaskBluePrint() {
     taskBluePrintId: string,
     title: string,
     description: string,
-    colleagueId: string,
+    agentId: string,
     nodes?: NodeType[]
   ) => {
     if (!taskBluePrintId) {
@@ -100,7 +100,7 @@ function useTaskBluePrint() {
       title,
       description,
       nodes,
-      colleagueId,
+      agentId,
     });
     if (response?.data) {
       publish("TASK_BLUE_PRINT_UPSERTED", { taskBluePrint: response.data });
@@ -110,11 +110,11 @@ function useTaskBluePrint() {
 
   const removeTaskBluePrint = async (
     taskBluePrintId: string,
-    colleagueId: string
+    agentId: string
   ) => {
     const response = await http.delete(`/taskblueprints/${taskBluePrintId}`, {
       data: {
-        colleagueId,
+        agentId,
       },
     });
     if (response?.data) {

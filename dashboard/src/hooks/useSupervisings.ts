@@ -6,7 +6,7 @@ import { publish, useEvent } from "@nucleoidai/react-event";
 
 type SupervisingInput = {
   conversationId: string;
-  colleagueId: string;
+  agentId: string;
   sessionId: string;
 };
 
@@ -23,7 +23,7 @@ function useSupervisings() {
 
     const response = await http.post(`/supervisings`, {
       conversationId: supervising.conversationId,
-      colleagueId: supervising.colleagueId,
+      agentId: supervising.agentId,
       sessionId: supervising.sessionId,
     });
 
@@ -57,12 +57,12 @@ function useSupervisings() {
     return response?.data;
   };
 
-  const getAgentSupervising = useCallback((colleagueId?: string) => {
-    if (!colleagueId) return;
+  const getAgentSupervising = useCallback((agentId?: string) => {
+    if (!agentId) return;
 
     const { data, loading, error } = Api(
-      () => http.get(`/agents/${colleagueId}/supervisings`),
-      [colleagueId, supervisingAnswered]
+      () => http.get(`/agents/${agentId}/supervisings`),
+      [agentId, supervisingAnswered]
     );
 
     return {
@@ -74,17 +74,17 @@ function useSupervisings() {
   }, []);
 
   const getAgentSupervisingByStatus = useCallback(
-    (colleagueId?: string, status?: string) => {
-      if (!colleagueId) return;
+    (agentId?: string, status?: string) => {
+      if (!agentId) return;
 
       const endpoint =
         !status || status === "All"
-          ? `/agents/${colleagueId}/supervisings`
-          : `/agents/${colleagueId}/supervisings?status=${status}`;
+          ? `/agents/${agentId}/supervisings`
+          : `/agents/${agentId}/supervisings?status=${status}`;
 
       const { data, loading, error, fetch } = Api(
         () => http.get(endpoint),
-        [colleagueId, status, supervisingAnswered]
+        [agentId, status, supervisingAnswered]
       );
 
       return {

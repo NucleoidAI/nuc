@@ -10,7 +10,7 @@ export type Knowledge = {
   url: string;
   question: string;
   answer: string;
-  colleagueId: string;
+  agentId: string;
   status: string;
   createdAt: string;
   teamId: string;
@@ -86,7 +86,7 @@ function useKnowledge() {
   };
 
   const getColleagueKnowledges = (
-    colleagueId: string,
+    agentId: string,
     fetchState: DependencyArray = []
   ) => {
     const eventDependencies = [
@@ -97,9 +97,8 @@ function useKnowledge() {
     ];
 
     const { data, loading, error, fetch } = Api(
-      () =>
-        colleagueId ? http.get(`/knowledge?colleagueId=${colleagueId}`) : null,
-      [colleagueId, ...eventDependencies, ...fetchState]
+      () => (agentId ? http.get(`/knowledge?agentId=${agentId}`) : null),
+      [agentId, ...eventDependencies, ...fetchState]
     );
 
     if (data) {
@@ -116,7 +115,7 @@ function useKnowledge() {
 
   const createKnowledge = async (
     knowledge: KnowledgeInput,
-    colleagueId: string,
+    agentId: string,
     teamId?: string
   ) => {
     const response = await http.post("/knowledge", {
@@ -124,7 +123,7 @@ function useKnowledge() {
       text: knowledge.text,
       question: knowledge.question,
       answer: knowledge.answer,
-      colleagueId: colleagueId,
+      agentId: agentId,
       teamId: teamId,
       type: knowledge.type,
     });

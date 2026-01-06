@@ -24,10 +24,10 @@ function useMCPs() {
   }, []);
 
   const getColleagueMCP = useCallback(
-    (colleagueId: string) => {
+    (agentId: string) => {
       const { data, loading, error } = Api(
-        () => http.get(`/mcps?colleagueId=${colleagueId}`),
-        [colleagueId]
+        () => http.get(`/mcps?agentId=${agentId}`),
+        [agentId]
       );
 
       if (data) {

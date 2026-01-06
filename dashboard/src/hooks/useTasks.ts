@@ -23,7 +23,7 @@ function useTasks(agentId: string) {
     const { data, loading, error, fetch } = Api(
       () =>
         agentId
-          ? http.get(`/tasks?colleagueId=${agentId}`)
+          ? http.get(`/tasks?agentId=${agentId}`)
           : Promise.resolve({ data: [] }),
       [agentId, ...eventDependencies, ...fetchState]
     );
@@ -59,11 +59,11 @@ function useTasks(agentId: string) {
     }
   };
 
-  const createTask = async (task: string, colleagueId: string) => {
+  const createTask = async (task: string, agentId: string) => {
     try {
       const response = await http.post(`/tasks`, {
         description: task,
-        colleagueId: colleagueId,
+        agentId: agentId,
       });
 
       if (response && response.data) {

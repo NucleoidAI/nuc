@@ -34,13 +34,13 @@ function useAcquiredMCPs() {
       authorizationCode: code,
       mcpId: mcp.id,
       teamId: isTeam ? id : undefined,
-      colleagueId: isTeam ? undefined : id,
+      agentId: isTeam ? undefined : id,
     };
 
     if (isTeam) {
       payload.teamId = id;
     } else {
-      payload.colleagueId = id;
+      payload.agentId = id;
     }
 
     const response = await http.post(`/mcps`, payload);
@@ -95,9 +95,9 @@ function useAcquiredMCPs() {
   );
 
   const getColleagueAcquiredMCPs = useCallback(
-    (colleagueId: string) => {
+    (agentId: string) => {
       const { data, loading, error } = Api(
-        () => http.get(`/mcps?colleagueId=${colleagueId}`),
+        () => http.get(`/mcps?agentId=${agentId}`),
         []
       );
 

@@ -19,7 +19,7 @@ export default function () {
   const url = `${BASE_URL}/test-chat`;
 
   const payload = JSON.stringify({
-    colleagueId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
+    agentId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
     content: "Where is the parking lot?",
   });
 

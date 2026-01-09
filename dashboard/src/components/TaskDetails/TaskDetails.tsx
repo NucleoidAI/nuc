@@ -87,7 +87,7 @@ const TaskDetails = ({
       color: "warning.main",
     },
     SUPERVISED_NEEDED: {
-      label: "Supervised Needed",
+      label: "Supervision Raised",
       color: "info.main",
     },
   };

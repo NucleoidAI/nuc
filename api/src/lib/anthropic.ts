@@ -54,13 +54,15 @@ async function generate({
   }
 
   if (content) {
-    const textContent = content
+    let textContent = content
       .filter((block) => block.type === "text")
       .map((block) => block.text)
       .join("")
-      .replace(/^```json\s*/i, "")
-      .replace(/^```\s*/i, "")
-      .replace(/\s*```$/i, "")
+      .trim();
+
+    textContent = textContent
+      .replace(/^```(?:json|JSON)?\s*\n?/i, "")
+      .replace(/\n?```\s*$/i, "")
       .trim();
 
     try {

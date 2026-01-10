@@ -446,7 +446,7 @@
             },
             {
               "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-              "action": "PLATFORM:port_baglanti_with_technical_support",
+              "action": "TURK_TELEKOM:port_baglanti_with_technical_support",
               "status": "COMPLETED",
               "parameters": {
                 "assignment_id": "ASSIGN-123"

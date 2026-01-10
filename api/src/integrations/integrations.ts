@@ -315,6 +315,26 @@ const Integrations = [
     },
   },
   {
+    id: "d4k0j5i6-1j2h-0i9k-6l5m-4h3i2j1k0l9g",
+    action: "TURK_TELEKOM:port_baglanti_with_technical_support",
+    provider: "TURK_TELEKOM",
+    description:
+      "Connect/activate a port with technical support escalation using port assignment ID",
+    direction: "OUTGOING",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        assignment_id: {
+          type: "string",
+          description:
+            "The port assignment ID to connect/activate with technical support.",
+        },
+      },
+      required: ["assignment_id"],
+    },
+  },
+  {
     id: "c3j9i4h5-0i1g-9h8j-5k4l-3g2h1i0j9k8f",
     action: "TURK_TELEKOM:configuration",
     provider: "TURK_TELEKOM",
@@ -330,32 +350,6 @@ const Integrations = [
         },
       },
       required: ["serial_number"],
-    },
-  },
-  {
-    id: "d4k0j5i6-1j2h-0i9k-6l5m-4h3i2j1k0l9g",
-    action: "PROJECT_NOTIFIER:notify_project_open",
-    provider: "PROJECT_NOTIFIER",
-    description: "Sends a notification to the configured endpoint when a project is opened (for testing)",
-    direction: "OUTGOING",
-    lib: "mcp",
-    inputSchema: {
-      type: "object",
-      properties: {
-        projectId: {
-          type: "string",
-          description: "The ID of the project being opened.",
-        },
-        projectName: {
-          type: "string",
-          description: "The name of the project being opened.",
-        },
-        timestamp: {
-          type: "string",
-          description: "ISO timestamp when the project was opened.",
-        },
-      },
-      required: [],
     },
   },
 ];

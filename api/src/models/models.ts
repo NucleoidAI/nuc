@@ -152,6 +152,14 @@ async function init() {
     foreignKey: "colleagueId",
   });
 
+  // Supervising <-> Responsibility
+  models.Supervising.belongsTo(models.Responsibility, {
+    foreignKey: "responsibilityId",
+  });
+  models.Responsibility.hasMany(models.Supervising, {
+    foreignKey: "responsibilityId",
+  });
+
   // Conversation <-> Session
   models.Conversation.belongsTo(models.Session, {
     foreignKey: "sessionId",

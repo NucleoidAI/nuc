@@ -23,6 +23,7 @@ const ResponsibilityDrawer = ({
   setAiResponse,
   aiResponse,
   setSelectedItem,
+  taskId,
   agentId,
 }: {
   drawerOpen: boolean;
@@ -42,6 +43,7 @@ const ResponsibilityDrawer = ({
     description: string;
     colleagueId: string;
   }) => void;
+  taskId?: string;
   agentId?: string;
 }) => {
   const theme = useTheme();
@@ -232,42 +234,18 @@ const ResponsibilityDrawer = ({
                   minHeight: 0,
                 }}
               >
-                <Box
-                  sx={{
-                    p: 2,
-                    borderBottom: `1px solid ${theme.palette.divider}`,
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    alignItems: "center",
-                  }}
-                >
-                  <IconButton size="small" onClick={() => setIsChatOpen(false)}>
-                    <CloseIcon fontSize="small" />
-                  </IconButton>
-                </Box>
-
-                <Box
-                  sx={{
-                    flex: 1,
-                    display: "flex",
-                    alignItems: "stretch",
-                    justifyContent: "center",
-                    overflow: "hidden",
-                    p: 2,
-                  }}
-                >
-                  <ResponsibilityChat
-                    selectedItem={selectedItem}
-                    setAiResponse={setAiResponse}
-                    aiResponse={aiResponse}
-                    setSelectedItem={setSelectedItem}
-                    onTitleChange={handleTitleChange}
-                    onDescriptionChange={handleDescriptionChange}
-                    onCreateResponsibility={handleCreateResponsibility}
-                    onMessagesChange={handleMessagesChange}
-                    agentId={agentId}
-                  />
-                </Box>
+                <ResponsibilityChat
+                  selectedItem={selectedItem}
+                  setAiResponse={setAiResponse}
+                  aiResponse={aiResponse}
+                  setSelectedItem={setSelectedItem}
+                  onTitleChange={handleTitleChange}
+                  onDescriptionChange={handleDescriptionChange}
+                  onCreateResponsibility={handleCreateResponsibility}
+                  onMessagesChange={handleMessagesChange}
+                  taskId={taskId}
+                  agentId={agentId}
+                />
               </Box>
             </Grid>
           )}

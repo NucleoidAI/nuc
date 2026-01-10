@@ -24,9 +24,21 @@ class Supervising extends Model {
   @Column(DataType.UUID)
   declare sessionId: string;
 
-  @AllowNull(false)
+  @AllowNull(true)
   @Column(DataType.UUID)
-  declare conversationId: string;
+  declare conversationId: string | null;
+
+  @AllowNull(true)
+  @Column(DataType.UUID)
+  declare responsibilityId: string;
+
+  @AllowNull(true)
+  @Column(DataType.UUID)
+  declare taskId: string;
+
+  @AllowNull(true)
+  @Column(DataType.UUID)
+  declare stepId: string;
 
   @AllowNull(false)
   @Column(DataType.STRING(1000))
@@ -56,6 +68,8 @@ class Supervising extends Model {
   declare conversation?: any;
 
   declare colleague?: any;
+
+  declare responsibility?: any;
 }
 
 export default Supervising;

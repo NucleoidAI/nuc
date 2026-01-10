@@ -4,12 +4,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-async function generate({
-  model = "gpt-4o-mini-2024-07-18",
-  messages = [],
-  temperature = 0,
-  max_tokens = 2048,
-}) {
+async function generate({ model = "gpt-5-chat-latest", messages = [] }) {
   const {
     choices: [
       {
@@ -20,11 +15,6 @@ async function generate({
   } = await openai.chat.completions.create({
     model,
     messages,
-    temperature,
-    max_tokens,
-    top_p: 1,
-    frequency_penalty: 0,
-    presence_penalty: 0,
     response_format: { type: "json_object" },
   });
 

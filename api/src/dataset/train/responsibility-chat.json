@@ -1,5 +1,10 @@
 [
   {
+    "history": [],
+    "content": "If product is not available, create order. if available reduce product count and send email.",
+    "response": "Here's the flow for your request.",
+    "title": "Product Stock Management",
+    "description": "If product is not available, create order. if available reduce product count and send email.",
     "flow": [
       {
         "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
@@ -58,8 +63,202 @@
         "createdAt": "2025-06-19T06:02:00Z"
       }
     ],
-    "response": "Here’s the flow for your request.",
-    "content": "If product is not available, create order. if available reduce product count and send email.",
-    "pseudocode": "BEGIN_CONTEXT\n\nIF Product.Available == FALSE THEN\nOrder.Create()\nELSE\nProduct.Count = Product.Count - 1\nEmail.Send()\nEND_IF\nEND_CONTEXT"
+    "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n  Order.Create()\nELSE\n  Product.Count = Product.Count - 1\n  Email.Send()\nEND_IF\nEND_CONTEXT"
+  },
+  {
+    "history": [],
+    "content": "if product is not available then call user",
+    "response": "Here's the flow for your request.",
+    "title": "Product Stock Management",
+    "description": "If product is not available, call user. if available send email.",
+    "flow": [
+      {
+        "id": "a1b2c3d4-e5f6-4g7h-8i9j-k0l1m2n3o4p5",
+        "type": "NORMAL",
+        "properties": {
+          "action": "GREY:check_product_availability",
+          "label": "Check Product Availability",
+          "icon": "mdi:check"
+        },
+        "next": ["b2c3d4e5-f6g7-4h8i-9j0k-l1m2n3o4p5q6"],
+        "createdAt": "2025-06-19T06:02:00Z"
+      },
+      {
+        "id": "b2c3d4e5-f6g7-4h8i-9j0k-l1m2n3o4p5q6",
+        "type": "CONDITION",
+        "properties": {
+          "action": "PLATFORM:decision",
+          "label": "Product Available?",
+          "icon": "mdi:decision"
+        },
+        "true": null,
+        "false": ["c3d4e5f6-g7h8-4i9j-0k1l-m2n3o4p5q6r7"],
+        "createdAt": "2025-06-19T06:02:00Z"
+      },
+      {
+        "id": "c3d4e5f6-g7h8-4i9j-0k1l-m2n3o4p5q6r7",
+        "type": "NORMAL",
+        "properties": {
+          "action": "GREY:call_user",
+          "label": "Call User",
+          "icon": "mdi:phone"
+        },
+        "next": null,
+        "createdAt": "2025-06-19T06:02:00Z"
+      }
+    ],
+    "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n  User.Call()\nEND_IF\nEND_CONTEXT"
+  },
+  {
+    "history": [
+      {
+        "role": "user",
+        "content": "if product is not available then call user"
+      },
+      { "role": "assistant", "content": "Here's the flow for your request." },
+      {
+        "role": "assistant",
+        "content": "[{\"id\":\"a1b2c3d4-e5f6-4g7h-8i9j-k0l1m2n3o4p5\",\"type\":\"NORMAL\",\"properties\":{\"action\":\"GREY:check_product_availability\",\"label\":\"Check Product Availability\",\"icon\":\"mdi:check\"},\"next\":[\"b2c3d4e5-f6g7-4h8i-9j0k-l1m2n3o4p5q6\"],\"createdAt\":\"2025-06-19T06:02:00Z\"},{\"id\":\"b2c3d4e5-f6g7-4h8i-9j0k-l1m2n3o4p5q6\",\"type\":\"CONDITION\",\"properties\":{\"action\":\"PLATFORM:decision\",\"label\":\"Product Available?\",\"icon\":\"mdi:decision\"},\"true\":null,\"false\":[\"c3d4e5f6-g7h8-4i9j-0k1l-m2n3o4p5q6r7\"],\"createdAt\":\"2025-06-19T06:02:00Z\"},{\"id\":\"c3d4e5f6-g7h8-4i9j-0k1l-m2n3o4p5q6r7\",\"type\":\"NORMAL\",\"properties\":{\"action\":\"GREY:call_user\",\"label\":\"Call User\",\"icon\":\"mdi:phone\"},\"next\":null,\"createdAt\":\"2025-06-19T06:02:00Z\"}]"
+      }
+    ],
+    "content": "if product is available then mail user",
+    "response": "Here's the flow for your request.",
+    "title": "Product Stock Management",
+    "description": "If product is available, send email. if not available, call user.",
+    "flow": [
+      {
+        "id": "a1b2c3d4-e5f6-4g7h-8i9j-k0l1m2n3o4p5",
+        "type": "NORMAL",
+        "properties": {
+          "action": "GREY:check_product_availability",
+          "label": "Check Product Availability",
+          "icon": "mdi:check"
+        },
+        "next": ["b2c3d4e5-f6g7-4h8i-9j0k-l1m2n3o4p5q6"],
+        "createdAt": "2025-06-19T06:02:00Z"
+      },
+      {
+        "id": "b2c3d4e5-f6g7-4h8i-9j0k-l1m2n3o4p5q6",
+        "type": "CONDITION",
+        "properties": {
+          "action": "PLATFORM:decision",
+          "label": "Product Available?",
+          "icon": "mdi:decision"
+        },
+        "true": ["d4e5f6g7-h8i9-4j0k-1l2m-n3o4p5q6r7s8"],
+        "false": ["c3d4e5f6-g7h8-4i9j-0k1l-m2n3o4p5q6r7"],
+        "createdAt": "2025-06-19T06:02:00Z"
+      },
+      {
+        "id": "c3d4e5f6-g7h8-4i9j-0k1l-m2n3o4p5q6r7",
+        "type": "NORMAL",
+        "properties": {
+          "action": "GREY:call_user",
+          "label": "Call User",
+          "icon": "mdi:phone"
+        },
+        "next": null,
+        "createdAt": "2025-06-19T06:02:00Z"
+      },
+      {
+        "id": "d4e5f6g7-h8i9-4j0k-1l2m-n3o4p5q6r7s8",
+        "type": "NORMAL",
+        "properties": {
+          "action": "GREY:send_email",
+          "label": "Send Email",
+          "icon": "mdi:email"
+        },
+        "next": null,
+        "createdAt": "2025-06-19T06:02:00Z"
+      }
+    ],
+    "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == TRUE THEN\n  Email.Send()\nELSE\n  User.Call()\nEND_IF\nEND_CONTEXT"
+  },
+  {
+    "history": [],
+    "content": "Offer internet packages based on the user's residential address and set up the selected offer.",
+    "response": "Here's the flow for your request.",
+    "title": "Internet Subscription Setup",
+    "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+    "flow": [
+      {
+        "id": "int-001",
+        "type": "NORMAL",
+        "properties": {
+          "action": "GREY:get_user_address",
+          "label": "Get User Address",
+          "icon": "mdi:home"
+        },
+        "next": ["int-002"],
+        "createdAt": "2025-06-19T06:02:00Z"
+      },
+      {
+        "id": "int-002",
+        "type": "NORMAL",
+        "properties": {
+          "action": "GREY:check_coverage",
+          "label": "Check Coverage Area",
+          "icon": "mdi:map-marker-check"
+        },
+        "next": ["int-003"],
+        "createdAt": "2025-06-19T06:02:00Z"
+      },
+      {
+        "id": "int-003",
+        "type": "NORMAL",
+        "properties": {
+          "action": "GREY:get_available_packages",
+          "label": "Get Available Packages",
+          "icon": "mdi:package-variant"
+        },
+        "next": ["int-004"],
+        "createdAt": "2025-06-19T06:02:00Z"
+      },
+      {
+        "id": "int-004",
+        "type": "NORMAL",
+        "properties": {
+          "action": "GREY:present_offers",
+          "label": "Present Offers to User",
+          "icon": "mdi:offer"
+        },
+        "next": ["int-005"],
+        "createdAt": "2025-06-19T06:02:00Z"
+      },
+      {
+        "id": "int-005",
+        "type": "NORMAL",
+        "properties": {
+          "action": "GREY:get_user_selection",
+          "label": "Get User Selection",
+          "icon": "mdi:cursor-pointer"
+        },
+        "next": ["int-006"],
+        "createdAt": "2025-06-19T06:02:00Z"
+      },
+      {
+        "id": "int-006",
+        "type": "NORMAL",
+        "properties": {
+          "action": "GREY:setup_subscription",
+          "label": "Setup Subscription",
+          "icon": "mdi:wifi-check"
+        },
+        "next": ["int-007"],
+        "createdAt": "2025-06-19T06:02:00Z"
+      },
+      {
+        "id": "int-007",
+        "type": "NORMAL",
+        "properties": {
+          "action": "GREY:send_confirmation",
+          "label": "Send Confirmation",
+          "icon": "mdi:email-check"
+        },
+        "next": null,
+        "createdAt": "2025-06-19T06:02:00Z"
+      }
+    ],
+    "pseudocode": "BEGIN_CONTEXT\nAddress = User.GetAddress()\nCoverage = Coverage.Check(Address)\nPackages = Packages.GetAvailable(Coverage)\nOffers.Present(Packages)\nSelection = User.GetSelection()\nSubscription.Setup(Selection)\nConfirmation.Send()\nEND_CONTEXT"
   }
 ]

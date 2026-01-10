@@ -37,7 +37,7 @@ router.get("/:id", async (req, res) => {
 router.put("/:responsibilityId", async (req, res) => {
   const { projectId: teamId } = req.session;
   const { responsibilityId } = req.params;
-  const { title, description, colleagueId, nodes } =
+  const { title, description, colleagueId, nodes, taskId } =
     ResponsibilitySchema.upsert.parse(req.body);
 
   if (colleagueId) {
@@ -70,6 +70,13 @@ router.put("/:responsibilityId", async (req, res) => {
   await event.publish("RESPONSIBILITY_CREATED", {
     responsibility: { ...result, pseudocode },
   });
+
+  if (taskId) {
+    await event.publish("TASK_RESPONSIBILITY_UPDATED", {
+      taskId,
+      responsibilityId,
+    });
+  }
 
   res.status(200).json(result);
 });

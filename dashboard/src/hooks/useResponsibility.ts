@@ -43,6 +43,23 @@ function useResponsibility() {
     };
   };
 
+  const getResponsibilityById = (
+    id: string,
+    fetchState: DependencyArray = []
+  ) => {
+    const { data, loading, error, fetch } = Api(
+      () => (id ? http.get(`/responsibilities/${id}`) : null),
+      [...fetchState]
+    );
+
+    return {
+      responsibility: data,
+      loading,
+      error,
+      fetch,
+    };
+  };
+
   const getResponsibilityWithNode = (
     id: string,
     fetchState: DependencyArray = []
@@ -90,7 +107,8 @@ function useResponsibility() {
     title: string,
     description: string,
     colleagueId: string,
-    nodes?: NodeType[]
+    nodes?: NodeType[],
+    taskId?: string
   ) => {
     if (!responsibilityId) {
       responsibilityId = uuidv4();
@@ -101,6 +119,7 @@ function useResponsibility() {
       description,
       nodes,
       colleagueId,
+      taskId,
     });
     if (response?.data) {
       publish("RESPONSIBILITY_UPSERTED", { responsibility: response.data });
@@ -128,6 +147,7 @@ function useResponsibility() {
 
   return {
     getResponsibility,
+    getResponsibilityById,
     getResponsibilityWithNode,
     createResponsibility,
     upsertResponsibility,

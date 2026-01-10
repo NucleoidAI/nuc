@@ -13,12 +13,15 @@ const Responsibility = {
             .object({
               label: z.string(),
               icon: z.string(),
+              action: z.string().optional(),
+              description: z.string().optional(),
             })
             .optional(),
           type: z.string(),
           next: z.array(z.string()).nullish(),
           true: z.array(z.string()).nullish(),
           false: z.array(z.string()).nullish(),
+          createdAt: z.string().optional(),
         })
       )
       .optional(),

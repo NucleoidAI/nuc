@@ -403,7 +403,8 @@
           "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:get_bbk_by_address",
+            "action": "TELCO:get_bbk_by_address",
+            "description": "Retrieve BBK number based on the user's residential address information",
             "label": "Get BBK No by Address",
             "icon": "mdi:map-marker"
           },
@@ -414,7 +415,8 @@
           "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:get_inventory",
+            "action": "TELCO:get_inventory",
+            "description": "Check inventory availability for the given BBK number and address",
             "label": "Get Inventory",
             "icon": "mdi:server"
           },
@@ -426,6 +428,7 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
+            "description": "Decide based on inventory availability whether to proceed with product selection",
             "label": "Check if product is available",
             "icon": "mdi:decision"
           },
@@ -438,6 +441,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
+            "description": "Mark the process as complete when no products are available",
             "label": "Complete",
             "icon": "mdi:check"
           },
@@ -448,7 +452,8 @@
           "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:get_product_by_speed",
+            "action": "TELCO:get_product_by_speed",
+            "description": "Retrieve available internet products based on speed requirements",
             "label": "Get Product by Speed",
             "icon": "mdi:speedometer"
           },
@@ -460,6 +465,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
+            "description": "Wait for user to select a product from the available options",
             "label": "User selected product",
             "icon": "mdi:user"
           },
@@ -470,7 +476,8 @@
           "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:port_tahsis",
+            "action": "TELCO:port_tahsis",
+            "description": "Assign a port for the selected internet product and create an order",
             "label": "Assign Port",
             "icon": "mdi:link"
           },
@@ -481,7 +488,8 @@
           "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:configuration",
+            "action": "TELCO:configuration",
+            "description": "Configure the assigned port with necessary settings",
             "label": "Configure Port",
             "icon": "mdi:settings"
           },
@@ -492,7 +500,8 @@
           "id": "019b32f6-5878-73fb-8411-55916778d9a4",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:port_baglanti",
+            "action": "TELCO:port_baglanti",
+            "description": "Connect the assigned port to the user's residence",
             "label": "Connect Port",
             "icon": "mdi:check"
           },
@@ -504,6 +513,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
+            "description": "Mark the internet subscription setup process as complete",
             "label": "Complete",
             "icon": "mdi:check"
           },
@@ -534,7 +544,8 @@
           "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:get_bbk_by_address",
+            "action": "TELCO:get_bbk_by_address",
+            "description": "Retrieve BBK number based on the user's residential address information",
             "label": "Get BBK No by Address",
             "icon": "mdi:map-marker"
           },
@@ -545,7 +556,8 @@
           "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:get_inventory",
+            "action": "TELCO:get_inventory",
+            "description": "Check inventory availability for the given BBK number and address",
             "label": "Get Inventory",
             "icon": "mdi:server"
           },
@@ -557,6 +569,7 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
+            "description": "Decide based on inventory availability whether to proceed with product selection",
             "label": "Check if product is available",
             "icon": "mdi:decision"
           },
@@ -569,6 +582,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
+            "description": "Mark the process as complete when no products are available",
             "label": "Complete",
             "icon": "mdi:check"
           },
@@ -579,7 +593,8 @@
           "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:get_product_by_speed",
+            "action": "TELCO:get_product_by_speed",
+            "description": "Retrieve available internet products based on speed requirements",
             "label": "Get Product by Speed",
             "icon": "mdi:speedometer"
           },
@@ -591,6 +606,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
+            "description": "Wait for user to select a product from the available options",
             "label": "User selected product",
             "icon": "mdi:user"
           },
@@ -601,7 +617,8 @@
           "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:port_tahsis",
+            "action": "TELCO:port_tahsis",
+            "description": "Assign a port for the selected internet product and create an order",
             "label": "Assign Port",
             "icon": "mdi:link"
           },
@@ -612,7 +629,8 @@
           "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:configuration",
+            "action": "TELCO:configuration",
+            "description": "Configure the assigned port with necessary settings",
             "label": "Configure Port",
             "icon": "mdi:settings"
           },
@@ -623,7 +641,8 @@
           "id": "019b32f6-5878-73fb-8411-55916778d9a4",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:port_baglanti",
+            "action": "TELCO:port_baglanti",
+            "description": "Connect the assigned port to the user's residence",
             "label": "Connect Port",
             "icon": "mdi:check"
           },
@@ -635,6 +654,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
+            "description": "Mark the internet subscription setup process as complete",
             "label": "Complete",
             "icon": "mdi:check"
           },
@@ -665,7 +685,8 @@
           "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:get_bbk_by_address",
+            "action": "TELCO:get_bbk_by_address",
+            "description": "Retrieve BBK number based on the user's residential address information",
             "label": "Get BBK No by Address",
             "icon": "mdi:map-marker"
           },
@@ -676,7 +697,8 @@
           "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:get_inventory",
+            "action": "TELCO:get_inventory",
+            "description": "Check inventory availability for the given BBK number and address",
             "label": "Get Inventory",
             "icon": "mdi:server"
           },
@@ -688,6 +710,7 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
+            "description": "Decide based on inventory availability whether to proceed with product selection",
             "label": "Check if product is available",
             "icon": "mdi:decision"
           },
@@ -700,6 +723,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
+            "description": "Mark the process as complete when no products are available",
             "label": "Complete",
             "icon": "mdi:check"
           },
@@ -710,7 +734,8 @@
           "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:get_product_by_speed",
+            "action": "TELCO:get_product_by_speed",
+            "description": "Retrieve available internet products based on speed requirements",
             "label": "Get Product by Speed",
             "icon": "mdi:speedometer"
           },
@@ -722,6 +747,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
+            "description": "Wait for user to select a product from the available options",
             "label": "User selected product",
             "icon": "mdi:user"
           },
@@ -732,7 +758,8 @@
           "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:port_tahsis",
+            "action": "TELCO:port_tahsis",
+            "description": "Assign a port for the selected internet product and create an order",
             "label": "Assign Port",
             "icon": "mdi:link"
           },
@@ -743,7 +770,8 @@
           "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:configuration",
+            "action": "TELCO:configuration",
+            "description": "Configure the assigned port with necessary settings",
             "label": "Configure Port",
             "icon": "mdi:settings"
           },
@@ -754,7 +782,8 @@
           "id": "019b32f6-5878-73fb-8411-55916778d9a4",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:port_baglanti",
+            "action": "TELCO:port_baglanti",
+            "description": "Connect the assigned port to the user's residence",
             "label": "Connect Port",
             "icon": "mdi:check"
           },
@@ -766,6 +795,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
+            "description": "Mark the internet subscription setup process as complete",
             "label": "Complete",
             "icon": "mdi:check"
           },
@@ -796,7 +826,8 @@
           "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:get_bbk_by_address",
+            "action": "TELCO:get_bbk_by_address",
+            "description": "Retrieve BBK number based on the user's residential address information",
             "label": "Get BBK No by Address",
             "icon": "mdi:map-marker"
           },
@@ -807,7 +838,8 @@
           "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:get_inventory",
+            "action": "TELCO:get_inventory",
+            "description": "Check inventory availability for the given BBK number and address",
             "label": "Get Inventory",
             "icon": "mdi:server"
           },
@@ -819,6 +851,7 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
+            "description": "Decide based on inventory availability whether to proceed with product selection",
             "label": "Check if product is available",
             "icon": "mdi:decision"
           },
@@ -831,6 +864,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
+            "description": "Mark the process as complete when no products are available",
             "label": "Complete",
             "icon": "mdi:check"
           },
@@ -841,7 +875,8 @@
           "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:get_product_by_speed",
+            "action": "TELCO:get_product_by_speed",
+            "description": "Retrieve available internet products based on speed requirements",
             "label": "Get Product by Speed",
             "icon": "mdi:speedometer"
           },
@@ -853,6 +888,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
+            "description": "Wait for user to select a product from the available options",
             "label": "User selected product",
             "icon": "mdi:user"
           },
@@ -863,7 +899,8 @@
           "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:port_tahsis",
+            "action": "TELCO:port_tahsis",
+            "description": "Assign a port for the selected internet product and create an order",
             "label": "Assign Port",
             "icon": "mdi:link"
           },
@@ -874,7 +911,8 @@
           "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:configuration",
+            "action": "TELCO:configuration",
+            "description": "Configure the assigned port with necessary settings",
             "label": "Configure Port",
             "icon": "mdi:settings"
           },
@@ -885,7 +923,8 @@
           "id": "019b32f6-5878-73fb-8411-55916778d9a4",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:port_baglanti",
+            "action": "TELCO:port_baglanti",
+            "description": "Connect the assigned port to the user's residence",
             "label": "Connect Port",
             "icon": "mdi:check"
           },
@@ -897,6 +936,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
+            "description": "Mark the internet subscription setup process as complete",
             "label": "Complete",
             "icon": "mdi:check"
           },
@@ -927,7 +967,8 @@
           "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:get_bbk_by_address",
+            "action": "TELCO:get_bbk_by_address",
+            "description": "Retrieve BBK number based on the user's residential address information",
             "label": "Get BBK No by Address",
             "icon": "mdi:map-marker"
           },
@@ -938,7 +979,8 @@
           "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:get_inventory",
+            "action": "TELCO:get_inventory",
+            "description": "Check inventory availability for the given BBK number and address",
             "label": "Get Inventory",
             "icon": "mdi:server"
           },
@@ -950,6 +992,7 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
+            "description": "Decide based on inventory availability whether to proceed with product selection",
             "label": "Check if product is available",
             "icon": "mdi:decision"
           },
@@ -962,6 +1005,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
+            "description": "Mark the process as complete when no products are available",
             "label": "Complete",
             "icon": "mdi:check"
           },
@@ -972,7 +1016,8 @@
           "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:get_product_by_speed",
+            "action": "TELCO:get_product_by_speed",
+            "description": "Retrieve available internet products based on speed requirements",
             "label": "Get Product by Speed",
             "icon": "mdi:speedometer"
           },
@@ -984,6 +1029,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
+            "description": "Wait for user to select a product from the available options",
             "label": "User selected product",
             "icon": "mdi:user"
           },
@@ -994,7 +1040,8 @@
           "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:port_tahsis",
+            "action": "TELCO:port_tahsis",
+            "description": "Assign a port for the selected internet product and create an order",
             "label": "Assign Port",
             "icon": "mdi:link"
           },
@@ -1005,7 +1052,8 @@
           "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:configuration",
+            "action": "TELCO:configuration",
+            "description": "Configure the assigned port with necessary settings",
             "label": "Configure Port",
             "icon": "mdi:settings"
           },
@@ -1016,7 +1064,8 @@
           "id": "019b32f6-5878-73fb-8411-55916778d9a4",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:port_baglanti",
+            "action": "TELCO:port_baglanti",
+            "description": "Connect the assigned port to the user's residence",
             "label": "Connect Port",
             "icon": "mdi:check"
           },
@@ -1028,6 +1077,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
+            "description": "Mark the internet subscription setup process as complete",
             "label": "Complete",
             "icon": "mdi:check"
           },
@@ -1058,7 +1108,8 @@
           "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:get_bbk_by_address",
+            "action": "TELCO:get_bbk_by_address",
+            "description": "Retrieve BBK number based on the user's residential address information",
             "label": "Get BBK No by Address",
             "icon": "mdi:map-marker"
           },
@@ -1069,7 +1120,8 @@
           "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:get_inventory",
+            "action": "TELCO:get_inventory",
+            "description": "Check inventory availability for the given BBK number and address",
             "label": "Get Inventory",
             "icon": "mdi:server"
           },
@@ -1081,6 +1133,7 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
+            "description": "Decide based on inventory availability whether to proceed with product selection",
             "label": "Check if product is available",
             "icon": "mdi:decision"
           },
@@ -1093,6 +1146,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
+            "description": "Mark the process as complete when no products are available",
             "label": "Complete",
             "icon": "mdi:check"
           },
@@ -1103,7 +1157,8 @@
           "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:get_product_by_speed",
+            "action": "TELCO:get_product_by_speed",
+            "description": "Retrieve available internet products based on speed requirements",
             "label": "Get Product by Speed",
             "icon": "mdi:speedometer"
           },
@@ -1115,6 +1170,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
+            "description": "Wait for user to select a product from the available options",
             "label": "User selected product",
             "icon": "mdi:user"
           },
@@ -1125,7 +1181,8 @@
           "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:port_tahsis",
+            "action": "TELCO:port_tahsis",
+            "description": "Assign a port for the selected internet product and create an order",
             "label": "Assign Port",
             "icon": "mdi:link"
           },
@@ -1136,7 +1193,8 @@
           "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:configuration",
+            "action": "TELCO:configuration",
+            "description": "Configure the assigned port with necessary settings",
             "label": "Configure Port",
             "icon": "mdi:settings"
           },
@@ -1147,7 +1205,8 @@
           "id": "019b32f6-5878-73fb-8411-55916778d9a4",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:port_baglanti",
+            "action": "TELCO:port_baglanti",
+            "description": "Connect the assigned port to the user's residence",
             "label": "Connect Port",
             "icon": "mdi:check"
           },
@@ -1159,6 +1218,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
+            "description": "Mark the internet subscription setup process as complete",
             "label": "Complete",
             "icon": "mdi:check"
           },

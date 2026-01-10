@@ -19,7 +19,7 @@ async function run({
     content: answer || question,
   });
 
-  return answer;
+  return answer || question;
 }
 
 export default { run };

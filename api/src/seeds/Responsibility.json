@@ -13,6 +13,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TURK_TELEKOM:get_bbk_by_address",
+            "description": "Retrieve BBK number based on the user's residential address information",
             "label": "Get BBK No by Address",
             "icon": "mdi:map-marker"
           },
@@ -24,6 +25,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TURK_TELEKOM:get_inventory",
+            "description": "Check inventory availability for the given BBK number and address",
             "label": "Get Inventory",
             "icon": "mdi:server"
           },
@@ -35,6 +37,7 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
+            "description": "Decide based on inventory availability whether to proceed with product selection",
             "label": "Check if product is available",
             "icon": "mdi:decision"
           },
@@ -47,6 +50,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
+            "description": "Mark the process as complete when no products are available",
             "label": "Complete",
             "icon": "mdi:check"
           },
@@ -58,6 +62,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TURK_TELEKOM:get_product_by_speed",
+            "description": "Retrieve available internet products based on speed requirements",
             "label": "Get Product by Speed",
             "icon": "mdi:speedometer"
           },
@@ -69,6 +74,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
+            "description": "Wait for user to select a product from the available options",
             "label": "User selected product",
             "icon": "mdi:user"
           },
@@ -80,6 +86,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TURK_TELEKOM:port_tahsis",
+            "description": "Assign a port for the selected internet product and create an order",
             "label": "Assign Port",
             "icon": "mdi:link"
           },
@@ -91,6 +98,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TURK_TELEKOM:configuration",
+            "description": "Configure the assigned port with necessary settings",
             "label": "Configure Port",
             "icon": "mdi:settings"
           },
@@ -102,6 +110,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TURK_TELEKOM:port_baglanti",
+            "description": "Connect the assigned port to the user's residence",
             "label": "Connect Port",
             "icon": "mdi:check"
           },
@@ -114,6 +123,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
+            "description": "Mark the internet subscription setup process as complete",
             "label": "Complete",
             "icon": "mdi:check"
           },

@@ -97,7 +97,6 @@ function TasksWidget({ agentId }: { agentId: string }) {
         width: "100%",
         px: { xs: 1, md: 2 },
         pb: 2,
-        minHeight: "calc(100vh - 240px)",
       }}
     >
       <Stack spacing={2}>

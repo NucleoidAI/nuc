@@ -14,24 +14,31 @@ const ResponsibilityFlowDialog = ({
   handleFlowDialogClose,
   selectedItem,
   aiResponse,
+  setAiResponse,
 }) => {
   return (
     <Dialog
       open={flowDialogOpen}
       onClose={handleFlowDialogClose}
-      maxWidth="md"
+      maxWidth="xl"
       fullWidth
     >
       <DialogTitle>Flow Chart</DialogTitle>
       <DialogContent
         sx={{
           width: "100%",
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
+          msOverflowStyle: "none",
+          scrollbarWidth: "none",
         }}
       >
         {selectedItem && (
           <ResponsibilityFlow
             aiResponse={aiResponse}
             responsibility={selectedItem}
+            setAiResponse={setAiResponse}
           />
         )}
       </DialogContent>

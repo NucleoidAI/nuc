@@ -26,7 +26,17 @@ const IncomingDrawer = ({
   const [open, setOpen] = React.useState(false);
 
   return (
-    <Drawer anchor="right" open={drawerOpen} onClose={handleDrawerClose}>
+    <Drawer
+      anchor="right"
+      open={drawerOpen}
+      onClose={handleDrawerClose}
+      sx={{
+        zIndex: (theme) => theme.zIndex.modal + 2,
+        "& .MuiDrawer-paper": {
+          zIndex: (theme) => theme.zIndex.modal + 2,
+        },
+      }}
+    >
       <Box sx={{ width: "800px" }}>
         <Stack
           sx={{

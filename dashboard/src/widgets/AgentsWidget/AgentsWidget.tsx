@@ -1,7 +1,7 @@
 import AddNewButton from "../../components/AddNewButton";
 import AgentCard from "../../components/AgentCard";
-import AgentSkeleton from "../../components/Skeletons/AgentSkeleton";
 import AgentWizard from "../AgentWizard/AgentWizard";
+import AgentsSkeleton from "../../components/Skeletons/AgentsSkeleton";
 import Box from "@mui/material/Box";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
 import DeleteButton from "../../components/DeleteButton/DeleteButton";
@@ -71,7 +71,7 @@ function AgentsWidget({ teamId }) {
         {loading
           ? Array.from({ length: 1 }).map((_, index) => (
               <Grid item xs={12} sm={12} md={6} lg={4} key={index}>
-                <AgentSkeleton key={index} />
+                <AgentsSkeleton key={index} />
               </Grid>
             ))
           : agents.map((agent) => (
@@ -97,7 +97,7 @@ function AgentsWidget({ teamId }) {
             closeForm();
             setUpdatedAgent(null);
           }}
-          itemProperties={["name", "description"]}
+          itemProperties={["name", "description", "icon"]}
           onSubmit={updatedAgent ? updateAgent : createAgent}
           itemToEdit={updatedAgent}
         />

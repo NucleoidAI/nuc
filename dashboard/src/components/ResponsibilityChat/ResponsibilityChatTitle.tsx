@@ -443,6 +443,12 @@ const ResponsibilityChatTitle = ({
         onClose={handleCancelClick}
         fullWidth
         maxWidth="sm"
+        sx={{
+          zIndex: (theme) => theme.zIndex.modal + 2,
+          "& .MuiDrawer-paper": {
+            zIndex: (theme) => theme.zIndex.modal + 2,
+          },
+        }}
         PaperProps={{
           sx: {
             borderRadius: 3,

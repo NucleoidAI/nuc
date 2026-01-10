@@ -71,7 +71,7 @@ export const teamChartPlugin = {
                   boxShadow: 2,
                   position: "absolute",
                   top: "40%",
-                  left: "65%",
+                  left: "55%",
                   transform: `translate(-65%, calc(-40% + ${index * 20}px))`,
                 }}
               >
@@ -85,8 +85,8 @@ export const teamChartPlugin = {
       return (
         <Iconify
           icon={node?.icon?.replace(/^:|:$/g, "")}
-          width="40%"
-          height="40%"
+          width="30%"
+          height="30%"
           style={{ objectFit: "contain" }}
         />
       );
@@ -121,117 +121,67 @@ export const teamChartPlugin = {
             }),
           }}
           leftContent={renderInitialAvatar()}
-          rightContent={
-            <Stack
+          title={
+            <Chip
               onClick={handleCardClick}
-              direction="column"
+              label={title || node?.name}
+              icon={<Iconify icon="mingcute:location-fill" width={18} />}
+              size="small"
               sx={{
-                flex: 1,
-                width: "100%",
-                height: "100%",
+                alignSelf: "flex-start",
+                bgcolor: (theme) => alpha(theme.palette.primary.main, 0.12),
+                color: "white",
+                fontWeight: 600,
+                fontSize: "0.78rem",
+                height: 22,
                 mt: -1,
-                justifyContent: "space-between",
+                "& .MuiChip-icon": { color: "white" },
+                "&:hover": {
+                  bgcolor: (theme) => alpha(theme.palette.primary.main, 0.1),
+                  "& .MuiChip-icon": { color: "white" },
+                },
               }}
-            >
-              <Stack spacing={1} sx={{ width: "100%" }}>
-                <Stack
-                  direction="column"
-                  gap={1}
-                  alignItems="flex-start"
-                  sx={{ width: "100%" }}
-                >
-                  <Chip
-                    label={title || node?.name}
-                    icon={<Iconify icon="mingcute:location-fill" width={18} />}
-                    size="small"
-                    sx={{
-                      alignSelf: "flex-start",
-                      bgcolor: (theme) =>
-                        alpha(theme.palette.primary.main, 0.12),
-                      color: "white",
-                      fontWeight: 600,
-                      fontSize: "0.72rem",
-                      height: 22,
-                      "& .MuiChip-icon": {
-                        color: "white",
-                      },
-                      "&:hover": {
-                        bgcolor: (theme) =>
-                          alpha(theme.palette.primary.main, 0.1),
-                        "& .MuiChip-icon": {
-                          color: "white",
-                        },
-                      },
-                    }}
-                  />
-
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      width: "100%",
-                      color: "rgba(255,255,255,0.82)",
-                      lineHeight: 1.3,
-                      fontSize: "0.78rem",
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      wordBreak: "break-word",
-                    }}
-                  >
-                    {node?.description}
-                  </Typography>
-                </Stack>
-              </Stack>
-
-              {onAgentOpen && (
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    gap: 0.5,
-                    mb: -1.5,
+            />
+          }
+          description={<div onClick={handleCardClick}>{node.description}</div>}
+          footer={
+            onAgentOpen && (
+              <>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onAgentOpen(node, "responsibilities");
                   }}
+                  sx={{ minWidth: 30, width: 30, height: 30, p: 0 }}
                 >
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onAgentOpen(node, "responsibilities");
-                    }}
-                    sx={{ minWidth: 36, width: 36, height: 36, p: 0 }}
-                  >
-                    <Iconify icon="healthicons:crisis-response-center-person-outline" />
-                  </Button>
-
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onAgentOpen(node, "knowledge-base");
-                    }}
-                    sx={{ minWidth: 36, width: 36, height: 36, p: 0 }}
-                  >
-                    <Iconify icon="carbon:ibm-watson-knowledge-studio" />
-                  </Button>
-
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onAgentOpen(node, "tasks");
-                    }}
-                    sx={{ minWidth: 36, width: 36, height: 36, p: 0 }}
-                  >
-                    <Iconify icon="material-symbols:task" />
-                  </Button>
-                </Box>
-              )}
-            </Stack>
+                  <Iconify icon="healthicons:crisis-response-center-person-outline" />
+                </Button>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onAgentOpen(node, "knowledge-base");
+                  }}
+                  sx={{ minWidth: 30, width: 30, height: 30, p: 0 }}
+                >
+                  <Iconify icon="carbon:ibm-watson-knowledge-studio" />
+                </Button>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onAgentOpen(node, "tasks");
+                  }}
+                  sx={{ minWidth: 30, width: 30, height: 30, p: 0 }}
+                >
+                  <Iconify icon="material-symbols:task" />
+                </Button>
+              </>
+            )
           }
           background={undefined}
         />
@@ -251,7 +201,6 @@ export const teamChartPlugin = {
               transform: "none",
               boxShadow: "none",
             },
-
             "& .animated-background-selector": (theme) => ({
               background: `linear-gradient(
                 135deg,
@@ -261,55 +210,22 @@ export const teamChartPlugin = {
             }),
           }}
           stripeContent={renderInitialAvatar()}
-          mainContent={
-            <Box
-              sx={{
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                pl: 2,
-              }}
-            >
-              <Box>
-                <Typography
-                  variant="subtitle2"
-                  fontWeight={600}
-                  sx={{ mt: -2, ml: -2 }}
-                >
-                  {title || node?.name}
-                </Typography>
-                {node?.description && (
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      opacity: 0.8,
-                      lineHeight: 1.3,
-                      fontSize: "0.78rem",
-                      ml: -2,
-                    }}
-                  >
-                    {node.description}
-                  </Typography>
-                )}
-              </Box>
-
-              {onResponsibilityOpen && (
-                <Box display="flex" justifyContent="flex-end">
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onResponsibilityOpen(node);
-                    }}
-                    sx={{ minWidth: 36, width: 36, height: 36, p: 0 }}
-                  >
-                    <EditIcon />
-                  </Button>
-                </Box>
-              )}
-            </Box>
+          title={title || node?.name}
+          description={node?.description}
+          footer={
+            onResponsibilityOpen && (
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onResponsibilityOpen(node);
+                }}
+                sx={{ minWidth: 30, width: 30, height: 30, p: 0 }}
+              >
+                <EditIcon />
+              </Button>
+            )
           }
           minWidth={width}
           maxWidth={width}
@@ -318,7 +234,6 @@ export const teamChartPlugin = {
         />
       );
     }
-
     const teamName = node?.name || title || "";
     return (
       <HeaderCard
@@ -346,8 +261,8 @@ export const teamChartPlugin = {
               {node.icon ? (
                 <Iconify
                   sx={{
-                    width: 32,
-                    height: 32,
+                    width: 28,
+                    height: 28,
                     color: "info.main",
                     position: "relative",
                     top: -5,
@@ -393,9 +308,9 @@ export const teamChartPlugin = {
                       onTeamAddAgent(node);
                     }}
                     sx={{
-                      minWidth: 36,
-                      width: 36,
-                      height: 36,
+                      minWidth: 30,
+                      width: 30,
+                      height: 30,
                       position: "relative",
                       top: -5,
                     }}
@@ -416,15 +331,7 @@ export const teamChartPlugin = {
                 top: 10,
               }}
             >
-              <Typography
-                sx={{
-                  color: "text.primary",
-                  fontWeight: "bold",
-                  lineHeight: 1.2,
-                  textAlign: "center",
-                }}
-                noWrap
-              >
+              <Typography variant="inherit" noWrap>
                 {teamName}
               </Typography>
             </Box>

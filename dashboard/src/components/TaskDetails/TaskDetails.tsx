@@ -61,10 +61,10 @@ const TaskDetails = ({
     result: "",
   });
 
-  if (!task) {
+  if (!task || !task.id) {
     return (
       <Box sx={{ py: 6, textAlign: "center", color: "text.secondary" }}>
-        Select a task from the list to see details
+        Select a task from the list to see details.
       </Box>
     );
   }

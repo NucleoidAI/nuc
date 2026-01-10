@@ -5,6 +5,7 @@ function convertToNodesAndEdges(data) {
       label: item.properties?.label,
       icon: item.properties?.icon,
       type: item.type,
+      description: item.properties?.description,
     };
   });
 

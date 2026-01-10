@@ -14,6 +14,12 @@ export default function WidgetSummary({
   chart,
   sx,
   ...other
+}: {
+  title: string;
+  percent: number;
+  total: string | number;
+  chart: React.ReactNode;
+  sx?: object;
 }) {
   return (
     <Card
@@ -21,13 +27,13 @@ export default function WidgetSummary({
         height: "100%",
         display: "flex",
         alignItems: "center",
-        p: 3,
+        p: 2,
         ...sx,
       }}
       {...other}
     >
       <Box sx={{ flexGrow: 1 }}>
-        <Typography variant="subtitle2">{title}</Typography>
+        <Typography variant="body2">{title}</Typography>
 
         <Stack direction="row" alignItems="center" sx={{ mt: 2, mb: 1 }}>
           <Iconify
@@ -46,14 +52,14 @@ export default function WidgetSummary({
             }}
           />
 
-          <Typography component="div" variant="subtitle2">
+          <Typography component="div" variant="body2">
             {percent > 0 && "+"}
 
             {percent}
           </Typography>
         </Stack>
 
-        <Typography variant="h3">{total}</Typography>
+        <Typography variant="h4">{total}</Typography>
       </Box>
 
       {chart}

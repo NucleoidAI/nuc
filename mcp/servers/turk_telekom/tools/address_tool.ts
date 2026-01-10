@@ -1,13 +1,14 @@
-import { Tool, AddressToolInput } from "./types";
+import { AddressToolInput, Tool } from "./types";
+
+import { fileURLToPath } from "url";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export const addressTool: Tool<AddressToolInput> = {
-  name: "TURK_TELEKOM:get_address",
+  name: "TELCO:get_address",
   description:
     "Get address (acik_adres) information by BBK number. Returns the full address associated with the given BBK number.",
   inputSchema: {

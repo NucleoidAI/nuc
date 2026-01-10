@@ -1,13 +1,14 @@
-import { Tool, InventoryToolInput } from "./types";
+import { InventoryToolInput, Tool } from "./types";
+
+import { fileURLToPath } from "url";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export const inventoryTool: Tool<InventoryToolInput> = {
-  name: "TURK_TELEKOM:get_inventory",
+  name: "TELCO:get_inventory",
   description:
     "Get infrastructure inventory information by BBK number. Returns details including infrastructure type (Altyapı Tipi), topology (Topoloji), device information (Cihaz), port availability, HGW serial number, and speed limit.",
   inputSchema: {

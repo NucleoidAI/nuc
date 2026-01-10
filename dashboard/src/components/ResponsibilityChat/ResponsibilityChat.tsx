@@ -97,8 +97,6 @@ function ResponsibilityChat({
           { content: parsedMessage, role: "user" },
         ];
 
-        console.log("history", history);
-
         const { data } = await http.post("/colleagues/responsibilities", {
           history,
           content: message,

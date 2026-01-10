@@ -45,6 +45,7 @@ class Step extends Model {
       "COMPLETED",
       "FAILED",
       "WAITING_FOR_USER",
+      "LOW_CONFIDENCE",
     ],
   ])
   @Column(DataType.STRING)
@@ -53,7 +54,8 @@ class Step extends Model {
     | "SUPERVISED_NEEDED"
     | "COMPLETED"
     | "FAILED"
-    | "WAITING_FOR_USER";
+    | "WAITING_FOR_USER"
+    | "LOW_CONFIDENCE";
 
   @AllowNull(false)
   @Column(DataType.UUID)

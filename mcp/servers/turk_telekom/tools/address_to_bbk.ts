@@ -44,11 +44,11 @@ export const addressToBBKTool: Tool<AddressToBBKInput> = {
             {
               type: "text",
               text: JSON.stringify({
-                error: `BBK number not found for address: ${args.address}`,
+                message: `Address not found in records: ${args.address}`,
               }),
             },
           ],
-          isError: true,
+          isError: false,
         };
       }
 

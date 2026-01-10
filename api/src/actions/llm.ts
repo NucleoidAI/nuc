@@ -8,6 +8,10 @@ if (process.env.PLATFORM_LLM === "AZURE") {
   llm = require("../lib/azure").default;
 }
 
+if (process.env.PLATFORM_LLM === "ANTHROPIC") {
+  llm = require("../lib/anthropic").default;
+}
+
 async function run({ context, parameters: { message } }) {
   const { result } = await llm.generate({
     messages: [

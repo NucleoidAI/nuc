@@ -5,6 +5,7 @@ const Responsibility = {
     title: z.string(),
     description: z.string(),
     colleagueId: z.string().uuid(),
+    taskId: z.string().uuid().optional(),
     nodes: z
       .array(
         z.object({

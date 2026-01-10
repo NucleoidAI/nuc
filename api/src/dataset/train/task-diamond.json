@@ -182,5 +182,484 @@
         }
       }
     ]
+  },
+  {
+    "id": "1dcgcfde-6f1e-5a35-c6ge-7ef373396a47",
+    "description": "Setup internet subscription at user's address.",
+    "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
+    "pseudocode": "BEGIN_CONTEXT \nUser.Address = GetUserAddress()\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "responsibility": {
+      "id": "ca7g8022-f343-570e-a171-3992963g7f70",
+      "title": "Basic Internet Subscription Setup",
+      "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "nodes": [
+        {
+          "id": "019b9433-3de3-7545-a40a-854419ae8be1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "label": "Get User Address",
+            "icon": "mdi:map-marker"
+          },
+          "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:get_bbk_by_address",
+            "label": "Get BBK No by Address",
+            "icon": "mdi:map-marker"
+          },
+          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:get_inventory",
+            "label": "Get Inventory",
+            "icon": "mdi:server"
+          },
+          "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b209c-2e5a-777f-a04a-11960363fb25",
+          "type": "CONDITION",
+          "properties": {
+            "action": "PLATFORM:decision",
+            "label": "Check if product is available",
+            "icon": "mdi:decision"
+          },
+          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+          "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "label": "Complete",
+            "icon": "mdi:check"
+          },
+          "next": null,
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:get_product_by_speed",
+            "label": "Get Product by Speed",
+            "icon": "mdi:speedometer"
+          },
+          "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b0270-c493-7072-9d50-87952c5dc547",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "label": "User selected product",
+            "icon": "mdi:user"
+          },
+          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:port_tahsis",
+            "label": "Assign Port",
+            "icon": "mdi:link"
+          },
+          "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:configuration",
+            "label": "Configure Port",
+            "icon": "mdi:settings"
+          },
+          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b32f6-5878-73fb-8411-55916778d9a4",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:port_baglanti",
+            "label": "Connect Port",
+            "icon": "mdi:check"
+          },
+          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "label": "Complete",
+            "icon": "mdi:check"
+          },
+          "next": null,
+          "createdAt": "2025-06-19T06:02:00Z"
+        }
+      ]
+    },
+    "knowledge": [],
+    "steps": [
+      {
+        "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+        "action": "PLATFORM:user_interaction",
+        "status": "COMPLETED",
+        "parameters": {
+          "answer": "123 Main Street, Istanbul"
+        },
+        "comment": "User selected address"
+      },
+      {
+        "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+        "action": "TURK_TELEKOM:get_bbk_by_address",
+        "status": "COMPLETED",
+        "parameters": {
+          "address": "123 Main Street, Istanbul"
+        },
+        "comment": "Getting BBK number by address"
+      },
+      {
+        "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+        "action": "PLATFORM:ask_supervisor",
+        "status": "COMPLETED",
+        "parameters": {
+          "question": "Adress is not valid. What am i supposed to do?",
+          "sessionId": "123456019b6e75-8a07-72f2-8adf-82cd88f6b7cc7890",
+          "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+        },
+        "comment": "Asking supervisor to next step"
+      },
+      {
+        "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+        "action": "PLATFORM:user_interaction",
+        "status": "COMPLETED",
+        "parameters": {
+          "answer": "Gazi Mustafa Kemal Bulvarı, Istanbul"
+        },
+        "comment": "User selected address"
+      },
+      {
+        "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+        "action": "TURK_TELEKOM:get_bbk_by_address",
+        "status": "COMPLETED",
+        "parameters": {
+          "address": "Gazi Mustafa Kemal Bulvarı, Istanbul"
+        },
+        "comment": "Getting BBK number by address"
+      },
+      {
+        "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+        "action": "TURK_TELEKOM:get_inventory",
+        "status": "COMPLETED",
+        "parameters": {
+          "bbk": "BBK-12345"
+        },
+        "comment": "Checking inventory availability"
+      },
+      {
+        "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+        "action": "PLATFORM:decision",
+        "status": "COMPLETED",
+        "comment": "Making decision",
+        "parameters": {
+          "condition": "inventory.Available == TRUE",
+          "true": [
+            {
+              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+              "action": "TURK_TELEKOM:get_product_by_speed",
+              "status": "COMPLETED",
+              "parameters": {
+                "speed": 100
+              },
+              "comment": "Getting products by speed"
+            },
+            {
+              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+              "action": "PLATFORM:user_interaction",
+              "status": "COMPLETED",
+              "parameters": {
+                "selectedProduct": {
+                  "serial_number": "SN-789456",
+                  "assignment_id": "ASSIGN-123"
+                }
+              },
+              "comment": "User selected product"
+            },
+            {
+              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+              "action": "TURK_TELEKOM:port_tahsis",
+              "status": "COMPLETED",
+              "parameters": {
+                "serial_number": "SN-789456"
+              },
+              "comment": "Assigning port"
+            },
+            {
+              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+              "action": "TURK_TELEKOM:configuration",
+              "status": "COMPLETED",
+              "parameters": {
+                "serial_number": "SN-789456"
+              },
+              "comment": "Configuring port"
+            },
+            {
+              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+              "action": "TURK_TELEKOM:port_baglanti",
+              "status": "FAILED",
+              "parameters": {
+                "assignment_id": "ASSIGN-123"
+              },
+              "comment": "There is an error in the port connection"
+            },
+            {
+              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+              "action": "PLATFORM:ask_supervisor",
+              "status": "COMPLETED",
+              "parameters": {
+                "question": "There is an error in the port connection. What should i do?",
+                "sessionId": "123456019b6e75-8a07-72f2-8adf-82cd88f6b7cc7890",
+                "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+              },
+              "comment": "Asking supervisor to next step"
+            },
+            {
+              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+              "action": "TURK_TELEKOM:port_baglanti_with_technical_support",
+              "status": "COMPLETED",
+              "parameters": {
+                "assignment_id": "ASSIGN-123"
+              },
+              "comment": "Connecting port with technical support"
+            },
+            {
+              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+              "action": "PLATFORM:complete",
+              "status": "COMPLETED",
+              "parameters": {},
+              "comment": "Completing task"
+            }
+          ],
+          "false": [
+            {
+              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+              "action": "PLATFORM:complete",
+              "status": "COMPLETED",
+              "parameters": {},
+              "comment": "Completing task - inventory not available"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "2efhdhff-7g2f-6b46-d7hf-8fg484407b58",
+    "description": "Setup internet subscription at user's address.",
+    "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
+    "pseudocode": "BEGIN_CONTEXT \nUser.Address = GetUserAddress()\nbbk = GetBBKByAddress(User.Address)\nIF bbk == NULL THEN\n    NotifyUser(\"Address not found. Please call support center.\")\n    Complete()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "responsibility": {
+      "id": "ca7g8022-f343-570e-a171-3992963g7f70",
+      "title": "Basic Internet Subscription Setup",
+      "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "nodes": [
+        {
+          "id": "019b9433-3de3-7545-a40a-854419ae8be1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "label": "Get User Address",
+            "icon": "mdi:map-marker"
+          },
+          "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:get_bbk_by_address",
+            "label": "Get BBK No by Address",
+            "icon": "mdi:map-marker"
+          },
+          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:get_inventory",
+            "label": "Get Inventory",
+            "icon": "mdi:server"
+          },
+          "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b209c-2e5a-777f-a04a-11960363fb25",
+          "type": "CONDITION",
+          "properties": {
+            "action": "PLATFORM:decision",
+            "label": "Check if product is available",
+            "icon": "mdi:decision"
+          },
+          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+          "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "label": "Complete",
+            "icon": "mdi:check"
+          },
+          "next": null,
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:get_product_by_speed",
+            "label": "Get Product by Speed",
+            "icon": "mdi:speedometer"
+          },
+          "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b0270-c493-7072-9d50-87952c5dc547",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "label": "User selected product",
+            "icon": "mdi:user"
+          },
+          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:port_tahsis",
+            "label": "Assign Port",
+            "icon": "mdi:link"
+          },
+          "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:configuration",
+            "label": "Configure Port",
+            "icon": "mdi:settings"
+          },
+          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b32f6-5878-73fb-8411-55916778d9a4",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TURK_TELEKOM:port_baglanti",
+            "label": "Connect Port",
+            "icon": "mdi:check"
+          },
+          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "label": "Complete",
+            "icon": "mdi:check"
+          },
+          "next": null,
+          "createdAt": "2025-06-19T06:02:00Z"
+        }
+      ]
+    },
+    "knowledge": [],
+    "steps": [
+      {
+        "taskId": "c99hh389-e6h4-66fe-b1h0-g1g867804668",
+        "action": "PLATFORM:user_interaction",
+        "status": "COMPLETED",
+        "parameters": {
+          "answer": "Atatürk Caddesi No:45, Ankara"
+        },
+        "comment": "User provided address"
+      },
+      {
+        "taskId": "c99hh389-e6h4-66fe-b1h0-g1g867804668",
+        "action": "TURK_TELEKOM:get_bbk_by_address",
+        "status": "FAILED",
+        "parameters": {
+          "address": "Atatürk Caddesi No:45, Ankara"
+        },
+        "comment": "Address not found in database",
+        "error": {
+          "code": "ADDRESS_NOT_FOUND",
+          "message": "The provided address could not be found in the system database"
+        }
+      },
+      {
+        "taskId": "c99hh389-e6h4-66fe-b1h0-g1g867804668",
+        "action": "PLATFORM:ask_supervisor",
+        "status": "COMPLETED",
+        "parameters": {
+          "question": "Address not found in database. What should I do?",
+          "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
+          "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+        },
+        "comment": "Asking supervisor for next step"
+      },
+      {
+        "taskId": "c99hh389-e6h4-66fe-b1h0-g1g867804668",
+        "action": "PLATFORM:message_user",
+        "status": "COMPLETED",
+        "parameters": {
+          "message": "We apologize, but your address could not be found in our database. Please contact our support center at 444 1 444 for assistance with your internet subscription request."
+        },
+        "comment": "Notifying user to call support center"
+      },
+      {
+        "taskId": "c99hh389-e6h4-66fe-b1h0-g1g867804668",
+        "action": "PLATFORM:complete",
+        "status": "COMPLETED",
+        "comment": "Doing supervisor's instructions and complete the task"
+      }
+    ]
   }
 ]

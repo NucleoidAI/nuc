@@ -23,6 +23,26 @@ function useIntegrations() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const getActions = useCallback(() => {
+    const { data, loading, error } = Api(
+      () => http.get(`/integrations/actions`),
+      []
+    );
+
+    if (data) {
+      publish("ACTIONS_LOADED", {
+        actions: data,
+      });
+    }
+
+    return {
+      actions: data,
+      loading,
+      error,
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const getColleagueIntegration = useCallback(
     (colleagueId: string) => {
       const { data, loading, error } = Api(
@@ -48,6 +68,7 @@ function useIntegrations() {
 
   return {
     getIntegrations,
+    getActions,
     getColleagueIntegration,
   };
 }

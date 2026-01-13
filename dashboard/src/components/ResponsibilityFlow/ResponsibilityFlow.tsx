@@ -4,12 +4,12 @@ import { Flow } from "@canmingir/link/platform/components";
 import SuccessSnackbar from "./SuccessSnackbar";
 import ValidationButtons from "./ValidationButtons";
 import ValidationErrorView from "./ValidationErrorView";
-import { FlowDefinition, buildDefinitionGraph } from "./helper";
 import { responsibilityChartPlugin } from "./ResponsibilityFlowPlugin";
 import useIntegrations from "../../hooks/useIntegrations";
 import useResponsibility from "../../hooks/useResponsibility";
 import { v4 as uuid } from "uuid";
 import { validateFlow } from "./validation";
+import { FlowDefinition, buildDefinitionGraph } from "./helper";
 
 import React, { useEffect, useState } from "react";
 

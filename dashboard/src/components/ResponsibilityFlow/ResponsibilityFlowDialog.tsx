@@ -1,6 +1,7 @@
+import { FlowDefinition } from "./helper";
+
 import React from "react";
 import ResponsibilityFlow from "./ResponsibilityFlow";
-import { FlowDefinition } from "./helper";
 
 import {
   Button,

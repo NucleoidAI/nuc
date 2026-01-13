@@ -1,5 +1,6 @@
 import { AuthenticationError } from "@canmingir/link-express/error";
 import Integration from "../models/Integration";
+import actions from "../actions";
 import colleague from "../functions/colleague";
 import express from "express";
 import integration from "../functions/integration";
@@ -70,6 +71,11 @@ router.get("/", async (req, res) => {
     const allIntegrations = await integration.list();
     res.json(allIntegrations);
   }
+});
+
+router.get("/actions", async (req, res) => {
+  const action = actions.list();
+  res.json(action);
 });
 
 router.delete("/:id", async (req, res) => {

@@ -14,7 +14,6 @@ const ResponsibilityFlowDialog = ({
   handleFlowDialogClose,
   selectedItem,
   aiResponse,
-  setAiResponse,
 }: {
   flowDialogOpen: boolean;
   handleFlowDialogClose: () => void;
@@ -50,7 +49,6 @@ const ResponsibilityFlowDialog = ({
       }[];
     };
   };
-  setAiResponse?: (response) => void;
 }) => {
   return (
     <Dialog
@@ -74,7 +72,6 @@ const ResponsibilityFlowDialog = ({
           <ResponsibilityFlow
             aiResponse={aiResponse}
             responsibility={selectedItem}
-            setAiResponse={setAiResponse}
           />
         )}
       </DialogContent>

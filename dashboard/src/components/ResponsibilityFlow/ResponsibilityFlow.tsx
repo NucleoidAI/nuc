@@ -13,7 +13,7 @@ import { validateFlow } from "./validation";
 
 import React, { useEffect, useState } from "react";
 
-function ResponsibilityFlow({ aiResponse, setAiResponse, responsibility }) {
+function ResponsibilityFlow({ aiResponse, responsibility }) {
   const [graphData, setGraphData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [hasLocalChanges, setHasLocalChanges] = useState(false);
@@ -178,6 +178,7 @@ function ResponsibilityFlow({ aiResponse, setAiResponse, responsibility }) {
                 ? [inheritedNext]
                 : [],
               falseNext: [],
+              next: inheritedNext,
               raw: {
                 id: newId,
                 type: newNodeType,
@@ -287,19 +288,40 @@ function ResponsibilityFlow({ aiResponse, setAiResponse, responsibility }) {
       currentNodes[parentId] = updatedParent;
       currentNodes[newId] = newNode;
 
-      const nextGraphData = {
+      const referenced = new Set<string>();
+      Object.values(currentNodes).forEach(
+        (node: {
+          id: string;
+          nodeType: string;
+          next?: string | string[] | null;
+          trueNext?: string[] | null;
+          falseNext?: string[] | null;
+        }) => {
+          if (node.nodeType === "CONDITION") {
+            if (node.trueNext) {
+              node.trueNext.forEach((id) => referenced.add(id));
+            }
+            if (node.falseNext) {
+              node.falseNext.forEach((id) => referenced.add(id));
+            }
+          } else {
+            if (typeof node.next === "string") {
+              referenced.add(node.next);
+            } else if (Array.isArray(node.next)) {
+              node.next.forEach((id) => referenced.add(id));
+            }
+          }
+        }
+      );
+      const newRoots = Object.keys(currentNodes).filter(
+        (id) => !referenced.has(id)
+      );
+
+      return {
         ...prevData,
         nodes: currentNodes,
+        roots: newRoots,
       };
-
-      if (setAiResponse) {
-        setAiResponse((prev) => ({
-          ...prev,
-          flow: nextGraphData,
-        }));
-      }
-
-      return nextGraphData;
     });
 
     handleDrawerClose();
@@ -383,13 +405,6 @@ function ResponsibilityFlow({ aiResponse, setAiResponse, responsibility }) {
 
   const handleFlowChange = (updatedGraphData) => {
     setGraphData(updatedGraphData);
-    if (setAiResponse) {
-      setAiResponse((prev) => ({
-        ...prev,
-        flow: updatedGraphData,
-      }));
-    }
-
     setHasLocalChanges(true);
   };
 

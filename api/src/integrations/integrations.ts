@@ -352,6 +352,7 @@ const Integrations = [
         status: { type: "string" },
         assignment_date: { type: "string" },
         speed: { type: "string" },
+        serial_number: { type: "string" },
       },
       required: [
         "assignment_id",
@@ -389,6 +390,7 @@ const Integrations = [
         connection_date: { type: ["string", "null"] },
         port_status: { type: "string" },
         signal_strength: { type: ["string", "null"] },
+        assignment_id: { type: "string" },
       },
       required: ["connection_id", "status", "port_status"],
     },
@@ -424,6 +426,7 @@ const Integrations = [
         qos_profile: { type: "string" },
         status: { type: "string" },
         configuration_date: { type: ["string", "null"] },
+        assignment_id: { type: "string" },
       },
       required: [
         "connection_id",

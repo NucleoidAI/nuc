@@ -26,7 +26,6 @@ function ResponsibilitiesWidget({ agentId }: { agentId: string }) {
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [aiResponse, setAiResponse] = useState(null);
   const [flowDialogOpen, setFlowDialogOpen] = useState(false);
 
   const handleDrawerOpen = (item) => {
@@ -75,22 +74,23 @@ function ResponsibilitiesWidget({ agentId }: { agentId: string }) {
           ))}
         </Box>
       </Box>
-      <ResponsibilityDrawer
-        drawerOpen={drawerOpen}
-        handleDrawerClose={handleDrawerClose}
-        selectedItem={selectedItem}
-        setAiResponse={setAiResponse}
-        aiResponse={aiResponse}
-        setSelectedItem={setSelectedItem}
-        agentId={agentId}
-      />
-      <ResponsibilityFlowDialog
-        flowDialogOpen={flowDialogOpen}
-        handleFlowDialogClose={handleFlowDialogClose}
-        selectedItem={selectedItem}
-        aiResponse={aiResponse}
-        setAiResponse={setAiResponse}
-      />
+      {drawerOpen && (
+        <ResponsibilityDrawer
+          drawerOpen={drawerOpen}
+          handleDrawerClose={handleDrawerClose}
+          selectedItem={selectedItem}
+          setSelectedItem={setSelectedItem}
+          agentId={agentId}
+        />
+      )}
+
+      {flowDialogOpen && (
+        <ResponsibilityFlowDialog
+          flowDialogOpen={flowDialogOpen}
+          handleFlowDialogClose={handleFlowDialogClose}
+          selectedItem={selectedItem}
+        />
+      )}
 
       <Stack
         sx={{

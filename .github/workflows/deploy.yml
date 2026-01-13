@@ -55,6 +55,11 @@ on:
         type: boolean
         default: false
         description: "Whether to setup version.json"
+      image_tag:
+        required: false
+        type: string
+        description: "Image tag"
+        default: latest
     secrets:
       DOCKER_ACCESS_TOKEN:
         required: false
@@ -133,5 +138,5 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ${{ inputs.docker_username || secrets.DOCKER_USERNAME }}/${{ inputs.service_name }}-${{ inputs.environment }}:latest
+          tags: ${{ inputs.docker_username || secrets.DOCKER_USERNAME }}/${{ inputs.service_name }}-${{ inputs.environment }}:${{inputs.image_tag}}
           context: ${{ inputs.context_path }}

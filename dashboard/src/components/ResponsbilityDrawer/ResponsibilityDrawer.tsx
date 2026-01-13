@@ -1,5 +1,6 @@
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import CloseIcon from "@mui/icons-material/Close";
+import { FlowDefinition } from "../ResponsibilityFlow/helper";
 import ResponsibilityChat from "../ResponsibilityChat/ResponsibilityChat";
 import ResponsibilityChatTitle from "../ResponsibilityChat/ResponsibilityChatTitle";
 import ResponsibilityFlow from "../ResponsibilityFlow/ResponsibilityFlow";
@@ -34,9 +35,15 @@ const ResponsibilityDrawer = ({
     description: string;
     colleagueId: string;
   };
-  handleAiResponse?: (response) => void;
-  aiResponse?: string;
-  setAiResponse?: (response: string) => void;
+  handleAiResponse?: (response: {
+    flow: FlowDefinition;
+    response?: string;
+  }) => void;
+  aiResponse?: { flow: FlowDefinition; response?: string };
+  setAiResponse?: (response: {
+    flow: FlowDefinition;
+    response?: string;
+  }) => void;
   setSelectedItem?: (item: {
     id: string;
     title: string;
@@ -186,6 +193,7 @@ const ResponsibilityDrawer = ({
                 <ResponsibilityFlow
                   responsibility={selectedItem}
                   aiResponse={aiResponse}
+                  taskId={taskId}
                 />
 
                 {!isChatOpen && (

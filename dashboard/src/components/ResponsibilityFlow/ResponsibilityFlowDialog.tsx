@@ -1,3 +1,5 @@
+import { FlowDefinition } from "./helper";
+
 import React from "react";
 import ResponsibilityFlow from "./ResponsibilityFlow";
 
@@ -9,46 +11,29 @@ import {
   DialogTitle,
 } from "@mui/material";
 
+interface AIResponse {
+  flow: FlowDefinition;
+}
+
+interface Responsibility {
+  id: string;
+  title: string;
+  description: string;
+  colleagueId: string;
+}
+
 const ResponsibilityFlowDialog = ({
   flowDialogOpen,
   handleFlowDialogClose,
   selectedItem,
   aiResponse,
+  taskId,
 }: {
   flowDialogOpen: boolean;
   handleFlowDialogClose: () => void;
-  selectedItem: {
-    id: string;
-    title: string;
-    description: string;
-    colleagueId: string;
-  };
-  aiResponse?: {
-    flow: {
-      nodes: {
-        id: string;
-        type: string;
-        properties: {
-          label: string;
-          icon: string;
-          action: string;
-          description: string;
-        };
-        next: string[];
-        true: string[];
-        false: string[];
-        createdAt: string;
-      }[];
-      edges: {
-        id: string;
-        source: string;
-        target: string;
-        style: {
-          stroke: string;
-        };
-      }[];
-    };
-  };
+  selectedItem: Responsibility;
+  aiResponse?: AIResponse;
+  taskId?: string;
 }) => {
   return (
     <Dialog
@@ -72,6 +57,7 @@ const ResponsibilityFlowDialog = ({
           <ResponsibilityFlow
             aiResponse={aiResponse}
             responsibility={selectedItem}
+            taskId={taskId}
           />
         )}
       </DialogContent>

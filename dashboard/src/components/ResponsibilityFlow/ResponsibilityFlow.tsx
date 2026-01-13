@@ -4,16 +4,35 @@ import { Flow } from "@canmingir/link/platform/components";
 import SuccessSnackbar from "./SuccessSnackbar";
 import ValidationButtons from "./ValidationButtons";
 import ValidationErrorView from "./ValidationErrorView";
-import { buildDefinitionGraph } from "./helper";
 import { responsibilityChartPlugin } from "./ResponsibilityFlowPlugin";
 import useIntegrations from "../../hooks/useIntegrations";
 import useResponsibility from "../../hooks/useResponsibility";
 import { v4 as uuid } from "uuid";
 import { validateFlow } from "./validation";
+import { FlowDefinition, buildDefinitionGraph } from "./helper";
 
 import React, { useEffect, useState } from "react";
 
-function ResponsibilityFlow({ aiResponse, responsibility }) {
+interface AIResponse {
+  flow: FlowDefinition;
+}
+
+interface Responsibility {
+  id: string;
+  title: string;
+  description: string;
+  colleagueId: string;
+}
+
+function ResponsibilityFlow({
+  aiResponse,
+  responsibility,
+  taskId,
+}: {
+  aiResponse?: AIResponse;
+  responsibility: Responsibility;
+  taskId?: string;
+}) {
   const [graphData, setGraphData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [hasLocalChanges, setHasLocalChanges] = useState(false);
@@ -394,7 +413,8 @@ function ResponsibilityFlow({ aiResponse, responsibility }) {
         responsibilityNodes.title,
         responsibilityNodes.description,
         responsibilityNodes.colleagueId,
-        updatedNodes
+        updatedNodes,
+        taskId
       );
       setHasLocalChanges(false);
       setSaveSuccess(true);

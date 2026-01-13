@@ -2,11 +2,7 @@ import AddNodeDrawer from "../../components/AddNode/AddNodeDrawer";
 import useIntegrations from "../../hooks/useIntegrations";
 
 import React, { useEffect, useState } from "react";
-import {
-  getNextNodeId,
-  hasMatchingProperties,
-  isValidIntegration,
-} from "./helper";
+import { getNextNodeId, isValidIntegration } from "./helper";
 
 const AddNodeWidget = ({
   drawerOpen,
@@ -118,37 +114,6 @@ const AddNodeWidget = ({
       )
     : null;
 
-  const availableIntegrations =
-    newNodeType === "CONDITION"
-      ? allIntegrations
-      : allIntegrations.filter((integration) => {
-          const matchesParent =
-            !parentIntegration?.outputSchema ||
-            hasMatchingProperties(
-              parentIntegration.outputSchema,
-              integration.inputSchema
-            );
-
-          const matchesNext =
-            !nextIntegration?.inputSchema ||
-            !integration.outputSchema ||
-            hasMatchingProperties(
-              integration.outputSchema,
-              nextIntegration.inputSchema
-            );
-
-          return matchesParent && matchesNext;
-        });
-
-  const filteredIntegrations = availableIntegrations.filter((integration) => {
-    const query = searchQuery.toLowerCase();
-    return (
-      integration.action?.toLowerCase().includes(query) ||
-      integration.provider?.toLowerCase().includes(query) ||
-      integration.description?.toLowerCase().includes(query)
-    );
-  });
-
   return (
     <AddNodeDrawer
       drawerOpen={drawerOpen}
@@ -160,8 +125,7 @@ const AddNodeWidget = ({
       setNewNodeType={setNewNodeType}
       selectedBranch={selectedBranch}
       setSelectedBranch={setSelectedBranch}
-      availableIntegrations={availableIntegrations}
-      filteredIntegrations={filteredIntegrations}
+      availableIntegrations={allIntegrations}
       searchQuery={searchQuery}
       setSearchQuery={setSearchQuery}
       selectedIntegration={selectedIntegration}

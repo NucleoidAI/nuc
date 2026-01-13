@@ -1,13 +1,14 @@
-import { Tool, ConfigurationInput } from "./types";
+import { ConfigurationInput, Tool } from "./types";
+
+import { fileURLToPath } from "url";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export const configurationTool: Tool<ConfigurationInput> = {
-  name: "TURK_TELEKOM:configuration",
+  name: "TELCO:configuration",
   description:
     "Configure port settings using device serial number. Returns configuration details including VLAN, IP settings, and service parameters.",
   inputSchema: {

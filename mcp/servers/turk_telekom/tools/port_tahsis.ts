@@ -1,13 +1,14 @@
-import { Tool, PortTahsisInput } from "./types";
+import { PortTahsisInput, Tool } from "./types";
+
+import { fileURLToPath } from "url";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export const portTahsisTool: Tool<PortTahsisInput> = {
-  name: "TURK_TELEKOM:port_tahsis",
+  name: "TELCO:port_tahsis",
   description:
     "Assign a port to a customer using device serial number. Returns port assignment details including assignment ID, port information, and status.",
   inputSchema: {

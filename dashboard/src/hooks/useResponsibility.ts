@@ -64,9 +64,11 @@ function useResponsibility() {
     id: string,
     fetchState: DependencyArray = []
   ) => {
+    const eventDependencies = [responsibilityUpserted];
+
     const { data, loading, error, fetch } = Api(
       () => (id ? http.get(`/responsibilities/${id}`) : null),
-      [...fetchState]
+      [...eventDependencies, ...fetchState]
     );
     let result;
 
@@ -79,7 +81,7 @@ function useResponsibility() {
     }
 
     return {
-      responsibilityNodes: result,
+      responsibilityNodes: data,
       loading,
       error,
       fetch,

@@ -67,7 +67,7 @@ export const toTeamTree = (teams, responsibilities) => {
           title: r.title,
           description: r.description,
           colleagueId: r.colleagueId,
-          flowNodes: r.nodes,
+          nodes: r.nodes,
         })),
       };
     }),

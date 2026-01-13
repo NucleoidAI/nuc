@@ -112,6 +112,7 @@ function list() {
     direction: provider.direction,
     lib: provider.lib,
     inputSchema: provider.inputSchema,
+    outputSchema: provider.outputSchema,
     oauth: provider.oauth
       ? {
           scope: provider.oauth.scope,

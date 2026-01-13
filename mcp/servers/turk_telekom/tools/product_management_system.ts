@@ -1,13 +1,14 @@
-import { Tool, ProductManagementSystemInput } from "./types";
+import { ProductManagementSystemInput, Tool } from "./types";
+
+import { fileURLToPath } from "url";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export const productManagementSystemTool: Tool<ProductManagementSystemInput> = {
-  name: "TURK_TELEKOM:get_product_by_speed",
+  name: "TELCO:get_product_by_speed",
   description:
     "Get product information by speed limit (Hız Limit). Returns product code (Ürün Kodu) and product description (Ürün Açıklaması) for the given speed limit.",
   inputSchema: {

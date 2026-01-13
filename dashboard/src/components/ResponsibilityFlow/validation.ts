@@ -1,4 +1,4 @@
-export type ValidationError = {
+type ValidationError = {
   nodeId: string;
   nodeLabel: string;
   nextNodeId: string;
@@ -45,10 +45,10 @@ type GraphNode = {
   falseNext?: string[];
 };
 
-export const validateSchemaCompatibility = (
+function validateSchemaCompatibility(
   outputSchema: IntegrationSchema | undefined,
   inputSchema: IntegrationSchema | undefined
-): { isCompatible: boolean; missingProperties: string[] } => {
+): { isCompatible: boolean; missingProperties: string[] } {
   if (!outputSchema?.properties || !inputSchema?.properties) {
     return { isCompatible: true, missingProperties: [] };
   }
@@ -68,12 +68,12 @@ export const validateSchemaCompatibility = (
     isCompatible: missingProperties.length === 0,
     missingProperties,
   };
-};
+}
 
-export const validateFlow = (
+function validateFlow(
   graphData: { nodes: Record<string, GraphNode>; roots: string[] },
   integrations: Integration[]
-): ValidationResult => {
+): ValidationResult {
   const errors: ValidationError[] = [];
 
   if (!graphData?.nodes || !integrations) {
@@ -144,4 +144,7 @@ export const validateFlow = (
     isValid: errors.length === 0,
     errors,
   };
-};
+}
+
+export { validateFlow };
+export type { ValidationError };

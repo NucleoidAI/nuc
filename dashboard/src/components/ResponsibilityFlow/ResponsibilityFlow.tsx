@@ -13,7 +13,7 @@ import { validateFlow } from "./validation";
 
 import React, { useEffect, useState } from "react";
 
-function ResponsibilityFlow({ aiResponse, responsibility }) {
+function ResponsibilityFlow({ aiResponse, responsibility, taskId }) {
   const [graphData, setGraphData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [hasLocalChanges, setHasLocalChanges] = useState(false);
@@ -394,7 +394,8 @@ function ResponsibilityFlow({ aiResponse, responsibility }) {
         responsibilityNodes.title,
         responsibilityNodes.description,
         responsibilityNodes.colleagueId,
-        updatedNodes
+        updatedNodes,
+        taskId
       );
       setHasLocalChanges(false);
       setSaveSuccess(true);

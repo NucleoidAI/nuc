@@ -186,6 +186,7 @@ const ResponsibilityDrawer = ({
                 <ResponsibilityFlow
                   responsibility={selectedItem}
                   aiResponse={aiResponse}
+                  taskId={taskId}
                 />
 
                 {!isChatOpen && (

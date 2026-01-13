@@ -32,7 +32,6 @@ const AddNodeDrawer = ({
   selectedBranch,
   setSelectedBranch,
   availableIntegrations,
-  filteredIntegrations,
   searchQuery,
   setSearchQuery,
   selectedIntegration,
@@ -59,36 +58,6 @@ const AddNodeDrawer = ({
   selectedBranch: "true" | "false";
   setSelectedBranch: (branch: "true" | "false") => void;
   availableIntegrations: Array<{
-    id: string;
-    action: string;
-    provider: string;
-    description: string;
-    direction: string;
-    lib: string;
-    inputSchema: {
-      type?: string;
-      properties?: Record<
-        string,
-        {
-          type: string;
-          description?: string;
-          nullable?: boolean;
-        }
-      >;
-    };
-    outputSchema?: {
-      type?: string;
-      properties?: Record<
-        string,
-        {
-          type: string;
-          description?: string;
-          nullable?: boolean;
-        }
-      >;
-    };
-  }>;
-  filteredIntegrations: Array<{
     id: string;
     action: string;
     provider: string;
@@ -352,12 +321,12 @@ const AddNodeDrawer = ({
                     gap: 1,
                   }}
                 >
-                  {filteredIntegrations.length === 0 ? (
+                  {availableIntegrations.length === 0 ? (
                     <Typography variant="body2" color="text.secondary">
                       No integrations found matching {searchQuery}
                     </Typography>
                   ) : (
-                    filteredIntegrations.map((integration) => (
+                    availableIntegrations.map((integration) => (
                       <Card
                         key={integration.id}
                         variant="outlined"
@@ -618,7 +587,7 @@ const AddNodeDrawer = ({
             (newNodeType !== "CONDITION" && !selectedIntegration?.id)
           }
         >
-          Submit
+          Add Node
         </Button>
       </Stack>
     </Drawer>

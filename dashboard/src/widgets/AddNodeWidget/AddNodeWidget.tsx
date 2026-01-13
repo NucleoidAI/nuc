@@ -92,13 +92,53 @@ const AddNodeWidget = ({
     }
   }, [drawerOpen]);
 
-  const { getIntegrations } = useIntegrations();
+  const { getIntegrations, getActions } = useIntegrations();
 
   const { integrations } = getIntegrations();
+  const { actions } = getActions();
 
-  const allIntegrations = Array.isArray(integrations?.content.integrations)
+  const transformedActions = Array.isArray(actions?.content?.actions)
+    ? actions.content.actions
+        .filter((action) => action.action !== "PLATFORM:decision")
+        .map((action) => ({
+          id: action.action,
+          action: action.action,
+          provider: "PLATFORM",
+          description:
+            action.description || action.action.replace("PLATFORM:", ""),
+          direction: "internal",
+          lib: action.lib || "",
+          inputSchema: action.inputSchema || {
+            type: "object",
+            properties: {},
+          },
+          outputSchema: {
+            type: "object",
+            properties: {},
+          },
+        }))
+    : [];
+
+  const integrationsList = Array.isArray(integrations?.content.integrations)
     ? integrations.content.integrations.filter(isValidIntegration)
     : [];
+
+  const allIntegrations = [...transformedActions, ...integrationsList];
+
+  const filteredIntegrations = searchQuery
+    ? allIntegrations.filter(
+        (integration) =>
+          integration.action
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          integration.provider
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          integration.description
+            ?.toLowerCase()
+            .includes(searchQuery.toLowerCase())
+      )
+    : allIntegrations;
 
   const parentIntegration = selectedParentNode?.action
     ? allIntegrations.find(
@@ -125,7 +165,7 @@ const AddNodeWidget = ({
       setNewNodeType={setNewNodeType}
       selectedBranch={selectedBranch}
       setSelectedBranch={setSelectedBranch}
-      availableIntegrations={allIntegrations}
+      availableIntegrations={filteredIntegrations}
       searchQuery={searchQuery}
       setSearchQuery={setSearchQuery}
       selectedIntegration={selectedIntegration}

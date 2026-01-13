@@ -15,6 +15,42 @@ const ResponsibilityFlowDialog = ({
   selectedItem,
   aiResponse,
   setAiResponse,
+}: {
+  flowDialogOpen: boolean;
+  handleFlowDialogClose: () => void;
+  selectedItem: {
+    id: string;
+    title: string;
+    description: string;
+    colleagueId: string;
+  };
+  aiResponse?: {
+    flow: {
+      nodes: {
+        id: string;
+        type: string;
+        properties: {
+          label: string;
+          icon: string;
+          action: string;
+          description: string;
+        };
+        next: string[];
+        true: string[];
+        false: string[];
+        createdAt: string;
+      }[];
+      edges: {
+        id: string;
+        source: string;
+        target: string;
+        style: {
+          stroke: string;
+        };
+      }[];
+    };
+  };
+  setAiResponse?: (response) => void;
 }) => {
   return (
     <Dialog

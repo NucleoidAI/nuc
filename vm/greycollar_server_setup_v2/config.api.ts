@@ -24,23 +24,32 @@ const config = {
     },
   },
   postgres: {
-    uri: "postgres://greyadmin:eyuTSfZ4vJmxWfDz@postgres:5432/greycollar-land",
+    uri: "sqlite::memory:",
     debug: false,
     sync: true,
   },
   dynamodb: {
     region: "us-east-1",
   },
+  logger: {
+    elasticsearch: {
+      node: "http://10.98.228.27:9200",
+      esVersion: 8,
+      flushBytes: 1000,
+      index: "greycollar-logs",
+      consistency: "one",
+    },
+  },
   event: {
     type: "inMemory" as const,
-    host: "inmemory",
+    host: "10.98.228.27",
     protocol: "http" as const,
     port: 8080,
   },
   metrics: {
     enabled: true,
     interval: 15000,
-    url: "http://localhost:9091",
+    url: "http://10.98.228.27:9091",
     pushGateway: {
       jobName: "greycollar-database",
       instance: "default",
@@ -50,7 +59,7 @@ const config = {
       instance: "default",
     },
     pushGatewayNodeEvents: {
-      jobName: "greycollar-api-docker",
+      jobName: "greycollar-api",
       instance: "node-events",
     },
   },

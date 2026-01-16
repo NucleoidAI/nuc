@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.35.0",
-    "@canmingir/link": "^1.2.12",
+    "@canmingir/link": "^1.2.13",
     "@canmingir/link-express": "^1.7.7",
     "@modelcontextprotocol/sdk": "^1.15.1",
     "@nucleoidai/node-event": "^1.1.5",

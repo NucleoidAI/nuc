@@ -43,8 +43,6 @@ instance.getUserDetails = async () => {
     };
   }
 
-
-
   const { project } = config;
   const { github, google } = project;
 

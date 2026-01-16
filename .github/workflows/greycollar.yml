@@ -3,21 +3,26 @@ on:
   push:
     branches: [main]
     paths:
-      - 'dashboard/**'
-      - 'api/**'
-      - '.github/workflows/greycollar.yml'
+      - "dashboard/**"
+      - "api/**"
+      - ".github/workflows/greycollar.yml"
     tags:
-      - 'v*'
+      - "v*"
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment to deploy'
+        description: "Environment to deploy"
         required: true
         type: choice
         options:
           - land
           - live
-        default: 'land'
+        default: "land"
+      image_tag:
+        description: "Image tag"
+        required: false
+        type: string
+        default: "latest"
 jobs:
   greycollar:
     uses: ./.github/workflows/deploy.yml
@@ -25,7 +30,7 @@ jobs:
       service_name: greycollar
       environment: ${{ startsWith(github.ref, 'refs/tags/') && 'live' || github.event.inputs.environment || 'land' }}
       context_path: .
-      config_paths: './dashboard,./api'
+      config_paths: "./dashboard,./api"
       install_dependencies: true
       dependency_path: .
       run_lint: true

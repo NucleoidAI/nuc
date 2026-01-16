@@ -131,11 +131,13 @@ services:
     image: canmingir/greycollar-land:latest
     container_name: greycollar-land
     restart: unless-stopped
+    env_file:
+      - env.greycollar
     networks:
       - greycollar-network
     volumes:
       - ./config.api.ts:/app/api/config.ts:ro
-      - ./config.dashpboard.js:/app/dist/config.js:ro
+      - ./config.dashboard.js:/app/dist/config.js:ro
     ports:
       - "3000:3000"
     depends_on:

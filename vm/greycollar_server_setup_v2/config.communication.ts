@@ -1,16 +1,16 @@
 const config = {
   event: {
-    type: "DOCKER" as const,
-    host: "inmemory",
+    type: "inMemory" as const,
+    host: "localhost",
     protocol: "http" as const,
     port: 8080,
   },
   metrics: {
     enabled: true,
     interval: 15000,
-    url: "http://pushgateway:9091",
+    url: "http://localhost:9091",
     pushGateway: {
-      jobName: "greycollar-communication",
+      jobName: "greycollar-communication-docker",
       instance: "default",
     },
   },

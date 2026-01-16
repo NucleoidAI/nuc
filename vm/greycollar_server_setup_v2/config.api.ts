@@ -40,7 +40,7 @@ const config = {
   metrics: {
     enabled: true,
     interval: 15000,
-    url: "http://pushgateway:9091",
+    url: "http://localhost:9091",
     pushGateway: {
       jobName: "greycollar-database",
       instance: "default",
@@ -50,7 +50,7 @@ const config = {
       instance: "default",
     },
     pushGatewayNodeEvents: {
-      jobName: "greycollar-api",
+      jobName: "greycollar-api-docker",
       instance: "node-events",
     },
   },

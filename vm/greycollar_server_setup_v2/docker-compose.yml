@@ -121,7 +121,7 @@ services:
     networks:
       - greycollar-network
     volumes:
-      - ./config.communication.ts:/app/communication/config.ts:ro
+      - ./config.communication.ts:/app/config.ts:ro
     ports:
       - "3003:3003"
     depends_on:
@@ -135,7 +135,7 @@ services:
       - greycollar-network
     volumes:
       - ./config.api.ts:/app/api/config.ts:ro
-      - ./config.dashboard.js:/app/config.mjs:ro
+      - ./config.dashpboard.js:/app/dist/config.js:ro
     ports:
       - "3000:3000"
     depends_on:

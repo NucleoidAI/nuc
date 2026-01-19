@@ -1,10 +1,14 @@
 import OpenAI from "openai";
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY || "",
+  baseURL: process.env.PLATFORM_LLM_URL,
 });
 
-async function generate({ model = "gpt-5-chat-latest", messages = [] }) {
+async function generate({
+  model = process.env.PLATFORM_LLM_MODEL || "gpt-5-chat-latest",
+  messages = [],
+}) {
   const {
     choices: [
       {

@@ -1,4 +1,5 @@
 import AgentMCP from "../widgets/AgentMCP/AgentMCP";
+import BlueprintsWidget from "../widgets/BlueprintsWidget/BlueprintsWidget";
 import Communication from "../widgets/Communication/Communication";
 import { Iconify } from "@canmingir/link/platform/components";
 import Knowledge from "../widgets/Knowledge/Knowledge";
@@ -8,7 +9,6 @@ import ProfileCard from "../components/ProfileCard/ProfileCard";
 import React from "react";
 import Stack from "@mui/material/Stack";
 import Supervising from "../widgets/Supervising/Supervising";
-import TaskBluePrintsWidget from "../widgets/TaskBluePrintsWidget/TaskBluePrintsWidget";
 import TasksWidget from "../widgets/TasksWidget/TasksWidget";
 import { getAgentGradients } from "../utils/gradient";
 
@@ -28,8 +28,8 @@ const TABS = [
     icon: <Iconify icon="carbon:ibm-watson-knowledge-studio" width={24} />,
   },
   {
-    value: "task-blue-prints",
-    label: "Task Blueprints",
+    value: "blue-prints",
+    label: "Blueprints",
     icon: (
       <Iconify
         icon="healthicons:crisis-response-center-person-outline"
@@ -164,9 +164,7 @@ function AgentLayout({
       </Stack>
       {currentTab === "profile" && <Profile agentId={agent.id} />}
       {currentTab === "knowledge-base" && <Knowledge agentId={agent.id} />}
-      {currentTab === "task-blue-prints" && (
-        <TaskBluePrintsWidget agentId={agent.id} />
-      )}
+      {currentTab === "blue-prints" && <BlueprintsWidget agentId={agent.id} />}
       {currentTab === "supervisings" && <Supervising agentId={agent.id} />}
       {currentTab === "tasks" && <TasksWidget agentId={agent.id} />}
       {currentTab === "mcps" && <AgentMCP agent={agent} />}

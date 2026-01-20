@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const TaskBluePrint = {
+const Blueprint = {
   upsert: z.object({
     title: z.string(),
     description: z.string(),
@@ -34,7 +34,7 @@ const TaskBluePrint = {
       .optional(),
     content: z.string(),
   }),
-  createTaskBluePrintName: z.object({
+  createBlueprintName: z.object({
     history: z.array(
       z.object({
         role: z.enum(["user", "system", "assistant"]),
@@ -48,4 +48,4 @@ const TaskBluePrint = {
   }),
 };
 
-export default TaskBluePrint;
+export default Blueprint;

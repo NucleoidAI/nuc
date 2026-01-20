@@ -1,3 +1,4 @@
+import Blueprint from "./Blueprint";
 import Colleague from "./Colleague";
 import Command from "./Command";
 import Communication from "./Communication";
@@ -7,7 +8,6 @@ import Message from "./Message";
 import Project from "./Project";
 import Session from "./Session";
 import Supervising from "./Supervising";
-import TaskBluePrint from "./TaskBluePrint";
 import Team from "./Team";
 
 export default {
@@ -19,7 +19,7 @@ export default {
   Session,
   Supervising,
   Command,
-  TaskBluePrint,
+  Blueprint,
   MCP,
   Communication,
 };

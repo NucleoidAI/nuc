@@ -16,6 +16,7 @@ import projects from "./routes/projects";
 import sessions from "./routes/sessions";
 import statistics from "./routes/statistics";
 import supervisings from "./routes/supervisings";
+import taskFn from "./functions/task";
 import tasks from "./routes/tasks";
 import teamDetails from "./routes/teamDetails";
 import { telemetryMiddleware } from "./instrumentation";
@@ -97,40 +98,36 @@ function createApp() {
       agent.step({ stepId, action, parameters, comment })
     );
 
+    await event.subscribe<{ taskId: string }>(
+      "TASK_RESPONSIBILITY_UPDATED",
+      async ({ taskId }) => {
+        await agent.task({ taskId });
+
+        const steps = await taskFn.listSteps({ taskId });
+
+        const supervisedStep = steps.find(
+          (step) => step.status === "SUPERVISED_NEEDED"
+        );
+
+        if (supervisedStep) {
+          agent.step({
+            stepId: supervisedStep.id,
+            action: "SUPERVISOR_RESPONDED",
+            parameters: supervisedStep.parameters,
+            comment: supervisedStep.comment,
+          });
+        }
+      }
+    );
+
     await event.subscribe<{ taskId: string }>("STEP_COMPLETED", ({ taskId }) =>
       agent.task({ taskId })
     );
 
     await event.subscribe<{
-      id: string;
-      type: string;
-      agentId: string;
-    }>("SESSION_INITIATED", async ({ id, type, agentId }) => {
-      try {
-        const mcpClient = new McpClient({
-          name: "project-notifier",
-          tool: "PROJECT_NOTIFIER:notify_project_open",
-          version: "1.0.0",
-        });
-
-        await mcpClient.connectToServer({});
-
-        const result = await mcpClient.callTool(
-          "PROJECT_NOTIFIER:notify_project_open",
-          {
-            projectId: id,
-            projectName: `Session ${type}`,
-            timestamp: new Date().toISOString(),
-          }
-        );
-
-        console.log("[PROJECT_NOTIFIER] Notification sent:", result);
-
-        await mcpClient.close();
-      } catch (error) {
-        console.error("[PROJECT_NOTIFIER] Failed to send notification:", error);
-      }
-    });
+      taskId: string;
+      result: string;
+    }>("STEP_FAILED", ({ taskId, result }) => agent.task({ taskId }));
   })();
 
   return app;

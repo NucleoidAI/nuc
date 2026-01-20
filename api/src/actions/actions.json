@@ -2,6 +2,7 @@
   {
     "action": "PLATFORM:llm",
     "lib": "llm",
+    "description": "Send a message to the Language Model for AI processing",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -16,6 +17,7 @@
   {
     "action": "PLATFORM:scrape_website",
     "lib": "scrapper",
+    "description": "Extract data from a website URL",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -30,6 +32,7 @@
   {
     "action": "PLATFORM:decision",
     "lib": "decision",
+    "description": "A decision node that branches the flow based on conditions",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -52,6 +55,7 @@
   {
     "action": "PLATFORM:user_interaction",
     "lib": "interaction",
+    "description": "Interact with the user and get their response",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -64,6 +68,53 @@
     }
   },
   {
-    "action": "PLATFORM:complete"
+    "action": "PLATFORM:complete",
+    "description": "Mark the workflow as complete"
+  },
+  {
+    "action": "PLATFORM:ask_supervisor",
+    "lib": "ask_supervisor",
+    "description": "Ask a supervisor for guidance or approval",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "sessionId": {
+          "type": "string",
+          "description": "The session ID."
+        },
+        "colleagueId": {
+          "type": "string",
+          "description": "The colleague ID."
+        },
+        "question": {
+          "type": "string",
+          "description": "The question to ask the supervisor."
+        }
+      },
+      "required": ["question"]
+    }
+  },
+  {
+    "action": "PLATFORM:message_user",
+    "lib": "message_user",
+    "description": "Send a message to the user",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "sessionId": {
+          "type": "string",
+          "description": "The session ID."
+        },
+        "colleagueId": {
+          "type": "string",
+          "description": "The colleague ID."
+        },
+        "message": {
+          "type": "string",
+          "description": "The message to send to the user."
+        }
+      },
+      "required": ["message"]
+    }
   }
 ]

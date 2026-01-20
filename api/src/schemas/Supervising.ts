@@ -11,6 +11,15 @@ const Supervising = {
     agentId: Joi.string()
       .guid({ version: ["uuidv4"] })
       .required(),
+    responsibilityId: Joi.string()
+      .guid({ version: ["uuidv4"] })
+      .optional(),
+    taskId: Joi.string()
+      .guid({ version: ["uuidv4"] })
+      .optional(),
+    stepId: Joi.string()
+      .guid({ version: ["uuidv4"] })
+      .optional(),
   }),
   patch: Joi.object({
     answer: Joi.string().optional(),

@@ -159,9 +159,12 @@ async function teamChat({
 }
 
 async function task({ taskId }: { taskId: string }) {
-  const { agentId, description, sessionId } = await taskFn.get({ taskId });
+  const { agentId, description, sessionId, blueprintId } = await taskFn.get({
+    taskId,
+  });
   const currentTask = {
     description,
+    blueprintId,
     steps: await taskFn.listSteps({ taskId }),
   };
 
@@ -211,8 +214,14 @@ async function task({ taskId }: { taskId: string }) {
       comment,
       status: "COMPLETED",
     });
-  } else if (action === "PLATFORM:user_interaction") {
+  } else if (
+    action === "PLATFORM:user_interaction" ||
+    action === "PLATFORM:ask_supervisor"
+  ) {
+    parameters.taskId = taskId;
+    parameters.responsibilityId = currentTask.responsibilityId;
     parameters.sessionId = sessionId;
+    parameters.colleagueId = colleagueId;
     return await taskFn.addStep({
       taskId,
       action,
@@ -244,10 +253,12 @@ async function step({
 
   if (MCPs.find((mcp) => mcp.action === action)) {
     actionType = "MCP";
-  } else if (action === "SUPERVISED") {
+  } else if (action === "PLATFORM:ask_supervisor") {
     actionType = "SUPERVISED";
   } else if (action === "PLATFORM:user_interaction") {
     actionType = "INTERACTION";
+  } else if (action === "SUPERVISOR_RESPONDED") {
+    actionType = "SUPERVISED_RESPONDED";
   } else {
     actionType = "ACTION";
   }
@@ -257,8 +268,8 @@ async function step({
     let result;
     let mcpClient;
 
-    if (action === "SUPERVISED") {
-      actionFn = require("../actions/supervised").default;
+    if (actionType === "SUPERVISED") {
+      actionFn = require("../actions/ask_supervisor").default;
     } else if (actionType === "ACTION") {
       // @ts-ignore
       const { lib } = actions.find(action);
@@ -309,11 +320,17 @@ async function step({
         result: resultString,
         status: "WAITING_FOR_USER",
       });
-    } else {
+    } else if (actionType === "SUPERVISED") {
       await taskFn.updateStep({
         stepId,
         result: resultString,
-        status: "COMPLETED",
+        status: "SUPERVISED_NEEDED",
+      });
+    } else {
+      await taskFn.updateStep({
+        stepId,
+        result: resultString || "Completed",
+        status: result && result.isError ? "FAILED" : "COMPLETED",
       });
     }
   } catch (err: unknown) {
@@ -603,6 +620,7 @@ async function chat({
         sessionId,
         conversationId: conversation.id,
         question: content,
+        blueprintId: blueprintDecision.blueprintId,
         agentId,
       });
     }

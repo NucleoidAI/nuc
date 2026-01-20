@@ -7,18 +7,19 @@ async function run({
     sessionId: string;
     agentId: string;
     answer: string;
+    question: string;
   };
 }) {
-  const { sessionId, agentId, answer } = parameters;
+  const { sessionId, agentId, answer, question } = parameters;
 
   await session.addConversation({
     sessionId,
     agentId,
     role: "ASSISTANT",
-    content: answer,
+    content: answer || question,
   });
 
-  return answer;
+  return answer || question;
 }
 
 export default { run };

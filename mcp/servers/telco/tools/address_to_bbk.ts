@@ -1,13 +1,14 @@
-import { Tool, AddressToBBKInput } from "./types";
+import { AddressToBBKInput, Tool } from "./types";
+
+import { fileURLToPath } from "url";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export const addressToBBKTool: Tool<AddressToBBKInput> = {
-  name: "TURK_TELEKOM:get_bbk_by_address",
+  name: "TELCO:get_bbk_by_address",
   description:
     "Get BBK number by address (address). Returns the BBK number associated with the given address. Supports partial address matching.",
   inputSchema: {
@@ -43,11 +44,11 @@ export const addressToBBKTool: Tool<AddressToBBKInput> = {
             {
               type: "text",
               text: JSON.stringify({
-                error: `BBK number not found for address: ${args.address}`,
+                message: `Address not found in records: ${args.address}`,
               }),
             },
           ],
-          isError: true,
+          isError: false,
         };
       }
 

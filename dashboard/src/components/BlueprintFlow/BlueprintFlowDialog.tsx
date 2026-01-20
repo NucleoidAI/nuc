@@ -1,4 +1,5 @@
 import BlueprintFlow from "./BlueprintFlow";
+import { FlowDefinition } from "./helper";
 import React from "react";
 
 import {
@@ -9,12 +10,29 @@ import {
   DialogTitle,
 } from "@mui/material";
 
+interface AIResponse {
+  flow: FlowDefinition;
+}
+
+interface Responsibility {
+  id: string;
+  title: string;
+  description: string;
+  colleagueId: string;
+}
+
 const BlueprintFlowDialog = ({
   flowDialogOpen,
   handleFlowDialogClose,
   selectedItem,
   aiResponse,
-  setAiResponse,
+  taskId,
+}: {
+  flowDialogOpen: boolean;
+  handleFlowDialogClose: () => void;
+  selectedItem: Responsibility;
+  aiResponse?: AIResponse;
+  taskId?: string;
 }) => {
   return (
     <Dialog
@@ -45,6 +63,8 @@ const BlueprintFlowDialog = ({
         {selectedItem && (
           <BlueprintFlow
             aiResponse={aiResponse}
+            responsibility={selectedItem}
+            taskId={taskId}
             Blueprint={selectedItem}
             setAiResponse={setAiResponse}
           />

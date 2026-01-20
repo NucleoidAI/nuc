@@ -17,16 +17,7 @@ router.get("/", async (req, res) => {
     return res.status(400);
   }
 
-  const Blueprints = await Blueprint.findAll({
-    include: [
-      {
-        model: Colleague,
-        where: { teamId },
-        attributes: [],
-      },
-    ],
-  });
-
+  const Blueprints = await Blueprint.findAll();
   res.status(200).json(Blueprints);
 });
 
@@ -46,9 +37,8 @@ router.get("/:id", async (req, res) => {
 router.put("/:blueprintId", async (req, res) => {
   const { projectId: teamId } = req.session;
   const { blueprintId } = req.params;
-  const { title, description, agentId, nodes } = BlueprintSchema.upsert.parse(
-    req.body
-  );
+  const { title, description, agentId, nodes, taskId } =
+    BlueprintSchema.upsert.parse(req.body);
 
   if (agentId) {
     const { teamId: colleagueTeamId } = await colleague.get({
@@ -80,6 +70,13 @@ router.put("/:blueprintId", async (req, res) => {
   await event.publish("BLUE_PRINT_CREATED", {
     Blueprint: { ...result, pseudocode },
   });
+
+  if (taskId) {
+    await event.publish("TASK_BLUE_PRINT_UPDATED", {
+      taskId,
+      blueprintId,
+    });
+  }
 
   res.status(200).json(result);
 });

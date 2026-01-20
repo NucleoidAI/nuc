@@ -1,39 +1,47 @@
-import { Tool, AddressToolInput } from "./types";
+import { ConfigurationInput, Tool } from "./types";
+
+import { fileURLToPath } from "url";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const addressTool: Tool<AddressToolInput> = {
-  name: "TURK_TELEKOM:get_address",
+export const configurationTool: Tool<ConfigurationInput> = {
+  name: "TELCO:configuration",
   description:
-    "Get address (acik_adres) information by BBK number. Returns the full address associated with the given BBK number.",
+    "Configure port settings using device serial number. Returns configuration details including VLAN, IP settings, and service parameters.",
   inputSchema: {
     type: "object",
     properties: {
-      bbk_no: {
+      serial_number: {
         type: "string",
-        description: "The BBK number to look up the address for.",
+        description: "The device serial number to configure.",
       },
     },
-    required: ["bbk_no"],
+    required: ["serial_number"],
   },
-  handler: async (args: AddressToolInput) => {
+  handler: async (args: ConfigurationInput) => {
     try {
-      const mockDataPath = path.join(__dirname, "..", "mock", "addresses.json");
+      const mockDataPath = path.join(
+        __dirname,
+        "..",
+        "mock",
+        "configuration.json"
+      );
       const data = JSON.parse(fs.readFileSync(mockDataPath, "utf-8"));
 
-      const address = data.find((item: any) => item.bbk_no === args.bbk_no);
+      const configuration = data.find(
+        (item: any) => item.serial_number === args.serial_number
+      );
 
-      if (!address) {
+      if (!configuration) {
         return {
           content: [
             {
               type: "text",
               text: JSON.stringify({
-                error: `Address not found for BBK number: ${args.bbk_no}`,
+                error: `Configuration not found for device serial number: ${args.serial_number}`,
               }),
             },
           ],
@@ -45,7 +53,7 @@ export const addressTool: Tool<AddressToolInput> = {
         content: [
           {
             type: "text",
-            text: JSON.stringify(address),
+            text: JSON.stringify(configuration),
           },
         ],
         isError: false,

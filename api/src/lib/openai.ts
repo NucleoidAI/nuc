@@ -1,14 +1,13 @@
 import OpenAI from "openai";
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY || "",
+  baseURL: process.env.PLATFORM_LLM_URL,
 });
 
 async function generate({
-  model = "gpt-4o-mini-2024-07-18",
+  model = process.env.PLATFORM_LLM_MODEL || "gpt-5-chat-latest",
   messages = [],
-  temperature = 0,
-  max_tokens = 2048,
 }) {
   const {
     choices: [
@@ -20,11 +19,6 @@ async function generate({
   } = await openai.chat.completions.create({
     model,
     messages,
-    temperature,
-    max_tokens,
-    top_p: 1,
-    frequency_penalty: 0,
-    presence_penalty: 0,
     response_format: { type: "json_object" },
   });
 

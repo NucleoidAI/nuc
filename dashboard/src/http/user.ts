@@ -30,6 +30,19 @@ instance.interceptors.request.use(async (request) => {
 
 instance.getUserDetails = async () => {
   const refreshToken = await storage.get("link", "refreshToken");
+
+  const identityProvider = await storage.get("link", "identityProvider");
+  if (identityProvider?.toUpperCase() === "DEMO") {
+    const userId = "1001";
+    const avatarUrl = `https://api.dicebear.com/7.x/bottts/svg?seed=${userId}`;
+
+    return {
+      id: userId,
+      name: "admin",
+      avatarUrl,
+    };
+  }
+
   const { project } = config;
   const { github, google } = project;
 

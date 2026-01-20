@@ -1,40 +1,47 @@
-import { Tool, ProductManagementSystemInput } from "./types";
+import { PortTahsisInput, Tool } from "./types";
+
+import { fileURLToPath } from "url";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const productManagementSystemTool: Tool<ProductManagementSystemInput> = {
-  name: "TURK_TELEKOM:get_product_by_speed",
+export const portTahsisTool: Tool<PortTahsisInput> = {
+  name: "TELCO:port_tahsis",
   description:
-    "Get product information by speed limit (Hız Limit). Returns product code (Ürün Kodu) and product description (Ürün Açıklaması) for the given speed limit.",
+    "Assign a port to a customer using device serial number. Returns port assignment details including assignment ID, port information, and status.",
   inputSchema: {
     type: "object",
     properties: {
-      spped: {
+      serial_number: {
         type: "string",
-        description:
-          "The speed limit to look up the product for (e.g., '1gbps', '100mbps', '50mbps').",
+        description: "The device serial number to assign a port for.",
       },
     },
-    required: ["speed"],
+    required: ["serial_number"],
   },
-  handler: async (args: ProductManagementSystemInput) => {
+  handler: async (args: PortTahsisInput) => {
     try {
-      const mockDataPath = path.join(__dirname, "..", "mock", "products.json");
+      const mockDataPath = path.join(
+        __dirname,
+        "..",
+        "mock",
+        "port_tahsis.json"
+      );
       const data = JSON.parse(fs.readFileSync(mockDataPath, "utf-8"));
 
-      const product = data.find((item: any) => item.speed === args.speed);
+      const portTahsis = data.find(
+        (item: any) => item.serial_number === args.serial_number
+      );
 
-      if (!product) {
+      if (!portTahsis) {
         return {
           content: [
             {
               type: "text",
               text: JSON.stringify({
-                error: `Product not found for speed limit: ${args.speed}`,
+                error: `Port assignment not found for device serial number: ${args.serial_number}`,
               }),
             },
           ],
@@ -46,7 +53,7 @@ export const productManagementSystemTool: Tool<ProductManagementSystemInput> = {
         content: [
           {
             type: "text",
-            text: JSON.stringify(product),
+            text: JSON.stringify(portTahsis),
           },
         ],
         isError: false,

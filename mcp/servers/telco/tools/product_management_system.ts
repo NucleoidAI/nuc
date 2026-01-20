@@ -1,46 +1,41 @@
-import { Tool, ConfigurationInput } from "./types";
+import { ProductManagementSystemInput, Tool } from "./types";
+
+import { fileURLToPath } from "url";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const configurationTool: Tool<ConfigurationInput> = {
-  name: "TURK_TELEKOM:configuration",
+export const productManagementSystemTool: Tool<ProductManagementSystemInput> = {
+  name: "TELCO:get_product_by_speed",
   description:
-    "Configure port settings using device serial number. Returns configuration details including VLAN, IP settings, and service parameters.",
+    "Get product information by speed limit (Hız Limit). Returns product code (Ürün Kodu) and product description (Ürün Açıklaması) for the given speed limit.",
   inputSchema: {
     type: "object",
     properties: {
-      serial_number: {
+      spped: {
         type: "string",
-        description: "The device serial number to configure.",
+        description:
+          "The speed limit to look up the product for (e.g., '1gbps', '100mbps', '50mbps').",
       },
     },
-    required: ["serial_number"],
+    required: ["speed"],
   },
-  handler: async (args: ConfigurationInput) => {
+  handler: async (args: ProductManagementSystemInput) => {
     try {
-      const mockDataPath = path.join(
-        __dirname,
-        "..",
-        "mock",
-        "configuration.json"
-      );
+      const mockDataPath = path.join(__dirname, "..", "mock", "products.json");
       const data = JSON.parse(fs.readFileSync(mockDataPath, "utf-8"));
 
-      const configuration = data.find(
-        (item: any) => item.serial_number === args.serial_number
-      );
+      const product = data.find((item: any) => item.speed === args.speed);
 
-      if (!configuration) {
+      if (!product) {
         return {
           content: [
             {
               type: "text",
               text: JSON.stringify({
-                error: `Configuration not found for device serial number: ${args.serial_number}`,
+                error: `Product not found for speed limit: ${args.speed}`,
               }),
             },
           ],
@@ -52,7 +47,7 @@ export const configurationTool: Tool<ConfigurationInput> = {
         content: [
           {
             type: "text",
-            text: JSON.stringify(configuration),
+            text: JSON.stringify(product),
           },
         ],
         isError: false,

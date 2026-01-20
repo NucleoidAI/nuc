@@ -3,6 +3,10 @@ import BlueprintChatTitle from "../BlueprintChat/BlueprintChatTitle";
 import BlueprintFlow from "../BlueprintFlow/BlueprintFlow";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import CloseIcon from "@mui/icons-material/Close";
+import { FlowDefinition } from "../ResponsibilityFlow/helper";
+import ResponsibilityChat from "../ResponsibilityChat/ResponsibilityChat";
+import ResponsibilityChatTitle from "../ResponsibilityChat/ResponsibilityChatTitle";
+import ResponsibilityFlow from "../ResponsibilityFlow/ResponsibilityFlow";
 
 import {
   Box,
@@ -23,6 +27,7 @@ const BlueprintDrawer = ({
   setAiResponse,
   aiResponse,
   setSelectedItem,
+  taskId,
   agentId,
 }: {
   drawerOpen: boolean;
@@ -33,15 +38,22 @@ const BlueprintDrawer = ({
     description: string;
     agentId: string;
   };
-  handleAiResponse?: (response) => void;
-  aiResponse?: string;
-  setAiResponse?: (response: string) => void;
+  handleAiResponse?: (response: {
+    flow: FlowDefinition;
+    response?: string;
+  }) => void;
+  aiResponse?: { flow: FlowDefinition; response?: string };
+  setAiResponse?: (response: {
+    flow: FlowDefinition;
+    response?: string;
+  }) => void;
   setSelectedItem?: (item: {
     id: string;
     title: string;
     description: string;
     agentId: string;
   }) => void;
+  taskId?: string;
   agentId?: string;
 }) => {
   const theme = useTheme();
@@ -183,7 +195,7 @@ const BlueprintDrawer = ({
                 <BlueprintFlow
                   Blueprint={selectedItem}
                   aiResponse={aiResponse}
-                  setAiResponse={setAiResponse}
+                  taskId={taskId}
                 />
 
                 {!isChatOpen && (
@@ -229,6 +241,20 @@ const BlueprintDrawer = ({
                   flexDirection: "column",
                   height: "100%",
                   minHeight: 0,
+                }}
+              >
+                <ResponsibilityChat
+                  selectedItem={selectedItem}
+                  setAiResponse={setAiResponse}
+                  aiResponse={aiResponse}
+                  setSelectedItem={setSelectedItem}
+                  onTitleChange={handleTitleChange}
+                  onDescriptionChange={handleDescriptionChange}
+                  onCreateResponsibility={handleCreateResponsibility}
+                  onMessagesChange={handleMessagesChange}
+                  taskId={taskId}
+                  agentId={agentId}
+                />
                 }}
               >
                 <Box

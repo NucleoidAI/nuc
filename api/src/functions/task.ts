@@ -184,6 +184,14 @@ async function updateStep({
       parameters,
       result,
     });
+  } else if (status === "FAILED") {
+    await event.publish("STEP_FAILED", {
+      taskId,
+      stepId,
+      action,
+      parameters,
+      result,
+    });
   }
 
   return step;

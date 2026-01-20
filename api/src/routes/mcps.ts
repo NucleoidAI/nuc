@@ -1,5 +1,6 @@
 import { AuthenticationError } from "@canmingir/link-express/error";
 import MCP from "../models/MCP";
+import actions from "../actions";
 import colleague from "../functions/colleague";
 import express from "express";
 import mcp from "../functions/mcp";
@@ -70,6 +71,11 @@ router.get("/", async (req, res) => {
     const allMCPs = await mcp.list();
     res.json(allMCPs);
   }
+});
+
+router.get("/actions", async (req, res) => {
+  const action = actions.list();
+  res.json(action);
 });
 
 router.delete("/:id", async (req, res) => {

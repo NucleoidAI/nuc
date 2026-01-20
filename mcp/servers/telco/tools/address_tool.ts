@@ -1,50 +1,44 @@
-import { Tool, PortBaglantiInput } from "./types";
+import { AddressToolInput, Tool } from "./types";
+
+import { fileURLToPath } from "url";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const portBaglantiTool: Tool<PortBaglantiInput> = {
-  name: "TURK_TELEKOM:port_baglanti",
+export const addressTool: Tool<AddressToolInput> = {
+  name: "TELCO:get_address",
   description:
-    "Connect/activate a port using port assignment ID. Returns connection details including connection ID, activation status, and timestamp.",
+    "Get address (acik_adres) information by BBK number. Returns the full address associated with the given BBK number.",
   inputSchema: {
     type: "object",
     properties: {
-      assignment_id: {
+      bbk_no: {
         type: "string",
-        description: "The port assignment ID to connect/activate.",
+        description: "The BBK number to look up the address for.",
       },
     },
-    required: ["assignment_id"],
+    required: ["bbk_no"],
   },
-  handler: async (args: PortBaglantiInput) => {
+  handler: async (args: AddressToolInput) => {
     try {
-      const mockDataPath = path.join(
-        __dirname,
-        "..",
-        "mock",
-        "port_baglanti.json"
-      );
+      const mockDataPath = path.join(__dirname, "..", "mock", "addresses.json");
       const data = JSON.parse(fs.readFileSync(mockDataPath, "utf-8"));
 
-      const portBaglanti = data.find(
-        (item: any) => item.assignment_id === args.assignment_id
-      );
+      const address = data.find((item: any) => item.bbk_no === args.bbk_no);
 
-      if (!portBaglanti) {
+      if (!address) {
         return {
           content: [
             {
               type: "text",
               text: JSON.stringify({
-                error: `Port connection not found for assignment ID: ${args.assignment_id}`,
+                message: `Address not found for BBK number: ${args.bbk_no}`,
               }),
             },
           ],
-          isError: true,
+          isError: false,
         };
       }
 
@@ -52,7 +46,7 @@ export const portBaglantiTool: Tool<PortBaglantiInput> = {
         content: [
           {
             type: "text",
-            text: JSON.stringify(portBaglanti),
+            text: JSON.stringify(address),
           },
         ],
         isError: false,

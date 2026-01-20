@@ -66,8 +66,8 @@ export const toTeamTree = (teams, Blueprints) => {
           nodeKind: "Blueprint",
           title: r.title,
           description: r.description,
+          nodes: r.nodes,
           agentId: r.agentId,
-          flowNodes: r.nodes,
         })),
       };
     }),

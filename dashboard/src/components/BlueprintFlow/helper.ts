@@ -17,7 +17,7 @@ type DefinitionNode = {
 export type FlowDefinition =
   | DefinitionNode[]
   | { nodes: DefinitionNode[] }
-  | { flowNodes: DefinitionNode[] };
+  | { nodes: DefinitionNode[] };
 
 type DefinitionGraphNode = {
   id: string;
@@ -53,13 +53,6 @@ export function buildDefinitionGraph(
     Array.isArray(definition.nodes)
   ) {
     list = definition.nodes;
-  } else if (
-    definition &&
-    typeof definition === "object" &&
-    "flowNodes" in definition &&
-    Array.isArray(definition.flowNodes)
-  ) {
-    list = definition.flowNodes;
   }
 
   if (!Array.isArray(list) || list.length === 0) {

@@ -18,6 +18,7 @@ function BlueprintChat({
   onDescriptionChange,
   onCreateBlueprint,
   onMessagesChange,
+  taskId,
   agentId,
 }) {
   const [loading, setLoading] = useState(false);
@@ -81,10 +82,13 @@ function BlueprintChat({
 
         const history = [
           ...messages,
-          ...(aiResponse?.flow
+          ...(aiResponse?.flow || responsibilityNodes
             ? [
                 {
                   content: JSON.stringify(aiResponse.flow || blueprintNodes),
+                  content: JSON.stringify(
+                    aiResponse?.flow || responsibilityNodes
+                  ),
                   role: "assistant",
                 },
               ]
@@ -105,16 +109,26 @@ function BlueprintChat({
           }
         );
 
-        if (onTitleChange) onTitleChange(blueprintNameData.title);
+        if (onTitleChange)
+          onTitleChange(
+            responsibilityNameData.title ||
+              responsibilityNameData?.train[0]?.title
+          );
         if (onDescriptionChange)
-          onDescriptionChange(blueprintNameData.description);
+          onDescriptionChange(
+            responsibilityNameData.description ||
+              responsibilityNameData?.train[0]?.description
+          );
 
         const response = await upsertBlueprint(
           selectedItem?.id,
-          blueprintNameData.title,
-          blueprintNameData.description,
+          responsibilityNameData.title ||
+            responsibilityNameData?.train[0]?.title,
+          responsibilityNameData.description ||
+            responsibilityNameData?.train[0]?.description,
           agentId,
-          data?.flow
+          data?.flow,
+          taskId
         );
 
         setSelectedItem(response.Blueprint);

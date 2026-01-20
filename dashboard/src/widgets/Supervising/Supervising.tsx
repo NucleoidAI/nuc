@@ -1,10 +1,10 @@
-import Box from "@mui/material/Box";
 import StatusToolbar from "../../components/StatusToolbar/StatusToolbar";
 import SupervisingCard from "../../components/SupervisingCard/SupervisingCard";
 import { useState } from "react";
+
 import useSupervisings from "../../hooks/useSupervisings";
 
-import { Skeleton, Stack } from "@mui/material";
+import { Box, Skeleton, Stack } from "@mui/material";
 
 const Supervising = ({ agentId }) => {
   const [selectedStatus, setSelectedStatus] = useState("All");
@@ -16,7 +16,7 @@ const Supervising = ({ agentId }) => {
     selectedStatus
   );
 
-  const handleChange = (event) => {
+  const handleStatusChange = (event) => {
     setSelectedStatus(event.target.value);
   };
 
@@ -37,7 +37,7 @@ const Supervising = ({ agentId }) => {
       >
         <StatusToolbar
           statuses={["All", "ANSWERED", "IN_PROGRESS"]}
-          handleChange={handleChange}
+          handleChange={handleStatusChange}
           selectedStatus={selectedStatus}
         />
 
@@ -55,13 +55,13 @@ const Supervising = ({ agentId }) => {
               />
             ))}
           </Stack>
-        ) : supervisings.length > 0 ? (
+        ) : supervisings && supervisings.length > 0 ? (
           supervisings.map((supervise) => (
             <SupervisingCard key={supervise.id} supervise={supervise} />
           ))
         ) : (
           <Stack sx={{ textAlign: "center", my: 4, color: "text.secondary" }}>
-            No supervising data available for the selected status
+            No supervising data available for the selected filters
           </Stack>
         )}
       </Box>

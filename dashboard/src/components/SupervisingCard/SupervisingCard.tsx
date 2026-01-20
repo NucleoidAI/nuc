@@ -1,9 +1,13 @@
 import { Iconify } from "@canmingir/link/platform/components";
+import ResponsibilityDrawer from "../ResponsbilityDrawer/ResponsibilityDrawer";
 import SupervisingChat from "../SupervisingChat";
-
+import SupervisingTypeDialog from "../SupervisingTypeDialog";
+import useResponsibility from "../../hooks/useResponsibility";
+import { useState } from "react";
 import {
   Box,
   Card,
+  Chip,
   Divider,
   Fab,
   Table,
@@ -16,7 +20,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
 
 const SupervisingCard = ({
   supervise,
@@ -26,13 +29,61 @@ const SupervisingCard = ({
     question?: string;
     answer?: string;
     status: string;
+    responsibilityId?: string;
+    taskId?: string;
   };
 }) => {
-  const [open, setOpen] = useState(false);
+  const [knowledgeChatOpen, setKnowledgeChatOpen] = useState(false);
+
+  const [aiResponse, setAiResponse] = useState(null);
+
+  const [responsibilityDrawerOpen, setResponsibilityDrawerOpen] =
+    useState(false);
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const { getResponsibilityById } = useResponsibility();
+
+  const [responsibilitySelectedItem, setResponsibilitySelectedItem] =
+    useState(null);
+
+  const { responsibility } = getResponsibilityById(
+    supervise.responsibilityId || ""
+  );
+
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const handleSelectKnowledge = () => {
+    setDialogOpen(false);
+    setKnowledgeChatOpen(true);
+  };
+
+  const handleSelectResponsibility = (responsibility: {
+    id: string;
+    title: string;
+    description: string;
+    colleagueId: string;
+  }) => {
+    setDialogOpen(false);
+    setResponsibilityDrawerOpen(true);
+    setResponsibilitySelectedItem(responsibility);
+  };
 
   return (
     <>
-      <Card data-cy="supervise-card">
+      <Card
+        data-cy="supervise-card"
+        sx={{
+          borderLeft: "4px solid #2196f3",
+          backgroundColor: "background.paper",
+        }}
+      >
         <Box
           sx={{
             display: "flex",
@@ -63,6 +114,35 @@ const SupervisingCard = ({
             >
               <Box
                 sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: 1,
+                  alignItems: "center",
+                }}
+              >
+                {supervise.responsibilityId && responsibility?.title && (
+                  <Chip
+                    icon={
+                      <Iconify
+                        icon="healthicons:crisis-response-center-person-outline"
+                        sx={{ width: 16, height: 16 }}
+                        color="inherit"
+                        style={{ color: "#ff9800" }}
+                      />
+                    }
+                    label={responsibility.title}
+                    size="small"
+                    sx={{
+                      backgroundColor: "rgba(255, 152, 0, 0.1)",
+                      color: "#ff9800",
+                      fontWeight: 500,
+                      border: "1px solid rgba(255, 152, 0, 0.3)",
+                    }}
+                  />
+                )}
+              </Box>
+              <Box
+                sx={{
                   borderRadius: "8px",
                   paddingLeft: 0.5,
                   backgroundColor: "background.paper",
@@ -78,7 +158,7 @@ const SupervisingCard = ({
               </Box>
 
               <TextField
-                data-cy="answer-supervising"
+                data-cy="supervising-answer"
                 variant="outlined"
                 label="Answer"
                 value={supervise.answer ? `${supervise.answer}` : ""}
@@ -141,7 +221,8 @@ const SupervisingCard = ({
                   </TableBody>
                 </Table>
               </TableContainer>
-              <Tooltip title="Go to sessions">
+
+              <Tooltip title="Open supervising options">
                 <Fab
                   size="medium"
                   sx={{
@@ -149,15 +230,13 @@ const SupervisingCard = ({
                     textAlign: "center",
                   }}
                   color="inherit"
-                  onClick={() => {
-                    setOpen(!open);
-                  }}
+                  onClick={handleOpenDialog}
                 >
                   <Iconify
                     icon={
-                      open
-                        ? "solar:chat-round-line-linear"
-                        : "solar:chat-round-line-bold"
+                      supervise.status === "IN_PROGRESS"
+                        ? "solar:reply-2-bold-duotone"
+                        : "solar:check-read-line-duotone"
                     }
                     sx={{ width: 26, height: 26 }}
                   />
@@ -167,10 +246,30 @@ const SupervisingCard = ({
           </Box>
         </Box>
       </Card>
+
+      <SupervisingTypeDialog
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        onSelectKnowledge={handleSelectKnowledge}
+        onSelectResponsibility={(responsibility) =>
+          handleSelectResponsibility(responsibility)
+        }
+        responsibility={responsibility}
+      />
+
       <SupervisingChat
-        open={open}
-        handleClose={() => setOpen(false)}
+        open={knowledgeChatOpen}
+        handleClose={() => setKnowledgeChatOpen(false)}
         supervise={supervise}
+      />
+      <ResponsibilityDrawer
+        drawerOpen={responsibilityDrawerOpen}
+        handleDrawerClose={() => setResponsibilityDrawerOpen(false)}
+        selectedItem={responsibilitySelectedItem}
+        taskId={supervise.taskId}
+        setSelectedItem={setResponsibilitySelectedItem}
+        setAiResponse={setAiResponse}
+        aiResponse={aiResponse}
       />
     </>
   );

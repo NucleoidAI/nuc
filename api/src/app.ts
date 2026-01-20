@@ -2,6 +2,7 @@ import "express";
 
 import McpClient from "../../mcp/McpClient";
 import agent from "./functions/agent";
+import blueprints from "./routes/blueprints";
 import colleagues from "./routes/colleagues";
 import communications from "./routes/communications";
 import engines from "./routes/engines";
@@ -15,7 +16,6 @@ import projects from "./routes/projects";
 import sessions from "./routes/sessions";
 import statistics from "./routes/statistics";
 import supervisings from "./routes/supervisings";
-import taskBluePrints from "./routes/taskBluePrints";
 import tasks from "./routes/tasks";
 import teamDetails from "./routes/teamDetails";
 import { telemetryMiddleware } from "./instrumentation";
@@ -50,7 +50,7 @@ function createApp() {
   app.use("/organizations", organizations);
   app.use("/statistics", statistics);
   app.use("/agents", colleagues);
-  app.use("/taskblueprints", taskBluePrints);
+  app.use("/blueprints", blueprints);
   app.use("/mcps", mcps);
   app.use("/communications", communications);
 

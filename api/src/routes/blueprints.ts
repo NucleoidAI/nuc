@@ -77,7 +77,7 @@ router.put("/:blueprintId", async (req, res) => {
     pseudocode,
   });
 
-  await event.publish("TASK_BLUE_PRINT_CREATED", {
+  await event.publish("BLUE_PRINT_CREATED", {
     Blueprint: { ...result, pseudocode },
   });
 

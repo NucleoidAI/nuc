@@ -10,10 +10,10 @@ import { Box, Fab, Stack, useMediaQuery } from "@mui/material";
 import React, { useState } from "react";
 
 function BlueprintsWidget({ agentId }: { agentId: string }) {
-  const [blueprintUpsertedEvent] = useEvent("TASK_BLUE_PRINT_UPSERTED", {
+  const [blueprintUpsertedEvent] = useEvent("BLUE_PRINT_UPSERTED", {
     Blueprint: null,
   });
-  const [blueprintRemovedEvent] = useEvent("TASK_BLUE_PRINT_REMOVED", {
+  const [blueprintRemovedEvent] = useEvent("BLUE_PRINT_REMOVED", {
     Blueprint: null,
   });
 

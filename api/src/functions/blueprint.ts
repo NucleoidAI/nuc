@@ -1,5 +1,5 @@
+import BluePrint from "../models/Blueprint";
 import { NotFoundError } from "@canmingir/link-express/error";
-import TaskBluePrint from "../models/TaskBluePrint";
 
 type NodeType = {
   id: string;
@@ -18,17 +18,17 @@ async function getWithNodes(id: string) {
     throw new Error("ID is required");
   }
 
-  const taskBluePrint = await TaskBluePrint.findOne({
+  const Blueprint = await BluePrint.findOne({
     where: {
       id,
     },
   });
 
-  if (!taskBluePrint) {
+  if (!Blueprint) {
     throw new NotFoundError();
   }
 
-  return taskBluePrint.toJSON();
+  return Blueprint.toJSON();
 }
 
 async function upsert(
@@ -38,21 +38,21 @@ async function upsert(
   id: string,
   nodes?: NodeType[]
 ) {
-  let taskBluePrint;
+  let Blueprint;
 
-  const existingTaskBluePrint = await TaskBluePrint.findByPk(id);
+  const existingBlueprint = await BluePrint.findByPk(id);
 
-  if (existingTaskBluePrint) {
-    await existingTaskBluePrint.update({
+  if (existingBlueprint) {
+    await existingBlueprint.update({
       title,
       description,
       agentId,
       nodes: nodes || null,
     });
 
-    taskBluePrint = existingTaskBluePrint;
+    Blueprint = existingBlueprint;
   } else {
-    taskBluePrint = await TaskBluePrint.create({
+    Blueprint = await BluePrint.create({
       id,
       title,
       description,
@@ -62,59 +62,59 @@ async function upsert(
   }
 
   return {
-    ...taskBluePrint.toJSON(),
+    ...Blueprint.toJSON(),
     Nodes: nodes || [],
   };
 }
 
-async function remove({ taskBluePrintId }: { taskBluePrintId: string }) {
-  await TaskBluePrint.destroy({
-    where: { id: taskBluePrintId },
+async function remove({ blueprintId }: { blueprintId: string }) {
+  await BluePrint.destroy({
+    where: { id: blueprintId },
   });
 }
 
 async function list({ agentId }: { agentId: string }) {
-  const taskBluePrints = await TaskBluePrint.findAll({
+  const Blueprints = await BluePrint.findAll({
     where: { agentId },
   });
 
-  return taskBluePrints.map((taskBluePrint) => taskBluePrint.toJSON());
+  return Blueprints.map((Blueprint) => Blueprint.toJSON());
 }
 
-async function get({ taskBluePrintId }: { taskBluePrintId: string }) {
-  const taskBluePrint = await TaskBluePrint.findByPk(taskBluePrintId);
+async function get({ blueprintId }: { blueprintId: string }) {
+  const Blueprint = await BluePrint.findByPk(blueprintId);
 
-  if (!taskBluePrint) {
+  if (!Blueprint) {
     throw new NotFoundError();
   }
 
-  return taskBluePrint.toJSON();
+  return Blueprint.toJSON();
 }
 
 async function patch({
-  taskBluePrintId,
+  blueprintId,
   pseudocode,
   title,
   description,
 }: {
-  taskBluePrintId: string;
+  blueprintId: string;
   pseudocode?: string;
   title?: string;
   description?: string;
 }) {
-  const taskBluePrint = await TaskBluePrint.findByPk(taskBluePrintId);
+  const Blueprint = await BluePrint.findByPk(blueprintId);
 
-  if (!taskBluePrint) {
+  if (!Blueprint) {
     throw new NotFoundError();
   }
 
-  await taskBluePrint.update({
+  await Blueprint.update({
     ...(pseudocode && { pseudocode }),
     ...(title && { title }),
     ...(description && { description }),
   });
 
-  return taskBluePrint.toJSON();
+  return Blueprint.toJSON();
 }
 
 export default {

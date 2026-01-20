@@ -1,5 +1,6 @@
 import MCPs from "../mcps/mcps";
 import actions from "../actions";
+import blueprintFn from "./blueprint";
 import colleague from "./colleague";
 import dataset from "../dataset";
 import { generate } from "../lib/llm";
@@ -9,7 +10,6 @@ import message from "./message";
 import messagesFunc from "./message";
 import session from "./session";
 import supervising from "./supervising";
-import taskBluePrintFn from "./taskBluePrint";
 import taskFn from "./task";
 
 async function messages({ teamId }: { teamId: string }) {
@@ -89,13 +89,13 @@ async function steps({ taskId }) {
   };
 }
 
-async function taskBluePrints({ agentId }) {
-  const taskBluePrints = await taskBluePrintFn.list({ agentId });
+async function Blueprints({ agentId }) {
+  const Blueprints = await blueprintFn.list({ agentId });
 
   return {
     role: "system",
     content: {
-      taskBluePrints,
+      Blueprints,
     },
   } as {
     role: "user" | "system" | "assistant";
@@ -178,7 +178,7 @@ async function task({ taskId }: { taskId: string }) {
       await Promise.all([
         info({ agentId }),
         knowledge({ agentId, taskId }),
-        taskBluePrints({ agentId }),
+        Blueprints({ agentId }),
         steps({ taskId }),
       ])
     ).flat(),
@@ -327,7 +327,7 @@ async function step({
   }
 }
 
-async function taskBluePrint({
+async function Blueprint({
   history,
   content,
 }: {
@@ -338,7 +338,7 @@ async function taskBluePrint({
   content: string;
 }) {
   const response = await generate({
-    dataset: dataset.train.taskBluePrintChat,
+    dataset: dataset.train.blueprintChat,
     context: history,
     content,
     json_format: "{ response: <RESPONSE>, flow: [<FLOW>] }",
@@ -347,7 +347,7 @@ async function taskBluePrint({
   return response;
 }
 
-async function taskBluePrintName({
+async function blueprintName({
   history,
   content,
 }: {
@@ -358,7 +358,7 @@ async function taskBluePrintName({
   content: string;
 }) {
   const response = await generate({
-    dataset: dataset.train.taskBluePrintName,
+    dataset: dataset.train.blueprintName,
     context: history,
     content,
     json_format: "{ title: <TITLE>, description: <DESCRIPTION> }",
@@ -366,11 +366,11 @@ async function taskBluePrintName({
   return response;
 }
 
-async function taskBluePrintToTask({
+async function blueprintToTask({
   history,
   content,
   knowledge,
-  taskBluePrint,
+  Blueprint,
 }: {
   history?: {
     role: "system" | "user" | "assistant";
@@ -378,13 +378,13 @@ async function taskBluePrintToTask({
   }[];
   content: string;
   knowledge: Array<[]>;
-  taskBluePrint: object;
+  Blueprint: object;
 }) {
   const context = [
     {
       role: "system" as const,
       content: {
-        taskBluePrint,
+        Blueprint,
         knowledge,
         history,
       },
@@ -392,7 +392,7 @@ async function taskBluePrintToTask({
   ];
 
   const response = await generate({
-    dataset: dataset.train.taskBluePrint,
+    dataset: dataset.train.Blueprint,
     context,
     content,
     json_format: "{ task: <TASK> ,answer: <ANSWER> }",
@@ -401,28 +401,28 @@ async function taskBluePrintToTask({
   return response;
 }
 
-async function taskBluePrintDiamond({
+async function blueprintDiamond({
   content,
-  taskBluePrints,
+  Blueprints,
 }: {
   content: string;
-  taskBluePrints: Array<[]>;
+  Blueprints: Array<[]>;
 }) {
   const context = [
     {
       role: "system" as const,
       content: {
-        taskBluePrints,
+        Blueprints,
       },
     },
   ];
 
   const response = await generate({
-    dataset: dataset.train.taskBluePrintDiamond,
+    dataset: dataset.train.blueprintDiamond,
     context,
     content,
     json_format:
-      "{ decision: <DECISION>,existing: <EXISTING>,taskBluePrintId: <TASKBLUEPRINT_ID> }",
+      "{ decision: <DECISION>,existing: <EXISTING>,blueprintId: <BLUEPRINT_ID> }",
   });
   return response;
 }
@@ -452,7 +452,7 @@ async function evaluateSupervisionAnswer({
   ];
 
   const evaluation = await generate({
-    dataset: dataset.train.taskBluePrintChatEvaluation,
+    dataset: dataset.train.blueprintChatEvaluation,
     context,
     content: `${content.question}\n\nAnswer: ${content.answer}`,
     json_format: `{
@@ -477,7 +477,7 @@ async function chat({
   });
 
   const conversationsData = await conversations({ sessionId });
-  const taskBluePrintsData = await taskBluePrintFn.list({ agentId });
+  const blueprintsData = await blueprintFn.list({ agentId });
 
   const colleagueData = await colleague.get({ agentId });
 
@@ -521,29 +521,29 @@ async function chat({
     return;
   }
 
-  const taskBluePrintDecision = await taskBluePrintDiamond({
+  const blueprintDecision = await blueprintDiamond({
     content: content,
-    taskBluePrints: taskBluePrintsData,
+    Blueprints: blueprintsData,
   });
 
-  if (taskBluePrintDecision.decision === "TASKBLUEPRINT" && task.length === 0) {
-    const taskBluePrintData = await taskBluePrintFn.get({
-      taskBluePrintId: taskBluePrintDecision.taskBluePrintId,
+  if (blueprintDecision.decision === "BLUEPRINT" && task.length === 0) {
+    const blueprintData = await blueprintFn.get({
+      blueprintId: blueprintDecision.blueprintId,
     });
 
-    const taskBluePrintToTaskResponse = await taskBluePrintToTask({
+    const blueprintToTaskResponse = await blueprintToTask({
       history: conversationsData,
       knowledge: knowledgeData,
       content: content,
-      taskBluePrint: taskBluePrintData,
+      Blueprint: blueprintData,
     });
 
     await taskFn.create({
       agentId,
       description:
-        taskBluePrintToTaskResponse.task?.description ||
-        taskBluePrintToTaskResponse.task,
-      taskBluePrintId: taskBluePrintDecision.taskBluePrintId,
+        blueprintToTaskResponse.task?.description ||
+        blueprintToTaskResponse.task,
+      blueprintId: blueprintDecision.blueprintId,
       sessionId,
     });
 
@@ -551,7 +551,7 @@ async function chat({
       sessionId,
       agentId,
       role: "ASSISTANT",
-      content: taskBluePrintToTaskResponse.answer,
+      content: blueprintToTaskResponse.answer,
     });
   } else {
     if (task.length > 0) {
@@ -625,8 +625,8 @@ export default {
   chat,
   task,
   step,
-  taskBluePrint,
-  taskBluePrintName,
+  Blueprint,
+  blueprintName,
   evaluateSupervisionAnswer,
   toPseudo,
 };

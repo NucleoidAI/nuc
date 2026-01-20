@@ -6,19 +6,19 @@ import { event } from "@canmingir/link-express/event/client";
 async function create({
   agentId,
   description,
-  taskBluePrintId,
+  blueprintId,
   sessionId,
 }: {
   agentId: string;
   description: string;
-  taskBluePrintId?: string;
+  blueprintId?: string;
   sessionId?: string;
 }) {
   const task = await Task.create({
     agentId,
     description,
     status: "IN_PROGRESS",
-    taskBluePrintId,
+    blueprintId,
     sessionId,
   });
 
@@ -26,7 +26,7 @@ async function create({
     taskId: task.id,
     agentId,
     description,
-    taskBluePrintId,
+    blueprintId,
     sessionId,
   });
 

@@ -8,9 +8,9 @@ import {
   MCPElement,
   MCPScopeElement,
   MentionElement,
-} from "../TaskBluePrintChat/MCPElement";
+} from "../BlueprintChat/MCPElement";
 
-function TaskBluePrintMessageBox({ message }) {
+function BlueprintMessageBox({ message }) {
   const { getAgent } = useAgent();
   const theme = useTheme();
 
@@ -203,4 +203,4 @@ function TaskBluePrintMessageBox({ message }) {
   );
 }
 
-export default TaskBluePrintMessageBox;
+export default BlueprintMessageBox;

@@ -14,11 +14,11 @@ interface AIResponse {
   flow: FlowDefinition;
 }
 
-interface Responsibility {
+interface Blueprint {
   id: string;
   title: string;
   description: string;
-  colleagueId: string;
+  agentId: string;
 }
 
 const BlueprintFlowDialog = ({
@@ -30,7 +30,7 @@ const BlueprintFlowDialog = ({
 }: {
   flowDialogOpen: boolean;
   handleFlowDialogClose: () => void;
-  selectedItem: Responsibility;
+  selectedItem: Blueprint;
   aiResponse?: AIResponse;
   taskId?: string;
 }) => {
@@ -63,10 +63,8 @@ const BlueprintFlowDialog = ({
         {selectedItem && (
           <BlueprintFlow
             aiResponse={aiResponse}
-            responsibility={selectedItem}
+            blueprint={selectedItem}
             taskId={taskId}
-            Blueprint={selectedItem}
-            setAiResponse={setAiResponse}
           />
         )}
       </DialogContent>

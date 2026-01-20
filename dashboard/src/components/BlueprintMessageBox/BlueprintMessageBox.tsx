@@ -112,7 +112,7 @@ function BlueprintMessageBox({ message }) {
     }
   };
 
-  const isUser = message.role === "user";
+  const isUser = message.role === "USER";
 
   return (
     <Box

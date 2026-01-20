@@ -4,9 +4,9 @@ import { Flow } from "@canmingir/link/platform/components";
 import SuccessSnackbar from "./SuccessSnackbar";
 import ValidationButtons from "./ValidationButtons";
 import ValidationErrorView from "./ValidationErrorView";
-import { responsibilityChartPlugin } from "./ResponsibilityFlowPlugin";
-import useIntegrations from "../../hooks/useIntegrations";
-import useResponsibility from "../../hooks/useResponsibility";
+import { blueprintFlowPlugin } from "./BlueprintFlowPlugin";
+import useBlueprint from "../../hooks/useBlueprint";
+import useMCPs from "../../hooks/useMCPs";
 import { v4 as uuid } from "uuid";
 import { validateFlow } from "./validation";
 
@@ -17,20 +17,20 @@ interface AIResponse {
   flow: FlowDefinition;
 }
 
-interface Responsibility {
+interface Blueprint {
   id: string;
   title: string;
   description: string;
-  colleagueId: string;
+  agentId: string;
 }
 
-function ResponsibilityFlow({
+function BlueprintFlow({
   aiResponse,
-  responsibility,
+  blueprint,
   taskId,
 }: {
   aiResponse?: AIResponse;
-  responsibility: Responsibility;
+  blueprint: Blueprint;
   taskId?: string;
 }) {
   const [graphData, setGraphData] = useState(null);
@@ -40,13 +40,10 @@ function ResponsibilityFlow({
   const [showValidationErrors, setShowValidationErrors] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  const { getResponsibilityWithNode, upsertResponsibility } =
-    useResponsibility();
-  const { responsibilityNodes, loading } = getResponsibilityWithNode(
-    responsibility?.id
-  );
-  const { getIntegrations } = useIntegrations();
-  const { integrations } = getIntegrations();
+  const { getBlueprintWithNode, upsertBlueprint } = useBlueprint();
+  const { blueprintNodes, loading } = getBlueprintWithNode(blueprint?.id);
+  const { getMCPs } = useMCPs();
+  const { mcps } = getMCPs();
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedParentNode, setSelectedParentNode] = useState(null);
@@ -80,30 +77,27 @@ function ResponsibilityFlow({
     if (aiResponse?.flow) {
       const cleanData = buildDefinitionGraph(aiResponse.flow);
       setGraphData(cleanData);
-    } else if (responsibilityNodes) {
-      const initialData = buildDefinitionGraph(responsibilityNodes);
+    } else if (blueprintNodes) {
+      const initialData = buildDefinitionGraph(blueprintNodes);
       setGraphData(initialData);
       setHasLocalChanges(false);
     }
-  }, [responsibilityNodes, aiResponse]);
+  }, [blueprintNodes, aiResponse]);
 
   useEffect(() => {
     if (loading) setIsLoading(false);
   }, [loading]);
 
   useEffect(() => {
-    if (graphData && integrations?.content?.integrations) {
-      const validationResult = validateFlow(
-        graphData,
-        integrations.content.integrations
-      );
+    if (graphData && mcps?.content?.mcps) {
+      const validationResult = validateFlow(graphData, mcps.content.mcps);
       setValidationErrors(validationResult.errors);
 
       if (validationResult.errors.length === 0 && showValidationErrors) {
         setShowValidationErrors(false);
       }
     }
-  }, [graphData, integrations, showValidationErrors]);
+  }, [graphData, mcps, showValidationErrors]);
 
   const handleAddNodeClick = (node) => {
     setSelectedParentNode(node);
@@ -348,7 +342,7 @@ function ResponsibilityFlow({
   };
 
   const handleSaveFlow = async () => {
-    if (!graphData || !responsibilityNodes) return;
+    if (!graphData || !blueprintNodes) return;
 
     const updatedNodes = Object.values(graphData.nodes).map(
       (node: {
@@ -408,11 +402,11 @@ function ResponsibilityFlow({
     );
 
     try {
-      await upsertResponsibility(
-        responsibilityNodes.id,
-        responsibilityNodes.title,
-        responsibilityNodes.description,
-        responsibilityNodes.colleagueId,
+      await upsertBlueprint(
+        blueprintNodes.id,
+        blueprintNodes.title,
+        blueprintNodes.description,
+        blueprintNodes.agentId,
         updatedNodes,
         taskId
       );
@@ -454,7 +448,7 @@ function ResponsibilityFlow({
     >
       <Flow
         data={graphData}
-        plugin={responsibilityChartPlugin}
+        plugin={blueprintFlowPlugin}
         style={style}
         editable={true}
         onChange={handleFlowChange}

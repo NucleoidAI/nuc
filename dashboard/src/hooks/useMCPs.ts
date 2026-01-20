@@ -23,6 +23,23 @@ function useMCPs() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const getActions = useCallback(() => {
+    const { data, loading, error } = Api(() => http.get(`/mcps/actions`), []);
+
+    if (data) {
+      publish("ACTIONS_LOADED", {
+        actions: data,
+      });
+    }
+
+    return {
+      actions: data,
+      loading,
+      error,
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const getColleagueMCP = useCallback(
     (agentId: string) => {
       const { data, loading, error } = Api(
@@ -49,6 +66,7 @@ function useMCPs() {
   return {
     getMCPs,
     getColleagueMCP,
+    getActions,
   };
 }
 

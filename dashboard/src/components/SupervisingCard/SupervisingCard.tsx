@@ -1,9 +1,10 @@
+import BlueprintDrawer from "../BlueprintDrawer/BlueprintDrawer";
 import { Iconify } from "@canmingir/link/platform/components";
-import ResponsibilityDrawer from "../ResponsbilityDrawer/ResponsibilityDrawer";
 import SupervisingChat from "../SupervisingChat";
 import SupervisingTypeDialog from "../SupervisingTypeDialog";
-import useResponsibility from "../../hooks/useResponsibility";
+import useBlueprint from "../../hooks/useBlueprint";
 import { useState } from "react";
+
 import {
   Box,
   Card,
@@ -29,7 +30,7 @@ const SupervisingCard = ({
     question?: string;
     answer?: string;
     status: string;
-    responsibilityId?: string;
+    blueprintId?: string;
     taskId?: string;
   };
 }) => {
@@ -42,14 +43,11 @@ const SupervisingCard = ({
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const { getResponsibilityById } = useResponsibility();
+  const { getBlueprintWithId } = useBlueprint();
 
-  const [responsibilitySelectedItem, setResponsibilitySelectedItem] =
-    useState(null);
+  const [blueprintSelectedItem, setBlueprintSelectedItem] = useState(null);
 
-  const { responsibility } = getResponsibilityById(
-    supervise.responsibilityId || ""
-  );
+  const { blueprint } = getBlueprintWithId(supervise.blueprintId || "");
 
   const handleOpenDialog = () => {
     setDialogOpen(true);
@@ -64,15 +62,15 @@ const SupervisingCard = ({
     setKnowledgeChatOpen(true);
   };
 
-  const handleSelectResponsibility = (responsibility: {
+  const handleSelectBlueprint = (blueprint: {
     id: string;
     title: string;
     description: string;
-    colleagueId: string;
+    agentId: string;
   }) => {
     setDialogOpen(false);
     setResponsibilityDrawerOpen(true);
-    setResponsibilitySelectedItem(responsibility);
+    setBlueprintSelectedItem(blueprint);
   };
 
   return (
@@ -120,7 +118,7 @@ const SupervisingCard = ({
                   alignItems: "center",
                 }}
               >
-                {supervise.responsibilityId && responsibility?.title && (
+                {supervise.blueprintId && blueprint?.title && (
                   <Chip
                     icon={
                       <Iconify
@@ -130,7 +128,7 @@ const SupervisingCard = ({
                         style={{ color: "#ff9800" }}
                       />
                     }
-                    label={responsibility.title}
+                    label={blueprint.title}
                     size="small"
                     sx={{
                       backgroundColor: "rgba(255, 152, 0, 0.1)",
@@ -251,10 +249,8 @@ const SupervisingCard = ({
         open={dialogOpen}
         onClose={handleCloseDialog}
         onSelectKnowledge={handleSelectKnowledge}
-        onSelectResponsibility={(responsibility) =>
-          handleSelectResponsibility(responsibility)
-        }
-        responsibility={responsibility}
+        onSelectBlueprint={(blueprint) => handleSelectBlueprint(blueprint)}
+        blueprint={blueprint}
       />
 
       <SupervisingChat
@@ -262,12 +258,12 @@ const SupervisingCard = ({
         handleClose={() => setKnowledgeChatOpen(false)}
         supervise={supervise}
       />
-      <ResponsibilityDrawer
+      <BlueprintDrawer
         drawerOpen={responsibilityDrawerOpen}
         handleDrawerClose={() => setResponsibilityDrawerOpen(false)}
-        selectedItem={responsibilitySelectedItem}
+        selectedItem={blueprintSelectedItem}
         taskId={supervise.taskId}
-        setSelectedItem={setResponsibilitySelectedItem}
+        setSelectedItem={setBlueprintSelectedItem}
         setAiResponse={setAiResponse}
         aiResponse={aiResponse}
       />

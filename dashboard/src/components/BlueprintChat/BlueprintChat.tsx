@@ -82,13 +82,10 @@ function BlueprintChat({
 
         const history = [
           ...messages,
-          ...(aiResponse?.flow || responsibilityNodes
+          ...(aiResponse?.flow || blueprintNodes
             ? [
                 {
-                  content: JSON.stringify(aiResponse.flow || blueprintNodes),
-                  content: JSON.stringify(
-                    aiResponse?.flow || responsibilityNodes
-                  ),
+                  content: JSON.stringify(aiResponse?.flow || blueprintNodes),
                   role: "assistant",
                 },
               ]
@@ -111,21 +108,19 @@ function BlueprintChat({
 
         if (onTitleChange)
           onTitleChange(
-            responsibilityNameData.title ||
-              responsibilityNameData?.train[0]?.title
+            blueprintNameData.title || blueprintNameData?.train[0]?.title
           );
         if (onDescriptionChange)
           onDescriptionChange(
-            responsibilityNameData.description ||
-              responsibilityNameData?.train[0]?.description
+            blueprintNameData.description ||
+              blueprintNameData?.train[0]?.description
           );
 
         const response = await upsertBlueprint(
           selectedItem?.id,
-          responsibilityNameData.title ||
-            responsibilityNameData?.train[0]?.title,
-          responsibilityNameData.description ||
-            responsibilityNameData?.train[0]?.description,
+          blueprintNameData.title || blueprintNameData?.train[0]?.title,
+          blueprintNameData.description ||
+            blueprintNameData?.train[0]?.description,
           agentId,
           data?.flow,
           taskId

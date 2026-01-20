@@ -43,6 +43,20 @@ function useBlueprint() {
     };
   };
 
+  const getBlueprintWithId = (id: string, fetchState: DependencyArray = []) => {
+    const { data, loading, error, fetch } = Api(
+      () => (id ? http.get(`/blueprints/${id}`) : null),
+      [...fetchState]
+    );
+
+    return {
+      blueprint: data,
+      loading,
+      error,
+      fetch,
+    };
+  };
+
   const getBlueprintWithNode = (
     id: string,
     fetchState: DependencyArray = []
@@ -62,7 +76,7 @@ function useBlueprint() {
     }
 
     return {
-      blueprintNodes: result,
+      blueprintNodes: data,
       loading,
       error,
       fetch,
@@ -90,7 +104,8 @@ function useBlueprint() {
     title: string,
     description: string,
     agentId: string,
-    nodes?: NodeType[]
+    nodes?: NodeType[],
+    taskId?: string
   ) => {
     if (!blueprintId) {
       blueprintId = uuidv4();
@@ -101,6 +116,7 @@ function useBlueprint() {
       description,
       nodes,
       agentId,
+      taskId,
     });
     if (response?.data) {
       publish("BLUE_PRINT_UPSERTED", { Blueprint: response.data });
@@ -126,6 +142,7 @@ function useBlueprint() {
     createBlueprint,
     upsertBlueprint,
     removeBlueprint,
+    getBlueprintWithId,
   };
 }
 

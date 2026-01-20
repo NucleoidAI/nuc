@@ -75,7 +75,7 @@ function BlueprintsWidget({ agentId }: { agentId: string }) {
         </Box>
       </Box>
       {drawerOpen && (
-        <ResponsibilityDrawer
+        <BlueprintDrawer
           drawerOpen={drawerOpen}
           handleDrawerClose={handleDrawerClose}
           selectedItem={selectedItem}
@@ -85,7 +85,7 @@ function BlueprintsWidget({ agentId }: { agentId: string }) {
       )}
 
       {flowDialogOpen && (
-        <ResponsibilityFlowDialog
+        <BlueprintFlowDialog
           flowDialogOpen={flowDialogOpen}
           handleFlowDialogClose={handleFlowDialogClose}
           selectedItem={selectedItem}

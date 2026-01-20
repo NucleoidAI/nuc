@@ -3,10 +3,7 @@ import BlueprintChatTitle from "../BlueprintChat/BlueprintChatTitle";
 import BlueprintFlow from "../BlueprintFlow/BlueprintFlow";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import CloseIcon from "@mui/icons-material/Close";
-import { FlowDefinition } from "../ResponsibilityFlow/helper";
-import ResponsibilityChat from "../ResponsibilityChat/ResponsibilityChat";
-import ResponsibilityChatTitle from "../ResponsibilityChat/ResponsibilityChatTitle";
-import ResponsibilityFlow from "../ResponsibilityFlow/ResponsibilityFlow";
+import { FlowDefinition } from "../BlueprintFlow/helper";
 
 import {
   Box,
@@ -193,7 +190,7 @@ const BlueprintDrawer = ({
                 }}
               >
                 <BlueprintFlow
-                  Blueprint={selectedItem}
+                  blueprint={selectedItem}
                   aiResponse={aiResponse}
                   taskId={taskId}
                 />
@@ -243,20 +240,18 @@ const BlueprintDrawer = ({
                   minHeight: 0,
                 }}
               >
-                <ResponsibilityChat
+                <BlueprintChat
                   selectedItem={selectedItem}
                   setAiResponse={setAiResponse}
                   aiResponse={aiResponse}
                   setSelectedItem={setSelectedItem}
                   onTitleChange={handleTitleChange}
                   onDescriptionChange={handleDescriptionChange}
-                  onCreateResponsibility={handleCreateResponsibility}
+                  onCreateBlueprint={handleCreateBlueprint}
                   onMessagesChange={handleMessagesChange}
                   taskId={taskId}
                   agentId={agentId}
                 />
-                }}
-              >
                 <Box
                   sx={{
                     p: 2,
@@ -291,6 +286,7 @@ const BlueprintDrawer = ({
                     onCreateBlueprint={handleCreateBlueprint}
                     onMessagesChange={handleMessagesChange}
                     agentId={agentId}
+                    taskId={taskId}
                   />
                 </Box>
               </Box>

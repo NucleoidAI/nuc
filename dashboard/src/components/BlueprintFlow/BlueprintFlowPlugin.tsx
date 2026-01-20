@@ -26,7 +26,7 @@ const AddButtonWrapper = styled("div")(({ theme }) => ({
   },
 }));
 
-export const BlueprintFlowPlugin = {
+export const blueprintFlowPlugin = {
   id: "blueprintChart",
 
   style: ({ style }) => {

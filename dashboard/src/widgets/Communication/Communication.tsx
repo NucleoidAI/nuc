@@ -1,8 +1,8 @@
 import AddIcon from "@mui/icons-material/Add";
 import CommunicationDiagram from "../../components/CommunicationDiagram/CommunicationDiagram";
 import CommunicationWizard from "../CommunicationWizard/CommunicationWizard";
+import useBlueprint from "../../hooks/useBlueprint";
 import useCommunications from "../../hooks/useCommunications";
-import useTaskBluePrint from "../../hooks/useTaskBluePrint";
 
 import { Box, Fab } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -20,12 +20,8 @@ const availableChannels = [
 ];
 
 const Communication = () => {
-  const { getTaskBluePrint } = useTaskBluePrint();
-  const {
-    taskBluePrint: taskBlueprintList,
-    loading,
-    error,
-  } = getTaskBluePrint();
+  const { getBlueprint } = useBlueprint();
+  const { Blueprint: blueprintList, loading, error } = getBlueprint();
 
   const { getCommunications, createCommunication, deleteCommunication } =
     useCommunications();
@@ -62,7 +58,7 @@ const Communication = () => {
       setConnections(
         communications.map((comm) => ({
           left: `${comm.channelType.toLowerCase()}-${comm.channelCode}`,
-          right: `tbp-${comm.taskBluePrintId}`,
+          right: `tbp-${comm.blueprintId}`,
         }))
       );
     }
@@ -85,14 +81,14 @@ const Communication = () => {
     }
   };
 
-  const handleConnect = async (channelId, taskBluePrintIds) => {
+  const handleConnect = async (channelId, blueprintIds) => {
     const channel = channels.find((c) => c.id === channelId);
     if (channel) {
-      for (const rid of taskBluePrintIds) {
+      for (const rid of blueprintIds) {
         await createCommunication({
           channelType: channel.type.toUpperCase(),
           channelCode: channel.code,
-          taskBluePrintId: rid.replace(/^tbp-/, ""),
+          blueprintId: rid.replace(/^tbp-/, ""),
         });
       }
     }
@@ -105,8 +101,8 @@ const Communication = () => {
     return <div>Error loading task blueprints: {error}</div>;
   }
 
-  const taskBluePrints =
-    (taskBlueprintList || []).map((r) => ({
+  const Blueprints =
+    (blueprintList || []).map((r) => ({
       id: `tbp-${r.id}`,
       title: r.title,
     })) || [];
@@ -122,7 +118,7 @@ const Communication = () => {
       <Box position="relative">
         <CommunicationDiagram
           channels={channels}
-          taskBluePrints={taskBluePrints}
+          Blueprints={Blueprints}
           connections={connections}
           availableChannels={availableChannels}
           onAddChannel={handleAddChannel}
@@ -150,13 +146,13 @@ const Communication = () => {
           open={dialogOpen}
           onClose={() => setDialogOpen(false)}
           channels={channels}
-          taskBluePrints={taskBluePrints}
+          Blueprints={Blueprints}
           availableChannels={availableChannels}
           connections={connections}
           onAddChannel={handleAddChannel}
           onDeleteChannel={handleDeleteChannel}
           onConnect={handleConnect}
-          taskBluePrintIcon="healthicons:crisis-response-center-person-outline"
+          blueprintIcon="healthicons:crisis-response-center-person-outline"
         />
       </Box>
     </Box>

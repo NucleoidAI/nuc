@@ -32,7 +32,7 @@ export const TeamChartRenderer = (node) => {
         nodeSx: { minWidth: 400, minHeight: 130 },
       };
 
-    case "taskBluePrint":
+    case "Blueprint":
       return {
         ...base,
         teamLayout: "sideStripe",

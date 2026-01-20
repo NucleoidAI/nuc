@@ -1,7 +1,7 @@
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CommunicationBlueprintSelection from "./CommunicationBlueprintSelection";
 import CommunicationChannelSelection from "./CommunicationChannelSelection";
 import CommunicationInputDialog from "./CommunicationInputDialog";
-import CommunicationTaskBluePrintSelection from "./CommunicationTaskBluePrintSelection";
 import React from "react";
 
 import {
@@ -20,13 +20,13 @@ const CommunicationWizard = ({
   open,
   onClose,
   channels,
-  taskBluePrints,
+  Blueprints,
   availableChannels,
   connections,
   onAddChannel,
   onDeleteChannel,
   onConnect,
-  taskBluePrintIcon,
+  blueprintIcon,
 }) => {
   const [tabIndex, setTabIndex] = React.useState(0);
   const [leftSelection, setLeftSelection] = React.useState(null);
@@ -211,11 +211,11 @@ const CommunicationWizard = ({
                     sx={{ fontWeight: "bold" }}
                   >
                     {(() => {
-                      const connectedTaskBlueprint = taskBluePrints.find(
+                      const connectedblueprint = Blueprints.find(
                         (r) => r.id === existingConnection?.right
                       );
-                      return connectedTaskBlueprint
-                        ? connectedTaskBlueprint.title
+                      return connectedblueprint
+                        ? connectedblueprint.title
                         : "Unknown Task Blueprint";
                     })()}
                   </Typography>
@@ -229,11 +229,11 @@ const CommunicationWizard = ({
                   </Typography>
                 </Box>
               ) : (
-                <CommunicationTaskBluePrintSelection
-                  taskBluePrints={taskBluePrints}
+                <CommunicationBlueprintSelection
+                  Blueprints={Blueprints}
                   selectedRights={selectedRights}
                   onRightsChange={setSelectedRights}
-                  taskBluePrintIcon={taskBluePrintIcon}
+                  blueprintIcon={blueprintIcon}
                 />
               ))}
           </Box>

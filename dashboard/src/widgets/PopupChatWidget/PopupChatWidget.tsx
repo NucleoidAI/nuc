@@ -1,8 +1,8 @@
 import { Iconify } from "@canmingir/link/platform/components";
 import PopChat from "../../components/PopChat";
+import useBlueprint from "../../hooks/useBlueprint";
 import { useEvent } from "@nucleoidai/react-event";
 import useSession from "../../hooks/useSession";
-import useTaskBluePrint from "../../hooks/useTaskBluePrint";
 
 import { Badge, Fab } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -26,11 +26,11 @@ const PopupChatWidget = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [unreadMessages, setUnreadMessages] = useState(false);
-  const [selectedTaskBluePrint, setSelectedTaskBluePrint] = useState("");
+  const [selectedBlueprint, setSelectedBlueprint] = useState("");
 
   const { conversations, sendMessage, getSession } = useSession(agentId);
-  const { getTaskBluePrint } = useTaskBluePrint();
-  const { taskBluePrint } = getTaskBluePrint();
+  const { getBlueprint } = useBlueprint();
+  const { Blueprint } = getBlueprint();
 
   const [aiResponded] = useEvent("AI_RESPONDED", null);
 
@@ -82,11 +82,9 @@ const PopupChatWidget = ({
         readOnly={readOnly}
         selectedConversationId={conversationId || null}
         sound={sound}
-        taskBluePrints={
-          Array.isArray(taskBluePrint) ? taskBluePrint : [taskBluePrint]
-        }
-        selectedTaskBluePrint={selectedTaskBluePrint}
-        onTaskBluePrintChange={setSelectedTaskBluePrint}
+        Blueprints={Array.isArray(Blueprint) ? Blueprint : [Blueprint]}
+        selectedBlueprint={selectedBlueprint}
+        onBlueprintChange={setSelectedBlueprint}
         sx={{}}
       />
       {!open && !readOnly && (

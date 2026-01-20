@@ -1,16 +1,16 @@
 import AgentDrawer from "../../components/AgentDrawer/AgentDrawer";
 import AgentWizard from "../AgentWizard/AgentWizard";
+import BlueprintDrawer from "../../components/BlueprintDrawer/BlueprintDrawer";
 import { Flow } from "@canmingir/link/platform/components";
 import { Iconify } from "@canmingir/link/platform/components";
-import TaskBluePrintDrawer from "../../components/TaskBluePrintDrawer/TaskBluePrintDrawer";
 import { TeamChartRenderer } from "./TeamChartRenderer";
 import TeamSkeleton from "../../components/Skeletons/TeamSkeleton";
 import { publish } from "@nucleoidai/react-event";
 import { storage } from "@nucleoidjs/webstorage";
 import { teamChartPlugin } from "./TeamChartPlugin";
 import useAgents from "../../hooks/useAgents";
+import useBlueprint from "../../hooks/useBlueprint";
 import useOrganizations from "../../hooks/useOrganizations";
-import useTaskBluePrint from "../../hooks/useTaskBluePrint";
 import useTeam from "../../hooks/useTeams";
 
 import {
@@ -36,8 +36,8 @@ function TeamChart() {
   const { organization, loading } =
     useOrganizations().getOrganizationById(organizationId);
 
-  const { getTaskBluePrint } = useTaskBluePrint();
-  const { taskBluePrint: allTaskBluePrintsRaw } = getTaskBluePrint();
+  const { getBlueprint } = useBlueprint();
+  const { Blueprint: allBlueprintsRaw } = getBlueprint();
 
   const { createAgent } = useAgents();
 
@@ -52,8 +52,8 @@ function TeamChart() {
   );
 
   const teamTree = useMemo(
-    () => toTeamTree(filteredOrganizations, allTaskBluePrintsRaw || []),
-    [filteredOrganizations, allTaskBluePrintsRaw]
+    () => toTeamTree(filteredOrganizations, allBlueprintsRaw || []),
+    [filteredOrganizations, allBlueprintsRaw]
   );
 
   const data = teamTree ? treeToLinked(teamTree) : { nodes: {}, roots: [] };
@@ -67,7 +67,7 @@ function TeamChart() {
     | "profile"
     | "knowledge-base"
     | "tasks"
-    | "taskBluePrints"
+    | "Blueprints"
     | "supervisings"
     | "communication"
     | "mcps"
@@ -130,7 +130,7 @@ function TeamChart() {
       ...base,
       onTeamAddAgent: (teamNode) => handleAddAgent(teamNode.id),
       onAgentOpen: (colNode, tab) => handleAgentDrawerOpen(colNode, tab),
-      onTaskBluePrintOpen: (respNode) => handleDrawerOpen(respNode),
+      onBlueprintOpen: (respNode) => handleDrawerOpen(respNode),
     };
   };
 
@@ -187,7 +187,7 @@ function TeamChart() {
       )}
 
       {drawerOpen && (
-        <TaskBluePrintDrawer
+        <BlueprintDrawer
           drawerOpen={drawerOpen}
           handleDrawerClose={handleDrawerClose}
           selectedItem={selectedItem}

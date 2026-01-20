@@ -1,3 +1,4 @@
+import { BlueprintCommands } from "../../components/ChatInput/chat.config";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import { Iconify } from "@canmingir/link/platform/components";
@@ -7,7 +8,6 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Popover from "@mui/material/Popover";
 import SourcedAvatar from "../../components/SourcedAvatar/SourcedAvatar";
-import { TaskBluePrintCommands } from "../../components/ChatInput/chat.config";
 import useAgents from "../../hooks/useAgents";
 import { withHistory } from "slate-history";
 
@@ -31,7 +31,7 @@ import {
 import {
   MCPElement,
   MentionElement,
-} from "../../components/TaskBluePrintChat/MCPElement";
+} from "../../components/BlueprintChat/MCPElement";
 import { styled, useTheme } from "@mui/material/styles";
 import { useCallback, useMemo, useState } from "react";
 
@@ -44,8 +44,8 @@ const ELEMENT_TYPES = {
 type CustomElement = {
   type: (typeof ELEMENT_TYPES)[keyof typeof ELEMENT_TYPES];
   children: CustomText[];
-  command?: (typeof TaskBluePrintCommands)[number];
-  selectedMCP?: (typeof TaskBluePrintCommands)[0]["next"]["list"][number];
+  command?: (typeof BlueprintCommands)[number];
+  selectedMCP?: (typeof BlueprintCommands)[0]["next"]["list"][number];
   selectedScope?: {
     id: string;
     name: string;
@@ -198,10 +198,10 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
   const [showScopes, setShowScopes] = useState(false);
   const [showMentions, setShowMentions] = useState(false);
   const [selectedCommand, setSelectedCommand] = useState<
-    (typeof TaskBluePrintCommands)[number] | null
+    (typeof BlueprintCommands)[number] | null
   >(null);
   const [selectedMCP, setSelectedMCP] = useState<
-    (typeof TaskBluePrintCommands)[0]["next"]["list"][number] | null
+    (typeof BlueprintCommands)[0]["next"]["list"][number] | null
   >(null);
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(0);
   const { getTeamAgents } = useAgents();
@@ -299,7 +299,7 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
   }, [value, onSend, resetEditor]);
 
   const handleCommandSelect = useCallback(
-    (command: (typeof TaskBluePrintCommands)[number]) => {
+    (command: (typeof BlueprintCommands)[number]) => {
       if (command.type === "mcp") {
         setSelectedCommand(command);
         setShowCommands(false);
@@ -322,7 +322,7 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
   );
 
   const handleMCPSelect = useCallback(
-    (mcp: (typeof TaskBluePrintCommands)[0]["next"]["list"][number]) => {
+    (mcp: (typeof BlueprintCommands)[0]["next"]["list"][number]) => {
       setSelectedMCP(mcp);
 
       const mcpNode: CustomElement = {
@@ -424,7 +424,7 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
         event.preventDefault();
 
         if (showCommands && selectedOptionIndex !== null) {
-          handleCommandSelect(TaskBluePrintCommands[selectedOptionIndex]);
+          handleCommandSelect(BlueprintCommands[selectedOptionIndex]);
           return;
         } else if (
           showMCPs &&
@@ -473,7 +473,7 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
         let maxIndex = 0;
 
         if (showCommands) {
-          maxIndex = TaskBluePrintCommands.length - 1;
+          maxIndex = BlueprintCommands.length - 1;
         } else if (showMCPs && selectedCommand?.next?.list) {
           maxIndex = selectedCommand.next.list.length - 1;
         } else if (showScopes && selectedMCP?.next?.list) {
@@ -632,7 +632,7 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
         }}
       >
         <CommandList>
-          {TaskBluePrintCommands.map((command, index) => (
+          {BlueprintCommands.map((command, index) => (
             <ListItem
               key={command.id}
               button

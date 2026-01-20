@@ -1,5 +1,5 @@
+import BlueprintFlow from "./BlueprintFlow";
 import React from "react";
-import TaskBluePrintFlow from "./TaskBluePrintFlow";
 
 import {
   Button,
@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 
-const TaskBluePrintFlowDialog = ({
+const BlueprintFlowDialog = ({
   flowDialogOpen,
   handleFlowDialogClose,
   selectedItem,
@@ -43,9 +43,9 @@ const TaskBluePrintFlowDialog = ({
         }}
       >
         {selectedItem && (
-          <TaskBluePrintFlow
+          <BlueprintFlow
             aiResponse={aiResponse}
-            taskBluePrint={selectedItem}
+            Blueprint={selectedItem}
             setAiResponse={setAiResponse}
           />
         )}
@@ -59,4 +59,4 @@ const TaskBluePrintFlowDialog = ({
   );
 };
 
-export default TaskBluePrintFlowDialog;
+export default BlueprintFlowDialog;

@@ -1,18 +1,18 @@
 import AddNodeDrawer from "../AddNode/AddNodeDrawer";
+import { BlueprintFlowPlugin } from "./BlueprintFlowPlugin";
 import { Box } from "@mui/material";
 import { Flow } from "@canmingir/link/platform/components";
-import { TaskBluePrintFlowPlugin } from "./TaskBluePrintFlowPlugin";
 import { buildDefinitionGraph } from "./helper";
-import useTaskBluePrint from "../../hooks/useTaskBluePrint";
+import useBlueprint from "../../hooks/useBlueprint";
 import { v4 as uuid } from "uuid";
 
 import React, { useEffect, useState } from "react";
 
-function TaskBluePrintFlow({ aiResponse, setAiResponse, taskBluePrint }) {
+function BlueprintFlow({ aiResponse, setAiResponse, Blueprint }) {
   const [graphData, setGraphData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { getTaskBluePrintWithNode } = useTaskBluePrint();
-  const { loading } = getTaskBluePrintWithNode(taskBluePrint?.id);
+  const { getBlueprintWithNode } = useBlueprint();
+  const { loading } = getBlueprintWithNode(Blueprint?.id);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedParentNode, setSelectedParentNode] = useState(null);
@@ -31,11 +31,11 @@ function TaskBluePrintFlow({ aiResponse, setAiResponse, taskBluePrint }) {
         const cleanData = buildDefinitionGraph(aiResponse.flow);
         setGraphData(cleanData);
       }
-    } else if (taskBluePrint) {
-      const initialData = buildDefinitionGraph(taskBluePrint);
+    } else if (Blueprint) {
+      const initialData = buildDefinitionGraph(Blueprint);
       setGraphData(initialData);
     }
-  }, [taskBluePrint, aiResponse]);
+  }, [Blueprint, aiResponse]);
 
   useEffect(() => {
     if (loading) setIsLoading(false);
@@ -157,7 +157,7 @@ function TaskBluePrintFlow({ aiResponse, setAiResponse, taskBluePrint }) {
         position: "relative",
       }}
     >
-      <Flow data={graphData} plugin={TaskBluePrintFlowPlugin} style={style} />
+      <Flow data={graphData} plugin={BlueprintFlowPlugin} style={style} />
 
       <AddNodeDrawer
         drawerOpen={drawerOpen}
@@ -173,4 +173,4 @@ function TaskBluePrintFlow({ aiResponse, setAiResponse, taskBluePrint }) {
   );
 }
 
-export default TaskBluePrintFlow;
+export default BlueprintFlow;

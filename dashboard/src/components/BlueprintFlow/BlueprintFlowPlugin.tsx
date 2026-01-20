@@ -26,8 +26,8 @@ const AddButtonWrapper = styled("div")(({ theme }) => ({
   },
 }));
 
-export const TaskBluePrintFlowPlugin = {
-  id: "taskBluePrintChart",
+export const BlueprintFlowPlugin = {
+  id: "blueprintChart",
 
   style: ({ style }) => {
     const styleTokens = style || {};

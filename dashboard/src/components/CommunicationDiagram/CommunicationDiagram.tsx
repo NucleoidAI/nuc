@@ -16,7 +16,7 @@ const DEFAULT_TASK_BLUE_PRINT_ICON =
 function CommunicationDiagram(props) {
   const {
     channels,
-    taskBluePrints,
+    Blueprints,
     connections,
     nodeWidth = 260,
     nodeHeight = 180,
@@ -28,9 +28,9 @@ function CommunicationDiagram(props) {
     containerProps,
     showRightIcons = true,
     showLeftIcons = true,
-    taskBluePrintIcon = DEFAULT_TASK_BLUE_PRINT_ICON,
+    blueprintIcon = DEFAULT_TASK_BLUE_PRINT_ICON,
     renderChannelNode,
-    renderTaskBluePrintNode,
+    renderBlueprintNode,
   } = props;
 
   const theme = useTheme();
@@ -47,21 +47,21 @@ function CommunicationDiagram(props) {
 
   const rightNodes = useMemo(
     () =>
-      (taskBluePrints || []).map((resp, idx) => ({
+      (Blueprints || []).map((resp, idx) => ({
         ...resp,
         id: resp.id,
-        icon: resp.icon || taskBluePrintIcon,
+        icon: resp.icon || blueprintIcon,
         x: leftX + horizontalGap,
         y: initialTop + idx * (nodeHeight + verticalGap),
       })),
     [
-      taskBluePrints,
+      Blueprints,
       leftX,
       horizontalGap,
       initialTop,
       nodeHeight,
       verticalGap,
-      taskBluePrintIcon,
+      blueprintIcon,
     ]
   );
 
@@ -172,8 +172,8 @@ function CommunicationDiagram(props) {
                 (connections || []).some((c) => c.right === node.id)
               )
               .map((node) =>
-                renderTaskBluePrintNode ? (
-                  renderTaskBluePrintNode(node)
+                renderBlueprintNode ? (
+                  renderBlueprintNode(node)
                 ) : (
                   <Card
                     key={node.id}

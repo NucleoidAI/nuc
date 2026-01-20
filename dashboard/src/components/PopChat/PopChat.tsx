@@ -1,8 +1,8 @@
+import BlueprintSelector from "../BlueprintSelector";
 import Draggable from "react-draggable";
 import { Iconify } from "@canmingir/link/platform/components";
 import { Scrollbar } from "@canmingir/link/platform/components";
 import Stack from "@mui/material/Stack";
-import TaskBluePrintSelector from "../TaskBluePrintSelector";
 import { alpha } from "@mui/material/styles";
 import styles from "./styles";
 import { useEvent } from "@nucleoidai/react-event";
@@ -31,9 +31,9 @@ const PopChat = ({
   readOnly,
   closeButton,
   sound,
-  taskBluePrints,
-  selectedTaskBluePrint,
-  onTaskBluePrintChange,
+  Blueprints,
+  selectedBlueprint,
+  onBlueprintChange,
   //eslint-disable-next-line
   sx,
 }) => {
@@ -144,11 +144,11 @@ const PopChat = ({
           readOnly={readOnly}
         />
 
-        {taskBluePrints.length > 0 && !readOnly && (
-          <TaskBluePrintSelector
-            taskBluePrints={taskBluePrints}
-            selectedTaskBluePrint={selectedTaskBluePrint}
-            onTaskBluePrintChange={onTaskBluePrintChange}
+        {Blueprints.length > 0 && !readOnly && (
+          <BlueprintSelector
+            Blueprints={Blueprints}
+            selectedBlueprint={selectedBlueprint}
+            onBlueprintChange={onBlueprintChange}
           />
         )}
 

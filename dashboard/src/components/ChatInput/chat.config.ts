@@ -176,7 +176,7 @@ const Commands = [
   },
 ];
 
-const TaskBluePrintCommands = [
+const BlueprintCommands = [
   {
     id: "MCP",
     label: "MCP",
@@ -251,8 +251,8 @@ const Types = [
 ];
 
 const findMCPById = (id: string) => {
-  const mcp = TaskBluePrintCommands[0].next.list.find((mcp) => mcp.id === id);
+  const mcp = BlueprintCommands[0].next.list.find((mcp) => mcp.id === id);
   return mcp || null;
 };
 
-export { Commands, Types, TaskBluePrintCommands, findMCPById };
+export { Commands, Types, BlueprintCommands, findMCPById };

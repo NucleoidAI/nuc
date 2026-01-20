@@ -1,7 +1,7 @@
+import BlueprintChatContent from "../BlueprintChat/BlueprintChatContent";
 import { Iconify } from "@canmingir/link/platform/components";
 import InlineChatInput from "../../widgets/ChatInput/InlineChatInput";
 import PopupChatWidget from "../../widgets/PopupChatWidget/PopupChatWidget";
-import TaskBluePrintChatContent from "../TaskBluePrintChat/TaskBluePrintChatContent";
 import useSupervisings from "../../hooks/useSupervisings";
 
 import {
@@ -256,7 +256,7 @@ const SupervisingChat = ({
                 overflow: "hidden",
               }}
             >
-              <TaskBluePrintChatContent
+              <BlueprintChatContent
                 loading={loading || isEvaluating}
                 messages={messages}
               />

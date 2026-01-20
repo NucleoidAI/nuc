@@ -1,12 +1,12 @@
 import {
-  Table,
+  AllowNull,
   Column,
-  Model,
   DataType,
   Default,
-  PrimaryKey,
-  AllowNull,
   IsIn,
+  Model,
+  PrimaryKey,
+  Table,
 } from "@canmingir/link-express/sequelize";
 
 @Table({
@@ -31,9 +31,9 @@ class Communication extends Model {
 
   @AllowNull(false)
   @Column(DataType.UUID)
-  declare taskBluePrintId: string;
+  declare blueprintId: string;
 
-  declare taskBluePrint?: any;
+  declare Blueprint?: any;
 }
 
 export default Communication;

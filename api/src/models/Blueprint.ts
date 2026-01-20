@@ -11,11 +11,11 @@ import {
 import Node from "../schemas/Node";
 
 @Table({
-  tableName: "TaskBluePrint",
+  tableName: "Blueprint",
   timestamps: false,
   underscored: true,
 })
-class TaskBluePrint extends Model {
+class Blueprint extends Model {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)
@@ -57,4 +57,4 @@ class TaskBluePrint extends Model {
   declare communications?: any[];
 }
 
-export default TaskBluePrint;
+export default Blueprint;

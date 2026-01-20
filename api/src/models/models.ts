@@ -6,12 +6,12 @@ async function init() {
   } = await platform.getModules();
   const models = sequelize.models;
 
-  // TaskBluePrint <-> Communication
-  models.TaskBluePrint.hasMany(models.Communication, {
-    foreignKey: "taskBluePrintId",
+  // Blueprint <-> Communication
+  models.Blueprint.hasMany(models.Communication, {
+    foreignKey: "blueprintId",
   });
-  models.Communication.belongsTo(models.TaskBluePrint, {
-    foreignKey: "taskBluePrintId",
+  models.Communication.belongsTo(models.Blueprint, {
+    foreignKey: "blueprintId",
   });
 
   // Project <-> Colleague
@@ -24,11 +24,11 @@ async function init() {
     as: "colleagues",
   });
 
-  // Colleague <-> TaskBluePrint
-  models.Colleague.hasMany(models.TaskBluePrint, {
+  // Colleague <-> Blueprint
+  models.Colleague.hasMany(models.Blueprint, {
     foreignKey: "agentId",
   });
-  models.TaskBluePrint.belongsTo(models.Colleague, {
+  models.Blueprint.belongsTo(models.Colleague, {
     foreignKey: "agentId",
   });
 
@@ -178,12 +178,12 @@ async function init() {
     as: "task",
   });
 
-  // Task <-> TaskBluePrint
-  models.Task.hasOne(models.TaskBluePrint, {
-    foreignKey: "taskBluePrintId",
+  // Task <-> Blueprint
+  models.Task.hasOne(models.Blueprint, {
+    foreignKey: "blueprintId",
   });
-  models.TaskBluePrint.belongsTo(models.Task, {
-    foreignKey: "taskBluePrintId",
+  models.Blueprint.belongsTo(models.Task, {
+    foreignKey: "blueprintId",
   });
 
   // Hooks

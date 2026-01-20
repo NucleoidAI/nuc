@@ -20,11 +20,11 @@ import {
   usePopover,
 } from "@canmingir/link/platform/components";
 
-const TaskBluePrintCard = ({
+const BlueprintCard = ({
   item,
   handleDrawerOpen,
   handleFlowDialogOpen,
-  removeTaskBluePrint,
+  removeBlueprint,
   agentId,
 }) => {
   const popover = usePopover();
@@ -52,7 +52,7 @@ const TaskBluePrintCard = ({
           }}
         >
           <Fab
-            data-cy="taskBluePrint-more-vert"
+            data-cy="Blueprint-more-vert"
             color="default"
             size="small"
             sx={{
@@ -156,7 +156,7 @@ const TaskBluePrintCard = ({
         sx={{ width: 140 }}
       >
         <MenuItem
-          data-cy="taskBluePrint-menu-view"
+          data-cy="Blueprint-menu-view"
           onClick={() => {
             popover.onClose();
             handleFlowDialogOpen(item);
@@ -167,7 +167,7 @@ const TaskBluePrintCard = ({
         </MenuItem>
 
         <MenuItem
-          data-cy="taskBluePrint-menu-edit"
+          data-cy="Blueprint-menu-edit"
           onClick={() => {
             popover.onClose();
             handleDrawerOpen(item);
@@ -178,9 +178,9 @@ const TaskBluePrintCard = ({
         </MenuItem>
 
         <MenuItem
-          data-cy="taskBluePrint-menu-delete"
+          data-cy="Blueprint-menu-delete"
           onClick={() => {
-            removeTaskBluePrint(item.id, agentId);
+            removeBlueprint(item.id, agentId);
             popover.onClose();
           }}
           sx={{ color: "error.main" }}
@@ -193,4 +193,4 @@ const TaskBluePrintCard = ({
   );
 };
 
-export default TaskBluePrintCard;
+export default BlueprintCard;

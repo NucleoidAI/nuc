@@ -11,7 +11,7 @@ const Supervising = {
     agentId: Joi.string()
       .guid({ version: ["uuidv4"] })
       .required(),
-    responsibilityId: Joi.string()
+    blueprintId: Joi.string()
       .guid({ version: ["uuidv4"] })
       .optional(),
     taskId: Joi.string()

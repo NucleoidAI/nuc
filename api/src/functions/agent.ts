@@ -219,9 +219,9 @@ async function task({ taskId }: { taskId: string }) {
     action === "PLATFORM:ask_supervisor"
   ) {
     parameters.taskId = taskId;
-    parameters.responsibilityId = currentTask.responsibilityId;
+    parameters.blueprintId = currentTask.blueprintId;
     parameters.sessionId = sessionId;
-    parameters.colleagueId = colleagueId;
+    parameters.agentId = agentId;
     return await taskFn.addStep({
       taskId,
       action,

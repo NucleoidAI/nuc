@@ -152,12 +152,12 @@ async function init() {
     foreignKey: "agentId",
   });
 
-  // Supervising <-> Responsibility
-  models.Supervising.belongsTo(models.Responsibility, {
-    foreignKey: "responsibilityId",
+  // Supervising <-> Blueprint
+  models.Supervising.belongsTo(models.Blueprint, {
+    foreignKey: "blueprintId",
   });
-  models.Responsibility.hasMany(models.Supervising, {
-    foreignKey: "responsibilityId",
+  models.Blueprint.hasMany(models.Supervising, {
+    foreignKey: "blueprintId",
   });
 
   // Conversation <-> Session

@@ -1,12 +1,12 @@
 import {
-  Table,
+  AllowNull,
   Column,
-  Model,
   DataType,
   Default,
-  PrimaryKey,
-  AllowNull,
   IsIn,
+  Model,
+  PrimaryKey,
+  Table,
 } from "@canmingir/link-express/sequelize";
 
 @Table({
@@ -30,7 +30,7 @@ class Supervising extends Model {
 
   @AllowNull(true)
   @Column(DataType.UUID)
-  declare responsibilityId: string;
+  declare blueprintId: string;
 
   @AllowNull(true)
   @Column(DataType.UUID)

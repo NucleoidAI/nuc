@@ -5,20 +5,19 @@ async function run({
 }: {
   parameters: {
     sessionId: string;
-    colleagueId: string;
+    agentId: string;
     question: string;
-    responsibilityId?: string;
+    blueprintId?: string;
     taskId?: string;
   };
 }) {
-  const { sessionId, colleagueId, question, responsibilityId, taskId } =
-    parameters;
+  const { sessionId, agentId, question, blueprintId, taskId } = parameters;
 
   return await supervising.create({
     sessionId,
     question,
-    colleagueId,
-    responsibilityId,
+    agentId,
+    blueprintId,
     taskId,
   });
 }

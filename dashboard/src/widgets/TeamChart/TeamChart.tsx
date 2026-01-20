@@ -10,6 +10,7 @@ import { storage } from "@nucleoidjs/webstorage";
 import { teamChartPlugin } from "./TeamChartPlugin";
 import useAgents from "../../hooks/useAgents";
 import useBlueprint from "../../hooks/useBlueprint";
+import { useLocation } from "react-router-dom";
 import useOrganizations from "../../hooks/useOrganizations";
 import useTeam from "../../hooks/useTeams";
 
@@ -27,6 +28,9 @@ import { toTeamTree, treeToLinked } from "./utils";
 function TeamChart() {
   const theme = useTheme();
   const lgUp = useMediaQuery(theme.breakpoints.up("lg"));
+
+  const location = useLocation();
+  const showNavButton = !lgUp && location.pathname.includes("/team");
 
   const projectId = storage.get("projectId");
   const { getTeamById } = useTeam();
@@ -136,7 +140,7 @@ function TeamChart() {
 
   return (
     <>
-      {!lgUp && (
+      {showNavButton && (
         <IconButton
           sx={{
             top: 10,

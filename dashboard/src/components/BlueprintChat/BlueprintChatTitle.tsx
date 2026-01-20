@@ -1,7 +1,7 @@
 import AddIcon from "@mui/icons-material/Add";
+import { BlueprintCommands } from "../ChatInput/chat.config";
 import EditIcon from "@mui/icons-material/Edit";
 import { Iconify } from "@canmingir/link/platform/components";
-import { TaskBluePrintCommands } from "../ChatInput/chat.config";
 
 import {
   Box,
@@ -22,11 +22,11 @@ import {
 import { MCPElement, MCPScopeElement } from "./MCPElement";
 import React, { useState } from "react";
 
-const TaskBluePrintChatTitle = ({
+const BlueprintChatTitle = ({
   title,
   description,
   messages,
-  handleCreateTaskBluePrint,
+  handleCreateBlueprint,
   setTitle,
 }) => {
   const theme = useTheme();
@@ -37,7 +37,7 @@ const TaskBluePrintChatTitle = ({
   };
 
   const handleSaveClick = () => {
-    handleCreateTaskBluePrint(title, description);
+    handleCreateBlueprint(title, description);
     setIsEditing(false);
   };
 
@@ -50,7 +50,7 @@ const TaskBluePrintChatTitle = ({
 
     try {
       // TODO: Extract MCPs and its scopes
-      const availableMCPs = TaskBluePrintCommands[0]?.next?.list || [];
+      const availableMCPs = BlueprintCommands[0]?.next?.list || [];
       const availableScopes = [];
 
       availableMCPs.forEach((mcp) => {
@@ -160,7 +160,7 @@ const TaskBluePrintChatTitle = ({
     if (!title) return "Add Title";
 
     try {
-      const availableMCPs = TaskBluePrintCommands[0]?.next?.list || [];
+      const availableMCPs = BlueprintCommands[0]?.next?.list || [];
       const availableScopes = [];
 
       availableMCPs.forEach((mcp) => {
@@ -472,7 +472,7 @@ const TaskBluePrintChatTitle = ({
             WebkitTextFillColor: "transparent",
           }}
         >
-          {messages.length > 0 ? "Edit TaskBluePrint" : "Create TaskBluePrint"}
+          {messages.length > 0 ? "Edit Blueprint" : "Create Blueprint"}
         </DialogTitle>
         <DialogContent sx={{ pt: 2 }}>
           <TextField
@@ -543,4 +543,4 @@ const TaskBluePrintChatTitle = ({
   );
 };
 
-export default TaskBluePrintChatTitle;
+export default BlueprintChatTitle;

@@ -1,9 +1,9 @@
-import TaskBluePrintMessageBox from "../TaskBluePrintMessageBox/TaskBluePrintMessageBox";
-import TaskBluePrintWelcomeMessage from "./TaskBluePrintWelcomeMessage";
+import BlueprintMessageBox from "../BlueprintMessageBox/BlueprintMessageBox";
+import BlueprintWelcomeMessage from "./BlueprintWelcomeMessage";
 
 import { Box, CircularProgress, useTheme } from "@mui/material";
 
-const TaskBluePrintChatContent = ({ loading, messages }) => {
+const BlueprintChatContent = ({ loading, messages }) => {
   const theme = useTheme();
 
   return (
@@ -34,10 +34,10 @@ const TaskBluePrintChatContent = ({ loading, messages }) => {
         },
       }}
     >
-      {messages.length === 0 && <TaskBluePrintWelcomeMessage />}
+      {messages.length === 0 && <BlueprintWelcomeMessage />}
 
       {messages.map((message, index) => (
-        <TaskBluePrintMessageBox key={index} message={message} />
+        <BlueprintMessageBox key={index} message={message} />
       ))}
 
       {loading && (
@@ -62,4 +62,4 @@ const TaskBluePrintChatContent = ({ loading, messages }) => {
   );
 };
 
-export default TaskBluePrintChatContent;
+export default BlueprintChatContent;

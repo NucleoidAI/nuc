@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 
-const TaskBluePrintWelcomeMessage = () => {
+const BlueprintWelcomeMessage = () => {
   return (
     <Box
       data-cy="chat-welcome-message"
@@ -22,4 +22,4 @@ const TaskBluePrintWelcomeMessage = () => {
   );
 };
 
-export default TaskBluePrintWelcomeMessage;
+export default BlueprintWelcomeMessage;

@@ -1,55 +1,55 @@
+import BlueprintChatContent from "./BlueprintChatContent";
 import Box from "@mui/material/Box";
 import InlineChatInput from "../../widgets/ChatInput/InlineChatInput";
 import React from "react";
-import TaskBluePrintChatContent from "./TaskBluePrintChatContent";
 import http from "@canmingir/link/platform/http";
 import { publish } from "@nucleoidai/react-event";
-import useTaskBluePrint from "../../hooks/useTaskBluePrint";
+import useBlueprint from "../../hooks/useBlueprint";
 
 import { Card, CardContent, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 
-function TaskBluePrintChat({
+function BlueprintChat({
   setAiResponse,
   selectedItem,
   aiResponse,
   setSelectedItem,
   onTitleChange,
   onDescriptionChange,
-  onCreateTaskBluePrint,
+  onCreateBlueprint,
   onMessagesChange,
   agentId,
 }) {
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
   const [error, setError] = useState(null);
-  const { upsertTaskBluePrint, getTaskBluePrintWithNode } = useTaskBluePrint();
-  const { taskBluePrintNodes } = getTaskBluePrintWithNode(selectedItem?.id);
+  const { upsertBlueprint, getBlueprintWithNode } = useBlueprint();
+  const { blueprintNodes } = getBlueprintWithNode(selectedItem?.id);
   const theme = useTheme();
 
   useEffect(
     () => {
-      if (onCreateTaskBluePrint) {
-        onCreateTaskBluePrint(handleCreateTaskBluePrint);
+      if (onCreateBlueprint) {
+        onCreateBlueprint(handleCreateBlueprint);
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [onCreateTaskBluePrint]
+    [onCreateBlueprint]
   );
 
   useEffect(() => {
     if (onMessagesChange) onMessagesChange(messages);
   }, [messages, onMessagesChange]);
 
-  const handleCreateTaskBluePrint = async (title, description) => {
-    const response = await upsertTaskBluePrint(
+  const handleCreateBlueprint = async (title, description) => {
+    const response = await upsertBlueprint(
       selectedItem?.id,
       title,
       description,
       agentId
     );
 
-    setSelectedItem(response.taskBluePrint);
+    setSelectedItem(response.Blueprint);
   };
 
   const addMessage = async (message, role = "user") => {
@@ -84,9 +84,7 @@ function TaskBluePrintChat({
           ...(aiResponse?.flow
             ? [
                 {
-                  content: JSON.stringify(
-                    aiResponse.flow || taskBluePrintNodes
-                  ),
+                  content: JSON.stringify(aiResponse.flow || blueprintNodes),
                   role: "assistant",
                 },
               ]
@@ -94,32 +92,32 @@ function TaskBluePrintChat({
           { content: parsedMessage, role: "user" },
         ];
 
-        const { data } = await http.post("/colleagues/taskBluePrints", {
+        const { data } = await http.post("/colleagues/Blueprints", {
           history,
           content: message,
         });
 
-        const { data: taskBluePrintNameData } = await http.post(
-          "/colleagues/taskBluePrint-name",
+        const { data: blueprintNameData } = await http.post(
+          "/colleagues/Blueprint-name",
           {
             history: messages,
             content: message,
           }
         );
 
-        if (onTitleChange) onTitleChange(taskBluePrintNameData.title);
+        if (onTitleChange) onTitleChange(blueprintNameData.title);
         if (onDescriptionChange)
-          onDescriptionChange(taskBluePrintNameData.description);
+          onDescriptionChange(blueprintNameData.description);
 
-        const response = await upsertTaskBluePrint(
+        const response = await upsertBlueprint(
           selectedItem?.id,
-          taskBluePrintNameData.title,
-          taskBluePrintNameData.description,
+          blueprintNameData.title,
+          blueprintNameData.description,
           agentId,
           data?.flow
         );
 
-        setSelectedItem(response.taskBluePrint);
+        setSelectedItem(response.Blueprint);
 
         const aiMessage = data?.response;
 
@@ -189,7 +187,7 @@ function TaskBluePrintChat({
             minHeight: 0,
           }}
         >
-          <TaskBluePrintChatContent loading={loading} messages={messages} />
+          <BlueprintChatContent loading={loading} messages={messages} />
           {error && (
             <Box
               sx={{
@@ -223,4 +221,4 @@ function TaskBluePrintChat({
   );
 }
 
-export default TaskBluePrintChat;
+export default BlueprintChat;

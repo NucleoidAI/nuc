@@ -1,6 +1,6 @@
 [
   {
-    "taskBluePrint": {
+    "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Product Order",
       "description": "Check product availability, if not exist, create order.",
@@ -93,12 +93,12 @@
       "id": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
       "status": "COMPLETED",
       "description": "Check product availability, if not exist, create order.",
-      "taskBluePrintId": "ba6f7911-e232-469d-9060-2881852f6e59"
+      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
     "answer": "I'm creating a task to check battery availability. The system will verify stock for product btr-123 and automatically order 10 units if needed. You'll receive a confirmation email once complete."
   },
   {
-    "taskBluePrint": {
+    "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Product Order",
       "description": "Check product availability, if not exist, create order.",
@@ -191,12 +191,12 @@
       "id": "a77ff167-c4f2-44dc-9e8f-e9e645682447",
       "status": "COMPLETED",
       "description": "Check product availability, if not exist, create order.",
-      "taskBluePrintId": "ba6f7911-e232-469d-9060-2881852f6e59"
+      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
     "answer": "I'm checking the battery stock levels now. The task will verify inventory for btr-123 and place an order for 10 units automatically if stock is low."
   },
   {
-    "taskBluePrint": {
+    "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Product Order",
       "description": "Check product availability, if not exist, create order.",
@@ -289,12 +289,12 @@
       "id": "a77ff167-c4f2-44dc-9e8f-e9e645682448",
       "status": "COMPLETED",
       "description": "Check product availability, if not exist, create order.",
-      "taskBluePrintId": "ba6f7911-e232-469d-9060-2881852f6e59"
+      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
     "answer": "Starting the battery restock process. I'll check current inventory levels and order 10 units of btr-123 if stock is insufficient. The manager will be notified via email."
   },
   {
-    "taskBluePrint": {
+    "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Product Order",
       "description": "Check product availability, if not exist, create order.",
@@ -387,12 +387,12 @@
       "id": "a77ff167-c4f2-44dc-9e8f-e9e645682449",
       "status": "COMPLETED",
       "description": "Check product availability, if not exist, create order.",
-      "taskBluePrintId": "ba6f7911-e232-469d-9060-2881852f6e59"
+      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
     "answer": "Processing your battery order request. The system will first verify current stock levels for btr-123, then create an order for 10 units if needed. Email confirmation will be sent to the manager."
   },
   {
-    "taskBluePrint": {
+    "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
@@ -518,12 +518,12 @@
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
       "status": "COMPLETED",
       "description": "Setup internet subscription at user's address.",
-      "taskBluePrintId": "ba6f7911-e232-469d-9060-2881852f6e59"
+      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
     "answer": "I'm initiating the internet subscription setup process. The system will check infrastructure availability at your address, present available packages, and then proceed with port assignment, configuration, and connection activation."
   },
   {
-    "taskBluePrint": {
+    "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
@@ -649,12 +649,12 @@
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793558",
       "status": "COMPLETED",
       "description": "Setup internet subscription at user's address.",
-      "taskBluePrintId": "ba6f7911-e232-469d-9060-2881852f6e59"
+      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
     "answer": "Starting the home internet setup process. I'll check what services are available at your location, show you the available package options, and complete the full setup including port assignment and activation."
   },
   {
-    "taskBluePrint": {
+    "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
@@ -780,12 +780,12 @@
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793559",
       "status": "COMPLETED",
       "description": "Setup internet subscription at user's address.",
-      "taskBluePrintId": "ba6f7911-e232-469d-9060-2881852f6e59"
+      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
     "answer": "I'm starting the internet service setup. The system will verify infrastructure availability, display available internet packages, and complete the setup with port assignment, configuration, and connection."
   },
   {
-    "taskBluePrint": {
+    "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
@@ -911,12 +911,12 @@
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793560",
       "status": "COMPLETED",
       "description": "Setup internet subscription at user's address.",
-      "taskBluePrintId": "ba6f7911-e232-469d-9060-2881852f6e59"
+      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
     "answer": "Initiating new internet connection setup. I'll check service availability, present available speed options, and proceed with port assignment, configuration, and connection activation."
   },
   {
-    "taskBluePrint": {
+    "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
@@ -1042,12 +1042,12 @@
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793561",
       "status": "COMPLETED",
       "description": "Setup internet subscription at user's address.",
-      "taskBluePrintId": "ba6f7911-e232-469d-9060-2881852f6e59"
+      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
     "answer": "I'm processing your internet subscription request. The task will check infrastructure availability, show available packages, and complete the full service setup including port assignment and activation."
   },
   {
-    "taskBluePrint": {
+    "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
@@ -1173,7 +1173,7 @@
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793562",
       "status": "COMPLETED",
       "description": "Setup internet subscription at user's address.",
-      "taskBluePrintId": "ba6f7911-e232-469d-9060-2881852f6e59"
+      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
     "answer": "Starting the broadband internet setup process now. I'll verify service availability, present available speed packages, and complete the full setup with port assignment, configuration, and connection activation."
   }

@@ -1,8 +1,8 @@
+import BlueprintChat from "../BlueprintChat/BlueprintChat";
+import BlueprintChatTitle from "../BlueprintChat/BlueprintChatTitle";
+import BlueprintFlow from "../BlueprintFlow/BlueprintFlow";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import CloseIcon from "@mui/icons-material/Close";
-import TaskBluePrintChat from "../TaskBluePrintChat/TaskBluePrintChat";
-import TaskBluePrintChatTitle from "../TaskBluePrintChat/TaskBluePrintChatTitle";
-import TaskBluePrintFlow from "../TaskBluePrintFlow/TaskBluePrintFlow";
 
 import {
   Box,
@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 
-const TaskBluePrintDrawer = ({
+const BlueprintDrawer = ({
   drawerOpen,
   handleDrawerClose,
   selectedItem,
@@ -50,8 +50,7 @@ const TaskBluePrintDrawer = ({
 
   const [title, setTitle] = useState(selectedItem?.title);
   const [description, setDescription] = useState(selectedItem?.description);
-  const [createTaskBluePrintHandler, setCreateTaskBluePrintHandler] =
-    useState(null);
+  const [createBlueprintHandler, setCreateBlueprintHandler] = useState(null);
   const [messages, setMessages] = useState([]);
 
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -69,8 +68,8 @@ const TaskBluePrintDrawer = ({
     setDescription(newDescription);
   }, []);
 
-  const handleCreateTaskBluePrint = useCallback((handler) => {
-    setCreateTaskBluePrintHandler(() => handler);
+  const handleCreateBlueprint = useCallback((handler) => {
+    setCreateBlueprintHandler(() => handler);
   }, []);
 
   const handleMessagesChange = useCallback((newMessages) => {
@@ -165,11 +164,11 @@ const TaskBluePrintDrawer = ({
               }}
             >
               <Box sx={{ flexShrink: 0 }}>
-                <TaskBluePrintChatTitle
+                <BlueprintChatTitle
                   title={title}
                   description={description}
                   messages={messages}
-                  handleCreateTaskBluePrint={createTaskBluePrintHandler}
+                  handleCreateBlueprint={createBlueprintHandler}
                   setTitle={setTitle}
                 />
               </Box>
@@ -181,8 +180,8 @@ const TaskBluePrintDrawer = ({
                   position: "relative",
                 }}
               >
-                <TaskBluePrintFlow
-                  taskBluePrint={selectedItem}
+                <BlueprintFlow
+                  Blueprint={selectedItem}
                   aiResponse={aiResponse}
                   setAiResponse={setAiResponse}
                 />
@@ -256,14 +255,14 @@ const TaskBluePrintDrawer = ({
                     p: 2,
                   }}
                 >
-                  <TaskBluePrintChat
+                  <BlueprintChat
                     selectedItem={selectedItem}
                     setAiResponse={setAiResponse}
                     aiResponse={aiResponse}
                     setSelectedItem={setSelectedItem}
                     onTitleChange={handleTitleChange}
                     onDescriptionChange={handleDescriptionChange}
-                    onCreateTaskBluePrint={handleCreateTaskBluePrint}
+                    onCreateBlueprint={handleCreateBlueprint}
                     onMessagesChange={handleMessagesChange}
                     agentId={agentId}
                   />
@@ -277,4 +276,4 @@ const TaskBluePrintDrawer = ({
   );
 };
 
-export default TaskBluePrintDrawer;
+export default BlueprintDrawer;

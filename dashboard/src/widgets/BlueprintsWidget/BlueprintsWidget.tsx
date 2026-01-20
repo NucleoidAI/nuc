@@ -1,27 +1,27 @@
 import AddIcon from "@mui/icons-material/Add";
-import TaskBluePrintCard from "../../components/TaskBluePrintCard/TaskBluePrintCard";
-import TaskBluePrintDrawer from "../../components/TaskBluePrintDrawer/TaskBluePrintDrawer";
-import TaskBluePrintFlowDialog from "../../components/TaskBluePrintFlow/TaskBluePrintFlowDialog";
+import BlueprintCard from "../../components/BlueprintCard/BlueprintCard";
+import BlueprintDrawer from "../../components/BlueprintDrawer/BlueprintDrawer";
+import BlueprintFlowDialog from "../../components/BlueprintFlow/BlueprintFlowDialog";
 import { Theme } from "@mui/material/styles";
+import useBlueprint from "../../hooks/useBlueprint";
 import { useEvent } from "@nucleoidai/react-event";
-import useTaskBluePrint from "../../hooks/useTaskBluePrint";
 
 import { Box, Fab, Stack, useMediaQuery } from "@mui/material";
 import React, { useState } from "react";
 
-function TaskBluePrintsWidget({ agentId }: { agentId: string }) {
-  const [taskBluePrintUpsertedEvent] = useEvent("TASK_BLUE_PRINT_UPSERTED", {
-    taskBluePrint: null,
+function BlueprintsWidget({ agentId }: { agentId: string }) {
+  const [blueprintUpsertedEvent] = useEvent("TASK_BLUE_PRINT_UPSERTED", {
+    Blueprint: null,
   });
-  const [taskBluePrintRemovedEvent] = useEvent("TASK_BLUE_PRINT_REMOVED", {
-    taskBluePrint: null,
+  const [blueprintRemovedEvent] = useEvent("TASK_BLUE_PRINT_REMOVED", {
+    Blueprint: null,
   });
 
-  const { getTaskBluePrint, removeTaskBluePrint } = useTaskBluePrint();
+  const { getBlueprint, removeBlueprint } = useBlueprint();
 
-  const { taskBluePrint } = getTaskBluePrint([
-    taskBluePrintUpsertedEvent.taskBluePrint,
-    taskBluePrintRemovedEvent.taskBluePrint,
+  const { Blueprint } = getBlueprint([
+    blueprintUpsertedEvent.Blueprint,
+    blueprintRemovedEvent.Blueprint,
   ]);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -63,19 +63,19 @@ function TaskBluePrintsWidget({ agentId }: { agentId: string }) {
     >
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         <Box sx={{ mt: 2 }}>
-          {taskBluePrint?.map((item) => (
-            <TaskBluePrintCard
+          {Blueprint?.map((item) => (
+            <BlueprintCard
               key={item.id}
               item={item}
               handleDrawerOpen={handleDrawerOpen}
               handleFlowDialogOpen={handleFlowDialogOpen}
-              removeTaskBluePrint={removeTaskBluePrint}
+              removeBlueprint={removeBlueprint}
               agentId={item.agentId}
             />
           ))}
         </Box>
       </Box>
-      <TaskBluePrintDrawer
+      <BlueprintDrawer
         drawerOpen={drawerOpen}
         handleDrawerClose={handleDrawerClose}
         selectedItem={selectedItem}
@@ -84,7 +84,7 @@ function TaskBluePrintsWidget({ agentId }: { agentId: string }) {
         setSelectedItem={setSelectedItem}
         agentId={agentId}
       />
-      <TaskBluePrintFlowDialog
+      <BlueprintFlowDialog
         flowDialogOpen={flowDialogOpen}
         handleFlowDialogClose={handleFlowDialogClose}
         selectedItem={selectedItem}
@@ -112,4 +112,4 @@ function TaskBluePrintsWidget({ agentId }: { agentId: string }) {
   );
 }
 
-export default TaskBluePrintsWidget;
+export default BlueprintsWidget;

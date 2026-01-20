@@ -118,6 +118,8 @@ services:
     image: canmingir/communication-land:latest
     container_name: communication-land
     restart: unless-stopped
+    env_file:
+      - env.greycollar  
     networks:
       - greycollar-network
     volumes:

@@ -11,18 +11,18 @@ import {
   Typography,
 } from "@mui/material";
 
-const TaskBluePrintSelector = ({
-  taskBluePrints,
-  selectedTaskBluePrint,
-  onTaskBluePrintChange,
+const BlueprintSelector = ({
+  Blueprints,
+  selectedBlueprint,
+  onBlueprintChange,
 }: {
-  taskBluePrints: Array<{
+  Blueprints: Array<{
     id: string;
     title: string;
     description?: string;
   }>;
-  selectedTaskBluePrint?: string;
-  onTaskBluePrintChange: (taskBluePrintId: string) => void;
+  selectedBlueprint?: string;
+  onBlueprintChange: (blueprintId: string) => void;
 }) => {
   return (
     <Box
@@ -43,12 +43,12 @@ const TaskBluePrintSelector = ({
             },
           }}
         >
-          TaskBluePrint
+          Blueprint
         </InputLabel>
         <Select
-          value={selectedTaskBluePrint || ""}
-          onChange={(e) => onTaskBluePrintChange(e.target.value)}
-          label="TaskBluePrint"
+          value={selectedBlueprint || ""}
+          onChange={(e) => onBlueprintChange(e.target.value)}
+          label="Blueprint"
           sx={{
             color: "white",
             "& .MuiOutlinedInput-notchedOutline": {
@@ -88,8 +88,8 @@ const TaskBluePrintSelector = ({
           <MenuItem value="">
             <em style={{ color: "rgba(255, 255, 255, 0.7)" }}>None selected</em>
           </MenuItem>
-          {taskBluePrints.map((taskBluePrint) => (
-            <MenuItem key={taskBluePrint.id} value={taskBluePrint.id}>
+          {Blueprints.map((Blueprint) => (
+            <MenuItem key={Blueprint.id} value={Blueprint.id}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <Iconify
                   icon="healthicons:crisis-response-center-person-outline"
@@ -98,7 +98,7 @@ const TaskBluePrintSelector = ({
                   sx={{ color: "white" }}
                 />
                 <Typography sx={{ color: "white" }}>
-                  {taskBluePrint.title}
+                  {Blueprint.title}
                 </Typography>
               </Box>
             </MenuItem>
@@ -109,4 +109,4 @@ const TaskBluePrintSelector = ({
   );
 };
 
-export default TaskBluePrintSelector;
+export default BlueprintSelector;

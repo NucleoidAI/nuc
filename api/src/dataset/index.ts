@@ -1,12 +1,12 @@
+import Blueprint from "./train/blue-print.json";
+import blueprintChat from "./train/blue-print-chat.json";
+import blueprintChatEvaluation from "./train/blue-print-chat-evaluation.json";
+import blueprintDiamond from "./train/blue-print-diamond.json";
+import blueprintName from "./train/blue-print-name.json";
 import chat from "./train/chat.json";
 import humanInLoop from "./train/human-in-loop.json";
 import policy from "./policy.json";
 import pseudocode from "./train/pseudocode.json";
-import taskBluePrint from "./train/task-blue-print.json";
-import taskBluePrintChat from "./train/task-blue-print-chat.json";
-import taskBluePrintChatEvaluation from "./train/task-blue-print-chat-evaluation.json";
-import taskBluePrintDiamond from "./train/task-blue-print-diamond.json";
-import taskBluePrintName from "./train/task-blue-print-name.json";
 import taskDiamond from "./train/task-diamond.json";
 import teamChat from "./train/team-chat.json";
 
@@ -16,10 +16,10 @@ export default {
     content: JSON.stringify({ policy }),
   },
   train: {
-    taskBluePrint: {
+    Blueprint: {
       role: "system" as const,
       content: JSON.stringify({
-        train: taskBluePrint,
+        train: Blueprint,
       }),
     },
     chat: {
@@ -52,28 +52,28 @@ export default {
         train: teamChat,
       }),
     },
-    taskBluePrintChat: {
+    blueprintChat: {
       role: "system" as const,
       content: JSON.stringify({
-        train: taskBluePrintChat,
+        train: blueprintChat,
       }),
     },
-    taskBluePrintChatEvaluation: {
+    blueprintChatEvaluation: {
       role: "system" as const,
       content: JSON.stringify({
-        train: taskBluePrintChatEvaluation,
+        train: blueprintChatEvaluation,
       }),
     },
-    taskBluePrintName: {
+    blueprintName: {
       role: "system" as const,
       content: JSON.stringify({
-        train: taskBluePrintName,
+        train: blueprintName,
       }),
     },
-    taskBluePrintDiamond: {
+    blueprintDiamond: {
       role: "system" as const,
       content: JSON.stringify({
-        train: taskBluePrintDiamond,
+        train: blueprintDiamond,
       }),
     },
   },

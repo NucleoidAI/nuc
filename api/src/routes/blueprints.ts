@@ -1,12 +1,12 @@
 import { AuthenticationError } from "@canmingir/link-express/error";
+import Blueprint from "../models/Blueprint";
+import BlueprintSchema from "../schemas/Blueprint";
 import Colleague from "../models/Colleague";
-import TaskBluePrint from "../models/TaskBluePrint";
-import TaskBluePrintSchema from "../schemas/TaskBluePrint";
 import agent from "../functions/agent";
+import bluePrint from "../functions/blueprint";
 import colleague from "../functions/colleague";
 import { event } from "@canmingir/link-express/event/client";
 import express from "express";
-import taskBluePrint from "../functions/taskBluePrint";
 
 const router = express.Router();
 
@@ -17,7 +17,7 @@ router.get("/", async (req, res) => {
     return res.status(400);
   }
 
-  const taskBluePrints = await TaskBluePrint.findAll({
+  const Blueprints = await Blueprint.findAll({
     include: [
       {
         model: Colleague,
@@ -27,7 +27,7 @@ router.get("/", async (req, res) => {
     ],
   });
 
-  res.status(200).json(taskBluePrints);
+  res.status(200).json(Blueprints);
 });
 
 router.get("/:id", async (req, res) => {
@@ -38,16 +38,17 @@ router.get("/:id", async (req, res) => {
     return res.status(400);
   }
 
-  const taskBluePrintWithNodes = await taskBluePrint.getWithNodes(id);
+  const blueprintWithNodes = await bluePrint.getWithNodes(id);
 
-  res.status(200).json(taskBluePrintWithNodes);
+  res.status(200).json(blueprintWithNodes);
 });
 
-router.put("/:taskBluePrintId", async (req, res) => {
+router.put("/:blueprintId", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { taskBluePrintId } = req.params;
-  const { title, description, agentId, nodes } =
-    TaskBluePrintSchema.upsert.parse(req.body);
+  const { blueprintId } = req.params;
+  const { title, description, agentId, nodes } = BlueprintSchema.upsert.parse(
+    req.body
+  );
 
   if (agentId) {
     const { teamId: colleagueTeamId } = await colleague.get({
@@ -59,11 +60,11 @@ router.put("/:taskBluePrintId", async (req, res) => {
     }
   }
 
-  const result = await taskBluePrint.upsert(
+  const result = await bluePrint.upsert(
     title,
     description,
     agentId,
-    taskBluePrintId,
+    blueprintId,
     nodes
   );
 
@@ -71,23 +72,23 @@ router.put("/:taskBluePrintId", async (req, res) => {
     content: result.description,
   });
 
-  await taskBluePrint.patch({
-    taskBluePrintId,
+  await bluePrint.patch({
+    blueprintId,
     pseudocode,
   });
 
   await event.publish("TASK_BLUE_PRINT_CREATED", {
-    taskBluePrint: { ...result, pseudocode },
+    Blueprint: { ...result, pseudocode },
   });
 
   res.status(200).json(result);
 });
 
-router.delete("/:taskBluePrintId", async (req, res) => {
+router.delete("/:blueprintId", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { taskBluePrintId } = req.params;
+  const { blueprintId } = req.params;
 
-  const { agentId } = TaskBluePrintSchema.delete.parse(req.body);
+  const { agentId } = BlueprintSchema.delete.parse(req.body);
 
   if (agentId) {
     const { teamId: colleagueTeamId } = await colleague.get({
@@ -99,9 +100,9 @@ router.delete("/:taskBluePrintId", async (req, res) => {
     }
   }
 
-  await taskBluePrint.remove({ taskBluePrintId });
+  await bluePrint.remove({ blueprintId });
 
-  res.status(200).json({ message: "TaskBluePrint deleted" });
+  res.status(200).json({ message: "Blueprint deleted" });
 });
 
 export default router;

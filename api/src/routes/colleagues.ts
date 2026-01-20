@@ -1,8 +1,8 @@
+import Blueprint from "../schemas/Blueprint";
 import Colleague from "../models/Colleague";
 import Joi from "joi";
 import Session from "../models/Session";
 import Supervising from "../models/Supervising";
-import TaskBluePrint from "../schemas/TaskBluePrint";
 import agent from "../functions/agent";
 import { event } from "node-event-test-package/client";
 import express from "express";
@@ -158,12 +158,12 @@ router.get("/:agentId/supervisings", async (req, res) => {
   res.json(supervisings);
 });
 
-router.post("/taskBluePrints", async (req, res) => {
+router.post("/Blueprints", async (req, res) => {
   const { body } = req;
 
-  const { history, content } = TaskBluePrint.create.parse(body);
+  const { history, content } = Blueprint.create.parse(body);
 
-  const response = await agent.taskBluePrint({
+  const response = await agent.Blueprint({
     history,
     content,
   });
@@ -174,12 +174,11 @@ router.post("/taskBluePrints", async (req, res) => {
   });
 });
 
-router.post("/taskBluePrint-name", async (req, res) => {
+router.post("/Blueprint-name", async (req, res) => {
   const { body } = req;
-  const { history, content } =
-    TaskBluePrint.createTaskBluePrintName.parse(body);
+  const { history, content } = Blueprint.createBlueprintName.parse(body);
 
-  const response = await agent.taskBluePrintName({ history, content });
+  const response = await agent.blueprintName({ history, content });
 
   res.json(response);
 });

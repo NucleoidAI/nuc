@@ -36,11 +36,11 @@ export interface AddressToBBKInput {
   address: string;
 }
 
-export interface PortTahsisInput {
+export interface PortAllocationInput {
   serial_number: string; // Device serial number
 }
 
-export interface PortBaglantiInput {
+export interface PortConnectionInput {
   assignment_id: string; // Port assignment ID
 }
 
@@ -48,6 +48,6 @@ export interface ConfigurationInput {
   serial_number: string; // Device serial number
 }
 
-export interface PortBaglantiWithTechnicalSupportInput {
+export interface PortConnectionWithTechnicalSupportInput {
   assignment_id: string; // Port assignment ID
 }

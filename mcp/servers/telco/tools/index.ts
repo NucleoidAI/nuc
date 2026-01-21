@@ -1,19 +1,19 @@
-import { addressTool } from "./address_tool";
 import { addressToBBKTool } from "./address_to_bbk";
-import { inventoryTool } from "./inventory_tool";
-import { productManagementSystemTool } from "./product_management_system";
-import { portTahsisTool } from "./port_tahsis";
-import { portBaglantiTool } from "./port_baglanti";
-import { portBaglantiWithTechnicalSupportTool } from "./port_baglanti_with_technical_support";
+import { addressTool } from "./address_tool";
 import { configurationTool } from "./configuration";
+import { inventoryTool } from "./inventory_tool";
+import { portAllocationTool } from "./port_allocation";
+import { portConnectionTool } from "./port_connection";
+import { portConnectionWithTechnicalSupportTool } from "./port_connection_with_technical_support";
+import { productManagementSystemTool } from "./product_management_system";
 
 export const tools = [
   addressTool,
   addressToBBKTool,
   inventoryTool,
   productManagementSystemTool,
-  portTahsisTool,
-  portBaglantiTool,
-  portBaglantiWithTechnicalSupportTool,
+  portAllocationTool,
+  portConnectionTool,
+  portConnectionWithTechnicalSupportTool,
   configurationTool,
 ];

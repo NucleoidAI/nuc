@@ -1,6 +1,5 @@
 import "express";
 
-import McpClient from "../../mcp/McpClient";
 import agent from "./functions/agent";
 import blueprints from "./routes/blueprints";
 import colleagues from "./routes/colleagues";

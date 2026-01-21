@@ -1,7 +1,6 @@
 import { AuthenticationError } from "@canmingir/link-express/error";
 import Blueprint from "../models/Blueprint";
 import BlueprintSchema from "../schemas/Blueprint";
-import Colleague from "../models/Colleague";
 import agent from "../functions/agent";
 import bluePrint from "../functions/blueprint";
 import colleague from "../functions/colleague";

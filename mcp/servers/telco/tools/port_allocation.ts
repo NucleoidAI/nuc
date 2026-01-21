@@ -1,4 +1,4 @@
-import { PortTahsisInput, Tool } from "./types";
+import { PortAllocationInput, Tool } from "./types";
 
 import { fileURLToPath } from "url";
 import fs from "fs";
@@ -7,8 +7,8 @@ import path from "path";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const portTahsisTool: Tool<PortTahsisInput> = {
-  name: "TELCO:port_tahsis",
+export const portAllocationTool: Tool<PortAllocationInput> = {
+  name: "TELCO:port_allocation",
   description:
     "Assign a port to a customer using device serial number. Returns port assignment details including assignment ID, port information, and status.",
   inputSchema: {
@@ -21,21 +21,21 @@ export const portTahsisTool: Tool<PortTahsisInput> = {
     },
     required: ["serial_number"],
   },
-  handler: async (args: PortTahsisInput) => {
+  handler: async (args: PortAllocationInput) => {
     try {
       const mockDataPath = path.join(
         __dirname,
         "..",
         "mock",
-        "port_tahsis.json"
+        "port_allocation.json"
       );
       const data = JSON.parse(fs.readFileSync(mockDataPath, "utf-8"));
 
-      const portTahsis = data.find(
+      const portAllocation = data.find(
         (item: any) => item.serial_number === args.serial_number
       );
 
-      if (!portTahsis) {
+      if (!portAllocation) {
         return {
           content: [
             {
@@ -53,7 +53,7 @@ export const portTahsisTool: Tool<PortTahsisInput> = {
         content: [
           {
             type: "text",
-            text: JSON.stringify(portTahsis),
+            text: JSON.stringify(portAllocation),
           },
         ],
         isError: false,

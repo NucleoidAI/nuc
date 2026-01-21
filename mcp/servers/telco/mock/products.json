@@ -1,22 +1,22 @@
 [
   {
     "speed": "1gbps",
-    "urun_kodu": "1000_mbps_12",
-    "urun_aciklamasi": "1000 Mbps İnternet 12 Ay Limitsiz"
+    "product_code": "1000_mbps_12",
+    "product_description": "1000 Mbps Internet 12 Months Unlimited"
   },
   {
     "speed": "100mbps",
-    "urun_kodu": "100_mbps_12",
-    "urun_aciklamasi": "100 Mbps İnternet 12 Ay Limitsiz"
+    "product_code": "100_mbps_12",
+    "product_description": "100 Mbps Internet 12 Months Unlimited"
   },
   {
     "speed": "50mbps",
-    "urun_kodu": "50_mbps_12",
-    "urun_aciklamasi": "50 Mbps İnternet 12 Ay Limitsiz"
+    "product_code": "50_mbps_12",
+    "product_description": "50 Mbps Internet 12 Months Unlimited"
   },
   {
     "speed": "25mbps",
-    "urun_kodu": "25_mbps_12",
-    "urun_aciklamasi": "25 Mbps İnternet 12 Ay Limitsiz"
+    "product_code": "25_mbps_12",
+    "product_description": "25 Mbps Internet 12 Months Unlimited"
   }
 ]

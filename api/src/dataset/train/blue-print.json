@@ -396,7 +396,7 @@
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -476,7 +476,7 @@
           "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
           "type": "NORMAL",
           "properties": {
-            "action": "TELCO:port_tahsis",
+            "action": "TELCO:port_allocation",
             "description": "Assign a port for the selected internet product and create an order",
             "label": "Assign Port",
             "icon": "mdi:link"
@@ -500,7 +500,7 @@
           "id": "019b32f6-5878-73fb-8411-55916778d9a4",
           "type": "NORMAL",
           "properties": {
-            "action": "TELCO:port_baglanti",
+            "action": "TELCO:port_connection",
             "description": "Connect the assigned port to the user's residence",
             "label": "Connect Port",
             "icon": "mdi:check"
@@ -523,7 +523,7 @@
       ]
     },
     "content": "I want to setup internet subscription at my address.",
-    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "task": {
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
       "status": "COMPLETED",
@@ -537,7 +537,7 @@
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -617,7 +617,7 @@
           "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
           "type": "NORMAL",
           "properties": {
-            "action": "TELCO:port_tahsis",
+            "action": "TELCO:port_allocation",
             "description": "Assign a port for the selected internet product and create an order",
             "label": "Assign Port",
             "icon": "mdi:link"
@@ -641,7 +641,7 @@
           "id": "019b32f6-5878-73fb-8411-55916778d9a4",
           "type": "NORMAL",
           "properties": {
-            "action": "TELCO:port_baglanti",
+            "action": "TELCO:port_connection",
             "description": "Connect the assigned port to the user's residence",
             "label": "Connect Port",
             "icon": "mdi:check"
@@ -664,7 +664,7 @@
       ]
     },
     "content": "I need internet at home",
-    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "task": {
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793558",
       "status": "COMPLETED",
@@ -678,7 +678,7 @@
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -758,7 +758,7 @@
           "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
           "type": "NORMAL",
           "properties": {
-            "action": "TELCO:port_tahsis",
+            "action": "TELCO:port_allocation",
             "description": "Assign a port for the selected internet product and create an order",
             "label": "Assign Port",
             "icon": "mdi:link"
@@ -782,7 +782,7 @@
           "id": "019b32f6-5878-73fb-8411-55916778d9a4",
           "type": "NORMAL",
           "properties": {
-            "action": "TELCO:port_baglanti",
+            "action": "TELCO:port_connection",
             "description": "Connect the assigned port to the user's residence",
             "label": "Connect Port",
             "icon": "mdi:check"
@@ -805,7 +805,7 @@
       ]
     },
     "content": "Can you get me internet service?",
-    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "task": {
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793559",
       "status": "COMPLETED",
@@ -819,7 +819,7 @@
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -899,7 +899,7 @@
           "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
           "type": "NORMAL",
           "properties": {
-            "action": "TELCO:port_tahsis",
+            "action": "TELCO:port_allocation",
             "description": "Assign a port for the selected internet product and create an order",
             "label": "Assign Port",
             "icon": "mdi:link"
@@ -923,7 +923,7 @@
           "id": "019b32f6-5878-73fb-8411-55916778d9a4",
           "type": "NORMAL",
           "properties": {
-            "action": "TELCO:port_baglanti",
+            "action": "TELCO:port_connection",
             "description": "Connect the assigned port to the user's residence",
             "label": "Connect Port",
             "icon": "mdi:check"
@@ -946,7 +946,7 @@
       ]
     },
     "content": "Setup new internet connection",
-    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "task": {
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793560",
       "status": "COMPLETED",
@@ -960,7 +960,7 @@
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -1040,7 +1040,7 @@
           "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
           "type": "NORMAL",
           "properties": {
-            "action": "TELCO:port_tahsis",
+            "action": "TELCO:port_allocation",
             "description": "Assign a port for the selected internet product and create an order",
             "label": "Assign Port",
             "icon": "mdi:link"
@@ -1064,7 +1064,7 @@
           "id": "019b32f6-5878-73fb-8411-55916778d9a4",
           "type": "NORMAL",
           "properties": {
-            "action": "TELCO:port_baglanti",
+            "action": "TELCO:port_connection",
             "description": "Connect the assigned port to the user's residence",
             "label": "Connect Port",
             "icon": "mdi:check"
@@ -1087,7 +1087,7 @@
       ]
     },
     "content": "I want to subscribe to internet",
-    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "task": {
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793561",
       "status": "COMPLETED",
@@ -1101,7 +1101,7 @@
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -1181,7 +1181,7 @@
           "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
           "type": "NORMAL",
           "properties": {
-            "action": "TELCO:port_tahsis",
+            "action": "TELCO:port_allocation",
             "description": "Assign a port for the selected internet product and create an order",
             "label": "Assign Port",
             "icon": "mdi:link"
@@ -1205,7 +1205,7 @@
           "id": "019b32f6-5878-73fb-8411-55916778d9a4",
           "type": "NORMAL",
           "properties": {
-            "action": "TELCO:port_baglanti",
+            "action": "TELCO:port_connection",
             "description": "Connect the assigned port to the user's residence",
             "label": "Connect Port",
             "icon": "mdi:check"
@@ -1228,7 +1228,7 @@
       ]
     },
     "content": "Help me get broadband internet",
-    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "task": {
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793562",
       "status": "COMPLETED",

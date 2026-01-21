@@ -1,14 +1,15 @@
-import { Tool, PortBaglantiWithTechnicalSupportInput } from "./types";
+import { PortConnectionWithTechnicalSupportInput, Tool } from "./types";
+
+import { fileURLToPath } from "url";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const portBaglantiWithTechnicalSupportTool: Tool<PortBaglantiWithTechnicalSupportInput> =
+export const portConnectionWithTechnicalSupportTool: Tool<PortConnectionWithTechnicalSupportInput> =
   {
-    name: "TURK_TELEKOM:port_baglanti_with_technical_support",
+    name: "TURK_TELEKOM:port_connection_with_technical_support",
     description:
       "Connect/activate a port using port assignment ID with technical support escalation. Returns connection details including connection ID, activation status, technical support ticket information, and timestamp.",
     inputSchema: {
@@ -22,21 +23,21 @@ export const portBaglantiWithTechnicalSupportTool: Tool<PortBaglantiWithTechnica
       },
       required: ["assignment_id"],
     },
-    handler: async (args: PortBaglantiWithTechnicalSupportInput) => {
+    handler: async (args: PortConnectionWithTechnicalSupportInput) => {
       try {
         const mockDataPath = path.join(
           __dirname,
           "..",
           "mock",
-          "port_baglanti_with_technical_support.json"
+          "port_connection_with_technical_support.json"
         );
         const data = JSON.parse(fs.readFileSync(mockDataPath, "utf-8"));
 
-        const portBaglanti = data.find(
+        const portConnection = data.find(
           (item: any) => item.assignment_id === args.assignment_id
         );
 
-        if (!portBaglanti) {
+        if (!portConnection) {
           return {
             content: [
               {
@@ -54,7 +55,7 @@ export const portBaglantiWithTechnicalSupportTool: Tool<PortBaglantiWithTechnica
           content: [
             {
               type: "text",
-              text: JSON.stringify(portBaglanti),
+              text: JSON.stringify(portConnection),
             },
           ],
           isError: false,

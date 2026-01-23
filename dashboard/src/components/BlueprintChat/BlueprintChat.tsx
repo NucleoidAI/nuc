@@ -153,7 +153,7 @@ function BlueprintChat({
           blueprintNameData.title || blueprintNameData?.train[0]?.title,
           blueprintNameData.description ||
             blueprintNameData?.train[0]?.description,
-          selectedItem?.colleagueId || agentId,
+          selectedItem?.agentId || agentId,
           data?.flow,
           taskId,
           updatedMessages

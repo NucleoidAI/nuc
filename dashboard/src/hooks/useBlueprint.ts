@@ -108,7 +108,11 @@ function useBlueprint() {
     agentId: string,
     nodes?: NodeType[],
     taskId?: string,
-    messages?: Array<{ role: string; content: string; createdAt: Date }>
+    messages?: Array<{
+      role: "user" | "assistant";
+      content: string;
+      createdAt: string | Date;
+    }>
   ) => {
     if (!blueprintId) {
       blueprintId = uuidv4();

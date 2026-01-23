@@ -240,6 +240,18 @@ const BlueprintDrawer = ({
                   minHeight: 0,
                 }}
               >
+                <Box
+                  sx={{
+                    p: 1,
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    alignItems: "center",
+                  }}
+                >
+                  <IconButton size="small" onClick={() => setIsChatOpen(false)}>
+                    <CloseIcon fontSize="small" />
+                  </IconButton>
+                </Box>
                 <BlueprintChat
                   selectedItem={selectedItem}
                   setAiResponse={setAiResponse}
@@ -252,43 +264,6 @@ const BlueprintDrawer = ({
                   taskId={taskId}
                   agentId={agentId}
                 />
-                <Box
-                  sx={{
-                    p: 2,
-                    borderBottom: `1px solid ${theme.palette.divider}`,
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    alignItems: "center",
-                  }}
-                >
-                  <IconButton size="small" onClick={() => setIsChatOpen(false)}>
-                    <CloseIcon fontSize="small" />
-                  </IconButton>
-                </Box>
-
-                <Box
-                  sx={{
-                    flex: 1,
-                    display: "flex",
-                    alignItems: "stretch",
-                    justifyContent: "center",
-                    overflow: "hidden",
-                    p: 2,
-                  }}
-                >
-                  <BlueprintChat
-                    selectedItem={selectedItem}
-                    setAiResponse={setAiResponse}
-                    aiResponse={aiResponse}
-                    setSelectedItem={setSelectedItem}
-                    onTitleChange={handleTitleChange}
-                    onDescriptionChange={handleDescriptionChange}
-                    onCreateBlueprint={handleCreateBlueprint}
-                    onMessagesChange={handleMessagesChange}
-                    agentId={agentId}
-                    taskId={taskId}
-                  />
-                </Box>
               </Box>
             </Grid>
           )}

@@ -14,6 +14,15 @@ async function init() {
     foreignKey: "blueprintId",
   });
 
+  // Blueprint <-> BlueprintMessage
+  models.Blueprint.hasMany(models.BlueprintMessage, {
+    foreignKey: "blueprintId",
+    as: "messages",
+  });
+  models.BlueprintMessage.belongsTo(models.Blueprint, {
+    foreignKey: "blueprintId",
+  });
+
   // Project <-> Colleague
   models.Project.hasMany(models.Colleague, {
     foreignKey: "teamId",

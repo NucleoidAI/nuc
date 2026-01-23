@@ -28,7 +28,7 @@ const TABS = [
     icon: <Iconify icon="carbon:ibm-watson-knowledge-studio" width={24} />,
   },
   {
-    value: "blue-prints",
+    value: "blueprints",
     label: "Blueprints",
     icon: (
       <Iconify
@@ -164,7 +164,7 @@ function AgentLayout({
       </Stack>
       {currentTab === "profile" && <Profile agentId={agent.id} />}
       {currentTab === "knowledge-base" && <Knowledge agentId={agent.id} />}
-      {currentTab === "blue-prints" && <BlueprintsWidget agentId={agent.id} />}
+      {currentTab === "blueprints" && <BlueprintsWidget agentId={agent.id} />}
       {currentTab === "supervisings" && <Supervising agentId={agent.id} />}
       {currentTab === "tasks" && <TasksWidget agentId={agent.id} />}
       {currentTab === "mcps" && <AgentMCP agent={agent} />}

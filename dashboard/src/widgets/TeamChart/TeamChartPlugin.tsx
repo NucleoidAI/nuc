@@ -152,7 +152,7 @@ export const teamChartPlugin = {
                   variant="outlined"
                   onClick={(e) => {
                     e.stopPropagation();
-                    onAgentOpen(node, "blue-prints");
+                    onAgentOpen(node, "blueprints");
                   }}
                   sx={{ minWidth: 30, width: 30, height: 30, p: 0 }}
                 >

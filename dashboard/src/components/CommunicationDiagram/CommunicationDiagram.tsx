@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import React, { useMemo } from "react";
 
-const DEFAULT_BLUE_PRINT_ICON =
+const DEFAULT_BLUEPRINT_ICON =
   "healthicons:crisis-response-center-person-outline";
 
 function CommunicationDiagram(props) {
@@ -28,7 +28,7 @@ function CommunicationDiagram(props) {
     containerProps,
     showRightIcons = true,
     showLeftIcons = true,
-    blueprintIcon = DEFAULT_BLUE_PRINT_ICON,
+    blueprintIcon = DEFAULT_BLUEPRINT_ICON,
     renderChannelNode,
     renderBlueprintNode,
   } = props;

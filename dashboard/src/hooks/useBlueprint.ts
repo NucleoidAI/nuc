@@ -21,7 +21,7 @@ type NodeType = {
 function useBlueprint() {
   const { Api } = useApi();
 
-  const [blueprintUpserted] = useEvent("BLUE_PRINT_UPSERTED", null);
+  const [blueprintUpserted] = useEvent("BLUEPRINT_UPSERTED", null);
 
   const getBlueprint = (fetchState: DependencyArray = []) => {
     const eventDependencies = [blueprintUpserted];
@@ -32,7 +32,7 @@ function useBlueprint() {
     );
 
     if (data) {
-      publish("BLUE_PRINT_LOADED", { Blueprint: data });
+      publish("BLUEPRINT_LOADED", { Blueprint: data });
     }
 
     return {
@@ -70,7 +70,7 @@ function useBlueprint() {
     if (data) {
       result = convertToNodesAndEdges(data.nodes);
 
-      publish("BLUE_PRINT_NODES_LOADED", {
+      publish("BLUEPRINT_NODES_LOADED", {
         blueprintNodes: result,
       });
     }
@@ -94,7 +94,7 @@ function useBlueprint() {
       agentId,
     });
     if (response?.data) {
-      publish("BLUE_PRINT_CREATED", { Blueprint: response.data });
+      publish("BLUEPRINT_CREATED", { Blueprint: response.data });
     }
     return { Blueprint: response?.data };
   };
@@ -119,7 +119,7 @@ function useBlueprint() {
       taskId,
     });
     if (response?.data) {
-      publish("BLUE_PRINT_UPSERTED", { Blueprint: response.data });
+      publish("BLUEPRINT_UPSERTED", { Blueprint: response.data });
     }
     return { Blueprint: response?.data };
   };
@@ -131,7 +131,7 @@ function useBlueprint() {
       },
     });
     if (response?.data) {
-      publish("BLUE_PRINT_REMOVED", { Blueprint: response.data });
+      publish("BLUEPRINT_REMOVED", { Blueprint: response.data });
     }
     return { Blueprint: response?.data };
   };

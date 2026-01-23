@@ -63,7 +63,7 @@ const CommunicationBlueprintSelection = ({
                 onRightsChange([Blueprint.id]);
               }}
               value={Blueprint.id}
-              name="blue-print-selection"
+              name="blueprint-selection"
               color="primary"
               sx={{ p: 0 }}
             />

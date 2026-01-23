@@ -1,7 +1,7 @@
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CommunicationBlueprintSelection from "./CommunicationBlueprintSelection";
 import CommunicationChannelSelection from "./CommunicationChannelSelection";
 import CommunicationInputDialog from "./CommunicationInputDialog";
-import CommunicationResponsibilitySelection from "./CommunicationResponsibilitySelection";
 import React from "react";
 
 import {
@@ -20,13 +20,13 @@ const CommunicationWizard = ({
   open,
   onClose,
   channels,
-  responsibilities,
+  Blueprints,
   availableChannels,
   connections,
   onAddChannel,
   onDeleteChannel,
   onConnect,
-  responsibilityIcon,
+  blueprintIcon,
 }) => {
   const [tabIndex, setTabIndex] = React.useState(0);
   const [leftSelection, setLeftSelection] = React.useState(null);
@@ -114,7 +114,7 @@ const CommunicationWizard = ({
   return (
     <>
       <Dialog open={open} onClose={handleDialogClose} fullWidth maxWidth="md">
-        <DialogTitle>Connect Channel to Responsibility</DialogTitle>
+        <DialogTitle>Connect Channel to Task Blueprint</DialogTitle>
         <DialogContent sx={{ minHeight: 200 }}>
           <Tabs value={tabIndex} onChange={handleTabChange}>
             <Tab
@@ -164,7 +164,7 @@ const CommunicationWizard = ({
                   >
                     2
                   </Typography>
-                  Responsibility
+                  Task Blueprint
                 </Box>
               }
               disabled={!leftSelection}
@@ -203,7 +203,7 @@ const CommunicationWizard = ({
                     Channel Already Connected
                   </Typography>
                   <Typography variant="body1" sx={{ mb: 2 }}>
-                    This channel is already connected to a responsibility:
+                    This channel is already connected to a task blueprint:
                   </Typography>
                   <Typography
                     variant="body1"
@@ -211,12 +211,12 @@ const CommunicationWizard = ({
                     sx={{ fontWeight: "bold" }}
                   >
                     {(() => {
-                      const connectedResp = responsibilities.find(
+                      const connectedblueprint = Blueprints.find(
                         (r) => r.id === existingConnection?.right
                       );
-                      return connectedResp
-                        ? connectedResp.title
-                        : "Unknown Responsibility";
+                      return connectedblueprint
+                        ? connectedblueprint.title
+                        : "Unknown Task Blueprint";
                     })()}
                   </Typography>
                   <Typography
@@ -224,16 +224,16 @@ const CommunicationWizard = ({
                     color="text.secondary"
                     sx={{ mt: 3 }}
                   >
-                    To connect this channel to a different responsibility,
+                    To connect this channel to a different task blueprint,
                     please disconnect it first.
                   </Typography>
                 </Box>
               ) : (
-                <CommunicationResponsibilitySelection
-                  responsibilities={responsibilities}
+                <CommunicationBlueprintSelection
+                  Blueprints={Blueprints}
                   selectedRights={selectedRights}
                   onRightsChange={setSelectedRights}
-                  responsibilityIcon={responsibilityIcon}
+                  blueprintIcon={blueprintIcon}
                 />
               ))}
           </Box>

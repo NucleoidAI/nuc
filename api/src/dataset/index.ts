@@ -1,12 +1,12 @@
+import Blueprint from "./train/blueprint.json";
+import blueprintChat from "./train/blueprint-chat.json";
+import blueprintChatEvaluation from "./train/blueprint-chat-evaluation.json";
+import blueprintDiamond from "./train/blueprint-diamond.json";
+import blueprintName from "./train/blueprint-name.json";
 import chat from "./train/chat.json";
 import humanInLoop from "./train/human-in-loop.json";
 import policy from "./policy.json";
 import pseudocode from "./train/pseudocode.json";
-import responsibility from "./train/responsibility.json";
-import responsibilityChat from "./train/responsibility-chat.json";
-import responsibilityChatEvaluation from "./train/responsibility-chat-evaluation.json";
-import responsibilityDiamond from "./train/responsibility-diamond.json";
-import responsibilityName from "./train/responsibility-name.json";
 import taskDiamond from "./train/task-diamond.json";
 import teamChat from "./train/team-chat.json";
 
@@ -16,10 +16,10 @@ export default {
     content: JSON.stringify({ policy }),
   },
   train: {
-    responsibility: {
+    Blueprint: {
       role: "system" as const,
       content: JSON.stringify({
-        train: responsibility,
+        train: Blueprint,
       }),
     },
     chat: {
@@ -52,28 +52,28 @@ export default {
         train: teamChat,
       }),
     },
-    responsibilityChat: {
+    blueprintChat: {
       role: "system" as const,
       content: JSON.stringify({
-        train: responsibilityChat,
+        train: blueprintChat,
       }),
     },
-    responsibilityChatEvaluation: {
+    blueprintChatEvaluation: {
       role: "system" as const,
       content: JSON.stringify({
-        train: responsibilityChatEvaluation,
+        train: blueprintChatEvaluation,
       }),
     },
-    responsibilityName: {
+    blueprintName: {
       role: "system" as const,
       content: JSON.stringify({
-        train: responsibilityName,
+        train: blueprintName,
       }),
     },
-    responsibilityDiamond: {
+    blueprintDiamond: {
       role: "system" as const,
       content: JSON.stringify({
-        train: responsibilityDiamond,
+        train: blueprintDiamond,
       }),
     },
   },

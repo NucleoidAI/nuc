@@ -44,7 +44,7 @@ const TeamChatWidget = memo(function ChatWidget({
       ...message,
       role: message.role || "",
       content: message.content || "",
-      colleagueId: message.colleagueId || "",
+      agentId: message.agentId || "",
       knowledgeId: message.knowledgeId || "",
       createdAt: message.createdAt || "",
       userId: message.userId || "",

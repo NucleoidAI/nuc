@@ -1,6 +1,6 @@
+import Blueprint from "../schemas/Blueprint";
 import Colleague from "../models/Colleague";
 import Joi from "joi";
-import Responsibility from "../schemas/Responsibility";
 import Session from "../models/Session";
 import Supervising from "../models/Supervising";
 import agent from "../functions/agent";
@@ -58,11 +58,11 @@ router.put("/:id", async (req, res) => {
   res.json(colleague);
 });
 
-router.get("/:colleagueId", async (req, res) => {
+router.get("/:agentId", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { colleagueId } = req.params;
+  const { agentId } = req.params;
 
-  const validatedId = Joi.attempt(colleagueId, Joi.string().guid().required());
+  const validatedId = Joi.attempt(agentId, Joi.string().guid().required());
 
   const colleague = await Colleague.findByPk(validatedId, {
     attributes: { exclude: ["aiEngineId"] },
@@ -101,14 +101,14 @@ router.delete("/:id", async (req, res) => {
   res.status(204).end();
 });
 
-router.get("/:colleagueId/sessions", async (req, res) => {
+router.get("/:agentId/sessions", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { colleagueId } = Joi.attempt(
+  const { agentId } = Joi.attempt(
     req.params,
-    Joi.object({ colleagueId: Joi.string().guid().required() })
+    Joi.object({ agentId: Joi.string().guid().required() })
   );
 
-  const colleague = await Colleague.findByPk(colleagueId);
+  const colleague = await Colleague.findByPk(agentId);
 
   if (!colleague) {
     res.status(404);
@@ -118,14 +118,14 @@ router.get("/:colleagueId/sessions", async (req, res) => {
     res.status(401);
   }
 
-  const sessions = await Session.findAll({ where: { colleagueId } });
+  const sessions = await Session.findAll({ where: { agentId } });
 
   res.json(sessions);
 });
 
-router.get("/:colleagueId/supervisings", async (req, res) => {
+router.get("/:agentId/supervisings", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { colleagueId } = req.params;
+  const { agentId } = req.params;
 
   const { status } = Joi.attempt(
     req.query,
@@ -134,7 +134,7 @@ router.get("/:colleagueId/supervisings", async (req, res) => {
     })
   );
 
-  const colleague = await Colleague.findByPk(colleagueId);
+  const colleague = await Colleague.findByPk(agentId);
 
   if (!colleague) {
     res.status(404);
@@ -144,8 +144,8 @@ router.get("/:colleagueId/supervisings", async (req, res) => {
     res.status(401);
   }
 
-  const where = { colleagueId } as {
-    colleagueId: string;
+  const where = { agentId } as {
+    agentId: string;
     status?: string;
   };
 
@@ -158,12 +158,12 @@ router.get("/:colleagueId/supervisings", async (req, res) => {
   res.json(supervisings);
 });
 
-router.post("/responsibilities", async (req, res) => {
+router.post("/Blueprints", async (req, res) => {
   const { body } = req;
 
-  const { history, content } = Responsibility.create.parse(body);
+  const { history, content } = Blueprint.create.parse(body);
 
-  const response = await agent.responsibility({
+  const response = await agent.Blueprint({
     history,
     content,
   });
@@ -174,12 +174,11 @@ router.post("/responsibilities", async (req, res) => {
   });
 });
 
-router.post("/responsibility-name", async (req, res) => {
+router.post("/Blueprint-name", async (req, res) => {
   const { body } = req;
-  const { history, content } =
-    Responsibility.createResponsibilityName.parse(body);
+  const { history, content } = Blueprint.createBlueprintName.parse(body);
 
-  const response = await agent.responsibilityName({ history, content });
+  const response = await agent.blueprintName({ history, content });
 
   res.json(response);
 });

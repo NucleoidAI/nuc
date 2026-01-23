@@ -5,10 +5,10 @@ import useAgent from "../hooks/useAgent";
 import { useParams } from "react-router-dom";
 
 function Agent() {
-  const { colleagueId } = useParams();
+  const { agentId } = useParams();
 
   const { getAgent } = useAgent();
-  const { agent, loading } = getAgent(colleagueId);
+  const { agent, loading } = getAgent(agentId);
 
   if (loading) {
     return <AgentSkeleton />;

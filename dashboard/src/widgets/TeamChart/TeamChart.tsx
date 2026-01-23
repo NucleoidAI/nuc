@@ -1,21 +1,37 @@
 import AgentDrawer from "../../components/AgentDrawer/AgentDrawer";
 import AgentWizard from "../AgentWizard/AgentWizard";
+import BlueprintDrawer from "../../components/BlueprintDrawer/BlueprintDrawer";
 import { Flow } from "@canmingir/link/platform/components";
-import ResponsibilityDrawer from "../../components/ResponsbilityDrawer/ResponsibilityDrawer";
+import { Iconify } from "@canmingir/link/platform/components";
 import { TeamChartRenderer } from "./TeamChartRenderer";
 import TeamSkeleton from "../../components/Skeletons/TeamSkeleton";
+import { publish } from "@nucleoidai/react-event";
 import { storage } from "@nucleoidjs/webstorage";
 import { teamChartPlugin } from "./TeamChartPlugin";
 import useAgents from "../../hooks/useAgents";
+import useBlueprint from "../../hooks/useBlueprint";
+import { useLocation } from "react-router-dom";
 import useOrganizations from "../../hooks/useOrganizations";
-import useResponsibility from "../../hooks/useResponsibility";
 import useTeam from "../../hooks/useTeams";
 
-import { Box, CircularProgress, Stack } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  IconButton,
+  Stack,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import React, { useMemo, useState } from "react";
 import { toTeamTree, treeToLinked } from "./utils";
 
 function TeamChart() {
+  const theme = useTheme();
+  const lgUp = useMediaQuery(theme.breakpoints.up("lg"));
+
+  const location = useLocation();
+  const showNavButton = !lgUp && location.pathname.includes("/team");
+
   const projectId = storage.get("projectId");
   const { getTeamById } = useTeam();
   const { team } = getTeamById(projectId);
@@ -24,8 +40,8 @@ function TeamChart() {
   const { organization, loading } =
     useOrganizations().getOrganizationById(organizationId);
 
-  const { getResponsibility } = useResponsibility();
-  const { responsibility: allResponsibilitiesRaw } = getResponsibility();
+  const { getBlueprint } = useBlueprint();
+  const { Blueprint: allBlueprintsRaw } = getBlueprint();
 
   const { createAgent } = useAgents();
 
@@ -40,8 +56,8 @@ function TeamChart() {
   );
 
   const teamTree = useMemo(
-    () => toTeamTree(filteredOrganizations, allResponsibilitiesRaw || []),
-    [filteredOrganizations, allResponsibilitiesRaw]
+    () => toTeamTree(filteredOrganizations, allBlueprintsRaw || []),
+    [filteredOrganizations, allBlueprintsRaw]
   );
 
   const data = teamTree ? treeToLinked(teamTree) : { nodes: {}, roots: [] };
@@ -55,10 +71,10 @@ function TeamChart() {
     | "profile"
     | "knowledge-base"
     | "tasks"
-    | "responsibilities"
+    | "Blueprints"
     | "supervisings"
     | "communication"
-    | "integrations"
+    | "mcps"
   >("profile");
 
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -118,12 +134,27 @@ function TeamChart() {
       ...base,
       onTeamAddAgent: (teamNode) => handleAddAgent(teamNode.id),
       onAgentOpen: (colNode, tab) => handleAgentDrawerOpen(colNode, tab),
-      onResponsibilityOpen: (respNode) => handleDrawerOpen(respNode),
+      onBlueprintOpen: (respNode) => handleDrawerOpen(respNode),
     };
   };
 
   return (
     <>
+      {showNavButton && (
+        <IconButton
+          sx={{
+            top: 10,
+            left: 10,
+          }}
+          data-cy="open-nav-button"
+          onClick={() =>
+            publish("PLATFORM_NAV_OPENED", { layout: "fullScreen" })
+          }
+        >
+          <Iconify icon="mingcute:menu-fill" sx={{ width: 28, height: 28 }} />
+        </IconButton>
+      )}
+
       <Box
         sx={{
           width: "100%",
@@ -160,7 +191,7 @@ function TeamChart() {
       )}
 
       {drawerOpen && (
-        <ResponsibilityDrawer
+        <BlueprintDrawer
           drawerOpen={drawerOpen}
           handleDrawerClose={handleDrawerClose}
           selectedItem={selectedItem}

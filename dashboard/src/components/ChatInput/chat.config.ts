@@ -27,7 +27,7 @@ const learnAction = async (command) => {
     answer,
     url,
     text,
-    colleagueId: colleague.id,
+    agentId: colleague.id,
   });
 
   publish("KNOWLEDGE_STATUS_CHANGED", {
@@ -58,7 +58,7 @@ const taskAction = async (command) => {
 
   const { data: createdTask } = await http.post(`/tasks`, {
     description: task,
-    colleagueId: colleague.id,
+    agentId: colleague.id,
   });
 
   publish("TASK_STATUS_CHANGED", {
@@ -176,15 +176,15 @@ const Commands = [
   },
 ];
 
-const ResponsibilityCommands = [
+const BlueprintCommands = [
   {
-    id: "integration",
-    label: "Integration",
-    type: "integration",
+    id: "MCP",
+    label: "MCP",
+    type: "MCP",
     icon: "carbon:ibm-cloud-pak-integration",
     description: "Integrate with other tools",
     next: {
-      label: "Select an Integration",
+      label: "Select a MCP",
       list: [
         {
           id: "g-drive-id",
@@ -250,11 +250,9 @@ const Types = [
   },
 ];
 
-const findIntegrationById = (id: string) => {
-  const integration = ResponsibilityCommands[0].next.list.find(
-    (integration) => integration.id === id
-  );
-  return integration || null;
+const findMCPById = (id: string) => {
+  const mcp = BlueprintCommands[0].next.list.find((mcp) => mcp.id === id);
+  return mcp || null;
 };
 
-export { Commands, Types, ResponsibilityCommands, findIntegrationById };
+export { Commands, Types, BlueprintCommands, findMCPById };

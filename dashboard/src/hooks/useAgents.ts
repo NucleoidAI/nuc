@@ -23,7 +23,7 @@ function useAgents() {
     ];
 
     const { data, loading, error, fetch } = Api(
-      () => http.get(`/colleagues`),
+      () => http.get(`/agents`),
       [...eventDependencies, ...fetchState]
     );
 
@@ -45,7 +45,7 @@ function useAgents() {
 
       console.log("agent", agent);
 
-      const response = await http.post(`/colleagues`, {
+      const response = await http.post(`/agents`, {
         name: agent.name,
         icon: agent.icon,
         teamId: agent.teamId,
@@ -66,7 +66,7 @@ function useAgents() {
 
   const deleteAgent = async (agentId) => {
     try {
-      const response = await http.delete(`/colleagues/${agentId}`);
+      const response = await http.delete(`/agents/${agentId}`);
 
       if (response) {
         publish("AGENT_DELETED", { agentId });

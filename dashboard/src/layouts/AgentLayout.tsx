@@ -1,11 +1,12 @@
-import AgentIntegration from "../widgets/AgentIntegration/AgentIntegration";
+import AgentMCP from "../widgets/AgentMCP/AgentMCP";
+import BlueprintsWidget from "../widgets/BlueprintsWidget/BlueprintsWidget";
 import Communication from "../widgets/Communication/Communication";
 import { Iconify } from "@canmingir/link/platform/components";
 import Knowledge from "../widgets/Knowledge/Knowledge";
 import PopupChatWidget from "../widgets/PopupChatWidget";
 import Profile from "../widgets/Profile/Profile";
 import ProfileCard from "../components/ProfileCard/ProfileCard";
-import ResponsibilitiesWidget from "../widgets/ResponsibilitiesWidget/ResponsibilitiesWidget";
+import React from "react";
 import Stack from "@mui/material/Stack";
 import Supervising from "../widgets/Supervising/Supervising";
 import TasksWidget from "../widgets/TasksWidget/TasksWidget";
@@ -27,8 +28,8 @@ const TABS = [
     icon: <Iconify icon="carbon:ibm-watson-knowledge-studio" width={24} />,
   },
   {
-    value: "responsibilities",
-    label: "Responsibilities",
+    value: "blueprints",
+    label: "Blueprints",
     icon: (
       <Iconify
         icon="healthicons:crisis-response-center-person-outline"
@@ -52,8 +53,8 @@ const TABS = [
     icon: <Iconify icon="material-symbols:chat" width={24} />,
   },
   {
-    value: "integrations",
-    label: "Integrations",
+    value: "mcps",
+    label: "MCPs",
     icon: <Iconify icon="carbon:ibm-cloud-pak-integration" width={24} />,
   },
 ];
@@ -156,19 +157,17 @@ function AgentLayout({
                 zIndex: 1000,
               }}
             >
-              <PopupChatWidget />
+              <PopupChatWidget agentId={agent.id} />
             </Stack>
           </>
         )}
       </Stack>
       {currentTab === "profile" && <Profile agentId={agent.id} />}
       {currentTab === "knowledge-base" && <Knowledge agentId={agent.id} />}
-      {currentTab === "responsibilities" && (
-        <ResponsibilitiesWidget agentId={agent.id} />
-      )}
+      {currentTab === "blueprints" && <BlueprintsWidget agentId={agent.id} />}
       {currentTab === "supervisings" && <Supervising agentId={agent.id} />}
       {currentTab === "tasks" && <TasksWidget agentId={agent.id} />}
-      {currentTab === "integrations" && <AgentIntegration agent={agent} />}
+      {currentTab === "mcps" && <AgentMCP agent={agent} />}
       {currentTab === "communication" && <Communication />}
     </>
   );

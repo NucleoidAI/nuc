@@ -9,17 +9,17 @@ const router = express.Router();
 
 router.post("/", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { colleagueId, description } = Joi.attempt(
+  const { agentId, description } = Joi.attempt(
     req.body,
     Joi.object({
-      colleagueId: Joi.string()
+      agentId: Joi.string()
         .guid({ version: ["uuidv4"] })
         .required(),
       description: Joi.string().required(),
     })
   );
 
-  const colleague = await Colleague.findByPk(colleagueId);
+  const colleague = await Colleague.findByPk(agentId);
 
   if (!colleague) {
     return res.status(404).end();
@@ -29,23 +29,23 @@ router.post("/", async (req, res) => {
     return res.status(401).end();
   }
 
-  const taskInstance = await task.create({ colleagueId, description });
+  const taskInstance = await task.create({ agentId, description });
 
   return res.status(200).json(taskInstance);
 });
 
 router.get("/", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { colleagueId } = Joi.attempt(
+  const { agentId } = Joi.attempt(
     req.query,
     Joi.object({
-      colleagueId: Joi.string()
+      agentId: Joi.string()
         .guid({ version: ["uuidv4"] })
         .required(),
     })
   );
 
-  const tasks = await task.list({ colleagueId, teamId });
+  const tasks = await task.list({ agentId, teamId });
 
   return res.status(200).json(tasks);
 });
@@ -106,11 +106,11 @@ router.get("/:taskId/steps", async (req, res) => {
 
 router.post("/:taskId/supervising", async (req, res) => {
   const { taskId } = req.params;
-  const { text, addToKnowledgeBase, colleagueId } = Joi.attempt(
+  const { text, addToKnowledgeBase, agentId } = Joi.attempt(
     req.body,
     Joi.object({
       text: Joi.string().required(),
-      colleagueId: Joi.string()
+      agentId: Joi.string()
         .guid({ version: ["uuidv4"] })
         .required(),
       addToKnowledgeBase: Joi.boolean().required(),
@@ -128,7 +128,7 @@ router.post("/:taskId/supervising", async (req, res) => {
 
   if (addToKnowledgeBase) {
     await knowledge.create({
-      colleagueId,
+      agentId,
       knowledge: {
         type: "TASK",
         taskId,

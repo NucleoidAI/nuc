@@ -39,15 +39,15 @@ export const teamChartPlugin = {
 
     const isTeam = node.nodeKind === "team";
     const isColleague = node.nodeKind === "colleague";
-    const isResponsibility = node.nodeKind === "responsibility";
+    const isBlueprint = node.nodeKind === "Blueprint";
 
     const teamLayout =
       nodeStyle.teamLayout ||
-      (isTeam ? "gradient" : isResponsibility ? "sideStripe" : "media");
+      (isTeam ? "gradient" : isBlueprint ? "sideStripe" : "media");
 
     const onTeamAddAgent = nodeStyle.onTeamAddAgent;
     const onAgentOpen = nodeStyle.onAgentOpen;
-    const onResponsibilityOpen = nodeStyle.onResponsibilityOpen;
+    const onBlueprintOpen = nodeStyle.onBlueprintOpen;
 
     const renderInitialAvatar = () => {
       if (!isColleague) {
@@ -152,7 +152,7 @@ export const teamChartPlugin = {
                   variant="outlined"
                   onClick={(e) => {
                     e.stopPropagation();
-                    onAgentOpen(node, "responsibilities");
+                    onAgentOpen(node, "blueprints");
                   }}
                   sx={{ minWidth: 30, width: 30, height: 30, p: 0 }}
                 >
@@ -188,7 +188,7 @@ export const teamChartPlugin = {
       );
     }
 
-    if (teamLayout === "sideStripe" && isResponsibility) {
+    if (teamLayout === "sideStripe" && isBlueprint) {
       const stripeWidth = 100;
 
       return (
@@ -213,13 +213,13 @@ export const teamChartPlugin = {
           title={title || node?.name}
           description={node?.description}
           footer={
-            onResponsibilityOpen && (
+            onBlueprintOpen && (
               <Button
                 size="small"
                 variant="outlined"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onResponsibilityOpen(node);
+                  onBlueprintOpen(node);
                 }}
                 sx={{ minWidth: 30, width: 30, height: 30, p: 0 }}
               >

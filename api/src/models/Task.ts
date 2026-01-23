@@ -1,12 +1,12 @@
 import {
-  Table,
+  AllowNull,
   Column,
-  Model,
   DataType,
   Default,
-  PrimaryKey,
-  AllowNull,
   IsIn,
+  Model,
+  PrimaryKey,
+  Table,
 } from "@canmingir/link-express/sequelize";
 
 @Table({
@@ -45,11 +45,11 @@ class Task extends Model {
 
   @AllowNull(true)
   @Column(DataType.UUID)
-  declare colleagueId: string | null;
+  declare agentId: string | null;
 
   @AllowNull(true)
   @Column(DataType.UUID)
-  declare responsibilityId: string | null;
+  declare blueprintId: string | null;
 
   @AllowNull(true)
   @Column(DataType.UUID)
@@ -57,7 +57,7 @@ class Task extends Model {
 
   declare colleague?: any;
 
-  declare responsibility?: any;
+  declare Blueprint?: any;
 }
 
 export default Task;

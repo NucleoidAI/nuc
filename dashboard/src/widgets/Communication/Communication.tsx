@@ -1,8 +1,8 @@
 import AddIcon from "@mui/icons-material/Add";
 import CommunicationDiagram from "../../components/CommunicationDiagram/CommunicationDiagram";
 import CommunicationWizard from "../CommunicationWizard/CommunicationWizard";
+import useBlueprint from "../../hooks/useBlueprint";
 import useCommunications from "../../hooks/useCommunications";
-import useResponsibility from "../../hooks/useResponsibility";
 
 import { Box, Fab } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -20,8 +20,8 @@ const availableChannels = [
 ];
 
 const Communication = () => {
-  const { getResponsibility } = useResponsibility();
-  const { responsibility: respList, loading, error } = getResponsibility();
+  const { getBlueprint } = useBlueprint();
+  const { Blueprint: blueprintList, loading, error } = getBlueprint();
 
   const { getCommunications, createCommunication, deleteCommunication } =
     useCommunications();
@@ -58,7 +58,7 @@ const Communication = () => {
       setConnections(
         communications.map((comm) => ({
           left: `${comm.channelType.toLowerCase()}-${comm.channelCode}`,
-          right: `resp-${comm.responsibilityId}`,
+          right: `tbp-${comm.blueprintId}`,
         }))
       );
     }
@@ -81,29 +81,29 @@ const Communication = () => {
     }
   };
 
-  const handleConnect = async (channelId, responsibilityIds) => {
+  const handleConnect = async (channelId, blueprintIds) => {
     const channel = channels.find((c) => c.id === channelId);
     if (channel) {
-      for (const rid of responsibilityIds) {
+      for (const rid of blueprintIds) {
         await createCommunication({
           channelType: channel.type.toUpperCase(),
           channelCode: channel.code,
-          responsibilityId: rid.replace(/^resp-/, ""),
+          blueprintId: rid.replace(/^tbp-/, ""),
         });
       }
     }
   };
 
   if (loading) {
-    return <div>Loading responsibilities...</div>;
+    return <div>Loading task blueprints...</div>;
   }
   if (error) {
-    return <div>Error loading responsibilities: {error}</div>;
+    return <div>Error loading task blueprints: {error}</div>;
   }
 
-  const responsibilities =
-    (respList || []).map((r) => ({
-      id: `resp-${r.id}`,
+  const Blueprints =
+    (blueprintList || []).map((r) => ({
+      id: `tbp-${r.id}`,
       title: r.title,
     })) || [];
 
@@ -118,7 +118,7 @@ const Communication = () => {
       <Box position="relative">
         <CommunicationDiagram
           channels={channels}
-          responsibilities={responsibilities}
+          Blueprints={Blueprints}
           connections={connections}
           availableChannels={availableChannels}
           onAddChannel={handleAddChannel}
@@ -137,7 +137,7 @@ const Communication = () => {
           size="medium"
           sx={{ position: "fixed", bottom: 16, right: 16 }}
           onClick={() => setDialogOpen(true)}
-          aria-label="Connect channel to responsibility"
+          aria-label="Connect channel to task blueprint"
         >
           <AddIcon />
         </Fab>
@@ -146,13 +146,13 @@ const Communication = () => {
           open={dialogOpen}
           onClose={() => setDialogOpen(false)}
           channels={channels}
-          responsibilities={responsibilities}
+          Blueprints={Blueprints}
           availableChannels={availableChannels}
           connections={connections}
           onAddChannel={handleAddChannel}
           onDeleteChannel={handleDeleteChannel}
           onConnect={handleConnect}
-          responsibilityIcon="healthicons:crisis-response-center-person-outline"
+          blueprintIcon="healthicons:crisis-response-center-person-outline"
         />
       </Box>
     </Box>

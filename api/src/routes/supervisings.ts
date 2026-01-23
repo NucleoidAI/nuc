@@ -14,12 +14,12 @@ const router = express.Router();
 router.post("/", async (req, res) => {
   const teamId = req.session.projectId;
 
-  const { sessionId, conversationId, colleagueId } = Joi.attempt(
+  const { sessionId, conversationId, agentId } = Joi.attempt(
     req.body,
     schemas.Supervising.create
   );
 
-  const colleague = await Colleague.findByPk(colleagueId);
+  const colleague = await Colleague.findByPk(agentId);
 
   if (!colleague) {
     res.status(404);
@@ -39,7 +39,7 @@ router.post("/", async (req, res) => {
     sessionId,
     conversationId,
     question: conversation.content,
-    colleagueId,
+    agentId,
   });
 
   res.status(201).json(createdSupervising);
@@ -132,7 +132,7 @@ router.patch("/:supervisingId", async (req, res) => {
     return res.status(404).json({ error: "Supervising not found" });
   }
 
-  const colleague = await Colleague.findByPk(supervisingInstance.colleagueId);
+  const colleague = await Colleague.findByPk(supervisingInstance.agentId);
 
   if (!colleague) {
     return res.status(404).json({ error: "Colleague not found" });
@@ -145,7 +145,7 @@ router.patch("/:supervisingId", async (req, res) => {
   const updatedSupervising = await supervising.update({
     teamId,
     supervisingId,
-    colleagueId: colleague.id,
+    agentId: colleague.id,
     question: supervisingInstance.question,
     answer,
     status,
@@ -171,7 +171,7 @@ router.post("/:supervisingId/evaluate", async (req, res) => {
     return res.status(404).json({ error: "Supervising not found" });
   }
 
-  const colleague = await Colleague.findByPk(supervisingInstance.colleagueId);
+  const colleague = await Colleague.findByPk(supervisingInstance.agentId);
 
   if (!colleague) {
     return res.status(404).json({ error: "Colleague not found" });
@@ -182,7 +182,7 @@ router.post("/:supervisingId/evaluate", async (req, res) => {
   }
 
   const evaluation = await agent.evaluateSupervisionAnswer({
-    colleagueId: colleague.id,
+    agentId: colleague.id,
     content: {
       question: supervisingInstance.question,
       answer,
@@ -193,7 +193,7 @@ router.post("/:supervisingId/evaluate", async (req, res) => {
     const updatedSupervising = await supervising.update({
       teamId,
       supervisingId,
-      colleagueId: colleague.id,
+      agentId: colleague.id,
       question: supervisingInstance.question,
       answer,
       status: "ANSWERED",

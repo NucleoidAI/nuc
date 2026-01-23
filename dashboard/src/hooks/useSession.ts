@@ -6,7 +6,7 @@ import { storage } from "@nucleoidjs/webstorage";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-function useSession(colleagueId) {
+function useSession(agentId) {
   const [conversations, setConversations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -21,7 +21,7 @@ function useSession(colleagueId) {
       socketRef.current = io(host, {
         path,
         auth: { token },
-        query: { colleagueId },
+        query: { agentId },
       });
 
       const socket = socketRef.current;

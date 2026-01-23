@@ -14,7 +14,7 @@ router.post("/", async (req, res) => {
   const { projectId: teamId } = req.session;
 
   const {
-    colleagueId,
+    agentId,
     teamId: knowledgeTeamId,
     ...knowledgeBody
   } = Joi.attempt(body, schemas.Knowledge.create);
@@ -27,7 +27,7 @@ router.post("/", async (req, res) => {
     const colleague = await Colleague.findOne({
       where: {
         teamId,
-        id: colleagueId,
+        id: agentId,
       },
     });
 
@@ -38,7 +38,7 @@ router.post("/", async (req, res) => {
 
   const createdKnowledge = await knowledge.create({
     teamId,
-    colleagueId,
+    agentId,
     knowledge: knowledgeBody,
   });
 
@@ -47,14 +47,14 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { colleagueId, type } = req.query as {
+  const { agentId, type } = req.query as {
     teamId?: string;
-    colleagueId?: string;
+    agentId?: string;
     type?: string;
   };
 
-  if (colleagueId) {
-    const colleagueInstance = await colleague.get({ colleagueId });
+  if (agentId) {
+    const colleagueInstance = await colleague.get({ agentId });
 
     if (colleagueInstance.teamId !== teamId) {
       throw new AuthenticationError();
@@ -62,7 +62,7 @@ router.get("/", async (req, res) => {
   }
 
   const knowledgeList = await knowledge.list({
-    colleagueId,
+    agentId,
     teamId,
     type,
   });
@@ -89,13 +89,13 @@ router.get("/:id", async (req, res) => {
     throw new AuthenticationError();
   }
 
-  const { colleagueId } = ColleagueKnowledge;
+  const { agentId } = ColleagueKnowledge;
 
   delete knowledgeItem.ColleagueKnowledge;
 
   const responseData = {
     ...knowledgeItem,
-    ...(colleagueId ? { colleagueId, teamId } : { teamId }),
+    ...(agentId ? { agentId, teamId } : { teamId }),
   };
 
   return res.json(responseData);

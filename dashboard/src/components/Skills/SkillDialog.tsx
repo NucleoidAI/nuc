@@ -31,16 +31,11 @@ const SkillDialog = ({
   skill,
   team,
   agents,
-  acquiredIntegrations,
+  acquiredMCPs,
   getTokens,
 }: {
-  getTokens: (
-    integration,
-    code,
-    id,
-    isTeam
-  ) => Promise<{ refresh_token: string }>;
-  acquiredIntegrations?: Array<{
+  getTokens: (mcp, code, id, isTeam) => Promise<{ refresh_token: string }>;
+  acquiredMCPs?: Array<{
     id: string;
     mcpId: string;
     refreshToken: string;
@@ -63,16 +58,14 @@ const SkillDialog = ({
   team?: { name: string; icon: string; id: string };
   agents?: Array<{ id: string; name: string; icon: string }>;
 }) => {
-  const matchingIntegration = acquiredIntegrations?.find(
-    (integration) => integration.mcpId === skill?.id
-  );
+  const matchingMCP = acquiredMCPs?.find((mcp) => mcp.mcpId === skill?.id);
 
   const [selectedOption, setSelectedOption] = useState("");
   const [selectedOptionId, setSelectedOptionId] = useState("");
   const [isSwitchChecked, setIsSwitchChecked] = useState(
-    matchingIntegration?.refreshToken !== undefined &&
-      matchingIntegration?.refreshToken !== null &&
-      matchingIntegration?.refreshToken !== ""
+    matchingMCP?.refreshToken !== undefined &&
+      matchingMCP?.refreshToken !== null &&
+      matchingMCP?.refreshToken !== ""
   );
   const NumberOne = "/media/number-one.png";
   const NumberTwo = "/media/number-two.png";
@@ -108,14 +101,14 @@ const SkillDialog = ({
 
   useEffect(() => {
     setIsSwitchChecked(
-      matchingIntegration?.refreshToken !== undefined &&
-        matchingIntegration?.refreshToken !== null &&
-        matchingIntegration?.refreshToken !== ""
+      matchingMCP?.refreshToken !== undefined &&
+        matchingMCP?.refreshToken !== null &&
+        matchingMCP?.refreshToken !== ""
     );
-  }, [matchingIntegration]);
+  }, [matchingMCP]);
 
   const handleSwitchChange = () => {
-    if (matchingIntegration) {
+    if (matchingMCP) {
       if (!isSwitchChecked) {
         handleLogin(selectedOptionId, team && selectedOptionId === team.id);
       }

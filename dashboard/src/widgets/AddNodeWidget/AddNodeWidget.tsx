@@ -1,5 +1,5 @@
 import AddNodeDrawer from "../../components/AddNode/AddNodeDrawer";
-import useIntegrations from "../../hooks/useIntegrations";
+import useMCPs from "../../hooks/useMCPs";
 
 import React, { useEffect, useState } from "react";
 import { getNextNodeId, isValidIntegration } from "./helper";
@@ -92,9 +92,9 @@ const AddNodeWidget = ({
     }
   }, [drawerOpen]);
 
-  const { getIntegrations, getActions } = useIntegrations();
+  const { getMCPs, getActions } = useMCPs();
 
-  const { integrations } = getIntegrations();
+  const { mcps } = getMCPs();
   const { actions } = getActions();
 
   const transformedActions = Array.isArray(actions?.content?.actions)
@@ -119,8 +119,8 @@ const AddNodeWidget = ({
         }))
     : [];
 
-  const integrationsList = Array.isArray(integrations?.content.integrations)
-    ? integrations.content.integrations.filter(isValidIntegration)
+  const integrationsList = Array.isArray(mcps?.content.mcps)
+    ? mcps.content.mcps.filter(isValidIntegration)
     : [];
 
   const allIntegrations = [...transformedActions, ...integrationsList];

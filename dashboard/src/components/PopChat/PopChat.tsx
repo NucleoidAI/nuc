@@ -1,6 +1,6 @@
+import BlueprintSelector from "../BlueprintSelector";
 import Draggable from "react-draggable";
 import { Iconify } from "@canmingir/link/platform/components";
-import ResponsibilitySelector from "../ResponsibilitySelector";
 import { Scrollbar } from "@canmingir/link/platform/components";
 import Stack from "@mui/material/Stack";
 import { alpha } from "@mui/material/styles";
@@ -31,9 +31,9 @@ const PopChat = ({
   readOnly,
   closeButton,
   sound,
-  responsibilities,
-  selectedResponsibility,
-  onResponsibilityChange,
+  Blueprints,
+  selectedBlueprint,
+  onBlueprintChange,
   //eslint-disable-next-line
   sx,
 }) => {
@@ -144,11 +144,11 @@ const PopChat = ({
           readOnly={readOnly}
         />
 
-        {responsibilities.length > 0 && !readOnly && (
-          <ResponsibilitySelector
-            responsibilities={responsibilities}
-            selectedResponsibility={selectedResponsibility}
-            onResponsibilityChange={onResponsibilityChange}
+        {Blueprints.length > 0 && !readOnly && (
+          <BlueprintSelector
+            Blueprints={Blueprints}
+            selectedBlueprint={selectedBlueprint}
+            onBlueprintChange={onBlueprintChange}
           />
         )}
 

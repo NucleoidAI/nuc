@@ -3,12 +3,12 @@
     "id": "0cbfbecd-5e0d-4924-b5fd-6de262285936",
     "description": "Check product availability, if not exist, create order.",
     "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n    Order.Create()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-    "responsibility": {
+    "Blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Product Order",
       "description": "Check product availability, if not exist, create order.",
       "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n    Order.Create()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-      "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
           "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
@@ -187,13 +187,13 @@
     "id": "1dcgcfde-6f1e-5a35-c6ge-7ef373396a47",
     "description": "Setup internet subscription at user's address.",
     "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
-    "pseudocode": "BEGIN_CONTEXT \nUser.Address = GetUserAddress()\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "pseudocode": "BEGIN_CONTEXT \nUser.Address = GetUserAddress()\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "responsibility": {
       "id": "ca7g8022-f343-570e-a171-3992963g7f70",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-      "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
           "id": "019b9433-3de3-7545-a40a-854419ae8be1",
@@ -210,7 +210,7 @@
           "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:get_bbk_by_address",
+            "action": "TELCO:get_bbk_by_address",
             "label": "Get BBK No by Address",
             "icon": "mdi:map-marker"
           },
@@ -221,7 +221,7 @@
           "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:get_inventory",
+            "action": "TELCO:get_inventory",
             "label": "Get Inventory",
             "icon": "mdi:server"
           },
@@ -255,7 +255,7 @@
           "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:get_product_by_speed",
+            "action": "TELCO:get_product_by_speed",
             "label": "Get Product by Speed",
             "icon": "mdi:speedometer"
           },
@@ -277,7 +277,7 @@
           "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:port_tahsis",
+            "action": "TELCO:port_allocation",
             "label": "Assign Port",
             "icon": "mdi:link"
           },
@@ -288,7 +288,7 @@
           "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:configuration",
+            "action": "TELCO:configuration",
             "label": "Configure Port",
             "icon": "mdi:settings"
           },
@@ -299,7 +299,7 @@
           "id": "019b32f6-5878-73fb-8411-55916778d9a4",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:port_baglanti",
+            "action": "TELCO:port_connection",
             "label": "Connect Port",
             "icon": "mdi:check"
           },
@@ -332,7 +332,7 @@
       },
       {
         "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-        "action": "TURK_TELEKOM:get_bbk_by_address",
+        "action": "TELCO:get_bbk_by_address",
         "status": "COMPLETED",
         "parameters": {
           "address": "123 Main Street, Istanbul"
@@ -346,7 +346,7 @@
         "parameters": {
           "question": "Adress is not valid. What am i supposed to do?",
           "sessionId": "123456019b6e75-8a07-72f2-8adf-82cd88f6b7cc7890",
-          "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+          "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
         },
         "comment": "Asking supervisor to next step"
       },
@@ -361,7 +361,7 @@
       },
       {
         "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-        "action": "TURK_TELEKOM:get_bbk_by_address",
+        "action": "TELCO:get_bbk_by_address",
         "status": "COMPLETED",
         "parameters": {
           "address": "Gazi Mustafa Kemal Bulvarı, Istanbul"
@@ -370,7 +370,7 @@
       },
       {
         "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-        "action": "TURK_TELEKOM:get_inventory",
+        "action": "TELCO:get_inventory",
         "status": "COMPLETED",
         "parameters": {
           "bbk": "BBK-12345"
@@ -387,7 +387,7 @@
           "true": [
             {
               "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-              "action": "TURK_TELEKOM:get_product_by_speed",
+              "action": "TELCO:get_product_by_speed",
               "status": "COMPLETED",
               "parameters": {
                 "speed": 100
@@ -408,7 +408,7 @@
             },
             {
               "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-              "action": "TURK_TELEKOM:port_tahsis",
+              "action": "TELCO:port_allocation",
               "status": "COMPLETED",
               "parameters": {
                 "serial_number": "SN-789456"
@@ -417,7 +417,7 @@
             },
             {
               "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-              "action": "TURK_TELEKOM:configuration",
+              "action": "TELCO:configuration",
               "status": "COMPLETED",
               "parameters": {
                 "serial_number": "SN-789456"
@@ -426,7 +426,7 @@
             },
             {
               "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-              "action": "TURK_TELEKOM:port_baglanti",
+              "action": "TELCO:port_connection",
               "status": "FAILED",
               "parameters": {
                 "assignment_id": "ASSIGN-123"
@@ -440,13 +440,13 @@
               "parameters": {
                 "question": "There is an error in the port connection. What should i do?",
                 "sessionId": "123456019b6e75-8a07-72f2-8adf-82cd88f6b7cc7890",
-                "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+                "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
               },
               "comment": "Asking supervisor to next step"
             },
             {
               "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-              "action": "TURK_TELEKOM:port_baglanti_with_technical_support",
+              "action": "TELCO:port_connection_with_technical_support",
               "status": "COMPLETED",
               "parameters": {
                 "assignment_id": "ASSIGN-123"
@@ -483,8 +483,8 @@
       "id": "ca7g8022-f343-570e-a171-3992963g7f70",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortTahsis(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortBaglanti(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-      "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
           "id": "019b9433-3de3-7545-a40a-854419ae8be1",
@@ -501,7 +501,7 @@
           "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:get_bbk_by_address",
+            "action": "TELCO:get_bbk_by_address",
             "label": "Get BBK No by Address",
             "icon": "mdi:map-marker"
           },
@@ -512,7 +512,7 @@
           "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:get_inventory",
+            "action": "TELCO:get_inventory",
             "label": "Get Inventory",
             "icon": "mdi:server"
           },
@@ -546,7 +546,7 @@
           "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:get_product_by_speed",
+            "action": "TELCO:get_product_by_speed",
             "label": "Get Product by Speed",
             "icon": "mdi:speedometer"
           },
@@ -568,7 +568,7 @@
           "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:port_tahsis",
+            "action": "TELCO:port_allocation",
             "label": "Assign Port",
             "icon": "mdi:link"
           },
@@ -579,7 +579,7 @@
           "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:configuration",
+            "action": "TELCO:configuration",
             "label": "Configure Port",
             "icon": "mdi:settings"
           },
@@ -590,7 +590,7 @@
           "id": "019b32f6-5878-73fb-8411-55916778d9a4",
           "type": "NORMAL",
           "properties": {
-            "action": "TURK_TELEKOM:port_baglanti",
+            "action": "TELCO:port_connection",
             "label": "Connect Port",
             "icon": "mdi:check"
           },
@@ -623,7 +623,7 @@
       },
       {
         "taskId": "c99hh389-e6h4-66fe-b1h0-g1g867804668",
-        "action": "TURK_TELEKOM:get_bbk_by_address",
+        "action": "TELCO:get_bbk_by_address",
         "status": "FAILED",
         "parameters": {
           "address": "Atatürk Caddesi No:45, Ankara"
@@ -641,7 +641,7 @@
         "parameters": {
           "question": "Address not found in database. What should I do?",
           "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
-          "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+          "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
         },
         "comment": "Asking supervisor for next step"
       },

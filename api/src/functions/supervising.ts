@@ -7,23 +7,23 @@ async function create({
   sessionId,
   conversationId,
   question,
-  colleagueId,
-  responsibilityId,
+  blueprintId,
+  agentId,
   taskId,
 }: {
   sessionId: string;
   conversationId?: string;
   question: string;
-  colleagueId: string;
-  responsibilityId?: string;
+  agentId: string;
+  blueprintId?: string;
   taskId?: string;
 }) {
   const supervising = await Supervising.create({
     sessionId,
     conversationId,
     question,
-    colleagueId,
-    responsibilityId,
+    agentId,
+    blueprintId,
     taskId,
   });
 
@@ -31,8 +31,8 @@ async function create({
     sessionId,
     conversationId,
     question,
-    colleagueId,
-    responsibilityId,
+    agentId,
+    blueprintId,
     taskId,
   });
 
@@ -42,7 +42,7 @@ async function create({
 async function update({
   teamId,
   supervisingId,
-  colleagueId,
+  agentId,
   question,
   answer,
   status,
@@ -50,7 +50,7 @@ async function update({
   teamId: string;
   supervisingId: string;
   status: "ANSWERED";
-  colleagueId: string;
+  agentId: string;
   question: string;
   answer: string;
 }) {
@@ -66,11 +66,11 @@ async function update({
     type: "QA",
     question,
     answer,
-    colleagueId,
+    agentId,
   });
   await ColleagueKnowledge.create({
     knowledgeId: knowledgeInstance.id,
-    colleagueId,
+    agentId,
     teamId,
   });
 
@@ -79,7 +79,7 @@ async function update({
     supervisingId,
     sessionId,
     conversationId,
-    colleagueId,
+    agentId,
     question,
     answer,
     status,

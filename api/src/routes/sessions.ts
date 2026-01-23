@@ -10,15 +10,15 @@ const router = express.Router();
 router.post("/", async (req, res) => {
   const { projectId: teamId } = req.session;
 
-  const { type, colleagueId } = Joi.attempt(
+  const { type, agentId } = Joi.attempt(
     req.body,
     Joi.object({
       type: Joi.string().valid("CHAT", "EMAIL").required(),
-      colleagueId: Joi.string().uuid().required(),
+      agentId: Joi.string().uuid().required(),
     })
   );
 
-  const colleague = await Colleague.findByPk(colleagueId);
+  const colleague = await Colleague.findByPk(agentId);
 
   if (colleague?.teamId !== teamId) {
     return res.status(401).end();
@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
 
   const sessionInstance = await session.create({
     type,
-    colleagueId,
+    agentId,
   });
 
   return res.status(200).json(sessionInstance);
@@ -50,7 +50,7 @@ router.post("/:sessionId", async (req, res) => {
   }
 
   const colleagueInstance = await Colleague.findByPk(
-    sessionInstance.colleagueId
+    sessionInstance.agentId
   );
 
   if (colleagueInstance?.teamId !== teamId) {
@@ -60,7 +60,7 @@ router.post("/:sessionId", async (req, res) => {
   const conversation = await session.addConversation({
     sessionId,
     role: "USER",
-    colleagueId: sessionInstance.colleagueId,
+    agentId: sessionInstance.agentId,
     content,
   });
 
@@ -77,7 +77,7 @@ router.get("/:id", async (req, res) => {
     return res.status(404).end();
   }
 
-  const colleague = await Colleague.findByPk(session.colleagueId);
+  const colleague = await Colleague.findByPk(session.agentId);
 
   if (colleague && colleague.teamId !== teamId) {
     return res.status(401).end();

@@ -5,23 +5,23 @@ import { v4 as uuid } from "uuid";
 
 async function create({
   type,
-  colleagueId,
+  agentId,
 }: {
   type: string;
-  colleagueId: string;
+  agentId: string;
 }) {
   const sessionId = uuid();
 
   const session = await Session.create({
     id: sessionId,
     type,
-    colleagueId,
+    agentId,
   });
 
   await event.publish("SESSION_INITIATED", {
     id: sessionId,
     type,
-    colleagueId,
+    agentId,
   });
 
   return session;
@@ -30,11 +30,11 @@ async function create({
 async function addConversation({
   sessionId,
   role,
-  colleagueId,
+  agentId,
   content,
 }: {
   sessionId: string;
-  colleagueId: string;
+  agentId: string;
   role: string;
   content: string;
 }) {
@@ -52,14 +52,14 @@ async function addConversation({
 
   if (role === "USER") {
     await event.publish("SESSION_USER_MESSAGED", {
-      colleagueId,
+      agentId,
       sessionId,
       conversationId: conversation.id,
       content,
     });
   } else {
     await event.publish("AI_ASSISTANT_MESSAGED", {
-      colleagueId,
+      agentId,
       sessionId,
       conversationId: conversation.id,
       content,

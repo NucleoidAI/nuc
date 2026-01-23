@@ -9,9 +9,9 @@ import { Box, Skeleton, Stack } from "@mui/material";
 const Supervising = ({ agentId }) => {
   const [selectedStatus, setSelectedStatus] = useState("All");
 
-  const { getColleagueSupervisingByStatus } = useSupervisings();
+  const { getAgentSupervisingByStatus } = useSupervisings();
 
-  const { supervisings, loading } = getColleagueSupervisingByStatus(
+  const { supervisings, loading } = getAgentSupervisingByStatus(
     agentId,
     selectedStatus
   );

@@ -1,16 +1,16 @@
-import Integrations from "../integrations/integrations";
+import MCPs from "../mcps/mcps";
 import actions from "../actions";
+import blueprintFn from "./blueprint";
 import colleague from "./colleague";
 import dataset from "../dataset";
 import { generate } from "../lib/llm";
 import knowledgeFn from "./knowledge";
+import mcpFn from "./mcp";
 import message from "./message";
 import messagesFunc from "./message";
-import responsibilityFn from "../functions/responsibility";
 import session from "./session";
 import supervising from "./supervising";
 import taskFn from "./task";
-import integrationsFn from "./integration";
 
 async function messages({ teamId }: { teamId: string }) {
   const messageInstances = await messagesFunc.listMessages({ teamId });
@@ -22,8 +22,8 @@ async function messages({ teamId }: { teamId: string }) {
     .map(({ role, content }) => ({ role: role.toLowerCase(), content }));
 }
 
-async function info({ colleagueId }) {
-  const { name, description } = await colleague.get({ colleagueId });
+async function info({ agentId }) {
+  const { name, description } = await colleague.get({ agentId });
   return {
     role: "system",
     content: {
@@ -40,14 +40,14 @@ async function info({ colleagueId }) {
 }
 
 async function knowledge({
-  colleagueId,
+  agentId,
   taskId,
 }: {
-  colleagueId: string;
+  agentId: string;
   taskId?: string;
 }) {
   const knowledgeList = await knowledgeFn.list({
-    colleagueId,
+    agentId,
     options: { includeSteps: true },
   });
 
@@ -89,13 +89,13 @@ async function steps({ taskId }) {
   };
 }
 
-async function responsibilities({ colleagueId }) {
-  const responsibilities = await responsibilityFn.list({ colleagueId });
+async function Blueprints({ agentId }) {
+  const Blueprints = await blueprintFn.list({ agentId });
 
   return {
     role: "system",
     content: {
-      responsibilities,
+      Blueprints,
     },
   } as {
     role: "user" | "system" | "assistant";
@@ -159,11 +159,12 @@ async function teamChat({
 }
 
 async function task({ taskId }: { taskId: string }) {
-  const { colleagueId, description, sessionId, responsibilityId } =
-    await taskFn.get({ taskId });
+  const { agentId, description, sessionId, blueprintId } = await taskFn.get({
+    taskId,
+  });
   const currentTask = {
     description,
-    responsibilityId,
+    blueprintId,
     steps: await taskFn.listSteps({ taskId }),
   };
 
@@ -178,14 +179,14 @@ async function task({ taskId }: { taskId: string }) {
   const context = [
     ...(
       await Promise.all([
-        info({ colleagueId }),
-        knowledge({ colleagueId, taskId }),
-        responsibilities({ colleagueId }),
+        info({ agentId }),
+        knowledge({ agentId, taskId }),
+        Blueprints({ agentId }),
         steps({ taskId }),
       ])
     ).flat(),
     actions.list(),
-    integrationsFn.list(),
+    mcpFn.list(),
   ];
 
   const {
@@ -218,9 +219,9 @@ async function task({ taskId }: { taskId: string }) {
     action === "PLATFORM:ask_supervisor"
   ) {
     parameters.taskId = taskId;
-    parameters.responsibilityId = currentTask.responsibilityId;
+    parameters.blueprintId = currentTask.blueprintId;
     parameters.sessionId = sessionId;
-    parameters.colleagueId = colleagueId;
+    parameters.agentId = agentId;
     return await taskFn.addStep({
       taskId,
       action,
@@ -250,7 +251,7 @@ async function step({
 }) {
   let actionType;
 
-  if (Integrations.find((integration) => integration.action === action)) {
+  if (MCPs.find((mcp) => mcp.action === action)) {
     actionType = "MCP";
   } else if (action === "PLATFORM:ask_supervisor") {
     actionType = "SUPERVISED";
@@ -343,7 +344,7 @@ async function step({
   }
 }
 
-async function responsibility({
+async function Blueprint({
   history,
   content,
 }: {
@@ -354,7 +355,7 @@ async function responsibility({
   content: string;
 }) {
   const response = await generate({
-    dataset: dataset.train.responsibilityChat,
+    dataset: dataset.train.blueprintChat,
     context: history,
     content,
     json_format: "{ response: <RESPONSE>, flow: [<FLOW>] }",
@@ -363,7 +364,7 @@ async function responsibility({
   return response;
 }
 
-async function responsibilityName({
+async function blueprintName({
   history,
   content,
 }: {
@@ -374,7 +375,7 @@ async function responsibilityName({
   content: string;
 }) {
   const response = await generate({
-    dataset: dataset.train.responsibilityName,
+    dataset: dataset.train.blueprintName,
     context: history,
     content,
     json_format: "{ title: <TITLE>, description: <DESCRIPTION> }",
@@ -382,11 +383,11 @@ async function responsibilityName({
   return response;
 }
 
-async function responsibilityToTask({
+async function blueprintToTask({
   history,
   content,
   knowledge,
-  responsibility,
+  Blueprint,
 }: {
   history?: {
     role: "system" | "user" | "assistant";
@@ -394,13 +395,13 @@ async function responsibilityToTask({
   }[];
   content: string;
   knowledge: Array<[]>;
-  responsibility: object;
+  Blueprint: object;
 }) {
   const context = [
     {
       role: "system" as const,
       content: {
-        responsibility,
+        Blueprint,
         knowledge,
         history,
       },
@@ -408,7 +409,7 @@ async function responsibilityToTask({
   ];
 
   const response = await generate({
-    dataset: dataset.train.responsibility,
+    dataset: dataset.train.Blueprint,
     context,
     content,
     json_format: "{ task: <TASK> ,answer: <ANSWER> }",
@@ -417,45 +418,45 @@ async function responsibilityToTask({
   return response;
 }
 
-async function responsibilityDiamond({
+async function blueprintDiamond({
   content,
-  responsibilities,
+  Blueprints,
 }: {
   content: string;
-  responsibilities: Array<[]>;
+  Blueprints: Array<[]>;
 }) {
   const context = [
     {
       role: "system" as const,
       content: {
-        responsibilities,
+        Blueprints,
       },
     },
   ];
 
   const response = await generate({
-    dataset: dataset.train.responsibilityDiamond,
+    dataset: dataset.train.blueprintDiamond,
     context,
     content,
     json_format:
-      "{ decision: <DECISION>,existing: <EXISTING>,responsibilityId: <RESPONSIBILITY_ID> }",
+      "{ decision: <DECISION>,existing: <EXISTING>,blueprintId: <BLUEPRINT_ID> }",
   });
   return response;
 }
 
 async function evaluateSupervisionAnswer({
-  colleagueId,
+  agentId,
   content,
 }: {
-  colleagueId: string;
+  agentId: string;
   content: {
     question: string;
     answer: string;
   };
 }) {
   const context = [
-    await info({ colleagueId }),
-    await knowledge({ colleagueId }),
+    await info({ agentId }),
+    await knowledge({ agentId }),
     {
       role: "system" as const,
       content: {
@@ -468,7 +469,7 @@ async function evaluateSupervisionAnswer({
   ];
 
   const evaluation = await generate({
-    dataset: dataset.train.responsibilityChatEvaluation,
+    dataset: dataset.train.blueprintChatEvaluation,
     context,
     content: `${content.question}\n\nAnswer: ${content.answer}`,
     json_format: `{
@@ -480,22 +481,22 @@ async function evaluateSupervisionAnswer({
 }
 
 async function chat({
-  colleagueId,
+  agentId,
   sessionId,
   content,
 }: {
-  colleagueId: string;
+  agentId: string;
   sessionId: string;
   content: string;
 }) {
   const knowledgeData = await knowledgeFn.list({
-    colleagueId,
+    agentId,
   });
 
   const conversationsData = await conversations({ sessionId });
-  const responsibilitiesData = await responsibilityFn.list({ colleagueId });
+  const blueprintsData = await blueprintFn.list({ agentId });
 
-  const colleagueData = await colleague.get({ colleagueId });
+  const colleagueData = await colleague.get({ agentId });
 
   if (!colleagueData) {
     throw new Error("Colleague not found");
@@ -503,7 +504,7 @@ async function chat({
 
   const task = await taskFn.list({
     teamId: colleagueData.teamId,
-    colleagueId,
+    agentId,
     status: "IN_PROGRESS",
     sessionId,
     includeSteps: true,
@@ -529,7 +530,7 @@ async function chat({
 
     await session.addConversation({
       sessionId,
-      colleagueId,
+      agentId,
       role: "USER",
       content,
     });
@@ -537,40 +538,37 @@ async function chat({
     return;
   }
 
-  const responsibilityDecision = await responsibilityDiamond({
+  const blueprintDecision = await blueprintDiamond({
     content: content,
-    responsibilities: responsibilitiesData,
+    Blueprints: blueprintsData,
   });
 
-  if (
-    responsibilityDecision.decision === "RESPONSIBILITY" &&
-    task.length === 0
-  ) {
-    const responsibilityData = await responsibilityFn.get({
-      responsibilityId: responsibilityDecision.responsibilityId,
+  if (blueprintDecision.decision === "BLUEPRINT" && task.length === 0) {
+    const blueprintData = await blueprintFn.get({
+      blueprintId: blueprintDecision.blueprintId,
     });
 
-    const responsibilityToTaskResponse = await responsibilityToTask({
+    const blueprintToTaskResponse = await blueprintToTask({
       history: conversationsData,
       knowledge: knowledgeData,
       content: content,
-      responsibility: responsibilityData,
+      Blueprint: blueprintData,
     });
 
     await taskFn.create({
-      colleagueId,
+      agentId,
       description:
-        responsibilityToTaskResponse.task?.description ||
-        responsibilityToTaskResponse.task,
-      responsibilityId: responsibilityDecision.responsibilityId,
+        blueprintToTaskResponse.task?.description ||
+        blueprintToTaskResponse.task,
+      blueprintId: blueprintDecision.blueprintId,
       sessionId,
     });
 
     await session.addConversation({
       sessionId,
-      colleagueId,
+      agentId,
       role: "ASSISTANT",
-      content: responsibilityToTaskResponse.answer,
+      content: blueprintToTaskResponse.answer,
     });
   } else {
     if (task.length > 0) {
@@ -579,8 +577,8 @@ async function chat({
     const context = [
       ...(
         await Promise.all([
-          info({ colleagueId }),
-          knowledge({ colleagueId }),
+          info({ agentId }),
+          knowledge({ agentId }),
           conversations({ sessionId }),
         ])
       ).flat(),
@@ -606,14 +604,14 @@ async function chat({
 
       await session.addConversation({
         sessionId,
-        colleagueId,
+        agentId,
         role: "ASSISTANT",
         content: answer,
       });
     } else {
       const conversation = await session.addConversation({
         sessionId,
-        colleagueId,
+        agentId,
         role: "ASSISTANT",
         content: "Please wait while I am working on your request.",
       });
@@ -622,8 +620,8 @@ async function chat({
         sessionId,
         conversationId: conversation.id,
         question: content,
-        responsibilityId: responsibilityDecision.responsibilityId,
-        colleagueId,
+        blueprintId: blueprintDecision.blueprintId,
+        agentId,
       });
     }
   }
@@ -645,8 +643,8 @@ export default {
   chat,
   task,
   step,
-  responsibility,
-  responsibilityName,
+  Blueprint,
+  blueprintName,
   evaluateSupervisionAnswer,
   toPseudo,
 };

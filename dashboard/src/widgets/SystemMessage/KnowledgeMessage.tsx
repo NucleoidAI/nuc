@@ -15,7 +15,7 @@ function KnowledgeMessage({ id, handleClick, onDateFetched }) {
 
   const { getAgent } = useAgent();
 
-  const { agent } = getAgent(loading ? null : knowledge.colleagueId);
+  const { agent } = getAgent(loading ? null : knowledge.agentId);
 
   useEffect(() => {
     if (knowledge) {

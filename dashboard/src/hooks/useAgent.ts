@@ -29,7 +29,7 @@ function useAgent() {
     const eventDependencies = [agentUpdated];
 
     const { data, loading, error, fetch } = Api(
-      () => (agentId ? http.get(`/colleagues/${agentId}`) : null),
+      () => (agentId ? http.get(`/agents/${agentId}`) : null),
       [agentId, ...eventDependencies, ...fetchState]
     );
 
@@ -49,7 +49,7 @@ function useAgent() {
     const eventDependencies = [agentUpdated];
 
     const { data, loading, error, fetch } = Api(
-      () => http.get("/colleagues"),
+      () => http.get("/agents"),
       [...eventDependencies, ...fetchState]
     );
 
@@ -66,7 +66,7 @@ function useAgent() {
   };
 
   const updateAgent = async (agent: Agent) => {
-    const response = await http.put(`/colleagues/${agent.id}`, {
+    const response = await http.put(`/agents/${agent.id}`, {
       name: agent.name,
       icon: agent.icon,
       projectId: agent.projectId,

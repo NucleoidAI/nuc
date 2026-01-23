@@ -1,23 +1,21 @@
 import "express";
 
-import platform from "@canmingir/link-express";
-
 import agent from "./functions/agent";
+import blueprints from "./routes/blueprints";
 import colleagues from "./routes/colleagues";
 import communications from "./routes/communications";
 import engines from "./routes/engines";
 import { event } from "@canmingir/link-express/event/client";
-import integrations from "./routes/integrations";
 import knowledge from "./routes/knowledge";
+import mcps from "./routes/mcps";
 import messages from "./routes/messages";
 import organizations from "./routes/organizations";
+import platform from "@canmingir/link-express";
 import projects from "./routes/projects";
-import responsibilities from "./routes/responsibilities";
-import responsibilityFn from "./functions/responsibility";
-import taskFn from "./functions/task";
 import sessions from "./routes/sessions";
 import statistics from "./routes/statistics";
 import supervisings from "./routes/supervisings";
+import taskFn from "./functions/task";
 import tasks from "./routes/tasks";
 import teamDetails from "./routes/teamDetails";
 import { telemetryMiddleware } from "./instrumentation";
@@ -51,9 +49,9 @@ function createApp() {
   app.use("/engines", engines);
   app.use("/organizations", organizations);
   app.use("/statistics", statistics);
-  app.use("/colleagues", colleagues);
-  app.use("/responsibilities", responsibilities);
-  app.use("/integrations", integrations);
+  app.use("/agents", colleagues);
+  app.use("/blueprints", blueprints);
+  app.use("/mcps", mcps);
   app.use("/communications", communications);
 
   (async () => {
@@ -63,12 +61,12 @@ function createApp() {
     );
 
     await event.subscribe<{
-      colleagueId: string;
+      agentId: string;
       sessionId: string;
       content: string;
-    }>("SESSION_USER_MESSAGED", ({ colleagueId, sessionId, content }) =>
+    }>("SESSION_USER_MESSAGED", ({ agentId, sessionId, content }) =>
       agent.chat({
-        colleagueId,
+        agentId,
         sessionId,
         content,
       })
@@ -76,11 +74,11 @@ function createApp() {
 
     await event.subscribe<{
       sessionId: string;
-      colleagueId: string;
+      agentId: string;
       question: string;
-    }>("SUPERVISING_ANSWERED", ({ sessionId, colleagueId, question }) =>
+    }>("SUPERVISING_ANSWERED", ({ sessionId, agentId, question }) =>
       agent.chat({
-        colleagueId,
+        agentId,
         sessionId,
         content: question,
       })

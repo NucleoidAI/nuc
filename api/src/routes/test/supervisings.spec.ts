@@ -16,7 +16,7 @@ describe("Supervisings service", () => {
       .send({
         conversationId: "93dcd933-9bd8-45c0-b347-2dc12a0b2658",
         sessionId: "b605ad87-fe47-4dc8-b1cd-23d783c0a547",
-        colleagueId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
+        agentId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
       })
       .expect(201)
       .catch(done);
@@ -25,14 +25,14 @@ describe("Supervisings service", () => {
       deepEqual(supervising, {
         conversationId: "93dcd933-9bd8-45c0-b347-2dc12a0b2658",
         sessionId: "b605ad87-fe47-4dc8-b1cd-23d783c0a547",
-        colleagueId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
+        agentId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
         question: "What time do you close?",
       });
       done();
     });
   });
 
-  it("gets supervisings by colleagueId", async () => {
+  it("gets supervisings by agentId", async () => {
     test.project("e6d4744d-a11b-4c75-acad-e24a02903729");
 
     const { body } = await request(app)
@@ -48,7 +48,7 @@ describe("Supervisings service", () => {
         answer: null,
         status: "IN_PROGRESS",
         createdAt: "2023-08-06T12:00:00.000Z",
-        colleagueId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
+        agentId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
       },
     ]);
   });
@@ -74,7 +74,7 @@ describe("Supervisings service", () => {
         answer: "This is answer",
         status: "ANSWERED",
         teamId: "e6d4744d-a11b-4c75-acad-e24a02903729",
-        colleagueId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
+        agentId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
       });
       done();
     });
@@ -98,7 +98,7 @@ describe("Supervisings service", () => {
         answer: null,
         createdAt: "2023-08-06T12:00:00.000Z",
         status: "IN_PROGRESS",
-        colleagueId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
+        agentId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
       });
       done();
     });
@@ -118,7 +118,7 @@ describe("Supervisings service", () => {
         question: "What time do you close?",
         answer: null,
         status: "IN_PROGRESS",
-        colleagueId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
+        agentId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
         createdAt: new Date("2023-08-06T12:00:00.000Z"),
       });
       done();
@@ -141,7 +141,7 @@ describe("Supervisings service", () => {
         question: "What time do you close?",
         answer: null,
         status: "IN_PROGRESS",
-        colleagueId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
+        agentId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
         createdAt: new Date("2023-08-06T12:00:00.000Z"),
       });
       done();

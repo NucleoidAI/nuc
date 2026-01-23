@@ -14,14 +14,14 @@ describe("Session service", () => {
       .post("/sessions")
       .send({
         type: "CHAT",
-        colleagueId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
+        agentId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
       })
       .expect(200);
 
     deepEqual(body, {
       id: body.id,
       type: "CHAT",
-      colleagueId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
+      agentId: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
     });
   });
 

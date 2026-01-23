@@ -5,16 +5,16 @@ async function run({
 }: {
   parameters: {
     sessionId: string;
-    colleagueId: string;
+    agentId: string;
     answer: string;
     question: string;
   };
 }) {
-  const { sessionId, colleagueId, answer, question } = parameters;
+  const { sessionId, agentId, answer, question } = parameters;
 
   await session.addConversation({
     sessionId,
-    colleagueId,
+    agentId,
     role: "ASSISTANT",
     content: answer || question,
   });

@@ -10,13 +10,13 @@ import {
 } from "@mui/material";
 import React, { useMemo } from "react";
 
-const DEFAULT_RESPONSIBILITY_ICON =
+const DEFAULT_BLUEPRINT_ICON =
   "healthicons:crisis-response-center-person-outline";
 
 function CommunicationDiagram(props) {
   const {
     channels,
-    responsibilities,
+    Blueprints,
     connections,
     nodeWidth = 260,
     nodeHeight = 180,
@@ -28,9 +28,9 @@ function CommunicationDiagram(props) {
     containerProps,
     showRightIcons = true,
     showLeftIcons = true,
-    responsibilityIcon = DEFAULT_RESPONSIBILITY_ICON,
+    blueprintIcon = DEFAULT_BLUEPRINT_ICON,
     renderChannelNode,
-    renderResponsibilityNode,
+    renderBlueprintNode,
   } = props;
 
   const theme = useTheme();
@@ -47,21 +47,21 @@ function CommunicationDiagram(props) {
 
   const rightNodes = useMemo(
     () =>
-      (responsibilities || []).map((resp, idx) => ({
+      (Blueprints || []).map((resp, idx) => ({
         ...resp,
         id: resp.id,
-        icon: resp.icon || responsibilityIcon,
+        icon: resp.icon || blueprintIcon,
         x: leftX + horizontalGap,
         y: initialTop + idx * (nodeHeight + verticalGap),
       })),
     [
-      responsibilities,
+      Blueprints,
       leftX,
       horizontalGap,
       initialTop,
       nodeHeight,
       verticalGap,
-      responsibilityIcon,
+      blueprintIcon,
     ]
   );
 
@@ -172,8 +172,8 @@ function CommunicationDiagram(props) {
                 (connections || []).some((c) => c.right === node.id)
               )
               .map((node) =>
-                renderResponsibilityNode ? (
-                  renderResponsibilityNode(node)
+                renderBlueprintNode ? (
+                  renderBlueprintNode(node)
                 ) : (
                   <Card
                     key={node.id}

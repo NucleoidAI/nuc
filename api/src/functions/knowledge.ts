@@ -10,11 +10,11 @@ import scrapper from "../actions/scrapper";
 
 async function create({
   teamId,
-  colleagueId,
+  agentId,
   knowledge,
 }: {
   teamId?: string;
-  colleagueId?: string;
+  agentId?: string;
   knowledge: {
     type: "QA" | "URL" | "TEXT" | "TASK";
     url?: string;
@@ -25,7 +25,7 @@ async function create({
     taskId?: string;
   };
 }) {
-  if (!teamId && !colleagueId) {
+  if (!teamId && !agentId) {
     throw new Error("INVALID_TEAM_OR_COLLEAGUE");
   }
 
@@ -67,14 +67,14 @@ async function create({
   const knowledgeInstance = await Knowledge.create(knowledge);
   await ColleagueKnowledge.create({
     knowledgeId: knowledgeInstance.id,
-    colleagueId,
+    agentId,
     teamId,
   });
 
   const knowledgeJson = knowledgeInstance.toJSON();
   const knowledgeData = {
     ...knowledgeJson,
-    colleagueId,
+    agentId,
     teamId,
     url: knowledgeJson.url || null,
     text: knowledgeJson.text || null,
@@ -88,13 +88,13 @@ async function create({
 }
 
 async function list({
-  colleagueId,
+  agentId,
   teamId,
   type,
   options = { includeSteps: false },
 }: {
   teamId?: string;
-  colleagueId?: string;
+  agentId?: string;
   type?: string;
   options?: { includeSteps?: boolean };
 }) {
@@ -107,12 +107,12 @@ async function list({
   }
 
   const knowledgeWhere: {
-    colleagueId?: string;
+    agentId?: string;
     teamId?: string;
   }[] = [];
 
-  if (colleagueId) {
-    const colleagueInstance = await Colleague.findByPk(colleagueId);
+  if (agentId) {
+    const colleagueInstance = await Colleague.findByPk(agentId);
 
     if (!colleagueInstance) {
       throw new Error("INVALID_COLLEAGUE");
@@ -120,7 +120,7 @@ async function list({
 
     const teamId = colleagueInstance.toJSON().teamId;
 
-    knowledgeWhere.push({ colleagueId });
+    knowledgeWhere.push({ agentId });
     knowledgeWhere.push({ teamId });
   }
 
@@ -154,8 +154,8 @@ async function list({
     .map((knowledge) => knowledge.toJSON())
     .map(({ ColleagueKnowledge, ...knowledgeData }) => ({
       ...knowledgeData,
-      colleagueId: ColleagueKnowledge.colleagueId
-        ? ColleagueKnowledge.colleagueId
+      agentId: ColleagueKnowledge.agentId
+        ? ColleagueKnowledge.agentId
         : null,
       teamId: ColleagueKnowledge.teamId ? ColleagueKnowledge.teamId : null,
       Task: knowledgeData.Task && {
@@ -193,7 +193,7 @@ async function get({
   if (includeColleague) {
     includeOptions.push({
       model: ColleagueKnowledge,
-      attributes: ["teamId", "colleagueId"],
+      attributes: ["teamId", "agentId"],
       include: [
         {
           model: Colleague,

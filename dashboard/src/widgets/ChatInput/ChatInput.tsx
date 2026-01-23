@@ -1,9 +1,9 @@
+import { BlueprintCommands } from "../../components/ChatInput/chat.config.js";
 import ChatInputCommandEditor from "../../components/ChatInput/ChatInputCommandEditor.js";
 import { Commands } from "../../components/ChatInput/chat.config.js";
 /* eslint-disable */
 import IconButton from "@mui/material/IconButton";
 import { Iconify } from "@canmingir/link/platform/components";
-import { ResponsibilityCommands } from "../../components/ChatInput/chat.config.js";
 import Stack from "@mui/material/Stack";
 import { Types } from "../../components/ChatInput/chat.config.js";
 import { sub } from "date-fns";
@@ -19,7 +19,7 @@ const ChatInput = memo(function ChatMessageInput({
   replied,
   createMessage,
   userId,
-  responsibilityChat = false,
+  blueprintChat = false,
 }: {
   disabled?: boolean;
   onSendMessage?: (message: string | { command: Event }) => void;
@@ -28,7 +28,7 @@ const ChatInput = memo(function ChatMessageInput({
   replied?: { current: boolean };
   createMessage?: (message: string) => void;
   userId?: string;
-  responsibilityChat?: boolean;
+  blueprintChat?: boolean;
 }) {
   const fileRef = useRef(null);
 
@@ -51,7 +51,7 @@ const ChatInput = memo(function ChatMessageInput({
     async (event) => {
       if (event.key === "Enter") {
         try {
-          if (responsibilityChat) {
+          if (blueprintChat) {
             const message = messageRef.current.trim();
             if (message) {
               onSendMessage(message);
@@ -77,7 +77,7 @@ const ChatInput = memo(function ChatMessageInput({
             onSendMessage(messageRef.current);
           }
 
-          if (!responsibilityChat) {
+          if (!blueprintChat) {
             messageRef.current = "";
           }
         } catch (error) {
@@ -88,7 +88,7 @@ const ChatInput = memo(function ChatMessageInput({
     [onSendMessage]
   );
 
-  const commands = responsibilityChat ? ResponsibilityCommands : Commands;
+  const commands = blueprintChat ? BlueprintCommands : Commands;
 
   return (
     <>

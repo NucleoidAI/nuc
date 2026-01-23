@@ -34,8 +34,8 @@ function AgentsWidget({ teamId }) {
     navigate("/teams");
   }
 
-  const handleAgentClick = (colleagueId) => {
-    navigate(`/colleagues/${colleagueId}`);
+  const handleAgentClick = (agentId) => {
+    navigate(`/agents/${agentId}`);
   };
 
   return (

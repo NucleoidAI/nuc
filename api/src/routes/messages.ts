@@ -9,12 +9,12 @@ const router = express.Router();
 
 router.post("/", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { role, content, userId, command, knowledgeId, colleagueId, replyTo } =
+  const { role, content, userId, command, knowledgeId, agentId, replyTo } =
     Joi.attempt(req.body, schemas.Message.create);
 
   const messageInstance = await message.create({
     role,
-    colleagueId,
+    agentId,
     content,
     userId,
     command,

@@ -1,4 +1,5 @@
 import { Iconify } from "@canmingir/link/platform/components";
+
 import {
   Box,
   Dialog,
@@ -11,17 +12,17 @@ interface SupervisingTypeDialogProps {
   open: boolean;
   onClose: () => void;
   onSelectKnowledge: () => void;
-  onSelectResponsibility: (responsibility: {
+  onSelectBlueprint: (blueprint: {
     id: string;
     title: string;
     description: string;
-    colleagueId: string;
+    agentId: string;
   }) => void;
-  responsibility: {
+  blueprint: {
     id: string;
     title: string;
     description: string;
-    colleagueId: string;
+    agentId: string;
   };
 }
 
@@ -29,8 +30,8 @@ const SupervisingTypeDialog = ({
   open,
   onClose,
   onSelectKnowledge,
-  onSelectResponsibility,
-  responsibility,
+  onSelectBlueprint,
+  blueprint,
 }: SupervisingTypeDialogProps) => {
   return (
     <Dialog
@@ -118,7 +119,7 @@ const SupervisingTypeDialog = ({
           </Box>
 
           <Box
-            onClick={() => onSelectResponsibility(responsibility)}
+            onClick={() => onSelectBlueprint(blueprint)}
             sx={{
               flex: 1,
               display: "flex",

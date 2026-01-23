@@ -34,7 +34,7 @@ export const treeToLinked = (tree) => {
   return { nodes, roots };
 };
 
-export const toTeamTree = (teams, responsibilities) => {
+export const toTeamTree = (teams, Blueprints) => {
   if (!teams || teams.length === 0) return null;
 
   const team = teams[0];
@@ -49,8 +49,8 @@ export const toTeamTree = (teams, responsibilities) => {
     organizationId: team.organizationId,
     coach: team.coach,
     children: (team.colleagues || []).map((c) => {
-      const colleagueResponsibilities = (responsibilities || []).filter(
-        (r) => r.colleagueId === c.id
+      const colleagueBlueprints = (Blueprints || []).filter(
+        (r) => r.agentId === c.id
       );
 
       return {
@@ -61,13 +61,13 @@ export const toTeamTree = (teams, responsibilities) => {
         teamId: c.teamId,
         description: c.description,
         aiEngineId: c.aiEngineId,
-        children: colleagueResponsibilities.map((r) => ({
+        children: colleagueBlueprints.map((r) => ({
           id: r.id,
-          nodeKind: "responsibility",
+          nodeKind: "Blueprint",
           title: r.title,
           description: r.description,
-          colleagueId: r.colleagueId,
           nodes: r.nodes,
+          agentId: r.agentId,
         })),
       };
     }),

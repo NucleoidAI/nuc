@@ -8,7 +8,7 @@ const menuConfig = {
         {
           title: "Agents",
           icon: "solar:chart-line-duotone",
-          path: "/colleagues",
+          path: "/agents",
         },
         {
           title: "Team Chat",
@@ -21,9 +21,9 @@ const menuConfig = {
           path: "/knowledge",
         },
         {
-          title: "Integrations",
+          title: "MCPs",
           icon: "carbon:ibm-cloud-pak-integration",
-          path: "/integrations",
+          path: "/mcps",
         },
         {
           title: "Monitoring",

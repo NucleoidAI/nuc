@@ -6,12 +6,12 @@ async function init() {
   } = await platform.getModules();
   const models = sequelize.models;
 
-  // Responsibility <-> Communication
-  models.Responsibility.hasMany(models.Communication, {
-    foreignKey: "responsibilityId",
+  // Blueprint <-> Communication
+  models.Blueprint.hasMany(models.Communication, {
+    foreignKey: "blueprintId",
   });
-  models.Communication.belongsTo(models.Responsibility, {
-    foreignKey: "responsibilityId",
+  models.Communication.belongsTo(models.Blueprint, {
+    foreignKey: "blueprintId",
   });
 
   // Project <-> Colleague
@@ -24,12 +24,12 @@ async function init() {
     as: "colleagues",
   });
 
-  // Colleague <-> Responsibility
-  models.Colleague.hasMany(models.Responsibility, {
-    foreignKey: "colleagueId",
+  // Colleague <-> Blueprint
+  models.Colleague.hasMany(models.Blueprint, {
+    foreignKey: "agentId",
   });
-  models.Responsibility.belongsTo(models.Colleague, {
-    foreignKey: "colleagueId",
+  models.Blueprint.belongsTo(models.Colleague, {
+    foreignKey: "agentId",
   });
 
   // AIEngine <-> Colleague
@@ -50,26 +50,26 @@ async function init() {
 
   // Message <-> Colleague
   models.Message.belongsTo(models.Colleague, {
-    foreignKey: "colleagueId",
+    foreignKey: "agentId",
   });
 
-  // Integration <-> Project (many-to-many)
-  models.Integration.belongsToMany(models.Project, {
-    through: "Integration",
+  // MCP <-> Project (many-to-many)
+  models.MCP.belongsToMany(models.Project, {
+    through: "MCP",
     foreignKey: "id",
   });
-  models.Project.belongsToMany(models.Integration, {
-    through: "Integration",
+  models.Project.belongsToMany(models.MCP, {
+    through: "MCP",
     foreignKey: "teamId",
   });
 
-  // Integration <-> Colleague
-  models.Integration.belongsTo(models.Colleague, {
-    foreignKey: "colleagueId",
+  // MCP <-> Colleague
+  models.MCP.belongsTo(models.Colleague, {
+    foreignKey: "agentId",
   });
 
-  // Integration <-> Project (belongsTo)
-  models.Integration.belongsTo(models.Project, {
+  // MCP <-> Project (belongsTo)
+  models.MCP.belongsTo(models.Project, {
     foreignKey: "teamId",
   });
 
@@ -79,7 +79,7 @@ async function init() {
   });
 
   models.ColleagueKnowledge.belongsTo(models.Colleague, {
-    foreignKey: "colleagueId",
+    foreignKey: "agentId",
   });
 
   models.Project.belongsToMany(models.Colleague, {
@@ -89,11 +89,11 @@ async function init() {
 
   models.Colleague.belongsToMany(models.Project, {
     through: models.ColleagueKnowledge,
-    foreignKey: "colleagueId",
+    foreignKey: "agentId",
   });
 
   models.Colleague.hasMany(models.ColleagueKnowledge, {
-    foreignKey: "colleagueId",
+    foreignKey: "agentId",
   });
 
   // Knowledge <-> ColleagueKnowledge
@@ -146,18 +146,18 @@ async function init() {
     foreignKey: "conversationId",
   });
   models.Supervising.belongsTo(models.Colleague, {
-    foreignKey: "colleagueId",
+    foreignKey: "agentId",
   });
   models.Colleague.hasMany(models.Supervising, {
-    foreignKey: "colleagueId",
+    foreignKey: "agentId",
   });
 
-  // Supervising <-> Responsibility
-  models.Supervising.belongsTo(models.Responsibility, {
-    foreignKey: "responsibilityId",
+  // Supervising <-> Blueprint
+  models.Supervising.belongsTo(models.Blueprint, {
+    foreignKey: "blueprintId",
   });
-  models.Responsibility.hasMany(models.Supervising, {
-    foreignKey: "responsibilityId",
+  models.Blueprint.hasMany(models.Supervising, {
+    foreignKey: "blueprintId",
   });
 
   // Conversation <-> Session
@@ -168,11 +168,11 @@ async function init() {
 
   // Task <-> Colleague
   models.Task.belongsTo(models.Colleague, {
-    foreignKey: "colleagueId",
+    foreignKey: "agentId",
     onDelete: "CASCADE",
   });
   models.Colleague.hasMany(models.Task, {
-    foreignKey: "colleagueId",
+    foreignKey: "agentId",
     onDelete: "CASCADE",
   });
 
@@ -186,12 +186,12 @@ async function init() {
     as: "task",
   });
 
-  // Task <-> Responsibility
-  models.Task.hasOne(models.Responsibility, {
-    foreignKey: "responsibilityId",
+  // Task <-> Blueprint
+  models.Task.hasOne(models.Blueprint, {
+    foreignKey: "blueprintId",
   });
-  models.Responsibility.belongsTo(models.Task, {
-    foreignKey: "responsibilityId",
+  models.Blueprint.belongsTo(models.Task, {
+    foreignKey: "blueprintId",
   });
 
   // Hooks
@@ -202,9 +202,9 @@ async function init() {
   });
 
   models.Colleague.addHook("beforeDestroy", async (colleague: any) => {
-    await models.Supervising.destroy({ where: { colleagueId: colleague.id } });
+    await models.Supervising.destroy({ where: { agentId: colleague.id } });
     await models.ColleagueKnowledge.destroy({
-      where: { colleagueId: colleague.id },
+      where: { agentId: colleague.id },
     });
   });
 

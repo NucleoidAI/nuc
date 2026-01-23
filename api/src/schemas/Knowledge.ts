@@ -3,7 +3,7 @@ import Joi from "joi";
 const Knowledge = {
   create: Joi.object({
     type: Joi.string().valid("QA", "URL", "TEXT").required(),
-    colleagueId: Joi.string().guid({ version: ["uuidv4"] }),
+    agentId: Joi.string().guid({ version: ["uuidv4"] }),
     teamId: Joi.string().guid({ version: ["uuidv4"] }),
     question: Joi.string().optional(),
     answer: Joi.string().optional(),

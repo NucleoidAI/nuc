@@ -12,9 +12,9 @@ export default function AboutWidget({ colleague }) {
       <Stack spacing={2} sx={{ p: 3 }}>
         <Stack direction="row" spacing={2}>
           <Box sx={{ typography: "body2" }}>
-            {"Responsibility:"}
+            {"Blueprint:"}
             <Typography variant="subtitle2" color="inherit">
-              {colleague?.responsibility}
+              {colleague?.Blueprint}
             </Typography>
           </Box>
         </Stack>

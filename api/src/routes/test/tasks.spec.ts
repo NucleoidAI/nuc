@@ -15,7 +15,7 @@ describe("Tasks service", () => {
       .post("/tasks")
       .send({
         description: "Find closing hours of Dark-sided Coffee Shop",
-        colleagueId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        agentId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
       })
       .expect(200);
 
@@ -25,7 +25,7 @@ describe("Tasks service", () => {
         description: "Find closing hours of Dark-sided Coffee Shop",
         status: "IN_PROGRESS",
         createdAt: body.createdAt,
-        colleagueId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        agentId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
       });
     });
   });
@@ -34,7 +34,7 @@ describe("Tasks service", () => {
     test.project("add6dfa4-45ba-4da2-bc5c-5a529610b52f");
 
     const { body } = await request(app)
-      .get("/tasks?colleagueId=00db1bd4-4829-40f2-8b99-d2e42342157e")
+      .get("/tasks?agentId=00db1bd4-4829-40f2-8b99-d2e42342157e")
       .expect(200);
 
     deepEqual(body, [
@@ -45,7 +45,7 @@ describe("Tasks service", () => {
         comment: null,
         result: null,
         createdAt: "2025-01-19T10:34:20.094Z",
-        colleagueId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        agentId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
       },
     ]);
   });
@@ -64,7 +64,7 @@ describe("Tasks service", () => {
       comment: null,
       result: null,
       createdAt: "2025-01-19T10:34:20.094Z",
-      colleagueId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      agentId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
       Colleague: {
         teamId: "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
       },

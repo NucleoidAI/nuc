@@ -9,7 +9,7 @@
     {
       "id": "525bf0bf-25a4-49fd-979e-d961b6561c93",
       "knowledgeId": "8a743824-3a4c-4d96-b235-34a2f0c19dd0",
-      "colleagueId": "72ef5b08-b4a9-42b7-bb0a-22d40e56798b"
+      "agentId": "72ef5b08-b4a9-42b7-bb0a-22d40e56798b"
     },
     {
       "id": "dbbeca84-e69a-41af-b18c-e218681410f9",
@@ -29,22 +29,22 @@
     {
       "id": "eee75bd1-82b9-468b-b4d2-aae104872a0e",
       "knowledgeId": "9a1c0eb7-5ada-44e9-bd84-0f55943809b8",
-      "colleagueId": "ef906c5d-cafe-4518-9edc-b80c605df58e"
+      "agentId": "ef906c5d-cafe-4518-9edc-b80c605df58e"
     },
     {
       "id": "f8cb297d-cbf3-4934-9f4c-25f10ba47ea4",
       "knowledgeId": "9b1c0eb7-5ada-44e9-bd84-0f55943809b8",
-      "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
     },
     {
       "id": "784c5bb5-c8be-488f-b47f-8341a956b79f",
       "knowledgeId": "c141c799-4ad9-4fd3-9482-95de77057810",
-      "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
     },
     {
       "id": "82c5eb8f-1650-4736-9d5c-a60b71a181cd",
       "knowledgeId": "ea02e7db-7ff6-4c88-846f-2de9494d6d8d",
-      "colleagueId": "ef906c5d-cafe-4518-9edc-b80c605df58e"
+      "agentId": "ef906c5d-cafe-4518-9edc-b80c605df58e"
     },
     {
       "id": "ea0bc7d4-8e0e-4118-9279-f9beaddd18f9",
@@ -54,7 +54,7 @@
     {
       "id": "2f6f4fa1-a047-4b6c-b3ea-b49ef91eae20",
       "knowledgeId": "78324f23-6b55-4ef1-871c-34177b312481",
-      "colleagueId": "ef906c5d-cafe-4518-9edc-b80c605df58e"
+      "agentId": "ef906c5d-cafe-4518-9edc-b80c605df58e"
     },
     {
       "id": "efa12ea4-bcf6-40da-99f1-d55c47953858",
@@ -64,17 +64,17 @@
     {
       "id": "f2f5b5b6-c7ba-46f1-94fc-af99453e1904",
       "knowledgeId": "7e3d88f6-bc6f-4beb-a793-ef68f219c14a",
-      "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
     },
     {
       "id": "a08f93a0-449a-4c91-9bb0-ab190a035c39",
       "knowledgeId": "18a6dc62-9c58-49db-ae61-eef9042102b2",
-      "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
     },
     {
       "id": "019ae40e-388c-70a8-8bde-97139f47bc3e",
       "knowledgeId": "019ae3fb-df10-70e1-9575-06860872a022",
-      "colleagueId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
     }
   ]
 }

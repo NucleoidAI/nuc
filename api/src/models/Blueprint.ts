@@ -55,6 +55,14 @@ class Blueprint extends Model {
   declare colleague?: any;
 
   declare communications?: any[];
+
+  @AllowNull(true)
+  @Column(DataType.JSONB)
+  declare messages: Array<{
+    content: string;
+    role: string;
+    createdAt: Date;
+  }> | null;
 }
 
 export default Blueprint;

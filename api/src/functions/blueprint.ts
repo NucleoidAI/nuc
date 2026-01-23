@@ -36,7 +36,8 @@ async function upsert(
   description: string,
   agentId: string,
   id: string,
-  nodes?: NodeType[]
+  nodes?: NodeType[],
+  messages?: Array<{ role: string; content: string; createdAt: Date }>
 ) {
   let Blueprint;
 
@@ -48,6 +49,7 @@ async function upsert(
       description,
       agentId,
       nodes: nodes || null,
+      messages: messages || null,
     });
 
     Blueprint = existingBlueprint;
@@ -58,6 +60,7 @@ async function upsert(
       description,
       agentId,
       nodes: nodes || null,
+      messages: messages || null,
     });
   }
 

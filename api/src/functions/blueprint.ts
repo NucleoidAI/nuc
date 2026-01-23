@@ -1,4 +1,5 @@
 import BluePrint from "../models/Blueprint";
+import BlueprintMessage from "../models/BlueprintMessage";
 import { NotFoundError } from "@canmingir/link-express/error";
 
 type NodeType = {
@@ -22,6 +23,12 @@ async function getWithNodes(id: string) {
     where: {
       id,
     },
+    include: [
+      {
+        model: BlueprintMessage,
+        as: "messages",
+      },
+    ],
   });
 
   if (!Blueprint) {
@@ -37,7 +44,7 @@ async function upsert(
   agentId: string,
   id: string,
   nodes?: NodeType[],
-  messages?: Array<{ role: string; content: string; createdAt: Date }>
+  messages?: Array<{ role: string; content: string; createdAt: Date }>,
 ) {
   let Blueprint;
 
@@ -49,7 +56,6 @@ async function upsert(
       description,
       agentId,
       nodes: nodes || null,
-      messages: messages || null,
     });
 
     Blueprint = existingBlueprint;
@@ -60,8 +66,25 @@ async function upsert(
       description,
       agentId,
       nodes: nodes || null,
-      messages: messages || null,
     });
+  }
+
+  // Handle messages separately
+  if (messages && messages.length > 0) {
+    // Delete old messages
+    await BlueprintMessage.destroy({
+      where: { blueprintId: id },
+    });
+
+    // Create new messages
+    await BlueprintMessage.bulkCreate(
+      messages.map((msg) => ({
+        blueprintId: id,
+        content: msg.content,
+        role: msg.role,
+        createdAt: msg.createdAt,
+      })),
+    );
   }
 
   return {
@@ -79,13 +102,26 @@ async function remove({ blueprintId }: { blueprintId: string }) {
 async function list({ agentId }: { agentId: string }) {
   const Blueprints = await BluePrint.findAll({
     where: { agentId },
+    include: [
+      {
+        model: BlueprintMessage,
+        as: "messages",
+      },
+    ],
   });
 
   return Blueprints.map((Blueprint) => Blueprint.toJSON());
 }
 
 async function get({ blueprintId }: { blueprintId: string }) {
-  const Blueprint = await BluePrint.findByPk(blueprintId);
+  const Blueprint = await BluePrint.findByPk(blueprintId, {
+    include: [
+      {
+        model: BlueprintMessage,
+        as: "messages",
+      },
+    ],
+  });
 
   if (!Blueprint) {
     throw new NotFoundError();

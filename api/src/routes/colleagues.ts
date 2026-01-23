@@ -158,7 +158,7 @@ router.get("/:agentId/supervisings", async (req, res) => {
   res.json(supervisings);
 });
 
-router.post("/Blueprints", async (req, res) => {
+router.post("/blueprints", async (req, res) => {
   const { body } = req;
 
   const { history, content } = Blueprint.create.parse(body);
@@ -174,7 +174,7 @@ router.post("/Blueprints", async (req, res) => {
   });
 });
 
-router.post("/Blueprint-name", async (req, res) => {
+router.post("/blueprint-name", async (req, res) => {
   const { body } = req;
   const { history, content } = Blueprint.createBlueprintName.parse(body);
 

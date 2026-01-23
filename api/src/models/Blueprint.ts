@@ -61,7 +61,7 @@ class Blueprint extends Model {
   declare messages: Array<{
     content: string;
     role: string;
-    createdAt: Date;
+    createdAt: string | Date;
   }> | null;
 }
 

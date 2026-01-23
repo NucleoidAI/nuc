@@ -39,6 +39,14 @@ function BlueprintChat({
   );
 
   useEffect(() => {
+    if (blueprintNodes?.messages) {
+      setMessages(blueprintNodes.messages);
+    } else {
+      setMessages([]);
+    }
+  }, [blueprintNodes]);
+
+  useEffect(() => {
     if (onMessagesChange) onMessagesChange(messages);
   }, [messages, onMessagesChange]);
 
@@ -47,10 +55,13 @@ function BlueprintChat({
       selectedItem?.id,
       title,
       description,
-      agentId
+      selectedItem?.agentId || agentId,
+      messages.length > 0 ? messages : undefined
     );
 
-    setSelectedItem(response.Blueprint);
+    if (setSelectedItem) {
+      setSelectedItem(response.Blueprint);
+    }
   };
 
   const addMessage = async (message, role = "user") => {
@@ -73,7 +84,7 @@ function BlueprintChat({
 
       setMessages((prevMessages) => [
         ...prevMessages,
-        { content: parsedMessage, role },
+        { content: parsedMessage, role, createdAt: new Date().toISOString() },
       ]);
 
       if (role === "user") {
@@ -87,19 +98,24 @@ function BlueprintChat({
                 {
                   content: JSON.stringify(aiResponse?.flow || blueprintNodes),
                   role: "assistant",
+                  createdAt: new Date().toISOString(),
                 },
               ]
             : []),
-          { content: parsedMessage, role: "user" },
+          {
+            content: parsedMessage,
+            role: "user",
+            createdAt: new Date().toISOString(),
+          },
         ];
 
-        const { data } = await http.post("/colleagues/Blueprints", {
+        const { data } = await http.post("/agents/blueprints", {
           history,
           content: message,
         });
 
         const { data: blueprintNameData } = await http.post(
-          "/colleagues/Blueprint-name",
+          "/agents/blueprint-name",
           {
             history: messages,
             content: message,
@@ -116,26 +132,42 @@ function BlueprintChat({
               blueprintNameData?.train[0]?.description
           );
 
+        const aiMessage = data?.response;
+
+        const updatedMessages = [
+          ...messages,
+          {
+            content: parsedMessage,
+            role: "user",
+            createdAt: new Date().toISOString(),
+          },
+          {
+            content: aiMessage,
+            role: "assistant",
+            createdAt: new Date().toISOString(),
+          },
+        ];
+
         const response = await upsertBlueprint(
           selectedItem?.id,
           blueprintNameData.title || blueprintNameData?.train[0]?.title,
           blueprintNameData.description ||
             blueprintNameData?.train[0]?.description,
-          agentId,
+          selectedItem?.colleagueId || agentId,
           data?.flow,
-          taskId
+          taskId,
+          updatedMessages
         );
 
-        setSelectedItem(response.Blueprint);
+        if (setSelectedItem) {
+          setSelectedItem(response.Blueprint);
+        }
 
-        const aiMessage = data?.response;
+        if (setAiResponse) {
+          setAiResponse(data);
+        }
 
-        setAiResponse(data);
-
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { content: aiMessage, role: "assistant" },
-        ]);
+        setMessages(updatedMessages);
       }
     } catch (err) {
       const errorMessage =

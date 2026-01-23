@@ -130,6 +130,18 @@
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
         }
+      ],
+      "messages": [
+        {
+          "content": "I want to buy new internet subscription",
+          "role": "user",
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "content": "Sure, I can help you with that.",
+          "role": "assistant",
+          "createdAt": "2025-06-19T06:02:01Z"
+        }
       ]
     }
   ]

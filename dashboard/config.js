@@ -7,7 +7,7 @@ const config = {
   socket: {
     host: "http://localhost:3003",
     path: "/socket.io",
-    transport: "polling",
+    transport: ["polling"],
   },
   project: {
     github: {

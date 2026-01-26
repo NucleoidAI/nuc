@@ -40,6 +40,7 @@ const SupervisingChat = ({
     question?: string;
     conversationId?: string;
     sessionId?: string;
+    agentId?: string;
   };
 }) => {
   const SUPERVISING_CHAT_WELCOME_MESSAGE =
@@ -278,6 +279,7 @@ const SupervisingChat = ({
         setOpenPopChat={setPopChatOpen}
         conversationId={supervise.conversationId}
         sessionId={supervise.sessionId}
+        agentId={supervise.agentId}
       />
     </>
   );

@@ -591,7 +591,18 @@ async function chat({
       json_format: "{ evaluation: { is_answer_known: <true|false> } }",
     });
 
-    if (evaluation.is_answer_known) {
+    if (
+      evaluation.is_answer_known ||
+      responsibilityDecision.decision === "UNRELEVANT"
+    ) {
+      if (task.length > 0) {
+        await taskFn.update({
+          taskId: task[0].id,
+          status: "COMPLETED",
+          comment: "Answer is known or irrelevant",
+        });
+      }
+
       const { answer, confidence } = await generate({
         policy: dataset.policy,
         dataset: dataset.train.chat,

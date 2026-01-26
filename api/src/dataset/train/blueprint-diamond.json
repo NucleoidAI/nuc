@@ -203,5 +203,10 @@
       ]
     },
     "existing": false
+  },
+  {
+    "content": "What's the weather like in Paris tomorrow?",
+    "decision": "UNREVELANT",
+    "existing": false
   }
 ]

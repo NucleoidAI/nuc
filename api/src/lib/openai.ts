@@ -19,7 +19,7 @@ async function generate({
   } = await openai.chat.completions.create({
     model,
     messages,
-    stream: "false",
+    stream: false,
     response_format: { type: "json_object" },
   });
 

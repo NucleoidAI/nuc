@@ -15,7 +15,6 @@ export const useSocket = () => {
       auth: {
         token: token,
       },
-      transports: config.socket?.transport || ["websocket", "polling"],
     });
 
     return () => {

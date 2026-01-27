@@ -93,13 +93,13 @@ function BlueprintChat({
           { content: parsedMessage, role: "user" },
         ];
 
-        const { data } = await http.post("/colleagues/Blueprints", {
+        const { data } = await http.post("/agents/Blueprints", {
           history,
           content: message,
         });
 
         const { data: blueprintNameData } = await http.post(
-          "/colleagues/Blueprint-name",
+          "/agents/Blueprint-name",
           {
             history: messages,
             content: message,
@@ -121,8 +121,8 @@ function BlueprintChat({
           blueprintNameData.title || blueprintNameData?.train[0]?.title,
           blueprintNameData.description ||
             blueprintNameData?.train[0]?.description,
-          agentId,
-          data?.flow,
+          selectedItem?.agentId || agentId,
+          selectedItem?.nodes,
           taskId
         );
 

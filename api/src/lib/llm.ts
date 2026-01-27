@@ -28,15 +28,15 @@ async function generate({
 }: {
   model?: string;
   policy?: {
-    role: "system";
+    role: "SYSTEM";
     content: string;
   };
   dataset?: {
-    role: "system";
+    role: "SYSTEM";
     content: string;
   };
   context?: {
-    role: "user" | "system" | "assistant";
+    role: "USER" | "SYSTEM" | "ASSISTANT";
     content: string | object | object[];
   }[];
   content: string | object;
@@ -49,9 +49,9 @@ async function generate({
       role,
       content: JSON.stringify(content),
     })),
-    { role: "user", content: JSON.stringify(content) },
+    { role: "USER", content: JSON.stringify(content) },
     {
-      role: "system",
+      role: "SYSTEM",
       content: `json_format: ${json_format}`,
     },
   ].map(({ role, content }) => ({
@@ -76,4 +76,3 @@ async function generate({
 }
 
 export { generate };
-

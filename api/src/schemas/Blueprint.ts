@@ -30,7 +30,7 @@ const Blueprint = {
       .array(
         z.object({
           content: z.string(),
-          role: z.enum(["user", "assistant"]),
+          role: z.enum(["USER", "ASSISTANT"]),
           createdAt: z.string().or(z.date()),
         })
       )
@@ -40,7 +40,7 @@ const Blueprint = {
     history: z
       .array(
         z.object({
-          role: z.enum(["user", "system", "assistant"]),
+          role: z.enum(["USER", "SYSTEM", "ASSISTANT"]),
           content: z.string(),
         })
       )
@@ -50,7 +50,7 @@ const Blueprint = {
   createBlueprintName: z.object({
     history: z.array(
       z.object({
-        role: z.enum(["user", "system", "assistant"]),
+        role: z.enum(["USER", "SYSTEM", "ASSISTANT"]),
         content: z.string(),
       })
     ),

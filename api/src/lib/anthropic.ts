@@ -18,12 +18,12 @@ async function generate({
   max_tokens = 4096,
 }: {
   model?: string;
-  messages?: { role: "user" | "assistant" | "system"; content: string }[];
+  messages?: { role: "USER" | "ASSISTANT" | "SYSTEM"; content: string }[];
   temperature?: number;
   max_tokens?: number;
 }) {
-  const systemMessages = messages.filter((msg) => msg.role === "system");
-  const conversationMessages = messages.filter((msg) => msg.role !== "system");
+  const systemMessages = messages.filter((msg) => msg.role === "SYSTEM");
+  const conversationMessages = messages.filter((msg) => msg.role !== "SYSTEM");
 
   let systemPrompt =
     systemMessages.length > 0

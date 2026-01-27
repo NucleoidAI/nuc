@@ -123,10 +123,10 @@ function list() {
   }));
 
   return {
-    role: "system",
+    role: "SYSTEM",
     content: { mcps },
   } as {
-    role: "user" | "system" | "assistant";
+    role: "USER" | "SYSTEM" | "ASSISTANT";
     content: object;
   };
 }

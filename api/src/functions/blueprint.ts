@@ -44,7 +44,7 @@ async function upsert(
   agentId: string,
   id: string,
   nodes?: NodeType[],
-  messages?: Array<{ role: string; content: string; createdAt: Date }>,
+  messages?: Array<{ role: string; content: string; createdAt: Date }>
 ) {
   let Blueprint;
 
@@ -69,21 +69,18 @@ async function upsert(
     });
   }
 
-  // Handle messages separately
-  if (messages && messages.length > 0) {
-    // Delete old messages
+  if (messages?.length) {
     await BlueprintMessage.destroy({
       where: { blueprintId: id },
     });
 
-    // Create new messages
     await BlueprintMessage.bulkCreate(
       messages.map((msg) => ({
         blueprintId: id,
         content: msg.content,
         role: msg.role,
         createdAt: msg.createdAt,
-      })),
+      }))
     );
   }
 

@@ -19,13 +19,13 @@ async function messages({ teamId }: { teamId: string }) {
     .filter(
       (message) => message.role === "USER" || message.role === "ASSISTANT"
     )
-    .map(({ role, content }) => ({ role: role.toLowerCase(), content }));
+    .map(({ role, content }) => ({ role: role.toUpperCase(), content }));
 }
 
 async function info({ agentId }) {
   const { name, description } = await colleague.get({ agentId });
   return {
-    role: "system",
+    role: "SYSTEM",
     content: {
       ai_assistant_info: {
         name,
@@ -34,7 +34,7 @@ async function info({ agentId }) {
       },
     },
   } as {
-    role: "user" | "system" | "assistant";
+    role: "USER" | "SYSTEM" | "ASSISTANT";
     content: object;
   };
 }
@@ -66,12 +66,12 @@ async function knowledge({
     }));
 
   return {
-    role: "system",
+    role: "SYSTEM",
     content: {
       knowledge_base,
     },
   } as {
-    role: "user" | "system" | "assistant";
+    role: "USER" | "SYSTEM" | "ASSISTANT";
     content: object;
   };
 }
@@ -79,12 +79,12 @@ async function knowledge({
 async function steps({ taskId }) {
   const steps = await taskFn.listSteps({ taskId });
   return {
-    role: "system",
+    role: "SYSTEM",
     content: {
       steps,
     },
   } as {
-    role: "user" | "system" | "assistant";
+    role: "USER" | "SYSTEM" | "ASSISTANT";
     content: object;
   };
 }
@@ -93,12 +93,12 @@ async function Blueprints({ agentId }) {
   const Blueprints = await blueprintFn.list({ agentId });
 
   return {
-    role: "system",
+    role: "SYSTEM",
     content: {
       Blueprints,
     },
   } as {
-    role: "user" | "system" | "assistant";
+    role: "USER" | "SYSTEM" | "ASSISTANT";
     content: object;
   };
 }
@@ -107,7 +107,7 @@ async function conversations({ sessionId }) {
   const conversations = await session.listConversations({ sessionId });
 
   return conversations.map(({ role, content }) => ({
-    role: role.toLowerCase(),
+    role: role.toUpperCase(),
     content,
   }));
 }
@@ -349,7 +349,7 @@ async function Blueprint({
   content,
 }: {
   history?: {
-    role: "system" | "user" | "assistant";
+    role: "SYSTEM" | "USER" | "ASSISTANT";
     content: string;
   }[];
   content: string;
@@ -369,7 +369,7 @@ async function blueprintName({
   content,
 }: {
   history?: {
-    role: "system" | "user" | "assistant";
+    role: "SYSTEM" | "USER" | "ASSISTANT";
     content: string;
   }[];
   content: string;
@@ -390,7 +390,7 @@ async function blueprintToTask({
   Blueprint,
 }: {
   history?: {
-    role: "system" | "user" | "assistant";
+    role: "SYSTEM" | "USER" | "ASSISTANT";
     content: string;
   }[];
   content: string;
@@ -399,7 +399,7 @@ async function blueprintToTask({
 }) {
   const context = [
     {
-      role: "system" as const,
+      role: "SYSTEM" as const,
       content: {
         Blueprint,
         knowledge,
@@ -427,7 +427,7 @@ async function blueprintDiamond({
 }) {
   const context = [
     {
-      role: "system" as const,
+      role: "SYSTEM" as const,
       content: {
         Blueprints,
       },
@@ -458,7 +458,7 @@ async function evaluateSupervisionAnswer({
     await info({ agentId }),
     await knowledge({ agentId }),
     {
-      role: "system" as const,
+      role: "SYSTEM" as const,
       content: {
         supervision_context: {
           original_question: content.question,

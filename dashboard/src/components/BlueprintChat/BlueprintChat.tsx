@@ -64,7 +64,7 @@ function BlueprintChat({
     }
   };
 
-  const addMessage = async (message, role = "user") => {
+  const addMessage = async (message, role = "USER") => {
     try {
       const parsedMessage = message
         .split(/(\{.*?\})/)
@@ -87,7 +87,7 @@ function BlueprintChat({
         { content: parsedMessage, role, createdAt: new Date().toISOString() },
       ]);
 
-      if (role === "user") {
+      if (role === "USER") {
         setLoading(true);
         setError(null);
 
@@ -97,14 +97,14 @@ function BlueprintChat({
             ? [
                 {
                   content: JSON.stringify(aiResponse?.flow || blueprintNodes),
-                  role: "assistant",
+                  role: "ASSISTANT",
                   createdAt: new Date().toISOString(),
                 },
               ]
             : []),
           {
             content: parsedMessage,
-            role: "user",
+            role: "USER",
             createdAt: new Date().toISOString(),
           },
         ];
@@ -138,12 +138,12 @@ function BlueprintChat({
           ...messages,
           {
             content: parsedMessage,
-            role: "user",
+            role: "USER",
             createdAt: new Date().toISOString(),
           },
           {
             content: aiMessage,
-            role: "assistant",
+            role: "ASSISTANT",
             createdAt: new Date().toISOString(),
           },
         ];

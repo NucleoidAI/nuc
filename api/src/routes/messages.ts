@@ -1,9 +1,9 @@
-import { Op } from "sequelize";
-import express from "express";
 import Joi from "joi";
-import Message from "../models/Message";
-import schemas from "../schemas";
+import { Op } from "sequelize";
+import TeamMessage from "../models/TeamMessage";
+import express from "express";
 import message from "../functions/message";
+import schemas from "../schemas";
 
 const router = express.Router();
 
@@ -56,7 +56,7 @@ router.patch("/", async (req, res) => {
     },
   };
 
-  await Message.update({ status }, { where });
+  await TeamMessage.update({ status }, { where });
 
   res.end();
 });

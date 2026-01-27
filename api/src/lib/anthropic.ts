@@ -38,9 +38,21 @@ async function generate({
       "\n\nIMPORTANT: You MUST respond with ONLY valid JSON that matches the format specified. Do NOT include any text before or after the JSON. Do NOT wrap the JSON in markdown code blocks. Output ONLY the raw JSON object.";
   }
 
+  const roleMap: Record<string, MessageParam["role"]> = {
+    USER: "user",
+    SYSTEM: "system",
+    ASSISTANT: "assistant",
+  };
+
+  const normalizedConversationMessages: MessageParam[] =
+    conversationMessages.map(({ role, content }) => ({
+      role: roleMap[role] ?? "assistant",
+      content,
+    }));
+
   const params = {
     model,
-    messages: conversationMessages as MessageParam[],
+    messages: normalizedConversationMessages,
     temperature,
     max_tokens,
     ...(systemPrompt && { system: systemPrompt }),

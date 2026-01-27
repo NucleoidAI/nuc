@@ -1,4 +1,5 @@
 import { BlueprintFlowProps } from "./BlueprintFlow.types";
+import { Box } from "@mui/material";
 import DiffButton from "./DiffPanel/DiffButton";
 import { Flow } from "@canmingir/link/platform/components";
 import JSONDiffPanel from "./DiffPanel/JSONDiffPanel";
@@ -6,8 +7,6 @@ import SuccessSnackbar from "./Validation/SuccessSnackbar";
 import ValidationButtons from "./Validation/ValidationButtons";
 import ValidationErrorView from "./Validation/ValidationErrorView";
 import { blueprintFlowPlugin } from "./BlueprintFlowPlugin";
-
-import { Box, Button, alpha } from "@mui/material";
 
 export default function BlueprintFlow({
   graphData,

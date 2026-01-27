@@ -5,7 +5,7 @@ import { buildDefinitionGraph } from "./helper";
 
 import { Box, Typography } from "@mui/material";
 
-const EXAMPLE_FLOW = {
+const SAMPLE_FLOW = {
   nodes: [
     {
       id: "example-start",
@@ -65,8 +65,8 @@ const EXAMPLE_FLOW = {
   ],
 };
 
-const ExampleFlow = () => {
-  const exampleGraphData = buildDefinitionGraph(EXAMPLE_FLOW);
+const SampleFlow = () => {
+  const exampleGraphData = buildDefinitionGraph(SAMPLE_FLOW);
 
   return (
     <Box sx={{ height: "100%", width: "100%", position: "relative" }}>
@@ -104,4 +104,4 @@ const ExampleFlow = () => {
   );
 };
 
-export default ExampleFlow;
+export default SampleFlow;

@@ -12,7 +12,7 @@ const anthropic = new Anthropic({
 });
 
 async function generate({
-  model = "claude-haiku-4-5-20251001",
+  model = process.env.PLATFORM_LLM_MODEL || "claude-haiku-4-5",
   messages = [],
   temperature = 0,
   max_tokens = 4096,

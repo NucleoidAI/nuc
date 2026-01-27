@@ -4,6 +4,7 @@ services:
   postgres:
     image: postgres:16-alpine
     container_name: postgres-greycollar
+    pull_policy: always
     restart: unless-stopped
     environment:
       - POSTGRES_USER=greyadmin
@@ -20,6 +21,7 @@ services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
     container_name: elasticsearch
+    pull_policy: always
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
@@ -46,6 +48,7 @@ services:
   kibana:
     image: docker.elastic.co/kibana/kibana:8.11.0
     container_name: kibana
+    pull_policy: always
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
       - ELASTICSEARCH_URL=http://elasticsearch:9200
@@ -65,6 +68,7 @@ services:
   filebeat:
     image: docker.elastic.co/beats/filebeat:8.11.0
     container_name: filebeat
+    pull_policy: always
     user: root
     restart: unless-stopped
     volumes:
@@ -86,6 +90,7 @@ services:
   pushgateway:
     image: prom/pushgateway:latest
     container_name: pushgateway-land
+    pull_policy: always
     restart: unless-stopped
     networks:
       - greycollar-network
@@ -95,6 +100,7 @@ services:
   prometheus:
     image: canmingir/prometheus-land:latest
     container_name: prometheus-land
+    pull_policy: always
     restart: unless-stopped
     networks:
       - greycollar-network
@@ -106,6 +112,7 @@ services:
   grafana:
     image: canmingir/grafana-land:latest
     container_name: grafana-land
+    pull_policy: always
     restart: unless-stopped
     networks:
       - greycollar-network
@@ -117,6 +124,7 @@ services:
   communication:
     image: canmingir/communication-land:latest
     container_name: communication-land
+    pull_policy: always
     restart: unless-stopped
     env_file:
       - env.greycollar  
@@ -132,6 +140,7 @@ services:
   greycollar:
     image: canmingir/greycollar-land:latest
     container_name: greycollar-land
+    pull_policy: always
     restart: unless-stopped
     env_file:
       - env.greycollar
@@ -149,6 +158,7 @@ services:
   inmemory:
     image: canmingir/inmemory-queue-land:latest
     container_name: inmemory_queue
+    pull_policy: always
     restart: unless-stopped
     ports:
       - "8080:8080"

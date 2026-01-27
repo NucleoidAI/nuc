@@ -16,15 +16,15 @@ async function run({ context, parameters: { message } }) {
   const { result } = await llm.generate({
     messages: [
       {
-        role: "assistant",
+        role: "ASSISTANT",
         content: JSON.stringify(context),
       },
       {
-        role: "assistant",
+        role: "ASSISTANT",
         content: JSON.stringify(message),
       },
       {
-        role: "system",
+        role: "SYSTEM",
         content: "json_format: { result: <RESULT_IN_NLP> }",
       },
     ],

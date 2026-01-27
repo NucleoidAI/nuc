@@ -7,11 +7,11 @@
     "history": [
       {
         "content": "If product is not available, create order. if available reduce product count.",
-        "role": "user"
+        "role": "USER"
       },
       {
         "content": "Here’s the flow for your request.",
-        "role": "assistant"
+        "role": "ASSISTANT"
       }
     ]
   }

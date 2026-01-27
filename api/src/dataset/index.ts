@@ -12,66 +12,66 @@ import teamChat from "./train/team-chat.json";
 
 export default {
   policy: {
-    role: "system" as const,
+    role: "SYSTEM" as const,
     content: JSON.stringify({ policy }),
   },
   train: {
     Blueprint: {
-      role: "system" as const,
+      role: "SYSTEM" as const,
       content: JSON.stringify({
         train: Blueprint,
       }),
     },
     chat: {
-      role: "system" as const,
+      role: "SYSTEM" as const,
       content: JSON.stringify({
         train: chat,
       }),
     },
     humanInLoop: {
-      role: "system" as const,
+      role: "SYSTEM" as const,
       content: JSON.stringify({
         train: humanInLoop,
       }),
     },
     pseudocode: {
-      role: "system" as const,
+      role: "SYSTEM" as const,
       content: JSON.stringify({
         train: pseudocode,
       }),
     },
     taskDiamond: {
-      role: "system" as const,
+      role: "SYSTEM" as const,
       content: JSON.stringify({
         train: taskDiamond,
       }),
     },
     teamChat: {
-      role: "system" as const,
+      role: "SYSTEM" as const,
       content: JSON.stringify({
         train: teamChat,
       }),
     },
     blueprintChat: {
-      role: "system" as const,
+      role: "SYSTEM" as const,
       content: JSON.stringify({
         train: blueprintChat,
       }),
     },
     blueprintChatEvaluation: {
-      role: "system" as const,
+      role: "SYSTEM" as const,
       content: JSON.stringify({
         train: blueprintChatEvaluation,
       }),
     },
     blueprintName: {
-      role: "system" as const,
+      role: "SYSTEM" as const,
       content: JSON.stringify({
         train: blueprintName,
       }),
     },
     blueprintDiamond: {
-      role: "system" as const,
+      role: "SYSTEM" as const,
       content: JSON.stringify({
         train: blueprintDiamond,
       }),

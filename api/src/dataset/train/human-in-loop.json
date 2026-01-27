@@ -2,11 +2,11 @@
   {
     "history": [
       {
-        "role": "user",
+        "role": "USER",
         "content": "I want to order a new product"
       },
       {
-        "role": "assistant",
+        "role": "ASSISTANT",
         "content": "Please wait while I am working on your request."
       }
     ],
@@ -16,11 +16,11 @@
   {
     "history": [
       {
-        "role": "user",
+        "role": "USER",
         "content": "Update my shipping address"
       },
       {
-        "role": "assistant",
+        "role": "ASSISTANT",
         "content": "Please wait while I am working on your request."
       }
     ],
@@ -30,11 +30,11 @@
   {
     "history": [
       {
-        "role": "user",
+        "role": "USER",
         "content": "Check product availability"
       },
       {
-        "role": "assistant",
+        "role": "ASSISTANT",
         "content": "Please wait while I am working on your request."
       }
     ],
@@ -44,11 +44,11 @@
   {
     "history": [
       {
-        "role": "user",
+        "role": "USER",
         "content": "I need to return a product"
       },
       {
-        "role": "assistant",
+        "role": "ASSISTANT",
         "content": "Please wait while I am working on your request."
       }
     ],
@@ -58,11 +58,11 @@
   {
     "history": [
       {
-        "role": "user",
+        "role": "USER",
         "content": "Schedule a meeting"
       },
       {
-        "role": "assistant",
+        "role": "ASSISTANT",
         "content": "Please wait while I am working on your request."
       }
     ],
@@ -72,11 +72,11 @@
   {
     "history": [
       {
-        "role": "user",
+        "role": "USER",
         "content": "Create a new account"
       },
       {
-        "role": "assistant",
+        "role": "ASSISTANT",
         "content": "Please wait while I am working on your request."
       }
     ],
@@ -86,11 +86,11 @@
   {
     "history": [
       {
-        "role": "user",
+        "role": "USER",
         "content": "Process my payment"
       },
       {
-        "role": "assistant",
+        "role": "ASSISTANT",
         "content": "Please wait while I am working on your request."
       }
     ],
@@ -100,11 +100,11 @@
   {
     "history": [
       {
-        "role": "user",
+        "role": "USER",
         "content": "Check product availability"
       },
       {
-        "role": "assistant",
+        "role": "ASSISTANT",
         "content": "Please wait while I am working on your request."
       }
     ],
@@ -114,11 +114,11 @@
   {
     "history": [
       {
-        "role": "user",
+        "role": "USER",
         "content": "I want to order a product"
       },
       {
-        "role": "assistant",
+        "role": "ASSISTANT",
         "content": "Please wait while I am working on your request."
       }
     ],
@@ -128,11 +128,11 @@
   {
     "history": [
       {
-        "role": "user",
+        "role": "USER",
         "content": "Update my profile"
       },
       {
-        "role": "assistant",
+        "role": "ASSISTANT",
         "content": "Please wait while I am working on your request."
       }
     ],
@@ -142,11 +142,11 @@
   {
     "history": [
       {
-        "role": "user",
+        "role": "USER",
         "content": "Schedule delivery"
       },
       {
-        "role": "assistant",
+        "role": "ASSISTANT",
         "content": "Please wait while I am working on your request."
       }
     ],
@@ -156,11 +156,11 @@
   {
     "history": [
       {
-        "role": "user",
+        "role": "USER",
         "content": "Check my account balance"
       },
       {
-        "role": "assistant",
+        "role": "ASSISTANT",
         "content": "Please wait while I am working on your request."
       }
     ],

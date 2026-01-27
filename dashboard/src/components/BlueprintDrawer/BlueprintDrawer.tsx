@@ -1,6 +1,6 @@
 import BlueprintChat from "../BlueprintChat/BlueprintChat";
 import BlueprintChatTitle from "../BlueprintChat/BlueprintChatTitle";
-import BlueprintFlow from "../BlueprintFlow/BlueprintFlow";
+import BlueprintFlowWidget from "../../widgets/BlueprintFlowWidget/BlueprintFlowWidget";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import CloseIcon from "@mui/icons-material/Close";
 import { FlowDefinition } from "../BlueprintFlow/helper";
@@ -189,9 +189,10 @@ const BlueprintDrawer = ({
                   position: "relative",
                 }}
               >
-                <BlueprintFlow
+                <BlueprintFlowWidget
                   blueprint={selectedItem}
                   aiResponse={aiResponse}
+                  setAiResponse={setAiResponse}
                   taskId={taskId}
                 />
 

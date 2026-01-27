@@ -26,6 +26,159 @@ const AddButtonWrapper = styled("div")(({ theme }) => ({
   },
 }));
 
+const HighlightOverlay = styled("div")<{ changetype?: string }>(
+  ({ changetype, theme }) => {
+    const isDark = theme.palette.mode === "dark";
+
+    const colors = {
+      added: {
+        border: isDark ? "#66bb6a" : "#4caf50",
+        glow: isDark ? "76, 175, 80" : "76, 175, 80",
+        bg: isDark ? "76, 175, 80" : "76, 175, 80",
+      },
+      modified: {
+        border: isDark ? "#ffa726" : "#ff9800",
+        glow: isDark ? "255, 167, 38" : "255, 152, 0",
+        bg: isDark ? "255, 167, 38" : "255, 152, 0",
+      },
+      removed: {
+        border: isDark ? "#ef5350" : "#f44336",
+        glow: isDark ? "239, 83, 80" : "244, 67, 54",
+        bg: isDark ? "239, 83, 80" : "244, 67, 54",
+      },
+    };
+
+    const config = colors[changetype];
+    if (!config) return { display: "none" };
+
+    return {
+      position: "absolute",
+      top: "-2px",
+      left: "-2px",
+      right: "-2px",
+      bottom: "-2px",
+      border: `3px solid ${config.border}`,
+      borderRadius: "18px",
+      pointerEvents: "none",
+      zIndex: 5,
+      background: `linear-gradient(135deg, rgba(${config.bg}, 0.08) 0%, rgba(${config.bg}, 0.02) 100%)`,
+      boxShadow: `
+        0 0 0 1px rgba(${config.glow}, 0.1),
+        0 0 20px rgba(${config.glow}, 0.25),
+        0 0 40px rgba(${config.glow}, 0.15),
+        inset 0 0 30px rgba(${config.glow}, 0.08)
+      `,
+    };
+  }
+);
+
+const ChangeBadge = styled("div")<{ changetype?: string }>(
+  ({ changetype, theme }) => {
+    const isDark = theme.palette.mode === "dark";
+
+    const colors = {
+      added: {
+        bg: isDark ? "#66bb6a" : "#4caf50",
+        text: "#ffffff",
+        icon: "+",
+      },
+      modified: {
+        bg: isDark ? "#ffa726" : "#ff9800",
+        text: "#ffffff",
+        icon: "~",
+      },
+      removed: {
+        bg: isDark ? "#ef5350" : "#f44336",
+        text: "#ffffff",
+        icon: "×",
+      },
+    };
+
+    const config = colors[changetype];
+    if (!config) return { display: "none" };
+
+    return {
+      position: "absolute",
+      top: "-10px",
+      right: "-10px",
+      width: "28px",
+      height: "28px",
+      borderRadius: "50%",
+      backgroundColor: config.bg,
+      color: config.text,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontSize: "16px",
+      fontWeight: "bold",
+      boxShadow: `
+        0 2px 8px rgba(0, 0, 0, 0.2),
+        0 0 0 3px ${theme.palette.background.paper}
+      `,
+      zIndex: 15,
+      "&::before": {
+        content: `"${config.icon}"`,
+      },
+    };
+  }
+);
+
+const ChangeLabel = styled("div")<{ changetype?: string }>(
+  ({ changetype, theme }) => {
+    const isDark = theme.palette.mode === "dark";
+
+    const colors = {
+      added: {
+        bg: isDark ? "#66bb6a" : "#4caf50",
+        text: "#ffffff",
+        label: "Added",
+      },
+      modified: {
+        bg: isDark ? "#ffa726" : "#ff9800",
+        text: "#ffffff",
+        label: "Modified",
+      },
+      removed: {
+        bg: isDark ? "#ef5350" : "#f44336",
+        text: "#ffffff",
+        label: "Removed",
+      },
+    };
+
+    const config = colors[changetype];
+    if (!config) return { display: "none" };
+
+    return {
+      position: "absolute",
+      top: "-10px",
+      left: "-10px",
+      padding: "4px 10px",
+      borderRadius: "12px",
+      backgroundColor: config.bg,
+      color: config.text,
+      fontSize: "11px",
+      fontWeight: 600,
+      textTransform: "uppercase",
+      letterSpacing: "0.5px",
+      boxShadow: `
+        0 2px 6px rgba(0, 0, 0, 0.15),
+        0 0 0 2px ${theme.palette.background.paper}
+      `,
+      zIndex: 15,
+      whiteSpace: "nowrap",
+      "&::before": {
+        content: `"${config.label}"`,
+      },
+    };
+  }
+);
+
+const NodeWrapper = styled("div")({
+  position: "relative",
+  width: "100%",
+  height: "100%",
+});
+
 export const blueprintFlowPlugin = {
   id: "blueprintChart",
 
@@ -60,6 +213,7 @@ export const blueprintFlowPlugin = {
 
   node: ({ node, nodeStyle }) => {
     const { onAdd } = nodeStyle || {};
+    const changeType = node.changeType;
 
     const handleAddClick = (e) => {
       e.stopPropagation();
@@ -70,11 +224,20 @@ export const blueprintFlowPlugin = {
     };
 
     return (
-      <InfoNode node={node} nodeStyle={nodeStyle}>
-        <AddButtonWrapper onClick={handleAddClick} title="Add child node">
-          <Iconify icon="mdi:plus" width={16} height={16} />
-        </AddButtonWrapper>
-      </InfoNode>
+      <NodeWrapper>
+        <HighlightOverlay changetype={changeType} />
+        {changeType && changeType !== "unchanged" && (
+          <>
+            <ChangeLabel changetype={changeType} />
+            <ChangeBadge changetype={changeType} />
+          </>
+        )}
+        <InfoNode node={node} nodeStyle={nodeStyle}>
+          <AddButtonWrapper onClick={handleAddClick} title="Add child node">
+            <Iconify icon="mdi:plus" width={16} height={16} />
+          </AddButtonWrapper>
+        </InfoNode>
+      </NodeWrapper>
     );
   },
 };

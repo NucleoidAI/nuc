@@ -593,7 +593,7 @@ async function chat({
 
     if (
       evaluation.is_answer_known ||
-      responsibilityDecision.decision === "UNRELEVANT"
+      blueprintDecision.decision === "UNRELEVANT"
     ) {
       if (task.length > 0) {
         await taskFn.update({

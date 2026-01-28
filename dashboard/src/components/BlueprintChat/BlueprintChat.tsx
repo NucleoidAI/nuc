@@ -115,7 +115,7 @@ function BlueprintChat({
         });
 
         const { data: blueprintNameData } = await http.post(
-          "/agents/blueprint-name",
+          `/agents/${selectedItem?.agentId || agentId}/blueprints`,
           {
             history: messages,
             content: message,

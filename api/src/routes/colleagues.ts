@@ -174,11 +174,12 @@ router.post("/blueprints", async (req, res) => {
   });
 });
 
-router.post("/blueprint-name", async (req, res) => {
+router.post("/:agentId/blueprints", async (req, res) => {
   const { body } = req;
+  const { agentId } = req.params;
   const { history, content } = Blueprint.createBlueprintName.parse(body);
 
-  const response = await agent.blueprintName({ history, content });
+  const response = await agent.blueprintName({ history, content, agentId });
 
   res.json(response);
 });

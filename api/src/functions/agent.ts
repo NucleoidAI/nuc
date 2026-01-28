@@ -367,19 +367,24 @@ async function Blueprint({
 async function blueprintName({
   history,
   content,
+  agentId,
 }: {
   history?: {
     role: "SYSTEM" | "USER" | "ASSISTANT";
     content: string;
   }[];
   content: string;
+  agentId: string;
 }) {
+  const context = [await info({ agentId }), ...(history ?? [])];
+
   const response = await generate({
     dataset: dataset.train.blueprintName,
-    context: history,
+    context,
     content,
     json_format: "{ title: <TITLE>, description: <DESCRIPTION> }",
   });
+
   return response;
 }
 

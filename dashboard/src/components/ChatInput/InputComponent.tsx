@@ -123,7 +123,6 @@ const InputComponent = ({
           break;
         case "Enter":
           event.preventDefault();
-          console.log("FOCUSED INDEX", focusedIndex);
           handleOptionSelect(options[focusedIndex]);
           break;
         default:

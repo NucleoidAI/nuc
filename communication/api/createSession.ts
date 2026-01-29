@@ -17,7 +17,6 @@ const createSession = async (accessToken?: string, agentId?: string) => {
     }
   );
 
-  console.log("Session created", create.data);
   return create.data;
 };
 

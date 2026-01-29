@@ -1,12 +1,11 @@
 import "./src/instrumentation";
 
-import platform from "@canmingir/link-express";
-
 import config from "./config";
 import dotenv from "dotenv";
 import { event } from "@canmingir/link-express/event/client";
 import http from "http";
 import models from "./src/models";
+import platform from "@canmingir/link-express";
 
 //import kafkaConfig from "./config.kafka";
 //import txqConfig from "./config.txq";
@@ -14,17 +13,17 @@ import models from "./src/models";
 dotenv.config();
 
 process.on("uncaughtException", (err) => {
-  console.error(`Uncaught Exception: ${err.message}`);
+  platform.logger.error(`Uncaught Exception: ${err.message}`);
 });
 
 process.on("unhandledRejection", (reason, promise) => {
-  console.error("==========================================");
-  console.error("Unhandled Rejection:", reason);
-  console.error("Promise:", promise);
+  platform.logger.error("==========================================");
+  platform.logger.error("Unhandled Rejection:", reason);
+  platform.logger.error("Promise:", promise);
   if (reason instanceof Error) {
-    console.error("Stack:", reason.stack);
+    platform.logger.error("Stack:", reason.stack);
   }
-  console.error("==========================================");
+  platform.logger.error("==========================================");
 });
 
 platform.init(config).then(async () => {
@@ -50,6 +49,6 @@ platform.init(config).then(async () => {
   }
 
   server.listen(process.env.PORT || 4000, () => {
-    console.log(`Server is running on port ${process.env.PORT || 4000}`);
+    logger.info(`Server is running on port ${process.env.PORT || 4000}`);
   });
 });

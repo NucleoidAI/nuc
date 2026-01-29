@@ -108,7 +108,6 @@ function BlueprintMessageBox({ message }) {
         </>
       );
     } catch (error) {
-      console.error("Error processing message content:", error);
       return message.content;
     }
   };

@@ -1,4 +1,5 @@
 import McpClient from "../../../mcp/McpClient";
+import platform from "@canmingir/link-express";
 
 async function connect({ name, tool }: { name: string; tool: string }) {
   const mcpClient = new McpClient({
@@ -16,15 +17,12 @@ async function connect({ name, tool }: { name: string; tool: string }) {
         refreshToken: process.env.GDRIVE_REFRESH_TOKEN as string,
       },
     });
-    const tools = await mcpClient.listTools();
-    console.log(JSON.stringify(tools, null, 2));
 
     return mcpClient;
   } catch (error) {
-    console.error(error);
+    platform.logger.error(error);
     throw error;
   }
 }
 
 export default { connect };
-

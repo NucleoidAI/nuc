@@ -43,8 +43,6 @@ function useAgents() {
     try {
       agent.teamId = teamId || storage.get("projectId");
 
-      console.log("agent", agent);
-
       const response = await http.post(`/agents`, {
         name: agent.name,
         icon: agent.icon,
@@ -59,7 +57,6 @@ function useAgents() {
 
       return response?.data;
     } catch (error) {
-      console.error("Error creating agent:", error);
       return null;
     }
   };
@@ -74,7 +71,6 @@ function useAgents() {
 
       return response?.data;
     } catch (error) {
-      console.error("Error deleting agent:", error);
       return null;
     }
   };

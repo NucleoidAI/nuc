@@ -4,7 +4,6 @@ import { Dialog, DialogContent, DialogTitle } from "@mui/material";
 
 function OrganizationChart({ open, setOpen }) {
   const Content = () => {
-    console.log("Organization Chart");
     return (
       <DialogContent sx={{ margin: 5 }} data-cy="organization-chart">
         <DialogTitle variant="h4">Organizational Chart</DialogTitle>

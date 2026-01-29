@@ -13,6 +13,7 @@ import { HostMetrics } from "@opentelemetry/host-metrics";
 import { RuntimeNodeInstrumentation } from "@opentelemetry/instrumentation-runtime-node";
 import axios from "axios";
 import config from "../config";
+import platform from "@canmingir/link-express";
 
 interface HttpMetrics {
   requestsCounter: Counter;
@@ -38,7 +39,10 @@ class PushgatewayExporter {
       });
       resultCallback({ code: 0 });
     } catch (err) {
-      console.error("[Pushgateway] ❌ Push failed:", (err as Error).message);
+      platform.logger.error(
+        "[Pushgateway] ❌ Push failed:",
+        (err as Error).message
+      );
       resultCallback({ code: 1, error: err as Error });
     }
   }

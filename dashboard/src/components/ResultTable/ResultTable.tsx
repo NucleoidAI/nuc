@@ -22,11 +22,8 @@ const renderValue = (value) => {
 };
 
 export const ResultTable = ({ data }) => {
-  console.log("data", data);
   const content = data?.content || data[0];
-  console.log("content", content);
   const keys = getAllKeys(content);
-  console.log("keys", keys);
 
   return (
     <TableContainer component={Paper}>

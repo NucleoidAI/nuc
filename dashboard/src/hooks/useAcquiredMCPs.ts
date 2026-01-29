@@ -45,8 +45,6 @@ function useAcquiredMCPs() {
 
     const response = await http.post(`/mcps`, payload);
 
-    console.log(response);
-
     publish("AUTHORIZED", {});
 
     return response.data;

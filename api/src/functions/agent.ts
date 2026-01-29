@@ -8,6 +8,7 @@ import knowledgeFn from "./knowledge";
 import mcpFn from "./mcp";
 import message from "./message";
 import messagesFunc from "./message";
+import platform from "@canmingir/link-express";
 import session from "./session";
 import supervising from "./supervising";
 import taskFn from "./task";
@@ -136,7 +137,7 @@ async function teamChat({
       const resource = require(`./${next.resource}`).default;
       data = await resource[next.function]({ ...next.parameters, teamId });
     } catch (err) {
-      console.error(err);
+      platform.logger.error(err);
     }
   }
 
@@ -615,8 +616,6 @@ async function chat({
         content,
         json_format: "{ answer: <ANSWER_IN_NLP>, confidence: <0-1> }",
       });
-
-      console.debug(answer, confidence);
 
       await session.addConversation({
         sessionId,

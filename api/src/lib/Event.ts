@@ -39,7 +39,7 @@ const subscribe = (...args) => {
   const type = args.join(".");
   const id = uuid();
 
-  platform.logger.log("node-event", "subscribe", type, id);
+  platform.logger.info("node-event", "subscribe", type, id);
 
   if (type === "__proto__" || type === "constructor" || type === "prototype") {
     throw new Error("Invalid subscription type");
@@ -53,7 +53,7 @@ const subscribe = (...args) => {
     type,
     callback,
     unsubscribe: () => {
-      platform.logger.log("node-event", "unsubscribe", type, id);
+      platform.logger.info("node-event", "unsubscribe", type, id);
       delete subscriptions[type][id];
 
       if (Object.keys(subscriptions[type]).length === 0) {
@@ -75,7 +75,7 @@ const publish = (...args) => {
   const payload = args.pop();
   const type = args.join(".");
 
-  platform.logger.log("node-event", "publish", type, payload);
+  platform.logger.info("node-event", "publish", type, payload);
   messages.set(type, payload);
 
   if (type === "__proto__" || type === "constructor" || type === "prototype") {

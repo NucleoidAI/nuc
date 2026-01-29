@@ -25,7 +25,7 @@ const ValidationButtons = ({
         alignItems: "center",
       }}
     >
-      {validationErrors.length > 0 && (
+      {validationErrors?.length > 0 && (
         <Button
           variant="outlined"
           onClick={() => setShowValidationErrors(true)}

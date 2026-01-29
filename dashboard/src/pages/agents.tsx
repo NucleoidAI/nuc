@@ -24,7 +24,7 @@ function Agents() {
   }
   return (
     <>
-      <Page name={"Colleague"} />
+      <Page name={"Agent"} />
       <SingleScrollableLayout title={team?.name}>
         <AgentsWidget teamId={teamId} />
       </SingleScrollableLayout>

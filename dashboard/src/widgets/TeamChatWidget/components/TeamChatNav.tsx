@@ -33,16 +33,16 @@ function TeamChatNav({ loading, agents, collapsed, setCollapsed }) {
   const navigate = useNavigate();
 
   const mdUp = true;
-  const [colleagueCardDialogOpen, setColleagueCardDialogOpen] = useState(false);
+  const [agentCardDialogOpen, setAgentCardDialogOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
 
-  const handleColleagueClick = (colleague) => {
-    setSelectedMember(colleague);
-    setColleagueCardDialogOpen(true);
+  const handleAgentClick = (agent) => {
+    setSelectedMember(agent);
+    setAgentCardDialogOpen(true);
   };
 
-  const handleColleagueView = (colleague) => {
-    navigate(`/colleagues/${colleague.id}`);
+  const handleAgentView = (agent) => {
+    navigate(`/agents/${agent.id}`);
   };
 
   const [searchContacts, setSearchContacts] = useState({
@@ -78,8 +78,8 @@ function TeamChatNav({ loading, agents, collapsed, setCollapsed }) {
       }));
 
       if (inputValue) {
-        const results = agents?.filter((colleague) =>
-          colleague.name.toLowerCase().includes(inputValue)
+        const results = agents?.filter((agent) =>
+          agent.name.toLowerCase().includes(inputValue)
         );
 
         setSearchContacts((prevState) => ({
@@ -122,7 +122,7 @@ function TeamChatNav({ loading, agents, collapsed, setCollapsed }) {
           member={member}
           collapse={collapsed}
           selected={false}
-          onClick={handleColleagueClick}
+          onClick={handleAgentClick}
         />
       ))}
 
@@ -264,12 +264,12 @@ function TeamChatNav({ loading, agents, collapsed, setCollapsed }) {
         </Stack>
       )}
       <Dialog
-        open={colleagueCardDialogOpen}
-        onClose={() => setColleagueCardDialogOpen(false)}
+        open={agentCardDialogOpen}
+        onClose={() => setAgentCardDialogOpen(false)}
       >
         <AgentCard
           agent={selectedMember}
-          onView={() => handleColleagueView(selectedMember)}
+          onView={() => handleAgentView(selectedMember)}
           onEdit={() => {}}
           onDelete={() => {}}
         />

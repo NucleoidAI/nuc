@@ -1,6 +1,6 @@
 import { createSession } from "../api/createSession";
 import express from "express";
-import { getColleague } from "../api/getColleague";
+import { getAgent } from "../api/getAgent";
 import { sendMessageToSession } from "../api/sendMessageSession";
 
 const router = express.Router();
@@ -27,7 +27,7 @@ router.post("/", async (req, res) => {
         .json({ error: "Invalid Authorization Bearer token" });
     }
 
-    const agentId = process.env.COLLEAGUE_ID;
+    const agentId = process.env.AGENT_ID;
     const decoded = { aud: process.env.PROJECT_ID };
 
     if (!agentId) {
@@ -39,14 +39,14 @@ router.post("/", async (req, res) => {
     const sessionData = await createSession(token, agentId);
     stringResponse = "Session created";
 
-    stringResponse = "Getting colleague...";
-    const colleague = await getColleague(token, agentId);
-    stringResponse = "Colleague found";
+    stringResponse = "Getting agent...";
+    const agent = await getAgent(token, agentId);
+    stringResponse = "Agent found";
 
-    if (!colleague || colleague.teamId !== decoded?.aud) {
+    if (!agent || agent.teamId !== decoded?.aud) {
       return res
         .status(403)
-        .json({ error: "Colleague not found or team ID mismatch" });
+        .json({ error: "Agent not found or team ID mismatch" });
     }
 
     const content: string =
@@ -65,7 +65,7 @@ router.post("/", async (req, res) => {
     return res.status(200).json({
       status: "success",
       session: sessionData,
-      colleague,
+      agent,
       stringResponse,
       message: messageResponse,
     });

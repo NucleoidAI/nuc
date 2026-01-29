@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-const Colleague = Joi.object({
+const Agent = Joi.object({
   name: Joi.string().required(),
   icon: Joi.string().required(),
   teamId: Joi.string().guid().required(),
@@ -8,4 +8,4 @@ const Colleague = Joi.object({
   description: Joi.string().required(),
 });
 
-export default Colleague;
+export default Agent;

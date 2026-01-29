@@ -1,5 +1,5 @@
-import Colleague from "../models/Colleague";
-import ColleagueKnowledge from "../models/ColleagueKnowledge";
+import Agent from "../models/Agent";
+import AgentKnowledge from "../models/AgentKnowledge";
 import Knowledge from "../models/Knowledge";
 import { NotFoundError } from "@canmingir/link-express/error";
 import { Op } from "sequelize";
@@ -26,7 +26,7 @@ async function create({
   };
 }) {
   if (!teamId && !agentId) {
-    throw new Error("INVALID_TEAM_OR_COLLEAGUE");
+    throw new Error("INVALID_TEAM_OR_AGENT");
   }
 
   if (knowledge.type === "QA" && (!knowledge.question || !knowledge.answer)) {
@@ -65,7 +65,7 @@ async function create({
   }
 
   const knowledgeInstance = await Knowledge.create(knowledge);
-  await ColleagueKnowledge.create({
+  await AgentKnowledge.create({
     knowledgeId: knowledgeInstance.id,
     agentId,
     teamId,
@@ -112,13 +112,13 @@ async function list({
   }[] = [];
 
   if (agentId) {
-    const colleagueInstance = await Colleague.findByPk(agentId);
+    const agentInstance = await Agent.findByPk(agentId);
 
-    if (!colleagueInstance) {
-      throw new Error("INVALID_COLLEAGUE");
+    if (!agentInstance) {
+      throw new Error("INVALID_AGENT");
     }
 
-    const teamId = colleagueInstance.toJSON().teamId;
+    const teamId = agentInstance.toJSON().teamId;
 
     knowledgeWhere.push({ agentId });
     knowledgeWhere.push({ teamId });
@@ -132,7 +132,7 @@ async function list({
     where: typeWhere,
     include: [
       {
-        model: ColleagueKnowledge,
+        model: AgentKnowledge,
         where: {
           [Op.or]: knowledgeWhere,
         },
@@ -152,12 +152,12 @@ async function list({
 
   const knowledgesInstances = knowledgeInstances
     .map((knowledge) => knowledge.toJSON())
-    .map(({ ColleagueKnowledge, ...knowledgeData }) => ({
+    .map(({ AgentKnowledge, ...knowledgeData }) => ({
       ...knowledgeData,
-      agentId: ColleagueKnowledge.agentId
-        ? ColleagueKnowledge.agentId
+      agentId: AgentKnowledge.agentId
+        ? AgentKnowledge.agentId
         : null,
-      teamId: ColleagueKnowledge.teamId ? ColleagueKnowledge.teamId : null,
+      teamId: AgentKnowledge.teamId ? AgentKnowledge.teamId : null,
       Task: knowledgeData.Task && {
         ...knowledgeData.Task,
         steps:
@@ -176,27 +176,27 @@ async function list({
 
 async function get({
   knowledgeId,
-  includeColleague = false,
+  includeAgent = false,
 }: {
   knowledgeId: string;
-  includeColleague?: boolean;
+  includeAgent?: boolean;
 }) {
   const includeOptions: {
-    model: typeof ColleagueKnowledge;
+    model: typeof AgentKnowledge;
     attributes: string[];
     include: {
-      model: typeof Colleague;
+      model: typeof Agent;
       attributes: string[];
     }[];
   }[] = [];
 
-  if (includeColleague) {
+  if (includeAgent) {
     includeOptions.push({
-      model: ColleagueKnowledge,
+      model: AgentKnowledge,
       attributes: ["teamId", "agentId"],
       include: [
         {
-          model: Colleague,
+          model: Agent,
           attributes: ["id", "teamId"],
         },
       ],

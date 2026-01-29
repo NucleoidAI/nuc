@@ -1,4 +1,4 @@
-import Colleague from "../models/Colleague";
+import Agent from "../models/Agent";
 import Step from "../models/Step";
 import Task from "../models/Task";
 import { event } from "@canmingir/link-express/event/client";
@@ -100,7 +100,7 @@ async function list({
     include: includeSteps
       ? [
           {
-            model: Colleague,
+            model: Agent,
             attributes: [],
             where: { teamId },
             required: true,

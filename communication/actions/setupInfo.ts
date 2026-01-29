@@ -11,10 +11,10 @@ const setupSuccessfullyBlock = [
 
 const setupInfo = async ({ body, ack, client, say }) => {
   await ack();
-  
-  const selectedColleagueId = body.actions[0].selected_option.value;
-  await storage.set("selectedColleagueId", selectedColleagueId);
-  
+
+  const selectedAgentId = body.actions[0].selected_option.value;
+  await storage.set("selectedAgentId", selectedAgentId);
+
   try {
     await client.chat.update({
       channel: body.channel.id,

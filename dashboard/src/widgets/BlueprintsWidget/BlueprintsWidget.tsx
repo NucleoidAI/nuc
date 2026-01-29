@@ -27,6 +27,7 @@ function BlueprintsWidget({ agentId }: { agentId: string }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [flowDialogOpen, setFlowDialogOpen] = useState(false);
+  const [aiResponse, setAiResponse] = useState(null);
 
   const handleDrawerOpen = (item) => {
     setSelectedItem(item);
@@ -36,6 +37,7 @@ function BlueprintsWidget({ agentId }: { agentId: string }) {
   const handleDrawerClose = () => {
     setDrawerOpen(false);
     setSelectedItem(null);
+    setAiResponse(null);
   };
 
   const handleFlowDialogOpen = (item) => {
@@ -80,6 +82,8 @@ function BlueprintsWidget({ agentId }: { agentId: string }) {
           handleDrawerClose={handleDrawerClose}
           selectedItem={selectedItem}
           setSelectedItem={setSelectedItem}
+          setAiResponse={setAiResponse}
+          aiResponse={aiResponse}
           agentId={agentId}
         />
       )}
@@ -89,6 +93,8 @@ function BlueprintsWidget({ agentId }: { agentId: string }) {
           flowDialogOpen={flowDialogOpen}
           handleFlowDialogClose={handleFlowDialogClose}
           selectedItem={selectedItem}
+          aiResponse={aiResponse}
+          setAiResponse={setAiResponse}
         />
       )}
 

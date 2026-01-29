@@ -84,7 +84,7 @@
         },
         "agentId": {
           "type": "string",
-          "description": "The colleague ID."
+          "description": "The agent ID."
         },
         "question": {
           "type": "string",
@@ -107,7 +107,7 @@
         },
         "agentId": {
           "type": "string",
-          "description": "The colleague ID."
+          "description": "The agent ID."
         },
         "message": {
           "type": "string",

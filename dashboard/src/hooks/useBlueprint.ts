@@ -61,14 +61,16 @@ function useBlueprint() {
     id: string,
     fetchState: DependencyArray = []
   ) => {
+    const eventDependencies = [blueprintUpserted];
+
     const { data, loading, error, fetch } = Api(
       () => (id ? http.get(`/blueprints/${id}`) : null),
-      [...fetchState]
+      [...eventDependencies, ...fetchState]
     );
     let result;
 
     if (data) {
-      result = convertToNodesAndEdges(data.nodes);
+      result = convertToNodesAndEdges(data.nodes || []);
 
       publish("BLUEPRINT_NODES_LOADED", {
         blueprintNodes: result,
@@ -105,7 +107,12 @@ function useBlueprint() {
     description: string,
     agentId: string,
     nodes?: NodeType[],
-    taskId?: string
+    taskId?: string,
+    messages?: Array<{
+      role: "user" | "assistant";
+      content: string;
+      createdAt: string | Date;
+    }>
   ) => {
     if (!blueprintId) {
       blueprintId = uuidv4();
@@ -117,6 +124,7 @@ function useBlueprint() {
       nodes,
       agentId,
       taskId,
+      messages,
     });
     if (response?.data) {
       publish("BLUEPRINT_UPSERTED", { Blueprint: response.data });

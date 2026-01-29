@@ -1,5 +1,6 @@
 import { Iconify } from "@canmingir/link/platform/components";
 import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
+import { fDateTime } from "../../utils/formatTime";
 import { findMCPById } from "../ChatInput/chat.config";
 import useAgent from "../../hooks/useAgent";
 
@@ -83,14 +84,14 @@ function BlueprintMessageBox({ message }) {
                     )}
                   </>
                 );
-              } else if (parsedContent.type === "COLLEAGUE") {
+              } else if (parsedContent.type === "AGENT") {
                 const { agent, loading } = getAgent(parsedContent.id);
 
                 return (
                   <MentionElement key={index}>
                     <SourcedAvatar
                       iconUrl={loading ? "L" : agent.icon}
-                      name="Colleague"
+                      name="Agent"
                       source="MINIMAL"
                       sx={{ mr: 1 }}
                     />
@@ -112,7 +113,7 @@ function BlueprintMessageBox({ message }) {
     }
   };
 
-  const isUser = message.role === "USER";
+  const isUser = message.role === "user";
 
   return (
     <Box
@@ -165,22 +166,43 @@ function BlueprintMessageBox({ message }) {
               gap: 1,
             }}
           >
-            <Typography
-              variant="subtitle2"
+            <Box
               sx={{
-                fontWeight: 600,
-                color: isUser
-                  ? theme.palette.primary.main
-                  : theme.palette.secondary.main,
-                fontSize: "0.75rem",
-                textTransform: "uppercase",
-                letterSpacing: "0.5px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
                 mb: 0.5,
               }}
-              data-cy="message-role"
             >
-              {isUser ? "You" : "Assistant"}
-            </Typography>
+              <Typography
+                variant="subtitle2"
+                sx={{
+                  fontWeight: 600,
+                  color: isUser
+                    ? theme.palette.primary.main
+                    : theme.palette.secondary.main,
+                  fontSize: "0.75rem",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                }}
+                data-cy="message-role"
+              >
+                {isUser ? "You" : "Assistant"}
+              </Typography>
+              {message.createdAt && (
+                <Typography
+                  variant="caption"
+                  sx={{
+                    ml: 1,
+                    color: theme.palette.text.secondary,
+                    fontSize: "0.65rem",
+                  }}
+                  data-cy="message-timestamp"
+                >
+                  {fDateTime(message.createdAt, "MMM DD, YYYY h:mm a")}
+                </Typography>
+              )}
+            </Box>
             <Typography
               variant="body1"
               sx={{

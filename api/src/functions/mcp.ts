@@ -1,4 +1,4 @@
-import Colleague from "../models/Colleague";
+import Agent from "../models/Agent";
 import MCP from "../models/MCP";
 import MCPs from "../mcps/mcps";
 import { NotFoundError } from "@canmingir/link-express/error";
@@ -17,10 +17,10 @@ async function read({
   } = {};
 
   if (agentId) {
-    const colleagueInstance = await Colleague.findByPk(agentId);
+    const agentInstance = await Agent.findByPk(agentId);
 
-    if (!colleagueInstance) {
-      throw new Error("INVALID_COLLEAGUE");
+    if (!agentInstance) {
+      throw new Error("INVALID_AGENT");
     }
 
     mcpWhere.agentId = agentId;
@@ -34,7 +34,7 @@ async function read({
 
   return mcpInstance
     .map((mcp) => mcp.toJSON())
-    .map(({ Colleague, ...mcpData }) => ({
+    .map(({ Agent, ...mcpData }) => ({
       ...mcpData,
       agentId: mcpData.agentId,
       teamId: mcpData.teamId,
@@ -53,7 +53,7 @@ async function create({
   agentId?: string;
 }) {
   if ((agentId && teamId) || (!agentId && !teamId)) {
-    throw new Error("EITHER_COLLEAGUE_ID_OR_TEAM_ID_REQUIRED");
+    throw new Error("EITHER_AGENT_ID_OR_TEAM_ID_REQUIRED");
   }
 
   const params = new URLSearchParams();

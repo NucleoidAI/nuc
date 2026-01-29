@@ -10,11 +10,11 @@ import useAgent from "../../hooks/useAgent";
 import { Box, Grid } from "@mui/material";
 
 const AgentMCP = ({ agent }: { agent: { id: string; name: string } }) => {
-  const { getMCPs, getColleagueAcquiredMCPs, getTokens } = useAcquiredMCPs();
+  const { getMCPs, getAgentAcquiredMCPs, getTokens } = useAcquiredMCPs();
 
   const { mcps } = getMCPs();
 
-  const { acquiredMCPs } = getColleagueAcquiredMCPs(agent.id);
+  const { acquiredMCPs } = getAgentAcquiredMCPs(agent.id);
 
   const instructions = [
     { id: "1", instruction: "Clone the repository from GitHub." },

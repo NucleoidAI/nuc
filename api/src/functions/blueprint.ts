@@ -1,4 +1,5 @@
 import BluePrint from "../models/Blueprint";
+import BlueprintMessage from "../models/BlueprintMessage";
 import { NotFoundError } from "@canmingir/link-express/error";
 
 type NodeType = {
@@ -22,6 +23,12 @@ async function getWithNodes(id: string) {
     where: {
       id,
     },
+    include: [
+      {
+        model: BlueprintMessage,
+        as: "messages",
+      },
+    ],
   });
 
   if (!Blueprint) {
@@ -36,7 +43,8 @@ async function upsert(
   description: string,
   agentId: string,
   id: string,
-  nodes?: NodeType[]
+  nodes?: NodeType[],
+  messages?: Array<{ role: string; content: string; createdAt: Date }>
 ) {
   let Blueprint;
 
@@ -61,6 +69,21 @@ async function upsert(
     });
   }
 
+  if (messages?.length) {
+    await BlueprintMessage.destroy({
+      where: { blueprintId: id },
+    });
+
+    await BlueprintMessage.bulkCreate(
+      messages.map((msg) => ({
+        blueprintId: id,
+        content: msg.content,
+        role: msg.role,
+        createdAt: msg.createdAt,
+      }))
+    );
+  }
+
   return {
     ...Blueprint.toJSON(),
     Nodes: nodes || [],
@@ -76,13 +99,26 @@ async function remove({ blueprintId }: { blueprintId: string }) {
 async function list({ agentId }: { agentId: string }) {
   const Blueprints = await BluePrint.findAll({
     where: { agentId },
+    include: [
+      {
+        model: BlueprintMessage,
+        as: "messages",
+      },
+    ],
   });
 
   return Blueprints.map((Blueprint) => Blueprint.toJSON());
 }
 
 async function get({ blueprintId }: { blueprintId: string }) {
-  const Blueprint = await BluePrint.findByPk(blueprintId);
+  const Blueprint = await BluePrint.findByPk(blueprintId, {
+    include: [
+      {
+        model: BlueprintMessage,
+        as: "messages",
+      },
+    ],
+  });
 
   if (!Blueprint) {
     throw new NotFoundError();

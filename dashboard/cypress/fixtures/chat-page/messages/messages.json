@@ -126,15 +126,15 @@
     "text": "In-progress report on customer service trends and improvements.",
     "status": "COMPLETED",
     "createdAt": "1970-01-20T22:08:14.324Z",
-    "ColleagueKnowledges": [
+    "AgentKnowledges": [
       {
         "id": "8de8e1c7-69c3-4591-8c94-5c7e559b9f71",
         "knowledgeId": "eab826a3-2566-4ac9-abaf-c3a31b947059",
         "agentId": null,
         "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
         "ProjectId": null,
-        "ColleagueKnowledgeId": null,
-        "ColleagueId": null
+        "AgentKnowledgeId": null,
+        "AgentId": null
       }
     ]
   }

@@ -188,7 +188,7 @@
     "description": "Setup internet subscription at user's address.",
     "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
     "pseudocode": "BEGIN_CONTEXT \nUser.Address = GetUserAddress()\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-    "responsibility": {
+    "blueprint": {
       "id": "ca7g8022-f343-570e-a171-3992963g7f70",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
@@ -479,7 +479,7 @@
     "description": "Setup internet subscription at user's address.",
     "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
     "pseudocode": "BEGIN_CONTEXT \nUser.Address = GetUserAddress()\nbbk = GetBBKByAddress(User.Address)\nIF bbk == NULL THEN\n    NotifyUser(\"Address not found. Please call support center.\")\n    Complete()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-    "responsibility": {
+    "blueprint": {
       "id": "ca7g8022-f343-570e-a171-3992963g7f70",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",

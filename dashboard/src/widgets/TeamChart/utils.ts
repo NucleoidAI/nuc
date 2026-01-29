@@ -48,20 +48,20 @@ export const toTeamTree = (teams, Blueprints) => {
     type: team.type,
     organizationId: team.organizationId,
     coach: team.coach,
-    children: (team.colleagues || []).map((c) => {
-      const colleagueBlueprints = (Blueprints || []).filter(
+    children: (team.agents || []).map((c) => {
+      const agentBlueprints = (Blueprints || []).filter(
         (r) => r.agentId === c.id
       );
 
       return {
         id: c.id,
-        nodeKind: "colleague",
+        nodeKind: "agent",
         name: c.name,
         icon: c.icon,
         teamId: c.teamId,
         description: c.description,
         aiEngineId: c.aiEngineId,
-        children: colleagueBlueprints.map((r) => ({
+        children: agentBlueprints.map((r) => ({
           id: r.id,
           nodeKind: "Blueprint",
           title: r.title,

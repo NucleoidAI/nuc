@@ -1,5 +1,5 @@
 import { App } from "@slack/bolt";
-import { colleagueSelect } from "./actions/colleagueSelect";
+import { agentSelect } from "./actions/agentSelect";
 import { createTask } from "./actions/createTask";
 import { handleLearnType } from "./actions/handleLearnType";
 import { learn } from "./commands/learn";
@@ -29,26 +29,26 @@ const createApp = () => {
 
   app.command("/learn", learn);
   app.action("learn_team_select", teamSelect);
-  app.action("learn_colleague_select", colleagueSelect);
+  app.action("learn_agent_select", agentSelect);
   app.action("select_learn_type", selectLearnType);
   app.action(/^learn_type_/, handleLearnType);
   app.action("submit_learn_info", submitLearnInfo);
 
   app.command("/task", task);
   app.action("task_team_select", teamSelect);
-  app.action("task_colleague_select", colleagueSelect);
+  app.action("task_agent_select", agentSelect);
   app.action("create_task", createTask);
   app.action("send_task", sendTask);
 
   app.command("/setup-ai-chat", setupAIChat);
   app.action("setup_team_select", teamSelect);
-  app.action("setup_colleague_select", colleagueSelect);
+  app.action("setup_agent_select", agentSelect);
   app.action("setup_ai_chat", setupInfo);
   app.message(listenAiMessage);
 
   app.command("/setup-supervising", setupSupervising);
   app.action("supervising_team_select", teamSelect);
-  app.action("supervising_colleague_select", colleagueSelect);
+  app.action("supervising_agent_select", agentSelect);
   app.action("supervising_info", setupSupervisingInfo);
   app.message(listenSupervisingMessage);
 

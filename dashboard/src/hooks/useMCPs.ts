@@ -40,7 +40,7 @@ function useMCPs() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getColleagueMCP = useCallback(
+  const getAgentMCP = useCallback(
     (agentId: string) => {
       const { data, loading, error } = Api(
         () => http.get(`/mcps?agentId=${agentId}`),
@@ -48,13 +48,13 @@ function useMCPs() {
       );
 
       if (data) {
-        publish("COLLEAGUE_MCPS_LOADED", {
-          colleagueMCPs: data,
+        publish("AGENT_MCPS_LOADED", {
+          agentMCPs: data,
         });
       }
 
       return {
-        colleagueMCPs: data,
+        agentMCPs: data,
         loading,
         error,
       };
@@ -65,7 +65,7 @@ function useMCPs() {
 
   return {
     getMCPs,
-    getColleagueMCP,
+    getAgentMCP,
     getActions,
   };
 }

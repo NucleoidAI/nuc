@@ -35,7 +35,7 @@ class MCP extends Model {
   @Column(DataType.UUID)
   declare teamId: string | null;
 
-  declare colleague?: any;
+  declare Agent?: any;
 }
 
 export default MCP;

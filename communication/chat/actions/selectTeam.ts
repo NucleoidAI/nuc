@@ -1,6 +1,6 @@
 import {account} from "../../account";
 import chat from "../../session";
-import { getColleagues } from "../../api/getColleagues";
+import { getAgents } from "../../api/getAgents";
 import storage from "../../Storage";
 
 const selectTeam = async ({ action, ack, say, body }) => {
@@ -14,15 +14,15 @@ const selectTeam = async ({ action, ack, say, body }) => {
 
   const sessions = account(body.message.user);
 
-  const colleagues = await getColleagues(sessions);
+  const agents = await getAgents(sessions);
 
-  const colleagueOptions = colleagues.map((colleague) => ({
+  const agentOptions = agents.map((agent) => ({
     text: {
       type: "plain_text",
-      text: colleague.name,
+      text: agent.name,
       emoji: true,
     },
-    value: colleague.id,
+    value: agent.id,
   }));
 
   await say({
@@ -31,22 +31,22 @@ const selectTeam = async ({ action, ack, say, body }) => {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: "✨ *Please select a colleague:*",
+          text: "✨ *Please select an agent:*",
         },
       },
       {
         type: "actions",
-        block_id: "colleague_selection",
+        block_id: "agent_selection",
         elements: [
           {
             type: "static_select",
             placeholder: {
               type: "plain_text",
-              text: "Select a colleague",
+              text: "Select an agent",
               emoji: true,
             },
-            action_id: "colleague_selected",
-            options: colleagueOptions,
+            action_id: "agent_selected",
+            options: agentOptions,
           },
         ],
       },

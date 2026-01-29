@@ -1,7 +1,7 @@
 import MCPs from "../mcps/mcps";
 import actions from "../actions";
 import blueprintFn from "./blueprint";
-import colleague from "./colleague";
+import agentData from "./agentData";
 import dataset from "../dataset";
 import { generate } from "../lib/llm";
 import knowledgeFn from "./knowledge";
@@ -23,7 +23,7 @@ async function messages({ teamId }: { teamId: string }) {
 }
 
 async function info({ agentId }) {
-  const { name, description } = await colleague.get({ agentId });
+  const { name, description } = await agentData.get({ agentId });
   return {
     role: "system",
     content: {
@@ -367,19 +367,24 @@ async function Blueprint({
 async function blueprintName({
   history,
   content,
+  agentId,
 }: {
   history?: {
     role: "system" | "user" | "assistant";
     content: string;
   }[];
   content: string;
+  agentId: string;
 }) {
+  const context = [await info({ agentId }), ...(history ?? [])];
+
   const response = await generate({
     dataset: dataset.train.blueprintName,
-    context: history,
+    context,
     content,
     json_format: "{ title: <TITLE>, description: <DESCRIPTION> }",
   });
+
   return response;
 }
 
@@ -496,14 +501,14 @@ async function chat({
   const conversationsData = await conversations({ sessionId });
   const blueprintsData = await blueprintFn.list({ agentId });
 
-  const colleagueData = await colleague.get({ agentId });
+  const agentDataResult = await agentData.get({ agentId });
 
-  if (!colleagueData) {
-    throw new Error("Colleague not found");
+  if (!agentDataResult) {
+    throw new Error("Agent not found");
   }
 
   const task = await taskFn.list({
-    teamId: colleagueData.teamId,
+    teamId: agentDataResult.teamId,
     agentId,
     status: "IN_PROGRESS",
     sessionId,

@@ -52,7 +52,7 @@ function TeamChart() {
     : [];
 
   const filteredOrganizations = orgArray.filter(
-    (org) => org.colleagues && org.colleagues.length > 0 && org.id === projectId
+    (org) => org.agents && org.agents.length > 0 && org.id === projectId
   );
 
   const teamTree = useMemo(
@@ -79,6 +79,7 @@ function TeamChart() {
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [aiResponse, setAiResponse] = useState(null);
 
   const handleAddAgent = (teamId: string) => {
     setSelectedTeamId(teamId);
@@ -98,6 +99,7 @@ function TeamChart() {
   const handleDrawerClose = () => {
     setDrawerOpen(false);
     setSelectedItem(null);
+    setAiResponse(null);
   };
 
   const handleAgentDrawerOpen = (agentNode, tab) => {
@@ -195,6 +197,8 @@ function TeamChart() {
           drawerOpen={drawerOpen}
           handleDrawerClose={handleDrawerClose}
           selectedItem={selectedItem}
+          setAiResponse={setAiResponse}
+          aiResponse={aiResponse}
         />
       )}
 

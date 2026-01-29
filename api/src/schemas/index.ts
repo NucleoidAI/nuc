@@ -1,5 +1,5 @@
 import Blueprint from "./Blueprint";
-import Colleague from "./Colleague";
+import Agent from "./Agent";
 import Command from "./Command";
 import Communication from "./Communication";
 import Knowledge from "./Knowledge";
@@ -13,7 +13,7 @@ import Team from "./Team";
 export default {
   Project,
   Team,
-  Colleague,
+  Agent,
   Knowledge,
   Message,
   Session,

@@ -15,13 +15,13 @@ import { useEffect, useState } from "react";
 
 function Knowledge({ agentId, teamId }: { agentId?: string; teamId?: string }) {
   const {
-    getColleagueKnowledges,
+    getAgentKnowledges,
     deleteKnowledge,
     createKnowledge,
     getTeamKnowledges,
   } = useKnowledge();
 
-  const { knowledges } = getColleagueKnowledges(agentId);
+  const { knowledges } = getAgentKnowledges(agentId);
   const { knowledges: teamKnowledges } = getTeamKnowledges(teamId);
 
   const { getTeamById } = useTeams();

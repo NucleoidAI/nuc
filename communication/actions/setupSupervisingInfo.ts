@@ -15,8 +15,8 @@ const setupSuccessfullyBlock = [
 const setupSupervisingInfo = async ({ body, ack, client, say }) => {
   await ack();
 
-  const selectedColleagueId = body.actions[0].selected_option.value;
-  await storage.set("selectedColleagueId", selectedColleagueId);
+  const selectedAgentId = body.actions[0].selected_option.value;
+  await storage.set("selectedAgentId", selectedAgentId);
 
   const setupTimestamp = new Date().toISOString();
   await storage.set("setupTimestamp", setupTimestamp);

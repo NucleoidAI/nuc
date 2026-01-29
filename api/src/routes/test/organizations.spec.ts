@@ -4,10 +4,10 @@ import app from "../../app";
 import { deepEqual } from "assert";
 import request from "supertest";
 
-describe("Organization Colleagues", () => {
+describe("Organization Agents", () => {
   beforeEach(async () => test.reset());
 
-  it("lists organization with colleagues and teams", async () => {
+  it("lists organization with agents and teams", async () => {
     test.project("e6d4744d-a11b-4c75-acad-e24a02903729");
 
     const { body } = await request(app)
@@ -23,7 +23,7 @@ describe("Organization Colleagues", () => {
         type: null,
         organizationId: "1c063446-7e78-432a-a273-34f481d0f0c3",
         coach: "Emily",
-        colleagues: [
+        agents: [
           {
             id: "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
             name: "Alex",
@@ -55,7 +55,7 @@ describe("Organization Colleagues", () => {
         type: "MULTI",
         organizationId: "1c063446-7e78-432a-a273-34f481d0f0c3",
         coach: null,
-        colleagues: [],
+        agents: [],
       },
       {
         id: "488edd32-93cd-491f-a108-f872e39517cc",
@@ -65,7 +65,7 @@ describe("Organization Colleagues", () => {
         type: null,
         organizationId: "1c063446-7e78-432a-a273-34f481d0f0c3",
         coach: "Elijah",
-        colleagues: [
+        agents: [
           {
             id: "7a222222-9696-498f-9aaf-b4cf5b2ca043",
             name: "Ava",

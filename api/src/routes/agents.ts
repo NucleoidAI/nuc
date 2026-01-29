@@ -1,9 +1,9 @@
 import Blueprint from "../schemas/Blueprint";
-import Colleague from "../models/Colleague";
+import Agent from "../models/Agent";
 import Joi from "joi";
 import Session from "../models/Session";
 import Supervising from "../models/Supervising";
-import agent from "../functions/agent";
+import agentFn from "../functions/agent";
 import { event } from "node-event-test-package/client";
 import express from "express";
 import schemas from "../schemas";
@@ -14,25 +14,25 @@ router.post("/", async (req, res) => {
   const { projectId: teamId } = req.session;
   const { body } = req;
 
-  const validatedBody = Joi.attempt(body, schemas.Colleague);
+  const validatedBody = Joi.attempt(body, schemas.Agent);
 
   validatedBody.teamId = teamId;
 
-  const colleague = await Colleague.create(validatedBody);
+  const agent = await Agent.create(validatedBody);
 
-  res.status(201).json(colleague);
+  res.status(201).json(agent);
 });
 
 router.get("/", async (req, res) => {
   const { projectId: teamId } = req.session;
 
-  const colleagues = await Colleague.findAll({
+  const agents = await Agent.findAll({
     where: { teamId },
     attributes: { exclude: ["aiEngineId"] },
     include: ["AIEngine"],
   });
 
-  res.json(colleagues);
+  res.json(agents);
 });
 
 router.put("/:id", async (req, res) => {
@@ -41,21 +41,21 @@ router.put("/:id", async (req, res) => {
   const { body } = req;
 
   const validatedId = Joi.attempt(id, Joi.string().guid().required());
-  const validatedBody = Joi.attempt(body, schemas.Colleague);
+  const validatedBody = Joi.attempt(body, schemas.Agent);
 
-  const colleague = await Colleague.findByPk(validatedId);
+  const agent = await Agent.findByPk(validatedId);
 
-  if (!colleague) {
+  if (!agent) {
     res.status(404);
   }
 
-  if (colleague.teamId !== teamId) {
+  if (agent.teamId !== teamId) {
     res.status(401);
   }
 
-  await colleague.update(validatedBody);
+  await agent.update(validatedBody);
 
-  res.json(colleague);
+  res.json(agent);
 });
 
 router.get("/:agentId", async (req, res) => {
@@ -64,20 +64,20 @@ router.get("/:agentId", async (req, res) => {
 
   const validatedId = Joi.attempt(agentId, Joi.string().guid().required());
 
-  const colleague = await Colleague.findByPk(validatedId, {
+  const agent = await Agent.findByPk(validatedId, {
     attributes: { exclude: ["aiEngineId"] },
     include: ["AIEngine"],
   });
 
-  if (!colleague) {
+  if (!agent) {
     res.status(404);
   }
 
-  if (colleague && colleague.teamId !== teamId) {
+  if (agent && agent.teamId !== teamId) {
     res.status(401);
   }
 
-  res.json(colleague);
+  res.json(agent);
 });
 
 router.delete("/:id", async (req, res) => {
@@ -86,17 +86,17 @@ router.delete("/:id", async (req, res) => {
 
   const validatedId = Joi.attempt(id, Joi.string().guid().required());
 
-  const colleague = await Colleague.findByPk(validatedId);
+  const agent = await Agent.findByPk(validatedId);
 
-  if (!colleague) {
+  if (!agent) {
     res.status(404);
   }
 
-  if (colleague && colleague.teamId !== teamId) {
+  if (agent && agent.teamId !== teamId) {
     res.status(401);
   }
 
-  await colleague?.destroy();
+  await agent?.destroy();
 
   res.status(204).end();
 });
@@ -108,13 +108,13 @@ router.get("/:agentId/sessions", async (req, res) => {
     Joi.object({ agentId: Joi.string().guid().required() })
   );
 
-  const colleague = await Colleague.findByPk(agentId);
+  const agent = await Agent.findByPk(agentId);
 
-  if (!colleague) {
+  if (!agent) {
     res.status(404);
   }
 
-  if (colleague && colleague.teamId !== teamId) {
+  if (agent && agent.teamId !== teamId) {
     res.status(401);
   }
 
@@ -134,13 +134,13 @@ router.get("/:agentId/supervisings", async (req, res) => {
     })
   );
 
-  const colleague = await Colleague.findByPk(agentId);
+  const agent = await Agent.findByPk(agentId);
 
-  if (!colleague) {
+  if (!agent) {
     res.status(404);
   }
 
-  if (colleague && colleague.teamId !== teamId) {
+  if (agent && agent.teamId !== teamId) {
     res.status(401);
   }
 
@@ -158,12 +158,12 @@ router.get("/:agentId/supervisings", async (req, res) => {
   res.json(supervisings);
 });
 
-router.post("/Blueprints", async (req, res) => {
+router.post("/blueprints", async (req, res) => {
   const { body } = req;
 
   const { history, content } = Blueprint.create.parse(body);
 
-  const response = await agent.Blueprint({
+  const response = await agentFn.Blueprint({
     history,
     content,
   });
@@ -174,11 +174,12 @@ router.post("/Blueprints", async (req, res) => {
   });
 });
 
-router.post("/Blueprint-name", async (req, res) => {
+router.post("/:agentId/blueprints", async (req, res) => {
   const { body } = req;
+  const { agentId } = req.params;
   const { history, content } = Blueprint.createBlueprintName.parse(body);
 
-  const response = await agent.blueprintName({ history, content });
+  const response = await agentFn.blueprintName({ history, content, agentId });
 
   res.json(response);
 });

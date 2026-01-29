@@ -1,16 +1,16 @@
 import config from "../../config";
 
-describe("Colleague page", () => {
+describe("Agent page", () => {
   beforeEach(() => {
-    cy.fixture("colleagues-page/teams.json").then((teams) => {
+    cy.fixture("agents-page/teams.json").then((teams) => {
       cy.wrap(teams[1].id).as("teamId");
-      cy.platformSetup(teams[1].id, "colleagues-page/teams.json", config);
+      cy.platformSetup(teams[1].id, "agents-page/teams.json", config);
       cy.viewport(1280, 720);
     });
 
-    cy.fixture("colleagues-page/colleagues.json").as("colleagues");
+    cy.fixture("agents-page/agents.json").as("agents");
 
-    cy.fixture("colleagues-page/colleague.json").as("colleague");
+    cy.fixture("agents-page/agent.json").as("agent");
 
     cy.fixture("knowledges/knowledges.json").as("knowledges");
 
@@ -69,27 +69,27 @@ describe("Colleague page", () => {
     );
   });
 
-  it("visit colleague page", function () {
-    cy.visit("/colleagues");
+  it("visit agent page", function () {
+    cy.visit("/agents");
 
-    cy.setColleagueIntercept();
-    cy.intercept("GET", `/api/colleagues/${this.colleague.id}`, this.colleague);
-    cy.getBySel("colleague-card-more-vert").eq(0).first().click();
-    cy.getBySel("colleague-card-menu-view").click();
-    cy.checkRoute(`/colleagues/${this.colleague.id}`);
+    cy.setAgentIntercept();
+    cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
+    cy.getBySel("agent-card-more-vert").eq(0).first().click();
+    cy.getBySel("agent-card-menu-view").click();
+    cy.checkRoute(`/agents/${this.agent.id}`);
   });
 
-  it("edit colleague page profile", function () {
-    cy.visit(`/colleagues/${this.colleague.id}`);
+  it("edit agent page profile", function () {
+    cy.visit(`/agents/${this.agent.id}`);
 
-    cy.intercept("GET", `/api/colleagues/${this.colleague.id}`, this.colleague);
+    cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
 
     cy.getBySel("edit-icon").click();
 
     cy.getBySel("role").type("Developer");
     cy.getBySel("character").type("Funny");
 
-    cy.intercept("PUT", `/api/colleagues/${this.colleague.id}`, this.colleague);
+    cy.intercept("PUT", `/api/agents/${this.agent.id}`, this.agent);
 
     cy.getBySel("edit-icon").click();
     cy.getBySel("edit-icon").click();
@@ -99,16 +99,16 @@ describe("Colleague page", () => {
 
     cy.getBySel("edit-icon").click();
 
-    cy.checkRoute(`/colleagues/${this.colleague.id}`);
+    cy.checkRoute(`/agents/${this.agent.id}`);
   });
 
   it("add url in knowledge base", function () {
-    cy.visit(`/colleagues/${this.colleague.id}`);
+    cy.visit(`/agents/${this.agent.id}`);
 
-    cy.intercept("GET", `/api/colleagues/${this.colleague.id}`, this.colleague);
+    cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
     cy.intercept(
       "GET",
-      `/api/knowledge?agentId=${this.colleague.id}`,
+      `/api/knowledge?agentId=${this.agent.id}`,
       this.knowledges
     );
 
@@ -130,7 +130,7 @@ describe("Colleague page", () => {
     cy.intercept("POST", `/api/knowledge`, this.knowledgesUrl);
     cy.intercept(
       "GET",
-      `/api/knowledge?agentId=${this.colleague.id}`,
+      `/api/knowledge?agentId=${this.agent.id}`,
       this.knowledgesPost
     );
 
@@ -142,9 +142,9 @@ describe("Colleague page", () => {
   });
 
   it("add text in knowledge base", function () {
-    cy.visit(`/colleagues/${this.colleague.id}`);
+    cy.visit(`/agents/${this.agent.id}`);
 
-    cy.intercept("GET", `/api/colleagues/${this.colleague.id}`, this.colleague);
+    cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
 
     cy.get('[data-cy="tab-knowledge-base"]').click();
 
@@ -165,7 +165,7 @@ describe("Colleague page", () => {
     cy.intercept("POST", `/api/knowledge`, this.knowledgesText);
     cy.intercept(
       "GET",
-      `/api/knowledge?agentId=${this.colleague.id}`,
+      `/api/knowledge?agentId=${this.agent.id}`,
       this.knowledgesPost
     );
 
@@ -173,15 +173,15 @@ describe("Colleague page", () => {
 
     cy.waitEvent("KNOWLEDGE_CREATED");
 
-    cy.checkRoute(`/colleagues/${this.colleague.id}`);
+    cy.checkRoute(`/agents/${this.agent.id}`);
 
     cy.waitEvent("KNOWLEDGE_LOADED");
   });
 
   it("add qa in knowledge base", function () {
-    cy.visit(`/colleagues/${this.colleague.id}`);
+    cy.visit(`/agents/${this.agent.id}`);
 
-    cy.intercept("GET", `/api/colleagues/${this.colleague.id}`, this.colleague);
+    cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
 
     cy.get('[data-cy="tab-knowledge-base"]').click();
 
@@ -200,7 +200,7 @@ describe("Colleague page", () => {
     cy.intercept("POST", `/api/knowledge`, this.knowledgesQA);
     cy.intercept(
       "GET",
-      `/api/knowledge?agentId=${this.colleague.id}`,
+      `/api/knowledge?agentId=${this.agent.id}`,
       this.knowledgesPost
     );
 
@@ -208,19 +208,19 @@ describe("Colleague page", () => {
 
     cy.waitEvent("KNOWLEDGE_CREATED");
 
-    cy.checkRoute(`/colleagues/${this.colleague.id}`);
+    cy.checkRoute(`/agents/${this.agent.id}`);
 
     cy.waitEvent("KNOWLEDGE_LOADED");
   });
 
   it("delete url in knowledge base", function () {
-    cy.visit(`/colleagues/${this.colleague.id}`);
+    cy.visit(`/agents/${this.agent.id}`);
 
-    cy.intercept("GET", `/api/colleagues/${this.colleague.id}`, this.colleague);
+    cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
 
     cy.intercept(
       "GET",
-      `/api/knowledge?agentId=${this.colleague.id}`,
+      `/api/knowledge?agentId=${this.agent.id}`,
       this.knowledgesDelete
     );
 
@@ -240,7 +240,7 @@ describe("Colleague page", () => {
 
     cy.intercept(
       "GET",
-      `/api/knowledge?agentId=${this.colleague.id}`,
+      `/api/knowledge?agentId=${this.agent.id}`,
       this.knowledges
     );
 
@@ -250,19 +250,19 @@ describe("Colleague page", () => {
 
     cy.waitEvent("KNOWLEDGE_DELETED");
 
-    cy.checkRoute(`/colleagues/${this.colleague.id}`);
+    cy.checkRoute(`/agents/${this.agent.id}`);
 
     cy.waitEvent("KNOWLEDGE_LOADED");
   });
 
   it("delete text in knowledge base", function () {
-    cy.visit(`/colleagues/${this.colleague.id}`);
+    cy.visit(`/agents/${this.agent.id}`);
 
-    cy.intercept("GET", `/api/colleagues/${this.colleague.id}`, this.colleague);
+    cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
 
     cy.intercept(
       "GET",
-      `/api/knowledge?agentId=${this.colleague.id}`,
+      `/api/knowledge?agentId=${this.agent.id}`,
       this.knowledgesDelete
     );
 
@@ -282,7 +282,7 @@ describe("Colleague page", () => {
 
     cy.intercept(
       "GET",
-      `/api/knowledge?agentId=${this.colleague.id}`,
+      `/api/knowledge?agentId=${this.agent.id}`,
       this.knowledges
     );
 
@@ -292,19 +292,19 @@ describe("Colleague page", () => {
 
     cy.waitEvent("KNOWLEDGE_DELETED");
 
-    cy.checkRoute(`/colleagues/${this.colleague.id}`);
+    cy.checkRoute(`/agents/${this.agent.id}`);
 
     cy.waitEvent("KNOWLEDGE_LOADED");
   });
 
   it("delete qa in knowledge base", function () {
-    cy.visit(`/colleagues/${this.colleague.id}`);
+    cy.visit(`/agents/${this.agent.id}`);
 
-    cy.intercept("GET", `/api/colleagues/${this.colleague.id}`, this.colleague);
+    cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
 
     cy.intercept(
       "GET",
-      `/api/knowledge?agentId=${this.colleague.id}`,
+      `/api/knowledge?agentId=${this.agent.id}`,
       this.knowledgesDelete
     );
 
@@ -324,7 +324,7 @@ describe("Colleague page", () => {
 
     cy.intercept(
       "GET",
-      `/api/knowledge?agentId=${this.colleague.id}`,
+      `/api/knowledge?agentId=${this.agent.id}`,
       this.knowledges
     );
 
@@ -334,20 +334,20 @@ describe("Colleague page", () => {
 
     cy.waitEvent("KNOWLEDGE_DELETED");
 
-    cy.checkRoute(`/colleagues/${this.colleague.id}`);
+    cy.checkRoute(`/agents/${this.agent.id}`);
 
     cy.waitEvent("KNOWLEDGE_LOADED");
   });
 
   it("answers supervising", function () {
-    cy.visit(`/colleagues/${this.colleague.id}`);
+    cy.visit(`/agents/${this.agent.id}`);
 
     cy.intercept(
       "GET",
-      `/api/colleagues/${this.colleague.id}/supervisings`,
+      `/api/agents/${this.agent.id}/supervisings`,
       this.supervising
     );
-    cy.intercept("GET", `/api/colleagues/${this.colleague.id}`, this.colleague);
+    cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
 
     cy.get('[data-cy="tab-supervisings"]').click();
 
@@ -359,7 +359,7 @@ describe("Colleague page", () => {
 
     cy.intercept(
       "GET",
-      `/api/colleagues/${this.colleague.id}/supervisings?status=IN_PROGRESS`,
+      `/api/agents/${this.agent.id}/supervisings?status=IN_PROGRESS`,
       this.supervisingStatus
     );
 
@@ -375,7 +375,7 @@ describe("Colleague page", () => {
 
     cy.intercept(
       "GET",
-      `/api/colleagues/${this.colleague.id}/supervisings`,
+      `/api/agents/${this.agent.id}/supervisings`,
       this.supervisingPatchGet
     );
 
@@ -387,7 +387,7 @@ describe("Colleague page", () => {
 
     cy.intercept(
       "GET",
-      `/api/colleagues/${this.colleague.id}/supervisings?status=ANSWERED`,
+      `/api/agents/${this.agent.id}/supervisings?status=ANSWERED`,
       this.supervisingStatusAnswered
     );
 
@@ -395,9 +395,9 @@ describe("Colleague page", () => {
   });
 
   it("goes task page", function () {
-    cy.visit(`/colleagues/${this.colleague.id}`);
+    cy.visit(`/agents/${this.agent.id}`);
 
-    cy.intercept("GET", `/api/colleagues/${this.colleague.id}`, this.colleague);
+    cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
 
     cy.intercept("GET", `/api/tasks`, {
       fixture: "tasks/task.single.json",
@@ -407,11 +407,11 @@ describe("Colleague page", () => {
   });
 
   it("add task", function () {
-    cy.visit(`/colleagues/${this.colleague.id}`);
+    cy.visit(`/agents/${this.agent.id}`);
 
-    cy.intercept("GET", `/api/colleagues/${this.colleague.id}`, this.colleague);
+    cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
 
-    cy.intercept("GET", `/api/tasks?agentId=${this.colleague.id}`, {
+    cy.intercept("GET", `/api/tasks?agentId=${this.agent.id}`, {
       fixture: "tasks/task.single.json",
     });
 
@@ -427,7 +427,7 @@ describe("Colleague page", () => {
       fixture: "tasks/task.single.json",
     });
 
-    cy.intercept("GET", `/api/tasks?agentId=${this.colleague.id}`, {
+    cy.intercept("GET", `/api/tasks?agentId=${this.agent.id}`, {
       fixture: "tasks/task.json",
     });
 
@@ -439,11 +439,11 @@ describe("Colleague page", () => {
   });
 
   it("shows task progresses", function () {
-    cy.visit(`/colleagues/${this.colleague.id}`);
+    cy.visit(`/agents/${this.agent.id}`);
 
-    cy.intercept("GET", `/api/colleagues/${this.colleague.id}`, this.colleague);
+    cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
 
-    cy.intercept("GET", `/api/tasks?agentId=${this.colleague.id}`, {
+    cy.intercept("GET", `/api/tasks?agentId=${this.agent.id}`, {
       fixture: "tasks/task.single.json",
     });
 

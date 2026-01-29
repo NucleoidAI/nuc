@@ -1,4 +1,4 @@
-import BlueprintFlow from "./BlueprintFlow";
+import BlueprintFlowWidget from "../../widgets/BlueprintFlowWidget/BlueprintFlowWidget";
 import { FlowDefinition } from "./helper";
 import React from "react";
 
@@ -21,19 +21,23 @@ interface Blueprint {
   agentId: string;
 }
 
+interface BlueprintFlowDialogProps {
+  flowDialogOpen: boolean;
+  handleFlowDialogClose: () => void;
+  selectedItem: Blueprint;
+  aiResponse?: AIResponse;
+  setAiResponse?: (response: AIResponse | null) => void;
+  taskId?: string;
+}
+
 const BlueprintFlowDialog = ({
   flowDialogOpen,
   handleFlowDialogClose,
   selectedItem,
   aiResponse,
+  setAiResponse,
   taskId,
-}: {
-  flowDialogOpen: boolean;
-  handleFlowDialogClose: () => void;
-  selectedItem: Blueprint;
-  aiResponse?: AIResponse;
-  taskId?: string;
-}) => {
+}: BlueprintFlowDialogProps) => {
   return (
     <Dialog
       open={flowDialogOpen}
@@ -61,8 +65,9 @@ const BlueprintFlowDialog = ({
         }}
       >
         {selectedItem && (
-          <BlueprintFlow
+          <BlueprintFlowWidget
             aiResponse={aiResponse}
+            setAiResponse={setAiResponse}
             blueprint={selectedItem}
             taskId={taskId}
           />

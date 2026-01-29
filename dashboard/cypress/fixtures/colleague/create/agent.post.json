@@ -2,7 +2,7 @@
   "id": 3,
   "name": "Batman",
   "personality": "Intelligent, mysterious, and brave. Excels in detective work and combat.",
-  "responsibility": "Protecting Gotham City, solving mysteries, and combating threats.",
+  "blueprint": "Protecting Gotham City, solving mysteries, and combating threats.",
   "companyId": 1,
   "avatar": ":9:",
   "departmentId": 1,

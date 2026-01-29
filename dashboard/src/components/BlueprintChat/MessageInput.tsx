@@ -50,7 +50,7 @@ const MessageInput = ({ addMessage }) => {
           fullWidth
           variant="standard"
           onChange={handleInputChange}
-          placeholder="Type here what you want your colleague to do."
+          placeholder="Type here what you want your agent to do."
           InputProps={{
             disableUnderline: true,
           }}

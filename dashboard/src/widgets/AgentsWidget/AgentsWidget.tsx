@@ -64,7 +64,7 @@ function AgentsWidget({ teamId }) {
           addNew={"Agent"}
           onClickFunction={() => {
             openForm();
-            publish("COLLEAGUE_WIZARD_OPENED", { type: "ADD" });
+            publish("AGENT_WIZARD_OPENED", { type: "ADD" });
           }}
         />
 

@@ -65,7 +65,7 @@ describe("Tasks service", () => {
       result: null,
       createdAt: "2025-01-19T10:34:20.094Z",
       agentId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      Colleague: {
+      Agent: {
         teamId: "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
       },
     });

@@ -6,7 +6,7 @@ const createTask = async ({ body, ack, client, action }) => {
   
   const agentId = body.actions[0].selected_option.value;
   
-  storage.set("selectedColleagueId", agentId);
+  storage.set("selectedAgentId", agentId);
 
   let blocks: AnyBlock[] = [
     {

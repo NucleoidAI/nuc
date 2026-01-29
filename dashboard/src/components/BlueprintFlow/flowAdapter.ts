@@ -1,4 +1,8 @@
 function convertToNodesAndEdges(data) {
+  if (!data || !Array.isArray(data) || data.length === 0) {
+    return { nodes: [], edges: [] };
+  }
+
   const nodes = data.map((item) => {
     return {
       id: item.id,

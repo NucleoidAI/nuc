@@ -32,6 +32,7 @@ type DefinitionGraphNode = {
   next?: string | string[];
   trueNext?: string[];
   falseNext?: string[];
+  changeType?: "added" | "modified" | "removed" | "unchanged";
 };
 
 export type DefinitionGraph = {

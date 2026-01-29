@@ -70,7 +70,7 @@ function useBlueprint() {
     let result;
 
     if (data) {
-      result = convertToNodesAndEdges(data.nodes);
+      result = convertToNodesAndEdges(data.nodes || []);
 
       publish("BLUEPRINT_NODES_LOADED", {
         blueprintNodes: result,

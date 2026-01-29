@@ -1,19 +1,14 @@
 import http from "../http";
 
-const createKnowledge = async (
-  session,
-  learnType,
-  agentId,
-  learningInfo
-) => {
-  let body = { agentId, type: learnType } as { 
-    agentId: string; 
-    type: string; 
-    url?: string; 
-    answer?: string; 
-    question?: string; 
+const createKnowledge = async (session, learnType, agentId, learningInfo) => {
+  let body = { agentId, type: learnType } as {
+    agentId: string;
+    type: string;
+    url?: string;
+    answer?: string;
+    question?: string;
     text?: string;
-  }
+  };
 
   switch (learnType) {
     case "URL":
@@ -34,10 +29,7 @@ const createKnowledge = async (
     },
   });
 
-  console.log("Knowledge created:", response.data);
-
   return response.data;
 };
 
 export { createKnowledge };
-

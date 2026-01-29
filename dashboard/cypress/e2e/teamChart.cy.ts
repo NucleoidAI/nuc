@@ -21,12 +21,8 @@ describe("Organization chart", () => {
       }
     );
 
-    cy.fixture("agents-page/create/agents.team.get.json").as(
-      "newAgents"
-    );
-    cy.fixture("agents-page/create/agent.team.post.json").as(
-      "createdAgent"
-    );
+    cy.fixture("agents-page/create/agents.team.get.json").as("newAgents");
+    cy.fixture("agents-page/create/agent.team.post.json").as("createdAgent");
 
     cy.intercept("GET", "/api/blueprints", {
       fixture: "blueprints/blueprints.get.json",

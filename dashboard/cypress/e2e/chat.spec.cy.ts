@@ -40,13 +40,9 @@ describe("Chat widget", () => {
       fixture: "knowledges/create/knowledges.url.post.json",
     });
 
-    cy.intercept(
-      "GET",
-      `/api/agents/72ef5b08-b4a9-42b7-bb0a-22d40e56798b`,
-      {
-        fixture: "chat-page/agent.json",
-      }
-    );
+    cy.intercept("GET", `/api/agents/72ef5b08-b4a9-42b7-bb0a-22d40e56798b`, {
+      fixture: "chat-page/agent.json",
+    });
 
     cy.getBySel("send-button").click();
 
@@ -108,13 +104,9 @@ describe("Chat widget", () => {
       fixture: "knowledges/create/knowledges.text.post.json",
     });
 
-    cy.intercept(
-      "GET",
-      `/api/agents/72ef5b08-b4a9-42b7-bb0a-22d40e56798b`,
-      {
-        fixture: "chat-page/agent.json",
-      }
-    );
+    cy.intercept("GET", `/api/agents/72ef5b08-b4a9-42b7-bb0a-22d40e56798b`, {
+      fixture: "chat-page/agent.json",
+    });
 
     cy.getBySel("send-button").click();
 
@@ -148,13 +140,9 @@ describe("Chat widget", () => {
       fixture: "knowledges/create/knowledges.url.post.json",
     });
 
-    cy.intercept(
-      "GET",
-      `/api/agents/72ef5b08-b4a9-42b7-bb0a-22d40e56798b`,
-      {
-        fixture: "chat-page/agent.json",
-      }
-    );
+    cy.intercept("GET", `/api/agents/72ef5b08-b4a9-42b7-bb0a-22d40e56798b`, {
+      fixture: "chat-page/agent.json",
+    });
 
     cy.getBySel("send-button").click();
 
@@ -184,13 +172,9 @@ describe("Chat widget", () => {
       fixture: "knowledges/create/knowledges.url.post.json",
     });
 
-    cy.intercept(
-      "GET",
-      `/api/agents/72ef5b08-b4a9-42b7-bb0a-22d40e56798b`,
-      {
-        fixture: "chat-page/agent.json",
-      }
-    );
+    cy.intercept("GET", `/api/agents/72ef5b08-b4a9-42b7-bb0a-22d40e56798b`, {
+      fixture: "chat-page/agent.json",
+    });
 
     cy.getBySel("message-input").type("{enter}");
 

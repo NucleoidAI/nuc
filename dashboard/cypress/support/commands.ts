@@ -67,50 +67,47 @@ declare namespace Cypress {
   }
 }
 
-Cypress.Commands.add(
-  "createAgentViaDialog",
-  (agent, newAgentsFixture) => {
-    const { name, character, title, role, avatar } = agent;
+Cypress.Commands.add("createAgentViaDialog", (agent, newAgentsFixture) => {
+  const { name, character, title, role, avatar } = agent;
 
-    cy.getBySel("agent-wizard-name-input").click();
+  cy.getBySel("agent-wizard-name-input").click();
 
-    cy.getBySel("name").type(name, {
-      force: true,
-    });
+  cy.getBySel("name").type(name, {
+    force: true,
+  });
 
-    cy.getBySel("avatar-select-button").click();
+  cy.getBySel("avatar-select-button").click();
 
-    cy.getBySel("avatar-selection").should("be.visible");
+  cy.getBySel("avatar-selection").should("be.visible");
 
-    cy.selectIconFromPicker(avatar);
+  cy.selectIconFromPicker(avatar);
 
-    cy.getBySel("agent-next-button").click();
+  cy.getBySel("agent-next-button").click();
 
-    cy.getBySel("agent-wizard-title-input").type(title);
+  cy.getBySel("agent-wizard-title-input").type(title);
 
-    cy.getBySel("agent-wizard-role-input").type(role);
+  cy.getBySel("agent-wizard-role-input").type(role);
 
-    cy.getBySel("agent-next-button").click();
+  cy.getBySel("agent-next-button").click();
 
-    cy.get('[data-cy="character"]').type(character, {
-      force: true,
-    });
+  cy.get('[data-cy="character"]').type(character, {
+    force: true,
+  });
 
-    cy.getBySel("agent-next-button").click();
+  cy.getBySel("agent-next-button").click();
 
-    cy.getBySel("ai-marketplace-item").eq(1).click();
+  cy.getBySel("ai-marketplace-item").eq(1).click();
 
-    cy.intercept("POST", `/api/agents`, agent);
+  cy.intercept("POST", `/api/agents`, agent);
 
-    cy.storageGet("itemId").then(() => {
-      cy.intercept("GET", "/api/agents", newAgentsFixture);
-    });
+  cy.storageGet("itemId").then(() => {
+    cy.intercept("GET", "/api/agents", newAgentsFixture);
+  });
 
-    cy.getBySel("agent-finish-button").click();
+  cy.getBySel("agent-finish-button").click();
 
-    cy.waitEvent("AGENT_ADDED");
-  }
-);
+  cy.waitEvent("AGENT_ADDED");
+});
 
 Cypress.Commands.add("editAgentViaDialog", (agent, newAgents) => {
   const { id, name, character, role, title, avatar } = agent;

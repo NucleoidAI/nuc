@@ -49,7 +49,7 @@ const AuthHandler = ({ skill, getTokens, onAuthSuccess }) => {
             onAuthSuccess();
           }
         } catch (error) {
-          throw error;
+          console.error("Error during authentication:", error);
         } finally {
           window.removeEventListener("message", handleMessage);
           popup.close();

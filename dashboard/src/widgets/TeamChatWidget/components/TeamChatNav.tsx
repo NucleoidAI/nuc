@@ -98,12 +98,9 @@ function TeamChatNav({ loading, agents, collapsed, setCollapsed }) {
     });
   }, []);
 
-  const handleClickResult = useCallback(
-    (result) => {
-      handleClickAwaySearch();
-    },
-    [handleClickAwaySearch]
-  );
+  const handleClickResult = useCallback(() => {
+    handleClickAwaySearch();
+  }, [handleClickAwaySearch]);
 
   const renderSkeleton = (
     <>

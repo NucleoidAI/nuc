@@ -57,27 +57,23 @@ instance.getUserDetails = async () => {
   }
 
   if (refreshToken) {
-    try {
-      const response = await axios.get(userUrl, {
-        headers: {
-          Authorization: `Bearer ${refreshToken}`,
-        },
-      });
-      if (provider === "github") {
-        return {
-          name: response.data.login,
-          avatarUrl: response.data.avatar_url,
-          id: response.data.id,
-        };
-      } else if (provider === "google") {
-        return {
-          name: response.data.name,
-          avatarUrl: response.data.picture,
-          id: response.data.id,
-        };
-      }
-    } catch (error) {
-      throw error;
+    const response = await axios.get(userUrl, {
+      headers: {
+        Authorization: `Bearer ${refreshToken}`,
+      },
+    });
+    if (provider === "github") {
+      return {
+        name: response.data.login,
+        avatarUrl: response.data.avatar_url,
+        id: response.data.id,
+      };
+    } else if (provider === "google") {
+      return {
+        name: response.data.name,
+        avatarUrl: response.data.picture,
+        id: response.data.id,
+      };
     }
   }
   return null;

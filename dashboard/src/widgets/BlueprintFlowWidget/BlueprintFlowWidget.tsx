@@ -441,24 +441,20 @@ function BlueprintFlowWidget({
       }
     });
 
-    try {
-      await upsertBlueprint(
-        blueprintNodes.id,
-        blueprintNodes.title,
-        blueprintNodes.description,
-        blueprintNodes.agentId,
-        updatedNodes,
-        taskId
-      );
-      setHasLocalChanges(false);
-      setShowDiffPanel(false);
-      if (setAiResponse) {
-        setAiResponse(null);
-      }
-      setSaveSuccess(true);
-    } catch (error) {
-      throw error;
+    await upsertBlueprint(
+      blueprintNodes.id,
+      blueprintNodes.title,
+      blueprintNodes.description,
+      blueprintNodes.agentId,
+      updatedNodes,
+      taskId
+    );
+    setHasLocalChanges(false);
+    setShowDiffPanel(false);
+    if (setAiResponse) {
+      setAiResponse(null);
     }
+    setSaveSuccess(true);
   };
 
   const handleFlowChange = (updatedGraphData) => {

@@ -1,5 +1,6 @@
 import anthropic from "./anthropic";
 import azure from "./azure";
+import llama from "./llama";
 import openai from "./openai";
 
 let llm;
@@ -14,6 +15,10 @@ if (process.env.PLATFORM_LLM === "AZURE") {
 
 if (process.env.PLATFORM_LLM === "ANTHROPIC") {
   llm = anthropic;
+}
+
+if (process.env.PLATFORM_LLM === "LLAMA") {
+  llm = llama;
 }
 
 async function generate({

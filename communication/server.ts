@@ -46,6 +46,7 @@ const startServer = async () => {
       credentials: true,
     },
     path: "/socket.io/",
+    transports: config.socket?.transports,
   });
 
   session.setup(io);

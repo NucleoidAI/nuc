@@ -14,6 +14,9 @@ const config = {
       instance: "default",
     },
   },
+  socket: {
+    transports: ["polling", "websocket"] as ("polling" | "websocket")[],
+  },
 };
 
 export default config;

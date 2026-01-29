@@ -109,7 +109,7 @@ function useBlueprint() {
     nodes?: NodeType[],
     taskId?: string,
     messages?: Array<{
-      role: "USER" | "ASSISTANT";
+      role: "user" | "assistant";
       content: string;
       createdAt: string | Date;
     }>

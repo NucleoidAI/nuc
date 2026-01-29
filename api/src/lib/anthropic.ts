@@ -18,12 +18,12 @@ async function generate({
   max_tokens = 4096,
 }: {
   model?: string;
-  messages?: { role: "USER" | "ASSISTANT" | "SYSTEM"; content: string }[];
+  messages?: { role: "user" | "assistant" | "system"; content: string }[];
   temperature?: number;
   max_tokens?: number;
 }) {
-  const systemMessages = messages.filter((msg) => msg.role === "SYSTEM");
-  const conversationMessages = messages.filter((msg) => msg.role !== "SYSTEM");
+  const systemMessages = messages.filter((msg) => msg.role === "system");
+  const conversationMessages = messages.filter((msg) => msg.role !== "system");
 
   let systemPrompt =
     systemMessages.length > 0
@@ -38,21 +38,9 @@ async function generate({
       "\n\nIMPORTANT: You MUST respond with ONLY valid JSON that matches the format specified. Do NOT include any text before or after the JSON. Do NOT wrap the JSON in markdown code blocks. Output ONLY the raw JSON object.";
   }
 
-  const roleMap: Record<string, MessageParam["role"]> = {
-    USER: "user",
-    SYSTEM: "system",
-    ASSISTANT: "assistant",
-  };
-
-  const normalizedConversationMessages: MessageParam[] =
-    conversationMessages.map(({ role, content }) => ({
-      role: roleMap[role] ?? "assistant",
-      content,
-    }));
-
   const params = {
     model,
-    messages: normalizedConversationMessages,
+    messages: conversationMessages as MessageParam[],
     temperature,
     max_tokens,
     ...(systemPrompt && { system: systemPrompt }),

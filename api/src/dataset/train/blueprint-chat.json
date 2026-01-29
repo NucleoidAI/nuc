@@ -112,12 +112,12 @@
   {
     "history": [
       {
-        "role": "USER",
+        "role": "user",
         "content": "if product is not available then call user"
       },
-      { "role": "ASSISTANT", "content": "Here's the flow for your request." },
+      { "role": "assistant", "content": "Here's the flow for your request." },
       {
-        "role": "ASSISTANT",
+        "role": "assistant",
         "content": "[{\"id\":\"a1b2c3d4-e5f6-4g7h-8i9j-k0l1m2n3o4p5\",\"type\":\"NORMAL\",\"properties\":{\"action\":\"GREY:check_product_availability\",\"label\":\"Check Product Availability\",\"icon\":\"mdi:check\"},\"next\":[\"b2c3d4e5-f6g7-4h8i-9j0k-l1m2n3o4p5q6\"],\"createdAt\":\"2025-06-19T06:02:00Z\"},{\"id\":\"b2c3d4e5-f6g7-4h8i-9j0k-l1m2n3o4p5q6\",\"type\":\"CONDITION\",\"properties\":{\"action\":\"PLATFORM:decision\",\"label\":\"Product Available?\",\"icon\":\"mdi:decision\"},\"true\":null,\"false\":[\"c3d4e5f6-g7h8-4i9j-0k1l-m2n3o4p5q6r7\"],\"createdAt\":\"2025-06-19T06:02:00Z\"},{\"id\":\"c3d4e5f6-g7h8-4i9j-0k1l-m2n3o4p5q6r7\",\"type\":\"NORMAL\",\"properties\":{\"action\":\"GREY:call_user\",\"label\":\"Call User\",\"icon\":\"mdi:phone\"},\"next\":null,\"createdAt\":\"2025-06-19T06:02:00Z\"}]"
       }
     ],

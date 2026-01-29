@@ -6,10 +6,10 @@ function find(action: string) {
 
 function list() {
   return {
-    role: "SYSTEM",
+    role: "system",
     content: { actions },
   } as {
-    role: "USER" | "SYSTEM" | "ASSISTANT";
+    role: "user" | "system" | "assistant";
     content: object;
   };
 }

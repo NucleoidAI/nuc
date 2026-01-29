@@ -25,7 +25,7 @@ async function messages({ teamId }: { teamId: string }) {
 async function info({ agentId }) {
   const { name, description } = await colleague.get({ agentId });
   return {
-    role: "SYSTEM",
+    role: "system",
     content: {
       ai_assistant_info: {
         name,
@@ -34,7 +34,7 @@ async function info({ agentId }) {
       },
     },
   } as {
-    role: "USER" | "SYSTEM" | "ASSISTANT";
+    role: "user" | "system" | "assistant";
     content: object;
   };
 }
@@ -66,12 +66,12 @@ async function knowledge({
     }));
 
   return {
-    role: "SYSTEM",
+    role: "system",
     content: {
       knowledge_base,
     },
   } as {
-    role: "USER" | "SYSTEM" | "ASSISTANT";
+    role: "user" | "system" | "assistant";
     content: object;
   };
 }
@@ -79,12 +79,12 @@ async function knowledge({
 async function steps({ taskId }) {
   const steps = await taskFn.listSteps({ taskId });
   return {
-    role: "SYSTEM",
+    role: "system",
     content: {
       steps,
     },
   } as {
-    role: "USER" | "SYSTEM" | "ASSISTANT";
+    role: "user" | "system" | "assistant";
     content: object;
   };
 }
@@ -93,12 +93,12 @@ async function Blueprints({ agentId }) {
   const Blueprints = await blueprintFn.list({ agentId });
 
   return {
-    role: "SYSTEM",
+    role: "system",
     content: {
       Blueprints,
     },
   } as {
-    role: "USER" | "SYSTEM" | "ASSISTANT";
+    role: "user" | "system" | "assistant";
     content: object;
   };
 }
@@ -349,7 +349,7 @@ async function Blueprint({
   content,
 }: {
   history?: {
-    role: "SYSTEM" | "USER" | "ASSISTANT";
+    role: "system" | "user" | "assistant";
     content: string;
   }[];
   content: string;
@@ -370,7 +370,7 @@ async function blueprintName({
   agentId,
 }: {
   history?: {
-    role: "SYSTEM" | "USER" | "ASSISTANT";
+    role: "system" | "user" | "assistant";
     content: string;
   }[];
   content: string;
@@ -395,7 +395,7 @@ async function blueprintToTask({
   Blueprint,
 }: {
   history?: {
-    role: "SYSTEM" | "USER" | "ASSISTANT";
+    role: "system" | "user" | "assistant";
     content: string;
   }[];
   content: string;
@@ -404,7 +404,7 @@ async function blueprintToTask({
 }) {
   const context = [
     {
-      role: "SYSTEM" as const,
+      role: "system" as const,
       content: {
         Blueprint,
         knowledge,
@@ -432,7 +432,7 @@ async function blueprintDiamond({
 }) {
   const context = [
     {
-      role: "SYSTEM" as const,
+      role: "system" as const,
       content: {
         Blueprints,
       },
@@ -463,7 +463,7 @@ async function evaluateSupervisionAnswer({
     await info({ agentId }),
     await knowledge({ agentId }),
     {
-      role: "SYSTEM" as const,
+      role: "system" as const,
       content: {
         supervision_context: {
           original_question: content.question,

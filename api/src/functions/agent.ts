@@ -19,7 +19,7 @@ async function messages({ teamId }: { teamId: string }) {
     .filter(
       (message) => message.role === "USER" || message.role === "ASSISTANT"
     )
-    .map(({ role, content }) => ({ role: role.toUpperCase(), content }));
+    .map(({ role, content }) => ({ role: role.toLowerCase(), content }));
 }
 
 async function info({ agentId }) {
@@ -107,7 +107,7 @@ async function conversations({ sessionId }) {
   const conversations = await session.listConversations({ sessionId });
 
   return conversations.map(({ role, content }) => ({
-    role: role.toUpperCase(),
+    role: role.toLowerCase(),
     content,
   }));
 }

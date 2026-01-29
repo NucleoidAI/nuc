@@ -10,15 +10,9 @@ describe("Agents page", () => {
 
     cy.fixture("agents-page/agents.json").as("agents");
 
-    cy.fixture("agents-page/create/agents.get.json").as(
-      "newAgents"
-    );
-    cy.fixture("agents-page/create/agent.post.json").as(
-      "createdAgent"
-    );
-    cy.fixture("agents-page/edit/agents.get.json").as(
-      "agentsWithEditedAgent"
-    );
+    cy.fixture("agents-page/create/agents.get.json").as("newAgents");
+    cy.fixture("agents-page/create/agent.post.json").as("createdAgent");
+    cy.fixture("agents-page/edit/agents.get.json").as("agentsWithEditedAgent");
     cy.fixture("agents-page/edit/agent.put.json").as("editedAgent");
 
     cy.fixture("agents-page/delete/agents.get.json").as(
@@ -55,10 +49,7 @@ describe("Agents page", () => {
 
     cy.getBySel("agent-card-menu-edit").click();
 
-    cy.editAgentViaDialog(
-      this.editedAgent,
-      this.agentsWithEditedAgent
-    );
+    cy.editAgentViaDialog(this.editedAgent, this.agentsWithEditedAgent);
 
     cy.waitEvent("AGENT_UPDATED");
 
@@ -75,21 +66,17 @@ describe("Agents page", () => {
 
     cy.setAgentIntercept();
 
-    cy.fixture("agents-page/delete/agents.delete.json").then(
-      (agent) => {
-        cy.intercept("DELETE", `/api/agents/` + agent.id, {
-          fixture: "agents-page/delete/agents.delete.json",
-        }).as("deleteAgent");
-      }
-    );
+    cy.fixture("agents-page/delete/agents.delete.json").then((agent) => {
+      cy.intercept("DELETE", `/api/agents/` + agent.id, {
+        fixture: "agents-page/delete/agents.delete.json",
+      }).as("deleteAgent");
+    });
 
-    cy.fixture("agents-page/delete/agents.get.json").then(
-      (agent) => {
-        cy.intercept("GET", `/api/agents/${agent.id}`, {
-          fixture: "agents-page/delete/agents.get.json",
-        }).as("getAgents");
-      }
-    );
+    cy.fixture("agents-page/delete/agents.get.json").then((agent) => {
+      cy.intercept("GET", `/api/agents/${agent.id}`, {
+        fixture: "agents-page/delete/agents.get.json",
+      }).as("getAgents");
+    });
 
     cy.intercept("GET", `/api/agents`, {
       fixture: "agents-page/delete/agents.get.json",

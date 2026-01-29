@@ -1,20 +1,20 @@
 import {
-  Table,
+  AllowNull,
   Column,
-  Model,
   DataType,
   Default,
-  PrimaryKey,
-  AllowNull,
   IsIn,
+  Model,
+  PrimaryKey,
+  Table,
 } from "@canmingir/link-express/sequelize";
 
 @Table({
-  tableName: "Message",
+  tableName: "TeamMessage",
   timestamps: false,
   underscored: true,
 })
-class Message extends Model {
+class TeamMessage extends Model {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)
@@ -70,4 +70,4 @@ class Message extends Model {
   declare replyToMessage?: any;
 }
 
-export default Message;
+export default TeamMessage;

@@ -6,6 +6,7 @@
   "author": "GreyCollar Team",
   "private": "true",
   "scripts": {
+    "predev": " rm -rf dashboard/node_modules/.vite",
     "debug:mcp": "cd ./mcp && npm run debug",
     "dev:api": "cd ./api && npm run dev",
     "dev:dashboard": "cd ./dashboard && npm run dev",
@@ -28,7 +29,7 @@
     "typecheck": "npm run typecheck:dashboard"
   },
   "dependencies": {
-    "@canmingir/link": "^1.2.14",
+    "@canmingir/link": "^1.2.16",
     "@canmingir/link-express": "^1.7.7",
     "@modelcontextprotocol/sdk": "^1.15.1",
     "@nucleoidai/node-event": "^1.1.5",

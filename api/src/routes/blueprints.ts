@@ -36,7 +36,7 @@ router.get("/:id", async (req, res) => {
 router.put("/:blueprintId", async (req, res) => {
   const { projectId: teamId } = req.session;
   const { blueprintId } = req.params;
-  const { title, description, agentId, nodes, taskId } =
+  const { title, description, agentId, nodes, taskId, messages } =
     BlueprintSchema.upsert.parse(req.body);
 
   if (agentId) {
@@ -54,7 +54,8 @@ router.put("/:blueprintId", async (req, res) => {
     description,
     agentId,
     blueprintId,
-    nodes
+    nodes,
+    messages
   );
 
   const pseudocode = await agent.toPseudo({

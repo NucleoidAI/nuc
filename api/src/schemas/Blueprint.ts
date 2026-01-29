@@ -26,6 +26,15 @@ const Blueprint = {
         })
       )
       .optional(),
+    messages: z
+      .array(
+        z.object({
+          content: z.string(),
+          role: z.enum(["user", "assistant"]),
+          createdAt: z.string().or(z.date()),
+        })
+      )
+      .optional(),
   }),
   create: z.object({
     history: z

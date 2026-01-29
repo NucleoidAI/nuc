@@ -1,10 +1,10 @@
 import Colleague from "../models/Colleague";
 import ColleagueKnowledge from "../models/ColleagueKnowledge";
 import Knowledge from "../models/Knowledge";
-import Message from "../models/Message";
 import { Op } from "sequelize";
 import Supervising from "../models/Supervising";
 import Task from "../models/Task";
+import TeamMessage from "../models/TeamMessage";
 import { event } from "@canmingir/link-express/event/client";
 
 async function create({
@@ -26,7 +26,7 @@ async function create({
   teamId: string;
   replyTo?: string;
 }) {
-  const messageInstance = await Message.create({
+  const messageInstance = await TeamMessage.create({
     role,
     agentId,
     content,
@@ -74,7 +74,7 @@ async function listMessages({
     };
   }
 
-  const messageInstances = await Message.findAll({
+  const messageInstances = await TeamMessage.findAll({
     where,
     order: [["createdAt", "ASC"]],
     limit,
@@ -109,7 +109,7 @@ async function list({
     };
   }
 
-  const messagePromise = Message.findAll({
+  const messagePromise = TeamMessage.findAll({
     where,
     order: [["createdAt", "ASC"]],
     limit,

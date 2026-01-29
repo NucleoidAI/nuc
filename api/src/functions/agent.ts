@@ -367,19 +367,24 @@ async function Blueprint({
 async function blueprintName({
   history,
   content,
+  agentId,
 }: {
   history?: {
     role: "system" | "user" | "assistant";
     content: string;
   }[];
   content: string;
+  agentId: string;
 }) {
+  const context = [await info({ agentId }), ...(history ?? [])];
+
   const response = await generate({
     dataset: dataset.train.blueprintName,
-    context: history,
+    context,
     content,
     json_format: "{ title: <TITLE>, description: <DESCRIPTION> }",
   });
+
   return response;
 }
 
@@ -591,7 +596,18 @@ async function chat({
       json_format: "{ evaluation: { is_answer_known: <true|false> } }",
     });
 
-    if (evaluation.is_answer_known) {
+    if (
+      evaluation.is_answer_known ||
+      blueprintDecision.decision === "UNRELEVANT"
+    ) {
+      if (task.length > 0) {
+        await taskFn.update({
+          taskId: task[0].id,
+          status: "COMPLETED",
+          comment: "Answer is known or irrelevant",
+        });
+      }
+
       const { answer, confidence } = await generate({
         policy: dataset.policy,
         dataset: dataset.train.chat,

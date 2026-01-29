@@ -1,6 +1,7 @@
 import AddNodeWidget from "../../widgets/AddNodeWidget/AddNodeWidget";
 import { Box } from "@mui/material";
 import { Flow } from "@canmingir/link/platform/components";
+import SampleFlow from "./SampleFlow";
 import SuccessSnackbar from "./SuccessSnackbar";
 import ValidationButtons from "./ValidationButtons";
 import ValidationErrorView from "./ValidationErrorView";
@@ -429,7 +430,9 @@ function BlueprintFlow({
     };
   };
 
-  if (isLoading || !graphData) return;
+  if (isLoading || !graphData) {
+    return <SampleFlow />;
+  }
 
   const flowDimensions = getFlowDimensions();
 

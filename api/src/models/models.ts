@@ -14,6 +14,15 @@ async function init() {
     foreignKey: "blueprintId",
   });
 
+  // Blueprint <-> BlueprintMessage
+  models.Blueprint.hasMany(models.BlueprintMessage, {
+    foreignKey: "blueprintId",
+    as: "messages",
+  });
+  models.BlueprintMessage.belongsTo(models.Blueprint, {
+    foreignKey: "blueprintId",
+  });
+
   // Project <-> Colleague
   models.Project.hasMany(models.Colleague, {
     foreignKey: "teamId",
@@ -48,8 +57,8 @@ async function init() {
     foreignKey: "teamId",
   });
 
-  // Message <-> Colleague
-  models.Message.belongsTo(models.Colleague, {
+  // TeamMessage <-> Colleague
+  models.TeamMessage.belongsTo(models.Colleague, {
     foreignKey: "agentId",
   });
 
@@ -208,7 +217,7 @@ async function init() {
     });
   });
 
-  models.Message.addHook("beforeCreate", async (message: any) => {
+  models.TeamMessage.addHook("beforeCreate", async (message: any) => {
     if (message.role === "USER") {
       message.status = "READ";
     } else if (message.role === "ASSISTANT") {

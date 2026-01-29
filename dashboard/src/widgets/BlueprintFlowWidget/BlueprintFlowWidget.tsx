@@ -1,6 +1,6 @@
 import AddNodeWidget from "../../widgets/AddNodeWidget/AddNodeWidget";
 import BlueprintFlow from "../../components/BlueprintFlow/BlueprintFlow";
-import ExampleFlow from "../../components/BlueprintFlow/ExampleFlow";
+import SampleFlow from "../../components/BlueprintFlow/SampleFlow";
 import { calculateNodeChanges } from "../../components/BlueprintFlow/DiffPanel/diffHelper";
 import useBlueprint from "../../hooks/useBlueprint";
 import useMCPs from "../../hooks/useMCPs";
@@ -467,7 +467,7 @@ function BlueprintFlowWidget({
   };
 
   if (loading || !graphData) {
-    return <ExampleFlow />;
+    return <SampleFlow />;
   }
 
   return (

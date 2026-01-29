@@ -151,7 +151,6 @@ const BlueprintChatTitle = ({
 
       return description;
     } catch (error) {
-      console.error("Error processing description content:", error);
       return description;
     }
   };
@@ -257,7 +256,6 @@ const BlueprintChatTitle = ({
 
       return title;
     } catch (error) {
-      console.error("Error processing title content:", error);
       return title || "Add Title";
     }
   };

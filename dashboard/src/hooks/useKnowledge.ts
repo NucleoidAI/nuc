@@ -128,8 +128,6 @@ function useKnowledge() {
       type: knowledge.type,
     });
 
-    console.log("createResponse", response);
-
     if (response && response.data) {
       publish("KNOWLEDGE_CREATED", { knowledge: response.data });
     }
@@ -139,13 +137,10 @@ function useKnowledge() {
 
   const deleteKnowledge = async (knowledge: Knowledge) => {
     if (!knowledge || !knowledge.id) {
-      console.error("Cannot delete knowledge: Missing ID");
       return null;
     }
 
     const response = await http.delete(`/knowledge/${knowledge.id}`);
-
-    console.log("deleteResponse", response);
 
     if (response) {
       publish("KNOWLEDGE_DELETED", { knowledge: knowledge.id });

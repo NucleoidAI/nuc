@@ -17,7 +17,6 @@ function useSupervisings() {
 
   const createSupervising = async (supervising: SupervisingInput) => {
     if (!supervising) {
-      console.error("Cannot create supervising: Missing supervising input");
       return null;
     }
 

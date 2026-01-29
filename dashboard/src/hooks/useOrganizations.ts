@@ -69,7 +69,6 @@ function useOrganizations() {
 
   const createOrganization = async (organization: OrganizationInput) => {
     if (!organization) {
-      console.error("Cannot create organization: Missing organization input");
       return null;
     }
 
@@ -87,7 +86,6 @@ function useOrganizations() {
 
   const updateOrganization = async (organization: Organization) => {
     if (!organization || !organization.id) {
-      console.error("Cannot update organization: Missing ID");
       return null;
     }
 

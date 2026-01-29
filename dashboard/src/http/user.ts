@@ -77,7 +77,6 @@ instance.getUserDetails = async () => {
         };
       }
     } catch (error) {
-      console.error("Failed to fetch user details:", error);
       throw error;
     }
   }

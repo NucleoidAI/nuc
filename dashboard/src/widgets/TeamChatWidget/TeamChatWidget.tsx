@@ -115,9 +115,7 @@ const TeamChatWidget = memo(function ChatWidget({
       }
 
       Promise.resolve(promise)
-        .catch((err) => {
-          console.error("Send message failed:", err);
-
+        .catch(() => {
           setTimeout(() => {
             setInputDisabled(false);
           }, 1500);

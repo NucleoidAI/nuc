@@ -457,7 +457,7 @@ function BlueprintFlowWidget({
       }
       setSaveSuccess(true);
     } catch (error) {
-      console.error("Failed to save flow:", error);
+      throw error;
     }
   };
 

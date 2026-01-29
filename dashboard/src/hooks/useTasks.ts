@@ -53,7 +53,6 @@ function useTasks(agentId: string) {
       setStepsLoading(false);
       return response.data;
     } catch (error) {
-      console.error("Error fetching steps:", error);
       setStepsLoading(false);
       return [];
     }
@@ -72,7 +71,6 @@ function useTasks(agentId: string) {
 
       return response?.data;
     } catch (error) {
-      console.error("Error creating task:", error);
       return null;
     }
   };
@@ -91,7 +89,6 @@ function useTasks(agentId: string) {
 
       return response?.data;
     } catch (error) {
-      console.error("Error creating task supervising:", error);
       return null;
     }
   };

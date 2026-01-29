@@ -101,7 +101,6 @@ function TeamChatNav({ loading, agents, collapsed, setCollapsed }) {
   const handleClickResult = useCallback(
     (result) => {
       handleClickAwaySearch();
-      console.log("clicked result: ", result);
     },
     [handleClickAwaySearch]
   );

@@ -15,8 +15,6 @@ const AuthHandler = ({ skill, getTokens, onAuthSuccess }) => {
   const handleLogin = (id, isTeam) => {
     const { authUrl, clientId, redirectUri, scope } = skill.oauth;
 
-    console.log(skill.oauth);
-
     const queryParams = new URLSearchParams({
       client_id: clientId,
       redirect_uri: redirectUri,

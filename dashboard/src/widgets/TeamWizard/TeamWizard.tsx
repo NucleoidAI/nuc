@@ -257,12 +257,10 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
         setActiveStep(0);
         onClose();
       } catch (error) {
-        console.error(error);
+        throw error;
       }
     },
     (errors) => {
-      console.log("Validation errors:", errors);
-
       if (errors.organization) {
         setActiveStep(0);
         return;

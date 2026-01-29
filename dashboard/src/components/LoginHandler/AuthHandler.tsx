@@ -49,7 +49,7 @@ const AuthHandler = ({ skill, getTokens, onAuthSuccess }) => {
             onAuthSuccess();
           }
         } catch (error) {
-          console.error("Error during token exchange:", error);
+          throw error;
         } finally {
           window.removeEventListener("message", handleMessage);
           popup.close();

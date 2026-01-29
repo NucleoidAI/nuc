@@ -65,6 +65,22 @@ services:
       timeout: 10s
       retries: 5
 
+  kibana-init:
+    image: curlimages/curl:latest
+    container_name: kibana-init
+    volumes:
+      - ./kibana/saved-objects.ndjson:/saved-objects/saved-objects.ndjson:ro
+      - ./kibana/import-saved-objects.sh:/import-saved-objects.sh:ro
+    environment:
+      - KIBANA_URL=http://kibana:5601
+    networks:
+      - greycollar-network
+    depends_on:
+      kibana:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "/import-saved-objects.sh"]
+    restart: "no"
+
   filebeat:
     image: docker.elastic.co/beats/filebeat:8.11.0
     container_name: filebeat

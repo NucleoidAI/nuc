@@ -23,7 +23,6 @@ const renderValue = (value) => {
 
 export const ResultTable = ({ data }) => {
   const content = data?.content || data[0];
-
   const keys = getAllKeys(content);
 
   return (

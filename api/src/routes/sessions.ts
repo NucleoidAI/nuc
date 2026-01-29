@@ -1,4 +1,4 @@
-import Colleague from "../models/Colleague";
+import Agent from "../models/Agent";
 import Conversation from "../models/Conversation";
 import Joi from "joi";
 import Session from "../models/Session";
@@ -18,9 +18,9 @@ router.post("/", async (req, res) => {
     })
   );
 
-  const colleague = await Colleague.findByPk(agentId);
+  const agent = await Agent.findByPk(agentId);
 
-  if (colleague?.teamId !== teamId) {
+  if (agent?.teamId !== teamId) {
     return res.status(401).end();
   }
 
@@ -49,11 +49,11 @@ router.post("/:sessionId", async (req, res) => {
     return res.status(404).end();
   }
 
-  const colleagueInstance = await Colleague.findByPk(
+  const agentInstance = await Agent.findByPk(
     sessionInstance.agentId
   );
 
-  if (colleagueInstance?.teamId !== teamId) {
+  if (agentInstance?.teamId !== teamId) {
     return res.status(401).end();
   }
 
@@ -77,9 +77,9 @@ router.get("/:id", async (req, res) => {
     return res.status(404).end();
   }
 
-  const colleague = await Colleague.findByPk(session.agentId);
+  const agent = await Agent.findByPk(session.agentId);
 
-  if (colleague && colleague.teamId !== teamId) {
+  if (agent && agent.teamId !== teamId) {
     return res.status(401).end();
   }
 

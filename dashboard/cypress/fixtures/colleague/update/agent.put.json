@@ -2,7 +2,7 @@
     "id": 3,
     "name": "Superman",
     "personality": "Strong, brave, and righteous. Excels in saving the world and maintaining peace.",
-    "responsibility": "Protecting the world from threats, maintaining peace, and upholding justice.",
+    "blueprint": "Protecting the world from threats, maintaining peace, and upholding justice.",
     "companyId": 1,
     "departmentId": 1,
     "avatar": ":10:",

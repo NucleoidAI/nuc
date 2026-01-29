@@ -9,7 +9,7 @@ const sendTask = async ({ body, ack, client }) => {
 
   const session = account(user);
 
-  const agentId = storage.get("selectedColleagueId");
+  const agentId = storage.get("selectedAgentId");
   const description = body.state.values.text_block.text_input.value;
 
   try {

@@ -36,7 +36,7 @@ describe("Supervisings service", () => {
     test.project("e6d4744d-a11b-4c75-acad-e24a02903729");
 
     const { body } = await request(app)
-      .get("/colleagues/72ef5b08-b4a9-42b7-bb0a-22d40e56798b/supervisings")
+      .get("/agents/72ef5b08-b4a9-42b7-bb0a-22d40e56798b/supervisings")
       .expect(200);
 
     deepEqual(body, [

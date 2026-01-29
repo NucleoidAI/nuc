@@ -1,8 +1,8 @@
-import Colleague from "../models/Colleague";
+import Agent from "../models/Agent";
 import Conversation from "../models/Conversation";
 import Joi from "joi";
 import Supervising from "../models/Supervising";
-import agent from "../functions/agent";
+import agentFn from "../functions/agent";
 import express from "express";
 import { publish } from "../lib/Event";
 import schemas from "../schemas";
@@ -19,13 +19,13 @@ router.post("/", async (req, res) => {
     schemas.Supervising.create
   );
 
-  const colleague = await Colleague.findByPk(agentId);
+  const agent = await Agent.findByPk(agentId);
 
-  if (!colleague) {
+  if (!agent) {
     res.status(404);
   }
 
-  if (colleague.teamId !== teamId) {
+  if (agent.teamId !== teamId) {
     res.status(401);
   }
 
@@ -58,7 +58,7 @@ router.get("/", async (req, res) => {
     where: whereClause,
     include: [
       {
-        model: Colleague,
+        model: Agent,
         where: { teamId },
         attributes: [],
       },
@@ -92,7 +92,7 @@ router.get("/:id", async (req, res) => {
     where: { id: validatedId },
     include: [
       {
-        model: Colleague,
+        model: Agent,
         attributes: ["teamId"],
         required: true,
       },
@@ -103,15 +103,15 @@ router.get("/:id", async (req, res) => {
     res.status(404);
   }
 
-  if (supervising.Colleague.teamId !== teamId) {
+  if (supervising.Agent.teamId !== teamId) {
     res.status(401);
   }
 
   const { dataValues } = supervising;
 
-  if (dataValues.Colleague) {
+  if (dataValues.Agent) {
     // eslint-disable-next-line no-unused-vars
-    const { Colleague, ...rest } = dataValues;
+    const { Agent, ...rest } = dataValues;
     res.status(200).json(rest);
     publish("SUPERVISING_LOADED", rest);
   } else {
@@ -132,20 +132,20 @@ router.patch("/:supervisingId", async (req, res) => {
     return res.status(404).json({ error: "Supervising not found" });
   }
 
-  const colleague = await Colleague.findByPk(supervisingInstance.agentId);
+  const agent = await Agent.findByPk(supervisingInstance.agentId);
 
-  if (!colleague) {
-    return res.status(404).json({ error: "Colleague not found" });
+  if (!agent) {
+    return res.status(404).json({ error: "Agent not found" });
   }
 
-  if (colleague.teamId !== teamId) {
+  if (agent.teamId !== teamId) {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
   const updatedSupervising = await supervising.update({
     teamId,
     supervisingId,
-    agentId: colleague.id,
+    agentId: agent.id,
     question: supervisingInstance.question,
     answer,
     status,
@@ -171,18 +171,18 @@ router.post("/:supervisingId/evaluate", async (req, res) => {
     return res.status(404).json({ error: "Supervising not found" });
   }
 
-  const colleague = await Colleague.findByPk(supervisingInstance.agentId);
+  const agent = await Agent.findByPk(supervisingInstance.agentId);
 
-  if (!colleague) {
-    return res.status(404).json({ error: "Colleague not found" });
+  if (!agent) {
+    return res.status(404).json({ error: "Agent not found" });
   }
 
-  if (colleague.teamId !== teamId) {
+  if (agent.teamId !== teamId) {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  const evaluation = await agent.evaluateSupervisionAnswer({
-    agentId: colleague.id,
+  const evaluation = await agentFn.evaluateSupervisionAnswer({
+    agentId: agent.id,
     content: {
       question: supervisingInstance.question,
       answer,
@@ -193,7 +193,7 @@ router.post("/:supervisingId/evaluate", async (req, res) => {
     const updatedSupervising = await supervising.update({
       teamId,
       supervisingId,
-      agentId: colleague.id,
+      agentId: agent.id,
       question: supervisingInstance.question,
       answer,
       status: "ANSWERED",

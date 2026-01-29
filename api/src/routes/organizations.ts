@@ -1,4 +1,4 @@
-import Colleague from "../models/Colleague";
+import Agent from "../models/Agent";
 import { Project } from "@canmingir/link-express/models";
 import express from "express";
 import platform from "@canmingir/link-express";
@@ -12,21 +12,21 @@ router.get("/:id", async (req, res) => {
     return res.status(401).end();
   }
 
-  const colleagues = await Project.findAll({
+  const agents = await Project.findAll({
     where: { organizationId: id },
     include: [
       {
-        model: Colleague,
-        as: "colleagues",
+        model: Agent,
+        as: "agents",
       },
     ],
   });
 
-  if (!colleagues) {
+  if (!agents) {
     return res.status(404);
   }
 
-  res.json(colleagues);
+  res.json(agents);
 });
 
 export default router;

@@ -53,7 +53,7 @@ function AddItemDialog({
   useEffect(() => {
     if (agentId) {
       setSelectedOptionId(agentId);
-      setSelectedOptionType("colleague");
+      setSelectedOptionType("agent");
     } else if (organizations.length > 0) {
       setSelectedOptionId(organizations[0].id);
       setSelectedOptionType("organization");
@@ -66,7 +66,7 @@ function AddItemDialog({
       organizations.find(
         (organization) => organization.name === selectedOptionName
       ) ||
-      agents.find((colleague) => colleague.name === selectedOptionName) ||
+      agents.find((agent) => agent.name === selectedOptionName) ||
       (teamById.name === selectedOptionName ? teamById : null);
 
     setSelectedOptionId(selectedOption?.id || "");
@@ -76,10 +76,8 @@ function AddItemDialog({
       )
     ) {
       setSelectedOptionType("organization");
-    } else if (
-      agents.find((colleague) => colleague.name === selectedOptionName)
-    ) {
-      setSelectedOptionType("colleague");
+    } else if (agents.find((agent) => agent.name === selectedOptionName)) {
+      setSelectedOptionType("agent");
     } else if (teamById.name === selectedOptionName) {
       setSelectedOptionType("team");
     }
@@ -157,7 +155,7 @@ function AddItemDialog({
       ...item,
       ...(selectedOptionType === "organization" && { orgId: selectedOptionId }),
       teamId: selectedOptionType === "team" ? selectedOptionId : teamId,
-      agentId: selectedOptionType === "colleague" ? selectedOptionId : agentId,
+      agentId: selectedOptionType === "agent" ? selectedOptionId : agentId,
     };
 
     try {

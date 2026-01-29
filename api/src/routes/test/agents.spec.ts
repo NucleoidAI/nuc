@@ -3,14 +3,14 @@ import { deepEqual } from "assert";
 import request from "supertest";
 import test from "@canmingir/link-express/test";
 
-describe("Colleague service", () => {
+describe("Agent service", () => {
   beforeEach(async () => test.reset());
 
-  it("creates a colleague", async () => {
+  it("creates an agent", async () => {
     const { body } = await request(app)
-      .post("/colleagues")
+      .post("/agents")
       .send({
-        name: "Test Colleague",
+        name: "Test Agent",
         avatar: "Test Avatar",
         character: "Test Character",
         title: "Test Title",
@@ -22,7 +22,7 @@ describe("Colleague service", () => {
 
     deepEqual(body, {
       id: body.id,
-      name: "Test Colleague",
+      name: "Test Agent",
       avatar: "Test Avatar",
       character: "Test Character",
       role: "Test Role",
@@ -32,10 +32,10 @@ describe("Colleague service", () => {
     });
   });
 
-  it("lists colleagues", async () => {
+  it("lists agents", async () => {
     test.project("e6d4744d-a11b-4c75-acad-e24a02903729");
 
-    const { body } = await request(app).get("/colleagues").expect(200);
+    const { body } = await request(app).get("/agents").expect(200);
 
     deepEqual(body, [
       {
@@ -79,11 +79,11 @@ describe("Colleague service", () => {
     ]);
   });
 
-  it("retrieves colleague by id", async () => {
+  it("retrieves agent by id", async () => {
     test.project("add6dfa4-45ba-4da2-bc5c-5a529610b52f");
 
     const { body } = await request(app)
-      .get(`/colleagues/00db1bd4-4829-40f2-8b99-d2e42342157e`)
+      .get(`/agents/00db1bd4-4829-40f2-8b99-d2e42342157e`)
       .expect(200);
 
     deepEqual(body, {
@@ -107,11 +107,11 @@ describe("Colleague service", () => {
     });
   });
 
-  it("updates colleague", async () => {
+  it("updates agent", async () => {
     test.project("add6dfa4-45ba-4da2-bc5c-5a529610b52f");
 
     const { body } = await request(app)
-      .put(`/colleagues/00db1bd4-4829-40f2-8b99-d2e42342157e`)
+      .put(`/agents/00db1bd4-4829-40f2-8b99-d2e42342157e`)
       .send({
         name: "Updated Name",
         title: "Barista",
@@ -135,11 +135,11 @@ describe("Colleague service", () => {
     });
   });
 
-  it("deletes colleague", async () => {
+  it("deletes agent", async () => {
     test.project("add6dfa4-45ba-4da2-bc5c-5a529610b52f");
 
     await request(app)
-      .delete(`/colleagues/00db1bd4-4829-40f2-8b99-d2e42342157e`)
+      .delete(`/agents/00db1bd4-4829-40f2-8b99-d2e42342157e`)
       .expect(204);
   });
 });

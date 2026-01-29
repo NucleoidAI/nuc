@@ -38,7 +38,7 @@ export const teamChartPlugin = {
     const height = nodeStyle.nodeHeight ?? 125;
 
     const isTeam = node.nodeKind === "team";
-    const isColleague = node.nodeKind === "colleague";
+    const isAgent = node.nodeKind === "agent";
     const isBlueprint = node.nodeKind === "Blueprint";
 
     const teamLayout =
@@ -50,7 +50,7 @@ export const teamChartPlugin = {
     const onBlueprintOpen = nodeStyle.onBlueprintOpen;
 
     const renderInitialAvatar = () => {
-      if (!isColleague) {
+      if (!isAgent) {
         return (
           <Box
             sx={{
@@ -92,7 +92,7 @@ export const teamChartPlugin = {
       );
     };
 
-    if (teamLayout === "media" && isColleague) {
+    if (teamLayout === "media" && isAgent) {
       const handleCardClick = () => {
         if (onAgentOpen) {
           onAgentOpen(node, "profile");

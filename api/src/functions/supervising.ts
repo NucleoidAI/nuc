@@ -1,4 +1,4 @@
-import ColleagueKnowledge from "../models/ColleagueKnowledge";
+import AgentKnowledge from "../models/AgentKnowledge";
 import Knowledge from "../models/Knowledge";
 import Supervising from "../models/Supervising";
 import { event } from "@canmingir/link-express/event/client";
@@ -68,7 +68,7 @@ async function update({
     answer,
     agentId,
   });
-  await ColleagueKnowledge.create({
+  await AgentKnowledge.create({
     knowledgeId: knowledgeInstance.id,
     agentId,
     teamId,

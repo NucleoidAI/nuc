@@ -27,7 +27,7 @@ class Session extends Model {
   @Column(DataType.UUID)
   declare agentId: string;
 
-  declare colleague?: any;
+  declare agent?: any;
 
   declare conversations?: any[];
 }

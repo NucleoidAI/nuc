@@ -4,7 +4,7 @@ const handleLearnType = async ({ body, ack, client, action }) => {
   await ack();
 
   const learnType = body.actions[0].value.toUpperCase();
-  const colleague =
+  const agent =
     body.message.attachments[0].blocks[0].text.text.split("*")[1];
 
   let blocks: AnyBlock[] = [
@@ -12,7 +12,7 @@ const handleLearnType = async ({ body, ack, client, action }) => {
       type: "section",
       text: {
         type: "mrkdwn",
-        text: `:pencil2: You've chosen to learn from *${colleague}* using *${learnType}* format.\nPlease enter the required information:`,
+        text: `:pencil2: You've chosen to learn from *${agent}* using *${learnType}* format.\nPlease enter the required information:`,
       },
     },
   ];

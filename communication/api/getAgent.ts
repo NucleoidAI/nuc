@@ -1,6 +1,6 @@
 import http from "../http";
 
-const getColleague = async (accessToken?: string, agentId?: string) => {
+const getAgent = async (accessToken?: string, agentId?: string) => {
   const { data } = await http.get(`/agents/${agentId}`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -10,4 +10,4 @@ const getColleague = async (accessToken?: string, agentId?: string) => {
   return data;
 };
 
-export { getColleague };
+export { getAgent };

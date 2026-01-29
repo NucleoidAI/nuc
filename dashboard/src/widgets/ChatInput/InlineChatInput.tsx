@@ -51,7 +51,7 @@ type CustomElement = {
     name: string;
     icon: string;
   };
-  colleague?: {
+  agent?: {
     id: string;
     name: string;
     icon: string;
@@ -277,8 +277,8 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
               ) {
                 const customChild = child as CustomElement;
                 return JSON.stringify({
-                  type: "COLLEAGUE",
-                  id: customChild.colleague?.id,
+                  type: "AGENT",
+                  id: customChild.agent?.id,
                 });
               }
               return Text.isText(child) ? child.text : "";
@@ -391,13 +391,13 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
   );
 
   const handleMentionSelect = useCallback(
-    (colleague: CustomElement["colleague"]) => {
+    (agent: CustomElement["agent"]) => {
       const mentionNode: CustomElement = {
         type: ELEMENT_TYPES.MENTION,
-        colleague: {
-          id: colleague.id,
-          name: colleague.name,
-          icon: colleague.icon,
+        agent: {
+          id: agent.id,
+          name: agent.name,
+          icon: agent.icon,
         },
         children: [{ text: "" }],
       };
@@ -543,12 +543,12 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
         return (
           <MentionElement {...attributes} contentEditable={false}>
             <SourcedAvatar
-              name={element.colleague?.name}
+              name={element.agent?.name}
               source={"MINIMAL"}
-              iconUrl={element.colleague?.icon}
+              iconUrl={element.agent?.icon}
               sx={{ mr: 0.5, width: 20, height: 20 }}
             />
-            {element.colleague?.name}
+            {element.agent?.name}
             {children}
           </MentionElement>
         );

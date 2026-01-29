@@ -144,7 +144,7 @@ const MCPsWidget = () => {
         sx={{ mb: 3 }}
         fullWidth
         variant="outlined"
-        placeholder="Search MCPs for team or colleagues"
+        placeholder="Search MCPs for team or agents"
         value={searchTerm}
         autoComplete="off"
         onChange={handleSearchChange}

@@ -1,7 +1,7 @@
-const ColleagueAndTeamAvatars = [
+const AgentAndTeamAvatars = [
   {
-    id: "colleague_icons",
-    name: "Colleague Icons",
+    id: "agent_icons",
+    name: "Agent Icons",
     emojis: [
       "ph:coffee-bean-duotone",
       "ph:apple-logo-duotone",
@@ -115,4 +115,4 @@ const ColleagueAndTeamAvatars = [
   },
 ];
 
-export default ColleagueAndTeamAvatars;
+export default AgentAndTeamAvatars;

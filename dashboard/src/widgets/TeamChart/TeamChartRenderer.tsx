@@ -22,7 +22,7 @@ export const TeamChartRenderer = (node) => {
         nodeSx: { minWidth: 400, minHeight: 130 },
       };
 
-    case "colleague":
+    case "agent":
       return {
         ...base,
         teamLayout: "media",

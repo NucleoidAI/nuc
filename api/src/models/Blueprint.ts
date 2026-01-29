@@ -52,7 +52,7 @@ class Blueprint extends Model {
   })
   declare nodes: any[] | null;
 
-  declare colleague?: any;
+  declare agent?: any;
 
   declare communications?: any[];
 }

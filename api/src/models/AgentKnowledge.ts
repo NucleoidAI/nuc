@@ -9,11 +9,11 @@ import {
 } from "@canmingir/link-express/sequelize";
 
 @Table({
-  tableName: "ColleagueKnowledge",
+  tableName: "AgentKnowledge",
   timestamps: false,
   underscored: true,
 })
-class ColleagueKnowledge extends Model {
+class AgentKnowledge extends Model {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)
@@ -35,9 +35,9 @@ class ColleagueKnowledge extends Model {
   @Column(DataType.UUID)
   declare teamId: string | null;
 
-  declare colleague?: any;
+  declare agent?: any;
 
   declare knowledge?: any;
 }
 
-export default ColleagueKnowledge;
+export default AgentKnowledge;

@@ -1,24 +1,24 @@
 import { account } from "../account";
-import { getColleagues } from "../api/getColleagues";
+import { getAgents } from "../api/getAgents";
 import storage from "../Storage";
 
-const colleagueSelect = async ({ body, ack, client }) => {
+const agentSelect = async ({ body, ack, client }) => {
   await ack();
 
   const actionId = body.actions[0].action_id;
 
   let action_id;
 
-  if(actionId === 'learn_colleague_select') {
+  if(actionId === 'learn_agent_select') {
     action_id = 'select_learn_type';
-  } else if (actionId === 'task_colleague_select') {
+  } else if (actionId === 'task_agent_select') {
     action_id = 'create_task';
-  } else if (actionId === 'setup_colleague_select') {
+  } else if (actionId === 'setup_agent_select') {
     action_id = 'setup_ai_chat';
-  } else if (actionId === 'supervising_colleague_select') {
+  } else if (actionId === 'supervising_agent_select') {
     action_id = 'supervising_info';
   }
-    
+
   await storage.set("selectedTeamId", body.actions[0].selected_option.value);
   console.log(body);
 
@@ -27,7 +27,7 @@ const colleagueSelect = async ({ body, ack, client }) => {
   const session = account(user);
 
   try {
-    const colleagues = await getColleagues(session);
+    const agents = await getAgents(session);
 
     const blocks = [
       {
@@ -38,14 +38,14 @@ const colleagueSelect = async ({ body, ack, client }) => {
             action_id: action_id,
             placeholder: {
               type: "plain_text",
-              text: "Select a colleague",
+              text: "Select an agent",
             },
-            options: colleagues.map((colleague) => ({
+            options: agents.map((agent) => ({
               text: {
                 type: "plain_text",
-                text: colleague.name,
+                text: agent.name,
               },
-              value: colleague.id,
+              value: agent.id,
             })),
           },
         ],
@@ -64,9 +64,9 @@ const colleagueSelect = async ({ body, ack, client }) => {
       ],
     });
   } catch (error) {
-    console.error("Error handling colleague select action:", error);
+    console.error("Error handling agent select action:", error);
   }
 };
 
-export { colleagueSelect };
+export { agentSelect };
 

@@ -2,7 +2,7 @@
     "id": 2,
     "name": "Bob",
     "personality": "Analytical, detail-oriented, and organized. Excels in managing inventory and analyzing sales data to optimize stock levels.",
-    "responsibility": "Overseeing inventory management, conducting regular stock checks, and coordinating with suppliers for timely replenishment.",
+    "blueprint": "Overseeing inventory management, conducting regular stock checks, and coordinating with suppliers for timely replenishment.",
     "companyId": 1,
     "avatar": "avatar",
     "departmentId": 1,

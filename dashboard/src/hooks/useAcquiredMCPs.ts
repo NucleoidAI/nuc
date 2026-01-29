@@ -94,7 +94,7 @@ function useAcquiredMCPs() {
     []
   );
 
-  const getColleagueAcquiredMCPs = useCallback(
+  const getAgentAcquiredMCPs = useCallback(
     (agentId: string) => {
       const { data, loading, error } = Api(
         () => http.get(`/mcps?agentId=${agentId}`),
@@ -102,7 +102,7 @@ function useAcquiredMCPs() {
       );
 
       if (data) {
-        publish("COLLEAGUE_ACQUIRED_MCPS_LOADED", {
+        publish("AGENT_ACQUIRED_MCPS_LOADED", {
           acquiredMCPs: data,
         });
       }
@@ -120,7 +120,7 @@ function useAcquiredMCPs() {
   return {
     getMCPs,
     getAcquiredMCPs,
-    getColleagueAcquiredMCPs,
+    getAgentAcquiredMCPs,
     getTokens,
   };
 }

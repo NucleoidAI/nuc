@@ -55,7 +55,7 @@ class Task extends Model {
   @Column(DataType.UUID)
   declare sessionId: string | null;
 
-  declare colleague?: any;
+  declare Agent?: any;
 
   declare Blueprint?: any;
 }

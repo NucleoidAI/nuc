@@ -9,8 +9,8 @@ describe("Chat widget", () => {
     });
 
     cy.get("@teamId").then(() => {
-      cy.intercept("GET", `/api/colleagues`, {
-        fixture: "chat-page/colleagues.json",
+      cy.intercept("GET", `/api/agents`, {
+        fixture: "chat-page/agents.json",
       });
     });
 
@@ -42,9 +42,9 @@ describe("Chat widget", () => {
 
     cy.intercept(
       "GET",
-      `/api/colleagues/72ef5b08-b4a9-42b7-bb0a-22d40e56798b`,
+      `/api/agents/72ef5b08-b4a9-42b7-bb0a-22d40e56798b`,
       {
-        fixture: "chat-page/colleague.json",
+        fixture: "chat-page/agent.json",
       }
     );
 
@@ -110,9 +110,9 @@ describe("Chat widget", () => {
 
     cy.intercept(
       "GET",
-      `/api/colleagues/72ef5b08-b4a9-42b7-bb0a-22d40e56798b`,
+      `/api/agents/72ef5b08-b4a9-42b7-bb0a-22d40e56798b`,
       {
-        fixture: "chat-page/colleague.json",
+        fixture: "chat-page/agent.json",
       }
     );
 
@@ -150,9 +150,9 @@ describe("Chat widget", () => {
 
     cy.intercept(
       "GET",
-      `/api/colleagues/72ef5b08-b4a9-42b7-bb0a-22d40e56798b`,
+      `/api/agents/72ef5b08-b4a9-42b7-bb0a-22d40e56798b`,
       {
-        fixture: "chat-page/colleague.json",
+        fixture: "chat-page/agent.json",
       }
     );
 
@@ -186,9 +186,9 @@ describe("Chat widget", () => {
 
     cy.intercept(
       "GET",
-      `/api/colleagues/72ef5b08-b4a9-42b7-bb0a-22d40e56798b`,
+      `/api/agents/72ef5b08-b4a9-42b7-bb0a-22d40e56798b`,
       {
-        fixture: "chat-page/colleague.json",
+        fixture: "chat-page/agent.json",
       }
     );
 

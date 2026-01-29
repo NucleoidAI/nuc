@@ -2,14 +2,14 @@ import { Server } from "socket.io";
 import { createSession } from "../api/createSession";
 import dotenv from "dotenv";
 import { event } from "@canmingir/link-express/event/client";
-import { getColleague } from "../api/getColleague";
+import { getAgent } from "../api/getAgent";
 import jwt from "jsonwebtoken";
 import { sendMessageToSession } from "../api/sendMessageSession";
 
 const sockets = {};
 dotenv.config();
 
-export type Colleague = {
+export type Agent = {
   id: string;
   teamId: string;
   name: string;
@@ -50,24 +50,24 @@ const setup = async (io: Server) => {
           );
         }
       } else {
-        agentId = process.env.COLLEAGUE_ID;
+        agentId = process.env.AGENT_ID;
         decoded = {
           aud: process.env.PROJECT_ID,
         };
       }
 
-      console.log("Colleague ID:", agentId);
+      console.log("Agent ID:", agentId);
       console.log("Token:", token);
       console.log("Decoded:", decoded);
 
       const session: Session = await createSession(token, agentId);
-      const colleague: Colleague = await getColleague(token, agentId);
+      const agent: Agent = await getAgent(token, agentId);
 
       console.log("Session:", session);
-      console.log("Colleague:", colleague);
+      console.log("Agent:", agent);
 
-      if (!colleague || colleague.teamId !== decoded.aud) {
-        console.log("Colleague not found or team ID does not match");
+      if (!agent || agent.teamId !== decoded.aud) {
+        console.log("Agent not found or team ID does not match");
         socket.disconnect();
         return;
       }

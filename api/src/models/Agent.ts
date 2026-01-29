@@ -11,7 +11,7 @@ import {
 
 import AIEngine from "./AIEngine";
 
-export interface ColleagueAttributes {
+export interface AgentAttributes {
   id: string;
   name: string;
   icon: string;
@@ -21,11 +21,11 @@ export interface ColleagueAttributes {
 }
 
 @Table({
-  tableName: "Colleague",
+  tableName: "Agent",
   timestamps: false,
   underscored: true,
 })
-class Colleague extends Model<ColleagueAttributes> {
+class Agent extends Model<AgentAttributes> {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)
@@ -51,4 +51,4 @@ class Colleague extends Model<ColleagueAttributes> {
   declare teamId: string;
 }
 
-export default Colleague;
+export default Agent;

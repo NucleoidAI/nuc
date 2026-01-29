@@ -13,13 +13,13 @@ const teamSelect = async ({ body, ack, client, say }) => {
   let nexActionId;
 
   if (actionId === "learn_team_select") {
-    nexActionId = "learn_colleague_select";
+    nexActionId = "learn_agent_select";
   } else if (actionId === "learn_team_select") {
-    nexActionId = "task_colleague_select";
+    nexActionId = "task_agent_select";
   } else if (actionId === "setup_team_select") {
-    nexActionId = "setup_colleague_select";
+    nexActionId = "setup_agent_select";
   } else if (actionId === "supervising_team_select") {
-    nexActionId = "supervising_colleague_select";
+    nexActionId = "supervising_agent_select";
   } else {
     nexActionId = "listen_notifications";
   }

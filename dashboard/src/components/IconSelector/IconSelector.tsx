@@ -1,5 +1,5 @@
 import AddIcon from "@mui/icons-material/Add";
-import ColleagueAndTeamAvatars from "../../lib/ColleagueAndTeamAvatars";
+import AgentAndTeamAvatars from "../../lib/AgentAndTeamAvatars";
 import IconButton from "@mui/material/IconButton";
 import Picker from "@emoji-mart/react";
 import React from "react";
@@ -60,7 +60,7 @@ export default function IconSelector({ handleEmojiSelect, iconSrc, icon }) {
           onEmojiSelect={(emoji) => {
             handleEmojiSelect(emoji), setEmojiDialogOpen(false);
           }}
-          custom={ColleagueAndTeamAvatars}
+          custom={AgentAndTeamAvatars}
           categories={["team_icons"]}
           searchPosition={"none"}
           navPosition="none"

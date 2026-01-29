@@ -63,7 +63,7 @@ class TeamMessage extends Model {
   @Column(DataType.UUID)
   declare replyTo: string | null;
 
-  declare colleague?: any;
+  declare agent?: any;
 
   declare knowledge?: any;
 

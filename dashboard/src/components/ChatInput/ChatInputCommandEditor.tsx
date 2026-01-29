@@ -83,12 +83,11 @@ const ChatInputCommandEditor = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentInput]);
 
-  const selectedColleague =
-    location.state?.name || sessionStorage.getItem("name");
+  const selectedAgent = location.state?.name || sessionStorage.getItem("name");
 
   useEffect(() => {
     sessionStorage.removeItem("name");
-  }, [selectedColleague]);
+  }, [selectedAgent]);
 
   const insertCommand = (selectedCommand) => {
     const command: CustomElement = {
@@ -215,7 +214,7 @@ const ChatInputCommandEditor = ({
   const input = new Map();
   const [inputValue, setInputValue] = useState([]);
 
-  const initialValue: CustomElement[] = selectedColleague
+  const initialValue: CustomElement[] = selectedAgent
     ? [
         {
           type: "paragraph",
@@ -224,9 +223,9 @@ const ChatInputCommandEditor = ({
               text: "",
             },
             {
-              text: `@${selectedColleague}`,
+              text: `@${selectedAgent}`,
               type: "mention",
-              agentId: selectedColleague,
+              agentId: selectedAgent,
             },
           ],
         },
@@ -357,15 +356,15 @@ const ChatInputCommandEditor = ({
 
         const firstInput = selectedCommand.next;
 
-        if (firstInput.type === "COLLEAGUE") {
+        if (firstInput.type === "AGENT") {
           Transforms.insertNodes(editor, {
             type: "input",
             options: agents,
-            onSelect: (colleague) => {
-              handleInputSubmit("COLLEAGUE", colleague);
+            onSelect: (agent) => {
+              handleInputSubmit("AGENT", agent);
               setCurrentInput(firstInput.next);
             },
-            children: [{ text: "Select a Colleague" }],
+            children: [{ text: "Select an Agent" }],
           });
         } else if (firstInput.type === "MCP") {
           Transforms.insertNodes(editor, {

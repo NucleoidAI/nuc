@@ -1,7 +1,7 @@
 import http from "../http";
 
-const getColleagues = async (session) => {
-  const { data } = await http.get("/colleagues", {
+const getAgents = async (session) => {
+  const { data } = await http.get("/agents", {
     headers: {
       Authorization: `Bearer ${session.accessToken}`,
     },
@@ -10,4 +10,4 @@ const getColleagues = async (session) => {
   return data;
 };
 
-export { getColleagues };
+export { getAgents };

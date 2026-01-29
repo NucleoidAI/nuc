@@ -157,7 +157,7 @@ const SupervisingTypeDialog = ({
               />
             </Box>
             <Typography variant="h6" sx={{ color: "#ff9800", fontWeight: 600 }}>
-              Responsibility
+              Blueprint
             </Typography>
             <Typography
               variant="body2"
@@ -167,7 +167,7 @@ const SupervisingTypeDialog = ({
                 fontSize: "0.875rem",
               }}
             >
-              Manage specific responsibilities
+              Manage specific blueprints
             </Typography>
           </Box>
         </Box>

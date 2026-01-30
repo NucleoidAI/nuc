@@ -26,12 +26,10 @@ export const portConnectionTool: Tool<PortConnectionInput> = {
       content: [
         {
           type: "text",
-          text: JSON.stringify({
-            error: "There is an error in the port connection",
-          }),
+          text: JSON.stringify({ message: "Port connection successful" }),
         },
       ],
-      isError: true,
+      isError: false,
     };
   },
 };

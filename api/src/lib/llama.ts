@@ -8,7 +8,18 @@ const llama = new OpenAI({
 async function generate({
   model = process.env.LLAMA_MODEL || "llama3.2",
   messages = [],
+}: {
+  model?: string;
+  messages?: { role: "user" | "assistant" | "system"; content: string }[];
 }) {
+  console.log("LLAMA input messages:", messages);
+
+  messages.push({
+    role: "system",
+    content:
+      "\n\nIMPORTANT: You MUST respond with ONLY valid JSON that matches the format specified. Do NOT include any text before or after the JSON. Do NOT wrap the JSON in markdown code blocks. Output ONLY the raw JSON object.",
+  });
+
   const {
     choices: [
       {
@@ -29,6 +40,7 @@ async function generate({
   }
 
   if (content) {
+    console.log("LLAMA output message:", content);
     return JSON.parse(content);
   } else {
     throw new Error("Llama is not responding");

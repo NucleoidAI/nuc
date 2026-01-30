@@ -8,7 +8,7 @@ export const TeamChartRenderer = (node) => {
     teamLineWidth: 1.8,
     teamGap: 14,
     teamLevelGap: 12,
-    teamConnectorType: "default",
+    teamConnectorType: "normal",
   };
 
   switch (node.nodeKind) {

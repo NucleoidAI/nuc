@@ -326,7 +326,7 @@
         "action": "PLATFORM:user_interaction",
         "status": "COMPLETED",
         "parameters": {
-          "answer": "123 Main Street, Istanbul"
+          "question": "What is your address?"
         },
         "comment": "User selected address"
       },
@@ -355,7 +355,7 @@
         "action": "PLATFORM:user_interaction",
         "status": "COMPLETED",
         "parameters": {
-          "answer": "Gazi Mustafa Kemal Bulvarı, Istanbul"
+          "question": "What is your address?"
         },
         "comment": "User selected address"
       },
@@ -617,7 +617,7 @@
         "action": "PLATFORM:user_interaction",
         "status": "COMPLETED",
         "parameters": {
-          "answer": "Atatürk Caddesi No:45, Ankara"
+          "question": "What is your address?"
         },
         "comment": "User provided address"
       },

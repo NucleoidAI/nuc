@@ -2,6 +2,7 @@ import anthropic from "./anthropic";
 import azure from "./azure";
 import llama from "./llama";
 import openai from "./openai";
+import bedrock from "./bedrock";
 
 let llm;
 
@@ -17,7 +18,12 @@ if (process.env.PLATFORM_LLM === "ANTHROPIC") {
   llm = anthropic;
 }
 
-if (process.env.PLATFORM_LLM === "LLAMA") {
+if (
+  process.env.PLATFORM_LLM === "LLAMA" &&
+  process.env.LLM_PROVIDER === "BEDROCK"
+) {
+  llm = bedrock;
+} else {
   llm = llama;
 }
 

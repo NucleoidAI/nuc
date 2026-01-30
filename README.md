@@ -13,13 +13,13 @@
 
 GreyCollar AI is a supervised AI agent platform for human–AI collaboration. The platform provides an environment to continuously learn from human supervisors, so they can adapt to real-world workloads.
 
-Each AI colleague works within defined responsibilities and uses a knowledge base to complete tasks. When uncertain, they escalate to human supervisors—enabling **"Hallucination Control"** to prevent mistakes.
+Each AI agent works within defined blueprints and uses a knowledge base to complete tasks. When uncertain, they escalate to human supervisors—enabling **"Hallucination Control"** to prevent mistakes.
 
 ## Human-AI Collabs (Human-in-the-Loop)
 
 Human-in-the-Loop (HITL) is a collaborative approach where AI agents work alongside human experts to enhance decision-making, automate processes, and refine task execution. In this model, human supervision plays a key role in guiding, correcting, and improving AI-driven workflows.
 
-- **Improved Accuracy** – Human feedback enables AI colleagues to refine responses in real time, reducing errors and increasing reliability.
+- **Improved Accuracy** – Human feedback enables AI agents to refine responses in real time, reducing errors and increasing reliability.
 - **Continuous Learning** – AI adapts to new tasks and domains by integrating ongoing human input, improving with every interaction.
 - **Safe & Responsible AI** – Human oversight ensures ethical alignment, reduces bias, and mitigates unintended or harmful outputs.
 - **Operational Efficiency** – AI handles routine, repetitive work at scale, freeing human supervisors to focus on higher-value, strategic decisions.
@@ -81,23 +81,23 @@ GreyCollar can be part of your favorite flow tools like n8n, enabling you to emb
 
 ![GreyCollar](https://github.com/user-attachments/assets/cedf7872-e4b8-46fe-a2b5-306fb7cb12b5)
 
-- [Colleague (AI)](#colleague-ai): AI assistants that handle tasks based on assigned responsibilities and knowledge.
+- [Agent (AI)](#agent-ai): AI assistants that handle tasks based on assigned blueprints and knowledge.
 - [Supervising (Human)](#supervising-human): Humans who guide AI with feedback, questions, or extra info.
 - [Knowledge](#knowledge): The info AI uses—documents, FAQs, or other sources.
-- [Responsibility and Task](#responsibility-and-task): Defines what tasks the AI performs and how.
-- [Team](#team): A group of AI colleagues for managing knowledge and leadership.
+- [Blueprint and Task](#blueprint-and-task): Defines what tasks the AI performs and how.
+- [Team](#team): A group of AI agents for managing knowledge and leadership.
 - [Communication](#communication): How you interact with AI—via chat, email, Slack, WhatsApp, etc.
 - [Integration](#integration): Connects to third-party tools via Model Context Protocol (MCP).
 
-## Colleague (AI)
+## Agent (AI)
 
-![Colleague Page](https://cdn.nucleoid.com/greycollar/media/5afbf454-97dc-45a9-bc4d-14fb69d6b1f9.png)
+![Agent Page](https://cdn.nucleoid.com/greycollar/media/5afbf454-97dc-45a9-bc4d-14fb69d6b1f9.png)
 
-Colleagues are AI assistants that help you with your tasks based on responsibilities and knowledge. They are designed to:
+Agents are AI assistants that help you with your tasks based on blueprints and knowledge. They are designed to:
 
-- Complete tasks standalone for given responsibilities
+- Complete tasks standalone for given blueprints
 - Continuously learn and persist to knowledge base
-- Collaborate with other human supervisors or human colleagues
+- Collaborate with other human supervisors or human agents
 
 ## Supervising (Human)
 
@@ -111,34 +111,34 @@ Supervising by human is raised when the AI is not able to complete the task or n
 
 ![Knowledge Base](https://cdn.nucleoid.com/greycollar/media/e10ddf80-499f-45da-9182-7284fcc21bf0.png)
 
-Knowledge is the information that the AI uses when working on responsibilities. It can be in the form of documents, FAQs, or any other.
+Knowledge is the information that the AI uses when working on blueprints. It can be in the form of documents, FAQs, or any other.
 
 > Knowledge can be added manually or part of the supervising process during task execution.
 
-## Responsibility and Task
+## Blueprint and Task
 
-![Responsibility](https://cdn.nucleoid.com/greycollar/media/d12714f4-e584-4020-92cb-62a25664e14d.png)
+![Blueprint](https://cdn.nucleoid.com/greycollar/media/d12714f4-e584-4020-92cb-62a25664e14d.png)
 
-Responsibility is a blueprint of the tasks that the AI will perform based on knowledge. It defines what the AI can do and how it can help you.
+Blueprint is a blueprint of the tasks that the AI will perform based on knowledge. It defines what the AI can do and how it can help you.
 
-> Tasks are the actions that the AI performs for a given responsibility with knowledge. Once the task is initiated through communication, the AI will execute the task and provide feedback to the supervisor.
+> Tasks are the actions that the AI performs for a given blueprint with knowledge. Once the task is initiated through communication, the AI will execute the task and provide feedback to the supervisor.
 
 ## Team
 
 ![Team](https://cdn.nucleoid.com/greycollar/media/8046f722-d9c0-487f-89b2-a4e3aafc1874.png)
 
-Team is a logical grouping of AI colleagues. Mainly this grouping provides 2 major benefits:
+Team is a logical grouping of AI agents. Mainly this grouping provides 2 major benefits:
 
-- **Knowledge Management**: Knowledge can be shared between AI colleagues within the team, while each colleague can also maintain their own individual knowledge. In agentic AI, effective knowledge management is crucial to eliminate hallucinations, ensuring that each AI colleague has sufficient knowledge to complete tasks without being misled by irrelevant or unnecessary information. a
-- **Team Lead**: The team lead is the person responsible for handing off the task to the AI colleagues.
+- **Knowledge Management**: Knowledge can be shared between AI agents within the team, while each agent can also maintain their own individual knowledge. In agentic AI, effective knowledge management is crucial to eliminate hallucinations, ensuring that each AI agent has sufficient knowledge to complete tasks without being misled by irrelevant or unnecessary information. a
+- **Team Lead**: The team lead is the person responsible for handing off the task to the AI agents.
 
 ## Communication
 
 ![Communication](https://cdn.nucleoid.com/greycollar/media/1f23108d-5f9d-4b20-8064-3679ee43289b.png)
 
-Communication is the primary way to interact with AI colleagues. It can occur through various channels, such as chat, email, or voice, depending on the context and user preferences. These communication channels are linked to specific responsibilities that AI colleagues are capable of handling, ensuring interactions are efficient and task-relevant. Multiple channels can be used simultaneously, allowing for flexibility in how users engage with AI colleagues.
+Communication is the primary way to interact with AI agents. It can occur through various channels, such as chat, email, or voice, depending on the context and user preferences. These communication channels are linked to specific blueprints that AI agents are capable of handling, ensuring interactions are efficient and task-relevant. Multiple channels can be used simultaneously, allowing for flexibility in how users engage with AI agents.
 
-> In short, communication opens up AI colleagues to the outside world, enabling them to perform tasks.
+> In short, communication opens up AI agents to the outside world, enabling them to perform tasks.
 
 ## Integration
 

@@ -82,7 +82,7 @@ const TeamChatWidget = memo(function ChatWidget({
 
         socket?.emit("command_sent", {
           teamId: projectId,
-          colleagueName: command.get("COLLEAGUE").name,
+          agentName: command.get("AGENT").name,
           command: command.get("NAME"),
           createdAt: new Date(),
           from: "Greycollar",

@@ -84,14 +84,14 @@ function BlueprintMessageBox({ message }) {
                     )}
                   </>
                 );
-              } else if (parsedContent.type === "COLLEAGUE") {
+              } else if (parsedContent.type === "AGENT") {
                 const { agent, loading } = getAgent(parsedContent.id);
 
                 return (
                   <MentionElement key={index}>
                     <SourcedAvatar
                       iconUrl={loading ? "L" : agent.icon}
-                      name="Colleague"
+                      name="Agent"
                       source="MINIMAL"
                       sx={{ mr: 1 }}
                     />

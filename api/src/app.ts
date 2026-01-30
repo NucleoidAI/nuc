@@ -1,8 +1,8 @@
 import "express";
 
-import agent from "./functions/agent";
+import agentFn from "./functions/agent";
 import blueprints from "./routes/blueprints";
-import colleagues from "./routes/colleagues";
+import agents from "./routes/agents";
 import communications from "./routes/communications";
 import engines from "./routes/engines";
 import { event } from "@canmingir/link-express/event/client";
@@ -49,7 +49,7 @@ function createApp() {
   app.use("/engines", engines);
   app.use("/organizations", organizations);
   app.use("/statistics", statistics);
-  app.use("/agents", colleagues);
+  app.use("/agents", agents);
   app.use("/blueprints", blueprints);
   app.use("/mcps", mcps);
   app.use("/communications", communications);
@@ -57,7 +57,7 @@ function createApp() {
   (async () => {
     await event.subscribe<{ teamId: string; content: string }>(
       "MESSAGE_USER_MESSAGED",
-      ({ teamId, content }) => agent.teamChat({ teamId, content })
+      ({ teamId, content }) => agentFn.teamChat({ teamId, content })
     );
 
     await event.subscribe<{
@@ -65,7 +65,7 @@ function createApp() {
       sessionId: string;
       content: string;
     }>("SESSION_USER_MESSAGED", ({ agentId, sessionId, content }) =>
-      agent.chat({
+      agentFn.chat({
         agentId,
         sessionId,
         content,
@@ -77,7 +77,7 @@ function createApp() {
       agentId: string;
       question: string;
     }>("SUPERVISING_ANSWERED", ({ sessionId, agentId, question }) =>
-      agent.chat({
+      agentFn.chat({
         agentId,
         sessionId,
         content: question,
@@ -85,7 +85,7 @@ function createApp() {
     );
 
     await event.subscribe<{ taskId: string }>("TASK_CREATED", ({ taskId }) =>
-      agent.task({ taskId })
+      agentFn.task({ taskId })
     );
 
     await event.subscribe<{
@@ -94,13 +94,13 @@ function createApp() {
       parameters: object;
       comment: string;
     }>("STEP_ADDED", ({ stepId, action, parameters, comment }) =>
-      agent.step({ stepId, action, parameters, comment })
+      agentFn.step({ stepId, action, parameters, comment })
     );
 
     await event.subscribe<{ taskId: string }>(
-      "TASK_RESPONSIBILITY_UPDATED",
+      "TASK_BLUEPRINT_UPDATED",
       async ({ taskId }) => {
-        await agent.task({ taskId });
+        await agentFn.task({ taskId });
 
         const steps = await taskFn.listSteps({ taskId });
 
@@ -109,7 +109,7 @@ function createApp() {
         );
 
         if (supervisedStep) {
-          agent.step({
+          agentFn.step({
             stepId: supervisedStep.id,
             action: "SUPERVISOR_RESPONDED",
             parameters: supervisedStep.parameters,
@@ -120,13 +120,13 @@ function createApp() {
     );
 
     await event.subscribe<{ taskId: string }>("STEP_COMPLETED", ({ taskId }) =>
-      agent.task({ taskId })
+      agentFn.task({ taskId })
     );
 
     await event.subscribe<{
       taskId: string;
       result: string;
-    }>("STEP_FAILED", ({ taskId, result }) => agent.task({ taskId }));
+    }>("STEP_FAILED", ({ taskId, result }) => agentFn.task({ taskId }));
   })();
 
   return app;

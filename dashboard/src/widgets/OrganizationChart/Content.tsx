@@ -29,7 +29,7 @@ function OrganizationalChart({ variant = "simple", sx }) {
     useOrganizations().getOrganizationById(organizationId);
 
   const filteredOrganizations = organization
-    ? organization.filter((org) => org.colleagues && org.colleagues.length > 0)
+    ? organization.filter((org) => org.agents && org.agents.length > 0)
     : [];
 
   if (loading) {
@@ -59,12 +59,12 @@ function OrganizationalChart({ variant = "simple", sx }) {
               variant === "standard" && <StandardNode sx={sx} node={rootNode} />
             }
           >
-            {rootNode.colleagues &&
-              rootNode.colleagues.map((colleague) => (
+            {rootNode.agents &&
+              rootNode.agents.map((agent) => (
                 <List
-                  key={colleague.name}
+                  key={agent.name}
                   depth={1}
-                  data={colleague}
+                  data={agent}
                   variant={variant}
                   sx={sx}
                 />
@@ -128,13 +128,8 @@ function List({ data, depth, variant, sx }) {
     <TreeNode
       label={variant === "standard" && <StandardNode sx={sx} node={data} />}
     >
-      {data.colleagues && data.colleagues.length > 0 && (
-        <SubList
-          data={data.colleagues}
-          depth={depth}
-          variant={variant}
-          sx={sx}
-        />
+      {data.agents && data.agents.length > 0 && (
+        <SubList data={data.agents} depth={depth} variant={variant} sx={sx} />
       )}
     </TreeNode>
   );

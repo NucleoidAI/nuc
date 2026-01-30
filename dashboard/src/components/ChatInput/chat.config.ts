@@ -2,7 +2,7 @@ import http from "@canmingir/link/platform/http";
 import { publish } from "@nucleoidai/react-event";
 
 const learnAction = async (command) => {
-  const colleague = command.get("COLLEAGUE");
+  const agent = command.get("AGENT");
   const name = command.get("NAME");
   const url = command.get("URL");
   const text = command.get("TEXT");
@@ -27,13 +27,13 @@ const learnAction = async (command) => {
     answer,
     url,
     text,
-    agentId: colleague.id,
+    agentId: agent.id,
   });
 
   publish("KNOWLEDGE_STATUS_CHANGED", {
     ...createdKnowledge,
     commandName: name,
-    colleague,
+    agent,
   });
 
   const intervalId = setInterval(async () => {
@@ -43,7 +43,7 @@ const learnAction = async (command) => {
       publish("KNOWLEDGE_STATUS_CHANGED", {
         ...knowledge,
         commandName: name,
-        colleague,
+        agent,
       });
     } else {
       console.log("Knowledge status:", knowledge.status);
@@ -52,19 +52,19 @@ const learnAction = async (command) => {
 };
 
 const taskAction = async (command) => {
-  const colleague = command.get("COLLEAGUE");
+  const agent = command.get("AGENT");
   const name = command.get("NAME");
   const task = command.get("TEXT");
 
   const { data: createdTask } = await http.post(`/tasks`, {
     description: task,
-    agentId: colleague.id,
+    agentId: agent.id,
   });
 
   publish("TASK_STATUS_CHANGED", {
     ...createdTask,
     commandName: name,
-    colleague,
+    agent,
   });
 
   const intervalId = setInterval(async () => {
@@ -74,7 +74,7 @@ const taskAction = async (command) => {
       publish("TASK_STATUS_CHANGED", {
         ...task,
         commandName: name,
-        colleague,
+        agent,
       });
     } else {
       console.log("Task status:", task.status);
@@ -89,7 +89,7 @@ const Commands = [
     description: "Learn something new",
     icon: "mdi:learn-outline",
     next: {
-      type: "COLLEAGUE",
+      type: "AGENT",
       next: {
         type: "DROPDOWN",
         label: "Select a Type",
@@ -124,7 +124,7 @@ const Commands = [
     description: "Learn something new from a URL",
     icon: "mdi:search-web",
     next: {
-      type: "COLLEAGUE",
+      type: "AGENT",
       next: {
         label: "Enter URL",
         type: "URL",
@@ -137,7 +137,7 @@ const Commands = [
     description: "Learn something new from a text",
     icon: "tabler:text-size",
     next: {
-      type: "COLLEAGUE",
+      type: "AGENT",
       next: {
         label: "Enter Text",
         type: "TEXT",
@@ -150,7 +150,7 @@ const Commands = [
     description: "Learn something new from a QA",
     icon: "ic:twotone-question-answer",
     next: {
-      type: "COLLEAGUE",
+      type: "AGENT",
       next: {
         label: "Enter QA",
         type: "QA",
@@ -167,7 +167,7 @@ const Commands = [
     description: "Create a task",
     icon: "clarity:tasks-solid",
     next: {
-      type: "COLLEAGUE",
+      type: "AGENT",
       next: {
         label: "Enter Task",
         type: "TEXT",

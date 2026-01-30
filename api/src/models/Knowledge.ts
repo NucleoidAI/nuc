@@ -62,7 +62,7 @@ class Knowledge extends Model {
 
   declare task?: any;
 
-  declare colleagueKnowledge?: any;
+  declare AgentKnowledge?: any;
 }
 
 export default Knowledge;

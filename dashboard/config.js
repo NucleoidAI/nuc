@@ -8,6 +8,9 @@ const config = {
     host: "http://localhost:3003",
     path: "/socket.io",
   },
+  credentials: {
+    provider: "DEMO",
+  },
   project: {
     github: {
       authUrl: "https://github.com/login/oauth/authorize",

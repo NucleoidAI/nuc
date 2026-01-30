@@ -1,5 +1,5 @@
-import Colleague from "../models/Colleague";
-import ColleagueKnowledge from "../models/ColleagueKnowledge";
+import Agent from "../models/Agent";
+import AgentKnowledge from "../models/AgentKnowledge";
 import Knowledge from "../models/Knowledge";
 import { Op } from "sequelize";
 import Supervising from "../models/Supervising";
@@ -118,7 +118,7 @@ async function list({
   const supervisingPromise = Supervising.findAll({
     include: [
       {
-        model: Colleague,
+        model: Agent,
         where: { teamId },
         attributes: [],
       },
@@ -128,7 +128,7 @@ async function list({
   const taskPromise = Task.findAll({
     include: [
       {
-        model: Colleague,
+        model: Agent,
         attributes: [],
         where: { teamId },
         required: true,
@@ -139,7 +139,7 @@ async function list({
   const knowledgePromise = Knowledge.findAll({
     include: [
       {
-        model: ColleagueKnowledge,
+        model: AgentKnowledge,
         where: { teamId },
       },
     ],

@@ -21,64 +21,60 @@ describe("Organization chart", () => {
       }
     );
 
-    cy.fixture("colleagues-page/create/colleagues.team.get.json").as(
-      "newColleagues"
-    );
-    cy.fixture("colleagues-page/create/colleague.team.post.json").as(
-      "createdColleague"
-    );
+    cy.fixture("agents-page/create/agents.team.get.json").as("newAgents");
+    cy.fixture("agents-page/create/agent.team.post.json").as("createdAgent");
 
-    cy.intercept("GET", "/api/responsibilities", {
-      fixture: "responsibilities/responsibilities.get.json",
+    cy.intercept("GET", "/api/blueprints", {
+      fixture: "blueprints/blueprints.get.json",
     });
 
-    cy.fixture("colleagues-page/colleague.json").as("colleague");
+    cy.fixture("agents-page/agent.json").as("agent");
   });
-  it("adds new colleague", function () {
+  it("adds new agent", function () {
     cy.visit("/");
 
-    cy.setColleagueIntercept();
+    cy.setAgentIntercept();
 
     cy.intercept("GET", "/api/engines", {
-      fixture: "colleagues-page/engines.json",
+      fixture: "agents-page/engines.json",
     });
 
     cy.getBySel("organization-button").click();
 
     cy.getBySel("team-chart").should("be.visible");
 
-    cy.getBySel("add-colleague-button").should("be.visible");
+    cy.getBySel("add-agent-button").should("be.visible");
 
-    cy.getBySel("add-colleague-button").eq(0).click();
+    cy.getBySel("add-agent-button").eq(0).click();
 
     cy.intercept("GET", `/api/organizations/${this.project.organizationId}`, {
       fixture: "organizations/organization.get.json",
     });
 
-    cy.createColleagueViaDialog(this.createdColleague, this.newColleagues);
+    cy.createAgentViaDialog(this.createdAgent, this.newAgents);
 
-    cy.waitEvent("COLLEAGUE_ADDED");
+    cy.waitEvent("AGENT_ADDED");
   });
 
-  it("opens responsibility drawer", function () {
+  it("opens blueprint drawer", function () {
     cy.visit("/team");
 
-    cy.setColleagueIntercept();
+    cy.setAgentIntercept();
 
     cy.getBySel("team-chart").should("be.visible");
 
-    cy.getBySel("responsibility-button").click();
+    cy.getBySel("blueprint-button").click();
   });
 
-  it("opens colleague page", function () {
+  it("opens agent page", function () {
     cy.visit("/team");
 
-    cy.setColleagueIntercept();
+    cy.setAgentIntercept();
 
     cy.getBySel("team-chart").should("be.visible");
 
-    cy.intercept("GET", `/api/colleagues/${this.colleague.id}`, this.colleague);
+    cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
 
-    cy.getBySel("colleague-page-button").click();
+    cy.getBySel("agent-page-button").click();
   });
 });

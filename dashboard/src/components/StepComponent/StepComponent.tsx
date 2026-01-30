@@ -66,7 +66,7 @@ export default function StepComponent({
         sx={{ backgroundColor: (theme) => theme.palette.background.default }}
       >
         <Button
-          data-cy="colleague-back-button"
+          data-cy="agent-back-button"
           variant="outlined"
           color="inherit"
           disabled={activeStep === 0}
@@ -79,7 +79,7 @@ export default function StepComponent({
         {activeStep === steps.length - 1 ? (
           <Button
             variant="contained"
-            data-cy="colleague-finish-button"
+            data-cy="agent-finish-button"
             onClick={handleSave}
           >
             Finish
@@ -88,7 +88,7 @@ export default function StepComponent({
           <>
             <Button
               variant="outlined"
-              data-cy="colleague-next-button"
+              data-cy="agent-next-button"
               onClick={handleNext}
             >
               Next

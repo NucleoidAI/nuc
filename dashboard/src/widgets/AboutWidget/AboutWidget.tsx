@@ -4,7 +4,7 @@ import CardHeader from "@mui/material/CardHeader";
 import Stack from "@mui/material/Stack";
 import { Typography } from "@mui/material";
 
-export default function AboutWidget({ colleague }) {
+export default function AboutWidget({ agent }) {
   return (
     <Card>
       <CardHeader title="About" />
@@ -14,7 +14,7 @@ export default function AboutWidget({ colleague }) {
           <Box sx={{ typography: "body2" }}>
             {"Blueprint:"}
             <Typography variant="subtitle2" color="inherit">
-              {colleague?.Blueprint}
+              {agent?.Blueprint}
             </Typography>
           </Box>
         </Stack>

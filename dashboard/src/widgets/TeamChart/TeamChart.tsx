@@ -52,7 +52,7 @@ function TeamChart() {
     : [];
 
   const filteredOrganizations = orgArray.filter(
-    (org) => org.colleagues && org.colleagues.length > 0 && org.id === projectId
+    (org) => org.agents && org.agents.length > 0 && org.id === projectId
   );
 
   const teamTree = useMemo(

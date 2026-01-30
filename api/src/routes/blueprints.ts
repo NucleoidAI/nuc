@@ -1,9 +1,9 @@
 import { AuthenticationError } from "@canmingir/link-express/error";
 import Blueprint from "../models/Blueprint";
 import BlueprintSchema from "../schemas/Blueprint";
-import agent from "../functions/agent";
+import agentFn from "../functions/agent";
 import bluePrint from "../functions/blueprint";
-import colleague from "../functions/colleague";
+import agentData from "../functions/agentData";
 import { event } from "@canmingir/link-express/event/client";
 import express from "express";
 
@@ -40,11 +40,11 @@ router.put("/:blueprintId", async (req, res) => {
     BlueprintSchema.upsert.parse(req.body);
 
   if (agentId) {
-    const { teamId: colleagueTeamId } = await colleague.get({
+    const { teamId: agentTeamId } = await agentData.get({
       agentId,
     });
 
-    if (teamId !== colleagueTeamId) {
+    if (teamId !== agentTeamId) {
       throw new AuthenticationError();
     }
   }
@@ -58,7 +58,7 @@ router.put("/:blueprintId", async (req, res) => {
     messages
   );
 
-  const pseudocode = await agent.toPseudo({
+  const pseudocode = await agentFn.toPseudo({
     content: result.description,
   });
 
@@ -88,11 +88,11 @@ router.delete("/:blueprintId", async (req, res) => {
   const { agentId } = BlueprintSchema.delete.parse(req.body);
 
   if (agentId) {
-    const { teamId: colleagueTeamId } = await colleague.get({
+    const { teamId: agentTeamId } = await agentData.get({
       agentId,
     });
 
-    if (teamId !== colleagueTeamId) {
+    if (teamId !== agentTeamId) {
       throw new AuthenticationError();
     }
   }

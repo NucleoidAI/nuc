@@ -38,8 +38,7 @@ const SupervisingCard = ({
 
   const [aiResponse, setAiResponse] = useState(null);
 
-  const [responsibilityDrawerOpen, setResponsibilityDrawerOpen] =
-    useState(false);
+  const [blueprintDrawerOpen, setBlueprintDrawerOpen] = useState(false);
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -69,7 +68,7 @@ const SupervisingCard = ({
     agentId: string;
   }) => {
     setDialogOpen(false);
-    setResponsibilityDrawerOpen(true);
+    setBlueprintDrawerOpen(true);
     setBlueprintSelectedItem(blueprint);
   };
 
@@ -259,8 +258,8 @@ const SupervisingCard = ({
         supervise={supervise}
       />
       <BlueprintDrawer
-        drawerOpen={responsibilityDrawerOpen}
-        handleDrawerClose={() => setResponsibilityDrawerOpen(false)}
+        drawerOpen={blueprintDrawerOpen}
+        handleDrawerClose={() => setBlueprintDrawerOpen(false)}
         selectedItem={blueprintSelectedItem}
         taskId={supervise.taskId}
         setSelectedItem={setBlueprintSelectedItem}

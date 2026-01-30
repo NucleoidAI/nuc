@@ -34,7 +34,7 @@ export default function CreateMethodSelect({
             fullWidth
             multiline
             rows={10}
-            placeholder="Specify the colleague you have in mind"
+            placeholder="Specify the agent you have in mind"
             onChange={() => setDisabledAI(false)}
           />
           <Button

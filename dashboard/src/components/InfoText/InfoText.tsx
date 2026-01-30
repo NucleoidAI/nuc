@@ -3,17 +3,17 @@ import styles from "./styles";
 
 import { Container, Typography } from "@mui/material";
 
-function InfoText({ colleague }) {
+function InfoText({ agent }) {
   return (
     <Container sx={styles.container}>
       <Typography variant="h6" sx={styles.name}>
-        {colleague?.name}
+        {agent?.name}
       </Typography>
       <Typography variant="body1" color="text.secondary" sx={styles.mail}>
-        {colleague?.email}
+        {agent?.email}
       </Typography>
       <Typography variant="body2" color="secondary.main">
-        {colleague?.phone}
+        {agent?.phone}
       </Typography>
     </Container>
   );

@@ -3,7 +3,7 @@ import { appOpen } from "./chat/events/appOpen";
 import { chatCommand } from "./chat/commands/chat";
 import dotenv from 'dotenv';
 import { renew } from "./chat/commands/renew";
-import { selectColleague } from "./chat/actions/selectColleague";
+import { selectAgent } from "./chat/actions/selectAgent";
 import { selectTeam } from "./chat/actions/selectTeam";
 import { sendMessage } from "./chat/messages/sendMessage";
 
@@ -19,7 +19,7 @@ const createChatApp = () => {
   popApp.command("/renew", renew);
   popApp.command("/chat", chatCommand);
   popApp.action("team_selected", selectTeam);
-  popApp.action("colleague_selected", selectColleague);
+  popApp.action("agent_selected", selectAgent);
   popApp.event("app_home_opened", appOpen);
 
   return popApp;

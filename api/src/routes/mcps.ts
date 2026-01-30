@@ -1,7 +1,7 @@
 import { AuthenticationError } from "@canmingir/link-express/error";
 import MCP from "../models/MCP";
 import actions from "../actions";
-import colleague from "../functions/colleague";
+import agentData from "../functions/agentData";
 import express from "express";
 import mcp from "../functions/mcp";
 
@@ -53,9 +53,9 @@ router.get("/", async (req, res) => {
 
   if (agentId || queryTeamId) {
     if (agentId) {
-      const colleagueInstance = await colleague.get({ agentId });
+      const agentInstance = await agentData.get({ agentId });
 
-      if (colleagueInstance.teamId !== teamId) {
+      if (agentInstance.teamId !== teamId) {
         throw new AuthenticationError();
       }
     }
@@ -86,10 +86,10 @@ router.delete("/:id", async (req, res) => {
     mcpId: id,
   });
 
-  const { Colleague } = mcpItem;
+  const { Agent } = mcpItem;
 
   const hasAccess =
-    (Colleague && Colleague.teamId === teamId) || mcpItem.teamId === teamId;
+    (Agent && Agent.teamId === teamId) || mcpItem.teamId === teamId;
 
   if (!hasAccess) {
     throw new AuthenticationError();

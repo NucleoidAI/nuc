@@ -1,4 +1,4 @@
-import Colleague from "../models/Colleague";
+import Agent from "../models/Agent";
 import Joi from "joi";
 import Task from "../models/Task";
 import express from "express";
@@ -19,13 +19,13 @@ router.post("/", async (req, res) => {
     })
   );
 
-  const colleague = await Colleague.findByPk(agentId);
+  const agent = await Agent.findByPk(agentId);
 
-  if (!colleague) {
+  if (!agent) {
     return res.status(404).end();
   }
 
-  if (colleague.teamId !== teamId) {
+  if (agent.teamId !== teamId) {
     return res.status(401).end();
   }
 
@@ -58,7 +58,7 @@ router.get("/:taskId", async (req, res) => {
     where: { id: taskId },
     include: [
       {
-        model: Colleague,
+        model: Agent,
         attributes: ["teamId"],
         required: true,
       },
@@ -69,7 +69,7 @@ router.get("/:taskId", async (req, res) => {
     return res.status(404);
   }
 
-  if (task.Colleague.teamId !== teamId) {
+  if (task.Agent.teamId !== teamId) {
     return res.status(401);
   }
 
@@ -84,7 +84,7 @@ router.get("/:taskId/steps", async (req, res) => {
     where: { id: taskId },
     include: [
       {
-        model: Colleague,
+        model: Agent,
         attributes: ["teamId"],
         required: true,
       },
@@ -95,7 +95,7 @@ router.get("/:taskId/steps", async (req, res) => {
     return res.status(404);
   }
 
-  if (taskInstance.Colleague.teamId !== teamId) {
+  if (taskInstance.Agent.teamId !== teamId) {
     return res.status(401);
   }
 

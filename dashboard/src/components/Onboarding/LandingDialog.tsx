@@ -65,7 +65,7 @@ const LandingDialog = () => {
               <ListItemAvatar>
                 <Avatar src={NumberTwo}></Avatar>
               </ListItemAvatar>
-              <ListItemText primary="Build your AI Colleague" />
+              <ListItemText primary="Build your AI Agent" />
             </ListItem>
             <ListItem>
               <ListItemAvatar>

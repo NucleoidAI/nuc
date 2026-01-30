@@ -67,9 +67,9 @@ class Supervising extends Model {
 
   declare conversation?: any;
 
-  declare colleague?: any;
+  declare Agent?: any;
 
-  declare responsibility?: any;
+  declare blueprint?: any;
 }
 
 export default Supervising;

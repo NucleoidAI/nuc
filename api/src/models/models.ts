@@ -23,29 +23,29 @@ async function init() {
     foreignKey: "blueprintId",
   });
 
-  // Project <-> Colleague
-  models.Project.hasMany(models.Colleague, {
+  // Project <-> Agent
+  models.Project.hasMany(models.Agent, {
     foreignKey: "teamId",
-    as: "colleagues",
+    as: "agents",
   });
-  models.Colleague.belongsTo(models.Project, {
+  models.Agent.belongsTo(models.Project, {
     foreignKey: "teamId",
-    as: "colleagues",
+    as: "agents",
   });
 
-  // Colleague <-> Blueprint
-  models.Colleague.hasMany(models.Blueprint, {
+  // Agent <-> Blueprint
+  models.Agent.hasMany(models.Blueprint, {
     foreignKey: "agentId",
   });
-  models.Blueprint.belongsTo(models.Colleague, {
+  models.Blueprint.belongsTo(models.Agent, {
     foreignKey: "agentId",
   });
 
-  // AIEngine <-> Colleague
-  models.AIEngine.hasMany(models.Colleague, {
+  // AIEngine <-> Agent
+  models.AIEngine.hasMany(models.Agent, {
     foreignKey: "aiEngineId",
   });
-  models.Colleague.belongsTo(models.AIEngine, {
+  models.Agent.belongsTo(models.AIEngine, {
     foreignKey: "aiEngineId",
   });
 
@@ -57,8 +57,8 @@ async function init() {
     foreignKey: "teamId",
   });
 
-  // TeamMessage <-> Colleague
-  models.TeamMessage.belongsTo(models.Colleague, {
+  // TeamMessage <-> Agent
+  models.TeamMessage.belongsTo(models.Agent, {
     foreignKey: "agentId",
   });
 
@@ -72,8 +72,8 @@ async function init() {
     foreignKey: "teamId",
   });
 
-  // MCP <-> Colleague
-  models.MCP.belongsTo(models.Colleague, {
+  // MCP <-> Agent
+  models.MCP.belongsTo(models.Agent, {
     foreignKey: "agentId",
   });
 
@@ -82,34 +82,34 @@ async function init() {
     foreignKey: "teamId",
   });
 
-  // ColleagueKnowledge associations
-  models.ColleagueKnowledge.belongsTo(models.Project, {
+  // AgentKnowledge associations
+  models.AgentKnowledge.belongsTo(models.Project, {
     foreignKey: "teamId",
   });
 
-  models.ColleagueKnowledge.belongsTo(models.Colleague, {
+  models.AgentKnowledge.belongsTo(models.Agent, {
     foreignKey: "agentId",
   });
 
-  models.Project.belongsToMany(models.Colleague, {
-    through: models.ColleagueKnowledge,
+  models.Project.belongsToMany(models.Agent, {
+    through: models.AgentKnowledge,
     foreignKey: "projectId",
   });
 
-  models.Colleague.belongsToMany(models.Project, {
-    through: models.ColleagueKnowledge,
+  models.Agent.belongsToMany(models.Project, {
+    through: models.AgentKnowledge,
     foreignKey: "agentId",
   });
 
-  models.Colleague.hasMany(models.ColleagueKnowledge, {
+  models.Agent.hasMany(models.AgentKnowledge, {
     foreignKey: "agentId",
   });
 
-  // Knowledge <-> ColleagueKnowledge
-  models.Knowledge.hasOne(models.ColleagueKnowledge, {
+  // Knowledge <-> AgentKnowledge
+  models.Knowledge.hasOne(models.AgentKnowledge, {
     foreignKey: "knowledgeId",
   });
-  models.ColleagueKnowledge.belongsTo(models.Knowledge, {
+  models.AgentKnowledge.belongsTo(models.Knowledge, {
     foreignKey: "knowledgeId",
   });
 
@@ -154,10 +154,10 @@ async function init() {
   models.Supervising.belongsTo(models.Conversation, {
     foreignKey: "conversationId",
   });
-  models.Supervising.belongsTo(models.Colleague, {
+  models.Supervising.belongsTo(models.Agent, {
     foreignKey: "agentId",
   });
-  models.Colleague.hasMany(models.Supervising, {
+  models.Agent.hasMany(models.Supervising, {
     foreignKey: "agentId",
   });
 
@@ -175,12 +175,12 @@ async function init() {
     as: "session",
   });
 
-  // Task <-> Colleague
-  models.Task.belongsTo(models.Colleague, {
+  // Task <-> Agent
+  models.Task.belongsTo(models.Agent, {
     foreignKey: "agentId",
     onDelete: "CASCADE",
   });
-  models.Colleague.hasMany(models.Task, {
+  models.Agent.hasMany(models.Task, {
     foreignKey: "agentId",
     onDelete: "CASCADE",
   });
@@ -205,15 +205,15 @@ async function init() {
 
   // Hooks
   models.Project.addHook("beforeDestroy", async (project: any) => {
-    await models.Colleague.destroy({ where: { teamId: project.id } });
-    await models.ColleagueKnowledge.destroy({ where: { teamId: project.id } });
+    await models.Agent.destroy({ where: { teamId: project.id } });
+    await models.AgentKnowledge.destroy({ where: { teamId: project.id } });
     await models.TeamDetails.destroy({ where: { id: project.id } });
   });
 
-  models.Colleague.addHook("beforeDestroy", async (colleague: any) => {
-    await models.Supervising.destroy({ where: { agentId: colleague.id } });
-    await models.ColleagueKnowledge.destroy({
-      where: { agentId: colleague.id },
+  models.Agent.addHook("beforeDestroy", async (agent: any) => {
+    await models.Supervising.destroy({ where: { agentId: agent.id } });
+    await models.AgentKnowledge.destroy({
+      where: { agentId: agent.id },
     });
   });
 

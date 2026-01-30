@@ -11,7 +11,7 @@ const submitLearnInfo = async ({ body, ack, client }) => {
 
   const learnType = body.actions[0].value.toUpperCase();
 
-  const colleague = body.message.attachments[0].blocks[0].text.text
+  const agent = body.message.attachments[0].blocks[0].text.text
     .split("*")[1]
     .split("*")[0]
     .trim();
@@ -42,7 +42,7 @@ const submitLearnInfo = async ({ body, ack, client }) => {
   try {
     await createKnowledge(session, learnType, agentId, learningInfo);
 
-    const successMessage = `Learning Submission Successful! Colleague: ${colleague}, Type: ${learnType}, Information Provided: ${learningInfo}`;
+    const successMessage = `Learning Submission Successful! Agent: ${agent}, Type: ${learnType}, Information Provided: ${learningInfo}`;
 
     await client.chat.delete({
       channel: body.channel.id,
@@ -61,7 +61,7 @@ const submitLearnInfo = async ({ body, ack, client }) => {
               type: "section",
               text: {
                 type: "mrkdwn",
-                text: `:white_check_mark: *Learning Submission Successful!*\n\n:bust_in_silhouette: *Colleague:* ${colleague}\n:bookmark_tabs: *Type:* ${learnType}\n\n:information_source: *Information Provided:*\n${learningInfo}`,
+                text: `:white_check_mark: *Learning Submission Successful!*\n\n:bust_in_silhouette: *Agent:* ${agent}\n:bookmark_tabs: *Type:* ${learnType}\n\n:information_source: *Information Provided:*\n${learningInfo}`,
               },
             },
           ],
@@ -87,7 +87,7 @@ const submitLearnInfo = async ({ body, ack, client }) => {
               type: "section",
               text: {
                 type: "mrkdwn",
-                text: `:x: *Learning Submission Failed*\n\nSomething went wrong !\n\n:bust_in_silhouette: *Colleague:* ${colleague}\n:bookmark_tabs: *Type:* ${learnType}`,
+                text: `:x: *Learning Submission Failed*\n\nSomething went wrong !\n\n:bust_in_silhouette: *Agent:* ${agent}\n:bookmark_tabs: *Type:* ${learnType}`,
               },
             },
           ],

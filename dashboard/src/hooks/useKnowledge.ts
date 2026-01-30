@@ -85,7 +85,7 @@ function useKnowledge() {
     };
   };
 
-  const getColleagueKnowledges = (
+  const getAgentKnowledges = (
     agentId: string,
     fetchState: DependencyArray = []
   ) => {
@@ -169,7 +169,7 @@ function useKnowledge() {
   return {
     getKnowledge,
     getTeamKnowledges,
-    getColleagueKnowledges,
+    getAgentKnowledges,
     createKnowledge,
     deleteKnowledge,
     changeKnowledgeStatus,

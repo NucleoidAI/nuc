@@ -1,10 +1,10 @@
 const selectLearnType = async ({ body, ack, client, action }) => {
   await ack();
   const agentId = body.actions[0].selected_option.value;
-  const selectedColleague = body.actions[0].selected_option.text.text;
+  const selectedAgent = body.actions[0].selected_option.text.text;
 
   const metadata = {
-    event_type: "colleague_select",
+    event_type: "agent_select",
     event_payload: `{"agentId":"${agentId}"}`,
   };
 
@@ -21,7 +21,7 @@ const selectLearnType = async ({ body, ack, client, action }) => {
               type: "section",
               text: {
                 type: "mrkdwn",
-                text: `You selected: *${selectedColleague}*\n\nChoose a learning type:`,
+                text: `You selected: *${selectedAgent}*\n\nChoose a learning type:`,
               },
             },
             {

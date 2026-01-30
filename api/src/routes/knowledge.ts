@@ -1,8 +1,8 @@
 import { AuthenticationError } from "@canmingir/link-express/error";
-import Colleague from "../models/Colleague";
+import Agent from "../models/Agent";
 import Joi from "joi";
 import Knowledge from "../models/Knowledge";
-import colleague from "../functions/colleague";
+import agentData from "../functions/agentData";
 import express from "express";
 import knowledge from "../functions/knowledge";
 import schemas from "../schemas";
@@ -24,14 +24,14 @@ router.post("/", async (req, res) => {
       throw new AuthenticationError();
     }
   } else {
-    const colleague = await Colleague.findOne({
+    const agent = await Agent.findOne({
       where: {
         teamId,
         id: agentId,
       },
     });
 
-    if (!colleague) {
+    if (!agent) {
       throw new AuthenticationError();
     }
   }
@@ -54,9 +54,9 @@ router.get("/", async (req, res) => {
   };
 
   if (agentId) {
-    const colleagueInstance = await colleague.get({ agentId });
+    const agentInstance = await agentData.get({ agentId });
 
-    if (colleagueInstance.teamId !== teamId) {
+    if (agentInstance.teamId !== teamId) {
       throw new AuthenticationError();
     }
   }
@@ -76,22 +76,22 @@ router.get("/:id", async (req, res) => {
 
   const knowledgeItem = await knowledge.get({
     knowledgeId: id,
-    includeColleague: true,
+    includeAgent: true,
   });
 
-  const { ColleagueKnowledge } = knowledgeItem;
+  const { AgentKnowledge } = knowledgeItem;
 
   const hasAccess =
-    ColleagueKnowledge.teamId === teamId ||
-    ColleagueKnowledge.Colleague?.teamId === teamId;
+    AgentKnowledge.teamId === teamId ||
+    AgentKnowledge.Agent?.teamId === teamId;
 
   if (!hasAccess) {
     throw new AuthenticationError();
   }
 
-  const { agentId } = ColleagueKnowledge;
+  const { agentId } = AgentKnowledge;
 
-  delete knowledgeItem.ColleagueKnowledge;
+  delete knowledgeItem.AgentKnowledge;
 
   const responseData = {
     ...knowledgeItem,
@@ -107,14 +107,14 @@ router.delete("/:id", async (req, res) => {
 
   const knowledgeItem = await knowledge.get({
     knowledgeId: id,
-    includeColleague: true,
+    includeAgent: true,
   });
 
-  const { ColleagueKnowledge } = knowledgeItem;
+  const { AgentKnowledge } = knowledgeItem;
 
   const hasAccess =
-    ColleagueKnowledge.teamId === teamId ||
-    ColleagueKnowledge.Colleague?.teamId === teamId;
+    AgentKnowledge.teamId === teamId ||
+    AgentKnowledge.Agent?.teamId === teamId;
 
   if (!hasAccess) {
     throw new AuthenticationError();

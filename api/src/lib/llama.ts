@@ -12,38 +12,46 @@ async function generate({
   model?: string;
   messages?: { role: "user" | "assistant" | "system"; content: string }[];
 }) {
-  console.log("LLAMA input messages:", messages);
+  console.log("LLAMA input messages:", JSON.stringify(messages, null, 2));
 
-  messages.push({
-    role: "system",
-    content:
-      "\n\nIMPORTANT: You MUST respond with ONLY valid JSON that matches the format specified. Do NOT include any text before or after the JSON. Do NOT wrap the JSON in markdown code blocks. Output ONLY the raw JSON object.",
-  });
+  const systemMessages = messages.filter((m) => m.role === "system");
+  const otherMessages = messages.filter((m) => m.role !== "system");
 
-  const {
-    choices: [
-      {
-        message: { content },
-      },
-    ],
-    usage,
-  } = await llama.chat.completions.create({
+  const finalMessages = [
+    {
+      role: "system" as const,
+      content: `You MUST respond with ONLY valid JSON. ${systemMessages
+        .map((m) => m.content)
+        .join(" ")}`,
+    },
+    ...otherMessages,
+  ];
+
+  const response = await llama.chat.completions.create({
     model,
-    messages,
+    messages: finalMessages,
     stream: false,
     response_format: { type: "json_object" },
+    temperature: 0,
   });
 
-  if (usage) {
-    const { prompt_tokens, completion_tokens } = usage;
+  const content = response.choices[0]?.message?.content;
+
+  if (response.usage) {
+    const { prompt_tokens, completion_tokens } = response.usage;
     console.info({ prompt_tokens, completion_tokens });
   }
 
-  if (content) {
-    console.log("LLAMA output message:", content);
+  if (!content) {
+    throw new Error("Llama did not return content");
+  }
+
+  console.log("LLAMA output message:", content);
+
+  try {
     return JSON.parse(content);
-  } else {
-    throw new Error("Llama is not responding");
+  } catch (error) {
+    console.error("Failed to parse JSON:", content);
   }
 }
 

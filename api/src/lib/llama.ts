@@ -32,6 +32,7 @@ async function generate({
     messages,
     stream: false,
     response_format: { type: "json_object" },
+    temperature: 0,
   });
 
   if (usage) {

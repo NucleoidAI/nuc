@@ -37,7 +37,6 @@ function useOrganization(id?: string) {
 
       return response?.data;
     } catch (error) {
-      console.error("Error creating organization:", error);
       return null;
     }
   };

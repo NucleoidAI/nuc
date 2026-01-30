@@ -244,25 +244,19 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
 
   const onSubmit = handleSubmit(
     async (data) => {
-      try {
-        if (data.organization.id) {
-          await createTeam(data.team, data.organization.id);
-          publish("PLATFORM", "PROJECT_BAR_DIALOG", { open: false });
-        } else {
-          const result = await createOrganization(data.organization);
-          await createTeam(data.team, result.id);
-          publish("PLATFORM", "PROJECT_BAR_DIALOG", { open: false });
-        }
-
-        setActiveStep(0);
-        onClose();
-      } catch (error) {
-        console.error(error);
+      if (data.organization.id) {
+        await createTeam(data.team, data.organization.id);
+        publish("PLATFORM", "PROJECT_BAR_DIALOG", { open: false });
+      } else {
+        const result = await createOrganization(data.organization);
+        await createTeam(data.team, result.id);
+        publish("PLATFORM", "PROJECT_BAR_DIALOG", { open: false });
       }
+
+      setActiveStep(0);
+      onClose();
     },
     (errors) => {
-      console.log("Validation errors:", errors);
-
       if (errors.organization) {
         setActiveStep(0);
         return;

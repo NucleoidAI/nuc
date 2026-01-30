@@ -18,7 +18,6 @@ function useMessage() {
 
       return response?.data;
     } catch (error) {
-      console.error("Error creating message:", error);
       return null;
     }
   };
@@ -35,7 +34,6 @@ function useMessage() {
 
       return response?.data;
     } catch (error) {
-      console.error("Error updating message status:", error);
       return null;
     }
   };
@@ -51,7 +49,6 @@ function useMessage() {
 
       return messages;
     } catch (error) {
-      console.error("Error getting messages by date:", error);
       return [];
     }
   };

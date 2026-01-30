@@ -75,7 +75,6 @@ function useTeam() {
 
       return response?.data;
     } catch (error) {
-      console.error("Error creating team:", error);
       return null;
     }
   };
@@ -88,15 +87,12 @@ function useTeam() {
         organizationId: team.organizationId,
       });
 
-      console.log("updateResponse", response);
-
       if (response) {
         publish("TEAM_UPDATED", { teamId: team.id });
       }
 
       return response?.data;
     } catch (error) {
-      console.error("Error updating team:", error);
       return null;
     }
   };
@@ -111,7 +107,6 @@ function useTeam() {
 
       return response?.data;
     } catch (error) {
-      console.error("Error deleting team:", error);
       return null;
     }
   };

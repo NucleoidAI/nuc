@@ -291,8 +291,7 @@ export const getLayoutedElements = (nodes, edges, options = {}) => {
         edges: layoutedGraph.edges,
       };
     })
-    .catch((error) => {
-      console.error(error);
+    .catch(() => {
       return {
         nodes: nodes.map((node) => ({
           ...node,

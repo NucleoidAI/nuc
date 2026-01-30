@@ -45,8 +45,6 @@ const learnAction = async (command) => {
         commandName: name,
         agent,
       });
-    } else {
-      console.log("Knowledge status:", knowledge.status);
     }
   }, 5000);
 };
@@ -76,8 +74,6 @@ const taskAction = async (command) => {
         commandName: name,
         agent,
       });
-    } else {
-      console.log("Task status:", task.status);
     }
   }, 5000);
 };
@@ -237,16 +233,12 @@ const Types = [
   {
     name: "KNOWLEDGE",
     replyColor: "rgba(2,136,209, .6)",
-    replyAction: () => {
-      console.log("No reply action for KNOWLEDGE");
-    },
+    replyAction: () => {},
   },
   {
     name: "TASK",
     replyColor: "rgba(171,71,188, .6)",
-    replyAction: () => {
-      console.log("No reply action for TASK");
-    },
+    replyAction: () => {},
   },
 ];
 

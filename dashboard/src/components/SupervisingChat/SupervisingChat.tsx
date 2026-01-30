@@ -89,7 +89,6 @@ const SupervisingChat = ({
             },
           ]);
         } catch (error) {
-          console.error("Error evaluating answer:", error);
           setMessages((prev) => [
             ...prev,
             {

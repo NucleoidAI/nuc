@@ -1,6 +1,6 @@
+import platform from "@canmingir/link-express";
 // This will move to node-event-test-package
 import { v4 as uuid } from "uuid";
-
 const subscriptions = {};
 const messages = new Map();
 
@@ -39,7 +39,7 @@ const subscribe = (...args) => {
   const type = args.join(".");
   const id = uuid();
 
-  console.debug("node-event", "subscribe", type, id);
+  platform.logger.info("node-event", "subscribe", type, id);
 
   if (type === "__proto__" || type === "constructor" || type === "prototype") {
     throw new Error("Invalid subscription type");
@@ -53,7 +53,7 @@ const subscribe = (...args) => {
     type,
     callback,
     unsubscribe: () => {
-      console.debug("node-event", "unsubscribe", type, id);
+      platform.logger.info("node-event", "unsubscribe", type, id);
       delete subscriptions[type][id];
 
       if (Object.keys(subscriptions[type]).length === 0) {
@@ -75,7 +75,7 @@ const publish = (...args) => {
   const payload = args.pop();
   const type = args.join(".");
 
-  console.log("node-event", "publish", type, payload);
+  platform.logger.info("node-event", "publish", type, payload);
   messages.set(type, payload);
 
   if (type === "__proto__" || type === "constructor" || type === "prototype") {
@@ -88,7 +88,7 @@ const publish = (...args) => {
       try {
         registry.callback(payload, registry);
       } catch (err) {
-        console.error("node-event", "error", type, err);
+        platform.logger.error("node-event", "error", type, err);
       }
     }, 0);
   });

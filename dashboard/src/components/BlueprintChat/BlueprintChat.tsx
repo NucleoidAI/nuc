@@ -175,7 +175,6 @@ function BlueprintChat({
         err.message ||
         "Failed to fetch AI response";
       setError(errorMessage);
-      console.error("Error in addMessage:", err);
     } finally {
       setLoading(false);
       publish("MESSAGES_LOADED", true);

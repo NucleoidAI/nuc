@@ -1,5 +1,6 @@
-import puppeteer from "puppeteer";
 import os from "os";
+import platform from "@canmingir/link-express";
+import puppeteer from "puppeteer";
 
 async function run({
   parameters: { url, maxDepth = 1 },
@@ -87,7 +88,7 @@ async function run({
         }
       }
     } catch (error) {
-      console.error(`Error crawling ${pageUrl}:`, error);
+      platform.logger.error(`Error crawling ${pageUrl}:`, error);
     }
   }
 

@@ -4,6 +4,7 @@ const MCPs = [
     action: "GDRIVE:search",
     provider: "GOOGLE DRIVE",
     description: "Search for files in Google Drive",
+    icon: "mdi:google-drive",
     oauth: {
       scope: "https://www.googleapis.com/auth/drive.metadata.readonly",
       tokenUrl: "https://oauth2.googleapis.com/token",
@@ -31,6 +32,7 @@ const MCPs = [
     action: "SLACK:search",
     provider: "SLACK",
     description: "Search for messages in Slack",
+    icon: "mdi:slack",
     oauth: {
       scope: "search:read",
       tokenUrl: "https://slack.com/api/oauth.v2.access",
@@ -53,6 +55,7 @@ const MCPs = [
     action: "DISCORD:search",
     provider: "DISCORD",
     description: "Search for messages in Discord",
+    icon: "mdi:discord",
     oauth: {
       scope: "messages.read",
       tokenUrl: "https://discord.com/api/oauth2/token",
@@ -75,6 +78,7 @@ const MCPs = [
     action: "JIRA:search",
     provider: "JIRA",
     description: "Search for issues in JIRA",
+    icon: "mdi:jira",
     oauth: {
       scope: "read:jira-work",
       tokenUrl: "https://auth.atlassian.com/oauth/token",
@@ -97,6 +101,7 @@ const MCPs = [
     action: "GITHUB:search",
     provider: "GITHUB",
     description: "Search for repositories on GitHub",
+    icon: "mdi:github",
     oauth: {
       scope: "repo",
       tokenUrl: "https://github.com/login/oauth/access_token",
@@ -119,6 +124,7 @@ const MCPs = [
     action: "GREY:check_product_count",
     provider: "GREY",
     description: "Check product count",
+    icon: "mdi:counter",
     direction: "OUTGOING",
     lib: "mcp",
     inputSchema: {
@@ -138,6 +144,7 @@ const MCPs = [
     provider: "GREY",
     description: "Create an order",
     direction: "OUTGOING",
+    icon: "mdi:cart-plus",
     lib: "mcp",
     inputSchema: {
       type: "object",
@@ -160,6 +167,7 @@ const MCPs = [
     provider: "GREY",
     description: "Reduce product count",
     direction: "OUTGOING",
+    icon: "mdi:counter",
     lib: "mcp",
     inputSchema: {
       type: "object",
@@ -182,6 +190,7 @@ const MCPs = [
     provider: "GREY",
     description: "Send an email",
     direction: "OUTGOING",
+    icon: "mdi:email-send",
     lib: "mcp",
     inputSchema: {
       type: "object",
@@ -209,6 +218,7 @@ const MCPs = [
     description: "Get address information by BBK number",
     direction: "OUTGOING",
     lib: "mcp",
+    icon: "mdi:map",
     inputSchema: {
       type: "object",
       properties: {
@@ -234,6 +244,7 @@ const MCPs = [
     description:
       "Get BBK number by address. Supports partial address matching.",
     direction: "OUTGOING",
+    icon: "mdi:map-marker",
     lib: "mcp",
     inputSchema: {
       type: "object",
@@ -261,6 +272,7 @@ const MCPs = [
     description: "Get infrastructure inventory information by BBK number",
     direction: "OUTGOING",
     lib: "mcp",
+    icon: "mdi:server",
     inputSchema: {
       type: "object",
       properties: {
@@ -304,6 +316,7 @@ const MCPs = [
     provider: "TELCO",
     description: "Get product information by speed limit",
     direction: "OUTGOING",
+    icon: "mdi:speedometer",
     lib: "mcp",
     inputSchema: {
       type: "object",
@@ -332,6 +345,7 @@ const MCPs = [
     description: "Assign a port to a customer using device serial number",
     direction: "OUTGOING",
     lib: "mcp",
+    icon: "mdi:link",
     inputSchema: {
       type: "object",
       properties: {
@@ -371,6 +385,7 @@ const MCPs = [
     provider: "TELCO",
     description: "Connect/activate a port using port assignment ID",
     direction: "OUTGOING",
+    icon: "mdi:ethernet",
     lib: "mcp",
     inputSchema: {
       type: "object",
@@ -401,6 +416,7 @@ const MCPs = [
     provider: "TELCO",
     description: "Configure port settings using device serial number",
     direction: "OUTGOING",
+    icon: "mdi:cog",
     lib: "mcp",
     inputSchema: {
       type: "object",
@@ -444,6 +460,7 @@ const MCPs = [
     description:
       "Sends a notification to the configured endpoint when a project is opened (for testing)",
     direction: "OUTGOING",
+    icon: "mdi:projector-screen",
     lib: "mcp",
     inputSchema: {
       type: "object",

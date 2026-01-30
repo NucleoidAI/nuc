@@ -112,6 +112,7 @@ function BlueprintFlowWidget({
     action: "",
     provider: "",
     description: "",
+    icon: "",
     direction: "",
     lib: "",
     inputSchema: {
@@ -185,6 +186,7 @@ function BlueprintFlowWidget({
       action: "",
       provider: "",
       description: "",
+      icon: "",
       direction: "",
       lib: "",
       inputSchema: {
@@ -206,8 +208,8 @@ function BlueprintFlowWidget({
 
     const nodeIcon =
       newNodeType === "CONDITION"
-        ? "mdi:help-circle-outline"
-        : "mdi:cube-outline";
+        ? "mdi:source-branch"
+        : selectedIntegration?.icon;
     const actionType =
       newNodeType === "CONDITION"
         ? "PLATFORM:decision"

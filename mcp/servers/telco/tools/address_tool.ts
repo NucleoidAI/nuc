@@ -1,11 +1,5 @@
 import { AddressToolInput, Tool } from "./types";
-
-import { fileURLToPath } from "url";
-import fs from "fs";
-import path from "path";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { findOne } from "../db/index.js";
 
 export const addressTool: Tool<AddressToolInput> = {
   name: "TELCO:get_address",
@@ -23,10 +17,7 @@ export const addressTool: Tool<AddressToolInput> = {
   },
   handler: async (args: AddressToolInput) => {
     try {
-      const mockDataPath = path.join(__dirname, "..", "mock", "addresses.json");
-      const data = JSON.parse(fs.readFileSync(mockDataPath, "utf-8"));
-
-      const address = data.find((item: any) => item.bbk_no === args.bbk_no);
+      const address = findOne("addresses", "bbk_no", args.bbk_no);
 
       if (!address) {
         return {

@@ -399,6 +399,7 @@
               "action": "PLATFORM:user_interaction",
               "status": "COMPLETED",
               "parameters": {
+                "question": "Please select a product 100mbps 6 months unlimited or 100mbps 3 months unlimited or 50mbps 12 months unlimited or 50mbps 6 months unlimited or 50mbps 3 months unlimited or 25mbps 12 months unlimited or 25mbps 3 months unlimited or 25mbps 6 months unlimited",
                 "selectedProduct": {
                   "serial_number": "SN-789456",
                   "assignment_id": "ASSIGN-123"
@@ -411,7 +412,7 @@
               "action": "TELCO:port_allocation",
               "status": "COMPLETED",
               "parameters": {
-                "serial_number": "SN-789456"
+                "device_serial_number": "SN-789456"
               },
               "comment": "Assigning port"
             },
@@ -420,7 +421,12 @@
               "action": "TELCO:configuration",
               "status": "COMPLETED",
               "parameters": {
-                "serial_number": "SN-789456"
+                "device_serial_number": "SN-789456",
+                "port_no": "1",
+                "device_tid": "ALC_11TTIM_TEST1",
+                "hgw_serial_no": "HGW111",
+                "speed": "1gbps",
+                "device_card_no": "1"
               },
               "comment": "Configuring port"
             },

@@ -26,18 +26,20 @@ interface Database {
     bbk_no: string;
     infrastructure_type: string;
     topology: string;
-    upstream_device_card_no: string;
-    upstream_device_port_no: string;
+    device_tid: string;
+    hgw_serial_no: string;
     device_serial_number: string;
     speed_limit: string;
   }>;
   port_allocations: Array<{
     serial_number: string;
     assignment_id: string;
-    bbk_no: string;
-    port_no: string;
+    bbk_no?: string;
+    port_no?: string;
     status: string;
-    speed: string;
+    speed?: string;
+    customer_no?: string;
+    assignment_date?: string | null;
   }>;
   port_connections: Array<{
     assignment_id: string;
@@ -83,13 +85,14 @@ const SEED_DATA: Database = {
     { serial_number: "789", connection_id: "BG003", vlan_id: "102", ip_address: null, subnet_mask: null, gateway: null, dns_primary: null, dns_secondary: null, service_profile: "VDSL_50M", qos_profile: "Bronze", status: "Pending", configuration_date: null },
   ],
   inventory: [
-    { bbk_no: "987", infrastructure_type: "Fiber", topology: "FTTH", upstream_device_card_no: "1", upstream_device_port_no: "1", device_serial_number: "123", speed_limit: "1gbps" },
-    { bbk_no: "988", infrastructure_type: "Fiber", topology: "FTTB", upstream_device_card_no: "2", upstream_device_port_no: "3", device_serial_number: "456", speed_limit: "100mbps" },
-    { bbk_no: "989", infrastructure_type: "VDSL", topology: "FTTC", upstream_device_card_no: "3", upstream_device_port_no: "5", device_serial_number: "789", speed_limit: "50mbps" },
+    { bbk_no: "987", infrastructure_type: "Fiber", topology: "FTTH", device_tid: "ALC_06TTIM_TEST1", hgw_serial_no: "HGW001", device_serial_number: "123", speed_limit: "1gbps" },
+    { bbk_no: "988", infrastructure_type: "Fiber", topology: "FTTB", device_tid: "ALC_06TTIM_TEST2", hgw_serial_no: "HGW002", device_serial_number: "456", speed_limit: "100mbps" },
+    { bbk_no: "989", infrastructure_type: "VDSL", topology: "FTTC", device_tid: "ALC_06TTIM_TEST3", hgw_serial_no: "HGW003", device_serial_number: "789", speed_limit: "50mbps" },
   ],
   port_allocations: [
     { serial_number: "123", assignment_id: "TH001", bbk_no: "987", port_no: "1/1/1", status: "Assigned", speed: "1gbps" },
     { serial_number: "789", assignment_id: "TH003", bbk_no: "989", port_no: "3/5/1", status: "Pending", speed: "50mbps" },
+    { serial_number: "456", assignment_id: "TH007332", customer_no: "M194980", assignment_date: "2026-02-01T18:23:47.771Z", status: "Connected" },
   ],
   port_connections: [
     { assignment_id: "TH001", connection_id: "BG001", status: "Active", connection_date: "2025-12-15T11:00:00Z", port_status: "Running", signal_strength: "-15dBm" },
@@ -104,9 +107,17 @@ const SEED_DATA: Database = {
   ],
   products: [
     { speed: "1gbps", product_code: "1000_mbps_12", product_description: "1000 Mbps Internet 12 Months Unlimited" },
+    { speed: "1gbps", product_code: "1000_mbps_6", product_description: "1000 Mbps Internet 6 Months Unlimited" },
+    { speed: "1gbps", product_code: "1000_mbps_3", product_description: "1000 Mbps Internet 3 Months Unlimited" },
     { speed: "100mbps", product_code: "100_mbps_12", product_description: "100 Mbps Internet 12 Months Unlimited" },
+    { speed: "100mbps", product_code: "100_mbps_6", product_description: "100 Mbps Internet 6 Months Unlimited" },
+    { speed: "100mbps", product_code: "100_mbps_3", product_description: "100 Mbps Internet 3 Months Unlimited" },
     { speed: "50mbps", product_code: "50_mbps_12", product_description: "50 Mbps Internet 12 Months Unlimited" },
+    { speed: "50mbps", product_code: "50_mbps_6", product_description: "50 Mbps Internet 6 Months Unlimited" },
+    { speed: "50mbps", product_code: "50_mbps_3", product_description: "50 Mbps Internet 3 Months Unlimited" },
     { speed: "25mbps", product_code: "25_mbps_12", product_description: "25 Mbps Internet 12 Months Unlimited" },
+    { speed: "25mbps", product_code: "25_mbps_6", product_description: "25 Mbps Internet 6 Months Unlimited" },
+    { speed: "25mbps", product_code: "25_mbps_3", product_description: "25 Mbps Internet 3 Months Unlimited" },
   ],
 };
 

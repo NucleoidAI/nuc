@@ -19,8 +19,6 @@ async function generate({
   model?: string;
   messages?: { role: "user" | "assistant" | "system"; content: string }[];
 }) {
-  console.log("Bedrock input messages:", messages);
-
   const systemPrompts: { text: string }[] = [];
   const conversationMessages: Message[] = [];
 
@@ -45,7 +43,7 @@ async function generate({
     messages: conversationMessages,
     inferenceConfig: {
       temperature: 0,
-      maxTokens: 4096,
+      maxTokens: 8192,
     },
   });
 
@@ -59,14 +57,63 @@ async function generate({
     });
   }
 
+  if (response.stopReason === "max_tokens") {
+    console.error("Response was truncated due to max_tokens limit");
+    throw new Error(
+      "LLM response was truncated. The response exceeded the maximum token limit."
+    );
+  }
+
   const outputContent = response.output?.message?.content;
   if (outputContent && outputContent[0]?.text) {
     const content = outputContent[0].text;
-    console.log("Bedrock output message:", content);
-    return JSON.parse(content);
+    return parseJSONFromLLMResponse(content);
   } else {
     throw new Error("Bedrock is not responding");
   }
+}
+
+function parseJSONFromLLMResponse(content: string): unknown {
+  try {
+    return JSON.parse(content);
+  } catch {
+    console.error(
+      "Failed to parse LLM response as JSON:",
+      content.substring(0, 500)
+    );
+  }
+
+  const codeBlockMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (codeBlockMatch) {
+    try {
+      return JSON.parse(codeBlockMatch[1].trim());
+    } catch {
+      console.error(
+        "Failed to parse LLM response as JSON:",
+        codeBlockMatch[1].trim()
+      );
+    }
+  }
+
+  const jsonMatch = content.match(/(\{[\s\S]*\}|\[[\s\S]*\])/);
+  if (jsonMatch) {
+    try {
+      return JSON.parse(jsonMatch[1]);
+    } catch {
+      console.error("Failed to parse LLM response as JSON:", jsonMatch[1]);
+    }
+  }
+
+  console.error(
+    "Failed to parse LLM response as JSON:",
+    content.substring(0, 500)
+  );
+  throw new SyntaxError(
+    `Failed to parse LLM response as JSON. Content starts with: ${content.substring(
+      0,
+      100
+    )}`
+  );
 }
 
 export default { generate };

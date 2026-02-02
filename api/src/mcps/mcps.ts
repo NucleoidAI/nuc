@@ -335,12 +335,12 @@ const MCPs = [
     inputSchema: {
       type: "object",
       properties: {
-        serial_number: {
+        device_serial_number: {
           type: "string",
           description: "The device serial number to assign a port for.",
         },
       },
-      required: ["serial_number"],
+      required: ["device_serial_number"],
     },
     outputSchema: {
       type: "object",
@@ -405,12 +405,39 @@ const MCPs = [
     inputSchema: {
       type: "object",
       properties: {
-        serial_number: {
+        device_serial_number: {
           type: "string",
           description: "The device serial number to configure.",
         },
+        port_no: {
+          type: "string",
+          description: "The port number to configure.",
+        },
+        device_tid: {
+          type: "string",
+          description: "The device TID to configure.",
+        },
+        hgw_serial_no: {
+          type: "string",
+          description: "The HGW serial number to configure.",
+        },
+        device_card_no: {
+          type: "string",
+          description: "The device card number to configure.",
+        },
+        speed: {
+          type: "string",
+          description: "The speed to configure.",
+        },
       },
-      required: ["serial_number"],
+      required: [
+        "device_serial_number",
+        "port_no",
+        "device_tid",
+        "hgw_serial_no",
+        "device_card_no",
+        "speed",
+      ],
     },
     outputSchema: {
       type: "object",

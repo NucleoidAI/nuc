@@ -1,11 +1,5 @@
 import { PortConnectionWithTechnicalSupportInput, Tool } from "./types";
-
-import { fileURLToPath } from "url";
-import fs from "fs";
-import path from "path";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { findOne } from "../db/index.js";
 
 export const portConnectionWithTechnicalSupportTool: Tool<PortConnectionWithTechnicalSupportInput> =
   {
@@ -25,16 +19,10 @@ export const portConnectionWithTechnicalSupportTool: Tool<PortConnectionWithTech
     },
     handler: async (args: PortConnectionWithTechnicalSupportInput) => {
       try {
-        const mockDataPath = path.join(
-          __dirname,
-          "..",
-          "mock",
-          "port_connection_with_technical_support.json"
-        );
-        const data = JSON.parse(fs.readFileSync(mockDataPath, "utf-8"));
-
-        const portConnection = data.find(
-          (item: any) => item.assignment_id === args.assignment_id
+        const portConnection = findOne(
+          "port_connections_with_support",
+          "assignment_id",
+          args.assignment_id
         );
 
         if (!portConnection) {

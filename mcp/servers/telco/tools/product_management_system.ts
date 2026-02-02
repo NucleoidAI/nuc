@@ -1,11 +1,5 @@
 import { ProductManagementSystemInput, Tool } from "./types";
-
-import { fileURLToPath } from "url";
-import fs from "fs";
-import path from "path";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { findAll, findOne } from "../db/index.js";
 
 export const productManagementSystemTool: Tool<ProductManagementSystemInput> = {
   name: "TELCO:get_product_by_speed",
@@ -14,7 +8,7 @@ export const productManagementSystemTool: Tool<ProductManagementSystemInput> = {
   inputSchema: {
     type: "object",
     properties: {
-      spped: {
+      speed: {
         type: "string",
         description:
           "The speed limit to look up the product for (e.g., '1gbps', '100mbps', '50mbps').",
@@ -24,18 +18,15 @@ export const productManagementSystemTool: Tool<ProductManagementSystemInput> = {
   },
   handler: async (args: ProductManagementSystemInput) => {
     try {
-      const mockDataPath = path.join(__dirname, "..", "mock", "products.json");
-      const data = JSON.parse(fs.readFileSync(mockDataPath, "utf-8"));
+      const products = findAll("products", (item) => item.speed === args.speed);
 
-      const product = data.find((item: any) => item.speed === args.speed);
-
-      if (!product) {
+      if (!products.length) {
         return {
           content: [
             {
               type: "text",
               text: JSON.stringify({
-                error: `Product not found for speed limit: ${args.speed}`,
+                error: `Products not found for speed limit: ${args.speed}`,
               }),
             },
           ],
@@ -47,7 +38,9 @@ export const productManagementSystemTool: Tool<ProductManagementSystemInput> = {
         content: [
           {
             type: "text",
-            text: JSON.stringify(product),
+            text: JSON.stringify({
+              products: products,
+            }),
           },
         ],
         isError: false,

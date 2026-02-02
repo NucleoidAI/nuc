@@ -1,11 +1,5 @@
 import { InventoryToolInput, Tool } from "./types";
-
-import { fileURLToPath } from "url";
-import fs from "fs";
-import path from "path";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { findOne } from "../db/index.js";
 
 export const inventoryTool: Tool<InventoryToolInput> = {
   name: "TELCO:get_inventory",
@@ -24,10 +18,7 @@ export const inventoryTool: Tool<InventoryToolInput> = {
   },
   handler: async (args: InventoryToolInput) => {
     try {
-      const mockDataPath = path.join(__dirname, "..", "mock", "inventory.json");
-      const data = JSON.parse(fs.readFileSync(mockDataPath, "utf-8"));
-
-      const inventory = data.find((item: any) => item.bbk_no === args.bbk_no);
+      const inventory = findOne("inventory", "bbk_no", args.bbk_no);
 
       if (!inventory) {
         return {

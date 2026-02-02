@@ -1,11 +1,5 @@
 import { PortConnectionInput, Tool } from "./types";
-
-import { fileURLToPath } from "url";
-import fs from "fs";
-import path from "path";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { findOne, update } from "../db/index.js";
 
 export const portConnectionTool: Tool<PortConnectionInput> = {
   name: "TELCO:port_connection",
@@ -22,11 +16,18 @@ export const portConnectionTool: Tool<PortConnectionInput> = {
     required: ["assignment_id"],
   },
   handler: async (args: PortConnectionInput) => {
+   
+    update("port_allocations", "assignment_id", args.assignment_id, {
+      status: "Connected",
+    });
+
     return {
       content: [
         {
           type: "text",
-          text: JSON.stringify({ message: "Port connection successful" }),
+          text: JSON.stringify({
+            message: `Port connected successfully for assignment ID: ${args.assignment_id}`,
+          }),
         },
       ],
       isError: false,

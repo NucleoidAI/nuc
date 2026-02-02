@@ -435,6 +435,7 @@ const MCPs = [
         "port_no",
         "device_tid",
         "hgw_serial_no",
+        "device_card_no",
         "speed",
       ],
     },

@@ -63,6 +63,7 @@
       "infrastructure_type": "Fiber",
       "topology": "FTTH",
       "device_tid": "ALC_06TTIM_TEST1",
+      "device_card_no": "1",
       "hgw_serial_no": "HGW001",
       "device_serial_number": "123",
       "speed_limit": "1gbps"
@@ -72,6 +73,7 @@
       "infrastructure_type": "Fiber",
       "topology": "FTTB",
       "device_tid": "ALC_06TTIM_TEST2",
+      "device_card_no": "2",
       "hgw_serial_no": "HGW002",
       "device_serial_number": "456",
       "speed_limit": "100mbps"
@@ -81,6 +83,7 @@
       "infrastructure_type": "VDSL",
       "topology": "FTTC",
       "device_tid": "ALC_06TTIM_TEST3",
+      "device_card_no": "3",
       "hgw_serial_no": "HGW003",
       "device_serial_number": "789",
       "speed_limit": "50mbps"

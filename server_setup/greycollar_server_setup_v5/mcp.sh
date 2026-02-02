@@ -10,25 +10,25 @@ if [ $# -lt 2 ]; then
 fi
 
 SERVER_NAME=$1
-DB_PATH="mcp/$SERVER_NAME/db/database.json"
+CONTAINER_NAME="greycollar-land"
+DB_PATH="/app/mcp/servers/$SERVER_NAME/db/database.json"
 
-# Check if database file exists
-if [ ! -f "$DB_PATH" ]; then
-    echo "Error: Database file not found at $DB_PATH"
+# Check if container is running
+if ! docker ps --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
+    echo "Error: Container '$CONTAINER_NAME' is not running"
     exit 1
 fi
 
-# Check if jq is installed for JSON parsing
-if ! command -v jq &> /dev/null; then
-    echo "Error: jq is required but not installed."
-    echo "Install it with: apt-get install jq (Debian/Ubuntu) or yum install jq (CentOS/RHEL)"
+# Check if database file exists inside container
+if ! docker exec "$CONTAINER_NAME" test -f "$DB_PATH"; then
+    echo "Error: Database file not found at $DB_PATH inside container"
     exit 1
 fi
 
 # Case 1: View all entities - mcp.sh [server_name] view
 if [ $# -eq 2 ] && [ "$2" == "view" ]; then
     echo "=== All entities in $SERVER_NAME ==="
-    jq '.' "$DB_PATH"
+    docker exec "$CONTAINER_NAME" cat "$DB_PATH" | jq '.'
     exit 0
 fi
 
@@ -36,16 +36,18 @@ fi
 if [ $# -eq 3 ] && [ "$3" == "view" ]; then
     ENTITY_NAME=$2
     echo "=== Entity: $ENTITY_NAME in $SERVER_NAME ==="
-    
-    # Try to find the entity (supports both array and object structures)
-    RESULT=$(jq --arg entity "$ENTITY_NAME" '.[$entity] // .[] | select(.name == $entity or .id == $entity)' "$DB_PATH")
-    
-    if [ -z "$RESULT" ]; then
+
+    # Get the entity by key name
+    RESULT=$(docker exec "$CONTAINER_NAME" cat "$DB_PATH" | jq --arg entity "$ENTITY_NAME" '.[$entity]')
+
+    if [ -z "$RESULT" ] || [ "$RESULT" == "null" ]; then
         echo "Error: Entity '$ENTITY_NAME' not found in $DB_PATH"
+        echo "Available entities:"
+        docker exec "$CONTAINER_NAME" cat "$DB_PATH" | jq -r 'keys[]'
         exit 1
     fi
-    
-    echo "$RESULT" | jq '.'
+
+    echo "$RESULT"
     exit 0
 fi
 

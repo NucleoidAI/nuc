@@ -3,18 +3,20 @@ import BlueprintsWidget from "../widgets/BlueprintsWidget/BlueprintsWidget";
 import Communication from "../widgets/Communication/Communication";
 import { Iconify } from "@canmingir/link/platform/components";
 import Knowledge from "../widgets/Knowledge/Knowledge";
-import PopupChatWidget from "../widgets/PopupChatWidget";
 import Profile from "../widgets/Profile/Profile";
 import ProfileCard from "../components/ProfileCard/ProfileCard";
-import React from "react";
+import SidebarChatWidget from "../widgets/SidebarChatWidget";
+
 import Stack from "@mui/material/Stack";
 import Supervising from "../widgets/Supervising/Supervising";
 import TasksWidget from "../widgets/TasksWidget/TasksWidget";
 import { getAgentGradients } from "../utils/gradient";
 
-import { Skeleton, Theme, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Skeleton, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+
+const DRAWER_WIDTH = 400;
 
 const TABS = [
   {
@@ -90,9 +92,13 @@ function AgentLayout({
         : "profile")
   );
 
-  const mdDown = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"));
+  const [chatOpen, setChatOpen] = useState(false);
 
-  const handleTabChange = (newTab) => {
+  const handleChatToggle = () => {
+    setChatOpen((prev) => !prev);
+  };
+
+  const handleTabChange = (newTab: string) => {
     setCurrentTab(newTab);
 
     const newQueryParams = new URLSearchParams(location.search);
@@ -133,11 +139,16 @@ function AgentLayout({
 
   return (
     <>
-      <Stack margin={2} sx={{ position: "relative", marginTop: -2 }}>
-        {loading ? (
-          <Skeleton variant="rectangular" height={200} />
-        ) : (
-          <>
+      <Box
+        sx={{
+          transition: "margin 0.3s ease-in-out",
+          marginRight: chatOpen ? `${DRAWER_WIDTH}px` : 0,
+        }}
+      >
+        <Stack margin={2} sx={{ position: "relative", marginTop: -2 }}>
+          {loading ? (
+            <Skeleton variant="rectangular" height={200} />
+          ) : (
             <ProfileCard
               TABS={TABS}
               currentTab={currentTab}
@@ -146,29 +157,25 @@ function AgentLayout({
               iconUrl={agent.icon}
               coverUrl={getAgentGradients(agent.id, theme)}
               loading={loading}
+              sidebarOpen={chatOpen}
             />
-            <Stack
-              sx={{
-                position: "absolute",
-                bottom: mdDown ? "auto" : 50,
-                left: mdDown ? "auto" : 60,
-                top: mdDown ? 25 : "auto",
-                right: mdDown ? 25 : "auto",
-                zIndex: 1000,
-              }}
-            >
-              <PopupChatWidget agentId={agent.id} />
-            </Stack>
-          </>
-        )}
-      </Stack>
-      {currentTab === "profile" && <Profile agentId={agent.id} />}
-      {currentTab === "knowledge-base" && <Knowledge agentId={agent.id} />}
-      {currentTab === "blueprints" && <BlueprintsWidget agentId={agent.id} />}
-      {currentTab === "supervisings" && <Supervising agentId={agent.id} />}
-      {currentTab === "tasks" && <TasksWidget agentId={agent.id} />}
-      {currentTab === "mcps" && <AgentMCP agent={agent} />}
-      {currentTab === "communication" && <Communication />}
+          )}
+        </Stack>
+        {currentTab === "profile" && <Profile agentId={agent.id} />}
+        {currentTab === "knowledge-base" && <Knowledge agentId={agent.id} />}
+        {currentTab === "blueprints" && <BlueprintsWidget agentId={agent.id} />}
+        {currentTab === "supervisings" && <Supervising agentId={agent.id} />}
+        {currentTab === "tasks" && <TasksWidget agentId={agent.id} />}
+        {currentTab === "mcps" && <AgentMCP agent={agent} />}
+        {currentTab === "communication" && <Communication />}
+      </Box>
+
+      {/* Sidebar Chat */}
+      <SidebarChatWidget
+        agentId={agent.id}
+        open={chatOpen}
+        onToggle={handleChatToggle}
+      />
     </>
   );
 }

@@ -16,7 +16,6 @@ const MessageList = memo(
     highlightedMessage: { current: HTMLDivElement | null };
   }) => (
     <>
-      <AIMessage content="Hi, How can I help you today?" />
       {messages.map((item, index) => {
         const isLastMessage = index === messages.length - 1;
         const isSelected = item.id === selectedId;

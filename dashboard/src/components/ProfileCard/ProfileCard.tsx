@@ -10,6 +10,7 @@ function ProfileCard({
   setCurrentTab,
   TABS,
   loading,
+  sidebarOpen = false,
 }) {
   return (
     <Card variant="profile-card" sx={{ position: "relative", height: 200 }}>
@@ -24,6 +25,7 @@ function ProfileCard({
         TABS={TABS}
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
+        sidebarOpen={sidebarOpen}
       />
     </Card>
   );

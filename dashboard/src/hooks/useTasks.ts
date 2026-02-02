@@ -7,7 +7,7 @@ import { publish, useEvent } from "@nucleoidai/react-event";
 
 type DependencyArray = object[];
 
-function useTasks(agentId: string) {
+function useTasks(agentId: string, initialFetchState: DependencyArray = []) {
   const { Api } = useApi();
 
   const [taskStatus] = useEvent("TASK_STATUS_CHANGED", null);
@@ -40,7 +40,7 @@ function useTasks(agentId: string) {
     return { tasks, loading, error, fetch };
   };
 
-  const result = getTasks();
+  const result = getTasks(initialFetchState);
 
   const getSteps = async (id: string) => {
     if (!id) return;

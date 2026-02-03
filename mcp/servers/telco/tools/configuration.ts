@@ -156,8 +156,9 @@ export const configurationTool: Tool<ConfigurationInput> = {
             type: "text",
             text: JSON.stringify({
               success: true,
-              createOntRequest: createOntXml,
-              addCustomerServiceRequest: addCustomerServiceXml,
+              message: `Configuration successful for port number: ${args.port_no}`,
+              //createOntRequest: createOntXml,
+              // addCustomerServiceRequest: addCustomerServiceXml,
               //createOntResponse,
               //addCustomerServiceResponse,
             }),

@@ -20,10 +20,8 @@ export const addressToBBKTool: Tool<AddressToBBKInput> = {
     try {
       const addresses = findAll("addresses");
 
-      // Try exact match first
       let result = addresses.find((item) => item.address === args.address);
 
-      // If no exact match, try partial match (case-insensitive)
       if (!result) {
         const searchTerm = args.address?.toLowerCase();
         result = addresses.find((item) =>
@@ -37,7 +35,7 @@ export const addressToBBKTool: Tool<AddressToBBKInput> = {
             {
               type: "text",
               text: JSON.stringify({
-                message: `Address not found in records: ${args.address}`,
+                error: `BBK_NO_NOT_FOUND`,
               }),
             },
           ],
@@ -49,7 +47,9 @@ export const addressToBBKTool: Tool<AddressToBBKInput> = {
         content: [
           {
             type: "text",
-            text: JSON.stringify(result),
+            text: JSON.stringify({
+              bbk_no: result?.bbk_no,
+            }),
           },
         ],
         isError: false,

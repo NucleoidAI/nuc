@@ -1,6 +1,6 @@
 import { ConfigurationInput, Tool } from "./types";
 
-const ENDPOINT = "http://localhost:3001/api/soap/createOnt";
+const ENDPOINT = "http://10.98.136.58:9012/keys-fttx-middleware-webservice/webservices/FttxMiddlewareWebService";
 
 function createOntXmlRequest(args: ConfigurationInput): string {
   return `<?xml version='1.0' encoding='UTF-8'?>
@@ -155,9 +155,9 @@ export const configurationTool: Tool<ConfigurationInput> = {
           {
             type: "text",
             text: JSON.stringify({
-              success: true,
-              createOntRequest: createOntXml,
-              addCustomerServiceRequest: addCustomerServiceXml,
+              message: `CONFIGURATION_COMPLETED`,
+              //createOntRequest: createOntXml,
+              //addCustomerServiceRequest: addCustomerServiceXml,
               //createOntResponse,
               //addCustomerServiceResponse,
             }),

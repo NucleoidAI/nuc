@@ -13,50 +13,6 @@
       "address": "Beşiktaş Mahallesi, Barbaros Bulvarı, No:78/12, Beşiktaş, İstanbul"
     }
   ],
-  "configurations": [
-    {
-      "serial_number": "123",
-      "connection_id": "BG001",
-      "vlan_id": "100",
-      "ip_address": "192.168.1.10",
-      "subnet_mask": "255.255.255.0",
-      "gateway": "192.168.1.1",
-      "dns_primary": "8.8.8.8",
-      "dns_secondary": "8.8.4.4",
-      "service_profile": "FIBER_1G",
-      "qos_profile": "Gold",
-      "status": "Configured",
-      "configuration_date": "2025-12-15T11:30:00Z"
-    },
-    {
-      "serial_number": "456",
-      "connection_id": "BG002",
-      "vlan_id": "101",
-      "ip_address": "192.168.2.10",
-      "subnet_mask": "255.255.255.0",
-      "gateway": "192.168.2.1",
-      "dns_primary": "8.8.8.8",
-      "dns_secondary": "8.8.4.4",
-      "service_profile": "FIBER_100M",
-      "qos_profile": "Silver",
-      "status": "Configured",
-      "configuration_date": "2025-12-16T15:30:00Z"
-    },
-    {
-      "serial_number": "789",
-      "connection_id": "BG003",
-      "vlan_id": "102",
-      "ip_address": null,
-      "subnet_mask": null,
-      "gateway": null,
-      "dns_primary": null,
-      "dns_secondary": null,
-      "service_profile": "VDSL_50M",
-      "qos_profile": "Bronze",
-      "status": "Pending",
-      "configuration_date": null
-    }
-  ],
   "inventory": [
     {
       "bbk_no": "987",
@@ -137,79 +93,6 @@
       "port_no": "3/5/1",
       "status": "Available",
       "speed": "50mbps"
-    },
-    {
-      "serial_number": "456",
-      "assignment_id": "TH001720",
-      "bbk_no": "988",
-      "status": "Pending",
-      "speed": "100mbps"
-    }
-  ],
-  "port_connections_with_support": [
-    {
-      "assignment_id": "ASSIGN-123",
-      "connection_id": "BG-TS001",
-      "status": "Active",
-      "connection_date": "2025-12-20T10:30:00Z",
-      "port_status": "Running",
-      "signal_strength": "-12dBm",
-      "technical_support": {
-        "ticket_id": "TS-2025-001",
-        "assigned_engineer": "Ahmet Yılmaz",
-        "priority": "High",
-        "created_at": "2025-12-20T10:00:00Z",
-        "status": "Resolved",
-        "resolution_notes": "Port successfully connected with technical support assistance. All parameters verified."
-      }
-    },
-    {
-      "assignment_id": "ASSIGN-456",
-      "connection_id": "BG-TS002",
-      "status": "Active",
-      "connection_date": "2025-12-21T14:15:00Z",
-      "port_status": "Running",
-      "signal_strength": "-14dBm",
-      "technical_support": {
-        "ticket_id": "TS-2025-002",
-        "assigned_engineer": "Mehmet Kaya",
-        "priority": "Medium",
-        "created_at": "2025-12-21T13:45:00Z",
-        "status": "Resolved",
-        "resolution_notes": "Minor signal optimization required. Port now functioning optimally."
-      }
-    },
-    {
-      "assignment_id": "ASSIGN-789",
-      "connection_id": "BG-TS003",
-      "status": "Pending",
-      "connection_date": null,
-      "port_status": "Awaiting Technical Review",
-      "signal_strength": null,
-      "technical_support": {
-        "ticket_id": "TS-2025-003",
-        "assigned_engineer": "Ayşe Demir",
-        "priority": "High",
-        "created_at": "2025-12-22T09:00:00Z",
-        "status": "In Progress",
-        "resolution_notes": "Complex port configuration requires additional diagnostics. Estimated completion: 24 hours."
-      }
-    },
-    {
-      "assignment_id": "ASSIGN-101",
-      "connection_id": "BG-TS004",
-      "status": "Failed",
-      "connection_date": null,
-      "port_status": "Error",
-      "signal_strength": null,
-      "technical_support": {
-        "ticket_id": "TS-2025-004",
-        "assigned_engineer": "Fatma Şahin",
-        "priority": "Critical",
-        "created_at": "2025-12-23T11:20:00Z",
-        "status": "Open",
-        "resolution_notes": "Hardware compatibility issue detected. Escalated to engineering team."
-      }
     }
   ],
   "products": [

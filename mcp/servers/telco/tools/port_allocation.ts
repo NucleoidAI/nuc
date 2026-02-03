@@ -21,7 +21,7 @@ export const portAllocationTool: Tool<PortAllocationInput> = {
         description: "The speed to assign a port for.",
       },
     },
-    required: ["device_serial_number", "bbk_no", "port_no", "speed"],
+    required: ["device_serial_number", "bbk_no", "speed"],
   },
   handler: async (args: PortAllocationInput) => {
     try {
@@ -34,7 +34,7 @@ export const portAllocationTool: Tool<PortAllocationInput> = {
           serial_number: args.device_serial_number,
           assignment_id: `TH00${Math.floor(1000 + Math.random() * 9000)}`,
           bbk_no: args.bbk_no,
-          port_no: args.port_no,
+          port_no: availablePort.port_no,
           status: "Pending",
           speed: args.speed,
         }
@@ -45,7 +45,7 @@ export const portAllocationTool: Tool<PortAllocationInput> = {
             {
               type: "text",
               text: JSON.stringify({
-                message: `Port assigned successfully, assignment ID: ${portAllocation}`,
+                port_allocation: portAllocation,
               }),
             },
           ],
@@ -57,7 +57,7 @@ export const portAllocationTool: Tool<PortAllocationInput> = {
             {
               type: "text",
               text: JSON.stringify({
-                message: `No available port found for device serial number: ${args.device_serial_number}`,
+                error: `NOT_AVAILABLE_PORT`,
               }),
             },
 

@@ -1,5 +1,5 @@
 import { ProductManagementSystemInput, Tool } from "./types";
-import { findAll, findOne } from "../db/index.js";
+import { findAll } from "../db/index.js";
 
 export const productManagementSystemTool: Tool<ProductManagementSystemInput> = {
   name: "TELCO:get_product_by_speed",
@@ -26,11 +26,11 @@ export const productManagementSystemTool: Tool<ProductManagementSystemInput> = {
             {
               type: "text",
               text: JSON.stringify({
-                error: `Products not found for speed limit: ${args.speed}`,
+                error: `PRODUCTS_NOT_FOUND`,
               }),
             },
           ],
-          isError: true,
+          isError: false,
         };
       }
 

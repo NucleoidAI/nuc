@@ -25,7 +25,7 @@ export const addressTool: Tool<AddressToolInput> = {
             {
               type: "text",
               text: JSON.stringify({
-                message: `Address not found for BBK number: ${args.bbk_no}`,
+                error: `ADDRESS_NOT_FOUND`,
               }),
             },
           ],
@@ -37,7 +37,9 @@ export const addressTool: Tool<AddressToolInput> = {
         content: [
           {
             type: "text",
-            text: JSON.stringify(address),
+            text: JSON.stringify({
+              address: address?.address,
+            }),
           },
         ],
         isError: false,

@@ -5,6 +5,7 @@ on:
     paths:
       - 'dashboard/**'
       - 'api/**'
+      - 'mcp/**'
       - '.github/workflows/greycollar.yml'
     tags:
       - 'v*'

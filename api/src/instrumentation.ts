@@ -39,10 +39,7 @@ class PushgatewayExporter {
       });
       resultCallback({ code: 0 });
     } catch (err) {
-      platform.logger.error(
-        "[Pushgateway] ❌ Push failed:",
-        (err as Error).message
-      );
+      platform.logger.error(err);
       resultCallback({ code: 1, error: err as Error });
     }
   }
@@ -83,7 +80,7 @@ if (config.metrics.enabled) {
       {
         description: "Duration of HTTP requests in milliseconds",
         unit: "ms",
-      }
+      },
     ),
     errorsCounter: meter.createCounter("http_errors_total", {
       description: "Total number of HTTP errors",

@@ -39,7 +39,7 @@ async function run({
 
       const data = await page.evaluate(() => {
         const unwanted = document.querySelectorAll(
-          "script, style, nav, footer, img"
+          "script, style, nav, footer, img",
         );
 
         unwanted.forEach((elem) => elem.remove());
@@ -88,7 +88,7 @@ async function run({
         }
       }
     } catch (error) {
-      platform.logger.error(`Error crawling ${pageUrl}:`, error);
+      platform.logger.error(error);
     }
   }
 

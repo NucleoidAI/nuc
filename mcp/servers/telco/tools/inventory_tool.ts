@@ -26,11 +26,11 @@ export const inventoryTool: Tool<InventoryToolInput> = {
             {
               type: "text",
               text: JSON.stringify({
-                error: `Inventory not found for BBK number: ${args.bbk_no}`,
+                error: `INVENTORY_NOT_FOUND`,
               }),
             },
           ],
-          isError: true,
+          isError: false,
         };
       }
 
@@ -38,7 +38,9 @@ export const inventoryTool: Tool<InventoryToolInput> = {
         content: [
           {
             type: "text",
-            text: JSON.stringify(inventory),
+            text: JSON.stringify({
+              inventory: inventory,
+            }),
           },
         ],
         isError: false,

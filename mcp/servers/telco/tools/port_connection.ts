@@ -21,12 +21,14 @@ export const portConnectionTool: Tool<PortConnectionInput> = {
       status: "Connected",
     });
 
+    const updatedPortAllocation = findOne("port_allocations", "assignment_id", args.assignment_id);
+
     return {
       content: [
         {
           type: "text",
           text: JSON.stringify({
-            message: `Port connected successfully for assignment ID: ${args.assignment_id}`,
+            port_allocation: updatedPortAllocation,
           }),
         },
       ],

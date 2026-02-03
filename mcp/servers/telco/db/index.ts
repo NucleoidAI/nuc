@@ -67,6 +67,11 @@ interface Database {
     product_code: string;
     product_description: string;
   }>;
+  ports: Array<{
+    port_no: string;
+    status: string;
+    speed: string;
+  }>;
 }
 
 

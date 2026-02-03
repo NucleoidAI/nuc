@@ -1,6 +1,6 @@
 import { ConfigurationInput, Tool } from "./types";
 
-const ENDPOINT = "http://localhost:3001/api/soap/createOnt";
+const ENDPOINT = "http://10.98.136.58:9012/keys-fttx-middleware-webservice/webservices/FttxMiddlewareWebService";
 
 function createOntXmlRequest(args: ConfigurationInput): string {
   return `<?xml version='1.0' encoding='UTF-8'?>
@@ -98,10 +98,6 @@ async function sendSoapRequest(xmlBody: string): Promise<string> {
     body: xmlBody,
   });
 
-  if (!response.ok) {
-    throw new Error(`SOAP request failed: ${response.status} ${response.statusText}`);
-  }
-
   return response.text();
 }
 
@@ -142,23 +138,25 @@ export const configurationTool: Tool<ConfigurationInput> = {
   handler: async (args: ConfigurationInput) => {
     try {
       const createOntXml = createOntXmlRequest(args);
-      const addCustomerServiceXml = addCustomerServiceXmlRequest(args);
+      const createOntResponse = await sendSoapRequest(createOntXml);
 
+      console.log(createOntResponse);
+      
       //TODO: Uncomment these lines when the SOAP endpoint is ready
       /* 
-      const createOntResponse = await sendSoapRequest(createOntXml);
+      const addCustomerServiceXml = addCustomerServiceXmlRequest(args);
       const addCustomerServiceResponse = await sendSoapRequest(addCustomerServiceXml);
       */
 
+      
       return {
         content: [
           {
             type: "text",
             text: JSON.stringify({
-              success: true,
-              message: `Configuration successful for port number: ${args.port_no}`,
+              message: `CONFIGURATION_COMPLETED`,
               //createOntRequest: createOntXml,
-              // addCustomerServiceRequest: addCustomerServiceXml,
+              //addCustomerServiceRequest: addCustomerServiceXml,
               //createOntResponse,
               //addCustomerServiceResponse,
             }),

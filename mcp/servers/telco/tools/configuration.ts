@@ -98,10 +98,6 @@ async function sendSoapRequest(xmlBody: string): Promise<string> {
     body: xmlBody,
   });
 
-  if (!response.ok) {
-    throw new Error(`SOAP request failed: ${response.status} ${response.statusText}`);
-  }
-
   return response.text();
 }
 
@@ -142,21 +138,24 @@ export const configurationTool: Tool<ConfigurationInput> = {
   handler: async (args: ConfigurationInput) => {
     try {
       const createOntXml = createOntXmlRequest(args);
-      const addCustomerServiceXml = addCustomerServiceXmlRequest(args);
+      const createOntResponse = await sendSoapRequest(createOntXml);
 
+      console.log(createOntResponse);
+      
       //TODO: Uncomment these lines when the SOAP endpoint is ready
       /* 
-      const createOntResponse = await sendSoapRequest(createOntXml);
+      const addCustomerServiceXml = addCustomerServiceXmlRequest(args);
       const addCustomerServiceResponse = await sendSoapRequest(addCustomerServiceXml);
       */
 
+      
       return {
         content: [
           {
             type: "text",
             text: JSON.stringify({
               message: `CONFIGURATION_COMPLETED`,
-              createOntRequest: createOntXml,
+              //createOntRequest: createOntXml,
               //addCustomerServiceRequest: addCustomerServiceXml,
               //createOntResponse,
               //addCustomerServiceResponse,

@@ -89,13 +89,45 @@
       "speed_limit": "50mbps"
     }
   ],
+  "ports": [
+    {
+      "port_no": "1/1/1",
+      "status": "Available",
+      "speed": "1gbps"
+    },
+    {
+      "port_no": "1/1/2",
+      "status": "Available",
+      "speed": "1gbps"
+    },
+    {
+      "port_no": "3/5/2",
+      "status": "Available",
+      "speed": "50mbps"
+    },
+    {
+      "port_no": "3/5/3",
+      "status": "Available",
+      "speed": "50mbps"
+    },
+    {
+      "port_no": "2/2/1",
+      "status": "Available",
+      "speed": "100mbps"
+    },
+    {
+      "port_no": "2/2/2",
+      "status": "Available",
+      "speed": "100mbps"
+    }
+  ],
   "port_allocations": [
     {
       "serial_number": "123",
       "assignment_id": "TH001",
       "bbk_no": "987",
       "port_no": "1/1/1",
-      "status": "Assigned",
+      "status": "Available",
       "speed": "1gbps"
     },
     {
@@ -103,33 +135,15 @@
       "assignment_id": "TH003",
       "bbk_no": "989",
       "port_no": "3/5/1",
-      "status": "Pending",
+      "status": "Available",
       "speed": "50mbps"
     },
     {
       "serial_number": "456",
-      "assignment_id": "TH007332",
-      "customer_no": "M194980",
-      "assignment_date": "2026-02-01T18:23:47.771Z",
-      "status": "Connected"
-    }
-  ],
-  "port_connections": [
-    {
-      "assignment_id": "TH001",
-      "connection_id": "BG001",
-      "status": "Active",
-      "connection_date": "2025-12-15T11:00:00Z",
-      "port_status": "Running",
-      "signal_strength": "-15dBm"
-    },
-    {
-      "assignment_id": "TH003",
-      "connection_id": "BG003",
-      "status": "Inactive",
-      "connection_date": null,
-      "port_status": "Pending",
-      "signal_strength": null
+      "assignment_id": "TH001720",
+      "bbk_no": "988",
+      "status": "Pending",
+      "speed": "100mbps"
     }
   ],
   "port_connections_with_support": [

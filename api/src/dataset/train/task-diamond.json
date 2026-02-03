@@ -412,7 +412,9 @@
               "action": "TELCO:port_allocation",
               "status": "COMPLETED",
               "parameters": {
-                "device_serial_number": "SN-789456"
+                "device_serial_number": "SN-789456",
+                "bbk_no": "BBK-12345",
+                "speed": "1gbps"
               },
               "comment": "Assigning port"
             },

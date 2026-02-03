@@ -339,8 +339,16 @@ const MCPs = [
           type: "string",
           description: "The device serial number to assign a port for.",
         },
+        bbk_no: {
+          type: "string",
+          description: "The BBK number to assign a port for.",
+        },
+        speed: {
+          type: "string",
+          description: "The speed to assign a port for.",
+        },
       },
-      required: ["device_serial_number"],
+      required: ["device_serial_number", "bbk_no", "speed"],
     },
     outputSchema: {
       type: "object",

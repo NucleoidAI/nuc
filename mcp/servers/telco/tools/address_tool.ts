@@ -4,7 +4,7 @@ import { findOne } from "../db/index.js";
 export const addressTool: Tool<AddressToolInput> = {
   name: "TELCO:get_address",
   description:
-    "Get address (acik_adres) information by BBK number. Returns the full address associated with the given BBK number.",
+    "Get address information by BBK number. Returns the full address associated with the given BBK number.",
   inputSchema: {
     type: "object",
     properties: {

@@ -16,7 +16,7 @@ function createOntXmlRequest(args: ConfigurationInput): string {
                 <oltTid>${args.device_tid}</oltTid>
                 <ontSerialNo>${args.device_serial_number}</ontSerialNo>
                 <ontType>
-                    <id>25</id>
+                    <id>28</id>
                 </ontType>
             </gponOntBean>
         </ns1:createOnt>
@@ -53,18 +53,18 @@ function addCustomerServiceXmlRequest(args: ConfigurationInput): string {
                             <oltTid>${args.device_tid}</oltTid>
                             <ontSerialNo>${args.device_serial_number}</ontSerialNo>
                             <ontType>
-                                <id>25</id>
+                                <id>28</id>
                             </ontType>
                         </gponOntBean>
                         <gponOntPortNo>1</gponOntPortNo>
                     </gponPortBean>
                 </fttxPortBean>
                 <hgwPotsPortNo>1</hgwPotsPortNo>
-                <hgwSerialNo>${args.hgw_serial_no}</hgwSerialNo>
+                <hgwSerialNo>ZT30CC213FF851</hgwSerialNo>
                 <installationAddress>163316</installationAddress>
                 <installationType>6</installationType>
                 <packetId>109313</packetId>
-                <password>*****</password>
+                <password>1234</password>
                 <popNo>6018000000000161</popNo>
                 <retailPacketInfo>0</retailPacketInfo>
                 <service>
@@ -73,12 +73,10 @@ function addCustomerServiceXmlRequest(args: ConfigurationInput): string {
                 <serviceStatus>
                     <id>1</id>
                 </serviceStatus>
-                <sipServerIp>aydinlikevl.ankara.ttimscore.com.tr</sipServerIp>
-                <sipServerVendorName>ANKZIMS</sipServerVendorName>
                 <speedProfile>${args.speed_profile}</speedProfile>
                 <staticIp>0.0.0.0</staticIp>
-                <subscriptionNo>1799906793</subscriptionNo>
-                <username>cayir144152608</username>
+                <subscriptionNo>1234999999</subscriptionNo>
+                <username>hasancontuk</username>
                 <voiceServiceLevelBean>
                     <id>-1</id>
                 </voiceServiceLevelBean>

@@ -48,6 +48,7 @@ export interface PortConnectionInput {
 }
 
 export interface ConfigurationInput {
+  speed_profile: string; // Speed profile
   port_no: string; // Port number
   device_serial_number: string; // Device serial number
   hgw_serial_no: string; // HGW serial number

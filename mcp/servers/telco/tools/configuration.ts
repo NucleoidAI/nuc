@@ -75,7 +75,7 @@ function addCustomerServiceXmlRequest(args: ConfigurationInput): string {
                 </serviceStatus>
                 <sipServerIp>aydinlikevl.ankara.ttimscore.com.tr</sipServerIp>
                 <sipServerVendorName>ANKZIMS</sipServerVendorName>
-                <speedProfile>${args.speed}</speedProfile>
+                <speedProfile>${args.speed_profile}</speedProfile>
                 <staticIp>0.0.0.0</staticIp>
                 <subscriptionNo>1799906793</subscriptionNo>
                 <username>cayir144152608</username>
@@ -108,6 +108,10 @@ export const configurationTool: Tool<ConfigurationInput> = {
   inputSchema: {
     type: "object",
     properties: {
+      speed_profile: {
+        type: "string",
+        description: "The speed profile to configure.",
+      },
       port_no: {
         type: "string",
         description: "The port number to configure.",
@@ -133,20 +137,16 @@ export const configurationTool: Tool<ConfigurationInput> = {
         description: "The speed to configure.",
       },
     },
-    required: ["port_no", "device_serial_number", "hgw_serial_no", "device_tid", "device_card_no", "speed"],
+    required: ["speed_profile", "port_no", "device_serial_number", "hgw_serial_no", "device_tid", "device_card_no", "speed"],
   },
   handler: async (args: ConfigurationInput) => {
     try {
       const createOntXml = createOntXmlRequest(args);
-      const createOntResponse = await sendSoapRequest(createOntXml);
-
-      console.log(createOntResponse);
-      
-      //TODO: Uncomment these lines when the SOAP endpoint is ready
-      /* 
       const addCustomerServiceXml = addCustomerServiceXmlRequest(args);
-      const addCustomerServiceResponse = await sendSoapRequest(addCustomerServiceXml);
-      */
+
+      //const createOntResponse = await sendSoapRequest(createOntXml);
+      //const addCustomerServiceResponse = await sendSoapRequest(addCustomerServiceXml);
+      
 
       
       return {
@@ -155,8 +155,10 @@ export const configurationTool: Tool<ConfigurationInput> = {
             type: "text",
             text: JSON.stringify({
               message: `CONFIGURATION_COMPLETED`,
-              createOntResponse: createOntResponse,
+              //createOntResponse: createOntResponse,
               //createOntRequest: createOntXml,
+              createOntXml,
+              addCustomerServiceXml
               //addCustomerServiceRequest: addCustomerServiceXml,
               //createOntResponse,
               //addCustomerServiceResponse,

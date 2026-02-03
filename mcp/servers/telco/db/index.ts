@@ -64,7 +64,7 @@ interface Database {
   }>;
   products: Array<{
     speed: string;
-    product_code: string;
+    speed_profile: string;
     product_description: string;
   }>;
   ports: Array<{

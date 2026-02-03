@@ -319,10 +319,10 @@ const MCPs = [
     outputSchema: {
       type: "object",
       properties: {
-        product_code: { type: "string" },
+        speed_profile: { type: "string" },
         product_description: { type: "string" },
       },
-      required: ["product_code", "product_description"],
+      required: ["speed_profile", "product_description"],
     },
   },
   {
@@ -437,6 +437,10 @@ const MCPs = [
           type: "string",
           description: "The speed to configure.",
         },
+        speed_profile: {
+          type: "string",
+          description: "The speed profile to configure.",
+        },
       },
       required: [
         "device_serial_number",
@@ -445,6 +449,7 @@ const MCPs = [
         "hgw_serial_no",
         "device_card_no",
         "speed",
+        "speed_profile",
       ],
     },
     outputSchema: {

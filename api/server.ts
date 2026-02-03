@@ -13,15 +13,19 @@ import platform from "@canmingir/link-express";
 dotenv.config();
 
 process.on("uncaughtException", (err) => {
-  platform.logger.error(`Uncaught Exception: ${err.message}`);
+  platform.logger.error({
+    message: "Uncaught Exception",
+    error_message: err.message,
+    error_stack: err.stack,
+  });
 });
 
 process.on("unhandledRejection", (reason, promise) => {
   platform.logger.error("==========================================");
-  platform.logger.error("Unhandled Rejection:", reason);
-  platform.logger.error("Promise:", promise);
+  platform.logger.error(reason);
+  platform.logger.error(promise);
   if (reason instanceof Error) {
-    platform.logger.error("Stack:", reason.stack);
+    platform.logger.error(reason.stack);
   }
   platform.logger.error("==========================================");
 });

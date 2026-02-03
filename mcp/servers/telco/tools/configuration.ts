@@ -144,10 +144,8 @@ export const configurationTool: Tool<ConfigurationInput> = {
       const createOntXml = createOntXmlRequest(args);
       const addCustomerServiceXml = addCustomerServiceXmlRequest(args);
 
-      //const createOntResponse = await sendSoapRequest(createOntXml);
-      //const addCustomerServiceResponse = await sendSoapRequest(addCustomerServiceXml);
-      
-
+      const createOntResponse = await sendSoapRequest(createOntXml);
+      const addCustomerServiceResponse = await sendSoapRequest(addCustomerServiceXml);
       
       return {
         content: [
@@ -155,13 +153,8 @@ export const configurationTool: Tool<ConfigurationInput> = {
             type: "text",
             text: JSON.stringify({
               message: `CONFIGURATION_COMPLETED`,
-              //createOntResponse: createOntResponse,
-              //createOntRequest: createOntXml,
-              createOntXml,
-              addCustomerServiceXml
-              //addCustomerServiceRequest: addCustomerServiceXml,
-              //createOntResponse,
-              //addCustomerServiceResponse,
+              createOntResponse: createOntResponse,
+              addCustomerServiceResponse: addCustomerServiceResponse,
             }),
           },
         ],

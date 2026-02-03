@@ -39,7 +39,7 @@ export const productManagementSystemTool: Tool<ProductManagementSystemInput> = {
           {
             type: "text",
             text: JSON.stringify({
-              products: products,
+              available_products: products,
             }),
           },
         ],

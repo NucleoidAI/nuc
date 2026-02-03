@@ -156,7 +156,7 @@ export const configurationTool: Tool<ConfigurationInput> = {
             type: "text",
             text: JSON.stringify({
               message: `CONFIGURATION_COMPLETED`,
-              //createOntRequest: createOntXml,
+              createOntRequest: createOntXml,
               //addCustomerServiceRequest: addCustomerServiceXml,
               //createOntResponse,
               //addCustomerServiceResponse,

@@ -23,7 +23,7 @@ const SAMPLE_FLOW = {
       type: "CONDITION",
       properties: {
         label: "Check Condition",
-        icon: "mdi:help-circle-outline",
+        icon: "mdi:source-branch",
         action: "PLATFORM:decision",
         description: "Evaluate if condition is met",
       },

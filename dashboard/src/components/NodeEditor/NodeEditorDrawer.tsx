@@ -1,4 +1,5 @@
 import CloseIcon from "@mui/icons-material/Close";
+import { Iconify } from "@canmingir/link/platform/components";
 import React from "react";
 import SearchIcon from "@mui/icons-material/Search";
 
@@ -63,6 +64,7 @@ const NodeEditorDrawer = ({
     action: string;
     provider: string;
     description: string;
+    icon: string;
     direction: string;
     lib: string;
     inputSchema: {
@@ -95,6 +97,7 @@ const NodeEditorDrawer = ({
     action: string;
     provider: string;
     description: string;
+    icon: string;
     direction: string;
     lib: string;
     inputSchema: {
@@ -123,6 +126,7 @@ const NodeEditorDrawer = ({
     action: string;
     provider: string;
     description: string;
+    icon: string;
     direction: string;
     lib: string;
     inputSchema: {
@@ -151,6 +155,7 @@ const NodeEditorDrawer = ({
     action: string;
     provider: string;
     description: string;
+    icon: string;
     direction: string;
     lib: string;
     inputSchema: {
@@ -181,6 +186,7 @@ const NodeEditorDrawer = ({
     action: string;
     provider: string;
     description: string;
+    icon: string;
     direction: string;
     lib: string;
     inputSchema: {
@@ -350,13 +356,35 @@ const NodeEditorDrawer = ({
                         onClick={() => setSelectedIntegration(integration)}
                       >
                         <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
-                          <Typography
-                            variant="subtitle2"
-                            fontWeight="bold"
-                            gutterBottom
+                          <Stack
+                            direction="row"
+                            spacing={1.5}
+                            alignItems="center"
+                            mb={1}
                           >
-                            {integration.action}
-                          </Typography>
+                            <Box
+                              sx={{
+                                width: 32,
+                                height: 32,
+                                borderRadius: 1,
+                                bgcolor: "background.neutral",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <Iconify
+                                icon={integration.icon}
+                                width={18}
+                                height={18}
+                              />
+                            </Box>
+
+                            <Typography variant="subtitle2" fontWeight="bold">
+                              {integration.action}
+                            </Typography>
+                          </Stack>
+
                           <Typography
                             variant="caption"
                             color="text.secondary"
@@ -365,6 +393,7 @@ const NodeEditorDrawer = ({
                           >
                             {integration.provider}
                           </Typography>
+
                           <Typography variant="body2" color="text.secondary">
                             {integration.description}
                           </Typography>

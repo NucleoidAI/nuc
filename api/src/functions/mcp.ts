@@ -106,6 +106,7 @@ function list() {
     provider: provider.provider,
     description: provider.description,
     action: provider.action,
+    icon: provider.icon,
     direction: provider.direction,
     lib: provider.lib,
     inputSchema: provider.inputSchema,

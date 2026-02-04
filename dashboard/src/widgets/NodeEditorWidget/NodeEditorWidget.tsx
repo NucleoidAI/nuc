@@ -1,10 +1,10 @@
-import AddNodeDrawer from "../../components/AddNode/AddNodeDrawer";
+import NodeEditorDrawer from "../../components/NodeEditor/NodeEditorDrawer";
 import useMCPs from "../../hooks/useMCPs";
 
 import React, { useEffect, useState } from "react";
 import { getNextNodeId, isValidIntegration } from "./helper";
 
-const AddNodeWidget = ({
+const NodeEditorWidget = ({
   drawerOpen,
   handleDrawerClose,
   selectedParentNode,
@@ -202,7 +202,7 @@ const AddNodeWidget = ({
     : null;
 
   return (
-    <AddNodeDrawer
+    <NodeEditorDrawer
       drawerOpen={drawerOpen}
       handleDrawerClose={handleDrawerClose}
       selectedParentNode={selectedParentNode}
@@ -225,4 +225,4 @@ const AddNodeWidget = ({
   );
 };
 
-export default AddNodeWidget;
+export default NodeEditorWidget;

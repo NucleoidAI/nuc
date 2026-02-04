@@ -254,6 +254,12 @@ const NodeEditorDrawer = ({
           fullWidth
           value={newNodeLabel}
           onChange={(e) => setNewNodeLabel(e.target.value)}
+          autoComplete="off"
+          inputProps={{
+            autoComplete: "off",
+            autoCorrect: "off",
+            spellCheck: false,
+          }}
         />
 
         <FormControl fullWidth>
@@ -318,6 +324,12 @@ const NodeEditorDrawer = ({
                     ),
                   }}
                   sx={{ mb: 2 }}
+                  autoComplete="off"
+                  inputProps={{
+                    autoComplete: "off",
+                    autoCorrect: "off",
+                    spellCheck: false,
+                  }}
                 />
 
                 <Box

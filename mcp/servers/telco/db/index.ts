@@ -71,6 +71,7 @@ interface Database {
     port_no: string;
     status: string;
     speed: string;
+    bbk_no: string;
   }>;
 }
 

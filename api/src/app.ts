@@ -100,8 +100,6 @@ function createApp() {
     await event.subscribe<{ taskId: string }>(
       "TASK_BLUEPRINT_UPDATED",
       async ({ taskId }) => {
-        await agentFn.task({ taskId });
-
         const steps = await taskFn.listSteps({ taskId });
 
         const supervisedStep = steps.find(

@@ -1,7 +1,5 @@
 import { ConfigurationInput, Tool } from "./types";
 
-const ENDPOINT = "http://10.98.136.58:9012/keys-fttx-middleware-webservice/webservices/FttxMiddlewareWebService";
-
 function createOntXmlRequest(args: ConfigurationInput): string {
   return `<?xml version='1.0' encoding='UTF-8'?>
 <soapenv:Envelope
@@ -86,12 +84,12 @@ function addCustomerServiceXmlRequest(args: ConfigurationInput): string {
 </soapenv:Envelope>`;
 }
 
-async function sendSoapRequest(xmlBody: string): Promise<string> {
-  const response = await fetch(ENDPOINT, {
+async function sendSoapRequest(xmlBody: string, action: string): Promise<string> {
+  const response = await fetch(`${process.env.MCP_TELCO_URL}`, {
     method: "POST",
     headers: {
       "Content-Type": "text/xml; charset=utf-8",
-      "SOAPAction": "createOnt",
+      "SOAPAction": action,
     },
     body: xmlBody,
   });
@@ -139,11 +137,28 @@ export const configurationTool: Tool<ConfigurationInput> = {
   },
   handler: async (args: ConfigurationInput) => {
     try {
+
+      const endpoint = process.env.MCP_TELCO_URL
+
+      let ontResponse: string | null = null;
+      let addCustomerServiceResponse: string | null = null;
+
       const createOntXml = createOntXmlRequest(args);
       const addCustomerServiceXml = addCustomerServiceXmlRequest(args);
 
-      const createOntResponse = await sendSoapRequest(createOntXml);
-      const addCustomerServiceResponse = await sendSoapRequest(addCustomerServiceXml);
+      if (endpoint) {
+        ontResponse = await sendSoapRequest(createOntXml, "createOnt");
+        addCustomerServiceResponse = await sendSoapRequest(addCustomerServiceXml, "addCustomerService");
+      } 
+
+      const payload = endpoint ? {
+        ontResponse: ontResponse,
+        addCustomerServiceResponse: addCustomerServiceResponse,
+     
+      } : {
+        createOntXml: createOntXml,
+        addCustomerServiceXml: addCustomerServiceXml,
+      };
       
       return {
         content: [
@@ -151,8 +166,7 @@ export const configurationTool: Tool<ConfigurationInput> = {
             type: "text",
             text: JSON.stringify({
               message: `CONFIGURATION_COMPLETED`,
-              createOntResponse: createOntResponse,
-              addCustomerServiceResponse: addCustomerServiceResponse,
+              ...payload,
             }),
           },
         ],

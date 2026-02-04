@@ -21,7 +21,7 @@ import {
   useTheme,
 } from "@mui/material";
 
-const AddNodeDrawer = ({
+const NodeEditorDrawer = ({
   drawerOpen,
   handleDrawerClose,
   selectedParentNode,
@@ -596,4 +596,4 @@ const AddNodeDrawer = ({
   );
 };
 
-export default AddNodeDrawer;
+export default NodeEditorDrawer;

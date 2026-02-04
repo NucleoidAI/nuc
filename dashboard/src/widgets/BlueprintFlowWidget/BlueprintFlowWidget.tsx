@@ -1,5 +1,5 @@
-import AddNodeWidget from "../../widgets/AddNodeWidget/AddNodeWidget";
 import BlueprintFlow from "../../components/BlueprintFlow/BlueprintFlow";
+import NodeEditorWidget from "../NodeEditorWidget/NodeEditorWidget";
 import SampleFlow from "../../components/BlueprintFlow/SampleFlow";
 import { calculateNodeChanges } from "../../components/BlueprintFlow/DiffPanel/diffHelper";
 import useBlueprint from "../../hooks/useBlueprint";
@@ -581,7 +581,7 @@ function BlueprintFlowWidget({
         onSaveSuccessChange={setSaveSuccess}
       />
 
-      <AddNodeWidget
+      <NodeEditorWidget
         drawerOpen={drawerOpen}
         handleDrawerClose={handleDrawerClose}
         selectedParentNode={selectedParentNode}

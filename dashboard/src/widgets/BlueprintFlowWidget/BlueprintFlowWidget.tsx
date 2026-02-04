@@ -203,6 +203,17 @@ function BlueprintFlowWidget({
 
       if (parentNode) {
         setSelectedParentNode(parentNode);
+
+        if (parentNode.nodeType === "CONDITION") {
+          const isOnTrueBranch = parentNode.trueNext?.includes(node.id);
+          const isOnFalseBranch = parentNode.falseNext?.includes(node.id);
+
+          if (isOnTrueBranch) {
+            setSelectedBranch("true");
+          } else if (isOnFalseBranch) {
+            setSelectedBranch("false");
+          }
+        }
       }
     }
 

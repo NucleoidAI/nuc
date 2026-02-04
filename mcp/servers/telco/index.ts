@@ -13,6 +13,7 @@ import fs from "fs";
 import os from "os";
 import path from "path";
 import { tools } from "./tools/index.js";
+import { getDatabase, getDatabasePath } from "./db/index.js";
 
 const server = new Server(
   {
@@ -119,6 +120,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 });
 
 async function startServer() {
+  // Initialize the JSON database
+  getDatabase();
+  console.log("[MCP] JSON database initialized at:", getDatabasePath());
+
   const transport = new StdioServerTransport();
   await server.connect(transport);
 }

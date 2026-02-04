@@ -1,11 +1,5 @@
 import { PortAllocationInput, Tool } from "./types";
-
-import { fileURLToPath } from "url";
-import fs from "fs";
-import path from "path";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { findAll, findOne , insert} from "../db/index.js";
 
 export const portAllocationTool: Tool<PortAllocationInput> = {
   name: "TELCO:port_allocation",
@@ -14,62 +8,75 @@ export const portAllocationTool: Tool<PortAllocationInput> = {
   inputSchema: {
     type: "object",
     properties: {
-      serial_number: {
+      device_serial_number: {
         type: "string",
         description: "The device serial number to assign a port for.",
       },
+      bbk_no: {
+        type: "string",
+        description: "The BBK number to assign a port for.",
+      },
+      speed: {
+        type: "string",
+        description: "The speed to assign a port for.",
+      },
     },
-    required: ["serial_number"],
+    required: ["device_serial_number", "bbk_no", "speed"],
   },
   handler: async (args: PortAllocationInput) => {
     try {
-      const mockDataPath = path.join(
-        __dirname,
-        "..",
-        "mock",
-        "port_allocation.json"
-      );
-      const data = JSON.parse(fs.readFileSync(mockDataPath, "utf-8"));
+      const port = findAll("ports");
 
-      const portAllocation = data.find(
-        (item: any) => item.serial_number === args.serial_number
-      );
+      const availablePort = port.find((p) => p.status === "Available" && p.speed === args.speed);
 
-      if (!portAllocation) {
+      if (availablePort) {
+        const portAllocation = {
+          serial_number: args.device_serial_number,
+          assignment_id: `TH00${Math.floor(1000 + Math.random() * 9000)}`,
+          bbk_no: args.bbk_no,
+          port_no: availablePort.port_no,
+          status: "Pending",
+          speed: args.speed,
+        }
+        insert("port_allocations", portAllocation);
+
         return {
           content: [
             {
               type: "text",
               text: JSON.stringify({
-                error: `Port assignment not found for device serial number: ${args.serial_number}`,
+                port_allocation: portAllocation,
+              }),
+            },
+          ],
+          isError: false,
+        };
+      } else {
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify({
+                error: `NOT_AVAILABLE_PORT`,
+              }),
+            },
+
+            ],
+            isError: false,
+          };
+        }
+      }  catch (error) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify({
+                error: error instanceof Error ? error.message : "Unknown error",
               }),
             },
           ],
           isError: true,
         };
       }
-
-      return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify(portAllocation),
-          },
-        ],
-        isError: false,
-      };
-    } catch (error) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify({
-              error: error instanceof Error ? error.message : "Unknown error",
-            }),
-          },
-        ],
-        isError: true,
-      };
     }
-  },
 };

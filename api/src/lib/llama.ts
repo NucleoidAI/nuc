@@ -1,12 +1,12 @@
 import OpenAI from "openai";
 
 const llama = new OpenAI({
-  apiKey: process.env.LLAMA_API_KEY || "ollama",
-  baseURL: process.env.LLAMA_API_URL || "http://localhost:11434/v1",
+  apiKey: "ollama",
+  baseURL: process.env.PLATFORM_LLM_URL || "http://localhost:11434/v1",
 });
 
 async function generate({
-  model = process.env.LLAMA_MODEL || "llama3.2",
+  model = process.env.PLATFORM_LLM_MODEL || "llama3.2",
   messages = [],
 }: {
   model?: string;
@@ -32,6 +32,7 @@ async function generate({
     messages,
     stream: false,
     response_format: { type: "json_object" },
+    temperature: 0,
   });
 
   if (usage) {

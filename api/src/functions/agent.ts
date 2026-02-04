@@ -209,6 +209,15 @@ async function task({ taskId }: { taskId: string }) {
       result = steps[steps.length - 1].result;
     }
 
+    if (sessionId) {
+      await session.addConversation({
+        sessionId,
+        agentId,
+        role: "ASSISTANT",
+        content: comment || "Task has been completed.",
+      });
+    }
+
     return await taskFn.update({
       taskId,
       result,

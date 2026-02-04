@@ -4,9 +4,9 @@ import { Iconify } from "@canmingir/link/platform/components";
 import StatusToolbar from "../../components/StatusToolbar/StatusToolbar";
 import TaskDetails from "../../components/TaskDetails/TaskDetails";
 import TaskList from "../../components/TaskList/TaskList";
+import { useEvent } from "@nucleoidai/react-event";
 import useTasks from "../../hooks/useTasks";
 import { useTheme } from "@mui/material/styles";
-
 import {
   Box,
   Card,
@@ -22,7 +22,11 @@ import {
 import React, { useEffect, useMemo, useState } from "react";
 
 function TasksWidget({ agentId }: { agentId: string }) {
-  const { tasks, steps, getSteps, createTask } = useTasks(agentId);
+  const [aiResponded] = useEvent("AI_RESPONDED", null);
+
+  const { tasks, steps, getSteps, createTask } = useTasks(agentId, [
+    aiResponded,
+  ]);
 
   const [selectedStatus, setSelectedStatus] = useState<
     "All" | "COMPLETED" | "IN_PROGRESS"

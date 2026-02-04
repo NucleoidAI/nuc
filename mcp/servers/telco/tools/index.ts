@@ -4,7 +4,6 @@ import { configurationTool } from "./configuration";
 import { inventoryTool } from "./inventory_tool";
 import { portAllocationTool } from "./port_allocation";
 import { portConnectionTool } from "./port_connection";
-import { portConnectionWithTechnicalSupportTool } from "./port_connection_with_technical_support";
 import { productManagementSystemTool } from "./product_management_system";
 
 export const tools = [
@@ -14,6 +13,5 @@ export const tools = [
   productManagementSystemTool,
   portAllocationTool,
   portConnectionTool,
-  portConnectionWithTechnicalSupportTool,
   configurationTool,
 ];

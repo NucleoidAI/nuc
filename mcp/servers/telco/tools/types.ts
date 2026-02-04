@@ -37,7 +37,10 @@ export interface AddressToBBKInput {
 }
 
 export interface PortAllocationInput {
-  serial_number: string; // Device serial number
+  device_serial_number: string; // Device serial number
+  bbk_no: string; // BBK number
+  port_no: string; // Port number
+  speed: string; // Speed
 }
 
 export interface PortConnectionInput {
@@ -45,7 +48,13 @@ export interface PortConnectionInput {
 }
 
 export interface ConfigurationInput {
-  serial_number: string; // Device serial number
+  speed_profile: string; // Speed profile
+  port_no: string; // Port number
+  device_serial_number: string; // Device serial number
+  hgw_serial_no: string; // HGW serial number
+  device_card_no: string; // Device card number
+  device_tid: string; // Device TID
+  speed: string; // Speed
 }
 
 export interface PortConnectionWithTechnicalSupportInput {

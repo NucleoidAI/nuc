@@ -1,11 +1,5 @@
 import { AddressToBBKInput, Tool } from "./types";
-
-import { fileURLToPath } from "url";
-import fs from "fs";
-import path from "path";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { findAll } from "../db/index.js";
 
 export const addressToBBKTool: Tool<AddressToBBKInput> = {
   name: "TELCO:get_bbk_by_address",
@@ -24,16 +18,13 @@ export const addressToBBKTool: Tool<AddressToBBKInput> = {
   },
   handler: async (args: AddressToBBKInput) => {
     try {
-      const mockDataPath = path.join(__dirname, "..", "mock", "addresses.json");
-      const data = JSON.parse(fs.readFileSync(mockDataPath, "utf-8"));
+      const addresses = findAll("addresses");
 
-      // Try exact match first
-      let result = data.find((item: any) => item.address === args.address);
+      let result = addresses.find((item) => item.address === args.address);
 
-      // If no exact match, try partial match (case-insensitive)
       if (!result) {
         const searchTerm = args.address?.toLowerCase();
-        result = data.find((item: any) =>
+        result = addresses.find((item) =>
           item.address?.toLowerCase().includes(searchTerm)
         );
       }
@@ -44,7 +35,7 @@ export const addressToBBKTool: Tool<AddressToBBKInput> = {
             {
               type: "text",
               text: JSON.stringify({
-                message: `Address not found in records: ${args.address}`,
+                error: `BBK_NO_NOT_FOUND`,
               }),
             },
           ],
@@ -56,7 +47,9 @@ export const addressToBBKTool: Tool<AddressToBBKInput> = {
         content: [
           {
             type: "text",
-            text: JSON.stringify(result),
+            text: JSON.stringify({
+              bbk_no: result?.bbk_no,
+            }),
           },
         ],
         isError: false,

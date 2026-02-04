@@ -63,12 +63,21 @@
     "inputSchema": {
       "type": "object",
       "properties": {
-        "answer": {
+        "question": {
           "type": "string",
-          "description": "The answer to the question."
+          "description": "The question to ask the user."
         }
       },
-      "required": ["answer"]
+      "required": ["question"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "answer": {
+          "type": "string",
+          "description": "User's answer to the question."
+        }
+      }
     }
   },
   {

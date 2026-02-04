@@ -82,6 +82,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
+            "parameters": {
+              "question": "What is your address?"
+            },
             "label": "Get User Address",
             "icon": "mdi:map-marker"
           },
@@ -191,7 +194,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the internet subscription setup process as complete",
+            "description": "Mark the internet subscription setup process as complete ",
             "label": "Complete",
             "icon": "mdi:check"
           },

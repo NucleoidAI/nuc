@@ -332,10 +332,10 @@ const MCPs = [
     outputSchema: {
       type: "object",
       properties: {
-        product_code: { type: "string" },
+        speed_profile: { type: "string" },
         product_description: { type: "string" },
       },
-      required: ["product_code", "product_description"],
+      required: ["speed_profile", "product_description"],
     },
   },
   {
@@ -349,12 +349,20 @@ const MCPs = [
     inputSchema: {
       type: "object",
       properties: {
-        serial_number: {
+        device_serial_number: {
           type: "string",
           description: "The device serial number to assign a port for.",
         },
+        bbk_no: {
+          type: "string",
+          description: "The BBK number to assign a port for.",
+        },
+        speed: {
+          type: "string",
+          description: "The speed to assign a port for.",
+        },
       },
-      required: ["serial_number"],
+      required: ["device_serial_number", "bbk_no", "speed"],
     },
     outputSchema: {
       type: "object",
@@ -421,12 +429,44 @@ const MCPs = [
     inputSchema: {
       type: "object",
       properties: {
-        serial_number: {
+        device_serial_number: {
           type: "string",
           description: "The device serial number to configure.",
         },
+        port_no: {
+          type: "string",
+          description: "The port number to configure.",
+        },
+        device_tid: {
+          type: "string",
+          description: "The device TID to configure.",
+        },
+        hgw_serial_no: {
+          type: "string",
+          description: "The HGW serial number to configure.",
+        },
+        device_card_no: {
+          type: "string",
+          description: "The device card number to configure.",
+        },
+        speed: {
+          type: "string",
+          description: "The speed to configure.",
+        },
+        speed_profile: {
+          type: "string",
+          description: "The speed profile to configure.",
+        },
       },
-      required: ["serial_number"],
+      required: [
+        "device_serial_number",
+        "port_no",
+        "device_tid",
+        "hgw_serial_no",
+        "device_card_no",
+        "speed",
+        "speed_profile",
+      ],
     },
     outputSchema: {
       type: "object",

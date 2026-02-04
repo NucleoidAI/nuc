@@ -21,6 +21,7 @@ export default function BlueprintFlow({
   baselineNodes,
   onFlowChange,
   onAddNodeClick,
+  onEditNodeClick,
   onSave,
   onShowDiff,
   onCloseDiff,
@@ -58,6 +59,7 @@ export default function BlueprintFlow({
         style={() => ({
           direction: "horizontal",
           onAdd: onAddNodeClick,
+          onEdit: onEditNodeClick,
         })}
       />
 

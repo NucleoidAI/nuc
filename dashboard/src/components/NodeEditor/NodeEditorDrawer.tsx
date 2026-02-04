@@ -22,7 +22,7 @@ import {
   useTheme,
 } from "@mui/material";
 
-const AddNodeDrawer = ({
+const NodeEditorDrawer = ({
   drawerOpen,
   handleDrawerClose,
   selectedParentNode,
@@ -40,6 +40,7 @@ const AddNodeDrawer = ({
   parentIntegration,
   nextIntegration,
   handleSubmit,
+  editMode,
 }: {
   drawerOpen: boolean;
   handleDrawerClose: () => void;
@@ -212,6 +213,7 @@ const AddNodeDrawer = ({
     };
   };
   handleSubmit: () => void;
+  editMode?: boolean;
 }) => {
   const theme = useTheme();
 
@@ -616,11 +618,11 @@ const AddNodeDrawer = ({
             (newNodeType !== "CONDITION" && !selectedIntegration?.id)
           }
         >
-          Add Node
+          {editMode ? "Edit Node" : "Add Node"}
         </Button>
       </Stack>
     </Drawer>
   );
 };
 
-export default AddNodeDrawer;
+export default NodeEditorDrawer;

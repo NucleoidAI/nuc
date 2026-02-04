@@ -1,10 +1,10 @@
-import AddNodeDrawer from "../../components/AddNode/AddNodeDrawer";
+import NodeEditorDrawer from "../../components/NodeEditor/NodeEditorDrawer";
 import useMCPs from "../../hooks/useMCPs";
 
 import React, { useEffect, useState } from "react";
 import { getNextNodeId, isValidIntegration } from "./helper";
 
-const AddNodeWidget = ({
+const NodeEditorWidget = ({
   drawerOpen,
   handleDrawerClose,
   selectedParentNode,
@@ -18,6 +18,8 @@ const AddNodeWidget = ({
   handleSubmit,
   selectedIntegration,
   setSelectedIntegration,
+  editMode,
+  editingNode,
 }: {
   drawerOpen: boolean;
   handleDrawerClose: () => void;
@@ -84,6 +86,35 @@ const AddNodeWidget = ({
     };
   };
   setSelectedIntegration: (integration) => void;
+  editMode?: boolean;
+  editingNode?: {
+    id: string;
+    label?: string;
+    action?: string;
+    nodeType?: string;
+    properties?: {
+      label?: string;
+      action?: string;
+      description?: string;
+      icon?: string;
+    };
+    raw?: {
+      id?: string;
+      type?: string;
+      properties?: {
+        label?: string;
+        action?: string;
+        description?: string;
+        icon?: string;
+      };
+      next?: string | string[];
+      true?: string[];
+      false?: string[];
+      trueNext?: string[];
+      falseNext?: string[];
+      createdAt?: string;
+    };
+  };
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -127,6 +158,22 @@ const AddNodeWidget = ({
 
   const allIntegrations = [...transformedActions, ...integrationsList];
 
+  useEffect(() => {
+    if (editMode && editingNode && drawerOpen) {
+      const nodeAction =
+        editingNode?.action || editingNode?.raw?.properties?.action;
+      if (nodeAction && allIntegrations.length > 0) {
+        const currentIntegration = allIntegrations.find(
+          (int) => int.action === nodeAction
+        );
+        if (currentIntegration) {
+          setSelectedIntegration(currentIntegration);
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editMode, editingNode, drawerOpen]);
+
   const filteredIntegrations = searchQuery
     ? allIntegrations.filter(
         (integration) =>
@@ -157,7 +204,7 @@ const AddNodeWidget = ({
     : null;
 
   return (
-    <AddNodeDrawer
+    <NodeEditorDrawer
       drawerOpen={drawerOpen}
       handleDrawerClose={handleDrawerClose}
       selectedParentNode={selectedParentNode}
@@ -175,8 +222,9 @@ const AddNodeWidget = ({
       parentIntegration={parentIntegration}
       nextIntegration={nextIntegration}
       handleSubmit={handleSubmit}
+      editMode={editMode}
     />
   );
 };
 
-export default AddNodeWidget;
+export default NodeEditorWidget;

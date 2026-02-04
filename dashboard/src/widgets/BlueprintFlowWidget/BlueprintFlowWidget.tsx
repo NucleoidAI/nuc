@@ -1,5 +1,5 @@
-import AddNodeWidget from "../../widgets/AddNodeWidget/AddNodeWidget";
 import BlueprintFlow from "../../components/BlueprintFlow/BlueprintFlow";
+import NodeEditorWidget from "../NodeEditorWidget/NodeEditorWidget";
 import SampleFlow from "../../components/BlueprintFlow/SampleFlow";
 import { calculateNodeChanges } from "../../components/BlueprintFlow/DiffPanel/diffHelper";
 import useBlueprint from "../../hooks/useBlueprint";
@@ -89,19 +89,28 @@ function BlueprintFlowWidget({
       const change = nodeChanges.get(nodeId);
       const changeType = change?.changeType || "unchanged";
 
+      const hasError =
+        showValidationErrors &&
+        validationErrors.some(
+          (error) => error.nodeId === nodeId || error.nextNodeId === nodeId
+        );
+
       acc[nodeId] = {
         ...node,
         changeType,
+        hasError,
       };
 
       return acc;
     }, {});
 
     return enriched;
-  }, [graphData, nodeChanges]);
+  }, [graphData, nodeChanges, validationErrors, showValidationErrors]);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
   const [selectedParentNode, setSelectedParentNode] = useState(null);
+  const [editingNodeId, setEditingNodeId] = useState<string | null>(null);
   const [newNodeLabel, setNewNodeLabel] = useState("");
   const [newNodeType, setNewNodeType] = useState("NORMAL");
   const [selectedBranch, setSelectedBranch] = useState<"true" | "false">(
@@ -175,8 +184,177 @@ function BlueprintFlowWidget({
     setDrawerOpen(true);
   };
 
+  const handleEditNodeClick = (node) => {
+    setEditMode(true);
+    setEditingNodeId(node.id);
+    setNewNodeLabel(node?.label || node?.properties?.label || "");
+    setNewNodeType(node.nodeType || "NORMAL");
+
+    if (graphData?.nodes) {
+      const parentNode = Object.values(graphData.nodes).find((n) => {
+        if (n.next === node.id) return true;
+        if (Array.isArray(n.next) && n.next.includes(node.id)) return true;
+        if (Array.isArray(n.trueNext) && n.trueNext.includes(node.id))
+          return true;
+        if (Array.isArray(n.falseNext) && n.falseNext.includes(node.id))
+          return true;
+        return false;
+      });
+
+      if (parentNode) {
+        setSelectedParentNode(parentNode);
+
+        if (parentNode.nodeType === "CONDITION") {
+          const isOnTrueBranch = parentNode.trueNext?.includes(node.id);
+          const isOnFalseBranch = parentNode.falseNext?.includes(node.id);
+
+          if (isOnTrueBranch) {
+            setSelectedBranch("true");
+          } else if (isOnFalseBranch) {
+            setSelectedBranch("false");
+          }
+        }
+      }
+    }
+
+    setDrawerOpen(true);
+  };
+
+  const handleEditNode = () => {
+    if (!editingNodeId) return;
+
+    const nodeIcon =
+      newNodeType === "CONDITION"
+        ? "mdi:help-circle-outline"
+        : "mdi:cube-outline";
+    const actionType =
+      newNodeType === "CONDITION"
+        ? "PLATFORM:decision"
+        : selectedIntegration?.action;
+    const descriptionText =
+      newNodeType === "CONDITION"
+        ? "A decision node that branches the flow based on conditions."
+        : selectedIntegration?.description || "";
+
+    setGraphData((prevData) => {
+      if (!prevData) return prevData;
+
+      const currentNodes = { ...prevData.nodes };
+      const nodeToUpdate = currentNodes[editingNodeId];
+
+      if (!nodeToUpdate) return prevData;
+
+      const isChangingToCondition =
+        newNodeType === "CONDITION" && nodeToUpdate.nodeType !== "CONDITION";
+      const isChangingToNormal =
+        newNodeType !== "CONDITION" && nodeToUpdate.nodeType === "CONDITION";
+
+      let updatedNode;
+
+      if (isChangingToCondition) {
+        const existingNext = nodeToUpdate.next;
+        updatedNode = {
+          ...nodeToUpdate,
+          label: newNodeLabel,
+          description: descriptionText,
+          action: actionType,
+          icon: nodeIcon,
+          nodeType: newNodeType,
+          connectorType: "decision" as const,
+          trueNext: existingNext
+            ? Array.isArray(existingNext)
+              ? existingNext
+              : [existingNext]
+            : [],
+          falseNext: [],
+          next: existingNext,
+          raw: {
+            ...nodeToUpdate.raw,
+            type: newNodeType,
+            properties: {
+              ...nodeToUpdate.raw?.properties,
+              label: newNodeLabel,
+              description: descriptionText,
+              action: actionType,
+              icon: nodeIcon,
+            },
+            true: existingNext
+              ? Array.isArray(existingNext)
+                ? existingNext
+                : [existingNext]
+              : [],
+            false: [],
+            next: undefined,
+          },
+        };
+      } else if (isChangingToNormal) {
+        const nextValue = nodeToUpdate.trueNext?.[0] || null;
+        updatedNode = {
+          ...nodeToUpdate,
+          label: newNodeLabel,
+          description: descriptionText,
+          action: actionType,
+          icon: nodeIcon,
+          nodeType: newNodeType,
+          connectorType: "default" as const,
+          next: nextValue,
+          trueNext: undefined,
+          falseNext: undefined,
+          raw: {
+            ...nodeToUpdate.raw,
+            type: newNodeType,
+            properties: {
+              ...nodeToUpdate.raw?.properties,
+              label: newNodeLabel,
+              description: descriptionText,
+              action: actionType,
+              icon: nodeIcon,
+            },
+            next: nextValue ? [nextValue] : [],
+            true: undefined,
+            false: undefined,
+          },
+        };
+      } else {
+        updatedNode = {
+          ...nodeToUpdate,
+          label: newNodeLabel,
+          description: descriptionText,
+          action: actionType,
+          icon: nodeIcon,
+          nodeType: newNodeType,
+          raw: {
+            ...nodeToUpdate.raw,
+            type: newNodeType,
+            properties: {
+              ...nodeToUpdate.raw?.properties,
+              label: newNodeLabel,
+              description: descriptionText,
+              action: actionType,
+              icon: nodeIcon,
+            },
+          },
+        };
+      }
+
+      currentNodes[editingNodeId] = updatedNode;
+
+      return {
+        ...prevData,
+        nodes: currentNodes,
+      };
+    });
+
+    handleDrawerClose();
+    setHasLocalChanges(true);
+    setEditMode(false);
+    setEditingNodeId(null);
+  };
+
   const handleDrawerClose = () => {
     setDrawerOpen(false);
+    setEditMode(false);
+    setEditingNodeId(null);
     setSelectedParentNode(null);
     setNewNodeLabel("");
     setNewNodeType("NORMAL");
@@ -483,6 +661,7 @@ function BlueprintFlowWidget({
         baselineNodes={baselineNodes?.nodes ?? []}
         onFlowChange={handleFlowChange}
         onAddNodeClick={handleAddNodeClick}
+        onEditNodeClick={handleEditNodeClick}
         onSave={handleSaveFlow}
         onShowDiff={() => setShowDiffPanel(true)}
         onCloseDiff={() => setShowDiffPanel(false)}
@@ -490,7 +669,7 @@ function BlueprintFlowWidget({
         onSaveSuccessChange={setSaveSuccess}
       />
 
-      <AddNodeWidget
+      <NodeEditorWidget
         drawerOpen={drawerOpen}
         handleDrawerClose={handleDrawerClose}
         selectedParentNode={selectedParentNode}
@@ -501,9 +680,15 @@ function BlueprintFlowWidget({
         setNewNodeType={setNewNodeType}
         selectedBranch={selectedBranch}
         setSelectedBranch={setSelectedBranch}
-        handleSubmit={handleAddNode}
+        handleSubmit={editMode ? handleEditNode : handleAddNode}
         selectedIntegration={selectedIntegration}
         setSelectedIntegration={setSelectedIntegration}
+        editMode={editMode}
+        editingNode={
+          editingNodeId && graphData?.nodes?.[editingNodeId]
+            ? graphData.nodes[editingNodeId]
+            : undefined
+        }
       />
     </>
   );

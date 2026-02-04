@@ -89,19 +89,28 @@ function BlueprintFlowWidget({
       const change = nodeChanges.get(nodeId);
       const changeType = change?.changeType || "unchanged";
 
+      const hasError =
+        showValidationErrors &&
+        validationErrors.some(
+          (error) => error.nodeId === nodeId || error.nextNodeId === nodeId
+        );
+
       acc[nodeId] = {
         ...node,
         changeType,
+        hasError,
       };
 
       return acc;
     }, {});
 
     return enriched;
-  }, [graphData, nodeChanges]);
+  }, [graphData, nodeChanges, validationErrors, showValidationErrors]);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
   const [selectedParentNode, setSelectedParentNode] = useState(null);
+  const [editingNodeId, setEditingNodeId] = useState<string | null>(null);
   const [newNodeLabel, setNewNodeLabel] = useState("");
   const [newNodeType, setNewNodeType] = useState("NORMAL");
   const [selectedBranch, setSelectedBranch] = useState<"true" | "false">(
@@ -174,8 +183,91 @@ function BlueprintFlowWidget({
     setDrawerOpen(true);
   };
 
+  const handleEditNodeClick = (node) => {
+    setEditMode(true);
+    setEditingNodeId(node.id);
+    setNewNodeLabel(node?.label || node?.properties?.label || "");
+    setNewNodeType(node.nodeType || "NORMAL");
+
+    if (graphData?.nodes) {
+      const parentNode = Object.values(graphData.nodes).find((n) => {
+        if (n.next === node.id) return true;
+        if (Array.isArray(n.next) && n.next.includes(node.id)) return true;
+        if (Array.isArray(n.trueNext) && n.trueNext.includes(node.id))
+          return true;
+        if (Array.isArray(n.falseNext) && n.falseNext.includes(node.id))
+          return true;
+        return false;
+      });
+
+      if (parentNode) {
+        setSelectedParentNode(parentNode);
+      }
+    }
+
+    setDrawerOpen(true);
+  };
+
+  const handleEditNode = () => {
+    if (!editingNodeId) return;
+
+    const nodeIcon =
+      newNodeType === "CONDITION"
+        ? "mdi:help-circle-outline"
+        : "mdi:cube-outline";
+    const actionType =
+      newNodeType === "CONDITION"
+        ? "PLATFORM:decision"
+        : selectedIntegration?.action;
+    const descriptionText =
+      newNodeType === "CONDITION"
+        ? "A decision node that branches the flow based on conditions."
+        : selectedIntegration?.description || "";
+
+    setGraphData((prevData) => {
+      if (!prevData) return prevData;
+
+      const currentNodes = { ...prevData.nodes };
+      const nodeToUpdate = currentNodes[editingNodeId];
+
+      if (!nodeToUpdate) return prevData;
+
+      currentNodes[editingNodeId] = {
+        ...nodeToUpdate,
+        label: newNodeLabel,
+        description: descriptionText,
+        action: actionType,
+        icon: nodeIcon,
+        nodeType: newNodeType,
+        raw: {
+          ...nodeToUpdate.raw,
+          type: newNodeType,
+          properties: {
+            ...nodeToUpdate.raw?.properties,
+            label: newNodeLabel,
+            description: descriptionText,
+            action: actionType,
+            icon: nodeIcon,
+          },
+        },
+      };
+
+      return {
+        ...prevData,
+        nodes: currentNodes,
+      };
+    });
+
+    handleDrawerClose();
+    setHasLocalChanges(true);
+    setEditMode(false);
+    setEditingNodeId(null);
+  };
+
   const handleDrawerClose = () => {
     setDrawerOpen(false);
+    setEditMode(false);
+    setEditingNodeId(null);
     setSelectedParentNode(null);
     setNewNodeLabel("");
     setNewNodeType("NORMAL");
@@ -481,6 +573,7 @@ function BlueprintFlowWidget({
         baselineNodes={baselineNodes?.nodes ?? []}
         onFlowChange={handleFlowChange}
         onAddNodeClick={handleAddNodeClick}
+        onEditNodeClick={handleEditNodeClick}
         onSave={handleSaveFlow}
         onShowDiff={() => setShowDiffPanel(true)}
         onCloseDiff={() => setShowDiffPanel(false)}
@@ -499,9 +592,15 @@ function BlueprintFlowWidget({
         setNewNodeType={setNewNodeType}
         selectedBranch={selectedBranch}
         setSelectedBranch={setSelectedBranch}
-        handleSubmit={handleAddNode}
+        handleSubmit={editMode ? handleEditNode : handleAddNode}
         selectedIntegration={selectedIntegration}
         setSelectedIntegration={setSelectedIntegration}
+        editMode={editMode}
+        editingNode={
+          editingNodeId && graphData?.nodes?.[editingNodeId]
+            ? graphData.nodes[editingNodeId]
+            : undefined
+        }
       />
     </>
   );

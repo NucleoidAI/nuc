@@ -57,6 +57,7 @@ const AddNodeWidget = ({
     action: string;
     provider: string;
     description: string;
+    icon: string;
     direction: string;
     lib: string;
     inputSchema: {
@@ -106,6 +107,7 @@ const AddNodeWidget = ({
           provider: "PLATFORM",
           description:
             action.description || action.action.replace("PLATFORM:", ""),
+          icon: action.icon || "",
           direction: "internal",
           lib: action.lib || "",
           inputSchema: action.inputSchema || {

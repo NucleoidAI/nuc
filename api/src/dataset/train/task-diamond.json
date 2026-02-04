@@ -27,7 +27,7 @@
           "properties": {
             "action": "PLATFORM:decision",
             "label": "Make Decision",
-            "icon": "mdi:decision"
+            "icon": "mdi:source-branch"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
@@ -234,7 +234,7 @@
           "properties": {
             "action": "PLATFORM:decision",
             "label": "Check if product is available",
-            "icon": "mdi:decision"
+            "icon": "mdi:source-branch"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
@@ -301,7 +301,7 @@
           "properties": {
             "action": "TELCO:port_connection",
             "label": "Connect Port",
-            "icon": "mdi:check"
+            "icon": "mdi:ethernet"
           },
           "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -422,7 +422,7 @@
           "properties": {
             "action": "PLATFORM:decision",
             "label": "Check if product is available",
-            "icon": "mdi:decision"
+            "icon": "mdi:source-branch"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
@@ -489,7 +489,7 @@
           "properties": {
             "action": "TELCO:port_connection",
             "label": "Connect Port",
-            "icon": "mdi:check"
+            "icon": "mdi:ethernet"
           },
           "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"

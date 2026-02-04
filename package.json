@@ -6,7 +6,7 @@
   "author": "GreyCollar Team",
   "private": "true",
   "scripts": {
-    "predev": " rm -rf dashboard/node_modules/.vite",
+    "predev": " rm -rf dashboard/node_modules/.vite && cd ./mcp && npm run db:reset",
     "debug:mcp": "cd ./mcp && npm run debug",
     "dev:api": "cd ./api && npm run dev",
     "dev:dashboard": "cd ./dashboard && npm run dev",

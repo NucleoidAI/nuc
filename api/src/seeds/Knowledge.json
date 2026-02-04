@@ -48,14 +48,14 @@
     {
       "id": "9b1c0eb7-5ada-44e9-bd84-0f55943809b8",
       "type": "TEXT",
-      "text": "Rebel Coffee is located at 225 Wood St, London",
+      "text": "Our office is located at 225 Wood St, London",
       "status": "COMPLETED",
       "createdAt": "2023-08-05T12:00:25"
     },
     {
       "id": "c141c799-4ad9-4fd3-9482-95de77057810",
       "type": "URL",
-      "url": "https://e17rebelcoffee.com",
+      "url": "https://www.ibm.com/think/network",
       "status": "COMPLETED",
       "createdAt": "2024-08-07T10:00:00Z"
     },
@@ -69,7 +69,7 @@
     {
       "id": "8bc99c86-59f2-48d6-ab3f-4e9129b53814",
       "type": "TEXT",
-      "text": "In-progress report on coffee service trends and improvements.",
+      "text": "Our support email address is support@telco.com.",
       "status": "COMPLETED",
       "createdAt": "2024-08-07T10:00:00Z"
     },
@@ -98,21 +98,21 @@
     {
       "id": "7e3d88f6-bc6f-4beb-a793-ef68f219c14a",
       "type": "TEXT",
-      "text": "Battery product id is btr-123",
+      "text": "BBK Number is 3 digits",
       "status": "COMPLETED",
       "createdAt": "1970-01-20T22:08:14.337Z"
     },
     {
       "id": "18a6dc62-9c58-49db-ae61-eef9042102b2",
       "type": "TEXT",
-      "text": "If Battery is not available, order 10 Battery",
+      "text": "Ports are two statuses: Available and Allocated",
       "status": "COMPLETED",
       "createdAt": "1970-01-20T22:08:14.337Z"
     },
     {
       "id": "019ae3fb-df10-70e1-9575-06860872a022",
       "type": "TEXT",
-      "text": "Manager email address is halilibrahimcengel7@gmail.com.",
+      "text": "Business hours are 9am to 5pm, Monday to Friday.",
       "status": "COMPLETED",
       "createdAt": "1970-01-20T22:08:14.337Z"
     }

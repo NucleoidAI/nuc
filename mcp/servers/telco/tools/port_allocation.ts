@@ -1,5 +1,5 @@
 import { PortAllocationInput, Tool } from "./types";
-import { findAll, findOne , insert} from "../db/index.js";
+import { findAll, findOne , insert, update} from "../db/index.js";
 
 export const portAllocationTool: Tool<PortAllocationInput> = {
   name: "TELCO:port_allocation",
@@ -27,7 +27,7 @@ export const portAllocationTool: Tool<PortAllocationInput> = {
     try {
       const port = findAll("ports");
 
-      const availablePort = port.find((p) => p.status === "Available" && p.speed === args.speed);
+      const availablePort = port.find((p) => p.status === "Available" && p.speed === args.speed && p.bbk_no === args.bbk_no);
 
       if (availablePort) {
         const portAllocation = {
@@ -39,6 +39,7 @@ export const portAllocationTool: Tool<PortAllocationInput> = {
           speed: args.speed,
         }
         insert("port_allocations", portAllocation);
+        update("ports", "port_no", availablePort.port_no, { status: "Allocated" });
 
         return {
           content: [

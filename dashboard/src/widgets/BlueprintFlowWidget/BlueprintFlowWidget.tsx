@@ -1,3 +1,4 @@
+import AddIcon from "@mui/icons-material/Add";
 import BlueprintFlow from "../../components/BlueprintFlow/BlueprintFlow";
 import NodeEditorWidget from "../NodeEditorWidget/NodeEditorWidget";
 import SampleFlow from "../../components/BlueprintFlow/SampleFlow";
@@ -7,6 +8,7 @@ import useMCPs from "../../hooks/useMCPs";
 import { v4 as uuid } from "uuid";
 import { validateFlow } from "../../components/BlueprintFlow/Validation/validation";
 
+import { Avatar, Box, Button, Paper, Typography } from "@mui/material";
 import {
   DefinitionGraph,
   FlowDefinition,
@@ -30,11 +32,13 @@ function BlueprintFlowWidget({
   setAiResponse,
   blueprint,
   taskId,
+  setSelectedItem,
 }: {
   aiResponse?: AIResponse;
   setAiResponse?: (response: AIResponse | null) => void;
   blueprint: Blueprint;
   taskId?: string;
+  setSelectedItem?: (item: Blueprint) => void;
 }) {
   const [graphData, setGraphData] = useState<DefinitionGraph | null>(null);
   const [hasLocalChanges, setHasLocalChanges] = useState(false);
@@ -133,6 +137,8 @@ function BlueprintFlowWidget({
       properties: {},
     },
   });
+
+  const [showSampleFlow, setShowSampleFlow] = useState(false);
 
   useEffect(
     () => {
@@ -398,6 +404,69 @@ function BlueprintFlowWidget({
         ? "A decision node that branches the flow based on conditions."
         : selectedIntegration?.description || "";
 
+    if (selectedParentNode.id === "starter") {
+      const firstNode =
+        newNodeType === "CONDITION"
+          ? {
+              id: newId,
+              label: newNodeLabel,
+              description: descriptionText,
+              nodeType: newNodeType,
+              action: actionType,
+              icon: nodeIcon,
+              createdAt: currentTime,
+              connectorType: "decision" as const,
+              trueNext: [],
+              falseNext: [],
+              next: null,
+              raw: {
+                id: newId,
+                type: newNodeType,
+                properties: {
+                  action: actionType,
+                  label: newNodeLabel,
+                  description: descriptionText,
+                  icon: nodeIcon,
+                },
+                true: [],
+                false: [],
+                createdAt: currentTime,
+              },
+            }
+          : {
+              id: newId,
+              label: newNodeLabel,
+              description: descriptionText,
+              nodeType: newNodeType,
+              action: actionType,
+              icon: nodeIcon,
+              createdAt: currentTime,
+              connectorType: "default" as const,
+              next: null,
+              raw: {
+                id: newId,
+                type: newNodeType,
+                properties: {
+                  action: actionType,
+                  label: newNodeLabel,
+                  description: descriptionText,
+                  icon: nodeIcon,
+                },
+                next: [],
+                createdAt: currentTime,
+              },
+            };
+
+      setGraphData({
+        nodes: { [newId]: firstNode },
+        roots: [newId],
+      });
+
+      handleDrawerClose();
+      setHasLocalChanges(true);
+      return;
+    }
+
     setGraphData((prevData) => {
       const currentNodes = { ...prevData.nodes };
       const parentId = selectedParentNode.id;
@@ -588,7 +657,17 @@ function BlueprintFlowWidget({
   };
 
   const handleSaveFlow = async () => {
-    if (!graphData || !blueprintNodes) return;
+    if (!graphData) return;
+
+    const agentId = blueprintNodes?.agentId || blueprint?.agentId;
+
+    if (!agentId) {
+      console.error("Cannot save blueprint: agentId is required");
+      alert(
+        "Cannot save blueprint: Agent ID is missing. Please ensure an agent is selected."
+      );
+      return;
+    }
 
     const updatedNodes = Object.values(graphData.nodes).map((node) => {
       const baseNode = {
@@ -621,14 +700,22 @@ function BlueprintFlowWidget({
       }
     });
 
-    await upsertBlueprint(
-      blueprintNodes.id,
-      blueprintNodes.title,
-      blueprintNodes.description,
-      blueprintNodes.agentId,
+    const response = await upsertBlueprint(
+      blueprintNodes?.id || blueprint?.id,
+      blueprintNodes?.title || blueprint?.title || "Newly Created Blueprint",
+      blueprintNodes?.description ||
+        blueprint?.description ||
+        "Blueprint created from flow",
+      agentId,
       updatedNodes,
-      taskId
+      taskId,
+      blueprintNodes?.messages
     );
+
+    if (setSelectedItem && response?.Blueprint) {
+      setSelectedItem(response.Blueprint);
+    }
+
     setHasLocalChanges(false);
     setShowDiffPanel(false);
     if (setAiResponse) {
@@ -642,32 +729,101 @@ function BlueprintFlowWidget({
     setHasLocalChanges(true);
   };
 
-  if (loading || !graphData) {
-    return <SampleFlow />;
-  }
+  const loadSampleFlow = () => {
+    setShowSampleFlow(!showSampleFlow);
+  };
+
+  const handleStarterNodeClick = () => {
+    const starterParent = {
+      id: "starter",
+      label: "Start",
+      nodeType: "START",
+      next: null,
+    };
+    setSelectedParentNode(starterParent);
+    setNewNodeLabel("");
+    setNewNodeType("NORMAL");
+    setSelectedBranch("true");
+    setShowValidationErrors(false);
+    setDrawerOpen(true);
+  };
 
   return (
     <>
-      <BlueprintFlow
-        graphData={graphData}
-        enrichedGraphData={enrichedGraphData}
-        drawerOpen={drawerOpen}
-        hasLocalChanges={hasLocalChanges}
-        hasDifferences={hasDifferences}
-        validationErrors={validationErrors}
-        showDiffPanel={showDiffPanel}
-        showValidationErrors={showValidationErrors}
-        saveSuccess={saveSuccess}
-        baselineNodes={baselineNodes?.nodes ?? []}
-        onFlowChange={handleFlowChange}
-        onAddNodeClick={handleAddNodeClick}
-        onEditNodeClick={handleEditNodeClick}
-        onSave={handleSaveFlow}
-        onShowDiff={() => setShowDiffPanel(true)}
-        onCloseDiff={() => setShowDiffPanel(false)}
-        onShowValidationErrors={setShowValidationErrors}
-        onSaveSuccessChange={setSaveSuccess}
-      />
+      {loading || !graphData ? (
+        <>
+          <Button onClick={loadSampleFlow}>
+            {showSampleFlow ? "Hide" : "Load"} Sample Flow
+          </Button>
+          {showSampleFlow && <SampleFlow />}
+          {!showSampleFlow && (
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              minHeight="600px"
+              p={5}
+            >
+              <Paper
+                onClick={handleStarterNodeClick}
+                elevation={1}
+                sx={{
+                  width: 280,
+                  height: 160,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  borderRadius: 2,
+                  "&:hover": {
+                    bgcolor: "primary.50",
+                    boxShadow: 3,
+                  },
+                }}
+              >
+                <Avatar
+                  sx={{
+                    width: 64,
+                    height: 64,
+                    bgcolor: "primary.50",
+                    mb: 2,
+                  }}
+                >
+                  <AddIcon sx={{ fontSize: 36, color: "primary.info" }} />
+                </Avatar>
+                <Typography variant="h6" fontWeight={600} gutterBottom>
+                  Add First Node
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Click here to start building your flow
+                </Typography>
+              </Paper>
+            </Box>
+          )}
+        </>
+      ) : (
+        <BlueprintFlow
+          graphData={graphData}
+          enrichedGraphData={enrichedGraphData}
+          drawerOpen={drawerOpen}
+          hasLocalChanges={hasLocalChanges}
+          hasDifferences={hasDifferences}
+          validationErrors={validationErrors}
+          showDiffPanel={showDiffPanel}
+          showValidationErrors={showValidationErrors}
+          saveSuccess={saveSuccess}
+          baselineNodes={baselineNodes?.nodes ?? []}
+          onFlowChange={handleFlowChange}
+          onAddNodeClick={handleAddNodeClick}
+          onEditNodeClick={handleEditNodeClick}
+          onSave={handleSaveFlow}
+          onShowDiff={() => setShowDiffPanel(true)}
+          onCloseDiff={() => setShowDiffPanel(false)}
+          onShowValidationErrors={setShowValidationErrors}
+          onSaveSuccessChange={setSaveSuccess}
+        />
+      )}
 
       <NodeEditorWidget
         drawerOpen={drawerOpen}

@@ -54,7 +54,6 @@ const HighlightOverlay = styled("div")<{
 }>(({ changetype, haserror, theme }) => {
   const isDark = theme.palette.mode === "dark";
 
-  // Error takes priority over change type
   if (haserror === "true") {
     const errorColor = {
       border: isDark ? "#ef5350" : "#f44336",
@@ -315,6 +314,45 @@ export const blueprintFlowPlugin = {
       gap: styleTokens.gap ?? 6,
       levelGap: styleTokens.levelGap ?? 15,
     };
+  },
+
+  edge: ({ node, child }) => {
+    if (node?.connectorType === "decision" && child) {
+      const trueNext = node?.trueNext || [];
+      const falseNext = node?.falseNext || [];
+
+      if (trueNext.includes(child.id)) {
+        return {
+          label: "true",
+          labelStyle: {
+            fontSize: "12px",
+            fontWeight: 600,
+            color: "#4b4e4c",
+            textColor: "#2e914f",
+          },
+          labelPosition: 0.4,
+          labelOffsetX: 10,
+          labelOffsetY: -20,
+        };
+      }
+
+      if (falseNext.includes(child.id)) {
+        return {
+          label: "false",
+          labelStyle: {
+            fontSize: "12px",
+            fontWeight: 600,
+            color: "#4b4e4c",
+            textColor: "#d32f2f",
+          },
+          labelPosition: 0.4,
+          labelOffsetX: 10,
+          labelOffsetY: 20,
+        };
+      }
+    }
+
+    return {};
   },
 
   node: ({ node, nodeStyle }) => {

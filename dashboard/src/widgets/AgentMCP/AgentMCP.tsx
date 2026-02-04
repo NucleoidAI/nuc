@@ -3,7 +3,6 @@ import MCPTabs from "../../components/MCPTabs/MCPTabs";
 import MCPs from "../../components/MCPs/MCPs";
 import React from "react";
 import SkillDialog from "../../components/Skills/SkillDialog";
-import { getProviderLogo } from "../../utils/icon";
 import useAcquiredMCPs from "../../hooks/useAcquiredMCPs";
 import useAgent from "../../hooks/useAgent";
 
@@ -42,7 +41,7 @@ const AgentMCP = ({ agent }: { agent: { id: string; name: string } }) => {
   const [selectedSkill, setSelectedSkill] = React.useState<{
     id: string;
     name: string;
-    logo: string;
+    icon: string;
     title: string;
     description: string;
     oauth: {
@@ -102,7 +101,7 @@ const AgentMCP = ({ agent }: { agent: { id: string; name: string } }) => {
                   key={skill.id}
                   title={skill.provider}
                   description={skill.description}
-                  logo={getProviderLogo(skill.provider)}
+                  icon={skill.icon}
                   onSkillClick={handleSkillClick}
                   id={skill.id}
                   oauth={skill.oauth}
@@ -120,7 +119,7 @@ const AgentMCP = ({ agent }: { agent: { id: string; name: string } }) => {
                   key={skill.id}
                   title={skill.provider}
                   description={skill.description}
-                  logo={getProviderLogo(skill.provider)}
+                  icon={skill.icon}
                   onSkillClick={handleSkillClick}
                   id={skill.id}
                   oauth={skill.oauth}

@@ -190,10 +190,14 @@ const BlueprintDrawer = ({
                 }}
               >
                 <BlueprintFlowWidget
-                  blueprint={selectedItem}
+                  blueprint={{
+                    ...selectedItem,
+                    agentId: selectedItem?.agentId || agentId,
+                  }}
                   aiResponse={aiResponse}
                   setAiResponse={setAiResponse}
                   taskId={taskId}
+                  setSelectedItem={setSelectedItem}
                 />
 
                 {!isChatOpen && (

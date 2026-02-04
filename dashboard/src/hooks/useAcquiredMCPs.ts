@@ -15,7 +15,7 @@ export type MCPSkill = {
   title?: string;
   description?: string;
   direction: "INCOMING" | "OUTGOING";
-  logo?: string;
+  icon?: string;
   oauth?: {
     scope: string;
     tokenUrl: string;

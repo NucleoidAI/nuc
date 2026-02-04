@@ -244,25 +244,100 @@ function BlueprintFlowWidget({
 
       if (!nodeToUpdate) return prevData;
 
-      currentNodes[editingNodeId] = {
-        ...nodeToUpdate,
-        label: newNodeLabel,
-        description: descriptionText,
-        action: actionType,
-        icon: nodeIcon,
-        nodeType: newNodeType,
-        raw: {
-          ...nodeToUpdate.raw,
-          type: newNodeType,
-          properties: {
-            ...nodeToUpdate.raw?.properties,
-            label: newNodeLabel,
-            description: descriptionText,
-            action: actionType,
-            icon: nodeIcon,
+      const isChangingToCondition =
+        newNodeType === "CONDITION" && nodeToUpdate.nodeType !== "CONDITION";
+      const isChangingToNormal =
+        newNodeType !== "CONDITION" && nodeToUpdate.nodeType === "CONDITION";
+
+      let updatedNode;
+
+      if (isChangingToCondition) {
+        const existingNext = nodeToUpdate.next;
+        updatedNode = {
+          ...nodeToUpdate,
+          label: newNodeLabel,
+          description: descriptionText,
+          action: actionType,
+          icon: nodeIcon,
+          nodeType: newNodeType,
+          connectorType: "decision" as const,
+          trueNext: existingNext
+            ? Array.isArray(existingNext)
+              ? existingNext
+              : [existingNext]
+            : [],
+          falseNext: [],
+          next: existingNext,
+          raw: {
+            ...nodeToUpdate.raw,
+            type: newNodeType,
+            properties: {
+              ...nodeToUpdate.raw?.properties,
+              label: newNodeLabel,
+              description: descriptionText,
+              action: actionType,
+              icon: nodeIcon,
+            },
+            true: existingNext
+              ? Array.isArray(existingNext)
+                ? existingNext
+                : [existingNext]
+              : [],
+            false: [],
+            next: undefined,
           },
-        },
-      };
+        };
+      } else if (isChangingToNormal) {
+        const nextValue = nodeToUpdate.trueNext?.[0] || null;
+        updatedNode = {
+          ...nodeToUpdate,
+          label: newNodeLabel,
+          description: descriptionText,
+          action: actionType,
+          icon: nodeIcon,
+          nodeType: newNodeType,
+          connectorType: "default" as const,
+          next: nextValue,
+          trueNext: undefined,
+          falseNext: undefined,
+          raw: {
+            ...nodeToUpdate.raw,
+            type: newNodeType,
+            properties: {
+              ...nodeToUpdate.raw?.properties,
+              label: newNodeLabel,
+              description: descriptionText,
+              action: actionType,
+              icon: nodeIcon,
+            },
+            next: nextValue ? [nextValue] : [],
+            true: undefined,
+            false: undefined,
+          },
+        };
+      } else {
+        updatedNode = {
+          ...nodeToUpdate,
+          label: newNodeLabel,
+          description: descriptionText,
+          action: actionType,
+          icon: nodeIcon,
+          nodeType: newNodeType,
+          raw: {
+            ...nodeToUpdate.raw,
+            type: newNodeType,
+            properties: {
+              ...nodeToUpdate.raw?.properties,
+              label: newNodeLabel,
+              description: descriptionText,
+              action: actionType,
+              icon: nodeIcon,
+            },
+          },
+        };
+      }
+
+      currentNodes[editingNodeId] = updatedNode;
 
       return {
         ...prevData,

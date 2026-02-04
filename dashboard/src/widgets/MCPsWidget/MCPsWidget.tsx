@@ -1,7 +1,6 @@
 import { Icon } from "@iconify/react";
 import SkillDialog from "../../components/Skills/SkillDialog";
 import Skills from "../../components/Skills/Skills";
-import { getProviderLogo } from "../../utils/icon";
 import { storage } from "@nucleoidjs/webstorage";
 import useAcquiredMCPs from "../../hooks/useAcquiredMCPs";
 import useTeam from "../../hooks/useTeams";
@@ -21,49 +20,49 @@ const mockMCPs = [
   {
     id: "deb57fdb-4d92-4335-979c-edbce3bd6b00",
     title: "Slack",
-    logo: "logos:slack",
+    icon: "logos:slack",
     provider: "Slack",
   },
   {
     id: "262705b3-a4d5-4df7-8820-5ea4e1b362d4",
     title: "Discord",
-    logo: "logos:discord",
+    icon: "logos:discord",
     provider: "Discord",
   },
   {
     id: "3d75adcb-c7c3-4f8e-aec6-029091366b48",
     title: "Jira",
-    logo: "logos:jira",
+    icon: "logos:jira",
     provider: "Jira",
   },
   {
     id: "bd37432b-56d1-4226-9814-9163ed80c887",
     title: "GitHub",
-    logo: "logos:github",
+    icon: "logos:github",
     provider: "GitHub",
   },
   {
     id: "b44c14d5-9d94-4a98-a6a3-6ec086f0e2e6",
     title: "Notion",
-    logo: "logos:notion",
+    icon: "logos:notion",
     provider: "Notion",
   },
   {
     id: "0919fcbe-d48d-4db5-afae-5777586f7df3",
     title: "Google Drive",
-    logo: "logos:google-drive",
+    icon: "logos:google-drive",
     provider: "Google Drive",
   },
   {
     id: "67784b37-dbc7-4878-899c-71c86880de11",
     title: "Trello",
-    logo: "logos:trello",
+    icon: "logos:trello",
     provider: "Trello",
   },
   {
     id: "4f117ca8-ca0d-44b3-86e5-8eb1e8e10cdc",
     title: "HubSpot",
-    logo: "logos:hubspot",
+    icon: "logos:hubspot",
     provider: "HubSpot",
   },
 ];
@@ -83,7 +82,7 @@ const MCPsWidget = () => {
   const [selectedSkill, setSelectedSkill] = useState<{
     id: string;
     name: string;
-    logo: string;
+    icon: string;
     title: string;
     description: string;
     oauth: {
@@ -177,7 +176,7 @@ const MCPsWidget = () => {
                   }}
                 >
                   <Icon
-                    icon={mcp.logo.replace(/^:|:$/g, "")}
+                    icon={mcp.icon.replace(/^:|:$/g, "")}
                     width="40"
                     height="40"
                   />
@@ -195,7 +194,7 @@ const MCPsWidget = () => {
               id={skill.id}
               title={skill.provider}
               description={skill.description}
-              logo={getProviderLogo(skill.provider)}
+              icon={skill.icon}
               oauth={skill.oauth}
               onSkillClick={handleSkillClick}
             />
@@ -237,7 +236,7 @@ const MCPsWidget = () => {
                   mb: 3,
                 }}
               >
-                <Icon icon={selectedMCP.logo} width="40" height="40" />
+                <Icon icon={selectedMCP.icon} width="40" height="40" />
                 <Typography variant="h5" component="h2" sx={{ ml: 2 }}>
                   {selectedMCP.title}
                 </Typography>
@@ -255,7 +254,7 @@ const MCPsWidget = () => {
                       id={skill.id}
                       title={skill.title}
                       description={skill.description}
-                      logo={skill.logo}
+                      icon={skill.icon}
                       oauth={skill.oauth}
                       onSkillClick={handleSkillClick}
                     />

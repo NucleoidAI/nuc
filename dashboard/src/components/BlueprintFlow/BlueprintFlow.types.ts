@@ -21,6 +21,7 @@ export interface BlueprintFlowProps {
   baselineNodes: BaselineNodes["nodes"];
   onFlowChange: (graph: DefinitionGraph) => void;
   onAddNodeClick: (node: { id: string }) => void;
+  onEditNodeClick: (node: { id: string }) => void;
   onSave: () => void;
   onShowDiff: () => void;
   onCloseDiff: () => void;

@@ -26,7 +26,7 @@ export const teamChartPlugin = {
       lineWidth: nodeStyle.teamLineWidth ?? nodeStyle.lineWidth ?? 1.5,
       lineStyle: nodeStyle.teamLineStyle ?? nodeStyle.lineStyle ?? "solid",
       connectorType:
-        nodeStyle.teamConnectorType ?? nodeStyle.connectorType ?? "default",
+        nodeStyle.teamConnectorType ?? nodeStyle.connectorType ?? "normal",
       gap: nodeStyle.teamGap ?? nodeStyle.gap ?? 6,
       levelGap: nodeStyle.teamLevelGap ?? nodeStyle.levelGap ?? 4,
     };

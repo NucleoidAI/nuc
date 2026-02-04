@@ -38,14 +38,21 @@ fi
 
 # Case 2: Reset database - mcp.sh [server_name] reset
 if [ $# -eq 2 ] && [ "$2" == "reset" ]; then
-    if [ ! -f "$HOST_DB_PATH" ]; then
-        echo "Error: Seed file not found at $HOST_DB_PATH"
+    # Define the seed path internal to the container
+    INTERNAL_SEED_PATH="/app/mcp/servers/$SERVER_NAME/db/seeds/seed.json"
+
+    echo "Resetting $SERVER_NAME database using internal container seed..."
+    
+    # Check if seed file exists inside container before attempting copy
+    if ! docker exec "$CONTAINER_NAME" test -f "$INTERNAL_SEED_PATH"; then
+        echo "Error: Seed file not found at $INTERNAL_SEED_PATH inside container"
         exit 1
     fi
 
-    echo "Resetting $SERVER_NAME database from seed..."
-    docker cp "$HOST_DB_PATH" "$CONTAINER_NAME:$DB_PATH"
-    echo "Reset complete."
+    # Perform the copy entirely within the container environment
+    docker exec "$CONTAINER_NAME" cp "$INTERNAL_SEED_PATH" "$DB_PATH"
+    
+    echo "Reset complete (Internal container reset)."
     exit 0
 fi
 

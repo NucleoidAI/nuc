@@ -84,8 +84,8 @@ function addCustomerServiceXmlRequest(args: ConfigurationInput): string {
 </soapenv:Envelope>`;
 }
 
-async function sendSoapRequest(xmlBody: string, action: string): Promise<string> {
-  const response = await fetch(`${process.env.MCP_TELCO_URL}`, {
+async function sendSoapRequest(endpoint: string, xmlBody: string, action: string): Promise<string> {
+  const response = await fetch(endpoint, {
     method: "POST",
     headers: {
       "Content-Type": "text/xml; charset=utf-8",
@@ -138,7 +138,7 @@ export const configurationTool: Tool<ConfigurationInput> = {
   handler: async (args: ConfigurationInput) => {
     try {
 
-      const endpoint = process.env.MCP_TELCO_URL
+      const endpoint = "http://10.98.136.58:9012/keys-fttx-middleware-webservice/webservices/FttxMiddlewareWebService";
 
       let ontResponse: string | null = null;
       let addCustomerServiceResponse: string | null = null;
@@ -147,8 +147,8 @@ export const configurationTool: Tool<ConfigurationInput> = {
       const addCustomerServiceXml = addCustomerServiceXmlRequest(args);
 
       if (endpoint) {
-        ontResponse = await sendSoapRequest(createOntXml, "createOnt");
-        addCustomerServiceResponse = await sendSoapRequest(addCustomerServiceXml, "addCustomerService");
+        ontResponse = await sendSoapRequest(endpoint, createOntXml, "createOnt");
+        addCustomerServiceResponse = await sendSoapRequest(endpoint, addCustomerServiceXml, "addCustomerService");
       } 
 
       const payload = endpoint ? {

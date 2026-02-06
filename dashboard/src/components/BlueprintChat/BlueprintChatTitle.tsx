@@ -37,7 +37,9 @@ const BlueprintChatTitle = ({
   };
 
   const handleSaveClick = () => {
-    handleCreateBlueprint(title, description);
+    if (handleCreateBlueprint) {
+      handleCreateBlueprint(title, description);
+    }
     setIsEditing(false);
   };
 

@@ -1,7 +1,7 @@
 import { Flow } from "@canmingir/link/platform/components";
 import React from "react";
-import { blueprintFlowPlugin } from "./BlueprintFlowPlugin";
-import { buildDefinitionGraph } from "./helper";
+import { blueprintFlowPlugin } from "../BlueprintFlowPlugin";
+import { buildDefinitionGraph } from "../helper";
 
 import { Box, Typography } from "@mui/material";
 
@@ -86,7 +86,7 @@ const SampleFlow = () => {
       >
         <Typography variant="body2" color="text.secondary" align="center">
           💡 This is an example flow. Start by typing your scenario in the chat
-          box, or use the editor to build your own workflow.
+          box.
         </Typography>
       </Box>
       <Flow

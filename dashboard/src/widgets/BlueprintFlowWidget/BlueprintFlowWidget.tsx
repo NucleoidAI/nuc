@@ -1,14 +1,13 @@
-import AddIcon from "@mui/icons-material/Add";
 import BlueprintFlow from "../../components/BlueprintFlow/BlueprintFlow";
 import NodeEditorWidget from "../NodeEditorWidget/NodeEditorWidget";
-import SampleFlow from "../../components/BlueprintFlow/SampleFlow";
+import SampleFlow from "../../components/BlueprintFlow/Samples/SampleFlow";
+import SampleNode from "../../components/BlueprintFlow/Samples/SampleNode";
 import { calculateNodeChanges } from "../../components/BlueprintFlow/DiffPanel/diffHelper";
 import useBlueprint from "../../hooks/useBlueprint";
 import useMCPs from "../../hooks/useMCPs";
 import { v4 as uuid } from "uuid";
 import { validateFlow } from "../../components/BlueprintFlow/Validation/validation";
 
-import { Avatar, Box, Button, Paper, Typography } from "@mui/material";
 import {
   DefinitionGraph,
   FlowDefinition,
@@ -747,59 +746,16 @@ function BlueprintFlowWidget({
     setShowValidationErrors(false);
     setDrawerOpen(true);
   };
-
   return (
     <>
       {loading || !graphData ? (
         <>
-          <Button onClick={loadSampleFlow}>
-            {showSampleFlow ? "Hide" : "Load"} Sample Flow
-          </Button>
           {showSampleFlow && <SampleFlow />}
           {!showSampleFlow && (
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              minHeight="600px"
-              p={5}
-            >
-              <Paper
-                onClick={handleStarterNodeClick}
-                elevation={1}
-                sx={{
-                  width: 280,
-                  height: 160,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                  borderRadius: 2,
-                  "&:hover": {
-                    bgcolor: "primary.50",
-                    boxShadow: 3,
-                  },
-                }}
-              >
-                <Avatar
-                  sx={{
-                    width: 64,
-                    height: 64,
-                    bgcolor: "primary.50",
-                    mb: 2,
-                  }}
-                >
-                  <AddIcon sx={{ fontSize: 36, color: "primary.info" }} />
-                </Avatar>
-                <Typography variant="h6" fontWeight={600} gutterBottom>
-                  Add First Node
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  Click here to start building your flow
-                </Typography>
-              </Paper>
-            </Box>
+            <SampleNode
+              loadSampleFlow={loadSampleFlow}
+              handleStarterNodeClick={handleStarterNodeClick}
+            />
           )}
         </>
       ) : (

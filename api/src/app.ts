@@ -73,10 +73,13 @@ function createApp() {
         });
       } catch (error) {
         platform.logger.error(error);
+        const errorMessage =
+          error instanceof Error && error.message
+            ? error.message
+            : "An error occurred while processing your message.";
         await event.publish("ERROR_OCCURRED", {
           sessionId,
-          message:
-            error.message || "An error occurred while processing your message.",
+          message: errorMessage,
         });
       }
     });

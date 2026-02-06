@@ -1,19 +1,24 @@
 import { AIMessage } from "./AIMessage";
+import { ErrorMessage } from "./ErrorMessage";
 import { HumanMessage } from "./HumanMessage";
 
 import React, { memo } from "react";
 
 const MessageList = memo(
   ({
+    error,
     messages,
     selectedId,
     messagesEndRef,
     highlightedMessage,
+    onErrorClose,
   }: {
+    error?: string;
     messages: { id: string; content: string; role: string }[];
     selectedId: string;
     messagesEndRef: { current: HTMLDivElement | null };
     highlightedMessage: { current: HTMLDivElement | null };
+    onErrorClose: () => void;
   }) => (
     <>
       <AIMessage content="Hi, How can I help you today?" />
@@ -36,6 +41,13 @@ const MessageList = memo(
           />
         );
       })}
+      {error && (
+        <ErrorMessage
+          key="error-message"
+          content={error}
+          onClose={onErrorClose}
+        />
+      )}
     </>
   )
 );

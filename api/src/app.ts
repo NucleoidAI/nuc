@@ -1,8 +1,8 @@
 import "express";
 
 import agentFn from "./functions/agent";
-import blueprints from "./routes/blueprints";
 import agents from "./routes/agents";
+import blueprints from "./routes/blueprints";
 import communications from "./routes/communications";
 import engines from "./routes/engines";
 import { event } from "@canmingir/link-express/event/client";
@@ -57,20 +57,32 @@ function createApp() {
   (async () => {
     await event.subscribe<{ teamId: string; content: string }>(
       "MESSAGE_USER_MESSAGED",
-      ({ teamId, content }) => agentFn.teamChat({ teamId, content })
+      ({ teamId, content }) => agentFn.teamChat({ teamId, content }),
     );
 
     await event.subscribe<{
       agentId: string;
       sessionId: string;
       content: string;
-    }>("SESSION_USER_MESSAGED", ({ agentId, sessionId, content }) =>
-      agentFn.chat({
-        agentId,
-        sessionId,
-        content,
-      })
-    );
+    }>("SESSION_USER_MESSAGED", async ({ agentId, sessionId, content }) => {
+      try {
+        await agentFn.chat({
+          agentId,
+          sessionId,
+          content,
+        });
+      } catch (error) {
+        platform.logger.error(error);
+        const errorMessage =
+          error instanceof Error && error.message
+            ? error.message
+            : "An error occurred while processing your message.";
+        await event.publish("ERROR_OCCURRED", {
+          sessionId,
+          message: errorMessage,
+        });
+      }
+    });
 
     await event.subscribe<{
       sessionId: string;
@@ -81,11 +93,11 @@ function createApp() {
         agentId,
         sessionId,
         content: question,
-      })
+      }),
     );
 
     await event.subscribe<{ taskId: string }>("TASK_CREATED", ({ taskId }) =>
-      agentFn.task({ taskId })
+      agentFn.task({ taskId }),
     );
 
     await event.subscribe<{
@@ -94,7 +106,7 @@ function createApp() {
       parameters: object;
       comment: string;
     }>("STEP_ADDED", ({ stepId, action, parameters, comment }) =>
-      agentFn.step({ stepId, action, parameters, comment })
+      agentFn.step({ stepId, action, parameters, comment }),
     );
 
     await event.subscribe<{ taskId: string }>(
@@ -103,7 +115,7 @@ function createApp() {
         const steps = await taskFn.listSteps({ taskId });
 
         const supervisedStep = steps.find(
-          (step) => step.status === "SUPERVISED_NEEDED"
+          (step) => step.status === "SUPERVISED_NEEDED",
         );
 
         if (supervisedStep) {
@@ -114,11 +126,11 @@ function createApp() {
             comment: supervisedStep.comment,
           });
         }
-      }
+      },
     );
 
     await event.subscribe<{ taskId: string }>("STEP_COMPLETED", ({ taskId }) =>
-      agentFn.task({ taskId })
+      agentFn.task({ taskId }),
     );
 
     await event.subscribe<{

@@ -7,6 +7,7 @@ import TaskList from "../../components/TaskList/TaskList";
 import { useEvent } from "@nucleoidai/react-event";
 import useTasks from "../../hooks/useTasks";
 import { useTheme } from "@mui/material/styles";
+
 import {
   Box,
   Card,
@@ -21,7 +22,13 @@ import {
 } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
 
-function TasksWidget({ agentId }: { agentId: string }) {
+function TasksWidget({
+  agentId,
+  fromDrawer,
+}: {
+  agentId: string;
+  fromDrawer?: boolean;
+}) {
   const [aiResponded] = useEvent("AI_RESPONDED", null);
 
   const { tasks, steps, getSteps, createTask } = useTasks(agentId, [
@@ -242,9 +249,9 @@ function TasksWidget({ agentId }: { agentId: string }) {
             data-cy="add-task-button"
             onClick={() => setOpenCreate(true)}
             sx={{
-              position: "fixed",
-              bottom: 24,
-              right: 24,
+              position: "absolute",
+              bottom: fromDrawer ? 30 : 10,
+              right: fromDrawer ? 30 : 5,
               zIndex: 1000,
               boxShadow: 6,
             }}

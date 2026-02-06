@@ -4,7 +4,7 @@ import CommunicationWizard from "../CommunicationWizard/CommunicationWizard";
 import useBlueprint from "../../hooks/useBlueprint";
 import useCommunications from "../../hooks/useCommunications";
 
-import { Box, Fab } from "@mui/material";
+import { Box, Fab, Stack } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
 const availableChannels = [
@@ -19,7 +19,7 @@ const availableChannels = [
   { id: "email", label: "Email", icon: "mdi:email-outline" },
 ];
 
-const Communication = () => {
+const Communication = ({ fromDrawer }: { fromDrawer?: boolean }) => {
   const { getBlueprint } = useBlueprint();
   const { Blueprint: blueprintList, loading, error } = getBlueprint();
 
@@ -131,16 +131,23 @@ const Communication = () => {
           }}
         />
 
-        <Fab
-          variant="button"
-          color="default"
-          size="medium"
-          sx={{ position: "fixed", bottom: 16, right: 16 }}
-          onClick={() => setDialogOpen(true)}
-          aria-label="Connect channel to task blueprint"
+        <Stack
+          sx={{
+            position: "fixed",
+            bottom: fromDrawer ? 115 : 10,
+            right: fromDrawer ? 80 : 5,
+          }}
         >
-          <AddIcon />
-        </Fab>
+          <Fab
+            variant="button"
+            color="default"
+            size="medium"
+            onClick={() => setDialogOpen(true)}
+            aria-label="Connect channel to task blueprint"
+          >
+            <AddIcon />
+          </Fab>
+        </Stack>
 
         <CommunicationWizard
           open={dialogOpen}

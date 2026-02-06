@@ -92,9 +92,7 @@ const setup = async (io: Server) => {
           const errorMessage =
             error instanceof Error ? error.message : "An error occurred";
           socket.emit("error_message", {
-            message:
-              errorMessage ||
-              "Failed to process your message. Please try again.",
+            message: errorMessage,
           });
           callback({
             status: "error",

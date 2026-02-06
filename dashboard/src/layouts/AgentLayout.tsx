@@ -63,6 +63,7 @@ function AgentLayout({
   agent,
   loading,
   initialTab,
+  fromDrawer,
 }: {
   agent: {
     id: string;
@@ -71,6 +72,7 @@ function AgentLayout({
   };
   loading: boolean;
   initialTab?: string;
+  fromDrawer?: boolean;
 }) {
   const location = useLocation();
   const navigate = useNavigate();

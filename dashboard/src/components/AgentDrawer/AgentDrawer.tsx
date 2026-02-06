@@ -55,7 +55,12 @@ const AgentDrawer = ({ open, onClose, agent, initialTab }) => {
         dividers
         sx={{ p: 1, mt: 3, width: "100%", height: "80vh" }}
       >
-        <AgentLayout agent={agent} loading={false} initialTab={initialTab} />
+        <AgentLayout
+          agent={agent}
+          loading={false}
+          initialTab={initialTab}
+          fromDrawer={true}
+        />
       </DialogContent>
     </Dialog>
   );

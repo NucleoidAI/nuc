@@ -28,7 +28,8 @@ const PopupChatWidget = ({
   const [unreadMessages, setUnreadMessages] = useState(false);
   const [selectedBlueprint, setSelectedBlueprint] = useState("");
 
-  const { conversations, sendMessage, getSession } = useSession(agentId);
+  const { conversations, sendMessage, getSession, error, clearError } =
+    useSession(agentId);
   const { getBlueprint } = useBlueprint();
   const { Blueprint } = getBlueprint();
 
@@ -73,6 +74,8 @@ const PopupChatWidget = ({
   return (
     <>
       <PopChat
+        clearError={clearError}
+        error={error}
         title={`Test Chat Session`}
         open={openPopChat || open}
         handleClose={handleClose}

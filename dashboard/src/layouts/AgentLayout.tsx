@@ -63,6 +63,7 @@ function AgentLayout({
   agent,
   loading,
   initialTab,
+  fromDrawer,
 }: {
   agent: {
     id: string;
@@ -71,6 +72,7 @@ function AgentLayout({
   };
   loading: boolean;
   initialTab?: string;
+  fromDrawer?: boolean;
 }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -146,6 +148,7 @@ function AgentLayout({
               iconUrl={agent.icon}
               coverUrl={getAgentGradients(agent.id, theme)}
               loading={loading}
+              fromDrawer={fromDrawer}
             />
             <Stack
               sx={{
@@ -163,12 +166,20 @@ function AgentLayout({
         )}
       </Stack>
       {currentTab === "profile" && <Profile agentId={agent.id} />}
-      {currentTab === "knowledge-base" && <Knowledge agentId={agent.id} />}
-      {currentTab === "blueprints" && <BlueprintsWidget agentId={agent.id} />}
+      {currentTab === "knowledge-base" && (
+        <Knowledge agentId={agent.id} fromDrawer={fromDrawer} />
+      )}
+      {currentTab === "blueprints" && (
+        <BlueprintsWidget agentId={agent.id} fromDrawer={fromDrawer} />
+      )}
       {currentTab === "supervisings" && <Supervising agentId={agent.id} />}
-      {currentTab === "tasks" && <TasksWidget agentId={agent.id} />}
+      {currentTab === "tasks" && (
+        <TasksWidget agentId={agent.id} fromDrawer={fromDrawer} />
+      )}
       {currentTab === "mcps" && <AgentMCP agent={agent} />}
-      {currentTab === "communication" && <Communication />}
+      {currentTab === "communication" && (
+        <Communication fromDrawer={fromDrawer} />
+      )}
     </>
   );
 }

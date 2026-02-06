@@ -2,7 +2,6 @@ import AddIcon from "@mui/icons-material/Add";
 import AddItemDialog from "../../components/AddItemDialog/AddItemDialog";
 import DeleteConfirmation from "../../components/DeleteConfirmation/DeleteConfirmation";
 import KnowledgeTable from "../../components/KnowledgeTable/KnowledgeTable";
-import { Theme } from "@mui/material/styles";
 import TypeToolbar from "../../components/TypeToolbar/TypeToolbar";
 import useAgent from "../../hooks/useAgent";
 import useKnowledge from "../../hooks/useKnowledge";
@@ -10,10 +9,18 @@ import useOrganizations from "../../hooks/useOrganizations";
 import { useTable } from "@canmingir/link/platform/components";
 import useTeams from "../../hooks/useTeams";
 
-import { Box, Fab, Stack, useMediaQuery } from "@mui/material";
+import { Box, Fab, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 
-function Knowledge({ agentId, teamId }: { agentId?: string; teamId?: string }) {
+function Knowledge({
+  agentId,
+  teamId,
+  fromDrawer,
+}: {
+  agentId?: string;
+  teamId?: string;
+  fromDrawer?: boolean;
+}) {
   const {
     getAgentKnowledges,
     deleteKnowledge,
@@ -45,10 +52,6 @@ function Knowledge({ agentId, teamId }: { agentId?: string; teamId?: string }) {
     if (b === "URL") return 1;
     return 0;
   });
-
-  const lgScreen = useMediaQuery((theme: Theme) =>
-    theme.breakpoints.down("lg")
-  );
 
   const ADD_ITEM_TYPES = ALL_KNOWLEDGE_TYPES.filter((type) => type !== "ALL");
 
@@ -128,9 +131,9 @@ function Knowledge({ agentId, teamId }: { agentId?: string; teamId?: string }) {
 
         <Stack
           sx={{
-            position: lgScreen ? "absolute" : "fixed",
-            bottom: lgScreen ? -60 : 10,
-            right: lgScreen ? 0 : 5,
+            position: "fixed",
+            bottom: fromDrawer ? 90 : 10,
+            right: fromDrawer ? 55 : 5,
           }}
         >
           <Fab

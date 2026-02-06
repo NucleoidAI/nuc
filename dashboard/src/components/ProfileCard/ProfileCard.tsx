@@ -10,9 +10,17 @@ function ProfileCard({
   setCurrentTab,
   TABS,
   loading,
+  fromDrawer = false,
 }) {
   return (
-    <Card variant="profile-card" sx={{ position: "relative", height: 200 }}>
+    <Card
+      variant="profile-card"
+      sx={{
+        position: "relative",
+        height: 200,
+        borderRadius: fromDrawer ? 0 : 2,
+      }}
+    >
       <ProfileCover
         loading={loading}
         name={name}

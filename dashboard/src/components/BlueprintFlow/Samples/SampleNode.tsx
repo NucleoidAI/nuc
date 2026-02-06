@@ -3,7 +3,13 @@ import React from "react";
 
 import { Box, Button, Paper, Typography, useTheme } from "@mui/material";
 
-const SampleNode = ({ loadSampleFlow, handleStarterNodeClick }) => {
+const SampleNode = ({
+  loadSampleFlow,
+  handleStarterNodeClick,
+}: {
+  loadSampleFlow: () => void;
+  handleStarterNodeClick: () => void;
+}) => {
   const theme = useTheme();
 
   return (
@@ -33,6 +39,7 @@ const SampleNode = ({ loadSampleFlow, handleStarterNodeClick }) => {
           <Button
             onClick={loadSampleFlow}
             size="small"
+            variant="outlined"
             sx={{
               textTransform: "none",
               fontSize: "0.75rem",
@@ -73,7 +80,7 @@ const SampleNode = ({ loadSampleFlow, handleStarterNodeClick }) => {
             justifyContent: "center",
             cursor: "pointer",
             borderRadius: 4,
-            background: `background.paper`,
+            background: "background.paper",
             border: "2px solid",
             borderColor: theme.palette.divider,
             position: "relative",

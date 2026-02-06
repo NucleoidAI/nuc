@@ -148,6 +148,7 @@ function AgentLayout({
               iconUrl={agent.icon}
               coverUrl={getAgentGradients(agent.id, theme)}
               loading={loading}
+              fromDrawer={fromDrawer}
             />
             <Stack
               sx={{

@@ -40,6 +40,7 @@ class McpClient {
       this.transport = new StdioClientTransport({
         command: "npx",
         args: ["tsx", serverPath, `'${JSON.stringify({ credentials })}'`],
+        env: { ...process.env },
       });
 
       this.mcp = new Client({ name: this.name, version: this.version });

@@ -140,7 +140,7 @@ export const configurationTool: Tool<ConfigurationInput> = {
   handler: async (args: ConfigurationInput) => {
     try {
 
-      const endpoint = "http://10.98.136.58:9012/keys-fttx-middleware-webservice/webservices/FttxMiddlewareWebService";
+      const endpoint = process.env.MCP_TELCO_URL;
 
       logger.info({ tool: "TELCO:configuration", endpoint }, "Sending SOAP request to endpoint");
 

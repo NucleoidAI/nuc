@@ -1,5 +1,6 @@
 import { AddressToBBKInput, Tool } from "./types";
 import { findAll } from "../db/index.js";
+import logger from "../../../logger/logger.js";
 
 export const addressToBBKTool: Tool<AddressToBBKInput> = {
   name: "TELCO:get_bbk_by_address",
@@ -18,6 +19,8 @@ export const addressToBBKTool: Tool<AddressToBBKInput> = {
   },
   handler: async (args: AddressToBBKInput) => {
     try {
+      logger.info({ tool: "TELCO:get_bbk_by_address", address: args.address }, "Looking up BBK by address");
+
       const addresses = findAll("addresses");
 
       let result = addresses.find((item) => item.address === args.address);
@@ -30,6 +33,8 @@ export const addressToBBKTool: Tool<AddressToBBKInput> = {
       }
 
       if (!result) {
+        logger.warn({ tool: "TELCO:get_bbk_by_address", address: args.address }, "BBK not found for address");
+
         return {
           content: [
             {
@@ -43,6 +48,8 @@ export const addressToBBKTool: Tool<AddressToBBKInput> = {
         };
       }
 
+      logger.info({ tool: "TELCO:get_bbk_by_address", address: args.address, bbk_no: result.bbk_no }, "BBK found for address");
+
       return {
         content: [
           {
@@ -55,6 +62,11 @@ export const addressToBBKTool: Tool<AddressToBBKInput> = {
         isError: false,
       };
     } catch (error) {
+      logger.error(
+        { tool: "TELCO:get_bbk_by_address", err: error instanceof Error ? error : new Error(String(error)), address: args.address },
+        "Failed to look up BBK by address"
+      );
+
       return {
         content: [
           {

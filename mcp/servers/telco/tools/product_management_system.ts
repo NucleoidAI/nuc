@@ -1,5 +1,6 @@
 import { ProductManagementSystemInput, Tool } from "./types";
 import { findAll } from "../db/index.js";
+import logger from "../../../logger/logger.js";
 
 export const productManagementSystemTool: Tool<ProductManagementSystemInput> = {
   name: "TELCO:get_product_by_speed",
@@ -18,9 +19,13 @@ export const productManagementSystemTool: Tool<ProductManagementSystemInput> = {
   },
   handler: async (args: ProductManagementSystemInput) => {
     try {
+      logger.info({ tool: "TELCO:get_product_by_speed", speed: args.speed }, "Looking up products by speed");
+
       const products = findAll("products", (item) => item.speed === args.speed);
 
       if (!products.length) {
+        logger.warn({ tool: "TELCO:get_product_by_speed", speed: args.speed }, "No products found for speed");
+
         return {
           content: [
             {
@@ -34,6 +39,8 @@ export const productManagementSystemTool: Tool<ProductManagementSystemInput> = {
         };
       }
 
+      logger.info({ tool: "TELCO:get_product_by_speed", speed: args.speed, count: products.length }, "Products found for speed");
+
       return {
         content: [
           {
@@ -46,6 +53,11 @@ export const productManagementSystemTool: Tool<ProductManagementSystemInput> = {
         isError: false,
       };
     } catch (error) {
+      logger.error(
+        { tool: "TELCO:get_product_by_speed", err: error instanceof Error ? error : new Error(String(error)), speed: args.speed },
+        "Failed to look up products"
+      );
+
       return {
         content: [
           {

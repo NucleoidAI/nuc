@@ -1,5 +1,7 @@
 import { ConfigurationInput, Tool } from "./types";
 
+import logger from "../../../logger/logger.js";
+
 function createOntXmlRequest(args: ConfigurationInput): string {
   return `<?xml version='1.0' encoding='UTF-8'?>
 <soapenv:Envelope
@@ -140,6 +142,8 @@ export const configurationTool: Tool<ConfigurationInput> = {
 
       const endpoint = "http://10.98.136.58:9012/keys-fttx-middleware-webservice/webservices/FttxMiddlewareWebService";
 
+      logger.info({ tool: "TELCO:configuration", endpoint }, "Sending SOAP request to endpoint");
+
       let ontResponse: string | null = null;
       let addCustomerServiceResponse: string | null = null;
 
@@ -150,6 +154,8 @@ export const configurationTool: Tool<ConfigurationInput> = {
         ontResponse = await sendSoapRequest(endpoint, createOntXml, "createOnt");
         addCustomerServiceResponse = await sendSoapRequest(endpoint, addCustomerServiceXml, "addCustomerService");
       } 
+
+      logger.info({ tool: "TELCO:configuration", args }, "Configuration completed successfully");
 
       const payload = endpoint ? {
         ontResponse: ontResponse,
@@ -173,6 +179,11 @@ export const configurationTool: Tool<ConfigurationInput> = {
         isError: false,
       };
     } catch (error) {
+      logger.error(
+        { tool: "TELCO:configuration", err: error instanceof Error ? error : new Error(String(error)), args },
+        "Configuration failed"
+      );
+
       return {
         content: [
           {

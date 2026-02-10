@@ -32,12 +32,15 @@ function BlueprintFlowWidget({
   blueprint,
   taskId,
   setSelectedItem,
+  usedNodeIds,
 }: {
   aiResponse?: AIResponse;
   setAiResponse?: (response: AIResponse | null) => void;
   blueprint: Blueprint;
   taskId?: string;
   setSelectedItem?: (item: Blueprint) => void;
+
+  usedNodeIds?: Set<string>;
 }) {
   const [graphData, setGraphData] = useState<DefinitionGraph | null>(null);
   const [hasLocalChanges, setHasLocalChanges] = useState(false);
@@ -98,17 +101,26 @@ function BlueprintFlowWidget({
           (error) => error.nodeId === nodeId || error.nextNodeId === nodeId
         );
 
+      const isUsed = usedNodeIds && usedNodeIds.has(nodeId);
+
       acc[nodeId] = {
         ...node,
         changeType,
         hasError,
+        isUsed,
       };
 
       return acc;
     }, {});
 
     return enriched;
-  }, [graphData, nodeChanges, validationErrors, showValidationErrors]);
+  }, [
+    graphData,
+    nodeChanges,
+    validationErrors,
+    showValidationErrors,
+    usedNodeIds,
+  ]);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);

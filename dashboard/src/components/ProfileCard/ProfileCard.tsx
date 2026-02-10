@@ -10,7 +10,6 @@ function ProfileCard({
   setCurrentTab,
   TABS,
   loading,
-  fromDrawer = false,
 }) {
   return (
     <Card
@@ -18,7 +17,7 @@ function ProfileCard({
       sx={{
         position: "relative",
         height: 200,
-        borderRadius: fromDrawer ? 0 : 2,
+        borderRadius: 2,
       }}
     >
       <ProfileCover

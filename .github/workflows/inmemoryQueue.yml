@@ -16,6 +16,7 @@ jobs:
       service_name: inmemory-queue
       environment: "land"
       context_path: ./inMemoryEventListener
+      image_tag: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'latest' }}
     secrets:
       DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
       DOCKER_USERNAME: canmingir

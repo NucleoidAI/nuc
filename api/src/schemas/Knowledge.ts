@@ -9,6 +9,7 @@ const Knowledge = {
     answer: Joi.string().optional(),
     url: Joi.string().uri().optional(),
     text: Joi.string().optional(),
+    taskId: Joi.string().optional(),
   }),
   update: Joi.object({})
     .when(Joi.object({ type: Joi.string().valid("QA") }).unknown(), {

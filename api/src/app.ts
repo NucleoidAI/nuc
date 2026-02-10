@@ -57,7 +57,7 @@ function createApp() {
   (async () => {
     await event.subscribe<{ teamId: string; content: string }>(
       "MESSAGE_USER_MESSAGED",
-      ({ teamId, content }) => agentFn.teamChat({ teamId, content }),
+      ({ teamId, content }) => agentFn.teamChat({ teamId, content })
     );
 
     await event.subscribe<{
@@ -93,11 +93,11 @@ function createApp() {
         agentId,
         sessionId,
         content: question,
-      }),
+      })
     );
 
     await event.subscribe<{ taskId: string }>("TASK_CREATED", ({ taskId }) =>
-      agentFn.task({ taskId }),
+      agentFn.task({ taskId })
     );
 
     await event.subscribe<{
@@ -106,16 +106,16 @@ function createApp() {
       parameters: object;
       comment: string;
     }>("STEP_ADDED", ({ stepId, action, parameters, comment }) =>
-      agentFn.step({ stepId, action, parameters, comment }),
+      agentFn.step({ stepId, action, parameters, comment })
     );
 
     await event.subscribe<{ taskId: string }>(
-      "TASK_BLUEPRINT_UPDATED",
+      "TASK_SUPERVISING_RESPONDED",
       async ({ taskId }) => {
         const steps = await taskFn.listSteps({ taskId });
 
         const supervisedStep = steps.find(
-          (step) => step.status === "SUPERVISED_NEEDED",
+          (step) => step.status === "SUPERVISED_NEEDED"
         );
 
         if (supervisedStep) {
@@ -126,11 +126,11 @@ function createApp() {
             comment: supervisedStep.comment,
           });
         }
-      },
+      }
     );
 
     await event.subscribe<{ taskId: string }>("STEP_COMPLETED", ({ taskId }) =>
-      agentFn.task({ taskId }),
+      agentFn.task({ taskId })
     );
 
     await event.subscribe<{

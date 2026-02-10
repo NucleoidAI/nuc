@@ -1,7 +1,6 @@
 import StatusToolbar from "../../components/StatusToolbar/StatusToolbar";
 import SupervisingCard from "../../components/SupervisingCard/SupervisingCard";
 import { useState } from "react";
-
 import useSupervisings from "../../hooks/useSupervisings";
 
 import { Box, Skeleton, Stack } from "@mui/material";
@@ -57,7 +56,11 @@ const Supervising = ({ agentId }) => {
           </Stack>
         ) : supervisings && supervisings.length > 0 ? (
           supervisings.map((supervise) => (
-            <SupervisingCard key={supervise.id} supervise={supervise} />
+            <SupervisingCard
+              agentId={agentId}
+              key={supervise.id}
+              supervise={supervise}
+            />
           ))
         ) : (
           <Stack sx={{ textAlign: "center", my: 4, color: "text.secondary" }}>

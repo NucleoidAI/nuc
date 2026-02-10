@@ -26,6 +26,7 @@ const BlueprintDrawer = ({
   setSelectedItem,
   taskId,
   agentId,
+  usedNodeIds,
 }: {
   drawerOpen: boolean;
   handleDrawerClose: () => void;
@@ -52,6 +53,7 @@ const BlueprintDrawer = ({
   }) => void;
   taskId?: string;
   agentId?: string;
+  usedNodeIds?: Set<string>;
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -198,6 +200,7 @@ const BlueprintDrawer = ({
                   setAiResponse={setAiResponse}
                   taskId={taskId}
                   setSelectedItem={setSelectedItem}
+                  usedNodeIds={usedNodeIds}
                 />
 
                 {!isChatOpen && (

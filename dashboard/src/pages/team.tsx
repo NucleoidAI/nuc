@@ -1,8 +1,16 @@
 import { Box } from "@mui/material";
-import React from "react";
 import TeamChart from "../widgets/TeamChart/TeamChart";
 
+import React, { useEffect } from "react";
+
 const Team = () => {
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
   return (
     <>
       <Box

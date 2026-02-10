@@ -3,7 +3,8 @@ import { Iconify } from "@canmingir/link/platform/components";
 import SupervisingChat from "../SupervisingChat";
 import SupervisingTypeDialog from "../SupervisingTypeDialog";
 import useBlueprint from "../../hooks/useBlueprint";
-import { useState } from "react";
+import { useEvent } from "@nucleoidai/react-event";
+import useTasks from "../../hooks/useTasks";
 
 import {
   Box,
@@ -21,9 +22,11 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
 
 const SupervisingCard = ({
   supervise,
+  agentId,
 }: {
   supervise: {
     id: string;
@@ -33,6 +36,7 @@ const SupervisingCard = ({
     blueprintId?: string;
     taskId?: string;
   };
+  agentId?: string;
 }) => {
   const [knowledgeChatOpen, setKnowledgeChatOpen] = useState(false);
 
@@ -47,6 +51,20 @@ const SupervisingCard = ({
   const [blueprintSelectedItem, setBlueprintSelectedItem] = useState(null);
 
   const { blueprint } = getBlueprintWithId(supervise.blueprintId || "");
+
+  const [aiResponded] = useEvent("AI_RESPONDED", null);
+
+  const { getSteps, steps } = useTasks(agentId, [aiResponded]);
+
+  useEffect(
+    () => {
+      if (supervise.taskId) {
+        getSteps(supervise.taskId);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [supervise.taskId, aiResponded]
+  );
 
   const handleOpenDialog = () => {
     setDialogOpen(true);
@@ -71,6 +89,36 @@ const SupervisingCard = ({
     setBlueprintDrawerOpen(true);
     setBlueprintSelectedItem(blueprint);
   };
+
+  const usedNodeIds = useMemo(() => {
+    if (!steps || steps.length === 0 || !blueprint?.nodes)
+      return new Set<string>();
+
+    let askSupervisorIndex = -1;
+    for (let i = steps.length - 1; i >= 0; i--) {
+      if (steps[i]?.action === "PLATFORM:ask_supervisor") {
+        askSupervisorIndex = i;
+        break;
+      }
+    }
+
+    const stepsBeforeAsk =
+      askSupervisorIndex > 0 ? steps.slice(0, askSupervisorIndex) : steps;
+
+    const usedIds = new Set<string>();
+    stepsBeforeAsk.forEach((step) => {
+      if (step?.action) {
+        const matchingNode = blueprint.nodes.find(
+          (node) => node.properties?.action === step.action
+        );
+        if (matchingNode) {
+          usedIds.add(matchingNode.id);
+        }
+      }
+    });
+
+    return usedIds;
+  }, [steps, blueprint]);
 
   return (
     <>
@@ -250,6 +298,8 @@ const SupervisingCard = ({
         onSelectKnowledge={handleSelectKnowledge}
         onSelectBlueprint={(blueprint) => handleSelectBlueprint(blueprint)}
         blueprint={blueprint}
+        usedNodeIds={usedNodeIds}
+        supervise={supervise}
       />
 
       <SupervisingChat
@@ -265,6 +315,7 @@ const SupervisingCard = ({
         setSelectedItem={setBlueprintSelectedItem}
         setAiResponse={setAiResponse}
         aiResponse={aiResponse}
+        usedNodeIds={usedNodeIds}
       />
     </>
   );

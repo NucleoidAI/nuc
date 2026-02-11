@@ -16,7 +16,7 @@ router.post("/", async (req, res) => {
 
   const { sessionId, conversationId, agentId } = Joi.attempt(
     req.body,
-    schemas.Supervising.create
+    schemas.Supervising.create,
   );
 
   const agent = await Agent.findByPk(agentId);
@@ -149,6 +149,7 @@ router.patch("/:supervisingId", async (req, res) => {
     question: supervisingInstance.question,
     answer,
     status,
+    taskId: supervisingInstance.taskId,
   });
 
   res.status(200).json(updatedSupervising);
@@ -162,7 +163,7 @@ router.post("/:supervisingId/evaluate", async (req, res) => {
     req.body,
     Joi.object({
       answer: Joi.string().required(),
-    })
+    }),
   );
 
   const supervisingInstance = await Supervising.findByPk(supervisingId);
@@ -197,6 +198,7 @@ router.post("/:supervisingId/evaluate", async (req, res) => {
       question: supervisingInstance.question,
       answer,
       status: "ANSWERED",
+      taskId: supervisingInstance.taskId,
     });
 
     return res.status(200).json({

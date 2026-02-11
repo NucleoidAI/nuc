@@ -84,6 +84,12 @@ async function create({
 
   await event.publish("KNOWLEDGE", "CREATED", knowledgeData);
 
+  if (knowledgeData.taskId) {
+    await event.publish("TASK_SUPERVISING_RESPONDED", {
+      taskId: knowledgeData.taskId,
+    });
+  }
+
   return knowledgeInstance;
 }
 
@@ -154,9 +160,7 @@ async function list({
     .map((knowledge) => knowledge.toJSON())
     .map(({ AgentKnowledge, ...knowledgeData }) => ({
       ...knowledgeData,
-      agentId: AgentKnowledge.agentId
-        ? AgentKnowledge.agentId
-        : null,
+      agentId: AgentKnowledge.agentId ? AgentKnowledge.agentId : null,
       teamId: AgentKnowledge.teamId ? AgentKnowledge.teamId : null,
       Task: knowledgeData.Task && {
         ...knowledgeData.Task,

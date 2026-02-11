@@ -55,7 +55,15 @@ const TaskStepDialog = ({
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      fullWidth
+      maxWidth="sm"
+      sx={{
+        zIndex: (theme) => theme.zIndex.modal + 2,
+      }}
+    >
       <DialogTitle
         sx={{
           backgroundColor: (theme) => theme.palette.background.default,

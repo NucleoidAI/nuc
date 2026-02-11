@@ -1,12 +1,12 @@
-import { AuthenticationError } from "@canmingir/link-express/error";
 import Agent from "../models/Agent";
+import { AuthenticationError } from "@canmingir/link-express/error";
 import Joi from "joi";
 import Knowledge from "../models/Knowledge";
 import agentData from "../functions/agentData";
+import { event } from "@canmingir/link-express/event/client";
 import express from "express";
 import knowledge from "../functions/knowledge";
 import schemas from "../schemas";
-
 const router = express.Router();
 
 router.post("/", async (req, res) => {
@@ -14,6 +14,7 @@ router.post("/", async (req, res) => {
   const { projectId: teamId } = req.session;
 
   const {
+    taskId,
     agentId,
     teamId: knowledgeTeamId,
     ...knowledgeBody
@@ -41,6 +42,12 @@ router.post("/", async (req, res) => {
     agentId,
     knowledge: knowledgeBody,
   });
+
+  if (taskId) {
+    await event.publish("TASK_SUPERVISING_RESPONDED", {
+      taskId,
+    });
+  }
 
   res.status(201).json(createdKnowledge);
 });
@@ -82,8 +89,7 @@ router.get("/:id", async (req, res) => {
   const { AgentKnowledge } = knowledgeItem;
 
   const hasAccess =
-    AgentKnowledge.teamId === teamId ||
-    AgentKnowledge.Agent?.teamId === teamId;
+    AgentKnowledge.teamId === teamId || AgentKnowledge.Agent?.teamId === teamId;
 
   if (!hasAccess) {
     throw new AuthenticationError();
@@ -113,8 +119,7 @@ router.delete("/:id", async (req, res) => {
   const { AgentKnowledge } = knowledgeItem;
 
   const hasAccess =
-    AgentKnowledge.teamId === teamId ||
-    AgentKnowledge.Agent?.teamId === teamId;
+    AgentKnowledge.teamId === teamId || AgentKnowledge.Agent?.teamId === teamId;
 
   if (!hasAccess) {
     throw new AuthenticationError();

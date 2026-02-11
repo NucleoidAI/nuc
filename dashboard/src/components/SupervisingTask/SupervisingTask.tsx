@@ -69,6 +69,9 @@ const SupervisingTask = ({ open, setOpen, taskId, agentId }) => {
       }}
       fullWidth
       maxWidth="sm"
+      sx={{
+        zIndex: (theme) => theme.zIndex.modal + 2,
+      }}
     >
       <DialogTitle
         sx={{

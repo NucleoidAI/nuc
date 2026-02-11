@@ -51,8 +51,35 @@ const EditButtonWrapper = styled("div")(({ theme }) => ({
 const HighlightOverlay = styled("div")<{
   changetype?: string;
   haserror?: string;
-}>(({ changetype, haserror, theme }) => {
+  isused?: string;
+}>(({ changetype, haserror, isused, theme }) => {
   const isDark = theme.palette.mode === "dark";
+
+  if (isused === "true") {
+    const usedColor = {
+      border: isDark ? "#66bb6a" : "#4caf50",
+      glow: "76, 175, 80",
+      bg: "76, 175, 80",
+    };
+
+    return {
+      position: "absolute",
+      top: "-2px",
+      left: "-2px",
+      right: "-2px",
+      bottom: "-2px",
+      border: `2px solid ${usedColor.border}`,
+      borderRadius: "18px",
+      pointerEvents: "none",
+      zIndex: 5,
+      background: `linear-gradient(135deg, rgba(${usedColor.bg}, 0.08) 0%, rgba(${usedColor.bg}, 0.04) 100%)`,
+      boxShadow: `
+          0 0 0 1px rgba(${usedColor.glow}, 0.1),
+          0 0 15px rgba(${usedColor.glow}, 0.2),
+          inset 0 0 20px rgba(${usedColor.glow}, 0.06)
+        `,
+    };
+  }
 
   if (haserror === "true") {
     const errorColor = {
@@ -251,6 +278,61 @@ const ErrorBadge = styled("div")(({ theme }) => {
   };
 });
 
+const UsedBadge = styled("div")(({ theme }) => {
+  const isDark = theme.palette.mode === "dark";
+
+  return {
+    position: "absolute",
+    top: "-10px",
+    right: "-10px",
+    width: "28px",
+    height: "28px",
+    borderRadius: "50%",
+    backgroundColor: isDark ? "#66bb6a" : "#4caf50",
+    color: "#ffffff",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "16px",
+    fontWeight: "bold",
+    boxShadow: `
+      0 2px 8px rgba(0, 0, 0, 0.2),
+      0 0 0 3px ${theme.palette.background.paper}
+    `,
+    zIndex: 15,
+    "&::before": {
+      content: '"✓"',
+    },
+  };
+});
+
+const UsedLabel = styled("div")(({ theme }) => {
+  const isDark = theme.palette.mode === "dark";
+
+  return {
+    position: "absolute",
+    top: "-10px",
+    left: "-10px",
+    padding: "4px 10px",
+    borderRadius: "12px",
+    backgroundColor: isDark ? "#66bb6a" : "#4caf50",
+    color: "#ffffff",
+    fontSize: "11px",
+    fontWeight: 600,
+    textTransform: "uppercase",
+    letterSpacing: "0.5px",
+    boxShadow: `
+      0 2px 6px rgba(0, 0, 0, 0.15),
+      0 0 0 2px ${theme.palette.background.paper}
+    `,
+    zIndex: 15,
+    whiteSpace: "nowrap",
+    "&::before": {
+      content: '"Completed"',
+    },
+  };
+});
+
 const ErrorLabel = styled("div")(({ theme }) => {
   const isDark = theme.palette.mode === "dark";
 
@@ -359,6 +441,7 @@ export const blueprintFlowPlugin = {
     const { onAdd, onEdit } = nodeStyle || {};
     const changeType = node.changeType;
     const hasError = node.hasError;
+    const isUsed = node.isUsed;
 
     const handleAddClick = (e) => {
       e.stopPropagation();
@@ -379,11 +462,17 @@ export const blueprintFlowPlugin = {
         <HighlightOverlay
           changetype={changeType}
           haserror={hasError ? "true" : "false"}
+          isused={isUsed ? "true" : "false"}
         />
         {hasError ? (
           <>
             <ErrorLabel />
             <ErrorBadge />
+          </>
+        ) : isUsed ? (
+          <>
+            <UsedLabel />
+            <UsedBadge />
           </>
         ) : (
           changeType &&

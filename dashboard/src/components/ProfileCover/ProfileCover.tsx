@@ -11,7 +11,7 @@ function ProfileCover({ name, iconUrl, coverUrl, loading }) {
     <Box
       sx={{
         background: coverUrl,
-        height: 1,
+        height: 0.9,
         color: "common.white",
       }}
     >

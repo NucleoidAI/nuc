@@ -295,7 +295,6 @@ const MCPs = [
         device_serial_number: { type: "string" },
         port_available: { type: "string" },
         hgw_serial_no: { type: "string" },
-        speed_limit: { type: "string" },
       },
       required: [
         "infrastructure_type",
@@ -306,7 +305,6 @@ const MCPs = [
         "device_serial_number",
         "port_available",
         "hgw_serial_no",
-        "speed_limit",
       ],
     },
   },
@@ -321,13 +319,13 @@ const MCPs = [
     inputSchema: {
       type: "object",
       properties: {
-        speed: {
+        speed_limit: {
           type: "string",
           description:
             "The speed limit to look up the product for (e.g., '1gbps', '100mbps', '50mbps').",
         },
       },
-      required: ["speed"],
+      required: ["speed_limit"],
     },
     outputSchema: {
       type: "object",
@@ -357,12 +355,12 @@ const MCPs = [
           type: "string",
           description: "The BBK number to assign a port for.",
         },
-        speed: {
+        speed_limit: {
           type: "string",
-          description: "The speed to assign a port for.",
+          description: "The speed limit to assign a port for.",
         },
       },
-      required: ["device_serial_number", "bbk_no", "speed"],
+      required: ["device_serial_number", "bbk_no", "speed_limit"],
     },
     outputSchema: {
       type: "object",
@@ -373,8 +371,8 @@ const MCPs = [
         port_no: { type: "string" },
         status: { type: "string" },
         assignment_date: { type: "string" },
-        speed: { type: "string" },
-        serial_number: { type: "string" },
+        speed_limit: { type: "string" },
+        device_serial_number: { type: "string" },
       },
       required: [
         "assignment_id",
@@ -383,7 +381,7 @@ const MCPs = [
         "port_no",
         "status",
         "assignment_date",
-        "speed",
+        "speed_limit",
       ],
     },
   },
@@ -449,9 +447,9 @@ const MCPs = [
           type: "string",
           description: "The device card number to configure.",
         },
-        speed: {
+        speed_limit: {
           type: "string",
-          description: "The speed to configure.",
+          description: "The speed limit to configure.",
         },
         speed_profile: {
           type: "string",
@@ -464,7 +462,7 @@ const MCPs = [
         "device_tid",
         "hgw_serial_no",
         "device_card_no",
-        "speed",
+        "speed_limit",
         "speed_profile",
       ],
     },

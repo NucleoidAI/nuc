@@ -135,7 +135,7 @@ function AgentLayout({
 
   return (
     <>
-      <Stack margin={2} sx={{ position: "relative", marginTop: -2 }}>
+      <Stack margin={2} sx={{ position: "relative", marginTop: 0 }}>
         {loading ? (
           <Skeleton variant="rectangular" height={200} />
         ) : (
@@ -148,7 +148,6 @@ function AgentLayout({
               iconUrl={agent.icon}
               coverUrl={getAgentGradients(agent.id, theme)}
               loading={loading}
-              fromDrawer={fromDrawer}
             />
             <Stack
               sx={{

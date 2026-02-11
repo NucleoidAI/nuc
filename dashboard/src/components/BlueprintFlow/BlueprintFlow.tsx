@@ -8,6 +8,8 @@ import ValidationButtons from "./Validation/ValidationButtons";
 import ValidationErrorView from "./Validation/ValidationErrorView";
 import { blueprintFlowPlugin } from "./BlueprintFlowPlugin";
 
+import React, { useEffect, useRef } from "react";
+
 export default function BlueprintFlow({
   graphData,
   enrichedGraphData,
@@ -28,17 +30,67 @@ export default function BlueprintFlow({
   onShowValidationErrors,
   onSaveSuccessChange,
 }: BlueprintFlowProps) {
-  const getFlowDimensions = () => {
-    return { width: "100%", height: "100%" };
-  };
+  const flowContainerRef = useRef<HTMLDivElement>(null);
+  const hasCenteredRef = useRef(false);
 
-  const flowDimensions = getFlowDimensions();
+  useEffect(() => {
+    if (
+      !enrichedGraphData?.nodes ||
+      Object.keys(enrichedGraphData.nodes).length === 0
+    )
+      return;
+    if (hasCenteredRef.current) return;
+
+    const timer = setTimeout(() => {
+      const container = flowContainerRef.current;
+      if (!container) return;
+
+      const node = container.querySelector("[data-node-id]") as HTMLElement;
+      if (!node) return;
+
+      const cRect = container.getBoundingClientRect();
+      const nRect = node.getBoundingClientRect();
+
+      const cx = cRect.left + cRect.width / 2;
+      const cy = cRect.top + cRect.height / 2;
+      const dx = cx - (nRect.left + nRect.width / 2);
+      const dy = cy - (nRect.top + nRect.height / 2);
+
+      if (Math.abs(dx) < 30 && Math.abs(dy) < 30) {
+        hasCenteredRef.current = true;
+        return;
+      }
+
+      let vp: HTMLElement | null = node.parentElement;
+      while (vp && vp !== container) {
+        if (getComputedStyle(vp).overflow === "hidden") break;
+        vp = vp.parentElement;
+      }
+      if (!vp || vp === container) return;
+
+      const evt = (type: string, opts = {}) =>
+        new MouseEvent(type, { bubbles: true, cancelable: true, ...opts });
+
+      vp.dispatchEvent(
+        evt("mousedown", { clientX: cx, clientY: cy, button: 0 })
+      );
+      window.dispatchEvent(
+        evt("mousemove", { clientX: cx + dx, clientY: cy + dy })
+      );
+      window.dispatchEvent(evt("mouseup"));
+
+      hasCenteredRef.current = true;
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [enrichedGraphData]);
 
   return (
     <Box
+      ref={flowContainerRef}
       sx={{
-        width: flowDimensions.width,
-        height: flowDimensions.height,
+        width: "100%",
+        height: "100%",
         position: "relative",
       }}
     >

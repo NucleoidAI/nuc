@@ -17,32 +17,32 @@ export const portAllocationTool: Tool<PortAllocationInput> = {
         type: "string",
         description: "The BBK number to assign a port for.",
       },
-      speed: {
+      speed_limit: {
         type: "string",
-        description: "The speed to assign a port for.",
+        description: "The speed limit to assign a port for.",
       },
     },
-    required: ["device_serial_number", "bbk_no", "speed"],
+    required: ["device_serial_number", "bbk_no", "speed_limit"],
   },
   handler: async (args: PortAllocationInput) => {
     try {
       logger.info(
-        { tool: "TELCO:port_allocation", device_serial_number: args.device_serial_number, bbk_no: args.bbk_no, speed: args.speed },
+        { tool: "TELCO:port_allocation", device_serial_number: args.device_serial_number, bbk_no: args.bbk_no, speed_limit: args.speed_limit },
         "Allocating port"
       );
 
       const port = findAll("ports");
 
-      const availablePort = port.find((p) => p.status === "Available" && p.speed === args.speed && p.bbk_no === args.bbk_no);
+      const availablePort = port.find((p) => p.status === "Available" && p.speed_limit === args.speed_limit && p.bbk_no === args.bbk_no);
 
       if (availablePort) {
         const portAllocation = {
-          serial_number: args.device_serial_number,
+          device_serial_number: args.device_serial_number,
           assignment_id: `TH00${Math.floor(1000 + Math.random() * 9000)}`,
           bbk_no: args.bbk_no,
           port_no: availablePort.port_no,
           status: "Pending",
-          speed: args.speed,
+          speed_limit: args.speed_limit,
         }
         insert("port_allocations", portAllocation);
         update("ports", "port_no", availablePort.port_no, { status: "Allocated" });
@@ -65,7 +65,7 @@ export const portAllocationTool: Tool<PortAllocationInput> = {
         };
       } else {
         logger.warn(
-          { tool: "TELCO:port_allocation", bbk_no: args.bbk_no, speed: args.speed },
+          { tool: "TELCO:port_allocation", bbk_no: args.bbk_no, speed_limit: args.speed_limit },
           "No available port found"
         );
 

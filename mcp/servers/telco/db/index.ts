@@ -6,7 +6,7 @@ const DB_PATH = path.join(__dirname, "database.json");
 interface Database {
   addresses: Array<{ bbk_no: string; address: string }>;
   configurations: Array<{
-    serial_number: string;
+    device_serial_number: string;
     connection_id: string;
     vlan_id: string;
     ip_address: string | null;
@@ -26,15 +26,14 @@ interface Database {
     device_tid: string;
     hgw_serial_no: string;
     device_serial_number: string;
-    speed_limit: string;
   }>;
   port_allocations: Array<{
-    serial_number: string;
+    device_serial_number: string;
     assignment_id: string;
     bbk_no?: string;
     port_no?: string;
     status: string;
-    speed?: string;
+    speed_limit?: string;
     customer_no?: string;
     assignment_date?: string | null;
   }>;
@@ -63,14 +62,14 @@ interface Database {
     };
   }>;
   products: Array<{
-    speed: string;
+    speed_limit: string;
     speed_profile: string;
     product_description: string;
   }>;
   ports: Array<{
     port_no: string;
     status: string;
-    speed: string;
+    speed_limit: string;
     bbk_no: string;
   }>;
 }

@@ -73,6 +73,15 @@ jobs:
       - name: Check Out Repo
         uses: actions/checkout@v4
 
+      - name: Resolve image tag
+        id: resolve_tag
+        run: |
+          TAG="${{ inputs.image_tag }}"
+          # Strip leading 'v' or 'V' prefix for semver-only Docker tags
+          TAG="${TAG#v}"
+          TAG="${TAG#V}"
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
       - name: Set config files
         if: ${{ inputs.setup_config }}
         run: |
@@ -110,7 +119,7 @@ jobs:
           FIRST_PATH=$(echo "${PATHS[0]}" | xargs)
 
           if [ -d "${FIRST_PATH}/src" ]; then
-            echo "{ \"version\": \"${{ github.ref_name }}\" }" > ${FIRST_PATH}/src/version.json
+            echo "{ \"version\": \"${{ steps.resolve_tag.outputs.tag }}\" }" > ${FIRST_PATH}/src/version.json
             echo "✓ Updated version.json in ${FIRST_PATH}/src"
           fi
 
@@ -138,5 +147,5 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ${{ inputs.docker_username || secrets.DOCKER_USERNAME }}/${{ inputs.service_name }}-${{ inputs.environment }}:${{inputs.image_tag}}
+          tags: ${{ inputs.docker_username || secrets.DOCKER_USERNAME }}/${{ inputs.service_name }}-${{ inputs.environment }}:${{ steps.resolve_tag.outputs.tag }}
           context: ${{ inputs.context_path }}

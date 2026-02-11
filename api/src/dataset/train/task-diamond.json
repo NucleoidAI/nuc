@@ -579,7 +579,7 @@
               "action": "TELCO:get_product_by_speed",
               "status": "COMPLETED",
               "parameters": {
-                "speed": 100
+                "speed_limit": 100
               },
               "comment": "Getting products by speed"
             },
@@ -590,7 +590,7 @@
               "parameters": {
                 "question": "Please select a product 100mbps 6 months unlimited or 100mbps 3 months unlimited or 50mbps 12 months unlimited or 50mbps 6 months unlimited or 50mbps 3 months unlimited or 25mbps 12 months unlimited or 25mbps 3 months unlimited or 25mbps 6 months unlimited",
                 "selectedProduct": {
-                  "serial_number": "SN-789456",
+                  "device_serial_number": "SN-789456",
                   "assignment_id": "ASSIGN-123"
                 }
               },
@@ -603,7 +603,7 @@
               "parameters": {
                 "device_serial_number": "SN-789456",
                 "bbk_no": "BBK-12345",
-                "speed": "1gbps"
+                "speed_limit": "1gbps"
               },
               "comment": "Available port not found"
             },

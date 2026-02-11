@@ -130,12 +130,12 @@ export const configurationTool: Tool<ConfigurationInput> = {
         type: "string",
         description: "The device card number to configure.",
       },
-      speed: {
+      speed_limit: {
         type: "string",
-        description: "The speed to configure.",
+        description: "The speed limit to configure.",
       },
     },
-    required: ["speed_profile", "port_no", "device_serial_number", "hgw_serial_no", "device_tid", "device_card_no", "speed"],
+    required: ["speed_profile", "port_no", "device_serial_number", "hgw_serial_no", "device_tid", "device_card_no", "speed_limit"],
   },
   handler: async (args: ConfigurationInput) => {
     try {

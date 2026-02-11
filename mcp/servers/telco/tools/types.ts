@@ -29,7 +29,7 @@ export interface InventoryToolInput {
 }
 
 export interface ProductManagementSystemInput {
-  speed: string;
+  speed_limit: string;
 }
 
 export interface AddressToBBKInput {
@@ -40,7 +40,7 @@ export interface PortAllocationInput {
   device_serial_number: string; // Device serial number
   bbk_no: string; // BBK number
   port_no: string; // Port number
-  speed: string; // Speed
+  speed_limit: string; // Speed limit
 }
 
 export interface PortConnectionInput {
@@ -54,7 +54,7 @@ export interface ConfigurationInput {
   hgw_serial_no: string; // HGW serial number
   device_card_no: string; // Device card number
   device_tid: string; // Device TID
-  speed: string; // Speed
+  speed_limit: string; // Speed limit
 }
 
 export interface PortConnectionWithTechnicalSupportInput {

@@ -9,22 +9,22 @@ export const productManagementSystemTool: Tool<ProductManagementSystemInput> = {
   inputSchema: {
     type: "object",
     properties: {
-      speed: {
+      speed_limit: {
         type: "string",
         description:
           "The speed limit to look up the product for (e.g., '1gbps', '100mbps', '50mbps').",
       },
     },
-    required: ["speed"],
+    required: ["speed_limit"],
   },
   handler: async (args: ProductManagementSystemInput) => {
     try {
-      logger.info({ tool: "TELCO:get_product_by_speed", speed: args.speed }, "Looking up products by speed");
+      logger.info({ tool: "TELCO:get_product_by_speed", speed_limit: args.speed_limit }, "Looking up products by speed");
 
-      const products = findAll("products", (item) => item.speed === args.speed);
+      const products = findAll("products", (item) => item.speed_limit === args.speed_limit);
 
       if (!products.length) {
-        logger.warn({ tool: "TELCO:get_product_by_speed", speed: args.speed }, "No products found for speed");
+        logger.warn({ tool: "TELCO:get_product_by_speed", speed_limit: args.speed_limit }, "No products found for speed");
 
         return {
           content: [
@@ -39,7 +39,7 @@ export const productManagementSystemTool: Tool<ProductManagementSystemInput> = {
         };
       }
 
-      logger.info({ tool: "TELCO:get_product_by_speed", speed: args.speed, count: products.length }, "Products found for speed");
+      logger.info({ tool: "TELCO:get_product_by_speed", speed_limit: args.speed_limit, count: products.length }, "Products found for speed");
 
       return {
         content: [
@@ -54,7 +54,7 @@ export const productManagementSystemTool: Tool<ProductManagementSystemInput> = {
       };
     } catch (error) {
       logger.error(
-        { tool: "TELCO:get_product_by_speed", err: error instanceof Error ? error : new Error(String(error)), speed: args.speed },
+        { tool: "TELCO:get_product_by_speed", err: error instanceof Error ? error : new Error(String(error)), speed_limit: args.speed_limit },
         "Failed to look up products"
       );
 

@@ -191,8 +191,8 @@
     "blueprint": {
       "id": "ca7g8022-f343-570e-a171-3992963g7f70",
       "title": "Basic Internet Subscription Setup",
-      "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "description": "Offer internet packages based on the user's residential address and provide available internet packages for the selected address.",
+      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n ShowProducts(products)\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -380,8 +380,8 @@
     "blueprint": {
       "id": "ca7g8022-f343-570e-a171-3992963g7f70",
       "title": "Basic Internet Subscription Setup",
-      "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "description": "Offer internet packages based on the user's residential address and provide available internet packages for the selected address.",
+      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n ShowProducts(products)\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -588,7 +588,7 @@
               "action": "PLATFORM:user_interaction",
               "status": "COMPLETED",
               "parameters": {
-                "question": "Please select a product 100mbps 6 months unlimited or 100mbps 3 months unlimited or 50mbps 12 months unlimited or 50mbps 6 months unlimited or 50mbps 3 months unlimited or 25mbps 12 months unlimited or 25mbps 3 months unlimited or 25mbps 6 months unlimited",
+                "question": "Please select a product avaialble for the address 100mbps 6 months unlimited or 100mbps 3 months unlimited or 50mbps 12 months unlimited or 50mbps 6 months unlimited or 50mbps 3 months unlimited or 25mbps 12 months unlimited or 25mbps 3 months unlimited or 25mbps 6 months unlimited",
                 "selectedProduct": {
                   "serial_number": "SN-789456",
                   "assignment_id": "ASSIGN-123"

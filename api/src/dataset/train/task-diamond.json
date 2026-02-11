@@ -259,6 +259,17 @@
             "label": "Get Product by Speed",
             "icon": "mdi:speedometer"
           },
+          "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "label": "Notify user about available products",
+            "icon": "mdi:user"
+          },
           "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
@@ -448,6 +459,17 @@
             "label": "Get Product by Speed",
             "icon": "mdi:speedometer"
           },
+          "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "label": "Notify user about available products",
+            "icon": "mdi:user"
+          },
           "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
@@ -585,16 +607,22 @@
             },
             {
               "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+              "action": "PLATFORM:message_user",
+              "status": "COMPLETED",
+              "parameters": {
+                "sessionId": "123456019b6e75-8a07-72f2-8adf-82cd88f6b7cc7890",
+                "message": "Available products are: 100mbps 6 months unlimited, 100mbps 3 months unlimited, 50mbps 12 months unlimited, 50mbps 6 months unlimited, 50mbps 3 months unlimited, 25mbps 12 months unlimited, 25mbps 3 months unlimited, 25mbps 6 months unlimited."
+              },
+              "comment": "Notifying user about available products"
+            },
+            {
+              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
               "action": "PLATFORM:user_interaction",
               "status": "COMPLETED",
               "parameters": {
-                "question": "Please select a product avaialble for the address 100mbps 6 months unlimited or 100mbps 3 months unlimited or 50mbps 12 months unlimited or 50mbps 6 months unlimited or 50mbps 3 months unlimited or 25mbps 12 months unlimited or 25mbps 3 months unlimited or 25mbps 6 months unlimited",
-                "selectedProduct": {
-                  "device_serial_number": "SN-789456",
-                  "assignment_id": "ASSIGN-123"
-                }
+                "question": "Please select a product"
               },
-              "comment": "User selected product"
+              "comment": "Waiting for user to select a product"
             },
             {
               "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
@@ -624,7 +652,7 @@
               "status": "COMPLETED",
               "parameters": {
                 "sessionId": "123456019b6e75-8a07-72f2-8adf-82cd88f6b7cc7890",
-                  "message": "We apologize, but we are not able to allocate the port. Please try again later."
+                "message": "We apologize, but we are not able to allocate the port. Please try again later."
               },
               "comment": "Notifying user to we are not able to allocate the port"
             },

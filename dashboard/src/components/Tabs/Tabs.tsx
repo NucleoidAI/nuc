@@ -51,7 +51,6 @@ function TabBar({ TABS, currentTab, setCurrentTab }) {
           label={tab.label}
           sx={{
             px: 2,
-            minHeight: 48,
           }}
         />
       ))}

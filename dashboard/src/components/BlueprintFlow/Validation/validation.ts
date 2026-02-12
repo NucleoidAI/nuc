@@ -45,45 +45,18 @@ type GraphNode = {
   falseNext?: string[];
 };
 
-function buildPropertyMap(integrations: Integration[]): {
-  allOutputProperties: Set<string>;
-  allInputProperties: Set<string>;
-  outputsByProperty: Map<string, string[]>;
-  inputsByProperty: Map<string, string[]>;
-} {
+function buildPropertyMap(integrations: Integration[]): Set<string> {
   const allOutputProperties = new Set<string>();
-  const allInputProperties = new Set<string>();
-  const outputsByProperty = new Map<string, string[]>();
-  const inputsByProperty = new Map<string, string[]>();
 
   integrations.forEach((integration) => {
     if (integration.outputSchema?.properties) {
       Object.keys(integration.outputSchema.properties).forEach((prop) => {
         allOutputProperties.add(prop);
-        if (!outputsByProperty.has(prop)) {
-          outputsByProperty.set(prop, []);
-        }
-        outputsByProperty.get(prop)!.push(integration.action);
-      });
-    }
-
-    if (integration.inputSchema?.properties) {
-      Object.keys(integration.inputSchema.properties).forEach((prop) => {
-        allInputProperties.add(prop);
-        if (!inputsByProperty.has(prop)) {
-          inputsByProperty.set(prop, []);
-        }
-        inputsByProperty.get(prop)!.push(integration.action);
       });
     }
   });
 
-  return {
-    allOutputProperties,
-    allInputProperties,
-    outputsByProperty,
-    inputsByProperty,
-  };
+  return allOutputProperties;
 }
 
 function validateSchemaCompatibility(
@@ -139,14 +112,15 @@ function validateSchemaCompatibility(
 
 function validateFlow(
   graphData: { nodes: Record<string, GraphNode>; roots: string[] },
-  integrations: Integration[]
+  integrations: Integration[],
+  allOutputProperties?: Set<string>
 ): ValidationResult {
   const errors: ValidationError[] = [];
 
   if (!graphData?.nodes || !integrations) {
     return { isValid: true, errors: [] };
   }
-  const { allOutputProperties } = buildPropertyMap(integrations);
+  const propertyMap = allOutputProperties ?? buildPropertyMap(integrations);
 
   const integrationMap = new Map<string, Integration>();
   integrations.forEach((integration) => {
@@ -189,19 +163,25 @@ function validateFlow(
       const { isCompatible, missingProperties } = validateSchemaCompatibility(
         currentIntegration.outputSchema,
         nextIntegration.inputSchema,
-        allOutputProperties
+        propertyMap
       );
 
       if (!isCompatible) {
+        const unavailableProperties = missingProperties.filter(
+          (prop) => !propertyMap.has(prop)
+        );
+
         errors.push({
           nodeId: node.id,
           nodeLabel: node.label || node.id,
           nextNodeId: nextNode.id,
           nextNodeLabel: nextNode.label || nextNode.id,
-          missingProperties,
+          missingProperties: unavailableProperties,
           message: `Node "${node.label || node.id}" → "${
             nextNode.label || nextNode.id
-          }": No matching properties found`,
+          }": Required properties not available anywhere in the system: ${unavailableProperties.join(
+            ", "
+          )}`,
         });
       }
     });
@@ -220,13 +200,14 @@ type CompatibleNode = {
   missingProperties: string[];
   matchingProperties: string[];
   contextuallyAvailable: string[];
-  isFullyCompatible: boolean;
+  isDirectlyCompatible: boolean;
   isContextuallyCompatible: boolean;
 };
 
 function getCompatibleNodes(
   sourceNodeAction: string,
-  integrations: Integration[]
+  integrations: Integration[],
+  allOutputProperties?: Set<string>
 ): CompatibleNode[] {
   const sourceIntegration = integrations.find(
     (integration) => integration.action === sourceNodeAction
@@ -236,7 +217,7 @@ function getCompatibleNodes(
     return [];
   }
 
-  const { allOutputProperties } = buildPropertyMap(integrations);
+  const propertyMap = allOutputProperties ?? buildPropertyMap(integrations);
 
   const compatibleNodes: CompatibleNode[] = [];
 
@@ -253,7 +234,7 @@ function getCompatibleNodes(
     } = validateSchemaCompatibility(
       sourceIntegration.outputSchema,
       targetIntegration.inputSchema,
-      allOutputProperties
+      propertyMap
     );
 
     if (isCompatible) {
@@ -264,7 +245,7 @@ function getCompatibleNodes(
         missingProperties,
         matchingProperties,
         contextuallyAvailable,
-        isFullyCompatible: missingProperties.length === 0,
+        isDirectlyCompatible: missingProperties.length === 0,
         isContextuallyCompatible: contextuallyAvailable.length > 0,
       });
     }
@@ -276,7 +257,8 @@ function getCompatibleNodes(
 function canNodesConnect(
   sourceNodeAction: string,
   targetNodeAction: string,
-  integrations: Integration[]
+  integrations: Integration[],
+  allOutputProperties?: Set<string>
 ): {
   canConnect: boolean;
   missingProperties: string[];
@@ -299,7 +281,7 @@ function canNodesConnect(
     };
   }
 
-  const { allOutputProperties } = buildPropertyMap(integrations);
+  const propertyMap = allOutputProperties ?? buildPropertyMap(integrations);
 
   const {
     isCompatible,
@@ -309,7 +291,7 @@ function canNodesConnect(
   } = validateSchemaCompatibility(
     sourceIntegration.outputSchema,
     targetIntegration.inputSchema,
-    allOutputProperties
+    propertyMap
   );
 
   return {

@@ -49,6 +49,10 @@ function TabBar({ TABS, currentTab, setCurrentTab }) {
           value={tab.value}
           icon={tab.icon}
           label={tab.label}
+          sx={{
+            px: 2,
+            minHeight: 48,
+          }}
         />
       ))}
     </Tabs>

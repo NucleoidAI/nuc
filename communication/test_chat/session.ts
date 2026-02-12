@@ -32,7 +32,7 @@ const setup = async (io: Server) => {
       let agentId;
       let decoded;
 
-      if (env !== "TEST") {
+      if (env !== "TEST" ) {
         token = socket.handshake.auth.token;
         agentId = socket.handshake.query.agentId as string;
 
@@ -86,7 +86,7 @@ const setup = async (io: Server) => {
           console.log("Customer message received:", content);
           await sendMessageToSession(session.id, token, content);
 
-          callback({ status: "success" });
+          if (typeof callback === "function") callback({ status: "success" });
         } catch (error) {
           console.error("Error processing customer message:", error);
           const errorMessage =
@@ -94,10 +94,12 @@ const setup = async (io: Server) => {
           socket.emit("error_message", {
             message: errorMessage,
           });
-          callback({
-            status: "error",
-            error: errorMessage,
-          });
+          if (typeof callback === "function") {
+            callback({
+              status: "error",
+              error: errorMessage,
+            });
+          }
         }
       });
     } catch (err) {

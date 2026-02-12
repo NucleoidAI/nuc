@@ -46,6 +46,7 @@ async function update({
   question,
   answer,
   status,
+  taskId,
 }: {
   teamId: string;
   supervisingId: string;
@@ -53,10 +54,11 @@ async function update({
   agentId: string;
   question: string;
   answer: string;
+  taskId?: string;
 }) {
   await Supervising.update(
     { status, answer },
-    { where: { id: supervisingId } }
+    { where: { id: supervisingId } },
   );
 
   const updatedSupervising = await Supervising.findByPk(supervisingId);
@@ -67,12 +69,23 @@ async function update({
     question,
     answer,
     agentId,
+    taskId,
   });
   await AgentKnowledge.create({
     knowledgeId: knowledgeInstance.id,
     agentId,
     teamId,
   });
+
+  const knowledgeJson = knowledgeInstance.toJSON();
+
+  await event.publish("KNOWLEDGE", "CREATED", knowledgeJson);
+
+  if (knowledgeJson?.taskId) {
+    await event.publish("TASK_SUPERVISING_RESPONDED", {
+      taskId: knowledgeJson.taskId,
+    });
+  }
 
   await event.publish("SUPERVISING_ANSWERED", {
     teamId,

@@ -58,7 +58,6 @@ const setup = async (io: Server) => {
 
       console.log("Agent ID:", agentId);
       console.log("Token:", token);
-      console.log("Decoded:", decoded);
 
       const session: Session = await createSession(token, agentId);
       const agent: Agent = await getAgent(token, agentId);
@@ -86,7 +85,7 @@ const setup = async (io: Server) => {
           console.log("Customer message received:", content);
           await sendMessageToSession(session.id, token, content);
 
-          callback({ status: "success" });
+          if (typeof callback === "function") callback({ status: "success" });
         } catch (error) {
           console.error("Error processing customer message:", error);
           const errorMessage =
@@ -94,10 +93,12 @@ const setup = async (io: Server) => {
           socket.emit("error_message", {
             message: errorMessage,
           });
-          callback({
-            status: "error",
-            error: errorMessage,
-          });
+          if (typeof callback === "function") {
+            callback({
+              status: "error",
+              error: errorMessage,
+            });
+          }
         }
       });
     } catch (err) {

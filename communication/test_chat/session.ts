@@ -32,7 +32,7 @@ const setup = async (io: Server) => {
       let agentId;
       let decoded;
 
-      if (env !== "TEST" ) {
+      if (env !== "TEST") {
         token = socket.handshake.auth.token;
         agentId = socket.handshake.query.agentId as string;
 

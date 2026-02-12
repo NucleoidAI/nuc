@@ -58,7 +58,6 @@ const setup = async (io: Server) => {
 
       console.log("Agent ID:", agentId);
       console.log("Token:", token);
-      console.log("Decoded:", decoded);
 
       const session: Session = await createSession(token, agentId);
       const agent: Agent = await getAgent(token, agentId);

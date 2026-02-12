@@ -18,7 +18,7 @@ async function messages({ teamId }: { teamId: string }) {
 
   return messageInstances
     .filter(
-      (message) => message.role === "USER" || message.role === "ASSISTANT",
+      (message) => message.role === "USER" || message.role === "ASSISTANT"
     )
     .map(({ role, content }) => ({ role: role.toLowerCase(), content }));
 }
@@ -55,7 +55,7 @@ async function knowledge({
   const knowledge_base = knowledgeList
     .filter(
       (knowledge) =>
-        !taskId || !(knowledge.type === "TASK" && knowledge.taskId === taskId),
+        !taskId || !(knowledge.type === "TASK" && knowledge.taskId === taskId)
     )
     .map(({ type, question, answer, text, content, Task }) => ({
       type,
@@ -146,7 +146,7 @@ async function teamChat({
     content:
       next.resource && next.function && next.parameters
         ? `${next.resource}.${next.function}(${JSON.stringify(
-            next.parameters,
+            next.parameters
           )})=${JSON.stringify(data)} ${content}`
         : content,
     json_format: "{ response: <RESPONSE> }",
@@ -307,7 +307,7 @@ async function step({
         context: steps
           .filter((step) => step.result)
           .map(
-            ({ comment, result }) => `Comment: ${comment}\nResult: ${result}`,
+            ({ comment, result }) => `Comment: ${comment}\nResult: ${result}`
           )
           .join("\n"),
         parameters,
@@ -526,12 +526,12 @@ async function chat({
   });
 
   const waitingTask = task.find((task) =>
-    task.steps.some((step) => step.status === "WAITING_FOR_USER"),
+    task.steps.some((step) => step.status === "WAITING_FOR_USER")
   );
 
   if (waitingTask) {
     const waitingStep = waitingTask.steps.find(
-      (step) => step.status === "WAITING_FOR_USER",
+      (step) => step.status === "WAITING_FOR_USER"
     );
     if (!waitingStep) {
       return;
@@ -599,8 +599,8 @@ async function chat({
     });
 
     if (
-      evaluation.is_answer_known ||
-      blueprintDecision.decision === "UNRELEVANT"
+      evaluation?.is_answer_known ||
+      blueprintDecision.decision === "UNREVELANT"
     ) {
       if (task.length > 0) {
         await taskFn.update({

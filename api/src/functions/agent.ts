@@ -232,6 +232,7 @@ async function task({ taskId }: { taskId: string }) {
     parameters.blueprintId = currentTask.blueprintId;
     parameters.sessionId = sessionId;
     parameters.agentId = agentId;
+
     return await taskFn.addStep({
       taskId,
       action,
@@ -331,6 +332,12 @@ async function step({
         status: "WAITING_FOR_USER",
       });
     } else if (actionType === "SUPERVISED") {
+      await session.addConversation({
+        sessionId: parameters.sessionId,
+        agentId: parameters.agentId,
+        role: "ASSISTANT",
+        content: "I need to ask my supervisor for more information.",
+      });
       await taskFn.updateStep({
         stepId,
         result: resultString,

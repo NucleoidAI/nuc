@@ -35,7 +35,7 @@ const config = {
     elasticsearch: {
       node: "http://docker.greycollar.ai:9200",
       esVersion: 8,
-      flushBytes: 1000,
+      flushBytes: 50000,
       index: "greycollar-logs",
       consistency: "one",
     },

@@ -228,7 +228,7 @@ const SupervisingTypeDialog = ({
                 }
                 label={`${usedNodeIds.size} step${
                   usedNodeIds.size > 1 ? "s" : ""
-                } used`}
+                } completed`}
                 size="small"
                 sx={{
                   backgroundColor: "rgba(33, 150, 243, 0.1)",
@@ -281,7 +281,7 @@ const SupervisingTypeDialog = ({
                   icon="solar:list-check-bold-duotone"
                   sx={{ width: 18, height: 18, color: "text.secondary" }}
                 />
-                Used Blueprint Steps
+                Completed Blueprint Steps
               </Typography>
             </Box>
 
@@ -334,7 +334,6 @@ const SupervisingTypeDialog = ({
           }}
         >
           <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            Tasks
           </Typography>
           <IconButton onClick={() => setTaskDrawerOpen(false)}>
             <Iconify icon="material-symbols:close" />

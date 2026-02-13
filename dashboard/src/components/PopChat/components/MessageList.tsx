@@ -31,7 +31,13 @@ const MessageList = memo(
             key={item.id || index}
             message={item}
             selectedId={selectedId}
-            messageRef={isSelected ? highlightedMessage : undefined}
+            messageRef={
+              isSelected
+                ? highlightedMessage
+                : isLastMessage
+                ? messagesEndRef
+                : undefined
+            }
           />
         ) : (
           <AIMessage

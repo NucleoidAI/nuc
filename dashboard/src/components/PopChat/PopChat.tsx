@@ -193,7 +193,9 @@ const PopChat = ({
               highlightedMessage={highlightedMessage}
               onErrorClose={handleErrorClose}
             />
-            {renderIndicator() && <LoadingMessage />}
+            {renderIndicator() && (
+              <LoadingMessage messagesEndRef={messagesEndRef} />
+            )}
           </Scrollbar>
         </Stack>
 

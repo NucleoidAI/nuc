@@ -22,6 +22,7 @@
     "test": "npm run test:api && npm run test:dashboard",
     "build": "cd ./dashboard && npm run build",
     "dev:communication": "cd ./communication && npm run dev",
+    "preserve": "cd ./mcp && npm run db:reset",
     "serve": "concurrently -n \"main,api,dashboard\" \"npm start\" \"npm run dev:api\" \"npx @nucleoidai/http-server start --port 5173\"",
     "lint:dashboard": "cd ./dashboard && npm run lint",
     "lint": "npm run lint:dashboard",

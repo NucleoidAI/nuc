@@ -336,14 +336,13 @@ async function step({
         sessionId: parameters.sessionId,
         agentId: parameters.agentId,
         role: "ASSISTANT",
-        content: "I need to ask the supervisor for more information.",
+        content: "I need to ask my supervisor for more information.",
       });
       await taskFn.updateStep({
         stepId,
         result: resultString,
         status: "SUPERVISED_NEEDED",
       });
-
     } else {
       await taskFn.updateStep({
         stepId,

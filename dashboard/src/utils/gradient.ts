@@ -19,8 +19,8 @@ const agentGradients = [
   (theme) =>
     `linear-gradient(
       135deg,
-      ${alpha("#ff8a00", 0.9)},
-      ${alpha("#ff4d8d", 0.85)}
+      ${alpha("#a076f9", 0.85)},
+      ${alpha("#f187ed", 0.9)}
     )`,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (theme) =>

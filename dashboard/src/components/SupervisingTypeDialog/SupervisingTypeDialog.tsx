@@ -37,6 +37,7 @@ interface SupervisingTypeDialogProps {
     conversationId?: string;
     sessionId?: string;
     agentId?: string;
+    taskId?: string;
   };
   usedNodeIds?: Set<string>;
 }
@@ -228,7 +229,7 @@ const SupervisingTypeDialog = ({
                 }
                 label={`${usedNodeIds.size} step${
                   usedNodeIds.size > 1 ? "s" : ""
-                } used`}
+                } completed`}
                 size="small"
                 sx={{
                   backgroundColor: "rgba(33, 150, 243, 0.1)",
@@ -281,7 +282,7 @@ const SupervisingTypeDialog = ({
                   icon="solar:list-check-bold-duotone"
                   sx={{ width: 18, height: 18, color: "text.secondary" }}
                 />
-                Used Blueprint Steps
+                Completed Blueprint Steps
               </Typography>
             </Box>
 
@@ -334,14 +335,19 @@ const SupervisingTypeDialog = ({
           }}
         >
           <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            Tasks
+            Task Details
           </Typography>
           <IconButton onClick={() => setTaskDrawerOpen(false)}>
             <Iconify icon="material-symbols:close" />
           </IconButton>
         </Box>
-        <Box sx={{ overflow: "auto", height: "100%" }}>
-          <TasksWidget agentId={supervise?.agentId} fromDrawer={true} />
+        <Box sx={{ overflow: "auto", height: "100%", mt: 2 }}>
+          <TasksWidget
+            agentId={supervise?.agentId}
+            fromDrawer={true}
+            supervisionRaised={true}
+            taskId={supervise?.taskId}
+          />
         </Box>
       </Drawer>
     </Dialog>

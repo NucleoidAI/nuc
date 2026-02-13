@@ -47,6 +47,7 @@ const TeamChatMessageContent = memo(function ChatMessageList({
   setIsReplying: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const messagesEndRef = useRef(null);
+  const scrollContainerRef = useRef(null);
 
   const handleClick = (message) => {
     setIsReplying(true);
@@ -60,9 +61,12 @@ const TeamChatMessageContent = memo(function ChatMessageList({
   }, [messages]);
 
   const scrollMessagesToBottom = () => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
-    }
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }, 100);
   };
 
   const Colors = Types.reduce(
@@ -124,8 +128,11 @@ const TeamChatMessageContent = memo(function ChatMessageList({
 
   return (
     <>
-      <Scrollbar ref={messagesEndRef} sx={{ px: 3, py: 5, height: 1 }}>
-        <Box>{messages.map((message) => renderMessages(message))}</Box>
+      <Scrollbar ref={scrollContainerRef} sx={{ px: 3, py: 5, height: 1 }}>
+        <Box>
+          {messages.map((message) => renderMessages(message))}
+          <Box ref={messagesEndRef} sx={{ height: 1 }} />
+        </Box>
       </Scrollbar>
       {isReplying && (
         <>

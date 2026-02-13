@@ -25,9 +25,13 @@ import React, { useEffect, useMemo, useState } from "react";
 function TasksWidget({
   agentId,
   fromDrawer,
+  taskId,
+  supervisionRaised = false,
 }: {
   agentId: string;
   fromDrawer?: boolean;
+  taskId?: string;
+  supervisionRaised?: boolean;
 }) {
   const [aiResponded] = useEvent("AI_RESPONDED", null);
 
@@ -80,11 +84,16 @@ function TasksWidget({
   }, [tasks, selectedStatus, query]);
 
   useEffect(() => {
-    if (!selectedTask && filteredTasks.length) {
+    if (supervisionRaised && taskId && tasks) {
+      const task = tasks.find((t) => t.id === taskId);
+      if (task) {
+        setSelectedTask(task);
+      }
+    } else if (!selectedTask && filteredTasks.length) {
       setSelectedTask(filteredTasks[0]);
     }
     // eslint-disable-next-line
-  }, [filteredTasks.length]);
+  }, [filteredTasks.length, supervisionRaised, taskId, tasks]);
 
   useEffect(() => {
     if (!selectedTask?.id) return;
@@ -111,68 +120,74 @@ function TasksWidget({
       }}
     >
       <Stack spacing={2}>
-        <Card
-          sx={{
-            borderRadius: 2,
-            border: "1px solid",
-            borderColor: "divider",
-            p: 2,
-          }}
-        >
-          <Stack spacing={2}>
-            <Stack
-              direction={{ xs: "column", sm: "row" }}
-              spacing={2}
-              alignItems={{ xs: "stretch", sm: "center" }}
-            >
-              <StatusToolbar
-                statuses={["All", "COMPLETED", "IN_PROGRESS"]}
-                selectedStatus={selectedStatus}
-                handleChange={(e) => setSelectedStatus(e.target.value)}
-              />
+        {!supervisionRaised && (
+          <Card
+            sx={{
+              borderRadius: 2,
+              border: "1px solid",
+              borderColor: "divider",
+              p: 2,
+            }}
+          >
+            <Stack spacing={2}>
+              <Stack
+                direction={{ xs: "column", sm: "row" }}
+                spacing={2}
+                alignItems={{ xs: "stretch", sm: "center" }}
+              >
+                <StatusToolbar
+                  statuses={["All", "COMPLETED", "IN_PROGRESS"]}
+                  selectedStatus={selectedStatus}
+                  handleChange={(e) => setSelectedStatus(e.target.value)}
+                />
 
-              <TextField
-                fullWidth
-                size="small"
-                placeholder="Search tasks by description..."
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <Iconify
-                      icon="eva:search-fill"
-                      sx={{ color: "text.disabled", mr: 1 }}
-                    />
-                  ),
-                }}
-              />
+                <TextField
+                  fullWidth
+                  size="small"
+                  placeholder="Search tasks by description..."
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <Iconify
+                        icon="eva:search-fill"
+                        sx={{ color: "text.disabled", mr: 1 }}
+                      />
+                    ),
+                  }}
+                />
+              </Stack>
             </Stack>
-          </Stack>
-        </Card>
+          </Card>
+        )}
 
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: { xs: "1fr", md: "380px 1fr" },
+            gridTemplateColumns: supervisionRaised
+              ? "1fr"
+              : { xs: "1fr", md: "380px 1fr" },
             gap: 2,
             alignItems: "start",
           }}
         >
-          <Card
-            sx={{
-              borderRadius: 2,
-              overflow: "hidden",
-              border: "1px solid",
-              borderColor: "divider",
-              minHeight: "calc(100vh - 380px)",
-            }}
-          >
-            <TaskList
-              tasks={filteredTasks}
-              selectedTask={selectedTask}
-              onTaskSelect={handleTaskSelect}
-            />
-          </Card>
+          {!supervisionRaised && (
+            <Card
+              sx={{
+                borderRadius: 2,
+                overflow: "hidden",
+                border: "1px solid",
+                borderColor: "divider",
+                minHeight: "calc(100vh - 380px)",
+              }}
+            >
+              <TaskList
+                tasks={filteredTasks}
+                selectedTask={selectedTask}
+                onTaskSelect={handleTaskSelect}
+              />
+            </Card>
+          )}
 
           <>
             {isMobile ? (
@@ -242,23 +257,25 @@ function TasksWidget({
           </>
         </Box>
 
-        <Tooltip title="Add New Task" placement="left">
-          <Fab
-            color="default"
-            size="medium"
-            data-cy="add-task-button"
-            onClick={() => setOpenCreate(true)}
-            sx={{
-              position: "absolute",
-              bottom: fromDrawer ? 30 : 10,
-              right: fromDrawer ? 30 : 5,
-              zIndex: 1000,
-              boxShadow: 6,
-            }}
-          >
-            <AddIcon />
-          </Fab>
-        </Tooltip>
+        {!supervisionRaised && (
+          <Tooltip title="Add New Task" placement="left">
+            <Fab
+              color="default"
+              size="medium"
+              data-cy="add-task-button"
+              onClick={() => setOpenCreate(true)}
+              sx={{
+                position: "absolute",
+                bottom: fromDrawer ? 30 : 10,
+                right: fromDrawer ? 30 : 5,
+                zIndex: 1000,
+                boxShadow: 6,
+              }}
+            >
+              <AddIcon />
+            </Fab>
+          </Tooltip>
+        )}
 
         <AddTaskDialog
           open={openCreate}

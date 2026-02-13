@@ -59,6 +59,10 @@ const PopChat = ({
       behavior: "smooth",
       block: "center",
     });
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
   }, []);
 
   const handleErrorClose = useCallback(() => {
@@ -189,7 +193,9 @@ const PopChat = ({
               highlightedMessage={highlightedMessage}
               onErrorClose={handleErrorClose}
             />
-            {renderIndicator() && <LoadingMessage />}
+            {renderIndicator() && (
+              <LoadingMessage messagesEndRef={messagesEndRef} />
+            )}
           </Scrollbar>
         </Stack>
 

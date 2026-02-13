@@ -59,6 +59,10 @@ const PopChat = ({
       behavior: "smooth",
       block: "center",
     });
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
   }, []);
 
   const handleErrorClose = useCallback(() => {

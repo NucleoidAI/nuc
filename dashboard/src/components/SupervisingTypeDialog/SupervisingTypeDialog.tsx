@@ -37,6 +37,7 @@ interface SupervisingTypeDialogProps {
     conversationId?: string;
     sessionId?: string;
     agentId?: string;
+    taskId?: string;
   };
   usedNodeIds?: Set<string>;
 }
@@ -334,13 +335,19 @@ const SupervisingTypeDialog = ({
           }}
         >
           <Typography variant="h6" sx={{ fontWeight: 600 }}>
+            Task Details
           </Typography>
           <IconButton onClick={() => setTaskDrawerOpen(false)}>
             <Iconify icon="material-symbols:close" />
           </IconButton>
         </Box>
-        <Box sx={{ overflow: "auto", height: "100%" }}>
-          <TasksWidget agentId={supervise?.agentId} fromDrawer={true} />
+        <Box sx={{ overflow: "auto", height: "100%", mt: 2 }}>
+          <TasksWidget
+            agentId={supervise?.agentId}
+            fromDrawer={true}
+            supervisionRaised={true}
+            taskId={supervise?.taskId}
+          />
         </Box>
       </Drawer>
     </Dialog>

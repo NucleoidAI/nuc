@@ -131,7 +131,7 @@ const TeamChatMessageContent = memo(function ChatMessageList({
       <Scrollbar ref={scrollContainerRef} sx={{ px: 3, py: 5, height: 1 }}>
         <Box>
           {messages.map((message) => renderMessages(message))}
-          <div ref={messagesEndRef} style={{ height: 1 }} />
+          <Box ref={messagesEndRef} sx={{ height: 1 }} />
         </Box>
       </Scrollbar>
       {isReplying && (

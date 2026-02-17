@@ -127,6 +127,7 @@ function BlueprintFlowWidget({
   const [selectedParentNode, setSelectedParentNode] = useState(null);
   const [editingNodeId, setEditingNodeId] = useState<string | null>(null);
   const [newNodeLabel, setNewNodeLabel] = useState("");
+  const [newNodePrompt, setNewNodePrompt] = useState("");
   const [newNodeType, setNewNodeType] = useState("NORMAL");
   const [selectedBranch, setSelectedBranch] = useState<"true" | "false">(
     "true"
@@ -195,6 +196,7 @@ function BlueprintFlowWidget({
   const handleAddNodeClick = (node) => {
     setSelectedParentNode(node);
     setNewNodeLabel("");
+    setNewNodePrompt("");
     setNewNodeType("NORMAL");
     setSelectedBranch("true");
     setShowValidationErrors(false);
@@ -205,6 +207,7 @@ function BlueprintFlowWidget({
     setEditMode(true);
     setEditingNodeId(node.id);
     setNewNodeLabel(node?.label || node?.properties?.label || "");
+    setNewNodePrompt(node?.raw?.properties?.prompt || "");
     setNewNodeType(node.nodeType || "NORMAL");
 
     if (graphData?.nodes) {
@@ -291,6 +294,7 @@ function BlueprintFlowWidget({
             properties: {
               ...nodeToUpdate.raw?.properties,
               label: newNodeLabel,
+              prompt: newNodePrompt,
               description: descriptionText,
               action: actionType,
               icon: nodeIcon,
@@ -323,6 +327,7 @@ function BlueprintFlowWidget({
             properties: {
               ...nodeToUpdate.raw?.properties,
               label: newNodeLabel,
+              prompt: newNodePrompt,
               description: descriptionText,
               action: actionType,
               icon: nodeIcon,
@@ -346,6 +351,7 @@ function BlueprintFlowWidget({
             properties: {
               ...nodeToUpdate.raw?.properties,
               label: newNodeLabel,
+              prompt: newNodePrompt,
               description: descriptionText,
               action: actionType,
               icon: nodeIcon,
@@ -374,6 +380,7 @@ function BlueprintFlowWidget({
     setEditingNodeId(null);
     setSelectedParentNode(null);
     setNewNodeLabel("");
+    setNewNodePrompt("");
     setNewNodeType("NORMAL");
     setSelectedBranch("true");
     setSelectedIntegration({
@@ -436,6 +443,7 @@ function BlueprintFlowWidget({
                 properties: {
                   action: actionType,
                   label: newNodeLabel,
+                  prompt: newNodePrompt,
                   description: descriptionText,
                   icon: nodeIcon,
                 },
@@ -460,6 +468,7 @@ function BlueprintFlowWidget({
                 properties: {
                   action: actionType,
                   label: newNodeLabel,
+                  prompt: newNodePrompt,
                   description: descriptionText,
                   icon: nodeIcon,
                 },
@@ -524,6 +533,7 @@ function BlueprintFlowWidget({
                 properties: {
                   action: actionType,
                   label: newNodeLabel,
+                  prompt: newNodePrompt,
                   description: descriptionText,
                   icon: nodeIcon,
                 },
@@ -552,6 +562,7 @@ function BlueprintFlowWidget({
                 properties: {
                   action: actionType,
                   label: newNodeLabel,
+                  prompt: newNodePrompt,
                   description: descriptionText,
                   icon: nodeIcon,
                 },
@@ -686,6 +697,7 @@ function BlueprintFlowWidget({
         type: node.nodeType,
         properties: {
           label: node.label || node.raw?.properties?.label,
+          prompt: node.raw?.properties?.prompt,
           icon: node.icon || node.raw?.properties?.icon,
           action: node.action || node.raw?.properties?.action,
           description: node.description || node.raw?.properties?.description,
@@ -753,6 +765,7 @@ function BlueprintFlowWidget({
     };
     setSelectedParentNode(starterParent);
     setNewNodeLabel("");
+    setNewNodePrompt("");
     setNewNodeType("NORMAL");
     setSelectedBranch("true");
     setShowValidationErrors(false);
@@ -800,6 +813,8 @@ function BlueprintFlowWidget({
         graphData={graphData}
         newNodeLabel={newNodeLabel}
         setNewNodeLabel={setNewNodeLabel}
+        newNodePrompt={newNodePrompt}
+        setNewNodePrompt={setNewNodePrompt}
         newNodeType={newNodeType}
         setNewNodeType={setNewNodeType}
         selectedBranch={selectedBranch}

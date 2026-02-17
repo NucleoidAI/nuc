@@ -1,6 +1,7 @@
 import CodeBlock from "../CodeBlock/CodeBlock";
 import InfoCard from "../InfoCard/InfoCard";
 import { ResultTable } from "../ResultTable/ResultTable";
+import SystemMeta from "./SystemMeta";
 import { parseJsonResult } from "../../utils/formatters";
 
 import {
@@ -25,6 +26,13 @@ const TaskStepDialog = ({
     createdAt: string;
     status: string;
     result: string | object | object[];
+    parameters?: {
+      agentId: string;
+      taskId: string;
+      question: string;
+      blueprintId: string;
+      sessionId: string;
+    };
   };
 }) => {
   const [viewMode, setViewMode] = useState("table");
@@ -100,8 +108,9 @@ const TaskStepDialog = ({
             label="Created At"
             value={createdAt ? new Date(createdAt).toLocaleTimeString() : "-"}
           />
+          <InfoCard label="Input" value={step.parameters?.question} />
           <InfoCard
-            label="Result"
+            label="Output"
             sx={{ position: "relative" }}
             value={
               <>
@@ -135,6 +144,16 @@ const TaskStepDialog = ({
                 )}
                 {renderResult()}
               </>
+            }
+          />
+          <InfoCard
+            label="System Information"
+            value={
+              <SystemMeta
+                agentId={step.parameters?.agentId}
+                blueprintId={step.parameters?.blueprintId}
+                sessionId={step.parameters?.sessionId}
+              />
             }
           />
         </Box>

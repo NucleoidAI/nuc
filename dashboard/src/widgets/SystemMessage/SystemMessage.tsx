@@ -32,9 +32,14 @@ const typeStyles = {
   },
 };
 
-function SystemMessage({ loading, type, id, message, handleClick }) {
+function SystemMessage({ loading, type, id, message, handleClick, onLoaded }) {
   const currentTypeStyle = typeStyles[type] || typeStyles.DEFAULT;
   const [createdAt, setCreatedAt] = useState(null);
+
+  const handleDateFetched = (date) => {
+    setCreatedAt(date);
+    onLoaded?.();
+  };
 
   const theme = useTheme();
   const smDown = useMediaQuery(theme.breakpoints.down("sm")); // 0 - 600
@@ -47,7 +52,7 @@ function SystemMessage({ loading, type, id, message, handleClick }) {
           <KnowledgeMessage
             handleClick={() => handleClick()}
             id={id}
-            onDateFetched={(date) => setCreatedAt(date)}
+            onDateFetched={handleDateFetched}
           />
         );
       case "SUPERVISING":
@@ -55,7 +60,7 @@ function SystemMessage({ loading, type, id, message, handleClick }) {
           <SupervisingMessage
             handleClick={() => handleClick()}
             id={id}
-            onDateFetched={(date) => setCreatedAt(date)}
+            onDateFetched={handleDateFetched}
           />
         );
       case "TASK":
@@ -63,7 +68,7 @@ function SystemMessage({ loading, type, id, message, handleClick }) {
           <TaskMessage
             handleClick={() => handleClick()}
             id={id}
-            onDateFetched={(date) => setCreatedAt(date)}
+            onDateFetched={handleDateFetched}
           />
         );
       default:
@@ -74,7 +79,7 @@ function SystemMessage({ loading, type, id, message, handleClick }) {
             message={message}
             command={message?.command}
             handleClick={() => handleClick()}
-            onDateFetched={(date) => setCreatedAt(date)}
+            onDateFetched={handleDateFetched}
           />
         );
     }

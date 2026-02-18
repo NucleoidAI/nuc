@@ -90,9 +90,13 @@ const SupervisingCard = ({
     setBlueprintSelectedItem(blueprint);
   };
 
-  const usedNodeIds = useMemo(() => {
+  const { usedNodeIds, lastUsedNodeId, failedNodeId } = useMemo(() => {
     if (!steps || steps.length === 0 || !blueprint?.nodes)
-      return new Set<string>();
+      return {
+        usedNodeIds: new Set<string>(),
+        lastUsedNodeId: null as string | null,
+        failedNodeId: null as string | null,
+      };
 
     let askSupervisorIndex = -1;
     for (let i = steps.length - 1; i >= 0; i--) {
@@ -105,19 +109,91 @@ const SupervisingCard = ({
     const stepsBeforeAsk =
       askSupervisorIndex > 0 ? steps.slice(0, askSupervisorIndex) : steps;
 
-    const usedIds = new Set<string>();
-    stepsBeforeAsk.forEach((step) => {
-      if (step?.action) {
-        const matchingNode = blueprint.nodes.find(
-          (node) => node.properties?.action === step.action
-        );
-        if (matchingNode) {
-          usedIds.add(matchingNode.id);
-        }
-      }
+    const nodeMap = new Map<string, (typeof blueprint.nodes)[number]>();
+    blueprint.nodes.forEach((node) => nodeMap.set(node.id, node));
+
+    const referencedIds = new Set<string>();
+    blueprint.nodes.forEach((node) => {
+      (node.next || []).forEach((id: string) => referencedIds.add(id));
+      (node.true || []).forEach((id: string) => referencedIds.add(id));
+      (node.false || []).forEach((id: string) => referencedIds.add(id));
     });
 
-    return usedIds;
+    let possibleNextIds = new Set<string>(
+      blueprint.nodes.filter((n) => !referencedIds.has(n.id)).map((n) => n.id)
+    );
+
+    const getChildren = (node: (typeof blueprint.nodes)[number]) =>
+      new Set<string>([
+        ...(node.next || []),
+        ...(node.true || []),
+        ...(node.false || []),
+      ]);
+
+    const stepActions = new Set(
+      stepsBeforeAsk.map((s) => s?.action).filter(Boolean)
+    );
+
+    const expandFrontier = (ids: Set<string>): Set<string> => {
+      const expanded = new Set<string>();
+      const queue = [...ids];
+      const visited = new Set<string>();
+
+      while (queue.length > 0) {
+        const id = queue.shift()!;
+        if (visited.has(id)) continue;
+        visited.add(id);
+
+        const node = nodeMap.get(id);
+        if (!node) continue;
+
+        if (stepActions.has(node.properties?.action)) {
+          expanded.add(id);
+        } else {
+          for (const childId of getChildren(node)) {
+            if (!visited.has(childId)) queue.push(childId);
+          }
+        }
+      }
+
+      return expanded;
+    };
+
+    const usedIds = new Set<string>();
+    let lastId: string | null = null;
+    let failedId: string | null = null;
+
+    possibleNextIds = expandFrontier(possibleNextIds);
+
+    for (const step of stepsBeforeAsk) {
+      if (!step?.action) continue;
+
+      let matched: (typeof blueprint.nodes)[number] | null = null;
+      for (const nodeId of possibleNextIds) {
+        const node = nodeMap.get(nodeId);
+        if (node?.properties?.action === step.action) {
+          matched = node;
+          break;
+        }
+      }
+
+      if (matched) {
+        if (step.status === "FAILED") {
+          failedId = matched.id;
+        } else {
+          usedIds.add(matched.id);
+          lastId = matched.id;
+        }
+
+        possibleNextIds = expandFrontier(getChildren(matched));
+      }
+    }
+
+    return {
+      usedNodeIds: usedIds,
+      lastUsedNodeId: failedId ? null : lastId,
+      failedNodeId: failedId,
+    };
   }, [steps, blueprint]);
 
   return (
@@ -299,6 +375,8 @@ const SupervisingCard = ({
         onSelectBlueprint={(blueprint) => handleSelectBlueprint(blueprint)}
         blueprint={blueprint}
         usedNodeIds={usedNodeIds}
+        lastUsedNodeId={lastUsedNodeId}
+        failedNodeId={failedNodeId}
         supervise={supervise}
       />
 
@@ -316,6 +394,8 @@ const SupervisingCard = ({
         setAiResponse={setAiResponse}
         aiResponse={aiResponse}
         usedNodeIds={usedNodeIds}
+        lastUsedNodeId={lastUsedNodeId}
+        failedNodeId={failedNodeId}
       />
     </>
   );

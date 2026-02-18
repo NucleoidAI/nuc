@@ -108,7 +108,11 @@ const SupervisingTypeDialog = ({
           </Fab>
         </Box>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent
+        sx={{
+          overflow: "hidden",
+        }}
+      >
         <Box
           sx={{
             display: "flex",

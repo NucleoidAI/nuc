@@ -52,8 +52,64 @@ const HighlightOverlay = styled("div")<{
   changetype?: string;
   haserror?: string;
   isused?: string;
-}>(({ changetype, haserror, isused, theme }) => {
+  islastused?: string;
+  isfailed?: string;
+}>(({ changetype, haserror, isused, islastused, isfailed, theme }) => {
   const isDark = theme.palette.mode === "dark";
+
+  if (isfailed === "true") {
+    const failedColor = {
+      border: isDark ? "#ef5350" : "#f44336",
+      glow: "244, 67, 54",
+      bg: "244, 67, 54",
+    };
+
+    return {
+      position: "absolute",
+      top: "-2px",
+      left: "-2px",
+      right: "-2px",
+      bottom: "-2px",
+      border: `3px solid ${failedColor.border}`,
+      borderRadius: "18px",
+      pointerEvents: "none",
+      zIndex: 5,
+      background: `linear-gradient(135deg, rgba(${failedColor.bg}, 0.12) 0%, rgba(${failedColor.bg}, 0.04) 100%)`,
+      boxShadow: `
+          0 0 0 1px rgba(${failedColor.glow}, 0.15),
+          0 0 20px rgba(${failedColor.glow}, 0.35),
+          0 0 40px rgba(${failedColor.glow}, 0.2),
+          inset 0 0 30px rgba(${failedColor.glow}, 0.1)
+        `,
+    };
+  }
+
+  if (islastused === "true") {
+    const warningColor = {
+      border: isDark ? "#ffa726" : "#ff9800",
+      glow: "255, 152, 0",
+      bg: "255, 152, 0",
+    };
+
+    return {
+      position: "absolute",
+      top: "-2px",
+      left: "-2px",
+      right: "-2px",
+      bottom: "-2px",
+      border: `3px solid ${warningColor.border}`,
+      borderRadius: "18px",
+      pointerEvents: "none",
+      zIndex: 5,
+      background: `linear-gradient(135deg, rgba(${warningColor.bg}, 0.12) 0%, rgba(${warningColor.bg}, 0.04) 100%)`,
+      boxShadow: `
+          0 0 0 1px rgba(${warningColor.glow}, 0.15),
+          0 0 20px rgba(${warningColor.glow}, 0.35),
+          0 0 40px rgba(${warningColor.glow}, 0.2),
+          inset 0 0 30px rgba(${warningColor.glow}, 0.1)
+        `,
+    };
+  }
 
   if (isused === "true") {
     const usedColor = {
@@ -360,6 +416,116 @@ const ErrorLabel = styled("div")(({ theme }) => {
   };
 });
 
+const FailedLabel = styled("div")(({ theme }) => {
+  const isDark = theme.palette.mode === "dark";
+
+  return {
+    position: "absolute",
+    top: "-10px",
+    left: "-10px",
+    padding: "4px 10px",
+    borderRadius: "12px",
+    backgroundColor: isDark ? "#ef5350" : "#f44336",
+    color: "#ffffff",
+    fontSize: "11px",
+    fontWeight: 600,
+    textTransform: "uppercase",
+    letterSpacing: "0.5px",
+    boxShadow: `
+      0 2px 6px rgba(0, 0, 0, 0.15),
+      0 0 0 2px ${theme.palette.background.paper}
+    `,
+    zIndex: 15,
+    whiteSpace: "nowrap",
+    "&::before": {
+      content: '"Failed"',
+    },
+  };
+});
+
+const FailedBadge = styled("div")(({ theme }) => {
+  const isDark = theme.palette.mode === "dark";
+
+  return {
+    position: "absolute",
+    top: "-10px",
+    right: "-10px",
+    width: "28px",
+    height: "28px",
+    borderRadius: "50%",
+    backgroundColor: isDark ? "#ef5350" : "#f44336",
+    color: "#ffffff",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "16px",
+    fontWeight: "bold",
+    boxShadow: `
+      0 2px 8px rgba(0, 0, 0, 0.2),
+      0 0 0 3px ${theme.palette.background.paper}
+    `,
+    zIndex: 15,
+    "&::before": {
+      content: '"✕"',
+    },
+  };
+});
+
+const SuperviseNeededLabel = styled("div")(({ theme }) => {
+  const isDark = theme.palette.mode === "dark";
+
+  return {
+    position: "absolute",
+    top: "-10px",
+    left: "-10px",
+    padding: "4px 10px",
+    borderRadius: "12px",
+    backgroundColor: isDark ? "#ffa726" : "#ff9800",
+    color: "#ffffff",
+    fontSize: "11px",
+    fontWeight: 600,
+    textTransform: "uppercase",
+    letterSpacing: "0.5px",
+    boxShadow: `
+      0 2px 6px rgba(0, 0, 0, 0.15),
+      0 0 0 2px ${theme.palette.background.paper}
+    `,
+    zIndex: 15,
+    whiteSpace: "nowrap",
+    "&::before": {
+      content: '"Supervise Needed"',
+    },
+  };
+});
+
+const SuperviseNeededBadge = styled("div")(({ theme }) => {
+  const isDark = theme.palette.mode === "dark";
+
+  return {
+    position: "absolute",
+    top: "-10px",
+    right: "-10px",
+    width: "28px",
+    height: "28px",
+    borderRadius: "50%",
+    backgroundColor: isDark ? "#ffa726" : "#ff9800",
+    color: "#ffffff",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "16px",
+    fontWeight: "bold",
+    boxShadow: `
+      0 2px 8px rgba(0, 0, 0, 0.2),
+      0 0 0 3px ${theme.palette.background.paper}
+    `,
+    zIndex: 15,
+    "&::before": {
+      content: '"⚠"',
+    },
+  };
+});
+
 const NodeWrapper = styled("div")({
   position: "relative",
   width: "100%",
@@ -442,6 +608,8 @@ export const blueprintFlowPlugin = {
     const changeType = node.changeType;
     const hasError = node.hasError;
     const isUsed = node.isUsed;
+    const isLastUsed = node.isLastUsed;
+    const isFailed = node.isFailed;
 
     const handleAddClick = (e) => {
       e.stopPropagation();
@@ -463,11 +631,23 @@ export const blueprintFlowPlugin = {
           changetype={changeType}
           haserror={hasError ? "true" : "false"}
           isused={isUsed ? "true" : "false"}
+          islastused={isLastUsed ? "true" : "false"}
+          isfailed={isFailed ? "true" : "false"}
         />
         {hasError ? (
           <>
             <ErrorLabel />
             <ErrorBadge />
+          </>
+        ) : isFailed ? (
+          <>
+            <FailedLabel />
+            <FailedBadge />
+          </>
+        ) : isLastUsed ? (
+          <>
+            <SuperviseNeededLabel />
+            <SuperviseNeededBadge />
           </>
         ) : isUsed ? (
           <>

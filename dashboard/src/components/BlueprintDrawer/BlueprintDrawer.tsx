@@ -27,6 +27,8 @@ const BlueprintDrawer = ({
   taskId,
   agentId,
   usedNodeIds,
+  lastUsedNodeId,
+  failedNodeId,
 }: {
   drawerOpen: boolean;
   handleDrawerClose: () => void;
@@ -54,6 +56,8 @@ const BlueprintDrawer = ({
   taskId?: string;
   agentId?: string;
   usedNodeIds?: Set<string>;
+  lastUsedNodeId?: string | null;
+  failedNodeId?: string | null;
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -201,6 +205,8 @@ const BlueprintDrawer = ({
                   taskId={taskId}
                   setSelectedItem={setSelectedItem}
                   usedNodeIds={usedNodeIds}
+                  lastUsedNodeId={lastUsedNodeId}
+                  failedNodeId={failedNodeId}
                 />
 
                 {!isChatOpen && (

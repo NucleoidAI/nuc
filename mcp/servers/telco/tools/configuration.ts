@@ -38,10 +38,7 @@ function addCustomerServiceXmlRequest(args: ConfigurationInput): string {
                 </customerBean>
                 <domain>ttnet</domain>
                 <fttxPortBean>
-                    <aePortBean>
-                        <kaesPortNo>0</kaesPortNo>
-                        <taesPortNo>0</taesPortNo>
-                    </aePortBean>
+
                     <fttxType>
                         <id>1</id>
                     </fttxType>
@@ -64,7 +61,7 @@ function addCustomerServiceXmlRequest(args: ConfigurationInput): string {
                 <installationAddress>163316</installationAddress>
                 <installationType>6</installationType>
                 <packetId>109313</packetId>
-                <password>1234</password>
+                <password>CMV88qkg</password> 
                 <popNo>6018000000000161</popNo>
                 <retailPacketInfo>0</retailPacketInfo>
                 <service>
@@ -76,7 +73,7 @@ function addCustomerServiceXmlRequest(args: ConfigurationInput): string {
                 <speedProfile>${args.speed_profile}</speedProfile>
                 <staticIp>0.0.0.0</staticIp>
                 <subscriptionNo>1234999999</subscriptionNo>
-                <username>hasancontuk</username>
+                <username>turktele421133246</username>
                 <voiceServiceLevelBean>
                     <id>-1</id>
                 </voiceServiceLevelBean>

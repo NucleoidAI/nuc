@@ -19,6 +19,7 @@ import {
   CircularProgress,
   IconButton,
   Stack,
+  alpha,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -173,7 +174,7 @@ function TeamChart() {
           backgroundColor: (theme) => theme.palette.background.default,
           backgroundImage: (theme) => `
       radial-gradient(
-        ${theme.palette.divider} 1px,
+        ${alpha(theme.palette.divider, 0.08)} 1px,
         transparent 1px
       )
     `,

@@ -325,12 +325,13 @@ const SupervisingTypeDialog = ({
                 p: 2,
                 position: "relative",
                 backgroundColor: (theme) => theme.palette.background.paper,
+                backgroundImage: (theme) => `
+                          radial-gradient(
+                            ${alpha(theme.palette.divider, 0.08)} 1px,
+                            transparent 1px
+                          )
+                        `,
                 backgroundSize: "16px 16px",
-                backgroundImage: (theme) =>
-                  `radial-gradient(${alpha(
-                    theme.palette.divider,
-                    0.08
-                  )} 1px, transparent 1px)`,
               }}
             >
               <BlueprintFlowWidget

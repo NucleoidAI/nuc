@@ -78,6 +78,7 @@ function AgentsWidget({ teamId }) {
               <AgentCard
                 key={agent.id}
                 agent={agent}
+                allAgentIds={agents.map((a) => a.id)}
                 onView={() => handleAgentClick(agent.id)}
                 onDelete={() => {
                   setDeleteFunction(() => () => deleteAgent(agent.id));

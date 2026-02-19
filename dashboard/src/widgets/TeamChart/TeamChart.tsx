@@ -55,6 +55,10 @@ function TeamChart() {
     (org) => org.agents && org.agents.length > 0 && org.id === projectId
   );
 
+  const allAgentIds = filteredOrganizations.flatMap((org) =>
+    (org.agents || []).map((agent) => agent.id)
+  );
+
   const teamTree = useMemo(
     () => toTeamTree(filteredOrganizations, allBlueprintsRaw || []),
     [filteredOrganizations, allBlueprintsRaw]
@@ -134,6 +138,7 @@ function TeamChart() {
 
     return {
       ...base,
+      allAgentIds,
       onTeamAddAgent: (teamNode) => handleAddAgent(teamNode.id),
       onAgentOpen: (colNode, tab) => handleAgentDrawerOpen(colNode, tab),
       onBlueprintOpen: (respNode) => handleDrawerOpen(respNode),
@@ -165,7 +170,6 @@ function TeamChart() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-
           backgroundColor: (theme) => theme.palette.background.default,
           backgroundImage: (theme) => `
       radial-gradient(
@@ -208,6 +212,7 @@ function TeamChart() {
           onClose={handleAgentDrawerClose}
           agent={selectedAgent}
           initialTab={selectedAgentTab}
+          allAgentIds={allAgentIds}
         />
       )}
     </>

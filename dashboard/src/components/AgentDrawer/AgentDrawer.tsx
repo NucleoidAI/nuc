@@ -5,7 +5,7 @@ import { Box, Button, Dialog, DialogContent } from "@mui/material";
 import React, { useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const AgentDrawer = ({ open, onClose, agent, initialTab }) => {
+const AgentDrawer = ({ open, onClose, agent, initialTab, allAgentIds }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -60,6 +60,7 @@ const AgentDrawer = ({ open, onClose, agent, initialTab }) => {
           loading={false}
           initialTab={initialTab}
           fromDrawer={true}
+          allAgentIds={allAgentIds}
         />
       </DialogContent>
     </Dialog>

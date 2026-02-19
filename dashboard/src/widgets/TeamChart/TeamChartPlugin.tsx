@@ -48,6 +48,7 @@ export const teamChartPlugin = {
     const onTeamAddAgent = nodeStyle.onTeamAddAgent;
     const onAgentOpen = nodeStyle.onAgentOpen;
     const onBlueprintOpen = nodeStyle.onBlueprintOpen;
+    const allAgentIds = nodeStyle.allAgentIds;
 
     const renderInitialAvatar = () => {
       if (!isAgent) {
@@ -117,7 +118,7 @@ export const teamChartPlugin = {
               width: 100,
               height: "100%",
               zIndex: 0,
-              background: getAgentGradients(node.id, theme),
+              background: getAgentGradients(node.id, theme, allAgentIds),
             }),
           }}
           leftContent={renderInitialAvatar()}

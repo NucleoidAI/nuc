@@ -22,7 +22,17 @@ const renderValue = (value) => {
 };
 
 export const ResultTable = ({ data }) => {
-  const content = data?.content || data[0];
+  let content;
+  if (
+    data &&
+    typeof data === "object" &&
+    !Array.isArray(data) &&
+    !data.content
+  ) {
+    content = data;
+  } else {
+    content = data?.content || data[0];
+  }
   const keys = getAllKeys(content);
 
   return (

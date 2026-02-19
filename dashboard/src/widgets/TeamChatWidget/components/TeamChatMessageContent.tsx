@@ -93,6 +93,7 @@ const TeamChatMessageContent = memo(function ChatMessageList({
             message={message}
             loading={false}
             handleClick={() => handleClick(message)}
+            onLoaded={scrollMessagesToBottom}
           />
         );
       }

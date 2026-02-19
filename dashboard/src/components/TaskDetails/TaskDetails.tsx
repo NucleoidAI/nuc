@@ -186,7 +186,7 @@ const TaskDetails = ({
                 <TableCell>Comment</TableCell>
                 <TableCell>Date</TableCell>
                 <TableCell>Status</TableCell>
-                <TableCell align="right">Result</TableCell>
+                <TableCell align="right">Details</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

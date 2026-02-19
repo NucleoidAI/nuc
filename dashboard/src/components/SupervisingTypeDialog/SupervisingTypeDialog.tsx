@@ -40,6 +40,8 @@ interface SupervisingTypeDialogProps {
     taskId?: string;
   };
   usedNodeIds?: Set<string>;
+  lastUsedNodeId?: string | null;
+  failedNodeId?: string | null;
 }
 
 const SupervisingTypeDialog = ({
@@ -49,6 +51,8 @@ const SupervisingTypeDialog = ({
   onSelectBlueprint,
   blueprint,
   usedNodeIds,
+  lastUsedNodeId,
+  failedNodeId,
   supervise,
 }: SupervisingTypeDialogProps) => {
   const [popChatOpen, setPopChatOpen] = useState(false);
@@ -104,7 +108,11 @@ const SupervisingTypeDialog = ({
           </Fab>
         </Box>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent
+        sx={{
+          overflow: "hidden",
+        }}
+      >
         <Box
           sx={{
             display: "flex",
@@ -217,7 +225,27 @@ const SupervisingTypeDialog = ({
             >
               Manage specific blueprints
             </Typography>
-            {usedNodeIds && usedNodeIds.size > 0 && (
+            {failedNodeId ? (
+              <Chip
+                icon={
+                  <Iconify
+                    icon="solar:close-circle-bold"
+                    sx={{ width: 16, height: 16 }}
+                    color="inherit"
+                    style={{ color: "#f44336" }}
+                  />
+                }
+                label="Step failed"
+                size="small"
+                sx={{
+                  backgroundColor: "rgba(244, 67, 54, 0.1)",
+                  color: "#f44336",
+                  fontWeight: 500,
+                  border: "1px solid rgba(244, 67, 54, 0.3)",
+                  mt: 1,
+                }}
+              />
+            ) : usedNodeIds && usedNodeIds.size > 0 ? (
               <Chip
                 icon={
                   <Iconify
@@ -239,11 +267,11 @@ const SupervisingTypeDialog = ({
                   mt: 1,
                 }}
               />
-            )}
+            ) : null}
           </Box>
         </Box>
 
-        {usedNodeIds && usedNodeIds.size > 0 && (
+        {((usedNodeIds && usedNodeIds.size > 0) || failedNodeId) && (
           <Box
             sx={{
               mb: 2,
@@ -282,7 +310,11 @@ const SupervisingTypeDialog = ({
                   icon="solar:list-check-bold-duotone"
                   sx={{ width: 18, height: 18, color: "text.secondary" }}
                 />
-                Completed Blueprint Steps
+                {failedNodeId
+                  ? "Failed Blueprint Steps"
+                  : usedNodeIds
+                  ? "Blueprint Steps"
+                  : "Completed Blueprint Steps"}
               </Typography>
             </Box>
 
@@ -296,6 +328,9 @@ const SupervisingTypeDialog = ({
               <BlueprintFlowWidget
                 blueprint={blueprint}
                 usedNodeIds={usedNodeIds}
+                lastUsedNodeId={lastUsedNodeId}
+                failedNodeId={failedNodeId}
+                isSuperviseFlow={true}
               />
             </Box>
           </Box>

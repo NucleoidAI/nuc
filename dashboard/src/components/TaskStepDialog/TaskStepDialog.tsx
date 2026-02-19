@@ -25,9 +25,17 @@ const TaskStepDialog = ({
     createdAt: string;
     status: string;
     result: string | object | object[];
+    parameters?: {
+      agentId: string;
+      taskId: string;
+      question: string;
+      blueprintId: string;
+      sessionId: string;
+    };
   };
 }) => {
   const [viewMode, setViewMode] = useState("table");
+  const [paramViewMode, setParamViewMode] = useState("table");
 
   const { result, comment, status, createdAt } = step;
 
@@ -39,6 +47,10 @@ const TaskStepDialog = ({
 
   const toggleViewMode = useCallback(() => {
     setViewMode((prev) => (prev === "table" ? "text" : "table"));
+  }, []);
+
+  const toggleParamViewMode = useCallback(() => {
+    setParamViewMode((prev) => (prev === "table" ? "text" : "table"));
   }, []);
 
   const renderResult = () => {
@@ -93,12 +105,61 @@ const TaskStepDialog = ({
                 ? "Completed"
                 : status === "WAITING_FOR_USER"
                 ? "Waiting for user"
+                : status === "SUPERVISED_NEEDED"
+                ? "Supervised Needed"
+                : status === "FAILED"
+                ? "Failed"
                 : "-"
             }
           />
           <InfoCard
             label="Created At"
             value={createdAt ? new Date(createdAt).toLocaleTimeString() : "-"}
+          />
+          <InfoCard
+            label="Parameters"
+            sx={{ position: "relative" }}
+            value={
+              step.parameters && typeof step.parameters === "object" ? (
+                <>
+                  <Switch
+                    checked={paramViewMode === "table"}
+                    onChange={toggleParamViewMode}
+                    sx={{
+                      position: "absolute",
+                      top: -5,
+                      right: -12,
+                      transform: "scale(0.8)",
+                    }}
+                  />
+                  <Typography
+                    variant="body2"
+                    color={
+                      paramViewMode === "table"
+                        ? "text.disabled"
+                        : "text.primary"
+                    }
+                    sx={{
+                      position: "absolute",
+                      top: 3,
+                      right: 33,
+                      transform: "scale(0.8)",
+                    }}
+                  >
+                    JSON
+                  </Typography>
+                  {paramViewMode === "table" ? (
+                    <ResultTable data={{ ...step.parameters }} />
+                  ) : (
+                    <CodeBlock>
+                      {JSON.stringify(step.parameters, null, 2)}
+                    </CodeBlock>
+                  )}
+                </>
+              ) : (
+                "-"
+              )
+            }
           />
           <InfoCard
             label="Result"

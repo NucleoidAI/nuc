@@ -33,14 +33,19 @@ function BlueprintFlowWidget({
   taskId,
   setSelectedItem,
   usedNodeIds,
+  lastUsedNodeId,
+  failedNodeId,
+  isSuperviseFlow = false,
 }: {
   aiResponse?: AIResponse;
   setAiResponse?: (response: AIResponse | null) => void;
   blueprint: Blueprint;
   taskId?: string;
   setSelectedItem?: (item: Blueprint) => void;
-
   usedNodeIds?: Set<string>;
+  lastUsedNodeId?: string | null;
+  failedNodeId?: string | null;
+  isSuperviseFlow?: boolean;
 }) {
   const [graphData, setGraphData] = useState<DefinitionGraph | null>(null);
   const [hasLocalChanges, setHasLocalChanges] = useState(false);
@@ -102,12 +107,16 @@ function BlueprintFlowWidget({
         );
 
       const isUsed = usedNodeIds && usedNodeIds.has(nodeId);
+      const isLastUsed = lastUsedNodeId === nodeId;
+      const isFailed = failedNodeId === nodeId;
 
       acc[nodeId] = {
         ...node,
         changeType,
         hasError,
         isUsed,
+        isLastUsed,
+        isFailed,
       };
 
       return acc;
@@ -120,6 +129,8 @@ function BlueprintFlowWidget({
     validationErrors,
     showValidationErrors,
     usedNodeIds,
+    lastUsedNodeId,
+    failedNodeId,
   ]);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -758,9 +769,19 @@ function BlueprintFlowWidget({
     setShowValidationErrors(false);
     setDrawerOpen(true);
   };
+
+  const hasRealFlowData =
+    aiResponse?.flow ||
+    (blueprintNodes?.nodes && blueprintNodes.nodes.length > 0);
+
+  const isEmptyState =
+    !loading &&
+    !aiResponse?.flow &&
+    (!blueprintNodes?.nodes || blueprintNodes.nodes.length === 0);
+
   return (
     <>
-      {loading || !graphData ? (
+      {loading ? null : isEmptyState ? (
         <>
           {showSampleFlow && <SampleFlow />}
           {!showSampleFlow && (
@@ -770,7 +791,7 @@ function BlueprintFlowWidget({
             />
           )}
         </>
-      ) : (
+      ) : !graphData && hasRealFlowData ? null : (
         <BlueprintFlow
           graphData={graphData}
           enrichedGraphData={enrichedGraphData}
@@ -790,6 +811,7 @@ function BlueprintFlowWidget({
           onCloseDiff={() => setShowDiffPanel(false)}
           onShowValidationErrors={setShowValidationErrors}
           onSaveSuccessChange={setSaveSuccess}
+          isSuperviseFlow={isSuperviseFlow}
         />
       )}
 

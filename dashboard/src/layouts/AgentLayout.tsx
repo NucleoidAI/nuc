@@ -64,6 +64,7 @@ function AgentLayout({
   loading,
   initialTab,
   fromDrawer,
+  allAgentIds,
 }: {
   agent: {
     id: string;
@@ -73,6 +74,7 @@ function AgentLayout({
   loading: boolean;
   initialTab?: string;
   fromDrawer?: boolean;
+  allAgentIds?: string[];
 }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -146,7 +148,7 @@ function AgentLayout({
               setCurrentTab={handleTabChange}
               name={agent.name}
               iconUrl={agent.icon}
-              coverUrl={getAgentGradients(agent.id, theme)}
+              coverUrl={getAgentGradients(agent.id, theme, allAgentIds)}
               loading={loading}
             />
             <Stack

@@ -12,8 +12,8 @@ const agentGradients = [
   (theme) =>
     `linear-gradient(
       135deg,
-      ${alpha("#7b5cff", 0.85)},
-      ${alpha("#3cefff", 0.9)}
+    ${alpha("#ff6f61", 0.85)},
+    ${alpha("#845ef7", 0.9)}
     )`,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (theme) =>
@@ -52,8 +52,19 @@ const hashString = (value?: string) => {
   return hash;
 };
 
-export const getAgentGradients = (id: string, theme) => {
+export const getAgentGradients = (id: string, theme, allIds?: string[]) => {
+  const len = agentGradients.length;
+
+  if (allIds && allIds.length > 0) {
+    const index = allIds.indexOf(id);
+    if (index >= 0) {
+      return agentGradients[index % len](theme);
+    }
+    const hash = Math.abs(hashString(id));
+    return agentGradients[hash % len](theme);
+  }
+
   const hash = Math.abs(hashString(id));
-  const index = hash % agentGradients.length;
+  const index = hash % len;
   return agentGradients[index](theme);
 };

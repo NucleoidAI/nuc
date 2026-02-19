@@ -265,6 +265,7 @@ function TeamChatNav({ loading, agents, collapsed, setCollapsed }) {
       >
         <AgentCard
           agent={selectedMember}
+          allAgentIds={agents ? agents.map((a) => a.id) : undefined}
           onView={() => handleAgentView(selectedMember)}
           onEdit={() => {}}
           onDelete={() => {}}

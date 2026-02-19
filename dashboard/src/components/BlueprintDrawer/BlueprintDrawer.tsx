@@ -12,6 +12,7 @@ import {
   Grid,
   IconButton,
   Tooltip,
+  alpha,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -97,6 +98,8 @@ const BlueprintDrawer = ({
     return "85vw";
   };
 
+  console.log("color", alpha(theme.palette.divider, 0.1));
+
   return (
     <Drawer
       anchor="right"
@@ -160,7 +163,7 @@ const BlueprintDrawer = ({
               backgroundColor: (theme) => theme.palette.background.default,
               backgroundImage: (theme) => `
             radial-gradient(
-              ${theme.palette.divider} 1px,
+              ${alpha(theme.palette.divider, 0.08)} 1px,
               transparent 1px
             )
           `,

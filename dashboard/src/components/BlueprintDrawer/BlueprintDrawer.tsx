@@ -160,15 +160,6 @@ const BlueprintDrawer = ({
               borderRight: isChatOpen
                 ? `1px solid ${theme.palette.divider}`
                 : "none",
-              backgroundColor: (theme) => theme.palette.background.default,
-              backgroundImage: (theme) => `
-            radial-gradient(
-              ${alpha(theme.palette.divider, 0.08)} 1px,
-              transparent 1px
-            )
-          `,
-              backgroundSize: "16px 16px",
-              position: "relative",
             }}
           >
             <Box
@@ -196,6 +187,14 @@ const BlueprintDrawer = ({
                   minHeight: 0,
                   overflow: "hidden",
                   position: "relative",
+                  backgroundColor: (theme) => theme.palette.background.default,
+                  backgroundImage: (theme) => `
+                radial-gradient(
+                  ${alpha(theme.palette.divider, 0.08)} 1px,
+                  transparent 1px
+                )
+              `,
+                  backgroundSize: "16px 16px",
                 }}
               >
                 <BlueprintFlowWidget

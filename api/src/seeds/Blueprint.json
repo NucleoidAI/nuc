@@ -14,6 +14,7 @@
           "properties": {
             "action": "TELCO:get_bbk_by_address",
             "description": "Retrieve BBK number based on the user's residential address information",
+            "prompt": "Get BBK by address",
             "label": "Get BBK No by Address",
             "icon": "mdi:map-marker"
           },
@@ -26,6 +27,7 @@
           "properties": {
             "action": "TELCO:get_inventory",
             "description": "Check inventory availability for the given BBK number and address",
+            "prompt": "Check inventory availability",
             "label": "Get Inventory",
             "icon": "mdi:server"
           },
@@ -38,6 +40,7 @@
           "properties": {
             "action": "PLATFORM:decision",
             "description": "Decide based on inventory availability whether to proceed with product selection",
+            "prompt": "Is inventory available?",
             "label": "Check if product is available",
             "icon": "mdi:source-branch"
           },
@@ -51,6 +54,7 @@
           "properties": {
             "action": "PLATFORM:complete",
             "description": "Mark the process as complete when no products are available",
+            "prompt": "No product available, complete",
             "label": "Complete",
             "icon": "mdi:check"
           },
@@ -63,6 +67,7 @@
           "properties": {
             "action": "TELCO:get_product_by_speed",
             "description": "Retrieve available internet products based on speed requirements",
+            "prompt": "Get products by speed",
             "label": "Get Product by Speed",
             "icon": "mdi:speedometer"
           },
@@ -75,6 +80,7 @@
           "properties": {
             "action": "PLATFORM:message_user",
             "description": "Provide available products to the user",
+            "prompt": "Show products to user",
             "label": "Notify user about available products",
             "icon": "mdi:user"
           },
@@ -87,6 +93,7 @@
           "properties": {
             "action": "PLATFORM:user_interaction",
             "description": "Wait for user to select a product from the available options",
+            "prompt": "Wait for product choice",
             "label": "User selected product",
             "icon": "mdi:user"
           },
@@ -99,6 +106,7 @@
           "properties": {
             "action": "TELCO:port_allocation",
             "description": "Assign a port for the selected internet product and create an order",
+            "prompt": "Allocate port and create order",
             "label": "Assign Port",
             "icon": "mdi:link"
           },
@@ -111,6 +119,7 @@
           "properties": {
             "action": "TELCO:configuration",
             "description": "Configure the assigned port with necessary settings",
+            "prompt": "Configure allocated port",
             "label": "Configure Port",
             "icon": "mdi:settings"
           },
@@ -123,6 +132,7 @@
           "properties": {
             "action": "TELCO:port_connection",
             "description": "Connect the assigned port to the user's residence",
+            "prompt": "Connect port to residence",
             "label": "Connect Port",
             "icon": "mdi:ethernet"
           },
@@ -136,6 +146,7 @@
           "properties": {
             "action": "PLATFORM:complete",
             "description": "Mark the internet subscription setup process as complete",
+            "prompt": "Complete setup flow",
             "label": "Complete",
             "icon": "mdi:check"
           },

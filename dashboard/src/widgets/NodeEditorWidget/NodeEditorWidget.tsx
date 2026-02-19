@@ -11,6 +11,8 @@ const NodeEditorWidget = ({
   graphData,
   newNodeLabel,
   setNewNodeLabel,
+  newNodePrompt,
+  setNewNodePrompt,
   newNodeType,
   setNewNodeType,
   selectedBranch,
@@ -49,6 +51,8 @@ const NodeEditorWidget = ({
   };
   newNodeLabel: string;
   setNewNodeLabel: (label: string) => void;
+  newNodePrompt: string;
+  setNewNodePrompt: (prompt: string) => void;
   newNodeType: string;
   setNewNodeType: (type: string) => void;
   selectedBranch: "true" | "false";
@@ -210,6 +214,8 @@ const NodeEditorWidget = ({
       selectedParentNode={selectedParentNode}
       newNodeLabel={newNodeLabel}
       setNewNodeLabel={setNewNodeLabel}
+      newNodePrompt={newNodePrompt}
+      setNewNodePrompt={setNewNodePrompt}
       newNodeType={newNodeType}
       setNewNodeType={setNewNodeType}
       selectedBranch={selectedBranch}

@@ -28,6 +28,8 @@ const NodeEditorDrawer = ({
   selectedParentNode,
   newNodeLabel,
   setNewNodeLabel,
+  newNodePrompt,
+  setNewNodePrompt,
   newNodeType,
   setNewNodeType,
   selectedBranch,
@@ -55,6 +57,8 @@ const NodeEditorDrawer = ({
   };
   newNodeLabel: string;
   setNewNodeLabel: (label: string) => void;
+  newNodePrompt: string;
+  setNewNodePrompt: (prompt: string) => void;
   newNodeType: string;
   setNewNodeType: (type: string) => void;
   selectedBranch: "true" | "false";
@@ -254,6 +258,22 @@ const NodeEditorDrawer = ({
           fullWidth
           value={newNodeLabel}
           onChange={(e) => setNewNodeLabel(e.target.value)}
+          autoComplete="off"
+          inputProps={{
+            autoComplete: "off",
+            autoCorrect: "off",
+            spellCheck: false,
+          }}
+        />
+
+        <TextField
+          label="Prompt"
+          variant="outlined"
+          fullWidth
+          multiline
+          minRows={3}
+          value={newNodePrompt}
+          onChange={(e) => setNewNodePrompt(e.target.value)}
           autoComplete="off"
           inputProps={{
             autoComplete: "off",

@@ -13,10 +13,12 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:check_product_count",
-            "label": "Check Product Availability",
-            "icon": "mdi:check"
+            "icon": "mdi:check",
+            "prompt": "Check Product Availability"
           },
-          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+          "next": [
+            "51dca395-1d90-4a28-9bbc-233de9c1a207"
+          ],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -24,11 +26,15 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
-            "label": "Make Decision",
-            "icon": "mdi:source-branch"
+            "icon": "mdi:source-branch",
+            "prompt": "Make Decision"
           },
-          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
-          "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
+          "true": [
+            "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
+          ],
+          "false": [
+            "5be22de7-9673-448d-a1b5-dc23a8789b5c"
+          ],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -36,10 +42,12 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:create_order",
-            "label": "Create Order",
-            "icon": "mdi:cart-plus"
+            "icon": "mdi:cart-plus",
+            "prompt": "Create Order"
           },
-          "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
+          "next": [
+            "2a69ce9c-32e9-49c9-ad7c-b631d890359b"
+          ],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -47,8 +55,8 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:send_email",
-            "label": "Send Email",
-            "icon": "mdi:email"
+            "icon": "mdi:email",
+            "prompt": "Send Email"
           },
           "next": null,
           "createdAt": "2025-06-19T06:03:00Z"
@@ -58,8 +66,8 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:reduce_product_count",
-            "label": "Reduce Product Quantity",
-            "icon": "mdi:minus"
+            "icon": "mdi:minus",
+            "prompt": "Reduce Product Quantity"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -85,10 +93,12 @@
             "parameters": {
               "question": "What is your address?"
             },
-            "label": "Get User Address",
-            "icon": "mdi:map-marker"
+            "icon": "mdi:map-marker",
+            "prompt": "Get User Address"
           },
-          "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
+          "next": [
+            "76ccda2d-f11f-408c-8087-66c377600d0b"
+          ],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -97,10 +107,12 @@
           "properties": {
             "action": "TELCO:get_bbk_by_address",
             "description": "Retrieve BBK number based on the user's residential address information",
-            "label": "Get BBK No by Address",
-            "icon": "mdi:map-marker"
+            "icon": "mdi:map-marker",
+            "prompt": "Get BBK No by Address"
           },
-          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+          "next": [
+            "51dca395-1d90-4a28-9bbc-233de9c1a207"
+          ],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -109,10 +121,12 @@
           "properties": {
             "action": "TELCO:get_inventory",
             "description": "Check inventory availability for the given BBK number and address",
-            "label": "Get Inventory",
-            "icon": "mdi:server"
+            "icon": "mdi:server",
+            "prompt": "Get Inventory"
           },
-          "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
+          "next": [
+            "019b209c-2e5a-777f-a04a-11960363fb25"
+          ],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -121,11 +135,15 @@
           "properties": {
             "action": "PLATFORM:decision",
             "description": "Decide based on inventory availability whether to proceed with product selection",
-            "label": "Check if product is available",
-            "icon": "mdi:source-branch"
+            "icon": "mdi:source-branch",
+            "prompt": "Check if product is available"
           },
-          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
-          "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
+          "true": [
+            "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
+          ],
+          "false": [
+            "019b20a6-1aa6-7510-b222-66535e50dfb3"
+          ],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -134,10 +152,12 @@
           "properties": {
             "action": "TELCO:get_product_by_speed",
             "description": "Retrieve available internet products based on speed requirements",
-            "label": "Get Product by Speed",
-            "icon": "mdi:speedometer"
+            "icon": "mdi:speedometer",
+            "prompt": "Get Product by Speed"
           },
-          "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
+          "next": [
+            "019b0270-c493-7072-9d50-87952c5dc547"
+          ],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -146,10 +166,12 @@
           "properties": {
             "action": "PLATFORM:user_interaction",
             "description": "Wait for user to select a product from the available options",
-            "label": "User selected product",
-            "icon": "mdi:user"
+            "icon": "mdi:user",
+            "prompt": "User selected product"
           },
-          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
+          "next": [
+            "019b3302-7846-75c2-9ab7-897c18b8ccee"
+          ],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -158,10 +180,12 @@
           "properties": {
             "action": "TELCO:port_allocation",
             "description": "Assign a port for the selected internet product and create an order",
-            "label": "Assign Port",
-            "icon": "mdi:link"
+            "icon": "mdi:link",
+            "prompt": "Assign Port"
           },
-          "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
+          "next": [
+            "019b209e-3122-75ce-9ba6-674b6184f68d"
+          ],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -170,10 +194,12 @@
           "properties": {
             "action": "TELCO:configuration",
             "description": "Configure the assigned port with necessary settings",
-            "label": "Configure Port",
-            "icon": "mdi:settings"
+            "icon": "mdi:settings",
+            "prompt": "Configure Port"
           },
-          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
+          "next": [
+            "019b32f6-5878-73fb-8411-55916778d9a4"
+          ],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -182,21 +208,22 @@
           "properties": {
             "action": "TELCO:port_connection",
             "description": "Connect the assigned port to the user's residence",
-            "label": "Connect Port",
-            "icon": "mdi:ethernet"
+            "icon": "mdi:ethernet",
+            "prompt": "Connect Port"
           },
-          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
+          "next": [
+            "019b32f6-bd02-734e-bd3a-aec89d79609c"
+          ],
           "createdAt": "2025-06-19T06:02:00Z"
         },
-
         {
           "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
             "description": "Mark the internet subscription setup process as complete ",
-            "label": "Complete",
-            "icon": "mdi:check"
+            "icon": "mdi:check",
+            "prompt": "Complete"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"

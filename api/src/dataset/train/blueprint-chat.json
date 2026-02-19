@@ -11,10 +11,12 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:check_product_count",
-          "label": "Check Product Availability",
-          "icon": "mdi:check"
+          "icon": "mdi:check",
+          "prompt": "Check Product Availability"
         },
-        "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+        "next": [
+          "51dca395-1d90-4a28-9bbc-233de9c1a207"
+        ],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -22,11 +24,15 @@
         "type": "CONDITION",
         "properties": {
           "action": "PLATFORM:decision",
-          "label": "Make Decision",
-          "icon": "mdi:source-branch"
+          "icon": "mdi:source-branch",
+          "prompt": "Make Decision"
         },
-        "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
-        "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
+        "true": [
+          "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
+        ],
+        "false": [
+          "5be22de7-9673-448d-a1b5-dc23a8789b5c"
+        ],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -34,10 +40,12 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:create_order",
-          "label": "Create Order",
-          "icon": "mdi:cart-plus"
+          "icon": "mdi:cart-plus",
+          "prompt": "Create Order"
         },
-        "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
+        "next": [
+          "2a69ce9c-32e9-49c9-ad7c-b631d890359b"
+        ],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -45,8 +53,8 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:send_email",
-          "label": "Send Email",
-          "icon": "mdi:email"
+          "icon": "mdi:email",
+          "prompt": "Send Email"
         },
         "next": null,
         "createdAt": "2025-06-19T06:03:00Z"
@@ -56,8 +64,8 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:reduce_product_count",
-          "label": "Reduce Product Quantity",
-          "icon": "mdi:minus"
+          "icon": "mdi:minus",
+          "prompt": "Reduce Product Quantity"
         },
         "next": null,
         "createdAt": "2025-06-19T06:02:00Z"
@@ -77,10 +85,12 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:check_product_availability",
-          "label": "Check Product Availability",
-          "icon": "mdi:check"
+          "icon": "mdi:check",
+          "prompt": "Check Product Availability"
         },
-        "next": ["b2c3d4e5-f6g7-4h8i-9j0k-l1m2n3o4p5q6"],
+        "next": [
+          "b2c3d4e5-f6g7-4h8i-9j0k-l1m2n3o4p5q6"
+        ],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -88,11 +98,13 @@
         "type": "CONDITION",
         "properties": {
           "action": "PLATFORM:decision",
-          "label": "Product Available?",
-          "icon": "mdi:source-branch"
+          "icon": "mdi:source-branch",
+          "prompt": "Product Available?"
         },
         "true": null,
-        "false": ["c3d4e5f6-g7h8-4i9j-0k1l-m2n3o4p5q6r7"],
+        "false": [
+          "c3d4e5f6-g7h8-4i9j-0k1l-m2n3o4p5q6r7"
+        ],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -100,8 +112,8 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:call_user",
-          "label": "Call User",
-          "icon": "mdi:phone"
+          "icon": "mdi:phone",
+          "prompt": "Call User"
         },
         "next": null,
         "createdAt": "2025-06-19T06:02:00Z"
@@ -115,7 +127,10 @@
         "role": "user",
         "content": "if product is not available then call user"
       },
-      { "role": "assistant", "content": "Here's the flow for your request." },
+      {
+        "role": "assistant",
+        "content": "Here's the flow for your request."
+      },
       {
         "role": "assistant",
         "content": "[{\"id\":\"a1b2c3d4-e5f6-4g7h-8i9j-k0l1m2n3o4p5\",\"type\":\"NORMAL\",\"properties\":{\"action\":\"GREY:check_product_availability\",\"label\":\"Check Product Availability\",\"icon\":\"mdi:check\"},\"next\":[\"b2c3d4e5-f6g7-4h8i-9j0k-l1m2n3o4p5q6\"],\"createdAt\":\"2025-06-19T06:02:00Z\"},{\"id\":\"b2c3d4e5-f6g7-4h8i-9j0k-l1m2n3o4p5q6\",\"type\":\"CONDITION\",\"properties\":{\"action\":\"PLATFORM:decision\",\"label\":\"Product Available?\",\"icon\":\"mdi:decision\"},\"true\":null,\"false\":[\"c3d4e5f6-g7h8-4i9j-0k1l-m2n3o4p5q6r7\"],\"createdAt\":\"2025-06-19T06:02:00Z\"},{\"id\":\"c3d4e5f6-g7h8-4i9j-0k1l-m2n3o4p5q6r7\",\"type\":\"NORMAL\",\"properties\":{\"action\":\"GREY:call_user\",\"label\":\"Call User\",\"icon\":\"mdi:phone\"},\"next\":null,\"createdAt\":\"2025-06-19T06:02:00Z\"}]"
@@ -131,10 +146,12 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:check_product_availability",
-          "label": "Check Product Availability",
-          "icon": "mdi:check"
+          "icon": "mdi:check",
+          "prompt": "Check Product Availability"
         },
-        "next": ["b2c3d4e5-f6g7-4h8i-9j0k-l1m2n3o4p5q6"],
+        "next": [
+          "b2c3d4e5-f6g7-4h8i-9j0k-l1m2n3o4p5q6"
+        ],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -142,11 +159,15 @@
         "type": "CONDITION",
         "properties": {
           "action": "PLATFORM:decision",
-          "label": "Product Available?",
-          "icon": "mdi:source-branch"
+          "icon": "mdi:source-branch",
+          "prompt": "Product Available?"
         },
-        "true": ["d4e5f6g7-h8i9-4j0k-1l2m-n3o4p5q6r7s8"],
-        "false": ["c3d4e5f6-g7h8-4i9j-0k1l-m2n3o4p5q6r7"],
+        "true": [
+          "d4e5f6g7-h8i9-4j0k-1l2m-n3o4p5q6r7s8"
+        ],
+        "false": [
+          "c3d4e5f6-g7h8-4i9j-0k1l-m2n3o4p5q6r7"
+        ],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -154,8 +175,8 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:call_user",
-          "label": "Call User",
-          "icon": "mdi:phone"
+          "icon": "mdi:phone",
+          "prompt": "Call User"
         },
         "next": null,
         "createdAt": "2025-06-19T06:02:00Z"
@@ -165,8 +186,8 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:send_email",
-          "label": "Send Email",
-          "icon": "mdi:email"
+          "icon": "mdi:email",
+          "prompt": "Send Email"
         },
         "next": null,
         "createdAt": "2025-06-19T06:02:00Z"
@@ -186,10 +207,12 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:get_user_address",
-          "label": "Get User Address",
-          "icon": "mdi:home"
+          "icon": "mdi:home",
+          "prompt": "Get User Address"
         },
-        "next": ["int-002"],
+        "next": [
+          "int-002"
+        ],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -197,10 +220,12 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:check_coverage",
-          "label": "Check Coverage Area",
-          "icon": "mdi:map-marker-check"
+          "icon": "mdi:map-marker-check",
+          "prompt": "Check Coverage Area"
         },
-        "next": ["int-003"],
+        "next": [
+          "int-003"
+        ],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -208,10 +233,12 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:get_available_packages",
-          "label": "Get Available Packages",
-          "icon": "mdi:package-variant"
+          "icon": "mdi:package-variant",
+          "prompt": "Get Available Packages"
         },
-        "next": ["int-004"],
+        "next": [
+          "int-004"
+        ],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -219,10 +246,12 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:present_offers",
-          "label": "Present Offers to User",
-          "icon": "mdi:offer"
+          "icon": "mdi:offer",
+          "prompt": "Present Offers to User"
         },
-        "next": ["int-005"],
+        "next": [
+          "int-005"
+        ],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -230,10 +259,12 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:get_user_selection",
-          "label": "Get User Selection",
-          "icon": "mdi:cursor-pointer"
+          "icon": "mdi:cursor-pointer",
+          "prompt": "Get User Selection"
         },
-        "next": ["int-006"],
+        "next": [
+          "int-006"
+        ],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -241,10 +272,12 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:setup_subscription",
-          "label": "Setup Subscription",
-          "icon": "mdi:wifi-check"
+          "icon": "mdi:wifi-check",
+          "prompt": "Setup Subscription"
         },
-        "next": ["int-007"],
+        "next": [
+          "int-007"
+        ],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -252,8 +285,8 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:send_confirmation",
-          "label": "Send Confirmation",
-          "icon": "mdi:email-check"
+          "icon": "mdi:email-check",
+          "prompt": "Send Confirmation"
         },
         "next": null,
         "createdAt": "2025-06-19T06:02:00Z"

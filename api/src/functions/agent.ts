@@ -91,7 +91,7 @@ async function steps({ taskId }) {
 }
 
 async function Blueprints({ agentId }) {
-  const Blueprints = await blueprintFn.list({ agentId });
+  const Blueprints = await blueprintFn.list({ agentId, includeLabels: false });
 
   return {
     role: "system",
@@ -516,7 +516,7 @@ async function chat({
   });
 
   const conversationsData = await conversations({ sessionId });
-  const blueprintsData = await blueprintFn.list({ agentId });
+  const blueprintsData = await Blueprints({ agentId });
 
   const agentDataResult = await agentData.get({ agentId });
 
@@ -560,6 +560,7 @@ async function chat({
   if (blueprintDecision.decision === "BLUEPRINT" && task.length === 0) {
     const blueprintData = await blueprintFn.get({
       blueprintId: blueprintDecision.blueprintId,
+      includeLabels: false,
     });
 
     const blueprintToTaskResponse = await blueprintToTask({

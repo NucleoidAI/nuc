@@ -13,6 +13,7 @@ const Blueprint = {
           properties: z
             .object({
               label: z.string(),
+              prompt: z.string().optional(),
               icon: z.string(),
               action: z.string().optional(),
               description: z.string().optional(),

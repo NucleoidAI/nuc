@@ -153,15 +153,6 @@ export const configurationTool: Tool<ConfigurationInput> = {
       } 
 
       logger.info({ tool: "TELCO:configuration", args }, "Configuration completed successfully");
-
-      const payload = endpoint ? {
-        ontResponse: ontResponse,
-        addCustomerServiceResponse: addCustomerServiceResponse,
-     
-      } : {
-        createOntXml: createOntXml,
-        addCustomerServiceXml: addCustomerServiceXml,
-      };
       
       return {
         content: [
@@ -169,7 +160,7 @@ export const configurationTool: Tool<ConfigurationInput> = {
             type: "text",
             text: JSON.stringify({
               message: `CONFIGURATION_COMPLETED`,
-              ...payload,
+              isRequestSend: endpoint ? true : false,
             }),
           },
         ],

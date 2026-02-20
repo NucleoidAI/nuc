@@ -2,13 +2,13 @@
 
 For UI code review, follow:
 
-- `/Users/halilcengel/Developer/GreyCollar/.github/copilot-reviewer-instructions.md`
+- `./.github/copilot-reviewer-instructions.md`
 
 For API code review, follow:
 
-- `/Users/halilcengel/Developer/GreyCollar/.github/copilot-api-reviewer-instructions.md`
-
-Mandatory UI boundaries in `/dashboard/src`:
+- `./.github/copilot-api-reviewer-instructions.md`
+  W
+  Mandatory UI boundaries in `/dashboard/src`:
 
 - `components/`: stateless and presentational
 - `widgets/`: API calls and orchestration

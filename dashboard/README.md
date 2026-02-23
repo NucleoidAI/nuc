@@ -3,9 +3,9 @@
 Run the development server:
 
 ```bash
-npm run dev
+bun run dev
 # and
-npm run storybook
+bun run storybook
 # and
-cd server; npm start;
+cd server; bun run start;
 ```

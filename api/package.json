@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "author": "NucTeam",
+  "packageManager": "bun@1.1.38",
   "scripts": {
     "prepare": "exit 0",
     "dev": "ts-node server --dev",

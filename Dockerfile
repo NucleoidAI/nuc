@@ -13,6 +13,8 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
+RUN npm install -g bun
+
 WORKDIR /app
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
@@ -39,10 +41,9 @@ COPY ./dashboard/config.js ./config.mjs
 COPY ./api ./api
 COPY ./mcp ./mcp
 
-RUN cd api && npm rebuild sqlite3
-RUN npm install -g concurrently
-RUN npm install express
+RUN bun install
+RUN cd api && bun rebuild sqlite3
 
 EXPOSE 3000
 
-ENTRYPOINT ["npm", "run", "serve"]
+ENTRYPOINT ["bun", "run", "serve"]

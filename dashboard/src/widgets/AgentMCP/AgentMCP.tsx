@@ -19,9 +19,9 @@ const AgentMCP = ({ agent }: { agent: { id: string; name: string } }) => {
     { id: "1", instruction: "Clone the repository from GitHub." },
     {
       id: "2",
-      instruction: "Install the necessary dependencies using `npm install`.",
+      instruction: "Install the necessary dependencies using `bun install`.",
     },
-    { id: "3", instruction: "Run the project using `npm start`." },
+    { id: "3", instruction: "Run the project using `bun run start`." },
     {
       id: "4",
       instruction: "Follow the documentation for further MCP steps.",

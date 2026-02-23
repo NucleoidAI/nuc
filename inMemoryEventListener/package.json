@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "author": "GreyCollar Team",
+  "packageManager": "bun@1.1.38",
   "scripts": {
-    "dev": "npx @canmingir/link-express start"
+    "dev": "bunx @canmingir/link-express start"
   },
   "dependencies": {
     "@canmingir/link-express": "^1.7.3"

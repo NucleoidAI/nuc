@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "author": "GreyTeam",
+  "packageManager": "bun@1.1.38",
   "scripts": {
     "debug": "ts-node debugger.ts",
     "db:reset": "rm -rf servers/telco/db/database.json && cp servers/telco/db/seeds/seed.json servers/telco/db/database.json",

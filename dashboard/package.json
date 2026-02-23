@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "packageManager": "bun@1.1.38",
   "scripts": {
     "dev": "vite",
     "dev:cy": "cypress open",

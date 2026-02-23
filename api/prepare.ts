@@ -4,7 +4,7 @@ const prePush = `#!/usr/bin/env node
 const { execSync } = require("child_process");
 
 try {
-  execSync("npm run lint");
+  execSync("bun run lint");
   execSync("exit 0");
 } catch (err) {
   console.log(err.stdout.toString());

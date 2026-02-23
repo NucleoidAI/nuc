@@ -30,7 +30,7 @@ Human-in-the-Loop (HITL) is a collaborative approach where AI agents work alongs
 
 ```
 git clone https://github.com/greycollar/greycollar.git
-npm install
+bun install
 
 // Add env variables
 JWT_SECRET=<JWT_SECRET>
@@ -40,7 +40,7 @@ OPENAI_API_KEY=<OPENAI_API_KEY>
 ```
 
 ```
-npm start
+bun run start
 ```
 
 This will start three applications simultaneously: Dashboard, API Server and Proxy Server. Once started, the dashboard should be accessible in your browser at http://localhost:3000

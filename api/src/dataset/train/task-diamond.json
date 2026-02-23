@@ -18,9 +18,7 @@
             "icon": "mdi:check",
             "prompt": "Check Product Availability"
           },
-          "next": [
-            "51dca395-1d90-4a28-9bbc-233de9c1a207"
-          ],
+          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -31,12 +29,8 @@
             "icon": "mdi:source-branch",
             "prompt": "Make Decision"
           },
-          "true": [
-            "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-          ],
-          "false": [
-            "5be22de7-9673-448d-a1b5-dc23a8789b5c"
-          ],
+          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+          "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -148,6 +142,17 @@
               "comment": "Creating order"
             },
             {
+              "taskId": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
+              "action": "PLATFORM:message_user",
+              "status": "COMPLETED",
+              "parameters": {
+                "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
+                "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+                "message": "Order created."
+              },
+              "comment": "Notifying user about product order creation"
+            },
+            {
               "taskId": "a777ff167-c4f2-44dc-9e8f-e9e645682446",
               "action": "GREY:send_email",
               "status": "COMPLETED",
@@ -198,7 +203,7 @@
       "id": "ca7g8022-f343-570e-a171-3992963g7f70",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and provide available internet packages for the selected address.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n ShowProducts(products)\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n ShowProducts(products)\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -209,9 +214,7 @@
             "icon": "mdi:map-marker",
             "prompt": "Get User Address"
           },
-          "next": [
-            "76ccda2d-f11f-408c-8087-66c377600d0b"
-          ],
+          "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -222,9 +225,7 @@
             "icon": "mdi:map-marker",
             "prompt": "Get BBK No by Address"
           },
-          "next": [
-            "51dca395-1d90-4a28-9bbc-233de9c1a207"
-          ],
+          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -235,9 +236,7 @@
             "icon": "mdi:server",
             "prompt": "Get Inventory"
           },
-          "next": [
-            "019b209c-2e5a-777f-a04a-11960363fb25"
-          ],
+          "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -246,14 +245,10 @@
           "properties": {
             "action": "PLATFORM:decision",
             "icon": "mdi:source-branch",
-            "prompt": "Check if product is available"
+            "prompt": "Is inventory available?"
           },
-          "true": [
-            "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-          ],
-          "false": [
-            "019b20a6-1aa6-7510-b222-66535e50dfb3"
-          ],
+          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+          "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -262,7 +257,7 @@
           "properties": {
             "action": "PLATFORM:complete",
             "icon": "mdi:check",
-            "prompt": "Complete"
+            "prompt": "No product available, complete"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -273,37 +268,20 @@
           "properties": {
             "action": "TELCO:get_product_by_speed",
             "icon": "mdi:speedometer",
-            "prompt": "Get Product by Speed"
+            "prompt": "Get products by speed"
           },
-          "next": [
-            "019c4c9f-6864-7329-a872-a65efbbdb4d1"
-          ],
+          "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
-          "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:user",
-            "prompt": "Notify user about available products"
-          },
-          "next": [
-            "019b0270-c493-7072-9d50-87952c5dc547"
-          ],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b0270-c493-7072-9d50-87952c5dc547",
+          "id": "019c8a58-10e3-713f-9484-78d04923040f",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
-            "icon": "mdi:user",
-            "prompt": "User selected product"
+            "icon": "mdi:cursor-pointer",
+            "prompt": "Provide available products and wait for user to select a product"
           },
-          "next": [
-            "019b3302-7846-75c2-9ab7-897c18b8ccee"
-          ],
+          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -312,11 +290,20 @@
           "properties": {
             "action": "TELCO:port_allocation",
             "icon": "mdi:link",
-            "prompt": "Assign Port"
+            "prompt": "Allocate port and create order"
           },
-          "next": [
-            "019b209e-3122-75ce-9ba6-674b6184f68d"
-          ],
+          "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "icon": "mdi:bell",
+            "prompt": "Notify user about port allocation"
+          },
+          "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -325,11 +312,9 @@
           "properties": {
             "action": "TELCO:configuration",
             "icon": "mdi:settings",
-            "prompt": "Configure Port"
+            "prompt": "Configure allocated port"
           },
-          "next": [
-            "019b32f6-5878-73fb-8411-55916778d9a4"
-          ],
+          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -338,11 +323,9 @@
           "properties": {
             "action": "TELCO:port_connection",
             "icon": "mdi:ethernet",
-            "prompt": "Connect Port"
+            "prompt": "Connect port to residence"
           },
-          "next": [
-            "019b32f6-bd02-734e-bd3a-aec89d79609c"
-          ],
+          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -351,7 +334,7 @@
           "properties": {
             "action": "PLATFORM:complete",
             "icon": "mdi:check",
-            "prompt": "Complete"
+            "prompt": "Complete setup flow"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -399,7 +382,7 @@
         "status": "COMPLETED",
         "parameters": {
           "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
-          "message": "We apologize, but your address could not be found in our database. Please contact our support center at 444 1 444 for assistance with your internet subscription request."
+          "message": "Sorry, we couldn't find your address. Please call 444 1 444 for help."
         },
         "comment": "Notifying user to call support center"
       },
@@ -415,12 +398,12 @@
     "id": "1dcgcfde-6f1e-5a35-c6ge-7ef373396a47",
     "description": "Setup internet subscription at user's address.",
     "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
-    "pseudocode": "BEGIN_CONTEXT \nUser.Address = GetUserAddress()\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "pseudocode": "BEGIN_CONTEXT \nUser.Address = GetUserAddress()\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "blueprint": {
       "id": "ca7g8022-f343-570e-a171-3992963g7f70",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and provide available internet packages for the selected address.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n ShowProducts(products)\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n ShowProducts(products)\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -431,9 +414,7 @@
             "icon": "mdi:map-marker",
             "prompt": "Get User Address"
           },
-          "next": [
-            "76ccda2d-f11f-408c-8087-66c377600d0b"
-          ],
+          "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -444,9 +425,7 @@
             "icon": "mdi:map-marker",
             "prompt": "Get BBK No by Address"
           },
-          "next": [
-            "51dca395-1d90-4a28-9bbc-233de9c1a207"
-          ],
+          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -457,9 +436,7 @@
             "icon": "mdi:server",
             "prompt": "Get Inventory"
           },
-          "next": [
-            "019b209c-2e5a-777f-a04a-11960363fb25"
-          ],
+          "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -468,14 +445,10 @@
           "properties": {
             "action": "PLATFORM:decision",
             "icon": "mdi:source-branch",
-            "prompt": "Check if product is available"
+            "prompt": "Is inventory available?"
           },
-          "true": [
-            "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-          ],
-          "false": [
-            "019b20a6-1aa6-7510-b222-66535e50dfb3"
-          ],
+          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+          "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -484,7 +457,7 @@
           "properties": {
             "action": "PLATFORM:complete",
             "icon": "mdi:check",
-            "prompt": "Complete"
+            "prompt": "No product available, complete"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -495,37 +468,20 @@
           "properties": {
             "action": "TELCO:get_product_by_speed",
             "icon": "mdi:speedometer",
-            "prompt": "Get Product by Speed"
+            "prompt": "Get products by speed"
           },
-          "next": [
-            "019c4c9f-6864-7329-a872-a65efbbdb4d1"
-          ],
+          "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
-          "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:user",
-            "prompt": "Notify user about available products"
-          },
-          "next": [
-            "019b0270-c493-7072-9d50-87952c5dc547"
-          ],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b0270-c493-7072-9d50-87952c5dc547",
+          "id": "019c8a58-10e3-713f-9484-78d04923040f",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
-            "icon": "mdi:user",
-            "prompt": "User selected product"
+            "icon": "mdi:cursor-pointer",
+            "prompt": "Provide available products and wait for user to select a product"
           },
-          "next": [
-            "019b3302-7846-75c2-9ab7-897c18b8ccee"
-          ],
+          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -534,11 +490,20 @@
           "properties": {
             "action": "TELCO:port_allocation",
             "icon": "mdi:link",
-            "prompt": "Assign Port"
+            "prompt": "Allocate port and create order"
           },
-          "next": [
-            "019b209e-3122-75ce-9ba6-674b6184f68d"
-          ],
+          "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "icon": "mdi:bell",
+            "prompt": "Notify user about port allocation"
+          },
+          "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -547,11 +512,9 @@
           "properties": {
             "action": "TELCO:configuration",
             "icon": "mdi:settings",
-            "prompt": "Configure Port"
+            "prompt": "Configure allocated port"
           },
-          "next": [
-            "019b32f6-5878-73fb-8411-55916778d9a4"
-          ],
+          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -560,11 +523,9 @@
           "properties": {
             "action": "TELCO:port_connection",
             "icon": "mdi:ethernet",
-            "prompt": "Connect Port"
+            "prompt": "Connect port to residence"
           },
-          "next": [
-            "019b32f6-bd02-734e-bd3a-aec89d79609c"
-          ],
+          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -573,7 +534,7 @@
           "properties": {
             "action": "PLATFORM:complete",
             "icon": "mdi:check",
-            "prompt": "Complete"
+            "prompt": "Complete setup flow"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -657,20 +618,10 @@
             },
             {
               "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-              "action": "PLATFORM:message_user",
-              "status": "COMPLETED",
-              "parameters": {
-                "sessionId": "123456019b6e75-8a07-72f2-8adf-82cd88f6b7cc7890",
-                "message": "Available products are: 100mbps 6 months unlimited, 100mbps 3 months unlimited, 50mbps 12 months unlimited, 50mbps 6 months unlimited, 50mbps 3 months unlimited, 25mbps 12 months unlimited, 25mbps 3 months unlimited, 25mbps 6 months unlimited."
-              },
-              "comment": "Notifying user about available products"
-            },
-            {
-              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
               "action": "PLATFORM:user_interaction",
               "status": "COMPLETED",
               "parameters": {
-                "question": "Please select a product"
+                "question": "Here are your options: 100mbps (6 months), 100mbps (3 months), 50mbps (12 months), 50mbps (6 months), 50mbps (3 months), 25mbps (12 months), 25mbps (3 months), 25mbps (6 months)."
               },
               "comment": "Waiting for user to select a product"
             },
@@ -702,7 +653,7 @@
               "status": "COMPLETED",
               "parameters": {
                 "sessionId": "123456019b6e75-8a07-72f2-8adf-82cd88f6b7cc7890",
-                "message": "We apologize, but we are not able to allocate the port. Please try again later."
+                "message": "Sorry, we couldn't assign a port. Please try again later."
               },
               "comment": "Notifying user to we are not able to allocate the port"
             },
@@ -716,6 +667,542 @@
           "false": [
             {
               "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+              "action": "PLATFORM:complete",
+              "status": "COMPLETED",
+              "parameters": {},
+              "comment": "Completing task - inventory not available"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "5hkjgmih-8h4g-7d57-e9jh-0igf495519d60",
+    "description": "Setup internet subscription for a US residential address with full notification flow.",
+    "sessionId": "029c8g97-0c29-94h4-0cfg-04ef00h8d9ee",
+    "pseudocode": "BEGIN_CONTEXT \nUser.Address = GetUserAddress()\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\n    Complete()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "blueprint": {
+      "id": "ca7g8022-f343-570e-a171-3992963g7f70",
+      "title": "Basic Internet Subscription Setup",
+      "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    ShowProducts(products)\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\n    Complete()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "nodes": [
+        {
+          "id": "019b9433-3de3-7545-a40a-854419ae8be1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "icon": "mdi:map-marker",
+            "prompt": "Get User Address"
+          },
+          "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TELCO:get_bbk_by_address",
+            "icon": "mdi:map-marker",
+            "prompt": "Get BBK No by Address"
+          },
+          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TELCO:get_inventory",
+            "icon": "mdi:server",
+            "prompt": "Get Inventory"
+          },
+          "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b209c-2e5a-777f-a04a-11960363fb25",
+          "type": "CONDITION",
+          "properties": {
+            "action": "PLATFORM:decision",
+            "icon": "mdi:source-branch",
+            "prompt": "Is inventory available?"
+          },
+          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+          "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "icon": "mdi:check",
+            "prompt": "No product available, complete"
+          },
+          "next": null,
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TELCO:get_product_by_speed",
+            "icon": "mdi:speedometer",
+            "prompt": "Get products by speed"
+          },
+          "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019c8a58-10e3-713f-9484-78d04923040f",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "icon": "mdi:cursor-pointer",
+            "prompt": "Provide available products and wait for user to select a product"
+          },
+          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TELCO:port_allocation",
+            "icon": "mdi:link",
+            "prompt": "Allocate port and create order"
+          },
+          "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "icon": "mdi:bell",
+            "prompt": "Notify user about port allocation"
+          },
+          "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TELCO:configuration",
+            "icon": "mdi:settings",
+            "prompt": "Configure allocated port"
+          },
+          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b32f6-5878-73fb-8411-55916778d9a4",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TELCO:port_connection",
+            "icon": "mdi:ethernet",
+            "prompt": "Connect port to residence"
+          },
+          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "icon": "mdi:check",
+            "prompt": "Complete setup flow"
+          },
+          "next": null,
+          "createdAt": "2025-06-19T06:02:00Z"
+        }
+      ]
+    },
+    "knowledge": [],
+    "steps": [
+      {
+        "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+        "action": "PLATFORM:user_interaction",
+        "status": "COMPLETED",
+        "parameters": {
+          "question": "What is your address?"
+        },
+        "result": "2555 Wentwood Ct, Cumming, GA 30041",
+        "comment": "User provided US residential address"
+      },
+      {
+        "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+        "action": "TELCO:get_bbk_by_address",
+        "status": "COMPLETED",
+        "parameters": {
+          "address": "2555 Wentwood Ct, Cumming, GA 30041"
+        },
+        "comment": "BBK number 990 retrieved successfully"
+      },
+      {
+        "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+        "action": "TELCO:get_inventory",
+        "status": "COMPLETED",
+        "parameters": {
+          "bbk": "990"
+        },
+        "comment": "Inventory is available for BBK 990"
+      },
+      {
+        "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+        "action": "PLATFORM:decision",
+        "status": "COMPLETED",
+        "comment": "Inventory available, proceeding with product selection",
+        "parameters": {
+          "condition": "inventory.Available == TRUE",
+          "true": [
+            {
+              "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+              "action": "TELCO:get_product_by_speed",
+              "status": "COMPLETED",
+              "parameters": {
+                "speed_limit": "16mbps"
+              },
+              "comment": "Retrieved available internet packages for 16mbps"
+            },
+            {
+              "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+              "action": "PLATFORM:user_interaction",
+              "status": "COMPLETED",
+              "parameters": {
+                "question": "2 Options: 16 Mbps (12 months), 16 Mbps (6 months). Select one."
+              },
+              "comment": "User selected 16 Mbps (12 months)"
+            },
+            {
+              "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+              "action": "TELCO:port_allocation",
+              "status": "COMPLETED",
+              "parameters": {
+                "device_serial_number": "1234567890",
+                "bbk_no": "990",
+                "speed_limit": "16mbps"
+              },
+              "comment": "Port 9 allocated successfully for BBK 990"
+            },
+            {
+              "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+              "action": "PLATFORM:message_user",
+              "status": "COMPLETED",
+              "parameters": {
+                "sessionId": "029c8g97-0c29-94h4-0cfg-04ef00h8d9ee",
+                "message": "A port has been assigned."
+              },
+              "comment": "Notified user about port allocation completion"
+            },
+            {
+              "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+              "action": "TELCO:configuration",
+              "status": "COMPLETED",
+              "parameters": {
+                "device_serial_number": "1234567890",
+                "assignment_id": "TH990"
+              },
+              "comment": "Port configured successfully for device 1234567890"
+            },
+            {
+              "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+              "action": "TELCO:port_connection",
+              "status": "COMPLETED",
+              "parameters": {
+                "assignment_id": "TH990"
+              },
+              "comment": "Port connected successfully to the residence"
+            },
+            {
+              "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+              "action": "PLATFORM:complete",
+              "status": "COMPLETED",
+              "comment": "Internet subscription has been successfully completed."
+            }
+          ],
+          "false": [
+            {
+              "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+              "action": "PLATFORM:complete",
+              "status": "COMPLETED",
+              "parameters": {},
+              "comment": "Completing task - inventory not available"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "3fgidgef-7g3f-6c46-d8ig-9hf484408c59",
+    "description": "Setup internet subscription at user's address.",
+    "sessionId": "019b7f86-9b18-83g3-9beg-93de99g7c8dd",
+    "pseudocode": "BEGIN_CONTEXT \nUser.Address = GetUserAddress()\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "blueprint": {
+      "id": "ca7g8022-f343-570e-a171-3992963g7f70",
+      "title": "Basic Internet Subscription Setup",
+      "description": "Offer internet packages based on the user's residential address and provide available internet packages for the selected address.",
+      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n ShowProducts(products)\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "nodes": [
+        {
+          "id": "019b9433-3de3-7545-a40a-854419ae8be1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "icon": "mdi:map-marker",
+            "prompt": "Get User Address"
+          },
+          "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TELCO:get_bbk_by_address",
+            "icon": "mdi:map-marker",
+            "prompt": "Get BBK No by Address"
+          },
+          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TELCO:get_inventory",
+            "icon": "mdi:server",
+            "prompt": "Get Inventory"
+          },
+          "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b209c-2e5a-777f-a04a-11960363fb25",
+          "type": "CONDITION",
+          "properties": {
+            "action": "PLATFORM:decision",
+            "icon": "mdi:source-branch",
+            "prompt": "Check if product is available"
+          },
+          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+          "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "icon": "mdi:check",
+            "prompt": "Complete"
+          },
+          "next": null,
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TELCO:get_product_by_speed",
+            "icon": "mdi:speedometer",
+            "prompt": "Get Product by Speed"
+          },
+          "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "icon": "mdi:user",
+            "prompt": "Notify user about available products"
+          },
+          "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b0270-c493-7072-9d50-87952c5dc547",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "icon": "mdi:user",
+            "prompt": "Waiting for user to select a product"
+          },
+          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TELCO:port_allocation",
+            "icon": "mdi:link",
+            "prompt": "Assign Port"
+          },
+          "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "icon": "mdi:bell",
+            "prompt": "Notify user about port allocation"
+          },
+          "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TELCO:configuration",
+            "icon": "mdi:settings",
+            "prompt": "Configure Port"
+          },
+          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b32f6-5878-73fb-8411-55916778d9a4",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TELCO:port_connection",
+            "icon": "mdi:ethernet",
+            "prompt": "Connect Port"
+          },
+          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "icon": "mdi:check",
+            "prompt": "Complete"
+          },
+          "next": null,
+          "createdAt": "2025-06-19T06:02:00Z"
+        }
+      ]
+    },
+    "knowledge": [],
+    "steps": [
+      {
+        "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+        "action": "PLATFORM:user_interaction",
+        "status": "COMPLETED",
+        "parameters": {
+          "question": "What is your address?"
+        },
+        "comment": "User provided address"
+      },
+      {
+        "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+        "action": "TELCO:get_bbk_by_address",
+        "status": "COMPLETED",
+        "parameters": {
+          "address": "Küçükbakkalköy Mahallesi, Vedat Günyol Caddesi, No. 12, Ataşehir, İstanbul"
+        },
+        "comment": "BBK number retrieved successfully"
+      },
+      {
+        "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+        "action": "TELCO:get_inventory",
+        "status": "COMPLETED",
+        "parameters": {
+          "bbk": "987"
+        },
+        "comment": "Inventory is available"
+      },
+      {
+        "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+        "action": "PLATFORM:decision",
+        "status": "COMPLETED",
+        "comment": "Inventory available, proceeding with product selection",
+        "parameters": {
+          "condition": "inventory.Available == TRUE",
+          "true": [
+            {
+              "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+              "action": "TELCO:get_product_by_speed",
+              "status": "COMPLETED",
+              "parameters": {
+                "speed_limit": "16mbps"
+              },
+              "comment": "Retrieved available internet packages"
+            },
+            {
+              "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+              "action": "PLATFORM:user_interaction",
+              "status": "COMPLETED",
+              "parameters": {
+                "question": "2 Options: 16 Mbps (12 months), 16 Mbps (6 months). Please select a product"
+              },
+              "comment": "Waiting for user to select a product"
+            },
+            {
+              "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+              "action": "TELCO:port_allocation",
+              "status": "COMPLETED",
+              "parameters": {
+                "device_serial_number": "123",
+                "bbk_no": "987",
+                "speed_limit": "16mbps"
+              },
+              "comment": "Port allocated successfully"
+            },
+            {
+              "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+              "action": "PLATFORM:message_user",
+              "status": "COMPLETED",
+              "parameters": {
+                "sessionId": "019b7f86-9b18-83g3-9beg-93de99g7c8dd",
+                "message": "A port has been assigned."
+              },
+              "comment": "Notified user about port allocation completion"
+            },
+            {
+              "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+              "action": "TELCO:configuration",
+              "status": "COMPLETED",
+              "parameters": {
+                "device_serial_number": "123",
+                "assignment_id": "TH001"
+              },
+              "comment": "Port configured successfully"
+            },
+            {
+              "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+              "action": "TELCO:port_connection",
+              "status": "COMPLETED",
+              "parameters": {
+                "assignment_id": "TH001"
+              },
+              "comment": "Port connected successfully"
+            },
+            {
+              "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+              "action": "PLATFORM:complete",
+              "status": "COMPLETED",
+              "comment": "Internet subscription has been successfully completed."
+            }
+          ],
+          "false": [
+            {
+              "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
               "action": "PLATFORM:complete",
               "status": "COMPLETED",
               "parameters": {},

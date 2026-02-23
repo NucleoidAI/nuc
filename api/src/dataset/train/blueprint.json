@@ -14,9 +14,7 @@
             "icon": "mdi:check",
             "prompt": "Check Product Availability"
           },
-          "next": [
-            "51dca395-1d90-4a28-9bbc-233de9c1a207"
-          ],
+          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -27,12 +25,8 @@
             "icon": "mdi:source-branch",
             "prompt": "Make Decision"
           },
-          "true": [
-            "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-          ],
-          "false": [
-            "5be22de7-9673-448d-a1b5-dc23a8789b5c"
-          ],
+          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+          "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -43,9 +37,7 @@
             "icon": "mdi:cart-plus",
             "prompt": "Create Order"
           },
-          "next": [
-            "2a69ce9c-32e9-49c9-ad7c-b631d890359b"
-          ],
+          "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -103,7 +95,7 @@
       "description": "Check product availability, if not exist, create order.",
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
-    "answer": "I'm creating a task to check battery availability. The system will verify stock for product btr-123 and automatically order 10 units if needed. You'll receive a confirmation email once complete."
+    "answer": "Checking stock for btr-123. I'll order 10 units if needed."
   },
   {
     "blueprint": {
@@ -120,9 +112,7 @@
             "icon": "mdi:check",
             "prompt": "Check Product Availability"
           },
-          "next": [
-            "51dca395-1d90-4a28-9bbc-233de9c1a207"
-          ],
+          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -133,12 +123,8 @@
             "icon": "mdi:source-branch",
             "prompt": "Make Decision"
           },
-          "true": [
-            "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-          ],
-          "false": [
-            "5be22de7-9673-448d-a1b5-dc23a8789b5c"
-          ],
+          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+          "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -149,9 +135,7 @@
             "icon": "mdi:cart-plus",
             "prompt": "Create Order"
           },
-          "next": [
-            "2a69ce9c-32e9-49c9-ad7c-b631d890359b"
-          ],
+          "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -209,7 +193,7 @@
       "description": "Check product availability, if not exist, create order.",
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
-    "answer": "I'm checking the battery stock levels now. The task will verify inventory for btr-123 and place an order for 10 units automatically if stock is low."
+    "answer": "Checking battery stock now. I'll order 10 units of btr-123 if it's low."
   },
   {
     "blueprint": {
@@ -226,9 +210,7 @@
             "icon": "mdi:check",
             "prompt": "Check Product Availability"
           },
-          "next": [
-            "51dca395-1d90-4a28-9bbc-233de9c1a207"
-          ],
+          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -239,12 +221,8 @@
             "icon": "mdi:source-branch",
             "prompt": "Make Decision"
           },
-          "true": [
-            "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-          ],
-          "false": [
-            "5be22de7-9673-448d-a1b5-dc23a8789b5c"
-          ],
+          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+          "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -255,9 +233,7 @@
             "icon": "mdi:cart-plus",
             "prompt": "Create Order"
           },
-          "next": [
-            "2a69ce9c-32e9-49c9-ad7c-b631d890359b"
-          ],
+          "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -315,7 +291,7 @@
       "description": "Check product availability, if not exist, create order.",
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
-    "answer": "Starting the battery restock process. I'll check current inventory levels and order 10 units of btr-123 if stock is insufficient. The manager will be notified via email."
+    "answer": "Starting restock check. I'll order 10 units of btr-123 if stock is low. Manager will get an email."
   },
   {
     "blueprint": {
@@ -332,9 +308,7 @@
             "icon": "mdi:check",
             "prompt": "Check Product Availability"
           },
-          "next": [
-            "51dca395-1d90-4a28-9bbc-233de9c1a207"
-          ],
+          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -345,12 +319,8 @@
             "icon": "mdi:source-branch",
             "prompt": "Make Decision"
           },
-          "true": [
-            "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-          ],
-          "false": [
-            "5be22de7-9673-448d-a1b5-dc23a8789b5c"
-          ],
+          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+          "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -361,9 +331,7 @@
             "icon": "mdi:cart-plus",
             "prompt": "Create Order"
           },
-          "next": [
-            "2a69ce9c-32e9-49c9-ad7c-b631d890359b"
-          ],
+          "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -421,14 +389,14 @@
       "description": "Check product availability, if not exist, create order.",
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
-    "answer": "Processing your battery order request. The system will first verify current stock levels for btr-123, then create an order for 10 units if needed. Email confirmation will be sent to the manager."
+    "answer": "Checking stock for btr-123. I'll place an order for 10 units if needed. Manager gets an email."
   },
   {
     "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -440,9 +408,7 @@
             "icon": "mdi:map-marker",
             "prompt": "Get BBK No by Address"
           },
-          "next": [
-            "51dca395-1d90-4a28-9bbc-233de9c1a207"
-          ],
+          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -454,9 +420,7 @@
             "icon": "mdi:server",
             "prompt": "Get Inventory"
           },
-          "next": [
-            "019b209c-2e5a-777f-a04a-11960363fb25"
-          ],
+          "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -468,12 +432,8 @@
             "icon": "mdi:source-branch",
             "prompt": "Check if product is available"
           },
-          "true": [
-            "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-          ],
-          "false": [
-            "019b20a6-1aa6-7510-b222-66535e50dfb3"
-          ],
+          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+          "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -497,26 +457,19 @@
             "icon": "mdi:speedometer",
             "prompt": "Get Product by Speed"
           },
-          "next": [
-            "019b0270-c493-7072-9d50-87952c5dc547"
-          ],
+          "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
-          "id": "019b0270-c493-7072-9d50-87952c5dc547",
+          "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
-            "parameters": {
-              "question": "What is your address?"
-            },
             "description": "Wait for user to select a product from the available options",
             "icon": "mdi:user",
-            "prompt": "User selected product"
+            "prompt": "Provide available options and waiting for user to select a product"
           },
-          "next": [
-            "019b3302-7846-75c2-9ab7-897c18b8ccee"
-          ],
+          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -528,9 +481,19 @@
             "icon": "mdi:link",
             "prompt": "Assign Port"
           },
-          "next": [
-            "019b209e-3122-75ce-9ba6-674b6184f68d"
-          ],
+          "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Notify user about port allocation completion",
+            "icon": "mdi:bell",
+            "prompt": "Notify user about port allocation"
+          },
+          "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -542,9 +505,7 @@
             "icon": "mdi:settings",
             "prompt": "Configure Port"
           },
-          "next": [
-            "019b32f6-5878-73fb-8411-55916778d9a4"
-          ],
+          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -556,9 +517,7 @@
             "icon": "mdi:ethernet",
             "prompt": "Connect Port"
           },
-          "next": [
-            "019b32f6-bd02-734e-bd3a-aec89d79609c"
-          ],
+          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -576,21 +535,21 @@
       ]
     },
     "content": "I want to setup internet subscription at my address.",
-    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "task": {
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
       "status": "COMPLETED",
       "description": "Setup internet subscription at user's address.",
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
-    "answer": "I'm initiating the internet subscription setup process. The system will check infrastructure availability at your address, present available packages, and then proceed with port assignment, configuration, and connection activation."
+    "answer": "Internet subscription is being initiated."
   },
   {
     "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -602,9 +561,7 @@
             "icon": "mdi:map-marker",
             "prompt": "Get BBK No by Address"
           },
-          "next": [
-            "51dca395-1d90-4a28-9bbc-233de9c1a207"
-          ],
+          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -616,9 +573,7 @@
             "icon": "mdi:server",
             "prompt": "Get Inventory"
           },
-          "next": [
-            "019b209c-2e5a-777f-a04a-11960363fb25"
-          ],
+          "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -630,12 +585,8 @@
             "icon": "mdi:source-branch",
             "prompt": "Check if product is available"
           },
-          "true": [
-            "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-          ],
-          "false": [
-            "019b20a6-1aa6-7510-b222-66535e50dfb3"
-          ],
+          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+          "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -659,9 +610,19 @@
             "icon": "mdi:speedometer",
             "prompt": "Get Product by Speed"
           },
-          "next": [
-            "019b0270-c493-7072-9d50-87952c5dc547"
-          ],
+          "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Notify user about available products",
+            "icon": "mdi:bell",
+            "prompt": "Notify user about available products"
+          },
+          "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -671,11 +632,9 @@
             "action": "PLATFORM:user_interaction",
             "description": "Wait for user to select a product from the available options",
             "icon": "mdi:user",
-            "prompt": "User selected product"
+            "prompt": "Waiting for user to select a product"
           },
-          "next": [
-            "019b3302-7846-75c2-9ab7-897c18b8ccee"
-          ],
+          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -687,9 +646,19 @@
             "icon": "mdi:link",
             "prompt": "Assign Port"
           },
-          "next": [
-            "019b209e-3122-75ce-9ba6-674b6184f68d"
-          ],
+          "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Notify user about port allocation completion",
+            "icon": "mdi:bell",
+            "prompt": "Notify user about port allocation"
+          },
+          "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -701,9 +670,7 @@
             "icon": "mdi:settings",
             "prompt": "Configure Port"
           },
-          "next": [
-            "019b32f6-5878-73fb-8411-55916778d9a4"
-          ],
+          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -713,11 +680,9 @@
             "action": "TELCO:port_connection",
             "description": "Connect the assigned port to the user's residence",
             "icon": "mdi:ethernet",
-            "prompt": "Connect Port"
+            "prompt": "Connect the assigned port to the user's residence"
           },
-          "next": [
-            "019b32f6-bd02-734e-bd3a-aec89d79609c"
-          ],
+          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -735,21 +700,21 @@
       ]
     },
     "content": "I need internet at home",
-    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "task": {
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793558",
       "status": "COMPLETED",
       "description": "Setup internet subscription at user's address.",
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
-    "answer": "Starting the home internet setup process. I'll check what services are available at your location, show you the available package options, and complete the full setup including port assignment and activation."
+    "answer": "Internet subscription is being initiated."
   },
   {
     "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -761,9 +726,7 @@
             "icon": "mdi:map-marker",
             "prompt": "Get BBK No by Address"
           },
-          "next": [
-            "51dca395-1d90-4a28-9bbc-233de9c1a207"
-          ],
+          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -775,9 +738,7 @@
             "icon": "mdi:server",
             "prompt": "Get Inventory"
           },
-          "next": [
-            "019b209c-2e5a-777f-a04a-11960363fb25"
-          ],
+          "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -789,12 +750,8 @@
             "icon": "mdi:source-branch",
             "prompt": "Check if product is available"
           },
-          "true": [
-            "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-          ],
-          "false": [
-            "019b20a6-1aa6-7510-b222-66535e50dfb3"
-          ],
+          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+          "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -818,9 +775,19 @@
             "icon": "mdi:speedometer",
             "prompt": "Get Product by Speed"
           },
-          "next": [
-            "019b0270-c493-7072-9d50-87952c5dc547"
-          ],
+          "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Notify user about available products",
+            "icon": "mdi:bell",
+            "prompt": "Notify user about available products"
+          },
+          "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -830,11 +797,9 @@
             "action": "PLATFORM:user_interaction",
             "description": "Wait for user to select a product from the available options",
             "icon": "mdi:user",
-            "prompt": "User selected product"
+            "prompt": "Please select a product."
           },
-          "next": [
-            "019b3302-7846-75c2-9ab7-897c18b8ccee"
-          ],
+          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -846,9 +811,19 @@
             "icon": "mdi:link",
             "prompt": "Assign Port"
           },
-          "next": [
-            "019b209e-3122-75ce-9ba6-674b6184f68d"
-          ],
+          "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Notify user about port allocation completion",
+            "icon": "mdi:bell",
+            "prompt": "Notify user about port allocation"
+          },
+          "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -860,9 +835,7 @@
             "icon": "mdi:settings",
             "prompt": "Configure Port"
           },
-          "next": [
-            "019b32f6-5878-73fb-8411-55916778d9a4"
-          ],
+          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -874,9 +847,7 @@
             "icon": "mdi:ethernet",
             "prompt": "Connect Port"
           },
-          "next": [
-            "019b32f6-bd02-734e-bd3a-aec89d79609c"
-          ],
+          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -894,21 +865,21 @@
       ]
     },
     "content": "Can you get me internet service?",
-    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "task": {
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793559",
       "status": "COMPLETED",
       "description": "Setup internet subscription at user's address.",
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
-    "answer": "I'm starting the internet service setup. The system will verify infrastructure availability, display available internet packages, and complete the setup with port assignment, configuration, and connection."
+    "answer": "Internet subscription is being initiated."
   },
   {
     "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -920,9 +891,7 @@
             "icon": "mdi:map-marker",
             "prompt": "Get BBK No by Address"
           },
-          "next": [
-            "51dca395-1d90-4a28-9bbc-233de9c1a207"
-          ],
+          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -934,9 +903,7 @@
             "icon": "mdi:server",
             "prompt": "Get Inventory"
           },
-          "next": [
-            "019b209c-2e5a-777f-a04a-11960363fb25"
-          ],
+          "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -948,12 +915,8 @@
             "icon": "mdi:source-branch",
             "prompt": "Check if product is available"
           },
-          "true": [
-            "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-          ],
-          "false": [
-            "019b20a6-1aa6-7510-b222-66535e50dfb3"
-          ],
+          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+          "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -977,9 +940,19 @@
             "icon": "mdi:speedometer",
             "prompt": "Get Product by Speed"
           },
-          "next": [
-            "019b0270-c493-7072-9d50-87952c5dc547"
-          ],
+          "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Notify user about available products",
+            "icon": "mdi:bell",
+            "prompt": "Notify user about available products"
+          },
+          "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -989,11 +962,9 @@
             "action": "PLATFORM:user_interaction",
             "description": "Wait for user to select a product from the available options",
             "icon": "mdi:user",
-            "prompt": "User selected product"
+            "prompt": "Waiting for user to select a product"
           },
-          "next": [
-            "019b3302-7846-75c2-9ab7-897c18b8ccee"
-          ],
+          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -1005,9 +976,19 @@
             "icon": "mdi:link",
             "prompt": "Assign Port"
           },
-          "next": [
-            "019b209e-3122-75ce-9ba6-674b6184f68d"
-          ],
+          "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Notify user about port allocation completion",
+            "icon": "mdi:bell",
+            "prompt": "Notify user about port allocation"
+          },
+          "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -1019,9 +1000,7 @@
             "icon": "mdi:settings",
             "prompt": "Configure Port"
           },
-          "next": [
-            "019b32f6-5878-73fb-8411-55916778d9a4"
-          ],
+          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -1033,9 +1012,7 @@
             "icon": "mdi:ethernet",
             "prompt": "Connect Port"
           },
-          "next": [
-            "019b32f6-bd02-734e-bd3a-aec89d79609c"
-          ],
+          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -1053,21 +1030,21 @@
       ]
     },
     "content": "Setup new internet connection",
-    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "task": {
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793560",
       "status": "COMPLETED",
       "description": "Setup internet subscription at user's address.",
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
-    "answer": "Initiating new internet connection setup. I'll check service availability, present available speed options, and proceed with port assignment, configuration, and connection activation."
+    "answer": "Internet subscription is being initiated."
   },
   {
     "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -1079,9 +1056,7 @@
             "icon": "mdi:map-marker",
             "prompt": "Get BBK No by Address"
           },
-          "next": [
-            "51dca395-1d90-4a28-9bbc-233de9c1a207"
-          ],
+          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -1093,9 +1068,7 @@
             "icon": "mdi:server",
             "prompt": "Get Inventory"
           },
-          "next": [
-            "019b209c-2e5a-777f-a04a-11960363fb25"
-          ],
+          "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -1107,12 +1080,8 @@
             "icon": "mdi:source-branch",
             "prompt": "Check if product is available"
           },
-          "true": [
-            "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-          ],
-          "false": [
-            "019b20a6-1aa6-7510-b222-66535e50dfb3"
-          ],
+          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+          "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -1136,9 +1105,19 @@
             "icon": "mdi:speedometer",
             "prompt": "Get Product by Speed"
           },
-          "next": [
-            "019b0270-c493-7072-9d50-87952c5dc547"
-          ],
+          "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Notify user about available products",
+            "icon": "mdi:bell",
+            "prompt": "Notify user about available products"
+          },
+          "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -1148,11 +1127,9 @@
             "action": "PLATFORM:user_interaction",
             "description": "Wait for user to select a product from the available options",
             "icon": "mdi:user",
-            "prompt": "User selected product"
+            "prompt": "Waiting for user to select a product"
           },
-          "next": [
-            "019b3302-7846-75c2-9ab7-897c18b8ccee"
-          ],
+          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -1164,9 +1141,19 @@
             "icon": "mdi:link",
             "prompt": "Assign Port"
           },
-          "next": [
-            "019b209e-3122-75ce-9ba6-674b6184f68d"
-          ],
+          "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Notify user about port allocation completion",
+            "icon": "mdi:bell",
+            "prompt": "Notify user about port allocation"
+          },
+          "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -1178,9 +1165,7 @@
             "icon": "mdi:settings",
             "prompt": "Configure Port"
           },
-          "next": [
-            "019b32f6-5878-73fb-8411-55916778d9a4"
-          ],
+          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -1192,9 +1177,7 @@
             "icon": "mdi:ethernet",
             "prompt": "Connect Port"
           },
-          "next": [
-            "019b32f6-bd02-734e-bd3a-aec89d79609c"
-          ],
+          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -1212,21 +1195,21 @@
       ]
     },
     "content": "I want to subscribe to internet",
-    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "task": {
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793561",
       "status": "COMPLETED",
       "description": "Setup internet subscription at user's address.",
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
-    "answer": "I'm processing your internet subscription request. The task will check infrastructure availability, show available packages, and complete the full service setup including port assignment and activation."
+    "answer": "Internet subscription is being initiated."
   },
   {
     "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -1238,9 +1221,7 @@
             "icon": "mdi:map-marker",
             "prompt": "Get BBK No by Address"
           },
-          "next": [
-            "51dca395-1d90-4a28-9bbc-233de9c1a207"
-          ],
+          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -1252,9 +1233,7 @@
             "icon": "mdi:server",
             "prompt": "Get Inventory"
           },
-          "next": [
-            "019b209c-2e5a-777f-a04a-11960363fb25"
-          ],
+          "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -1266,12 +1245,8 @@
             "icon": "mdi:source-branch",
             "prompt": "Check if product is available"
           },
-          "true": [
-            "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-          ],
-          "false": [
-            "019b20a6-1aa6-7510-b222-66535e50dfb3"
-          ],
+          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+          "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -1295,9 +1270,19 @@
             "icon": "mdi:speedometer",
             "prompt": "Get Product by Speed"
           },
-          "next": [
-            "019b0270-c493-7072-9d50-87952c5dc547"
-          ],
+          "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Notify user about available products",
+            "icon": "mdi:bell",
+            "prompt": "Notify user about available products"
+          },
+          "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -1307,11 +1292,9 @@
             "action": "PLATFORM:user_interaction",
             "description": "Wait for user to select a product from the available options",
             "icon": "mdi:user",
-            "prompt": "User selected product"
+            "prompt": "Waiting for user to select a product"
           },
-          "next": [
-            "019b3302-7846-75c2-9ab7-897c18b8ccee"
-          ],
+          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -1323,9 +1306,19 @@
             "icon": "mdi:link",
             "prompt": "Assign Port"
           },
-          "next": [
-            "019b209e-3122-75ce-9ba6-674b6184f68d"
-          ],
+          "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Notify user about port allocation completion",
+            "icon": "mdi:bell",
+            "prompt": "Notify user about port allocation"
+          },
+          "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -1337,9 +1330,7 @@
             "icon": "mdi:settings",
             "prompt": "Configure Port"
           },
-          "next": [
-            "019b32f6-5878-73fb-8411-55916778d9a4"
-          ],
+          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -1351,9 +1342,7 @@
             "icon": "mdi:ethernet",
             "prompt": "Connect Port"
           },
-          "next": [
-            "019b32f6-bd02-734e-bd3a-aec89d79609c"
-          ],
+          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
@@ -1371,13 +1360,13 @@
       ]
     },
     "content": "Help me get broadband internet",
-    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "task": {
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793562",
       "status": "COMPLETED",
       "description": "Setup internet subscription at user's address.",
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
-    "answer": "Starting the broadband internet setup process now. I'll verify service availability, present available speed packages, and complete the full setup with port assignment, configuration, and connection activation."
+    "answer": "Internet subscription is being initiated."
   }
 ]

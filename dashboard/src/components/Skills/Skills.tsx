@@ -6,18 +6,18 @@ import { Box, Card, CardContent, Typography } from "@mui/material";
 const Skills = ({
   title,
   description,
-  logo,
+  icon,
   onSkillClick,
   id,
   oauth,
 }: {
   title: string;
   description: string;
-  logo: string;
+  icon: string;
   onSkillClick: (skill: {
     title: string;
     description: string;
-    logo: string;
+    icon: string;
     id: string;
     oauth?: {
       tokenUrl: string;
@@ -42,7 +42,7 @@ const Skills = ({
         transition: "transform 0.3s",
         "&:hover": { transform: "scale(1.05)", cursor: "pointer" },
       }}
-      onClick={() => onSkillClick({ title, description, logo, id, oauth })}
+      onClick={() => onSkillClick({ title, description, icon, id, oauth })}
     >
       <Box
         sx={{
@@ -52,7 +52,7 @@ const Skills = ({
           padding: 2,
         }}
       >
-        <Icon icon={logo} width="30" height="30" />
+        <Icon icon={icon} width="30" height="30" />
       </Box>
       <CardContent>
         <Typography variant="h4" sx={{ mb: 2 }}>

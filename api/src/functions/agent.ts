@@ -1,7 +1,7 @@
 import MCPs from "../mcps/mcps";
 import actions from "../actions";
-import blueprintFn from "./blueprint";
 import agentData from "./agentData";
+import blueprintFn from "./blueprint";
 import dataset from "../dataset";
 import { generate } from "../lib/llm";
 import knowledgeFn from "./knowledge";
@@ -18,7 +18,7 @@ async function messages({ teamId }: { teamId: string }) {
 
   return messageInstances
     .filter(
-      (message) => message.role === "USER" || message.role === "ASSISTANT"
+      (message) => message.role === "USER" || message.role === "ASSISTANT",
     )
     .map(({ role, content }) => ({ role: role.toLowerCase(), content }));
 }
@@ -55,7 +55,7 @@ async function knowledge({
   const knowledge_base = knowledgeList
     .filter(
       (knowledge) =>
-        !taskId || !(knowledge.type === "TASK" && knowledge.taskId === taskId)
+        !taskId || !(knowledge.type === "TASK" && knowledge.taskId === taskId),
     )
     .map(({ type, question, answer, text, content, Task }) => ({
       type,
@@ -91,7 +91,7 @@ async function steps({ taskId }) {
 }
 
 async function Blueprints({ agentId }) {
-  const Blueprints = await blueprintFn.list({ agentId });
+  const Blueprints = await blueprintFn.list({ agentId, includeLabels: false });
 
   return {
     role: "system",
@@ -146,7 +146,7 @@ async function teamChat({
     content:
       next.resource && next.function && next.parameters
         ? `${next.resource}.${next.function}(${JSON.stringify(
-            next.parameters
+            next.parameters,
           )})=${JSON.stringify(data)} ${content}`
         : content,
     json_format: "{ response: <RESPONSE> }",
@@ -169,7 +169,8 @@ async function task({ taskId }: { taskId: string }) {
     steps: await taskFn.listSteps({ taskId }),
   };
 
-  if (currentTask.steps.length > 10) {
+  //TODO: Loop detection
+  if (currentTask.steps.length > 20) {
     return await taskFn.update({
       taskId,
       status: "FAILED",
@@ -232,6 +233,7 @@ async function task({ taskId }: { taskId: string }) {
     parameters.blueprintId = currentTask.blueprintId;
     parameters.sessionId = sessionId;
     parameters.agentId = agentId;
+
     return await taskFn.addStep({
       taskId,
       action,
@@ -307,7 +309,7 @@ async function step({
         context: steps
           .filter((step) => step.result)
           .map(
-            ({ comment, result }) => `Comment: ${comment}\nResult: ${result}`
+            ({ comment, result }) => `Comment: ${comment}\nResult: ${result}`,
           )
           .join("\n"),
         parameters,
@@ -331,6 +333,12 @@ async function step({
         status: "WAITING_FOR_USER",
       });
     } else if (actionType === "SUPERVISED") {
+      await session.addConversation({
+        sessionId: parameters.sessionId,
+        agentId: parameters.agentId,
+        role: "ASSISTANT",
+        content: "I need to ask my supervisor for more information.",
+      });
       await taskFn.updateStep({
         stepId,
         result: resultString,
@@ -509,7 +517,7 @@ async function chat({
   });
 
   const conversationsData = await conversations({ sessionId });
-  const blueprintsData = await blueprintFn.list({ agentId });
+  const blueprintsData = await Blueprints({ agentId });
 
   const agentDataResult = await agentData.get({ agentId });
 
@@ -526,12 +534,12 @@ async function chat({
   });
 
   const waitingTask = task.find((task) =>
-    task.steps.some((step) => step.status === "WAITING_FOR_USER")
+    task.steps.some((step) => step.status === "WAITING_FOR_USER"),
   );
 
   if (waitingTask) {
     const waitingStep = waitingTask.steps.find(
-      (step) => step.status === "WAITING_FOR_USER"
+      (step) => step.status === "WAITING_FOR_USER",
     );
     if (!waitingStep) {
       return;
@@ -542,14 +550,6 @@ async function chat({
       result: content,
       status: "COMPLETED",
     });
-
-    await session.addConversation({
-      sessionId,
-      agentId,
-      role: "USER",
-      content,
-    });
-
     return;
   }
 
@@ -561,6 +561,7 @@ async function chat({
   if (blueprintDecision.decision === "BLUEPRINT" && task.length === 0) {
     const blueprintData = await blueprintFn.get({
       blueprintId: blueprintDecision.blueprintId,
+      includeLabels: false,
     });
 
     const blueprintToTaskResponse = await blueprintToTask({
@@ -607,8 +608,8 @@ async function chat({
     });
 
     if (
-      evaluation.is_answer_known ||
-      blueprintDecision.decision === "UNRELEVANT"
+      evaluation?.is_answer_known ||
+      blueprintDecision.decision === "UNREVELANT"
     ) {
       if (task.length > 0) {
         await taskFn.update({

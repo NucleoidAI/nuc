@@ -1,6 +1,6 @@
 import { ConfigurationInput, Tool } from "./types";
 
-const ENDPOINT = "http://localhost:3001/api/soap/createOnt";
+import logger from "../../../logger/logger.js";
 
 function createOntXmlRequest(args: ConfigurationInput): string {
   return `<?xml version='1.0' encoding='UTF-8'?>
@@ -16,7 +16,7 @@ function createOntXmlRequest(args: ConfigurationInput): string {
                 <oltTid>${args.device_tid}</oltTid>
                 <ontSerialNo>${args.device_serial_number}</ontSerialNo>
                 <ontType>
-                    <id>25</id>
+                    <id>28</id>
                 </ontType>
             </gponOntBean>
         </ns1:createOnt>
@@ -38,10 +38,7 @@ function addCustomerServiceXmlRequest(args: ConfigurationInput): string {
                 </customerBean>
                 <domain>ttnet</domain>
                 <fttxPortBean>
-                    <aePortBean>
-                        <kaesPortNo>0</kaesPortNo>
-                        <taesPortNo>0</taesPortNo>
-                    </aePortBean>
+
                     <fttxType>
                         <id>1</id>
                     </fttxType>
@@ -53,18 +50,18 @@ function addCustomerServiceXmlRequest(args: ConfigurationInput): string {
                             <oltTid>${args.device_tid}</oltTid>
                             <ontSerialNo>${args.device_serial_number}</ontSerialNo>
                             <ontType>
-                                <id>25</id>
+                                <id>28</id>
                             </ontType>
                         </gponOntBean>
                         <gponOntPortNo>1</gponOntPortNo>
                     </gponPortBean>
                 </fttxPortBean>
                 <hgwPotsPortNo>1</hgwPotsPortNo>
-                <hgwSerialNo>${args.hgw_serial_no}</hgwSerialNo>
+                <hgwSerialNo>ZT30CC213FF851</hgwSerialNo>
                 <installationAddress>163316</installationAddress>
                 <installationType>6</installationType>
                 <packetId>109313</packetId>
-                <password>*****</password>
+                <password>CMV88qkg</password> 
                 <popNo>6018000000000161</popNo>
                 <retailPacketInfo>0</retailPacketInfo>
                 <service>
@@ -73,12 +70,10 @@ function addCustomerServiceXmlRequest(args: ConfigurationInput): string {
                 <serviceStatus>
                     <id>1</id>
                 </serviceStatus>
-                <sipServerIp>aydinlikevl.ankara.ttimscore.com.tr</sipServerIp>
-                <sipServerVendorName>ANKZIMS</sipServerVendorName>
-                <speedProfile>${args.speed}</speedProfile>
+                <speedProfile>${args.speed_profile}</speedProfile>
                 <staticIp>0.0.0.0</staticIp>
-                <subscriptionNo>1799906793</subscriptionNo>
-                <username>cayir144152608</username>
+                <subscriptionNo>1234999999</subscriptionNo>
+                <username>turktele421133246</username>
                 <voiceServiceLevelBean>
                     <id>-1</id>
                 </voiceServiceLevelBean>
@@ -88,19 +83,19 @@ function addCustomerServiceXmlRequest(args: ConfigurationInput): string {
 </soapenv:Envelope>`;
 }
 
-async function sendSoapRequest(xmlBody: string): Promise<string> {
-  const response = await fetch(ENDPOINT, {
+async function sendSoapRequest(
+  endpoint: string,
+  xmlBody: string,
+  action: string,
+): Promise<string> {
+  const response = await fetch(endpoint, {
     method: "POST",
     headers: {
       "Content-Type": "text/xml; charset=utf-8",
-      "SOAPAction": "createOnt",
+      SOAPAction: action,
     },
     body: xmlBody,
   });
-
-  if (!response.ok) {
-    throw new Error(`SOAP request failed: ${response.status} ${response.statusText}`);
-  }
 
   return response.text();
 }
@@ -112,6 +107,10 @@ export const configurationTool: Tool<ConfigurationInput> = {
   inputSchema: {
     type: "object",
     properties: {
+      speed_profile: {
+        type: "string",
+        description: "The speed profile to configure.",
+      },
       port_no: {
         type: "string",
         description: "The port number to configure.",
@@ -132,40 +131,76 @@ export const configurationTool: Tool<ConfigurationInput> = {
         type: "string",
         description: "The device card number to configure.",
       },
-      speed: {
+      speed_limit: {
         type: "string",
-        description: "The speed to configure.",
+        description: "The speed limit to configure.",
       },
     },
-    required: ["port_no", "device_serial_number", "hgw_serial_no", "device_tid", "device_card_no", "speed"],
+    required: [
+      "speed_profile",
+      "port_no",
+      "device_serial_number",
+      "hgw_serial_no",
+      "device_tid",
+      "device_card_no",
+      "speed_limit",
+    ],
   },
   handler: async (args: ConfigurationInput) => {
     try {
+      const endpoint = process.env.MCP_TELCO_URL;
+
+      logger.info(
+        { tool: "TELCO:configuration", endpoint },
+        "Sending SOAP request to endpoint",
+      );
+
+      let ontResponse: string | null = null;
+      let addCustomerServiceResponse: string | null = null;
+
       const createOntXml = createOntXmlRequest(args);
       const addCustomerServiceXml = addCustomerServiceXmlRequest(args);
 
-      //TODO: Uncomment these lines when the SOAP endpoint is ready
-      /* 
-      const createOntResponse = await sendSoapRequest(createOntXml);
-      const addCustomerServiceResponse = await sendSoapRequest(addCustomerServiceXml);
-      */
+      if (endpoint) {
+        ontResponse = await sendSoapRequest(
+          endpoint,
+          createOntXml,
+          "createOnt",
+        );
+        addCustomerServiceResponse = await sendSoapRequest(
+          endpoint,
+          addCustomerServiceXml,
+          "addCustomerService",
+        );
+      }
+
+      logger.info(
+        { tool: "TELCO:configuration", args },
+        "Configuration completed successfully",
+      );
 
       return {
         content: [
           {
             type: "text",
             text: JSON.stringify({
-              success: true,
-              createOntRequest: createOntXml,
-              addCustomerServiceRequest: addCustomerServiceXml,
-              //createOntResponse,
-              //addCustomerServiceResponse,
+              message: `CONFIGURATION_COMPLETED`,
+              isRequestSend: endpoint ? true : false,
             }),
           },
         ],
         isError: false,
       };
     } catch (error) {
+      logger.error(
+        {
+          tool: "TELCO:configuration",
+          err: error instanceof Error ? error : new Error(String(error)),
+          args,
+        },
+        "Configuration failed",
+      );
+
       return {
         content: [
           {

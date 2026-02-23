@@ -1,5 +1,7 @@
 import { InventoryToolInput, Tool } from "./types";
+
 import { findOne } from "../db/index.js";
+import logger from "../../../logger/logger.js";
 
 export const inventoryTool: Tool<InventoryToolInput> = {
   name: "TELCO:get_inventory",
@@ -18,32 +20,58 @@ export const inventoryTool: Tool<InventoryToolInput> = {
   },
   handler: async (args: InventoryToolInput) => {
     try {
+      logger.info(
+        { tool: "TELCO:get_inventory", bbk_no: args.bbk_no },
+        "Looking up inventory by BBK",
+      );
+
       const inventory = findOne("inventory", "bbk_no", args.bbk_no);
 
       if (!inventory) {
+        logger.warn(
+          { tool: "TELCO:get_inventory", bbk_no: args.bbk_no },
+          "Inventory not found for BBK",
+        );
+
         return {
           content: [
             {
               type: "text",
               text: JSON.stringify({
-                error: `Inventory not found for BBK number: ${args.bbk_no}`,
+                error: `INVENTORY_NOT_FOUND`,
               }),
             },
           ],
-          isError: true,
+          isError: false,
         };
       }
+
+      logger.info(
+        { tool: "TELCO:get_inventory", bbk_no: args.bbk_no },
+        "Inventory found for BBK",
+      );
 
       return {
         content: [
           {
             type: "text",
-            text: JSON.stringify(inventory),
+            text: JSON.stringify({
+              inventory: inventory,
+            }),
           },
         ],
         isError: false,
       };
     } catch (error) {
+      logger.error(
+        {
+          tool: "TELCO:get_inventory",
+          err: error instanceof Error ? error : new Error(String(error)),
+          bbk_no: args.bbk_no,
+        },
+        "Failed to look up inventory",
+      );
+
       return {
         content: [
           {

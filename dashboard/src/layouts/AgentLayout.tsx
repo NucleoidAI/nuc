@@ -6,7 +6,6 @@ import Knowledge from "../widgets/Knowledge/Knowledge";
 import Profile from "../widgets/Profile/Profile";
 import ProfileCard from "../components/ProfileCard/ProfileCard";
 import SidebarChatWidget from "../widgets/SidebarChatWidget";
-
 import Stack from "@mui/material/Stack";
 import Supervising from "../widgets/Supervising/Supervising";
 import TasksWidget from "../widgets/TasksWidget/TasksWidget";
@@ -65,6 +64,8 @@ function AgentLayout({
   agent,
   loading,
   initialTab,
+  fromDrawer,
+  allAgentIds,
 }: {
   agent: {
     id: string;
@@ -73,6 +74,8 @@ function AgentLayout({
   };
   loading: boolean;
   initialTab?: string;
+  fromDrawer?: boolean;
+  allAgentIds?: string[];
 }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -155,7 +158,7 @@ function AgentLayout({
               setCurrentTab={handleTabChange}
               name={agent.name}
               iconUrl={agent.icon}
-              coverUrl={getAgentGradients(agent.id, theme)}
+              coverUrl={getAgentGradients(agent.id, theme, allAgentIds)}
               loading={loading}
               sidebarOpen={chatOpen}
             />

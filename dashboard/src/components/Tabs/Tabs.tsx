@@ -56,6 +56,9 @@ function TabBar({ TABS, currentTab, setCurrentTab, sidebarOpen = false }) {
           value={tab.value}
           icon={tab.icon}
           label={tab.label}
+          sx={{
+            px: 2,
+          }}
         />
       ))}
     </Tabs>

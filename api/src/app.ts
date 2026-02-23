@@ -1,8 +1,8 @@
 import "express";
 
 import agentFn from "./functions/agent";
-import blueprints from "./routes/blueprints";
 import agents from "./routes/agents";
+import blueprints from "./routes/blueprints";
 import communications from "./routes/communications";
 import engines from "./routes/engines";
 import { event } from "@canmingir/link-express/event/client";
@@ -64,13 +64,25 @@ function createApp() {
       agentId: string;
       sessionId: string;
       content: string;
-    }>("SESSION_USER_MESSAGED", ({ agentId, sessionId, content }) =>
-      agentFn.chat({
-        agentId,
-        sessionId,
-        content,
-      })
-    );
+    }>("SESSION_USER_MESSAGED", async ({ agentId, sessionId, content }) => {
+      try {
+        await agentFn.chat({
+          agentId,
+          sessionId,
+          content,
+        });
+      } catch (error) {
+        platform.logger.error(error);
+        const errorMessage =
+          error instanceof Error && error.message
+            ? error.message
+            : "An error occurred while processing your message.";
+        await event.publish("ERROR_OCCURRED", {
+          sessionId,
+          message: errorMessage,
+        });
+      }
+    });
 
     await event.subscribe<{
       sessionId: string;
@@ -98,10 +110,8 @@ function createApp() {
     );
 
     await event.subscribe<{ taskId: string }>(
-      "TASK_BLUEPRINT_UPDATED",
+      "TASK_SUPERVISING_RESPONDED",
       async ({ taskId }) => {
-        await agentFn.task({ taskId });
-
         const steps = await taskFn.listSteps({ taskId });
 
         const supervisedStep = steps.find(

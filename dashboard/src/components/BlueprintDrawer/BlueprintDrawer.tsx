@@ -12,6 +12,7 @@ import {
   Grid,
   IconButton,
   Tooltip,
+  alpha,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -26,6 +27,9 @@ const BlueprintDrawer = ({
   setSelectedItem,
   taskId,
   agentId,
+  usedNodeIds,
+  lastUsedNodeId,
+  failedNodeId,
 }: {
   drawerOpen: boolean;
   handleDrawerClose: () => void;
@@ -52,6 +56,9 @@ const BlueprintDrawer = ({
   }) => void;
   taskId?: string;
   agentId?: string;
+  usedNodeIds?: Set<string>;
+  lastUsedNodeId?: string | null;
+  failedNodeId?: string | null;
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -90,6 +97,8 @@ const BlueprintDrawer = ({
     if (isChatOpen && !isTablet) return "90vw";
     return "85vw";
   };
+
+  console.log("color", alpha(theme.palette.divider, 0.1));
 
   return (
     <Drawer
@@ -154,7 +163,7 @@ const BlueprintDrawer = ({
               backgroundColor: (theme) => theme.palette.background.default,
               backgroundImage: (theme) => `
             radial-gradient(
-              ${theme.palette.divider} 1px,
+              ${alpha(theme.palette.divider, 0.08)} 1px,
               transparent 1px
             )
           `,
@@ -190,10 +199,17 @@ const BlueprintDrawer = ({
                 }}
               >
                 <BlueprintFlowWidget
-                  blueprint={selectedItem}
+                  blueprint={{
+                    ...selectedItem,
+                    agentId: selectedItem?.agentId || agentId,
+                  }}
                   aiResponse={aiResponse}
                   setAiResponse={setAiResponse}
                   taskId={taskId}
+                  setSelectedItem={setSelectedItem}
+                  usedNodeIds={usedNodeIds}
+                  lastUsedNodeId={lastUsedNodeId}
+                  failedNodeId={failedNodeId}
                 />
 
                 {!isChatOpen && (

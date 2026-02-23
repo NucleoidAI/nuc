@@ -45,7 +45,7 @@ const SkillDialog = ({
   skill?: {
     id: string;
     name: string;
-    logo: string;
+    icon: string;
     title: string;
     description: string;
     oauth: {
@@ -131,7 +131,7 @@ const SkillDialog = ({
       <ClosableDialogTitle handleClose={handleClose} />
       <DialogContent>
         <Box sx={{ textAlign: "center" }}>
-          <Icon icon={skill.logo} width="20" height="20" />
+          <Icon icon={skill.icon} width="20" height="20" />
           <Typography variant="h4" sx={{ mt: 1 }}>
             {skill.title}
           </Typography>

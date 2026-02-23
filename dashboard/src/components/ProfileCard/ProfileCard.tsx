@@ -13,7 +13,14 @@ function ProfileCard({
   sidebarOpen = false,
 }) {
   return (
-    <Card variant="profile-card" sx={{ position: "relative", height: 200 }}>
+    <Card
+      variant="profile-card"
+      sx={{
+        position: "relative",
+        height: 200,
+        borderRadius: 2,
+      }}
+    >
       <ProfileCover
         loading={loading}
         name={name}

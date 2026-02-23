@@ -2,14 +2,19 @@ import AddIcon from "@mui/icons-material/Add";
 import BlueprintCard from "../../components/BlueprintCard/BlueprintCard";
 import BlueprintDrawer from "../../components/BlueprintDrawer/BlueprintDrawer";
 import BlueprintFlowDialog from "../../components/BlueprintFlow/BlueprintFlowDialog";
-import { Theme } from "@mui/material/styles";
 import useBlueprint from "../../hooks/useBlueprint";
 import { useEvent } from "@nucleoidai/react-event";
 
-import { Box, Fab, Stack, useMediaQuery } from "@mui/material";
+import { Box, Fab, Stack } from "@mui/material";
 import React, { useState } from "react";
 
-function BlueprintsWidget({ agentId }: { agentId: string }) {
+function BlueprintsWidget({
+  agentId,
+  fromDrawer,
+}: {
+  agentId: string;
+  fromDrawer?: boolean;
+}) {
   const [blueprintUpsertedEvent] = useEvent("BLUEPRINT_UPSERTED", {
     Blueprint: null,
   });
@@ -49,10 +54,6 @@ function BlueprintsWidget({ agentId }: { agentId: string }) {
     setFlowDialogOpen(false);
     setSelectedItem(null);
   };
-
-  const lgScreen = useMediaQuery((theme: Theme) =>
-    theme.breakpoints.down("lg")
-  );
 
   return (
     <Box
@@ -100,9 +101,9 @@ function BlueprintsWidget({ agentId }: { agentId: string }) {
 
       <Stack
         sx={{
-          position: lgScreen ? "absolute" : "fixed",
-          bottom: lgScreen ? -60 : 10,
-          right: lgScreen ? 0 : 5,
+          position: "absolute",
+          bottom: fromDrawer ? 30 : 10,
+          right: fromDrawer ? 30 : 5,
         }}
       >
         <Fab

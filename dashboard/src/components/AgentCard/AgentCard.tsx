@@ -20,6 +20,7 @@ export default function AgentCard({
   onView,
   onEdit,
   onDelete,
+  allAgentIds,
 }: {
   agent: {
     id: string;
@@ -35,6 +36,7 @@ export default function AgentCard({
   onView: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  allAgentIds?: string[];
 }) {
   const theme = useTheme();
   const popover = usePopover();
@@ -83,7 +85,7 @@ export default function AgentCard({
               sx={{
                 width: "100%",
                 pt: "56.25%",
-                background: getAgentGradients(agent.id, theme),
+                background: getAgentGradients(agent.id, theme, allAgentIds),
                 overflow: "hidden",
               }}
             />

@@ -19,6 +19,7 @@ import {
   CircularProgress,
   IconButton,
   Stack,
+  alpha,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -53,6 +54,10 @@ function TeamChart() {
 
   const filteredOrganizations = orgArray.filter(
     (org) => org.agents && org.agents.length > 0 && org.id === projectId
+  );
+
+  const allAgentIds = filteredOrganizations.flatMap((org) =>
+    (org.agents || []).map((agent) => agent.id)
   );
 
   const teamTree = useMemo(
@@ -134,6 +139,7 @@ function TeamChart() {
 
     return {
       ...base,
+      allAgentIds,
       onTeamAddAgent: (teamNode) => handleAddAgent(teamNode.id),
       onAgentOpen: (colNode, tab) => handleAgentDrawerOpen(colNode, tab),
       onBlueprintOpen: (respNode) => handleDrawerOpen(respNode),
@@ -165,14 +171,13 @@ function TeamChart() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-
           backgroundColor: (theme) => theme.palette.background.default,
           backgroundImage: (theme) => `
-      radial-gradient(
-        ${theme.palette.divider} 1px,
-        transparent 1px
-      )
-    `,
+                     radial-gradient(
+                       ${alpha(theme.palette.divider, 0.08)} 1px,
+                       transparent 1px
+                     )
+                   `,
           backgroundSize: "16px 16px",
         }}
       >
@@ -208,6 +213,7 @@ function TeamChart() {
           onClose={handleAgentDrawerClose}
           agent={selectedAgent}
           initialTab={selectedAgentTab}
+          allAgentIds={allAgentIds}
         />
       )}
     </>

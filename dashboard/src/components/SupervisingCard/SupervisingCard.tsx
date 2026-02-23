@@ -3,7 +3,8 @@ import { Iconify } from "@canmingir/link/platform/components";
 import SupervisingChat from "../SupervisingChat";
 import SupervisingTypeDialog from "../SupervisingTypeDialog";
 import useBlueprint from "../../hooks/useBlueprint";
-import { useState } from "react";
+import { useEvent } from "@nucleoidai/react-event";
+import useTasks from "../../hooks/useTasks";
 
 import {
   Box,
@@ -21,9 +22,11 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
 
 const SupervisingCard = ({
   supervise,
+  agentId,
 }: {
   supervise: {
     id: string;
@@ -33,6 +36,7 @@ const SupervisingCard = ({
     blueprintId?: string;
     taskId?: string;
   };
+  agentId?: string;
 }) => {
   const [knowledgeChatOpen, setKnowledgeChatOpen] = useState(false);
 
@@ -47,6 +51,20 @@ const SupervisingCard = ({
   const [blueprintSelectedItem, setBlueprintSelectedItem] = useState(null);
 
   const { blueprint } = getBlueprintWithId(supervise.blueprintId || "");
+
+  const [aiResponded] = useEvent("AI_RESPONDED", null);
+
+  const { getSteps, steps } = useTasks(agentId, [aiResponded]);
+
+  useEffect(
+    () => {
+      if (supervise.taskId) {
+        getSteps(supervise.taskId);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [supervise.taskId, aiResponded]
+  );
 
   const handleOpenDialog = () => {
     setDialogOpen(true);
@@ -71,6 +89,112 @@ const SupervisingCard = ({
     setBlueprintDrawerOpen(true);
     setBlueprintSelectedItem(blueprint);
   };
+
+  const { usedNodeIds, lastUsedNodeId, failedNodeId } = useMemo(() => {
+    if (!steps || steps.length === 0 || !blueprint?.nodes)
+      return {
+        usedNodeIds: new Set<string>(),
+        lastUsedNodeId: null as string | null,
+        failedNodeId: null as string | null,
+      };
+
+    let askSupervisorIndex = -1;
+    for (let i = steps.length - 1; i >= 0; i--) {
+      if (steps[i]?.action === "PLATFORM:ask_supervisor") {
+        askSupervisorIndex = i;
+        break;
+      }
+    }
+
+    const stepsBeforeAsk =
+      askSupervisorIndex > 0 ? steps.slice(0, askSupervisorIndex) : steps;
+
+    const nodeMap = new Map<string, (typeof blueprint.nodes)[number]>();
+    blueprint.nodes.forEach((node) => nodeMap.set(node.id, node));
+
+    const referencedIds = new Set<string>();
+    blueprint.nodes.forEach((node) => {
+      (node.next || []).forEach((id: string) => referencedIds.add(id));
+      (node.true || []).forEach((id: string) => referencedIds.add(id));
+      (node.false || []).forEach((id: string) => referencedIds.add(id));
+    });
+
+    let possibleNextIds = new Set<string>(
+      blueprint.nodes.filter((n) => !referencedIds.has(n.id)).map((n) => n.id)
+    );
+
+    const getChildren = (node: (typeof blueprint.nodes)[number]) =>
+      new Set<string>([
+        ...(node.next || []),
+        ...(node.true || []),
+        ...(node.false || []),
+      ]);
+
+    const stepActions = new Set(
+      stepsBeforeAsk.map((s) => s?.action).filter(Boolean)
+    );
+
+    const expandFrontier = (ids: Set<string>): Set<string> => {
+      const expanded = new Set<string>();
+      const queue = [...ids];
+      const visited = new Set<string>();
+
+      while (queue.length > 0) {
+        const id = queue.shift()!;
+        if (visited.has(id)) continue;
+        visited.add(id);
+
+        const node = nodeMap.get(id);
+        if (!node) continue;
+
+        if (stepActions.has(node.properties?.action)) {
+          expanded.add(id);
+        } else {
+          for (const childId of getChildren(node)) {
+            if (!visited.has(childId)) queue.push(childId);
+          }
+        }
+      }
+
+      return expanded;
+    };
+
+    const usedIds = new Set<string>();
+    let lastId: string | null = null;
+    let failedId: string | null = null;
+
+    possibleNextIds = expandFrontier(possibleNextIds);
+
+    for (const step of stepsBeforeAsk) {
+      if (!step?.action) continue;
+
+      let matched: (typeof blueprint.nodes)[number] | null = null;
+      for (const nodeId of possibleNextIds) {
+        const node = nodeMap.get(nodeId);
+        if (node?.properties?.action === step.action) {
+          matched = node;
+          break;
+        }
+      }
+
+      if (matched) {
+        if (step.status === "FAILED") {
+          failedId = matched.id;
+        } else {
+          usedIds.add(matched.id);
+          lastId = matched.id;
+        }
+
+        possibleNextIds = expandFrontier(getChildren(matched));
+      }
+    }
+
+    return {
+      usedNodeIds: usedIds,
+      lastUsedNodeId: failedId ? null : lastId,
+      failedNodeId: failedId,
+    };
+  }, [steps, blueprint]);
 
   return (
     <>
@@ -250,6 +374,10 @@ const SupervisingCard = ({
         onSelectKnowledge={handleSelectKnowledge}
         onSelectBlueprint={(blueprint) => handleSelectBlueprint(blueprint)}
         blueprint={blueprint}
+        usedNodeIds={usedNodeIds}
+        lastUsedNodeId={lastUsedNodeId}
+        failedNodeId={failedNodeId}
+        supervise={supervise}
       />
 
       <SupervisingChat
@@ -265,6 +393,9 @@ const SupervisingCard = ({
         setSelectedItem={setBlueprintSelectedItem}
         setAiResponse={setAiResponse}
         aiResponse={aiResponse}
+        usedNodeIds={usedNodeIds}
+        lastUsedNodeId={lastUsedNodeId}
+        failedNodeId={failedNodeId}
       />
     </>
   );

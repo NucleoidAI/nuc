@@ -1,12 +1,12 @@
 {
   "name": "greycollar",
-  "version": "0.0.2",
+  "version": "0.0.6",
   "description": "GreyCollar is a supervised agentic AI platform designed to automate tasks, manage workflows, and provide insights.",
   "main": "server.js",
   "author": "GreyCollar Team",
   "private": "true",
   "scripts": {
-    "predev": " rm -rf dashboard/node_modules/.vite",
+    "predev": " rm -rf dashboard/node_modules/.vite && cd ./mcp && npm run db:reset",
     "debug:mcp": "cd ./mcp && npm run debug",
     "dev:api": "cd ./api && npm run dev",
     "dev:dashboard": "cd ./dashboard && npm run dev",
@@ -22,6 +22,7 @@
     "test": "npm run test:api && npm run test:dashboard",
     "build": "cd ./dashboard && npm run build",
     "dev:communication": "cd ./communication && npm run dev",
+    "preserve": "cd ./mcp && npm run db:reset",
     "serve": "concurrently -n \"main,api,dashboard\" \"npm start\" \"npm run dev:api\" \"npx @nucleoidai/http-server start --port 5173\"",
     "lint:dashboard": "cd ./dashboard && npm run lint",
     "lint": "npm run lint:dashboard",
@@ -29,8 +30,8 @@
     "typecheck": "npm run typecheck:dashboard"
   },
   "dependencies": {
-    "@canmingir/link": "^1.2.17",
-    "@canmingir/link-express": "^1.7.7",
+    "@canmingir/link-express": "^1.7.9",
+    "@canmingir/link": "^1.2.21",
     "@modelcontextprotocol/sdk": "^1.15.1",
     "@nucleoidai/node-event": "^1.1.5",
     "concurrently": "^9.1.2",

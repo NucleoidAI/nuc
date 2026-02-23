@@ -3,11 +3,19 @@
   "seed": [
     {
       "id": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "name": "ops_agent",
-      "icon": "ph:coffee-bean-duotone",
+      "name": "subscription_agent",
+      "icon": "iconoir:internet",
       "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
       "aiEngineId": "289a3c9a-f23b-421a-ac6e-f14052a2d57c",
-      "description": "A general-purpose operations agent optimized for task handling, workflow assistance, and context-aware support within the system."
+      "description": "A agent optimized for subscription tasks, workflow assistance, and context-aware support within the system."
+    },
+    {
+      "id": "019c4c15-a99e-765f-92bc-46a27dedbb30",
+      "name": "support_agent",
+      "icon": "fluent:person-support-16-regular",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "aiEngineId": "289a3c9a-f23b-421a-ac6e-f14052a2d57c",
+      "description": "A agent optimized for support tasks and user assistance."
     },
     {
       "id": "7a222222-9696-498f-9aaf-b4cf5b2ca043",

@@ -46,7 +46,7 @@ const setup = async (io: Server) => {
 
         if (typeof decoded !== "object" || decoded === null) {
           throw new Error(
-            "Invalid JWT payload: expected an object, got a string"
+            "Invalid JWT payload: expected an object, got a string",
           );
         }
       } else {
@@ -58,7 +58,6 @@ const setup = async (io: Server) => {
 
       console.log("Agent ID:", agentId);
       console.log("Token:", token);
-      console.log("Decoded:", decoded);
 
       const session: Session = await createSession(token, agentId);
       const agent: Agent = await getAgent(token, agentId);
@@ -82,10 +81,25 @@ const setup = async (io: Server) => {
       console.log("Sockets:", sockets);
 
       socket.on("customer_message", async ({ content }, callback) => {
-        console.log("Customer message received:", content);
-        await sendMessageToSession(session.id, token, content);
+        try {
+          console.log("Customer message received:", content);
+          await sendMessageToSession(session.id, token, content);
 
-        callback({ status: "success" });
+          if (typeof callback === "function") callback({ status: "success" });
+        } catch (error) {
+          console.error("Error processing customer message:", error);
+          const errorMessage =
+            error instanceof Error ? error.message : "An error occurred";
+          socket.emit("error_message", {
+            message: errorMessage,
+          });
+          if (typeof callback === "function") {
+            callback({
+              status: "error",
+              error: errorMessage,
+            });
+          }
+        }
       });
     } catch (err) {
       socket.disconnect();
@@ -107,7 +121,20 @@ const setup = async (io: Server) => {
           content,
         });
       }
-    }
+    },
+  );
+
+  await event.subscribe<{ sessionId: string; message: string }>(
+    "ERROR_OCCURRED",
+    ({ sessionId, message }) => {
+      console.log("subscribed ERROR_OCCURRED", sessionId, message);
+      const socketId = sockets[sessionId];
+      if (socketId) {
+        io.to(socketId).emit("error_message", {
+          message,
+        });
+      }
+    },
   );
 };
 

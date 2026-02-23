@@ -10,8 +10,12 @@ type DependencyArray = object[];
 type NodeType = {
   id: string;
   properties?: {
-    label: string;
-    icon: string;
+    label?: string;
+    prompt?: string;
+    icon?: string;
+    action?: string;
+    description?: string;
+    [key: string]: unknown;
   };
   type: string;
   blueprintId?: string;

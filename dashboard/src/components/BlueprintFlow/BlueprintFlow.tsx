@@ -8,6 +8,8 @@ import ValidationButtons from "./Validation/ValidationButtons";
 import ValidationErrorView from "./Validation/ValidationErrorView";
 import { blueprintFlowPlugin } from "./BlueprintFlowPlugin";
 
+import React, { useRef } from "react";
+
 export default function BlueprintFlow({
   graphData,
   enrichedGraphData,
@@ -21,23 +23,22 @@ export default function BlueprintFlow({
   baselineNodes,
   onFlowChange,
   onAddNodeClick,
+  onEditNodeClick,
   onSave,
   onShowDiff,
   onCloseDiff,
   onShowValidationErrors,
   onSaveSuccessChange,
+  isSuperviseFlow = false,
 }: BlueprintFlowProps) {
-  const getFlowDimensions = () => {
-    return { width: "100%", height: "100%" };
-  };
-
-  const flowDimensions = getFlowDimensions();
+  const flowContainerRef = useRef<HTMLDivElement>(null);
 
   return (
     <Box
+      ref={flowContainerRef}
       sx={{
-        width: flowDimensions.width,
-        height: flowDimensions.height,
+        width: "100%",
+        height: "100%",
         position: "relative",
       }}
     >
@@ -54,10 +55,13 @@ export default function BlueprintFlow({
         data={enrichedGraphData}
         plugin={blueprintFlowPlugin}
         editable
+        height={isSuperviseFlow ? "50%" : "100%"}
         onChange={onFlowChange}
+        variant="horizontal"
         style={() => ({
           direction: "horizontal",
           onAdd: onAddNodeClick,
+          onEdit: onEditNodeClick,
         })}
       />
 

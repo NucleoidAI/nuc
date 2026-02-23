@@ -12,9 +12,9 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.35.0",
+    "@canmingir/link": "^1.2.21",
     "@aws-sdk/client-bedrock-runtime": "^3.978.0",
-    "@canmingir/link": "^1.2.17",
-    "@canmingir/link-express": "^1.7.7",
+    "@canmingir/link-express": "^1.7.9",
     "@modelcontextprotocol/sdk": "^1.15.1",
     "@nucleoidai/node-event": "^1.1.5",
     "@opentelemetry/api": "^1.9.0",

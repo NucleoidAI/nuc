@@ -1,6 +1,6 @@
 import { Tool } from "../../gdrive/tools/types";
+import logger from "../../../logger/logger.js";
 import nodemailer from "nodemailer";
-import { logger } from "../../../logger/logger";
 
 export const sendEmailTool: Tool<any> = {
   name: "GREY:send_email",
@@ -29,12 +29,10 @@ export const sendEmailTool: Tool<any> = {
     required: ["to", "subject", "text"],
   },
   handler: async (args: any) => {
-    // Log the email attempt
-    logger.info("Email send attempt initiated", {
-      to: args.to,
-      subject: args.subject,
-      hasHtml: !!args.html,
-    });
+    logger.info(
+      { tool: "GREY:send_email", to: args.to, subject: args.subject, hasHtml: !!args.html },
+      "Email send attempt initiated"
+    );
 
     try {
       logger.debug("Creating nodemailer transporter");
@@ -59,18 +57,10 @@ export const sendEmailTool: Tool<any> = {
         html: args.html,
       });
 
-      // Log successful email
-      logger.logEmail("send", {
-        to: args.to,
-        subject: args.subject,
-        success: true,
-        messageId: info.messageId,
-      });
-
-      logger.info("Email sent successfully", {
-        messageId: info.messageId,
-        to: args.to,
-      });
+      logger.info(
+        { tool: "GREY:send_email", action: "send", to: args.to, subject: args.subject, messageId: info.messageId },
+        "Email sent successfully"
+      );
 
       return {
         content: [
@@ -90,20 +80,16 @@ export const sendEmailTool: Tool<any> = {
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error";
 
-      // Log failed email
-      logger.logEmail("send", {
-        to: args.to,
-        subject: args.subject,
-        success: false,
-        error: errorMessage,
-      });
-
-      logger.error("Email send failed", {
-        error: errorMessage,
-        to: args.to,
-        subject: args.subject,
-        stack: error instanceof Error ? error.stack : undefined,
-      });
+      logger.error(
+        {
+          tool: "GREY:send_email",
+          action: "send",
+          err: error instanceof Error ? error : new Error(errorMessage),
+          to: args.to,
+          subject: args.subject,
+        },
+        "Email send failed"
+      );
 
       console.error(error);
 

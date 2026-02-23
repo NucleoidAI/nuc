@@ -22,6 +22,7 @@ export const handleAddResponseMessage = (ret) => {
 };
 
 const PopChat = ({
+  error,
   selectedConversationId,
   title,
   open,
@@ -34,10 +35,12 @@ const PopChat = ({
   Blueprints,
   selectedBlueprint,
   onBlueprintChange,
+  clearError,
   //eslint-disable-next-line
   sx,
 }) => {
   const [aiResponded] = useEvent("AI_RESPONDED", null);
+  const [aiError] = useEvent("AI_ERROR", null);
   const [conversationSent] = useEvent("CONVERSATION_SENT", null);
 
   const MessageSfx = "/src/components/PopChat/messageSFX.mp3";
@@ -56,7 +59,17 @@ const PopChat = ({
       behavior: "smooth",
       block: "center",
     });
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
   }, []);
+
+  const handleErrorClose = useCallback(() => {
+    if (clearError) {
+      clearError();
+    }
+  }, [clearError]);
 
   const handleSend = useCallback(
     (messageContent) => {
@@ -124,6 +137,12 @@ const PopChat = ({
     // eslint-disable-next-line
   }, [aiResponded, mute, play]);
 
+  useEffect(() => {
+    if (aiError !== null) {
+      setLoading(false);
+    }
+  }, [aiError]);
+
   const renderIndicator = useCallback(() => {
     if (conversationSent?.createdAt > aiResponded?.createdAt) return true;
     if (loading) return true;
@@ -167,12 +186,16 @@ const PopChat = ({
         >
           <Scrollbar sx={{ height: "100%" }}>
             <MessageList
+              error={error}
               messages={history}
               selectedId={selectedConversationId}
               messagesEndRef={messagesEndRef}
               highlightedMessage={highlightedMessage}
+              onErrorClose={handleErrorClose}
             />
-            {renderIndicator() && <LoadingMessage />}
+            {renderIndicator() && (
+              <LoadingMessage messagesEndRef={messagesEndRef} />
+            )}
           </Scrollbar>
         </Stack>
 

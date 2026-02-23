@@ -1,5 +1,5 @@
 {
-  "sequence": 9,
+  "sequence": 10,
   "seed": [
     {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
@@ -14,6 +14,7 @@
           "properties": {
             "action": "TELCO:get_bbk_by_address",
             "description": "Retrieve BBK number based on the user's residential address information",
+            "prompt": "Get BBK by address",
             "label": "Get BBK No by Address",
             "icon": "mdi:map-marker"
           },
@@ -26,6 +27,7 @@
           "properties": {
             "action": "TELCO:get_inventory",
             "description": "Check inventory availability for the given BBK number and address",
+            "prompt": "Check inventory availability",
             "label": "Get Inventory",
             "icon": "mdi:server"
           },
@@ -38,8 +40,9 @@
           "properties": {
             "action": "PLATFORM:decision",
             "description": "Decide based on inventory availability whether to proceed with product selection",
+            "prompt": "Is inventory available?",
             "label": "Check if product is available",
-            "icon": "mdi:decision"
+            "icon": "mdi:source-branch"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
@@ -51,6 +54,7 @@
           "properties": {
             "action": "PLATFORM:complete",
             "description": "Mark the process as complete when no products are available",
+            "prompt": "No product available, complete",
             "label": "Complete",
             "icon": "mdi:check"
           },
@@ -63,18 +67,20 @@
           "properties": {
             "action": "TELCO:get_product_by_speed",
             "description": "Retrieve available internet products based on speed requirements",
+            "prompt": "Get products by speed",
             "label": "Get Product by Speed",
             "icon": "mdi:speedometer"
           },
-          "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
+          "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
-          "id": "019b0270-c493-7072-9d50-87952c5dc547",
+          "id": "019c8a58-10e3-713f-9484-78d04923040f",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
             "description": "Wait for user to select a product from the available options",
+            "prompt": "Provide available options and waiting for user to select a product",
             "label": "User selected product",
             "icon": "mdi:user"
           },
@@ -87,8 +93,22 @@
           "properties": {
             "action": "TELCO:port_allocation",
             "description": "Assign a port for the selected internet product and create an order",
+            "prompt": "Allocate port and create order",
             "label": "Assign Port",
             "icon": "mdi:link"
+          },
+          "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Notify user about port allocation completion",
+            "prompt": "Notify user about port allocation",
+            "label": "Notify Port Allocation",
+            "icon": "mdi:bell"
           },
           "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -99,6 +119,7 @@
           "properties": {
             "action": "TELCO:configuration",
             "description": "Configure the assigned port with necessary settings",
+            "prompt": "Configure allocated port",
             "label": "Configure Port",
             "icon": "mdi:settings"
           },
@@ -111,8 +132,9 @@
           "properties": {
             "action": "TELCO:port_connection",
             "description": "Connect the assigned port to the user's residence",
+            "prompt": "Connect port to residence",
             "label": "Connect Port",
-            "icon": "mdi:check"
+            "icon": "mdi:ethernet"
           },
           "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -124,6 +146,7 @@
           "properties": {
             "action": "PLATFORM:complete",
             "description": "Mark the internet subscription setup process as complete",
+            "prompt": "Complete setup flow",
             "label": "Complete",
             "icon": "mdi:check"
           },

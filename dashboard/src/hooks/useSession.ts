@@ -35,9 +35,15 @@ function useSession(agentId) {
         publish("AI_RESPONDED", { content });
       });
 
+      socket.on("error_message", ({ message }) => {
+        setError(message);
+        publish("AI_ERROR", { message });
+      });
+
       return () => {
         socket.off("connect");
         socket.off("ai_message");
+        socket.off("error_message");
         socket.disconnect();
       };
     },
@@ -67,12 +73,17 @@ function useSession(agentId) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const clearError = useCallback(() => {
+    setError(null);
+  }, []);
+
   return {
     getSession,
     loading,
     error,
     conversations,
     sendMessage,
+    clearError,
   };
 }
 

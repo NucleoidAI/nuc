@@ -71,29 +71,16 @@
             "label": "Get Product by Speed",
             "icon": "mdi:speedometer"
           },
-          "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
+          "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
-          "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "description": "Provide available products to the user",
-            "prompt": "Show products to user",
-            "label": "Notify user about available products",
-            "icon": "mdi:user"
-          },
-          "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b0270-c493-7072-9d50-87952c5dc547",
+          "id": "019c8a58-10e3-713f-9484-78d04923040f",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
             "description": "Wait for user to select a product from the available options",
-            "prompt": "Wait for product choice",
+            "prompt": "Provide available options and waiting for user to select a product",
             "label": "User selected product",
             "icon": "mdi:user"
           },

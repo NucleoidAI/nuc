@@ -148,7 +148,7 @@
               "parameters": {
                 "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
                 "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-                "message": "Product order created"
+                "message": "Order created."
               },
               "comment": "Notifying user about product order creation"
             },
@@ -245,7 +245,7 @@
           "properties": {
             "action": "PLATFORM:decision",
             "icon": "mdi:source-branch",
-            "prompt": "Check if product is available"
+            "prompt": "Is inventory available?"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
@@ -257,7 +257,7 @@
           "properties": {
             "action": "PLATFORM:complete",
             "icon": "mdi:check",
-            "prompt": "Complete"
+            "prompt": "No product available, complete"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -268,29 +268,18 @@
           "properties": {
             "action": "TELCO:get_product_by_speed",
             "icon": "mdi:speedometer",
-            "prompt": "Get Product by Speed"
+            "prompt": "Get products by speed"
           },
-          "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
+          "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
-          "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:user",
-            "prompt": "Notify user about available products"
-          },
-          "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b0270-c493-7072-9d50-87952c5dc547",
+          "id": "019c8a58-10e3-713f-9484-78d04923040f",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
-            "icon": "mdi:user",
-            "prompt": "User selected product"
+            "icon": "mdi:cursor-pointer",
+            "prompt": "Provide available products and wait for user to select a product"
           },
           "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -301,7 +290,7 @@
           "properties": {
             "action": "TELCO:port_allocation",
             "icon": "mdi:link",
-            "prompt": "Assign Port"
+            "prompt": "Allocate port and create order"
           },
           "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -323,7 +312,7 @@
           "properties": {
             "action": "TELCO:configuration",
             "icon": "mdi:settings",
-            "prompt": "Configure Port"
+            "prompt": "Configure allocated port"
           },
           "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -334,7 +323,7 @@
           "properties": {
             "action": "TELCO:port_connection",
             "icon": "mdi:ethernet",
-            "prompt": "Connect Port"
+            "prompt": "Connect port to residence"
           },
           "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -345,7 +334,7 @@
           "properties": {
             "action": "PLATFORM:complete",
             "icon": "mdi:check",
-            "prompt": "Complete"
+            "prompt": "Complete setup flow"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -393,7 +382,7 @@
         "status": "COMPLETED",
         "parameters": {
           "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
-          "message": "We apologize, but your address could not be found in our database. Please contact our support center at 444 1 444 for assistance with your internet subscription request."
+          "message": "Sorry, we couldn't find your address. Please call 444 1 444 for help."
         },
         "comment": "Notifying user to call support center"
       },
@@ -456,7 +445,7 @@
           "properties": {
             "action": "PLATFORM:decision",
             "icon": "mdi:source-branch",
-            "prompt": "Check if product is available"
+            "prompt": "Is inventory available?"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
@@ -468,7 +457,7 @@
           "properties": {
             "action": "PLATFORM:complete",
             "icon": "mdi:check",
-            "prompt": "Complete"
+            "prompt": "No product available, complete"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -479,29 +468,18 @@
           "properties": {
             "action": "TELCO:get_product_by_speed",
             "icon": "mdi:speedometer",
-            "prompt": "Get Product by Speed"
+            "prompt": "Get products by speed"
           },
-          "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
+          "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
-          "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:user",
-            "prompt": "Notify user about available products"
-          },
-          "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b0270-c493-7072-9d50-87952c5dc547",
+          "id": "019c8a58-10e3-713f-9484-78d04923040f",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
-            "icon": "mdi:user",
-            "prompt": "User selected product"
+            "icon": "mdi:cursor-pointer",
+            "prompt": "Provide available products and wait for user to select a product"
           },
           "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -512,7 +490,7 @@
           "properties": {
             "action": "TELCO:port_allocation",
             "icon": "mdi:link",
-            "prompt": "Assign Port"
+            "prompt": "Allocate port and create order"
           },
           "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -534,7 +512,7 @@
           "properties": {
             "action": "TELCO:configuration",
             "icon": "mdi:settings",
-            "prompt": "Configure Port"
+            "prompt": "Configure allocated port"
           },
           "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -545,7 +523,7 @@
           "properties": {
             "action": "TELCO:port_connection",
             "icon": "mdi:ethernet",
-            "prompt": "Connect Port"
+            "prompt": "Connect port to residence"
           },
           "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -556,7 +534,7 @@
           "properties": {
             "action": "PLATFORM:complete",
             "icon": "mdi:check",
-            "prompt": "Complete"
+            "prompt": "Complete setup flow"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -640,20 +618,10 @@
             },
             {
               "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-              "action": "PLATFORM:message_user",
-              "status": "COMPLETED",
-              "parameters": {
-                "sessionId": "123456019b6e75-8a07-72f2-8adf-82cd88f6b7cc7890",
-                "message": "Available products are: 100mbps 6 months unlimited, 100mbps 3 months unlimited, 50mbps 12 months unlimited, 50mbps 6 months unlimited, 50mbps 3 months unlimited, 25mbps 12 months unlimited, 25mbps 3 months unlimited, 25mbps 6 months unlimited."
-              },
-              "comment": "Notifying user about available products"
-            },
-            {
-              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
               "action": "PLATFORM:user_interaction",
               "status": "COMPLETED",
               "parameters": {
-                "question": "Please select a product"
+                "question": "Here are your options: 100mbps (6 months), 100mbps (3 months), 50mbps (12 months), 50mbps (6 months), 50mbps (3 months), 25mbps (12 months), 25mbps (3 months), 25mbps (6 months)."
               },
               "comment": "Waiting for user to select a product"
             },
@@ -685,7 +653,7 @@
               "status": "COMPLETED",
               "parameters": {
                 "sessionId": "123456019b6e75-8a07-72f2-8adf-82cd88f6b7cc7890",
-                "message": "We apologize, but we are not able to allocate the port. Please try again later."
+                "message": "Sorry, we couldn't assign a port. Please try again later."
               },
               "comment": "Notifying user to we are not able to allocate the port"
             },
@@ -785,27 +753,16 @@
             "icon": "mdi:speedometer",
             "prompt": "Get products by speed"
           },
-          "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
+          "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
         {
-          "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:bell",
-            "prompt": "Show products to user"
-          },
-          "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b0270-c493-7072-9d50-87952c5dc547",
+          "id": "019c8a58-10e3-713f-9484-78d04923040f",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
             "icon": "mdi:cursor-pointer",
-            "prompt": "Wait for product choice"
+            "prompt": "Provide available products and wait for user to select a product"
           },
           "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -916,22 +873,12 @@
             },
             {
               "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
-              "action": "PLATFORM:message_user",
-              "status": "COMPLETED",
-              "parameters": {
-                "sessionId": "029c8g97-0c29-94h4-0cfg-04ef00h8d9ee",
-                "message": "Available internet packages for your address: 16 Mbps Internet 12 Months Unlimited, 16 Mbps Internet 6 Months Unlimited."
-              },
-              "comment": "Notified user about available products"
-            },
-            {
-              "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
               "action": "PLATFORM:user_interaction",
               "status": "COMPLETED",
               "parameters": {
-                "question": "Please select a product"
+                "question": "2 Options: 16 Mbps (12 months), 16 Mbps (6 months). Select one."
               },
-              "comment": "User selected 16 Mbps Internet 12 Months Unlimited"
+              "comment": "User selected 16 Mbps (12 months)"
             },
             {
               "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
@@ -950,7 +897,7 @@
               "status": "COMPLETED",
               "parameters": {
                 "sessionId": "029c8g97-0c29-94h4-0cfg-04ef00h8d9ee",
-                "message": "Your port has been successfully allocated. We are now proceeding with the configuration."
+                "message": "A port has been assigned."
               },
               "comment": "Notified user about port allocation completion"
             },
@@ -977,7 +924,7 @@
               "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
               "action": "PLATFORM:complete",
               "status": "COMPLETED",
-              "comment": "Internet subscription setup completed successfully"
+              "comment": "Internet subscription has been successfully completed."
             }
           ],
           "false": [
@@ -1089,7 +1036,7 @@
           "properties": {
             "action": "PLATFORM:user_interaction",
             "icon": "mdi:user",
-            "prompt": "User selected product"
+            "prompt": "Waiting for user to select a product"
           },
           "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1199,22 +1146,12 @@
             },
             {
               "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
-              "action": "PLATFORM:message_user",
-              "status": "COMPLETED",
-              "parameters": {
-                "sessionId": "019b7f86-9b18-83g3-9beg-93de99g7c8dd",
-                "message": "Available internet packages for your address: 16 Mbps Internet 12 Months Unlimited, 16 Mbps Internet 6 Months Unlimited."
-              },
-              "comment": "Notified user about available products"
-            },
-            {
-              "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
               "action": "PLATFORM:user_interaction",
               "status": "COMPLETED",
               "parameters": {
-                "question": "Please select a product"
+                "question": "2 Options: 16 Mbps (12 months), 16 Mbps (6 months). Please select a product"
               },
-              "comment": "User selected 16 Mbps Internet 12 Months Unlimited"
+              "comment": "Waiting for user to select a product"
             },
             {
               "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
@@ -1233,7 +1170,7 @@
               "status": "COMPLETED",
               "parameters": {
                 "sessionId": "019b7f86-9b18-83g3-9beg-93de99g7c8dd",
-                "message": "Your port has been successfully allocated. We are now proceeding with the configuration."
+                "message": "A port has been assigned."
               },
               "comment": "Notified user about port allocation completion"
             },
@@ -1260,7 +1197,7 @@
               "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
               "action": "PLATFORM:complete",
               "status": "COMPLETED",
-              "comment": "Internet subscription setup completed successfully"
+              "comment": "Internet subscription has been successfully completed."
             }
           ],
           "false": [

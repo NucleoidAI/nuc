@@ -1,5 +1,5 @@
 {
-  "sequence": 9,
+  "sequence": 10,
   "seed": [
     {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
@@ -109,6 +109,19 @@
             "prompt": "Allocate port and create order",
             "label": "Assign Port",
             "icon": "mdi:link"
+          },
+          "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Notify user about port allocation completion",
+            "prompt": "Notify user about port allocation",
+            "label": "Notify Port Allocation",
+            "icon": "mdi:bell"
           },
           "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"

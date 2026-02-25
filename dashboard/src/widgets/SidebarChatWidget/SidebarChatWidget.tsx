@@ -1,8 +1,9 @@
 import SidebarChat from "../../components/SidebarChat";
+import useAgent from "../../hooks/useAgent";
 import useBlueprint from "../../hooks/useBlueprint";
 import useSession from "../../hooks/useSession";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface SidebarChatWidgetProps {
   readOnly?: boolean;
@@ -17,7 +18,6 @@ interface SidebarChatWidgetProps {
 const SidebarChatWidget = ({
   readOnly,
   conversationId,
-  sessionId,
   sound,
   agentId,
   open,
@@ -25,9 +25,13 @@ const SidebarChatWidget = ({
 }: SidebarChatWidgetProps) => {
   const [selectedBlueprint, setSelectedBlueprint] = useState("");
 
-  const { conversations, sendMessage, getSession } = useSession(agentId);
+  const { sessionId, conversations, sendMessage, switchSession, getSession } =
+    useSession(agentId);
   const { getBlueprint } = useBlueprint();
   const { Blueprint } = getBlueprint();
+
+  const { getAgent } = useAgent();
+  const { agent } = getAgent(agentId);
 
   const [messages, setMessages] = useState([]);
 
@@ -43,6 +47,24 @@ const SidebarChatWidget = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, sessionId]);
+
+  const handleSessionSelect = useCallback(
+    async (
+      selectedSessionId: string,
+      cachedMessages?: { id?: string; content: string; role: string }[]
+    ) => {
+      if (cachedMessages?.length) {
+        setMessages(cachedMessages);
+      }
+      try {
+        await switchSession(selectedSessionId);
+        getSession(selectedSessionId);
+      } catch {
+        getSession(selectedSessionId);
+      }
+    },
+    [switchSession, getSession]
+  );
 
   const handleNewUserMessage = async (content: string) => {
     const newMessage = {
@@ -62,6 +84,8 @@ const SidebarChatWidget = ({
       history={messages}
       handleNewUserMessage={handleNewUserMessage}
       readOnly={readOnly}
+      sessionId={sessionId}
+      agent={agent}
       selectedConversationId={conversationId || null}
       sound={sound}
       Blueprints={
@@ -69,6 +93,7 @@ const SidebarChatWidget = ({
       }
       selectedBlueprint={selectedBlueprint}
       onBlueprintChange={setSelectedBlueprint}
+      onSessionSelect={handleSessionSelect}
     />
   );
 };

@@ -165,15 +165,20 @@ function AgentLayout({
           )}
         </Stack>
         {currentTab === "profile" && <Profile agentId={agent.id} />}
-        {currentTab === "knowledge-base" && <Knowledge agentId={agent.id} />}
-        {currentTab === "blueprints" && <BlueprintsWidget agentId={agent.id} />}
+        {currentTab === "knowledge-base" && (
+          <Knowledge agentId={agent.id} fromDrawer={fromDrawer} />
+        )}
+        {currentTab === "blueprints" && (
+          <BlueprintsWidget agentId={agent.id} fromDrawer={fromDrawer} />
+        )}
         {currentTab === "supervisings" && <Supervising agentId={agent.id} />}
-        {currentTab === "tasks" && <TasksWidget agentId={agent.id} />}
+        {currentTab === "tasks" && (
+          <TasksWidget agentId={agent.id} fromDrawer={fromDrawer} />
+        )}
         {currentTab === "mcps" && <AgentMCP agent={agent} />}
         {currentTab === "communication" && <Communication />}
       </Box>
 
-      {/* Sidebar Chat */}
       <SidebarChatWidget
         agentId={agent.id}
         open={chatOpen}

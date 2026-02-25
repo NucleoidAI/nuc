@@ -7,6 +7,7 @@ import TaskList from "../../components/TaskList/TaskList";
 import { useEvent } from "@nucleoidai/react-event";
 import useTasks from "../../hooks/useTasks";
 import { useTheme } from "@mui/material/styles";
+
 import {
   Box,
   Card,
@@ -34,13 +35,9 @@ function TasksWidget({
 }) {
   const [aiResponded] = useEvent("AI_RESPONDED", null);
 
-  const [aiResponded] = useEvent("AI_RESPONDED", null);
-
-  const { tasks, steps, getSteps, createTask } = useTasks(
-    agentId,
-    [aiResponded],
-    [aiResponded]
-  );
+  const { tasks, steps, getSteps, createTask } = useTasks(agentId, [
+    aiResponded,
+  ]);
 
   const [selectedStatus, setSelectedStatus] = useState<
     "All" | "COMPLETED" | "IN_PROGRESS"

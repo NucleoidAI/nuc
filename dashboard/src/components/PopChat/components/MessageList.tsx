@@ -18,7 +18,7 @@ const MessageList = memo(
     selectedId: string;
     messagesEndRef: { current: HTMLDivElement | null };
     highlightedMessage: { current: HTMLDivElement | null };
-    onErrorClose: () => void;
+    onErrorClose?: () => void;
   }) => (
     <>
       {messages.map((item, index) => {

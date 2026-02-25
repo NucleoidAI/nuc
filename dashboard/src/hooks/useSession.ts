@@ -2,7 +2,7 @@ import config from "../../config";
 import http from "@canmingir/link/platform/http";
 import { io } from "socket.io-client";
 import { publish } from "@nucleoidai/react-event";
-import { readSessions } from "../components/SidebarChat/useChatSessions";
+import { readSessions } from "./useChatSessions";
 import { storage } from "@nucleoidjs/webstorage";
 
 import { useCallback, useEffect, useRef, useState } from "react";

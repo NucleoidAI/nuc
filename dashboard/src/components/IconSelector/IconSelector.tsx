@@ -1,16 +1,30 @@
 import AddIcon from "@mui/icons-material/Add";
-import AgentAndTeamAvatars from "../../lib/AgentAndTeamAvatars";
+import { ICON_NAMES } from "../../lib/AgentAndTeamAvatars";
 import IconButton from "@mui/material/IconButton";
-import Picker from "@emoji-mart/react";
+import { Iconify } from "@canmingir/link/platform/components";
 import React from "react";
-import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
+import { cleanIconName } from "../../utils/cleanIconName";
 
-import { Dialog, Stack } from "@mui/material";
+import { Box, Dialog, Stack, Typography } from "@mui/material";
 
-export default function IconSelector({ handleEmojiSelect, iconSrc, icon }) {
+export default function IconSelector({
+  handleEmojiSelect,
+  iconSrc,
+  icon,
+}: {
+  handleEmojiSelect: (emoji: { id: string; src?: string }) => void;
+  iconSrc?: string;
+  icon?: string;
+}) {
   const [emojiDialogOpen, setEmojiDialogOpen] = React.useState(false);
+
   const handleEmojiButtonClick = () => {
     setEmojiDialogOpen(true);
+  };
+
+  const handleIconClick = (iconName: string) => {
+    handleEmojiSelect({ id: iconName, src: iconName });
+    setEmojiDialogOpen(false);
   };
 
   return (
@@ -28,49 +42,70 @@ export default function IconSelector({ handleEmojiSelect, iconSrc, icon }) {
             height: { xs: 77, md: 140 },
           }}
         >
-          <SourcedAvatar
-            name="avatar"
-            iconUrl={
-              iconSrc ||
-              `https://api-dev-minimal-v510.vercel.app/assets/images/avatar/avatar_${icon}.jpg`
-            }
-            source={
-              iconSrc ||
-              `https://api-dev-minimal-v510.vercel.app/assets/images/avatar/avatar_${icon}.jpg`
-            }
-            sx={{
-              display: "flex",
-              alignSelf: "center",
-              mx: "auto",
-              width: { xs: 64, md: 128 },
-              height: { xs: 64, md: 128 },
-              border: `solid 2px ${(theme) => theme.palette.common.white}`,
-            }}
-          >
-            <AddIcon fontSize="large" />
-          </SourcedAvatar>
+          {icon ? (
+            <Iconify
+              sx={{
+                width: { xs: 48, md: 64 },
+                height: { xs: 48, md: 64 },
+              }}
+              icon={cleanIconName(iconSrc)}
+              color="#2065d1"
+            />
+          ) : (
+            <AddIcon
+              sx={{ width: { xs: 32, md: 48 }, height: { xs: 32, md: 48 } }}
+            />
+          )}
         </IconButton>
       </Stack>
       <Dialog
         data-cy="avatar-selection"
         open={emojiDialogOpen}
         onClose={() => setEmojiDialogOpen(false)}
+        PaperProps={{
+          sx: {
+            backgroundColor: "background.default",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            maxHeight: "50vh",
+            width: { xs: "90%", sm: 500 },
+          },
+        }}
       >
-        <Picker
-          onEmojiSelect={(emoji) => {
-            handleEmojiSelect(emoji), setEmojiDialogOpen(false);
-          }}
-          custom={AgentAndTeamAvatars}
-          categories={["team_icons"]}
-          searchPosition={"none"}
-          navPosition="none"
-          emojiButtonSize={90}
-          emojiSize={75}
-          perLine={4}
-          autoFocus="true"
-          previewPosition={"none"}
-          theme={"dark"}
-        />
+        <Box sx={{ p: 2 }}>
+          <Typography sx={{ mb: 2 }}>Team Icons</Typography>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, minmax(72px, 1fr))",
+              gap: 2,
+            }}
+          >
+            {ICON_NAMES.map((iconName) => (
+              <IconButton
+                key={iconName}
+                onClick={() => handleIconClick(iconName)}
+                sx={{
+                  width: 90,
+                  height: 90,
+                  borderRadius: 2,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Iconify
+                  icon={iconName}
+                  width={60}
+                  height={60}
+                  color="#2065d1"
+                />
+              </IconButton>
+            ))}
+          </Box>
+        </Box>
       </Dialog>
     </Stack>
   );

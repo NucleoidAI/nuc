@@ -1,7 +1,6 @@
 import DialogContentText from "@mui/material/DialogContentText";
 import Grid from "@mui/material/Grid";
 import { Iconify } from "@canmingir/link/platform/components";
-import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
 import { cleanIconName } from "../../utils/cleanIconName";
 
 import { Box, Card, CardContent, Typography } from "@mui/material";
@@ -56,26 +55,29 @@ function Summary({ organization, team, agent }) {
             <CardContent>
               <Grid container alignItems="center" spacing={2}>
                 <Grid item xs={4}>
-                  <SourcedAvatar
-                    source={
-                      team.src ||
-                      `https://api-dev-minimal-v510.vercel.app/assets/images/avatar/avatar_${team?.avatar?.replace(
-                        /:/g,
-                        ""
-                      )}.jpg`
-                    }
+                  <Box
                     sx={{
-                      display: "block",
-                      margin: "0 auto",
-                      width: { xs: 40, md: 104 },
-                      height: { xs: 40, md: 104 },
-                      border: `solid 2px ${(theme) =>
-                        theme.palette.common.white}`,
+                      mx: "auto",
+                      width: { xs: 32, md: 64 },
+                      height: { xs: 32, md: 64 },
+                      borderRadius: "50%",
+
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      overflow: "hidden",
                     }}
-                  />
+                  >
+                    <Iconify
+                      icon={cleanIconName(team.icon)}
+                      width="70%"
+                      height="70%"
+                      style={{ objectFit: "contain" }}
+                    />
+                  </Box>
                 </Grid>
                 <Grid item xs={8}>
-                  <Typography variant="h6" data-cy="item-summary-name-area">
+                  <Typography variant="h6" data-cy="team-summary-name-area">
                     {team.name}
                   </Typography>
                 </Grid>

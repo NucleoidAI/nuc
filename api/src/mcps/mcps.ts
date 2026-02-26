@@ -360,11 +360,7 @@ const MCPs = [
           description: "The speed limit to assign a port for.",
         },
       },
-<<<<<<< HEAD
-      required: ["device_serial_number"],
-=======
       required: ["device_serial_number", "bbk_no", "speed_limit"],
->>>>>>> main
     },
     outputSchema: {
       type: "object",
@@ -451,11 +447,6 @@ const MCPs = [
           type: "string",
           description: "The device card number to configure.",
         },
-<<<<<<< HEAD
-        speed: {
-          type: "string",
-          description: "The speed to configure.",
-=======
         speed_limit: {
           type: "string",
           description: "The speed limit to configure.",
@@ -463,7 +454,6 @@ const MCPs = [
         speed_profile: {
           type: "string",
           description: "The speed profile to configure.",
->>>>>>> main
         },
       },
       required: [
@@ -471,13 +461,9 @@ const MCPs = [
         "port_no",
         "device_tid",
         "hgw_serial_no",
-<<<<<<< HEAD
-        "speed",
-=======
         "device_card_no",
         "speed_limit",
         "speed_profile",
->>>>>>> main
       ],
     },
     outputSchema: {

@@ -132,8 +132,8 @@ function Knowledge({
         <Stack
           sx={{
             position: "fixed",
-            bottom: fromDrawer ? 90 : 10,
-            right: fromDrawer ? 55 : 5,
+            bottom: fromDrawer ? 62 : 10,
+            right: fromDrawer ? 62 : 5,
           }}
         >
           <Fab

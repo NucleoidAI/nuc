@@ -148,7 +148,7 @@ function AgentLayout({
           marginRight: chatOpen ? `${DRAWER_WIDTH}px` : 0,
         }}
       >
-        <Stack margin={2} sx={{ position: "relative", marginTop: -2 }}>
+        <Stack margin={2} sx={{ position: "relative", marginTop: 0 }}>
           {loading ? (
             <Skeleton variant="rectangular" height={200} />
           ) : (
@@ -176,7 +176,9 @@ function AgentLayout({
           <TasksWidget agentId={agent.id} fromDrawer={fromDrawer} />
         )}
         {currentTab === "mcps" && <AgentMCP agent={agent} />}
-        {currentTab === "communication" && <Communication />}
+        {currentTab === "communication" && (
+          <Communication fromDrawer={fromDrawer} />
+        )}
       </Box>
 
       <SidebarChatWidget

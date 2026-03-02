@@ -74,10 +74,9 @@ interface Database {
   }>;
 }
 
-
 function loadDatabase(): Database {
-    const data = fs.readFileSync(DB_PATH, "utf-8");
-    return JSON.parse(data);
+  const data = fs.readFileSync(DB_PATH, "utf-8");
+  return JSON.parse(data);
 }
 
 function saveDatabase(data: Database): void {
@@ -88,11 +87,10 @@ export function getDatabase(): Database {
   return loadDatabase();
 }
 
-
 export function findOne<T extends keyof Database>(
   table: T,
   key: string,
-  value: any
+  value: any,
 ): Database[T][number] | null {
   const db = loadDatabase();
   const records = db[table] as any[];
@@ -101,7 +99,7 @@ export function findOne<T extends keyof Database>(
 
 export function findAll<T extends keyof Database>(
   table: T,
-  filter?: (item: Database[T][number]) => boolean
+  filter?: (item: Database[T][number]) => boolean,
 ): Database[T] {
   const db = loadDatabase();
   const records = db[table] as any[];
@@ -113,7 +111,7 @@ export function findAll<T extends keyof Database>(
 
 export function insert<T extends keyof Database>(
   table: T,
-  record: Database[T][number]
+  record: Database[T][number],
 ): void {
   const db = loadDatabase();
   (db[table] as any[]).push(record);
@@ -125,7 +123,7 @@ export function update<T extends keyof Database>(
   key: string,
   value: any,
   updates: Partial<Database[T][number]> | Database[T][number],
-  updateWholeRow: boolean = false 
+  updateWholeRow: boolean = false,
 ): boolean {
   const db = loadDatabase();
   const records = db[table] as any[];
@@ -145,7 +143,7 @@ export function update<T extends keyof Database>(
 export function remove<T extends keyof Database>(
   table: T,
   key: string,
-  value: any
+  value: any,
 ): boolean {
   const db = loadDatabase();
   const records = db[table] as any[];

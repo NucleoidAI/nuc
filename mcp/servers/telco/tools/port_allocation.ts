@@ -1,5 +1,6 @@
 import { PortAllocationInput, Tool } from "./types";
-import { findAll, findOne , insert, update} from "../db/index.js";
+import { findAll, findOne, insert, update } from "../db/index.js";
+
 import logger from "../../../logger/logger.js";
 
 export const portAllocationTool: Tool<PortAllocationInput> = {
@@ -27,13 +28,23 @@ export const portAllocationTool: Tool<PortAllocationInput> = {
   handler: async (args: PortAllocationInput) => {
     try {
       logger.info(
-        { tool: "TELCO:port_allocation", device_serial_number: args.device_serial_number, bbk_no: args.bbk_no, speed_limit: args.speed_limit },
-        "Allocating port"
+        {
+          tool: "TELCO:port_allocation",
+          device_serial_number: args.device_serial_number,
+          bbk_no: args.bbk_no,
+          speed_limit: args.speed_limit,
+        },
+        "Allocating port",
       );
 
       const port = findAll("ports");
 
-      const availablePort = port.find((p) => p.status === "Available" && p.speed_limit === args.speed_limit && p.bbk_no === args.bbk_no);
+      const availablePort = port.find(
+        (p) =>
+          p.status === "Available" &&
+          p.speed_limit === args.speed_limit &&
+          p.bbk_no === args.bbk_no,
+      );
 
       if (availablePort) {
         const portAllocation = {
@@ -43,13 +54,20 @@ export const portAllocationTool: Tool<PortAllocationInput> = {
           port_no: availablePort.port_no,
           status: "Pending",
           speed_limit: args.speed_limit,
-        }
+        };
         insert("port_allocations", portAllocation);
-        update("ports", "port_no", availablePort.port_no, { status: "Allocated" });
+        update("ports", "port_no", availablePort.port_no, {
+          status: "Allocated",
+        });
 
         logger.info(
-          { tool: "TELCO:port_allocation", assignment_id: portAllocation.assignment_id, port_no: portAllocation.port_no, bbk_no: args.bbk_no },
-          "Port allocated successfully"
+          {
+            tool: "TELCO:port_allocation",
+            assignment_id: portAllocation.assignment_id,
+            port_no: portAllocation.port_no,
+            bbk_no: args.bbk_no,
+          },
+          "Port allocated successfully",
         );
 
         return {
@@ -65,8 +83,12 @@ export const portAllocationTool: Tool<PortAllocationInput> = {
         };
       } else {
         logger.warn(
-          { tool: "TELCO:port_allocation", bbk_no: args.bbk_no, speed_limit: args.speed_limit },
-          "No available port found"
+          {
+            tool: "TELCO:port_allocation",
+            bbk_no: args.bbk_no,
+            speed_limit: args.speed_limit,
+          },
+          "No available port found",
         );
 
         return {
@@ -77,28 +99,31 @@ export const portAllocationTool: Tool<PortAllocationInput> = {
                 error: `NOT_AVAILABLE_PORT`,
               }),
             },
-
-            ],
-            isError: false,
-          };
-        }
-      }  catch (error) {
-        logger.error(
-          { tool: "TELCO:port_allocation", err: error instanceof Error ? error : new Error(String(error)), args },
-          "Port allocation failed"
-        );
-
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify({
-                error: error instanceof Error ? error.message : "Unknown error",
-              }),
-            },
           ],
-          isError: true,
+          isError: false,
         };
       }
+    } catch (error) {
+      logger.error(
+        {
+          tool: "TELCO:port_allocation",
+          err: error instanceof Error ? error : new Error(String(error)),
+          args,
+        },
+        "Port allocation failed",
+      );
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify({
+              error: error instanceof Error ? error.message : "Unknown error",
+            }),
+          },
+        ],
+        isError: true,
+      };
     }
+  },
 };

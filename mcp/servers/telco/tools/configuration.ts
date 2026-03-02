@@ -83,12 +83,16 @@ function addCustomerServiceXmlRequest(args: ConfigurationInput): string {
 </soapenv:Envelope>`;
 }
 
-async function sendSoapRequest(endpoint: string, xmlBody: string, action: string): Promise<string> {
+async function sendSoapRequest(
+  endpoint: string,
+  xmlBody: string,
+  action: string,
+): Promise<string> {
   const response = await fetch(endpoint, {
     method: "POST",
     headers: {
       "Content-Type": "text/xml; charset=utf-8",
-      "SOAPAction": action,
+      SOAPAction: action,
     },
     body: xmlBody,
   });
@@ -132,14 +136,24 @@ export const configurationTool: Tool<ConfigurationInput> = {
         description: "The speed limit to configure.",
       },
     },
-    required: ["speed_profile", "port_no", "device_serial_number", "hgw_serial_no", "device_tid", "device_card_no", "speed_limit"],
+    required: [
+      "speed_profile",
+      "port_no",
+      "device_serial_number",
+      "hgw_serial_no",
+      "device_tid",
+      "device_card_no",
+      "speed_limit",
+    ],
   },
   handler: async (args: ConfigurationInput) => {
     try {
-
       const endpoint = process.env.MCP_TELCO_URL;
 
-      logger.info({ tool: "TELCO:configuration", endpoint }, "Sending SOAP request to endpoint");
+      logger.info(
+        { tool: "TELCO:configuration", endpoint },
+        "Sending SOAP request to endpoint",
+      );
 
       let ontResponse: string | null = null;
       let addCustomerServiceResponse: string | null = null;
@@ -148,12 +162,23 @@ export const configurationTool: Tool<ConfigurationInput> = {
       const addCustomerServiceXml = addCustomerServiceXmlRequest(args);
 
       if (endpoint) {
-        ontResponse = await sendSoapRequest(endpoint, createOntXml, "createOnt");
-        addCustomerServiceResponse = await sendSoapRequest(endpoint, addCustomerServiceXml, "addCustomerService");
-      } 
+        ontResponse = await sendSoapRequest(
+          endpoint,
+          createOntXml,
+          "createOnt",
+        );
+        addCustomerServiceResponse = await sendSoapRequest(
+          endpoint,
+          addCustomerServiceXml,
+          "addCustomerService",
+        );
+      }
 
-      logger.info({ tool: "TELCO:configuration", args }, "Configuration completed successfully");
-      
+      logger.info(
+        { tool: "TELCO:configuration", args },
+        "Configuration completed successfully",
+      );
+
       return {
         content: [
           {
@@ -168,8 +193,12 @@ export const configurationTool: Tool<ConfigurationInput> = {
       };
     } catch (error) {
       logger.error(
-        { tool: "TELCO:configuration", err: error instanceof Error ? error : new Error(String(error)), args },
-        "Configuration failed"
+        {
+          tool: "TELCO:configuration",
+          err: error instanceof Error ? error : new Error(String(error)),
+          args,
+        },
+        "Configuration failed",
       );
 
       return {

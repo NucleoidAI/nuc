@@ -1,11 +1,18 @@
 import Tab from "@mui/material/Tab";
-import { useCallback } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import Tabs, { tabsClasses } from "@mui/material/Tabs";
+import { useCallback, useEffect } from "react";
 
-function TabBar({ TABS, currentTab, setCurrentTab }) {
+function TabBar({ TABS, currentTab, setCurrentTab, sidebarOpen = false }) {
   const isWideScreen = useMediaQuery("(min-width:1450px)");
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      window.dispatchEvent(new Event("resize"));
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [sidebarOpen]);
 
   const handleTabChange = useCallback(
     (event, newValue) => {

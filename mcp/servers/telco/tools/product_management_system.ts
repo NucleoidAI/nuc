@@ -1,4 +1,5 @@
 import { ProductManagementSystemInput, Tool } from "./types";
+
 import { findAll } from "../db/index.js";
 import logger from "../../../logger/logger.js";
 
@@ -19,12 +20,21 @@ export const productManagementSystemTool: Tool<ProductManagementSystemInput> = {
   },
   handler: async (args: ProductManagementSystemInput) => {
     try {
-      logger.info({ tool: "TELCO:get_product_by_speed", speed_limit: args.speed_limit }, "Looking up products by speed");
+      logger.info(
+        { tool: "TELCO:get_product_by_speed", speed_limit: args.speed_limit },
+        "Looking up products by speed",
+      );
 
-      const products = findAll("products", (item) => item.speed_limit === args.speed_limit);
+      const products = findAll(
+        "products",
+        (item) => item.speed_limit === args.speed_limit,
+      );
 
       if (!products.length) {
-        logger.warn({ tool: "TELCO:get_product_by_speed", speed_limit: args.speed_limit }, "No products found for speed");
+        logger.warn(
+          { tool: "TELCO:get_product_by_speed", speed_limit: args.speed_limit },
+          "No products found for speed",
+        );
 
         return {
           content: [
@@ -39,7 +49,14 @@ export const productManagementSystemTool: Tool<ProductManagementSystemInput> = {
         };
       }
 
-      logger.info({ tool: "TELCO:get_product_by_speed", speed_limit: args.speed_limit, count: products.length }, "Products found for speed");
+      logger.info(
+        {
+          tool: "TELCO:get_product_by_speed",
+          speed_limit: args.speed_limit,
+          count: products.length,
+        },
+        "Products found for speed",
+      );
 
       return {
         content: [
@@ -54,8 +71,12 @@ export const productManagementSystemTool: Tool<ProductManagementSystemInput> = {
       };
     } catch (error) {
       logger.error(
-        { tool: "TELCO:get_product_by_speed", err: error instanceof Error ? error : new Error(String(error)), speed_limit: args.speed_limit },
-        "Failed to look up products"
+        {
+          tool: "TELCO:get_product_by_speed",
+          err: error instanceof Error ? error : new Error(String(error)),
+          speed_limit: args.speed_limit,
+        },
+        "Failed to look up products",
       );
 
       return {

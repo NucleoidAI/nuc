@@ -1,4 +1,5 @@
 import { InventoryToolInput, Tool } from "./types";
+
 import { findOne } from "../db/index.js";
 import logger from "../../../logger/logger.js";
 
@@ -19,12 +20,18 @@ export const inventoryTool: Tool<InventoryToolInput> = {
   },
   handler: async (args: InventoryToolInput) => {
     try {
-      logger.info({ tool: "TELCO:get_inventory", bbk_no: args.bbk_no }, "Looking up inventory by BBK");
+      logger.info(
+        { tool: "TELCO:get_inventory", bbk_no: args.bbk_no },
+        "Looking up inventory by BBK",
+      );
 
       const inventory = findOne("inventory", "bbk_no", args.bbk_no);
 
       if (!inventory) {
-        logger.warn({ tool: "TELCO:get_inventory", bbk_no: args.bbk_no }, "Inventory not found for BBK");
+        logger.warn(
+          { tool: "TELCO:get_inventory", bbk_no: args.bbk_no },
+          "Inventory not found for BBK",
+        );
 
         return {
           content: [
@@ -39,7 +46,10 @@ export const inventoryTool: Tool<InventoryToolInput> = {
         };
       }
 
-      logger.info({ tool: "TELCO:get_inventory", bbk_no: args.bbk_no }, "Inventory found for BBK");
+      logger.info(
+        { tool: "TELCO:get_inventory", bbk_no: args.bbk_no },
+        "Inventory found for BBK",
+      );
 
       return {
         content: [
@@ -54,8 +64,12 @@ export const inventoryTool: Tool<InventoryToolInput> = {
       };
     } catch (error) {
       logger.error(
-        { tool: "TELCO:get_inventory", err: error instanceof Error ? error : new Error(String(error)), bbk_no: args.bbk_no },
-        "Failed to look up inventory"
+        {
+          tool: "TELCO:get_inventory",
+          err: error instanceof Error ? error : new Error(String(error)),
+          bbk_no: args.bbk_no,
+        },
+        "Failed to look up inventory",
       );
 
       return {

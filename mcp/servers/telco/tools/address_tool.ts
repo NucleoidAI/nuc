@@ -1,4 +1,5 @@
 import { AddressToolInput, Tool } from "./types";
+
 import { findOne } from "../db/index.js";
 import logger from "../../../logger/logger.js";
 
@@ -18,12 +19,18 @@ export const addressTool: Tool<AddressToolInput> = {
   },
   handler: async (args: AddressToolInput) => {
     try {
-      logger.info({ tool: "TELCO:get_address", bbk_no: args.bbk_no }, "Looking up address by BBK");
+      logger.info(
+        { tool: "TELCO:get_address", bbk_no: args.bbk_no },
+        "Looking up address by BBK",
+      );
 
       const address = findOne("addresses", "bbk_no", args.bbk_no);
 
       if (!address) {
-        logger.warn({ tool: "TELCO:get_address", bbk_no: args.bbk_no }, "Address not found for BBK");
+        logger.warn(
+          { tool: "TELCO:get_address", bbk_no: args.bbk_no },
+          "Address not found for BBK",
+        );
 
         return {
           content: [
@@ -38,7 +45,10 @@ export const addressTool: Tool<AddressToolInput> = {
         };
       }
 
-      logger.info({ tool: "TELCO:get_address", bbk_no: args.bbk_no }, "Address found for BBK");
+      logger.info(
+        { tool: "TELCO:get_address", bbk_no: args.bbk_no },
+        "Address found for BBK",
+      );
 
       return {
         content: [
@@ -53,8 +63,12 @@ export const addressTool: Tool<AddressToolInput> = {
       };
     } catch (error) {
       logger.error(
-        { tool: "TELCO:get_address", err: error instanceof Error ? error : new Error(String(error)), bbk_no: args.bbk_no },
-        "Failed to look up address by BBK"
+        {
+          tool: "TELCO:get_address",
+          err: error instanceof Error ? error : new Error(String(error)),
+          bbk_no: args.bbk_no,
+        },
+        "Failed to look up address by BBK",
       );
 
       return {

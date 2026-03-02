@@ -2,16 +2,14 @@ import { Iconify } from "@canmingir/link/platform/components";
 import { Skeleton } from "@mui/material";
 import { cleanIconName } from "../../utils/cleanIconName";
 
-import { Box, ListItemText, Stack, useTheme } from "@mui/material";
+import { Box, ListItemText, Stack } from "@mui/material";
 
 function ProfileCover({ name, iconUrl, coverUrl, loading }) {
-  const theme = useTheme();
-
   return (
     <Box
       sx={{
-        background: coverUrl,
-        height: 0.9,
+        background: "#1e2730",
+        height: 1,
         color: "common.white",
       }}
     >
@@ -31,12 +29,14 @@ function ProfileCover({ name, iconUrl, coverUrl, loading }) {
           <>
             <Box
               sx={{
-                mx: "auto",
-                width: { xs: 32, md: 64 },
-                height: { xs: 32, md: 64 },
+                mx: { md: "auto" },
+                ml: { xs: "50%" },
+                mt: { xs: -4, md: 3 },
+                width: { xs: 32, md: 56 },
+                height: { xs: 32, md: 56 },
                 borderRadius: "50%",
-                border: `2px solid ${theme.palette.common.white}`,
                 display: "flex",
+                backgroundImage: coverUrl,
                 alignItems: "center",
                 justifyContent: "center",
                 overflow: "hidden",
@@ -44,21 +44,21 @@ function ProfileCover({ name, iconUrl, coverUrl, loading }) {
             >
               <Iconify
                 icon={cleanIconName(iconUrl)}
-                width="70%"
-                height="70%"
+                width="50%"
+                height="50%"
                 style={{ objectFit: "contain" }}
               />
             </Box>
 
             <ListItemText
               sx={{
-                mt: 3,
-                ml: { md: 3 },
+                mt: { xs: 0.5, md: 7 },
+                ml: { xs: 3, md: 1 },
                 textAlign: { xs: "center", md: "unset" },
               }}
               primary={name}
               primaryTypographyProps={{
-                typography: "h4",
+                typography: "h5",
               }}
               secondaryTypographyProps={{
                 mt: 0.5,

@@ -179,7 +179,7 @@ const TaskDetails = ({
           </Typography>
         </Box>
 
-        <Box sx={{ maxHeight: 500, overflow: "auto" }}>
+        <Box>
           <Table size="small">
             <TableHead>
               <TableRow>

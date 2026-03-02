@@ -1,7 +1,6 @@
-import AgentAndTeamAvatars from "../../lib/AgentAndTeamAvatars";
-
 import AppsIcon from "@mui/icons-material/Apps";
-import Picker from "@emoji-mart/react";
+import { ICON_NAMES } from "../../lib/AgentAndTeamAvatars";
+import { Iconify } from "@canmingir/link/platform/components";
 import styles from "./styles";
 
 import {
@@ -86,17 +85,32 @@ function NewItemForm({
               <Divider sx={styles.iconDivider} />
               <Box sx={styles.iconBox}>
                 <Box sx={styles.iconPreview}>
-                  {newItem.src && (
+                  {newItem.src && newItem.src.includes(":") ? (
                     <Box
-                      component={"img"}
-                      src={newItem?.src}
                       sx={{
                         mx: "auto",
                         width: { xs: 64, md: 128 },
                         height: { xs: 64, md: 128 },
-                        borderStyle: "none",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
                       }}
-                    />
+                    >
+                      <Iconify icon={newItem.src} width={64} height={64} />
+                    </Box>
+                  ) : (
+                    newItem.src && (
+                      <Box
+                        component={"img"}
+                        src={newItem?.src}
+                        sx={{
+                          mx: "auto",
+                          width: { xs: 64, md: 128 },
+                          height: { xs: 64, md: 128 },
+                          borderStyle: "none",
+                        }}
+                      />
+                    )
                   )}
                 </Box>
                 <Button
@@ -108,18 +122,39 @@ function NewItemForm({
                   <AppsIcon />
                   Pick Icon
                 </Button>
-                <Dialog open={emojiDialogOpen}>
-                  <Picker
-                    onEmojiSelect={handleEmojiSelect}
-                    custom={AgentAndTeamAvatars}
-                    categories={"team_icons"}
-                    emojiButtonSize={90}
-                    emojiSize={75}
-                    perLine={4}
-                    previewPosition={"none"}
-                    searchPosition={"none"}
-                    theme={"dark"}
-                  />
+                <Dialog
+                  open={emojiDialogOpen}
+                  onClose={() => setEmojiDialogOpen(false)}
+                >
+                  <Box sx={{ p: 2 }}>
+                    <Box
+                      sx={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(4, minmax(72px, 1fr))",
+                        gap: 2,
+                      }}
+                    >
+                      {ICON_NAMES.map((iconName) => (
+                        <Button
+                          key={iconName}
+                          onClick={() =>
+                            handleEmojiSelect({ id: iconName, src: iconName })
+                          }
+                          sx={{
+                            minWidth: 0,
+                            width: 90,
+                            height: 90,
+                            borderRadius: 2,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Iconify icon={iconName} width={60} height={60} />
+                        </Button>
+                      ))}
+                    </Box>
+                  </Box>
                 </Dialog>
               </Box>
             </div>

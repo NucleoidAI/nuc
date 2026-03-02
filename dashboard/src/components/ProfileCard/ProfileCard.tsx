@@ -17,7 +17,7 @@ function ProfileCard({
       variant="profile-card"
       sx={{
         position: "relative",
-        height: 200,
+        height: 130,
         borderRadius: 2,
       }}
     >

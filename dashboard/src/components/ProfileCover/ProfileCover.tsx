@@ -30,7 +30,7 @@ function ProfileCover({ name, iconUrl, coverUrl, loading }) {
             <Box
               sx={{
                 mx: { md: "auto" },
-                ml: { xs: "50%" },
+                ml: { xs: "50%", md: "auto" },
                 mt: { xs: -4, md: 3 },
                 width: { xs: 32, md: 56 },
                 height: { xs: 32, md: 56 },

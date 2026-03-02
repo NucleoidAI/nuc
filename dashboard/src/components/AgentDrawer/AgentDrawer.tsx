@@ -21,10 +21,7 @@ const AgentDrawer = ({ open, onClose, agent, initialTab, allAgentIds }) => {
       onClose={handleClose}
       maxWidth={false}
       PaperProps={{
-        sx: {
-          width: "100%",
-          height: "100%",
-        },
+        sx: { width: "100%", height: "100%" },
       }}
       sx={{
         "& .MuiDialog-paper": {

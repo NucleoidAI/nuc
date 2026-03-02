@@ -134,8 +134,8 @@ const Communication = ({ fromDrawer }: { fromDrawer?: boolean }) => {
         <Stack
           sx={{
             position: "fixed",
-            bottom: fromDrawer ? 115 : 10,
-            right: fromDrawer ? 80 : 5,
+            bottom: fromDrawer ? 62 : 10,
+            right: fromDrawer ? 62 : 5,
           }}
         >
           <Fab

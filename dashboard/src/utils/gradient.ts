@@ -5,8 +5,9 @@ const agentGradients = [
   (theme) =>
     `linear-gradient(
       135deg,
-      ${alpha("#ff6fb1", 0.85)},
-      ${alpha("#ffb36b", 0.9)}
+      ${alpha("#f472b6", 0.85)} 0%,
+      ${alpha("#a78bfa", 0.85)} 50%,
+      ${alpha("#38bdf8", 0.9)} 100%
     )`,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (theme) =>
@@ -33,9 +34,8 @@ const agentGradients = [
   (theme) =>
     `linear-gradient(
       135deg,
-      ${alpha("#f472b6", 0.85)} 0%,
-      ${alpha("#a78bfa", 0.85)} 50%,
-      ${alpha("#38bdf8", 0.9)} 100%
+      ${alpha("#ff6fb1", 0.85)},
+      ${alpha("#ffb36b", 0.9)}
     )`,
 ];
 

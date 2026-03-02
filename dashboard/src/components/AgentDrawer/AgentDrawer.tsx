@@ -19,8 +19,13 @@ const AgentDrawer = ({ open, onClose, agent, initialTab, allAgentIds }) => {
     <Dialog
       open={open}
       onClose={handleClose}
-      maxWidth="xl"
-      fullWidth
+      maxWidth={false}
+      PaperProps={{
+        sx: {
+          width: "100%",
+          height: "100%",
+        },
+      }}
       sx={{
         "& .MuiDialog-paper": {
           position: "relative",

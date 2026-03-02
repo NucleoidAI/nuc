@@ -2,6 +2,7 @@ import { Server } from "socket.io";
 import { createSession } from "../api/createSession";
 import dotenv from "dotenv";
 import { event } from "@canmingir/link-express/event/client";
+import { getSession as fetchSession } from "../api/getSession";
 import { getAgent } from "../api/getAgent";
 import jwt from "jsonwebtoken";
 import { sendMessageToSession } from "../api/sendMessageSession";
@@ -59,7 +60,24 @@ const setup = async (io: Server) => {
       console.log("Agent ID:", agentId);
       console.log("Token:", token);
 
-      const session: Session = await createSession(token, agentId);
+      const requestedSessionId = socket.handshake.query.sessionId as string;
+      let session: Session;
+
+      if (requestedSessionId) {
+        try {
+          const existing = await fetchSession(token, requestedSessionId);
+          if (existing) {
+            session = { id: requestedSessionId, agentId };
+          } else {
+            session = await createSession(token, agentId);
+          }
+        } catch {
+          session = await createSession(token, agentId);
+        }
+      } else {
+        session = await createSession(token, agentId);
+      }
+
       const agent: Agent = await getAgent(token, agentId);
 
       console.log("Session:", session);
@@ -71,19 +89,48 @@ const setup = async (io: Server) => {
         return;
       }
 
+      let activeSessionId = session.id;
+
       socket.on("disconnect", () => {
         console.log("Disconnected from socket");
-        delete sockets[session.id];
+        delete sockets[activeSessionId];
       });
 
-      sockets[session.id] = socket.id;
+      sockets[activeSessionId] = socket.id;
+      socket.emit("session_started", { sessionId: activeSessionId });
 
       console.log("Sockets:", sockets);
+
+      socket.on(
+        "switch_session",
+        async ({ sessionId: targetSessionId }, callback) => {
+          try {
+            const existing = await fetchSession(token, targetSessionId);
+            if (!existing) {
+              if (typeof callback === "function")
+                callback({ status: "error", error: "Session not found" });
+              return;
+            }
+
+            delete sockets[activeSessionId];
+            activeSessionId = targetSessionId;
+            sockets[activeSessionId] = socket.id;
+
+            socket.emit("session_started", { sessionId: activeSessionId });
+            if (typeof callback === "function") callback({ status: "success" });
+          } catch (error) {
+            const errorMessage =
+              error instanceof Error ? error.message : "An error occurred";
+            if (typeof callback === "function")
+              callback({ status: "error", error: errorMessage });
+          }
+        },
+      );
 
       socket.on("customer_message", async ({ content }, callback) => {
         try {
           console.log("Customer message received:", content);
-          await sendMessageToSession(session.id, token, content);
+          await sendMessageToSession(activeSessionId, token, content);
 
           if (typeof callback === "function") callback({ status: "success" });
         } catch (error) {

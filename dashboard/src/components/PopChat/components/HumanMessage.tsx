@@ -1,14 +1,7 @@
 import { alpha } from "@mui/material/styles";
-import { keyframes } from "@emotion/react";
 import { memo } from "react";
 
 import { Stack, Typography } from "@mui/material";
-
-const pulse = keyframes`
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-`;
 
 const HumanMessage = memo(
   ({
@@ -32,16 +25,10 @@ const HumanMessage = memo(
         justifyContent: "center",
         borderWidth: message?.id === selectedId ? 3 : 0,
         borderRadius: "16px 16px 4px 16px",
-        borderStyle: message?.id === selectedId ? "solid" : "none",
-        borderColor: (theme) =>
-          message?.id === selectedId
-            ? theme.palette.warning.main
-            : "transparent",
-        backgroundColor: (theme) =>
-          message?.id === selectedId
-            ? alpha(theme.palette.warning.main, 0.25)
-            : alpha(theme.palette.grey[700], 0.4),
-        animation: message?.id === selectedId ? `${pulse} 1.2s` : "none",
+        borderStyle: "none",
+        borderColor: "transparent",
+        backgroundColor: (theme) => alpha(theme.palette.grey[700], 0.4),
+        animation: "none",
         boxShadow: 1,
       }}
     >

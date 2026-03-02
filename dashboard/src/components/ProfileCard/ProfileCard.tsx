@@ -10,6 +10,7 @@ function ProfileCard({
   setCurrentTab,
   TABS,
   loading,
+  sidebarOpen = false,
 }) {
   return (
     <Card
@@ -31,6 +32,7 @@ function ProfileCard({
         TABS={TABS}
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
+        sidebarOpen={sidebarOpen}
       />
     </Card>
   );

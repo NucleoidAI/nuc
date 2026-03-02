@@ -1,4 +1,5 @@
 import { AddressToBBKInput, Tool } from "./types";
+
 import { findAll } from "../db/index.js";
 import logger from "../../../logger/logger.js";
 
@@ -19,7 +20,10 @@ export const addressToBBKTool: Tool<AddressToBBKInput> = {
   },
   handler: async (args: AddressToBBKInput) => {
     try {
-      logger.info({ tool: "TELCO:get_bbk_by_address", address: args.address }, "Looking up BBK by address");
+      logger.info(
+        { tool: "TELCO:get_bbk_by_address", address: args.address },
+        "Looking up BBK by address",
+      );
 
       const addresses = findAll("addresses");
 
@@ -28,12 +32,15 @@ export const addressToBBKTool: Tool<AddressToBBKInput> = {
       if (!result) {
         const searchTerm = args.address?.toLowerCase();
         result = addresses.find((item) =>
-          item.address?.toLowerCase().includes(searchTerm)
+          item.address?.toLowerCase().includes(searchTerm),
         );
       }
 
       if (!result) {
-        logger.warn({ tool: "TELCO:get_bbk_by_address", address: args.address }, "BBK not found for address");
+        logger.warn(
+          { tool: "TELCO:get_bbk_by_address", address: args.address },
+          "BBK not found for address",
+        );
 
         return {
           content: [
@@ -48,7 +55,14 @@ export const addressToBBKTool: Tool<AddressToBBKInput> = {
         };
       }
 
-      logger.info({ tool: "TELCO:get_bbk_by_address", address: args.address, bbk_no: result.bbk_no }, "BBK found for address");
+      logger.info(
+        {
+          tool: "TELCO:get_bbk_by_address",
+          address: args.address,
+          bbk_no: result.bbk_no,
+        },
+        "BBK found for address",
+      );
 
       return {
         content: [
@@ -63,8 +77,12 @@ export const addressToBBKTool: Tool<AddressToBBKInput> = {
       };
     } catch (error) {
       logger.error(
-        { tool: "TELCO:get_bbk_by_address", err: error instanceof Error ? error : new Error(String(error)), address: args.address },
-        "Failed to look up BBK by address"
+        {
+          tool: "TELCO:get_bbk_by_address",
+          err: error instanceof Error ? error : new Error(String(error)),
+          address: args.address,
+        },
+        "Failed to look up BBK by address",
       );
 
       return {

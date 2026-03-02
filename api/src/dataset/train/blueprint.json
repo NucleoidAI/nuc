@@ -465,6 +465,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
+            "parameters": {
+              "question": "What is your address?"
+            },
             "description": "Wait for user to select a product from the available options",
             "icon": "mdi:user",
             "prompt": "Provide available options and waiting for user to select a product"

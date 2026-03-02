@@ -1,5 +1,6 @@
 import { PortConnectionInput, Tool } from "./types";
 import { findOne, update } from "../db/index.js";
+
 import logger from "../../../logger/logger.js";
 
 export const portConnectionTool: Tool<PortConnectionInput> = {
@@ -17,15 +18,25 @@ export const portConnectionTool: Tool<PortConnectionInput> = {
     required: ["assignment_id"],
   },
   handler: async (args: PortConnectionInput) => {
-    logger.info({ tool: "TELCO:port_connection", assignment_id: args.assignment_id }, "Connecting port");
+    logger.info(
+      { tool: "TELCO:port_connection", assignment_id: args.assignment_id },
+      "Connecting port",
+    );
 
     update("port_allocations", "assignment_id", args.assignment_id, {
       status: "Connected",
     });
 
-    const updatedPortAllocation = findOne("port_allocations", "assignment_id", args.assignment_id);
+    const updatedPortAllocation = findOne(
+      "port_allocations",
+      "assignment_id",
+      args.assignment_id,
+    );
 
-    logger.info({ tool: "TELCO:port_connection", assignment_id: args.assignment_id }, "Port connected successfully");
+    logger.info(
+      { tool: "TELCO:port_connection", assignment_id: args.assignment_id },
+      "Port connected successfully",
+    );
 
     return {
       content: [

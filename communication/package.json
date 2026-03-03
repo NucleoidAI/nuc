@@ -10,7 +10,7 @@
   "keywords": [],
   "author": "NucTeam",
   "dependencies": {
-    "@canmingir/link-express": "^1.7.11",
+    "@canmingir/link-express": "^1.7.12",
     "@nucleoidai/node-event": "^1.1.5",
     "@slack/bolt": "^3.22.0",
     "@slack/types": "^2.14.0",

@@ -43,6 +43,7 @@ const NodeEditorDrawer = ({
   nextIntegration,
   handleSubmit,
   editMode,
+  pseudocode,
 }: {
   drawerOpen: boolean;
   handleDrawerClose: () => void;
@@ -218,6 +219,7 @@ const NodeEditorDrawer = ({
   };
   handleSubmit: () => void;
   editMode?: boolean;
+  pseudocode?: string;
 }) => {
   const theme = useTheme();
 
@@ -281,6 +283,29 @@ const NodeEditorDrawer = ({
             spellCheck: false,
           }}
         />
+
+        <Box
+          sx={{
+            p: 2,
+            border: "1px solid",
+            borderColor: "divider",
+            borderRadius: 1,
+            bgcolor: "background.default",
+          }}
+        >
+          <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+            Pseudocode
+          </Typography>
+
+          <Typography
+            variant="subtitle2"
+            fontWeight="bold"
+            color="text.secondary"
+            gutterBottom
+          >
+            {pseudocode}
+          </Typography>
+        </Box>
 
         <FormControl fullWidth>
           <InputLabel id="node-type-label">Type</InputLabel>

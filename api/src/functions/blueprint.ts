@@ -1,12 +1,16 @@
 import BluePrint from "../models/Blueprint";
 import BlueprintMessage from "../models/BlueprintMessage";
 import { NotFoundError } from "@canmingir/link-express/error";
+import agentFn from "./agent";
 
 type NodeType = {
   id: string;
   properties?: {
     label: string;
     icon: string;
+    prompt?: string;
+    description?: string;
+    pseudocode?: string;
   };
   type: string;
   next?: string[] | null;
@@ -44,7 +48,7 @@ async function upsert(
   agentId: string,
   id: string,
   nodes?: NodeType[],
-  messages?: Array<{ role: string; content: string; createdAt: Date }>
+  messages?: Array<{ role: string; content: string; createdAt: Date }>,
 ) {
   let Blueprint;
 
@@ -80,7 +84,7 @@ async function upsert(
         content: msg.content,
         role: msg.role,
         createdAt: msg.createdAt,
-      }))
+      })),
     );
   }
 
@@ -124,8 +128,8 @@ async function list({
             properties: node?.properties
               ? Object.fromEntries(
                   Object.entries(node.properties).filter(
-                    ([key]) => key !== "label"
-                  )
+                    ([key]) => key !== "label",
+                  ),
                 )
               : node?.properties,
           }))
@@ -165,8 +169,8 @@ async function get({
           properties: node?.properties
             ? Object.fromEntries(
                 Object.entries(node.properties).filter(
-                  ([key]) => key !== "label"
-                )
+                  ([key]) => key !== "label",
+                ),
               )
             : node?.properties,
         }))
@@ -202,9 +206,63 @@ async function patch({
   return Blueprint.toJSON();
 }
 
+async function upsertPseudocode({
+  id,
+  title,
+  description,
+  agentId,
+  nodes,
+  messages,
+}: {
+  id: string;
+  title: string;
+  description: string;
+  agentId: string;
+  nodes?: NodeType[];
+  messages?: Array<{ role: string; content: string; createdAt: Date }>;
+}) {
+  const [pseudocode, nodesWithPseudocode] = await Promise.all([
+    agentFn.toPseudo({ content: description }),
+    nodes
+      ? Promise.all(
+          nodes.map((node) => {
+            const content =
+              node.properties?.prompt ||
+              node.properties?.description ||
+              node.properties?.label;
+            if (!content) return node;
+            return agentFn.toPseudo({ content }).then(
+              (nodePseudocode) =>
+                ({
+                  ...node,
+                  properties: {
+                    ...node.properties,
+                    pseudocode: nodePseudocode,
+                  },
+                } as typeof node),
+            );
+          }),
+        )
+      : undefined,
+  ]);
+
+  const result = await upsert(
+    title,
+    description,
+    agentId,
+    id,
+    nodesWithPseudocode,
+    messages,
+  );
+
+  await patch({ blueprintId: id, pseudocode });
+
+  return { ...result, pseudocode };
+}
 export default {
   getWithNodes,
   upsert,
+  upsertPseudocode,
   remove,
   list,
   get,

@@ -221,6 +221,10 @@ async function upsertPseudocode({
   nodes?: NodeType[];
   messages?: Array<{ role: string; content: string; createdAt: Date }>;
 }) {
+  const existingNodes = new Map(
+    (await BluePrint.findByPk(id))?.nodes?.map((n) => [n.id, n]) || [],
+  );
+
   const [pseudocode, nodesWithPseudocode] = await Promise.all([
     agentFn.toPseudo({ content: description }),
     nodes
@@ -231,6 +235,20 @@ async function upsertPseudocode({
               node.properties?.description ||
               node.properties?.label;
             if (!content) return node;
+            const prev = existingNodes.get(node.id);
+            const prevContent =
+              prev?.properties?.prompt ||
+              prev?.properties?.description ||
+              prev?.properties?.label;
+            if (prev?.properties?.pseudocode && prevContent === content) {
+              return {
+                ...node,
+                properties: {
+                  ...node.properties,
+                  pseudocode: prev.properties.pseudocode,
+                },
+              } as typeof node;
+            }
             return agentFn.toPseudo({ content }).then(
               (nodePseudocode) =>
                 ({

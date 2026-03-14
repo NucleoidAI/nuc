@@ -302,6 +302,8 @@ const NodeEditorDrawer = ({
             fontWeight="bold"
             color="text.secondary"
             gutterBottom
+            component="pre"
+            sx={{ whiteSpace: "pre-wrap", fontFamily: "monospace" }}
           >
             {pseudocode && pseudocode.trim() ? pseudocode : "Not available"}
           </Typography>

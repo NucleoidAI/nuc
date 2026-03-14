@@ -9,6 +9,7 @@ const ConditionNode = z.object({
     label: z.string(),
     prompt: z.string().optional(),
     icon: z.string(),
+    pseudocode: z.string().optional(),
   }),
 });
 
@@ -24,6 +25,7 @@ const NormalNode = z.object({
     label: z.string(),
     prompt: z.string().optional(),
     icon: z.string(),
+    pseudocode: z.string().optional(),
   }),
 });
 

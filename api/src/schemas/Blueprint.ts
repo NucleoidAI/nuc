@@ -17,6 +17,7 @@ const Blueprint = {
               icon: z.string(),
               action: z.string().optional(),
               description: z.string().optional(),
+              pseudocode: z.string().optional(),
             })
             .optional(),
           type: z.string(),

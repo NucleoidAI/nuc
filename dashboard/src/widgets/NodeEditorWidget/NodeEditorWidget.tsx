@@ -22,6 +22,7 @@ const NodeEditorWidget = ({
   setSelectedIntegration,
   editMode,
   editingNode,
+  pseudocode,
 }: {
   drawerOpen: boolean;
   handleDrawerClose: () => void;
@@ -119,6 +120,7 @@ const NodeEditorWidget = ({
       createdAt?: string;
     };
   };
+  pseudocode?: string;
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -209,6 +211,7 @@ const NodeEditorWidget = ({
 
   return (
     <NodeEditorDrawer
+      pseudocode={pseudocode}
       drawerOpen={drawerOpen}
       handleDrawerClose={handleDrawerClose}
       selectedParentNode={selectedParentNode}

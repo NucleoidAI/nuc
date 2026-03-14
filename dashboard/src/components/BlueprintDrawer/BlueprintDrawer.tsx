@@ -38,6 +38,7 @@ const BlueprintDrawer = ({
     title: string;
     description: string;
     agentId: string;
+    pseudocode?: string;
   };
   handleAiResponse?: (response: {
     flow: FlowDefinition;
@@ -53,6 +54,7 @@ const BlueprintDrawer = ({
     title: string;
     description: string;
     agentId: string;
+    pseudocode?: string;
   }) => void;
   taskId?: string;
   agentId?: string;

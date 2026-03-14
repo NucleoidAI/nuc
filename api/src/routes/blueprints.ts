@@ -2,7 +2,6 @@ import { AuthenticationError } from "@canmingir/link-express/error";
 import Blueprint from "../models/Blueprint";
 import BlueprintSchema from "../schemas/Blueprint";
 import agentData from "../functions/agentData";
-import agentFn from "../functions/agent";
 import bluePrint from "../functions/blueprint";
 import { event } from "@canmingir/link-express/event/client";
 import express from "express";
@@ -49,42 +48,21 @@ router.put("/:blueprintId", async (req, res) => {
     }
   }
 
-  const [pseudocode, nodesWithPseudocode] = await Promise.all([
-    agentFn.toPseudo({ content: description }),
-    nodes
-      ? Promise.all(
-          nodes.map(async (node) => {
-            const content =
-              node.properties?.prompt ||
-              node.properties?.description ||
-              node.properties?.label;
-            if (!content) return node;
-            const nodePseudocode = await agentFn.toPseudo({ content });
-            return {
-              ...node,
-              properties: { ...node.properties, pseudocode: nodePseudocode },
-            } as typeof node;
-          }),
-        )
-      : Promise.resolve(nodes),
-  ]);
-
-  const result = await bluePrint.upsert(
+  const result = await bluePrint.upsertPseudocode({
+    id: blueprintId,
     title,
     description,
     agentId,
-    blueprintId,
-    nodesWithPseudocode,
-    messages,
-  );
-
-  await bluePrint.patch({
-    blueprintId,
-    pseudocode,
+    nodes,
+    messages: messages?.map((msg) => ({
+      content: msg.content,
+      role: msg.role,
+      createdAt: new Date(msg.createdAt),
+    })),
   });
 
   await event.publish("BLUEPRINT_CREATED", {
-    Blueprint: { ...result, pseudocode },
+    Blueprint: result,
   });
 
   if (taskId) {

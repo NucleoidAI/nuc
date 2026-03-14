@@ -303,7 +303,7 @@ const NodeEditorDrawer = ({
             color="text.secondary"
             gutterBottom
           >
-            {pseudocode}
+            {pseudocode && pseudocode.trim() ? pseudocode : "Not available"}
           </Typography>
         </Box>
 

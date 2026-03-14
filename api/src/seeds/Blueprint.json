@@ -16,7 +16,8 @@
             "description": "Retrieve BBK number based on the user's residential address information",
             "prompt": "Get BBK by address",
             "label": "Get BBK No by Address",
-            "icon": "mdi:map-marker"
+            "icon": "mdi:map-marker",
+            "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -29,7 +30,8 @@
             "description": "Check inventory availability for the given BBK number and address",
             "prompt": "Check inventory availability",
             "label": "Get Inventory",
-            "icon": "mdi:server"
+            "icon": "mdi:server",
+            "pseudocode": "BEGIN_CONTEXT\ninventory = GetInventory(bbk)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -42,7 +44,8 @@
             "description": "Decide based on inventory availability whether to proceed with product selection",
             "prompt": "Is inventory available?",
             "label": "Check if product is available",
-            "icon": "mdi:source-branch"
+            "icon": "mdi:source-branch",
+            "pseudocode": "BEGIN_CONTEXT\nIF inventory.Available == TRUE THEN\n    // handle true path\nELSE\n    // handle false path\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
@@ -56,7 +59,8 @@
             "description": "Mark the process as complete when no products are available",
             "prompt": "No product available, complete",
             "label": "Complete",
-            "icon": "mdi:check"
+            "icon": "mdi:check",
+            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -69,7 +73,8 @@
             "description": "Retrieve available internet products based on speed requirements",
             "prompt": "Get products by speed",
             "label": "Get Product by Speed",
-            "icon": "mdi:speedometer"
+            "icon": "mdi:speedometer",
+            "pseudocode": "BEGIN_CONTEXT\nproducts = GetProductBySpeed()\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -82,7 +87,8 @@
             "description": "Wait for user to select a product from the available options",
             "prompt": "Provide available options and waiting for user to select a product",
             "label": "User selected product",
-            "icon": "mdi:user"
+            "icon": "mdi:user",
+            "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection(products)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -95,7 +101,8 @@
             "description": "Assign a port for the selected internet product and create an order",
             "prompt": "Allocate port and create order",
             "label": "Assign Port",
-            "icon": "mdi:link"
+            "icon": "mdi:link",
+            "pseudocode": "BEGIN_CONTEXT\nport = PortAllocation(selectedProduct, User.Address)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -108,7 +115,8 @@
             "description": "Notify user about port allocation completion",
             "prompt": "Notify user about port allocation",
             "label": "Notify Port Allocation",
-            "icon": "mdi:bell"
+            "icon": "mdi:bell",
+            "pseudocode": "BEGIN_CONTEXT\nMessageUser(\"Notify user about port allocation\")\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -121,7 +129,8 @@
             "description": "Configure the assigned port with necessary settings",
             "prompt": "Configure allocated port",
             "label": "Configure Port",
-            "icon": "mdi:settings"
+            "icon": "mdi:settings",
+            "pseudocode": "BEGIN_CONTEXT\nconfiguration = Configuration(port)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -134,12 +143,12 @@
             "description": "Connect the assigned port to the user's residence",
             "prompt": "Connect port to residence",
             "label": "Connect Port",
-            "icon": "mdi:ethernet"
+            "icon": "mdi:ethernet",
+            "pseudocode": "BEGIN_CONTEXT\nPortConnection(port)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
         },
-
         {
           "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
           "type": "NORMAL",
@@ -148,7 +157,8 @@
             "description": "Mark the internet subscription setup process as complete",
             "prompt": "Complete setup flow",
             "label": "Complete",
-            "icon": "mdi:check"
+            "icon": "mdi:check",
+            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"

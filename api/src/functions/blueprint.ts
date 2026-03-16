@@ -230,16 +230,10 @@ async function upsertPseudocode({
     nodes
       ? Promise.all(
           nodes.map((node) => {
-            const content =
-              node.properties?.prompt ||
-              node.properties?.description ||
-              node.properties?.label;
+            const content = node.properties?.prompt;
             if (!content) return node;
             const prev = existingNodes.get(node.id);
-            const prevContent =
-              prev?.properties?.prompt ||
-              prev?.properties?.description ||
-              prev?.properties?.label;
+            const prevContent = prev?.properties?.prompt;
             if (prev?.properties?.pseudocode && prevContent === content) {
               return {
                 ...node,

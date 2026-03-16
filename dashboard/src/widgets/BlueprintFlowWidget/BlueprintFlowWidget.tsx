@@ -24,6 +24,7 @@ interface Blueprint {
   title: string;
   description: string;
   agentId: string;
+  pseudocode?: string;
 }
 
 function BlueprintFlowWidget({
@@ -162,6 +163,7 @@ function BlueprintFlowWidget({
   });
 
   const [showSampleFlow, setShowSampleFlow] = useState(false);
+  const [nodePseudocode, setNodePseudocode] = useState("");
 
   useEffect(
     () => {
@@ -208,6 +210,7 @@ function BlueprintFlowWidget({
     setSelectedParentNode(node);
     setNewNodeLabel("");
     setNewNodePrompt("");
+    setNodePseudocode("");
     setNewNodeType("NORMAL");
     setSelectedBranch("true");
     setShowValidationErrors(false);
@@ -217,9 +220,13 @@ function BlueprintFlowWidget({
   const handleEditNodeClick = (node) => {
     setEditMode(true);
     setEditingNodeId(node.id);
-    setNewNodeLabel(node?.label || node?.properties?.label || "");
-    setNewNodePrompt(node?.raw?.properties?.prompt || "");
-    setNewNodeType(node.nodeType || "NORMAL");
+    const nodeLabel = node?.label || node?.properties?.label || "";
+    const nodePrompt = node?.raw?.properties?.prompt || "";
+    const nodeType = node.nodeType || "NORMAL";
+    setNewNodeLabel(nodeLabel);
+    setNewNodePrompt(nodePrompt);
+    setNewNodeType(nodeType);
+    setNodePseudocode(node?.raw?.properties?.pseudocode || "");
 
     if (graphData?.nodes) {
       const parentNode = Object.values(graphData.nodes).find((n) => {
@@ -266,7 +273,6 @@ function BlueprintFlowWidget({
       newNodeType === "CONDITION"
         ? "A decision node that branches the flow based on conditions."
         : selectedIntegration?.description || "";
-
     setGraphData((prevData) => {
       if (!prevData) return prevData;
 
@@ -392,6 +398,7 @@ function BlueprintFlowWidget({
     setSelectedParentNode(null);
     setNewNodeLabel("");
     setNewNodePrompt("");
+    setNodePseudocode("");
     setNewNodeType("NORMAL");
     setSelectedBranch("true");
     setSelectedIntegration({
@@ -432,7 +439,6 @@ function BlueprintFlowWidget({
       newNodeType === "CONDITION"
         ? "A decision node that branches the flow based on conditions."
         : selectedIntegration?.description || "";
-
     if (selectedParentNode.id === "starter") {
       const firstNode =
         newNodeType === "CONDITION"
@@ -709,6 +715,7 @@ function BlueprintFlowWidget({
         properties: {
           label: node.label || node.raw?.properties?.label,
           prompt: node.raw?.properties?.prompt,
+          pseudocode: node.raw?.properties?.pseudocode,
           icon: node.icon || node.raw?.properties?.icon,
           action: node.action || node.raw?.properties?.action,
           description: node.description || node.raw?.properties?.description,
@@ -777,6 +784,7 @@ function BlueprintFlowWidget({
     setSelectedParentNode(starterParent);
     setNewNodeLabel("");
     setNewNodePrompt("");
+    setNodePseudocode("");
     setNewNodeType("NORMAL");
     setSelectedBranch("true");
     setShowValidationErrors(false);
@@ -829,6 +837,7 @@ function BlueprintFlowWidget({
       )}
 
       <NodeEditorWidget
+        pseudocode={nodePseudocode}
         drawerOpen={drawerOpen}
         handleDrawerClose={handleDrawerClose}
         selectedParentNode={selectedParentNode}

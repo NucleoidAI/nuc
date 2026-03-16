@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.35.0",
-    "@canmingir/link": "^1.2.23",
+    "@canmingir/link": "^1.2.26",
     "@aws-sdk/client-bedrock-runtime": "^3.978.0",
     "@canmingir/link-express": "^1.7.12",
     "@modelcontextprotocol/sdk": "^1.15.1",

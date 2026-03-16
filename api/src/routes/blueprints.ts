@@ -1,9 +1,8 @@
 import { AuthenticationError } from "@canmingir/link-express/error";
 import Blueprint from "../models/Blueprint";
 import BlueprintSchema from "../schemas/Blueprint";
-import agentFn from "../functions/agent";
-import bluePrint from "../functions/blueprint";
 import agentData from "../functions/agentData";
+import bluePrint from "../functions/blueprint";
 import { event } from "@canmingir/link-express/event/client";
 import express from "express";
 
@@ -49,26 +48,21 @@ router.put("/:blueprintId", async (req, res) => {
     }
   }
 
-  const result = await bluePrint.upsert(
+  const result = await bluePrint.upsertPseudocode({
+    id: blueprintId,
     title,
     description,
     agentId,
-    blueprintId,
     nodes,
-    messages
-  );
-
-  const pseudocode = await agentFn.toPseudo({
-    content: result.description,
-  });
-
-  await bluePrint.patch({
-    blueprintId,
-    pseudocode,
+    messages: messages?.map((msg) => ({
+      content: msg.content,
+      role: msg.role,
+      createdAt: new Date(msg.createdAt),
+    })),
   });
 
   await event.publish("BLUEPRINT_CREATED", {
-    Blueprint: { ...result, pseudocode },
+    Blueprint: result,
   });
 
   if (taskId) {

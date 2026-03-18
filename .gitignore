@@ -3,3 +3,8 @@
 node_modules
 api/.env
 oracle/
+.env.local
+.env
+dashboard/dist
+api/dist
+communication/dist

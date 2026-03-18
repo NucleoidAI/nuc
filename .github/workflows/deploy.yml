@@ -143,6 +143,50 @@ jobs:
           username: ${{ inputs.docker_username || secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
 
+      - name: Ensure Docker Hub repository is private
+        env:
+          DOCKER_NAMESPACE: ${{ inputs.docker_username || secrets.DOCKER_USERNAME }}
+          DOCKER_TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+          DOCKER_REPOSITORY: ${{ inputs.service_name }}-${{ inputs.environment }}
+        run: |
+          set -euo pipefail
+
+          AUTH_PAYLOAD=$(printf '{"username":"%s","password":"%s"}' "$DOCKER_NAMESPACE" "$DOCKER_TOKEN")
+          JWT_TOKEN=$(curl -fsSL \
+            -X POST "https://hub.docker.com/v2/users/login/" \
+            -H "Content-Type: application/json" \
+            -d "$AUTH_PAYLOAD" | jq -r '.token')
+
+          if [ -z "$JWT_TOKEN" ] || [ "$JWT_TOKEN" = "null" ]; then
+            echo "Failed to get Docker Hub JWT token."
+            exit 1
+          fi
+
+          REPO_URL="https://hub.docker.com/v2/repositories/$DOCKER_NAMESPACE/$DOCKER_REPOSITORY/"
+          REPO_FILE="$(mktemp)"
+          trap 'rm -f "$REPO_FILE"' EXIT
+          STATUS_CODE=$(curl -sS -o "$REPO_FILE" -w "%{http_code}" \
+            -H "Authorization: JWT $JWT_TOKEN" \
+            "$REPO_URL")
+
+          if [ "$STATUS_CODE" = "404" ]; then
+            echo "Repository not found. Creating as private: $DOCKER_NAMESPACE/$DOCKER_REPOSITORY"
+            CREATE_PAYLOAD=$(printf '{"namespace":"%s","name":"%s","is_private":true}' "$DOCKER_NAMESPACE" "$DOCKER_REPOSITORY")
+            curl -fsSL \
+              -X POST "https://hub.docker.com/v2/repositories/" \
+              -H "Authorization: JWT $JWT_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "$CREATE_PAYLOAD" >/dev/null
+            echo "Private repository created."
+          elif [ "$STATUS_CODE" = "200" ]; then
+            echo "Repository already exists. Skipping create."
+          else
+            echo "Failed to query Docker Hub repository. HTTP status: $STATUS_CODE"
+            cat "$REPO_FILE" || true
+            exit 1
+          fi
+
+
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:

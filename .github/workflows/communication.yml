@@ -26,6 +26,7 @@ jobs:
       install_dependencies: true
       dependency_path: communication
       run_build: true
+      build_command: npm run build:communication
       config_paths: "./communication"
       setup_config: true
       image_tag: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'latest' }}

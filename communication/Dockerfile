@@ -23,8 +23,11 @@ WORKDIR /app
 
 #ENV LD_LIBRARY_PATH=/app/oracle/instantclient
 
-COPY . /app
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
+
+COPY dist ./dist
 
 EXPOSE 3000
 
-ENTRYPOINT ["npm", "run", "dev"]
+ENTRYPOINT ["node", "dist/server.js"]

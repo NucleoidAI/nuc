@@ -36,10 +36,13 @@ COPY package.json .
 COPY server.js .
 COPY ./dashboard/dist ./dist
 COPY ./dashboard/config.js ./config.mjs
-COPY ./api ./api
+COPY ./api/package.json ./api/package.json
+COPY ./api/package-lock.json ./api/package-lock.json
+COPY ./api/tsconfig.json ./api/tsconfig.json
+COPY ./api/dist/ ./api/
 COPY ./mcp ./mcp
 
-RUN cd api && npm rebuild sqlite3
+RUN cd api && npm ci --omit=dev && npm rebuild sqlite3
 RUN npm install -g concurrently
 RUN npm install express
 

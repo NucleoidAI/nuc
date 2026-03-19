@@ -36,6 +36,11 @@ on:
         type: boolean
         default: false
         description: "Whether to run npm build"
+      build_command:
+        required: false
+        type: string
+        default: "npm run build"
+        description: "Command to run build"
       setup_config:
         required: false
         type: boolean
@@ -135,7 +140,7 @@ jobs:
 
       - name: Build
         if: ${{ inputs.run_build }}
-        run: npm run build
+        run: ${{ inputs.build_command }}
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3

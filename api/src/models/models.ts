@@ -196,10 +196,10 @@ async function init() {
   });
 
   // Task <-> Blueprint
-  models.Task.hasOne(models.Blueprint, {
+  models.Blueprint.hasMany(models.Task, {
     foreignKey: "blueprintId",
   });
-  models.Blueprint.belongsTo(models.Task, {
+  models.Task.belongsTo(models.Blueprint, {
     foreignKey: "blueprintId",
   });
 

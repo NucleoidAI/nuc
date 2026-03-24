@@ -9,6 +9,7 @@ import ProfileCard from "../components/ProfileCard/ProfileCard";
 import SidebarChatWidget from "../widgets/SidebarChatWidget";
 import Stack from "@mui/material/Stack";
 import Supervising from "../widgets/Supervising/Supervising";
+import SwaggerDialog from "../components/SwaggerDialog/SwaggerDialog";
 import TasksWidget from "../widgets/TasksWidget/TasksWidget";
 import { getAgentGradients } from "../utils/gradient";
 import { useEvent } from "@nucleoidai/react-event";
@@ -103,6 +104,15 @@ function AgentLayout({
   );
 
   const [chatOpen, setChatOpen] = useState(false);
+  const [swaggerOpen, setSwaggerOpen] = useState(false);
+
+  const [swaggerEvent] = useEvent("SWAGGER_DIALOG_OPEN", { open: false });
+
+  useEffect(() => {
+    if (swaggerEvent?.open) setSwaggerOpen(true);
+  }, [swaggerEvent]);
+
+  console.log("swagger dialog", swaggerOpen);
 
   const handleChatToggle = () => {
     setChatOpen((prev) => !prev);
@@ -193,6 +203,11 @@ function AgentLayout({
         agentId={agent.id}
         open={chatOpen}
         onToggle={handleChatToggle}
+      />
+
+      <SwaggerDialog
+        swaggerOpen={swaggerOpen}
+        setSwaggerOpen={setSwaggerOpen}
       />
     </>
   );

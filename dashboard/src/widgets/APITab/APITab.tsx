@@ -120,7 +120,7 @@ function toOpenAPIPaths(endpoints: Endpoint[]) {
   return paths;
 }
 
-function APITab() {
+function APITab({ agentId }: { agentId: string }) {
   const [api, setApi] = useState<Endpoint[]>([]);
 
   const [types, setTypes] = useState<
@@ -145,7 +145,6 @@ function APITab() {
   const [nodeEditor, setNodeEditor] =
     useState<NodeEditorState>(INITIAL_NODE_EDITOR);
   const hydratedRef = useRef(false);
-  const agentId = "00db1bd4-4829-40f2-8b99-d2e42342157e";
 
   const methodRef = useRef("GET");
   const pathRef = useRef("/");

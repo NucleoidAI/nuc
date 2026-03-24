@@ -194,7 +194,7 @@ function AgentLayout({
         {currentTab === "communication" && (
           <Communication fromDrawer={fromDrawer} />
         )}
-        {currentTab === "api" && <APITab />}
+        {currentTab === "api" && <APITab agentId={agent.id} />}
       </Box>
 
       <SidebarChatWidget

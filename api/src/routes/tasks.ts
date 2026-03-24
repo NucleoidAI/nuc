@@ -2,21 +2,27 @@ import Agent from "../models/Agent";
 import Joi from "joi";
 import Task from "../models/Task";
 import express from "express";
-import task from "../functions/task";
 import knowledge from "../functions/knowledge";
+import task from "../functions/task";
 
 const router = express.Router();
 
 router.post("/", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { agentId, description } = Joi.attempt(
+  const { agentId, description, sessionId, blueprintId } = Joi.attempt(
     req.body,
     Joi.object({
       agentId: Joi.string()
         .guid({ version: ["uuidv4"] })
         .required(),
       description: Joi.string().required(),
-    })
+      sessionId: Joi.string()
+        .guid({ version: ["uuidv4"] })
+        .optional(),
+      blueprintId: Joi.string()
+        .guid({ version: ["uuidv4"] })
+        .optional(),
+    }),
   );
 
   const agent = await Agent.findByPk(agentId);
@@ -29,7 +35,12 @@ router.post("/", async (req, res) => {
     return res.status(401).end();
   }
 
-  const taskInstance = await task.create({ agentId, description });
+  const taskInstance = await task.create({
+    agentId,
+    description,
+    sessionId,
+    blueprintId,
+  });
 
   return res.status(200).json(taskInstance);
 });
@@ -42,7 +53,7 @@ router.get("/", async (req, res) => {
       agentId: Joi.string()
         .guid({ version: ["uuidv4"] })
         .required(),
-    })
+    }),
   );
 
   const tasks = await task.list({ agentId, teamId });
@@ -114,7 +125,7 @@ router.post("/:taskId/supervising", async (req, res) => {
         .guid({ version: ["uuidv4"] })
         .required(),
       addToKnowledgeBase: Joi.boolean().required(),
-    })
+    }),
   );
 
   await task.addStep({

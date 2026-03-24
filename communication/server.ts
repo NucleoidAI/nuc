@@ -7,8 +7,8 @@ import { event } from "@canmingir/link-express/event/client";
 import express from "express";
 import http from "http";
 import session from "./test_chat/session";
+import { setupSwagger } from "./swagger";
 import testChat from "./test_chat/testChat";
-
 //import kafkaConfig from "./config.kafka";
 //import txqConfig from "./config.txq";
 
@@ -17,6 +17,8 @@ dotenv.config();
 const startServer = async () => {
   await event.init(config.event);
   const mainApp = express();
+
+  setupSwagger(mainApp);
 
   const testApp = express();
 

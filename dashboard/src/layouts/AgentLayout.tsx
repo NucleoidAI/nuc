@@ -1,3 +1,4 @@
+import APITab from "../widgets/APITab/APITab";
 import AgentMCP from "../widgets/AgentMCP/AgentMCP";
 import BlueprintsWidget from "../widgets/BlueprintsWidget/BlueprintsWidget";
 import Communication from "../widgets/Communication/Communication";
@@ -10,6 +11,7 @@ import Stack from "@mui/material/Stack";
 import Supervising from "../widgets/Supervising/Supervising";
 import TasksWidget from "../widgets/TasksWidget/TasksWidget";
 import { getAgentGradients } from "../utils/gradient";
+import { useEvent } from "@nucleoidai/react-event";
 
 import { Box, Skeleton, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -57,6 +59,11 @@ const TABS = [
     value: "mcps",
     label: "MCPs",
     icon: <Iconify icon="carbon:ibm-cloud-pak-integration" width={24} />,
+  },
+  {
+    value: "api",
+    label: "API",
+    icon: <Iconify icon="mdi:api" width={24} />,
   },
 ];
 
@@ -179,6 +186,7 @@ function AgentLayout({
         {currentTab === "communication" && (
           <Communication fromDrawer={fromDrawer} />
         )}
+        {currentTab === "api" && <APITab />}
       </Box>
 
       <SidebarChatWidget

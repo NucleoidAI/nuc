@@ -112,8 +112,6 @@ function AgentLayout({
     if (swaggerEvent?.open) setSwaggerOpen(true);
   }, [swaggerEvent]);
 
-  console.log("swagger dialog", swaggerOpen);
-
   const handleChatToggle = () => {
     setChatOpen((prev) => !prev);
   };

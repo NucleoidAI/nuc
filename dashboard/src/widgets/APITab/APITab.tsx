@@ -283,9 +283,11 @@ function APITab() {
     api.forEach((ep) => {
       pathIds.add("/");
       if (ep.path !== "/") {
-        const parts = ep.path.split("/");
-        for (let i = 1; i < parts.length; i++) {
-          pathIds.add("/" + parts[i]);
+        const parts = ep.path.split("/").filter(Boolean);
+        let currentPath = "";
+        for (const part of parts) {
+          currentPath += "/" + part;
+          pathIds.add(currentPath);
         }
       }
     });

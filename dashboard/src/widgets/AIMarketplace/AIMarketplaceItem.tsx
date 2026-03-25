@@ -1,7 +1,17 @@
+import { Image } from "@canmingir/link/platform/components";
+import { ReactNode } from "react";
 import { getBackgroundUrl } from "../../utils/background";
 
+import {
+  AiIcon,
+  BardIcon,
+  ClaudeIcon,
+  DeepMindIcon,
+  IbmIcon,
+  MetaIcon,
+  OpenAIIcon,
+} from "./AIEngineIcons";
 import { Avatar, Box, Card, Stack, Typography } from "@mui/material";
-import { Iconify, Image } from "@canmingir/link/platform/components";
 import { alpha, useTheme } from "@mui/material/styles";
 
 function AIMarketplaceItem({
@@ -24,16 +34,18 @@ function AIMarketplaceItem({
 
   const icons =
     engine?.vendor === "OpenAI"
-      ? "mingcute:openai-fill"
-      : engine?.vendor === "Microsoft"
-      ? "mdi:microsoft"
+      ? OpenAIIcon({ width: 18, height: 18 })
+      : engine?.vendor === "Google Bard"
+      ? BardIcon({ width: 18, height: 18 })
       : engine?.vendor === "Claude"
-      ? "lineicons:claude"
+      ? ClaudeIcon({ width: 18, height: 18 })
       : engine?.vendor === "Meta"
-      ? "hugeicons:meta"
+      ? MetaIcon({ width: 18, height: 18 })
       : engine?.vendor === "DeepMind"
-      ? "simple-icons:deepmind"
-      : "tabler:ai";
+      ? DeepMindIcon({ width: 18, height: 18 })
+      : engine?.vendor === "IBM Watson"
+      ? IbmIcon({ width: 18, height: 18 })
+      : AiIcon({ width: 18, height: 18 });
 
   return (
     <Box
@@ -106,12 +118,7 @@ function AIMarketplaceItem({
                 zIndex: 10,
               }}
             >
-              <Iconify
-                icon={engine.avatar}
-                width="70%"
-                height="70%"
-                style={{ objectFit: "contain" }}
-              />
+              {icons}
             </Box>
           ) : (
             <Avatar
@@ -176,7 +183,7 @@ function InfoBox({
   value,
 }: {
   label: string;
-  icon?: string;
+  icon?: ReactNode;
   value: string | number;
 }) {
   return (
@@ -203,7 +210,7 @@ function InfoBox({
         sx={{ mb: 0.5, height: 20 }}
       >
         {icon ? (
-          <Iconify icon={icon} width={18} />
+          icon
         ) : (
           <Typography
             variant="caption"

@@ -1,6 +1,8 @@
 import EditIcon from "@mui/icons-material/Edit";
 import React from "react";
 import { getAgentGradients } from "../../utils/gradient";
+import slackIcon from "@iconify-icons/logos/slack-icon";
+import whatsappIcon from "@iconify-icons/logos/whatsapp-icon";
 
 import { Box, Button, Chip, Stack, Typography } from "@mui/material";
 import { Fab, alpha } from "@mui/material";
@@ -60,9 +62,9 @@ export const teamChartPlugin = {
               width: "100%",
             }}
           >
-            {["logos:slack-icon", "logos:whatsapp-icon"].map((icon, index) => (
+            {[slackIcon, whatsappIcon].map((icon, index) => (
               <Fab
-                key={icon}
+                key={index}
                 color="default"
                 size="small"
                 sx={{

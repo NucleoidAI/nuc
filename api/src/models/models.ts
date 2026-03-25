@@ -93,12 +93,14 @@ async function init() {
 
   models.Project.belongsToMany(models.Agent, {
     through: models.AgentKnowledge,
-    foreignKey: "projectId",
+    foreignKey: "teamId",
+    otherKey: "agentId",
   });
 
   models.Agent.belongsToMany(models.Project, {
     through: models.AgentKnowledge,
     foreignKey: "agentId",
+    otherKey: "teamId",
   });
 
   models.Agent.hasMany(models.AgentKnowledge, {

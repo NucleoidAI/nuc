@@ -32,20 +32,18 @@ function AIMarketplaceItem({
 }) {
   const theme = useTheme();
 
-  const icons =
-    engine?.vendor === "OpenAI"
-      ? OpenAIIcon({ width: 18, height: 18 })
-      : engine?.vendor === "Google Bard"
-      ? BardIcon({ width: 18, height: 18 })
-      : engine?.vendor === "Claude"
-      ? ClaudeIcon({ width: 18, height: 18 })
-      : engine?.vendor === "Meta"
-      ? MetaIcon({ width: 18, height: 18 })
-      : engine?.vendor === "DeepMind"
-      ? DeepMindIcon({ width: 18, height: 18 })
-      : engine?.vendor === "IBM Watson"
-      ? IbmIcon({ width: 18, height: 18 })
-      : AiIcon({ width: 18, height: 18 });
+  const vendorIconMap: Record<string, ReactNode> = {
+    OpenAI: <OpenAIIcon width={20} height={20} />,
+    "Google Bard": <BardIcon width={20} height={20} />,
+    Claude: <ClaudeIcon width={20} height={20} />,
+    Meta: <MetaIcon width={20} height={20} />,
+    DeepMind: <DeepMindIcon width={20} height={20} />,
+    "IBM Watson": <IbmIcon width={20} height={20} />,
+  };
+
+  const icon = vendorIconMap[engine?.vendor] || (
+    <AiIcon width={20} height={20} />
+  );
 
   return (
     <Box
@@ -118,7 +116,7 @@ function AIMarketplaceItem({
                 zIndex: 10,
               }}
             >
-              {icons}
+              {icon}
             </Box>
           ) : (
             <Avatar
@@ -167,7 +165,7 @@ function AIMarketplaceItem({
               mt: "auto",
             }}
           >
-            <InfoBox label="Vendor" icon={icons} value={engine?.vendor} />
+            <InfoBox label="Vendor" icon={icon} value={engine?.vendor} />
             <InfoBox label="Model" value={engine?.model} />
             <InfoBox label="Price" value={`$ ${engine?.price}`} />
           </Stack>

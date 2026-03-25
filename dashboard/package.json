@@ -25,6 +25,8 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@hookform/resolvers": "^3.9.0",
+    "@iconify-icons/logos": "^1.2.36",
+    "@iconify/json": "^2.2.454",
     "@mui/icons-material": "^5.16.4",
     "@mui/material": "^5.16.4",
     "@mui/styled-engine-sc": "^5.14.12",

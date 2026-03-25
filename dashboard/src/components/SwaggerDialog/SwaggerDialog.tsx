@@ -1,10 +1,9 @@
 import { Iconify } from "@canmingir/link/platform/components";
 import { KeyboardArrowDown } from "@mui/icons-material";
-import React from "react";
-import config from "../../../config";
 import { publish } from "@nucleoidai/react-event";
 
 import { AppBar, Box, Dialog, IconButton, Toolbar } from "@mui/material";
+import React, { useState } from "react";
 
 const SwaggerDialog = ({
   swaggerOpen,
@@ -13,6 +12,7 @@ const SwaggerDialog = ({
   swaggerOpen: boolean;
   setSwaggerOpen: (open: boolean) => void;
 }) => {
+  const [iframeKey, setIframeKey] = useState(0);
   return (
     <Dialog
       fullScreen
@@ -40,6 +40,10 @@ const SwaggerDialog = ({
               onClick={() => {
                 publish("SWAGGER_DIALOG_OPEN", { open: false });
                 setSwaggerOpen(false);
+                fetch("http://localhost:3004/swagger/reset", {
+                  method: "POST",
+                });
+                setIframeKey((prev) => prev + 1);
               }}
               aria-label="close"
             >
@@ -52,12 +56,15 @@ const SwaggerDialog = ({
           </Box>
         </Toolbar>
       </AppBar>
-      <iframe
-        title="Swagger"
-        src={`${config.socket.host}/swagger`}
-        style={{ width: "100%", height: "100%", border: 0 }}
-        sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-      />
+      {swaggerOpen && (
+        <iframe
+          key={iframeKey}
+          title="Swagger"
+          src="http://localhost:3004/swagger"
+          style={{ width: "100%", height: "100%", border: 0 }}
+          sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+        />
+      )}
     </Dialog>
   );
 };

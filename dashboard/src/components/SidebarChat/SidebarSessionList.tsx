@@ -19,7 +19,7 @@ interface SidebarSessionListProps {
   onClearAll: () => void;
   isCompact?: boolean;
   onMouseEnter?: () => void;
-  wrapperRef?: React.RefObject<HTMLDivElement>;
+  wrapperRef?: React.Ref<HTMLDivElement>;
 }
 
 const SidebarSessionList = ({

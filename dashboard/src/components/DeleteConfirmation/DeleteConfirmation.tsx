@@ -20,6 +20,9 @@ function DeleteConfirmation({
       fullWidth
       open={openDeleteDialog}
       onClose={() => setOpenDeleteDialog(false)}
+      sx={{
+        zIndex: (theme) => theme.zIndex.modal + 3,
+      }}
     >
       <DialogTitle
         sx={{ backgroundColor: (theme) => theme.palette.background.default }}

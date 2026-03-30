@@ -14,6 +14,7 @@ export default function BlueprintFlow({
   graphData,
   enrichedGraphData,
   drawerOpen,
+  readOnly = false,
   hasLocalChanges,
   hasDifferences,
   validationErrors,
@@ -60,12 +61,13 @@ export default function BlueprintFlow({
         variant="horizontal"
         style={() => ({
           direction: "horizontal",
-          onAdd: onAddNodeClick,
-          onEdit: onEditNodeClick,
+          readOnly,
+          onAdd: readOnly ? "" : onAddNodeClick,
+          onEdit: readOnly ? "" : onEditNodeClick,
         })}
       />
 
-      {hasLocalChanges && !drawerOpen && (
+      {hasLocalChanges && !drawerOpen && !readOnly && (
         <ValidationButtons
           validationErrors={validationErrors}
           setShowValidationErrors={onShowValidationErrors}

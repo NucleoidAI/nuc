@@ -340,6 +340,7 @@ const SupervisingTypeDialog = ({
                 lastUsedNodeId={lastUsedNodeId}
                 failedNodeId={failedNodeId}
                 isSuperviseFlow={true}
+                readOnly={true}
               />
             </Box>
           </Box>

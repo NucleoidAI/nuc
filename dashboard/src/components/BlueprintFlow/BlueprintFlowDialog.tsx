@@ -76,6 +76,7 @@ const BlueprintFlowDialog = ({
             setAiResponse={setAiResponse}
             blueprint={selectedItem}
             taskId={taskId}
+            readOnly={true}
           />
         )}
       </DialogContent>

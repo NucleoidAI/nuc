@@ -604,7 +604,7 @@ export const blueprintFlowPlugin = {
   },
 
   node: ({ node, nodeStyle }) => {
-    const { onAdd, onEdit } = nodeStyle || {};
+    const { onAdd, onEdit, readOnly } = nodeStyle || {};
     const changeType = node.changeType;
     const hasError = node.hasError;
     const isUsed = node.isUsed;
@@ -664,12 +664,16 @@ export const blueprintFlowPlugin = {
           )
         )}
         <InfoNode node={node} nodeStyle={nodeStyle}>
-          <EditButtonWrapper onClick={handleEditClick} title="Edit node">
-            <Iconify icon="mdi:pencil" width={16} height={16} />
-          </EditButtonWrapper>
-          <AddButtonWrapper onClick={handleAddClick} title="Add child node">
-            <Iconify icon="mdi:plus" width={16} height={16} />
-          </AddButtonWrapper>
+          {!readOnly && (
+            <>
+              <EditButtonWrapper onClick={handleEditClick} title="Edit node">
+                <Iconify icon="mdi:pencil" width={16} height={16} />
+              </EditButtonWrapper>
+              <AddButtonWrapper onClick={handleAddClick} title="Add child node">
+                <Iconify icon="mdi:plus" width={16} height={16} />
+              </AddButtonWrapper>
+            </>
+          )}
         </InfoNode>
       </NodeWrapper>
     );

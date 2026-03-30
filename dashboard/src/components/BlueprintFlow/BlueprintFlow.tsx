@@ -62,8 +62,8 @@ export default function BlueprintFlow({
         style={() => ({
           direction: "horizontal",
           readOnly,
-          onAdd: readOnly ? "" : onAddNodeClick,
-          onEdit: readOnly ? "" : onEditNodeClick,
+          onAdd: readOnly ? undefined : onAddNodeClick,
+          onEdit: readOnly ? undefined : onEditNodeClick,
         })}
       />
 

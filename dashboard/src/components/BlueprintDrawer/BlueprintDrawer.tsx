@@ -1,8 +1,6 @@
 import BlueprintChat from "../BlueprintChat/BlueprintChat";
 import BlueprintChatTitle from "../BlueprintChat/BlueprintChatTitle";
 import BlueprintFlowWidget from "../../widgets/BlueprintFlowWidget/BlueprintFlowWidget";
-import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
-import CloseIcon from "@mui/icons-material/Close";
 import { FlowDefinition } from "../BlueprintFlow/helper";
 
 import {
@@ -16,6 +14,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import { ChatBubbleOutline, Close } from "@mui/icons-material";
 import React, { useCallback, useEffect, useState } from "react";
 
 const BlueprintDrawer = ({
@@ -100,8 +99,6 @@ const BlueprintDrawer = ({
     return "85vw";
   };
 
-  console.log("color", alpha(theme.palette.divider, 0.1));
-
   return (
     <Drawer
       anchor="right"
@@ -110,7 +107,6 @@ const BlueprintDrawer = ({
       sx={{
         zIndex: (theme) => theme.zIndex.modal + 2,
         "& .MuiDrawer-paper": {
-          zIndex: (theme) => theme.zIndex.modal + 2,
           width: getDrawerWidth(),
           maxWidth: "100vw",
           transition: "width 0.3s ease-in-out",
@@ -143,7 +139,7 @@ const BlueprintDrawer = ({
             }}
             size="small"
           >
-            <CloseIcon />
+            <Close />
           </IconButton>
         )}
 
@@ -164,11 +160,11 @@ const BlueprintDrawer = ({
                 : "none",
               backgroundColor: (theme) => theme.palette.background.default,
               backgroundImage: (theme) => `
-            radial-gradient(
-              ${alpha(theme.palette.divider, 0.08)} 1px,
-              transparent 1px
-            )
-          `,
+                  radial-gradient(
+                    ${alpha(theme.palette.divider, 0.08)} 1px,
+                    transparent 1px
+                  )
+                `,
               backgroundSize: "16px 16px",
               position: "relative",
             }}
@@ -212,6 +208,7 @@ const BlueprintDrawer = ({
                   usedNodeIds={usedNodeIds}
                   lastUsedNodeId={lastUsedNodeId}
                   failedNodeId={failedNodeId}
+                  agentId={agentId}
                 />
 
                 {!isChatOpen && (
@@ -227,7 +224,7 @@ const BlueprintDrawer = ({
                         zIndex: 10,
                       }}
                     >
-                      <ChatBubbleOutlineIcon />
+                      <ChatBubbleOutline />
                     </Fab>
                   </Tooltip>
                 )}
@@ -268,7 +265,7 @@ const BlueprintDrawer = ({
                   }}
                 >
                   <IconButton size="small" onClick={() => setIsChatOpen(false)}>
-                    <CloseIcon fontSize="small" />
+                    <Close fontSize="small" />
                   </IconButton>
                 </Box>
                 <BlueprintChat

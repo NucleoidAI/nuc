@@ -33,6 +33,9 @@ function TypeToolbar({ types, selectedType, handleChange }) {
             onChange={handleChange}
             input={<OutlinedInput label="Types" />}
             data-cy="type-select"
+            MenuProps={{
+              sx: { zIndex: (theme) => theme.zIndex.modal + 3 },
+            }}
           >
             {types.map((option) => (
               <MenuItem

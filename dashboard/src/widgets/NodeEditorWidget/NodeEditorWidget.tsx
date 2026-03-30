@@ -23,6 +23,7 @@ const NodeEditorWidget = ({
   editMode,
   editingNode,
   pseudocode,
+  agentId,
 }: {
   drawerOpen: boolean;
   handleDrawerClose: () => void;
@@ -121,6 +122,7 @@ const NodeEditorWidget = ({
     };
   };
   pseudocode?: string;
+  agentId: string;
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -232,6 +234,7 @@ const NodeEditorWidget = ({
       nextIntegration={nextIntegration}
       handleSubmit={handleSubmit}
       editMode={editMode}
+      agentId={agentId}
     />
   );
 };

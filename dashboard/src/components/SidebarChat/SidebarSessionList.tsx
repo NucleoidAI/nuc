@@ -36,12 +36,9 @@ const SidebarSessionList = ({
   const sidebarSessions = sessions;
 
   return (
-    <RightSideBar
-      ref={wrapperRef}
-      width={isCompact ? 45 : 75}
-      height={420}
-    >
+    <RightSideBar width={isCompact ? 45 : 75} height={420}>
       <Box
+        ref={wrapperRef}
         onMouseEnter={onMouseEnter}
         sx={{
           width: "100%",

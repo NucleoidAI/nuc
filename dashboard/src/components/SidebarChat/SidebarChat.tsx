@@ -67,15 +67,30 @@ const SidebarChat = ({
   const messagesEndRef = useRef(null);
   const highlightedMessage = useRef(null);
   const lastSeenCountRef = useRef(0);
+  const sidebarRef = useRef<HTMLDivElement>(null);
 
   const [popoverAnchor, setPopoverAnchor] = useState<HTMLElement | null>(null);
   const [activeLogSessionId, setActiveLogSessionId] = useState("");
+  const [isCompact, setIsCompact] = useState(true);
 
   const scrollToBottom = useCallback(() => {
     highlightedMessage.current?.scrollIntoView({
       behavior: "smooth",
       block: "center",
     });
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target as Node)
+      ) {
+        setIsCompact(true);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   useEffect(() => {
@@ -165,6 +180,9 @@ const SidebarChat = ({
           onToggleChat={handleToggle}
           onSessionClick={handleSessionClick}
           onClearAll={clearAll}
+          isCompact={isCompact}
+          onMouseEnter={() => setIsCompact(false)}
+          wrapperRef={sidebarRef}
         />
       )}
 

@@ -275,7 +275,11 @@ const NodeEditorDrawer = ({
               {editMode ? "Edit Node" : "Add New Node"}
             </Typography>
             <Box>
-              <IconButton onClick={() => setShowKnowledge(!showKnowledge)}>
+              <IconButton
+                onClick={() => setShowKnowledge(!showKnowledge)}
+                aria-label={showKnowledge ? "Hide knowledge panel" : "Show knowledge panel"}
+                aria-expanded={showKnowledge}
+              >
                 <ExpandMoreIcon />
               </IconButton>
               <IconButton onClick={handleDrawerClose}>

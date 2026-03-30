@@ -1,7 +1,7 @@
 import CloseIcon from "@mui/icons-material/Close";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Iconify } from "@canmingir/link/platform/components";
 import Knowledge from "../../widgets/Knowledge/Knowledge";
+import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 import React from "react";
 import SearchIcon from "@mui/icons-material/Search";
 
@@ -284,7 +284,7 @@ const NodeEditorDrawer = ({
                 }
                 aria-expanded={showKnowledge}
               >
-                <ExpandMoreIcon />
+                <OpenInFullIcon />
               </IconButton>
               <IconButton onClick={handleDrawerClose}>
                 <CloseIcon />

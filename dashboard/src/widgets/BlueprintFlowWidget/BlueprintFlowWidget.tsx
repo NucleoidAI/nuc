@@ -864,7 +864,7 @@ function BlueprintFlowWidget({
             ? graphData.nodes[editingNodeId]
             : undefined
         }
-        agentId={agentId}
+        agentId={agentId ?? blueprint.agentId}
       />
     </>
   );

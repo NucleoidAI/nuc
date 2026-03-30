@@ -277,7 +277,11 @@ const NodeEditorDrawer = ({
             <Box>
               <IconButton
                 onClick={() => setShowKnowledge(!showKnowledge)}
-                aria-label={showKnowledge ? "Hide knowledge panel" : "Show knowledge panel"}
+                aria-label={
+                  showKnowledge
+                    ? "Hide knowledge panel"
+                    : "Show knowledge panel"
+                }
                 aria-expanded={showKnowledge}
               >
                 <ExpandMoreIcon />

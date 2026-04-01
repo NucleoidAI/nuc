@@ -11,9 +11,11 @@ import React, { useState } from "react";
 function BlueprintsWidget({
   agentId,
   fromDrawer,
+  teamId,
 }: {
   agentId: string;
   fromDrawer?: boolean;
+  teamId?: string;
 }) {
   const [blueprintUpsertedEvent] = useEvent("BLUEPRINT_UPSERTED", {
     Blueprint: null,
@@ -86,6 +88,7 @@ function BlueprintsWidget({
           setAiResponse={setAiResponse}
           aiResponse={aiResponse}
           agentId={agentId}
+          teamId={teamId}
         />
       )}
 

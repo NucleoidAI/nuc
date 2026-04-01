@@ -1,12 +1,12 @@
 import {
-  Table,
+  AllowNull,
   Column,
-  Model,
   DataType,
   Default,
-  PrimaryKey,
-  AllowNull,
   IsIn,
+  Model,
+  PrimaryKey,
+  Table,
 } from "@canmingir/link-express/sequelize";
 
 @Table({
@@ -48,6 +48,10 @@ class Knowledge extends Model {
   @AllowNull(true)
   @Column(DataType.UUID)
   declare taskId: string | null;
+
+  @AllowNull(true)
+  @Column(DataType.UUID)
+  declare blueprintId: string | null;
 
   @AllowNull(false)
   @Default("COMPLETED")

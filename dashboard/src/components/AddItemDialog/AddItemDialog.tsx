@@ -1,6 +1,6 @@
-import { Iconify } from "@canmingir/link/platform/components";
 import LoadingButton from "@mui/lab/LoadingButton";
 import type { Resolver } from "react-hook-form";
+import type { SelectChangeEvent } from "@mui/material/Select";
 import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -19,6 +19,7 @@ import {
   FormProvider,
   RHFTextField,
 } from "@canmingir/link/platform/components";
+import { Iconify, Label } from "@canmingir/link/platform/components";
 import React, { useEffect, useState } from "react";
 
 import * as Yup from "yup";
@@ -31,9 +32,38 @@ function AddItemDialog({
   addItem,
   agentId,
   teamId,
+  blueprintId,
   teamById,
   agents,
   organizations,
+  blueprint,
+  blueprints,
+}: {
+  selectedType: string;
+  types: string[];
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  addItem: (
+    item: {
+      type: string;
+      url?: string;
+      text?: string;
+      question?: string;
+      answer?: string;
+      orgId?: string;
+    },
+    agentId?: string,
+    teamId?: string,
+    blueprintId?: string
+  ) => Promise<void>;
+  agentId?: string;
+  teamId?: string;
+  blueprintId?: string;
+  teamById?: { id: string; name: string; icon: string };
+  agents?: { id: string; name: string; icon: string }[];
+  organizations?: { id: string; name: string }[];
+  blueprint?: { id: string; title?: string; name?: string };
+  blueprints?: { id: string; title?: string; name?: string }[];
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -54,32 +84,43 @@ function AddItemDialog({
     if (agentId) {
       setSelectedOptionId(agentId);
       setSelectedOptionType("agent");
-    } else if (organizations.length > 0) {
+    } else if (blueprints?.length > 0) {
+      setSelectedOptionId(blueprints[0].id);
+      setSelectedOptionType("blueprint");
+    } else if (blueprint?.id) {
+      setSelectedOptionId(blueprint.id);
+      setSelectedOptionType("blueprint");
+    } else if (teamById?.id) {
+      setSelectedOptionId(teamById.id);
+      setSelectedOptionType("team");
+    } else if (organizations?.length > 0) {
       setSelectedOptionId(organizations[0].id);
       setSelectedOptionType("organization");
     }
-  }, [agentId, organizations]);
+  }, [agentId, blueprint, blueprints, organizations, teamById]);
 
-  const handleOptionChange = (event) => {
-    const selectedOptionName = event.target.value;
-    const selectedOption =
-      organizations.find(
-        (organization) => organization.name === selectedOptionName
-      ) ||
-      agents.find((agent) => agent.name === selectedOptionName) ||
-      (teamById.name === selectedOptionName ? teamById : null);
+  const handleOptionChange = (event: SelectChangeEvent<string>) => {
+    const nextSelectedOptionId = event.target.value;
 
-    setSelectedOptionId(selectedOption?.id || "");
+    setSelectedOptionId(nextSelectedOptionId);
+
     if (
-      organizations.find(
-        (organization) => organization.name === selectedOptionName
+      organizations?.some(
+        (organization) => organization.id === nextSelectedOptionId
       )
     ) {
       setSelectedOptionType("organization");
-    } else if (agents.find((agent) => agent.name === selectedOptionName)) {
-      setSelectedOptionType("agent");
-    } else if (teamById.name === selectedOptionName) {
+    } else if (teamById?.id === nextSelectedOptionId) {
       setSelectedOptionType("team");
+    } else if (agents?.some((agent) => agent.id === nextSelectedOptionId)) {
+      setSelectedOptionType("agent");
+    } else if (
+      blueprints?.some((item) => item.id === nextSelectedOptionId) ||
+      blueprint?.id === nextSelectedOptionId
+    ) {
+      setSelectedOptionType("blueprint");
+    } else {
+      setSelectedOptionType("");
     }
   };
 
@@ -156,10 +197,17 @@ function AddItemDialog({
       ...(selectedOptionType === "organization" && { orgId: selectedOptionId }),
       teamId: selectedOptionType === "team" ? selectedOptionId : teamId,
       agentId: selectedOptionType === "agent" ? selectedOptionId : agentId,
+      blueprintId:
+        selectedOptionType === "blueprint" ? selectedOptionId : blueprintId,
     };
 
     try {
-      await addItem(payload, payload.agentId, payload.teamId);
+      await addItem(
+        payload,
+        payload.agentId,
+        payload.teamId,
+        payload.blueprintId
+      );
       setOpen(false);
     } catch (error) {
       setOpen(false);
@@ -205,58 +253,119 @@ function AddItemDialog({
           backgroundColor: (theme) => theme.palette.background.default,
         }}
       >
-        {!agentId && (
-          <Select
-            fullWidth
-            value={
-              organizations.find(
-                (organization) => organization.id === selectedOptionId
-              )?.name ||
-              agents?.find((agent) => agent?.id === selectedOptionId)?.name ||
-              (teamById?.id === selectedOptionId ? teamById?.name : "") ||
-              ""
-            }
-            onChange={handleOptionChange}
-            MenuProps={{
-              sx: { zIndex: (theme) => theme.zIndex.modal + 4 },
-            }}
-          >
-            {organizations.map((organization) => (
-              <MenuItem key={organization.id} value={organization.name}>
+        <Select
+          fullWidth
+          value={selectedOptionId}
+          onChange={handleOptionChange}
+          MenuProps={{
+            sx: { zIndex: (theme) => theme.zIndex.modal + 4 },
+          }}
+        >
+          {organizations?.map((organization) => (
+            <MenuItem key={organization?.id} value={organization?.id}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 2,
+                  width: "100%",
+                }}
+              >
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <Iconify
                     icon={"jam:ghost-org-circle"}
                     sx={{ width: 40, height: 40 }}
                   />
-                  <Box sx={{ ml: 1 }}>{organization.name}</Box>
+                  <Box sx={{ ml: 1 }}>{organization?.name}</Box>
                 </Box>
-              </MenuItem>
-            ))}
-
-            <MenuItem value={teamById?.name}>
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Iconify
-                  icon={teamById?.icon.replace(/^:|:$/g, "")}
-                  sx={{ width: 40, height: 40 }}
-                />
-                <Box sx={{ ml: 1 }}>{teamById?.name}</Box>
+                <Label>Organization</Label>
               </Box>
             </MenuItem>
+          ))}
 
-            {agents?.map((agent) => (
-              <MenuItem key={agent.id} value={agent.name}>
+          {teamById?.id && (
+            <MenuItem value={teamById.id}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 2,
+                  width: "100%",
+                }}
+              >
                 <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <SourcedAvatar
-                    source={"MINIMAL"}
-                    iconUrl={agent.icon}
-                    name={agent.name}
+                  <Iconify
+                    icon={teamById?.icon?.replace(/^:|:$/g, "")}
+                    sx={{ width: 40, height: 40 }}
                   />
-                  <Box sx={{ ml: 1 }}>{agent.name}</Box>
+                  <Box sx={{ ml: 1 }}>{teamById?.name}</Box>
+                </Box>
+                <Label>Team</Label>
+              </Box>
+            </MenuItem>
+          )}
+
+          {agents
+            ?.filter((agent) => !agentId || agent.id === agentId)
+            .map((agent) => (
+              <MenuItem key={agent.id} value={agent.id}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 2,
+                    width: "100%",
+                  }}
+                >
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <SourcedAvatar
+                      source={"MINIMAL"}
+                      iconUrl={agent.icon}
+                      name={agent.name}
+                    />
+                    <Box sx={{ ml: 1 }}>{agent.name}</Box>
+                  </Box>
+                  <Label>Agent</Label>
                 </Box>
               </MenuItem>
             ))}
-          </Select>
-        )}
+
+          {(blueprints?.length > 0
+            ? blueprints
+            : blueprint?.id
+            ? [blueprint]
+            : []
+          ).map((item) => (
+            <MenuItem key={item.id} value={item.id}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 2,
+                  width: "100%",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <Iconify
+                    icon="ph:flow-arrow"
+                    sx={{ width: 40, height: 40 }}
+                  />
+                  <Box sx={{ ml: 1 }}>{item.title || item.name}</Box>
+                </Box>
+                <Label>Blueprint</Label>
+              </Box>
+            </MenuItem>
+          ))}
+        </Select>
 
         <Select
           fullWidth

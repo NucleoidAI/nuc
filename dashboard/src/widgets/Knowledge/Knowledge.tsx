@@ -16,14 +16,10 @@ import { useEffect, useState } from "react";
 function Knowledge({
   agentId,
   teamId,
-  fromDrawer,
-  fromBlueprintDrawer,
   blueprintId,
 }: {
   agentId?: string;
   teamId?: string;
-  fromDrawer?: boolean;
-  fromBlueprintDrawer?: boolean;
   blueprintId?: string;
 }) {
   const {
@@ -174,27 +170,26 @@ function Knowledge({
         )}
       </Box>
 
-        <Stack
-          sx={{
-            position: fromBlueprintDrawer ? "absolute" : "fixed",
-            bottom: fromDrawer ? 62 : fromBlueprintDrawer ? -50 : 10,
-            right: fromDrawer ? 62 : 5,
+      <Stack
+        sx={{
+          position: "absolute",
+          right: 16,
+          bottom: 16,
+        }}
+      >
+        <Fab
+          variant="button"
+          color="default"
+          size="medium"
+          sx={{ zIndex: 1 }}
+          data-cy="add-knowledge-button"
+          onClick={() => {
+            setOpen(true);
           }}
         >
-          <Fab
-            variant="button"
-            color="default"
-            size="medium"
-            sx={{ mt: 2, zIndex: 0 }}
-            data-cy="add-knowledge-button"
-            onClick={() => {
-              setOpen(true);
-            }}
-          >
-            <AddIcon />
-          </Fab>
-        </Stack>
-      </Box>
+          <AddIcon />
+        </Fab>
+      </Stack>
 
       <DeleteConfirmation
         openDeleteDialog={openDeleteDialog}

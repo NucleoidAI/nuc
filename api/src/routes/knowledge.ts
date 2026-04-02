@@ -18,6 +18,7 @@ router.post("/", async (req, res) => {
     agentId,
     teamId: knowledgeTeamId,
     blueprintId,
+    organizationId,
     ...knowledgeBody
   } = Joi.attempt(body, schemas.Knowledge.create);
 
@@ -45,6 +46,7 @@ router.post("/", async (req, res) => {
       ...knowledgeBody,
       taskId,
       blueprintId,
+      organizationId,
     },
   });
 
@@ -94,8 +96,7 @@ router.get("/:id", async (req, res) => {
   const { AgentKnowledge } = knowledgeItem;
 
   const hasAccess =
-    AgentKnowledge.teamId === teamId ||
-    AgentKnowledge.Agent?.teamId === teamId;
+    AgentKnowledge.teamId === teamId || AgentKnowledge.Agent?.teamId === teamId;
 
   if (!hasAccess) {
     throw new AuthenticationError();
@@ -125,8 +126,7 @@ router.delete("/:id", async (req, res) => {
   const { AgentKnowledge } = knowledgeItem;
 
   const hasAccess =
-    AgentKnowledge.teamId === teamId ||
-    AgentKnowledge.Agent?.teamId === teamId;
+    AgentKnowledge.teamId === teamId || AgentKnowledge.Agent?.teamId === teamId;
 
   if (!hasAccess) {
     throw new AuthenticationError();

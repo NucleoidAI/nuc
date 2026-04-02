@@ -53,6 +53,10 @@ class Knowledge extends Model {
   @Column(DataType.UUID)
   declare blueprintId: string | null;
 
+  @AllowNull(true)
+  @Column(DataType.UUID)
+  declare organizationId: string | null;
+
   @AllowNull(false)
   @Default("COMPLETED")
   @IsIn([["IN_PROGRESS", "COMPLETED"]])

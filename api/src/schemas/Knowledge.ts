@@ -6,6 +6,7 @@ const Knowledge = {
     agentId: Joi.string().guid({ version: ["uuidv4"] }),
     teamId: Joi.string().guid({ version: ["uuidv4"] }),
     blueprintId: Joi.string().guid({ version: ["uuidv4"] }),
+    organizationId: Joi.string().guid({ version: ["uuidv4"] }),
     question: Joi.string().optional(),
     answer: Joi.string().optional(),
     url: Joi.string().uri().optional(),

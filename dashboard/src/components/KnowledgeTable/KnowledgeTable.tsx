@@ -70,6 +70,10 @@ function KnowledgeTable({
       return "Blueprint";
     }
 
+    if (row.organizationId) {
+      return "Organization";
+    }
+
     return row.teamId !== null ? "Team" : "Agent";
   };
 

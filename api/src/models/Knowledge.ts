@@ -56,7 +56,7 @@ class Knowledge extends Model {
   @AllowNull(true)
   @Column(DataType.UUID)
   declare organizationId: string | null;
-
+  dat;
   @AllowNull(false)
   @Default("COMPLETED")
   @IsIn([["IN_PROGRESS", "COMPLETED"]])

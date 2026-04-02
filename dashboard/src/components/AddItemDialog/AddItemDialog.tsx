@@ -194,7 +194,9 @@ function AddItemDialog({
 
     const payload = {
       ...item,
-      ...(selectedOptionType === "organization" && { orgId: selectedOptionId }),
+      ...(selectedOptionType === "organization" && {
+        organizationId: selectedOptionId,
+      }),
       teamId: selectedOptionType === "team" ? selectedOptionId : teamId,
       agentId: selectedOptionType === "agent" ? selectedOptionId : agentId,
       blueprintId:

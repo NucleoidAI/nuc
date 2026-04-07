@@ -162,6 +162,16 @@ export const configurationTool: Tool<ConfigurationInput> = {
       const addCustomerServiceXml = addCustomerServiceXmlRequest(args);
 
       if (endpoint) {
+        logger.info(
+          { tool: "TELCO:configuration", createOntXml },
+          "Creating ONT",
+        );
+
+        logger.info(
+          { tool: "TELCO:configuration", addCustomerServiceXml },
+          "Adding customer service",
+        );
+
         ontResponse = await sendSoapRequest(
           endpoint,
           createOntXml,
@@ -173,6 +183,16 @@ export const configurationTool: Tool<ConfigurationInput> = {
           "addCustomerService",
         );
       }
+
+      logger.info(
+        { tool: "TELCO:configuration", ontResponse },
+        "Create ONT response",
+      );
+
+      logger.info(
+        { tool: "TELCO:configuration", addCustomerServiceResponse },
+        "Add customer service response",
+      );
 
       logger.info(
         { tool: "TELCO:configuration", args },

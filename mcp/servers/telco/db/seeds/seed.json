@@ -1,152 +1,152 @@
 {
-    "addresses": [
-      {
-        "bbk_no": "987",
-        "address": "Küçükbakkalköy Mahallesi, Vedat Günyol Caddesi, No. 12, Ataşehir, İstanbul"
-      },
-      {
-        "bbk_no": "988",
-        "address": "Kadıköy Neighborhood, Bağdat Street, number 234, Kadıköy, Istanbul."
-      },
-      {
-        "bbk_no": "988",
-        "address": "Kadıköy Mahallesi, Bağdat Caddesi, No. 235, Kadıköy, İstanbul"
-      },
-      {
-        "bbk_no": "989",
-        "address": "Beşiktaş Mahallesi, Barbaros Bulvarı, No. 78, Beşiktaş, İstanbul"
-      },
-      {
-        "bbk_no": "990",
-        "address": "2555 Wentwood Ct, Cumming, GA 30041"
-      },
-      {
-        "bbk_no": "990",
-        "address": "2556 Wentwood Ct, Cumming, GA 30041"
-      }
-    ],
-    "inventory": [
-        {
-          "bbk_no": "987",
-          "infrastructure_type": "Fiber",
-          "topology": "FTTH",
-          "device_tid": "ALC_06TTIM_TEST1",
-          "device_card_no": "1",
-          "hgw_serial_no": "HGW001",
-          "device_serial_number": "123",
-          "speed_limit": "16mbps"
-        },
-        {
-          "bbk_no": "988",
-          "infrastructure_type": "Fiber",
-          "topology": "FTTB",
-          "device_tid": "HUA_06MKMMELYT_TEST6",
-          "device_card_no": "4",
-          "hgw_serial_no": "HGW002",
-          "device_serial_number": "HWTCD40F49A5",
-          "speed_limit": "8mbps"
-        },
-        {
-          "bbk_no": "989",
-          "infrastructure_type": "VDSL",
-          "topology": "FTTC",
-          "device_tid": "ALC_06TTIM_TEST3",
-          "device_card_no": "3",
-          "hgw_serial_no": "HGW003",
-          "device_serial_number": "789",
-          "speed_limit": "24mbps"
-        },
-        {
-          "bbk_no": "990",
-          "infrastructure_type": "Fiber",
-          "topology": "FTTH",
-          "device_tid": "ALC_06TTIM_TEST4",
-          "device_card_no": "4",
-          "hgw_serial_no": "HGW004",
-          "device_serial_number": "1234567890",
-          "speed_limit": "16mbps"
-        }
-    ],
-    "ports": [
-      {
-        "port_no": "1",
-        "status": "Allocated",
-        "speed_limit": "16mbps",
-        "bbk_no": "987"
-      },
-      {
-        "port_no": "3",
-        "status": "Allocated",
-        "speed_limit": "24mbps",
-        "bbk_no": "989"
-      },
-      {
-        "port_no": "5",
-        "status": "Available",
-        "speed_limit": "24mbps",
-        "bbk_no": "989"
-      },
-      {
-        "bbk_no": "988",
-        "port_no": "8",
-        "status": "Available",
-        "speed_limit": "8mbps"
-      },
-      {
-        "bbk_no": "990",
-        "port_no": "9",
-        "status": "Available",
-        "speed_limit": "16mbps"
-      }
-    ],
-    "port_allocations": [
-      {
-        "device_serial_number": "123",
-        "assignment_id": "TH001",
-        "bbk_no": "987",
-        "port_no": "1",
-        "status": "Connected",
-        "speed_limit": "16mbps"
-      },
-      {
-        "device_serial_number": "789",
-        "assignment_id": "TH003",
-        "bbk_no": "989",
-        "port_no": "3",
-        "status": "Connected",
-        "speed_limit": "16mbps"
-      }
-    ],
-    "products": [
-      {
-        "speed_limit": "8mbps",
-        "product_description": "8 Mbps Internet 12 Months Unlimited",
-        "speed_profile": "24576/3071"
-      },
-      {
-        "speed_limit": "8mbps",
-        "product_description": "8 Mbps Internet 6 Months Unlimited",
-        "speed_profile": "24576/3071"
-      },
-      {
-        "speed_limit": "16mbps",
-        "product_description": "16 Mbps Internet 12 Months Unlimited",
-        "speed_profile": "8192/16384"
-      },
-      {
-        "speed_limit": "16mbps",
-        "speed_profile": "8192/16384",
-        "product_description": "16 Mbps Internet 6 Months Unlimited"
-      },
-      {
-        "speed_limit": "24mbps",
-        "speed_profile": "102400/51200",
-        "product_description": "24 Mbps Internet 12 Months Unlimited"
-      },
-      {
-        "speed_limit": "24mbps",
-        "speed_profile": "102400/51200",
-        "product_description": "24 Mbps Internet 6 Months Unlimited"
-      }
-    ]
-  }
+  "addresses": [
+    {
+      "bbk_no": "987",
+      "address": "Küçükbakkalköy Mahallesi, Vedat Günyol Caddesi, No. 12, Ataşehir, İstanbul"
+    },
+    {
+      "bbk_no": "988",
+      "address": "Kadıköy Neighborhood, Bağdat Street, number 234, Kadıköy, Istanbul."
+    },
+    {
+      "bbk_no": "988",
+      "address": "Kadıköy Mahallesi, Bağdat Caddesi, No. 235, Kadıköy, İstanbul"
+    },
+    {
+      "bbk_no": "989",
+      "address": "Beşiktaş Mahallesi, Barbaros Bulvarı, No. 78, Beşiktaş, İstanbul"
+    },
+    {
+      "bbk_no": "990",
+      "address": "2555 Wentwood Ct, Cumming, GA 30041"
+    },
+    {
+      "bbk_no": "990",
+      "address": "2556 Wentwood Ct, Cumming, GA 30041"
+    }
+  ],
+  "inventory": [
+    {
+      "bbk_no": "987",
+      "infrastructure_type": "Fiber",
+      "topology": "FTTH",
+      "device_tid": "ALC_06TTIM_TEST1",
+      "device_card_no": "1",
+      "hgw_serial_no": "HGW001",
+      "device_serial_number": "123",
+      "speed_limit": "16mbps"
+    },
+    {
+      "bbk_no": "988",
+      "infrastructure_type": "Fiber",
+      "topology": "FTTB",
+      "device_tid": "HUA_06TTIM_TEST3",
+      "device_card_no": "16",
+      "hgw_serial_no": "HGW002",
+      "device_serial_number": "HWTC495AE59E",
+      "speed_limit": "8mbps"
+    },
+    {
+      "bbk_no": "989",
+      "infrastructure_type": "VDSL",
+      "topology": "FTTC",
+      "device_tid": "ALC_06TTIM_TEST3",
+      "device_card_no": "3",
+      "hgw_serial_no": "HGW003",
+      "device_serial_number": "789",
+      "speed_limit": "24mbps"
+    },
+    {
+      "bbk_no": "990",
+      "infrastructure_type": "Fiber",
+      "topology": "FTTH",
+      "device_tid": "ALC_06TTIM_TEST4",
+      "device_card_no": "4",
+      "hgw_serial_no": "HGW004",
+      "device_serial_number": "1234567890",
+      "speed_limit": "16mbps"
+    }
+  ],
+  "ports": [
+    {
+      "port_no": "1",
+      "status": "Allocated",
+      "speed_limit": "16mbps",
+      "bbk_no": "987"
+    },
+    {
+      "port_no": "3",
+      "status": "Allocated",
+      "speed_limit": "24mbps",
+      "bbk_no": "989"
+    },
+    {
+      "port_no": "5",
+      "status": "Available",
+      "speed_limit": "24mbps",
+      "bbk_no": "989"
+    },
+    {
+      "bbk_no": "988",
+      "port_no": "4",
+      "status": "Available",
+      "speed_limit": "8mbps"
+    },
+    {
+      "bbk_no": "990",
+      "port_no": "9",
+      "status": "Available",
+      "speed_limit": "16mbps"
+    }
+  ],
+  "port_allocations": [
+    {
+      "device_serial_number": "123",
+      "assignment_id": "TH001",
+      "bbk_no": "987",
+      "port_no": "1",
+      "status": "Connected",
+      "speed_limit": "16mbps"
+    },
+    {
+      "device_serial_number": "789",
+      "assignment_id": "TH003",
+      "bbk_no": "989",
+      "port_no": "3",
+      "status": "Connected",
+      "speed_limit": "16mbps"
+    }
+  ],
+  "products": [
+    {
+      "speed_limit": "8mbps",
+      "product_description": "8 Mbps Internet 12 Months Unlimited",
+      "speed_profile": "51200/8192"
+    },
+    {
+      "speed_limit": "8mbps",
+      "product_description": "8 Mbps Internet 6 Months Unlimited",
+      "speed_profile": "51200/8192"
+    },
+    {
+      "speed_limit": "16mbps",
+      "product_description": "16 Mbps Internet 12 Months Unlimited",
+      "speed_profile": "8192/16384"
+    },
+    {
+      "speed_limit": "16mbps",
+      "speed_profile": "8192/16384",
+      "product_description": "16 Mbps Internet 6 Months Unlimited"
+    },
+    {
+      "speed_limit": "24mbps",
+      "speed_profile": "102400/51200",
+      "product_description": "24 Mbps Internet 12 Months Unlimited"
+    },
+    {
+      "speed_limit": "24mbps",
+      "speed_profile": "102400/51200",
+      "product_description": "24 Mbps Internet 6 Months Unlimited"
+    }
+  ]
+}

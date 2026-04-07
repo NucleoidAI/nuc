@@ -32,7 +32,7 @@
       "type": "row"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -85,7 +85,7 @@
       "pluginVersion": "12.1.1",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "sum(events_published_total)",
           "interval": "",
           "legendFormat": "Total Events",
@@ -96,7 +96,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -180,7 +180,7 @@
       "pluginVersion": "12.1.1",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "sum(rate(events_published_total[5m]))",
           "interval": "",
           "legendFormat": "Events/sec",
@@ -204,7 +204,7 @@
       "type": "row"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -261,7 +261,7 @@
       "pluginVersion": "12.1.1",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "backlog_events_total{topic=\"SESSION_USER_MESSAGED\"}",
           "interval": "",
           "legendFormat": "SESSION_USER_MESSAGED",
@@ -272,7 +272,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -329,7 +329,7 @@
       "pluginVersion": "12.1.1",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "backlog_events_total{topic=\"SUPERVISING_ANSWERED\"}",
           "interval": "",
           "legendFormat": "SUPERVISING_ANSWERED",
@@ -340,7 +340,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -397,7 +397,7 @@
       "pluginVersion": "12.1.1",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "backlog_events_total{topic=\"TASK_CREATED\"}",
           "interval": "",
           "legendFormat": "TASK_CREATED",
@@ -408,7 +408,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -465,7 +465,7 @@
       "pluginVersion": "12.1.1",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "backlog_events_total{topic=\"STEP_COMPLETED\"}",
           "interval": "",
           "legendFormat": "STEP_COMPLETED",
@@ -476,7 +476,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -556,28 +556,28 @@
       "pluginVersion": "12.1.1",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "backlog_events_total{topic=\"SESSION_USER_MESSAGED\"}",
           "interval": "",
           "legendFormat": "SESSION_USER_MESSAGED",
           "refId": "A"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "backlog_events_total{topic=\"SUPERVISING_ANSWERED\"}",
           "interval": "",
           "legendFormat": "SUPERVISING_ANSWERED",
           "refId": "B"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "backlog_events_total{topic=\"TASK_CREATED\"}",
           "interval": "",
           "legendFormat": "TASK_CREATED",
           "refId": "C"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "backlog_events_total{topic=\"STEP_COMPLETED\"}",
           "interval": "",
           "legendFormat": "STEP_COMPLETED",
@@ -588,7 +588,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -684,28 +684,28 @@
       "pluginVersion": "12.1.1",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "increase(backlog_events_total{topic=\"SESSION_USER_MESSAGED\"}[5m]) / 300",
           "interval": "",
           "legendFormat": "SESSION_USER_MESSAGED",
           "refId": "A"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "increase(backlog_events_total{topic=\"SUPERVISING_ANSWERED\"}[5m]) / 300",
           "interval": "",
           "legendFormat": "SUPERVISING_ANSWERED",
           "refId": "B"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "increase(backlog_events_total{topic=\"TASK_CREATED\"}[5m]) / 300",
           "interval": "",
           "legendFormat": "TASK_CREATED",
           "refId": "C"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "increase(backlog_events_total{topic=\"STEP_COMPLETED\"}[5m]) / 300",
           "interval": "",
           "legendFormat": "STEP_COMPLETED",
@@ -729,7 +729,7 @@
       "type": "row"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -782,7 +782,7 @@
       "pluginVersion": "12.1.1",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "sum(event_callbacks_processed_total)",
           "interval": "",
           "legendFormat": "Total Consumed",
@@ -793,7 +793,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -877,7 +877,7 @@
       "pluginVersion": "12.1.1",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "sum(rate(event_callbacks_processed_total[5m]))",
           "interval": "",
           "legendFormat": "Consume/sec",
@@ -901,7 +901,7 @@
       "type": "row"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1047,28 +1047,28 @@
       "pluginVersion": "12.1.1",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "histogram_quantile(0.99, sum(rate(event_publish_duration_seconds_bucket[5m])) by (le))",
           "interval": "",
           "legendFormat": "99th Percentile",
           "refId": "A"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "histogram_quantile(0.95, sum(rate(event_publish_duration_seconds_bucket[5m])) by (le))",
           "interval": "",
           "legendFormat": "95th Percentile",
           "refId": "B"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "histogram_quantile(0.75, sum(rate(event_publish_duration_seconds_bucket[5m])) by (le))",
           "interval": "",
           "legendFormat": "75th Percentile",
           "refId": "C"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "histogram_quantile(0.50, sum(rate(event_publish_duration_seconds_bucket[5m])) by (le))",
           "interval": "",
           "legendFormat": "50th Percentile",
@@ -1079,7 +1079,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1225,28 +1225,28 @@
       "pluginVersion": "12.1.1",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "histogram_quantile(0.99, sum(rate(event_callback_duration_seconds_bucket[5m])) by (le))",
           "interval": "",
           "legendFormat": "99th Percentile",
           "refId": "A"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "histogram_quantile(0.95, sum(rate(event_callback_duration_seconds_bucket[5m])) by (le))",
           "interval": "",
           "legendFormat": "95th Percentile",
           "refId": "B"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "histogram_quantile(0.75, sum(rate(event_callback_duration_seconds_bucket[5m])) by (le))",
           "interval": "",
           "legendFormat": "75th Percentile",
           "refId": "C"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "histogram_quantile(0.50, sum(rate(event_callback_duration_seconds_bucket[5m])) by (le))",
           "interval": "",
           "legendFormat": "50th Percentile",
@@ -1270,7 +1270,7 @@
       "type": "row"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1323,7 +1323,7 @@
       "pluginVersion": "12.1.1",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "sum(db_read_operations_total)",
           "interval": "",
           "legendFormat": "Total Read Ops",
@@ -1334,7 +1334,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1387,7 +1387,7 @@
       "pluginVersion": "12.1.1",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "sum(db_write_operations_total)",
           "interval": "",
           "legendFormat": "Total Write Ops",
@@ -1398,7 +1398,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1478,7 +1478,7 @@
       "pluginVersion": "12.1.1",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "sum(rate(db_read_operations_total[5m]))",
           "interval": "",
           "legendFormat": "Read Ops/sec",
@@ -1489,7 +1489,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1569,7 +1569,7 @@
       "pluginVersion": "12.1.1",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "sum(rate(db_write_operations_total[5m]))",
           "interval": "",
           "legendFormat": "Write Ops/sec",
@@ -1580,7 +1580,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1725,28 +1725,28 @@
       "pluginVersion": "12.1.1",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "histogram_quantile(0.99, sum(rate(db_read_duration_seconds_bucket[5m])) by (le))",
           "interval": "",
           "legendFormat": "99th Percentile",
           "refId": "A"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "histogram_quantile(0.95, sum(rate(db_read_duration_seconds_bucket[5m])) by (le))",
           "interval": "",
           "legendFormat": "95th Percentile",
           "refId": "B"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "histogram_quantile(0.75, sum(rate(db_read_duration_seconds_bucket[5m])) by (le))",
           "interval": "",
           "legendFormat": "75th Percentile",
           "refId": "C"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "histogram_quantile(0.50, sum(rate(db_read_duration_seconds_bucket[5m])) by (le))",
           "interval": "",
           "legendFormat": "50th Percentile",
@@ -1757,7 +1757,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1902,28 +1902,28 @@
       "pluginVersion": "12.1.1",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "histogram_quantile(0.99, sum(rate(db_write_duration_seconds_bucket[5m])) by (le))",
           "interval": "",
           "legendFormat": "99th Percentile",
           "refId": "A"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "histogram_quantile(0.95, sum(rate(db_write_duration_seconds_bucket[5m])) by (le))",
           "interval": "",
           "legendFormat": "95th Percentile",
           "refId": "B"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "histogram_quantile(0.75, sum(rate(db_write_duration_seconds_bucket[5m])) by (le))",
           "interval": "",
           "legendFormat": "75th Percentile",
           "refId": "C"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "histogram_quantile(0.50, sum(rate(db_write_duration_seconds_bucket[5m])) by (le))",
           "interval": "",
           "legendFormat": "50th Percentile",

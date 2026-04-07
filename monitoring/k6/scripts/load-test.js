@@ -1,14 +1,13 @@
 import { check } from "k6";
 import http from "k6/http";
 
-const BASE_URL =
-  "https://communication-land.gentleflower-99ef02e0.eastus.azurecontainerapps.io";
+const BASE_URL = "http://localhost:3003";
 const TOKEN = "dcf0ac50d784ea9837ebf2e1a57d70d9";
 
 export const options = {
   scenarios: {
     scenarios: {
-      executor: 'constant-vus',
+      executor: "constant-vus",
       vus: 250,
       duration: "15m",
     },
@@ -20,7 +19,7 @@ export default function () {
 
   const payload = JSON.stringify({
     agentId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
-    content: "Where is the parking lot?",
+    content: "Hello",
   });
 
   const params = {

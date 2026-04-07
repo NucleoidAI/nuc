@@ -16,6 +16,15 @@ dotenv.config();
 
 const startServer = async () => {
   await event.init(config.event);
+
+  if (config.metrics.enabled) {
+    event.startPushgateway({
+      url: config.metrics.url,
+      jobName: config.metrics.pushGateway.jobName,
+      instance: config.metrics.pushGateway.instance,
+      interval: config.metrics.interval,
+    });
+  }
   const mainApp = express();
 
   const testApp = express();

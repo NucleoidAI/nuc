@@ -165,7 +165,7 @@ export const configurationTool: Tool<ConfigurationInput> = {
         const delay = (ms: number) =>
           new Promise((resolve) => setTimeout(resolve, ms));
 
-        const ms = 10000;
+        const ms = 5000;
 
         logger.info(
           { tool: "TELCO:configuration", createOntXml },
@@ -181,6 +181,14 @@ export const configurationTool: Tool<ConfigurationInput> = {
           endpoint,
           createOntXml,
           "createOnt",
+        );
+
+        await delay(ms);
+
+        addCustomerServiceResponse = await sendSoapRequest(
+          endpoint,
+          addCustomerServiceXml,
+          "addCustomerService",
         );
 
         await delay(ms);

@@ -8,7 +8,7 @@ function SingleScrollableLayout({ title, children }) {
       <Typography sx={{ textAlign: "center", fontSize: "3rem", marginTop: 4 }}>
         {title}
       </Typography>
-      <Box sx={{ paddingX: 10 }}>
+      <Box sx={{ paddingX: 5 }}>
         <Grid container spacing={4}>
           {children}
         </Grid>

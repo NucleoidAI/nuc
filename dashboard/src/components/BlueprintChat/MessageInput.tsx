@@ -51,14 +51,16 @@ const MessageInput = ({ addMessage }) => {
           variant="standard"
           onChange={handleInputChange}
           placeholder="Type here what you want your agent to do."
-          InputProps={{
-            disableUnderline: true,
-          }}
           inputRef={inputRef}
           multiline
           maxRows={4}
           sx={{ flexGrow: 1 }}
           data-cy="message-input"
+          slotProps={{
+            input: {
+              disableUnderline: true,
+            },
+          }}
         />
 
         <IconButton

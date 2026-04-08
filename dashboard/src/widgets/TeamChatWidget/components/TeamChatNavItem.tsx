@@ -46,16 +46,19 @@ function TeamChatNavItem({ member, selected, collapse, onClick }) {
           <ListItemText
             sx={{ ml: 2 }}
             primary={name}
-            primaryTypographyProps={{
-              noWrap: true,
-              variant: "subtitle2",
-            }}
             secondary={role}
-            secondaryTypographyProps={{
-              noWrap: true,
-              component: "span",
-              variant: "body2",
-              color: "text.secondary",
+            slotProps={{
+              primary: {
+                noWrap: true,
+                variant: "subtitle2",
+              },
+
+              secondary: {
+                noWrap: true,
+                component: "span",
+                variant: "body2",
+                color: "text.secondary",
+              },
             }}
           />
           <Stack alignItems="flex-end" sx={{ ml: 1, height: 44 }}></Stack>

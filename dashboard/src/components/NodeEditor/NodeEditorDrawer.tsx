@@ -10,7 +10,6 @@ import {
   Button,
   Card,
   CardContent,
-  Divider,
   Drawer,
   FormControl,
   Grid,
@@ -241,30 +240,45 @@ const NodeEditorDrawer = ({
       sx={{
         zIndex: (theme) => theme.zIndex.modal + 2,
       }}
-      PaperProps={{
-        sx: {
-          width: isMobile ? "100%" : showKnowledge ? "100%" : 450,
-          padding: 3,
+      slotProps={{
+        paper: {
+          sx: {
+            width: isMobile ? "100%" : showKnowledge ? "100%" : 450,
+            padding: 3,
+          },
         },
       }}
     >
-      <Grid display={"flex"} flexDirection={"row"}>
+      <Grid container spacing={3}>
         {showKnowledge && (
-          <>
-            <Grid item xs={12} md={6}>
-              <Knowledge agentId={agentId} fromBlueprintDrawer={true} />
-            </Grid>
-            <Divider orientation="vertical" flexItem sx={{ mx: 2 }} />
-          </>
+          <Grid
+            size={{
+              xs: 12,
+              md: 6,
+            }}
+          >
+            <Knowledge agentId={agentId} fromBlueprintDrawer={true} />
+          </Grid>
         )}
         <Grid
           data-cy="node-editor-drawer"
           gap={2}
-          item
-          xs={12}
-          md={showKnowledge ? 6 : 12}
           display="flex"
           flexDirection="column"
+          size={{
+            xs: 12,
+            md: showKnowledge ? 6 : 12,
+          }}
+          sx={{
+            borderLeft: {
+              xs: "none",
+              md: showKnowledge ? `1px solid ${theme.palette.divider}` : "none",
+            },
+            pl: {
+              xs: 0,
+              md: showKnowledge ? 3 : 0,
+            },
+          }}
         >
           <Box
             display="flex"
@@ -308,10 +322,12 @@ const NodeEditorDrawer = ({
             value={newNodeLabel}
             onChange={(e) => setNewNodeLabel(e.target.value)}
             autoComplete="off"
-            inputProps={{
-              autoComplete: "off",
-              autoCorrect: "off",
-              spellCheck: false,
+            slotProps={{
+              htmlInput: {
+                autoComplete: "off",
+                autoCorrect: "off",
+                spellCheck: false,
+              },
             }}
           />
 
@@ -324,10 +340,12 @@ const NodeEditorDrawer = ({
             value={newNodePrompt}
             onChange={(e) => setNewNodePrompt(e.target.value)}
             autoComplete="off"
-            inputProps={{
-              autoComplete: "off",
-              autoCorrect: "off",
-              spellCheck: false,
+            slotProps={{
+              htmlInput: {
+                autoComplete: "off",
+                autoCorrect: "off",
+                spellCheck: false,
+              },
             }}
           />
 
@@ -410,19 +428,22 @@ const NodeEditorDrawer = ({
                     size="small"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <SearchIcon />
-                        </InputAdornment>
-                      ),
-                    }}
                     sx={{ mb: 2 }}
                     autoComplete="off"
-                    inputProps={{
-                      autoComplete: "off",
-                      autoCorrect: "off",
-                      spellCheck: false,
+                    slotProps={{
+                      input: {
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <SearchIcon />
+                          </InputAdornment>
+                        ),
+                      },
+
+                      htmlInput: {
+                        autoComplete: "off",
+                        autoCorrect: "off",
+                        spellCheck: false,
+                      },
                     }}
                   />
 
@@ -646,7 +667,13 @@ const NodeEditorDrawer = ({
                 <Typography variant="subtitle2" color="primary" gutterBottom>
                   {selectedIntegration.action}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" paragraph>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{
+                    marginBottom: "16px",
+                  }}
+                >
                   {selectedIntegration.description}
                 </Typography>
               </Box>

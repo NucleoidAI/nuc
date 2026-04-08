@@ -97,12 +97,15 @@ const MentionList = ({ agents, onSelect, editor }) => {
           <ListItemText
             primary={agent.name}
             secondary={agent.role}
-            primaryTypographyProps={{ fontWeight: "bold" }}
-            secondaryTypographyProps={{
-              fontSize: "14px",
-              fontWeight: "bold",
-              color: "#91959c",
-              className: "command-description",
+            slotProps={{
+              primary: { fontWeight: "bold" },
+
+              secondary: {
+                fontSize: "14px",
+                fontWeight: "bold",
+                color: "#91959c",
+                className: "command-description",
+              },
             }}
           />
         </ListItem>

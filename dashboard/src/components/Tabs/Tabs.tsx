@@ -58,6 +58,15 @@ function TabBar({ TABS, currentTab, setCurrentTab, sidebarOpen = false }) {
           label={tab.label}
           sx={{
             px: 2,
+            display: "flex",
+            flexDirection: "row",
+            gap: 1,
+            "&.Mui-selected": {
+              color: "text.primary",
+            },
+            "&..MuiTab-iconWrapper": {
+              mb: "-3",
+            },
           }}
         />
       ))}

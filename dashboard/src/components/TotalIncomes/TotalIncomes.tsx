@@ -28,6 +28,7 @@ export default function TotalIncomes({
         borderRadius: 2,
         color: `${color}.darker`,
         backgroundColor: "common.white",
+        marginTop: "20px",
         ...sx,
       }}
       {...other}

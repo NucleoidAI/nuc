@@ -156,12 +156,17 @@ function TeamChatNav({ loading, agents, collapsed, setCollapsed }) {
         value={searchContacts.query}
         onChange={(event) => handleSearchContacts(event.target.value)}
         placeholder="Search agents..."
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <Iconify icon="eva:search-fill" sx={{ color: "text.disabled" }} />
-            </InputAdornment>
-          ),
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment position="start">
+                <Iconify
+                  icon="eva:search-fill"
+                  sx={{ color: "text.disabled" }}
+                />
+              </InputAdornment>
+            ),
+          },
         }}
       />
     </ClickAwayListener>
@@ -227,9 +232,10 @@ function TeamChatNav({ loading, agents, collapsed, setCollapsed }) {
           onClose={() => setCollapsed(true)}
           slotProps={{
             backdrop: { invisible: true },
-          }}
-          PaperProps={{
-            sx: { width: "100%", height: "100%" },
+
+            paper: {
+              sx: { width: "100%", height: "100%" },
+            },
           }}
         >
           {renderContent}

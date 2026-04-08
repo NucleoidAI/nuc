@@ -40,7 +40,7 @@ function UsageChart() {
         maxWidth: "100%",
         height: "100%",
         maxHeight: isSmallScreen ? "auto" : "600px",
-        marginTop: isSmallScreen ? "6px" : "0",
+        marginTop: "10px",
       }}
     >
       <CardHeader title="TAA" />

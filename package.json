@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@canmingir/link-express": "^1.7.12",
-    "@canmingir/link": "^1.2.26",
+    "@canmingir/link": "^1.2.30",
     "@modelcontextprotocol/sdk": "^1.15.1",
     "@nucleoidai/node-event": "^1.1.5",
     "concurrently": "^9.1.2",

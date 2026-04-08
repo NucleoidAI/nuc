@@ -64,9 +64,6 @@ function TabBar({ TABS, currentTab, setCurrentTab, sidebarOpen = false }) {
             "&.Mui-selected": {
               color: "text.primary",
             },
-            "&..MuiTab-iconWrapper": {
-              mb: "-3",
-            },
           }}
         />
       ))}

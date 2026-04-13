@@ -25,8 +25,14 @@ const SidebarChatWidget = ({
 }: SidebarChatWidgetProps) => {
   const [selectedBlueprint, setSelectedBlueprint] = useState("");
 
-  const { sessionId, conversations, sendMessage, switchSession, getSession } =
-    useSession(agentId);
+  const {
+    sessionId,
+    conversations,
+    sendMessage,
+    switchSession,
+    createSession,
+    getSession,
+  } = useSession(agentId);
   const { getBlueprint } = useBlueprint();
   const { Blueprint } = getBlueprint();
 
@@ -66,6 +72,11 @@ const SidebarChatWidget = ({
     [switchSession, getSession]
   );
 
+  const handleNewSession = useCallback(() => {
+    setMessages([]);
+    createSession();
+  }, [createSession]);
+
   const handleNewUserMessage = async (content: string) => {
     const newMessage = {
       role: "USER",
@@ -94,6 +105,7 @@ const SidebarChatWidget = ({
       selectedBlueprint={selectedBlueprint}
       onBlueprintChange={setSelectedBlueprint}
       onSessionSelect={handleSessionSelect}
+      onNewSession={handleNewSession}
     />
   );
 };

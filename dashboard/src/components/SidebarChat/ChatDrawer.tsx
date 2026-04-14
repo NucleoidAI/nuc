@@ -46,7 +46,6 @@ const ChatDrawer = ({
   onBlueprintChange,
   messagesEndRef,
   highlightedMessage,
-  onNewSession,
 }: ChatDrawerProps) => {
   const inputRef = useRef(null);
 
@@ -104,14 +103,6 @@ const ChatDrawer = ({
             {title}
           </Typography>
           <Stack direction="row" spacing={1}>
-            {!readOnly && onNewSession && (
-              <IconButton onClick={onNewSession} size="small" title="New Chat">
-                <Iconify
-                  icon="solar:add-square-bold-duotone"
-                  sx={{ width: 20, height: 20, color: "white" }}
-                />
-              </IconButton>
-            )}
             {!readOnly && (
               <IconButton onClick={onMuteToggle} size="small">
                 <Iconify

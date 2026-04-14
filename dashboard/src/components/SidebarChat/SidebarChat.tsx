@@ -167,6 +167,7 @@ const SidebarChat = ({
           onToggleChat={handleToggle}
           onSessionClick={handleSessionClick}
           onClearAll={clearAll}
+          onNewSession={onNewSession}
         />
       )}
 

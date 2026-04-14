@@ -17,6 +17,7 @@ interface SidebarSessionListProps {
     sessionId: string
   ) => void;
   onClearAll: () => void;
+  onNewSession?: () => void;
 }
 
 const SidebarSessionList = ({
@@ -26,15 +27,19 @@ const SidebarSessionList = ({
   onToggleChat,
   onSessionClick,
   onClearAll,
+  onNewSession,
 }: SidebarSessionListProps) => {
   const sidebarSessions = sessions;
 
   return (
     <RightSideBar width={75} height={420}>
       <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
-        <Tooltip title="Open Chat" placement="left">
+        <Tooltip title="New Chat" placement="left">
           <Box
-            onClick={onToggleChat}
+            onClick={() => {
+              onNewSession?.();
+              onToggleChat();
+            }}
             sx={{
               width: 65,
               height: 50,
@@ -54,7 +59,10 @@ const SidebarSessionList = ({
               },
             }}
           >
-            <Iconify icon="mdi:play" sx={{ width: 22, height: 22 }} />
+            <Iconify
+              icon="solar:add-square-bold-duotone"
+              sx={{ width: 22, height: 22 }}
+            />
             <Typography
               sx={{
                 fontSize: "0.6rem",
@@ -64,7 +72,7 @@ const SidebarSessionList = ({
                 textTransform: "uppercase",
               }}
             >
-              Run
+              New
             </Typography>
           </Box>
         </Tooltip>

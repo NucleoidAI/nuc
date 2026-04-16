@@ -63,6 +63,8 @@ const BlueprintFlowDialog = ({
       <DialogContent
         sx={{
           width: "100%",
+          height: "calc(100vh - 160px)",
+          p: 0,
           "&::-webkit-scrollbar": {
             display: "none",
           },

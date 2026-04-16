@@ -1,10 +1,10 @@
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
+import { BlueprintFlowMiniPreview } from "./BlueprintFlowMiniPreview";
+
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import React from "react";
 import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
 import TaskIcon from "@mui/icons-material/Task";
-import { BlueprintFlowMiniPreview } from "./BlueprintFlowMiniPreview";
 
 import {
   Box,
@@ -155,6 +155,7 @@ const BlueprintCard = ({
         sx={{
           px: 2,
           pb: 2,
+          height: 200,
           cursor: "pointer",
           opacity: 0.6,
         }}

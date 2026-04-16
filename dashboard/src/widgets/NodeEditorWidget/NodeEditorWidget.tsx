@@ -17,6 +17,8 @@ const NodeEditorWidget = ({
   setNewNodeType,
   selectedBranch,
   setSelectedBranch,
+  inheritedNextBranch,
+  setInheritedNextBranch,
   handleSubmit,
   selectedIntegration,
   setSelectedIntegration,
@@ -58,6 +60,8 @@ const NodeEditorWidget = ({
   setNewNodeType: (type: string) => void;
   selectedBranch: "true" | "false";
   setSelectedBranch: (branch: "true" | "false") => void;
+  inheritedNextBranch: "true" | "false" | "none";
+  setInheritedNextBranch: (branch: "true" | "false" | "none") => void;
   handleSubmit: () => void;
   selectedIntegration: {
     id: string;
@@ -209,6 +213,8 @@ const NodeEditorWidget = ({
       )
     : null;
 
+  const hasInheritedNext = !!nextNodeId;
+
   return (
     <NodeEditorDrawer
       pseudocode={pseudocode}
@@ -223,6 +229,9 @@ const NodeEditorWidget = ({
       setNewNodeType={setNewNodeType}
       selectedBranch={selectedBranch}
       setSelectedBranch={setSelectedBranch}
+      inheritedNextBranch={inheritedNextBranch}
+      setInheritedNextBranch={setInheritedNextBranch}
+      hasInheritedNext={hasInheritedNext}
       availableIntegrations={filteredIntegrations}
       searchQuery={searchQuery}
       setSearchQuery={setSearchQuery}

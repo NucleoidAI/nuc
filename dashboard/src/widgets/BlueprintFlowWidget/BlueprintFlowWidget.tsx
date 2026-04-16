@@ -144,6 +144,9 @@ function BlueprintFlowWidget({
   const [selectedBranch, setSelectedBranch] = useState<"true" | "false">(
     "true"
   );
+  const [inheritedNextBranch, setInheritedNextBranch] = useState<
+    "true" | "false" | "none"
+  >("none");
   const [selectedIntegration, setSelectedIntegration] = useState({
     id: "",
     action: "",
@@ -213,6 +216,7 @@ function BlueprintFlowWidget({
     setNodePseudocode("");
     setNewNodeType("NORMAL");
     setSelectedBranch("true");
+    setInheritedNextBranch("none");
     setShowValidationErrors(false);
     setDrawerOpen(true);
   };
@@ -401,6 +405,7 @@ function BlueprintFlowWidget({
     setNodePseudocode("");
     setNewNodeType("NORMAL");
     setSelectedBranch("true");
+    setInheritedNextBranch("none");
     setSelectedIntegration({
       id: "",
       action: "",
@@ -537,13 +542,23 @@ function BlueprintFlowWidget({
               icon: nodeIcon,
               createdAt: currentTime,
               connectorType: "decision" as const,
-              trueNext: Array.isArray(inheritedNext)
-                ? inheritedNext
-                : inheritedNext
-                ? [inheritedNext]
-                : [],
-              falseNext: [],
-              next: inheritedNext,
+              trueNext:
+                inheritedNextBranch === "true"
+                  ? Array.isArray(inheritedNext)
+                    ? inheritedNext
+                    : inheritedNext
+                    ? [inheritedNext]
+                    : []
+                  : [],
+              falseNext:
+                inheritedNextBranch === "false"
+                  ? Array.isArray(inheritedNext)
+                    ? inheritedNext
+                    : inheritedNext
+                    ? [inheritedNext]
+                    : []
+                  : [],
+              next: inheritedNextBranch !== "none" ? inheritedNext : null,
               raw: {
                 id: newId,
                 type: newNodeType,
@@ -554,12 +569,22 @@ function BlueprintFlowWidget({
                   description: descriptionText,
                   icon: nodeIcon,
                 },
-                true: Array.isArray(inheritedNext)
-                  ? inheritedNext
-                  : inheritedNext
-                  ? [inheritedNext]
-                  : [],
-                false: [],
+                true:
+                  inheritedNextBranch === "true"
+                    ? Array.isArray(inheritedNext)
+                      ? inheritedNext
+                      : inheritedNext
+                      ? [inheritedNext]
+                      : []
+                    : [],
+                false:
+                  inheritedNextBranch === "false"
+                    ? Array.isArray(inheritedNext)
+                      ? inheritedNext
+                      : inheritedNext
+                      ? [inheritedNext]
+                      : []
+                    : [],
                 createdAt: currentTime,
               },
             }
@@ -695,6 +720,128 @@ function BlueprintFlowWidget({
     setHasLocalChanges(true);
   };
 
+  const handleDeleteNode = (node: { id: string }) => {
+    setGraphData((prev) => {
+      if (!prev) return prev;
+      const currentNodes = { ...prev.nodes };
+      const deletedNode = currentNodes[node.id];
+      if (!deletedNode) return prev;
+
+      // Get the deleted node's children
+      const children: string[] =
+        deletedNode.nodeType === "CONDITION"
+          ? [...(deletedNode.trueNext || []), ...(deletedNode.falseNext || [])]
+          : deletedNode.next
+          ? Array.isArray(deletedNode.next)
+            ? deletedNode.next
+            : [deletedNode.next]
+          : [];
+
+      // Find parent and reconnect to children
+      Object.keys(currentNodes).forEach((id) => {
+        const n = currentNodes[id];
+        if (n.nodeType === "CONDITION") {
+          const inTrue = n.trueNext?.includes(node.id);
+          const inFalse = n.falseNext?.includes(node.id);
+          if (inTrue || inFalse) {
+            const newTrueNext = inTrue
+              ? [
+                  ...(n.trueNext || []).filter((x) => x !== node.id),
+                  ...children,
+                ]
+              : n.trueNext || [];
+            const newFalseNext = inFalse
+              ? [
+                  ...(n.falseNext || []).filter((x) => x !== node.id),
+                  ...children,
+                ]
+              : n.falseNext || [];
+            currentNodes[id] = {
+              ...n,
+              trueNext: newTrueNext,
+              falseNext: newFalseNext,
+              raw: { ...n.raw, true: newTrueNext, false: newFalseNext },
+            };
+          }
+        } else {
+          const next = n.next;
+          if (
+            next === node.id ||
+            (Array.isArray(next) && next.includes(node.id))
+          ) {
+            const newNext =
+              children.length === 1
+                ? children[0]
+                : children.length > 1
+                ? children
+                : null;
+            currentNodes[id] = {
+              ...n,
+              next: newNext,
+              raw: {
+                ...n.raw,
+                next: children.length > 0 ? children : [],
+              },
+            };
+          }
+        }
+      });
+
+      delete currentNodes[node.id];
+
+      const referenced = new Set<string>();
+      Object.values(currentNodes).forEach(
+        (n: {
+          nodeType: string;
+          next?: string | string[] | null;
+          trueNext?: string[] | null;
+          falseNext?: string[] | null;
+        }) => {
+          if (n.nodeType === "CONDITION") {
+            n.trueNext?.forEach((id) => referenced.add(id));
+            n.falseNext?.forEach((id) => referenced.add(id));
+          } else {
+            if (typeof n.next === "string") referenced.add(n.next);
+            else if (Array.isArray(n.next))
+              n.next.forEach((id) => referenced.add(id));
+          }
+        }
+      );
+      const newRoots = Object.keys(currentNodes).filter(
+        (id) => !referenced.has(id)
+      );
+
+      return { ...prev, nodes: currentNodes, roots: newRoots };
+    });
+    setHasLocalChanges(true);
+  };
+
+  const handleSwapBranch = (node: { id: string }) => {
+    setGraphData((prev) => {
+      if (!prev) return prev;
+      const currentNodes = { ...prev.nodes };
+      const n = currentNodes[node.id];
+      if (!n || n.nodeType !== "CONDITION") return prev;
+
+      const newTrueNext = n.falseNext || [];
+      const newFalseNext = n.trueNext || [];
+
+      currentNodes[node.id] = {
+        ...n,
+        trueNext: newTrueNext,
+        falseNext: newFalseNext,
+        raw: {
+          ...n.raw,
+          true: newTrueNext,
+          false: newFalseNext,
+        },
+      };
+
+      return { ...prev, nodes: currentNodes };
+    });
+    setHasLocalChanges(true);
+  };
+
   const handleSaveFlow = async () => {
     if (!graphData) return;
 
@@ -827,6 +974,8 @@ function BlueprintFlowWidget({
           onFlowChange={handleFlowChange}
           onAddNodeClick={handleAddNodeClick}
           onEditNodeClick={handleEditNodeClick}
+          onSwapBranchClick={handleSwapBranch}
+          onDeleteNodeClick={handleDeleteNode}
           onSave={handleSaveFlow}
           onShowDiff={() => setShowDiffPanel(true)}
           onCloseDiff={() => setShowDiffPanel(false)}
@@ -850,6 +999,8 @@ function BlueprintFlowWidget({
         setNewNodeType={setNewNodeType}
         selectedBranch={selectedBranch}
         setSelectedBranch={setSelectedBranch}
+        inheritedNextBranch={inheritedNextBranch}
+        setInheritedNextBranch={setInheritedNextBranch}
         handleSubmit={editMode ? handleEditNode : handleAddNode}
         selectedIntegration={selectedIntegration}
         setSelectedIntegration={setSelectedIntegration}

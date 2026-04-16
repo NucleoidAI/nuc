@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
+import { Divider, ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
 
 import { Iconify, InfoNode } from "@canmingir/link/platform/components";
 
@@ -23,6 +24,50 @@ const AddButtonWrapper = styled("div")(({ theme }) => ({
   "&:hover": {
     boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
     color: theme.palette?.primary.main,
+  },
+}));
+
+const DeleteButtonWrapper = styled("div")(({ theme }) => ({
+  position: "absolute",
+  bottom: "8px",
+  right: "8px",
+  width: "24px",
+  height: "24px",
+  borderRadius: "50%",
+  backgroundColor: theme.palette?.background.paper,
+  color: "#555",
+  border: "1px solid rgba(0, 0, 0, 0.1)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  cursor: "pointer",
+  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+  zIndex: 10,
+  "&:hover": {
+    boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+    color: theme.palette?.error.main,
+  },
+}));
+
+const SwapButtonWrapper = styled("div")(({ theme }) => ({
+  position: "absolute",
+  top: "8px",
+  right: "68px",
+  width: "24px",
+  height: "24px",
+  borderRadius: "50%",
+  backgroundColor: theme.palette?.background.paper,
+  color: "#555",
+  border: "1px solid rgba(0, 0, 0, 0.1)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  cursor: "pointer",
+  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+  zIndex: 10,
+  "&:hover": {
+    boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+    color: theme.palette?.warning.main,
   },
 }));
 
@@ -603,75 +648,171 @@ export const blueprintFlowPlugin = {
     return {};
   },
 
-  node: ({ node, nodeStyle }) => {
-    const { onAdd, onEdit } = nodeStyle || {};
-    const changeType = node.changeType;
-    const hasError = node.hasError;
-    const isUsed = node.isUsed;
-    const isLastUsed = node.isLastUsed;
-    const isFailed = node.isFailed;
-
-    const handleAddClick = (e) => {
-      e.stopPropagation();
-      if (onAdd) {
-        onAdd(node);
-      }
-    };
-
-    const handleEditClick = (e) => {
-      e.stopPropagation();
-      if (onEdit) {
-        onEdit(node);
-      }
-    };
-
-    return (
-      <NodeWrapper>
-        <HighlightOverlay
-          changetype={changeType}
-          haserror={hasError ? "true" : "false"}
-          isused={isUsed ? "true" : "false"}
-          islastused={isLastUsed ? "true" : "false"}
-          isfailed={isFailed ? "true" : "false"}
-        />
-        {hasError ? (
-          <>
-            <ErrorLabel />
-            <ErrorBadge />
-          </>
-        ) : isFailed ? (
-          <>
-            <FailedLabel />
-            <FailedBadge />
-          </>
-        ) : isLastUsed ? (
-          <>
-            <SuperviseNeededLabel />
-            <SuperviseNeededBadge />
-          </>
-        ) : isUsed ? (
-          <>
-            <UsedLabel />
-            <UsedBadge />
-          </>
-        ) : (
-          changeType &&
-          changeType !== "unchanged" && (
-            <>
-              <ChangeLabel changetype={changeType} />
-              <ChangeBadge changetype={changeType} />
-            </>
-          )
-        )}
-        <InfoNode node={node} nodeStyle={nodeStyle}>
-          <EditButtonWrapper onClick={handleEditClick} title="Edit node">
-            <Iconify icon="mdi:pencil" width={16} height={16} />
-          </EditButtonWrapper>
-          <AddButtonWrapper onClick={handleAddClick} title="Add child node">
-            <Iconify icon="mdi:plus" width={16} height={16} />
-          </AddButtonWrapper>
-        </InfoNode>
-      </NodeWrapper>
-    );
-  },
+  node: (props) => <FlowNodeRenderer {...props} />,
 };
+
+function FlowNodeRenderer({ node, nodeStyle }: { node: any; nodeStyle: any }) {
+  const { onAdd, onEdit, onSwapBranch, onDelete } = nodeStyle || {};
+  const [contextMenu, setContextMenu] = useState<{
+    mouseX: number;
+    mouseY: number;
+  } | null>(null);
+
+  const changeType = node.changeType;
+  const hasError = node.hasError;
+  const isUsed = node.isUsed;
+  const isLastUsed = node.isLastUsed;
+  const isFailed = node.isFailed;
+  const isDecision = node.connectorType === "decision";
+  const hasChildren =
+    (node.trueNext?.length ?? 0) > 0 || (node.falseNext?.length ?? 0) > 0;
+
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setContextMenu({ mouseX: e.clientX, mouseY: e.clientY });
+  };
+
+  const handleClose = () => setContextMenu(null);
+
+  const handleAddClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onAdd?.(node);
+  };
+
+  const handleEditClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onEdit?.(node);
+  };
+
+  const handleSwapClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onSwapBranch?.(node);
+  };
+
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onDelete?.(node);
+  };
+
+  return (
+    <NodeWrapper onContextMenu={handleContextMenu}>
+      <HighlightOverlay
+        changetype={changeType}
+        haserror={hasError ? "true" : "false"}
+        isused={isUsed ? "true" : "false"}
+        islastused={isLastUsed ? "true" : "false"}
+        isfailed={isFailed ? "true" : "false"}
+      />
+      {hasError ? (
+        <>
+          <ErrorLabel />
+          <ErrorBadge />
+        </>
+      ) : isFailed ? (
+        <>
+          <FailedLabel />
+          <FailedBadge />
+        </>
+      ) : isLastUsed ? (
+        <>
+          <SuperviseNeededLabel />
+          <SuperviseNeededBadge />
+        </>
+      ) : isUsed ? (
+        <>
+          <UsedLabel />
+          <UsedBadge />
+        </>
+      ) : (
+        changeType &&
+        changeType !== "unchanged" && (
+          <>
+            <ChangeLabel changetype={changeType} />
+            <ChangeBadge changetype={changeType} />
+          </>
+        )
+      )}
+      <InfoNode node={node} nodeStyle={nodeStyle}>
+        <DeleteButtonWrapper onClick={handleDeleteClick} title="Delete node">
+          <Iconify icon="mdi:delete-outline" width={16} height={16} />
+        </DeleteButtonWrapper>
+        {isDecision && hasChildren && (
+          <SwapButtonWrapper
+            onClick={handleSwapClick}
+            title="Swap true/false branches"
+          >
+            <Iconify icon="mdi:swap-horizontal" width={16} height={16} />
+          </SwapButtonWrapper>
+        )}
+        <EditButtonWrapper onClick={handleEditClick} title="Edit node">
+          <Iconify icon="mdi:pencil" width={16} height={16} />
+        </EditButtonWrapper>
+        <AddButtonWrapper onClick={handleAddClick} title="Add child node">
+          <Iconify icon="mdi:plus" width={16} height={16} />
+        </AddButtonWrapper>
+      </InfoNode>
+
+      <Menu
+        open={contextMenu !== null}
+        onClose={handleClose}
+        anchorReference="anchorPosition"
+        anchorPosition={
+          contextMenu !== null
+            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+            : undefined
+        }
+        slotProps={{ paper: { sx: { minWidth: 180 } } }}
+      >
+        <MenuItem
+          onClick={(e) => {
+            handleAddClick(e);
+            handleClose();
+          }}
+        >
+          <ListItemIcon>
+            <Iconify icon="mdi:plus" width={18} height={18} />
+          </ListItemIcon>
+          <ListItemText>Add child node</ListItemText>
+        </MenuItem>
+        <MenuItem
+          onClick={(e) => {
+            handleEditClick(e);
+            handleClose();
+          }}
+        >
+          <ListItemIcon>
+            <Iconify icon="mdi:pencil" width={18} height={18} />
+          </ListItemIcon>
+          <ListItemText>Edit node</ListItemText>
+        </MenuItem>
+        {isDecision && hasChildren && (
+          <MenuItem
+            onClick={(e) => {
+              handleSwapClick(e);
+              handleClose();
+            }}
+          >
+            <ListItemIcon>
+              <Iconify icon="mdi:swap-horizontal" width={18} height={18} />
+            </ListItemIcon>
+            <ListItemText>Swap branches</ListItemText>
+          </MenuItem>
+        )}
+        <Divider />
+        <MenuItem
+          onClick={(e) => {
+            handleDeleteClick(e);
+            handleClose();
+          }}
+          sx={{ color: "error.main" }}
+        >
+          <ListItemIcon sx={{ color: "error.main" }}>
+            <Iconify icon="mdi:delete-outline" width={18} height={18} />
+          </ListItemIcon>
+          <ListItemText>Delete node</ListItemText>
+        </MenuItem>
+      </Menu>
+    </NodeWrapper>
+  );
+}

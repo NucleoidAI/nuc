@@ -17,6 +17,8 @@ import {
   Select,
   Stack,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
   useMediaQuery,
   useTheme,
@@ -34,6 +36,9 @@ const NodeEditorDrawer = ({
   setNewNodeType,
   selectedBranch,
   setSelectedBranch,
+  inheritedNextBranch,
+  setInheritedNextBranch,
+  hasInheritedNext,
   availableIntegrations,
   searchQuery,
   setSearchQuery,
@@ -64,6 +69,9 @@ const NodeEditorDrawer = ({
   setNewNodeType: (type: string) => void;
   selectedBranch: "true" | "false";
   setSelectedBranch: (branch: "true" | "false") => void;
+  inheritedNextBranch: "true" | "false" | "none";
+  setInheritedNextBranch: (branch: "true" | "false" | "none") => void;
+  hasInheritedNext: boolean;
   availableIntegrations: Array<{
     id: string;
     action: string;
@@ -345,6 +353,46 @@ const NodeEditorDrawer = ({
               <MenuItem value="false">False Branch</MenuItem>
             </Select>
           </FormControl>
+        )}
+
+        {newNodeType === "CONDITION" && hasInheritedNext && (
+          <Box>
+            <Typography variant="subtitle2" gutterBottom>
+              Continue existing flow on:
+            </Typography>
+            <ToggleButtonGroup
+              value={inheritedNextBranch}
+              exclusive
+              onChange={(_, val) => val && setInheritedNextBranch(val)}
+              fullWidth
+              size="small"
+            >
+              <ToggleButton
+                value="true"
+                sx={{
+                  "&.Mui-selected": {
+                    bgcolor: "success.main",
+                    color: "success.contrastText",
+                    "&:hover": { bgcolor: "success.dark" },
+                  },
+                }}
+              >
+                True
+              </ToggleButton>
+              <ToggleButton
+                value="false"
+                sx={{
+                  "&.Mui-selected": {
+                    bgcolor: "error.main",
+                    color: "error.contrastText",
+                    "&:hover": { bgcolor: "error.dark" },
+                  },
+                }}
+              >
+                False
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
         )}
 
         {newNodeType !== "CONDITION" && (

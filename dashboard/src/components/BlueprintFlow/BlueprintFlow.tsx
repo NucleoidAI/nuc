@@ -7,6 +7,7 @@ import SuccessSnackbar from "./Validation/SuccessSnackbar";
 import ValidationButtons from "./Validation/ValidationButtons";
 import ValidationErrorView from "./Validation/ValidationErrorView";
 import { blueprintFlowPlugin } from "./BlueprintFlowPlugin";
+import { FlowMiniMap } from "./FlowMiniMap";
 
 import React, { useRef } from "react";
 
@@ -24,6 +25,8 @@ export default function BlueprintFlow({
   onFlowChange,
   onAddNodeClick,
   onEditNodeClick,
+  onSwapBranchClick,
+  onDeleteNodeClick,
   onSave,
   onShowDiff,
   onCloseDiff,
@@ -62,8 +65,14 @@ export default function BlueprintFlow({
           direction: "horizontal",
           onAdd: onAddNodeClick,
           onEdit: onEditNodeClick,
+          onSwapBranch: onSwapBranchClick,
+          onDelete: onDeleteNodeClick,
         })}
       />
+
+      {!isSuperviseFlow && (
+        <FlowMiniMap graphData={graphData} flowContainerRef={flowContainerRef} />
+      )}
 
       {hasLocalChanges && !drawerOpen && (
         <ValidationButtons

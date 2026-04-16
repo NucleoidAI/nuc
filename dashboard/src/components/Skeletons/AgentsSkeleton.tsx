@@ -1,7 +1,6 @@
 import React from "react";
-import { Skeleton } from "@mui/material";
 
-import { Box, Card } from "@mui/material";
+import { Box, Card, Skeleton } from "@mui/material";
 
 const AgentsSkeleton = () => {
   return (

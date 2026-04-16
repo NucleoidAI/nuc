@@ -15,6 +15,7 @@ import {
   DialogContent,
   Fab,
   IconButton,
+  Skeleton,
   Stack,
   TextField,
   Tooltip,
@@ -35,7 +36,7 @@ function TasksWidget({
 }) {
   const [aiResponded] = useEvent("AI_RESPONDED", null);
 
-  const { tasks, steps, getSteps, createTask } = useTasks(agentId, [
+  const { tasks, steps, getSteps, createTask, loading } = useTasks(agentId, [
     aiResponded,
   ]);
 
@@ -181,11 +182,24 @@ function TasksWidget({
                 minHeight: "calc(100vh - 380px)",
               }}
             >
-              <TaskList
-                tasks={filteredTasks}
-                selectedTask={selectedTask}
-                onTaskSelect={handleTaskSelect}
-              />
+              {loading ? (
+                <Stack sx={{ p: 2, gap: 1.5 }}>
+                  {[...Array(6)].map((_, i) => (
+                    <Skeleton
+                      key={i}
+                      variant="rounded"
+                      height={56}
+                      sx={{ borderRadius: 1 }}
+                    />
+                  ))}
+                </Stack>
+              ) : (
+                <TaskList
+                  tasks={filteredTasks}
+                  selectedTask={selectedTask}
+                  onTaskSelect={handleTaskSelect}
+                />
+              )}
             </Card>
           )}
 

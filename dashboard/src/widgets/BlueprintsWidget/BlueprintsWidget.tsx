@@ -2,6 +2,7 @@ import AddIcon from "@mui/icons-material/Add";
 import BlueprintCard from "../../components/BlueprintCard/BlueprintCard";
 import BlueprintDrawer from "../../components/BlueprintDrawer/BlueprintDrawer";
 import BlueprintFlowDialog from "../../components/BlueprintFlow/BlueprintFlowDialog";
+import BlueprintSkeleton from "../../components/Skeletons/BlueprintSkeleton";
 import useBlueprint from "../../hooks/useBlueprint";
 import { useEvent } from "@nucleoidai/react-event";
 
@@ -24,7 +25,7 @@ function BlueprintsWidget({
 
   const { getBlueprint, removeBlueprint } = useBlueprint();
 
-  const { Blueprint } = getBlueprint([
+  const { Blueprint, loading } = getBlueprint([
     blueprintUpsertedEvent.Blueprint,
     blueprintRemovedEvent.Blueprint,
   ]);
@@ -65,16 +66,24 @@ function BlueprintsWidget({
     >
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         <Box sx={{ mt: 2 }}>
-          {Blueprint?.map((item) => (
-            <BlueprintCard
-              key={item.id}
-              item={item}
-              handleDrawerOpen={handleDrawerOpen}
-              handleFlowDialogOpen={handleFlowDialogOpen}
-              removeBlueprint={removeBlueprint}
-              agentId={item.agentId}
-            />
-          ))}
+          {loading ? (
+            <>
+              {[...Array(Blueprint?.length)].map((_, i) => (
+                <BlueprintSkeleton key={i} />
+              ))}
+            </>
+          ) : (
+            Blueprint?.map((item) => (
+              <BlueprintCard
+                key={item.id}
+                item={item}
+                handleDrawerOpen={handleDrawerOpen}
+                handleFlowDialogOpen={handleFlowDialogOpen}
+                removeBlueprint={removeBlueprint}
+                agentId={item.agentId}
+              />
+            ))
+          )}
         </Box>
       </Box>
       {drawerOpen && (

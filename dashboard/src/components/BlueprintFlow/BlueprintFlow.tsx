@@ -2,12 +2,13 @@ import { BlueprintFlowProps } from "./BlueprintFlow.types";
 import { Box } from "@mui/material";
 import DiffButton from "./DiffPanel/DiffButton";
 import { Flow } from "@canmingir/link/platform/components";
+import { FlowMiniMap } from "./FlowMiniMap";
+
 import JSONDiffPanel from "./DiffPanel/JSONDiffPanel";
 import SuccessSnackbar from "./Validation/SuccessSnackbar";
 import ValidationButtons from "./Validation/ValidationButtons";
 import ValidationErrorView from "./Validation/ValidationErrorView";
 import { blueprintFlowPlugin } from "./BlueprintFlowPlugin";
-import { FlowMiniMap } from "./FlowMiniMap";
 
 import React, { useRef } from "react";
 
@@ -71,7 +72,10 @@ export default function BlueprintFlow({
       />
 
       {!isSuperviseFlow && (
-        <FlowMiniMap graphData={graphData} flowContainerRef={flowContainerRef} />
+        <FlowMiniMap
+          graphData={graphData}
+          flowContainerRef={flowContainerRef}
+        />
       )}
 
       {hasLocalChanges && !drawerOpen && (

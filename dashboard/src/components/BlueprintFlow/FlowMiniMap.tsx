@@ -1,13 +1,12 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Box } from "@mui/material";
 import type { DefinitionGraph } from "./helper";
-
-import { alpha, useTheme } from "@mui/material/styles";
 import {
   FlowSvgContent,
   type RawNode,
   layoutFlow,
 } from "../BlueprintCard/BlueprintFlowMiniPreview";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { alpha, useTheme } from "@mui/material/styles";
 
 const MINIMAP_W = 300;
 

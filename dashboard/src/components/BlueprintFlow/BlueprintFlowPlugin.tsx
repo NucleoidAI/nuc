@@ -1,8 +1,15 @@
-import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import { Divider, ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
 
+import {
+  Divider,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+} from "@mui/material";
 import { Iconify, InfoNode } from "@canmingir/link/platform/components";
+
+import React, { useState } from "react";
 
 const AddButtonWrapper = styled("div")(({ theme }) => ({
   position: "absolute",
@@ -651,7 +658,28 @@ export const blueprintFlowPlugin = {
   node: (props) => <FlowNodeRenderer {...props} />,
 };
 
-function FlowNodeRenderer({ node, nodeStyle }: { node: any; nodeStyle: any }) {
+type FlowGraphNode = import("./helper").DefinitionGraphNode & {
+  changeType?: string;
+  hasError?: boolean;
+  isUsed?: boolean;
+  isLastUsed?: boolean;
+  isFailed?: boolean;
+  [key: string]: unknown;
+};
+
+function FlowNodeRenderer({
+  node,
+  nodeStyle,
+}: {
+  node: FlowGraphNode;
+  nodeStyle?: {
+    onAdd?: (node: FlowGraphNode) => void;
+    onEdit?: (node: FlowGraphNode) => void;
+    onSwapBranch?: (node: FlowGraphNode) => void;
+    onDelete?: (node: FlowGraphNode) => void;
+    [key: string]: unknown;
+  };
+}) {
   const { onAdd, onEdit, onSwapBranch, onDelete } = nodeStyle || {};
   const [contextMenu, setContextMenu] = useState<{
     mouseX: number;

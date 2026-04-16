@@ -10,7 +10,7 @@ import SourcedAvatar from "../../../components/SourcedAvatar/SourcedAvatar";
 import Stack from "@mui/material/Stack";
 import TeamChatNavAccount from "./TeamChatNavAccount";
 import TeamChatNavItem from "./TeamChatNavItem";
-import TeamChatNavItemSkeleton from "./TeamChatSkeleton";
+import TeamChatNavItemSkeleton from "../../../components/Skeletons/TeamChatNavItemSkeleton";
 import TeamChatNavSearchResults from "./TeamChatNavSearchResults";
 import TextField from "@mui/material/TextField";
 import { publish } from "@nucleoidai/react-event";

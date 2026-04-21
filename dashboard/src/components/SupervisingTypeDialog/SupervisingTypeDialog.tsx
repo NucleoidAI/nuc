@@ -14,7 +14,6 @@ import {
   Fab,
   IconButton,
   Typography,
-  alpha,
 } from "@mui/material";
 
 interface SupervisingTypeDialogProps {
@@ -327,13 +326,6 @@ const SupervisingTypeDialog = ({
                 p: 2,
                 position: "relative",
                 backgroundColor: (theme) => theme.palette.background.paper,
-                backgroundImage: (theme) => `
-                          radial-gradient(
-                            ${alpha(theme.palette.divider, 0.08)} 1px,
-                            transparent 1px
-                          )
-                        `,
-                backgroundSize: "16px 16px",
               }}
             >
               <BlueprintFlowWidget
@@ -391,7 +383,6 @@ const SupervisingTypeDialog = ({
         <Box sx={{ overflow: "auto", height: "100%", mt: 2 }}>
           <TasksWidget
             agentId={supervise?.agentId}
-            fromDrawer={true}
             supervisionRaised={true}
             taskId={supervise?.taskId}
           />

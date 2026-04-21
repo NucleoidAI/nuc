@@ -48,6 +48,8 @@ const NodeEditorDrawer = ({
   editMode,
   pseudocode,
   agentId,
+  blueprintId,
+  teamId,
 }: {
   drawerOpen: boolean;
   handleDrawerClose: () => void;
@@ -225,6 +227,8 @@ const NodeEditorDrawer = ({
   editMode?: boolean;
   pseudocode?: string;
   agentId: string;
+  blueprintId?: string;
+  teamId?: string;
 }) => {
   const theme = useTheme();
 

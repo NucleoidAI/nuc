@@ -45,11 +45,16 @@ function useSupervisings() {
     return response?.data;
   };
 
-  const evaluateSupervising = async (supervisingId: string, answer: string) => {
+  const evaluateSupervising = async (
+    supervisingId: string,
+    answer: string,
+    blueprintId?: string
+  ) => {
     const response = await http.post(
       `/supervisings/${supervisingId}/evaluate`,
       {
         answer,
+        blueprintId,
       }
     );
 

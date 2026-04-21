@@ -14,6 +14,8 @@ export type Knowledge = {
   status: string;
   createdAt: string;
   teamId: string;
+  blueprintId?: string;
+  organizationId?: string;
 };
 
 export type KnowledgeInput = {
@@ -22,6 +24,8 @@ export type KnowledgeInput = {
   url?: string;
   question?: string;
   answer?: string;
+  blueprintId?: string;
+  organizationId?: string;
 };
 
 type DependencyArray = object[];
@@ -116,7 +120,9 @@ function useKnowledge() {
   const createKnowledge = async (
     knowledge: KnowledgeInput,
     agentId: string,
-    teamId?: string
+    teamId?: string,
+    blueprintId?: string,
+    organizationId?: string
   ) => {
     const response = await http.post("/knowledge", {
       url: knowledge.url,
@@ -125,6 +131,8 @@ function useKnowledge() {
       answer: knowledge.answer,
       agentId: agentId,
       teamId: teamId,
+      blueprintId: blueprintId || knowledge.blueprintId,
+      organizationId: organizationId || knowledge.organizationId,
       type: knowledge.type,
     });
 

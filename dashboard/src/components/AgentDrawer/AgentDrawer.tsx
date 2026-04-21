@@ -62,7 +62,6 @@ const AgentDrawer = ({ open, onClose, agent, initialTab, allAgentIds }) => {
           agent={agent}
           loading={false}
           initialTab={initialTab}
-          fromDrawer={true}
           allAgentIds={allAgentIds}
         />
       </DialogContent>

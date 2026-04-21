@@ -7,16 +7,23 @@ import { event } from "@canmingir/link-express/event/client";
 import express from "express";
 import http from "http";
 import session from "./test_chat/session";
+import { setupSwagger } from "./swagger";
 import testChat from "./test_chat/testChat";
-
 //import kafkaConfig from "./config.kafka";
 //import txqConfig from "./config.txq";
 
 dotenv.config();
 
+const createSwaggerApp = () => {
+  const app = express();
+  setupSwagger(app);
+  return app;
+};
+
 const startServer = async () => {
   await event.init(config.event);
   const mainApp = express();
+  const swaggerApp = createSwaggerApp();
 
   const testApp = express();
 
@@ -52,7 +59,8 @@ const startServer = async () => {
   session.setup(io);
 
   const mainPort = process.env.MAIN_PORT || 3001;
-  const scoketIoPort = process.env.SOCKET_IO_PORT || 3003;
+  const socketIoPort = process.env.SOCKET_IO_PORT || 3003;
+  const swaggerPort = process.env.SWAGGER_PORT || 3004;
 
   mainApp.listen(mainPort, () => {
     console.log(`⚡️ Main server running on port ${mainPort}`);
@@ -61,8 +69,12 @@ const startServer = async () => {
     console.log(`⚡️ Test app accessible at /test-chat`);
   });
 
-  server.listen(scoketIoPort, () => {
-    console.log(`⚡️ Socket.io server running on port ${scoketIoPort}`);
+  server.listen(socketIoPort, () => {
+    console.log(`⚡️ Socket.io server running on port ${socketIoPort}`);
+  });
+
+  swaggerApp.listen(swaggerPort, () => {
+    console.log(`📄 Swagger docs running on port ${swaggerPort}`);
   });
 };
 

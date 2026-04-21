@@ -8,7 +8,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  alpha,
 } from "@mui/material";
 
 interface AIResponse {

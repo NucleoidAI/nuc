@@ -247,20 +247,23 @@ const NodeEditorDrawer = ({
     >
       <Stack spacing={2}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6">Add New Node</Typography>
+          <Typography variant="h6">
+            {editMode ? "Edit Node" : "Add New Node"}
+          </Typography>
           <IconButton onClick={handleDrawerClose}>
             <CloseIcon />
           </IconButton>
         </Box>
-
-        <Box>
-          <Typography variant="caption" color="text.secondary">
-            Parent Node:
-          </Typography>
-          <Typography variant="body2" fontWeight="bold">
-            {selectedParentNode?.label || selectedParentNode?.id || "Unknown"}
-          </Typography>
-        </Box>
+        {selectedParentNode && (
+          <Box>
+            <Typography variant="caption" color="text.secondary">
+              Parent Node:
+            </Typography>
+            <Typography variant="body2" fontWeight="bold">
+              {selectedParentNode?.label || selectedParentNode?.id || "Unknown"}
+            </Typography>
+          </Box>
+        )}
 
         <TextField
           label="Label"
@@ -397,7 +400,7 @@ const NodeEditorDrawer = ({
 
         {newNodeType !== "CONDITION" && (
           <Box>
-            {availableIntegrations.length === 0 ? (
+            {availableIntegrations.length === 0 && !searchQuery ? (
               <></>
             ) : (
               <>
@@ -438,7 +441,7 @@ const NodeEditorDrawer = ({
                 >
                   {availableIntegrations.length === 0 ? (
                     <Typography variant="body2" color="text.secondary">
-                      No integrations found matching {searchQuery}
+                      No integrations found matching &quot;{searchQuery}&quot;
                     </Typography>
                   ) : (
                     availableIntegrations.map((integration) => (

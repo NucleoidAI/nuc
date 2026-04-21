@@ -24,6 +24,8 @@ const NodeEditorWidget = ({
   editingNode,
   pseudocode,
   agentId,
+  blueprintId,
+  teamId,
 }: {
   drawerOpen: boolean;
   handleDrawerClose: () => void;
@@ -122,7 +124,9 @@ const NodeEditorWidget = ({
     };
   };
   pseudocode?: string;
-  agentId?: string;
+  agentId: string;
+  blueprintId?: string;
+  teamId?: string;
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -235,6 +239,8 @@ const NodeEditorWidget = ({
       handleSubmit={handleSubmit}
       editMode={editMode}
       agentId={agentId}
+      blueprintId={blueprintId}
+      teamId={teamId}
     />
   );
 };

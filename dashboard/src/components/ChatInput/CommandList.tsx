@@ -94,12 +94,15 @@ const CommandList = ({ commands, onSelect, editor }) => {
           <ListItemText
             primary={command.name}
             secondary={command.description}
-            primaryTypographyProps={{ fontWeight: "bold" }}
-            secondaryTypographyProps={{
-              fontSize: "14px",
-              fontWeight: "bold",
-              color: "#91959c",
-              className: "command-description",
+            slotProps={{
+              primary: { fontWeight: "bold" },
+
+              secondary: {
+                fontSize: "14px",
+                fontWeight: "bold",
+                color: "#91959c",
+                className: "command-description",
+              },
             }}
           />
         </ListItem>

@@ -1,13 +1,12 @@
 import React from "react";
-import { Skeleton } from "@mui/material";
 
-import { Box, Card, Divider, Stack } from "@mui/material";
+import { Box, Card, Skeleton } from "@mui/material";
 
 const AgentsSkeleton = () => {
   return (
-    <Card sx={{ textAlign: "center", width: "300px", height: "550px" }}>
+    <Card sx={{ textAlign: "center", width: "255px" }}>
       <Box sx={{ position: "relative" }}>
-        <Skeleton variant="rectangular" sx={{ height: "12rem" }} />
+        <Skeleton variant="rectangular" sx={{ height: "10rem" }} />
         <Skeleton
           variant="circular"
           sx={{
@@ -21,56 +20,34 @@ const AgentsSkeleton = () => {
           }}
         />
       </Box>
-      <Stack sx={{ mt: 5, mb: 2, alignItems: "center" }}>
+      <Box sx={{ mt: 4, display: "flex", justifyContent: "center" }}>
         <Skeleton
           variant="text"
           sx={{
             width: "50%",
           }}
         />
-      </Stack>
-      <Divider sx={{ borderStyle: "dashed" }} />
-      <Stack
-        direction={"column"}
-        sx={{ margin: 5, gap: 2, alignItems: "center" }}
-      >
-        <Stack
-          direction="column"
+      </Box>
+
+      <Box sx={{ display: "flex", justifyContent: "center" }}>
+        <Skeleton
+          variant="text"
           sx={{
-            typography: "body2",
-            padding: 1,
-            borderRadius: 1,
-            border: "dotted 1px gray",
-            width: "200px",
-            height: "100px",
-            gap: 1,
+            width: "85%",
+            height: 100,
           }}
-        >
-          <Stack direction="row" sx={{ gap: 1 }}>
-            <Skeleton variant="text" sx={{ width: "10%", height: "110%" }} />
-            <Skeleton variant="text" sx={{ width: "20%", height: "110%" }} />
-          </Stack>
-          <Skeleton variant="text" sx={{ width: "100%", height: "30%" }} />
-        </Stack>
-        <Stack
-          direction="column"
+        />
+      </Box>
+
+      <Box sx={{ mb: 1, display: "flex", justifyContent: "center" }}>
+        <Skeleton
+          variant="text"
           sx={{
-            typography: "body2",
-            padding: 1,
-            borderRadius: 1,
-            border: "dotted 1px gray",
-            width: "200px",
-            height: "100px",
-            gap: 1,
+            width: "70%",
           }}
-        >
-          <Stack direction="row" sx={{ gap: 1 }}>
-            <Skeleton variant="text" sx={{ width: "10%", height: "110%" }} />
-            <Skeleton variant="text" sx={{ width: "30%", height: "110%" }} />
-          </Stack>
-          <Skeleton variant="text" sx={{ width: "100%", height: "30%" }} />
-        </Stack>
-      </Stack>
+        />
+      </Box>
+
       <Skeleton
         variant="circular"
         sx={{ width: 40, height: 40, position: "absolute", top: 8, right: 8 }}

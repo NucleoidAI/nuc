@@ -159,10 +159,11 @@ router.post("/:supervisingId/evaluate", async (req, res) => {
   const { supervisingId } = req.params;
   const teamId = req.session.projectId;
 
-  const { answer } = Joi.attempt(
+  const { answer, blueprintId } = Joi.attempt(
     req.body,
     Joi.object({
       answer: Joi.string().required(),
+      blueprintId: Joi.string().guid().optional(),
     }),
   );
 
@@ -199,6 +200,7 @@ router.post("/:supervisingId/evaluate", async (req, res) => {
       answer,
       status: "ANSWERED",
       taskId: supervisingInstance.taskId,
+      blueprintId,
     });
 
     return res.status(200).json({

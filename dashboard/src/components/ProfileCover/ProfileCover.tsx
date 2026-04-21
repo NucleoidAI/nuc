@@ -57,15 +57,18 @@ function ProfileCover({ name, iconUrl, coverUrl, loading }) {
                 textAlign: { xs: "center", md: "unset" },
               }}
               primary={name}
-              primaryTypographyProps={{
-                typography: "h5",
-              }}
-              secondaryTypographyProps={{
-                mt: 0.5,
-                color: "inherit",
-                component: "span",
-                typography: "body2",
-                sx: { opacity: 0.48 },
+              slotProps={{
+                primary: {
+                  typography: "h5",
+                },
+
+                secondary: {
+                  mt: 0.5,
+                  color: "inherit",
+                  component: "span",
+                  typography: "body2",
+                  sx: { opacity: 0.48 },
+                },
               }}
             />
           </>

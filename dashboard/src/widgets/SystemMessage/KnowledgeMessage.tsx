@@ -5,7 +5,14 @@ import useAgent from "../../hooks/useAgent";
 import { useEffect } from "react";
 import useKnowledge from "../../hooks/useKnowledge";
 
-import { Chip, IconButton, Stack, Typography, alpha } from "@mui/material";
+import {
+  Chip,
+  IconButton,
+  Skeleton,
+  Stack,
+  Typography,
+  alpha,
+} from "@mui/material";
 import { Iconify, Label } from "@canmingir/link/platform/components";
 
 function KnowledgeMessage({ id, handleClick, onDateFetched }) {
@@ -25,7 +32,18 @@ function KnowledgeMessage({ id, handleClick, onDateFetched }) {
   }, [knowledge?.createdAt]);
 
   if (loading) {
-    return null;
+    return (
+      <Stack sx={{ flexDirection: "column", gap: 1 }}>
+        <Stack sx={{ flexDirection: "row", alignItems: "center", gap: 1 }}>
+          <Skeleton variant="rounded" width={80} height={24} />
+          <Skeleton variant="text" width={40} />
+          <Skeleton variant="rounded" width={100} height={24} />
+          <Skeleton variant="text" width={30} />
+          <Skeleton variant="rounded" width={120} height={24} />
+        </Stack>
+        <Skeleton variant="text" width={60} />
+      </Stack>
+    );
   }
 
   return (

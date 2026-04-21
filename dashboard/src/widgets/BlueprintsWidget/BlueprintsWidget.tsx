@@ -2,6 +2,7 @@ import AddIcon from "@mui/icons-material/Add";
 import BlueprintCard from "../../components/BlueprintCard/BlueprintCard";
 import BlueprintDrawer from "../../components/BlueprintDrawer/BlueprintDrawer";
 import BlueprintFlowDialog from "../../components/BlueprintFlow/BlueprintFlowDialog";
+import BlueprintSkeleton from "../../components/Skeletons/BlueprintSkeleton";
 import useBlueprint from "../../hooks/useBlueprint";
 import { useEvent } from "@nucleoidai/react-event";
 
@@ -10,10 +11,10 @@ import React, { useState } from "react";
 
 function BlueprintsWidget({
   agentId,
-  fromDrawer,
+  teamId,
 }: {
   agentId: string;
-  fromDrawer?: boolean;
+  teamId?: string;
 }) {
   const [blueprintUpsertedEvent] = useEvent("BLUEPRINT_UPSERTED", {
     Blueprint: null,
@@ -24,7 +25,7 @@ function BlueprintsWidget({
 
   const { getBlueprint, removeBlueprint } = useBlueprint();
 
-  const { Blueprint } = getBlueprint([
+  const { Blueprint, loading } = getBlueprint([
     blueprintUpsertedEvent.Blueprint,
     blueprintRemovedEvent.Blueprint,
   ]);
@@ -65,16 +66,24 @@ function BlueprintsWidget({
     >
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         <Box sx={{ mt: 2 }}>
-          {Blueprint?.map((item) => (
-            <BlueprintCard
-              key={item.id}
-              item={item}
-              handleDrawerOpen={handleDrawerOpen}
-              handleFlowDialogOpen={handleFlowDialogOpen}
-              removeBlueprint={removeBlueprint}
-              agentId={item.agentId}
-            />
-          ))}
+          {loading ? (
+            <>
+              {[...Array(Blueprint?.length)].map((_, i) => (
+                <BlueprintSkeleton key={i} />
+              ))}
+            </>
+          ) : (
+            Blueprint?.map((item) => (
+              <BlueprintCard
+                key={item.id}
+                item={item}
+                handleDrawerOpen={handleDrawerOpen}
+                handleFlowDialogOpen={handleFlowDialogOpen}
+                removeBlueprint={removeBlueprint}
+                agentId={item.agentId}
+              />
+            ))
+          )}
         </Box>
       </Box>
       {drawerOpen && (
@@ -86,6 +95,7 @@ function BlueprintsWidget({
           setAiResponse={setAiResponse}
           aiResponse={aiResponse}
           agentId={agentId}
+          teamId={teamId}
         />
       )}
 
@@ -102,8 +112,8 @@ function BlueprintsWidget({
       <Stack
         sx={{
           position: "absolute",
-          bottom: fromDrawer ? 30 : 10,
-          right: fromDrawer ? 30 : 5,
+          right: 16,
+          bottom: 16,
         }}
       >
         <Fab

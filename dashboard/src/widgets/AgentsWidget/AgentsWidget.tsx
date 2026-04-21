@@ -69,8 +69,16 @@ function AgentsWidget({ teamId }) {
         />
 
         {loading
-          ? Array.from({ length: 1 }).map((_, index) => (
-              <Grid item xs={12} sm={12} md={6} lg={4} key={index}>
+          ? Array.from({ length: 2 }).map((_, index) => (
+              <Grid
+                key={index}
+                size={{
+                  xs: 12,
+                  sm: 12,
+                  md: 6,
+                  lg: 4,
+                }}
+              >
                 <AgentsSkeleton key={index} />
               </Grid>
             ))

@@ -72,17 +72,16 @@ function AgentLayout({
   agent,
   loading,
   initialTab,
-  fromDrawer,
   allAgentIds,
 }: {
   agent: {
     id: string;
     name: string;
     icon: string;
+    teamId: string;
   };
   loading: boolean;
   initialTab?: string;
-  fromDrawer?: boolean;
   allAgentIds?: string[];
 }) {
   const location = useLocation();
@@ -181,19 +180,15 @@ function AgentLayout({
         </Stack>
         {currentTab === "profile" && <Profile agentId={agent.id} />}
         {currentTab === "knowledge-base" && (
-          <Knowledge agentId={agent.id} fromDrawer={fromDrawer} />
+          <Knowledge teamId={agent.teamId} agentId={agent.id} />
         )}
         {currentTab === "blueprints" && (
-          <BlueprintsWidget agentId={agent.id} fromDrawer={fromDrawer} />
+          <BlueprintsWidget teamId={agent.teamId} agentId={agent.id} />
         )}
         {currentTab === "supervisings" && <Supervising agentId={agent.id} />}
-        {currentTab === "tasks" && (
-          <TasksWidget agentId={agent.id} fromDrawer={fromDrawer} />
-        )}
+        {currentTab === "tasks" && <TasksWidget agentId={agent.id} />}
         {currentTab === "mcps" && <AgentMCP agent={agent} />}
-        {currentTab === "communication" && (
-          <Communication fromDrawer={fromDrawer} />
-        )}
+        {currentTab === "communication" && <Communication />}
         {currentTab === "api" && <APITab agentId={agent.id} />}
       </Box>
 

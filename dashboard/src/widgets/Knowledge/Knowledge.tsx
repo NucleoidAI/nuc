@@ -1,9 +1,11 @@
 import AddIcon from "@mui/icons-material/Add";
 import AddItemDialog from "../../components/AddItemDialog/AddItemDialog";
 import DeleteConfirmation from "../../components/DeleteConfirmation/DeleteConfirmation";
+import KnowledgeBaseSkeleton from "../../components/Skeletons/KnowledgeBaseSkeleton";
 import KnowledgeTable from "../../components/KnowledgeTable/KnowledgeTable";
 import TypeToolbar from "../../components/TypeToolbar/TypeToolbar";
 import useAgent from "../../hooks/useAgent";
+import useBlueprint from "../../hooks/useBlueprint";
 import useKnowledge from "../../hooks/useKnowledge";
 import useOrganizations from "../../hooks/useOrganizations";
 import { useTable } from "@canmingir/link/platform/components";
@@ -15,13 +17,11 @@ import { useEffect, useState } from "react";
 function Knowledge({
   agentId,
   teamId,
-  fromDrawer,
-  fromBlueprintDrawer,
+  blueprintId,
 }: {
   agentId?: string;
   teamId?: string;
-  fromDrawer?: boolean;
-  fromBlueprintDrawer?: boolean;
+  blueprintId?: string;
 }) {
   const {
     getAgentKnowledges,
@@ -30,17 +30,22 @@ function Knowledge({
     getTeamKnowledges,
   } = useKnowledge();
 
-  const { knowledges } = getAgentKnowledges(agentId);
-  const { knowledges: teamKnowledges } = getTeamKnowledges(teamId);
+  const { knowledges, loading: agentKnowledgesLoading } =
+    getAgentKnowledges(agentId);
+  const { knowledges: teamKnowledges, loading: teamKnowledgesLoading } =
+    getTeamKnowledges(teamId);
+  const isLoading = agentKnowledgesLoading || teamKnowledgesLoading;
 
   const { getTeamById } = useTeams();
 
   const { team } = getTeamById(teamId);
+  const { getBlueprintWithId, getBlueprint } = useBlueprint();
 
   const { getOrganizations } = useOrganizations();
 
-  const { organizations: filteredOrganizations, loading: organizationLoading } =
-    getOrganizations();
+  const { organizations, loading: organizationLoading } = getOrganizations();
+  const { blueprint } = getBlueprintWithId(blueprintId);
+  const { Blueprint } = getBlueprint();
 
   const { getAgents } = useAgent();
   const { agents } = getAgents();
@@ -70,6 +75,42 @@ function Knowledge({
     selectedType === "ALL"
       ? source
       : source.filter((k) => k?.type === selectedType);
+
+  const doesOrganizationMatchTeamCoach = (organization, currentTeam) => {
+    if (!currentTeam) {
+      return false;
+    }
+
+    if (organization.id === currentTeam.organizationId) {
+      return true;
+    }
+
+    if (organization.coachId && currentTeam.coachId) {
+      return organization.coachId === currentTeam.coachId;
+    }
+
+    if (organization.coach && currentTeam.coach) {
+      return organization.coach === currentTeam.coach;
+    }
+
+    return false;
+  };
+
+  const filteredOrganizations = organizations?.filter((organization) =>
+    doesOrganizationMatchTeamCoach(organization, team)
+  );
+
+  const selectableBlueprints = (Blueprint || []).filter((item) => {
+    if (blueprintId) {
+      return item.id === blueprintId;
+    }
+
+    if (agentId) {
+      return item.agentId === agentId;
+    }
+
+    return false;
+  });
 
   const handleChange = (event) => {
     setSelectedType(event.target.value);
@@ -115,10 +156,13 @@ function Knowledge({
 
       <Box
         sx={{
-          position: "relative",
+          flex: 1,
+          pb: 10,
         }}
       >
-        {filteredKnowledges?.length > 0 ? (
+        {isLoading ? (
+          <KnowledgeBaseSkeleton />
+        ) : filteredKnowledges?.length > 0 ? (
           <KnowledgeTable
             table={table}
             selectedType={selectedType}
@@ -130,28 +174,28 @@ function Knowledge({
             No data available for {selectedType} type
           </Stack>
         )}
+      </Box>
 
-        <Stack
-          sx={{
-            position: fromBlueprintDrawer ? "absolute" : "fixed",
-            bottom: fromDrawer ? 62 : fromBlueprintDrawer ? -50 : 10,
-            right: fromDrawer ? 62 : 5,
+      <Stack
+        sx={{
+          position: "absolute",
+          right: 16,
+          bottom: 16,
+        }}
+      >
+        <Fab
+          variant="button"
+          color="default"
+          size="medium"
+          sx={{ zIndex: 1 }}
+          data-cy="add-knowledge-button"
+          onClick={() => {
+            setOpen(true);
           }}
         >
-          <Fab
-            variant="button"
-            color="default"
-            size="medium"
-            sx={{ mt: 2, zIndex: 0 }}
-            data-cy="add-knowledge-button"
-            onClick={() => {
-              setOpen(true);
-            }}
-          >
-            <AddIcon />
-          </Fab>
-        </Stack>
-      </Box>
+          <AddIcon />
+        </Fab>
+      </Stack>
 
       <DeleteConfirmation
         openDeleteDialog={openDeleteDialog}
@@ -168,6 +212,9 @@ function Knowledge({
           addItem={createKnowledge}
           agentId={agentId}
           teamId={teamId}
+          blueprintId={blueprintId}
+          blueprint={blueprint}
+          blueprints={selectableBlueprints}
           teamById={team}
           agents={agents}
           organizations={filteredOrganizations}

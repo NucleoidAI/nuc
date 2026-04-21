@@ -44,10 +44,12 @@ const BlueprintFlowDialog = ({
       onClose={handleFlowDialogClose}
       maxWidth="xl"
       fullWidth
-      PaperProps={{
-        sx: {
-          backgroundColor: (theme) => theme.palette.background.default,
-          position: "relative",
+      slotProps={{
+        paper: {
+          sx: {
+            backgroundColor: (theme) => theme.palette.background.default,
+            position: "relative",
+          },
         },
       }}
     >

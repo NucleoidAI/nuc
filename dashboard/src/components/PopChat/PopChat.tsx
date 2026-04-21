@@ -217,30 +217,32 @@ const PopChat = ({
                 fullWidth
                 inputRef={inputRef}
                 onKeyDown={handleKeyDown}
-                InputProps={{
-                  endAdornment: (
-                    <IconButton
-                      onClick={() => {
-                        const content = inputRef.current?.value?.trim();
-                        if (content) {
-                          handleSend(content);
-                          inputRef.current.value = "";
-                        }
-                      }}
-                    >
-                      <Iconify
-                        icon="material-symbols:send"
-                        sx={{
-                          width: 22,
-                          height: 22,
-                          color: (theme) =>
-                            inputRef.current?.value
-                              ? alpha(theme.palette.primary.main, 0.6)
-                              : "inherit",
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <IconButton
+                        onClick={() => {
+                          const content = inputRef.current?.value?.trim();
+                          if (content) {
+                            handleSend(content);
+                            inputRef.current.value = "";
+                          }
                         }}
-                      />
-                    </IconButton>
-                  ),
+                      >
+                        <Iconify
+                          icon="material-symbols:send"
+                          sx={{
+                            width: 22,
+                            height: 22,
+                            color: (theme) =>
+                              inputRef.current?.value
+                                ? alpha(theme.palette.primary.main, 0.6)
+                                : "inherit",
+                          }}
+                        />
+                      </IconButton>
+                    ),
+                  },
                 }}
               />
             </Stack>

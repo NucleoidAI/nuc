@@ -99,9 +99,9 @@ const SidebarSessionList = ({
           <Box
             onClick={() => publish("SWAGGER_DIALOG_OPEN", { open: true })}
             sx={{
-              width: 65,
-              height: 50,
-              borderRadius: "12px",
+              width: isCompact ? 35 : 65,
+              height: isCompact ? 35 : 50,
+              borderRadius: isCompact ? "10px" : "12px",
               cursor: "pointer",
               display: "flex",
               flexDirection: "column",
@@ -109,26 +109,36 @@ const SidebarSessionList = ({
               justifyContent: "center",
               gap: 0.5,
               mb: 1,
+              alignSelf: "center",
               color: (theme) => theme.palette.text.secondary,
-              transition: "all 0.18s ease-in-out",
+              transition: "all 0.2s ease-in-out",
               "&:hover": {
                 bgcolor: (theme) => alpha(theme.palette.primary.main, 0.1),
                 color: (theme) => theme.palette.primary.main,
               },
             }}
           >
-            <Iconify icon="logos:swagger" sx={{ width: 22, height: 22 }} />
-            <Typography
+            <Iconify
+              icon="logos:swagger"
               sx={{
-                fontSize: "0.6rem",
-                fontWeight: 700,
-                letterSpacing: 0.5,
-                lineHeight: 1,
-                textTransform: "uppercase",
+                width: isCompact ? 20 : 22,
+                height: isCompact ? 20 : 22,
+                transition: "all 0.2s ease-in-out",
               }}
-            >
-              API
-            </Typography>
+            />
+            {!isCompact && (
+              <Typography
+                sx={{
+                  fontSize: "0.6rem",
+                  fontWeight: 700,
+                  letterSpacing: 0.5,
+                  lineHeight: 1,
+                  textTransform: "uppercase",
+                }}
+              >
+                API
+              </Typography>
+            )}
           </Box>
         </Tooltip>
 

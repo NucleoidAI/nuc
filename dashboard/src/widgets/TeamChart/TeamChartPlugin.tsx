@@ -153,6 +153,7 @@ export const teamChartPlugin = {
                 <Button
                   size="small"
                   variant="outlined"
+                  color="inherit"
                   onClick={(e) => {
                     e.stopPropagation();
                     onAgentOpen(node, "blueprints");
@@ -164,6 +165,7 @@ export const teamChartPlugin = {
                 <Button
                   size="small"
                   variant="outlined"
+                  color="inherit"
                   onClick={(e) => {
                     e.stopPropagation();
                     onAgentOpen(node, "knowledge-base");
@@ -175,6 +177,7 @@ export const teamChartPlugin = {
                 <Button
                   size="small"
                   variant="outlined"
+                  color="inherit"
                   onClick={(e) => {
                     e.stopPropagation();
                     onAgentOpen(node, "tasks");
@@ -220,6 +223,7 @@ export const teamChartPlugin = {
               <Button
                 size="small"
                 variant="outlined"
+                color="inherit"
                 onClick={(e) => {
                   e.stopPropagation();
                   onBlueprintOpen(node);
@@ -306,6 +310,7 @@ export const teamChartPlugin = {
                   <Button
                     size="small"
                     variant="outlined"
+                    color="inherit"
                     onClick={(e) => {
                       e.stopPropagation();
                       onTeamAddAgent(node);

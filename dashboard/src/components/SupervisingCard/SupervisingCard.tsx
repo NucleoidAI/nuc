@@ -283,16 +283,18 @@ const SupervisingCard = ({
                 variant="outlined"
                 label="Answer"
                 value={supervise.answer ? `${supervise.answer}` : ""}
-                InputProps={{
-                  readOnly: true,
-                  style: { cursor: "text" },
-                }}
                 fullWidth
                 sx={{
                   "& .MuiOutlinedInput-input": {
                     cursor: "default",
                   },
                   marginTop: 1,
+                }}
+                slotProps={{
+                  input: {
+                    readOnly: true,
+                    style: { cursor: "text" },
+                  },
                 }}
               />
             </Box>
@@ -367,7 +369,6 @@ const SupervisingCard = ({
           </Box>
         </Box>
       </Card>
-
       <SupervisingTypeDialog
         open={dialogOpen}
         onClose={handleCloseDialog}
@@ -379,7 +380,6 @@ const SupervisingCard = ({
         failedNodeId={failedNodeId}
         supervise={supervise}
       />
-
       <SupervisingChat
         open={knowledgeChatOpen}
         handleClose={() => setKnowledgeChatOpen(false)}

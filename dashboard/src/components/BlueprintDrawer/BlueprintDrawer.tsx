@@ -29,6 +29,7 @@ const BlueprintDrawer = ({
   usedNodeIds,
   lastUsedNodeId,
   failedNodeId,
+  teamId,
 }: {
   drawerOpen: boolean;
   handleDrawerClose: () => void;
@@ -60,6 +61,7 @@ const BlueprintDrawer = ({
   usedNodeIds?: Set<string>;
   lastUsedNodeId?: string | null;
   failedNodeId?: string | null;
+  teamId?: string;
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -145,11 +147,6 @@ const BlueprintDrawer = ({
 
         <Grid container sx={{ flex: 1, height: "100%" }} spacing={0}>
           <Grid
-            item
-            xs={12}
-            md={isChatOpen ? 7 : 12}
-            lg={isChatOpen ? 8 : 12}
-            xl={isChatOpen ? 9 : 12}
             sx={{
               display: "flex",
               flexDirection: "column",
@@ -167,6 +164,12 @@ const BlueprintDrawer = ({
                 `,
               backgroundSize: "16px 16px",
               position: "relative",
+            }}
+            size={{
+              xs: 12,
+              md: isChatOpen ? 7 : 12,
+              lg: isChatOpen ? 8 : 12,
+              xl: isChatOpen ? 9 : 12,
             }}
           >
             <Box
@@ -209,6 +212,7 @@ const BlueprintDrawer = ({
                   lastUsedNodeId={lastUsedNodeId}
                   failedNodeId={failedNodeId}
                   agentId={agentId}
+                  teamId={teamId}
                 />
 
                 {!isChatOpen && (
@@ -234,17 +238,18 @@ const BlueprintDrawer = ({
 
           {isChatOpen && (
             <Grid
-              item
-              xs={12}
-              md={5}
-              lg={4}
-              xl={3}
               sx={{
                 display: "flex",
                 flexDirection: "column",
                 position: "relative",
                 height: "100%",
                 maxHeight: "100vh",
+              }}
+              size={{
+                xs: 12,
+                md: 5,
+                lg: 4,
+                xl: 3,
               }}
             >
               <Box

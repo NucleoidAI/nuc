@@ -9,6 +9,7 @@ import { useTheme } from "@mui/material/styles";
 import {
   Chip,
   IconButton,
+  Skeleton,
   Stack,
   Typography,
   alpha,
@@ -17,7 +18,7 @@ import {
 import { Iconify, Label } from "@canmingir/link/platform/components";
 
 function TaskMessage({ id, handleClick, onDateFetched }) {
-  const { task } = useTask(id);
+  const { task, loading } = useTask(id);
 
   const { getAgent } = useAgent();
 
@@ -38,6 +39,19 @@ function TaskMessage({ id, handleClick, onDateFetched }) {
       return content?.substring(0, 10);
     }
     return content;
+  }
+
+  if (loading) {
+    return (
+      <Stack sx={{ flexDirection: "column", gap: 1 }}>
+        <Stack sx={{ flexDirection: "row", alignItems: "center", gap: 1 }}>
+          <Skeleton variant="rounded" width={80} height={24} />
+          <Skeleton variant="text" width={60} />
+          <Skeleton variant="rounded" width={140} height={24} />
+        </Stack>
+        <Skeleton variant="text" width={60} />
+      </Stack>
+    );
   }
 
   return (

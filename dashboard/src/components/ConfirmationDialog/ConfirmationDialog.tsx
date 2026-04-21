@@ -16,7 +16,9 @@ const ConfirmationDialog = ({ open, onClose, onConfirm, title, content }) => (
     onClose={onClose}
     aria-labelledby="alert-dialog-title"
     aria-describedby="alert-dialog-description"
-    PaperProps={{ sx: { borderRadius: "10px" } }}
+    slotProps={{
+      paper: { sx: { borderRadius: "10px" } },
+    }}
   >
     <DialogTitle id="alert-dialog-title" sx={styles.dialogTitle}>
       {title}

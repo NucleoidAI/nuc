@@ -1,4 +1,5 @@
 import { Icon } from "@iconify/react";
+import MCPSkeleton from "../../components/Skeletons/MCPSkeleton";
 import SkillDialog from "../../components/Skills/SkillDialog";
 import Skills from "../../components/Skills/Skills";
 import { storage } from "@nucleoidjs/webstorage";
@@ -71,7 +72,7 @@ const MCPsWidget = () => {
   const teamId = storage.get("projectId");
 
   const { getMCPs, getAcquiredMCPs, getTokens } = useAcquiredMCPs();
-  const { mcps } = getMCPs();
+  const { mcps, loading } = getMCPs();
 
   const { acquiredMCPs } = getAcquiredMCPs(teamId);
 
@@ -148,11 +149,17 @@ const MCPsWidget = () => {
         autoComplete="off"
         onChange={handleSearchChange}
       />
-
       <Grid container spacing={1} sx={{ mb: 2 }}>
         {searchTerm &&
           filteredMCPs.map((mcp) => (
-            <Grid key={mcp.id} item xs={12} sm={6} md={2}>
+            <Grid
+              key={mcp.id}
+              size={{
+                xs: 12,
+                sm: 6,
+                md: 2,
+              }}
+            >
               <Card
                 sx={{
                   height: 160,
@@ -186,22 +193,26 @@ const MCPsWidget = () => {
             </Grid>
           ))}
       </Grid>
-
       <Grid container spacing={2}>
-        {filteredData?.map((skill) => (
-          <Grid item xs={12} sm={6} md={3} key={skill.id}>
-            <Skills
-              id={skill.id}
-              title={skill.provider}
-              description={skill.description}
-              icon={skill.icon}
-              oauth={skill.oauth}
-              onSkillClick={handleSkillClick}
-            />
-          </Grid>
-        ))}
+        {loading
+          ? Array.from({ length: 10 }).map((_, i) => (
+              <Grid key={i} size={{ xs: 12, sm: 6, md: 3 }}>
+                <MCPSkeleton />
+              </Grid>
+            ))
+          : filteredData?.map((skill) => (
+              <Grid size={{ xs: 12, sm: 6, md: 3 }} key={skill.id}>
+                <Skills
+                  id={skill.id}
+                  title={skill.provider}
+                  description={skill.description}
+                  icon={skill.icon}
+                  oauth={skill.oauth}
+                  onSkillClick={handleSkillClick}
+                />
+              </Grid>
+            ))}
       </Grid>
-
       <SkillDialog
         open={skillDialogOpen}
         handleClose={handleSkillDialogClose}
@@ -210,7 +221,6 @@ const MCPsWidget = () => {
         acquiredMCPs={acquiredMCPs}
         getTokens={getTokens}
       />
-
       <Modal open={open} onClose={handleClose}>
         <Box
           sx={{
@@ -249,7 +259,7 @@ const MCPsWidget = () => {
               </Typography>
               <Grid container spacing={2}>
                 {relatedSkills.map((skill) => (
-                  <Grid item xs={6} key={skill.id}>
+                  <Grid key={skill.id} size={6}>
                     <Skills
                       id={skill.id}
                       title={skill.title}

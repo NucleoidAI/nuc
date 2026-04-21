@@ -4,7 +4,7 @@ import CommunicationWizard from "../CommunicationWizard/CommunicationWizard";
 import useBlueprint from "../../hooks/useBlueprint";
 import useCommunications from "../../hooks/useCommunications";
 
-import { Box, Fab, Stack } from "@mui/material";
+import { Box, CircularProgress, Fab, Stack } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
 const availableChannels = [
@@ -19,7 +19,7 @@ const availableChannels = [
   { id: "email", label: "Email", icon: "mdi:email-outline" },
 ];
 
-const Communication = ({ fromDrawer }: { fromDrawer?: boolean }) => {
+const Communication = () => {
   const { getBlueprint } = useBlueprint();
   const { Blueprint: blueprintList, loading, error } = getBlueprint();
 
@@ -95,7 +95,18 @@ const Communication = ({ fromDrawer }: { fromDrawer?: boolean }) => {
   };
 
   if (loading) {
-    return <div>Loading task blueprints...</div>;
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: 200,
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
   }
   if (error) {
     return <div>Error loading task blueprints: {error}</div>;
@@ -131,24 +142,6 @@ const Communication = ({ fromDrawer }: { fromDrawer?: boolean }) => {
           }}
         />
 
-        <Stack
-          sx={{
-            position: "fixed",
-            bottom: fromDrawer ? 62 : 10,
-            right: fromDrawer ? 62 : 5,
-          }}
-        >
-          <Fab
-            variant="button"
-            color="default"
-            size="medium"
-            onClick={() => setDialogOpen(true)}
-            aria-label="Connect channel to task blueprint"
-          >
-            <AddIcon />
-          </Fab>
-        </Stack>
-
         <CommunicationWizard
           open={dialogOpen}
           onClose={() => setDialogOpen(false)}
@@ -162,6 +155,24 @@ const Communication = ({ fromDrawer }: { fromDrawer?: boolean }) => {
           blueprintIcon="healthicons:crisis-response-center-person-outline"
         />
       </Box>
+
+      <Stack
+        sx={{
+          position: "absolute",
+          right: 16,
+          bottom: 16,
+        }}
+      >
+        <Fab
+          variant="button"
+          color="default"
+          size="medium"
+          onClick={() => setDialogOpen(true)}
+          aria-label="Connect channel to task blueprint"
+        >
+          <AddIcon />
+        </Fab>
+      </Stack>
     </Box>
   );
 };

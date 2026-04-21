@@ -10,7 +10,7 @@ import SourcedAvatar from "../../../components/SourcedAvatar/SourcedAvatar";
 import Stack from "@mui/material/Stack";
 import TeamChatNavAccount from "./TeamChatNavAccount";
 import TeamChatNavItem from "./TeamChatNavItem";
-import TeamChatNavItemSkeleton from "./TeamChatSkeleton";
+import TeamChatNavItemSkeleton from "../../../components/Skeletons/TeamChatNavItemSkeleton";
 import TeamChatNavSearchResults from "./TeamChatNavSearchResults";
 import TextField from "@mui/material/TextField";
 import { publish } from "@nucleoidai/react-event";
@@ -156,12 +156,17 @@ function TeamChatNav({ loading, agents, collapsed, setCollapsed }) {
         value={searchContacts.query}
         onChange={(event) => handleSearchContacts(event.target.value)}
         placeholder="Search agents..."
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <Iconify icon="eva:search-fill" sx={{ color: "text.disabled" }} />
-            </InputAdornment>
-          ),
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment position="start">
+                <Iconify
+                  icon="eva:search-fill"
+                  sx={{ color: "text.disabled" }}
+                />
+              </InputAdornment>
+            ),
+          },
         }}
       />
     </ClickAwayListener>
@@ -227,9 +232,10 @@ function TeamChatNav({ loading, agents, collapsed, setCollapsed }) {
           onClose={() => setCollapsed(true)}
           slotProps={{
             backdrop: { invisible: true },
-          }}
-          PaperProps={{
-            sx: { width: "100%", height: "100%" },
+
+            paper: {
+              sx: { width: "100%", height: "100%" },
+            },
           }}
         >
           {renderContent}

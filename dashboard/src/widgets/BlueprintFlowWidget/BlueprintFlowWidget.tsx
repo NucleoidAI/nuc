@@ -40,6 +40,7 @@ function BlueprintFlowWidget({
   isSuperviseFlow = false,
   agentId,
   readOnly = false,
+  teamId,
 }: {
   aiResponse?: AIResponse;
   setAiResponse?: (response: AIResponse | null) => void;
@@ -52,6 +53,7 @@ function BlueprintFlowWidget({
   isSuperviseFlow?: boolean;
   agentId?: string;
   readOnly?: boolean;
+  teamId?: string;
 }) {
   const [graphData, setGraphData] = useState<DefinitionGraph | null>(null);
   const [hasLocalChanges, setHasLocalChanges] = useState(false);
@@ -868,6 +870,8 @@ function BlueprintFlowWidget({
             : undefined
         }
         agentId={agentId ?? blueprint.agentId}
+        blueprintId={blueprint?.id}
+        teamId={teamId}
       />
     </>
   );

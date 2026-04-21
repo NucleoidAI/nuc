@@ -25,12 +25,10 @@ import React, { useEffect, useMemo, useState } from "react";
 
 function TasksWidget({
   agentId,
-  fromDrawer,
   taskId,
   supervisionRaised = false,
 }: {
   agentId: string;
-  fromDrawer?: boolean;
   taskId?: string;
   supervisionRaised?: boolean;
 }) {
@@ -148,13 +146,15 @@ function TasksWidget({
                   placeholder="Search tasks by description..."
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <Iconify
-                        icon="eva:search-fill"
-                        sx={{ color: "text.disabled", mr: 1 }}
-                      />
-                    ),
+                  slotProps={{
+                    input: {
+                      startAdornment: (
+                        <Iconify
+                          icon="eva:search-fill"
+                          sx={{ color: "text.disabled", mr: 1 }}
+                        />
+                      ),
+                    },
                   }}
                 />
               </Stack>
@@ -209,9 +209,11 @@ function TasksWidget({
                 open={Boolean(selectedTask)}
                 onClose={() => setSelectedTask(null)}
                 fullScreen
-                PaperProps={{
-                  sx: {
-                    borderRadius: 0,
+                slotProps={{
+                  paper: {
+                    sx: {
+                      borderRadius: 0,
+                    },
                   },
                 }}
               >
@@ -280,8 +282,8 @@ function TasksWidget({
               onClick={() => setOpenCreate(true)}
               sx={{
                 position: "absolute",
-                bottom: fromDrawer ? 30 : 10,
-                right: fromDrawer ? 30 : 5,
+                right: 16,
+                bottom: 16,
                 zIndex: 1000,
                 boxShadow: 6,
               }}

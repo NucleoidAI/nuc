@@ -40,6 +40,7 @@ const SupervisingChat = ({
     question?: string;
     conversationId?: string;
     sessionId?: string;
+    blueprintId?: string;
   };
 }) => {
   const SUPERVISING_CHAT_WELCOME_MESSAGE =
@@ -65,7 +66,11 @@ const SupervisingChat = ({
         setIsEvaluating(true);
 
         try {
-          const result = await evaluateSupervising(supervise.id, message);
+          const result = await evaluateSupervising(
+            supervise.id,
+            message,
+            supervise.blueprintId
+          );
 
           const { action } = result;
 
@@ -102,7 +107,7 @@ const SupervisingChat = ({
         }
       }
     },
-    [supervise.id, evaluateSupervising]
+    [supervise.id, evaluateSupervising, supervise.blueprintId]
   );
 
   return (

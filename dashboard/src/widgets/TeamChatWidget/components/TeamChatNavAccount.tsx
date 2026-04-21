@@ -16,16 +16,19 @@ function TeamChatNavAccount() {
       <ListItemText
         sx={{ ml: 2 }}
         primary={teamDetails?.coach}
-        primaryTypographyProps={{
-          noWrap: true,
-          variant: "subtitle2",
-        }}
         secondary={"Team Leader Agent"}
-        secondaryTypographyProps={{
-          noWrap: true,
-          component: "span",
-          variant: "body2",
-          color: "text.secondary",
+        slotProps={{
+          primary: {
+            noWrap: true,
+            variant: "subtitle2",
+          },
+
+          secondary: {
+            noWrap: true,
+            component: "span",
+            variant: "body2",
+            color: "text.secondary",
+          },
         }}
       />
     </>

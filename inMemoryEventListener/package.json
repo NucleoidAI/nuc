@@ -7,6 +7,6 @@
     "dev": "npx @canmingir/link-express start"
   },
   "dependencies": {
-    "@canmingir/link-express": "^1.7.3"
+    "@canmingir/link-express": "^1.7.14"
   }
 }

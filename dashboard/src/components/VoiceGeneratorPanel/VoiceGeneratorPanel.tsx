@@ -83,7 +83,7 @@ function VoiceGeneratorPanel({
         />
       </Box>
       <Grid container direction="column" spacing={1}>
-        <Grid item>
+        <Grid>
           <Button
             fullWidth
             onClick={generateTemporaryVoice}
@@ -94,7 +94,7 @@ function VoiceGeneratorPanel({
             {isLoading ? "Generating..." : "Generate"}
           </Button>
         </Grid>
-        <Grid item>
+        <Grid>
           <Button
             fullWidth
             onClick={() => {
@@ -106,7 +106,7 @@ function VoiceGeneratorPanel({
             {isCreatingPermanentVoice ? "Creating..." : "Use Voice"}
           </Button>
         </Grid>
-        <Grid item>
+        <Grid>
           <Button
             fullWidth
             onClick={() => {

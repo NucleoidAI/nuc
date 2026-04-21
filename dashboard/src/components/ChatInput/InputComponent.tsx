@@ -188,14 +188,17 @@ const InputComponent = ({
               </ListItemAvatar>
               <ListItemText
                 primary={option.name}
-                primaryTypographyProps={{ fontWeight: "bold" }}
-                secondaryTypographyProps={{
-                  fontSize: "14px",
-                  fontWeight: "bold",
-                  color: "#91959c",
-                  className: "command-description",
-                }}
                 sx={{ ml: 1 }}
+                slotProps={{
+                  primary: { fontWeight: "bold" },
+
+                  secondary: {
+                    fontSize: "14px",
+                    fontWeight: "bold",
+                    color: "#91959c",
+                    className: "command-description",
+                  },
+                }}
               />
             </ListItem>
           ))}

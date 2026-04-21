@@ -186,16 +186,18 @@ const JSONDiffPanel: React.FC<JSONDiffPanelProps> = ({
         keepMounted: false,
         disablePortal: false,
       }}
-      PaperProps={{
-        sx: {
-          width: { xs: "95%", sm: "80%", md: "70%", lg: "60%" },
-          maxWidth: "1000px",
-          backgroundColor: theme.palette.background.default,
-          zIndex: 9999,
-          backgroundImage:
-            theme.palette.mode === "dark"
-              ? "linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05))"
-              : "none",
+      slotProps={{
+        paper: {
+          sx: {
+            width: { xs: "95%", sm: "80%", md: "70%", lg: "60%" },
+            maxWidth: "1000px",
+            backgroundColor: theme.palette.background.default,
+            zIndex: 9999,
+            backgroundImage:
+              theme.palette.mode === "dark"
+                ? "linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05))"
+                : "none",
+          },
         },
       }}
     >

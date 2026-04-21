@@ -25,7 +25,7 @@ function TabBar({ TABS, currentTab, setCurrentTab, sidebarOpen = false }) {
     <Tabs
       value={currentTab}
       onChange={handleTabChange}
-      variant={isWideScreen ? "standard" : "scrollable"}
+      variant={"scrollable"}
       centered={isWideScreen}
       scrollButtons="auto"
       allowScrollButtonsMobile
@@ -58,6 +58,12 @@ function TabBar({ TABS, currentTab, setCurrentTab, sidebarOpen = false }) {
           label={tab.label}
           sx={{
             px: 2,
+            display: "flex",
+            flexDirection: "row",
+            gap: 1,
+            "&.Mui-selected": {
+              color: "text.primary",
+            },
           }}
         />
       ))}

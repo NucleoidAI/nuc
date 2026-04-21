@@ -11,10 +11,10 @@ import React, { useState } from "react";
 
 function BlueprintsWidget({
   agentId,
-  fromDrawer,
+  teamId,
 }: {
   agentId: string;
-  fromDrawer?: boolean;
+  teamId?: string;
 }) {
   const [blueprintUpsertedEvent] = useEvent("BLUEPRINT_UPSERTED", {
     Blueprint: null,
@@ -95,6 +95,7 @@ function BlueprintsWidget({
           setAiResponse={setAiResponse}
           aiResponse={aiResponse}
           agentId={agentId}
+          teamId={teamId}
         />
       )}
 
@@ -111,8 +112,8 @@ function BlueprintsWidget({
       <Stack
         sx={{
           position: "absolute",
-          bottom: fromDrawer ? 30 : 10,
-          right: fromDrawer ? 30 : 5,
+          right: 16,
+          bottom: 16,
         }}
       >
         <Fab

@@ -19,7 +19,7 @@ const availableChannels = [
   { id: "email", label: "Email", icon: "mdi:email-outline" },
 ];
 
-const Communication = ({ fromDrawer }: { fromDrawer?: boolean }) => {
+const Communication = () => {
   const { getBlueprint } = useBlueprint();
   const { Blueprint: blueprintList, loading, error } = getBlueprint();
 
@@ -142,24 +142,6 @@ const Communication = ({ fromDrawer }: { fromDrawer?: boolean }) => {
           }}
         />
 
-        <Stack
-          sx={{
-            position: "fixed",
-            bottom: fromDrawer ? 62 : 10,
-            right: fromDrawer ? 62 : 5,
-          }}
-        >
-          <Fab
-            variant="button"
-            color="default"
-            size="medium"
-            onClick={() => setDialogOpen(true)}
-            aria-label="Connect channel to task blueprint"
-          >
-            <AddIcon />
-          </Fab>
-        </Stack>
-
         <CommunicationWizard
           open={dialogOpen}
           onClose={() => setDialogOpen(false)}
@@ -173,6 +155,24 @@ const Communication = ({ fromDrawer }: { fromDrawer?: boolean }) => {
           blueprintIcon="healthicons:crisis-response-center-person-outline"
         />
       </Box>
+
+      <Stack
+        sx={{
+          position: "absolute",
+          right: 16,
+          bottom: 16,
+        }}
+      >
+        <Fab
+          variant="button"
+          color="default"
+          size="medium"
+          onClick={() => setDialogOpen(true)}
+          aria-label="Connect channel to task blueprint"
+        >
+          <AddIcon />
+        </Fab>
+      </Stack>
     </Box>
   );
 };

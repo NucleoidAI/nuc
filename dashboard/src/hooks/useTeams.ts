@@ -8,6 +8,8 @@ export type Team = {
   name: string;
   icon: string;
   organizationId?: string;
+  coach?: string;
+  coachId?: string;
 };
 
 export type TeamInput = {

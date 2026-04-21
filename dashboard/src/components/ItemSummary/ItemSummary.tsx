@@ -11,9 +11,8 @@ export default function ItemSummary({ newItem }) {
       <DialogContentText sx={{ textAlign: "center", mb: 2 }}>
         Agent Summary
       </DialogContentText>
-
       <Grid container spacing={2} alignItems="stretch">
-        <Grid item xs={6}>
+        <Grid size={6}>
           <Card
             sx={{
               bgcolor: (theme) => theme.palette.background.paper,
@@ -53,7 +52,7 @@ export default function ItemSummary({ newItem }) {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={6}>
+        <Grid size={6}>
           <Card sx={{ height: "100%" }}>
             <CardHeader title="Engine" />
             <CardContent>
@@ -63,7 +62,7 @@ export default function ItemSummary({ newItem }) {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Card>
             <CardHeader title="Description" />
             <CardContent>

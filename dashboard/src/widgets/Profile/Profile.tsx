@@ -20,17 +20,32 @@ function Profile({ agentId }: { agentId: string }) {
   return (
     <Stack margin={2}>
       <Grid container spacing={3}>
-        <Grid item xs={12} md={5}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 5,
+          }}
+        >
           <Stack spacing={3}>
             <Stack spacing={3}>{renderEngine}</Stack>
           </Stack>
         </Grid>
-        <Grid item xs={12} md={7}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 7,
+          }}
+        >
           <Stack spacing={3}>
             <Stack spacing={3}>{renderAbout}</Stack>
           </Stack>
         </Grid>
-        <Grid item xs={12} md={3}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 3,
+          }}
+        >
           <WidgetSummaryWidget
             key={5}
             title="Response Rate"
@@ -38,7 +53,12 @@ function Profile({ agentId }: { agentId: string }) {
             size={statistics?.responseRate}
           />
         </Grid>
-        <Grid item xs={12} md={3}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 3,
+          }}
+        >
           <WidgetSummaryWidget
             key={5}
             title="Supervising Rate"
@@ -46,7 +66,12 @@ function Profile({ agentId }: { agentId: string }) {
             size={statistics?.supervisingRate}
           />
         </Grid>
-        <Grid item xs={12} md={3}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 3,
+          }}
+        >
           <WidgetSummaryWidget
             key={5}
             title="Knowledge Size"
@@ -54,7 +79,12 @@ function Profile({ agentId }: { agentId: string }) {
             size={statistics?.knowledgeSize}
           />
         </Grid>
-        <Grid item xs={12} md={3}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 3,
+          }}
+        >
           <WidgetSummaryWidget
             key={5}
             title="Task Count"

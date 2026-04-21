@@ -17,10 +17,10 @@ export default function Settings() {
       </Helmet>
       <FullScreenLayout>
         <Grid container sx={{ alignSelf: "center", justifySelf: "center" }}>
-          <Grid item xs={4}>
+          <Grid size={4}>
             <SettingsMenuWidget />
           </Grid>
-          <Grid item xs={8}>
+          <Grid size={8}>
             <TeamPermissionWidget teamId={teamId} />
           </Grid>
         </Grid>

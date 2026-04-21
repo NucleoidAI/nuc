@@ -15,13 +15,18 @@ function PerformanceChart() {
 
   const isSmallScreen = useMediaQuery("(max-width:600px)");
 
-  const names = [agents?.map((agent) => agent?.name), "No Activity"];
-
-  const series = new Array(agents?.length).fill(1).concat(100);
+  const agentNames =
+    agents?.map((agent) => agent?.name?.replaceAll("_", " ")).filter(Boolean) ??
+    [];
+  const hasAgents = agentNames.length > 0;
+  const names = hasAgents ? agentNames : ["No Activity"];
+  const series = hasAgents ? new Array(agentNames.length).fill(1) : [1];
 
   const chartOptions = useChart({
     labels: names,
-    colors: [...new Array(agents?.length).fill(undefined), "#344055"],
+    colors: hasAgents
+      ? new Array(agentNames.length).fill(undefined)
+      : ["#344055"],
     legend: {
       position: "right",
       offsetX: -20,
@@ -29,6 +34,7 @@ function PerformanceChart() {
       itemMargin: {
         vertical: 8,
       },
+      formatter: (seriesName) => seriesName,
     },
     stroke: {
       show: false,
@@ -40,7 +46,7 @@ function PerformanceChart() {
       },
     },
     tooltip: {
-      fillSeriesColor: false,
+      fillSeriesColor: true,
     },
     plotOptions: {
       pie: {
@@ -65,6 +71,7 @@ function PerformanceChart() {
         maxWidth: "100%",
         height: "100%",
         maxHeight: isSmallScreen ? "auto" : "600px",
+        marginTop: "10px",
       }}
     >
       <CardHeader title="Team Activity" />

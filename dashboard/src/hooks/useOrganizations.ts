@@ -9,6 +9,8 @@ export type Organization = {
   description: string;
   created_at: string;
   updated_at: string;
+  coach?: string;
+  coachId?: string;
 };
 
 export type OrganizationInput = {

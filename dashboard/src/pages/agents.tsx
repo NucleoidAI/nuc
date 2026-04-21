@@ -1,3 +1,4 @@
+import AgentsSkeleton from "../components/Skeletons/AgentsSkeleton";
 import AgentsWidget from "../widgets/AgentsWidget/AgentsWidget";
 import Page from "../components/Page/Page";
 import SingleScrollableLayout from "../layouts/SingleScrollableLayout";
@@ -5,7 +6,6 @@ import { storage } from "@nucleoidjs/webstorage";
 import { useEffect } from "react";
 import { useEvent } from "@nucleoidai/react-event";
 import useTeam from "../hooks/useTeams";
-
 function Agents() {
   const teamId = storage.get("itemId");
 
@@ -20,7 +20,7 @@ function Agents() {
   }, [teamSelected]);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <AgentsSkeleton />;
   }
   return (
     <>

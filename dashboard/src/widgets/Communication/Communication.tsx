@@ -4,7 +4,7 @@ import CommunicationWizard from "../CommunicationWizard/CommunicationWizard";
 import useBlueprint from "../../hooks/useBlueprint";
 import useCommunications from "../../hooks/useCommunications";
 
-import { Box, Fab, Stack } from "@mui/material";
+import { Box, CircularProgress, Fab, Stack } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
 const availableChannels = [
@@ -95,7 +95,18 @@ const Communication = () => {
   };
 
   if (loading) {
-    return <div>Loading task blueprints...</div>;
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: 200,
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
   }
   if (error) {
     return <div>Error loading task blueprints: {error}</div>;

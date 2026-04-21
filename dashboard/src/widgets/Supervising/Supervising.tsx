@@ -1,9 +1,10 @@
 import StatusToolbar from "../../components/StatusToolbar/StatusToolbar";
 import SupervisingCard from "../../components/SupervisingCard/SupervisingCard";
+import SupervisingSkeleton from "../../components/Skeletons/SupervisingSkeleton";
 import { useState } from "react";
 import useSupervisings from "../../hooks/useSupervisings";
 
-import { Box, Skeleton, Stack } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 
 const Supervising = ({ agentId }) => {
   const [selectedStatus, setSelectedStatus] = useState("All");
@@ -41,19 +42,11 @@ const Supervising = ({ agentId }) => {
         />
 
         {loading ? (
-          <Stack
-            spacing={2}
-            sx={{ textAlign: "center", p: 2, color: "text.secondary" }}
-          >
-            {[1, 2, 3, 4, 5].map((item) => (
-              <Skeleton
-                key={item}
-                variant="rectangular"
-                height={180}
-                sx={{ borderRadius: 2 }}
-              />
+          <>
+            {[...Array(supervisings?.length)].map((_, i) => (
+              <SupervisingSkeleton key={i} />
             ))}
-          </Stack>
+          </>
         ) : supervisings && supervisings.length > 0 ? (
           supervisings.map((supervise) => (
             <SupervisingCard

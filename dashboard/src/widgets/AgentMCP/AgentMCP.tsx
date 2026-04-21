@@ -1,4 +1,5 @@
 import IncomingDrawer from "../../components/IncomingDrawer/IncomingDrawer";
+import MCPSkeleton from "../../components/Skeletons/MCPSkeleton";
 import MCPTabs from "../../components/MCPTabs/MCPTabs";
 import MCPs from "../../components/MCPs/MCPs";
 import React from "react";
@@ -11,7 +12,7 @@ import { Box, Grid } from "@mui/material";
 const AgentMCP = ({ agent }: { agent: { id: string; name: string } }) => {
   const { getMCPs, getAgentAcquiredMCPs, getTokens } = useAcquiredMCPs();
 
-  const { mcps } = getMCPs();
+  const { mcps, loading } = getMCPs();
 
   const { acquiredMCPs } = getAgentAcquiredMCPs(agent.id);
 
@@ -77,6 +78,9 @@ const AgentMCP = ({ agent }: { agent: { id: string; name: string } }) => {
     setSelectedTab(newValue);
   };
 
+  const incomingMCPs = mcps.filter((skill) => skill.direction === "INCOMING");
+  const outgoingMCPs = mcps.filter((skill) => skill.direction === "OUTGOING");
+
   return (
     <Box
       sx={{
@@ -92,40 +96,50 @@ const AgentMCP = ({ agent }: { agent: { id: string; name: string } }) => {
           tabs={tabs}
         />
 
-        {selectedTab === 0 && (
+        {loading ? (
           <Grid container spacing={2}>
-            {mcps
-              .filter((skill) => skill.direction === "INCOMING")
-              .map((skill) => (
-                <MCPs
-                  key={skill.id}
-                  title={skill.provider}
-                  description={skill.description}
-                  icon={skill.icon}
-                  onSkillClick={handleSkillClick}
-                  id={skill.id}
-                  oauth={skill.oauth}
-                />
-              ))}
+            {Array.from({
+              length: 4,
+            }).map((_, i) => (
+              <Grid key={i} size={{ xs: 12, sm: 6, md: 3 }}>
+                <MCPSkeleton />
+              </Grid>
+            ))}
           </Grid>
-        )}
+        ) : (
+          <>
+            {selectedTab === 0 && (
+              <Grid container spacing={2}>
+                {incomingMCPs?.map((skill) => (
+                  <MCPs
+                    key={skill.id}
+                    title={skill.provider}
+                    description={skill.description}
+                    icon={skill.icon}
+                    onSkillClick={handleSkillClick}
+                    id={skill.id}
+                    oauth={skill.oauth}
+                  />
+                ))}
+              </Grid>
+            )}
 
-        {selectedTab === 1 && (
-          <Grid container spacing={2}>
-            {mcps
-              .filter((skill) => skill.direction === "OUTGOING")
-              .map((skill) => (
-                <MCPs
-                  key={skill.id}
-                  title={skill.provider}
-                  description={skill.description}
-                  icon={skill.icon}
-                  onSkillClick={handleSkillClick}
-                  id={skill.id}
-                  oauth={skill.oauth}
-                />
-              ))}
-          </Grid>
+            {selectedTab === 1 && (
+              <Grid container spacing={2}>
+                {outgoingMCPs?.map((skill) => (
+                  <MCPs
+                    key={skill.id}
+                    title={skill.provider}
+                    description={skill.description}
+                    icon={skill.icon}
+                    onSkillClick={handleSkillClick}
+                    id={skill.id}
+                    oauth={skill.oauth}
+                  />
+                ))}
+              </Grid>
+            )}
+          </>
         )}
 
         <SkillDialog

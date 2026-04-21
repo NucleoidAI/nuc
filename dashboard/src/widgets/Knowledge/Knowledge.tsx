@@ -1,6 +1,7 @@
 import AddIcon from "@mui/icons-material/Add";
 import AddItemDialog from "../../components/AddItemDialog/AddItemDialog";
 import DeleteConfirmation from "../../components/DeleteConfirmation/DeleteConfirmation";
+import KnowledgeBaseSkeleton from "../../components/Skeletons/KnowledgeBaseSkeleton";
 import KnowledgeTable from "../../components/KnowledgeTable/KnowledgeTable";
 import TypeToolbar from "../../components/TypeToolbar/TypeToolbar";
 import useAgent from "../../hooks/useAgent";
@@ -29,8 +30,11 @@ function Knowledge({
     getTeamKnowledges,
   } = useKnowledge();
 
-  const { knowledges } = getAgentKnowledges(agentId);
-  const { knowledges: teamKnowledges } = getTeamKnowledges(teamId);
+  const { knowledges, loading: agentKnowledgesLoading } =
+    getAgentKnowledges(agentId);
+  const { knowledges: teamKnowledges, loading: teamKnowledgesLoading } =
+    getTeamKnowledges(teamId);
+  const isLoading = agentKnowledgesLoading || teamKnowledgesLoading;
 
   const { getTeamById } = useTeams();
 
@@ -156,7 +160,9 @@ function Knowledge({
           pb: 10,
         }}
       >
-        {filteredKnowledges?.length > 0 ? (
+        {isLoading ? (
+          <KnowledgeBaseSkeleton />
+        ) : filteredKnowledges?.length > 0 ? (
           <KnowledgeTable
             table={table}
             selectedType={selectedType}

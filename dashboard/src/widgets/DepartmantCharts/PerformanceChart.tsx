@@ -2,6 +2,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import Chart from "react-apexcharts";
+import PerformanceSkeleton from "../../components/Skeletons/PerformanceSkeleton";
 import React from "react";
 import useAgent from "../../hooks/useAgent";
 import { useChart } from "@canmingir/link/platform/components";
@@ -10,7 +11,7 @@ import { useMediaQuery } from "@mui/material";
 function PerformanceChart() {
   const { getAgents } = useAgent();
 
-  const { agents } = getAgents();
+  const { agents, loading } = getAgents();
 
   const isSmallScreen = useMediaQuery("(max-width:600px)");
 
@@ -57,6 +58,10 @@ function PerformanceChart() {
       },
     },
   });
+
+  if (loading) {
+    return <PerformanceSkeleton />;
+  }
 
   return (
     <Card

@@ -5,11 +5,18 @@ import useAgent from "../../hooks/useAgent";
 import { useEffect } from "react";
 import useSupervise from "../../hooks/useSupervise";
 
-import { Chip, IconButton, Stack, Typography, alpha } from "@mui/material";
+import {
+  Chip,
+  IconButton,
+  Skeleton,
+  Stack,
+  Typography,
+  alpha,
+} from "@mui/material";
 import { Iconify, Label } from "@canmingir/link/platform/components";
 
 function SupervisingMessage({ id, handleClick, onDateFetched }) {
-  const { supervising } = useSupervise(id);
+  const { supervising, loading } = useSupervise(id);
 
   const { getAgent } = useAgent();
 
@@ -21,6 +28,19 @@ function SupervisingMessage({ id, handleClick, onDateFetched }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [supervising]);
+
+  if (loading) {
+    return (
+      <Stack sx={{ flexDirection: "column", gap: 1 }}>
+        <Stack sx={{ flexDirection: "row", alignItems: "center", gap: 1 }}>
+          <Skeleton variant="rounded" width={80} height={24} />
+          <Skeleton variant="text" width={80} />
+          <Skeleton variant="rounded" width={160} height={24} />
+        </Stack>
+        <Skeleton variant="text" width={60} />
+      </Stack>
+    );
+  }
 
   return (
     <>

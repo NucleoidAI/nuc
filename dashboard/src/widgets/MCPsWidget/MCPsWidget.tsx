@@ -1,4 +1,5 @@
 import { Icon } from "@iconify/react";
+import MCPSkeleton from "../../components/Skeletons/MCPSkeleton";
 import SkillDialog from "../../components/Skills/SkillDialog";
 import Skills from "../../components/Skills/Skills";
 import { storage } from "@nucleoidjs/webstorage";
@@ -71,7 +72,7 @@ const MCPsWidget = () => {
   const teamId = storage.get("projectId");
 
   const { getMCPs, getAcquiredMCPs, getTokens } = useAcquiredMCPs();
-  const { mcps } = getMCPs();
+  const { mcps, loading } = getMCPs();
 
   const { acquiredMCPs } = getAcquiredMCPs(teamId);
 
@@ -193,25 +194,24 @@ const MCPsWidget = () => {
           ))}
       </Grid>
       <Grid container spacing={2}>
-        {filteredData?.map((skill) => (
-          <Grid
-            key={skill.id}
-            size={{
-              xs: 12,
-              sm: 6,
-              md: 3,
-            }}
-          >
-            <Skills
-              id={skill.id}
-              title={skill.provider}
-              description={skill.description}
-              icon={skill.icon}
-              oauth={skill.oauth}
-              onSkillClick={handleSkillClick}
-            />
-          </Grid>
-        ))}
+        {loading
+          ? Array.from({ length: 10 }).map((_, i) => (
+              <Grid key={i} size={{ xs: 12, sm: 6, md: 3 }}>
+                <MCPSkeleton />
+              </Grid>
+            ))
+          : filteredData?.map((skill) => (
+              <Grid size={{ xs: 12, sm: 6, md: 3 }} key={skill.id}>
+                <Skills
+                  id={skill.id}
+                  title={skill.provider}
+                  description={skill.description}
+                  icon={skill.icon}
+                  oauth={skill.oauth}
+                  onSkillClick={handleSkillClick}
+                />
+              </Grid>
+            ))}
       </Grid>
       <SkillDialog
         open={skillDialogOpen}

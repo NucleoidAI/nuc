@@ -20,6 +20,7 @@ import {
   Card,
   CardActionArea,
   CardContent,
+  CircularProgress,
   Dialog,
   DialogContent,
   Typography,
@@ -467,7 +468,11 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
 
   const Organization = () => {
     if (loading) {
-      return <div>Loading...</div>;
+      return (
+        <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
+          <CircularProgress />
+        </Box>
+      );
     }
 
     return (

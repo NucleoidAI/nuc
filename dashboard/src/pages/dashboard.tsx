@@ -1,3 +1,4 @@
+import DashboardSkeleton from "../components/Skeletons/DashboardSkeleton";
 import { Helmet } from "react-helmet-async";
 import PerformanceChart from "../widgets/DepartmantCharts/PerformanceChart";
 import React from "react";
@@ -9,7 +10,7 @@ import config from "../../config";
 import useStatistics from "../hooks/useStatistics";
 
 function Dashboard() {
-  const { statistics } = useStatistics();
+  const { statistics, loading } = useStatistics();
 
   return (
     <>
@@ -18,38 +19,44 @@ function Dashboard() {
         <title> {config.name} - Dashboard </title>
       </Helmet>
 
-      <TwoSideLayout
-        rows={{
-          firstRow: [
-            <WidgetSummaryWidget
-              key={5}
-              title="Response Rate"
-              chartType={"bar"}
-              size={statistics?.responseRate}
-            />,
-            <WidgetSummaryWidget
-              key={6}
-              title="Supervising Rate"
-              chartType={"line"}
-              size={statistics?.supervisingRate}
-            />,
-            <WidgetSummaryWidget
-              key={7}
-              title="Knowledge Size"
-              chartType={"line"}
-              size={statistics?.knowledgeSize}
-            />,
-            <WidgetSummaryWidget
-              key={8}
-              title="Task Rate"
-              chartType={"bar"}
-              size={statistics?.taskCount}
-            />,
-          ],
-          secondRow: [<UsageChart key={2} />, <PerformanceChart key={3} />],
-          thirdRow: [<TotalIncomes size={statistics?.totalMessages} key={4} />],
-        }}
-      />
+      {loading ? (
+        <DashboardSkeleton />
+      ) : (
+        <TwoSideLayout
+          rows={{
+            fourthRow: [
+              <WidgetSummaryWidget
+                key={5}
+                title="Response Rate"
+                chartType={"bar"}
+                size={statistics?.responseRate}
+              />,
+              <WidgetSummaryWidget
+                key={6}
+                title="Supervising Rate"
+                chartType={"line"}
+                size={statistics?.supervisingRate}
+              />,
+              <WidgetSummaryWidget
+                key={7}
+                title="Knowledge Size"
+                chartType={"line"}
+                size={statistics?.knowledgeSize}
+              />,
+              <WidgetSummaryWidget
+                key={8}
+                title="Task Rate"
+                chartType={"bar"}
+                size={statistics?.taskCount}
+              />,
+            ],
+            secondRow: [<UsageChart key={2} />, <PerformanceChart key={3} />],
+            thirdRow: [
+              <TotalIncomes size={statistics?.totalMessages} key={4} />,
+            ],
+          }}
+        />
+      )}
     </>
   );
 }

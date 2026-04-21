@@ -2,10 +2,12 @@ import Card from "@mui/material/Card";
 import ChatInput from "../ChatInput/ChatInput.js";
 import { Commands } from "../../components/ChatInput/chat.config.js";
 import Container from "@mui/material/Container";
+import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import TeamChatHeaderDetail from "./components/TeamChatHeaderDetail.js";
 import TeamChatMessageContent from "./components/TeamChatMessageContent.js";
 import TeamChatNav from "./components/TeamChatNav.js";
+import TeamChatNavItemSkeleton from "../../components/Skeletons/TeamChatNavItemSkeleton.js";
 import { createEditor } from "slate";
 import useAgents from "../../hooks/useAgents.js";
 import useChat from "../../hooks/useChat.js";
@@ -139,12 +141,10 @@ const TeamChatWidget = memo(function ChatWidget({
       flexShrink={0}
       sx={{ pr: 1, pl: 2.5, py: 1, height: mdDown ? 45 : 72 }}
     >
-      {teamLoading && (
-        <>
-          {details && (
-            <TeamChatHeaderDetail mdDown={mdDown} title={team?.name} />
-          )}
-        </>
+      {teamLoading ? (
+        <Skeleton variant="text" width={150} height={32} />
+      ) : (
+        details && <TeamChatHeaderDetail mdDown={mdDown} title={team?.name} />
       )}
     </Stack>
   );
@@ -155,7 +155,18 @@ const TeamChatWidget = memo(function ChatWidget({
     () => {
       return (
         <Stack sx={{ width: 1, height: 1, overflow: "hidden" }}>
-          {!messagesLoading && (
+          {messagesLoading ? (
+            <Stack sx={{ p: 2, gap: 1.5, flex: 1, overflow: "hidden" }}>
+              {[...Array(5)].map((_, i) => (
+                <Skeleton
+                  key={i}
+                  variant="rounded"
+                  height={52}
+                  sx={{ borderRadius: 1, width: i % 2 === 0 ? "60%" : "80%" }}
+                />
+              ))}
+            </Stack>
+          ) : (
             <TeamChatMessageContent
               replied={replied}
               user={user}
@@ -179,7 +190,14 @@ const TeamChatWidget = memo(function ChatWidget({
       );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [messages, replied, isReplying, selectedMessage, sendMessage]
+    [
+      messages,
+      messagesLoading,
+      replied,
+      isReplying,
+      selectedMessage,
+      sendMessage,
+    ]
   );
   return (
     <Container
@@ -202,7 +220,19 @@ const TeamChatWidget = memo(function ChatWidget({
           borderRadius: 0,
         }}
       >
-        {loading ? null : (
+        {loading ? (
+          <Stack
+            sx={{
+              minWidth: 240,
+              borderRight: "1px solid",
+              borderColor: "divider",
+            }}
+          >
+            {[0, 1, 2].map((i) => (
+              <TeamChatNavItemSkeleton key={i} sx={{ mt: 2 }} />
+            ))}
+          </Stack>
+        ) : (
           <TeamChatNav
             collapsed={collapsed}
             setCollapsed={setCollapsed}

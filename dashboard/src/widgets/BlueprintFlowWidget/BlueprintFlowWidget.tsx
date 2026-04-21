@@ -1,4 +1,5 @@
 import BlueprintFlow from "../../components/BlueprintFlow/BlueprintFlow";
+import BlueprintFlowSkeleton from "../../components/Skeletons/BlueprintFlowSkeleton";
 import NodeEditorWidget from "../NodeEditorWidget/NodeEditorWidget";
 import SampleFlow from "../../components/BlueprintFlow/Samples/SampleFlow";
 import SampleNode from "../../components/BlueprintFlow/Samples/SampleNode";
@@ -808,7 +809,9 @@ function BlueprintFlowWidget({
 
   return (
     <>
-      {loading ? null : isEmptyState ? (
+      {loading ? (
+        <BlueprintFlowSkeleton />
+      ) : isEmptyState ? (
         <>
           {showSampleFlow && <SampleFlow />}
           {!showSampleFlow && (

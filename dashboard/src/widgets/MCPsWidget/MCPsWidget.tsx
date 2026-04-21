@@ -196,12 +196,12 @@ const MCPsWidget = () => {
       <Grid container spacing={2}>
         {loading
           ? Array.from({ length: filteredData.length }).map((_, i) => (
-              <Grid key={i} item xs={12} sm={6} md={3}>
+              <Grid key={i} size={{ xs: 12, sm: 6, md: 3 }}>
                 <MCPSkeleton />
               </Grid>
             ))
           : filteredData?.map((skill) => (
-              <Grid item xs={12} sm={6} md={3} key={skill.id}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }} key={skill.id}>
                 <Skills
                   id={skill.id}
                   title={skill.provider}

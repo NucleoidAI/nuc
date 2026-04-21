@@ -24,12 +24,10 @@ import React, { useEffect, useMemo, useState } from "react";
 
 function TasksWidget({
   agentId,
-  fromDrawer,
   taskId,
   supervisionRaised = false,
 }: {
   agentId: string;
-  fromDrawer?: boolean;
   taskId?: string;
   supervisionRaised?: boolean;
 }) {
@@ -266,8 +264,8 @@ function TasksWidget({
               onClick={() => setOpenCreate(true)}
               sx={{
                 position: "absolute",
-                bottom: fromDrawer ? 30 : 10,
-                right: fromDrawer ? 30 : 5,
+                right: 16,
+                bottom: 16,
                 zIndex: 1000,
                 boxShadow: 6,
               }}

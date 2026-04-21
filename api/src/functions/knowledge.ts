@@ -23,6 +23,8 @@ async function create({
     answer?: string;
     content?: string;
     taskId?: string;
+    blueprintId?: string;
+    organizationId?: string;
   };
 }) {
   if (!teamId && !agentId) {
@@ -80,6 +82,8 @@ async function create({
     text: knowledgeJson.text || null,
     content: knowledgeJson.content || null,
     taskId: knowledgeJson.taskId || null,
+    blueprintId: knowledgeJson.blueprintId || null,
+    organizationId: knowledgeJson.organizationId || null,
   };
 
   await event.publish("KNOWLEDGE", "CREATED", knowledgeData);
@@ -162,6 +166,8 @@ async function list({
       ...knowledgeData,
       agentId: AgentKnowledge.agentId ? AgentKnowledge.agentId : null,
       teamId: AgentKnowledge.teamId ? AgentKnowledge.teamId : null,
+      blueprintId: knowledgeData.blueprintId || null,
+      organizationId: knowledgeData.organizationId || null,
       Task: knowledgeData.Task && {
         ...knowledgeData.Task,
         steps:

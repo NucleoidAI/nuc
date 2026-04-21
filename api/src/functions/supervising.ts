@@ -47,6 +47,7 @@ async function update({
   answer,
   status,
   taskId,
+  blueprintId,
 }: {
   teamId: string;
   supervisingId: string;
@@ -55,6 +56,7 @@ async function update({
   question: string;
   answer: string;
   taskId?: string;
+  blueprintId?: string;
 }) {
   await Supervising.update(
     { status, answer },
@@ -70,11 +72,14 @@ async function update({
     answer,
     agentId,
     taskId,
+    blueprintId,
+    teamId,
   });
   await AgentKnowledge.create({
     knowledgeId: knowledgeInstance.id,
     agentId,
     teamId,
+    blueprintId,
   });
 
   const knowledgeJson = knowledgeInstance.toJSON();
@@ -96,6 +101,7 @@ async function update({
     question,
     answer,
     status,
+    blueprintId,
   });
 
   return updatedSupervising;

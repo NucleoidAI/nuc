@@ -381,7 +381,6 @@ const SupervisingTypeDialog = ({
         <Box sx={{ overflow: "auto", height: "100%", mt: 2 }}>
           <TasksWidget
             agentId={supervise?.agentId}
-            fromDrawer={true}
             supervisionRaised={true}
             taskId={supervise?.taskId}
           />

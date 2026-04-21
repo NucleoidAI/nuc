@@ -49,6 +49,8 @@ const NodeEditorDrawer = ({
   editMode,
   pseudocode,
   agentId,
+  blueprintId,
+  teamId,
 }: {
   drawerOpen: boolean;
   handleDrawerClose: () => void;
@@ -226,6 +228,8 @@ const NodeEditorDrawer = ({
   editMode?: boolean;
   pseudocode?: string;
   agentId: string;
+  blueprintId?: string;
+  teamId?: string;
 }) => {
   const theme = useTheme();
 
@@ -248,11 +252,22 @@ const NodeEditorDrawer = ({
         },
       }}
     >
-      <Grid display={"flex"} flexDirection={"row"}>
+      <Grid display="flex" flexDirection="row" sx={{ height: "100%" }}>
         {showKnowledge && (
           <>
-            <Grid item xs={12} md={6}>
-              <Knowledge agentId={agentId} fromBlueprintDrawer={true} />
+            <Grid
+              item
+              xs={12}
+              md={6}
+              sx={{
+                position: "relative",
+              }}
+            >
+              <Knowledge
+                agentId={agentId}
+                blueprintId={blueprintId}
+                teamId={teamId}
+              />
             </Grid>
             <Divider orientation="vertical" flexItem sx={{ mx: 2 }} />
           </>

@@ -122,7 +122,7 @@ const NodeEditorWidget = ({
     };
   };
   pseudocode?: string;
-  agentId: string;
+  agentId?: string;
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
 

@@ -45,7 +45,7 @@ function SummaryWidgetSkeleton() {
 
 function TotalMessagesSkeleton() {
   return (
-    <Card sx={{ p: 3, borderRadius: 2 }}>
+    <Card sx={{ p: 3, borderRadius: 2, mt: "20px" }}>
       <Box
         sx={{
           mb: 3,

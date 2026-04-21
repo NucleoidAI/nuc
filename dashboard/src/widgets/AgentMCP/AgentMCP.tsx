@@ -99,10 +99,9 @@ const AgentMCP = ({ agent }: { agent: { id: string; name: string } }) => {
         {loading ? (
           <Grid container spacing={2}>
             {Array.from({
-              length:
-                selectedTab === 0 ? incomingMCPs.length : outgoingMCPs.length,
+              length: 4,
             }).map((_, i) => (
-              <Grid key={i} item xs={12} sm={6} md={3}>
+              <Grid key={i} size={{ xs: 12, sm: 6, md: 3 }}>
                 <MCPSkeleton />
               </Grid>
             ))}

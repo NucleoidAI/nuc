@@ -1,3 +1,4 @@
+import APITab from "../widgets/APITab/APITab";
 import AgentMCP from "../widgets/AgentMCP/AgentMCP";
 import BlueprintsWidget from "../widgets/BlueprintsWidget/BlueprintsWidget";
 import Communication from "../widgets/Communication/Communication";
@@ -8,8 +9,10 @@ import ProfileCard from "../components/ProfileCard/ProfileCard";
 import SidebarChatWidget from "../widgets/SidebarChatWidget";
 import Stack from "@mui/material/Stack";
 import Supervising from "../widgets/Supervising/Supervising";
+import SwaggerDialog from "../components/SwaggerDialog/SwaggerDialog";
 import TasksWidget from "../widgets/TasksWidget/TasksWidget";
 import { getAgentGradients } from "../utils/gradient";
+import { useEvent } from "@nucleoidai/react-event";
 
 import { Box, Skeleton, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -58,6 +61,11 @@ const TABS = [
     label: "MCPs",
     icon: <Iconify icon="carbon:ibm-cloud-pak-integration" width={24} />,
   },
+  {
+    value: "api",
+    label: "API",
+    icon: <Iconify icon="mdi:api" width={24} />,
+  },
 ];
 
 function AgentLayout({
@@ -96,6 +104,13 @@ function AgentLayout({
   );
 
   const [chatOpen, setChatOpen] = useState(false);
+  const [swaggerOpen, setSwaggerOpen] = useState(false);
+
+  const [swaggerEvent] = useEvent("SWAGGER_DIALOG_OPEN", { open: false });
+
+  useEffect(() => {
+    if (swaggerEvent?.open) setSwaggerOpen(true);
+  }, [swaggerEvent]);
 
   const handleChatToggle = () => {
     setChatOpen((prev) => !prev);
@@ -179,12 +194,18 @@ function AgentLayout({
         {currentTab === "communication" && (
           <Communication fromDrawer={fromDrawer} />
         )}
+        {currentTab === "api" && <APITab agentId={agent.id} />}
       </Box>
 
       <SidebarChatWidget
         agentId={agent.id}
         open={chatOpen}
         onToggle={handleChatToggle}
+      />
+
+      <SwaggerDialog
+        swaggerOpen={swaggerOpen}
+        setSwaggerOpen={setSwaggerOpen}
       />
     </>
   );

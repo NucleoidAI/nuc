@@ -37,6 +37,8 @@ function BlueprintFlowWidget({
   lastUsedNodeId,
   failedNodeId,
   isSuperviseFlow = false,
+  agentId,
+  readOnly = false,
 }: {
   aiResponse?: AIResponse;
   setAiResponse?: (response: AIResponse | null) => void;
@@ -47,6 +49,8 @@ function BlueprintFlowWidget({
   lastUsedNodeId?: string | null;
   failedNodeId?: string | null;
   isSuperviseFlow?: boolean;
+  agentId?: string;
+  readOnly?: boolean;
 }) {
   const [graphData, setGraphData] = useState<DefinitionGraph | null>(null);
   const [hasLocalChanges, setHasLocalChanges] = useState(false);
@@ -817,6 +821,7 @@ function BlueprintFlowWidget({
           graphData={graphData}
           enrichedGraphData={enrichedGraphData}
           drawerOpen={drawerOpen}
+          readOnly={readOnly}
           hasLocalChanges={hasLocalChanges}
           hasDifferences={hasDifferences}
           validationErrors={validationErrors}
@@ -859,6 +864,7 @@ function BlueprintFlowWidget({
             ? graphData.nodes[editingNodeId]
             : undefined
         }
+        agentId={agentId ?? blueprint.agentId}
       />
     </>
   );

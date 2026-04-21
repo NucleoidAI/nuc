@@ -32,7 +32,10 @@ class AgentKnowledge extends Model {
   declare agentId: string | null;
 
   @AllowNull(true)
-  @Column(DataType.UUID)
+  @Column({
+    type: DataType.UUID,
+    field: "project_id",
+  })
   declare teamId: string | null;
 
   declare agent?: any;

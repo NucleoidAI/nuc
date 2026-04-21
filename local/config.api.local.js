@@ -1,0 +1,68 @@
+const config = {
+  project: {
+    name: "greycollar-api",
+    version: "0.1.0",
+    label: "Team",
+    oauth: {
+      jwt: {
+        identifier: "id",
+      },
+      providers: {
+        github: {
+          tokenUrl: "https://github.com/login/oauth/access_token",
+          userUrl: "https://api.github.com/user",
+          clientId: "Ov23lihgDzlqJ1gnZxX3",
+          userIdentifier: "id",
+          userFields: {
+            name: "login",
+            displayName: "name",
+            avatarUrl: "avatar_url",
+            email: "email",
+          },
+        },
+      },
+    },
+  },
+  postgres: {
+    uri: "sqlite::memory:",
+    debug: false,
+    sync: true,
+  },
+  dynamodb: {
+    region: "us-east-1",
+  },
+  logger: {
+    elasticsearch: {
+      node: "http://elasticsearch:9200",
+      esVersion: 8,
+      flushBytes: 1000,
+      index: "greycollar-logs",
+      consistency: "one",
+    },
+  },
+  event: {
+    type: "inMemory",
+    host: "inmemory",
+    protocol: "http",
+    port: 8080,
+  },
+  metrics: {
+    enabled: false,
+    interval: 15000,
+    url: "http://pushgateway:9091",
+    pushGateway: {
+      jobName: "greycollar-database",
+      instance: "default",
+    },
+    pushGateWayOpenTelemetry: {
+      jobName: "greycollar-opentelemetry",
+      instance: "default",
+    },
+    pushGatewayNodeEvents: {
+      jobName: "greycollar-api",
+      instance: "node-events",
+    },
+  },
+};
+
+module.exports = config;

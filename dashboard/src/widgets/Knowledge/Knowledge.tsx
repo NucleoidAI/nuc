@@ -16,10 +16,12 @@ function Knowledge({
   agentId,
   teamId,
   fromDrawer,
+  fromBlueprintDrawer,
 }: {
   agentId?: string;
   teamId?: string;
   fromDrawer?: boolean;
+  fromBlueprintDrawer?: boolean;
 }) {
   const {
     getAgentKnowledges,
@@ -131,8 +133,8 @@ function Knowledge({
 
         <Stack
           sx={{
-            position: "fixed",
-            bottom: fromDrawer ? 62 : 10,
+            position: fromBlueprintDrawer ? "absolute" : "fixed",
+            bottom: fromDrawer ? 62 : fromBlueprintDrawer ? -50 : 10,
             right: fromDrawer ? 62 : 5,
           }}
         >

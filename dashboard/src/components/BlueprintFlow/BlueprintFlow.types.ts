@@ -12,6 +12,7 @@ export interface BlueprintFlowProps {
   graphData: DefinitionGraph;
   enrichedGraphData: DefinitionGraph;
   drawerOpen: boolean;
+  readOnly?: boolean;
   hasLocalChanges: boolean;
   hasDifferences: boolean;
   validationErrors: ValidationError[];

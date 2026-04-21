@@ -89,7 +89,8 @@ router.get("/:id", async (req, res) => {
   const { AgentKnowledge } = knowledgeItem;
 
   const hasAccess =
-    AgentKnowledge.teamId === teamId || AgentKnowledge.Agent?.teamId === teamId;
+    AgentKnowledge.teamId === teamId ||
+    AgentKnowledge.Agent?.teamId === teamId;
 
   if (!hasAccess) {
     throw new AuthenticationError();
@@ -119,7 +120,8 @@ router.delete("/:id", async (req, res) => {
   const { AgentKnowledge } = knowledgeItem;
 
   const hasAccess =
-    AgentKnowledge.teamId === teamId || AgentKnowledge.Agent?.teamId === teamId;
+    AgentKnowledge.teamId === teamId ||
+    AgentKnowledge.Agent?.teamId === teamId;
 
   if (!hasAccess) {
     throw new AuthenticationError();

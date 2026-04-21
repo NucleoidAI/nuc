@@ -1,7 +1,17 @@
+import { Image } from "@canmingir/link/platform/components";
+import { ReactNode } from "react";
 import { getBackgroundUrl } from "../../utils/background";
 
+import {
+  AiIcon,
+  BardIcon,
+  ClaudeIcon,
+  DeepMindIcon,
+  IbmIcon,
+  MetaIcon,
+  OpenAIIcon,
+} from "./AIEngineIcons";
 import { Avatar, Box, Card, Stack, Typography } from "@mui/material";
-import { Iconify, Image } from "@canmingir/link/platform/components";
 import { alpha, useTheme } from "@mui/material/styles";
 
 function AIMarketplaceItem({
@@ -22,18 +32,18 @@ function AIMarketplaceItem({
 }) {
   const theme = useTheme();
 
-  const icons =
-    engine?.vendor === "OpenAI"
-      ? "mingcute:openai-fill"
-      : engine?.vendor === "Microsoft"
-      ? "mdi:microsoft"
-      : engine?.vendor === "Claude"
-      ? "lineicons:claude"
-      : engine?.vendor === "Meta"
-      ? "hugeicons:meta"
-      : engine?.vendor === "DeepMind"
-      ? "simple-icons:deepmind"
-      : "tabler:ai";
+  const vendorIconMap: Record<string, ReactNode> = {
+    OpenAI: <OpenAIIcon width={20} height={20} />,
+    "Google Bard": <BardIcon width={20} height={20} />,
+    Claude: <ClaudeIcon width={20} height={20} />,
+    Meta: <MetaIcon width={20} height={20} />,
+    DeepMind: <DeepMindIcon width={20} height={20} />,
+    "IBM Watson": <IbmIcon width={20} height={20} />,
+  };
+
+  const icon = vendorIconMap[engine?.vendor] || (
+    <AiIcon width={20} height={20} />
+  );
 
   return (
     <Box
@@ -106,12 +116,7 @@ function AIMarketplaceItem({
                 zIndex: 10,
               }}
             >
-              <Iconify
-                icon={engine.avatar}
-                width="70%"
-                height="70%"
-                style={{ objectFit: "contain" }}
-              />
+              {icon}
             </Box>
           ) : (
             <Avatar
@@ -160,7 +165,7 @@ function AIMarketplaceItem({
               mt: "auto",
             }}
           >
-            <InfoBox label="Vendor" icon={icons} value={engine?.vendor} />
+            <InfoBox label="Vendor" icon={icon} value={engine?.vendor} />
             <InfoBox label="Model" value={engine?.model} />
             <InfoBox label="Price" value={`$ ${engine?.price}`} />
           </Stack>
@@ -176,7 +181,7 @@ function InfoBox({
   value,
 }: {
   label: string;
-  icon?: string;
+  icon?: ReactNode;
   value: string | number;
 }) {
   return (
@@ -203,7 +208,7 @@ function InfoBox({
         sx={{ mb: 0.5, height: 20 }}
       >
         {icon ? (
-          <Iconify icon={icon} width={18} />
+          icon
         ) : (
           <Typography
             variant="caption"

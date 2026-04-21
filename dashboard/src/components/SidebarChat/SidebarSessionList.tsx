@@ -18,6 +18,9 @@ interface SidebarSessionListProps {
     sessionId: string
   ) => void;
   onClearAll: () => void;
+  isCompact?: boolean;
+  onMouseEnter?: () => void;
+  wrapperRef?: React.Ref<HTMLDivElement>;
 }
 
 const SidebarSessionList = ({
@@ -27,19 +30,31 @@ const SidebarSessionList = ({
   onToggleChat,
   onSessionClick,
   onClearAll,
+  isCompact = true,
+  onMouseEnter,
+  wrapperRef,
 }: SidebarSessionListProps) => {
   const sidebarSessions = sessions;
 
   return (
-    <RightSideBar width={75} height={420}>
-      <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+    <RightSideBar width={isCompact ? 45 : 75} height={420}>
+      <Box
+        ref={wrapperRef}
+        onMouseEnter={onMouseEnter}
+        sx={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <Tooltip title="Open Chat" placement="left">
           <Box
             onClick={onToggleChat}
             sx={{
-              width: 65,
-              height: 50,
-              borderRadius: "12px",
+              width: isCompact ? 35 : 65,
+              height: isCompact ? 35 : 50,
+              borderRadius: isCompact ? "10px" : "12px",
               cursor: "pointer",
               display: "flex",
               flexDirection: "column",
@@ -47,26 +62,36 @@ const SidebarSessionList = ({
               justifyContent: "center",
               gap: 0.5,
               mb: 1,
+              alignSelf: "center",
               color: (theme) => theme.palette.text.secondary,
-              transition: "all 0.18s ease-in-out",
+              transition: "all 0.2s ease-in-out",
               "&:hover": {
                 bgcolor: (theme) => alpha(theme.palette.primary.main, 0.1),
                 color: (theme) => theme.palette.primary.main,
               },
             }}
           >
-            <Iconify icon="mdi:play" sx={{ width: 22, height: 22 }} />
-            <Typography
+            <Iconify
+              icon="mdi:play"
               sx={{
-                fontSize: "0.6rem",
-                fontWeight: 700,
-                letterSpacing: 0.5,
-                lineHeight: 1,
-                textTransform: "uppercase",
+                width: isCompact ? 20 : 22,
+                height: isCompact ? 20 : 22,
+                transition: "all 0.2s ease-in-out",
               }}
-            >
-              Run
-            </Typography>
+            />
+            {!isCompact && (
+              <Typography
+                sx={{
+                  fontSize: "0.6rem",
+                  fontWeight: 700,
+                  letterSpacing: 0.5,
+                  lineHeight: 1,
+                  textTransform: "uppercase",
+                }}
+              >
+                Run
+              </Typography>
+            )}
           </Box>
         </Tooltip>
 
@@ -141,7 +166,7 @@ const SidebarSessionList = ({
                     key={session.sessionId}
                     title={
                       hasUnread
-                        ? `${unreadCount} new ·  message${
+                        ? `${unreadCount} new · message${
                             unreadCount !== 1 ? "s" : ""
                           }`
                         : `${session.messages.length} message${
@@ -153,9 +178,9 @@ const SidebarSessionList = ({
                     <Box
                       onClick={(e) => onSessionClick(e, session.sessionId)}
                       sx={{
-                        width: 65,
-                        height: 50,
-                        borderRadius: "12px",
+                        width: isCompact ? 35 : 65,
+                        height: isCompact ? 35 : 50,
+                        borderRadius: isCompact ? "10px" : "12px",
                         cursor: "pointer",
                         flexShrink: 0,
                         display: "flex",
@@ -177,7 +202,7 @@ const SidebarSessionList = ({
                               ? alpha(theme.palette.primary.main, 0.25)
                               : "transparent"
                           }`,
-                        transition: "all 0.18s ease-in-out",
+                        transition: "all 0.2s ease-in-out",
                         "&:hover": {
                           bgcolor: (theme) =>
                             alpha(theme.palette.primary.main, 0.1),
@@ -197,17 +222,22 @@ const SidebarSessionList = ({
                             minWidth: 14,
                             height: 14,
                             padding: "0 3px",
+                            transform: isCompact
+                              ? "scale(0.85) translate(25%, -25%)"
+                              : "scale(1) translate(50%, -50%)",
+                            transition: "all 0.2s ease",
                           },
                         }}
                       >
                         <Box
                           sx={{
-                            width: 24,
-                            height: 24,
+                            width: isCompact ? 22 : 24,
+                            height: isCompact ? 22 : 24,
                             borderRadius: "7px",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
+                            transition: "all 0.2s ease-in-out",
                             bgcolor: (theme) =>
                               isCurrent
                                 ? alpha(theme.palette.primary.main, 0.2)
@@ -232,16 +262,19 @@ const SidebarSessionList = ({
                           )}
                         </Box>
                       </Badge>
-                      <Typography
-                        sx={{
-                          fontSize: "0.55rem",
-                          fontWeight: 700,
-                          lineHeight: 1,
-                          letterSpacing: 0.3,
-                        }}
-                      >
-                        {`Session ${sessionNum}`}
-                      </Typography>
+
+                      {!isCompact && (
+                        <Typography
+                          sx={{
+                            fontSize: "0.55rem",
+                            fontWeight: 700,
+                            lineHeight: 1,
+                            letterSpacing: 0.3,
+                          }}
+                        >
+                          {`Session ${sessionNum}`}
+                        </Typography>
+                      )}
                     </Box>
                   </Tooltip>
                 );
@@ -260,15 +293,17 @@ const SidebarSessionList = ({
                 onClick={onClearAll}
                 sx={{
                   mt: "auto",
-                  width: 65,
-                  height: 36,
+                  mb: isCompact ? 1 : 0,
+                  width: isCompact ? 35 : 65,
+                  height: isCompact ? 35 : 36,
                   borderRadius: "10px",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  alignSelf: "center",
                   color: (theme) => theme.palette.text.secondary,
-                  transition: "all 0.18s ease-in-out",
+                  transition: "all 0.2s ease-in-out",
                   "&:hover": {
                     bgcolor: (theme) => alpha(theme.palette.error.main, 0.1),
                     color: (theme) => theme.palette.error.main,
@@ -277,7 +312,10 @@ const SidebarSessionList = ({
               >
                 <Iconify
                   icon="solar:trash-bin-2-bold"
-                  sx={{ width: 18, height: 18 }}
+                  sx={{
+                    width: isCompact ? 16 : 18,
+                    height: isCompact ? 16 : 18,
+                  }}
                 />
               </Box>
             </Tooltip>

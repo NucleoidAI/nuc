@@ -1,0 +1,78 @@
+name: greycollar-local
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres-local
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=greyadmin
+      - POSTGRES_PASSWORD=eyuTSfZ4vJmxWfDz
+      - POSTGRES_DB=greycollar-land
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres-local-data:/var/lib/postgresql/data
+    networks:
+      - greycollar-local-network
+    ports:
+      - "5432:5432"
+
+  inmemory:
+    image: canmingir/inmemory-queue-land:latest
+    container_name: inmemory-local
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    networks:
+      - greycollar-local-network
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 8080 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+  greycollar:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: greycollar-local:latest
+    container_name: greycollar-local
+    restart: unless-stopped
+    env_file:
+      - ../.env.local
+    networks:
+      - greycollar-local-network
+    volumes:
+      - ./config.api.local.js:/app/api/config.js:ro
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+      - inmemory
+
+  communication:
+    build:
+      context: ../communication
+      dockerfile: Dockerfile
+    image: communication-local:latest
+    container_name: communication-local
+    restart: unless-stopped
+    env_file:
+      - ../.env.local
+    networks:
+      - greycollar-local-network
+    volumes:
+      - ./config.communication.local.js:/app/dist/config.js:ro
+    ports:
+      - "3003:3003"
+    depends_on:
+      inmemory:
+        condition: service_healthy
+
+networks:
+  greycollar-local-network:
+    driver: bridge
+
+volumes:
+  postgres-local-data:

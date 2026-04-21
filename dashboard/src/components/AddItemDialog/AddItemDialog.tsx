@@ -184,6 +184,9 @@ function AddItemDialog({
       }}
       fullWidth
       maxWidth="sm"
+      sx={{
+        zIndex: (theme) => theme.zIndex.modal + 3,
+      }}
     >
       <DialogTitle
         sx={{
@@ -214,6 +217,9 @@ function AddItemDialog({
               ""
             }
             onChange={handleOptionChange}
+            MenuProps={{
+              sx: { zIndex: (theme) => theme.zIndex.modal + 4 },
+            }}
           >
             {organizations.map((organization) => (
               <MenuItem key={organization.id} value={organization.name}>
@@ -258,6 +264,9 @@ function AddItemDialog({
           value={currentType}
           onChange={handleChangeType}
           data-cy="add-item-select"
+          MenuProps={{
+            sx: { zIndex: (theme) => theme.zIndex.modal + 4 },
+          }}
         >
           {types.map((type) => (
             <MenuItem data-cy={`add-type-menu-${type}`} key={type} value={type}>

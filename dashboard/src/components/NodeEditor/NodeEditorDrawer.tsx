@@ -260,8 +260,15 @@ const NodeEditorDrawer = ({
               xs: 12,
               md: 6,
             }}
+            sx={{
+              position: "relative",
+            }}
           >
-            <Knowledge agentId={agentId} fromBlueprintDrawer={true} />
+            <Knowledge
+              agentId={agentId}
+              blueprintId={blueprintId}
+              teamId={teamId}
+            />
           </Grid>
         )}
         <Grid

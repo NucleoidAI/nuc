@@ -25,7 +25,7 @@ function TabBar({ TABS, currentTab, setCurrentTab, sidebarOpen = false }) {
     <Tabs
       value={currentTab}
       onChange={handleTabChange}
-      variant={isWideScreen ? "standard" : "scrollable"}
+      variant={"scrollable"}
       centered={isWideScreen}
       scrollButtons="auto"
       allowScrollButtonsMobile

@@ -64,10 +64,12 @@ const SupervisingTypeDialog = ({
       onClose={onClose}
       maxWidth="lg"
       fullWidth
-      PaperProps={{
-        sx: {
-          borderRadius: 3,
-          p: 1,
+      slotProps={{
+        paper: {
+          sx: {
+            borderRadius: 3,
+            p: 1,
+          },
         },
       }}
     >
@@ -338,7 +340,6 @@ const SupervisingTypeDialog = ({
           </Box>
         )}
       </DialogContent>
-
       <PopupChatWidget
         readOnly={true}
         openPopChat={popChatOpen}
@@ -346,7 +347,6 @@ const SupervisingTypeDialog = ({
         conversationId={supervise?.conversationId}
         sessionId={supervise?.sessionId}
       />
-
       <Drawer
         anchor="right"
         open={taskDrawerOpen}
@@ -354,10 +354,12 @@ const SupervisingTypeDialog = ({
         sx={{
           zIndex: (theme) => theme.zIndex.modal + 2,
         }}
-        PaperProps={{
-          sx: {
-            width: { xs: "100%", sm: "90%", md: "80%", lg: "70%" },
-            maxWidth: 1400,
+        slotProps={{
+          paper: {
+            sx: {
+              width: { xs: "100%", sm: "90%", md: "80%", lg: "70%" },
+              maxWidth: 1400,
+            },
           },
         }}
       >

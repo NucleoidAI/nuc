@@ -20,7 +20,7 @@ function Dashboard() {
 
       <TwoSideLayout
         rows={{
-          fourthRow: [
+          firstRow: [
             <WidgetSummaryWidget
               key={5}
               title="Response Rate"

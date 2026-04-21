@@ -148,11 +148,17 @@ const MCPsWidget = () => {
         autoComplete="off"
         onChange={handleSearchChange}
       />
-
       <Grid container spacing={1} sx={{ mb: 2 }}>
         {searchTerm &&
           filteredMCPs.map((mcp) => (
-            <Grid key={mcp.id} item xs={12} sm={6} md={2}>
+            <Grid
+              key={mcp.id}
+              size={{
+                xs: 12,
+                sm: 6,
+                md: 2,
+              }}
+            >
               <Card
                 sx={{
                   height: 160,
@@ -186,10 +192,16 @@ const MCPsWidget = () => {
             </Grid>
           ))}
       </Grid>
-
       <Grid container spacing={2}>
         {filteredData?.map((skill) => (
-          <Grid item xs={12} sm={6} md={3} key={skill.id}>
+          <Grid
+            key={skill.id}
+            size={{
+              xs: 12,
+              sm: 6,
+              md: 3,
+            }}
+          >
             <Skills
               id={skill.id}
               title={skill.provider}
@@ -201,7 +213,6 @@ const MCPsWidget = () => {
           </Grid>
         ))}
       </Grid>
-
       <SkillDialog
         open={skillDialogOpen}
         handleClose={handleSkillDialogClose}
@@ -210,7 +221,6 @@ const MCPsWidget = () => {
         acquiredMCPs={acquiredMCPs}
         getTokens={getTokens}
       />
-
       <Modal open={open} onClose={handleClose}>
         <Box
           sx={{
@@ -249,7 +259,7 @@ const MCPsWidget = () => {
               </Typography>
               <Grid container spacing={2}>
                 {relatedSkills.map((skill) => (
-                  <Grid item xs={6} key={skill.id}>
+                  <Grid key={skill.id} size={6}>
                     <Skills
                       id={skill.id}
                       title={skill.title}

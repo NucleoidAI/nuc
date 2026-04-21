@@ -434,7 +434,6 @@ const BlueprintChatTitle = ({
           </Box>
         </CardContent>
       </Card>
-
       <Dialog
         open={isEditing}
         onClose={handleCancelClick}
@@ -446,18 +445,21 @@ const BlueprintChatTitle = ({
             zIndex: (theme) => theme.zIndex.modal + 2,
           },
         }}
-        PaperProps={{
-          sx: {
-            borderRadius: 3,
-            background: `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.background.default} 100%)`,
-            backdropFilter: "blur(20px)",
-            border: `1px solid ${theme.palette.divider}`,
+        slotProps={{
+          backdrop: {
+            sx: {
+              backgroundColor: "rgba(0, 0, 0, 0.2)",
+              backdropFilter: "blur(4px)",
+            },
           },
-        }}
-        BackdropProps={{
-          sx: {
-            backgroundColor: "rgba(0, 0, 0, 0.2)",
-            backdropFilter: "blur(4px)",
+
+          paper: {
+            sx: {
+              borderRadius: 3,
+              background: `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.background.default} 100%)`,
+              backdropFilter: "blur(20px)",
+              border: `1px solid ${theme.palette.divider}`,
+            },
           },
         }}
       >

@@ -37,13 +37,12 @@ function Summary({ organization, team, agent }) {
       </DialogContentText>
       <Grid container spacing={2}>
         <Grid
-          item
-          xs={12}
           sx={{
             justifyContent: "center",
             alignContent: "center",
             display: "flex",
           }}
+          size={12}
         >
           <Card
             sx={{
@@ -54,7 +53,7 @@ function Summary({ organization, team, agent }) {
           >
             <CardContent>
               <Grid container alignItems="center" spacing={2}>
-                <Grid item xs={4}>
+                <Grid size={4}>
                   <Box
                     sx={{
                       mx: "auto",
@@ -76,7 +75,7 @@ function Summary({ organization, team, agent }) {
                     />
                   </Box>
                 </Grid>
-                <Grid item xs={8}>
+                <Grid size={8}>
                   <Typography variant="h6" data-cy="team-summary-name-area">
                     {team.name}
                   </Typography>
@@ -86,7 +85,6 @@ function Summary({ organization, team, agent }) {
           </Card>
         </Grid>
       </Grid>
-
       {agent && (
         <>
           <DialogContentText sx={{ textAlign: "center", mb: 2, mt: 3 }}>
@@ -94,13 +92,12 @@ function Summary({ organization, team, agent }) {
           </DialogContentText>
           <Grid container spacing={2}>
             <Grid
-              item
-              xs={12}
               sx={{
                 justifyContent: "center",
                 alignContent: "center",
                 display: "flex",
               }}
+              size={12}
             >
               <Card
                 sx={{
@@ -111,7 +108,7 @@ function Summary({ organization, team, agent }) {
               >
                 <CardContent>
                   <Grid container alignItems="center" spacing={2}>
-                    <Grid item xs={4}>
+                    <Grid size={4}>
                       <Box
                         sx={{
                           mx: "auto",
@@ -133,7 +130,7 @@ function Summary({ organization, team, agent }) {
                         />
                       </Box>
                     </Grid>
-                    <Grid item xs={8}>
+                    <Grid size={8}>
                       <Typography
                         variant="h6"
                         data-cy="agent-summary-name-area"

@@ -145,13 +145,15 @@ function TasksWidget({
                   placeholder="Search tasks by description..."
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <Iconify
-                        icon="eva:search-fill"
-                        sx={{ color: "text.disabled", mr: 1 }}
-                      />
-                    ),
+                  slotProps={{
+                    input: {
+                      startAdornment: (
+                        <Iconify
+                          icon="eva:search-fill"
+                          sx={{ color: "text.disabled", mr: 1 }}
+                        />
+                      ),
+                    },
                   }}
                 />
               </Stack>
@@ -193,9 +195,11 @@ function TasksWidget({
                 open={Boolean(selectedTask)}
                 onClose={() => setSelectedTask(null)}
                 fullScreen
-                PaperProps={{
-                  sx: {
-                    borderRadius: 0,
+                slotProps={{
+                  paper: {
+                    sx: {
+                      borderRadius: 0,
+                    },
                   },
                 }}
               >

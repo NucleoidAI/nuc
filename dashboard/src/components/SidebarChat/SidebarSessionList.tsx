@@ -3,7 +3,6 @@ import RightSideBar from "../RightSideBar/RightSideBar";
 import type { StoredSession } from "../../hooks/useChatSessions";
 import { alpha } from "@mui/material/styles";
 import { cleanIconName } from "../../utils/cleanIconName";
-import { publish } from "@nucleoidai/react-event";
 
 import { Badge, Box, Divider, Tooltip, Typography } from "@mui/material";
 import React, { memo } from "react";

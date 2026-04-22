@@ -16,7 +16,6 @@ export default function BlueprintFlow({
   graphData,
   enrichedGraphData,
   drawerOpen,
-  readOnly = false,
   hasLocalChanges,
   hasDifferences,
   validationErrors,

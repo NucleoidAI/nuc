@@ -3,6 +3,7 @@ import RightSideBar from "../RightSideBar/RightSideBar";
 import type { StoredSession } from "../../hooks/useChatSessions";
 import { alpha } from "@mui/material/styles";
 import { cleanIconName } from "../../utils/cleanIconName";
+import { publish } from "@nucleoidai/react-event";
 
 import { Badge, Box, Divider, Tooltip, Typography } from "@mui/material";
 import React, { memo } from "react";
@@ -38,7 +39,7 @@ const SidebarSessionList = ({
   const sidebarSessions = sessions;
 
   return (
-    <RightSideBar width={75} height={420}>
+    <RightSideBar width={isCompact ? 45 : 75} height={420}>
       <Box
         ref={wrapperRef}
         onMouseEnter={onMouseEnter}
@@ -79,15 +80,66 @@ const SidebarSessionList = ({
               icon="solar:add-square-bold-duotone"
               sx={{ width: 22, height: 22 }}
             />
-            <Typography
+            {!isCompact && (
+              <Typography
+                sx={{
+                  fontSize: "0.6rem",
+                  fontWeight: 700,
+                  letterSpacing: 0.5,
+                  lineHeight: 1,
+                  textTransform: "uppercase",
+                }}
+              >
+                New
+              </Typography>
+            )}
+          </Box>
+        </Tooltip>
+
+        <Tooltip title="Open API" placement="left">
+          <Box
+            onClick={() => publish("SWAGGER_DIALOG_OPEN", { open: true })}
+            sx={{
+              width: isCompact ? 35 : 65,
+              height: isCompact ? 35 : 50,
+              borderRadius: isCompact ? "10px" : "12px",
+              cursor: "pointer",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 0.5,
+              mb: 1,
+              alignSelf: "center",
+              color: (theme) => theme.palette.text.secondary,
+              transition: "all 0.2s ease-in-out",
+              "&:hover": {
+                bgcolor: (theme) => alpha(theme.palette.primary.main, 0.1),
+                color: (theme) => theme.palette.primary.main,
+              },
+            }}
+          >
+            <Iconify
+              icon="logos:swagger"
               sx={{
                 width: isCompact ? 20 : 22,
                 height: isCompact ? 20 : 22,
                 transition: "all 0.2s ease-in-out",
               }}
-            >
-              New
-            </Typography>
+            />
+            {!isCompact && (
+              <Typography
+                sx={{
+                  fontSize: "0.6rem",
+                  fontWeight: 700,
+                  letterSpacing: 0.5,
+                  lineHeight: 1,
+                  textTransform: "uppercase",
+                }}
+              >
+                API
+              </Typography>
+            )}
           </Box>
         </Tooltip>
 

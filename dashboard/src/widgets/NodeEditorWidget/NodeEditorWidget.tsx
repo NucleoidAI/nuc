@@ -17,8 +17,8 @@ const NodeEditorWidget = ({
   setNewNodeType,
   selectedBranch,
   setSelectedBranch,
-  inheritedNextBranch,
-  setInheritedNextBranch,
+  inheritedNextBranch = "none",
+  setInheritedNextBranch = () => {},
   handleSubmit,
   selectedIntegration,
   setSelectedIntegration,
@@ -63,8 +63,8 @@ const NodeEditorWidget = ({
   setNewNodeType: (type: string) => void;
   selectedBranch: "true" | "false";
   setSelectedBranch: (branch: "true" | "false") => void;
-  inheritedNextBranch: "true" | "false" | "none";
-  setInheritedNextBranch: (branch: "true" | "false" | "none") => void;
+  inheritedNextBranch?: "true" | "false" | "none";
+  setInheritedNextBranch?: (branch: "true" | "false" | "none") => void;
   handleSubmit: () => void;
   selectedIntegration: {
     id: string;
@@ -247,9 +247,6 @@ const NodeEditorWidget = ({
       nextIntegration={nextIntegration}
       handleSubmit={handleSubmit}
       editMode={editMode}
-      agentId={agentId}
-      blueprintId={blueprintId}
-      teamId={teamId}
     />
   );
 };

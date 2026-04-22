@@ -1,6 +1,6 @@
 import CloseIcon from "@mui/icons-material/Close";
 import { Iconify } from "@canmingir/link/platform/components";
-import React from "react";
+import React, { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 
 import {
@@ -17,6 +17,7 @@ import {
   Select,
   Stack,
   TextField,
+  Pagination,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
@@ -230,6 +231,8 @@ const NodeEditorDrawer = ({
   pseudocode?: string;
 }) => {
   const theme = useTheme();
+  const [integrationPage, setIntegrationPage] = useState(1);
+  const ITEMS_PER_PAGE = 3;
 
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -413,7 +416,10 @@ const NodeEditorDrawer = ({
                   fullWidth
                   size="small"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setIntegrationPage(1);
+                  }}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -432,8 +438,6 @@ const NodeEditorDrawer = ({
 
                 <Box
                   sx={{
-                    minHeight: 500,
-                    overflowY: "auto",
                     display: "flex",
                     flexDirection: "column",
                     gap: 1,
@@ -444,74 +448,90 @@ const NodeEditorDrawer = ({
                       No integrations found matching &quot;{searchQuery}&quot;
                     </Typography>
                   ) : (
-                    availableIntegrations.map((integration) => (
-                      <Card
-                        key={integration.id}
-                        variant="outlined"
-                        sx={{
-                          cursor: "pointer",
-                          border:
-                            selectedIntegration?.id === integration.id
-                              ? `2px solid ${theme.palette.primary.main}`
-                              : "1px solid",
-                          borderColor:
-                            selectedIntegration?.id === integration.id
-                              ? "background.default"
-                              : "divider",
-                          bgcolor:
-                            selectedIntegration?.id === integration.id
-                              ? "action.selected"
-                              : "background.paper",
-                        }}
-                        onClick={() => setSelectedIntegration(integration)}
-                      >
-                        <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
-                          <Stack
-                            direction="row"
-                            spacing={1.5}
-                            alignItems="center"
-                            mb={1}
-                          >
-                            <Box
-                              sx={{
-                                width: 32,
-                                height: 32,
-                                borderRadius: 1,
-                                bgcolor: "background.neutral",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                              }}
+                    availableIntegrations
+                      .slice(
+                        (integrationPage - 1) * ITEMS_PER_PAGE,
+                        integrationPage * ITEMS_PER_PAGE
+                      )
+                      .map((integration) => (
+                        <Card
+                          key={integration.id}
+                          variant="outlined"
+                          sx={{
+                            cursor: "pointer",
+                            border:
+                              selectedIntegration?.id === integration.id
+                                ? `2px solid ${theme.palette.primary.main}`
+                                : "1px solid",
+                            borderColor:
+                              selectedIntegration?.id === integration.id
+                                ? "background.default"
+                                : "divider",
+                            bgcolor:
+                              selectedIntegration?.id === integration.id
+                                ? "action.selected"
+                                : "background.paper",
+                          }}
+                          onClick={() => setSelectedIntegration(integration)}
+                        >
+                          <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
+                            <Stack
+                              direction="row"
+                              spacing={1.5}
+                              alignItems="center"
+                              mb={1}
                             >
-                              <Iconify
-                                icon={integration.icon}
-                                width={18}
-                                height={18}
-                              />
-                            </Box>
+                              <Box
+                                sx={{
+                                  width: 32,
+                                  height: 32,
+                                  borderRadius: 1,
+                                  bgcolor: "background.neutral",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Iconify
+                                  icon={integration.icon}
+                                  width={18}
+                                  height={18}
+                                />
+                              </Box>
 
-                            <Typography variant="subtitle2" fontWeight="bold">
-                              {integration.action}
+                              <Typography variant="subtitle2" fontWeight="bold">
+                                {integration.action}
+                              </Typography>
+                            </Stack>
+
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                              display="block"
+                              sx={{ mb: 0.5 }}
+                            >
+                              {integration.provider}
                             </Typography>
-                          </Stack>
 
-                          <Typography
-                            variant="caption"
-                            color="text.secondary"
-                            display="block"
-                            sx={{ mb: 0.5 }}
-                          >
-                            {integration.provider}
-                          </Typography>
-
-                          <Typography variant="body2" color="text.secondary">
-                            {integration.description}
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                    ))
+                            <Typography variant="body2" color="text.secondary">
+                              {integration.description}
+                            </Typography>
+                          </CardContent>
+                        </Card>
+                      ))
                   )}
                 </Box>
+                {availableIntegrations.length > ITEMS_PER_PAGE && (
+                  <Pagination
+                    count={Math.ceil(
+                      availableIntegrations.length / ITEMS_PER_PAGE
+                    )}
+                    page={integrationPage}
+                    onChange={(_, value) => setIntegrationPage(value)}
+                    size="small"
+                    sx={{ mt: 1, display: "flex", justifyContent: "center" }}
+                  />
+                )}
               </>
             )}
           </Box>

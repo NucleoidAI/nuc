@@ -1,4 +1,4 @@
-import LoadingButton from "@mui/lab/LoadingButton";
+import LoadingButton from "../LoadingButton";
 import type { Resolver } from "react-hook-form";
 import type { SelectChangeEvent } from "@mui/material/Select";
 import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
@@ -7,7 +7,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import {
   Box,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -418,24 +417,11 @@ function AddItemDialog({
           >
             <LoadingButton
               type="submit"
-              variant="contained"
+              loading={isSubmitting}
               disabled={!isValid || isSubmitting}
               data-cy="finish"
             >
-              {isSubmitting ? (
-                <Box style={{ display: "flex", alignItems: "center" }}>
-                  <CircularProgress
-                    size={18}
-                    color="inherit"
-                    style={{ marginRight: "8px" }}
-                  />
-                  Save
-                </Box>
-              ) : (
-                <Box style={{ display: "flex", alignItems: "center" }}>
-                  Save
-                </Box>
-              )}
+              Save
             </LoadingButton>
           </DialogActions>
         </FormProvider>

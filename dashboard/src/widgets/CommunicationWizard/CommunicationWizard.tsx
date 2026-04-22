@@ -7,6 +7,7 @@ import React from "react";
 import {
   Box,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -30,10 +31,10 @@ const CommunicationWizard = ({
 }) => {
   const [tabIndex, setTabIndex] = React.useState(0);
   const [leftSelection, setLeftSelection] = React.useState(null);
-  const [selectedRights, setSelectedRights] = React.useState([]); // Keep as array for compatibility but will only contain one item
+  const [selectedRights, setSelectedRights] = React.useState([]);
   const [inputDialogOpen, setInputDialogOpen] = React.useState(false);
   const [pendingChannelOption, setPendingChannelOption] = React.useState(null);
-
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const handleDialogClose = () => {
     onClose();
     setTabIndex(0);
@@ -103,12 +104,14 @@ const CommunicationWizard = ({
   const isChannelAlreadyConnected = !!existingConnection;
 
   const handleConnect = async () => {
+    setIsSubmitting(true);
     if (!leftSelection) return;
     if (isChannelAlreadyConnected) {
       return;
     }
     if (onConnect) await onConnect(leftSelection, selectedRights);
     handleDialogClose();
+    setIsSubmitting(false);
   };
 
   return (
@@ -245,11 +248,25 @@ const CommunicationWizard = ({
             disabled={
               isChannelAlreadyConnected ||
               selectedRights.length !== 1 ||
-              !leftSelection
+              !leftSelection ||
+              isSubmitting
             }
             variant="contained"
           >
-            {isChannelAlreadyConnected ? "Already Connected" : "Connect"}
+            {isSubmitting ? (
+              <Box style={{ display: "flex", alignItems: "center" }}>
+                <CircularProgress
+                  size={18}
+                  color="inherit"
+                  style={{ marginRight: "8px" }}
+                />
+                Connecting...
+              </Box>
+            ) : isChannelAlreadyConnected ? (
+              "Already Connected"
+            ) : (
+              "Connect"
+            )}
           </Button>
         </DialogActions>
       </Dialog>

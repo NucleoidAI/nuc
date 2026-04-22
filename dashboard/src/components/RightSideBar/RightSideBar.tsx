@@ -1,8 +1,9 @@
-import { Box } from "@mui/material";
 import React from "react";
 import type { SxProps } from "@mui/system";
 import type { Theme } from "@mui/material/styles";
 import { alpha } from "@mui/material/styles";
+
+import { Box, Portal } from "@mui/material";
 
 type RightSideBarProps = {
   width?: number | string;
@@ -24,28 +25,31 @@ const RightSideBar = ({
   if (!open) return null;
 
   return (
-    <Box
-      component="aside"
-      sx={{
-        position: "fixed",
-        top,
-        right: 0,
-        transform: "translateY(-50%)",
-        width,
-        height,
-        bgcolor: (theme: Theme) => alpha(theme.palette.background.default, 0.6),
-        borderRadius: "6px",
-        zIndex: (theme: Theme) => theme.zIndex.drawer + 1,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        py: 1.5,
-        gap: 1,
-        ...((sx as object) || {}),
-      }}
-    >
-      {children}
-    </Box>
+    <Portal>
+      <Box
+        component="aside"
+        sx={{
+          position: "fixed",
+          top,
+          right: 0,
+          transform: "translateY(-50%)",
+          width,
+          height,
+          bgcolor: (theme: Theme) =>
+            alpha(theme.palette.background.default, 0.6),
+          borderRadius: "6px",
+          zIndex: (theme: Theme) => theme.zIndex.modal + 3,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          py: 1.5,
+          gap: 1,
+          ...((sx as object) || {}),
+        }}
+      >
+        {children}
+      </Box>
+    </Portal>
   );
 };
 

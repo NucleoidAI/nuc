@@ -1,19 +1,13 @@
 global:
   scrape_interval: 15s
   evaluation_interval: 15s
-
 storage:
   tsdb:
     out_of_order_time_window: 10m
-
 scrape_configs:
   - job_name: "prometheus"
     static_configs:
-      - targets: ["pushgateway.land.greycollar.ai:443"]
-    scheme: https
-
-  - job_name: "greycollar-land"
+      - targets: ["prometheus:9090"]
+  - job_name: "pushgateway"
     static_configs:
-      - targets: ["dashboard.land.greycollar.ai:443"]
-    scheme: https
-    metrics_path: /api/metrics/prometheus
+      - targets: ["pushgateway:9091"]

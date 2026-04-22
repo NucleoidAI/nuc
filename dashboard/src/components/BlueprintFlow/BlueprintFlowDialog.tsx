@@ -8,7 +8,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  alpha,
 } from "@mui/material";
 
 interface AIResponse {
@@ -45,17 +44,12 @@ const BlueprintFlowDialog = ({
       onClose={handleFlowDialogClose}
       maxWidth="xl"
       fullWidth
-      PaperProps={{
-        sx: {
-          backgroundColor: (theme) => theme.palette.background.default,
-          backgroundImage: (theme) => `
-                      radial-gradient(
-                        ${alpha(theme.palette.divider, 0.08)} 1px,
-                        transparent 1px
-                      )
-                    `,
-          backgroundSize: "16px 16px",
-          position: "relative",
+      slotProps={{
+        paper: {
+          sx: {
+            backgroundColor: (theme) => theme.palette.background.default,
+            position: "relative",
+          },
         },
       }}
     >
@@ -78,6 +72,7 @@ const BlueprintFlowDialog = ({
             setAiResponse={setAiResponse}
             blueprint={selectedItem}
             taskId={taskId}
+            readOnly={true}
           />
         )}
       </DialogContent>

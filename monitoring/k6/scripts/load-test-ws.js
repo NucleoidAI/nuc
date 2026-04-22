@@ -2,30 +2,28 @@ import { check } from "k6";
 import http from "k6/http";
 
 export const options = {
-    scenarios: {
-      load_test: {
-        executor: 'constant-arrival-rate',
-        rate: 1000, // requests per second
-        timeUnit: '1s',
-        duration: '30s',
-        preAllocatedVUs: 1000,
-        maxVUs: 2000,
-      },
+  scenarios: {
+    load_test: {
+      executor: "constant-arrival-rate",
+      rate: __ENV.RATE ? parseInt(__ENV.RATE) : 10, // requests per second (use RATE env var for prod)
+      timeUnit: "1s",
+      duration: __ENV.DURATION || "30s",
+      preAllocatedVUs: __ENV.VUS ? parseInt(__ENV.VUS) : 20,
+      maxVUs: __ENV.MAX_VUS ? parseInt(__ENV.MAX_VUS) : 50,
     },
+  },
   tags: {
     test_type: "load",
     environment: __ENV.ENVIRONMENT || "local",
   },
 };
 
-const BASE_URL =
-  __ENV.BASE_URL ||
-  "https://communication-land.gentleflower-99ef02e0.eastus.azurecontainerapps.io";
+const BASE_URL = "http://localhost:3001";
 
 export default function () {
   const payload = JSON.stringify({
     agentId: "00db1bd4-4829-40f2-8b99-d2e42342157e",
-    content: "Where is the parking lot?",
+    content: "Hello",
   });
 
   const params = {

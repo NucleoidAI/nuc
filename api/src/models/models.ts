@@ -93,12 +93,14 @@ async function init() {
 
   models.Project.belongsToMany(models.Agent, {
     through: models.AgentKnowledge,
-    foreignKey: "projectId",
+    foreignKey: "teamId",
+    otherKey: "agentId",
   });
 
   models.Agent.belongsToMany(models.Project, {
     through: models.AgentKnowledge,
     foreignKey: "agentId",
+    otherKey: "teamId",
   });
 
   models.Agent.hasMany(models.AgentKnowledge, {
@@ -196,10 +198,10 @@ async function init() {
   });
 
   // Task <-> Blueprint
-  models.Task.hasOne(models.Blueprint, {
+  models.Blueprint.hasMany(models.Task, {
     foreignKey: "blueprintId",
   });
-  models.Blueprint.belongsTo(models.Task, {
+  models.Task.belongsTo(models.Blueprint, {
     foreignKey: "blueprintId",
   });
 

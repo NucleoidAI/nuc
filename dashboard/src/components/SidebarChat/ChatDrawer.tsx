@@ -172,36 +172,38 @@ const ChatDrawer = ({
               inputRef={inputRef}
               onKeyDown={handleKeyDown}
               size="small"
-              InputProps={{
-                endAdornment: (
-                  <IconButton
-                    onClick={() => {
-                      const content = inputRef.current?.value?.trim();
-                      if (content) {
-                        onSend(content);
-                        inputRef.current.value = "";
-                      }
-                    }}
-                    size="small"
-                  >
-                    <Iconify
-                      icon="material-symbols:send"
-                      sx={{
-                        width: 20,
-                        height: 20,
-                        color: (theme) =>
-                          inputRef.current?.value
-                            ? theme.palette.primary.main
-                            : "inherit",
-                      }}
-                    />
-                  </IconButton>
-                ),
-              }}
               sx={{
                 "& .MuiOutlinedInput-root": {
                   bgcolor: (theme) =>
                     alpha(theme.palette.background.paper, 0.8),
+                },
+              }}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <IconButton
+                      onClick={() => {
+                        const content = inputRef.current?.value?.trim();
+                        if (content) {
+                          onSend(content);
+                          inputRef.current.value = "";
+                        }
+                      }}
+                      size="small"
+                    >
+                      <Iconify
+                        icon="material-symbols:send"
+                        sx={{
+                          width: 20,
+                          height: 20,
+                          color: (theme) =>
+                            inputRef.current?.value
+                              ? theme.palette.primary.main
+                              : "inherit",
+                        }}
+                      />
+                    </IconButton>
+                  ),
                 },
               }}
             />

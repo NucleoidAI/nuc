@@ -74,7 +74,9 @@ function NewItemForm({
     <Dialog
       open={open}
       onClose={onClose}
-      PaperProps={{ sx: { borderRadius: "25px" } }}
+      slotProps={{
+        paper: { sx: { borderRadius: "25px" } },
+      }}
     >
       <DialogTitle sx={styles.dialogTitle}>Add a new {title}</DialogTitle>
       <DialogContent sx={styles.dialogContent}>
@@ -160,9 +162,6 @@ function NewItemForm({
             </div>
           ) : (
             <TextField
-              inputProps={{
-                "data-cy": property,
-              }}
               key={property}
               autoFocus
               margin="dense"
@@ -170,8 +169,14 @@ function NewItemForm({
               fullWidth
               value={newItem[property] || ""}
               onChange={handleInputChange(property)}
-              InputLabelProps={{ sx: { color: "primary.main" } }}
               sx={{ mt: "1rem", textTransform: "capitalize" }}
+              slotProps={{
+                htmlInput: {
+                  "data-cy": property,
+                },
+
+                inputLabel: { sx: { color: "primary.main" } },
+              }}
             />
           )
         )}

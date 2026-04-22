@@ -6,7 +6,7 @@ const PerformanceSkeleton = () => {
   return (
     <Card
       elevation={6}
-      sx={{ position: "relative", width: "100%", height: "100%" }}
+      sx={{ position: "relative", width: "100%", height: "100%", mt: "10px" }}
     >
       <Box sx={{ display: "flex", flexDirection: "column" }}>
         <Skeleton

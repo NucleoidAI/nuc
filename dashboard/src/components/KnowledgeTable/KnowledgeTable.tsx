@@ -61,21 +61,27 @@ function KnowledgeTable({
         return [{ id: "status", label: "Status" }];
     }
   };
+  const getScopeLabel = (row) => {
+    if (row.label) {
+      return row.label;
+    }
+
+    if (row.blueprintId) {
+      return "Blueprint";
+    }
+
+    if (row.organizationId) {
+      return "Organization";
+    }
+
+    return row.teamId !== null ? "Team" : "Agent";
+  };
 
   const statusLabel = (row, status) => {
     return (
       <Stack direction="row" alignItems="center" spacing={1}>
         <span>{status}</span>
-        {row.teamId !== null && (
-          <Label
-            sx={{
-              backgroundColor: "rgba(97, 97, 97, 0.2)",
-              color: "white",
-            }}
-          >
-            TEAM
-          </Label>
-        )}
+        {getScopeLabel(row) && <Label>{getScopeLabel(row)}</Label>}
       </Stack>
     );
   };

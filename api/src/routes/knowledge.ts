@@ -17,6 +17,8 @@ router.post("/", async (req, res) => {
     taskId,
     agentId,
     teamId: knowledgeTeamId,
+    blueprintId,
+    organizationId,
     ...knowledgeBody
   } = Joi.attempt(body, schemas.Knowledge.create);
 
@@ -40,7 +42,12 @@ router.post("/", async (req, res) => {
   const createdKnowledge = await knowledge.create({
     teamId,
     agentId,
-    knowledge: knowledgeBody,
+    knowledge: {
+      ...knowledgeBody,
+      taskId,
+      blueprintId,
+      organizationId,
+    },
   });
 
   if (taskId) {

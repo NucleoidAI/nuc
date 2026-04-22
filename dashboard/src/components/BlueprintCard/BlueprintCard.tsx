@@ -104,12 +104,15 @@ const BlueprintCard = ({
             <ListItemText
               primary={<Typography color="inherit">{item.title}</Typography>}
               secondary={item.description}
-              primaryTypographyProps={{
-                typography: "subtitle1",
-              }}
-              secondaryTypographyProps={{
-                mt: 1,
-                color: "text.disabled",
+              slotProps={{
+                primary: {
+                  typography: "subtitle1",
+                },
+
+                secondary: {
+                  mt: 1,
+                  color: "text.disabled",
+                },
               }}
             />
           </Box>

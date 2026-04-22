@@ -1,4 +1,5 @@
 import BlueprintFlow from "../../components/BlueprintFlow/BlueprintFlow";
+import BlueprintFlowSkeleton from "../../components/Skeletons/BlueprintFlowSkeleton";
 import NodeEditorWidget from "../NodeEditorWidget/NodeEditorWidget";
 import SampleFlow from "../../components/BlueprintFlow/Samples/SampleFlow";
 import SampleNode from "../../components/BlueprintFlow/Samples/SampleNode";
@@ -37,6 +38,9 @@ function BlueprintFlowWidget({
   lastUsedNodeId,
   failedNodeId,
   isSuperviseFlow = false,
+  agentId,
+  readOnly = false,
+  teamId,
 }: {
   aiResponse?: AIResponse;
   setAiResponse?: (response: AIResponse | null) => void;
@@ -47,6 +51,9 @@ function BlueprintFlowWidget({
   lastUsedNodeId?: string | null;
   failedNodeId?: string | null;
   isSuperviseFlow?: boolean;
+  agentId?: string;
+  readOnly?: boolean;
+  teamId?: string;
 }) {
   const [graphData, setGraphData] = useState<DefinitionGraph | null>(null);
   const [hasLocalChanges, setHasLocalChanges] = useState(false);
@@ -949,7 +956,9 @@ function BlueprintFlowWidget({
 
   return (
     <>
-      {loading ? null : isEmptyState ? (
+      {loading ? (
+        <BlueprintFlowSkeleton />
+      ) : isEmptyState ? (
         <>
           {showSampleFlow && <SampleFlow />}
           {!showSampleFlow && (
@@ -964,6 +973,7 @@ function BlueprintFlowWidget({
           graphData={graphData}
           enrichedGraphData={enrichedGraphData}
           drawerOpen={drawerOpen}
+          readOnly={readOnly}
           hasLocalChanges={hasLocalChanges}
           hasDifferences={hasDifferences}
           validationErrors={validationErrors}
@@ -1010,6 +1020,9 @@ function BlueprintFlowWidget({
             ? graphData.nodes[editingNodeId]
             : undefined
         }
+        agentId={agentId ?? blueprint.agentId}
+        blueprintId={blueprint?.id}
+        teamId={teamId}
       />
     </>
   );

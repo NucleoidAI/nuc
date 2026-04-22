@@ -36,7 +36,12 @@ const TaskTree = ({ open, setOpen, treeData }) => {
           backgroundColor: (theme) => theme.palette.background.default,
         }}
       >
-        <Grid item xs={12} md={5}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 5,
+          }}
+        >
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <Flow
               data={data}

@@ -1,12 +1,6 @@
 import { BlueprintCommands } from "../../components/ChatInput/chat.config";
-import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
 import { Iconify } from "@canmingir/link/platform/components";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import Popover from "@mui/material/Popover";
 import SourcedAvatar from "../../components/SourcedAvatar/SourcedAvatar";
 import useAgents from "../../hooks/useAgents";
 import { withHistory } from "slate-history";
@@ -21,6 +15,14 @@ import {
   Transforms,
   createEditor,
 } from "slate";
+import {
+  Box,
+  IconButton,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Popover,
+} from "@mui/material";
 import {
   Editable,
   ReactEditor,
@@ -603,7 +605,6 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
           <Iconify icon="mdi:send" />
         </SendButton>
       </EditorContainer>
-
       <Popover
         open={showCommands}
         anchorEl={anchorEl}
@@ -633,9 +634,8 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
       >
         <CommandList>
           {BlueprintCommands.map((command, index) => (
-            <ListItem
-              key={command.id}
-              button
+            <ListItemButton
+              key={command?.id}
               selected={index === selectedOptionIndex}
               onClick={() => handleCommandSelect(command)}
             >
@@ -645,19 +645,21 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
               <ListItemText
                 primary={command.label}
                 secondary={command.description}
-                primaryTypographyProps={{
-                  fontSize: "0.875rem",
-                  fontWeight: 500,
-                }}
-                secondaryTypographyProps={{
-                  fontSize: "0.75rem",
+                slotProps={{
+                  primary: {
+                    fontSize: "0.875rem",
+                    fontWeight: 500,
+                  },
+
+                  secondary: {
+                    fontSize: "0.75rem",
+                  },
                 }}
               />
-            </ListItem>
+            </ListItemButton>
           ))}
         </CommandList>
       </Popover>
-
       <Popover
         open={showMCPs}
         anchorEl={anchorEl}
@@ -688,9 +690,8 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
       >
         <CommandList>
           {selectedCommand?.next?.list.map((mcp, index) => (
-            <ListItem
+            <ListItemButton
               key={mcp.id}
-              button
               selected={index === selectedOptionIndex}
               onClick={() => handleMCPSelect(mcp)}
             >
@@ -699,16 +700,17 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
               </ListItemIcon>
               <ListItemText
                 primary={mcp.name}
-                primaryTypographyProps={{
-                  fontSize: "0.875rem",
-                  fontWeight: 500,
+                slotProps={{
+                  primary: {
+                    fontSize: "0.875rem",
+                    fontWeight: 500,
+                  },
                 }}
               />
-            </ListItem>
+            </ListItemButton>
           ))}
         </CommandList>
       </Popover>
-
       <Popover
         open={showScopes}
         anchorEl={anchorEl}
@@ -740,9 +742,8 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
       >
         <CommandList>
           {selectedMCP?.next?.list.map((scope, index) => (
-            <ListItem
+            <ListItemButton
               key={scope.id}
-              button
               selected={index === selectedOptionIndex}
               onClick={() => handleScopeSelect(scope)}
             >
@@ -751,16 +752,17 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
               </ListItemIcon>
               <ListItemText
                 primary={scope.name}
-                primaryTypographyProps={{
-                  fontSize: "0.875rem",
-                  fontWeight: 500,
+                slotProps={{
+                  primary: {
+                    fontSize: "0.875rem",
+                    fontWeight: 500,
+                  },
                 }}
               />
-            </ListItem>
+            </ListItemButton>
           ))}
         </CommandList>
       </Popover>
-
       <Popover
         open={showMentions}
         anchorEl={anchorEl}
@@ -788,9 +790,8 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
       >
         <CommandList>
           {agents?.map((agent, index) => (
-            <ListItem
+            <ListItemButton
               key={agent.id}
-              button
               selected={index === selectedOptionIndex}
               onClick={() => handleMentionSelect(agent)}
             >
@@ -805,15 +806,18 @@ const InlineChatInput = ({ onSend }: InlineChatInputProps) => {
               <ListItemText
                 primary={agent.name}
                 secondary={agent.description}
-                primaryTypographyProps={{
-                  fontSize: "0.875rem",
-                  fontWeight: 500,
-                }}
-                secondaryTypographyProps={{
-                  fontSize: "0.75rem",
+                slotProps={{
+                  primary: {
+                    fontSize: "0.875rem",
+                    fontWeight: 500,
+                  },
+
+                  secondary: {
+                    fontSize: "0.75rem",
+                  },
                 }}
               />
-            </ListItem>
+            </ListItemButton>
           ))}
         </CommandList>
       </Popover>

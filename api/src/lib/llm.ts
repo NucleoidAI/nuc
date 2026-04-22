@@ -3,22 +3,19 @@ import azure from "./azure";
 import llama from "./llama";
 import openai from "./openai";
 import bedrock from "./bedrock";
+import mock from "./mock";
 
 let llm;
 
 if (process.env.PLATFORM_LLM === "OPENAI") {
   llm = openai;
-}
-
-if (process.env.PLATFORM_LLM === "AZURE") {
+} else if (process.env.PLATFORM_LLM === "AZURE") {
   llm = azure;
-}
-
-if (process.env.PLATFORM_LLM === "ANTHROPIC") {
+} else if (process.env.PLATFORM_LLM === "ANTHROPIC") {
   llm = anthropic;
-}
-
-if (
+} else if (process.env.PLATFORM_LLM === "MOCK") {
+  llm = mock;
+} else if (
   process.env.PLATFORM_LLM === "LLAMA" &&
   process.env.LLM_PROVIDER === "BEDROCK"
 ) {

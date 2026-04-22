@@ -1,8 +1,6 @@
 import BlueprintChat from "../BlueprintChat/BlueprintChat";
 import BlueprintChatTitle from "../BlueprintChat/BlueprintChatTitle";
 import BlueprintFlowWidget from "../../widgets/BlueprintFlowWidget/BlueprintFlowWidget";
-import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
-import CloseIcon from "@mui/icons-material/Close";
 import { FlowDefinition } from "../BlueprintFlow/helper";
 
 import {
@@ -16,6 +14,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import { ChatBubbleOutline, Close } from "@mui/icons-material";
 import React, { useCallback, useEffect, useState } from "react";
 
 const BlueprintDrawer = ({
@@ -30,6 +29,7 @@ const BlueprintDrawer = ({
   usedNodeIds,
   lastUsedNodeId,
   failedNodeId,
+  teamId,
 }: {
   drawerOpen: boolean;
   handleDrawerClose: () => void;
@@ -61,6 +61,7 @@ const BlueprintDrawer = ({
   usedNodeIds?: Set<string>;
   lastUsedNodeId?: string | null;
   failedNodeId?: string | null;
+  teamId?: string;
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -100,8 +101,6 @@ const BlueprintDrawer = ({
     return "85vw";
   };
 
-  console.log("color", alpha(theme.palette.divider, 0.1));
-
   return (
     <Drawer
       anchor="right"
@@ -110,7 +109,6 @@ const BlueprintDrawer = ({
       sx={{
         zIndex: (theme) => theme.zIndex.modal + 2,
         "& .MuiDrawer-paper": {
-          zIndex: (theme) => theme.zIndex.modal + 2,
           width: getDrawerWidth(),
           maxWidth: "100vw",
           transition: "width 0.3s ease-in-out",
@@ -143,17 +141,12 @@ const BlueprintDrawer = ({
             }}
             size="small"
           >
-            <CloseIcon />
+            <Close />
           </IconButton>
         )}
 
         <Grid container sx={{ flex: 1, height: "100%" }} spacing={0}>
           <Grid
-            item
-            xs={12}
-            md={isChatOpen ? 7 : 12}
-            lg={isChatOpen ? 8 : 12}
-            xl={isChatOpen ? 9 : 12}
             sx={{
               display: "flex",
               flexDirection: "column",
@@ -164,13 +157,19 @@ const BlueprintDrawer = ({
                 : "none",
               backgroundColor: (theme) => theme.palette.background.default,
               backgroundImage: (theme) => `
-            radial-gradient(
-              ${alpha(theme.palette.divider, 0.08)} 1px,
-              transparent 1px
-            )
-          `,
+                  radial-gradient(
+                    ${alpha(theme.palette.divider, 0.08)} 1px,
+                    transparent 1px
+                  )
+                `,
               backgroundSize: "16px 16px",
               position: "relative",
+            }}
+            size={{
+              xs: 12,
+              md: isChatOpen ? 7 : 12,
+              lg: isChatOpen ? 8 : 12,
+              xl: isChatOpen ? 9 : 12,
             }}
           >
             <Box
@@ -212,6 +211,8 @@ const BlueprintDrawer = ({
                   usedNodeIds={usedNodeIds}
                   lastUsedNodeId={lastUsedNodeId}
                   failedNodeId={failedNodeId}
+                  agentId={agentId}
+                  teamId={teamId}
                 />
 
                 {!isChatOpen && (
@@ -227,7 +228,7 @@ const BlueprintDrawer = ({
                         zIndex: 10,
                       }}
                     >
-                      <ChatBubbleOutlineIcon />
+                      <ChatBubbleOutline />
                     </Fab>
                   </Tooltip>
                 )}
@@ -237,17 +238,18 @@ const BlueprintDrawer = ({
 
           {isChatOpen && (
             <Grid
-              item
-              xs={12}
-              md={5}
-              lg={4}
-              xl={3}
               sx={{
                 display: "flex",
                 flexDirection: "column",
                 position: "relative",
                 height: "100%",
                 maxHeight: "100vh",
+              }}
+              size={{
+                xs: 12,
+                md: 5,
+                lg: 4,
+                xl: 3,
               }}
             >
               <Box
@@ -268,7 +270,7 @@ const BlueprintDrawer = ({
                   }}
                 >
                   <IconButton size="small" onClick={() => setIsChatOpen(false)}>
-                    <CloseIcon fontSize="small" />
+                    <Close fontSize="small" />
                   </IconButton>
                 </Box>
                 <BlueprintChat

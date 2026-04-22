@@ -2,6 +2,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import Chart from "react-apexcharts";
+import PerformanceSkeleton from "../../components/Skeletons/PerformanceSkeleton";
 import React from "react";
 import useAgent from "../../hooks/useAgent";
 import { useChart } from "@canmingir/link/platform/components";
@@ -10,17 +11,22 @@ import { useMediaQuery } from "@mui/material";
 function PerformanceChart() {
   const { getAgents } = useAgent();
 
-  const { agents } = getAgents();
+  const { agents, loading } = getAgents();
 
   const isSmallScreen = useMediaQuery("(max-width:600px)");
 
-  const names = [agents?.map((agent) => agent?.name), "No Activity"];
-
-  const series = new Array(agents?.length).fill(1).concat(100);
+  const agentNames =
+    agents?.map((agent) => agent?.name?.replaceAll("_", " ")).filter(Boolean) ??
+    [];
+  const hasAgents = agentNames.length > 0;
+  const names = hasAgents ? agentNames : ["No Activity"];
+  const series = hasAgents ? new Array(agentNames.length).fill(1) : [1];
 
   const chartOptions = useChart({
     labels: names,
-    colors: [...new Array(agents?.length).fill(undefined), "#344055"],
+    colors: hasAgents
+      ? new Array(agentNames.length).fill(undefined)
+      : ["#344055"],
     legend: {
       position: "right",
       offsetX: -20,
@@ -28,6 +34,7 @@ function PerformanceChart() {
       itemMargin: {
         vertical: 8,
       },
+      formatter: (seriesName) => seriesName,
     },
     stroke: {
       show: false,
@@ -39,7 +46,7 @@ function PerformanceChart() {
       },
     },
     tooltip: {
-      fillSeriesColor: false,
+      fillSeriesColor: true,
     },
     plotOptions: {
       pie: {
@@ -52,6 +59,10 @@ function PerformanceChart() {
     },
   });
 
+  if (loading) {
+    return <PerformanceSkeleton />;
+  }
+
   return (
     <Card
       key={2}
@@ -60,6 +71,7 @@ function PerformanceChart() {
         maxWidth: "100%",
         height: "100%",
         maxHeight: isSmallScreen ? "auto" : "600px",
+        marginTop: "10px",
       }}
     >
       <CardHeader title="Team Activity" />

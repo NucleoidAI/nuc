@@ -6,11 +6,11 @@
     },
     {
       "bbk_no": "988",
-      "address": "Kadıköy Neighborhood, Bağdat Street, number 234, Kadıköy, Istanbul."
+      "address": "Kadikoy Neighborhood, Bagdat Street, No. 234, Kadikoy, Istanbul."
     },
     {
       "bbk_no": "988",
-      "address": "Kadıköy Mahallesi, Bağdat Caddesi, No. 235, Kadıköy, İstanbul"
+      "address": "Kadikoy Neighborhood, Bagdat Street, No. 235, Kadikoy, Istanbul."
     },
     {
       "bbk_no": "989",
@@ -40,10 +40,10 @@
       "bbk_no": "988",
       "infrastructure_type": "Fiber",
       "topology": "FTTB",
-      "device_tid": "HUA_06MKMMELYT_TEST3",
+      "device_tid": "HUA_06TTIM_TEST3",
       "device_card_no": "16",
       "hgw_serial_no": "HGW002",
-      "device_serial_number": "HWTCD40F49A5",
+      "device_serial_number": "HWTC495AE59E",
       "speed_limit": "8mbps"
     },
     {
@@ -81,7 +81,7 @@
       "bbk_no": "989"
     },
     {
-      "port_no": "4",
+      "port_no": "5",
       "status": "Available",
       "speed_limit": "24mbps",
       "bbk_no": "989"
@@ -94,7 +94,7 @@
     },
     {
       "bbk_no": "990",
-      "port_no": "4",
+      "port_no": "9",
       "status": "Available",
       "speed_limit": "16mbps"
     }
@@ -121,12 +121,12 @@
     {
       "speed_limit": "8mbps",
       "product_description": "8 Mbps Internet 12 Months Unlimited",
-      "speed_profile": "24576/8192"
+      "speed_profile": "51200/8192"
     },
     {
       "speed_limit": "8mbps",
       "product_description": "8 Mbps Internet 6 Months Unlimited",
-      "speed_profile": "24576/8192"
+      "speed_profile": "51200/8192"
     },
     {
       "speed_limit": "16mbps",

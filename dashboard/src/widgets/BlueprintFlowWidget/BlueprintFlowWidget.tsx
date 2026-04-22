@@ -702,7 +702,10 @@ function BlueprintFlowWidget({
     setHasLocalChanges(true);
   };
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSaveFlow = async () => {
+    setIsSubmitting(true);
     if (!graphData) return;
 
     const agentId = blueprintNodes?.agentId || blueprint?.agentId;
@@ -770,6 +773,7 @@ function BlueprintFlowWidget({
       setAiResponse(null);
     }
     setSaveSuccess(true);
+    setIsSubmitting(false);
   };
 
   const handleFlowChange = (updatedGraphData) => {
@@ -843,6 +847,7 @@ function BlueprintFlowWidget({
           onShowValidationErrors={setShowValidationErrors}
           onSaveSuccessChange={setSaveSuccess}
           isSuperviseFlow={isSuperviseFlow}
+          isSubmitting={isSubmitting}
         />
       )}
 

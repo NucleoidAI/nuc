@@ -30,6 +30,7 @@ export default function BlueprintFlow({
   onCloseDiff,
   onShowValidationErrors,
   onSaveSuccessChange,
+  isSubmitting,
   isSuperviseFlow = false,
 }: BlueprintFlowProps) {
   const flowContainerRef = useRef<HTMLDivElement>(null);
@@ -72,6 +73,7 @@ export default function BlueprintFlow({
           validationErrors={validationErrors}
           setShowValidationErrors={onShowValidationErrors}
           handleSaveFlow={onSave}
+          isSubmitting={isSubmitting}
         />
       )}
 

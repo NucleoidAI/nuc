@@ -1,12 +1,10 @@
 import Joi from "joi";
-import LoadingButton from "@mui/lab/LoadingButton";
+import LoadingButton from "../LoadingButton";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { useEvent } from "@nucleoidai/react-event";
 import { useForm } from "react-hook-form";
 
 import {
-  Box,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -108,24 +106,11 @@ function AddTaskDialog({ open, setOpen, createTask, agentId }) {
           >
             <LoadingButton
               type="submit"
-              variant="contained"
+              loading={isSubmitting}
               disabled={!isValid || isSubmitting}
               data-cy="finish"
             >
-              {isSubmitting ? (
-                <Box style={{ display: "flex", alignItems: "center" }}>
-                  <CircularProgress
-                    size={18}
-                    color="inherit"
-                    style={{ marginRight: "8px" }}
-                  />
-                  Save
-                </Box>
-              ) : (
-                <Box style={{ display: "flex", alignItems: "center" }}>
-                  Save
-                </Box>
-              )}
+              Save
             </LoadingButton>
           </DialogActions>
         </FormProvider>

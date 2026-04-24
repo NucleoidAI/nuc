@@ -815,6 +815,52 @@ function BlueprintFlowWidget({
 
       delete currentNodes[node.id];
 
+      if (isDeletedCondition && falseChildren.length > 0) {
+        const falseSubtree = new Set<string>();
+        const queue = [...falseChildren];
+        while (queue.length > 0) {
+          const cid = queue.shift()!;
+          if (falseSubtree.has(cid) || !currentNodes[cid]) continue;
+          falseSubtree.add(cid);
+          const cn = currentNodes[cid];
+          if (cn.nodeType === "CONDITION") {
+            [...(cn.trueNext || []), ...(cn.falseNext || [])].forEach((id) =>
+              queue.push(id)
+            );
+          } else {
+            const cnNext = cn.next;
+            if (typeof cnNext === "string") queue.push(cnNext);
+            else if (Array.isArray(cnNext))
+              cnNext.forEach((id) => queue.push(id));
+          }
+        }
+
+        const stillReferenced = new Set<string>();
+        Object.values(currentNodes).forEach(
+          (n: {
+            nodeType: string;
+            next?: string | string[] | null;
+            trueNext?: string[] | null;
+            falseNext?: string[] | null;
+          }) => {
+            if (n.nodeType === "CONDITION") {
+              n.trueNext?.forEach((id) => stillReferenced.add(id));
+              n.falseNext?.forEach((id) => stillReferenced.add(id));
+            } else {
+              if (typeof n.next === "string") stillReferenced.add(n.next);
+              else if (Array.isArray(n.next))
+                n.next.forEach((id) => stillReferenced.add(id));
+            }
+          }
+        );
+
+        falseSubtree.forEach((cid) => {
+          if (!stillReferenced.has(cid)) {
+            delete currentNodes[cid];
+          }
+        });
+      }
+
       const referenced = new Set<string>();
       Object.values(currentNodes).forEach(
         (n: {

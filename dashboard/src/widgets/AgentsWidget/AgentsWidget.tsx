@@ -39,6 +39,11 @@ function AgentsWidget({ teamId }) {
 
   const handleAgentClick = (agentId) => {
     const agent = agents.find((a) => a.id === agentId);
+
+    if (!agent) {
+      return;
+    }
+
     setSelectedAgent(agent);
     setAgentDrawerOpen(true);
   };

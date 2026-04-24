@@ -20,7 +20,7 @@ export type FlowDefinition =
   | { nodes: DefinitionNode[] }
   | { nodes: DefinitionNode[] };
 
-type DefinitionGraphNode = {
+export type DefinitionGraphNode = {
   id: string;
   label: string;
   nodeType: DefinitionNode["type"];

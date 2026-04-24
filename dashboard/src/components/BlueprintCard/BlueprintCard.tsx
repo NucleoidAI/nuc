@@ -1,7 +1,8 @@
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
+import { BlueprintFlowMiniPreview } from "./BlueprintFlowMiniPreview";
+
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import React from "react";
 import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
 import TaskIcon from "@mui/icons-material/Task";
 
@@ -41,7 +42,6 @@ const BlueprintCard = ({
           gap: 1,
           borderRadius: 5,
           padding: 3,
-          height: 250,
         }}
       >
         <Box
@@ -152,6 +152,21 @@ const BlueprintCard = ({
           </Fab>
         </Box>
       </Box>
+
+      {/* Flow preview */}
+      <Box
+        sx={{
+          px: 2,
+          pb: 2,
+          height: 200,
+          cursor: "pointer",
+          opacity: 0.6,
+        }}
+        onClick={() => handleFlowDialogOpen(item)}
+      >
+        <BlueprintFlowMiniPreview blueprintId={item.id} />
+      </Box>
+
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}

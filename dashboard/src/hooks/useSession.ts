@@ -101,6 +101,45 @@ function useSession(agentId) {
     });
   }, []);
 
+  const createSession = useCallback(() => {
+    if (socketRef.current) {
+      socketRef.current.off("connect");
+      socketRef.current.off("session_started");
+      socketRef.current.off("ai_message");
+      socketRef.current.off("error_message");
+      socketRef.current.disconnect();
+    }
+
+    setConversations([]);
+    setSessionId(null);
+
+    const newSocket = io(host, {
+      path,
+      auth: { token },
+      query: { agentId },
+    });
+
+    newSocket.on("connect", () => {
+      console.log("Connected to socket server");
+    });
+
+    newSocket.on("session_started", ({ sessionId: id }) => {
+      setSessionId(id);
+    });
+
+    newSocket.on("ai_message", ({ content }) => {
+      setConversations((prev) => [...prev, { role: "AI", content }]);
+      publish("AI_RESPONDED", { content });
+    });
+
+    newSocket.on("error_message", ({ message }) => {
+      setError(message);
+      publish("AI_ERROR", { message });
+    });
+
+    socketRef.current = newSocket;
+  }, [agentId, host, path, token]);
+
   const getSession = useCallback(async (id) => {
     if (id) {
       http.get(`/sessions/${id}`).then((response) => {
@@ -122,6 +161,7 @@ function useSession(agentId) {
     conversations,
     sendMessage,
     switchSession,
+    createSession,
     clearError,
   };
 }

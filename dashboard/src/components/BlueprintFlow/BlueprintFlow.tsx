@@ -2,6 +2,8 @@ import { BlueprintFlowProps } from "./BlueprintFlow.types";
 import { Box } from "@mui/material";
 import DiffButton from "./DiffPanel/DiffButton";
 import { Flow } from "@canmingir/link/platform/components";
+import { FlowMiniMap } from "./FlowMiniMap";
+
 import JSONDiffPanel from "./DiffPanel/JSONDiffPanel";
 import SuccessSnackbar from "./Validation/SuccessSnackbar";
 import ValidationButtons from "./Validation/ValidationButtons";
@@ -25,6 +27,8 @@ export default function BlueprintFlow({
   onFlowChange,
   onAddNodeClick,
   onEditNodeClick,
+  onSwapBranchClick,
+  onDeleteNodeClick,
   onSave,
   onShowDiff,
   onCloseDiff,
@@ -43,7 +47,8 @@ export default function BlueprintFlow({
         position: "relative",
       }}
     >
-      {baselineNodes.length > 0 &&
+      {!readOnly &&
+        baselineNodes.length > 0 &&
         (hasLocalChanges || hasDifferences) &&
         !drawerOpen && (
           <DiffButton
@@ -55,19 +60,27 @@ export default function BlueprintFlow({
       <Flow
         data={enrichedGraphData}
         plugin={blueprintFlowPlugin}
-        editable
+        editable={!readOnly}
         height={isSuperviseFlow ? "50%" : "100%"}
-        onChange={onFlowChange}
+        onChange={readOnly ? undefined : onFlowChange}
         variant="horizontal"
         style={() => ({
           direction: "horizontal",
-          readOnly,
           onAdd: readOnly ? undefined : onAddNodeClick,
           onEdit: readOnly ? undefined : onEditNodeClick,
+          onSwapBranch: readOnly ? undefined : onSwapBranchClick,
+          onDelete: readOnly ? undefined : onDeleteNodeClick,
         })}
       />
 
-      {hasLocalChanges && !drawerOpen && !readOnly && (
+      {!isSuperviseFlow && (
+        <FlowMiniMap
+          graphData={graphData}
+          flowContainerRef={flowContainerRef}
+        />
+      )}
+
+      {!readOnly && hasLocalChanges && !drawerOpen && (
         <ValidationButtons
           validationErrors={validationErrors}
           setShowValidationErrors={onShowValidationErrors}

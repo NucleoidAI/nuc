@@ -732,35 +732,52 @@ function BlueprintFlowWidget({
       const deletedNode = currentNodes[node.id];
       if (!deletedNode) return prev;
 
-      // Get the deleted node's children
-      const children: string[] =
-        deletedNode.nodeType === "CONDITION"
-          ? [...(deletedNode.trueNext || []), ...(deletedNode.falseNext || [])]
-          : deletedNode.next
+      const isDeletedCondition = deletedNode.nodeType === "CONDITION";
+      const trueChildren: string[] = isDeletedCondition
+        ? deletedNode.trueNext || []
+        : [];
+      const falseChildren: string[] = isDeletedCondition
+        ? deletedNode.falseNext || []
+        : [];
+      const normalChildren: string[] = !isDeletedCondition
+        ? deletedNode.next
           ? Array.isArray(deletedNode.next)
             ? deletedNode.next
             : [deletedNode.next]
-          : [];
+          : []
+        : [];
 
-      // Find parent and reconnect to children
+      const dedup = (arr: string[]) => [...new Set(arr)];
+
       Object.keys(currentNodes).forEach((id) => {
         const n = currentNodes[id];
         if (n.nodeType === "CONDITION") {
           const inTrue = n.trueNext?.includes(node.id);
           const inFalse = n.falseNext?.includes(node.id);
           if (inTrue || inFalse) {
-            const newTrueNext = inTrue
-              ? [
-                  ...(n.trueNext || []).filter((x) => x !== node.id),
-                  ...children,
-                ]
-              : n.trueNext || [];
-            const newFalseNext = inFalse
-              ? [
-                  ...(n.falseNext || []).filter((x) => x !== node.id),
-                  ...children,
-                ]
-              : n.falseNext || [];
+            const replacementForTrue = isDeletedCondition
+              ? trueChildren
+              : normalChildren;
+            const replacementForFalse = isDeletedCondition
+              ? falseChildren
+              : normalChildren;
+
+            const newTrueNext = dedup(
+              inTrue
+                ? [
+                    ...(n.trueNext || []).filter((x) => x !== node.id),
+                    ...replacementForTrue,
+                  ]
+                : n.trueNext || []
+            );
+            const newFalseNext = dedup(
+              inFalse
+                ? [
+                    ...(n.falseNext || []).filter((x) => x !== node.id),
+                    ...replacementForFalse,
+                  ]
+                : n.falseNext || []
+            );
             currentNodes[id] = {
               ...n,
               trueNext: newTrueNext,
@@ -774,18 +791,22 @@ function BlueprintFlowWidget({
             next === node.id ||
             (Array.isArray(next) && next.includes(node.id))
           ) {
+            const replacement = isDeletedCondition
+              ? trueChildren
+              : normalChildren;
+            const dedupedReplacement = dedup(replacement);
             const newNext =
-              children.length === 1
-                ? children[0]
-                : children.length > 1
-                ? children
+              dedupedReplacement.length === 1
+                ? dedupedReplacement[0]
+                : dedupedReplacement.length > 1
+                ? dedupedReplacement
                 : null;
             currentNodes[id] = {
               ...n,
               next: newNext,
               raw: {
                 ...n.raw,
-                next: children.length > 0 ? children : [],
+                next: dedupedReplacement,
               },
             };
           }

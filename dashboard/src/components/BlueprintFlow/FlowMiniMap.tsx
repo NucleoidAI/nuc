@@ -140,8 +140,9 @@ export function FlowMiniMap({
       const dx_css = e.clientX - dragStartRef.current.x;
       const dy_css = e.clientY - dragStartRef.current.y;
 
+      const minimapH = (MINIMAP_W * svgH) / svgW;
       const svgScaleX = svgW / MINIMAP_W;
-      const svgScaleY = svgW / MINIMAP_W;
+      const svgScaleY = svgH / minimapH;
       const dx_flow = (dx_css * svgScaleX) / viewportInfoRef.current.scaleX;
       const dy_flow = (dy_css * svgScaleY) / viewportInfoRef.current.scaleY;
 
@@ -177,6 +178,7 @@ export function FlowMiniMap({
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDragging, svgW, flowContainerRef]);
 
   const handleViewportMouseDown = (e: React.MouseEvent) => {

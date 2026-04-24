@@ -766,7 +766,10 @@ function FlowNodeRenderer({
       <InfoNode node={node} nodeStyle={nodeStyle}>
         {!isReadOnly && (
           <>
-            <DeleteButtonWrapper onClick={handleDeleteClick} title="Delete node">
+            <DeleteButtonWrapper
+              onClick={handleDeleteClick}
+              title="Delete node"
+            >
               <Iconify icon="mdi:delete-outline" width={16} height={16} />
             </DeleteButtonWrapper>
             {isDecision && hasChildren && (
@@ -787,66 +790,68 @@ function FlowNodeRenderer({
         )}
       </InfoNode>
 
-      {!isReadOnly && <Menu
-        open={contextMenu !== null}
-        onClose={handleClose}
-        anchorReference="anchorPosition"
-        anchorPosition={
-          contextMenu !== null
-            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
-            : undefined
-        }
-        slotProps={{ paper: { sx: { minWidth: 180 } } }}
-      >
-        <MenuItem
-          onClick={(e) => {
-            handleAddClick(e);
-            handleClose();
-          }}
+      {!isReadOnly && (
+        <Menu
+          open={contextMenu !== null}
+          onClose={handleClose}
+          anchorReference="anchorPosition"
+          anchorPosition={
+            contextMenu !== null
+              ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+              : undefined
+          }
+          slotProps={{ paper: { sx: { minWidth: 180 } } }}
         >
-          <ListItemIcon>
-            <Iconify icon="mdi:plus" width={18} height={18} />
-          </ListItemIcon>
-          <ListItemText>Add child node</ListItemText>
-        </MenuItem>
-        <MenuItem
-          onClick={(e) => {
-            handleEditClick(e);
-            handleClose();
-          }}
-        >
-          <ListItemIcon>
-            <Iconify icon="mdi:pencil" width={18} height={18} />
-          </ListItemIcon>
-          <ListItemText>Edit node</ListItemText>
-        </MenuItem>
-        {isDecision && hasChildren && (
           <MenuItem
             onClick={(e) => {
-              handleSwapClick(e);
+              handleAddClick(e);
               handleClose();
             }}
           >
             <ListItemIcon>
-              <Iconify icon="mdi:swap-horizontal" width={18} height={18} />
+              <Iconify icon="mdi:plus" width={18} height={18} />
             </ListItemIcon>
-            <ListItemText>Swap branches</ListItemText>
+            <ListItemText>Add child node</ListItemText>
           </MenuItem>
-        )}
-        <Divider />
-        <MenuItem
-          onClick={(e) => {
-            handleDeleteClick(e);
-            handleClose();
-          }}
-          sx={{ color: "error.main" }}
-        >
-          <ListItemIcon sx={{ color: "error.main" }}>
-            <Iconify icon="mdi:delete-outline" width={18} height={18} />
-          </ListItemIcon>
-          <ListItemText>Delete node</ListItemText>
-        </MenuItem>
-      </Menu>}
+          <MenuItem
+            onClick={(e) => {
+              handleEditClick(e);
+              handleClose();
+            }}
+          >
+            <ListItemIcon>
+              <Iconify icon="mdi:pencil" width={18} height={18} />
+            </ListItemIcon>
+            <ListItemText>Edit node</ListItemText>
+          </MenuItem>
+          {isDecision && hasChildren && (
+            <MenuItem
+              onClick={(e) => {
+                handleSwapClick(e);
+                handleClose();
+              }}
+            >
+              <ListItemIcon>
+                <Iconify icon="mdi:swap-horizontal" width={18} height={18} />
+              </ListItemIcon>
+              <ListItemText>Swap branches</ListItemText>
+            </MenuItem>
+          )}
+          <Divider />
+          <MenuItem
+            onClick={(e) => {
+              handleDeleteClick(e);
+              handleClose();
+            }}
+            sx={{ color: "error.main" }}
+          >
+            <ListItemIcon sx={{ color: "error.main" }}>
+              <Iconify icon="mdi:delete-outline" width={18} height={18} />
+            </ListItemIcon>
+            <ListItemText>Delete node</ListItemText>
+          </MenuItem>
+        </Menu>
+      )}
     </NodeWrapper>
   );
 }

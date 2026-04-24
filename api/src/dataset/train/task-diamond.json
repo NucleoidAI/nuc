@@ -887,9 +887,10 @@
               "parameters": {
                 "device_serial_number": "1234567890",
                 "bbk_no": "990",
-                "speed_limit": "16mbps"
+                "speed_limit": "16mbps",
+                "speed_profile": "51200/8192"
               },
-              "comment": "Port 9 allocated successfully for BBK 990"
+              "comment": "Port 4 allocated successfully for BBK 990"
             },
             {
               "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
@@ -907,7 +908,12 @@
               "status": "COMPLETED",
               "parameters": {
                 "device_serial_number": "1234567890",
-                "assignment_id": "TH990"
+                "port_no": "4",
+                "hgw_serial_no": "HGW001",
+                "device_tid": "HUA_06TTIM_TEST1",
+                "device_card_no": "1",
+                "speed_limit": "16mbps",
+                "speed_profile": "51200/8192"
               },
               "comment": "Port configured successfully for device 1234567890"
             },
@@ -1160,7 +1166,8 @@
               "parameters": {
                 "device_serial_number": "123",
                 "bbk_no": "987",
-                "speed_limit": "16mbps"
+                "speed_limit": "16mbps",
+                "speed_profile": "51200/8192"
               },
               "comment": "Port allocated successfully"
             },
@@ -1180,7 +1187,12 @@
               "status": "COMPLETED",
               "parameters": {
                 "device_serial_number": "123",
-                "assignment_id": "TH001"
+                "port_no": "4",
+                "hgw_serial_no": "HGW001",
+                "device_tid": "HUA_06TTIM_TEST1",
+                "device_card_no": "1",
+                "speed_limit": "16mbps",
+                "speed_profile": "51200/8192"
               },
               "comment": "Port configured successfully"
             },

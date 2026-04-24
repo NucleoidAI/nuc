@@ -4,6 +4,10 @@ if (process.env.PLATFORM_LLM === "OPENAI") {
   llm = require("../lib/openai").default;
 }
 
+if (process.env.PLATFORM_LLM === "MOCK") {
+  llm = require("../lib/mock").default;
+}
+
 if (process.env.PLATFORM_LLM === "AZURE") {
   llm = require("../lib/azure").default;
 }

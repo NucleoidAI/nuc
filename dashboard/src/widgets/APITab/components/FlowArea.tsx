@@ -52,6 +52,8 @@ const FlowArea = ({
               onFlowChange={handleFlowChange}
               onAddNodeClick={handleAddNodeClick}
               onEditNodeClick={handleEditNodeClick}
+              onSwapBranchClick={() => {}}
+              onDeleteNodeClick={() => {}}
               onSave={() => {}}
               onShowDiff={() => {}}
               onCloseDiff={() => {}}

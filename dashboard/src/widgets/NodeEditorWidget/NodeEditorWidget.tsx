@@ -17,15 +17,14 @@ const NodeEditorWidget = ({
   setNewNodeType,
   selectedBranch,
   setSelectedBranch,
+  inheritedNextBranch = "none",
+  setInheritedNextBranch = () => {},
   handleSubmit,
   selectedIntegration,
   setSelectedIntegration,
   editMode,
   editingNode,
   pseudocode,
-  agentId,
-  blueprintId,
-  teamId,
 }: {
   drawerOpen: boolean;
   handleDrawerClose: () => void;
@@ -61,6 +60,8 @@ const NodeEditorWidget = ({
   setNewNodeType: (type: string) => void;
   selectedBranch: "true" | "false";
   setSelectedBranch: (branch: "true" | "false") => void;
+  inheritedNextBranch?: "true" | "false" | "none";
+  setInheritedNextBranch?: (branch: "true" | "false" | "none") => void;
   handleSubmit: () => void;
   selectedIntegration: {
     id: string;
@@ -124,9 +125,6 @@ const NodeEditorWidget = ({
     };
   };
   pseudocode?: string;
-  agentId: string;
-  blueprintId?: string;
-  teamId?: string;
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -215,6 +213,8 @@ const NodeEditorWidget = ({
       )
     : null;
 
+  const hasInheritedNext = !!nextNodeId;
+
   return (
     <NodeEditorDrawer
       pseudocode={pseudocode}
@@ -229,6 +229,9 @@ const NodeEditorWidget = ({
       setNewNodeType={setNewNodeType}
       selectedBranch={selectedBranch}
       setSelectedBranch={setSelectedBranch}
+      inheritedNextBranch={inheritedNextBranch}
+      setInheritedNextBranch={setInheritedNextBranch}
+      hasInheritedNext={hasInheritedNext}
       availableIntegrations={filteredIntegrations}
       searchQuery={searchQuery}
       setSearchQuery={setSearchQuery}
@@ -238,9 +241,6 @@ const NodeEditorWidget = ({
       nextIntegration={nextIntegration}
       handleSubmit={handleSubmit}
       editMode={editMode}
-      agentId={agentId}
-      blueprintId={blueprintId}
-      teamId={teamId}
     />
   );
 };

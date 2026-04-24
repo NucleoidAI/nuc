@@ -4,7 +4,7 @@ COPY scripts /scripts
 
 WORKDIR /scripts
 
-ENV BASE_URL=https://communication-land.gentleflower-99ef02e0.eastus.azurecontainerapps.io
+ENV BASE_URL=http://host.docker.internal:3001
 
 EXPOSE 6565
 

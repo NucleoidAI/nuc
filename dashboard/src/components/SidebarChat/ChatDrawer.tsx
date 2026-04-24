@@ -27,6 +27,7 @@ interface ChatDrawerProps {
   onBlueprintChange?: (blueprint: string) => void;
   messagesEndRef: React.RefObject<HTMLDivElement>;
   highlightedMessage: React.RefObject<HTMLDivElement>;
+  onNewSession?: () => void;
 }
 
 const ChatDrawer = ({

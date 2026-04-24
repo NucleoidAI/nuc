@@ -18,6 +18,7 @@ interface SidebarSessionListProps {
     sessionId: string
   ) => void;
   onClearAll: () => void;
+  onNewSession?: () => void;
   isCompact?: boolean;
   onMouseEnter?: () => void;
   wrapperRef?: React.Ref<HTMLDivElement>;
@@ -30,6 +31,7 @@ const SidebarSessionList = ({
   onToggleChat,
   onSessionClick,
   onClearAll,
+  onNewSession,
   isCompact = true,
   onMouseEnter,
   wrapperRef,
@@ -48,9 +50,12 @@ const SidebarSessionList = ({
           flexDirection: "column",
         }}
       >
-        <Tooltip title="Open Chat" placement="left">
+        <Tooltip title="New Chat" placement="left">
           <Box
-            onClick={onToggleChat}
+            onClick={() => {
+              onNewSession?.();
+              onToggleChat();
+            }}
             sx={{
               width: isCompact ? 35 : 65,
               height: isCompact ? 35 : 50,
@@ -72,12 +77,8 @@ const SidebarSessionList = ({
             }}
           >
             <Iconify
-              icon="mdi:play"
-              sx={{
-                width: isCompact ? 20 : 22,
-                height: isCompact ? 20 : 22,
-                transition: "all 0.2s ease-in-out",
-              }}
+              icon="solar:add-square-bold-duotone"
+              sx={{ width: 22, height: 22 }}
             />
             {!isCompact && (
               <Typography
@@ -89,13 +90,13 @@ const SidebarSessionList = ({
                   textTransform: "uppercase",
                 }}
               >
-                Run
+                New
               </Typography>
             )}
           </Box>
         </Tooltip>
 
-        <Tooltip title="Open API Docs" placement="left">
+        <Tooltip title="Open API" placement="left">
           <Box
             onClick={() => publish("SWAGGER_DIALOG_OPEN", { open: true })}
             sx={{

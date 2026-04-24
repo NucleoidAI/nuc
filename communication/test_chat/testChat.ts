@@ -27,8 +27,11 @@ router.post("/", async (req, res) => {
         .json({ error: "Invalid Authorization Bearer token" });
     }
 
-    const agentId = process.env.AGENT_ID;
-    const decoded = { aud: process.env.PROJECT_ID };
+    const agentId =
+      process.env.AGENT_ID || "00db1bd4-4829-40f2-8b99-d2e42342157e";
+    const decoded = {
+      aud: process.env.PROJECT_ID || "10b7bc8c-a49c-4002-b0ec-63599e4b5210",
+    };
 
     if (!agentId) {
       return res.status(400).json({ error: "Missing agentId" });
@@ -57,7 +60,7 @@ router.post("/", async (req, res) => {
     const messageResponse = await sendMessageToSession(
       sessionData.id,
       token,
-      content
+      content,
     );
 
     stringResponse = "Message sent";

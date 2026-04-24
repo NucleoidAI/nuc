@@ -1,8 +1,5 @@
 import CloseIcon from "@mui/icons-material/Close";
 import { Iconify } from "@canmingir/link/platform/components";
-import Knowledge from "../../widgets/Knowledge/Knowledge";
-import OpenInFullIcon from "@mui/icons-material/OpenInFull";
-import React from "react";
 import SearchIcon from "@mui/icons-material/Search";
 
 import {
@@ -12,18 +9,21 @@ import {
   CardContent,
   Drawer,
   FormControl,
-  Grid,
   IconButton,
   InputAdornment,
   InputLabel,
   MenuItem,
+  Pagination,
   Select,
   Stack,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import React, { useState } from "react";
 
 const NodeEditorDrawer = ({
   drawerOpen,
@@ -37,6 +37,9 @@ const NodeEditorDrawer = ({
   setNewNodeType,
   selectedBranch,
   setSelectedBranch,
+  inheritedNextBranch,
+  setInheritedNextBranch,
+  hasInheritedNext,
   availableIntegrations,
   searchQuery,
   setSearchQuery,
@@ -47,9 +50,6 @@ const NodeEditorDrawer = ({
   handleSubmit,
   editMode,
   pseudocode,
-  agentId,
-  blueprintId,
-  teamId,
 }: {
   drawerOpen: boolean;
   handleDrawerClose: () => void;
@@ -70,6 +70,9 @@ const NodeEditorDrawer = ({
   setNewNodeType: (type: string) => void;
   selectedBranch: "true" | "false";
   setSelectedBranch: (branch: "true" | "false") => void;
+  inheritedNextBranch: "true" | "false" | "none";
+  setInheritedNextBranch: (branch: "true" | "false" | "none") => void;
+  hasInheritedNext: boolean;
   availableIntegrations: Array<{
     id: string;
     action: string;
@@ -226,15 +229,12 @@ const NodeEditorDrawer = ({
   handleSubmit: () => void;
   editMode?: boolean;
   pseudocode?: string;
-  agentId: string;
-  blueprintId?: string;
-  teamId?: string;
 }) => {
   const theme = useTheme();
+  const [integrationPage, setIntegrationPage] = useState(1);
+  const ITEMS_PER_PAGE = 3;
 
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
-  const [showKnowledge, setShowKnowledge] = React.useState(false);
 
   return (
     <Drawer
@@ -244,79 +244,20 @@ const NodeEditorDrawer = ({
       sx={{
         zIndex: (theme) => theme.zIndex.modal + 2,
       }}
-      slotProps={{
-        paper: {
-          sx: {
-            width: isMobile ? "100%" : showKnowledge ? "100%" : 450,
-            padding: 3,
-          },
-        },
+      PaperProps={{
+        sx: { width: isMobile ? "100%" : 450, padding: 3 },
       }}
     >
-      <Grid container spacing={3}>
-        {showKnowledge && (
-          <Grid
-            size={{
-              xs: 12,
-              md: 6,
-            }}
-            sx={{
-              position: "relative",
-            }}
-          >
-            <Knowledge
-              agentId={agentId}
-              blueprintId={blueprintId}
-              teamId={teamId}
-            />
-          </Grid>
-        )}
-        <Grid
-          data-cy="node-editor-drawer"
-          gap={2}
-          display="flex"
-          flexDirection="column"
-          size={{
-            xs: 12,
-            md: showKnowledge ? 6 : 12,
-          }}
-          sx={{
-            borderLeft: {
-              xs: "none",
-              md: showKnowledge ? `1px solid ${theme.palette.divider}` : "none",
-            },
-            pl: {
-              xs: 0,
-              md: showKnowledge ? 3 : 0,
-            },
-          }}
-        >
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography variant="h6">
-              {editMode ? "Edit Node" : "Add New Node"}
-            </Typography>
-            <Box>
-              <IconButton
-                onClick={() => setShowKnowledge(!showKnowledge)}
-                aria-label={
-                  showKnowledge
-                    ? "Hide knowledge panel"
-                    : "Show knowledge panel"
-                }
-                aria-expanded={showKnowledge}
-              >
-                <OpenInFullIcon />
-              </IconButton>
-              <IconButton onClick={handleDrawerClose}>
-                <CloseIcon />
-              </IconButton>
-            </Box>
-          </Box>
-
+      <Stack spacing={2}>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography variant="h6">
+            {editMode ? "Edit Node" : "Add New Node"}
+          </Typography>
+          <IconButton onClick={handleDrawerClose}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
+        {selectedParentNode && (
           <Box>
             <Typography variant="caption" color="text.secondary">
               Parent Node:
@@ -325,154 +266,194 @@ const NodeEditorDrawer = ({
               {selectedParentNode?.label || selectedParentNode?.id || "Unknown"}
             </Typography>
           </Box>
+        )}
 
-          <TextField
-            label="Label"
-            variant="outlined"
-            fullWidth
-            value={newNodeLabel}
-            onChange={(e) => setNewNodeLabel(e.target.value)}
-            autoComplete="off"
-            slotProps={{
-              htmlInput: {
-                autoComplete: "off",
-                autoCorrect: "off",
-                spellCheck: false,
-              },
-            }}
-          />
+        <TextField
+          label="Label"
+          variant="outlined"
+          fullWidth
+          value={newNodeLabel}
+          onChange={(e) => setNewNodeLabel(e.target.value)}
+          autoComplete="off"
+          inputProps={{
+            autoComplete: "off",
+            autoCorrect: "off",
+            spellCheck: false,
+          }}
+        />
 
-          <TextField
-            label="Prompt"
-            variant="outlined"
-            fullWidth
-            multiline
-            minRows={3}
-            value={newNodePrompt}
-            onChange={(e) => setNewNodePrompt(e.target.value)}
-            autoComplete="off"
-            slotProps={{
-              htmlInput: {
-                autoComplete: "off",
-                autoCorrect: "off",
-                spellCheck: false,
-              },
-            }}
-          />
+        <TextField
+          label="Prompt"
+          variant="outlined"
+          fullWidth
+          multiline
+          minRows={3}
+          value={newNodePrompt}
+          onChange={(e) => setNewNodePrompt(e.target.value)}
+          autoComplete="off"
+          inputProps={{
+            autoComplete: "off",
+            autoCorrect: "off",
+            spellCheck: false,
+          }}
+        />
 
-          <Box
-            sx={{
-              p: 2,
-              border: "1px solid",
-              borderColor: "divider",
-              borderRadius: 1,
-              bgcolor: "background.default",
+        <Box
+          sx={{
+            p: 2,
+            border: "1px solid",
+            borderColor: "divider",
+            borderRadius: 1,
+            bgcolor: "background.default",
+          }}
+        >
+          <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+            Pseudocode
+          </Typography>
+
+          <Typography
+            variant="subtitle2"
+            fontWeight="bold"
+            color="text.secondary"
+            gutterBottom
+            component="pre"
+            sx={{ whiteSpace: "pre-wrap", fontFamily: "monospace" }}
+          >
+            {pseudocode && pseudocode.trim() ? pseudocode : "Not available"}
+          </Typography>
+        </Box>
+
+        <FormControl fullWidth>
+          <InputLabel id="node-type-label">Type</InputLabel>
+          <Select
+            labelId="node-type-label"
+            id="node-type-select"
+            value={newNodeType}
+            label="Type"
+            onChange={(e) => setNewNodeType(e.target.value)}
+            MenuProps={{
+              sx: { zIndex: (theme) => theme.zIndex.modal + 3 },
             }}
           >
-            <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
-              Pseudocode
-            </Typography>
+            <MenuItem value="NORMAL">Normal</MenuItem>
+            <MenuItem value="CONDITION">Condition</MenuItem>
+          </Select>
+        </FormControl>
 
-            <Typography
-              variant="subtitle2"
-              fontWeight="bold"
-              color="text.secondary"
-              gutterBottom
-              component="pre"
-              sx={{ whiteSpace: "pre-wrap", fontFamily: "monospace" }}
-            >
-              {pseudocode && pseudocode.trim() ? pseudocode : "Not available"}
-            </Typography>
-          </Box>
-
+        {selectedParentNode?.nodeType === "CONDITION" && (
           <FormControl fullWidth>
-            <InputLabel id="node-type-label">Type</InputLabel>
+            <InputLabel id="branch-label">Branch</InputLabel>
             <Select
-              labelId="node-type-label"
-              id="node-type-select"
-              value={newNodeType}
-              label="Type"
-              onChange={(e) => setNewNodeType(e.target.value)}
+              labelId="branch-label"
+              id="branch-select"
+              value={selectedBranch}
+              label="Branch"
+              onChange={(e) =>
+                setSelectedBranch(e.target.value as "true" | "false")
+              }
               MenuProps={{
                 sx: { zIndex: (theme) => theme.zIndex.modal + 3 },
               }}
             >
-              <MenuItem value="NORMAL">Normal</MenuItem>
-              <MenuItem value="CONDITION">Condition</MenuItem>
+              <MenuItem value="true">True Branch</MenuItem>
+              <MenuItem value="false">False Branch</MenuItem>
             </Select>
           </FormControl>
+        )}
 
-          {selectedParentNode?.nodeType === "CONDITION" && (
-            <FormControl fullWidth>
-              <InputLabel id="branch-label">Branch</InputLabel>
-              <Select
-                labelId="branch-label"
-                id="branch-select"
-                value={selectedBranch}
-                label="Branch"
-                onChange={(e) =>
-                  setSelectedBranch(e.target.value as "true" | "false")
-                }
-                MenuProps={{
-                  sx: { zIndex: (theme) => theme.zIndex.modal + 3 },
+        {newNodeType === "CONDITION" && hasInheritedNext && (
+          <Box>
+            <Typography variant="subtitle2" gutterBottom>
+              Continue existing flow on:
+            </Typography>
+            <ToggleButtonGroup
+              value={inheritedNextBranch}
+              exclusive
+              onChange={(_, val) => val && setInheritedNextBranch(val)}
+              fullWidth
+              size="small"
+            >
+              <ToggleButton
+                value="true"
+                sx={{
+                  "&.Mui-selected": {
+                    bgcolor: "success.main",
+                    color: "success.contrastText",
+                    "&:hover": { bgcolor: "success.dark" },
+                  },
                 }}
               >
-                <MenuItem value="true">True Branch</MenuItem>
-                <MenuItem value="false">False Branch</MenuItem>
-              </Select>
-            </FormControl>
-          )}
+                True
+              </ToggleButton>
+              <ToggleButton
+                value="false"
+                sx={{
+                  "&.Mui-selected": {
+                    bgcolor: "error.main",
+                    color: "error.contrastText",
+                    "&:hover": { bgcolor: "error.dark" },
+                  },
+                }}
+              >
+                False
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
+        )}
 
-          {newNodeType !== "CONDITION" && (
-            <Box>
-              {availableIntegrations.length === 0 ? (
-                <></>
-              ) : (
-                <>
-                  <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                    Select Integration
-                  </Typography>
-                  <TextField
-                    placeholder="Search integrations..."
-                    variant="outlined"
-                    fullWidth
-                    size="small"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    sx={{ mb: 2 }}
-                    autoComplete="off"
-                    slotProps={{
-                      input: {
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <SearchIcon />
-                          </InputAdornment>
-                        ),
-                      },
+        {newNodeType !== "CONDITION" && (
+          <Box>
+            {availableIntegrations.length === 0 && !searchQuery ? (
+              <></>
+            ) : (
+              <>
+                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                  Select Integration
+                </Typography>
+                <TextField
+                  placeholder="Search integrations..."
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setIntegrationPage(1);
+                  }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                  sx={{ mb: 2 }}
+                  autoComplete="off"
+                  inputProps={{
+                    autoComplete: "off",
+                    autoCorrect: "off",
+                    spellCheck: false,
+                  }}
+                />
 
-                      htmlInput: {
-                        autoComplete: "off",
-                        autoCorrect: "off",
-                        spellCheck: false,
-                      },
-                    }}
-                  />
-
-                  <Box
-                    sx={{
-                      minHeight: 500,
-                      overflowY: "auto",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 1,
-                    }}
-                  >
-                    {availableIntegrations.length === 0 ? (
-                      <Typography variant="body2" color="text.secondary">
-                        No integrations found matching {searchQuery}
-                      </Typography>
-                    ) : (
-                      availableIntegrations.map((integration) => (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 1,
+                  }}
+                >
+                  {availableIntegrations.length === 0 ? (
+                    <Typography variant="body2" color="text.secondary">
+                      No integrations found matching &quot;{searchQuery}&quot;
+                    </Typography>
+                  ) : (
+                    availableIntegrations
+                      .slice(
+                        (integrationPage - 1) * ITEMS_PER_PAGE,
+                        integrationPage * ITEMS_PER_PAGE
+                      )
+                      .map((integration) => (
                         <Card
                           key={integration.id}
                           variant="outlined"
@@ -538,169 +519,60 @@ const NodeEditorDrawer = ({
                           </CardContent>
                         </Card>
                       ))
+                  )}
+                </Box>
+                {availableIntegrations.length > ITEMS_PER_PAGE && (
+                  <Pagination
+                    count={Math.ceil(
+                      availableIntegrations.length / ITEMS_PER_PAGE
                     )}
-                  </Box>
-                </>
-              )}
-            </Box>
-          )}
-
-          {newNodeType !== "CONDITION" &&
-            (parentIntegration || nextIntegration) && (
-              <Box
-                sx={{
-                  p: 2,
-                  border: "1px solid",
-                  borderColor: "divider",
-                  borderRadius: 1,
-                  bgcolor: "background.default",
-                }}
-              >
-                <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
-                  Data Flow Context
-                </Typography>
-
-                {parentIntegration?.outputSchema?.properties && (
-                  <Box sx={{ mb: nextIntegration ? 2 : 0 }}>
-                    <Typography
-                      variant="subtitle2"
-                      fontWeight="bold"
-                      color="primary"
-                      gutterBottom
-                    >
-                      Parent Node: {parentIntegration.action}
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      display="block"
-                      sx={{ mb: 1 }}
-                    >
-                      Output (available data):
-                    </Typography>
-                    <Box sx={{ pl: 2 }}>
-                      {Object.entries(
-                        parentIntegration.outputSchema.properties
-                      ).map(
-                        ([key, value]: [
-                          string,
-                          {
-                            type: string;
-                            description?: string;
-                            nullable?: boolean;
-                          }
-                        ]) => (
-                          <Box key={key} sx={{ mb: 0.5 }}>
-                            <Typography variant="body2" component="span">
-                              <strong>{key}:</strong>{" "}
-                              <Typography
-                                component="span"
-                                variant="body2"
-                                color="text.secondary"
-                              >
-                                {value.type}
-                                {value.description && ` - ${value.description}`}
-                              </Typography>
-                            </Typography>
-                          </Box>
-                        )
-                      )}
-                    </Box>
-                  </Box>
+                    page={integrationPage}
+                    onChange={(_, value) => setIntegrationPage(value)}
+                    size="small"
+                    sx={{ mt: 1, display: "flex", justifyContent: "center" }}
+                  />
                 )}
-
-                {nextIntegration?.inputSchema?.properties && (
-                  <Box>
-                    <Typography
-                      variant="subtitle2"
-                      fontWeight="bold"
-                      color="error"
-                      gutterBottom
-                    >
-                      Next Node: {nextIntegration.action}
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      display="block"
-                      sx={{ mb: 1 }}
-                    >
-                      Input (required data):
-                    </Typography>
-                    <Box sx={{ pl: 2 }}>
-                      {Object.entries(
-                        nextIntegration.inputSchema.properties
-                      ).map(
-                        ([key, value]: [
-                          string,
-                          {
-                            type: string;
-                            description?: string;
-                            nullable?: boolean;
-                          }
-                        ]) => (
-                          <Box key={key} sx={{ mb: 0.5 }}>
-                            <Typography variant="body2" component="span">
-                              <strong>{key}:</strong>{" "}
-                              <Typography
-                                component="span"
-                                variant="body2"
-                                color="text.secondary"
-                              >
-                                {value.type}
-                                {value.description && ` - ${value.description}`}
-                              </Typography>
-                            </Typography>
-                          </Box>
-                        )
-                      )}
-                    </Box>
-                  </Box>
-                )}
-              </Box>
+              </>
             )}
+          </Box>
+        )}
 
-          {selectedIntegration?.id && newNodeType !== "CONDITION" && (
+        {newNodeType !== "CONDITION" &&
+          (parentIntegration || nextIntegration) && (
             <Box
               sx={{
                 p: 2,
                 border: "1px solid",
                 borderColor: "divider",
                 borderRadius: 1,
-                bgcolor: "background.paper",
+                bgcolor: "background.default",
               }}
             >
               <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
-                Selected Integration Details
+                Data Flow Context
               </Typography>
 
-              <Box sx={{ mb: 2 }}>
-                <Typography variant="subtitle2" color="primary" gutterBottom>
-                  {selectedIntegration.action}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{
-                    marginBottom: "16px",
-                  }}
-                >
-                  {selectedIntegration.description}
-                </Typography>
-              </Box>
-
-              {selectedIntegration.inputSchema?.properties && (
-                <Box sx={{ mb: 2 }}>
+              {parentIntegration?.outputSchema?.properties && (
+                <Box sx={{ mb: nextIntegration ? 2 : 0 }}>
                   <Typography
                     variant="subtitle2"
                     fontWeight="bold"
+                    color="primary"
                     gutterBottom
                   >
-                    Input Schema
+                    Parent Node: {parentIntegration.action}
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    display="block"
+                    sx={{ mb: 1 }}
+                  >
+                    Output (available data):
                   </Typography>
                   <Box sx={{ pl: 2 }}>
                     {Object.entries(
-                      selectedIntegration.inputSchema.properties
+                      parentIntegration.outputSchema.properties
                     ).map(
                       ([key, value]: [
                         string,
@@ -729,19 +601,26 @@ const NodeEditorDrawer = ({
                 </Box>
               )}
 
-              {selectedIntegration.outputSchema?.properties && (
+              {nextIntegration?.inputSchema?.properties && (
                 <Box>
                   <Typography
                     variant="subtitle2"
                     fontWeight="bold"
+                    color="error"
                     gutterBottom
                   >
-                    Output Schema
+                    Next Node: {nextIntegration.action}
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    display="block"
+                    sx={{ mb: 1 }}
+                  >
+                    Input (required data):
                   </Typography>
                   <Box sx={{ pl: 2 }}>
-                    {Object.entries(
-                      selectedIntegration.outputSchema.properties
-                    ).map(
+                    {Object.entries(nextIntegration.inputSchema.properties).map(
                       ([key, value]: [
                         string,
                         {
@@ -771,19 +650,107 @@ const NodeEditorDrawer = ({
             </Box>
           )}
 
-          <Button
-            size="large"
-            variant="contained"
-            onClick={handleSubmit}
-            disabled={
-              !newNodeLabel ||
-              (newNodeType !== "CONDITION" && !selectedIntegration?.id)
-            }
+        {selectedIntegration?.id && newNodeType !== "CONDITION" && (
+          <Box
+            sx={{
+              p: 2,
+              border: "1px solid",
+              borderColor: "divider",
+              borderRadius: 1,
+              bgcolor: "background.paper",
+            }}
           >
-            {editMode ? "Edit Node" : "Add Node"}
-          </Button>
-        </Grid>
-      </Grid>
+            <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+              Selected Integration Details
+            </Typography>
+
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="subtitle2" color="primary" gutterBottom>
+                {selectedIntegration.action}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" paragraph>
+                {selectedIntegration.description}
+              </Typography>
+            </Box>
+
+            {selectedIntegration.inputSchema?.properties && (
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+                  Input Schema
+                </Typography>
+                <Box sx={{ pl: 2 }}>
+                  {Object.entries(
+                    selectedIntegration.inputSchema.properties
+                  ).map(
+                    ([key, value]: [
+                      string,
+                      { type: string; description?: string; nullable?: boolean }
+                    ]) => (
+                      <Box key={key} sx={{ mb: 0.5 }}>
+                        <Typography variant="body2" component="span">
+                          <strong>{key}:</strong>{" "}
+                          <Typography
+                            component="span"
+                            variant="body2"
+                            color="text.secondary"
+                          >
+                            {value.type}
+                            {value.description && ` - ${value.description}`}
+                          </Typography>
+                        </Typography>
+                      </Box>
+                    )
+                  )}
+                </Box>
+              </Box>
+            )}
+
+            {selectedIntegration.outputSchema?.properties && (
+              <Box>
+                <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+                  Output Schema
+                </Typography>
+                <Box sx={{ pl: 2 }}>
+                  {Object.entries(
+                    selectedIntegration.outputSchema.properties
+                  ).map(
+                    ([key, value]: [
+                      string,
+                      { type: string; description?: string; nullable?: boolean }
+                    ]) => (
+                      <Box key={key} sx={{ mb: 0.5 }}>
+                        <Typography variant="body2" component="span">
+                          <strong>{key}:</strong>{" "}
+                          <Typography
+                            component="span"
+                            variant="body2"
+                            color="text.secondary"
+                          >
+                            {value.type}
+                            {value.description && ` - ${value.description}`}
+                          </Typography>
+                        </Typography>
+                      </Box>
+                    )
+                  )}
+                </Box>
+              </Box>
+            )}
+          </Box>
+        )}
+
+        <Button
+          size="large"
+          variant="contained"
+          onClick={handleSubmit}
+          disabled={
+            !newNodeLabel ||
+            (newNodeType !== "CONDITION" && !selectedIntegration?.id)
+          }
+        >
+          {editMode ? "Edit Node" : "Add Node"}
+        </Button>
+      </Stack>
     </Drawer>
   );
 };

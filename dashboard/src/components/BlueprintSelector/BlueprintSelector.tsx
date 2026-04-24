@@ -43,7 +43,7 @@ const BlueprintSelector = ({
             },
           }}
         >
-          Blueprint
+          Automatic
         </InputLabel>
         <Select
           value={selectedBlueprint || ""}

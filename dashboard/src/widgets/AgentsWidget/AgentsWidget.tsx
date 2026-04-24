@@ -1,5 +1,6 @@
 import AddNewButton from "../../components/AddNewButton";
 import AgentCard from "../../components/AgentCard";
+import AgentDrawer from "../../components/AgentDrawer/AgentDrawer";
 import AgentWizard from "../AgentWizard/AgentWizard";
 import AgentsSkeleton from "../../components/Skeletons/AgentsSkeleton";
 import Box from "@mui/material/Box";
@@ -18,6 +19,8 @@ import React, { useState } from "react";
 function AgentsWidget({ teamId }) {
   const [updatedAgent, setUpdatedAgent] = useState(null);
   const [deleteFunction, setDeleteFunction] = useState(null);
+  const [agentDrawerOpen, setAgentDrawerOpen] = useState(false);
+  const [selectedAgent, setSelectedAgent] = useState(null);
   const navigate = useNavigate();
   const { uiState, openForm, closeForm, openDialog, closeDialog } =
     useUIState();
@@ -35,7 +38,14 @@ function AgentsWidget({ teamId }) {
   }
 
   const handleAgentClick = (agentId) => {
-    navigate(`/agents/${agentId}`);
+    const agent = agents.find((a) => a.id === agentId);
+
+    if (!agent) {
+      return;
+    }
+
+    setSelectedAgent(agent);
+    setAgentDrawerOpen(true);
   };
 
   return (
@@ -130,6 +140,19 @@ function AgentsWidget({ teamId }) {
           )}
         />
       </Grid>
+
+      {agentDrawerOpen && (
+        <AgentDrawer
+          open={agentDrawerOpen}
+          onClose={() => {
+            setAgentDrawerOpen(false);
+            setSelectedAgent(null);
+          }}
+          agent={selectedAgent}
+          initialTab="profile"
+          allAgentIds={agents.map((a) => a.id)}
+        />
+      )}
     </>
   );
 }

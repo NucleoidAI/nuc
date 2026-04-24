@@ -33,7 +33,7 @@
       "type": "row"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -83,7 +83,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "sum(http_requests_total)",
           "interval": "",
           "legendFormat": "Total HTTP Requests",
@@ -94,7 +94,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -144,7 +144,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "sum(http_errors_total)",
           "interval": "",
           "legendFormat": "Total HTTP Errors",
@@ -155,7 +155,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -205,7 +205,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "histogram_quantile(0.5, sum(rate(http_request_duration_ms_bucket[5m])) by (le))",
           "interval": "",
           "legendFormat": "P50 Duration",
@@ -216,7 +216,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -266,7 +266,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "process_uptime_seconds",
           "interval": "",
           "legendFormat": "Uptime",
@@ -277,7 +277,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -327,7 +327,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "http_active_requests",
           "interval": "",
           "legendFormat": "Active Requests",
@@ -338,7 +338,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -388,7 +388,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "(sum(http_errors_total) / sum(http_requests_total)) * 100",
           "interval": "",
           "legendFormat": "Error Rate",
@@ -399,7 +399,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -449,7 +449,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_ms_bucket[5m])) by (le))",
           "interval": "",
           "legendFormat": "P95 Duration",
@@ -460,7 +460,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -510,7 +510,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "histogram_quantile(0.99, sum(rate(http_request_duration_ms_bucket[5m])) by (le))",
           "interval": "",
           "legendFormat": "P99 Duration",
@@ -534,7 +534,7 @@
       "type": "row"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -603,7 +603,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "rate(http_requests_total[5m])",
           "interval": "",
           "legendFormat": "{{method}} {{endpoint}} ({{status_code}})",
@@ -614,7 +614,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -683,7 +683,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "http_active_requests",
           "interval": "",
           "legendFormat": "Active Requests",
@@ -694,7 +694,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -809,21 +809,21 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "histogram_quantile(0.5, sum(rate(http_request_duration_ms_bucket[5m])) by (le, endpoint))",
           "interval": "",
           "legendFormat": "P50 {{endpoint}}",
           "refId": "A"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_ms_bucket[5m])) by (le, endpoint))",
           "interval": "",
           "legendFormat": "P95 {{endpoint}}",
           "refId": "B"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "histogram_quantile(0.99, sum(rate(http_request_duration_ms_bucket[5m])) by (le, endpoint))",
           "interval": "",
           "legendFormat": "P99 {{endpoint}}",
@@ -834,7 +834,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -903,7 +903,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "sum by (status_code) (http_requests_total)",
           "interval": "",
           "legendFormat": "Status {{status_code}}",
@@ -914,7 +914,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -983,7 +983,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "rate(http_errors_total[5m])",
           "interval": "",
           "legendFormat": "{{method}} {{endpoint}} ({{status_code}})",
@@ -994,7 +994,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1063,7 +1063,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "sum by (method) (http_requests_total)",
           "interval": "",
           "legendFormat": "{{method}}",
@@ -1087,7 +1087,7 @@
       "type": "row"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1156,14 +1156,14 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "sum by (v8js_heap_space_name) (v8js_memory_heap_used)",
           "interval": "",
           "legendFormat": "{{v8js_heap_space_name}} (used)",
           "refId": "A"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "sum by (v8js_heap_space_name) (v8js_memory_heap_limit)",
           "interval": "",
           "legendFormat": "{{v8js_heap_space_name}} (limit)",
@@ -1174,7 +1174,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1224,7 +1224,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "nodejs_eventloop_utilization",
           "interval": "",
           "legendFormat": "Event Loop Utilization",
@@ -1235,7 +1235,7 @@
       "type": "gauge"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1304,7 +1304,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "rate(nodejs_eventloop_time_total[5m])",
           "interval": "",
           "legendFormat": "{{nodejs_eventloop_state}}",
@@ -1315,7 +1315,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1384,7 +1384,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "rate(v8js_gc_duration_count[5m])",
           "interval": "",
           "legendFormat": "GC {{v8js_gc_type}}",
@@ -1395,7 +1395,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1464,14 +1464,14 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "histogram_quantile(0.5, sum(rate(v8js_gc_duration_bucket[5m])) by (le, v8js_gc_type))",
           "interval": "",
           "legendFormat": "P50 {{v8js_gc_type}}",
           "refId": "A"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "histogram_quantile(0.99, sum(rate(v8js_gc_duration_bucket[5m])) by (le, v8js_gc_type))",
           "interval": "",
           "legendFormat": "P99 {{v8js_gc_type}}",
@@ -1482,7 +1482,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1532,7 +1532,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "process_memory_usage",
           "interval": "",
           "legendFormat": "Process Memory",
@@ -1543,7 +1543,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1612,7 +1612,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "rate(process_cpu_time_total[5m])",
           "interval": "",
           "legendFormat": "CPU {{process_cpu_state}}",
@@ -1623,7 +1623,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1694,7 +1694,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "process_cpu_utilization",
           "interval": "",
           "legendFormat": "CPU {{process_cpu_state}}",
@@ -1718,7 +1718,7 @@
       "type": "row"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1789,7 +1789,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "avg by (system_cpu_state) (system_cpu_utilization)",
           "interval": "",
           "legendFormat": "CPU {{system_cpu_state}}",
@@ -1800,7 +1800,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1869,7 +1869,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "system_memory_usage",
           "interval": "",
           "legendFormat": "Memory {{system_memory_state}}",
@@ -1880,7 +1880,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1930,7 +1930,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "system_memory_utilization{system_memory_state=\"used\"}",
           "interval": "",
           "legendFormat": "Memory Utilization",
@@ -1941,7 +1941,7 @@
       "type": "gauge"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2010,7 +2010,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "rate(system_network_io_total[5m])",
           "interval": "",
           "legendFormat": "{{system_device}} {{network_io_direction}}",
@@ -2021,7 +2021,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2090,7 +2090,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "rate(system_network_errors_total[5m])",
           "interval": "",
           "legendFormat": "{{system_device}} {{network_io_direction}} errors",
@@ -2101,7 +2101,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2170,7 +2170,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "rate(system_network_dropped_total[5m])",
           "interval": "",
           "legendFormat": "{{system_device}} {{network_io_direction}} dropped",
@@ -2194,7 +2194,7 @@
       "type": "row"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2317,7 +2317,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "sum by (endpoint, method) (http_requests_total)",
           "format": "table",
           "instant": true,
@@ -2326,7 +2326,7 @@
           "refId": "A"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "sum by (endpoint, method) (http_errors_total)",
           "format": "table",
           "instant": true,
@@ -2335,7 +2335,7 @@
           "refId": "B"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "histogram_quantile(0.5, sum by (endpoint, method, le) (rate(http_request_duration_ms_bucket[5m])))",
           "format": "table",
           "instant": true,
@@ -2372,7 +2372,7 @@
       "type": "table"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2443,7 +2443,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "v8js_memory_heap_used",
           "format": "table",
           "instant": true,
@@ -2452,7 +2452,7 @@
           "refId": "A"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "v8js_memory_heap_limit",
           "format": "table",
           "instant": true,
@@ -2487,7 +2487,7 @@
       "type": "table"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "Prometheus Local",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2558,7 +2558,7 @@
       "pluginVersion": "10.0.0",
       "targets": [
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "v8js_gc_duration_count",
           "format": "table",
           "instant": true,
@@ -2567,7 +2567,7 @@
           "refId": "A"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": "Prometheus Local",
           "expr": "v8js_gc_duration_sum / v8js_gc_duration_count",
           "format": "table",
           "instant": true,

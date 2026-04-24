@@ -681,6 +681,7 @@ function FlowNodeRenderer({
   };
 }) {
   const { onAdd, onEdit, onSwapBranch, onDelete } = nodeStyle || {};
+  const isReadOnly = !onAdd && !onEdit && !onSwapBranch && !onDelete;
   const [contextMenu, setContextMenu] = useState<{
     mouseX: number;
     mouseY: number;
@@ -696,6 +697,7 @@ function FlowNodeRenderer({
     (node.trueNext?.length ?? 0) > 0 || (node.falseNext?.length ?? 0) > 0;
 
   const handleContextMenu = (e: React.MouseEvent) => {
+    if (isReadOnly) return;
     e.preventDefault();
     e.stopPropagation();
     setContextMenu({ mouseX: e.clientX, mouseY: e.clientY });
@@ -762,26 +764,30 @@ function FlowNodeRenderer({
         )
       )}
       <InfoNode node={node} nodeStyle={nodeStyle}>
-        <DeleteButtonWrapper onClick={handleDeleteClick} title="Delete node">
-          <Iconify icon="mdi:delete-outline" width={16} height={16} />
-        </DeleteButtonWrapper>
-        {isDecision && hasChildren && (
-          <SwapButtonWrapper
-            onClick={handleSwapClick}
-            title="Swap true/false branches"
-          >
-            <Iconify icon="mdi:swap-horizontal" width={16} height={16} />
-          </SwapButtonWrapper>
+        {!isReadOnly && (
+          <>
+            <DeleteButtonWrapper onClick={handleDeleteClick} title="Delete node">
+              <Iconify icon="mdi:delete-outline" width={16} height={16} />
+            </DeleteButtonWrapper>
+            {isDecision && hasChildren && (
+              <SwapButtonWrapper
+                onClick={handleSwapClick}
+                title="Swap true/false branches"
+              >
+                <Iconify icon="mdi:swap-horizontal" width={16} height={16} />
+              </SwapButtonWrapper>
+            )}
+            <EditButtonWrapper onClick={handleEditClick} title="Edit node">
+              <Iconify icon="mdi:pencil" width={16} height={16} />
+            </EditButtonWrapper>
+            <AddButtonWrapper onClick={handleAddClick} title="Add child node">
+              <Iconify icon="mdi:plus" width={16} height={16} />
+            </AddButtonWrapper>
+          </>
         )}
-        <EditButtonWrapper onClick={handleEditClick} title="Edit node">
-          <Iconify icon="mdi:pencil" width={16} height={16} />
-        </EditButtonWrapper>
-        <AddButtonWrapper onClick={handleAddClick} title="Add child node">
-          <Iconify icon="mdi:plus" width={16} height={16} />
-        </AddButtonWrapper>
       </InfoNode>
 
-      <Menu
+      {!isReadOnly && <Menu
         open={contextMenu !== null}
         onClose={handleClose}
         anchorReference="anchorPosition"
@@ -840,7 +846,7 @@ function FlowNodeRenderer({
           </ListItemIcon>
           <ListItemText>Delete node</ListItemText>
         </MenuItem>
-      </Menu>
+      </Menu>}
     </NodeWrapper>
   );
 }

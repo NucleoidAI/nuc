@@ -16,6 +16,7 @@ export default function BlueprintFlow({
   graphData,
   enrichedGraphData,
   drawerOpen,
+  readOnly = false,
   hasLocalChanges,
   hasDifferences,
   validationErrors,
@@ -46,7 +47,8 @@ export default function BlueprintFlow({
         position: "relative",
       }}
     >
-      {baselineNodes.length > 0 &&
+      {!readOnly &&
+        baselineNodes.length > 0 &&
         (hasLocalChanges || hasDifferences) &&
         !drawerOpen && (
           <DiffButton
@@ -58,16 +60,16 @@ export default function BlueprintFlow({
       <Flow
         data={enrichedGraphData}
         plugin={blueprintFlowPlugin}
-        editable
+        editable={!readOnly}
         height={isSuperviseFlow ? "50%" : "100%"}
-        onChange={onFlowChange}
+        onChange={readOnly ? undefined : onFlowChange}
         variant="horizontal"
         style={() => ({
           direction: "horizontal",
-          onAdd: onAddNodeClick,
-          onEdit: onEditNodeClick,
-          onSwapBranch: onSwapBranchClick,
-          onDelete: onDeleteNodeClick,
+          onAdd: readOnly ? undefined : onAddNodeClick,
+          onEdit: readOnly ? undefined : onEditNodeClick,
+          onSwapBranch: readOnly ? undefined : onSwapBranchClick,
+          onDelete: readOnly ? undefined : onDeleteNodeClick,
         })}
       />
 
@@ -78,7 +80,7 @@ export default function BlueprintFlow({
         />
       )}
 
-      {hasLocalChanges && !drawerOpen && (
+      {!readOnly && hasLocalChanges && !drawerOpen && (
         <ValidationButtons
           validationErrors={validationErrors}
           setShowValidationErrors={onShowValidationErrors}

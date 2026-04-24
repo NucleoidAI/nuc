@@ -38,7 +38,9 @@ function BlueprintFlowWidget({
   lastUsedNodeId,
   failedNodeId,
   isSuperviseFlow = false,
+  agentId,
   readOnly = false,
+  teamId,
 }: {
   aiResponse?: AIResponse;
   setAiResponse?: (response: AIResponse | null) => void;
@@ -1090,6 +1092,9 @@ function BlueprintFlowWidget({
             ? graphData.nodes[editingNodeId]
             : undefined
         }
+        agentId={agentId || blueprintNodes?.agentId || ""}
+        blueprintId={blueprint?.id}
+        teamId={teamId}
       />
     </>
   );

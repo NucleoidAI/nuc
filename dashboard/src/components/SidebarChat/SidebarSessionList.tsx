@@ -22,6 +22,7 @@ interface SidebarSessionListProps {
   isCompact?: boolean;
   onMouseEnter?: () => void;
   wrapperRef?: React.Ref<HTMLDivElement>;
+  beta?: boolean;
 }
 
 const SidebarSessionList = ({
@@ -35,6 +36,7 @@ const SidebarSessionList = ({
   isCompact = true,
   onMouseEnter,
   wrapperRef,
+  beta,
 }: SidebarSessionListProps) => {
   const sidebarSessions = sessions;
 
@@ -96,52 +98,54 @@ const SidebarSessionList = ({
           </Box>
         </Tooltip>
 
-        <Tooltip title="Open API" placement="left">
-          <Box
-            onClick={() => publish("SWAGGER_DIALOG_OPEN", { open: true })}
-            sx={{
-              width: isCompact ? 35 : 65,
-              height: isCompact ? 35 : 50,
-              borderRadius: isCompact ? "10px" : "12px",
-              cursor: "pointer",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 0.5,
-              mb: 1,
-              alignSelf: "center",
-              color: (theme) => theme.palette.text.secondary,
-              transition: "all 0.2s ease-in-out",
-              "&:hover": {
-                bgcolor: (theme) => alpha(theme.palette.primary.main, 0.1),
-                color: (theme) => theme.palette.primary.main,
-              },
-            }}
-          >
-            <Iconify
-              icon="logos:swagger"
+        {beta && (
+          <Tooltip title="Open API" placement="left">
+            <Box
+              onClick={() => publish("SWAGGER_DIALOG_OPEN", { open: true })}
               sx={{
-                width: isCompact ? 20 : 22,
-                height: isCompact ? 20 : 22,
+                width: isCompact ? 35 : 65,
+                height: isCompact ? 35 : 50,
+                borderRadius: isCompact ? "10px" : "12px",
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 0.5,
+                mb: 1,
+                alignSelf: "center",
+                color: (theme) => theme.palette.text.secondary,
                 transition: "all 0.2s ease-in-out",
+                "&:hover": {
+                  bgcolor: (theme) => alpha(theme.palette.primary.main, 0.1),
+                  color: (theme) => theme.palette.primary.main,
+                },
               }}
-            />
-            {!isCompact && (
-              <Typography
+            >
+              <Iconify
+                icon="logos:swagger"
                 sx={{
-                  fontSize: "0.6rem",
-                  fontWeight: 700,
-                  letterSpacing: 0.5,
-                  lineHeight: 1,
-                  textTransform: "uppercase",
+                  width: isCompact ? 20 : 22,
+                  height: isCompact ? 20 : 22,
+                  transition: "all 0.2s ease-in-out",
                 }}
-              >
-                API
-              </Typography>
-            )}
-          </Box>
-        </Tooltip>
+              />
+              {!isCompact && (
+                <Typography
+                  sx={{
+                    fontSize: "0.6rem",
+                    fontWeight: 700,
+                    letterSpacing: 0.5,
+                    lineHeight: 1,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  API
+                </Typography>
+              )}
+            </Box>
+          </Tooltip>
+        )}
 
         {sidebarSessions.length > 0 && (
           <>

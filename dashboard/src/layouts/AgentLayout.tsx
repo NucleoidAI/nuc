@@ -11,11 +11,12 @@ import Stack from "@mui/material/Stack";
 import Supervising from "../widgets/Supervising/Supervising";
 import SwaggerDialog from "../components/SwaggerDialog/SwaggerDialog";
 import TasksWidget from "../widgets/TasksWidget/TasksWidget";
+import config from "../../config";
 import { getAgentGradients } from "../utils/gradient";
 import { useEvent } from "@nucleoidai/react-event";
 
 import { Box, Skeleton, useTheme } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const DRAWER_WIDTH = 400;
@@ -84,6 +85,12 @@ function AgentLayout({
   initialTab?: string;
   allAgentIds?: string[];
 }) {
+  const { beta } = config;
+
+  const visibleTabs = useMemo(() => {
+    return TABS.filter((tab) => beta || tab.value !== "api");
+  }, [beta]);
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -93,11 +100,13 @@ function AgentLayout({
   const tabFromQuery = queryParams.get("tab");
 
   const safeInitial =
-    initialTab && TABS.some((t) => t.value === initialTab) ? initialTab : null;
+    initialTab && visibleTabs.some((t) => t.value === initialTab)
+      ? initialTab
+      : null;
 
   const [currentTab, setCurrentTab] = useState(
     safeInitial ||
-      (TABS.some((tab) => tab.value === tabFromQuery)
+      (visibleTabs.some((tab) => tab.value === tabFromQuery)
         ? tabFromQuery
         : "profile")
   );
@@ -147,12 +156,12 @@ function AgentLayout({
   useEffect(() => {
     if (
       tabFromQuery &&
-      TABS.some((tab) => tab.value === tabFromQuery) &&
+      visibleTabs.some((tab) => tab.value === tabFromQuery) &&
       tabFromQuery !== currentTab
     ) {
       setCurrentTab(tabFromQuery);
     }
-  }, [tabFromQuery, currentTab]);
+  }, [tabFromQuery, currentTab, visibleTabs]);
 
   return (
     <>
@@ -167,7 +176,7 @@ function AgentLayout({
             <Skeleton variant="rectangular" height={200} />
           ) : (
             <ProfileCard
-              TABS={TABS}
+              TABS={visibleTabs}
               currentTab={currentTab}
               setCurrentTab={handleTabChange}
               name={agent.name}
@@ -189,13 +198,14 @@ function AgentLayout({
         {currentTab === "tasks" && <TasksWidget agentId={agent.id} />}
         {currentTab === "mcps" && <AgentMCP agent={agent} />}
         {currentTab === "communication" && <Communication />}
-        {currentTab === "api" && <APITab agentId={agent.id} />}
+        {currentTab === "api" && beta && <APITab agentId={agent.id} />}
       </Box>
 
       <SidebarChatWidget
         agentId={agent.id}
         open={chatOpen}
         onToggle={handleChatToggle}
+        beta={beta}
       />
 
       <SwaggerDialog

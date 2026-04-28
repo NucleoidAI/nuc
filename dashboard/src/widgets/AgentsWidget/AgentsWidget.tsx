@@ -12,7 +12,6 @@ import useAgent from "../../hooks/useAgent";
 import useAgents from "../../hooks/useAgents";
 import { useNavigate } from "react-router-dom";
 import useTeams from "../../hooks/useTeams";
-import useUIState from "../../hooks/useUIState";
 
 import React, { useState } from "react";
 
@@ -21,28 +20,23 @@ function AgentsWidget({ teamId }) {
   const [deleteFunction, setDeleteFunction] = useState(null);
   const [agentDrawerOpen, setAgentDrawerOpen] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState(null);
-  const navigate = useNavigate();
-  const { uiState, openForm, closeForm, openDialog, closeDialog } =
-    useUIState();
+  const [formOpen, setFormOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
+  const navigate = useNavigate();
   const { deleteTeam } = useTeams();
   const { getTeamAgents, deleteAgent, createAgent } = useAgents();
-
   const { agents, loading } = getTeamAgents();
-
   const { updateAgent } = useAgent();
 
   function deleteTeams() {
-    //dispatch({ type: "TEAM_DELETE" });
     navigate("/teams");
   }
 
   const handleAgentClick = (agentId) => {
     const agent = agents.find((a) => a.id === agentId);
 
-    if (!agent) {
-      return;
-    }
+    if (!agent) return;
 
     setSelectedAgent(agent);
     setAgentDrawerOpen(true);
@@ -73,22 +67,14 @@ function AgentsWidget({ teamId }) {
           type={"wideButton"}
           addNew={"Agent"}
           onClickFunction={() => {
-            openForm();
+            setFormOpen(true);
             publish("AGENT_WIZARD_OPENED", { type: "ADD" });
           }}
         />
 
         {loading
           ? Array.from({ length: 2 }).map((_, index) => (
-              <Grid
-                key={index}
-                size={{
-                  xs: 12,
-                  sm: 12,
-                  md: 6,
-                  lg: 4,
-                }}
-              >
+              <Grid key={index} size={{ xs: 12, sm: 12, md: 6, lg: 4 }}>
                 <AgentsSkeleton key={index} />
               </Grid>
             ))
@@ -100,20 +86,21 @@ function AgentsWidget({ teamId }) {
                 onView={() => handleAgentClick(agent.id)}
                 onDelete={() => {
                   setDeleteFunction(() => () => deleteAgent(agent.id));
-                  openDialog();
+                  setDialogOpen(true);
                 }}
                 onEdit={() => {
                   setUpdatedAgent(agent);
-                  openForm();
+                  setFormOpen(true);
                 }}
               />
             ))}
       </Box>
+
       <Grid container justifyContent="center" mt={0} spacing={2}>
         <AgentWizard
-          open={uiState.formOpen}
+          open={formOpen}
           onClose={() => {
-            closeForm();
+            setFormOpen(false);
             setUpdatedAgent(null);
           }}
           itemProperties={["name", "description", "icon"]}
@@ -121,23 +108,23 @@ function AgentsWidget({ teamId }) {
           itemToEdit={updatedAgent}
         />
         <ConfirmationDialog
-          open={uiState.dialogOpen}
-          onClose={closeDialog}
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
           onConfirm={() => {
             deleteFunction();
-            closeDialog();
+            setDialogOpen(false);
           }}
           title="Delete Confirmation"
           content="Are you sure you want to delete this item?"
         />
         <DeleteButton
-          onClickFunction={() => (
+          onClickFunction={() => {
             setDeleteFunction(() => async () => {
               await deleteTeam(teamId);
               deleteTeams();
-            }),
-            openDialog()
-          )}
+            });
+            setDialogOpen(true);
+          }}
         />
       </Grid>
 

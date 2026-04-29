@@ -28,7 +28,7 @@ jobs:
       config_paths: "./dashboard,./api"
       install_dependencies: true
       dependency_path: .
-      build_command: npm run build:dashboard && npm run build:api
+      build_command: bun run build:dashboard && bun run build:api
       run_lint: true
       run_build: true
       setup_config: true

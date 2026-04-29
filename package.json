@@ -16,6 +16,7 @@
     "install:dashboard": "cd ./dashboard && bun install",
     "install:communication": "cd ./communication && bun install",
     "install": "bun run install:api && bun run install:dashboard && bun run install:communication",
+    "install:api": "cd ./api && bun install",
     "test:api": "cd ./api && bun run test",
     "test:dashboard": "cd ./dashboard && bun run test",
     "test": "bun run test:api && bun run test:dashboard",

@@ -15,7 +15,7 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 COPY package.json bun.lock ./
-COPY server.js .
+COPY server.ts .
 COPY ./dashboard/dist ./dist
 COPY ./dashboard/config.js ./config.mjs
 COPY ./api/package.json ./api/package.json

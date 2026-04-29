@@ -24,7 +24,7 @@ COPY ./api/tsconfig.json ./api/tsconfig.json
 COPY ./api/dist/ ./api/
 COPY ./mcp ./mcp
 
-RUN bun install --production
+RUN bun install --production --ignore-scripts
 RUN cd api && bun install --production
 
 EXPOSE 3000

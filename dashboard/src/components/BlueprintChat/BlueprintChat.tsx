@@ -1,12 +1,13 @@
 import BlueprintChatContent from "./BlueprintChatContent";
 import Box from "@mui/material/Box";
+import { Close } from "@mui/icons-material";
 import InlineChatInput from "../../widgets/ChatInput/InlineChatInput";
 import React from "react";
 import http from "@canmingir/link/platform/http";
 import { publish } from "@nucleoidai/react-event";
 import useBlueprint from "../../hooks/useBlueprint";
 
-import { Card, CardContent, useTheme } from "@mui/material";
+import { Card, CardContent, IconButton, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 
 function BlueprintChat({
@@ -20,6 +21,7 @@ function BlueprintChat({
   onMessagesChange,
   taskId,
   agentId,
+  setIsChatOpen,
 }) {
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -202,6 +204,7 @@ function BlueprintChat({
         position: "relative",
         display: "flex",
         flexDirection: "column",
+        zIndex: 99999,
       }}
     >
       <CardContent
@@ -214,6 +217,18 @@ function BlueprintChat({
           height: "100%",
         }}
       >
+        <Box
+          sx={{
+            p: 1,
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
+        >
+          <IconButton size="small" onClick={() => setIsChatOpen(false)}>
+            <Close fontSize="small" />
+          </IconButton>
+        </Box>
         <Box
           sx={{
             flex: 1,

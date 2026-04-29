@@ -26,7 +26,6 @@ const NodeEditorWidget = ({
   editingNode,
   pseudocode,
   agentId,
-  blueprintId,
   teamId,
 }: {
   drawerOpen: boolean;
@@ -100,7 +99,6 @@ const NodeEditorWidget = ({
   setSelectedIntegration: (integration) => void;
   editMode?: boolean;
   agentId: string;
-  blueprintId?: string;
   teamId?: string;
   editingNode?: {
     id: string;
@@ -248,7 +246,6 @@ const NodeEditorWidget = ({
       handleSubmit={handleSubmit}
       editMode={editMode}
       agentId={agentId}
-      blueprintId={blueprintId}
       teamId={teamId}
     />
   );

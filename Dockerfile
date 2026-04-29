@@ -17,6 +17,7 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
 COPY package.json bun.lock ./
 COPY server.ts .
 COPY ./dashboard/dist ./dist
+COPY ./dashboard/dist/config.land.js ./dist/config.js
 COPY ./dashboard/config.js ./config.mjs
 COPY ./api/package.json ./api/package.json
 COPY ./api/bun.lock ./api/bun.lock

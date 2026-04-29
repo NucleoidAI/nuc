@@ -11,6 +11,7 @@ const CORS_HEADERS = {
 
 const server = Bun.serve({
   port: PORT,
+  idleTimeout: 60,
 
   async fetch(req, server) {
     const url = new URL(req.url);

@@ -1,5 +1,6 @@
 const API_TARGET = "http://localhost:4000";
 const DASHBOARD_TARGET = "http://localhost:5173";
+const PROMETHEUS_TARGET = "http://localhost:9464";
 const PORT = 3000;
 
 const CORS_HEADERS = {
@@ -23,9 +24,23 @@ const server = Bun.serve({
     }
 
 
+    const isPrometheus = url.pathname === "/api/metrics/prometheus";
     const isApi = url.pathname.startsWith("/api");
-    const targetBase = isApi ? API_TARGET : DASHBOARD_TARGET;
-    const targetPath = isApi ? url.pathname.replace(/^\/api/, "") || "/" : url.pathname;
+
+    let targetBase: string;
+    let targetPath: string;
+
+    if (isPrometheus) {
+      targetBase = PROMETHEUS_TARGET;
+      targetPath = "/metrics";
+    } else if (isApi) {
+      targetBase = API_TARGET;
+      targetPath = url.pathname.replace(/^\/api/, "") || "/";
+    } else {
+      targetBase = DASHBOARD_TARGET;
+      targetPath = url.pathname;
+    }
+
     const targetUrl = `${targetBase}${targetPath}${url.search}`;
 
     const headers = new Headers(req.headers);

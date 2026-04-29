@@ -1093,7 +1093,6 @@ function BlueprintFlowWidget({
             : undefined
         }
         agentId={agentId || blueprintNodes?.agentId || ""}
-        blueprintId={blueprint?.id}
         teamId={teamId}
       />
     </>

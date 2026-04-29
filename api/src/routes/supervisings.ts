@@ -4,7 +4,7 @@ import Joi from "joi";
 import Supervising from "../models/Supervising";
 import agentFn from "../functions/agent";
 import express from "express";
-import { publish } from "../lib/Event";
+import { event } from "@canmingir/link-express/event/client";
 import schemas from "../schemas";
 import session from "../functions/session";
 import supervising from "../functions/supervising";
@@ -72,11 +72,11 @@ router.get("/", async (req, res) => {
       ...supervisingData,
       createdAt: supervisingData.createdAt?.toISOString(),
     };
-    publish("SUPERVISING_LOADED", formattedData);
+    event.publish("SUPERVISING_LOADED", formattedData);
   } else if (status && supervisings.length === 0) {
-    publish("SUPERVISING_LOADED", null);
+    event.publish("SUPERVISING_LOADED", null);
   } else {
-    publish("SUPERVISING_LOADED", supervisings);
+    event.publish("SUPERVISING_LOADED", supervisings);
   }
 
   res.status(200).json(supervisings);
@@ -113,10 +113,10 @@ router.get("/:id", async (req, res) => {
     // eslint-disable-next-line no-unused-vars
     const { Agent, ...rest } = dataValues;
     res.status(200).json(rest);
-    publish("SUPERVISING_LOADED", rest);
+    event.publish("SUPERVISING_LOADED", rest);
   } else {
     res.status(200).json(dataValues);
-    publish("SUPERVISING_LOADED", dataValues);
+    event.publish("SUPERVISING_LOADED", dataValues);
   }
 });
 

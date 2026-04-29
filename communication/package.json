@@ -5,24 +5,20 @@
   "main": "server.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.ts",
+    "dev": "bun --watch server.ts",
     "build": "node build.prod.js"
   },
   "keywords": [],
   "author": "NucTeam",
   "dependencies": {
-    "@canmingir/link-express": "^1.7.14",
-    "@nucleoidai/node-event": "^1.1.5",
+    "@canmingir/link-express": "^1.7.18",
     "@slack/bolt": "^3.22.0",
     "@slack/types": "^2.14.0",
     "axios": "^1.7.7",
     "dotenv": "^16.4.5",
     "http-proxy-middleware": "^3.0.3",
     "jsonwebtoken": "^9.0.2",
-    "node-event-test-package": "^1.1.66",
-    "react-event-test": "^1.7.0",
     "socket.io": "^4.8.1",
-    "socket.io-client": "^4.8.1",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^11.0.4"
   },
@@ -31,8 +27,6 @@
     "@types/node": "^22.12.0",
     "esbuild": "^0.25.0",
     "javascript-obfuscator": "^4.1.1",
-    "nodemon": "^3.1.7",
-    "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
   }
 }

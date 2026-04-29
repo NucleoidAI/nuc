@@ -24,7 +24,7 @@ COPY ./api/tsconfig.json ./api/tsconfig.json
 COPY ./api/dist/ ./api/
 COPY ./mcp ./mcp
 
-RUN cd api && bun install --production && bun rebuild sqlite3
+RUN cd api && bun install --production
 RUN bun add -g concurrently
 RUN bun add express
 

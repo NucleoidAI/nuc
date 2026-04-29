@@ -25,8 +25,6 @@ const NodeEditorWidget = ({
   editMode,
   editingNode,
   pseudocode,
-  agentId,
-  teamId,
 }: {
   drawerOpen: boolean;
   handleDrawerClose: () => void;
@@ -245,8 +243,6 @@ const NodeEditorWidget = ({
       nextIntegration={nextIntegration}
       handleSubmit={handleSubmit}
       editMode={editMode}
-      agentId={agentId}
-      teamId={teamId}
     />
   );
 };

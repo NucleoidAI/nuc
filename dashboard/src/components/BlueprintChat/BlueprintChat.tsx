@@ -204,7 +204,7 @@ function BlueprintChat({
         position: "relative",
         display: "flex",
         flexDirection: "column",
-        zIndex: 99999,
+        zIndex: theme.zIndex.modal,
       }}
     >
       <CardContent

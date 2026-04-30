@@ -38,7 +38,9 @@ function BlueprintFlowWidget({
   lastUsedNodeId,
   failedNodeId,
   isSuperviseFlow = false,
+  agentId,
   readOnly = false,
+  teamId,
 }: {
   aiResponse?: AIResponse;
   setAiResponse?: (response: AIResponse | null) => void;
@@ -725,6 +727,8 @@ function BlueprintFlowWidget({
     setHasLocalChanges(true);
   };
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleDeleteNode = (node: { id: string }) => {
     setGraphData((prev) => {
       if (!prev) return prev;
@@ -915,6 +919,7 @@ function BlueprintFlowWidget({
   };
 
   const handleSaveFlow = async () => {
+    setIsSubmitting(true);
     if (!graphData) return;
 
     const agentId = blueprintNodes?.agentId || blueprint?.agentId;
@@ -982,6 +987,7 @@ function BlueprintFlowWidget({
       setAiResponse(null);
     }
     setSaveSuccess(true);
+    setIsSubmitting(false);
   };
 
   const handleFlowChange = (updatedGraphData) => {
@@ -1057,6 +1063,7 @@ function BlueprintFlowWidget({
           onShowValidationErrors={setShowValidationErrors}
           onSaveSuccessChange={setSaveSuccess}
           isSuperviseFlow={isSuperviseFlow}
+          isSubmitting={isSubmitting}
         />
       )}
 
@@ -1085,6 +1092,8 @@ function BlueprintFlowWidget({
             ? graphData.nodes[editingNodeId]
             : undefined
         }
+        agentId={agentId || blueprintNodes?.agentId || ""}
+        teamId={teamId}
       />
     </>
   );

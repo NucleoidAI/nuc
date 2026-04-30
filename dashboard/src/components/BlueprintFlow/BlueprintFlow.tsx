@@ -3,7 +3,6 @@ import { Box } from "@mui/material";
 import DiffButton from "./DiffPanel/DiffButton";
 import { Flow } from "@canmingir/link/platform/components";
 import { FlowMiniMap } from "./FlowMiniMap";
-
 import JSONDiffPanel from "./DiffPanel/JSONDiffPanel";
 import SuccessSnackbar from "./Validation/SuccessSnackbar";
 import ValidationButtons from "./Validation/ValidationButtons";
@@ -34,6 +33,7 @@ export default function BlueprintFlow({
   onCloseDiff,
   onShowValidationErrors,
   onSaveSuccessChange,
+  isSubmitting,
   isSuperviseFlow = false,
 }: BlueprintFlowProps) {
   const flowContainerRef = useRef<HTMLDivElement>(null);
@@ -85,6 +85,7 @@ export default function BlueprintFlow({
           validationErrors={validationErrors}
           setShowValidationErrors={onShowValidationErrors}
           handleSaveFlow={onSave}
+          isSubmitting={isSubmitting}
         />
       )}
 

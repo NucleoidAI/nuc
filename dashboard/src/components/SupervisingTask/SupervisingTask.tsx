@@ -1,5 +1,5 @@
 import Joi from "joi";
-import LoadingButton from "@mui/lab/LoadingButton";
+import LoadingButton from "../LoadingButton";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { useForm } from "react-hook-form";
 import useTasks from "../../hooks/useTasks";
@@ -124,9 +124,9 @@ const SupervisingTask = ({ open, setOpen, taskId, agentId }) => {
             }}
           >
             <LoadingButton
-              disabled={!isValid || isSubmitting}
               type="submit"
-              variant="contained"
+              loading={isSubmitting}
+              disabled={!isValid || isSubmitting}
               data-cy="finish"
             >
               Save

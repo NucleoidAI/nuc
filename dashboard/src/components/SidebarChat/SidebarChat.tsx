@@ -27,6 +27,7 @@ interface SidebarChatProps {
   onBlueprintChange?: (blueprint: string) => void;
   onSessionSelect?: (sessionId: string, cachedMessages?: Message[]) => void;
   onNewSession?: () => void;
+  beta?: boolean;
 }
 
 const SidebarChat = ({
@@ -46,6 +47,7 @@ const SidebarChat = ({
   onBlueprintChange,
   onSessionSelect,
   onNewSession,
+  beta,
 }: SidebarChatProps) => {
   const [aiResponded] = useEvent("AI_RESPONDED", null);
   const [conversationSent] = useEvent("CONVERSATION_SENT", null);
@@ -185,6 +187,7 @@ const SidebarChat = ({
           isCompact={isCompact}
           onMouseEnter={() => setIsCompact(false)}
           wrapperRef={sidebarRef}
+          beta={beta}
         />
       )}
 

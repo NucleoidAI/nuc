@@ -11,6 +11,7 @@ interface SidebarChatWidgetProps {
   sessionId?: string;
   sound?: boolean;
   agentId?: string;
+  beta?: boolean;
   open: boolean;
   onToggle: () => void;
 }
@@ -22,6 +23,7 @@ const SidebarChatWidget = ({
   agentId,
   open,
   onToggle,
+  beta,
 }: SidebarChatWidgetProps) => {
   const [selectedBlueprint, setSelectedBlueprint] = useState("");
 
@@ -106,6 +108,7 @@ const SidebarChatWidget = ({
       onBlueprintChange={setSelectedBlueprint}
       onSessionSelect={handleSessionSelect}
       onNewSession={handleNewSession}
+      beta={beta}
     />
   );
 };

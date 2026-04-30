@@ -96,6 +96,8 @@ const NodeEditorWidget = ({
   };
   setSelectedIntegration: (integration) => void;
   editMode?: boolean;
+  agentId: string;
+  teamId?: string;
   editingNode?: {
     id: string;
     label?: string;

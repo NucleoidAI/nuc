@@ -31,4 +31,5 @@ export interface BlueprintFlowProps {
   onShowValidationErrors: (value: boolean) => void;
   onSaveSuccessChange: (value: boolean) => void;
   isSuperviseFlow?: boolean;
+  isSubmitting?: boolean;
 }

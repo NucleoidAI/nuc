@@ -1,17 +1,19 @@
+import LoadingButton from "../../LoadingButton";
 import React from "react";
 import { ValidationError } from "./validation";
-import { alpha } from "@mui/material";
 
-import { Box, Button } from "@mui/material";
+import { Box, Button, alpha } from "@mui/material";
 
 const ValidationButtons = ({
   validationErrors,
   setShowValidationErrors,
   handleSaveFlow,
+  isSubmitting,
 }: {
   validationErrors: ValidationError[];
   setShowValidationErrors: (show: boolean) => void;
   handleSaveFlow: () => void;
+  isSubmitting?: boolean;
 }) => {
   return (
     <Box
@@ -47,9 +49,9 @@ const ValidationButtons = ({
           {validationErrors.length > 1 ? "s" : ""}
         </Button>
       )}
-      <Button
-        variant="contained"
+      <LoadingButton
         onClick={handleSaveFlow}
+        loading={isSubmitting}
         disabled={validationErrors.length > 0}
         sx={{
           minWidth: 150,
@@ -72,7 +74,7 @@ const ValidationButtons = ({
         }}
       >
         Save Flow
-      </Button>
+      </LoadingButton>
     </Box>
   );
 };

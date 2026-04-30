@@ -1,14 +1,7 @@
 import BlueprintFlowWidget from "../../widgets/BlueprintFlowWidget/BlueprintFlowWidget";
+import DrawerLayout from "../../layouts/DrawerLayout";
 import { FlowDefinition } from "./helper";
 import React from "react";
-
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-} from "@mui/material";
 
 interface AIResponse {
   flow: FlowDefinition;
@@ -39,49 +32,22 @@ const BlueprintFlowDialog = ({
   taskId,
 }: BlueprintFlowDialogProps) => {
   return (
-    <Dialog
+    <DrawerLayout
       open={flowDialogOpen}
       onClose={handleFlowDialogClose}
-      maxWidth="xl"
-      fullWidth
-      slotProps={{
-        paper: {
-          sx: {
-            backgroundColor: (theme) => theme.palette.background.default,
-            position: "relative",
-          },
-        },
-      }}
+      mode="fullscreen"
+      sx={{ zIndex: (theme) => theme.zIndex.modal + 2 }}
     >
-      <DialogTitle>Flow Chart</DialogTitle>
-      <DialogContent
-        sx={{
-          width: "100%",
-          height: "calc(100vh - 160px)",
-          p: 0,
-          "&::-webkit-scrollbar": {
-            display: "none",
-          },
-          msOverflowStyle: "none",
-          scrollbarWidth: "none",
-        }}
-      >
-        {selectedItem && (
-          <BlueprintFlowWidget
-            aiResponse={aiResponse}
-            setAiResponse={setAiResponse}
-            blueprint={selectedItem}
-            taskId={taskId}
-            readOnly={true}
-          />
-        )}
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleFlowDialogClose} color="primary">
-          Close
-        </Button>
-      </DialogActions>
-    </Dialog>
+      {selectedItem && (
+        <BlueprintFlowWidget
+          aiResponse={aiResponse}
+          setAiResponse={setAiResponse}
+          blueprint={selectedItem}
+          taskId={taskId}
+          readOnly={true}
+        />
+      )}
+    </DrawerLayout>
   );
 };
 

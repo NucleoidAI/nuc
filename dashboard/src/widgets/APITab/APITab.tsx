@@ -705,6 +705,7 @@ function APITab({ agentId }: { agentId: string }) {
             ? flowGraphData.nodes[nodeEditor.editingNodeId]
             : undefined
         }
+        agentId={agentId}
       />
     </Box>
   );

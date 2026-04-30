@@ -139,6 +139,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [teamSelected] = useEvent("PROJECT_SELECTED", { projectId: null });
   const { organizations, loading } = useOrganizations().getOrganizations([]);
   const [activeStep, setActiveStep] = React.useState(0);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const { createOrganization } = useOrganizations();
   const { createAgent } = useAgents();
   const { createTeam } = useTeams();
@@ -351,7 +352,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const errors = methods.formState.errors;
 
     if (errors.organization?.name) {
@@ -384,7 +385,9 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
       return;
     }
 
-    onSubmit();
+    setIsSubmitting(true);
+    await onSubmit();
+    setIsSubmitting(false);
     setActiveStep(0);
   };
 
@@ -762,6 +765,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
           handleNext={handleNext}
           handleBack={handleBack}
           handleSave={handleSave}
+          isSubmitting={isSubmitting}
         >
           <DialogContent
             sx={{

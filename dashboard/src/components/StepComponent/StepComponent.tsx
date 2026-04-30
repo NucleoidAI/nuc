@@ -71,7 +71,7 @@ export default function StepComponent({
           data-cy="agent-back-button"
           variant="outlined"
           color="inherit"
-          disabled={activeStep === 0}
+          disabled={activeStep === 0 || isSubmitting}
           onClick={handleBack}
           sx={{ mr: 1 }}
         >

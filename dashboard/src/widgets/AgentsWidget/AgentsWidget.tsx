@@ -10,6 +10,7 @@ import { Grid } from "@mui/material";
 import { publish } from "@nucleoidai/react-event";
 import useAgent from "../../hooks/useAgent";
 import useAgents from "../../hooks/useAgents";
+import useInitialLoading from "../../hooks/useInitialLoading";
 import { useNavigate } from "react-router-dom";
 import useTeams from "../../hooks/useTeams";
 
@@ -28,6 +29,8 @@ function AgentsWidget({ teamId }) {
   const { getTeamAgents, deleteAgent, createAgent } = useAgents();
   const { agents, loading } = getTeamAgents();
   const { updateAgent } = useAgent();
+
+  const isInitialLoading = useInitialLoading(loading);
 
   function deleteTeams() {
     navigate("/teams");
@@ -72,7 +75,7 @@ function AgentsWidget({ teamId }) {
           }}
         />
 
-        {loading
+        {isInitialLoading
           ? Array.from({ length: 2 }).map((_, index) => (
               <Grid key={index} size={{ xs: 12, sm: 12, md: 6, lg: 4 }}>
                 <AgentsSkeleton key={index} />

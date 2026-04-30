@@ -6,6 +6,7 @@ import KnowledgeTable from "../../components/KnowledgeTable/KnowledgeTable";
 import TypeToolbar from "../../components/TypeToolbar/TypeToolbar";
 import useAgent from "../../hooks/useAgent";
 import useBlueprint from "../../hooks/useBlueprint";
+import useInitialLoading from "../../hooks/useInitialLoading";
 import useKnowledge from "../../hooks/useKnowledge";
 import useOrganizations from "../../hooks/useOrganizations";
 import { useTable } from "@canmingir/link/platform/components";
@@ -51,6 +52,8 @@ function Knowledge({
   const { agents } = getAgents();
 
   const table = useTable();
+
+  const isInitialLoading = useInitialLoading(isLoading);
 
   const ALL_KNOWLEDGE_TYPES = ["ALL", "URL", "TEXT", "QA"].sort((a, b) => {
     if (a === "ALL") return -1;
@@ -160,7 +163,7 @@ function Knowledge({
           pb: 10,
         }}
       >
-        {isLoading ? (
+        {isInitialLoading ? (
           <KnowledgeBaseSkeleton />
         ) : filteredKnowledges?.length > 0 ? (
           <KnowledgeTable

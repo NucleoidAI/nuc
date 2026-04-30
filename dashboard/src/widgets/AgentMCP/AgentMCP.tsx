@@ -6,6 +6,7 @@ import React from "react";
 import SkillDialog from "../../components/Skills/SkillDialog";
 import useAcquiredMCPs from "../../hooks/useAcquiredMCPs";
 import useAgent from "../../hooks/useAgent";
+import useInitialLoading from "../../hooks/useInitialLoading";
 
 import { Box, Grid } from "@mui/material";
 
@@ -15,6 +16,8 @@ const AgentMCP = ({ agent }: { agent: { id: string; name: string } }) => {
   const { mcps, loading } = getMCPs();
 
   const { acquiredMCPs } = getAgentAcquiredMCPs(agent.id);
+
+  const isInitialLoading = useInitialLoading(loading);
 
   const instructions = [
     { id: "1", instruction: "Clone the repository from GitHub." },
@@ -96,7 +99,7 @@ const AgentMCP = ({ agent }: { agent: { id: string; name: string } }) => {
           tabs={tabs}
         />
 
-        {loading ? (
+        {isInitialLoading ? (
           <Grid container spacing={2}>
             {Array.from({
               length: 4,

@@ -29,7 +29,7 @@
     "build:dashboard": "cd ./dashboard && bun run build",
     "build:api": "cd ./api && bun run build",
     "build:communication": "cd ./communication && bun run build",
-    "serve:api": "cd ./api && bun server.js",
+    "serve:api": "cd ./api && bun server.ts",
     "preserve": "cd ./mcp && bun run db:reset",
     "serve": "concurrently -n \"main,api,dashboard\" \"bun run server.js\" \"bun run serve:api\" \"bunx @nucleoidai/http-server start --port 5173\"",
     "lint:dashboard": "cd ./dashboard && bun run lint",
@@ -38,6 +38,9 @@
     "typecheck": "bun run typecheck:dashboard"
   },
   "dependencies": {
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.1.2",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "http-proxy-middleware": "^3.0.3"
   }
 }

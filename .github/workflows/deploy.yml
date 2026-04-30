@@ -20,12 +20,12 @@ on:
         required: false
         type: boolean
         default: false
-        description: "Whether to run npm ci"
+        description: "Whether to run bun install"
       dependency_path:
         required: false
         type: string
         default: "."
-        description: "Path where to run npm ci"
+        description: "Path where to run bun install"
       run_lint:
         required: false
         type: boolean
@@ -35,11 +35,11 @@ on:
         required: false
         type: boolean
         default: false
-        description: "Whether to run npm build"
+        description: "Whether to run bun build"
       build_command:
         required: false
         type: string
-        default: "npm run build"
+        default: "bun run build"
         description: "Command to run build"
       setup_config:
         required: false
@@ -128,15 +128,19 @@ jobs:
             echo "✓ Updated version.json in ${FIRST_PATH}/src"
           fi
 
+      - name: Setup Bun
+        if: ${{ inputs.install_dependencies || inputs.run_lint || inputs.run_build }}
+        uses: oven-sh/setup-bun@v2
+
       - name: Install Dependencies
         if: ${{ inputs.install_dependencies }}
         run: |
           cd ${{ inputs.dependency_path }}
-          npm ci
+          bun install
 
       - name: Check lint
         if: ${{ inputs.run_lint }}
-        run: npm run lint
+        run: bun run lint
 
       - name: Build
         if: ${{ inputs.run_build }}

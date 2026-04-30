@@ -1,5 +1,5 @@
-import { vite } from "@canmingir/link/vite";
 import { defineConfig } from "vite";
+import { vite } from "@canmingir/link/vite";
 
 export default async () => {
   const base = await vite();

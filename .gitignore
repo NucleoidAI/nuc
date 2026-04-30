@@ -8,3 +8,5 @@ oracle/
 dashboard/dist
 api/dist
 communication/dist
+server_setup/*
+server_setup/.*

@@ -54,6 +54,9 @@ function createApp() {
   app.use("/mcps", mcps);
   app.use("/communications", communications);
 
+  app.use((_req, res) => res.status(404).end());
+  app.use(platform.error.handle);
+
   (async () => {
     await event.subscribe<{ teamId: string; content: string }>(
       "MESSAGE_USER_MESSAGED",

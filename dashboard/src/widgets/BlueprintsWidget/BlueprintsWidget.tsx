@@ -5,7 +5,7 @@ import BlueprintFlowDialog from "../../components/BlueprintFlow/BlueprintFlowDia
 import BlueprintSkeleton from "../../components/Skeletons/BlueprintSkeleton";
 import useBlueprint from "../../hooks/useBlueprint";
 import { useEvent } from "@nucleoidai/react-event";
-import useInitialLoading from "../../hooks/useInitialLoading";
+import useLoading from "../../hooks/useLoading";
 
 import { Box, Fab, Stack } from "@mui/material";
 import React, { useState } from "react";
@@ -31,7 +31,7 @@ function BlueprintsWidget({
     blueprintRemovedEvent.Blueprint,
   ]);
 
-  const isInitialLoading = useInitialLoading(loading);
+  const isLoading = useLoading(loading);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -69,7 +69,7 @@ function BlueprintsWidget({
     >
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         <Box sx={{ mt: 2 }}>
-          {isInitialLoading ? (
+          {isLoading ? (
             <>
               {[...Array(Blueprint?.length)].map((_, i) => (
                 <BlueprintSkeleton key={i} />

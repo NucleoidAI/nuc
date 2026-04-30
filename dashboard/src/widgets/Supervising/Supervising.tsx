@@ -1,7 +1,7 @@
 import StatusToolbar from "../../components/StatusToolbar/StatusToolbar";
 import SupervisingCard from "../../components/SupervisingCard/SupervisingCard";
 import SupervisingSkeleton from "../../components/Skeletons/SupervisingSkeleton";
-import useInitialLoading from "../../hooks/useInitialLoading";
+import useLoading from "../../hooks/useLoading";
 import { useState } from "react";
 import useSupervisings from "../../hooks/useSupervisings";
 
@@ -17,7 +17,7 @@ const Supervising = ({ agentId }) => {
     selectedStatus
   );
 
-  const isInitialLoading = useInitialLoading(loading);
+  const isLoading = useLoading(loading);
 
   const handleStatusChange = (event) => {
     setSelectedStatus(event.target.value);
@@ -44,7 +44,7 @@ const Supervising = ({ agentId }) => {
           selectedStatus={selectedStatus}
         />
 
-        {isInitialLoading ? (
+        {isLoading ? (
           <>
             {[...Array(supervisings?.length)].map((_, i) => (
               <SupervisingSkeleton key={i} />

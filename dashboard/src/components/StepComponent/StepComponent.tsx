@@ -1,6 +1,6 @@
 import DialogActions from "@mui/material/DialogActions";
 import DialogContentText from "@mui/material/DialogContentText";
-import LoadingButton from "../LoadingButton";
+import LinkButton from "../LinkButton";
 import React from "react";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
@@ -79,14 +79,14 @@ export default function StepComponent({
         </Button>
         <Box sx={{ flex: "1 1 auto" }} />
         {activeStep === steps.length - 1 ? (
-          <LoadingButton
+          <LinkButton
             variant="contained"
             data-cy="agent-finish-button"
             onClick={handleSave}
             loading={isSubmitting}
           >
             Finish
-          </LoadingButton>
+          </LinkButton>
         ) : (
           <>
             <Button

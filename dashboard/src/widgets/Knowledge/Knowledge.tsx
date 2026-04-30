@@ -6,8 +6,8 @@ import KnowledgeTable from "../../components/KnowledgeTable/KnowledgeTable";
 import TypeToolbar from "../../components/TypeToolbar/TypeToolbar";
 import useAgent from "../../hooks/useAgent";
 import useBlueprint from "../../hooks/useBlueprint";
-import useInitialLoading from "../../hooks/useInitialLoading";
 import useKnowledge from "../../hooks/useKnowledge";
+import useLoading from "../../hooks/useLoading";
 import useOrganizations from "../../hooks/useOrganizations";
 import { useTable } from "@canmingir/link/platform/components";
 import useTeams from "../../hooks/useTeams";
@@ -35,7 +35,7 @@ function Knowledge({
     getAgentKnowledges(agentId);
   const { knowledges: teamKnowledges, loading: teamKnowledgesLoading } =
     getTeamKnowledges(teamId);
-  const isLoading = agentKnowledgesLoading || teamKnowledgesLoading;
+  const isKnowledgeLoading = agentKnowledgesLoading || teamKnowledgesLoading;
 
   const { getTeamById } = useTeams();
 
@@ -53,7 +53,7 @@ function Knowledge({
 
   const table = useTable();
 
-  const isInitialLoading = useInitialLoading(isLoading);
+  const isLoading = useLoading(isKnowledgeLoading);
 
   const ALL_KNOWLEDGE_TYPES = ["ALL", "URL", "TEXT", "QA"].sort((a, b) => {
     if (a === "ALL") return -1;
@@ -163,7 +163,7 @@ function Knowledge({
           pb: 10,
         }}
       >
-        {isInitialLoading ? (
+        {isLoading ? (
           <KnowledgeBaseSkeleton />
         ) : filteredKnowledges?.length > 0 ? (
           <KnowledgeTable

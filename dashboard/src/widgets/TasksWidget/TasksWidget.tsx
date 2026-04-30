@@ -5,7 +5,7 @@ import StatusToolbar from "../../components/StatusToolbar/StatusToolbar";
 import TaskDetails from "../../components/TaskDetails/TaskDetails";
 import TaskList from "../../components/TaskList/TaskList";
 import { useEvent } from "@nucleoidai/react-event";
-import useInitialLoading from "../../hooks/useInitialLoading";
+import useLoading from "../../hooks/useLoading";
 import useTasks from "../../hooks/useTasks";
 import { useTheme } from "@mui/material/styles";
 
@@ -39,7 +39,7 @@ function TasksWidget({
     aiResponded,
   ]);
 
-  const isInitialLoading = useInitialLoading(loading);
+  const isLoading = useLoading(loading);
 
   const [selectedStatus, setSelectedStatus] = useState<
     "All" | "COMPLETED" | "IN_PROGRESS"
@@ -185,7 +185,7 @@ function TasksWidget({
                 minHeight: "calc(100vh - 380px)",
               }}
             >
-              {isInitialLoading ? (
+              {isLoading ? (
                 <Stack sx={{ p: 2, gap: 1.5 }}>
                   {[...Array(6)].map((_, i) => (
                     <Skeleton

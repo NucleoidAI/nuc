@@ -1,5 +1,5 @@
 import Joi from "joi";
-import LoadingButton from "../LoadingButton";
+import LinkButton from "../LinkButton";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { useForm } from "react-hook-form";
 import useTasks from "../../hooks/useTasks";
@@ -123,14 +123,14 @@ const SupervisingTask = ({ open, setOpen, taskId, agentId }) => {
               backgroundColor: (theme) => theme.palette.background.default,
             }}
           >
-            <LoadingButton
+            <LinkButton
               type="submit"
               loading={isSubmitting}
               disabled={!isValid || isSubmitting}
               data-cy="finish"
             >
               Save
-            </LoadingButton>
+            </LinkButton>
           </DialogActions>
         </FormProvider>
       </DialogContent>

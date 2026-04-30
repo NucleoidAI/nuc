@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-function useInitialLoading(loading: boolean): boolean {
+function useLoading(loading: boolean): boolean {
   const hasLoadedOnce = useRef(false);
 
   useEffect(() => {
@@ -12,4 +12,4 @@ function useInitialLoading(loading: boolean): boolean {
   return !hasLoadedOnce.current && loading;
 }
 
-export default useInitialLoading;
+export default useLoading;

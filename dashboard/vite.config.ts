@@ -1,13 +1,19 @@
 import { vite } from "@canmingir/link/vite";
 import { defineConfig, mergeConfig } from "vite";
 
+const COUPLED_PACKAGES = ["react", "react-dom", "@emotion", "@mui"];
+
 export default async () => {
   const base = await vite();
 
   return defineConfig(
     mergeConfig(base, {
-      resolve: {
-        dedupe: ["@emotion/react", "@emotion/styled", "@emotion/css"],
+      build: {
+        rollupOptions: {
+          output: {
+            manualChunks: undefined,
+          },
+        },
       },
     })
   );

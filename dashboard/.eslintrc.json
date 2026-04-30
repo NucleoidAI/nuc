@@ -46,6 +46,25 @@
       {
         "memberSyntaxSortOrder": ["none", "single", "multiple", "all"]
       }
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "paths": [
+          {
+            "name": "@mui/lab/LoadingButton",
+            "message": "Unexpected use of MUI LoadingButton. Use <LinkLoadingButton /> instead."
+          }
+        ]
+      }
     ]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["**/LinkLoadingButton/**", "**/LinkLoadingButton.tsx"],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ]
 }

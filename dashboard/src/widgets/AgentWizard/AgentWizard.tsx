@@ -78,6 +78,7 @@ function AgentWizard({ itemProperties, onSubmit, open, onClose, itemToEdit }) {
   ];
 
   const [activeStep, setActiveStep] = React.useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -109,12 +110,10 @@ function AgentWizard({ itemProperties, onSubmit, open, onClose, itemToEdit }) {
     }
   }, [open, itemProperties, itemToEdit]);
 
-  const handleSave = () => {
-    if (newItem.id) {
-      onSubmit(newItem);
-    } else {
-      onSubmit(newItem);
-    }
+  const handleSave = async () => {
+    setIsSubmitting(true);
+    await onSubmit(newItem);
+    setIsSubmitting(false);
     onClose();
     setActiveStep(0);
   };
@@ -294,6 +293,7 @@ function AgentWizard({ itemProperties, onSubmit, open, onClose, itemToEdit }) {
           handleNext={handleNext}
           handleBack={handleBack}
           handleSave={handleSave}
+          isSubmitting={isSubmitting}
         >
           <DialogContent
             sx={{

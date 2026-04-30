@@ -4,6 +4,7 @@ import SkillDialog from "../../components/Skills/SkillDialog";
 import Skills from "../../components/Skills/Skills";
 import { storage } from "@nucleoidjs/webstorage";
 import useAcquiredMCPs from "../../hooks/useAcquiredMCPs";
+import useLoading from "../../hooks/useLoading";
 import useTeam from "../../hooks/useTeams";
 
 import {
@@ -98,6 +99,8 @@ const MCPsWidget = () => {
   const { getTeamById } = useTeam();
 
   const { team } = getTeamById(teamId);
+
+  const isLoading = useLoading(loading);
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -194,7 +197,7 @@ const MCPsWidget = () => {
           ))}
       </Grid>
       <Grid container spacing={2}>
-        {loading
+        {isLoading
           ? Array.from({ length: 10 }).map((_, i) => (
               <Grid key={i} size={{ xs: 12, sm: 6, md: 3 }}>
                 <MCPSkeleton />

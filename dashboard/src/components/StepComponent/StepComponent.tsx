@@ -1,5 +1,6 @@
 import DialogActions from "@mui/material/DialogActions";
 import DialogContentText from "@mui/material/DialogContentText";
+import LinkLoadingButton from "../LinkLoadingButton";
 import React from "react";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
@@ -15,6 +16,7 @@ export default function StepComponent({
   handleBack,
   handleSave,
   children,
+  isSubmitting,
 }) {
   return (
     <>
@@ -69,7 +71,7 @@ export default function StepComponent({
           data-cy="agent-back-button"
           variant="outlined"
           color="inherit"
-          disabled={activeStep === 0}
+          disabled={activeStep === 0 || isSubmitting}
           onClick={handleBack}
           sx={{ mr: 1 }}
         >
@@ -77,13 +79,14 @@ export default function StepComponent({
         </Button>
         <Box sx={{ flex: "1 1 auto" }} />
         {activeStep === steps.length - 1 ? (
-          <Button
+          <LinkLoadingButton
             variant="contained"
             data-cy="agent-finish-button"
             onClick={handleSave}
+            loading={isSubmitting}
           >
             Finish
-          </Button>
+          </LinkLoadingButton>
         ) : (
           <>
             <Button

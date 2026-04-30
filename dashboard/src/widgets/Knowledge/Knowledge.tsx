@@ -7,6 +7,7 @@ import TypeToolbar from "../../components/TypeToolbar/TypeToolbar";
 import useAgent from "../../hooks/useAgent";
 import useBlueprint from "../../hooks/useBlueprint";
 import useKnowledge from "../../hooks/useKnowledge";
+import useLoading from "../../hooks/useLoading";
 import useOrganizations from "../../hooks/useOrganizations";
 import { useTable } from "@canmingir/link/platform/components";
 import useTeams from "../../hooks/useTeams";
@@ -34,7 +35,7 @@ function Knowledge({
     getAgentKnowledges(agentId);
   const { knowledges: teamKnowledges, loading: teamKnowledgesLoading } =
     getTeamKnowledges(teamId);
-  const isLoading = agentKnowledgesLoading || teamKnowledgesLoading;
+  const isKnowledgeLoading = agentKnowledgesLoading || teamKnowledgesLoading;
 
   const { getTeamById } = useTeams();
 
@@ -51,6 +52,8 @@ function Knowledge({
   const { agents } = getAgents();
 
   const table = useTable();
+
+  const isLoading = useLoading(isKnowledgeLoading);
 
   const ALL_KNOWLEDGE_TYPES = ["ALL", "URL", "TEXT", "QA"].sort((a, b) => {
     if (a === "ALL") return -1;

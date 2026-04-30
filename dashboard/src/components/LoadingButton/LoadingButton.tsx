@@ -1,7 +1,7 @@
 import type { LoadingButtonProps } from "@mui/lab/LoadingButton";
 import MuiLoadingButton from "@mui/lab/LoadingButton";
 
-function LinkButton({ children, ...props }: LoadingButtonProps) {
+function LoadingButton({ children, ...props }: LoadingButtonProps) {
   return (
     <MuiLoadingButton variant="contained" loadingPosition="start" {...props}>
       {children}
@@ -9,4 +9,4 @@ function LinkButton({ children, ...props }: LoadingButtonProps) {
   );
 }
 
-export default LinkButton;
+export default LoadingButton;

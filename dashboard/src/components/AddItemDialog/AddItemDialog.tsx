@@ -1,4 +1,4 @@
-import LinkButton from "../LinkButton";
+import LoadingButton from "../LoadingButton";
 import type { Resolver } from "react-hook-form";
 import type { SelectChangeEvent } from "@mui/material/Select";
 import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
@@ -415,14 +415,14 @@ function AddItemDialog({
               backgroundColor: (theme) => theme.palette.background.default,
             }}
           >
-            <LinkButton
+            <LoadingButton
               type="submit"
               loading={isSubmitting}
               disabled={!isValid || isSubmitting}
               data-cy="finish"
             >
               Save
-            </LinkButton>
+            </LoadingButton>
           </DialogActions>
         </FormProvider>
       </DialogContent>

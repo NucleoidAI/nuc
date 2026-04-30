@@ -1,4 +1,4 @@
-import LinkButton from "../../LinkButton";
+import LoadingButton from "../../LoadingButton";
 import React from "react";
 import { ValidationError } from "./validation";
 
@@ -49,7 +49,7 @@ const ValidationButtons = ({
           {validationErrors.length > 1 ? "s" : ""}
         </Button>
       )}
-      <LinkButton
+      <LoadingButton
         onClick={handleSaveFlow}
         loading={isSubmitting}
         disabled={validationErrors.length > 0}
@@ -74,7 +74,7 @@ const ValidationButtons = ({
         }}
       >
         Save Flow
-      </LinkButton>
+      </LoadingButton>
     </Box>
   );
 };

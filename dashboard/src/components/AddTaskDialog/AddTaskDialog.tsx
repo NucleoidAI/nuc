@@ -1,5 +1,5 @@
 import Joi from "joi";
-import LinkButton from "../LinkButton";
+import LoadingButton from "../LoadingButton";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { useEvent } from "@nucleoidai/react-event";
 import { useForm } from "react-hook-form";
@@ -104,14 +104,14 @@ function AddTaskDialog({ open, setOpen, createTask, agentId }) {
               backgroundColor: (theme) => theme.palette.background.default,
             }}
           >
-            <LinkButton
+            <LoadingButton
               type="submit"
               loading={isSubmitting}
               disabled={!isValid || isSubmitting}
               data-cy="finish"
             >
               Save
-            </LinkButton>
+            </LoadingButton>
           </DialogActions>
         </FormProvider>
       </DialogContent>

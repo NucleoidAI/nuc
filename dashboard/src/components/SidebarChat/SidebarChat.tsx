@@ -188,6 +188,7 @@ const SidebarChat = ({
           onMouseEnter={() => setIsCompact(false)}
           wrapperRef={sidebarRef}
           beta={beta}
+          onNewSession={onNewSession}
         />
       )}
 

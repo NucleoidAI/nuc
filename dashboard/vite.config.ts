@@ -4,15 +4,12 @@ import { defineConfig, mergeConfig } from "vite";
 export default async () => {
   const base = await vite();
 
-  return defineConfig(
-    mergeConfig(base, {
-      build: {
-        rollupOptions: {
-          output: {
-            manualChunks: undefined,
-          },
-        },
-      },
-    })
-  );
+  if (
+    base.build?.rollupOptions?.output &&
+    !Array.isArray(base.build.rollupOptions.output)
+  ) {
+    delete base.build.rollupOptions.output.manualChunks;
+  }
+
+  return defineConfig(base);
 };

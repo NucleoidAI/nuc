@@ -1,6 +1,14 @@
-import { defineConfig } from "vite";
 import { vite } from "@canmingir/link/vite";
+import { defineConfig, mergeConfig } from "vite";
 
 export default async () => {
-  return defineConfig(vite());
+  const base = await vite();
+
+  return defineConfig(
+    mergeConfig(base, {
+      resolve: {
+        dedupe: ["@emotion/react", "@emotion/styled", "@emotion/css"],
+      },
+    })
+  );
 };

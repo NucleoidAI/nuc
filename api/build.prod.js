@@ -104,7 +104,7 @@ async function main() {
   fs.rmSync(OUT, { recursive: true, force: true });
   fs.mkdirSync(OUT, { recursive: true });
 
-  const srcDirs = ["server.js", "prepare.ts", "src"].map((d) =>
+  const srcDirs = ["server.ts", "prepare.ts", "src"].map((d) =>
     path.join(ROOT, d),
   );
   let tsFiles = [];

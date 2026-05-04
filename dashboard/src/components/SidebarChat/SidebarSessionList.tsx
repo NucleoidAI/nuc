@@ -19,8 +19,6 @@ interface SidebarSessionListProps {
   ) => void;
   onClearAll: () => void;
   onNewSession?: () => void;
-  isCompact?: boolean;
-  onMouseEnter?: () => void;
   wrapperRef?: React.Ref<HTMLDivElement>;
   beta?: boolean;
 }
@@ -33,18 +31,15 @@ const SidebarSessionList = ({
   onSessionClick,
   onClearAll,
   onNewSession,
-  isCompact = true,
-  onMouseEnter,
   wrapperRef,
   beta,
 }: SidebarSessionListProps) => {
   const sidebarSessions = sessions;
 
   return (
-    <RightSideBar width={isCompact ? 45 : 75} height={420}>
+    <RightSideBar width={45} height={370}>
       <Box
         ref={wrapperRef}
-        onMouseEnter={onMouseEnter}
         sx={{
           width: "100%",
           height: "100%",
@@ -59,9 +54,9 @@ const SidebarSessionList = ({
               onToggleChat();
             }}
             sx={{
-              width: isCompact ? 35 : 65,
-              height: isCompact ? 35 : 50,
-              borderRadius: isCompact ? "10px" : "12px",
+              width: 35,
+              height: 35,
+              borderRadius: "10px",
               cursor: "pointer",
               display: "flex",
               flexDirection: "column",
@@ -80,21 +75,20 @@ const SidebarSessionList = ({
           >
             <Iconify
               icon="solar:add-square-bold-duotone"
-              sx={{ width: 22, height: 22 }}
+              sx={{ width: 20, height: 20 }}
             />
-            {!isCompact && (
-              <Typography
-                sx={{
-                  fontSize: "0.6rem",
-                  fontWeight: 700,
-                  letterSpacing: 0.5,
-                  lineHeight: 1,
-                  textTransform: "uppercase",
-                }}
-              >
-                New
-              </Typography>
-            )}
+
+            <Typography
+              sx={{
+                fontSize: "0.5rem",
+                fontWeight: 500,
+                letterSpacing: 0.5,
+                lineHeight: 1,
+                textTransform: "uppercase",
+              }}
+            >
+              New
+            </Typography>
           </Box>
         </Tooltip>
 
@@ -103,9 +97,9 @@ const SidebarSessionList = ({
             <Box
               onClick={() => publish("SWAGGER_DIALOG_OPEN", { open: true })}
               sx={{
-                width: isCompact ? 35 : 65,
-                height: isCompact ? 35 : 50,
-                borderRadius: isCompact ? "10px" : "12px",
+                width: 35,
+                height: 35,
+                borderRadius: "10px",
                 cursor: "pointer",
                 display: "flex",
                 flexDirection: "column",
@@ -125,24 +119,23 @@ const SidebarSessionList = ({
               <Iconify
                 icon="logos:swagger"
                 sx={{
-                  width: isCompact ? 20 : 22,
-                  height: isCompact ? 20 : 22,
+                  width: 20,
+                  height: 20,
                   transition: "all 0.2s ease-in-out",
                 }}
               />
-              {!isCompact && (
-                <Typography
-                  sx={{
-                    fontSize: "0.6rem",
-                    fontWeight: 700,
-                    letterSpacing: 0.5,
-                    lineHeight: 1,
-                    textTransform: "uppercase",
-                  }}
-                >
-                  API
-                </Typography>
-              )}
+
+              <Typography
+                sx={{
+                  fontSize: "0.5rem",
+                  fontWeight: 500,
+                  letterSpacing: 0.5,
+                  lineHeight: 1,
+                  textTransform: "uppercase",
+                }}
+              >
+                API
+              </Typography>
             </Box>
           </Tooltip>
         )}
@@ -173,7 +166,7 @@ const SidebarSessionList = ({
             >
               {sidebarSessions.map((session, idx) => {
                 const isCurrent = session.sessionId === currentSessionId;
-                const sessionNum = sidebarSessions.length - idx;
+                const sessionNum = idx + 1;
                 const hasUnread = isCurrent && unreadCount > 0;
 
                 return (
@@ -193,9 +186,9 @@ const SidebarSessionList = ({
                     <Box
                       onClick={(e) => onSessionClick(e, session.sessionId)}
                       sx={{
-                        width: isCompact ? 35 : 65,
-                        height: isCompact ? 35 : 50,
-                        borderRadius: isCompact ? "10px" : "12px",
+                        width: 35,
+                        height: 35,
+                        borderRadius: "10px",
                         cursor: "pointer",
                         flexShrink: 0,
                         display: "flex",
@@ -237,17 +230,15 @@ const SidebarSessionList = ({
                             minWidth: 14,
                             height: 14,
                             padding: "0 3px",
-                            transform: isCompact
-                              ? "scale(0.85) translate(25%, -25%)"
-                              : "scale(1) translate(50%, -50%)",
+                            transform: "scale(0.85) translate(25%, -25%)",
                             transition: "all 0.2s ease",
                           },
                         }}
                       >
                         <Box
                           sx={{
-                            width: isCompact ? 22 : 24,
-                            height: isCompact ? 22 : 24,
+                            width: 20,
+                            height: 20,
                             borderRadius: "7px",
                             display: "flex",
                             alignItems: "center",
@@ -278,18 +269,16 @@ const SidebarSessionList = ({
                         </Box>
                       </Badge>
 
-                      {!isCompact && (
-                        <Typography
-                          sx={{
-                            fontSize: "0.55rem",
-                            fontWeight: 700,
-                            lineHeight: 1,
-                            letterSpacing: 0.3,
-                          }}
-                        >
-                          {`Session ${sessionNum}`}
-                        </Typography>
-                      )}
+                      <Typography
+                        sx={{
+                          fontSize: "0.55rem",
+                          fontWeight: 700,
+                          lineHeight: 1,
+                          letterSpacing: 0.3,
+                        }}
+                      >
+                        {`Ses. ${sessionNum}`}
+                      </Typography>
                     </Box>
                   </Tooltip>
                 );
@@ -308,9 +297,8 @@ const SidebarSessionList = ({
                 onClick={onClearAll}
                 sx={{
                   mt: "auto",
-                  mb: isCompact ? 1 : 0,
-                  width: isCompact ? 35 : 65,
-                  height: isCompact ? 35 : 36,
+                  width: 35,
+                  height: 35,
                   borderRadius: "10px",
                   cursor: "pointer",
                   display: "flex",
@@ -328,8 +316,8 @@ const SidebarSessionList = ({
                 <Iconify
                   icon="solar:trash-bin-2-bold"
                   sx={{
-                    width: isCompact ? 16 : 18,
-                    height: isCompact ? 16 : 18,
+                    width: 20,
+                    height: 20,
                   }}
                 />
               </Box>

@@ -88,8 +88,8 @@ function AgentLayout({
   const { beta } = config;
 
   const visibleTabs = useMemo(() => {
-    return TABS.filter((tab) => beta || tab.value !== "api");
-  }, [beta]);
+    return TABS.filter((tab) => !beta || tab.value !== "api");
+  }, [!beta]);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -198,7 +198,7 @@ function AgentLayout({
         {currentTab === "tasks" && <TasksWidget agentId={agent.id} />}
         {currentTab === "mcps" && <AgentMCP agent={agent} />}
         {currentTab === "communication" && <Communication />}
-        {currentTab === "api" && beta && <APITab agentId={agent.id} />}
+        {currentTab === "api" && !beta && <APITab agentId={agent.id} />}
       </Box>
 
       <SidebarChatWidget

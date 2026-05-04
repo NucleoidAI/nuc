@@ -97,7 +97,7 @@ const SidebarSessionList = ({
           </Box>
         </Tooltip>
 
-        {beta && (
+        {!beta && (
           <Tooltip
             title="Open API"
             placement="left"

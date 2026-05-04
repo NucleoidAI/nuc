@@ -104,11 +104,11 @@ function KnowledgeTable({
   };
 
   return (
-    <Card>
+    <Card sx={{ borderRadius: 0.5 }}>
       <TableContainer sx={{ position: "relative", overflow: "unset" }}>
         <TableSelectedAction dense={table.dense} />
         <Scrollbar>
-          <Table size={table.dense ? "small" : "medium"}>
+          <Table>
             <TableHeadCustom
               order={table.order}
               orderBy={table.orderBy}

@@ -34,7 +34,7 @@ const BlueprintSelector = ({
         boxShadow: 2,
       }}
     >
-      <FormControl fullWidth size="small">
+      <FormControl fullWidth>
         <InputLabel
           sx={{
             color: "rgba(255, 255, 255, 0.7)",

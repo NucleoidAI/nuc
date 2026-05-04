@@ -89,7 +89,7 @@ function AgentLayout({
 
   const visibleTabs = useMemo(() => {
     return TABS.filter((tab) => !beta || tab.value !== "api");
-  }, [!beta]);
+  }, [beta]);
 
   const location = useLocation();
   const navigate = useNavigate();

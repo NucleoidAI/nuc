@@ -43,10 +43,10 @@ const BlueprintSelector = ({
             },
           }}
         >
-          Automatic
+          Blueprint
         </InputLabel>
         <Select
-          value={selectedBlueprint || ""}
+          value={selectedBlueprint || "Automatic"}
           onChange={(e) => onBlueprintChange(e.target.value)}
           label="Blueprint"
           sx={{
@@ -85,8 +85,8 @@ const BlueprintSelector = ({
             },
           }}
         >
-          <MenuItem value="">
-            <em style={{ color: "rgba(255, 255, 255, 0.7)" }}>None selected</em>
+          <MenuItem value="Automatic">
+            <Typography sx={{ color: "white" }}>Automatic</Typography>
           </MenuItem>
           {Blueprints.map((Blueprint) => (
             <MenuItem key={Blueprint.id} value={Blueprint.id}>

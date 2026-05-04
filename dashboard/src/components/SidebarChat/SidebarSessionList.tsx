@@ -47,7 +47,12 @@ const SidebarSessionList = ({
           flexDirection: "column",
         }}
       >
-        <Tooltip title="New Chat" placement="left">
+        <Tooltip
+          title="New Chat"
+          placement="left"
+          enterDelay={1000}
+          enterNextDelay={1000}
+        >
           <Box
             onClick={() => {
               onNewSession?.();
@@ -93,7 +98,12 @@ const SidebarSessionList = ({
         </Tooltip>
 
         {beta && (
-          <Tooltip title="Open API" placement="left">
+          <Tooltip
+            title="Open API"
+            placement="left"
+            enterDelay={1000}
+            enterNextDelay={1000}
+          >
             <Box
               onClick={() => publish("SWAGGER_DIALOG_OPEN", { open: true })}
               sx={{
@@ -182,6 +192,8 @@ const SidebarSessionList = ({
                           }`
                     }
                     placement="left"
+                    enterDelay={1000}
+                    enterNextDelay={1000}
                   >
                     <Box
                       onClick={(e) => onSessionClick(e, session.sessionId)}

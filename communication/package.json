@@ -11,7 +11,7 @@
   "keywords": [],
   "author": "NucTeam",
   "dependencies": {
-    "@canmingir/link-express": "^1.7.18",
+    "@canmingir/link-express": "^1.7.20",
     "@slack/bolt": "^3.22.0",
     "@slack/types": "^2.14.0",
     "axios": "^1.7.7",

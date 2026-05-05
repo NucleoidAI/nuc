@@ -2,7 +2,7 @@ import BlueprintChat from "../BlueprintChat/BlueprintChat";
 import BlueprintChatTitle from "../BlueprintChat/BlueprintChatTitle";
 import BlueprintFlowWidget from "../../widgets/BlueprintFlowWidget/BlueprintFlowWidget";
 import { ChatBubbleOutline } from "@mui/icons-material";
-import DrawerLayout from "../../layouts/DrawerLayout";
+import { DrawerLayout } from "@canmingir/link/layouts";
 import { FlowDefinition } from "../BlueprintFlow/helper";
 import Knowledge from "../../widgets/Knowledge/Knowledge";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";

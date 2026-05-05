@@ -1,5 +1,5 @@
 import BlueprintFlowWidget from "../../widgets/BlueprintFlowWidget/BlueprintFlowWidget";
-import DrawerLayout from "../../layouts/DrawerLayout";
+import { DrawerLayout } from "@canmingir/link/layouts";
 import { FlowDefinition } from "./helper";
 import React from "react";
 

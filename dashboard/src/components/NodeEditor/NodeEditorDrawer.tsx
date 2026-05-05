@@ -1,4 +1,4 @@
-import DrawerLayout from "../../layouts/DrawerLayout";
+import { DrawerLayout } from "@canmingir/link/layouts";
 import { Iconify } from "@canmingir/link/platform/components";
 import SearchIcon from "@mui/icons-material/Search";
 

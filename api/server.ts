@@ -31,11 +31,11 @@ process.on("unhandledRejection", (reason, promise) => {
 });
 
 platform.init(config).then(async () => {
-  await event.init(config.event);
-
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const app = require("./src/app").default;
   const server = http.createServer(app);
+
+  await event.init(config.event);
 
   const logger = platform.logger;
 

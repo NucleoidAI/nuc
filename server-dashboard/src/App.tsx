@@ -20,29 +20,69 @@ function getFaviconUrl(icon?: string) {
   return `https://www.google.com/s2/favicons?domain=${icon}&sz=64`;
 }
 
-function ServiceCard({ service }: { service: Service }) {
+function useFavorites() {
+  const [favorites, setFavorites] = useState<Set<string>>(() => {
+    try {
+      const stored = localStorage.getItem('server-dashboard-favorites');
+      return new Set(stored ? JSON.parse(stored) : []);
+    } catch {
+      return new Set();
+    }
+  });
+
+  const toggle = (url: string) => {
+    setFavorites(prev => {
+      const next = new Set(prev);
+      next.has(url) ? next.delete(url) : next.add(url);
+      localStorage.setItem('server-dashboard-favorites', JSON.stringify([...next]));
+      return next;
+    });
+  };
+
+  return { favorites, toggle };
+}
+
+function ServiceCard({
+  service,
+  isFavorite,
+  onToggleFavorite,
+}: {
+  service: Service;
+  isFavorite: boolean;
+  onToggleFavorite: (url: string) => void;
+}) {
   const [imgError, setImgError] = useState(false);
   const faviconUrl = getFaviconUrl(service.icon);
 
   return (
-    <a href={service.url} target="_blank" rel="noopener noreferrer" className="card">
-      <div className="card-icon">
-        {faviconUrl && !imgError ? (
-          <img src={faviconUrl} alt="" onError={() => setImgError(true)} />
-        ) : (
-          service.name.charAt(0)
-        )}
-      </div>
-      <div className="card-text">
-        <div className="card-name">{service.name}</div>
-        <div className="card-url">{new URL(service.url).hostname}</div>
-      </div>
-    </a>
+    <div className="card">
+      <button
+        className={`fav-btn${isFavorite ? ' fav-btn--active' : ''}`}
+        onClick={e => { e.preventDefault(); onToggleFavorite(service.url); }}
+        title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+      >
+        ★
+      </button>
+      <a href={service.url} target="_blank" rel="noopener noreferrer" className="card-link">
+        <div className="card-icon">
+          {faviconUrl && !imgError ? (
+            <img src={faviconUrl} alt="" onError={() => setImgError(true)} />
+          ) : (
+            service.name.charAt(0)
+          )}
+        </div>
+        <div className="card-text">
+          <div className="card-name">{service.name}</div>
+          <div className="card-url">{new URL(service.url).hostname}</div>
+        </div>
+      </a>
+    </div>
   );
 }
 
 export default function App() {
   const [search, setSearch] = useState('');
+  const { favorites, toggle } = useFavorites();
   const services: Service[] = window.SERVICES || [];
 
   const filtered = useMemo(() => {
@@ -54,6 +94,11 @@ export default function App() {
       s.category.toLowerCase().includes(q)
     );
   }, [search, services]);
+
+  const favoriteServices = useMemo(
+    () => filtered.filter(s => favorites.has(s.url)),
+    [filtered, favorites]
+  );
 
   const grouped = useMemo(() => {
     const map: Record<string, Service[]> = {};
@@ -83,6 +128,21 @@ export default function App() {
         />
       </header>
       <main>
+        {favoriteServices.length > 0 && (
+          <section>
+            <h2 className="h2--favorites">★ Favorites</h2>
+            <div className="grid">
+              {favoriteServices.map(s => (
+                <ServiceCard
+                  key={s.url}
+                  service={s}
+                  isFavorite={true}
+                  onToggleFavorite={toggle}
+                />
+              ))}
+            </div>
+          </section>
+        )}
         {categories.length === 0 ? (
           <div className="empty">No services found</div>
         ) : (
@@ -91,7 +151,12 @@ export default function App() {
               <h2>{category}</h2>
               <div className="grid">
                 {grouped[category].map(s => (
-                  <ServiceCard key={s.url} service={s} />
+                  <ServiceCard
+                    key={s.url}
+                    service={s}
+                    isFavorite={favorites.has(s.url)}
+                    onToggleFavorite={toggle}
+                  />
                 ))}
               </div>
             </section>

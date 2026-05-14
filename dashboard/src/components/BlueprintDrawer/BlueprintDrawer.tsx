@@ -1,21 +1,23 @@
-import BlueprintChat from "../BlueprintChat/BlueprintChat";
 import BlueprintChatTitle from "../BlueprintChat/BlueprintChatTitle";
 import BlueprintFlowWidget from "../../widgets/BlueprintFlowWidget/BlueprintFlowWidget";
-import { ChatBubbleOutline } from "@mui/icons-material";
+import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
+import Draggable from "react-draggable";
 import { DrawerLayout } from "@canmingir/link/layouts";
 import { FlowDefinition } from "../BlueprintFlow/helper";
 import Knowledge from "../../widgets/Knowledge/Knowledge";
+import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 
 import {
   Box,
-  Fab,
+  Card,
   Grid,
+  IconButton,
   Tooltip,
-  useMediaQuery,
+  Typography,
   useTheme,
 } from "@mui/material";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const BlueprintDrawer = ({
   drawerOpen,
@@ -64,36 +66,16 @@ const BlueprintDrawer = ({
   teamId?: string;
 }) => {
   const theme = useTheme();
-  const isTablet = useMediaQuery(theme.breakpoints.down("md"));
 
   const [title, setTitle] = useState(selectedItem?.title);
   const [description, setDescription] = useState(selectedItem?.description);
-  const [createBlueprintHandler, setCreateBlueprintHandler] = useState(null);
-  const [messages, setMessages] = useState([]);
-
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [drawerMode, setDrawerMode] = useState<"wide" | "fullscreen">("wide");
+  const [knowledgeExpanded, setKnowledgeExpanded] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     setTitle(selectedItem?.title);
     setDescription(selectedItem?.description);
   }, [selectedItem]);
-
-  const handleTitleChange = useCallback((newTitle) => {
-    setTitle(newTitle);
-  }, []);
-
-  const handleDescriptionChange = useCallback((newDescription) => {
-    setDescription(newDescription);
-  }, []);
-
-  const handleCreateBlueprint = useCallback((handler) => {
-    setCreateBlueprintHandler(() => handler);
-  }, []);
-
-  const handleMessagesChange = useCallback((newMessages) => {
-    setMessages(newMessages);
-  }, []);
 
   const flowContent = (
     <Box
@@ -110,8 +92,6 @@ const BlueprintDrawer = ({
         <BlueprintChatTitle
           title={title}
           description={description}
-          messages={messages}
-          handleCreateBlueprint={createBlueprintHandler}
           setTitle={setTitle}
         />
       </Box>
@@ -138,48 +118,6 @@ const BlueprintDrawer = ({
           agentId={agentId}
           teamId={teamId}
         />
-
-        <Tooltip
-          title={
-            drawerMode === "wide"
-              ? "Show Knowledge Panel"
-              : "Hide Knowledge Panel"
-          }
-          placement="left"
-        >
-          <Fab
-            color="primary"
-            onClick={() =>
-              setDrawerMode((prev) => (prev === "wide" ? "fullscreen" : "wide"))
-            }
-            sx={{
-              position: "absolute",
-              bottom: 24,
-              right: 96,
-              zIndex: 10,
-            }}
-          >
-            <StickyNote2Icon />
-          </Fab>
-        </Tooltip>
-
-        {!isChatOpen && (
-          <Tooltip title="Open Assistant Chat" placement="left">
-            <Fab
-              color="primary"
-              aria-label="chat"
-              onClick={() => setIsChatOpen(true)}
-              sx={{
-                position: "absolute",
-                bottom: 24,
-                right: 24,
-                zIndex: 10,
-              }}
-            >
-              <ChatBubbleOutline />
-            </Fab>
-          </Tooltip>
-        )}
       </Box>
     </Box>
   );
@@ -188,18 +126,10 @@ const BlueprintDrawer = ({
     <DrawerLayout
       open={drawerOpen}
       onClose={handleDrawerClose}
-      mode={drawerMode}
+      mode="fullscreen"
       sx={{
         zIndex: (theme) => theme.zIndex.modal + 2,
       }}
-      paperSx={
-        drawerMode === "wide"
-          ? {
-              width: isChatOpen && !isTablet ? "90vw" : "85vw",
-              transition: "width 0.3s ease-in-out",
-            }
-          : undefined
-      }
       contentSx={{
         p: 0,
         overflow: "hidden",
@@ -216,103 +146,117 @@ const BlueprintDrawer = ({
         }}
         role="presentation"
       >
-        {drawerMode === "fullscreen" ? (
-          <Grid container sx={{ flex: 1, height: "100%" }} spacing={0}>
-            <Grid
-              size={{ xs: 12, md: 4 }}
-              sx={{
-                pt: 1,
-                position: "relative",
-                mt: 1,
-                borderRight: `1px solid ${theme.palette.divider}`,
-                overflow: "auto",
-              }}
-            >
-              <Knowledge
-                agentId={selectedItem?.agentId || agentId}
-                blueprintId={selectedItem?.id}
-                teamId={teamId}
-              />
-            </Grid>
-            <Grid
-              size={{ xs: 12, md: 8 }}
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                height: "100%",
-                maxHeight: "100vh",
-              }}
-            >
-              {flowContent}
-            </Grid>
-          </Grid>
-        ) : (
-          <Grid container sx={{ flex: 1, height: "100%" }} spacing={0}>
-            <Grid
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                height: "100%",
-                maxHeight: "100vh",
-                borderRight: isChatOpen
-                  ? `1px solid ${theme.palette.divider}`
-                  : "none",
-                // backgroundColor: (theme) => theme.palette.background.default,
-                position: "relative",
-              }}
-              size={{
-                xs: 12,
-                md: isChatOpen ? 7 : 12,
-                lg: isChatOpen ? 8 : 12,
-                xl: isChatOpen ? 9 : 12,
-              }}
-            >
-              {flowContent}
-            </Grid>
+        <Grid container sx={{ flex: 1, height: "100%" }} spacing={0}>
+          <Grid
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              height: "100%",
+              maxHeight: "100vh",
+              position: "relative",
+            }}
+            size={{
+              xs: 12,
+            }}
+          >
+            {flowContent}
 
-            {isChatOpen && (
-              <Grid
+            <Draggable
+              handle=".knowledge-drag-handle"
+              bounds="parent"
+              defaultPosition={{ x: 0, y: 0 }}
+              onStart={() => setIsDragging(false)}
+              onDrag={() => setIsDragging(true)}
+            >
+              <Card
+                elevation={4}
                 sx={{
+                  position: "absolute",
+                  top: 130,
+                  left: 24,
+                  width: knowledgeExpanded ? "550px" : "180px",
+                  maxHeight: knowledgeExpanded ? "calc(100% - 32px)" : "44px",
                   display: "flex",
                   flexDirection: "column",
-                  position: "relative",
-                  height: "100%",
-                  maxHeight: "100vh",
-                }}
-                size={{
-                  xs: 12,
-                  md: 5,
-                  lg: 4,
-                  xl: 3,
+                  background: `linear-gradient(135deg, ${theme.palette.primary.main}08 0%, ${theme.palette.secondary.main}05 100%)`,
+                  backdropFilter: "blur(10px)",
+                  border: `1px solid ${theme.palette.divider}`,
+                  borderRadius: 2,
+                  overflow: "hidden",
+                  zIndex: 9,
+                  transition:
+                    "width 300ms cubic-bezier(0.22, 1, 0.36, 1), max-height 300ms cubic-bezier(0.22, 1, 0.36, 1)",
                 }}
               >
                 <Box
+                  className="knowledge-drag-handle"
                   sx={{
-                    flex: 1,
                     display: "flex",
-                    flexDirection: "column",
-                    height: "100%",
-                    minHeight: 0,
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    px: 1.5,
+                    flexShrink: 0,
+                    minHeight: "44px",
+                    cursor: "pointer",
+                    borderBottom: knowledgeExpanded
+                      ? `1px solid ${theme.palette.divider}`
+                      : "none",
+                  }}
+                  onClick={() => {
+                    if (!isDragging) {
+                      setKnowledgeExpanded((prev) => !prev);
+                    }
                   }}
                 >
-                  <BlueprintChat
-                    selectedItem={selectedItem}
-                    setAiResponse={setAiResponse}
-                    aiResponse={aiResponse}
-                    setSelectedItem={setSelectedItem}
-                    onTitleChange={handleTitleChange}
-                    onDescriptionChange={handleDescriptionChange}
-                    onCreateBlueprint={handleCreateBlueprint}
-                    onMessagesChange={handleMessagesChange}
-                    taskId={taskId}
-                    agentId={agentId}
-                    setIsChatOpen={setIsChatOpen}
-                  />
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <StickyNote2Icon
+                      sx={{ fontSize: 18, color: "primary.main" }}
+                    />
+                    <Typography variant="body2" fontWeight={600} noWrap>
+                      Knowledge
+                    </Typography>
+                  </Box>
+                  <Tooltip
+                    title={knowledgeExpanded ? "Collapse" : "Expand"}
+                    placement="right"
+                  >
+                    <IconButton
+                      size="small"
+                      sx={{ ml: 1 }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setKnowledgeExpanded((prev) => !prev);
+                      }}
+                    >
+                      {knowledgeExpanded ? (
+                        <CloseFullscreenIcon sx={{ fontSize: 16 }} />
+                      ) : (
+                        <OpenInFullIcon sx={{ fontSize: 16 }} />
+                      )}
+                    </IconButton>
+                  </Tooltip>
                 </Box>
-              </Grid>
-            )}
+
+                {knowledgeExpanded && (
+                  <Box
+                    sx={{
+                      flex: 1,
+                      overflow: "auto",
+                      position: "relative",
+                      p: 1,
+                    }}
+                  >
+                    <Knowledge
+                      agentId={selectedItem?.agentId || agentId}
+                      blueprintId={selectedItem?.id}
+                      teamId={teamId}
+                    />
+                  </Box>
+                )}
+              </Card>
+            </Draggable>
           </Grid>
-        )}
+        </Grid>
       </Box>
     </DrawerLayout>
   );

@@ -35,7 +35,7 @@ const BlueprintFlowDialog = ({
     <DrawerLayout
       open={flowDialogOpen}
       onClose={handleFlowDialogClose}
-      mode="fullscreen"
+      mode="wide"
       sx={{ zIndex: (theme) => theme.zIndex.modal + 2 }}
     >
       {selectedItem && (

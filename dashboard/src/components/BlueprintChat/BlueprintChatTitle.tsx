@@ -8,7 +8,6 @@ import {
   Button,
   Card,
   CardContent,
-  Chip,
   Dialog,
   DialogActions,
   DialogContent,
@@ -22,13 +21,7 @@ import {
 import { MCPElement, MCPScopeElement } from "./MCPElement";
 import React, { useState } from "react";
 
-const BlueprintChatTitle = ({
-  title,
-  description,
-  messages,
-  handleCreateBlueprint,
-  setTitle,
-}) => {
+const BlueprintChatTitle = ({ title, description, setTitle }) => {
   const theme = useTheme();
   const [isEditing, setIsEditing] = useState(false);
 
@@ -37,9 +30,6 @@ const BlueprintChatTitle = ({
   };
 
   const handleSaveClick = () => {
-    if (handleCreateBlueprint) {
-      handleCreateBlueprint(title, description);
-    }
     setIsEditing(false);
   };
 
@@ -51,7 +41,6 @@ const BlueprintChatTitle = ({
     if (!description) return null;
 
     try {
-      // TODO: Extract MCPs and its scopes
       const availableMCPs = BlueprintCommands[0]?.next?.list || [];
       const availableScopes = [];
 
@@ -265,7 +254,7 @@ const BlueprintChatTitle = ({
   return (
     <Box
       sx={{
-        width: "100%",
+        width: "50%",
         mb: 3,
       }}
     >
@@ -297,7 +286,7 @@ const BlueprintChatTitle = ({
               }}
             >
               <Box sx={{ flex: 1, minWidth: 0 }}>
-                {title === null && messages.length > 0 ? (
+                {title === null ? (
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <Skeleton
                       variant="rectangular"
@@ -359,7 +348,7 @@ const BlueprintChatTitle = ({
             </Box>
 
             <Box>
-              {description === null && messages.length > 0 ? (
+              {description === null ? (
                 <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
                   <Skeleton
                     variant="rectangular"
@@ -409,28 +398,6 @@ const BlueprintChatTitle = ({
                 </Typography>
               )}
             </Box>
-
-            {messages.length > 0 && (
-              <Box
-                sx={{ display: "flex", justifyContent: "flex-end", mt: 0.5 }}
-              >
-                <Chip
-                  label={`${messages.length} message${
-                    messages.length !== 1 ? "s" : ""
-                  }`}
-                  size="small"
-                  variant="outlined"
-                  sx={{
-                    borderColor: theme.palette.primary.main + "30",
-                    color: theme.palette.primary.main,
-                    backgroundColor: theme.palette.primary.main + "08",
-                    fontWeight: 500,
-                    fontSize: "0.7rem",
-                    height: 24,
-                  }}
-                />
-              </Box>
-            )}
           </Box>
         </CardContent>
       </Card>
@@ -474,7 +441,7 @@ const BlueprintChatTitle = ({
             WebkitTextFillColor: "transparent",
           }}
         >
-          {messages.length > 0 ? "Edit Blueprint" : "Create Blueprint"}
+          {"Edit Blueprint Title & Description"}
         </DialogTitle>
         <DialogContent sx={{ pt: 2 }}>
           <TextField

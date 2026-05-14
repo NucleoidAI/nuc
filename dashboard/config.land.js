@@ -3,14 +3,14 @@ const config = {
   name: "GreyCollar",
   base: "/dashboard",
   beta: true,
-  api: "https://dashboard.land.greycollar.ai/api",
+  api: "https://greycollar.nuc.land/api",
   socket: {
     host: "https://communication.land.greycollar.ai",
     path: "/socket.io",
   },
   project: {
     github: {
-      redirectUri: "https://dashboard.land.greycollar.ai/dashboard/callback",
+      redirectUri: "https://greycollar.nuc.land/dashboard/callback",
       authUrl: "https://github.com/login/oauth/authorize",
       userUrl: "https://api.github.com/user",
       clientId: "Ov23liDUwCkj5NPpApo7",

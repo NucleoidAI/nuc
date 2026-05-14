@@ -1,8 +1,8 @@
 window.SERVICES = [
   // GreyCollar
   {
-    name: "Dashboard",
-    url: "https://dashboard.land.greycollar.ai",
+    name: "GreyCollar",
+    url: "https://greycollar.nuc.land",
     category: "GreyCollar",
     icon: "greycollar.ai",
   },

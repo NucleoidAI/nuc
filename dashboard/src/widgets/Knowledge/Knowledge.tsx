@@ -189,7 +189,6 @@ function Knowledge({
         <Fab
           variant="button"
           color="default"
-          size="medium"
           sx={{ zIndex: 1 }}
           data-cy="add-knowledge-button"
           onClick={() => {

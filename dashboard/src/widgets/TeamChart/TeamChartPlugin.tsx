@@ -66,7 +66,6 @@ export const teamChartPlugin = {
               <Fab
                 key={index}
                 color="default"
-                size="small"
                 sx={{
                   width: 32,
                   height: 32,

@@ -166,7 +166,6 @@ const Communication = () => {
         <Fab
           variant="button"
           color="default"
-          size="medium"
           onClick={() => setDialogOpen(true)}
           aria-label="Connect channel to task blueprint"
         >

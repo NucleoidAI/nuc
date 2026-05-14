@@ -167,7 +167,6 @@ const SupervisingChat = ({
             >
               <Tooltip title="See Full Conversation">
                 <Fab
-                  size="medium"
                   color="inherit"
                   onClick={() => setPopChatOpen(!popChatOpen)}
                 >

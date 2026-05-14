@@ -121,7 +121,6 @@ function BlueprintsWidget({
       >
         <Fab
           color="default"
-          size="medium"
           sx={{ mt: 2, zIndex: 0 }}
           onClick={() => handleDrawerOpen(null)}
         >

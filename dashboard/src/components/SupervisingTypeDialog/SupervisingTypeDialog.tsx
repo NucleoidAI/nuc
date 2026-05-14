@@ -84,11 +84,7 @@ const SupervisingTypeDialog = ({
       >
         <Typography>Select Supervising Type</Typography>
         <Box sx={{ display: "flex", gap: 1 }}>
-          <Fab
-            size="medium"
-            color="inherit"
-            onClick={() => setPopChatOpen(!popChatOpen)}
-          >
+          <Fab color="inherit" onClick={() => setPopChatOpen(!popChatOpen)}>
             <Iconify
               icon={
                 popChatOpen
@@ -98,11 +94,7 @@ const SupervisingTypeDialog = ({
               sx={{ width: 26, height: 26 }}
             />
           </Fab>
-          <Fab
-            size="medium"
-            color="inherit"
-            onClick={() => setTaskDrawerOpen(true)}
-          >
+          <Fab color="inherit" onClick={() => setTaskDrawerOpen(true)}>
             <Iconify
               icon="solar:clipboard-list-bold"
               sx={{ width: 26, height: 26 }}

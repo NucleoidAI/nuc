@@ -91,7 +91,7 @@ const PopupChatWidget = ({
         sx={{}}
       />
       {!open && !readOnly && (
-        <Fab onClick={() => setOpen(!open)} size="small">
+        <Fab onClick={() => setOpen(!open)}>
           <Badge
             anchorOrigin={{
               vertical: "top",

@@ -1,4 +1,75 @@
 {
   "sequence": 14,
-  "seed": []
+  "seed": [
+    {
+      "id": "b1c2d3e4-0001-4000-8000-000000000001",
+      "action": "TELCO:get_bbk_by_address",
+      "parameters": { "address": "Musterstrasse 12, 10115 Berlin" },
+      "result": "{\"bbk\": \"DEU-10115-00482\"}",
+      "comment": "Retrieved BBK number for the given address.",
+      "status": "COMPLETED",
+      "taskId": "a1b2c3d4-0001-4000-8000-000000000001",
+      "createdAt": "2026-05-10T09:01:00Z"
+    },
+    {
+      "id": "b1c2d3e4-0002-4000-8000-000000000002",
+      "action": "TELCO:get_inventory",
+      "parameters": { "bbk": "DEU-10115-00482" },
+      "result": "{\"available\": true, \"slots\": 4}",
+      "comment": "Inventory check passed, 4 slots available.",
+      "status": "COMPLETED",
+      "taskId": "a1b2c3d4-0001-4000-8000-000000000001",
+      "createdAt": "2026-05-10T09:02:00Z"
+    },
+    {
+      "id": "b1c2d3e4-0003-4000-8000-000000000003",
+      "action": "TELCO:get_product_by_speed",
+      "parameters": { "bbk": "DEU-10115-00482" },
+      "result": "[{\"id\": \"P100\", \"speed\": 100}, {\"id\": \"P250\", \"speed\": 250}]",
+      "comment": "Fetched available products.",
+      "status": "COMPLETED",
+      "taskId": "a1b2c3d4-0001-4000-8000-000000000001",
+      "createdAt": "2026-05-10T09:03:00Z"
+    },
+    {
+      "id": "b1c2d3e4-0004-4000-8000-000000000004",
+      "action": "PLATFORM:user_interaction",
+      "parameters": { "message": "Please select a product: 100 Mbps or 250 Mbps" },
+      "result": "P250",
+      "comment": "User selected 250 Mbps plan.",
+      "status": "COMPLETED",
+      "taskId": "a1b2c3d4-0001-4000-8000-000000000001",
+      "createdAt": "2026-05-10T09:05:00Z"
+    },
+    {
+      "id": "b1c2d3e4-0005-4000-8000-000000000005",
+      "action": "TELCO:get_bbk_by_address",
+      "parameters": { "address": "Hauptstrasse 5, 80331 Munich" },
+      "result": "{\"bbk\": \"DEU-80331-00219\"}",
+      "comment": "Retrieved BBK number.",
+      "status": "COMPLETED",
+      "taskId": "a1b2c3d4-0002-4000-8000-000000000002",
+      "createdAt": "2026-05-11T11:31:00Z"
+    },
+    {
+      "id": "b1c2d3e4-0006-4000-8000-000000000006",
+      "action": "TELCO:get_inventory",
+      "parameters": { "bbk": "DEU-80331-00219" },
+      "result": "Connection timeout after 3 retries.",
+      "comment": "Inventory service unreachable.",
+      "status": "FAILED",
+      "taskId": "a1b2c3d4-0002-4000-8000-000000000002",
+      "createdAt": "2026-05-11T11:32:00Z"
+    },
+    {
+      "id": "b1c2d3e4-0007-4000-8000-000000000007",
+      "action": "PLATFORM:scrapper",
+      "parameters": { "url": "https://internal/metrics/q1" },
+      "result": null,
+      "comment": "Fetching Q1 metrics data.",
+      "status": "IN_PROGRESS",
+      "taskId": "a1b2c3d4-0003-4000-8000-000000000003",
+      "createdAt": "2026-05-13T08:16:00Z"
+    }
+  ]
 }

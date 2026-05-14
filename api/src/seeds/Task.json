@@ -1,4 +1,38 @@
 {
   "sequence": 12,
-  "seed": []
+  "seed": [
+    {
+      "id": "a1b2c3d4-0001-4000-8000-000000000001",
+      "description": "Set up internet subscription for customer at Musterstrasse 12, 10115 Berlin",
+      "status": "COMPLETED",
+      "result": "Subscription successfully created. Port allocated and configured.",
+      "comment": "All steps completed successfully.",
+      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59",
+      "sessionId": "b9901597-8625-43d9-a925-ed5e0ad7b1e4",
+      "createdAt": "2026-05-10T09:00:00Z"
+    },
+    {
+      "id": "a1b2c3d4-0002-4000-8000-000000000002",
+      "description": "Resolve customer complaint about slow connection speed on account #8823",
+      "status": "FAILED",
+      "result": null,
+      "comment": "Failed to retrieve inventory data for the given BBK.",
+      "agentId": "019c4c15-a99e-765f-92bc-46a27dedbb30",
+      "blueprintId": null,
+      "sessionId": null,
+      "createdAt": "2026-05-11T11:30:00Z"
+    },
+    {
+      "id": "a1b2c3d4-0003-4000-8000-000000000003",
+      "description": "Analyze Q1 usage metrics and generate summary report for the team",
+      "status": "IN_PROGRESS",
+      "result": null,
+      "comment": null,
+      "agentId": "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
+      "blueprintId": null,
+      "sessionId": "b605ad87-fe47-4dc8-b1cd-23d783c0a547",
+      "createdAt": "2026-05-13T08:15:00Z"
+    }
+  ]
 }

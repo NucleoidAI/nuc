@@ -16,6 +16,7 @@ import sessions from "./routes/sessions";
 import statistics from "./routes/statistics";
 import supervisings from "./routes/supervisings";
 import taskFn from "./functions/task";
+import taskLogs from "./routes/taskLogs";
 import tasks from "./routes/tasks";
 import teamDetails from "./routes/teamDetails";
 import { telemetryMiddleware } from "./instrumentation";
@@ -46,6 +47,7 @@ function createApp() {
   app.use("/sessions", sessions);
   app.use("/supervisings", supervisings);
   app.use("/tasks", tasks);
+  app.use("/task-logs", taskLogs);
   app.use("/engines", engines);
   app.use("/organizations", organizations);
   app.use("/statistics", statistics);

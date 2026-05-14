@@ -12,6 +12,7 @@ import platform from "@canmingir/link-express";
 import session from "./session";
 import supervising from "./supervising";
 import taskFn from "./task";
+import taskLogFn from "./taskLog";
 
 async function messages({ teamId }: { teamId: string }) {
   const messageInstances = await messagesFunc.listMessages({ teamId });
@@ -192,13 +193,13 @@ async function task({ taskId }: { taskId: string }) {
   ];
 
   const {
-    next_step: { action, parameters, comment },
+    next_step: { action, parameters, comment, hallucination_score },
   } = await generate({
     dataset: dataset.train.taskDiamond,
     context,
     content: currentTask,
     json_format:
-      "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT> } }",
+      "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT>, hallucination_score: <0-1> } }",
   });
 
   if (action === "PLATFORM:complete") {
@@ -209,6 +210,17 @@ async function task({ taskId }: { taskId: string }) {
     if (steps.length) {
       result = steps[steps.length - 1].result;
     }
+
+    await taskLogFn.create({
+      taskId,
+      parameters: { description, blueprintId },
+      output: result ?? comment ?? null,
+      status: "COMPLETED",
+      hallucinationScore:
+        typeof hallucination_score === "number"
+          ? hallucination_score
+          : undefined,
+    });
 
     if (sessionId) {
       await session.addConversation({
@@ -280,6 +292,8 @@ async function step({
     let result;
     let mcpClient;
 
+    const { taskId } = await taskFn.getStep({ stepId });
+
     if (actionType === "SUPERVISED") {
       actionFn = require("../actions/ask_supervisor").default;
     } else if (actionType === "ACTION") {
@@ -302,7 +316,6 @@ async function step({
       actionType === "SUPERVISED" ||
       actionType === "INTERACTION"
     ) {
-      const { taskId } = await taskFn.getStep({ stepId });
       const steps = await taskFn.listSteps({ taskId });
 
       result = await actionFn.run({
@@ -332,6 +345,13 @@ async function step({
         result: resultString,
         status: "WAITING_FOR_USER",
       });
+      await taskLogFn.create({
+        taskId,
+        stepId,
+        parameters,
+        output: resultString,
+        status: "COMPLETED",
+      });
     } else if (actionType === "SUPERVISED") {
       await session.addConversation({
         sessionId: parameters.sessionId,
@@ -344,18 +364,41 @@ async function step({
         result: resultString,
         status: "SUPERVISED_NEEDED",
       });
+      await taskLogFn.create({
+        taskId,
+        stepId,
+        parameters,
+        output: resultString,
+        status: "SUPERVISED",
+      });
     } else {
+      const finalStatus = result && result.isError ? "FAILED" : "COMPLETED";
       await taskFn.updateStep({
         stepId,
         result: resultString || "Completed",
-        status: result && result.isError ? "FAILED" : "COMPLETED",
+        status: finalStatus,
+      });
+      await taskLogFn.create({
+        taskId,
+        stepId,
+        parameters,
+        output: resultString,
+        status: finalStatus === "FAILED" ? "FAILED" : "COMPLETED",
       });
     }
   } catch (err: unknown) {
     if (err instanceof Error) {
+      const { taskId: failedTaskId } = await taskFn.getStep({ stepId });
       await taskFn.updateStep({
         stepId,
         result: err.message,
+        status: "FAILED",
+      });
+      await taskLogFn.create({
+        taskId: failedTaskId,
+        stepId,
+        parameters,
+        output: err.message,
         status: "FAILED",
       });
     }

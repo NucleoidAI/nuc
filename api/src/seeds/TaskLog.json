@@ -1,0 +1,89 @@
+{
+  "sequence": 15,
+  "seed": [
+    {
+      "id": "c1d2e3f4-0001-4000-8000-000000000001",
+      "taskId": "a1b2c3d4-0001-4000-8000-000000000001",
+      "stepId": "b1c2d3e4-0001-4000-8000-000000000001",
+      "parameters": { "address": "Musterstrasse 12, 10115 Berlin" },
+      "output": "{\"bbk\": \"DEU-10115-00482\"}",
+      "status": "COMPLETED",
+      "hallucinationScore": 0.95,
+      "superviseScore": null,
+      "reviewScore": null,
+      "createdAt": "2026-05-10T09:01:00Z"
+    },
+    {
+      "id": "c1d2e3f4-0002-4000-8000-000000000002",
+      "taskId": "a1b2c3d4-0001-4000-8000-000000000001",
+      "stepId": "b1c2d3e4-0002-4000-8000-000000000002",
+      "parameters": { "bbk": "DEU-10115-00482" },
+      "output": "{\"available\": true, \"slots\": 4}",
+      "status": "COMPLETED",
+      "hallucinationScore": 0.97,
+      "superviseScore": null,
+      "reviewScore": null,
+      "createdAt": "2026-05-10T09:02:00Z"
+    },
+    {
+      "id": "c1d2e3f4-0003-4000-8000-000000000003",
+      "taskId": "a1b2c3d4-0001-4000-8000-000000000001",
+      "stepId": "b1c2d3e4-0003-4000-8000-000000000003",
+      "parameters": { "bbk": "DEU-10115-00482" },
+      "output": "[{\"id\": \"P100\", \"speed\": 100}, {\"id\": \"P250\", \"speed\": 250}]",
+      "status": "COMPLETED",
+      "hallucinationScore": 0.93,
+      "superviseScore": null,
+      "reviewScore": null,
+      "createdAt": "2026-05-10T09:03:00Z"
+    },
+    {
+      "id": "c1d2e3f4-0004-4000-8000-000000000004",
+      "taskId": "a1b2c3d4-0001-4000-8000-000000000001",
+      "stepId": "b1c2d3e4-0004-4000-8000-000000000004",
+      "parameters": { "message": "Please select a product: 100 Mbps or 250 Mbps" },
+      "output": "P250",
+      "status": "COMPLETED",
+      "hallucinationScore": 0.91,
+      "superviseScore": null,
+      "reviewScore": null,
+      "createdAt": "2026-05-10T09:05:00Z"
+    },
+    {
+      "id": "c1d2e3f4-0005-4000-8000-000000000005",
+      "taskId": "a1b2c3d4-0001-4000-8000-000000000001",
+      "stepId": null,
+      "parameters": { "description": "Set up internet subscription for customer at Musterstrasse 12, 10115 Berlin", "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59" },
+      "output": "Subscription successfully created. Port allocated and configured.",
+      "status": "COMPLETED",
+      "hallucinationScore": 0.94,
+      "superviseScore": 1.0,
+      "reviewScore": null,
+      "createdAt": "2026-05-10T09:10:00Z"
+    },
+    {
+      "id": "c1d2e3f4-0006-4000-8000-000000000006",
+      "taskId": "a1b2c3d4-0002-4000-8000-000000000002",
+      "stepId": "b1c2d3e4-0005-4000-8000-000000000005",
+      "parameters": { "address": "Hauptstrasse 5, 80331 Munich" },
+      "output": "{\"bbk\": \"DEU-80331-00219\"}",
+      "status": "COMPLETED",
+      "hallucinationScore": 0.96,
+      "superviseScore": null,
+      "reviewScore": null,
+      "createdAt": "2026-05-11T11:31:00Z"
+    },
+    {
+      "id": "c1d2e3f4-0007-4000-8000-000000000007",
+      "taskId": "a1b2c3d4-0002-4000-8000-000000000002",
+      "stepId": "b1c2d3e4-0006-4000-8000-000000000006",
+      "parameters": { "bbk": "DEU-80331-00219" },
+      "output": "Connection timeout after 3 retries.",
+      "status": "FAILED",
+      "hallucinationScore": 0.88,
+      "superviseScore": null,
+      "reviewScore": null,
+      "createdAt": "2026-05-11T11:32:00Z"
+    }
+  ]
+}

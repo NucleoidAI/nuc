@@ -147,31 +147,38 @@ function Knowledge({
     <Box
       sx={{
         width: "100%",
-        px: 2,
-        pb: 2,
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
-      <TypeToolbar
-        types={ALL_KNOWLEDGE_TYPES}
-        selectedType={selectedType}
-        handleChange={handleChange}
-      />
+      <Box sx={{ px: 2, pt: 2 }}>
+        <TypeToolbar
+          types={ALL_KNOWLEDGE_TYPES}
+          selectedType={selectedType}
+          handleChange={handleChange}
+        />
+      </Box>
 
       <Box
         sx={{
           flex: 1,
-          pb: 10,
+          overflow: "auto",
+          px: 2,
+          pb: 2,
         }}
       >
         {isLoading ? (
           <KnowledgeBaseSkeleton />
         ) : filteredKnowledges?.length > 0 ? (
-          <KnowledgeTable
-            table={table}
-            selectedType={selectedType}
-            knowledges={filteredKnowledges}
-            handleDeleteClick={handleDeleteClick}
-          />
+          <Box sx={{ mb: 6 }}>
+            <KnowledgeTable
+              table={table}
+              selectedType={selectedType}
+              knowledges={filteredKnowledges}
+              handleDeleteClick={handleDeleteClick}
+            />
+          </Box>
         ) : (
           <Stack sx={{ textAlign: "center", my: 4, color: "text.secondary" }}>
             No data available for {selectedType} type

@@ -1,13 +1,12 @@
 import AddIcon from "@mui/icons-material/Add";
 import { BlueprintCommands } from "../ChatInput/chat.config";
 import EditIcon from "@mui/icons-material/Edit";
+import GlassCard from "../GlassCard/GlassCard";
 import { Iconify } from "@canmingir/link/platform/components";
 
 import {
   Box,
   Button,
-  Card,
-  CardContent,
   Dialog,
   DialogActions,
   DialogContent,
@@ -254,27 +253,42 @@ const BlueprintChatTitle = ({ title, description, setTitle }) => {
   return (
     <Box
       sx={{
-        width: "50%",
-        mb: 3,
+        width: "100%",
       }}
     >
-      <Card
-        elevation={0}
-        sx={{
-          background: `linear-gradient(135deg, ${theme.palette.primary.main}08 0%, ${theme.palette.secondary.main}05 100%)`,
-          backdropFilter: "blur(10px)",
-          border: `1px solid ${theme.palette.divider}`,
-          borderRadius: 2,
-          overflow: "visible",
-          position: "relative",
-        }}
-      >
-        <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
+      <GlassCard
+        height="auto"
+        actions={
+          <IconButton
+            onClick={handleEditClick}
+            size="small"
+            sx={{
+              backgroundColor: theme.palette.primary.main + "10",
+              border: `1px solid ${theme.palette.primary.main}20`,
+              color: theme.palette.primary.main,
+              borderRadius: 1.5,
+              width: 36,
+              height: 36,
+              transition: "all 0.2s ease-in-out",
+              "&:hover": {
+                backgroundColor: theme.palette.primary.main + "20",
+                borderColor: theme.palette.primary.main + "40",
+              },
+            }}
+          >
+            {title ? (
+              <EditIcon fontSize="small" />
+            ) : (
+              <AddIcon fontSize="small" />
+            )}
+          </IconButton>
+        }
+        content={
           <Box
             sx={{
               display: "flex",
               flexDirection: "column",
-              gap: 1,
+              p: 2,
             }}
           >
             <Box
@@ -283,6 +297,7 @@ const BlueprintChatTitle = ({ title, description, setTitle }) => {
                 alignItems: "center",
                 justifyContent: "space-between",
                 gap: 1.5,
+                mb: 1,
               }}
             >
               <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -320,31 +335,6 @@ const BlueprintChatTitle = ({ title, description, setTitle }) => {
                   </Typography>
                 )}
               </Box>
-
-              <IconButton
-                onClick={handleEditClick}
-                size="small"
-                aria-label={title ? "Edit title" : "Add title"}
-                sx={{
-                  backgroundColor: theme.palette.primary.main + "10",
-                  border: `1px solid ${theme.palette.primary.main}20`,
-                  color: theme.palette.primary.main,
-                  borderRadius: 1.5,
-                  width: 36,
-                  height: 36,
-                  transition: "all 0.2s ease-in-out",
-                  "&:hover": {
-                    backgroundColor: theme.palette.primary.main + "20",
-                    borderColor: theme.palette.primary.main + "40",
-                  },
-                }}
-              >
-                {title ? (
-                  <EditIcon fontSize="small" />
-                ) : (
-                  <AddIcon fontSize="small" />
-                )}
-              </IconButton>
             </Box>
 
             <Box>
@@ -399,8 +389,8 @@ const BlueprintChatTitle = ({ title, description, setTitle }) => {
               )}
             </Box>
           </Box>
-        </CardContent>
-      </Card>
+        }
+      />
       <Dialog
         open={isEditing}
         onClose={handleCancelClick}

@@ -68,7 +68,7 @@ window.SERVICES = [
   },
   {
     name: "Kafka UI",
-    url: "https://kafka.greycollar.ai",
+    url: "https://kafka.nuc.land",
     category: "Infrastructure",
     icon: "kafka.apache.org",
   },

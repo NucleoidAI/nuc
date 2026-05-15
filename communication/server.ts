@@ -42,6 +42,14 @@ const startServer = async () => {
 
   await slackApp.start(slackPort);
 
+  const shutdown = async () => {
+    await event.disconnect();
+    server.close(() => process.exit(0));
+  };
+
+  process.on("SIGINT", shutdown);
+  process.on("SIGTERM", shutdown);
+
   const slackProxy = createProxyMiddleware({
     target: `http://localhost:${slackPort}`,
     ws: true,

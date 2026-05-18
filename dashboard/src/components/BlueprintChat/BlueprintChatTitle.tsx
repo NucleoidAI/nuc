@@ -1,7 +1,6 @@
 import AddIcon from "@mui/icons-material/Add";
 import { BlueprintCommands } from "../ChatInput/chat.config";
 import EditIcon from "@mui/icons-material/Edit";
-import React, { useState } from "react";
 
 import {
   Box,
@@ -20,6 +19,7 @@ import {
   Iconify,
 } from "@canmingir/link/platform/components";
 import { MCPElement, MCPScopeElement } from "./MCPElement";
+import React, { useState } from "react";
 
 const BlueprintChatTitle = ({ title, description, setTitle }) => {
   const theme = useTheme();

@@ -1,6 +1,7 @@
 import AddIcon from "@mui/icons-material/Add";
 import { BlueprintCommands } from "../ChatInput/chat.config";
 import EditIcon from "@mui/icons-material/Edit";
+import React, { useState } from "react";
 
 import {
   Box,
@@ -10,14 +11,15 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-  Skeleton,
   TextField,
-  Typography,
   useTheme,
 } from "@mui/material";
-import { GlassCard, Iconify } from "@canmingir/link/platform/components";
+import {
+  GlassCard,
+  GlassCardHeader,
+  Iconify,
+} from "@canmingir/link/platform/components";
 import { MCPElement, MCPScopeElement } from "./MCPElement";
-import React, { useState } from "react";
 
 const BlueprintChatTitle = ({ title, description, setTitle }) => {
   const theme = useTheme();
@@ -252,144 +254,43 @@ const BlueprintChatTitle = ({ title, description, setTitle }) => {
   return (
     <Box
       sx={{
-        width: "100%",
+        width: "600px",
       }}
     >
-      <GlassCard
-        height="auto"
-        actions={
-          <IconButton
-            onClick={handleEditClick}
-            size="small"
-            sx={{
-              backgroundColor: theme.palette.primary.main + "10",
-              border: `1px solid ${theme.palette.primary.main}20`,
-              color: theme.palette.primary.main,
-              borderRadius: 1.5,
-              width: 36,
-              height: 36,
-              transition: "all 0.2s ease-in-out",
-              "&:hover": {
-                backgroundColor: theme.palette.primary.main + "20",
-                borderColor: theme.palette.primary.main + "40",
-              },
-            }}
-          >
-            {title ? (
-              <EditIcon fontSize="small" />
-            ) : (
-              <AddIcon fontSize="small" />
-            )}
-          </IconButton>
-        }
-        content={
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              p: 2,
-            }}
-          >
-            <Box
+      <GlassCard>
+        <GlassCardHeader
+          sx={{
+            p: 2,
+          }}
+          title={renderTitleContent()}
+          subheader={renderDescriptionContent()}
+          action={
+            <IconButton
+              onClick={handleEditClick}
+              size="small"
               sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: 1.5,
-                mb: 1,
+                backgroundColor: theme.palette.primary.main + "10",
+                border: `1px solid ${theme.palette.primary.main}20`,
+                color: theme.palette.primary.main,
+                borderRadius: 1.5,
+                width: 36,
+                height: 36,
+                transition: "all 0.2s ease-in-out",
+                "&:hover": {
+                  backgroundColor: theme.palette.primary.main + "20",
+                  borderColor: theme.palette.primary.main + "40",
+                },
               }}
             >
-              <Box sx={{ flex: 1, minWidth: 0 }}>
-                {title === null ? (
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <Skeleton
-                      variant="rectangular"
-                      width={180}
-                      height={28}
-                      sx={{ borderRadius: 1.5 }}
-                    />
-                  </Box>
-                ) : (
-                  <Typography
-                    variant="h6"
-                    component="h1"
-                    sx={{
-                      fontWeight: 600,
-                      color: theme.palette.text.primary,
-                      display: "flex",
-                      alignItems: "center",
-                      flexWrap: "wrap",
-                      gap: 0.5,
-                      fontSize: { xs: "1.1rem", sm: "1.25rem" },
-                      lineHeight: 1.2,
-                      background: title
-                        ? "inherit"
-                        : `linear-gradient(45deg, ${theme.palette.text.disabled}, ${theme.palette.text.secondary})`,
-                      backgroundClip: title ? "inherit" : "text",
-                      WebkitBackgroundClip: title ? "inherit" : "text",
-                      WebkitTextFillColor: title ? "inherit" : "transparent",
-                    }}
-                  >
-                    {renderTitleContent()}
-                  </Typography>
-                )}
-              </Box>
-            </Box>
-
-            <Box>
-              {description === null ? (
-                <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
-                  <Skeleton
-                    variant="rectangular"
-                    width={130}
-                    height={20}
-                    sx={{ borderRadius: 1 }}
-                  />
-                  <Skeleton
-                    variant="rectangular"
-                    width={80}
-                    height={20}
-                    sx={{ borderRadius: 1 }}
-                  />
-                  <Skeleton
-                    variant="rectangular"
-                    width={100}
-                    height={20}
-                    sx={{ borderRadius: 1 }}
-                  />
-                </Box>
-              ) : description ? (
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: theme.palette.text.secondary,
-                    display: "flex",
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                    gap: 0.5,
-                    lineHeight: 1.4,
-                    fontSize: "0.875rem",
-                  }}
-                >
-                  {renderDescriptionContent()}
-                </Typography>
+              {title ? (
+                <EditIcon fontSize="small" />
               ) : (
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: theme.palette.text.disabled,
-                    fontStyle: "italic",
-                    opacity: 0.7,
-                    fontSize: "0.8rem",
-                  }}
-                >
-                  No description provided
-                </Typography>
+                <AddIcon fontSize="small" />
               )}
-            </Box>
-          </Box>
-        }
-      />
+            </IconButton>
+          }
+        />
+      </GlassCard>
       <Dialog
         open={isEditing}
         onClose={handleCancelClick}

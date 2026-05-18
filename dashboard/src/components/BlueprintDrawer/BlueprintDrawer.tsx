@@ -3,11 +3,14 @@ import BlueprintFlowWidget from "../../widgets/BlueprintFlowWidget/BlueprintFlow
 import CloseIcon from "@mui/icons-material/Close";
 import { DrawerLayout } from "@canmingir/link/layouts";
 import { FlowDefinition } from "../BlueprintFlow/helper";
-import { GlassCard } from "@canmingir/link/platform/components";
 import Knowledge from "../../widgets/Knowledge/Knowledge";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 
 import { Box, Fab, Grid, IconButton, Tooltip } from "@mui/material";
+import {
+  GlassCard,
+  GlassCardContent,
+} from "@canmingir/link/platform/components";
 import React, { useEffect, useState } from "react";
 
 const BlueprintDrawer = ({
@@ -112,25 +115,30 @@ const BlueprintDrawer = ({
 
         {showKnowledge && (
           <GlassCard
-            actions={
+            sx={{
+              width: "600px",
+              height: "85vh",
+              overflow: "hidden",
+              position: "relative",
+            }}
+          >
+            <GlassCardContent>
               <Tooltip title="Close" placement="right">
                 <IconButton
                   size="small"
-                  onClick={() => setShowKnowledge(!showKnowledge)}
-                  sx={{ zIndex: 99 }}
+                  onClick={() => setShowKnowledge(false)}
+                  sx={{ position: "absolute", top: 8, right: 8, zIndex: 99 }}
                 >
                   <CloseIcon />
                 </IconButton>
               </Tooltip>
-            }
-            content={
               <Knowledge
                 agentId={selectedItem?.agentId || agentId}
                 blueprintId={selectedItem?.id}
                 teamId={teamId}
               />
-            }
-          />
+            </GlassCardContent>
+          </GlassCard>
         )}
       </Box>
 

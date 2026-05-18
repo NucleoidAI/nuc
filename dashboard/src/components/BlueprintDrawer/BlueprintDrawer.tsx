@@ -3,7 +3,7 @@ import BlueprintFlowWidget from "../../widgets/BlueprintFlowWidget/BlueprintFlow
 import CloseIcon from "@mui/icons-material/Close";
 import { DrawerLayout } from "@canmingir/link/layouts";
 import { FlowDefinition } from "../BlueprintFlow/helper";
-import GlassCard from "../GlassCard/GlassCard";
+import { GlassCard } from "@canmingir/link/platform/components";
 import Knowledge from "../../widgets/Knowledge/Knowledge";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 

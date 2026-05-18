@@ -1,8 +1,6 @@
 import AddIcon from "@mui/icons-material/Add";
 import { BlueprintCommands } from "../ChatInput/chat.config";
 import EditIcon from "@mui/icons-material/Edit";
-import GlassCard from "../GlassCard/GlassCard";
-import { Iconify } from "@canmingir/link/platform/components";
 
 import {
   Box,
@@ -17,6 +15,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import { GlassCard, Iconify } from "@canmingir/link/platform/components";
 import { MCPElement, MCPScopeElement } from "./MCPElement";
 import React, { useState } from "react";
 

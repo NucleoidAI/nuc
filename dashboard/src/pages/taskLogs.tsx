@@ -46,11 +46,21 @@ function TaskLogs() {
                   label="Agents"
                   value={selectedAgentId}
                   onChange={(e) => setSelectedAgentId(e.target.value)}
-                  renderValue={(val) =>
-                    val
-                      ? agents?.find((a) => a.id === val)?.name ?? val
-                      : "Select an agent"
-                  }
+                  renderValue={(val) => {
+                    if (!val) return "Select an agent";
+                    const agent = agents?.find(
+                      (a: { id: string; name: string; icon?: string }) =>
+                        a.id === val
+                    );
+                    return (
+                      <Stack direction="row" alignItems="center" spacing={1}>
+                        {agent?.icon && (
+                          <Iconify icon={agent.icon} width={20} height={20} />
+                        )}
+                        <span>{agent?.name ?? val}</span>
+                      </Stack>
+                    );
+                  }}
                 >
                   <MenuItem value="" disabled>
                     Select an agent
@@ -59,15 +69,7 @@ function TaskLogs() {
                     <MenuItem key={agent.id} value={agent.id}>
                       <Stack direction="row" alignItems="center" spacing={1}>
                         {agent.icon && (
-                          <Box
-                            component="img"
-                            src={agent.icon}
-                            sx={{ width: 20, height: 20, borderRadius: 0.5 }}
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).style.display =
-                                "none";
-                            }}
-                          />
+                          <Iconify icon={agent.icon} width={20} height={20} />
                         )}
                         <span>{agent.name}</span>
                       </Stack>

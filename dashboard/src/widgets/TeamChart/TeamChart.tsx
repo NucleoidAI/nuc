@@ -162,17 +162,7 @@ function TeamChart() {
         </IconButton>
       )}
 
-      <Box
-        sx={{
-          width: "100%",
-          height: "100%",
-          minHeight: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: (theme) => theme.palette.background.default,
-        }}
-      >
+      <Box>
         <Flow data={data} style={style} plugin={teamChartPlugin} />
       </Box>
 

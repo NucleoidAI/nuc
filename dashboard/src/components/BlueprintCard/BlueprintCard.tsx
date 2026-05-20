@@ -1,6 +1,5 @@
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import { BlueprintFlowMiniPreview } from "./BlueprintFlowMiniPreview";
-
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
@@ -54,7 +53,6 @@ const BlueprintCard = ({
           <Fab
             data-cy="Blueprint-more-vert"
             color="default"
-            size="small"
             sx={{
               position: "absolute",
               top: 8,
@@ -127,7 +125,6 @@ const BlueprintCard = ({
         >
           <Fab
             color="default"
-            size="small"
             data-cy="flow-icon"
             onClick={() => handleFlowDialogOpen(item)}
           >
@@ -144,7 +141,6 @@ const BlueprintCard = ({
         >
           <Fab
             color="default"
-            size="small"
             data-cy="edit-icon"
             onClick={() => handleDrawerOpen(item)}
           >

@@ -126,7 +126,6 @@ const TaskDetails = ({
       <Stack direction="row" spacing={1}>
         <Tooltip title="Task Flow">
           <Fab
-            size="small"
             color="default"
             onClick={() => {
               setOpenFlow(true);
@@ -139,7 +138,6 @@ const TaskDetails = ({
 
         <Tooltip title="Supervising">
           <Fab
-            size="small"
             sx={{
               backgroundColor: (theme) => theme.palette.success.main,
               "&:hover": {
@@ -154,11 +152,7 @@ const TaskDetails = ({
 
         {task.status !== "IN_PROGRESS" && (
           <Tooltip title="Task Details">
-            <Fab
-              size="small"
-              color="default"
-              onClick={() => setTaskResult(true)}
-            >
+            <Fab color="default" onClick={() => setTaskResult(true)}>
               <Iconify icon="material-symbols:table-eye-outline" />
             </Fab>
           </Tooltip>
@@ -232,7 +226,6 @@ const TaskDetails = ({
 
                     <TableCell align="right">
                       <Fab
-                        size="small"
                         color="default"
                         onClick={() => {
                           setStep(step);

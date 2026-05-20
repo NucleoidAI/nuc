@@ -347,7 +347,6 @@ const SupervisingCard = ({
 
               <Tooltip title="Open supervising options">
                 <Fab
-                  size="medium"
                   sx={{
                     alignSelf: "center",
                     textAlign: "center",

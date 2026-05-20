@@ -109,7 +109,6 @@ const IncomingDrawer = ({
         <Box>
           <Stack sx={{ display: "flex", alignItems: "flex-end" }}>
             <Fab
-              size="small"
               sx={{ m: 2 }}
               onClick={() => {
                 setOpen(true);

@@ -280,7 +280,6 @@ function TasksWidget({
           <Tooltip title="Add New Task" placement="left">
             <Fab
               color="default"
-              size="medium"
               data-cy="add-task-button"
               onClick={() => setOpenCreate(true)}
               sx={{

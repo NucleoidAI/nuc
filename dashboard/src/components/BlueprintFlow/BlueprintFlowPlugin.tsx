@@ -8,7 +8,6 @@ import {
   MenuItem,
 } from "@mui/material";
 import { Iconify, InfoNode } from "@canmingir/link/platform/components";
-
 import React, { useState } from "react";
 
 const AddButtonWrapper = styled("div")(({ theme }) => ({
@@ -53,28 +52,6 @@ const DeleteButtonWrapper = styled("div")(({ theme }) => ({
   "&:hover": {
     boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
     color: theme.palette?.error.main,
-  },
-}));
-
-const SwapButtonWrapper = styled("div")(({ theme }) => ({
-  position: "absolute",
-  top: "8px",
-  right: "68px",
-  width: "24px",
-  height: "24px",
-  borderRadius: "50%",
-  backgroundColor: theme.palette?.background.paper,
-  color: "#555",
-  border: "1px solid rgba(0, 0, 0, 0.1)",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  cursor: "pointer",
-  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-  zIndex: 10,
-  "&:hover": {
-    boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
-    color: theme.palette?.warning.main,
   },
 }));
 
@@ -692,9 +669,6 @@ function FlowNodeRenderer({
   const isUsed = node.isUsed;
   const isLastUsed = node.isLastUsed;
   const isFailed = node.isFailed;
-  const isDecision = node.connectorType === "decision";
-  const hasChildren =
-    (node.trueNext?.length ?? 0) > 0 || (node.falseNext?.length ?? 0) > 0;
 
   const handleContextMenu = (e: React.MouseEvent) => {
     if (isReadOnly) return;
@@ -713,11 +687,6 @@ function FlowNodeRenderer({
   const handleEditClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onEdit?.(node);
-  };
-
-  const handleSwapClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onSwapBranch?.(node);
   };
 
   const handleDeleteClick = (e: React.MouseEvent) => {
@@ -772,14 +741,6 @@ function FlowNodeRenderer({
             >
               <Iconify icon="mdi:delete-outline" width={16} height={16} />
             </DeleteButtonWrapper>
-            {isDecision && hasChildren && (
-              <SwapButtonWrapper
-                onClick={handleSwapClick}
-                title="Swap true/false branches"
-              >
-                <Iconify icon="mdi:swap-horizontal" width={16} height={16} />
-              </SwapButtonWrapper>
-            )}
             <EditButtonWrapper onClick={handleEditClick} title="Edit node">
               <Iconify icon="mdi:pencil" width={16} height={16} />
             </EditButtonWrapper>
@@ -824,19 +785,6 @@ function FlowNodeRenderer({
             </ListItemIcon>
             <ListItemText>Edit node</ListItemText>
           </MenuItem>
-          {isDecision && hasChildren && (
-            <MenuItem
-              onClick={(e) => {
-                handleSwapClick(e);
-                handleClose();
-              }}
-            >
-              <ListItemIcon>
-                <Iconify icon="mdi:swap-horizontal" width={18} height={18} />
-              </ListItemIcon>
-              <ListItemText>Swap branches</ListItemText>
-            </MenuItem>
-          )}
           <Divider />
           <MenuItem
             onClick={(e) => {

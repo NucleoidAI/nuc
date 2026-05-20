@@ -68,7 +68,7 @@ function useChat() {
     messagesRef.current = messages;
   }, [messages]);
 
-  const intervalId = useRef<NodeJS.Timeout>();
+  const intervalId = useRef<ReturnType<typeof setTimeout>>();
 
   useEffect(() => {
     const fetchMessages = async () => {

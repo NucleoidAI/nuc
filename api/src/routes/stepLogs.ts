@@ -88,4 +88,33 @@ router.patch("/:logId", async (req, res) => {
   return res.status(200).end();
 });
 
+router.delete("/:logId/supervise-score", async (req, res) => {
+  const { projectId: teamId } = req.session;
+  const { logId } = req.params;
+
+  const log = await StepLog.findOne({
+    where: { id: logId },
+    include: [
+      {
+        model: Task,
+        as: "task",
+        include: [{ model: Agent, attributes: ["teamId"], required: true }],
+        required: true,
+      },
+    ],
+  });
+
+  if (!log) {
+    return res.status(404).end();
+  }
+
+  if (log.task.Agent.teamId !== teamId) {
+    return res.status(401).end();
+  }
+
+  await stepLog.removeSuperviseScore({ logId });
+
+  return res.status(200).end();
+});
+
 export default router;

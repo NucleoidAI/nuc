@@ -8,9 +8,9 @@ import Profile from "../widgets/Profile/Profile";
 import ProfileCard from "../components/ProfileCard/ProfileCard";
 import SidebarChatWidget from "../widgets/SidebarChatWidget";
 import Stack from "@mui/material/Stack";
-import StepLogsWidget from "../widgets/StepLogsWidget/StepLogsWidget";
 import Supervising from "../widgets/Supervising/Supervising";
 import SwaggerDialog from "../components/SwaggerDialog/SwaggerDialog";
+import TaskLogsWidget from "../widgets/TaskLogsWidget/TaskLogsWidget";
 import TasksWidget from "../widgets/TasksWidget/TasksWidget";
 import config from "../../config";
 import { getAgentGradients } from "../utils/gradient";
@@ -197,7 +197,7 @@ function AgentLayout({
         )}
         {currentTab === "supervisings" && <Supervising agentId={agent.id} />}
         {currentTab === "tasks" && <TasksWidget agentId={agent.id} />}
-        {currentTab === "step-logs" && <StepLogsWidget agentId={agent.id} />}
+        {currentTab === "step-logs" && <TaskLogsWidget agentId={agent.id} />}
         {currentTab === "mcps" && <AgentMCP agent={agent} />}
         {currentTab === "communication" && <Communication />}
         {currentTab === "api" && !beta && <APITab agentId={agent.id} />}

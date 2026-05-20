@@ -1,9 +1,9 @@
 import { Iconify } from "@canmingir/link/platform/components";
 import TaskList from "../../components/TaskList/TaskList";
 import useLoading from "../../hooks/useLoading";
-import useStepLogs from "../../hooks/useStepLogs";
+import { useState } from "react";
+import useTaskLogs from "../../hooks/useTaskLogs";
 import useTasks from "../../hooks/useTasks";
-
 import {
   Box,
   Card,
@@ -15,7 +15,6 @@ import {
   Typography,
   alpha,
 } from "@mui/material";
-import { useState } from "react";
 
 const STATUS_COLOR = {
   COMPLETED: "success.main",
@@ -343,13 +342,8 @@ function StepRow({
   );
 }
 
-function StepLogsWidget({ agentId }: { agentId: string }) {
-  const {
-    tasks,
-    loading: tasksLoading,
-    steps,
-    getSteps,
-  } = useTasks(agentId);
+function TaskLogsWidget({ agentId }: { agentId: string }) {
+  const { tasks, loading: tasksLoading, steps, getSteps } = useTasks(agentId);
   const isTasksLoading = useLoading(tasksLoading);
 
   const [selectedTask, setSelectedTask] = useState<{
@@ -367,13 +361,13 @@ function StepLogsWidget({ agentId }: { agentId: string }) {
     createdAt: string;
   } | null>(null);
 
-  const { getLogsByStep, updateSuperviseScore } = useStepLogs();
+  const { getLogsByStep, updateSuperviseScore } = useTaskLogs();
 
-  const { logs: stepLogs, loading: stepLogsLoading } = getLogsByStep(
+  const { logs: taskLogs, loading: taskLogsLoading } = getLogsByStep(
     selectedStep?.id ?? ""
   );
 
-  const isLogsLoading = useLoading(stepLogsLoading);
+  const isLogsLoading = useLoading(taskLogsLoading);
 
   const handleTaskSelect = (task: {
     id: string;
@@ -549,10 +543,10 @@ function StepLogsWidget({ agentId }: { agentId: string }) {
                   <Typography variant="subtitle2" sx={{ fontWeight: 900 }}>
                     Logs — {selectedStep.comment || selectedStep.action}
                   </Typography>
-                  {stepLogs.length > 0 && (
+                  {taskLogs.length > 0 && (
                     <Chip
                       size="small"
-                      label={stepLogs.length}
+                      label={taskLogs.length}
                       sx={{
                         height: 18,
                         fontSize: 11,
@@ -581,7 +575,7 @@ function StepLogsWidget({ agentId }: { agentId: string }) {
                       />
                     ))}
                   </Stack>
-                ) : stepLogs.length === 0 ? (
+                ) : taskLogs.length === 0 ? (
                   <Box sx={{ textAlign: "center", py: 4 }}>
                     <Iconify
                       icon="solar:document-text-line-duotone"
@@ -594,7 +588,7 @@ function StepLogsWidget({ agentId }: { agentId: string }) {
                   </Box>
                 ) : (
                   <Stack spacing={2}>
-                    {stepLogs.map((log) => (
+                    {taskLogs.map((log) => (
                       <LogCard
                         key={log.id}
                         log={log}
@@ -612,4 +606,4 @@ function StepLogsWidget({ agentId }: { agentId: string }) {
   );
 }
 
-export default StepLogsWidget;
+export default TaskLogsWidget;

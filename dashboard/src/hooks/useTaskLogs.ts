@@ -3,7 +3,7 @@ import useApi from "./useApi";
 
 import { publish, useEvent } from "@nucleoidai/react-event";
 
-export type StepLog = {
+export type TaskLog = {
   id: string;
   taskId: string;
   stepId: string | null;
@@ -17,9 +17,9 @@ export type StepLog = {
   createdAt: string;
 };
 
-function useStepLogs() {
+function useTaskLogs() {
   const { Api } = useApi();
-  const [scoreUpdated] = useEvent("STEP_LOG_SCORE_UPDATED", null);
+  const [scoreUpdated] = useEvent("TASK_LOG_SCORE_UPDATED", null);
 
   const getLogsByTask = (taskId: string) => {
     const { data, loading, error, fetch } = Api(
@@ -31,7 +31,7 @@ function useStepLogs() {
     );
 
     return {
-      logs: (data as StepLog[]) ?? [],
+      logs: (data as TaskLog[]) ?? [],
       loading,
       error,
       fetch,
@@ -48,7 +48,7 @@ function useStepLogs() {
     );
 
     return {
-      logs: (data as StepLog[]) ?? [],
+      logs: (data as TaskLog[]) ?? [],
       loading,
       error,
       fetch,
@@ -60,10 +60,10 @@ function useStepLogs() {
     superviseScore: number
   ) => {
     await http.patch(`/step-logs/${logId}`, { superviseScore });
-    publish("STEP_LOG_SCORE_UPDATED", { logId, superviseScore });
+    publish("TASK_LOG_SCORE_UPDATED", { logId, superviseScore });
   };
 
   return { getLogsByTask, getLogsByStep, updateSuperviseScore };
 }
 
-export default useStepLogs;
+export default useTaskLogs;

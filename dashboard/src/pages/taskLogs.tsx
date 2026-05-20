@@ -1,6 +1,6 @@
 import { Iconify } from "@canmingir/link/platform/components";
 import Page from "../components/Page/Page";
-import StepLogsWidget from "../widgets/StepLogsWidget/StepLogsWidget";
+import TaskLogsWidget from "../widgets/TaskLogsWidget/TaskLogsWidget";
 import useAgents from "../hooks/useAgents";
 import { useState } from "react";
 
@@ -13,7 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 
-function StepLogs() {
+function TaskLogs() {
   const { getTeamAgents } = useAgents();
   const { agents, loading } = getTeamAgents();
 
@@ -116,11 +116,11 @@ function StepLogs() {
             </Typography>
           </Box>
         ) : (
-          <StepLogsWidget agentId={selectedAgentId} />
+          <TaskLogsWidget agentId={selectedAgentId} />
         )}
       </Box>
     </>
   );
 }
 
-export default StepLogs;
+export default TaskLogs;

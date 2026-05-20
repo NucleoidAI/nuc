@@ -53,7 +53,10 @@ const TaskList = ({
   return (
     <List
       disablePadding
-      sx={{ maxHeight: "calc(100vh - 150px)", overflow: "auto" }}
+      sx={{
+        maxHeight: "calc(100vh - 150px)",
+        overflow: "auto",
+      }}
     >
       {tasks.map((task) => {
         const isSelected = selectedTask?.id === task.id;

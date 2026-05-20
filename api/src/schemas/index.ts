@@ -7,6 +7,7 @@ import MCP from "./MCP";
 import Message from "./Message";
 import Project from "./Project";
 import Session from "./Session";
+import StepLog from "./StepLog";
 import Supervising from "./Supervising";
 import Team from "./Team";
 
@@ -22,4 +23,5 @@ export default {
   Blueprint,
   MCP,
   Communication,
+  StepLog,
 };

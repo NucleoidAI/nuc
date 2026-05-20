@@ -5,18 +5,13 @@ import Task from "../models/Task";
 import StepLog from "../models/StepLog";
 import express from "express";
 import stepLog from "../functions/stepLog";
+import schemas from "../schemas";
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { taskId, stepId } = Joi.attempt(
-    req.query,
-    Joi.object({
-      taskId: Joi.string().guid({ version: ["uuidv4"] }).optional(),
-      stepId: Joi.string().guid({ version: ["uuidv4"] }).optional(),
-    }).or("taskId", "stepId"),
-  );
+  const { taskId, stepId } = Joi.attempt(req.query, schemas.StepLog.list);
 
   if (taskId) {
     const taskInstance = await Task.findOne({
@@ -65,10 +60,7 @@ router.patch("/:logId", async (req, res) => {
   const { logId } = req.params;
   const { superviseScore, resultScore } = Joi.attempt(
     req.body,
-    Joi.object({
-      superviseScore: Joi.number().min(0).max(1).optional(),
-      resultScore: Joi.number().min(0).max(1).optional(),
-    }).or("superviseScore", "resultScore"),
+    schemas.StepLog.patch,
   );
 
   const log = await StepLog.findOne({

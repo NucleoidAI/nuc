@@ -109,8 +109,7 @@ async function scoring({
   const { knowledge_score } = await generate({
     dataset: dataset.train.knowledgeScore,
     content: merged,
-    json_format:
-      "{ knowledge_score: <0.0-1.0> } — score how well the knowledge_base covers the agent's domain AND how correctly the completed steps demonstrate use of that knowledge. No steps yet = moderate score based on knowledge relevance alone. More correct steps that use the knowledge = higher score. Steps that contradict or ignore the knowledge = lower score.",
+    json_format: "{ knowledge_score: <0.0-1.0> }",
   });
 
   const parsed = parseFloat(String(knowledge_score));
@@ -339,7 +338,9 @@ async function step({
     let result;
     let mcpClient;
 
-    const { taskId, knowledgeScore: stepKnowledgeScore } = await taskFn.getStep({ stepId });
+    const { taskId, knowledgeScore: stepKnowledgeScore } = await taskFn.getStep(
+      { stepId },
+    );
     // TODO: hallucinationScore will be calculated separately in the future
     const stepHallucinationScore = stepKnowledgeScore;
 

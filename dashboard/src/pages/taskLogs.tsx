@@ -6,6 +6,8 @@ import { useState } from "react";
 
 import {
   Box,
+  FormControl,
+  InputLabel,
   MenuItem,
   Select,
   Skeleton,
@@ -23,29 +25,13 @@ function TaskLogs() {
     <>
       <Page name="Task Logs" />
 
-      <Box sx={{ px: { xs: 2, md: 4 }, pt: 3, pb: 2 }}>
+      <Box sx={{ px: { xs: 2, md: 4 }, pb: 1 }}>
         <Stack
           direction={{ xs: "column", sm: "row" }}
           alignItems={{ xs: "flex-start", sm: "center" }}
           spacing={2}
-          sx={{ mb: 3 }}
+          sx={{ mb: 1 }}
         >
-          <Stack
-            direction="row"
-            alignItems="center"
-            spacing={1}
-            sx={{ flex: 1 }}
-          >
-            <Iconify
-              icon="solar:document-text-bold"
-              width={28}
-              sx={{ color: "primary.main" }}
-            />
-            <Typography variant="h5" sx={{ fontWeight: 900 }}>
-              Task Logs
-            </Typography>
-          </Stack>
-
           <Box sx={{ minWidth: 240 }}>
             {loading ? (
               <Skeleton
@@ -54,40 +40,41 @@ function TaskLogs() {
                 sx={{ borderRadius: 1 }}
               />
             ) : (
-              <Select
-                size="small"
-                fullWidth
-                displayEmpty
-                value={selectedAgentId}
-                onChange={(e) => setSelectedAgentId(e.target.value)}
-                renderValue={(val) =>
-                  val
-                    ? agents?.find((a) => a.id === val)?.name ?? val
-                    : "Select an agent"
-                }
-              >
-                <MenuItem value="" disabled>
-                  Select an agent
-                </MenuItem>
-                {(agents ?? []).map((agent) => (
-                  <MenuItem key={agent.id} value={agent.id}>
-                    <Stack direction="row" alignItems="center" spacing={1}>
-                      {agent.icon && (
-                        <Box
-                          component="img"
-                          src={agent.icon}
-                          sx={{ width: 20, height: 20, borderRadius: 0.5 }}
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).style.display =
-                              "none";
-                          }}
-                        />
-                      )}
-                      <span>{agent.name}</span>
-                    </Stack>
+              <FormControl fullWidth>
+                <InputLabel>Agents</InputLabel>
+                <Select
+                  label="Agents"
+                  value={selectedAgentId}
+                  onChange={(e) => setSelectedAgentId(e.target.value)}
+                  renderValue={(val) =>
+                    val
+                      ? agents?.find((a) => a.id === val)?.name ?? val
+                      : "Select an agent"
+                  }
+                >
+                  <MenuItem value="" disabled>
+                    Select an agent
                   </MenuItem>
-                ))}
-              </Select>
+                  {(agents ?? []).map((agent) => (
+                    <MenuItem key={agent.id} value={agent.id}>
+                      <Stack direction="row" alignItems="center" spacing={1}>
+                        {agent.icon && (
+                          <Box
+                            component="img"
+                            src={agent.icon}
+                            sx={{ width: 20, height: 20, borderRadius: 0.5 }}
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display =
+                                "none";
+                            }}
+                          />
+                        )}
+                        <span>{agent.name}</span>
+                      </Stack>
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             )}
           </Box>
         </Stack>

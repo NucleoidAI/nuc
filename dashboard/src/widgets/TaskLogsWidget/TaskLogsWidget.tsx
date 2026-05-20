@@ -4,6 +4,7 @@ import useLoading from "../../hooks/useLoading";
 import { useState } from "react";
 import useTaskLogs from "../../hooks/useTaskLogs";
 import useTasks from "../../hooks/useTasks";
+
 import {
   Box,
   Card,
@@ -98,10 +99,9 @@ function LogCard({
     <Card
       variant="outlined"
       sx={{
-        p: 2,
+        p: 1,
         borderRadius: 2,
         borderColor: "divider",
-        "&:hover": { borderColor: "primary.main" },
       }}
     >
       <Stack spacing={1.5}>
@@ -201,54 +201,60 @@ function LogCard({
             }
           />
           <ScoreBar label="Result" value={log.resultScore} color="info.main" />
-        </Stack>
-
-        <Divider />
-
-        <Box>
+          <Divider />
           <Stack
             direction="row"
-            justifyContent="space-between"
             alignItems="center"
-            sx={{ mb: 0.5 }}
+            spacing={1}
+            sx={{ minWidth: 0 }}
           >
             <Typography
               variant="caption"
-              sx={{ fontWeight: 700, color: "text.secondary" }}
+              sx={{ width: 110, flexShrink: 0, color: "text.secondary" }}
             >
-              Supervise Score
+              Supervise
             </Typography>
+            <Slider
+              size="small"
+              min={0}
+              max={1}
+              step={0.01}
+              value={localScore}
+              onChange={(_e, val) => {
+                setLocalScore(Array.isArray(val) ? val[0] : val);
+                setDirty(true);
+              }}
+              onChangeCommitted={handleCommit}
+              sx={{
+                flex: 1,
+                color:
+                  localScore > 0.6
+                    ? "success.main"
+                    : localScore > 0.3
+                    ? "warning.main"
+                    : "error.main",
+                py: 0,
+                "& .MuiSlider-rail": { height: 6, borderRadius: 3 },
+                "& .MuiSlider-track": { height: 6, borderRadius: 3 },
+                "& .MuiSlider-thumb": {
+                  width: 12,
+                  height: 12,
+                },
+              }}
+            />
             <Typography
               variant="caption"
               sx={{
-                fontWeight: 900,
-                color: dirty ? "primary.main" : "text.secondary",
+                width: 36,
+                textAlign: "right",
+                fontWeight: 700,
+                color: dirty ? "primary.main" : "inherit",
               }}
             >
               {localScore.toFixed(2)}
             </Typography>
           </Stack>
-          <Slider
-            size="small"
-            min={0}
-            max={1}
-            step={0.01}
-            value={localScore}
-            onChange={(_e, val) => {
-              setLocalScore(Array.isArray(val) ? val[0] : val);
-              setDirty(true);
-            }}
-            onChangeCommitted={handleCommit}
-            sx={{
-              color:
-                localScore > 0.6
-                  ? "success.main"
-                  : localScore > 0.3
-                  ? "warning.main"
-                  : "error.main",
-            }}
-          />
-        </Box>
+        </Stack>
       </Stack>
     </Card>
   );
@@ -282,8 +288,7 @@ function StepRow({
     <Box
       onClick={onClick}
       sx={{
-        px: 2,
-        py: 1.25,
+        p: 1,
         cursor: "pointer",
         borderBottom: "1px solid",
         borderColor: "divider",
@@ -391,73 +396,131 @@ function TaskLogsWidget({ agentId }: { agentId: string }) {
   };
 
   return (
-    <Box sx={{ width: "100%", px: { xs: 1, md: 2 }, pb: 2 }}>
-      <Box
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateColumns: { xs: "1fr", md: "400px 1fr" },
+        gap: 1,
+        alignItems: "start",
+      }}
+    >
+      {/* Task List */}
+      <Card
         sx={{
-          display: "grid",
-          gridTemplateColumns: { xs: "1fr", md: "340px 1fr" },
-          gap: 2,
-          alignItems: "start",
+          borderRadius: 1,
+          border: "1px solid",
+          borderColor: "divider",
+          height: "100%",
         }}
       >
-        {/* Task List */}
+        <Box
+          sx={{
+            p: 1,
+            bgcolor: "background.default",
+            borderBottom: "1px solid",
+            borderColor: "divider",
+          }}
+        >
+          <Typography variant="subtitle2" sx={{ fontWeight: 900 }}>
+            Tasks
+          </Typography>
+        </Box>
+        {isTasksLoading ? (
+          <Stack sx={{ p: 2, gap: 1.5 }}>
+            {[...Array(6)].map((_, i) => (
+              <Skeleton
+                key={i}
+                variant="rounded"
+                height={56}
+                sx={{ borderRadius: 1 }}
+              />
+            ))}
+          </Stack>
+        ) : (
+          <TaskList
+            tasks={tasks ?? []}
+            selectedTask={selectedTask}
+            onTaskSelect={handleTaskSelect}
+          />
+        )}
+      </Card>
+
+      {/* Right Panel */}
+      <Stack spacing={1}>
+        {/* Steps Panel */}
         <Card
           sx={{
-            borderRadius: 2,
+            borderRadius: 1,
             border: "1px solid",
             borderColor: "divider",
-            minHeight: "calc(100vh - 320px)",
             overflow: "hidden",
           }}
         >
           <Box
             sx={{
-              px: 2,
-              py: 1.5,
+              p: 1,
               bgcolor: "background.default",
               borderBottom: "1px solid",
               borderColor: "divider",
             }}
           >
-            <Typography variant="subtitle2" sx={{ fontWeight: 900 }}>
-              Tasks
-            </Typography>
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <Iconify
+                icon="material-symbols:linear-scale"
+                width={18}
+                sx={{ color: "text.secondary" }}
+              />
+              <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                Steps
+              </Typography>
+            </Stack>
           </Box>
-          {isTasksLoading ? (
-            <Stack sx={{ p: 2, gap: 1.5 }}>
-              {[...Array(6)].map((_, i) => (
-                <Skeleton
-                  key={i}
-                  variant="rounded"
-                  height={56}
-                  sx={{ borderRadius: 1 }}
+
+          {!selectedTask ? (
+            <Box sx={{ p: 1, textAlign: "center" }}>
+              <Iconify
+                icon="solar:inbox-line-duotone"
+                width={48}
+                sx={{ color: "text.disabled", mb: 1 }}
+              />
+              <Typography variant="body2" color="text.disabled">
+                Select a task to see its steps
+              </Typography>
+            </Box>
+          ) : steps && steps.length === 0 ? (
+            <Box sx={{ p: 1, textAlign: "center" }}>
+              <Typography variant="body2" color="text.disabled">
+                No steps found for this task
+              </Typography>
+            </Box>
+          ) : (
+            <Box sx={{ maxHeight: 300, overflow: "auto" }}>
+              {(steps ?? []).map((step) => (
+                <StepRow
+                  key={step.id}
+                  step={step}
+                  selected={selectedStep?.id === step.id}
+                  onClick={() => handleStepSelect(step)}
                 />
               ))}
-            </Stack>
-          ) : (
-            <TaskList
-              tasks={tasks ?? []}
-              selectedTask={selectedTask}
-              onTaskSelect={handleTaskSelect}
-            />
+            </Box>
           )}
         </Card>
 
-        {/* Right Panel */}
-        <Stack spacing={2}>
-          {/* Steps Panel */}
+        {/* Logs Panel — only visible when a step is selected */}
+        {selectedStep && (
           <Card
             sx={{
               borderRadius: 2,
               border: "1px solid",
               borderColor: "divider",
               overflow: "hidden",
+              height: "100%",
             }}
           >
             <Box
               sx={{
-                px: 2,
-                py: 1.5,
+                p: 1,
                 bgcolor: "background.default",
                 borderBottom: "1px solid",
                 borderColor: "divider",
@@ -465,143 +528,72 @@ function TaskLogsWidget({ agentId }: { agentId: string }) {
             >
               <Stack direction="row" alignItems="center" spacing={1}>
                 <Iconify
-                  icon="material-symbols:linear-scale"
+                  icon="solar:document-text-bold"
                   width={18}
                   sx={{ color: "text.secondary" }}
                 />
-                <Typography variant="subtitle2" sx={{ fontWeight: 900 }}>
-                  Steps
-                  {selectedStep && (
-                    <Typography
-                      component="span"
-                      variant="caption"
-                      sx={{ ml: 1, color: "primary.main", fontWeight: 700 }}
-                    >
-                      — click selected step to deselect
-                    </Typography>
-                  )}
+                <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                  Logs — {selectedStep.comment || selectedStep.action}
                 </Typography>
+                {taskLogs.length > 0 && (
+                  <Chip
+                    size="small"
+                    label={taskLogs.length}
+                    sx={{
+                      height: 18,
+                      fontSize: 11,
+                      "& .MuiChip-label": { px: 0.75 },
+                    }}
+                  />
+                )}
               </Stack>
             </Box>
 
-            {!selectedTask ? (
-              <Box sx={{ p: 4, textAlign: "center" }}>
-                <Iconify
-                  icon="solar:inbox-line-duotone"
-                  width={48}
-                  sx={{ color: "text.disabled", mb: 1 }}
-                />
-                <Typography variant="body2" color="text.disabled">
-                  Select a task to see its steps
-                </Typography>
-              </Box>
-            ) : steps && steps.length === 0 ? (
-              <Box sx={{ p: 4, textAlign: "center" }}>
-                <Typography variant="body2" color="text.disabled">
-                  No steps found for this task
-                </Typography>
-              </Box>
-            ) : (
-              <Box sx={{ maxHeight: 260, overflow: "auto" }}>
-                {(steps ?? []).map((step) => (
-                  <StepRow
-                    key={step.id}
-                    step={step}
-                    selected={selectedStep?.id === step.id}
-                    onClick={() => handleStepSelect(step)}
-                  />
-                ))}
-              </Box>
-            )}
-          </Card>
-
-          {/* Logs Panel — only visible when a step is selected */}
-          {selectedStep && (
-            <Card
+            <Box
               sx={{
-                borderRadius: 2,
-                border: "1px solid",
-                borderColor: "divider",
-                overflow: "hidden",
+                p: 1,
+                maxHeight: "calc(100vh - 480px)",
+                height: "100%",
+                overflow: "auto",
               }}
             >
-              <Box
-                sx={{
-                  px: 2,
-                  py: 1.5,
-                  bgcolor: "background.default",
-                  borderBottom: "1px solid",
-                  borderColor: "divider",
-                }}
-              >
-                <Stack direction="row" alignItems="center" spacing={1}>
-                  <Iconify
-                    icon="solar:document-text-bold"
-                    width={18}
-                    sx={{ color: "text.secondary" }}
-                  />
-                  <Typography variant="subtitle2" sx={{ fontWeight: 900 }}>
-                    Logs — {selectedStep.comment || selectedStep.action}
-                  </Typography>
-                  {taskLogs.length > 0 && (
-                    <Chip
-                      size="small"
-                      label={taskLogs.length}
-                      sx={{
-                        height: 18,
-                        fontSize: 11,
-                        "& .MuiChip-label": { px: 0.75 },
-                      }}
+              {isLogsLoading ? (
+                <Stack spacing={1.5}>
+                  {[...Array(3)].map((_, i) => (
+                    <Skeleton
+                      key={i}
+                      variant="rounded"
+                      height={120}
+                      sx={{ borderRadius: 2 }}
                     />
-                  )}
+                  ))}
                 </Stack>
-              </Box>
-
-              <Box
-                sx={{
-                  p: 2,
-                  maxHeight: "calc(100vh - 600px)",
-                  overflow: "auto",
-                }}
-              >
-                {isLogsLoading ? (
-                  <Stack spacing={1.5}>
-                    {[...Array(3)].map((_, i) => (
-                      <Skeleton
-                        key={i}
-                        variant="rounded"
-                        height={120}
-                        sx={{ borderRadius: 2 }}
-                      />
-                    ))}
-                  </Stack>
-                ) : taskLogs.length === 0 ? (
-                  <Box sx={{ textAlign: "center", py: 4 }}>
-                    <Iconify
-                      icon="solar:document-text-line-duotone"
-                      width={48}
-                      sx={{ color: "text.disabled", mb: 1 }}
+              ) : taskLogs.length === 0 ? (
+                <Box sx={{ textAlign: "center", py: 4 }}>
+                  <Iconify
+                    icon="solar:document-text-line-duotone"
+                    width={48}
+                    sx={{ color: "text.disabled", mb: 1 }}
+                  />
+                  <Typography variant="body2" color="text.disabled">
+                    No logs for this step
+                  </Typography>
+                </Box>
+              ) : (
+                <Stack spacing={1}>
+                  {taskLogs.map((log) => (
+                    <LogCard
+                      key={log.id}
+                      log={log}
+                      onScoreChange={updateSuperviseScore}
                     />
-                    <Typography variant="body2" color="text.disabled">
-                      No logs for this step
-                    </Typography>
-                  </Box>
-                ) : (
-                  <Stack spacing={2}>
-                    {taskLogs.map((log) => (
-                      <LogCard
-                        key={log.id}
-                        log={log}
-                        onScoreChange={updateSuperviseScore}
-                      />
-                    ))}
-                  </Stack>
-                )}
-              </Box>
-            </Card>
-          )}
-        </Stack>
-      </Box>
+                  ))}
+                </Stack>
+              )}
+            </Box>
+          </Card>
+        )}
+      </Stack>
     </Box>
   );
 }

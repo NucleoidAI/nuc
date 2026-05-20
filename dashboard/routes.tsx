@@ -7,7 +7,7 @@ import Container from "./src/Container";
 import Dashboard from "./src/pages/dashboard";
 import KnowledgeBase from "./src/pages/knowledgeBase";
 import MCPs from "./src/pages/mcps";
-import StepLogs from "./src/pages/stepLogs";
+import TaskLogs from "./src/pages/taskLogs";
 import Team from "./src/pages/team";
 
 import { DashboardLayout, FullScreenLayout } from "@canmingir/link/layouts";
@@ -40,7 +40,7 @@ const routes = [
             element: <KnowledgeBase />,
           },
           { path: "/agents/:agentId", element: <Agent /> },
-          { path: "/task-logs", element: <StepLogs /> },
+          { path: "/task-logs", element: <TaskLogs /> },
           { path: "/teams/add", element: <AddTeam /> },
           { path: "/mcps/callback", element: <Callback /> },
         ],

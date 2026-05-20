@@ -116,7 +116,6 @@ const BlueprintDrawer = ({
         {showKnowledge && (
           <GlassCard
             sx={{
-              width: "600px",
               height: "85vh",
               overflow: "hidden",
               position: "relative",

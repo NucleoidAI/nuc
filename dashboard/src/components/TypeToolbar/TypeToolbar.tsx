@@ -11,7 +11,7 @@ function TypeToolbar({ types, selectedType, handleChange }) {
     <>
       <Stack
         spacing={2}
-        alignItems={{ xs: "flex-end", md: "center" }}
+        alignItems={"flex-start"}
         direction={{
           xs: "column",
           md: "row",
@@ -23,7 +23,6 @@ function TypeToolbar({ types, selectedType, handleChange }) {
         <FormControl
           sx={{
             flexShrink: 0,
-            width: { xs: 1, md: 200 },
           }}
         >
           <InputLabel>Types</InputLabel>

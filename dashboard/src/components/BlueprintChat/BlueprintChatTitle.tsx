@@ -252,11 +252,7 @@ const BlueprintChatTitle = ({ title, description, setTitle }) => {
   };
 
   return (
-    <Box
-      sx={{
-        width: "600px",
-      }}
-    >
+    <Box>
       <GlassCard>
         <GlassCardHeader
           sx={{

@@ -16,7 +16,7 @@ import sessions from "./routes/sessions";
 import statistics from "./routes/statistics";
 import supervisings from "./routes/supervisings";
 import taskFn from "./functions/task";
-import taskLogs from "./routes/taskLogs";
+import stepLogs from "./routes/stepLogs";
 import tasks from "./routes/tasks";
 import teamDetails from "./routes/teamDetails";
 import { telemetryMiddleware } from "./instrumentation";
@@ -47,7 +47,7 @@ function createApp() {
   app.use("/sessions", sessions);
   app.use("/supervisings", supervisings);
   app.use("/tasks", tasks);
-  app.use("/task-logs", taskLogs);
+  app.use("/step-logs", stepLogs);
   app.use("/engines", engines);
   app.use("/organizations", organizations);
   app.use("/statistics", statistics);
@@ -112,8 +112,9 @@ function createApp() {
       action: string;
       parameters: object;
       comment: string;
-    }>("STEP_ADDED", ({ stepId, action, parameters, comment }) =>
-      agentFn.step({ stepId, action, parameters, comment }),
+      resultScore?: number;
+    }>("STEP_ADDED", ({ stepId, action, parameters, comment, resultScore }) =>
+      agentFn.step({ stepId, action, parameters, comment, resultScore }),
     );
 
     await event.subscribe<{ taskId: string }>(

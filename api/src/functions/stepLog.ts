@@ -1,4 +1,4 @@
-import TaskLog from "../models/TaskLog";
+import StepLog from "../models/StepLog";
 
 async function create({
   taskId,
@@ -8,6 +8,8 @@ async function create({
   status,
   hallucinationScore,
   superviseScore,
+  knowledgeScore,
+  resultScore,
 }: {
   taskId: string;
   stepId?: string;
@@ -16,8 +18,10 @@ async function create({
   status: "COMPLETED" | "FAILED" | "SUPERVISED";
   hallucinationScore?: number;
   superviseScore?: number;
+  knowledgeScore?: number;
+  resultScore?: number;
 }) {
-  const log = await TaskLog.create({
+  const log = await StepLog.create({
     taskId,
     stepId: stepId ?? null,
     parameters: parameters ?? null,
@@ -25,6 +29,8 @@ async function create({
     status,
     hallucinationScore: hallucinationScore ?? null,
     superviseScore: superviseScore ?? null,
+    knowledgeScore: knowledgeScore ?? null,
+    resultScore: resultScore ?? null,
   });
 
   return log.toJSON();
@@ -33,22 +39,25 @@ async function create({
 async function update({
   logId,
   superviseScore,
-  reviewScore,
+  resultScore,
 }: {
   logId: string;
   superviseScore?: number;
-  reviewScore?: number;
+  resultScore?: number;
 }) {
-  await TaskLog.update({ superviseScore, reviewScore }, { where: { id: logId } });
+  await StepLog.update(
+    { superviseScore, resultScore },
+    { where: { id: logId } },
+  );
 }
 
 async function list({ taskId }: { taskId: string }) {
-  const logs = await TaskLog.findAll({ where: { taskId } });
+  const logs = await StepLog.findAll({ where: { taskId } });
   return logs.map((log) => log.toJSON());
 }
 
 async function listByStep({ stepId }: { stepId: string }) {
-  const logs = await TaskLog.findAll({ where: { stepId } });
+  const logs = await StepLog.findAll({ where: { stepId } });
   return logs.map((log) => log.toJSON());
 }
 

@@ -1,5 +1,5 @@
 {
-  "sequence": 15,
+  "sequence": 100,
   "seed": [
     {
       "id": "c1d2e3f4-0001-4000-8000-000000000001",
@@ -7,10 +7,11 @@
       "stepId": "b1c2d3e4-0001-4000-8000-000000000001",
       "parameters": { "address": "Musterstrasse 12, 10115 Berlin" },
       "output": "{\"bbk\": \"DEU-10115-00482\"}",
+      "hallucinationScore": 0.02,
+      "superviseScore": 0.95,
+      "resultScore": 0.98,
+      "knowledgeScore": 0.91,
       "status": "COMPLETED",
-      "hallucinationScore": 0.95,
-      "superviseScore": null,
-      "reviewScore": null,
       "createdAt": "2026-05-10T09:01:00Z"
     },
     {
@@ -19,10 +20,11 @@
       "stepId": "b1c2d3e4-0002-4000-8000-000000000002",
       "parameters": { "bbk": "DEU-10115-00482" },
       "output": "{\"available\": true, \"slots\": 4}",
+      "hallucinationScore": 0.01,
+      "superviseScore": 0.97,
+      "resultScore": 0.99,
+      "knowledgeScore": 0.94,
       "status": "COMPLETED",
-      "hallucinationScore": 0.97,
-      "superviseScore": null,
-      "reviewScore": null,
       "createdAt": "2026-05-10T09:02:00Z"
     },
     {
@@ -31,59 +33,66 @@
       "stepId": "b1c2d3e4-0003-4000-8000-000000000003",
       "parameters": { "bbk": "DEU-10115-00482" },
       "output": "[{\"id\": \"P100\", \"speed\": 100}, {\"id\": \"P250\", \"speed\": 250}]",
+      "hallucinationScore": 0.03,
+      "superviseScore": 0.93,
+      "resultScore": 0.96,
+      "knowledgeScore": 0.89,
       "status": "COMPLETED",
-      "hallucinationScore": 0.93,
-      "superviseScore": null,
-      "reviewScore": null,
       "createdAt": "2026-05-10T09:03:00Z"
     },
     {
       "id": "c1d2e3f4-0004-4000-8000-000000000004",
       "taskId": "a1b2c3d4-0001-4000-8000-000000000001",
       "stepId": "b1c2d3e4-0004-4000-8000-000000000004",
-      "parameters": { "message": "Please select a product: 100 Mbps or 250 Mbps" },
+      "parameters": {
+        "message": "Please select a product: 100 Mbps or 250 Mbps"
+      },
       "output": "P250",
+      "hallucinationScore": 0.0,
+      "superviseScore": 1.0,
+      "resultScore": 1.0,
+      "knowledgeScore": 0.97,
       "status": "COMPLETED",
-      "hallucinationScore": 0.91,
-      "superviseScore": null,
-      "reviewScore": null,
       "createdAt": "2026-05-10T09:05:00Z"
     },
     {
       "id": "c1d2e3f4-0005-4000-8000-000000000005",
-      "taskId": "a1b2c3d4-0001-4000-8000-000000000001",
-      "stepId": null,
-      "parameters": { "description": "Set up internet subscription for customer at Musterstrasse 12, 10115 Berlin", "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59" },
-      "output": "Subscription successfully created. Port allocated and configured.",
-      "status": "COMPLETED",
-      "hallucinationScore": 0.94,
-      "superviseScore": 1.0,
-      "reviewScore": null,
-      "createdAt": "2026-05-10T09:10:00Z"
-    },
-    {
-      "id": "c1d2e3f4-0006-4000-8000-000000000006",
       "taskId": "a1b2c3d4-0002-4000-8000-000000000002",
       "stepId": "b1c2d3e4-0005-4000-8000-000000000005",
       "parameters": { "address": "Hauptstrasse 5, 80331 Munich" },
       "output": "{\"bbk\": \"DEU-80331-00219\"}",
+      "hallucinationScore": 0.02,
+      "superviseScore": 0.94,
+      "resultScore": 0.97,
+      "knowledgeScore": 0.9,
       "status": "COMPLETED",
-      "hallucinationScore": 0.96,
-      "superviseScore": null,
-      "reviewScore": null,
       "createdAt": "2026-05-11T11:31:00Z"
     },
     {
-      "id": "c1d2e3f4-0007-4000-8000-000000000007",
+      "id": "c1d2e3f4-0006-4000-8000-000000000006",
       "taskId": "a1b2c3d4-0002-4000-8000-000000000002",
       "stepId": "b1c2d3e4-0006-4000-8000-000000000006",
       "parameters": { "bbk": "DEU-80331-00219" },
       "output": "Connection timeout after 3 retries.",
-      "status": "FAILED",
-      "hallucinationScore": 0.88,
+      "hallucinationScore": null,
       "superviseScore": null,
-      "reviewScore": null,
+      "resultScore": 0.0,
+      "knowledgeScore": null,
+      "status": "FAILED",
       "createdAt": "2026-05-11T11:32:00Z"
+    },
+    {
+      "id": "c1d2e3f4-0007-4000-8000-000000000007",
+      "taskId": "a1b2c3d4-0003-4000-8000-000000000003",
+      "stepId": "b1c2d3e4-0007-4000-8000-000000000007",
+      "parameters": { "url": "https://internal/metrics/q1" },
+      "output": null,
+      "hallucinationScore": null,
+      "superviseScore": null,
+      "resultScore": null,
+      "knowledgeScore": null,
+      "status": "SUPERVISED",
+      "createdAt": "2026-05-13T08:16:00Z"
     }
   ]
 }

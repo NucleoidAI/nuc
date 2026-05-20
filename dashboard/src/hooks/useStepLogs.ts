@@ -1,37 +1,37 @@
 import http from "@canmingir/link/platform/http";
 import useApi from "./useApi";
-import { useState } from "react";
 
 import { publish, useEvent } from "@nucleoidai/react-event";
 
-export type TaskLog = {
+export type StepLog = {
   id: string;
   taskId: string;
   stepId: string | null;
   parameters: object | null;
   output: string | null;
   hallucinationScore: number | null;
+  knowledgeScore: number | null;
   superviseScore: number | null;
-  reviewScore: number | null;
+  resultScore: number | null;
   status: "COMPLETED" | "FAILED" | "SUPERVISED";
   createdAt: string;
 };
 
-function useTaskLogs() {
+function useStepLogs() {
   const { Api } = useApi();
-  const [scoreUpdated] = useEvent("TASK_LOG_SCORE_UPDATED", null);
+  const [scoreUpdated] = useEvent("STEP_LOG_SCORE_UPDATED", null);
 
   const getLogsByTask = (taskId: string) => {
     const { data, loading, error, fetch } = Api(
       () =>
         taskId
-          ? http.get(`/task-logs?taskId=${taskId}`)
+          ? http.get(`/step-logs?taskId=${taskId}`)
           : Promise.resolve({ data: [] }),
       [taskId, scoreUpdated]
     );
 
     return {
-      logs: (data as TaskLog[]) ?? [],
+      logs: (data as StepLog[]) ?? [],
       loading,
       error,
       fetch,
@@ -42,25 +42,28 @@ function useTaskLogs() {
     const { data, loading, error, fetch } = Api(
       () =>
         stepId
-          ? http.get(`/task-logs?stepId=${stepId}`)
+          ? http.get(`/step-logs?stepId=${stepId}`)
           : Promise.resolve({ data: [] }),
       [stepId, scoreUpdated]
     );
 
     return {
-      logs: (data as TaskLog[]) ?? [],
+      logs: (data as StepLog[]) ?? [],
       loading,
       error,
       fetch,
     };
   };
 
-  const updateSuperviseScore = async (logId: string, superviseScore: number) => {
-    await http.patch(`/task-logs/${logId}`, { superviseScore });
-    publish("TASK_LOG_SCORE_UPDATED", { logId, superviseScore });
+  const updateSuperviseScore = async (
+    logId: string,
+    superviseScore: number
+  ) => {
+    await http.patch(`/step-logs/${logId}`, { superviseScore });
+    publish("STEP_LOG_SCORE_UPDATED", { logId, superviseScore });
   };
 
   return { getLogsByTask, getLogsByStep, updateSuperviseScore };
 }
 
-export default useTaskLogs;
+export default useStepLogs;

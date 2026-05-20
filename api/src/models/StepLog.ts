@@ -10,11 +10,11 @@ import {
 } from "@canmingir/link-express/sequelize";
 
 @Table({
-  tableName: "TaskLog",
+  tableName: "StepLog",
   timestamps: false,
   underscored: true,
 })
-class TaskLog extends Model {
+class StepLog extends Model {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)
@@ -46,7 +46,11 @@ class TaskLog extends Model {
 
   @AllowNull(true)
   @Column(DataType.FLOAT)
-  declare reviewScore: number | null;
+  declare resultScore: number | null;
+
+  @AllowNull(true)
+  @Column(DataType.FLOAT)
+  declare knowledgeScore: number | null;
 
   @AllowNull(false)
   @IsIn([["COMPLETED", "FAILED", "SUPERVISED"]])
@@ -63,4 +67,4 @@ class TaskLog extends Model {
   declare step?: any;
 }
 
-export default TaskLog;
+export default StepLog;

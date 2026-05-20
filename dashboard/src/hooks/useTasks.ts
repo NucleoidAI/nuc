@@ -75,6 +75,15 @@ function useTasks(agentId: string, initialFetchState: DependencyArray = []) {
     }
   };
 
+  const updateStepComment = async (
+    taskId: string,
+    stepId: string,
+    comment: string | null
+  ) => {
+    await http.patch(`/tasks/${taskId}/steps/${stepId}`, { comment });
+    publish("STEP_COMMENT_UPDATED", { stepId, comment });
+  };
+
   const createTaskSupervising = async (
     id: string,
     text: string,
@@ -102,6 +111,7 @@ function useTasks(agentId: string, initialFetchState: DependencyArray = []) {
     getSteps,
     createTask,
     createTaskSupervising,
+    updateStepComment,
   };
 }
 

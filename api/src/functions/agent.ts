@@ -12,7 +12,7 @@ import platform from "@canmingir/link-express";
 import session from "./session";
 import supervising from "./supervising";
 import taskFn from "./task";
-import taskLogFn from "./taskLog";
+import stepLogFn from "./stepLog";
 
 async function messages({ teamId }: { teamId: string }) {
   const messageInstances = await messagesFunc.listMessages({ teamId });
@@ -89,6 +89,32 @@ async function steps({ taskId }) {
     role: "user" | "system" | "assistant";
     content: object;
   };
+}
+
+async function scoring({
+  context,
+}: {
+  context: {
+    role: "user" | "system" | "assistant";
+    content: object | string;
+  }[];
+}) {
+  const merged: Record<string, unknown> = {};
+  for (const { content } of context) {
+    if (content && typeof content === "object") {
+      Object.assign(merged, content);
+    }
+  }
+
+  const { knowledge_score } = await generate({
+    dataset: dataset.train.knowledgeScore,
+    content: merged,
+    json_format:
+      "{ knowledge_score: <0.0-1.0> } — score how well the knowledge_base covers the agent's domain AND how correctly the completed steps demonstrate use of that knowledge. No steps yet = moderate score based on knowledge relevance alone. More correct steps that use the knowledge = higher score. Steps that contradict or ignore the knowledge = lower score.",
+  });
+
+  const parsed = parseFloat(String(knowledge_score));
+  return !isNaN(parsed) ? parsed : undefined;
 }
 
 async function Blueprints({ agentId }) {
@@ -186,21 +212,40 @@ async function task({ taskId }: { taskId: string }) {
         knowledge({ agentId, taskId }),
         Blueprints({ agentId }),
         steps({ taskId }),
+        sessionId ? conversations({ sessionId }) : Promise.resolve([]),
       ])
     ).flat(),
     actions.list(),
     mcpFn.list(),
   ];
 
+  console.log("context", context);
+
+  const knowledgeScore = await scoring({ context });
+
+  console.log("knowledgeScore", knowledgeScore);
+
+  const contextWithScore = [
+    ...context,
+    {
+      role: "system" as const,
+      content: { knowledge_score: knowledgeScore },
+    },
+  ];
+
   const {
-    next_step: { action, parameters, comment, hallucination_score },
+    next_step: { action, parameters, comment },
+    result_score,
   } = await generate({
     dataset: dataset.train.taskDiamond,
-    context,
+    context: contextWithScore,
     content: currentTask,
     json_format:
-      "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT>, hallucination_score: <0-1> } }",
+      "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
   });
+
+  const resultScore =
+    result_score != null ? parseFloat(String(result_score)) : undefined;
 
   if (action === "PLATFORM:complete") {
     const steps = await taskFn.listSteps({ taskId });
@@ -211,15 +256,11 @@ async function task({ taskId }: { taskId: string }) {
       result = steps[steps.length - 1].result;
     }
 
-    await taskLogFn.create({
+    await stepLogFn.create({
       taskId,
       parameters: { description, blueprintId },
       output: result ?? comment ?? null,
       status: "COMPLETED",
-      hallucinationScore:
-        typeof hallucination_score === "number"
-          ? hallucination_score
-          : undefined,
     });
 
     if (sessionId) {
@@ -251,6 +292,8 @@ async function task({ taskId }: { taskId: string }) {
       action,
       parameters,
       comment,
+      knowledgeScore,
+      resultScore,
     });
   }
 
@@ -259,6 +302,8 @@ async function task({ taskId }: { taskId: string }) {
     action,
     parameters,
     comment,
+    knowledgeScore,
+    resultScore,
   });
 }
 
@@ -267,11 +312,13 @@ async function step({
   action,
   parameters,
   comment,
+  resultScore: stepResultScore,
 }: {
   stepId: string;
   action: string;
   parameters: object;
   comment: string;
+  resultScore?: number;
 }) {
   let actionType;
 
@@ -292,7 +339,9 @@ async function step({
     let result;
     let mcpClient;
 
-    const { taskId } = await taskFn.getStep({ stepId });
+    const { taskId, knowledgeScore: stepKnowledgeScore } = await taskFn.getStep({ stepId });
+    // TODO: hallucinationScore will be calculated separately in the future
+    const stepHallucinationScore = stepKnowledgeScore;
 
     if (actionType === "SUPERVISED") {
       actionFn = require("../actions/ask_supervisor").default;
@@ -345,12 +394,15 @@ async function step({
         result: resultString,
         status: "WAITING_FOR_USER",
       });
-      await taskLogFn.create({
+      await stepLogFn.create({
         taskId,
         stepId,
         parameters,
         output: resultString,
         status: "COMPLETED",
+        knowledgeScore: stepKnowledgeScore,
+        hallucinationScore: stepHallucinationScore,
+        resultScore: stepResultScore,
       });
     } else if (actionType === "SUPERVISED") {
       await session.addConversation({
@@ -364,12 +416,15 @@ async function step({
         result: resultString,
         status: "SUPERVISED_NEEDED",
       });
-      await taskLogFn.create({
+      await stepLogFn.create({
         taskId,
         stepId,
         parameters,
         output: resultString,
         status: "SUPERVISED",
+        knowledgeScore: stepKnowledgeScore,
+        hallucinationScore: stepHallucinationScore,
+        resultScore: stepResultScore,
       });
     } else {
       const finalStatus = result && result.isError ? "FAILED" : "COMPLETED";
@@ -378,12 +433,15 @@ async function step({
         result: resultString || "Completed",
         status: finalStatus,
       });
-      await taskLogFn.create({
+      await stepLogFn.create({
         taskId,
         stepId,
         parameters,
         output: resultString,
         status: finalStatus === "FAILED" ? "FAILED" : "COMPLETED",
+        knowledgeScore: stepKnowledgeScore,
+        hallucinationScore: stepHallucinationScore,
+        resultScore: stepResultScore,
       });
     }
   } catch (err: unknown) {
@@ -394,7 +452,7 @@ async function step({
         result: err.message,
         status: "FAILED",
       });
-      await taskLogFn.create({
+      await stepLogFn.create({
         taskId: failedTaskId,
         stepId,
         parameters,

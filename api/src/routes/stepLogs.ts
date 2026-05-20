@@ -2,9 +2,9 @@ import Agent from "../models/Agent";
 import Joi from "joi";
 import Step from "../models/Step";
 import Task from "../models/Task";
-import TaskLog from "../models/TaskLog";
+import StepLog from "../models/StepLog";
 import express from "express";
-import taskLog from "../functions/taskLog";
+import stepLog from "../functions/stepLog";
 
 const router = express.Router();
 
@@ -32,7 +32,7 @@ router.get("/", async (req, res) => {
       return res.status(401).end();
     }
 
-    const logs = await taskLog.list({ taskId });
+    const logs = await stepLog.list({ taskId });
     return res.status(200).json(logs);
   }
 
@@ -56,22 +56,22 @@ router.get("/", async (req, res) => {
     return res.status(401).end();
   }
 
-  const logs = await taskLog.listByStep({ stepId });
+  const logs = await stepLog.listByStep({ stepId });
   return res.status(200).json(logs);
 });
 
 router.patch("/:logId", async (req, res) => {
   const { projectId: teamId } = req.session;
   const { logId } = req.params;
-  const { superviseScore, reviewScore } = Joi.attempt(
+  const { superviseScore, resultScore } = Joi.attempt(
     req.body,
     Joi.object({
       superviseScore: Joi.number().min(0).max(1).optional(),
-      reviewScore: Joi.number().min(0).max(1).optional(),
-    }).or("superviseScore", "reviewScore"),
+      resultScore: Joi.number().min(0).max(1).optional(),
+    }).or("superviseScore", "resultScore"),
   );
 
-  const log = await TaskLog.findOne({
+  const log = await StepLog.findOne({
     where: { id: logId },
     include: [
       {
@@ -91,7 +91,7 @@ router.patch("/:logId", async (req, res) => {
     return res.status(401).end();
   }
 
-  await taskLog.update({ logId, superviseScore, reviewScore });
+  await stepLog.update({ logId, superviseScore, resultScore });
 
   return res.status(200).end();
 });

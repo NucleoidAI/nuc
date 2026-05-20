@@ -1,7 +1,8 @@
 import { Iconify } from "@canmingir/link/platform/components";
 import Page from "../components/Page/Page";
-import TaskLogsWidget from "../widgets/TaskLogsWidget/TaskLogsWidget";
+import StepLogsWidget from "../widgets/StepLogsWidget/StepLogsWidget";
 import useAgents from "../hooks/useAgents";
+import { useState } from "react";
 
 import {
   Box,
@@ -11,15 +12,12 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
 
-function TaskLogs() {
+function StepLogs() {
   const { getTeamAgents } = useAgents();
   const { agents, loading } = getTeamAgents();
 
   const [selectedAgentId, setSelectedAgentId] = useState<string>("");
-
-  const selectedAgent = agents?.find((a) => a.id === selectedAgentId);
 
   return (
     <>
@@ -32,8 +30,17 @@ function TaskLogs() {
           spacing={2}
           sx={{ mb: 3 }}
         >
-          <Stack direction="row" alignItems="center" spacing={1} sx={{ flex: 1 }}>
-            <Iconify icon="solar:document-text-bold" width={28} sx={{ color: "primary.main" }} />
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={1}
+            sx={{ flex: 1 }}
+          >
+            <Iconify
+              icon="solar:document-text-bold"
+              width={28}
+              sx={{ color: "primary.main" }}
+            />
             <Typography variant="h5" sx={{ fontWeight: 900 }}>
               Task Logs
             </Typography>
@@ -41,7 +48,11 @@ function TaskLogs() {
 
           <Box sx={{ minWidth: 240 }}>
             {loading ? (
-              <Skeleton variant="rounded" height={40} sx={{ borderRadius: 1 }} />
+              <Skeleton
+                variant="rounded"
+                height={40}
+                sx={{ borderRadius: 1 }}
+              />
             ) : (
               <Select
                 size="small"
@@ -67,7 +78,8 @@ function TaskLogs() {
                           src={agent.icon}
                           sx={{ width: 20, height: 20, borderRadius: 0.5 }}
                           onError={(e) => {
-                            (e.target as HTMLImageElement).style.display = "none";
+                            (e.target as HTMLImageElement).style.display =
+                              "none";
                           }}
                         />
                       )}
@@ -91,7 +103,11 @@ function TaskLogs() {
               color: "text.disabled",
             }}
           >
-            <Iconify icon="solar:inbox-line-duotone" width={64} sx={{ mb: 2 }} />
+            <Iconify
+              icon="solar:inbox-line-duotone"
+              width={64}
+              sx={{ mb: 2 }}
+            />
             <Typography variant="h6" color="text.secondary" gutterBottom>
               No agent selected
             </Typography>
@@ -100,11 +116,11 @@ function TaskLogs() {
             </Typography>
           </Box>
         ) : (
-          <TaskLogsWidget agentId={selectedAgentId} />
+          <StepLogsWidget agentId={selectedAgentId} />
         )}
       </Box>
     </>
   );
 }
 
-export default TaskLogs;
+export default StepLogs;

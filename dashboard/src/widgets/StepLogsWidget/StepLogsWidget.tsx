@@ -1,7 +1,7 @@
 import { Iconify } from "@canmingir/link/platform/components";
 import TaskList from "../../components/TaskList/TaskList";
 import useLoading from "../../hooks/useLoading";
-import useTaskLogs from "../../hooks/useTaskLogs";
+import useStepLogs from "../../hooks/useStepLogs";
 import useTasks from "../../hooks/useTasks";
 
 import {
@@ -15,7 +15,7 @@ import {
   Typography,
   alpha,
 } from "@mui/material";
-import React, { useState } from "react";
+import { useState } from "react";
 
 const STATUS_COLOR = {
   COMPLETED: "success.main",
@@ -34,7 +34,10 @@ function ScoreBar({
 }) {
   return (
     <Stack direction="row" alignItems="center" spacing={1} sx={{ minWidth: 0 }}>
-      <Typography variant="caption" sx={{ width: 110, flexShrink: 0, color: "text.secondary" }}>
+      <Typography
+        variant="caption"
+        sx={{ width: 110, flexShrink: 0, color: "text.secondary" }}
+      >
         {label}
       </Typography>
       <Box
@@ -56,8 +59,11 @@ function ScoreBar({
           }}
         />
       </Box>
-      <Typography variant="caption" sx={{ width: 36, textAlign: "right", fontWeight: 700 }}>
-        {value != null ? value.toFixed(2) : "—"}
+      <Typography
+        variant="caption"
+        sx={{ width: 36, textAlign: "right", fontWeight: 700 }}
+      >
+        {value !== null ? value.toFixed(2) : "—"}
       </Typography>
     </Stack>
   );
@@ -72,8 +78,9 @@ function LogCard({
     parameters: object | null;
     output: string | null;
     hallucinationScore: number | null;
+    knowledgeScore: number | null;
     superviseScore: number | null;
-    reviewScore: number | null;
+    resultScore: number | null;
     status: "COMPLETED" | "FAILED" | "SUPERVISED";
     createdAt: string;
   };
@@ -99,7 +106,11 @@ function LogCard({
       }}
     >
       <Stack spacing={1.5}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+        >
           <Typography variant="caption" color="text.disabled">
             {new Date(log.createdAt).toLocaleString()}
           </Typography>
@@ -118,7 +129,10 @@ function LogCard({
 
         {log.parameters && (
           <Box>
-            <Typography variant="caption" sx={{ fontWeight: 700, color: "text.secondary" }}>
+            <Typography
+              variant="caption"
+              sx={{ fontWeight: 700, color: "text.secondary" }}
+            >
               Parameters
             </Typography>
             <Box
@@ -143,7 +157,10 @@ function LogCard({
 
         {log.output && (
           <Box>
-            <Typography variant="caption" sx={{ fontWeight: 700, color: "text.secondary" }}>
+            <Typography
+              variant="caption"
+              sx={{ fontWeight: 700, color: "text.secondary" }}
+            >
               Output
             </Typography>
             <Box
@@ -169,6 +186,11 @@ function LogCard({
 
         <Stack spacing={0.75}>
           <ScoreBar
+            label="Knowledge"
+            value={log.knowledgeScore}
+            color="primary.main"
+          />
+          <ScoreBar
             label="Hallucination"
             value={log.hallucinationScore}
             color={
@@ -179,17 +201,31 @@ function LogCard({
                 : "success.main"
             }
           />
-          <ScoreBar label="Review" value={log.reviewScore} color="info.main" />
+          <ScoreBar label="Result" value={log.resultScore} color="info.main" />
         </Stack>
 
         <Divider />
 
         <Box>
-          <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 0.5 }}>
-            <Typography variant="caption" sx={{ fontWeight: 700, color: "text.secondary" }}>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            sx={{ mb: 0.5 }}
+          >
+            <Typography
+              variant="caption"
+              sx={{ fontWeight: 700, color: "text.secondary" }}
+            >
               Supervise Score
             </Typography>
-            <Typography variant="caption" sx={{ fontWeight: 900, color: dirty ? "primary.main" : "text.secondary" }}>
+            <Typography
+              variant="caption"
+              sx={{
+                fontWeight: 900,
+                color: dirty ? "primary.main" : "text.secondary",
+              }}
+            >
               {localScore.toFixed(2)}
             </Typography>
           </Stack>
@@ -205,7 +241,12 @@ function LogCard({
             }}
             onChangeCommitted={handleCommit}
             sx={{
-              color: localScore > 0.6 ? "success.main" : localScore > 0.3 ? "warning.main" : "error.main",
+              color:
+                localScore > 0.6
+                  ? "success.main"
+                  : localScore > 0.3
+                  ? "warning.main"
+                  : "error.main",
             }}
           />
         </Box>
@@ -247,7 +288,9 @@ function StepRow({
         cursor: "pointer",
         borderBottom: "1px solid",
         borderColor: "divider",
-        bgcolor: selected ? (theme) => alpha(theme.palette.primary.main, 0.08) : "transparent",
+        bgcolor: selected
+          ? (theme) => alpha(theme.palette.primary.main, 0.08)
+          : "transparent",
         "&:hover": {
           bgcolor: (theme) =>
             selected
@@ -300,8 +343,13 @@ function StepRow({
   );
 }
 
-function TaskLogsWidget({ agentId }: { agentId: string }) {
-  const { tasks, loading: tasksLoading, steps, getSteps } = useTasks(agentId);
+function StepLogsWidget({ agentId }: { agentId: string }) {
+  const {
+    tasks,
+    loading: tasksLoading,
+    steps,
+    getSteps,
+  } = useTasks(agentId);
   const isTasksLoading = useLoading(tasksLoading);
 
   const [selectedTask, setSelectedTask] = useState<{
@@ -319,7 +367,7 @@ function TaskLogsWidget({ agentId }: { agentId: string }) {
     createdAt: string;
   } | null>(null);
 
-  const { getLogsByStep, updateSuperviseScore } = useTaskLogs();
+  const { getLogsByStep, updateSuperviseScore } = useStepLogs();
 
   const { logs: stepLogs, loading: stepLogsLoading } = getLogsByStep(
     selectedStep?.id ?? ""
@@ -368,7 +416,15 @@ function TaskLogsWidget({ agentId }: { agentId: string }) {
             overflow: "hidden",
           }}
         >
-          <Box sx={{ px: 2, py: 1.5, bgcolor: "background.default", borderBottom: "1px solid", borderColor: "divider" }}>
+          <Box
+            sx={{
+              px: 2,
+              py: 1.5,
+              bgcolor: "background.default",
+              borderBottom: "1px solid",
+              borderColor: "divider",
+            }}
+          >
             <Typography variant="subtitle2" sx={{ fontWeight: 900 }}>
               Tasks
             </Typography>
@@ -376,7 +432,12 @@ function TaskLogsWidget({ agentId }: { agentId: string }) {
           {isTasksLoading ? (
             <Stack sx={{ p: 2, gap: 1.5 }}>
               {[...Array(6)].map((_, i) => (
-                <Skeleton key={i} variant="rounded" height={56} sx={{ borderRadius: 1 }} />
+                <Skeleton
+                  key={i}
+                  variant="rounded"
+                  height={56}
+                  sx={{ borderRadius: 1 }}
+                />
               ))}
             </Stack>
           ) : (
@@ -399,9 +460,21 @@ function TaskLogsWidget({ agentId }: { agentId: string }) {
               overflow: "hidden",
             }}
           >
-            <Box sx={{ px: 2, py: 1.5, bgcolor: "background.default", borderBottom: "1px solid", borderColor: "divider" }}>
+            <Box
+              sx={{
+                px: 2,
+                py: 1.5,
+                bgcolor: "background.default",
+                borderBottom: "1px solid",
+                borderColor: "divider",
+              }}
+            >
               <Stack direction="row" alignItems="center" spacing={1}>
-                <Iconify icon="material-symbols:linear-scale" width={18} sx={{ color: "text.secondary" }} />
+                <Iconify
+                  icon="material-symbols:linear-scale"
+                  width={18}
+                  sx={{ color: "text.secondary" }}
+                />
                 <Typography variant="subtitle2" sx={{ fontWeight: 900 }}>
                   Steps
                   {selectedStep && (
@@ -468,7 +541,11 @@ function TaskLogsWidget({ agentId }: { agentId: string }) {
                 }}
               >
                 <Stack direction="row" alignItems="center" spacing={1}>
-                  <Iconify icon="solar:document-text-bold" width={18} sx={{ color: "text.secondary" }} />
+                  <Iconify
+                    icon="solar:document-text-bold"
+                    width={18}
+                    sx={{ color: "text.secondary" }}
+                  />
                   <Typography variant="subtitle2" sx={{ fontWeight: 900 }}>
                     Logs — {selectedStep.comment || selectedStep.action}
                   </Typography>
@@ -476,17 +553,32 @@ function TaskLogsWidget({ agentId }: { agentId: string }) {
                     <Chip
                       size="small"
                       label={stepLogs.length}
-                      sx={{ height: 18, fontSize: 11, "& .MuiChip-label": { px: 0.75 } }}
+                      sx={{
+                        height: 18,
+                        fontSize: 11,
+                        "& .MuiChip-label": { px: 0.75 },
+                      }}
                     />
                   )}
                 </Stack>
               </Box>
 
-              <Box sx={{ p: 2, maxHeight: "calc(100vh - 520px)", overflow: "auto" }}>
+              <Box
+                sx={{
+                  p: 2,
+                  maxHeight: "calc(100vh - 600px)",
+                  overflow: "auto",
+                }}
+              >
                 {isLogsLoading ? (
                   <Stack spacing={1.5}>
                     {[...Array(3)].map((_, i) => (
-                      <Skeleton key={i} variant="rounded" height={120} sx={{ borderRadius: 2 }} />
+                      <Skeleton
+                        key={i}
+                        variant="rounded"
+                        height={120}
+                        sx={{ borderRadius: 2 }}
+                      />
                     ))}
                   </Stack>
                 ) : stepLogs.length === 0 ? (
@@ -520,4 +612,4 @@ function TaskLogsWidget({ agentId }: { agentId: string }) {
   );
 }
 
-export default TaskLogsWidget;
+export default StepLogsWidget;

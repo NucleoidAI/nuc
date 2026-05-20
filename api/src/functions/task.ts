@@ -53,6 +53,7 @@ async function update({
 
 async function get({ taskId }: { taskId: string }) {
   const taskInstance = await Task.findOne({ where: { id: taskId } });
+  if (!taskInstance) throw new Error(`Task not found: ${taskId}`);
   return taskInstance.toJSON();
 }
 
@@ -122,17 +123,22 @@ async function addStep({
   action,
   parameters,
   comment,
+  knowledgeScore,
+  resultScore,
 }: {
   taskId: string;
   action: string;
   parameters: object;
   comment: string;
+  knowledgeScore?: number;
+  resultScore?: number;
 }) {
   const step = await Step.create({
     taskId,
     action,
     parameters,
     comment,
+    knowledgeScore: knowledgeScore ?? null,
   });
 
   await event.publish("STEP_ADDED", {
@@ -141,6 +147,7 @@ async function addStep({
     action,
     parameters,
     comment,
+    resultScore,
   });
 
   return step.toJSON();
@@ -148,6 +155,7 @@ async function addStep({
 
 async function getStep({ stepId }: { stepId: string }) {
   const step = await Step.findOne({ where: { id: stepId } });
+  if (!step) throw new Error(`Step not found: ${stepId}`);
   return step.toJSON();
 }
 
@@ -173,7 +181,7 @@ async function updateStep({
       result,
       status,
     },
-    { where: { id: stepId } }
+    { where: { id: stepId } },
   );
 
   if (status === "COMPLETED") {
@@ -197,6 +205,16 @@ async function updateStep({
   return step;
 }
 
+async function updateStepComment({
+  stepId,
+  comment,
+}: {
+  stepId: string;
+  comment: string | null;
+}) {
+  await Step.update({ comment }, { where: { id: stepId } });
+}
+
 async function listSteps({ taskId }: { taskId: string }) {
   const steps = await Step.findAll({
     where: { taskId },
@@ -218,5 +236,6 @@ export default {
   getStep,
   addStep,
   updateStep,
+  updateStepComment,
   listSteps,
 };

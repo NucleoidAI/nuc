@@ -333,14 +333,16 @@ async function step({
     actionType = "ACTION";
   }
 
+  let taskId = "";
+
   try {
     let actionFn;
     let result;
     let mcpClient;
 
-    const { taskId, knowledgeScore: stepKnowledgeScore } = await taskFn.getStep(
-      { stepId },
-    );
+    const step = await taskFn.getStep({ stepId });
+    taskId = step.taskId;
+    const stepKnowledgeScore = step.knowledgeScore;
     // TODO: hallucinationScore will be calculated separately in the future
     const stepHallucinationScore = stepKnowledgeScore;
 
@@ -447,19 +449,24 @@ async function step({
     }
   } catch (err: unknown) {
     if (err instanceof Error) {
-      const { taskId: failedTaskId } = await taskFn.getStep({ stepId });
       await taskFn.updateStep({
         stepId,
         result: err.message,
         status: "FAILED",
       });
-      await stepLogFn.create({
-        taskId: failedTaskId,
-        stepId,
-        parameters,
-        output: err.message,
-        status: "FAILED",
-      });
+      if (taskId) {
+        await stepLogFn.create({
+          taskId,
+          stepId,
+          parameters,
+          output: err.message,
+          status: "FAILED",
+        });
+      } else {
+        platform.logger.error(
+          `step ${stepId} failed before taskId resolved; skipping log: ${err.message}`,
+        );
+      }
     }
   }
 }

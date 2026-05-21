@@ -1,7 +1,6 @@
 import React from "react";
 import type { SxProps } from "@mui/system";
 import type { Theme } from "@mui/material/styles";
-import { alpha } from "@mui/material/styles";
 
 import { Box, Portal } from "@mui/material";
 
@@ -35,8 +34,7 @@ const RightSideBar = ({
           transform: "translateY(-50%)",
           width,
           height,
-          bgcolor: (theme: Theme) =>
-            alpha(theme.palette.background.default, 0.6),
+          bgcolor: "grey.700",
           borderRadius: "6px",
           zIndex: (theme: Theme) => theme.zIndex.modal + 3,
           display: "flex",

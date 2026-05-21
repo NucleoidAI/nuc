@@ -206,13 +206,15 @@ async function updateStep({
 }
 
 async function updateStepComment({
+  taskId,
   stepId,
   comment,
 }: {
+  taskId: string;
   stepId: string;
   comment: string | null;
 }) {
-  await Step.update({ comment }, { where: { id: stepId } });
+  await Step.update({ comment }, { where: { id: stepId, taskId } });
 }
 
 async function listSteps({ taskId }: { taskId: string }) {

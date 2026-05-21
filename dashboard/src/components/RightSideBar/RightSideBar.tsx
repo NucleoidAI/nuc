@@ -5,22 +5,12 @@ import type { Theme } from "@mui/material/styles";
 import { Box, Portal } from "@mui/material";
 
 type RightSideBarProps = {
-  width?: number | string;
-  height?: number | string;
-  top?: number | string;
   open?: boolean;
   children?: React.ReactNode;
   sx?: SxProps<Theme>;
 };
 
-const RightSideBar = ({
-  width = 62,
-  height = "auto",
-  top = "50%",
-  open = true,
-  children,
-  sx,
-}: RightSideBarProps) => {
+const RightSideBar = ({ open = true, children, sx }: RightSideBarProps) => {
   if (!open) return null;
 
   return (
@@ -29,19 +19,22 @@ const RightSideBar = ({
         component="aside"
         sx={{
           position: "fixed",
-          top,
+          top: 0,
           right: 0,
-          transform: "translateY(-50%)",
-          width,
-          height,
-          bgcolor: "grey.700",
-          borderRadius: "6px",
+          width: 56,
+          height: "100vh",
+          bgcolor: "background.default",
+          borderLeft: (theme: Theme) => `dashed 1px ${theme.palette.divider}`,
           zIndex: (theme: Theme) => theme.zIndex.modal + 3,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          py: 1.5,
-          gap: 1,
+          pt: 1,
+          pb: 2,
+          overflowY: "auto",
+          overflowX: "hidden",
+          "&::-webkit-scrollbar": { display: "none" },
+          scrollbarWidth: "none",
           ...((sx as object) || {}),
         }}
       >

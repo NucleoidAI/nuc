@@ -218,11 +218,7 @@ async function task({ taskId }: { taskId: string }) {
     mcpFn.list(),
   ];
 
-  console.log("context", context);
-
   const knowledgeScore = await scoring({ context });
-
-  console.log("knowledgeScore", knowledgeScore);
 
   const contextWithScore = [
     ...context,

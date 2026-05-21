@@ -3,7 +3,7 @@ import useApi from "./useApi";
 
 import { publish, useEvent } from "@nucleoidai/react-event";
 
-export type TaskLog = {
+export type TaskScore = {
   id: string;
   taskId: string;
   stepId: string | null;
@@ -17,7 +17,7 @@ export type TaskLog = {
   createdAt: string;
 };
 
-function useTaskLogs() {
+function useTaskScores() {
   const { Api } = useApi();
   const [scoreUpdated] = useEvent("TASK_LOG_SCORE_UPDATED", null);
 
@@ -25,13 +25,13 @@ function useTaskLogs() {
     const { data, loading, error, fetch } = Api(
       () =>
         taskId
-          ? http.get(`/step-logs?taskId=${taskId}`)
+          ? http.get(`/step-scores?taskId=${taskId}`)
           : Promise.resolve({ data: [] }),
       [taskId, scoreUpdated]
     );
 
     return {
-      logs: (data as TaskLog[]) ?? [],
+      logs: (data as TaskScore[]) ?? [],
       loading,
       error,
       fetch,
@@ -42,13 +42,13 @@ function useTaskLogs() {
     const { data, loading, error, fetch } = Api(
       () =>
         stepId
-          ? http.get(`/step-logs?stepId=${stepId}`)
+          ? http.get(`/step-scores?stepId=${stepId}`)
           : Promise.resolve({ data: [] }),
       [stepId, scoreUpdated]
     );
 
     return {
-      logs: (data as TaskLog[]) ?? [],
+      logs: (data as TaskScore[]) ?? [],
       loading,
       error,
       fetch,
@@ -59,12 +59,12 @@ function useTaskLogs() {
     logId: string,
     superviseScore: number
   ) => {
-    await http.patch(`/step-logs/${logId}`, { superviseScore });
+    await http.patch(`/step-scores/${logId}`, { superviseScore });
     publish("TASK_LOG_SCORE_UPDATED", { logId, superviseScore });
   };
 
   const deleteSuperviseScore = async (logId: string) => {
-    await http.delete(`/step-logs/${logId}/supervise-score`);
+    await http.delete(`/step-scores/${logId}/supervise-score`);
     publish("TASK_LOG_SCORE_UPDATED", { logId, superviseScore: null });
   };
 
@@ -76,4 +76,4 @@ function useTaskLogs() {
   };
 }
 
-export default useTaskLogs;
+export default useTaskScores;

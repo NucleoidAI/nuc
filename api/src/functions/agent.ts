@@ -10,9 +10,9 @@ import message from "./message";
 import messagesFunc from "./message";
 import platform from "@canmingir/link-express";
 import session from "./session";
+import stepScoreFn from "./stepScore";
 import supervising from "./supervising";
 import taskFn from "./task";
-import stepLogFn from "./stepLog";
 
 async function messages({ teamId }: { teamId: string }) {
   const messageInstances = await messagesFunc.listMessages({ teamId });
@@ -251,7 +251,7 @@ async function task({ taskId }: { taskId: string }) {
       result = steps[steps.length - 1].result;
     }
 
-    await stepLogFn.create({
+    await stepScoreFn.create({
       taskId,
       parameters: { description, blueprintId },
       output: result ?? comment ?? null,
@@ -393,7 +393,7 @@ async function step({
         result: resultString,
         status: "WAITING_FOR_USER",
       });
-      await stepLogFn.create({
+      await stepScoreFn.create({
         taskId,
         stepId,
         parameters,
@@ -415,7 +415,7 @@ async function step({
         result: resultString,
         status: "SUPERVISED_NEEDED",
       });
-      await stepLogFn.create({
+      await stepScoreFn.create({
         taskId,
         stepId,
         parameters,
@@ -432,7 +432,7 @@ async function step({
         result: resultString || "Completed",
         status: finalStatus,
       });
-      await stepLogFn.create({
+      await stepScoreFn.create({
         taskId,
         stepId,
         parameters,
@@ -451,7 +451,7 @@ async function step({
         status: "FAILED",
       });
       if (taskId) {
-        await stepLogFn.create({
+        await stepScoreFn.create({
           taskId,
           stepId,
           parameters,

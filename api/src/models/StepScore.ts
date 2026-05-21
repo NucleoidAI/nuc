@@ -10,11 +10,11 @@ import {
 } from "@canmingir/link-express/sequelize";
 
 @Table({
-  tableName: "StepLog",
+  tableName: "StepScore",
   timestamps: false,
   underscored: true,
 })
-class StepLog extends Model {
+class StepScore extends Model {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)
@@ -67,4 +67,4 @@ class StepLog extends Model {
   declare step?: any;
 }
 
-export default StepLog;
+export default StepScore;

@@ -20,7 +20,7 @@ const STATUS_COLOR = {
   SUPERVISED: "warning.main",
 };
 
-function LogCard({
+function ScoreCard({
   log,
   onScoreChange,
   onScoreDelete,
@@ -258,4 +258,4 @@ function LogCard({
   );
 }
 
-export default LogCard;
+export default ScoreCard;

@@ -1,7 +1,7 @@
 import { Iconify } from "@canmingir/link/platform/components";
-import LogCard from "../../components/TaskLogs/LogCard";
+import ScoreCard from "../../components/TaskScores/ScoreCard";
 import useLoading from "../../hooks/useLoading";
-import useTaskLogs from "../../hooks/useTaskLogs";
+import useTaskScores from "../../hooks/useTaskScores";
 
 import {
   Accordion,
@@ -24,7 +24,7 @@ const STEP_STATUS_COLOR: Record<string, string> = {
   LOW_CONFIDENCE: "warning.dark",
 };
 
-function StepLogsAccordion({
+function StepScoresAccordion({
   step,
 }: {
   step: {
@@ -37,7 +37,7 @@ function StepLogsAccordion({
 }) {
   const [expanded, setExpanded] = useState(false);
   const { getLogsByStep, updateSuperviseScore, deleteSuperviseScore } =
-    useTaskLogs();
+    useTaskScores();
   const { logs, loading } = getLogsByStep(expanded ? step.id : "");
   const isLoading = useLoading(loading);
 
@@ -135,7 +135,7 @@ function StepLogsAccordion({
         ) : (
           <Stack spacing={1}>
             {logs.map((log) => (
-              <LogCard
+              <ScoreCard
                 key={log.id}
                 log={log}
                 onScoreChange={updateSuperviseScore}
@@ -149,4 +149,4 @@ function StepLogsAccordion({
   );
 }
 
-export default StepLogsAccordion;
+export default StepScoresAccordion;

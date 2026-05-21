@@ -1,17 +1,17 @@
 import Agent from "../models/Agent";
 import Joi from "joi";
 import Step from "../models/Step";
+import StepScore from "../models/StepScore";
 import Task from "../models/Task";
-import StepLog from "../models/StepLog";
 import express from "express";
-import stepLog from "../functions/stepLog";
 import schemas from "../schemas";
+import stepScore from "../functions/stepScore";
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { taskId, stepId } = Joi.attempt(req.query, schemas.StepLog.list);
+  const { taskId, stepId } = Joi.attempt(req.query, schemas.StepScore.list);
 
   if (taskId) {
     const taskInstance = await Task.findOne({
@@ -27,7 +27,7 @@ router.get("/", async (req, res) => {
       return res.status(401).end();
     }
 
-    const logs = await stepLog.list({ taskId });
+    const logs = await stepScore.list({ taskId });
     return res.status(200).json(logs);
   }
 
@@ -51,7 +51,7 @@ router.get("/", async (req, res) => {
     return res.status(401).end();
   }
 
-  const logs = await stepLog.listByStep({ stepId });
+  const logs = await stepScore.listByStep({ stepId });
   return res.status(200).json(logs);
 });
 
@@ -60,10 +60,10 @@ router.patch("/:logId", async (req, res) => {
   const { logId } = req.params;
   const { superviseScore, resultScore } = Joi.attempt(
     req.body,
-    schemas.StepLog.patch,
+    schemas.StepScore.patch,
   );
 
-  const log = await StepLog.findOne({
+  const log = await StepScore.findOne({
     where: { id: logId },
     include: [
       {
@@ -83,7 +83,7 @@ router.patch("/:logId", async (req, res) => {
     return res.status(401).end();
   }
 
-  await stepLog.update({ logId, superviseScore, resultScore });
+  await stepScore.update({ logId, superviseScore, resultScore });
 
   return res.status(200).end();
 });
@@ -92,7 +92,7 @@ router.delete("/:logId/supervise-score", async (req, res) => {
   const { projectId: teamId } = req.session;
   const { logId } = req.params;
 
-  const log = await StepLog.findOne({
+  const log = await StepScore.findOne({
     where: { id: logId },
     include: [
       {
@@ -112,7 +112,7 @@ router.delete("/:logId/supervise-score", async (req, res) => {
     return res.status(401).end();
   }
 
-  await stepLog.removeSuperviseScore({ logId });
+  await stepScore.removeSuperviseScore({ logId });
 
   return res.status(200).end();
 });

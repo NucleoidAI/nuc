@@ -1,5 +1,5 @@
 import { Iconify } from "@canmingir/link/platform/components";
-import StepLogsAccordion from "./StepLogsAccordion";
+import StepScoresAccordion from "./StepScoresAccordion";
 import TaskList from "../../components/TaskList/TaskList";
 import useAgents from "../../hooks/useAgents";
 import useLoading from "../../hooks/useLoading";
@@ -18,7 +18,7 @@ import {
   Typography,
 } from "@mui/material";
 
-function TaskLogsWidget() {
+function TaskScoresWidget() {
   const { getTeamAgents } = useAgents();
   const { agents, loading } = getTeamAgents();
 
@@ -201,7 +201,7 @@ function TaskLogsWidget() {
           ) : (
             <Box sx={{ overflow: "auto", height: "calc(100% - 41px)" }}>
               {(steps ?? []).map((step) => (
-                <StepLogsAccordion key={step.id} step={step} />
+                <StepScoresAccordion key={step.id} step={step} />
               ))}
             </Box>
           )}
@@ -211,4 +211,4 @@ function TaskLogsWidget() {
   );
 }
 
-export default TaskLogsWidget;
+export default TaskScoresWidget;

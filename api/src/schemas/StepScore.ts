@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-const StepLog = {
+const StepScore = {
   list: Joi.object({
     taskId: Joi.string()
       .guid({ version: ["uuidv4"] })
@@ -15,4 +15,4 @@ const StepLog = {
   }).or("superviseScore", "resultScore"),
 };
 
-export default StepLog;
+export default StepScore;

@@ -26,9 +26,9 @@ const menuConfig = {
           path: "/mcps",
         },
         {
-          title: "Task Logs",
+          title: "Task Scores",
           icon: "solar:document-text-bold",
-          path: "/task-logs",
+          path: "/task-scores",
         },
         {
           title: "Monitoring",

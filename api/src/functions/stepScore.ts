@@ -1,4 +1,4 @@
-import StepLog from "../models/StepLog";
+import StepScore from "../models/StepScore";
 
 async function create({
   taskId,
@@ -21,7 +21,7 @@ async function create({
   knowledgeScore?: number;
   resultScore?: number;
 }) {
-  const log = await StepLog.create({
+  const log = await StepScore.create({
     taskId,
     stepId: stepId ?? null,
     parameters: parameters ?? null,
@@ -45,24 +45,24 @@ async function update({
   superviseScore?: number;
   resultScore?: number;
 }) {
-  await StepLog.update(
+  await StepScore.update(
     { superviseScore, resultScore },
     { where: { id: logId } },
   );
 }
 
 async function list({ taskId }: { taskId: string }) {
-  const logs = await StepLog.findAll({ where: { taskId } });
+  const logs = await StepScore.findAll({ where: { taskId } });
   return logs.map((log) => log.toJSON());
 }
 
 async function listByStep({ stepId }: { stepId: string }) {
-  const logs = await StepLog.findAll({ where: { stepId } });
+  const logs = await StepScore.findAll({ where: { stepId } });
   return logs.map((log) => log.toJSON());
 }
 
 async function removeSuperviseScore({ logId }: { logId: string }) {
-  await StepLog.update({ superviseScore: null }, { where: { id: logId } });
+  await StepScore.update({ superviseScore: null }, { where: { id: logId } });
 }
 
 export default { create, update, list, listByStep, removeSuperviseScore };

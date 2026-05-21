@@ -20,7 +20,7 @@ import {
 
 function TaskLogsWidget() {
   const { getTeamAgents } = useAgents();
-  const { agents } = getTeamAgents();
+  const { agents, loading } = getTeamAgents();
 
   const [selectedAgentId, setSelectedAgentId] = useState<string>("");
 
@@ -32,6 +32,7 @@ function TaskLogsWidget() {
   } = useTasks(selectedAgentId);
 
   const isTasksLoading = useLoading(tasksLoading);
+  const isLoading = useLoading(loading);
 
   const [selectedTask, setSelectedTask] = useState<{
     id: string;
@@ -59,7 +60,7 @@ function TaskLogsWidget() {
         sx={{ mb: 1 }}
       >
         <Box sx={{ minWidth: 240 }}>
-          {isTasksLoading ? (
+          {isLoading ? (
             <Skeleton variant="rounded" height={40} sx={{ borderRadius: 1 }} />
           ) : (
             <FormControl fullWidth>

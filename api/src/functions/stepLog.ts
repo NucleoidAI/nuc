@@ -61,4 +61,8 @@ async function listByStep({ stepId }: { stepId: string }) {
   return logs.map((log) => log.toJSON());
 }
 
-export default { create, update, list, listByStep };
+async function removeSuperviseScore({ logId }: { logId: string }) {
+  await StepLog.update({ superviseScore: null }, { where: { id: logId } });
+}
+
+export default { create, update, list, listByStep, removeSuperviseScore };

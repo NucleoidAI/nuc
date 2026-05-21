@@ -63,7 +63,17 @@ function useTaskLogs() {
     publish("TASK_LOG_SCORE_UPDATED", { logId, superviseScore });
   };
 
-  return { getLogsByTask, getLogsByStep, updateSuperviseScore };
+  const deleteSuperviseScore = async (logId: string) => {
+    await http.delete(`/step-logs/${logId}/supervise-score`);
+    publish("TASK_LOG_SCORE_UPDATED", { logId, superviseScore: null });
+  };
+
+  return {
+    getLogsByTask,
+    getLogsByStep,
+    updateSuperviseScore,
+    deleteSuperviseScore,
+  };
 }
 
 export default useTaskLogs;

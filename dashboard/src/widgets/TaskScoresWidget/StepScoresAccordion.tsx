@@ -36,9 +36,9 @@ function StepScoresAccordion({
   };
 }) {
   const [expanded, setExpanded] = useState(false);
-  const { getLogsByStep, updateSuperviseScore, deleteSuperviseScore } =
+  const { getScoresByStep, updateSuperviseScore, deleteSuperviseScore } =
     useTaskScores();
-  const { logs, loading } = getLogsByStep(expanded ? step.id : "");
+  const { scores, loading } = getScoresByStep(expanded ? step.id : "");
   const isLoading = useLoading(loading);
 
   return (
@@ -121,7 +121,7 @@ function StepScoresAccordion({
               />
             ))}
           </Stack>
-        ) : logs.length === 0 ? (
+        ) : scores.length === 0 ? (
           <Box sx={{ textAlign: "center", py: 2 }}>
             <Iconify
               icon="solar:document-text-line-duotone"
@@ -129,15 +129,15 @@ function StepScoresAccordion({
               sx={{ color: "text.disabled", mb: 0.5 }}
             />
             <Typography variant="body2" color="text.disabled">
-              No logs for this step
+              No scores for this step
             </Typography>
           </Box>
         ) : (
           <Stack spacing={1}>
-            {logs.map((log) => (
+            {scores.map((score) => (
               <ScoreCard
-                key={log.id}
-                log={log}
+                key={score.id}
+                score={score}
                 onScoreChange={updateSuperviseScore}
                 onScoreDelete={deleteSuperviseScore}
               />

@@ -21,11 +21,11 @@ const STATUS_COLOR = {
 };
 
 function ScoreCard({
-  log,
+  score,
   onScoreChange,
   onScoreDelete,
 }: {
-  log: {
+  score: {
     id: string;
     parameters: object | null;
     output: string | null;
@@ -36,23 +36,23 @@ function ScoreCard({
     status: "COMPLETED" | "FAILED" | "SUPERVISED";
     createdAt: string;
   };
-  onScoreChange: (logId: string, score: number) => void;
-  onScoreDelete: (logId: string) => void;
+  onScoreChange: (scoreId: string, score: number) => void;
+  onScoreDelete: (scoreId: string) => void;
 }) {
-  const [hasScore, setHasScore] = useState(log.superviseScore !== null);
+  const [hasScore, setHasScore] = useState(score.superviseScore !== null);
   const [localScore, setLocalScore] = useState<number>(
-    log.superviseScore ?? 0.5
+    score.superviseScore ?? 0.5
   );
   const [dirty, setDirty] = useState(false);
 
   const handleConfirm = () => {
-    onScoreChange(log.id, localScore);
+    onScoreChange(score.id, localScore);
     setHasScore(true);
     setDirty(false);
   };
 
   const handleDelete = () => {
-    onScoreDelete(log.id);
+    onScoreDelete(score.id);
     setHasScore(false);
     setLocalScore(0.5);
     setDirty(false);
@@ -74,22 +74,22 @@ function ScoreCard({
           alignItems="center"
         >
           <Typography variant="caption" color="text.disabled">
-            {new Date(log.createdAt).toLocaleString()}
+            {new Date(score.createdAt).toLocaleString()}
           </Typography>
           <Chip
             size="small"
-            label={log.status}
+            label={score.status}
             sx={{
               fontWeight: 800,
               fontSize: 11,
-              bgcolor: STATUS_COLOR[log.status],
+              bgcolor: STATUS_COLOR[score.status],
               color: "common.white",
               "& .MuiChip-label": { px: 1 },
             }}
           />
         </Stack>
 
-        {log.parameters && (
+        {score.parameters && (
           <Box>
             <Typography
               variant="caption"
@@ -112,12 +112,12 @@ function ScoreCard({
                 wordBreak: "break-all",
               }}
             >
-              {JSON.stringify(log.parameters, null, 2)}
+              {JSON.stringify(score.parameters, null, 2)}
             </Box>
           </Box>
         )}
 
-        {log.output && (
+        {score.output && (
           <Box>
             <Typography
               variant="caption"
@@ -139,7 +139,7 @@ function ScoreCard({
                 wordBreak: "break-all",
               }}
             >
-              {log.output}
+              {score.output}
             </Box>
           </Box>
         )}
@@ -149,21 +149,25 @@ function ScoreCard({
         <Stack spacing={0.75}>
           <ScoreBar
             label="Knowledge"
-            value={log.knowledgeScore}
+            value={score.knowledgeScore}
             color="primary.main"
           />
           <ScoreBar
             label="Hallucination"
-            value={log.hallucinationScore}
+            value={score.hallucinationScore}
             color={
-              (log.hallucinationScore ?? 0) > 0.6
+              (score.hallucinationScore ?? 0) > 0.6
                 ? "error.main"
-                : (log.hallucinationScore ?? 0) > 0.3
+                : (score.hallucinationScore ?? 0) > 0.3
                 ? "warning.main"
                 : "success.main"
             }
           />
-          <ScoreBar label="Result" value={log.resultScore} color="info.main" />
+          <ScoreBar
+            label="Result"
+            value={score.resultScore}
+            color="info.main"
+          />
           <Divider />
           <Stack
             direction="row"
@@ -191,7 +195,7 @@ function ScoreCard({
                 const next = Array.isArray(val) ? val[0] : val;
                 if (!hasScore) setHasScore(true);
                 setLocalScore(next);
-                setDirty(next !== (log.superviseScore ?? 0));
+                setDirty(next !== (score.superviseScore ?? 0));
               }}
               sx={{
                 flex: 1,

@@ -200,7 +200,7 @@ async function init() {
   // Task <-> StepScore
   models.Task.hasMany(models.StepScore, {
     foreignKey: "taskId",
-    as: "logs",
+    as: "scores",
   });
   models.StepScore.belongsTo(models.Task, {
     foreignKey: "taskId",
@@ -210,7 +210,7 @@ async function init() {
   // Step <-> StepScore
   models.Step.hasMany(models.StepScore, {
     foreignKey: "stepId",
-    as: "logs",
+    as: "scores",
   });
   models.StepScore.belongsTo(models.Step, {
     foreignKey: "stepId",

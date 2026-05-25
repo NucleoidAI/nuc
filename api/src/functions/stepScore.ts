@@ -21,7 +21,7 @@ async function create({
   knowledgeScore?: number;
   resultScore?: number;
 }) {
-  const log = await StepScore.create({
+  const score = await StepScore.create({
     taskId,
     stepId: stepId ?? null,
     parameters: parameters ?? null,
@@ -33,36 +33,36 @@ async function create({
     resultScore: resultScore ?? null,
   });
 
-  return log.toJSON();
+  return score.toJSON();
 }
 
 async function update({
-  logId,
+  scoreId,
   superviseScore,
   resultScore,
 }: {
-  logId: string;
+  scoreId: string;
   superviseScore?: number;
   resultScore?: number;
 }) {
   await StepScore.update(
     { superviseScore, resultScore },
-    { where: { id: logId } },
+    { where: { id: scoreId } },
   );
 }
 
 async function list({ taskId }: { taskId: string }) {
-  const logs = await StepScore.findAll({ where: { taskId } });
-  return logs.map((log) => log.toJSON());
+  const scores = await StepScore.findAll({ where: { taskId } });
+  return scores.map((score) => score.toJSON());
 }
 
 async function listByStep({ stepId }: { stepId: string }) {
-  const logs = await StepScore.findAll({ where: { stepId } });
-  return logs.map((log) => log.toJSON());
+  const scores = await StepScore.findAll({ where: { stepId } });
+  return scores.map((score) => score.toJSON());
 }
 
-async function removeSuperviseScore({ logId }: { logId: string }) {
-  await StepScore.update({ superviseScore: null }, { where: { id: logId } });
+async function removeSuperviseScore({ scoreId }: { scoreId: string }) {
+  await StepScore.update({ superviseScore: null }, { where: { id: scoreId } });
 }
 
 export default { create, update, list, listByStep, removeSuperviseScore };

@@ -19,9 +19,9 @@ export type TaskScore = {
 
 function useTaskScores() {
   const { Api } = useApi();
-  const [scoreUpdated] = useEvent("TASK_LOG_SCORE_UPDATED", null);
+  const [scoreUpdated] = useEvent("TASK_SCORE_UPDATED", null);
 
-  const getLogsByTask = (taskId: string) => {
+  const getScoresByTask = (taskId: string) => {
     const { data, loading, error, fetch } = Api(
       () =>
         taskId
@@ -31,14 +31,14 @@ function useTaskScores() {
     );
 
     return {
-      logs: (data as TaskScore[]) ?? [],
+      scores: (data as TaskScore[]) ?? [],
       loading,
       error,
       fetch,
     };
   };
 
-  const getLogsByStep = (stepId: string) => {
+  const getScoresByStep = (stepId: string) => {
     const { data, loading, error, fetch } = Api(
       () =>
         stepId
@@ -48,7 +48,7 @@ function useTaskScores() {
     );
 
     return {
-      logs: (data as TaskScore[]) ?? [],
+      scores: (data as TaskScore[]) ?? [],
       loading,
       error,
       fetch,
@@ -56,21 +56,21 @@ function useTaskScores() {
   };
 
   const updateSuperviseScore = async (
-    logId: string,
+    scoreId: string,
     superviseScore: number
   ) => {
-    await http.patch(`/step-scores/${logId}`, { superviseScore });
-    publish("TASK_LOG_SCORE_UPDATED", { logId, superviseScore });
+    await http.patch(`/step-scores/${scoreId}`, { superviseScore });
+    publish("TASK_SCORE_UPDATED", { scoreId, superviseScore });
   };
 
-  const deleteSuperviseScore = async (logId: string) => {
-    await http.delete(`/step-scores/${logId}/supervise-score`);
-    publish("TASK_LOG_SCORE_UPDATED", { logId, superviseScore: null });
+  const deleteSuperviseScore = async (scoreId: string) => {
+    await http.delete(`/step-scores/${scoreId}/supervise-score`);
+    publish("TASK_SCORE_UPDATED", { scoreId, superviseScore: null });
   };
 
   return {
-    getLogsByTask,
-    getLogsByStep,
+    getScoresByTask,
+    getScoresByStep,
     updateSuperviseScore,
     deleteSuperviseScore,
   };

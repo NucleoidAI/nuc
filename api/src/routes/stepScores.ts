@@ -27,8 +27,8 @@ router.get("/", async (req, res) => {
       return res.status(401).end();
     }
 
-    const logs = await stepScore.list({ taskId });
-    return res.status(200).json(logs);
+    const scores = await stepScore.list({ taskId });
+    return res.status(200).json(scores);
   }
 
   const stepInstance = await Step.findOne({
@@ -51,20 +51,20 @@ router.get("/", async (req, res) => {
     return res.status(401).end();
   }
 
-  const logs = await stepScore.listByStep({ stepId });
-  return res.status(200).json(logs);
+  const scores = await stepScore.listByStep({ stepId });
+  return res.status(200).json(scores);
 });
 
-router.patch("/:logId", async (req, res) => {
+router.patch("/:scoreId", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { logId } = req.params;
+  const { scoreId } = req.params;
   const { superviseScore, resultScore } = Joi.attempt(
     req.body,
     schemas.StepScore.patch,
   );
 
-  const log = await StepScore.findOne({
-    where: { id: logId },
+  const score = await StepScore.findOne({
+    where: { id: scoreId },
     include: [
       {
         model: Task,
@@ -75,25 +75,25 @@ router.patch("/:logId", async (req, res) => {
     ],
   });
 
-  if (!log) {
+  if (!score) {
     return res.status(404).end();
   }
 
-  if (log.task.Agent.teamId !== teamId) {
+  if (score.task.Agent.teamId !== teamId) {
     return res.status(401).end();
   }
 
-  await stepScore.update({ logId, superviseScore, resultScore });
+  await stepScore.update({ scoreId, superviseScore, resultScore });
 
   return res.status(200).end();
 });
 
-router.delete("/:logId/supervise-score", async (req, res) => {
+router.delete("/:scoreId/supervise-score", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { logId } = req.params;
+  const { scoreId } = req.params;
 
-  const log = await StepScore.findOne({
-    where: { id: logId },
+  const score = await StepScore.findOne({
+    where: { id: scoreId },
     include: [
       {
         model: Task,
@@ -104,15 +104,15 @@ router.delete("/:logId/supervise-score", async (req, res) => {
     ],
   });
 
-  if (!log) {
+  if (!score) {
     return res.status(404).end();
   }
 
-  if (log.task.Agent.teamId !== teamId) {
+  if (score.task.Agent.teamId !== teamId) {
     return res.status(401).end();
   }
 
-  await stepScore.removeSuperviseScore({ logId });
+  await stepScore.removeSuperviseScore({ scoreId });
 
   return res.status(200).end();
 });

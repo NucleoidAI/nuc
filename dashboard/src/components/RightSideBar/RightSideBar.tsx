@@ -19,18 +19,33 @@ const RightSideBar = ({ open = true, children, sx }: RightSideBarProps) => {
         component="aside"
         sx={{
           position: "fixed",
-          top: 0,
-          right: 0,
-          width: 56,
-          height: "100vh",
-          bgcolor: "background.default",
-          borderLeft: (theme: Theme) => `dashed 1px ${theme.palette.divider}`,
+          top: "50%",
+          right: 12,
+          transform: "translateY(-50%)",
+          width: 44,
+          maxHeight: "80vh",
+          bgcolor: (theme: Theme) =>
+            theme.palette.mode === "dark"
+              ? "background.paper"
+              : "rgba(255, 255, 255, 0.85)",
+          backdropFilter: "blur(16px) saturate(180%)",
+          WebkitBackdropFilter: "blur(16px) saturate(180%)",
+          border: (theme: Theme) =>
+            `1px solid ${
+              theme.palette.mode === "dark"
+                ? "rgba(255,255,255,0.07)"
+                : "rgba(0,0,0,0.07)"
+            }`,
+          borderRadius: "4px",
+          boxShadow: (theme: Theme) =>
+            theme.palette.mode === "dark"
+              ? "0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04)"
+              : "0 8px 32px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04)",
           zIndex: (theme: Theme) => theme.zIndex.modal + 3,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          pt: 1,
-          pb: 2,
+          py: 1.5,
           overflowY: "auto",
           overflowX: "hidden",
           "&::-webkit-scrollbar": { display: "none" },

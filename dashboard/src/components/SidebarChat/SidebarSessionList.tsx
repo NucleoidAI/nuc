@@ -5,7 +5,7 @@ import { alpha } from "@mui/material/styles";
 import { cleanIconName } from "../../utils/cleanIconName";
 import { publish } from "@nucleoidai/react-event";
 
-import { Badge, Box, Divider, Tooltip, Typography } from "@mui/material";
+import { Badge, Box, Tooltip, Typography } from "@mui/material";
 import React, { memo } from "react";
 
 interface SidebarSessionListProps {
@@ -52,7 +52,7 @@ const SidebarSessionList = ({
   const sidebarSessions = sessions;
 
   return (
-    <RightSideBar width={45} height={305}>
+    <RightSideBar width={45} height={300}>
       <Box
         ref={wrapperRef}
         sx={{
@@ -77,7 +77,7 @@ const SidebarSessionList = ({
               ...btnBase,
               flexDirection: "column",
               gap: 0.5,
-              mb: 1,
+              mb: 0.5,
               color: "text.secondary",
               "&:hover": {
                 color: "primary.main",
@@ -155,183 +155,162 @@ const SidebarSessionList = ({
         )}
 
         {sidebarSessions.length > 0 && (
-          <>
-            <Divider
-              flexItem
-              sx={{
-                width: "100%",
-                borderColor: (theme) => alpha(theme.palette.divider, 0.2),
-              }}
-            />
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: 0.75,
-                width: "100%",
-                overflowY: "auto",
-                overflowX: "hidden",
-                pb: 1,
-                pt: 1,
-                flex: 1,
-                "&::-webkit-scrollbar": { display: "none" },
-                scrollbarWidth: "none",
-              }}
-            >
-              {sidebarSessions.map((session, idx) => {
-                const isCurrent = session.sessionId === currentSessionId;
-                const sessionNum = idx + 1;
-                const hasUnread = isCurrent && unreadCount > 0;
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 1,
+              width: "100%",
+              overflowY: "auto",
+              overflowX: "hidden",
+              pb: 1,
+              pt: 1,
+              flex: 1,
+              "&::-webkit-scrollbar": { display: "none" },
+              scrollbarWidth: "none",
+            }}
+          >
+            {sidebarSessions.map((session, idx) => {
+              const isCurrent = session.sessionId === currentSessionId;
+              const sessionNum = idx + 1;
+              const hasUnread = isCurrent && unreadCount > 0;
 
-                return (
-                  <Tooltip
-                    key={session.sessionId}
-                    title={
-                      hasUnread
-                        ? `${unreadCount} new · message${
-                            unreadCount !== 1 ? "s" : ""
-                          }`
-                        : `${session.messages.length} message${
-                            session.messages.length !== 1 ? "s" : ""
-                          }`
-                    }
-                    placement="left"
-                    enterDelay={1000}
-                    enterNextDelay={1000}
+              return (
+                <Tooltip
+                  key={session.sessionId}
+                  title={
+                    hasUnread
+                      ? `${unreadCount} new · message${
+                          unreadCount !== 1 ? "s" : ""
+                        }`
+                      : `${session.messages.length} message${
+                          session.messages.length !== 1 ? "s" : ""
+                        }`
+                  }
+                  placement="left"
+                  enterDelay={1000}
+                  enterNextDelay={1000}
+                >
+                  <Box
+                    onClick={(e) => onSessionClick(e, session.sessionId)}
+                    sx={{
+                      ...btnBase,
+                      flexDirection: "column",
+                      gap: 0.4,
+                      color: isCurrent ? "primary.main" : "text.secondary",
+                      borderColor: isCurrent
+                        ? (theme) => alpha(theme.palette.primary.main, 0.28)
+                        : "transparent",
+                      boxShadow: isCurrent
+                        ? (theme) =>
+                            `0 0 0 1px ${alpha(
+                              theme.palette.primary.main,
+                              0.2
+                            )}`
+                        : "none",
+                      "&:hover": {
+                        bgcolor: isCurrent
+                          ? (theme) => alpha(theme.palette.primary.main, 0.2)
+                          : (theme) =>
+                              theme.palette.mode === "dark"
+                                ? "rgba(255,255,255,0.1)"
+                                : "rgba(0,0,0,0.08)",
+                        transform: "scale(1.08)",
+                      },
+                    }}
                   >
-                    <Box
-                      onClick={(e) => onSessionClick(e, session.sessionId)}
+                    <Badge
+                      badgeContent={hasUnread ? unreadCount : 0}
+                      color="error"
+                      max={9}
                       sx={{
-                        ...btnBase,
-                        flexDirection: "column",
-                        gap: 0.4,
-                        color: isCurrent ? "primary.main" : "text.secondary",
-                        borderColor: isCurrent
-                          ? (theme) => alpha(theme.palette.primary.main, 0.28)
-                          : "transparent",
-                        boxShadow: isCurrent
-                          ? (theme) =>
-                              `0 0 0 1px ${alpha(
-                                theme.palette.primary.main,
-                                0.2
-                              )}`
-                          : "none",
-                        "&:hover": {
-                          bgcolor: isCurrent
-                            ? (theme) => alpha(theme.palette.primary.main, 0.2)
-                            : (theme) =>
-                                theme.palette.mode === "dark"
-                                  ? "rgba(255,255,255,0.1)"
-                                  : "rgba(0,0,0,0.08)",
-                          transform: "scale(1.08)",
+                        "& .MuiBadge-badge": {
+                          fontSize: "0.55rem",
+                          minWidth: 14,
+                          height: 14,
+                          padding: "0 3px",
+                          transform: "scale(0.85) translate(25%, -25%)",
+                          transition: "all 0.2s ease",
                         },
                       }}
                     >
-                      <Badge
-                        badgeContent={hasUnread ? unreadCount : 0}
-                        color="error"
-                        max={9}
+                      <Box
                         sx={{
-                          "& .MuiBadge-badge": {
-                            fontSize: "0.55rem",
-                            minWidth: 14,
-                            height: 14,
-                            padding: "0 3px",
-                            transform: "scale(0.85) translate(25%, -25%)",
-                            transition: "all 0.2s ease",
-                          },
+                          width: 20,
+                          height: 20,
+                          borderRadius: "7px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          transition: "all 0.2s ease-in-out",
+                          bgcolor: (theme) =>
+                            isCurrent
+                              ? alpha(theme.palette.primary.main, 0.2)
+                              : alpha(theme.palette.text.secondary, 0.1),
                         }}
                       >
-                        <Box
-                          sx={{
-                            width: 20,
-                            height: 20,
-                            borderRadius: "7px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            transition: "all 0.2s ease-in-out",
-                            bgcolor: (theme) =>
-                              isCurrent
-                                ? alpha(theme.palette.primary.main, 0.2)
-                                : alpha(theme.palette.text.secondary, 0.1),
-                          }}
-                        >
-                          {session.agentIcon ? (
-                            <Iconify
-                              icon={cleanIconName(session.agentIcon)}
-                              sx={{ width: 15, height: 15 }}
-                            />
-                          ) : (
-                            <Typography
-                              sx={{
-                                fontSize: "0.65rem",
-                                fontWeight: 800,
-                                lineHeight: 1,
-                              }}
-                            >
-                              {sessionNum}
-                            </Typography>
-                          )}
-                        </Box>
-                      </Badge>
+                        {session.agentIcon ? (
+                          <Iconify
+                            icon={cleanIconName(session.agentIcon)}
+                            sx={{ width: 15, height: 15 }}
+                          />
+                        ) : (
+                          <Typography
+                            sx={{
+                              fontSize: "0.65rem",
+                              fontWeight: 800,
+                              lineHeight: 1,
+                            }}
+                          >
+                            {sessionNum}
+                          </Typography>
+                        )}
+                      </Box>
+                    </Badge>
 
-                      <Typography
-                        sx={{
-                          fontSize: "0.55rem",
-                          fontWeight: 700,
-                          lineHeight: 1,
-                          letterSpacing: 0.3,
-                        }}
-                      >
-                        {`Ses. ${sessionNum}`}
-                      </Typography>
-                    </Box>
-                  </Tooltip>
-                );
-              })}
-            </Box>
-          </>
+                    <Typography
+                      sx={{
+                        fontSize: "0.55rem",
+                        fontWeight: 700,
+                        lineHeight: 1,
+                        letterSpacing: 0.3,
+                      }}
+                    >
+                      {`Ses. ${sessionNum}`}
+                    </Typography>
+                  </Box>
+                </Tooltip>
+              );
+            })}
+          </Box>
         )}
 
         {sidebarSessions.length > 0 && (
-          <>
-            <Divider
-              flexItem
+          <Tooltip title="Clear all sessions" placement="left">
+            <Box
+              onClick={onClearAll}
               sx={{
-                width: "100%",
-                borderColor: (theme) => alpha(theme.palette.divider, 0.2),
+                ...btnBase,
+                color: "text.disabled",
+                bgcolor: "transparent",
+                "&:hover": {
+                  bgcolor: (theme) => alpha(theme.palette.error.main, 0.1),
+                  color: "error.main",
+                  borderColor: (theme) => alpha(theme.palette.error.main, 0.2),
+                  transform: "scale(1.08)",
+                },
               }}
-            />
-            <Tooltip title="Clear all sessions" placement="left">
-              <Box
-                onClick={onClearAll}
+            >
+              <Iconify
+                icon="solar:trash-bin-2-bold"
                 sx={{
-                  ...btnBase,
-                  mt: 0.5,
-                  gap: 0.5,
-                  color: "text.disabled",
-                  bgcolor: "transparent",
-                  "&:hover": {
-                    bgcolor: (theme) => alpha(theme.palette.error.main, 0.1),
-                    color: "error.main",
-                    borderColor: (theme) =>
-                      alpha(theme.palette.error.main, 0.2),
-                    transform: "scale(1.08)",
-                  },
+                  width: 18,
+                  height: 18,
                 }}
-              >
-                <Iconify
-                  icon="solar:trash-bin-2-bold"
-                  sx={{
-                    width: 18,
-                    height: 18,
-                  }}
-                />
-              </Box>
-            </Tooltip>
-          </>
+              />
+            </Box>
+          </Tooltip>
         )}
       </Box>
     </RightSideBar>

@@ -30,6 +30,8 @@ const btnBase = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
+  alignSelf: "center",
+  flexDirection: "column",
   cursor: "pointer",
   flexShrink: 0,
   transition: "all 0.18s ease",
@@ -47,24 +49,24 @@ const SidebarSessionList = ({
   wrapperRef,
   beta,
 }: SidebarSessionListProps) => {
+  const sidebarSessions = sessions;
+
   return (
-    <RightSideBar>
+    <RightSideBar width={45} height={305}>
       <Box
         ref={wrapperRef}
         sx={{
           width: "100%",
+          height: "100%",
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
-          gap: 0.5,
         }}
       >
-        {/* New Chat */}
         <Tooltip
           title="New Chat"
           placement="left"
-          enterDelay={600}
-          enterNextDelay={600}
+          enterDelay={1000}
+          enterNextDelay={1000}
         >
           <Box
             onClick={() => {
@@ -73,11 +75,10 @@ const SidebarSessionList = ({
             }}
             sx={{
               ...btnBase,
+              flexDirection: "column",
+              gap: 0.5,
+              mb: 1,
               color: "text.secondary",
-              bgcolor: (theme) =>
-                theme.palette.mode === "dark"
-                  ? "rgba(255,255,255,0.06)"
-                  : "rgba(0,0,0,0.05)",
               "&:hover": {
                 color: "primary.main",
                 bgcolor: (theme) => alpha(theme.palette.primary.main, 0.12),
@@ -88,28 +89,38 @@ const SidebarSessionList = ({
           >
             <Iconify
               icon="solar:add-square-bold-duotone"
-              sx={{ width: 17, height: 17 }}
+              sx={{ width: 20, height: 20 }}
             />
+
+            <Typography
+              sx={{
+                fontSize: "0.5rem",
+                fontWeight: 500,
+                letterSpacing: 0.5,
+                lineHeight: 1,
+                textTransform: "capitalize",
+              }}
+            >
+              New
+            </Typography>
           </Box>
         </Tooltip>
 
-        {/* Open API */}
         {!beta && (
           <Tooltip
             title="Open API"
             placement="left"
-            enterDelay={600}
-            enterNextDelay={600}
+            enterDelay={1000}
+            enterNextDelay={1000}
           >
             <Box
               onClick={() => publish("SWAGGER_DIALOG_OPEN", { open: true })}
               sx={{
                 ...btnBase,
+                flexDirection: "column",
+                gap: 0.5,
+                mb: 1,
                 color: "text.secondary",
-                bgcolor: (theme) =>
-                  theme.palette.mode === "dark"
-                    ? "rgba(255,255,255,0.06)"
-                    : "rgba(0,0,0,0.05)",
                 "&:hover": {
                   bgcolor: (theme) =>
                     theme.palette.mode === "dark"
@@ -119,134 +130,187 @@ const SidebarSessionList = ({
                 },
               }}
             >
-              <Iconify icon="logos:swagger" sx={{ width: 15, height: 15 }} />
+              <Iconify
+                icon="logos:swagger"
+                sx={{
+                  width: 20,
+                  height: 20,
+                  transition: "all 0.2s ease-in-out",
+                }}
+              />
+
+              <Typography
+                sx={{
+                  fontSize: "0.5rem",
+                  fontWeight: 500,
+                  letterSpacing: 0.5,
+                  lineHeight: 1,
+                  textTransform: "capitalize",
+                }}
+              >
+                API
+              </Typography>
             </Box>
           </Tooltip>
         )}
 
-        {/* Sessions */}
-        {sessions.length > 0 && (
+        {sidebarSessions.length > 0 && (
           <>
             <Divider
               flexItem
               sx={{
-                my: 0.5,
-                mx: 0.5,
-                borderColor: (theme) => alpha(theme.palette.divider, 0.18),
+                width: "100%",
+                borderColor: (theme) => alpha(theme.palette.divider, 0.2),
               }}
             />
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 0.75,
+                width: "100%",
+                overflowY: "auto",
+                overflowX: "hidden",
+                pb: 1,
+                pt: 1,
+                flex: 1,
+                "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
+              }}
+            >
+              {sidebarSessions.map((session, idx) => {
+                const isCurrent = session.sessionId === currentSessionId;
+                const sessionNum = idx + 1;
+                const hasUnread = isCurrent && unreadCount > 0;
 
-            {sessions.map((session, idx) => {
-              const isCurrent = session.sessionId === currentSessionId;
-              const sessionNum = idx + 1;
-              const hasUnread = isCurrent && unreadCount > 0;
-
-              return (
-                <Tooltip
-                  key={session.sessionId}
-                  title={
-                    hasUnread
-                      ? `${unreadCount} new message${
-                          unreadCount !== 1 ? "s" : ""
-                        }`
-                      : `Session ${sessionNum} · ${
-                          session.messages.length
-                        } msg${session.messages.length !== 1 ? "s" : ""}`
-                  }
-                  placement="left"
-                  enterDelay={600}
-                  enterNextDelay={600}
-                >
-                  <Box
-                    onClick={(e) => onSessionClick(e, session.sessionId)}
-                    sx={{
-                      ...btnBase,
-                      position: "relative",
-                      borderRadius: "10px",
-                      color: isCurrent ? "primary.main" : "text.secondary",
-                      bgcolor: isCurrent
-                        ? (theme) => alpha(theme.palette.primary.main, 0.14)
-                        : (theme) =>
-                            theme.palette.mode === "dark"
-                              ? "rgba(255,255,255,0.06)"
-                              : "rgba(0,0,0,0.05)",
-                      borderColor: isCurrent
-                        ? (theme) => alpha(theme.palette.primary.main, 0.28)
-                        : "transparent",
-                      boxShadow: isCurrent
-                        ? (theme) =>
-                            `0 0 0 1px ${alpha(
-                              theme.palette.primary.main,
-                              0.2
-                            )}`
-                        : "none",
-                      "&:hover": {
-                        bgcolor: isCurrent
-                          ? (theme) => alpha(theme.palette.primary.main, 0.2)
-                          : (theme) =>
-                              theme.palette.mode === "dark"
-                                ? "rgba(255,255,255,0.1)"
-                                : "rgba(0,0,0,0.08)",
-                        transform: "scale(1.08)",
-                      },
-                    }}
+                return (
+                  <Tooltip
+                    key={session.sessionId}
+                    title={
+                      hasUnread
+                        ? `${unreadCount} new · message${
+                            unreadCount !== 1 ? "s" : ""
+                          }`
+                        : `${session.messages.length} message${
+                            session.messages.length !== 1 ? "s" : ""
+                          }`
+                    }
+                    placement="left"
+                    enterDelay={1000}
+                    enterNextDelay={1000}
                   >
-                    <Badge
-                      badgeContent={hasUnread ? unreadCount : 0}
-                      color="error"
-                      max={9}
+                    <Box
+                      onClick={(e) => onSessionClick(e, session.sessionId)}
                       sx={{
-                        "& .MuiBadge-badge": {
-                          fontSize: "0.5rem",
-                          minWidth: 13,
-                          height: 13,
-                          padding: "0 2px",
-                          transform: "scale(0.9) translate(40%, -40%)",
+                        ...btnBase,
+                        flexDirection: "column",
+                        gap: 0.4,
+                        color: isCurrent ? "primary.main" : "text.secondary",
+                        borderColor: isCurrent
+                          ? (theme) => alpha(theme.palette.primary.main, 0.28)
+                          : "transparent",
+                        boxShadow: isCurrent
+                          ? (theme) =>
+                              `0 0 0 1px ${alpha(
+                                theme.palette.primary.main,
+                                0.2
+                              )}`
+                          : "none",
+                        "&:hover": {
+                          bgcolor: isCurrent
+                            ? (theme) => alpha(theme.palette.primary.main, 0.2)
+                            : (theme) =>
+                                theme.palette.mode === "dark"
+                                  ? "rgba(255,255,255,0.1)"
+                                  : "rgba(0,0,0,0.08)",
+                          transform: "scale(1.08)",
                         },
                       }}
                     >
-                      {session.agentIcon ? (
-                        <Iconify
-                          icon={cleanIconName(session.agentIcon)}
-                          sx={{ width: 16, height: 16 }}
-                        />
-                      ) : (
-                        <Typography
+                      <Badge
+                        badgeContent={hasUnread ? unreadCount : 0}
+                        color="error"
+                        max={9}
+                        sx={{
+                          "& .MuiBadge-badge": {
+                            fontSize: "0.55rem",
+                            minWidth: 14,
+                            height: 14,
+                            padding: "0 3px",
+                            transform: "scale(0.85) translate(25%, -25%)",
+                            transition: "all 0.2s ease",
+                          },
+                        }}
+                      >
+                        <Box
                           sx={{
-                            fontSize: "0.6rem",
-                            fontWeight: 800,
-                            lineHeight: 1,
-                            color: "inherit",
+                            width: 20,
+                            height: 20,
+                            borderRadius: "7px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            transition: "all 0.2s ease-in-out",
+                            bgcolor: (theme) =>
+                              isCurrent
+                                ? alpha(theme.palette.primary.main, 0.2)
+                                : alpha(theme.palette.text.secondary, 0.1),
                           }}
                         >
-                          {sessionNum}
-                        </Typography>
-                      )}
-                    </Badge>
-                  </Box>
-                </Tooltip>
-              );
-            })}
+                          {session.agentIcon ? (
+                            <Iconify
+                              icon={cleanIconName(session.agentIcon)}
+                              sx={{ width: 15, height: 15 }}
+                            />
+                          ) : (
+                            <Typography
+                              sx={{
+                                fontSize: "0.65rem",
+                                fontWeight: 800,
+                                lineHeight: 1,
+                              }}
+                            >
+                              {sessionNum}
+                            </Typography>
+                          )}
+                        </Box>
+                      </Badge>
 
+                      <Typography
+                        sx={{
+                          fontSize: "0.55rem",
+                          fontWeight: 700,
+                          lineHeight: 1,
+                          letterSpacing: 0.3,
+                        }}
+                      >
+                        {`Ses. ${sessionNum}`}
+                      </Typography>
+                    </Box>
+                  </Tooltip>
+                );
+              })}
+            </Box>
+          </>
+        )}
+
+        {sidebarSessions.length > 0 && (
+          <>
             <Divider
               flexItem
               sx={{
-                my: 0.5,
-                mx: 0.5,
-                borderColor: (theme) => alpha(theme.palette.divider, 0.18),
+                width: "100%",
+                borderColor: (theme) => alpha(theme.palette.divider, 0.2),
               }}
             />
-
-            {/* Clear all */}
-            <Tooltip
-              title="Clear all sessions"
-              placement="left"
-              enterDelay={600}
-            >
+            <Tooltip title="Clear all sessions" placement="left">
               <Box
                 onClick={onClearAll}
                 sx={{
                   ...btnBase,
+                  mt: 0.5,
+                  gap: 0.5,
                   color: "text.disabled",
                   bgcolor: "transparent",
                   "&:hover": {
@@ -260,7 +324,10 @@ const SidebarSessionList = ({
               >
                 <Iconify
                   icon="solar:trash-bin-2-bold"
-                  sx={{ width: 15, height: 15 }}
+                  sx={{
+                    width: 18,
+                    height: 18,
+                  }}
                 />
               </Box>
             </Tooltip>

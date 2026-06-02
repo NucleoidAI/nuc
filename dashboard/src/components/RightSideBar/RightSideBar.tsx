@@ -5,12 +5,22 @@ import type { Theme } from "@mui/material/styles";
 import { Box, Portal } from "@mui/material";
 
 type RightSideBarProps = {
+  width?: number | string;
+  height?: number | string;
+  top?: number | string;
   open?: boolean;
   children?: React.ReactNode;
   sx?: SxProps<Theme>;
 };
 
-const RightSideBar = ({ open = true, children, sx }: RightSideBarProps) => {
+const RightSideBar = ({
+  width = 62,
+  height = "auto",
+  top = "50%",
+  open = true,
+  children,
+  sx,
+}: RightSideBarProps) => {
   if (!open) return null;
 
   return (
@@ -19,11 +29,11 @@ const RightSideBar = ({ open = true, children, sx }: RightSideBarProps) => {
         component="aside"
         sx={{
           position: "fixed",
-          top: "50%",
-          right: 12,
+          top,
+          right: 0,
           transform: "translateY(-50%)",
-          width: 44,
-          maxHeight: "80vh",
+          width,
+          height,
           bgcolor: (theme: Theme) =>
             theme.palette.mode === "dark"
               ? "background.paper"

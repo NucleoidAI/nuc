@@ -4,7 +4,7 @@ import { getAgentGradients } from "../../utils/gradient";
 import slackIcon from "@iconify-icons/logos/slack-icon";
 import whatsappIcon from "@iconify-icons/logos/whatsapp-icon";
 
-import { Box, Button, Chip, Stack, Typography, useTheme } from "@mui/material";
+import { Box, Button, Chip, Stack, Typography } from "@mui/material";
 import { Fab, alpha } from "@mui/material";
 import {
   HeaderCard,

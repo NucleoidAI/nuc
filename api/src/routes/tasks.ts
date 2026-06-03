@@ -115,6 +115,19 @@ router.get("/:taskId/steps", async (req, res) => {
   return res.status(200).json(steps);
 });
 
+router.patch("/:taskId/steps/:stepId", async (req, res) => {
+  const { taskId, stepId } = req.params;
+  const { comment } = Joi.attempt(
+    req.body,
+    Joi.object({
+      comment: Joi.string().max(100).allow(null, "").optional(),
+    }),
+  );
+
+  await task.updateStepComment({ stepId, comment: comment ?? null });
+  return res.status(200).end();
+});
+
 router.post("/:taskId/supervising", async (req, res) => {
   const { taskId } = req.params;
   const { text, addToKnowledgeBase, agentId } = Joi.attempt(

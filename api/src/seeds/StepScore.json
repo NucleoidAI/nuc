@@ -1,0 +1,149 @@
+{
+  "sequence": 100,
+  "seed": [
+    {
+      "id": "c1d2e3f4-0001-4000-8000-000000000001",
+      "taskId": "a1b2c3d4-0001-4000-8000-000000000001",
+      "stepId": "b1c2d3e4-0001-4000-8000-000000000001",
+      "parameters": { "address": "Musterstrasse 12, 10115 Berlin" },
+      "output": "{\"bbk\": \"DEU-10115-00482\"}",
+      "hallucinationScore": 0.02,
+      "superviseScore": 0.95,
+      "resultScore": 0.98,
+      "knowledgeScore": 0.91,
+      "status": "COMPLETED",
+      "createdAt": "2026-05-10T09:01:00Z"
+    },
+    {
+      "id": "c1d2e3f4-0002-4000-8000-000000000002",
+      "taskId": "a1b2c3d4-0001-4000-8000-000000000001",
+      "stepId": "b1c2d3e4-0002-4000-8000-000000000002",
+      "parameters": { "bbk": "DEU-10115-00482" },
+      "output": "{\"available\": true, \"slots\": 4}",
+      "hallucinationScore": 0.01,
+      "superviseScore": 0.97,
+      "resultScore": 0.99,
+      "knowledgeScore": 0.94,
+      "status": "COMPLETED",
+      "createdAt": "2026-05-10T09:02:00Z"
+    },
+    {
+      "id": "c1d2e3f4-0003-4000-8000-000000000003",
+      "taskId": "a1b2c3d4-0001-4000-8000-000000000001",
+      "stepId": "b1c2d3e4-0003-4000-8000-000000000003",
+      "parameters": { "bbk": "DEU-10115-00482" },
+      "output": "[{\"id\": \"P100\", \"speed\": 100}, {\"id\": \"P250\", \"speed\": 250}]",
+      "hallucinationScore": 0.03,
+      "superviseScore": 0.93,
+      "resultScore": 0.96,
+      "knowledgeScore": 0.89,
+      "status": "COMPLETED",
+      "createdAt": "2026-05-10T09:03:00Z"
+    },
+    {
+      "id": "c1d2e3f4-0004-4000-8000-000000000004",
+      "taskId": "a1b2c3d4-0001-4000-8000-000000000001",
+      "stepId": "b1c2d3e4-0004-4000-8000-000000000004",
+      "parameters": {
+        "message": "Please select a product: 100 Mbps or 250 Mbps"
+      },
+      "output": "P250",
+      "hallucinationScore": 0.0,
+      "superviseScore": 1.0,
+      "resultScore": 1.0,
+      "knowledgeScore": 0.97,
+      "status": "COMPLETED",
+      "createdAt": "2026-05-10T09:05:00Z"
+    },
+    {
+      "id": "c1d2e3f4-0005-4000-8000-000000000005",
+      "taskId": "a1b2c3d4-0002-4000-8000-000000000002",
+      "stepId": "b1c2d3e4-0005-4000-8000-000000000005",
+      "parameters": { "address": "Hauptstrasse 5, 80331 Munich" },
+      "output": "{\"bbk\": \"DEU-80331-00219\"}",
+      "hallucinationScore": 0.02,
+      "superviseScore": 0.94,
+      "resultScore": 0.97,
+      "knowledgeScore": 0.9,
+      "status": "COMPLETED",
+      "createdAt": "2026-05-11T11:31:00Z"
+    },
+    {
+      "id": "c1d2e3f4-0006-4000-8000-000000000006",
+      "taskId": "a1b2c3d4-0002-4000-8000-000000000002",
+      "stepId": "b1c2d3e4-0006-4000-8000-000000000006",
+      "parameters": { "bbk": "DEU-80331-00219" },
+      "output": "Connection timeout after 3 retries.",
+      "hallucinationScore": null,
+      "superviseScore": null,
+      "resultScore": 0.0,
+      "knowledgeScore": null,
+      "status": "FAILED",
+      "createdAt": "2026-05-11T11:32:00Z"
+    },
+    {
+      "id": "c1d2e3f4-0007-4000-8000-000000000007",
+      "taskId": "a1b2c3d4-0003-4000-8000-000000000003",
+      "stepId": "b1c2d3e4-0007-4000-8000-000000000007",
+      "parameters": { "url": "https://internal/metrics/q1" },
+      "output": null,
+      "hallucinationScore": null,
+      "superviseScore": null,
+      "resultScore": null,
+      "knowledgeScore": null,
+      "status": "SUPERVISED",
+      "createdAt": "2026-05-13T08:16:00Z"
+    },
+    {
+      "id": "c1d2e3f4-1001-4000-8000-000000000001",
+      "taskId": "17816283-412c-4db3-abe7-be24ed494b21",
+      "stepId": "0c129e3a-012b-4d0f-849a-e111341ce437",
+      "parameters": {
+        "question": "What is your address?",
+        "taskId": "17816283-412c-4db3-abe7-be24ed494b21",
+        "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59",
+        "sessionId": "b9901597-8625-43d9-a925-ed5e0ad7b1e4",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+      },
+      "output": "Mars",
+      "hallucinationScore": 0.01,
+      "superviseScore": 0.96,
+      "resultScore": 0.98,
+      "knowledgeScore": 0.92,
+      "status": "COMPLETED",
+      "createdAt": "2026-05-25T12:39:54.835Z"
+    },
+    {
+      "id": "c1d2e3f4-1002-4000-8000-000000000002",
+      "taskId": "17816283-412c-4db3-abe7-be24ed494b21",
+      "stepId": "db01aded-bafe-4134-bd45-f6433e2cc311",
+      "parameters": { "address": "Mars" },
+      "output": "{\"_meta\":{},\"content\":[{\"type\":\"text\",\"text\":\"{\\\"error\\\":\\\"BBK_NO_NOT_FOUND\\\"}\"}],\"isError\":false}",
+      "hallucinationScore": 0.05,
+      "superviseScore": 0.88,
+      "resultScore": 0.6,
+      "knowledgeScore": 0.92,
+      "status": "COMPLETED",
+      "createdAt": "2026-05-25T12:40:01.462Z"
+    },
+    {
+      "id": "c1d2e3f4-1003-4000-8000-000000000003",
+      "taskId": "17816283-412c-4db3-abe7-be24ed494b21",
+      "stepId": "d5c02c73-655b-4a29-9e29-38b799df3ffe",
+      "parameters": {
+        "question": "Address not found in database. What should I do?",
+        "sessionId": "b9901597-8625-43d9-a925-ed5e0ad7b1e4",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "taskId": "17816283-412c-4db3-abe7-be24ed494b21",
+        "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
+      },
+      "output": "{\"id\":\"137e2411-299b-437c-aa8e-f0284518232c\",\"status\":\"IN_PROGRESS\",\"createdAt\":\"2026-05-25T12:40:11.092Z\",\"sessionId\":\"b9901597-8625-43d9-a925-ed5e0ad7b1e4\",\"question\":\"Address not found in database. What should I do?\",\"agentId\":\"00db1bd4-4829-40f2-8b99-d2e42342157e\",\"blueprintId\":\"ba6f7911-e232-469d-9060-2881852f6e59\",\"taskId\":\"17816283-412c-4db3-abe7-be24ed494b21\"}",
+      "hallucinationScore": null,
+      "superviseScore": null,
+      "resultScore": null,
+      "knowledgeScore": 0.92,
+      "status": "SUPERVISED",
+      "createdAt": "2026-05-25T12:40:11.085Z"
+    }
+  ]
+}

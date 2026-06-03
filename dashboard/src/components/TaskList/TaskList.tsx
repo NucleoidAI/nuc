@@ -53,7 +53,10 @@ const TaskList = ({
   return (
     <List
       disablePadding
-      sx={{ maxHeight: "calc(100vh - 380px)", overflow: "auto" }}
+      sx={{
+        maxHeight: "calc(100vh - 150px)",
+        overflow: "auto",
+      }}
     >
       {tasks.map((task) => {
         const isSelected = selectedTask?.id === task.id;
@@ -120,7 +123,7 @@ const TaskList = ({
                       textOverflow: "ellipsis",
                       display: "-webkit-box",
                       WebkitBoxOrient: "vertical",
-                      lineHeight: 1.4,
+                      lineHeight: 1,
                     }}
                   >
                     {task.description}
@@ -163,7 +166,7 @@ const TaskList = ({
                         ml: 1,
                       }}
                     >
-                      <Iconify icon="solar:calendar-linear" width={14} />
+                      <Iconify icon="solar:calendar-linear" width={12} />
                       {new Date(task.createdAt).toLocaleDateString(undefined, {
                         month: "short",
                         day: "numeric",

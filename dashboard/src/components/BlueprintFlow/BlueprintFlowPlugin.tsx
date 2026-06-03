@@ -563,7 +563,7 @@ const NodeWrapper = styled("div")({
   transformStyle: "preserve-3d",
   transform: "perspective(1500px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)",
   boxShadow: `
-     1px 1px 0 #174f77,
+    1px 1px 0 #174f77,
     2px 2px 0 #174f77,
     3px 3px 0 #174f77,
     4px 4px 0 #174f77,
@@ -592,9 +592,7 @@ const NodeWrapper = styled("div")({
   `,
   },
 });
-// 174f774d
-// rgba(198, 132, 255, 0.2) => #c684ff33
-// rgba(7, 141, 238, 0.3) => #078dee4d
+
 export const blueprintFlowPlugin = {
   id: "blueprintChart",
 
@@ -603,7 +601,7 @@ export const blueprintFlowPlugin = {
 
     const bgFrom = undefined;
     const bgTo = undefined;
-    const borderColor = undefined;
+    const borderColor = "none";
     const borderRadius = 16;
     const shadowLevel = 1;
     const minWidth = 300;

@@ -1,5 +1,3 @@
-import { styled } from "@mui/material/styles";
-
 import {
   Divider,
   ListItemIcon,
@@ -9,6 +7,7 @@ import {
 } from "@mui/material";
 import { Iconify, InfoNode } from "@canmingir/link/platform/components";
 import React, { useState } from "react";
+import { alpha, styled, useTheme } from "@mui/material/styles";
 
 const AddButtonWrapper = styled("div")(({ theme }) => ({
   position: "absolute",
@@ -559,8 +558,42 @@ const NodeWrapper = styled("div")({
   position: "relative",
   width: "100%",
   height: "100%",
+  borderRadius: "16px",
+  transformStyle: "preserve-3d",
+  transform: "perspective(1500px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)",
+  boxShadow: `
+     1px 1px 0 #174f77,
+    2px 2px 0 #174f77,
+    3px 3px 0 #174f77,
+    4px 4px 0 #174f77,
+    5px 5px 0 #174f77,
+    6px 6px 0 #174f77,
+    7px 7px 0 #174f77,
+    10px 10px 20px rgba(0, 0, 0, 0.4),
+    20px 20px 40px rgba(0, 0, 0, 0.5)
+  `,
+  transition:
+    "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, filter 0.25s ease",
+  "&:hover": {
+    transform:
+      "perspective(1500px) rotateX(0deg) rotateY(-10deg) rotateZ(0deg)",
+    filter: "brightness(1.070)",
+    boxShadow: `
+    1px 1px 0 #174f77,
+    2px 2px 0 #174f77,
+    3px 3px 0 #174f77,
+    4px 4px 0 #174f77,
+    5px 5px 0 #174f77,
+    6px 6px 0 #174f77,
+    7px 7px 0 #174f77,
+    10px 10px 20px rgba(0, 0, 0, 0.4),
+    20px 20px 40px rgba(0, 0, 0, 0.5)
+  `,
+  },
 });
-
+// 174f774d
+// rgba(198, 132, 255, 0.2) => #c684ff33
+// rgba(7, 141, 238, 0.3) => #078dee4d
 export const blueprintFlowPlugin = {
   id: "blueprintChart",
 
@@ -570,6 +603,7 @@ export const blueprintFlowPlugin = {
     const bgFrom = undefined;
     const bgTo = undefined;
     const borderColor = undefined;
+    const borderRadius = 16;
     const shadowLevel = 1;
     const minWidth = 300;
     const maxWidth = 300;
@@ -588,6 +622,7 @@ export const blueprintFlowPlugin = {
       minHeight,
       maxHeight,
       shape,
+      borderRadius,
       gap: styleTokens.gap ?? 6,
       levelGap: styleTokens.levelGap ?? 15,
     };

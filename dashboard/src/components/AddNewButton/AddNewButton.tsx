@@ -41,16 +41,16 @@ function AddNewButton({ type, addNew, onClickFunction }) {
           transform:
             "perspective(1500px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)",
           boxShadow: `
-    1px 1px 0 #161C24,
-    2px 2px 0 #161C24,
-    3px 3px 0 #161C24,
-    4px 4px 0 #161C24,
-    5px 5px 0 #161C24,
-    6px 6px 0 #161C24,
-    7px 7px 0 #161C24,
-    10px 10px 20px rgba(0, 0, 0, 0.4),
-    20px 20px 40px rgba(0, 0, 0, 0.5)
-  `,
+            1px 1px 0 #141820,
+            2px 2px 0 #171c24,
+            3px 3px 0 #1a2028,
+            4px 4px 0 #1d242c,
+            5px 5px 0 #202830,
+            6px 6px 0 #232c34,
+            7px 7px 0 #263038,
+            10px 10px 20px rgba(0, 0, 0, 0.4),
+            20px 20px 40px rgba(0, 0, 0, 0.5)
+          `,
           transition:
             "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, filter 0.25s ease",
           "&:hover": {
@@ -58,16 +58,16 @@ function AddNewButton({ type, addNew, onClickFunction }) {
               "perspective(1500px) rotateX(0deg) rotateY(-10deg) rotateZ(0deg)",
             filter: "brightness(1.070)",
             boxShadow: `
-    1px 1px 0 #161C24,
-    2px 2px 0 #161C24,
-    3px 3px 0 #161C24,
-    4px 4px 0 #161C24,
-    5px 5px 0 #161C24,
-    6px 6px 0 #161C24,
-    7px 7px 0 #161C24,
-    10px 10px 20px rgba(0, 0, 0, 0.4),
-    20px 20px 40px rgba(0, 0, 0, 0.5)
-  `,
+            1px 1px 0 #141820,
+            2px 2px 0 #171c24,
+            3px 3px 0 #1a2028,
+            4px 4px 0 #1d242c,
+            5px 5px 0 #202830,
+            6px 6px 0 #232c34,
+            7px 7px 0 #263038,
+            10px 10px 20px rgba(0, 0, 0, 0.4),
+            20px 20px 40px rgba(0, 0, 0, 0.5)
+          `,
           },
         }}
       >

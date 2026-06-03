@@ -23,7 +23,7 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     border: "1px solid",
-    borderColor: "#262f3a",
+    borderColor: "rgba(22, 28, 36, 0.5)",
     backgroundColor: "background.paper",
     transition: "none",
     color: "text.secondary",

@@ -1,7 +1,10 @@
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import { BlueprintFlowMiniPreview } from "./BlueprintFlowMiniPreview";
+import Chip from "@mui/material/Chip";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import LockIcon from "@mui/icons-material/Lock";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
 import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
 import TaskIcon from "@mui/icons-material/Task";
 
@@ -112,6 +115,21 @@ const BlueprintCard = ({
                   color: "text.disabled",
                 },
               }}
+            />
+
+            <Chip
+              size="small"
+              icon={
+                item.blocking !== false ? (
+                  <LockIcon fontSize="small" />
+                ) : (
+                  <LockOpenIcon fontSize="small" />
+                )
+              }
+              label={item.blocking !== false ? "Blocking" : "Non-blocking"}
+              color={item.blocking !== false ? "warning" : "success"}
+              variant="outlined"
+              sx={{ alignSelf: "flex-start" }}
             />
           </Box>
         </Box>

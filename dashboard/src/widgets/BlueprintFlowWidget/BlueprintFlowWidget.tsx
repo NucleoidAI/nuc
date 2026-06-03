@@ -26,6 +26,7 @@ interface Blueprint {
   description: string;
   agentId: string;
   pseudocode?: string;
+  blocking?: boolean;
 }
 
 function BlueprintFlowWidget({
@@ -57,13 +58,14 @@ function BlueprintFlowWidget({
 }) {
   const [graphData, setGraphData] = useState<DefinitionGraph | null>(null);
   const [hasLocalChanges, setHasLocalChanges] = useState(false);
+  const [blocking, setBlocking] = useState<boolean>(blueprint?.blocking ?? true);
   const [validationErrors, setValidationErrors] = useState([]);
   const [showValidationErrors, setShowValidationErrors] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [showDiffPanel, setShowDiffPanel] = useState(false);
   const [baselineNodes, setBaselineNodes] = useState(null);
 
-  const { getBlueprintWithNode, upsertBlueprint } = useBlueprint();
+  const { getBlueprintWithNode, upsertBlueprint, patchBlueprint } = useBlueprint();
   const { blueprintNodes, loading } = getBlueprintWithNode(blueprint?.id);
   const { getMCPs } = useMCPs();
   const { mcps } = getMCPs();
@@ -174,6 +176,12 @@ function BlueprintFlowWidget({
 
   const [showSampleFlow, setShowSampleFlow] = useState(false);
   const [nodePseudocode, setNodePseudocode] = useState("");
+
+  useEffect(() => {
+    if (blueprintNodes?.blocking !== undefined) {
+      setBlocking(blueprintNodes.blocking);
+    }
+  }, [blueprintNodes?.blocking]);
 
   useEffect(
     () => {
@@ -974,7 +982,8 @@ function BlueprintFlowWidget({
       agentId,
       updatedNodes,
       taskId,
-      blueprintNodes?.messages
+      blueprintNodes?.messages,
+      blocking
     );
 
     if (setSelectedItem && response?.Blueprint) {
@@ -988,6 +997,14 @@ function BlueprintFlowWidget({
     }
     setSaveSuccess(true);
     setIsSubmitting(false);
+  };
+
+  const handleBlockingChange = async (value: boolean) => {
+    setBlocking(value);
+    const id = blueprintNodes?.id || blueprint?.id;
+    if (id) {
+      await patchBlueprint(id, { blocking: value });
+    }
   };
 
   const handleFlowChange = (updatedGraphData) => {
@@ -1064,6 +1081,8 @@ function BlueprintFlowWidget({
           onSaveSuccessChange={setSaveSuccess}
           isSuperviseFlow={isSuperviseFlow}
           isSubmitting={isSubmitting}
+          blocking={blocking}
+          onBlockingChange={handleBlockingChange}
         />
       )}
 

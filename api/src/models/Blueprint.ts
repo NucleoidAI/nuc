@@ -33,6 +33,11 @@ class Blueprint extends Model {
   @Column(DataType.UUID)
   declare agentId: string;
 
+  @Default(true)
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  declare blocking: boolean;
+
   @AllowNull(true)
   @Column({
     type: DataType.JSONB,

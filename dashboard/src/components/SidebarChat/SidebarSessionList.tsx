@@ -301,8 +301,7 @@ const SidebarSessionList = ({
             sx={{
               ...btnBase,
               mb: -0.5,
-              color:
-                sidebarSessions.length > 0 ? "text.disabled" : "text.disabled",
+              color: "text.disabled",
               bgcolor: "transparent",
               opacity: sidebarSessions.length > 0 ? 1 : 0.4,
               cursor: sidebarSessions.length > 0 ? "pointer" : "not-allowed",

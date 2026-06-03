@@ -4,7 +4,7 @@
     {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
-      "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+      "description": "This Blueprint defines an address-based internet subscription and installation workflow. The system checks port availability using the location's infrastructure number, ending immediately if unavailable. If available, the user selects a compatible speed package, a port is allocated, an order is created, and the user is notified before the port is configured and physically connected to complete the setup.",
       "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    CreateOrder(selectedProduct, User.Address)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [

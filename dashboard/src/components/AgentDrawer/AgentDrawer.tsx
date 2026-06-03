@@ -28,7 +28,7 @@ const AgentDrawer = ({ open, onClose, agent, initialTab, allAgentIds }) => {
       }}
       slotProps={{
         paper: {
-          sx: { width: "100%", height: "100%" },
+          sx: { width: "100%", height: "100%", outline: "none" },
         },
       }}
     >

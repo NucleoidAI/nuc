@@ -225,42 +225,48 @@ async function upsertPseudocode({
     (await BluePrint.findByPk(id))?.nodes?.map((n) => [n.id, n]) || [],
   );
 
-  const [pseudocode, nodesWithPseudocode] = await Promise.all([
-    agentFn.toPseudo({ content: description }),
-    nodes
-      ? Promise.all(
-          nodes.map((node) => {
-            const content = node.properties?.prompt;
-            if (!content) return node;
-            const prev = existingNodes.get(node.id);
-            const prevContent = prev?.properties?.prompt;
-            if (prev?.properties?.pseudocode && prevContent === content) {
-              return {
-                ...node,
-                properties: {
-                  ...node.properties,
-                  pseudocode: prev.properties.pseudocode,
-                },
-              } as typeof node;
-            }
-            return agentFn.toPseudo({ content }).then(
-              (nodePseudocode) =>
-                ({
+  const [pseudocode, nodesWithPseudocode, generatedDescription] =
+    await Promise.all([
+      agentFn.toPseudo({ content: description }),
+      nodes
+        ? Promise.all(
+            nodes.map((node) => {
+              const content = node.properties?.prompt;
+              if (!content) return node;
+              const prev = existingNodes.get(node.id);
+              const prevContent = prev?.properties?.prompt;
+              if (prev?.properties?.pseudocode && prevContent === content) {
+                return {
                   ...node,
                   properties: {
                     ...node.properties,
-                    pseudocode: nodePseudocode,
+                    pseudocode: prev.properties.pseudocode,
                   },
-                } as typeof node),
-            );
-          }),
-        )
-      : undefined,
-  ]);
+                } as typeof node;
+              }
+              return agentFn.toPseudo({ content }).then(
+                (nodePseudocode) =>
+                  ({
+                    ...node,
+                    properties: {
+                      ...node.properties,
+                      pseudocode: nodePseudocode,
+                    },
+                  } as typeof node),
+              );
+            }),
+          )
+        : undefined,
+      nodes?.length
+        ? agentFn.blueprintDescription({ nodes })
+        : Promise.resolve(undefined),
+    ]);
+
+  const finalDescription = generatedDescription ?? description;
 
   const result = await upsert(
     title,
-    description,
+    finalDescription,
     agentId,
     id,
     nodesWithPseudocode,

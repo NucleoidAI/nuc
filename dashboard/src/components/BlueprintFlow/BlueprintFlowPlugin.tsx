@@ -601,7 +601,7 @@ export const blueprintFlowPlugin = {
 
     const bgFrom = undefined;
     const bgTo = undefined;
-    const borderColor = "none";
+    const borderColor = "linear-gradient(135deg, #c684ff33, #078dee4d)";
     const borderRadius = 16;
     const shadowLevel = 1;
     const minWidth = 300;

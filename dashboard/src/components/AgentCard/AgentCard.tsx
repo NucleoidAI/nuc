@@ -47,7 +47,7 @@ export default function AgentCard({
         sx={{
           width: "255px",
           position: "relative",
-          border: `1px solid ${alpha(theme.palette.grey[500], 0.2)}`,
+          border: `1px solid #262f3a`,
           borderRadius: 2,
           transformStyle: "preserve-3d",
           transform:

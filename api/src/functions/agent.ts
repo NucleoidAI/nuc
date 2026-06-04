@@ -220,27 +220,17 @@ async function task({ taskId }: { taskId: string }) {
 
   const knowledgeScore = await scoring({ context });
 
-  const contextWithScore = [
-    ...context,
-    {
-      role: "system" as const,
-      content: { knowledge_score: knowledgeScore },
-    },
-  ];
-
   const {
     next_step: { action, parameters, comment },
-    result_score,
   } = await generate({
     dataset: dataset.train.taskDiamond,
-    context: contextWithScore,
+    context,
     content: currentTask,
     json_format:
-      "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
+      "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT> } }",
   });
 
-  const resultScore =
-    result_score != null ? parseFloat(String(result_score)) : undefined;
+  const resultScore = undefined;
 
   if (action === "PLATFORM:complete") {
     const steps = await taskFn.listSteps({ taskId });

@@ -165,5 +165,261 @@
       ]
     },
     "description": "This Blueprint defines an address-based internet subscription and installation workflow. The system checks port availability using the location's infrastructure number, ending immediately if unavailable. If available, the user selects a compatible speed package, a port is allocated, the port is configured and physically connected without notifying the user, completing the setup."
+  },
+  {
+    "content": {
+      "nodes": [
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Get BBK by address",
+            "action": "TELCO:get_bbk_by_address"
+          },
+          "next": ["node-2"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Check inventory availability",
+            "action": "TELCO:get_inventory"
+          },
+          "next": ["node-3"]
+        },
+        {
+          "type": "CONDITION",
+          "properties": {
+            "prompt": "Is inventory available?",
+            "action": "PLATFORM:decision"
+          },
+          "true": ["node-4"],
+          "false": ["node-9"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Get products by speed",
+            "action": "TELCO:get_product_by_speed"
+          },
+          "next": ["node-5"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Provide available options and wait for user to select a product",
+            "action": "PLATFORM:user_interaction"
+          },
+          "next": ["node-6"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Allocate port and create order",
+            "action": "TELCO:port_allocation"
+          },
+          "next": ["node-7"]
+        },
+        {
+          "type": "CONDITION",
+          "properties": {
+            "prompt": "Is port available?",
+            "action": "PLATFORM:decision"
+          },
+          "true": ["node-8"],
+          "false": ["node-10"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Configure allocated port",
+            "action": "TELCO:configuration"
+          },
+          "next": ["node-11"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "No inventory available, complete",
+            "action": "PLATFORM:complete"
+          },
+          "next": null
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Notify user about port unavailability",
+            "action": "PLATFORM:message_user"
+          },
+          "next": ["node-12"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Connect port to residence",
+            "action": "TELCO:port_connection"
+          },
+          "next": ["node-13"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Complete — port unavailable",
+            "action": "PLATFORM:complete"
+          },
+          "next": null
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Complete setup flow",
+            "action": "PLATFORM:complete"
+          },
+          "next": null
+        }
+      ]
+    },
+    "description": "This Blueprint defines an address-based internet subscription workflow with port availability handling. After retrieving the BBK number and confirming inventory, the user selects a speed package and a port allocation is attempted. If port allocation fails (no available port), the user is notified and the process ends. If the port is successfully allocated, it is configured and physically connected to complete the setup."
+  },
+  {
+    "content": {
+      "nodes": [
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Get user address",
+            "action": "PLATFORM:user_interaction"
+          },
+          "next": ["node-2"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Get BBK by address",
+            "action": "TELCO:get_bbk_by_address"
+          },
+          "next": ["node-3"]
+        },
+        {
+          "type": "CONDITION",
+          "properties": {
+            "prompt": "Is address valid?",
+            "action": "PLATFORM:decision"
+          },
+          "true": ["node-4"],
+          "false": ["node-8"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Check inventory availability",
+            "action": "TELCO:get_inventory"
+          },
+          "next": ["node-5"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Get products by speed",
+            "action": "TELCO:get_product_by_speed"
+          },
+          "next": ["node-6"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Provide available options and wait for user to select a product",
+            "action": "PLATFORM:user_interaction"
+          },
+          "next": ["node-7"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Complete setup flow",
+            "action": "PLATFORM:complete"
+          },
+          "next": null
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Notify user that address was not found",
+            "action": "PLATFORM:message_user"
+          },
+          "next": ["node-9"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Complete — address not found",
+            "action": "PLATFORM:complete"
+          },
+          "next": null
+        }
+      ]
+    },
+    "description": "This Blueprint defines an address-based internet subscription workflow with address validation. The user provides their address, and the system attempts to retrieve the corresponding BBK number. If the address is not found or invalid, the user is notified and the process ends. If the address is valid, the system checks inventory, lists available speed packages, and waits for the user to select a product to proceed with the subscription."
+  },
+  {
+    "content": {
+      "nodes": [
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Get BBK by address",
+            "action": "TELCO:get_bbk_by_address"
+          },
+          "next": ["node-2"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Check inventory availability",
+            "action": "TELCO:get_inventory"
+          },
+          "next": ["node-3"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Get products by speed",
+            "action": "TELCO:get_product_by_speed"
+          },
+          "next": ["node-4"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Provide available options and wait for user to select a product",
+            "action": "PLATFORM:user_interaction"
+          },
+          "next": ["node-5"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Allocate port and create order",
+            "action": "TELCO:port_allocation"
+          },
+          "next": ["node-6"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Notify user about port unavailability and end process",
+            "action": "PLATFORM:message_user"
+          },
+          "next": ["node-7"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Complete — port not available",
+            "action": "PLATFORM:complete"
+          },
+          "next": null
+        }
+      ]
+    },
+    "description": "This Blueprint defines an internet subscription workflow where port unavailability terminates the process. After retrieving the BBK number, checking inventory, and having the user select a speed package, a port allocation is attempted. If no port is available, the user is immediately notified and the workflow ends without configuration or connection steps."
   }
 ]

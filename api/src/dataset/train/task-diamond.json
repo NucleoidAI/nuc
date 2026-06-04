@@ -355,15 +355,12 @@
       {
         "taskId": "c99hh389-e6h4-66fe-b1h0-g1g867804668",
         "action": "TELCO:get_bbk_by_address",
-        "status": "FAILED",
+        "status": "COMPLETED",
         "parameters": {
           "address": "Atatürk Caddesi No:45, Ankara"
         },
-        "comment": "Address not found in database",
-        "error": {
-          "code": "ADDRESS_NOT_FOUND",
-          "message": "The provided address could not be found in the system database"
-        }
+        "result": "{\"error\":\"ADDRESS_NOT_FOUND\"}",
+        "comment": "Address not found in database"
       },
       {
         "taskId": "c99hh389-e6h4-66fe-b1h0-g1g867804668",
@@ -559,14 +556,15 @@
         "parameters": {
           "address": "123 Main Street, Istanbul"
         },
-        "comment": "Getting BBK number by address"
+        "result": "{\"error\":\"INVALID_ADDRESS\"}",
+        "comment": "Address could not be validated in the system"
       },
       {
         "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
         "action": "PLATFORM:ask_supervisor",
         "status": "COMPLETED",
         "parameters": {
-          "question": "Adress is not valid. What am i supposed to do?",
+          "question": "Address '123 Main Street, Istanbul' is not valid according to the system. What should I do?",
           "sessionId": "123456019b6e75-8a07-72f2-8adf-82cd88f6b7cc7890",
           "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
         },
@@ -634,7 +632,8 @@
                 "bbk_no": "BBK-12345",
                 "speed_limit": "1gbps"
               },
-              "comment": "Available port not found"
+              "result": "{\"error\":\"NOT_AVAILABLE_PORT\"}",
+              "comment": "Port allocation returned no available port"
             },
             {
               "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
@@ -943,6 +942,636 @@
             }
           ]
         }
+      }
+    ]
+  },
+  {
+    "id": "6aab1234-1a2b-4c3d-8e5f-0f1234567890",
+    "description": "Process customer payment for order.",
+    "sessionId": "019b6e75-0001-0001-0001-000000000001",
+    "pseudocode": "BEGIN_CONTEXT\nPayment.Process(order.id, amount)\nIF Payment.Status == SUCCESS THEN\n    Order.Update(status=PAID)\n    NotifyUser()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "blueprint": {
+      "id": "bp-0001-0001-0001-0001-000000000001",
+      "title": "Payment Processing",
+      "description": "Process payment for a customer order and update order status.",
+      "pseudocode": "BEGIN_CONTEXT\nPayment.Process(order.id, amount)\nIF Payment.Status == SUCCESS THEN\n    Order.Update(status=PAID)\n    NotifyUser()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "nodes": [
+        {
+          "id": "node-pay-001",
+          "type": "NORMAL",
+          "properties": { "action": "BILLING:process_payment", "icon": "mdi:credit-card", "prompt": "Process Payment" },
+          "next": ["node-pay-002"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "node-pay-002",
+          "type": "NORMAL",
+          "properties": { "action": "GREY:update_order_status", "icon": "mdi:check", "prompt": "Update Order Status" },
+          "next": ["node-pay-003"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "node-pay-003",
+          "type": "NORMAL",
+          "properties": { "action": "PLATFORM:message_user", "icon": "mdi:bell", "prompt": "Notify User" },
+          "next": ["node-pay-004"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "node-pay-004",
+          "type": "NORMAL",
+          "properties": { "action": "PLATFORM:complete", "icon": "mdi:check", "prompt": "Complete" },
+          "next": null,
+          "createdAt": "2025-06-19T06:02:00Z"
+        }
+      ]
+    },
+    "knowledge": [],
+    "steps": [
+      {
+        "taskId": "task-pay-001",
+        "action": "BILLING:process_payment",
+        "status": "COMPLETED",
+        "parameters": { "orderId": "ORD-2026-0091", "amount": 249.99, "currency": "TRY" },
+        "result": "{\"error\":\"PAYMENT_DECLINED\"}",
+        "comment": "Payment gateway rejected the transaction"
+      },
+      {
+        "taskId": "task-pay-001",
+        "action": "PLATFORM:ask_supervisor",
+        "status": "COMPLETED",
+        "parameters": {
+          "question": "Payment for order ORD-2026-0091 was declined by the card issuer. Should I retry, cancel the order, or contact the customer?",
+          "sessionId": "019b6e75-0001-0001-0001-000000000001",
+          "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+        },
+        "comment": "Asking supervisor how to handle payment failure"
+      },
+      {
+        "taskId": "task-pay-001",
+        "action": "PLATFORM:message_user",
+        "status": "COMPLETED",
+        "parameters": {
+          "sessionId": "019b6e75-0001-0001-0001-000000000001",
+          "message": "Your payment could not be processed. Please update your payment method or contact support."
+        },
+        "comment": "Notified customer about payment failure per supervisor instruction"
+      },
+      {
+        "taskId": "task-pay-001",
+        "action": "PLATFORM:complete",
+        "status": "COMPLETED",
+        "comment": "Task completed following supervisor instructions"
+      }
+    ]
+  },
+  {
+    "id": "7bbc2345-2b3c-5d4e-9f6g-1g2345678901",
+    "description": "Update employee salary record in HR system.",
+    "sessionId": "019b6e75-0002-0002-0002-000000000002",
+    "pseudocode": "BEGIN_CONTEXT\nemployee = HR.GetEmployee(employeeId)\nHR.UpdateSalary(employeeId, newSalary)\nHR.NotifyPayroll()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+    "blueprint": {
+      "id": "bp-0002-0002-0002-0002-000000000002",
+      "title": "Employee Salary Update",
+      "description": "Update an employee's salary record and notify the payroll department.",
+      "pseudocode": "BEGIN_CONTEXT\nemployee = HR.GetEmployee(employeeId)\nHR.UpdateSalary(employeeId, newSalary)\nHR.NotifyPayroll()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "nodes": [
+        {
+          "id": "node-hr-001",
+          "type": "NORMAL",
+          "properties": { "action": "HR:get_employee", "icon": "mdi:account", "prompt": "Get Employee Record" },
+          "next": ["node-hr-002"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "node-hr-002",
+          "type": "NORMAL",
+          "properties": { "action": "HR:update_salary", "icon": "mdi:currency-usd", "prompt": "Update Salary" },
+          "next": ["node-hr-003"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "node-hr-003",
+          "type": "NORMAL",
+          "properties": { "action": "HR:notify_payroll", "icon": "mdi:email", "prompt": "Notify Payroll" },
+          "next": ["node-hr-004"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "node-hr-004",
+          "type": "NORMAL",
+          "properties": { "action": "PLATFORM:complete", "icon": "mdi:check", "prompt": "Complete" },
+          "next": null,
+          "createdAt": "2025-06-19T06:02:00Z"
+        }
+      ]
+    },
+    "knowledge": [],
+    "steps": [
+      {
+        "taskId": "task-hr-001",
+        "action": "HR:get_employee",
+        "status": "COMPLETED",
+        "parameters": { "employeeId": "EMP-99234" },
+        "result": "{\"error\":\"EMPLOYEE_NOT_FOUND\"}",
+        "comment": "Employee not found in HR system"
+      },
+      {
+        "taskId": "task-hr-001",
+        "action": "PLATFORM:ask_supervisor",
+        "status": "COMPLETED",
+        "parameters": {
+          "question": "Employee ID EMP-99234 does not exist in the HR system. Should I create a new record, check for a different ID, or cancel the salary update?",
+          "sessionId": "019b6e75-0002-0002-0002-000000000002",
+          "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+        },
+        "comment": "Asking supervisor how to proceed with missing employee record"
+      },
+      {
+        "taskId": "task-hr-001",
+        "action": "PLATFORM:complete",
+        "status": "COMPLETED",
+        "comment": "Task completed following supervisor instructions"
+      }
+    ]
+  },
+  {
+    "id": "8ccd3456-3c4d-6e5f-0g7h-2h3456789012",
+    "description": "Send promotional email campaign to customer segment.",
+    "sessionId": "019b6e75-0003-0003-0003-000000000003",
+    "pseudocode": "BEGIN_CONTEXT\nsegment = CRM.GetSegment(segmentId)\ncampaign = EMAIL.CreateCampaign(segment)\nEMAIL.Send(campaign)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+    "blueprint": {
+      "id": "bp-0003-0003-0003-0003-000000000003",
+      "title": "Email Campaign",
+      "description": "Send a promotional email campaign to a customer segment.",
+      "pseudocode": "BEGIN_CONTEXT\nsegment = CRM.GetSegment(segmentId)\ncampaign = EMAIL.CreateCampaign(segment)\nEMAIL.Send(campaign)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "nodes": [
+        {
+          "id": "node-email-001",
+          "type": "NORMAL",
+          "properties": { "action": "CRM:get_segment", "icon": "mdi:account-group", "prompt": "Get Customer Segment" },
+          "next": ["node-email-002"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "node-email-002",
+          "type": "NORMAL",
+          "properties": { "action": "EMAIL:create_campaign", "icon": "mdi:email-edit", "prompt": "Create Campaign" },
+          "next": ["node-email-003"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "node-email-003",
+          "type": "NORMAL",
+          "properties": { "action": "EMAIL:send_campaign", "icon": "mdi:send", "prompt": "Send Campaign" },
+          "next": ["node-email-004"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "node-email-004",
+          "type": "NORMAL",
+          "properties": { "action": "PLATFORM:complete", "icon": "mdi:check", "prompt": "Complete" },
+          "next": null,
+          "createdAt": "2025-06-19T06:02:00Z"
+        }
+      ]
+    },
+    "knowledge": [],
+    "steps": [
+      {
+        "taskId": "task-email-001",
+        "action": "CRM:get_segment",
+        "status": "COMPLETED",
+        "parameters": { "segmentId": "SEG-PREMIUM-2026" },
+        "comment": "Retrieved 4,200 customers in premium segment"
+      },
+      {
+        "taskId": "task-email-001",
+        "action": "EMAIL:create_campaign",
+        "status": "COMPLETED",
+        "parameters": { "segmentId": "SEG-PREMIUM-2026", "templateId": "PROMO-SUMMER-01" },
+        "comment": "Campaign created successfully"
+      },
+      {
+        "taskId": "task-email-001",
+        "action": "EMAIL:send_campaign",
+        "status": "COMPLETED",
+        "parameters": { "campaignId": "CAMP-2026-0055" },
+        "result": "{\"error\":\"RATE_LIMIT_EXCEEDED\",\"sent\":0,\"limit\":1000,\"requested\":4200}",
+        "comment": "Send limit exceeded, campaign could not be delivered"
+      },
+      {
+        "taskId": "task-email-001",
+        "action": "PLATFORM:ask_supervisor",
+        "status": "COMPLETED",
+        "parameters": {
+          "question": "Campaign CAMP-2026-0055 could not be sent because the daily email limit (1,000) is exceeded. The segment has 4,200 recipients. Should I split the send across multiple days or request a limit increase?",
+          "sessionId": "019b6e75-0003-0003-0003-000000000003",
+          "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+        },
+        "comment": "Asking supervisor how to handle email rate limit"
+      },
+      {
+        "taskId": "task-email-001",
+        "action": "PLATFORM:complete",
+        "status": "COMPLETED",
+        "comment": "Task completed following supervisor instructions"
+      }
+    ]
+  },
+  {
+    "id": "9dde4567-4d5e-7f6g-1h8i-3i4567890123",
+    "description": "Create a new user account and assign role permissions.",
+    "sessionId": "019b6e75-0004-0004-0004-000000000004",
+    "pseudocode": "BEGIN_CONTEXT\nuser = AUTH.CreateUser(email, password)\nAUTH.AssignRole(user.id, role)\nNotifyUser()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+    "blueprint": {
+      "id": "bp-0004-0004-0004-0004-000000000004",
+      "title": "User Account Creation",
+      "description": "Create a new user account and assign the appropriate role.",
+      "pseudocode": "BEGIN_CONTEXT\nuser = AUTH.CreateUser(email, password)\nAUTH.AssignRole(user.id, role)\nNotifyUser()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "nodes": [
+        {
+          "id": "node-auth-001",
+          "type": "NORMAL",
+          "properties": { "action": "AUTH:create_user", "icon": "mdi:account-plus", "prompt": "Create User" },
+          "next": ["node-auth-002"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "node-auth-002",
+          "type": "NORMAL",
+          "properties": { "action": "AUTH:assign_role", "icon": "mdi:shield-account", "prompt": "Assign Role" },
+          "next": ["node-auth-003"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "node-auth-003",
+          "type": "NORMAL",
+          "properties": { "action": "PLATFORM:message_user", "icon": "mdi:bell", "prompt": "Notify User" },
+          "next": ["node-auth-004"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "node-auth-004",
+          "type": "NORMAL",
+          "properties": { "action": "PLATFORM:complete", "icon": "mdi:check", "prompt": "Complete" },
+          "next": null,
+          "createdAt": "2025-06-19T06:02:00Z"
+        }
+      ]
+    },
+    "knowledge": [],
+    "steps": [
+      {
+        "taskId": "task-auth-001",
+        "action": "AUTH:create_user",
+        "status": "COMPLETED",
+        "parameters": { "email": "john.doe@example.com", "role": "ADMIN" },
+        "result": "{\"error\":\"DUPLICATE_EMAIL\",\"existingUserId\":\"USR-00412\"}",
+        "comment": "User with this email already exists in the system"
+      },
+      {
+        "taskId": "task-auth-001",
+        "action": "PLATFORM:ask_supervisor",
+        "status": "COMPLETED",
+        "parameters": {
+          "question": "Cannot create account: john.doe@example.com already exists. Should I update the existing account's role to ADMIN, or is a different email address intended?",
+          "sessionId": "019b6e75-0004-0004-0004-000000000004",
+          "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+        },
+        "comment": "Asking supervisor how to handle duplicate email"
+      },
+      {
+        "taskId": "task-auth-001",
+        "action": "PLATFORM:complete",
+        "status": "COMPLETED",
+        "comment": "Task completed following supervisor instructions"
+      }
+    ]
+  },
+  {
+    "id": "0eef5678-5e6f-8g7h-2i9j-4j5678901234",
+    "description": "Export monthly financial report and upload to cloud storage.",
+    "sessionId": "019b6e75-0005-0005-0005-000000000005",
+    "pseudocode": "BEGIN_CONTEXT\nreport = ERP.GenerateReport(month, year)\nSTORAGE.Upload(report, destination)\nNotifyTeam()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+    "blueprint": {
+      "id": "bp-0005-0005-0005-0005-000000000005",
+      "title": "Monthly Financial Report Export",
+      "description": "Generate monthly financial report and upload to cloud storage.",
+      "pseudocode": "BEGIN_CONTEXT\nreport = ERP.GenerateReport(month, year)\nSTORAGE.Upload(report, destination)\nNotifyTeam()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "nodes": [
+        {
+          "id": "node-erp-001",
+          "type": "NORMAL",
+          "properties": { "action": "ERP:generate_report", "icon": "mdi:file-chart", "prompt": "Generate Report" },
+          "next": ["node-erp-002"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "node-erp-002",
+          "type": "NORMAL",
+          "properties": { "action": "STORAGE:upload_file", "icon": "mdi:cloud-upload", "prompt": "Upload to Storage" },
+          "next": ["node-erp-003"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "node-erp-003",
+          "type": "NORMAL",
+          "properties": { "action": "GREY:notify_team", "icon": "mdi:email", "prompt": "Notify Team" },
+          "next": ["node-erp-004"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "node-erp-004",
+          "type": "NORMAL",
+          "properties": { "action": "PLATFORM:complete", "icon": "mdi:check", "prompt": "Complete" },
+          "next": null,
+          "createdAt": "2025-06-19T06:02:00Z"
+        }
+      ]
+    },
+    "knowledge": [],
+    "steps": [
+      {
+        "taskId": "task-erp-001",
+        "action": "ERP:generate_report",
+        "status": "COMPLETED",
+        "parameters": { "month": 5, "year": 2026, "type": "FINANCIAL_SUMMARY" },
+        "comment": "Report generated successfully, 842 transactions included"
+      },
+      {
+        "taskId": "task-erp-001",
+        "action": "STORAGE:upload_file",
+        "status": "COMPLETED",
+        "parameters": { "fileId": "RPT-2026-05-FIN", "destination": "gs://finance-reports/2026/05/" },
+        "result": "{\"error\":\"PERMISSION_DENIED\",\"bucket\":\"finance-reports\"}",
+        "comment": "Upload rejected due to insufficient permissions on the target bucket"
+      },
+      {
+        "taskId": "task-erp-001",
+        "action": "PLATFORM:ask_supervisor",
+        "status": "COMPLETED",
+        "parameters": {
+          "question": "Cannot upload the May 2026 financial report to cloud storage: permission denied on bucket finance-reports. Should I upload to an alternative location or request access to be granted?",
+          "sessionId": "019b6e75-0005-0005-0005-000000000005",
+          "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+        },
+        "comment": "Asking supervisor how to handle storage permission error"
+      },
+      {
+        "taskId": "task-erp-001",
+        "action": "PLATFORM:complete",
+        "status": "COMPLETED",
+        "comment": "Task completed following supervisor instructions"
+      }
+    ]
+  },
+  {
+    "id": "1ffg6789-6f7g-9h8i-3j0k-5k6789012345",
+    "description": "Cancel customer subscription and process refund.",
+    "sessionId": "019b6e75-0006-0006-0006-000000000006",
+    "pseudocode": "BEGIN_CONTEXT\nsubscription = BILLING.GetSubscription(customerId)\nBILLING.CancelSubscription(subscription.id)\nBILLING.ProcessRefund(subscription.id)\nNotifyUser()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+    "blueprint": {
+      "id": "bp-0006-0006-0006-0006-000000000006",
+      "title": "Subscription Cancellation and Refund",
+      "description": "Cancel a customer subscription and process a prorated refund.",
+      "pseudocode": "BEGIN_CONTEXT\nsubscription = BILLING.GetSubscription(customerId)\nBILLING.CancelSubscription(subscription.id)\nBILLING.ProcessRefund(subscription.id)\nNotifyUser()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "nodes": [
+        {
+          "id": "node-sub-001",
+          "type": "NORMAL",
+          "properties": { "action": "BILLING:get_subscription", "icon": "mdi:card-account-details", "prompt": "Get Subscription" },
+          "next": ["node-sub-002"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "node-sub-002",
+          "type": "NORMAL",
+          "properties": { "action": "BILLING:cancel_subscription", "icon": "mdi:cancel", "prompt": "Cancel Subscription" },
+          "next": ["node-sub-003"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "node-sub-003",
+          "type": "NORMAL",
+          "properties": { "action": "BILLING:process_refund", "icon": "mdi:cash-refund", "prompt": "Process Refund" },
+          "next": ["node-sub-004"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "node-sub-004",
+          "type": "NORMAL",
+          "properties": { "action": "PLATFORM:message_user", "icon": "mdi:bell", "prompt": "Notify User" },
+          "next": ["node-sub-005"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "node-sub-005",
+          "type": "NORMAL",
+          "properties": { "action": "PLATFORM:complete", "icon": "mdi:check", "prompt": "Complete" },
+          "next": null,
+          "createdAt": "2025-06-19T06:02:00Z"
+        }
+      ]
+    },
+    "knowledge": [],
+    "steps": [
+      {
+        "taskId": "task-sub-001",
+        "action": "BILLING:get_subscription",
+        "status": "COMPLETED",
+        "parameters": { "customerId": "CUST-88412" },
+        "comment": "Active annual subscription found, 7 months remaining"
+      },
+      {
+        "taskId": "task-sub-001",
+        "action": "BILLING:cancel_subscription",
+        "status": "COMPLETED",
+        "parameters": { "subscriptionId": "SUB-2025-88412" },
+        "comment": "Subscription cancelled successfully"
+      },
+      {
+        "taskId": "task-sub-001",
+        "action": "BILLING:process_refund",
+        "status": "COMPLETED",
+        "parameters": { "subscriptionId": "SUB-2025-88412", "amount": 420.00 },
+        "result": "{\"error\":\"REFUND_EXCEEDS_THRESHOLD\",\"amount\":420.00,\"threshold\":200.00}",
+        "comment": "Refund amount exceeds automatic approval threshold, manual approval required"
+      },
+      {
+        "taskId": "task-sub-001",
+        "action": "PLATFORM:ask_supervisor",
+        "status": "COMPLETED",
+        "parameters": {
+          "question": "Refund of 420.00 TRY for customer CUST-88412 exceeds the 200.00 TRY automatic threshold and requires manual approval. Please approve or adjust the refund amount.",
+          "sessionId": "019b6e75-0006-0006-0006-000000000006",
+          "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+        },
+        "comment": "Asking supervisor to approve large refund"
+      },
+      {
+        "taskId": "task-sub-001",
+        "action": "PLATFORM:message_user",
+        "status": "COMPLETED",
+        "parameters": {
+          "sessionId": "019b6e75-0006-0006-0006-000000000006",
+          "message": "Your subscription has been cancelled. Your refund of 420.00 TRY is being processed and will arrive within 3-5 business days."
+        },
+        "comment": "Notified customer about cancellation and refund status"
+      },
+      {
+        "taskId": "task-sub-001",
+        "action": "PLATFORM:complete",
+        "status": "COMPLETED",
+        "comment": "Task completed following supervisor instructions"
+      }
+    ]
+  },
+  {
+    "id": "2ggh7890-7g8h-0i9j-4k1l-6l7890123456",
+    "description": "Sync product catalog from ERP to e-commerce platform.",
+    "sessionId": "019b6e75-0007-0007-0007-000000000007",
+    "pseudocode": "BEGIN_CONTEXT\nproducts = ERP.GetProducts(categoryId)\nFOR EACH product IN products\n    ECOMMERCE.UpsertProduct(product)\nEND_FOR\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+    "blueprint": {
+      "id": "bp-0007-0007-0007-0007-000000000007",
+      "title": "Product Catalog Sync",
+      "description": "Sync product catalog from ERP system to e-commerce platform.",
+      "pseudocode": "BEGIN_CONTEXT\nproducts = ERP.GetProducts(categoryId)\nFOR EACH product IN products\n    ECOMMERCE.UpsertProduct(product)\nEND_FOR\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "nodes": [
+        {
+          "id": "node-sync-001",
+          "type": "NORMAL",
+          "properties": { "action": "ERP:get_products", "icon": "mdi:package-variant", "prompt": "Get Products from ERP" },
+          "next": ["node-sync-002"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "node-sync-002",
+          "type": "NORMAL",
+          "properties": { "action": "ECOMMERCE:upsert_products", "icon": "mdi:store", "prompt": "Sync to E-commerce" },
+          "next": ["node-sync-003"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "node-sync-003",
+          "type": "NORMAL",
+          "properties": { "action": "PLATFORM:complete", "icon": "mdi:check", "prompt": "Complete" },
+          "next": null,
+          "createdAt": "2025-06-19T06:02:00Z"
+        }
+      ]
+    },
+    "knowledge": [],
+    "steps": [
+      {
+        "taskId": "task-sync-001",
+        "action": "ERP:get_products",
+        "status": "COMPLETED",
+        "parameters": { "categoryId": "CAT-ELECTRONICS" },
+        "comment": "Retrieved 312 products from ERP"
+      },
+      {
+        "taskId": "task-sync-001",
+        "action": "ECOMMERCE:upsert_products",
+        "status": "COMPLETED",
+        "parameters": { "productCount": 312, "categoryId": "CAT-ELECTRONICS" },
+        "result": "{\"error\":\"SERVICE_UNAVAILABLE\",\"retryAfter\":\"2026-06-04T22:00:00Z\"}",
+        "comment": "E-commerce platform returned service unavailable during scheduled maintenance"
+      },
+      {
+        "taskId": "task-sync-001",
+        "action": "PLATFORM:ask_supervisor",
+        "status": "COMPLETED",
+        "parameters": {
+          "question": "The e-commerce platform API is unavailable due to scheduled maintenance until 22:00 today. The product sync for 312 electronics items cannot proceed. Should I reschedule the sync for after maintenance or abort the task?",
+          "sessionId": "019b6e75-0007-0007-0007-000000000007",
+          "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+        },
+        "comment": "Asking supervisor how to handle API downtime"
+      },
+      {
+        "taskId": "task-sync-001",
+        "action": "PLATFORM:complete",
+        "status": "COMPLETED",
+        "comment": "Task completed following supervisor instructions"
+      }
+    ]
+  },
+  {
+    "id": "3hhi8901-8h9i-1j0k-5l2m-7m8901234567",
+    "description": "Transfer stock between two warehouse locations.",
+    "sessionId": "019b6e75-0008-0008-0008-000000000008",
+    "pseudocode": "BEGIN_CONTEXT\nstock = WMS.CheckStock(productId, sourceWarehouse)\nIF stock.quantity >= requestedQty THEN\n    WMS.TransferStock(productId, sourceWarehouse, targetWarehouse, requestedQty)\n    Complete()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    "blueprint": {
+      "id": "bp-0008-0008-0008-0008-000000000008",
+      "title": "Warehouse Stock Transfer",
+      "description": "Transfer stock between warehouse locations.",
+      "pseudocode": "BEGIN_CONTEXT\nstock = WMS.CheckStock(productId, sourceWarehouse)\nIF stock.quantity >= requestedQty THEN\n    WMS.TransferStock(productId, sourceWarehouse, targetWarehouse, requestedQty)\n    Complete()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "nodes": [
+        {
+          "id": "node-wms-001",
+          "type": "NORMAL",
+          "properties": { "action": "WMS:check_stock", "icon": "mdi:warehouse", "prompt": "Check Stock Level" },
+          "next": ["node-wms-002"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "node-wms-002",
+          "type": "NORMAL",
+          "properties": { "action": "WMS:transfer_stock", "icon": "mdi:transfer", "prompt": "Transfer Stock" },
+          "next": ["node-wms-003"],
+          "createdAt": "2025-06-19T06:02:00Z"
+        },
+        {
+          "id": "node-wms-003",
+          "type": "NORMAL",
+          "properties": { "action": "PLATFORM:complete", "icon": "mdi:check", "prompt": "Complete" },
+          "next": null,
+          "createdAt": "2025-06-19T06:02:00Z"
+        }
+      ]
+    },
+    "knowledge": [],
+    "steps": [
+      {
+        "taskId": "task-wms-001",
+        "action": "WMS:check_stock",
+        "status": "COMPLETED",
+        "parameters": { "productId": "SKU-445566", "warehouseId": "WH-ISTANBUL-01" },
+        "comment": "Stock check completed: 15 units available, 50 units requested"
+      },
+      {
+        "taskId": "task-wms-001",
+        "action": "WMS:transfer_stock",
+        "status": "COMPLETED",
+        "parameters": { "productId": "SKU-445566", "sourceWarehouse": "WH-ISTANBUL-01", "targetWarehouse": "WH-ANKARA-01", "quantity": 50 },
+        "result": "{\"error\":\"INSUFFICIENT_STOCK\",\"available\":15,\"requested\":50}",
+        "comment": "Transfer could not be fulfilled due to insufficient stock"
+      },
+      {
+        "taskId": "task-wms-001",
+        "action": "PLATFORM:ask_supervisor",
+        "status": "COMPLETED",
+        "parameters": {
+          "question": "Cannot complete stock transfer: only 15 units of SKU-445566 available at WH-ISTANBUL-01, but 50 units requested for WH-ANKARA-01. Should I transfer the available 15 units, source from another warehouse, or cancel the transfer?",
+          "sessionId": "019b6e75-0008-0008-0008-000000000008",
+          "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+        },
+        "comment": "Asking supervisor how to handle insufficient stock"
+      },
+      {
+        "taskId": "task-wms-001",
+        "action": "PLATFORM:complete",
+        "status": "COMPLETED",
+        "comment": "Task completed following supervisor instructions"
       }
     ]
   },

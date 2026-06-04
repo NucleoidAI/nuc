@@ -224,7 +224,7 @@ async function listSteps({ taskId }: { taskId: string }) {
 
   return steps
     .map((step) => step.toJSON())
-    .map((step) => ({
+    .map(({ knowledgeScore: _ks, ...step }) => ({
       ...step,
       result: step.result ? step.result.toString() : null,
     }));

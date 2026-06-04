@@ -197,6 +197,26 @@ async function init() {
     as: "task",
   });
 
+  // Task <-> StepScore
+  models.Task.hasMany(models.StepScore, {
+    foreignKey: "taskId",
+    as: "scores",
+  });
+  models.StepScore.belongsTo(models.Task, {
+    foreignKey: "taskId",
+    as: "task",
+  });
+
+  // Step <-> StepScore
+  models.Step.hasMany(models.StepScore, {
+    foreignKey: "stepId",
+    as: "scores",
+  });
+  models.StepScore.belongsTo(models.Step, {
+    foreignKey: "stepId",
+    as: "step",
+  });
+
   // Task <-> Blueprint
   models.Blueprint.hasMany(models.Task, {
     foreignKey: "blueprintId",

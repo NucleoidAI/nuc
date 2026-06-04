@@ -63,7 +63,7 @@ function ServiceCard({
       >
         ★
       </button>
-      <a href={service.url} target="_blank" rel="noopener noreferrer" className="card-link">
+      <a href={service.url} className="card-link">
         <div className="card-icon">
           {faviconUrl && !imgError ? (
             <img src={faviconUrl} alt="" onError={() => setImgError(true)} />

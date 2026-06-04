@@ -26,7 +26,7 @@ class Blueprint extends Model {
   declare title: string;
 
   @AllowNull(false)
-  @Column(DataType.STRING)
+  @Column(DataType.TEXT)
   declare description: string;
 
   @AllowNull(false)

@@ -222,15 +222,17 @@ async function task({ taskId }: { taskId: string }) {
 
   const {
     next_step: { action, parameters, comment },
+    result_score,
   } = await generate({
     dataset: dataset.train.taskDiamond,
     context,
     content: currentTask,
     json_format:
-      "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT> } }",
+      "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
   });
 
-  const resultScore = undefined;
+  const resultScore =
+    result_score != null ? parseFloat(String(result_score)) : undefined;
 
   if (action === "PLATFORM:complete") {
     const steps = await taskFn.listSteps({ taskId });

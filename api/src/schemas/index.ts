@@ -1,5 +1,5 @@
-import Blueprint from "./Blueprint";
 import Agent from "./Agent";
+import Blueprint from "./Blueprint";
 import Command from "./Command";
 import Communication from "./Communication";
 import Knowledge from "./Knowledge";
@@ -7,6 +7,7 @@ import MCP from "./MCP";
 import Message from "./Message";
 import Project from "./Project";
 import Session from "./Session";
+import StepScore from "./StepScore";
 import Supervising from "./Supervising";
 import Team from "./Team";
 
@@ -22,4 +23,5 @@ export default {
   Blueprint,
   MCP,
   Communication,
+  StepScore,
 };

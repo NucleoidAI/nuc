@@ -123,12 +123,18 @@ const SupervisingCard = ({
       blueprint.nodes.filter((n) => !referencedIds.has(n.id)).map((n) => n.id)
     );
 
-    const getChildren = (node: (typeof blueprint.nodes)[number]) =>
-      new Set<string>([
-        ...(node.next || []),
+    const getChildren = (node: (typeof blueprint.nodes)[number]) => {
+      const next = Array.isArray(node.next)
+        ? node.next
+        : node.next
+        ? [node.next]
+        : [];
+      return new Set<string>([
+        ...next,
         ...(node.true || []),
         ...(node.false || []),
       ]);
+    };
 
     const stepActions = new Set(
       stepsBeforeAsk.map((s) => s?.action).filter(Boolean)
@@ -178,9 +184,12 @@ const SupervisingCard = ({
       }
 
       if (matched) {
+        const isDecisionNode =
+          matched.type === "CONDITION" ||
+          matched.properties?.action === "PLATFORM:decision";
         if (step.status === "FAILED") {
           failedId = matched.id;
-        } else {
+        } else if (!isDecisionNode) {
           usedIds.add(matched.id);
           lastId = matched.id;
         }
@@ -188,6 +197,22 @@ const SupervisingCard = ({
         possibleNextIds = expandFrontier(getChildren(matched));
       }
     }
+
+    blueprint.nodes.forEach((node: (typeof blueprint.nodes)[number]) => {
+      if (
+        node.type !== "CONDITION" &&
+        node.properties?.action !== "PLATFORM:decision"
+      )
+        return;
+      const children = getChildren(node);
+      const anyChildUsed = [...children].some((childId) => {
+        const child = nodeMap.get(childId);
+        return child && usedIds.has(childId);
+      });
+      if (anyChildUsed) {
+        usedIds.add(node.id);
+      }
+    });
 
     return {
       usedNodeIds: usedIds,

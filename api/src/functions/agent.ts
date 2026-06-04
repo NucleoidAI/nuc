@@ -10,6 +10,7 @@ import message from "./message";
 import messagesFunc from "./message";
 import platform from "@canmingir/link-express";
 import session from "./session";
+import stepScoreFn from "./stepScore";
 import supervising from "./supervising";
 import taskFn from "./task";
 
@@ -88,6 +89,31 @@ async function steps({ taskId }) {
     role: "user" | "system" | "assistant";
     content: object;
   };
+}
+
+async function scoring({
+  context,
+}: {
+  context: {
+    role: "user" | "system" | "assistant";
+    content: object | string;
+  }[];
+}) {
+  const merged: Record<string, unknown> = {};
+  for (const { content } of context) {
+    if (content && typeof content === "object") {
+      Object.assign(merged, content);
+    }
+  }
+
+  const { knowledge_score } = await generate({
+    dataset: dataset.train.knowledgeScore,
+    content: merged,
+    json_format: "{ knowledge_score: <0.0-1.0> }",
+  });
+
+  const parsed = parseFloat(String(knowledge_score));
+  return !isNaN(parsed) ? parsed : undefined;
 }
 
 async function Blueprints({ agentId }) {
@@ -185,21 +211,36 @@ async function task({ taskId }: { taskId: string }) {
         knowledge({ agentId, taskId }),
         Blueprints({ agentId }),
         steps({ taskId }),
+        sessionId ? conversations({ sessionId }) : Promise.resolve([]),
       ])
     ).flat(),
     actions.list(),
     mcpFn.list(),
   ];
 
+  const knowledgeScore = await scoring({ context });
+
+  const contextWithScore = [
+    ...context,
+    {
+      role: "system" as const,
+      content: { knowledge_score: knowledgeScore },
+    },
+  ];
+
   const {
     next_step: { action, parameters, comment },
+    result_score,
   } = await generate({
     dataset: dataset.train.taskDiamond,
-    context,
+    context: contextWithScore,
     content: currentTask,
     json_format:
-      "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT> } }",
+      "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
   });
+
+  const resultScore =
+    result_score != null ? parseFloat(String(result_score)) : undefined;
 
   if (action === "PLATFORM:complete") {
     const steps = await taskFn.listSteps({ taskId });
@@ -209,6 +250,13 @@ async function task({ taskId }: { taskId: string }) {
     if (steps.length) {
       result = steps[steps.length - 1].result;
     }
+
+    await stepScoreFn.create({
+      taskId,
+      parameters: { description, blueprintId },
+      output: result ?? comment ?? null,
+      status: "COMPLETED",
+    });
 
     if (sessionId) {
       await session.addConversation({
@@ -239,6 +287,8 @@ async function task({ taskId }: { taskId: string }) {
       action,
       parameters,
       comment,
+      knowledgeScore,
+      resultScore,
     });
   }
 
@@ -247,6 +297,8 @@ async function task({ taskId }: { taskId: string }) {
     action,
     parameters,
     comment,
+    knowledgeScore,
+    resultScore,
   });
 }
 
@@ -255,11 +307,13 @@ async function step({
   action,
   parameters,
   comment,
+  resultScore: stepResultScore,
 }: {
   stepId: string;
   action: string;
   parameters: object;
   comment: string;
+  resultScore?: number;
 }) {
   let actionType;
 
@@ -275,10 +329,18 @@ async function step({
     actionType = "ACTION";
   }
 
+  let taskId = "";
+
   try {
     let actionFn;
     let result;
     let mcpClient;
+
+    const step = await taskFn.getStep({ stepId });
+    taskId = step.taskId;
+    const stepKnowledgeScore = step.knowledgeScore;
+    // TODO: hallucinationScore will be calculated separately in the future
+    const stepHallucinationScore = stepKnowledgeScore;
 
     if (actionType === "SUPERVISED") {
       actionFn = require("../actions/ask_supervisor").default;
@@ -302,7 +364,6 @@ async function step({
       actionType === "SUPERVISED" ||
       actionType === "INTERACTION"
     ) {
-      const { taskId } = await taskFn.getStep({ stepId });
       const steps = await taskFn.listSteps({ taskId });
 
       result = await actionFn.run({
@@ -332,6 +393,16 @@ async function step({
         result: resultString,
         status: "WAITING_FOR_USER",
       });
+      await stepScoreFn.create({
+        taskId,
+        stepId,
+        parameters,
+        output: resultString,
+        status: "COMPLETED",
+        knowledgeScore: stepKnowledgeScore,
+        hallucinationScore: stepHallucinationScore,
+        resultScore: stepResultScore,
+      });
     } else if (actionType === "SUPERVISED") {
       await session.addConversation({
         sessionId: parameters.sessionId,
@@ -344,11 +415,32 @@ async function step({
         result: resultString,
         status: "SUPERVISED_NEEDED",
       });
+      await stepScoreFn.create({
+        taskId,
+        stepId,
+        parameters,
+        output: resultString,
+        status: "SUPERVISED",
+        knowledgeScore: stepKnowledgeScore,
+        hallucinationScore: stepHallucinationScore,
+        resultScore: stepResultScore,
+      });
     } else {
+      const finalStatus = result && result.isError ? "FAILED" : "COMPLETED";
       await taskFn.updateStep({
         stepId,
         result: resultString || "Completed",
-        status: result && result.isError ? "FAILED" : "COMPLETED",
+        status: finalStatus,
+      });
+      await stepScoreFn.create({
+        taskId,
+        stepId,
+        parameters,
+        output: resultString,
+        status: finalStatus === "FAILED" ? "FAILED" : "COMPLETED",
+        knowledgeScore: stepKnowledgeScore,
+        hallucinationScore: stepHallucinationScore,
+        resultScore: stepResultScore,
       });
     }
   } catch (err: unknown) {
@@ -358,6 +450,19 @@ async function step({
         result: err.message,
         status: "FAILED",
       });
+      if (taskId) {
+        await stepScoreFn.create({
+          taskId,
+          stepId,
+          parameters,
+          output: err.message,
+          status: "FAILED",
+        });
+      } else {
+        platform.logger.error(
+          `step ${stepId} failed before taskId resolved; skipping log: ${err.message}`,
+        );
+      }
     }
   }
 }

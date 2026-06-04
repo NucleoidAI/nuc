@@ -61,6 +61,10 @@ class Step extends Model {
   @Column(DataType.UUID)
   declare taskId: string;
 
+  @AllowNull(true)
+  @Column(DataType.FLOAT)
+  declare knowledgeScore: number | null;
+
   @AllowNull(false)
   @Default(DataType.NOW)
   @Column(DataType.DATE)

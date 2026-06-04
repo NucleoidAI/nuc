@@ -219,6 +219,8 @@ export const configurationTool: Tool<ConfigurationInput> = {
             type: "text",
             text: JSON.stringify({
               message: `CONFIGURATION_COMPLETED`,
+              ontResponse,
+              addCustomerServiceResponse,
               isRequestSend: endpoint ? true : false,
             }),
           },

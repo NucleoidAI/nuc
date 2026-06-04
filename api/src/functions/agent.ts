@@ -234,6 +234,52 @@ async function task({ taskId }: { taskId: string }) {
   const resultScore =
     result_score != null ? parseFloat(String(result_score)) : undefined;
 
+  const stableStringify = (val: unknown): string =>
+    JSON.stringify(val, (_, v) =>
+      v && typeof v === "object" && !Array.isArray(v)
+        ? Object.fromEntries(
+            Object.entries(v).sort(([a], [b]) => a.localeCompare(b)),
+          )
+        : v,
+    );
+
+  const isDuplicateStep =
+    action !== "PLATFORM:complete" &&
+    currentTask.steps.some(
+      (s) =>
+        s.status === "COMPLETED" &&
+        s.action === action &&
+        stableStringify(s.parameters) === stableStringify(parameters),
+    );
+
+  if (isDuplicateStep) {
+    const steps = await taskFn.listSteps({ taskId });
+    const result = steps.length ? steps[steps.length - 1].result : undefined;
+
+    await stepScoreFn.create({
+      taskId,
+      parameters: { description, blueprintId },
+      output: result ?? comment ?? null,
+      status: "COMPLETED",
+    });
+
+    if (sessionId) {
+      await session.addConversation({
+        sessionId,
+        agentId,
+        role: "ASSISTANT",
+        content: "Task has been completed.",
+      });
+    }
+
+    return await taskFn.update({
+      taskId,
+      result,
+      comment,
+      status: "COMPLETED",
+    });
+  }
+
   if (action === "PLATFORM:complete") {
     const steps = await taskFn.listSteps({ taskId });
 

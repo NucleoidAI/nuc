@@ -57,7 +57,7 @@ function addCustomerServiceXmlRequest(args: ConfigurationInput): string {
                     </gponPortBean>
                 </fttxPortBean>
                 <hgwPotsPortNo>1</hgwPotsPortNo>
-                <hgwSerialNo>ZT30CC213FF851</hgwSerialNo>
+                <hgwSerialNo>C884CFD7EE92</hgwSerialNo>
                 <installationAddress>163316</installationAddress>
                 <installationType>6</installationType>
                 <packetId>109313</packetId>

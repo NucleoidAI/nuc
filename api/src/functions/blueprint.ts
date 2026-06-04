@@ -49,6 +49,7 @@ async function upsert(
   id: string,
   nodes?: NodeType[],
   messages?: Array<{ role: string; content: string; createdAt: Date }>,
+  blocking?: boolean,
 ) {
   let Blueprint;
 
@@ -60,6 +61,7 @@ async function upsert(
       description,
       agentId,
       nodes: nodes || null,
+      ...(blocking !== undefined && { blocking }),
     });
 
     Blueprint = existingBlueprint;
@@ -70,6 +72,7 @@ async function upsert(
       description,
       agentId,
       nodes: nodes || null,
+      ...(blocking !== undefined && { blocking }),
     });
   }
 
@@ -185,11 +188,13 @@ async function patch({
   pseudocode,
   title,
   description,
+  blocking,
 }: {
   blueprintId: string;
   pseudocode?: string;
   title?: string;
   description?: string;
+  blocking?: boolean;
 }) {
   const Blueprint = await BluePrint.findByPk(blueprintId);
 
@@ -201,6 +206,7 @@ async function patch({
     ...(pseudocode && { pseudocode }),
     ...(title && { title }),
     ...(description && { description }),
+    ...(blocking !== undefined && { blocking }),
   });
 
   return Blueprint.toJSON();
@@ -213,6 +219,7 @@ async function upsertPseudocode({
   agentId,
   nodes,
   messages,
+  blocking,
 }: {
   id: string;
   title: string;
@@ -220,51 +227,59 @@ async function upsertPseudocode({
   agentId: string;
   nodes?: NodeType[];
   messages?: Array<{ role: string; content: string; createdAt: Date }>;
+  blocking?: boolean;
 }) {
   const existingNodes = new Map(
     (await BluePrint.findByPk(id))?.nodes?.map((n) => [n.id, n]) || [],
   );
 
-  const [pseudocode, nodesWithPseudocode] = await Promise.all([
-    agentFn.toPseudo({ content: description }),
-    nodes
-      ? Promise.all(
-          nodes.map((node) => {
-            const content = node.properties?.prompt;
-            if (!content) return node;
-            const prev = existingNodes.get(node.id);
-            const prevContent = prev?.properties?.prompt;
-            if (prev?.properties?.pseudocode && prevContent === content) {
-              return {
-                ...node,
-                properties: {
-                  ...node.properties,
-                  pseudocode: prev.properties.pseudocode,
-                },
-              } as typeof node;
-            }
-            return agentFn.toPseudo({ content }).then(
-              (nodePseudocode) =>
-                ({
+  const [pseudocode, nodesWithPseudocode, generatedDescription] =
+    await Promise.all([
+      agentFn.toPseudo({ content: description }),
+      nodes
+        ? Promise.all(
+            nodes.map((node) => {
+              const content = node.properties?.prompt;
+              if (!content) return node;
+              const prev = existingNodes.get(node.id);
+              const prevContent = prev?.properties?.prompt;
+              if (prev?.properties?.pseudocode && prevContent === content) {
+                return {
                   ...node,
                   properties: {
                     ...node.properties,
-                    pseudocode: nodePseudocode,
+                    pseudocode: prev.properties.pseudocode,
                   },
-                } as typeof node),
-            );
-          }),
-        )
-      : undefined,
-  ]);
+                } as typeof node;
+              }
+              return agentFn.toPseudo({ content }).then(
+                (nodePseudocode) =>
+                  ({
+                    ...node,
+                    properties: {
+                      ...node.properties,
+                      pseudocode: nodePseudocode,
+                    },
+                  } as typeof node),
+              );
+            }),
+          )
+        : undefined,
+      nodes?.length
+        ? agentFn.blueprintDescription({ nodes })
+        : Promise.resolve(undefined),
+    ]);
+
+  const finalDescription = generatedDescription ?? description;
 
   const result = await upsert(
     title,
-    description,
+    finalDescription,
     agentId,
     id,
     nodesWithPseudocode,
     messages,
+    blocking,
   );
 
   await patch({ blueprintId: id, pseudocode });

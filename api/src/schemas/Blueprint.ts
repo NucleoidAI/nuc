@@ -5,6 +5,7 @@ const Blueprint = {
     title: z.string(),
     description: z.string(),
     agentId: z.string().uuid(),
+    blocking: z.boolean().optional(),
     taskId: z.string().uuid().optional(),
     nodes: z
       .array(

@@ -26,9 +26,10 @@ function useBlueprint() {
   const { Api } = useApi();
 
   const [blueprintUpserted] = useEvent("BLUEPRINT_UPSERTED", null);
+  const [blueprintPatched] = useEvent("BLUEPRINT_PATCHED", null);
 
   const getBlueprint = (fetchState: DependencyArray = []) => {
-    const eventDependencies = [blueprintUpserted];
+    const eventDependencies = [blueprintUpserted, blueprintPatched];
 
     const { data, loading, error, fetch } = Api(
       () => http.get(`/blueprints`),
@@ -116,7 +117,8 @@ function useBlueprint() {
       role: "user" | "assistant";
       content: string;
       createdAt: string | Date;
-    }>
+    }>,
+    blocking?: boolean
   ) => {
     if (!blueprintId) {
       blueprintId = uuidv4();
@@ -129,9 +131,21 @@ function useBlueprint() {
       agentId,
       taskId,
       messages,
+      ...(blocking !== undefined && { blocking }),
     });
     if (response?.data) {
       publish("BLUEPRINT_UPSERTED", { Blueprint: response.data });
+    }
+    return { Blueprint: response?.data };
+  };
+
+  const patchBlueprint = async (
+    blueprintId: string,
+    fields: { blocking?: boolean }
+  ) => {
+    const response = await http.patch(`/blueprints/${blueprintId}`, fields);
+    if (response?.data) {
+      publish("BLUEPRINT_PATCHED", { Blueprint: response.data });
     }
     return { Blueprint: response?.data };
   };
@@ -153,6 +167,7 @@ function useBlueprint() {
     getBlueprintWithNode,
     createBlueprint,
     upsertBlueprint,
+    patchBlueprint,
     removeBlueprint,
     getBlueprintWithId,
   };

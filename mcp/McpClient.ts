@@ -38,8 +38,8 @@ class McpClient {
     try {
       const serverPath = path.join(path.dirname(process.cwd()), 'mcp', 'servers', this.name, 'index.ts');
       this.transport = new StdioClientTransport({
-        command: "npx",
-        args: ["tsx", serverPath, `'${JSON.stringify({ credentials })}'`],
+        command: "bun",
+        args: [serverPath, `'${JSON.stringify({ credentials })}'`],
         env: { ...process.env },
       });
 

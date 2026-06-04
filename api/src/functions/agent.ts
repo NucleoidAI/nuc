@@ -768,6 +768,26 @@ async function toPseudo({ content }: { content: string }) {
   return response.pseudocode;
 }
 
+async function blueprintDescription({ nodes }: { nodes: object[] }) {
+  const context = [
+    {
+      role: "system" as const,
+      content: { nodes },
+    },
+  ];
+
+  const response = await generate({
+    dataset: dataset.train.blueprintDescription,
+    context,
+    content: nodes,
+    json_format: "{ description: <DESCRIPTION> }",
+  });
+
+  console.log("[agent] blueprintDescription:", response);
+
+  return response.description as string;
+}
+
 export default {
   teamChat,
   chat,
@@ -777,4 +797,5 @@ export default {
   blueprintName,
   evaluateSupervisionAnswer,
   toPseudo,
+  blueprintDescription,
 };

@@ -1,0 +1,169 @@
+[
+  {
+    "content": {
+      "nodes": [
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Get BBK by address",
+            "action": "TELCO:get_bbk_by_address"
+          },
+          "next": ["node-2"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Check inventory availability",
+            "action": "TELCO:get_inventory"
+          },
+          "next": ["node-3"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Get products by speed",
+            "action": "TELCO:get_product_by_speed"
+          },
+          "next": ["node-4"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Provide available options and waiting for user to select a product",
+            "action": "PLATFORM:user_interaction"
+          },
+          "next": ["node-5"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Allocate port and create order",
+            "action": "TELCO:port_allocation"
+          },
+          "next": ["node-6"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Notify user about port allocation",
+            "action": "PLATFORM:message_user"
+          },
+          "next": ["node-7"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Configure allocated port",
+            "action": "TELCO:configuration"
+          },
+          "next": ["node-8"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Connect port to residence",
+            "action": "TELCO:port_connection"
+          },
+          "next": ["node-9"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Complete setup flow",
+            "action": "PLATFORM:complete"
+          },
+          "next": null
+        }
+      ]
+    },
+    "description": "This Blueprint defines an address-based internet subscription and installation workflow. The system retrieves inventory for the location without an availability check, then proceeds directly to speed-based product listing. The user selects a package, a port is allocated, the user is notified, and the port is configured and physically connected to complete the setup."
+  },
+  {
+    "content": {
+      "nodes": [
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Get BBK by address",
+            "action": "TELCO:get_bbk_by_address"
+          },
+          "next": ["node-2"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Check inventory availability",
+            "action": "TELCO:get_inventory"
+          },
+          "next": ["node-3"]
+        },
+        {
+          "type": "CONDITION",
+          "properties": {
+            "prompt": "Is inventory available?",
+            "action": "PLATFORM:decision"
+          },
+          "true": ["node-4"],
+          "false": ["node-9"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Get products by speed",
+            "action": "TELCO:get_product_by_speed"
+          },
+          "next": ["node-5"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Provide available options and waiting for user to select a product",
+            "action": "PLATFORM:user_interaction"
+          },
+          "next": ["node-6"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Allocate port and create order",
+            "action": "TELCO:port_allocation"
+          },
+          "next": ["node-7"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Configure allocated port",
+            "action": "TELCO:configuration"
+          },
+          "next": ["node-8"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Connect port to residence",
+            "action": "TELCO:port_connection"
+          },
+          "next": ["node-10"]
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "No product available, complete",
+            "action": "PLATFORM:complete"
+          },
+          "next": null
+        },
+        {
+          "type": "NORMAL",
+          "properties": {
+            "prompt": "Complete setup flow",
+            "action": "PLATFORM:complete"
+          },
+          "next": null
+        }
+      ]
+    },
+    "description": "This Blueprint defines an address-based internet subscription and installation workflow. The system checks port availability using the location's infrastructure number, ending immediately if unavailable. If available, the user selects a compatible speed package, a port is allocated, the port is configured and physically connected without notifying the user, completing the setup."
+  }
+]

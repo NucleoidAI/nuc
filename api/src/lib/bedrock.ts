@@ -12,6 +12,21 @@ const bedrock = new BedrockRuntimeClient({
   },
 });
 
+function extractJsonFormat(systemPrompts: { text: string }[]): string | null {
+  for (const prompt of systemPrompts) {
+    let text = prompt.text;
+    try {
+      const parsed = JSON.parse(text);
+      if (typeof parsed === "string") text = parsed;
+    } catch {
+      // not JSON-stringified, use as-is
+    }
+    const match = text.match(/^json_format:\s*(.+)/s);
+    if (match) return match[1].trim();
+  }
+  return null;
+}
+
 async function generate({
   model = process.env.PLATFORM_LLM_MODEL || "meta.llama3-3-70b-instruct-v1:0",
   messages = [],
@@ -33,9 +48,7 @@ async function generate({
     }
   }
 
-  systemPrompts.push({
-    text: "\n\nIMPORTANT: You MUST respond with ONLY valid JSON that matches the format specified. Do NOT include any text before or after the JSON. Do NOT wrap the JSON in markdown code blocks. Output ONLY the raw JSON object.",
-  });
+  const jsonFormat = extractJsonFormat(systemPrompts);
 
   const command = new ConverseCommand({
     modelId: model,
@@ -45,6 +58,22 @@ async function generate({
       temperature: 0,
       maxTokens: 8192,
     },
+    ...(jsonFormat && {
+      toolConfig: {
+        tools: [
+          {
+            toolSpec: {
+              name: "structured_output",
+              description: `You MUST call this tool to return your response. The response must match this format: ${jsonFormat}`,
+              inputSchema: {
+                json: { type: "object" },
+              },
+            },
+          },
+        ],
+        toolChoice: { auto: {} },
+      },
+    }),
   });
 
   const response = await bedrock.send(command);
@@ -60,17 +89,63 @@ async function generate({
   if (response.stopReason === "max_tokens") {
     console.error("Response was truncated due to max_tokens limit");
     throw new Error(
-      "LLM response was truncated. The response exceeded the maximum token limit."
+      "LLM response was truncated. The response exceeded the maximum token limit.",
     );
   }
 
   const outputContent = response.output?.message?.content;
-  if (outputContent && outputContent[0]?.text) {
-    const content = outputContent[0].text;
-    return parseJSONFromLLMResponse(content);
-  } else {
-    throw new Error("Bedrock is not responding");
+  console.debug("[bedrock] raw content:", JSON.stringify(outputContent));
+
+  const toolUseBlock = outputContent?.find((block) => "toolUse" in block);
+  if (toolUseBlock && "toolUse" in toolUseBlock) {
+    return toolUseBlock.toolUse?.input;
   }
+
+  const textBlock = outputContent?.find((block) => "text" in block);
+  if (textBlock && "text" in textBlock && textBlock.text) {
+    try {
+      const parsed = JSON.parse(textBlock.text);
+      if (parsed.type === "function" && parsed.parameters) {
+        const params = unwrapSchemaValues(parsed.parameters);
+        const outerKeyMatch = jsonFormat?.match(/^\{\s*(\w+)\s*:/);
+        const outerKey = outerKeyMatch?.[1];
+        if (outerKey && !(outerKey in params)) {
+          return { [outerKey]: params };
+        }
+        return params;
+      }
+    } catch {}
+
+    return parseJSONFromLLMResponse(textBlock.text);
+  }
+
+  throw new Error("Bedrock is not responding");
+}
+
+function unwrapSchemaValues(obj: unknown): unknown {
+  if (obj && typeof obj === "object" && !Array.isArray(obj)) {
+    const o = obj as Record<string, unknown>;
+    if ("type" in o && "value" in o) {
+      return unwrapSchemaValues(o.value);
+    }
+    return Object.fromEntries(
+      Object.entries(o).map(([k, v]) => [k, unwrapSchemaValues(v)]),
+    );
+  }
+  if (typeof obj === "string") {
+    const trimmed = obj.trim();
+    if (
+      (trimmed.startsWith("{") && trimmed.endsWith("}")) ||
+      (trimmed.startsWith("[") && trimmed.endsWith("]"))
+    ) {
+      try {
+        return unwrapSchemaValues(JSON.parse(trimmed));
+      } catch {
+        // not valid JSON, return as-is
+      }
+    }
+  }
+  return obj;
 }
 
 function parseJSONFromLLMResponse(content: string): unknown {
@@ -79,7 +154,7 @@ function parseJSONFromLLMResponse(content: string): unknown {
   } catch {
     console.error(
       "Failed to parse LLM response as JSON:",
-      content.substring(0, 500)
+      content.substring(0, 500),
     );
   }
 
@@ -90,7 +165,7 @@ function parseJSONFromLLMResponse(content: string): unknown {
     } catch {
       console.error(
         "Failed to parse LLM response as JSON:",
-        codeBlockMatch[1].trim()
+        codeBlockMatch[1].trim(),
       );
     }
   }
@@ -106,13 +181,13 @@ function parseJSONFromLLMResponse(content: string): unknown {
 
   console.error(
     "Failed to parse LLM response as JSON:",
-    content.substring(0, 500)
+    content.substring(0, 500),
   );
   throw new SyntaxError(
     `Failed to parse LLM response as JSON. Content starts with: ${content.substring(
       0,
-      100
-    )}`
+      100,
+    )}`,
   );
 }
 

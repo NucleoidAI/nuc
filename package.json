@@ -1,6 +1,6 @@
 {
   "name": "greycollar",
-  "version": "0.0.6",
+  "version": "0.0.14",
   "description": "GreyCollar is a supervised agentic AI platform designed to automate tasks, manage workflows, and provide insights.",
   "main": "server.js",
   "author": "GreyCollar Team",

@@ -5,6 +5,7 @@ import blueprintDiamond from "./train/blueprint-diamond.json";
 import blueprintName from "./train/blueprint-name.json";
 import chat from "./train/chat.json";
 import humanInLoop from "./train/human-in-loop.json";
+import knowledgeScore from "./train/knowledge-score.json";
 import policy from "./policy.json";
 import pseudocode from "./train/pseudocode.json";
 import taskDiamond from "./train/task-diamond.json";
@@ -74,6 +75,12 @@ export default {
       role: "system" as const,
       content: JSON.stringify({
         train: blueprintDiamond,
+      }),
+    },
+    knowledgeScore: {
+      role: "system" as const,
+      content: JSON.stringify({
+        train: knowledgeScore,
       }),
     },
   },

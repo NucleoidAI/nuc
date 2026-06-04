@@ -14,6 +14,7 @@ import platform from "@canmingir/link-express";
 import projects from "./routes/projects";
 import sessions from "./routes/sessions";
 import statistics from "./routes/statistics";
+import stepScores from "./routes/stepScores";
 import supervisings from "./routes/supervisings";
 import taskFn from "./functions/task";
 import tasks from "./routes/tasks";
@@ -46,6 +47,7 @@ function createApp() {
   app.use("/sessions", sessions);
   app.use("/supervisings", supervisings);
   app.use("/tasks", tasks);
+  app.use("/step-scores", stepScores);
   app.use("/engines", engines);
   app.use("/organizations", organizations);
   app.use("/statistics", statistics);
@@ -110,8 +112,9 @@ function createApp() {
       action: string;
       parameters: object;
       comment: string;
-    }>("STEP_ADDED", ({ stepId, action, parameters, comment }) =>
-      agentFn.step({ stepId, action, parameters, comment }),
+      resultScore?: number;
+    }>("STEP_ADDED", ({ stepId, action, parameters, comment, resultScore }) =>
+      agentFn.step({ stepId, action, parameters, comment, resultScore }),
     );
 
     await event.subscribe<{ taskId: string }>(

@@ -26,6 +26,11 @@ const menuConfig = {
           path: "/mcps",
         },
         {
+          title: "Task Scores",
+          icon: "solar:document-text-bold",
+          path: "/task-scores",
+        },
+        {
           title: "Monitoring",
           icon: "ic:outline-dashboard",
           path: "/monitoring",

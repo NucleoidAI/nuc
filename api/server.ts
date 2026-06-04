@@ -37,6 +37,14 @@ platform.init(config).then(async () => {
 
   await event.init(config.event);
 
+  const shutdown = async () => {
+    await event.disconnect();
+    server.close(() => process.exit(0));
+  };
+
+  process.on("SIGINT", shutdown);
+  process.on("SIGTERM", shutdown);
+
   const logger = platform.logger;
 
   logger.info("Platform Logger Initialized");

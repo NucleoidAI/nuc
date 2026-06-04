@@ -13,6 +13,40 @@ import {
   SideStripeCard,
 } from "@canmingir/link/platform/components";
 
+const threeDStyle = {
+  transformStyle: "preserve-3d",
+  transform: "perspective(1500px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)",
+  boxShadow: `
+    1px 1px 0 #161C24,
+    2px 2px 0 #161C24,
+    3px 3px 0 #161C24,
+    4px 4px 0 #161C24,
+    5px 5px 0 #161C24,
+    6px 6px 0 #161C24,
+    7px 7px 0 #161C24,
+    10px 10px 20px rgba(0, 0, 0, 0.4),
+    20px 20px 40px rgba(0, 0, 0, 0.5)
+  `,
+  transition:
+    "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, filter 0.25s ease",
+  "&:hover": {
+    transform:
+      "perspective(1500px) rotateX(0deg) rotateY(-10deg) rotateZ(0deg)",
+    filter: "brightness(1.070)",
+    boxShadow: `
+     1px 1px 0 #161C24,
+    2px 2px 0 #161C24,
+    3px 3px 0 #161C24,
+    4px 4px 0 #161C24,
+    5px 5px 0 #161C24,
+    6px 6px 0 #161C24,
+    7px 7px 0 #161C24,
+    10px 10px 20px rgba(0, 0, 0, 0.4),
+    20px 20px 40px rgba(0, 0, 0, 0.5)
+  `,
+  },
+};
+
 export const teamChartPlugin = {
   id: "teamChart",
 
@@ -104,13 +138,12 @@ export const teamChartPlugin = {
       return (
         <MediaAvatarCard
           sx={{
+            ...threeDStyle,
             minWidth: width,
             maxWidth: width,
             height,
             ...nodeSx,
-            "&:hover": {
-              boxShadow: (theme) => theme.shadows[3],
-            },
+
             "&::before": (theme) => ({
               content: '""',
               position: "absolute",
@@ -199,13 +232,10 @@ export const teamChartPlugin = {
       return (
         <SideStripeCard
           sx={{
+            ...threeDStyle,
             width,
             ...nodeSx,
             borderRadius: 1.5,
-            "&:hover": {
-              transform: "none",
-              boxShadow: "none",
-            },
             "& .animated-background-selector": (theme) => ({
               background: `linear-gradient(
                 135deg,
@@ -244,14 +274,13 @@ export const teamChartPlugin = {
     return (
       <HeaderCard
         sx={{
+          ...threeDStyle,
+          "&hover": {
+            "&:before": { height: "40%" },
+          },
           width,
           ...nodeSx,
           borderRadius: 1.5,
-          "&:hover": {
-            transform: "none",
-            boxShadow: "none",
-            "&:before": { height: "40%" },
-          },
         }}
         height={height}
         padding={nodeStyle.teamPadding || 2}

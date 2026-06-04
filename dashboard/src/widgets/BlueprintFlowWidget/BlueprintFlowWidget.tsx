@@ -58,14 +58,17 @@ function BlueprintFlowWidget({
 }) {
   const [graphData, setGraphData] = useState<DefinitionGraph | null>(null);
   const [hasLocalChanges, setHasLocalChanges] = useState(false);
-  const [blocking, setBlocking] = useState<boolean>(blueprint?.blocking ?? true);
+  const [blocking, setBlocking] = useState<boolean>(
+    blueprint?.blocking ?? true
+  );
   const [validationErrors, setValidationErrors] = useState([]);
   const [showValidationErrors, setShowValidationErrors] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [showDiffPanel, setShowDiffPanel] = useState(false);
   const [baselineNodes, setBaselineNodes] = useState(null);
 
-  const { getBlueprintWithNode, upsertBlueprint, patchBlueprint } = useBlueprint();
+  const { getBlueprintWithNode, upsertBlueprint, patchBlueprint } =
+    useBlueprint();
   const { blueprintNodes, loading } = getBlueprintWithNode(blueprint?.id);
   const { getMCPs } = useMCPs();
   const { mcps } = getMCPs();

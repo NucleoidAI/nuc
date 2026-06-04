@@ -132,6 +132,19 @@ function unwrapSchemaValues(obj: unknown): unknown {
       Object.entries(o).map(([k, v]) => [k, unwrapSchemaValues(v)]),
     );
   }
+  if (typeof obj === "string") {
+    const trimmed = obj.trim();
+    if (
+      (trimmed.startsWith("{") && trimmed.endsWith("}")) ||
+      (trimmed.startsWith("[") && trimmed.endsWith("]"))
+    ) {
+      try {
+        return unwrapSchemaValues(JSON.parse(trimmed));
+      } catch {
+        // not valid JSON, return as-is
+      }
+    }
+  }
   return obj;
 }
 

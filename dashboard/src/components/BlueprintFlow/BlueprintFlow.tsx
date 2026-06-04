@@ -1,5 +1,4 @@
 import { BlueprintFlowProps } from "./BlueprintFlow.types";
-import { Box, Chip, Tooltip } from "@mui/material";
 import DiffButton from "./DiffPanel/DiffButton";
 import { Flow } from "@canmingir/link/platform/components";
 import { FlowMiniMap } from "./FlowMiniMap";
@@ -10,6 +9,7 @@ import SuccessSnackbar from "./Validation/SuccessSnackbar";
 import ValidationButtons from "./Validation/ValidationButtons";
 import ValidationErrorView from "./Validation/ValidationErrorView";
 import { blueprintFlowPlugin } from "./BlueprintFlowPlugin";
+import { Box, Chip, Tooltip } from "@mui/material";
 
 import React, { useRef } from "react";
 
@@ -70,7 +70,13 @@ export default function BlueprintFlow({
           >
             <Chip
               size="small"
-              icon={blocking ? <LockIcon fontSize="small" /> : <LockOpenIcon fontSize="small" />}
+              icon={
+                blocking ? (
+                  <LockIcon fontSize="small" />
+                ) : (
+                  <LockOpenIcon fontSize="small" />
+                )
+              }
               label={blocking ? "Blocking" : "Non-blocking"}
               color={blocking ? "warning" : "success"}
               variant="outlined"

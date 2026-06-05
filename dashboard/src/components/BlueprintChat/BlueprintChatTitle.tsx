@@ -21,7 +21,7 @@ import {
 import { MCPElement, MCPScopeElement } from "./MCPElement";
 import React, { useState } from "react";
 
-const BlueprintChatTitle = ({ title, setTitle }) => {
+const BlueprintChatTitle = ({ title, description, setTitle }) => {
   const theme = useTheme();
   const [isEditing, setIsEditing] = useState(false);
 
@@ -35,6 +35,115 @@ const BlueprintChatTitle = ({ title, setTitle }) => {
 
   const handleCancelClick = () => {
     setIsEditing(false);
+  };
+
+  const renderDescriptionContent = () => {
+    if (!description) return null;
+
+    try {
+      const availableMCPs = BlueprintCommands[0]?.next?.list || [];
+      const availableScopes = [];
+
+      availableMCPs.forEach((mcp) => {
+        if (mcp.next?.list) {
+          mcp.next.list.forEach((scope) => {
+            availableScopes.push({
+              ...scope,
+              parentMCP: mcp,
+            });
+          });
+        }
+      });
+
+      const matches = [];
+      const modifiedDescription = description;
+
+      availableMCPs.forEach((mcp) => {
+        const regex = new RegExp(`\\b${mcp.name}\\b`, "gi");
+        const mcpMatches = modifiedDescription.match(regex);
+        if (mcpMatches) {
+          mcpMatches.forEach((match) => {
+            matches.push({
+              text: match,
+              type: "mcp",
+              data: mcp,
+              index: modifiedDescription
+                .toLowerCase()
+                .indexOf(match.toLowerCase()),
+            });
+          });
+        }
+      });
+
+      availableScopes.forEach((scope) => {
+        const regex = new RegExp(`\\b${scope.name}\\b`, "gi");
+        const scopeMatches = modifiedDescription.match(regex);
+        if (scopeMatches) {
+          scopeMatches.forEach((match) => {
+            matches.push({
+              text: match,
+              type: "scope",
+              data: scope,
+              index: modifiedDescription
+                .toLowerCase()
+                .indexOf(match.toLowerCase()),
+            });
+          });
+        }
+      });
+
+      if (matches.length > 0) {
+        matches.sort((a, b) => a.index - b.index);
+
+        const parts = [];
+        let lastIndex = 0;
+
+        matches.forEach((match) => {
+          const currentIndex = modifiedDescription
+            .toLowerCase()
+            .indexOf(match.text.toLowerCase(), lastIndex);
+
+          if (currentIndex > lastIndex) {
+            parts.push(modifiedDescription.substring(lastIndex, currentIndex));
+          }
+
+          parts.push(match);
+
+          lastIndex = currentIndex + match.text.length;
+        });
+
+        if (lastIndex < modifiedDescription.length) {
+          parts.push(modifiedDescription.substring(lastIndex));
+        }
+
+        return (
+          <>
+            {parts.map((part, index) => {
+              if (typeof part === "object" && part.type === "mcp") {
+                return (
+                  <MCPElement key={`desc-mcp-${index}`}>
+                    <Iconify icon={part.data.icon} sx={{ mr: 1 }} />
+                    {part.data.name}
+                  </MCPElement>
+                );
+              } else if (typeof part === "object" && part.type === "scope") {
+                return (
+                  <MCPScopeElement key={`desc-scope-${index}`}>
+                    <Iconify icon={part.data.icon} />
+                    {part.data.name}
+                  </MCPScopeElement>
+                );
+              }
+              return <span key={index}>{part}</span>;
+            })}
+          </>
+        );
+      }
+
+      return description;
+    } catch (error) {
+      return description;
+    }
   };
 
   const renderTitleContent = () => {
@@ -148,9 +257,9 @@ const BlueprintChatTitle = ({ title, setTitle }) => {
         <GlassCardHeader
           sx={{
             p: 2,
-            width: "500px",
           }}
           title={renderTitleContent()}
+          subheader={renderDescriptionContent()}
           action={
             <IconButton
               onClick={handleEditClick}

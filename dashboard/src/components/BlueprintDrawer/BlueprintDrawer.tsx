@@ -1,4 +1,4 @@
-// import BlueprintChatTitle from "../BlueprintChat/BlueprintChatTitle";
+import BlueprintChatTitle from "../BlueprintChat/BlueprintChatTitle";
 import BlueprintFlowWidget from "../../widgets/BlueprintFlowWidget/BlueprintFlowWidget";
 import CloseIcon from "@mui/icons-material/Close";
 import { DrawerLayout } from "@canmingir/link/layouts";
@@ -107,11 +107,11 @@ const BlueprintDrawer = ({
           maxHeight: "calc(100% - 32px)",
         }}
       >
-        {/* <BlueprintChatTitle
+        <BlueprintChatTitle
           title={title}
-          description={description}
+          // description={description}
           setTitle={setTitle}
-        /> */}
+        />
 
         {showKnowledge && (
           <GlassCard

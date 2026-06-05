@@ -107,11 +107,11 @@ const BlueprintDrawer = ({
           maxHeight: "calc(100% - 32px)",
         }}
       >
-        <BlueprintChatTitle
+        {/* <BlueprintChatTitle
           title={title}
           description={description}
           setTitle={setTitle}
-        />
+        /> */}
 
         {showKnowledge && (
           <GlassCard

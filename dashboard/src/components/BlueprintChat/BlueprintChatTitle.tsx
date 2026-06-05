@@ -257,6 +257,7 @@ const BlueprintChatTitle = ({ title, setTitle }) => {
         <GlassCardHeader
           sx={{
             p: 2,
+            width: 500,
           }}
           title={renderTitleContent()}
           // subheader={renderDescriptionContent()}

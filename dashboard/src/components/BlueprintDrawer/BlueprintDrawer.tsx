@@ -1,4 +1,4 @@
-import BlueprintChatTitle from "../BlueprintChat/BlueprintChatTitle";
+// import BlueprintChatTitle from "../BlueprintChat/BlueprintChatTitle";
 import BlueprintFlowWidget from "../../widgets/BlueprintFlowWidget/BlueprintFlowWidget";
 import CloseIcon from "@mui/icons-material/Close";
 import { DrawerLayout } from "@canmingir/link/layouts";

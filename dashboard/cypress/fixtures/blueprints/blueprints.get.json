@@ -1,0 +1,69 @@
+[
+  {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "title": "Customer Inquiry Handler",
+    "description": "Handles incoming customer inquiries and routes them to the appropriate department",
+    "agentId": "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
+    "blocking": true,
+    "nodes": [
+      {
+        "id": "node-start",
+        "type": "start",
+        "properties": {
+          "label": "Receive Inquiry",
+          "icon": "material-symbols:inbox"
+        },
+        "next": ["node-classify"]
+      },
+      {
+        "id": "node-classify",
+        "type": "action",
+        "properties": {
+          "label": "Classify Inquiry",
+          "prompt": "Classify the customer inquiry as billing, technical, or general",
+          "icon": "material-symbols:category"
+        },
+        "next": ["node-respond"]
+      },
+      {
+        "id": "node-respond",
+        "type": "action",
+        "properties": {
+          "label": "Generate Response",
+          "prompt": "Generate an appropriate response based on the inquiry classification",
+          "icon": "material-symbols:send"
+        },
+        "next": null
+      }
+    ]
+  },
+  {
+    "id": "b2c3d4e5-f6a7-8901-bcde-fa2345678901",
+    "title": "Account Balance Check",
+    "description": "Checks account balance and provides summary to the customer",
+    "agentId": "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
+    "blocking": false,
+    "nodes": [
+      {
+        "id": "node-fetch",
+        "type": "action",
+        "properties": {
+          "label": "Fetch Account",
+          "prompt": "Retrieve account details from the database",
+          "icon": "material-symbols:account-balance"
+        },
+        "next": ["node-format"]
+      },
+      {
+        "id": "node-format",
+        "type": "action",
+        "properties": {
+          "label": "Format Response",
+          "prompt": "Format the account balance information for the customer",
+          "icon": "material-symbols:format-list-bulleted"
+        },
+        "next": null
+      }
+    ]
+  }
+]

@@ -1,0 +1,34 @@
+{
+  "response": "I have analyzed your request and created a blueprint for handling customer inquiries. The workflow consists of three steps: receiving the inquiry, classifying it by category, and generating an appropriate response.",
+  "flow": [
+    {
+      "id": "node-start",
+      "type": "start",
+      "properties": {
+        "label": "Receive Inquiry",
+        "icon": "material-symbols:inbox"
+      },
+      "next": ["node-classify"]
+    },
+    {
+      "id": "node-classify",
+      "type": "action",
+      "properties": {
+        "label": "Classify Inquiry",
+        "prompt": "Classify the customer inquiry as billing, technical, or general",
+        "icon": "material-symbols:category"
+      },
+      "next": ["node-respond"]
+    },
+    {
+      "id": "node-respond",
+      "type": "action",
+      "properties": {
+        "label": "Generate Response",
+        "prompt": "Generate an appropriate response based on the inquiry classification",
+        "icon": "material-symbols:send"
+      },
+      "next": null
+    }
+  ]
+}

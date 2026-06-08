@@ -222,7 +222,7 @@ function TasksWidget({
               >
                 <Box
                   sx={{
-                    px: 2,
+                    px: 1,
                     py: 1.5,
                     borderBottom: "1px solid",
                     borderColor: "divider",
@@ -260,7 +260,7 @@ function TasksWidget({
                 <Box
                   sx={{
                     p: 2,
-                    maxHeight: "calc(100vh - 440px)",
+                    maxHeight: "calc(100vh - 380px)",
                     overflow: "auto",
                   }}
                 >

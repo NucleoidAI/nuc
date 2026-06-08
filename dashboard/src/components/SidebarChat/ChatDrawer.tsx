@@ -138,11 +138,10 @@ const ChatDrawer = ({
           sx={{
             flex: 1,
             overflow: "hidden",
-            display: "flex",
-            flexDirection: "column",
+            p: 2,
           }}
         >
-          <Scrollbar sx={{ flex: 1, p: 2 }}>
+          <Scrollbar sx={{ height: "100%" }}>
             <MessageList
               messages={
                 history as { id: string; content: string; role: string }[]

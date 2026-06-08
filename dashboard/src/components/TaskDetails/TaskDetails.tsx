@@ -20,7 +20,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const TaskDetails = ({
   task,
@@ -49,6 +49,17 @@ const TaskDetails = ({
   const [stepResult, setStepResult] = useState<boolean>(false);
   const [taskResult, setTaskResult] = useState<boolean>(false);
   const [supervisingTask, setSupervisingTask] = useState<boolean>(false);
+  const stepsEndRef = useRef<HTMLDivElement>(null);
+  const prevStepsLengthRef = useRef(steps?.length ?? 0);
+
+  useEffect(() => {
+    const currentLength = steps?.length ?? 0;
+    if (currentLength > prevStepsLengthRef.current) {
+      stepsEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+    prevStepsLengthRef.current = currentLength;
+  }, [steps]);
+
   const [step, setStep] = useState<{
     comment: string;
     createdAt: string;
@@ -138,6 +149,7 @@ const TaskDetails = ({
 
         <Tooltip title="Supervising">
           <Fab
+            color="default"
             sx={{
               backgroundColor: (theme) => theme.palette.success.main,
               "&:hover": {
@@ -241,6 +253,7 @@ const TaskDetails = ({
             </TableBody>
           </Table>
         </Box>
+        <div ref={stepsEndRef} />
       </Box>
 
       <SupervisingTask

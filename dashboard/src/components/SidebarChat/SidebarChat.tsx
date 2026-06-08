@@ -98,8 +98,14 @@ const SidebarChat = ({
   }, [history, open]);
 
   useEffect(() => {
+    if (open) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [history, open]);
+
+  useEffect(() => {
     scrollToBottom();
-  }, [history, open, aiResponded, scrollToBottom]);
+  }, [aiResponded, scrollToBottom]);
 
   useEffect(() => {
     if (selectedConversationId) scrollToBottom();

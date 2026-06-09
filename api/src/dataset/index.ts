@@ -10,6 +10,7 @@ import knowledgeScore from "./train/knowledge-score.json";
 import policy from "./policy.json";
 import pseudocode from "./train/pseudocode.json";
 import taskDiamond from "./train/task-diamond.json";
+import taskDiamondNonBlocking from "./train/task-diamond-non-blocking.json";
 import teamChat from "./train/team-chat.json";
 
 export default {
@@ -46,6 +47,12 @@ export default {
       role: "system" as const,
       content: JSON.stringify({
         train: taskDiamond,
+      }),
+    },
+    taskDiamondNonBlocking: {
+      role: "system" as const,
+      content: JSON.stringify({
+        train: taskDiamondNonBlocking,
       }),
     },
     teamChat: {

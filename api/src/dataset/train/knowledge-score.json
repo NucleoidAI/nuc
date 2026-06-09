@@ -3,44 +3,44 @@
     "context": {
       "ai_assistant_info": {
         "name": "ISP Agent",
-        "description": "Handles ISP internet subscriptions",
-        "job": "GreyCollar AI Assistant"
+        "description": "İSS internet aboneliklerini yönetir",
+        "job": "GreyCollar Yapay Zeka Asistanı"
       },
       "knowledge_base": [
-        { "type": "TEXT", "text": "Default speed limit is 16mbps for residential addresses." },
-        { "type": "TEXT", "text": "Business addresses get 100mbps by default." },
-        { "type": "QA", "question": "What is the BBK number?", "answer": "BBK is the infrastructure identifier used to check line availability at an address." },
-        { "type": "TEXT", "text": "ISP contracts are renewed annually. Early termination fee is 3 months." },
-        { "type": "QA", "question": "How to check address availability?", "answer": "Use TELCO:get_bbk_by_address then TELCO:get_inventory to verify available slots." },
-        { "type": "TEXT", "text": "Residential plans: 16mbps, 50mbps, 100mbps, 250mbps. Business plans: 100mbps, 500mbps, 1gbps." }
+        { "type": "TEXT", "text": "Konut adresleri için varsayılan hız limiti 16 Mbps'dir." },
+        { "type": "TEXT", "text": "İş adresleri varsayılan olarak 100 Mbps alır." },
+        { "type": "QA", "question": "BBK numarası nedir?", "answer": "BBK, bir adreste hat kullanılabilirliğini kontrol etmek için kullanılan altyapı tanımlayıcısıdır." },
+        { "type": "TEXT", "text": "İSS sözleşmeleri yıllık olarak yenilenir. Erken fesih ücreti 3 aydır." },
+        { "type": "QA", "question": "Adres kullanılabilirliği nasıl kontrol edilir?", "answer": "Mevcut slotları doğrulamak için TELCO:get_bbk_by_address ardından TELCO:get_inventory kullanın." },
+        { "type": "TEXT", "text": "Konut planları: 16 Mbps, 50 Mbps, 100 Mbps, 250 Mbps. İş planları: 100 Mbps, 500 Mbps, 1 Gbps." }
       ],
       "Blueprints": [
-        { "id": "bp-isp-1", "name": "ISP Subscription Setup" }
+        { "id": "bp-isp-1", "name": "İSS Aboneliği Kurulumu" }
       ],
       "steps": [
         { "action": "TELCO:get_bbk_by_address", "status": "COMPLETED", "parameters": { "address": "Kadikoy Neighborhood, Bagdat Street, No. 234, Kadikoy, Istanbul." }, "result": "{\"bbk\": \"TUR-34710-00234\"}" },
         { "action": "TELCO:get_inventory", "status": "COMPLETED", "parameters": { "bbk": "TUR-34710-00234" }, "result": "{\"available\": true, \"slots\": 6}" },
         { "action": "TELCO:get_product_by_speed", "status": "COMPLETED", "parameters": { "bbk": "TUR-34710-00234" }, "result": "[{\"id\": \"P100\", \"speed\": 100}, {\"id\": \"P250\", \"speed\": 250}]" },
-        { "action": "PLATFORM:user_interaction", "status": "COMPLETED", "parameters": { "question": "Please select a product: 100 Mbps or 250 Mbps" }, "result": "P250" },
+        { "action": "PLATFORM:user_interaction", "status": "COMPLETED", "parameters": { "question": "Lütfen bir ürün seçin: 100 Mbps veya 250 Mbps" }, "result": "P250" },
         { "action": "TELCO:create_order", "status": "COMPLETED", "parameters": { "bbk": "TUR-34710-00234", "productId": "P250" } }
       ],
       "actions": [
-        { "action": "PLATFORM:llm", "lib": "llm", "description": "Send a message to the Language Model for AI processing", "icon": "mdi:brain" },
-        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Extract data from a website URL", "icon": "mdi:web" },
-        { "action": "PLATFORM:decision", "lib": "decision", "description": "A decision node that branches the flow based on conditions", "icon": "mdi:source-branch" },
-        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Interact with the user and get their response", "icon": "mdi:account-question" },
-        { "action": "PLATFORM:complete", "description": "Mark the workflow as complete", "icon": "mdi:check" },
-        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Ask a supervisor for guidance or approval", "icon": "mdi:account-supervisor" },
-        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Send a message to the user", "icon": "mdi:message-text" }
+        { "action": "PLATFORM:llm", "lib": "llm", "description": "Yapay zeka işleme için Dil Modeline mesaj gönder", "icon": "mdi:brain" },
+        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Bir web sitesi URL'sinden veri çıkar", "icon": "mdi:web" },
+        { "action": "PLATFORM:decision", "lib": "decision", "description": "Koşullara göre akışı dallandıran bir karar düğümü", "icon": "mdi:source-branch" },
+        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Kullanıcıyla etkileşime geç ve yanıtını al", "icon": "mdi:account-question" },
+        { "action": "PLATFORM:complete", "description": "İş akışını tamamlandı olarak işaretle", "icon": "mdi:check" },
+        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Yönlendirme veya onay için denetçiye sor", "icon": "mdi:account-supervisor" },
+        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Kullanıcıya mesaj gönder", "icon": "mdi:message-text" }
       ],
       "mcps": [
-        { "id": "mcp-1", "provider": "TELCO", "action": "TELCO:get_bbk_by_address", "description": "Get BBK number for a given address", "direction": "OUTGOING" },
-        { "id": "mcp-2", "provider": "TELCO", "action": "TELCO:get_inventory", "description": "Check line availability at a BBK location", "direction": "OUTGOING" },
-        { "id": "mcp-3", "provider": "TELCO", "action": "TELCO:get_product_by_speed", "description": "Fetch available products for a BBK", "direction": "OUTGOING" },
-        { "id": "mcp-4", "provider": "TELCO", "action": "TELCO:create_order", "description": "Create a telecom subscription order", "direction": "OUTGOING" },
-        { "id": "mcp-5", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Search for files in Google Drive", "direction": "OUTGOING" },
-        { "id": "mcp-6", "provider": "SLACK", "action": "SLACK:search", "description": "Search for messages in Slack", "direction": "INCOMING" },
-        { "id": "mcp-7", "provider": "JIRA", "action": "JIRA:search", "description": "Search for issues in JIRA", "direction": "OUTGOING" }
+        { "id": "mcp-1", "provider": "TELCO", "action": "TELCO:get_bbk_by_address", "description": "Belirli bir adres için BBK numarasını al", "direction": "OUTGOING" },
+        { "id": "mcp-2", "provider": "TELCO", "action": "TELCO:get_inventory", "description": "BBK konumunda hat kullanılabilirliğini kontrol et", "direction": "OUTGOING" },
+        { "id": "mcp-3", "provider": "TELCO", "action": "TELCO:get_product_by_speed", "description": "Bir BBK için mevcut ürünleri getir", "direction": "OUTGOING" },
+        { "id": "mcp-4", "provider": "TELCO", "action": "TELCO:create_order", "description": "Telekom aboneliği siparişi oluştur", "direction": "OUTGOING" },
+        { "id": "mcp-5", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Google Drive'da dosya ara", "direction": "OUTGOING" },
+        { "id": "mcp-6", "provider": "SLACK", "action": "SLACK:search", "description": "Slack'te mesaj ara", "direction": "INCOMING" },
+        { "id": "mcp-7", "provider": "JIRA", "action": "JIRA:search", "description": "JIRA'da sorun ara", "direction": "OUTGOING" }
       ]
     },
     "knowledge_score": 0.95
@@ -49,29 +49,29 @@
     "context": {
       "ai_assistant_info": {
         "name": "ISP Agent",
-        "description": "Handles ISP internet subscriptions",
-        "job": "GreyCollar AI Assistant"
+        "description": "İSS internet aboneliklerini yönetir",
+        "job": "GreyCollar Yapay Zeka Asistanı"
       },
       "knowledge_base": [],
       "Blueprints": [],
       "steps": [],
       "actions": [
-        { "action": "PLATFORM:llm", "lib": "llm", "description": "Send a message to the Language Model for AI processing", "icon": "mdi:brain" },
-        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Extract data from a website URL", "icon": "mdi:web" },
-        { "action": "PLATFORM:decision", "lib": "decision", "description": "A decision node that branches the flow based on conditions", "icon": "mdi:source-branch" },
-        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Interact with the user and get their response", "icon": "mdi:account-question" },
-        { "action": "PLATFORM:complete", "description": "Mark the workflow as complete", "icon": "mdi:check" },
-        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Ask a supervisor for guidance or approval", "icon": "mdi:account-supervisor" },
-        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Send a message to the user", "icon": "mdi:message-text" }
+        { "action": "PLATFORM:llm", "lib": "llm", "description": "Yapay zeka işleme için Dil Modeline mesaj gönder", "icon": "mdi:brain" },
+        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Bir web sitesi URL'sinden veri çıkar", "icon": "mdi:web" },
+        { "action": "PLATFORM:decision", "lib": "decision", "description": "Koşullara göre akışı dallandıran bir karar düğümü", "icon": "mdi:source-branch" },
+        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Kullanıcıyla etkileşime geç ve yanıtını al", "icon": "mdi:account-question" },
+        { "action": "PLATFORM:complete", "description": "İş akışını tamamlandı olarak işaretle", "icon": "mdi:check" },
+        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Yönlendirme veya onay için denetçiye sor", "icon": "mdi:account-supervisor" },
+        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Kullanıcıya mesaj gönder", "icon": "mdi:message-text" }
       ],
       "mcps": [
-        { "id": "mcp-1", "provider": "TELCO", "action": "TELCO:get_bbk_by_address", "description": "Get BBK number for a given address", "direction": "OUTGOING" },
-        { "id": "mcp-2", "provider": "TELCO", "action": "TELCO:get_inventory", "description": "Check line availability at a BBK location", "direction": "OUTGOING" },
-        { "id": "mcp-3", "provider": "TELCO", "action": "TELCO:get_product_by_speed", "description": "Fetch available products for a BBK", "direction": "OUTGOING" },
-        { "id": "mcp-4", "provider": "TELCO", "action": "TELCO:create_order", "description": "Create a telecom subscription order", "direction": "OUTGOING" },
-        { "id": "mcp-5", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Search for files in Google Drive", "direction": "OUTGOING" },
-        { "id": "mcp-6", "provider": "SLACK", "action": "SLACK:search", "description": "Search for messages in Slack", "direction": "INCOMING" },
-        { "id": "mcp-7", "provider": "JIRA", "action": "JIRA:search", "description": "Search for issues in JIRA", "direction": "OUTGOING" }
+        { "id": "mcp-1", "provider": "TELCO", "action": "TELCO:get_bbk_by_address", "description": "Belirli bir adres için BBK numarasını al", "direction": "OUTGOING" },
+        { "id": "mcp-2", "provider": "TELCO", "action": "TELCO:get_inventory", "description": "BBK konumunda hat kullanılabilirliğini kontrol et", "direction": "OUTGOING" },
+        { "id": "mcp-3", "provider": "TELCO", "action": "TELCO:get_product_by_speed", "description": "Bir BBK için mevcut ürünleri getir", "direction": "OUTGOING" },
+        { "id": "mcp-4", "provider": "TELCO", "action": "TELCO:create_order", "description": "Telekom aboneliği siparişi oluştur", "direction": "OUTGOING" },
+        { "id": "mcp-5", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Google Drive'da dosya ara", "direction": "OUTGOING" },
+        { "id": "mcp-6", "provider": "SLACK", "action": "SLACK:search", "description": "Slack'te mesaj ara", "direction": "INCOMING" },
+        { "id": "mcp-7", "provider": "JIRA", "action": "JIRA:search", "description": "JIRA'da sorun ara", "direction": "OUTGOING" }
       ]
     },
     "knowledge_score": 0.05
@@ -80,36 +80,36 @@
     "context": {
       "ai_assistant_info": {
         "name": "ISP Agent",
-        "description": "Handles ISP internet subscriptions",
-        "job": "GreyCollar AI Assistant"
+        "description": "İSS internet aboneliklerini yönetir",
+        "job": "GreyCollar Yapay Zeka Asistanı"
       },
       "knowledge_base": [
-        { "type": "TEXT", "text": "Default speed limit is 16mbps for residential addresses." }
+        { "type": "TEXT", "text": "Konut adresleri için varsayılan hız limiti 16 Mbps'dir." }
       ],
       "Blueprints": [
-        { "id": "bp-isp-1", "name": "ISP Subscription Setup" }
+        { "id": "bp-isp-1", "name": "İSS Aboneliği Kurulumu" }
       ],
       "steps": [
-        { "action": "PLATFORM:user_interaction", "status": "COMPLETED", "parameters": { "question": "What is your address?" }, "result": "Besiktas, Istanbul" },
+        { "action": "PLATFORM:user_interaction", "status": "COMPLETED", "parameters": { "question": "Adresiniz nedir?" }, "result": "Besiktas, Istanbul" },
         { "action": "TELCO:get_bbk_by_address", "status": "COMPLETED", "parameters": { "address": "Besiktas, Istanbul" } }
       ],
       "actions": [
-        { "action": "PLATFORM:llm", "lib": "llm", "description": "Send a message to the Language Model for AI processing", "icon": "mdi:brain" },
-        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Extract data from a website URL", "icon": "mdi:web" },
-        { "action": "PLATFORM:decision", "lib": "decision", "description": "A decision node that branches the flow based on conditions", "icon": "mdi:source-branch" },
-        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Interact with the user and get their response", "icon": "mdi:account-question" },
-        { "action": "PLATFORM:complete", "description": "Mark the workflow as complete", "icon": "mdi:check" },
-        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Ask a supervisor for guidance or approval", "icon": "mdi:account-supervisor" },
-        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Send a message to the user", "icon": "mdi:message-text" }
+        { "action": "PLATFORM:llm", "lib": "llm", "description": "Yapay zeka işleme için Dil Modeline mesaj gönder", "icon": "mdi:brain" },
+        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Bir web sitesi URL'sinden veri çıkar", "icon": "mdi:web" },
+        { "action": "PLATFORM:decision", "lib": "decision", "description": "Koşullara göre akışı dallandıran bir karar düğümü", "icon": "mdi:source-branch" },
+        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Kullanıcıyla etkileşime geç ve yanıtını al", "icon": "mdi:account-question" },
+        { "action": "PLATFORM:complete", "description": "İş akışını tamamlandı olarak işaretle", "icon": "mdi:check" },
+        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Yönlendirme veya onay için denetçiye sor", "icon": "mdi:account-supervisor" },
+        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Kullanıcıya mesaj gönder", "icon": "mdi:message-text" }
       ],
       "mcps": [
-        { "id": "mcp-1", "provider": "TELCO", "action": "TELCO:get_bbk_by_address", "description": "Get BBK number for a given address", "direction": "OUTGOING" },
-        { "id": "mcp-2", "provider": "TELCO", "action": "TELCO:get_inventory", "description": "Check line availability at a BBK location", "direction": "OUTGOING" },
-        { "id": "mcp-3", "provider": "TELCO", "action": "TELCO:get_product_by_speed", "description": "Fetch available products for a BBK", "direction": "OUTGOING" },
-        { "id": "mcp-4", "provider": "TELCO", "action": "TELCO:create_order", "description": "Create a telecom subscription order", "direction": "OUTGOING" },
-        { "id": "mcp-5", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Search for files in Google Drive", "direction": "OUTGOING" },
-        { "id": "mcp-6", "provider": "SLACK", "action": "SLACK:search", "description": "Search for messages in Slack", "direction": "INCOMING" },
-        { "id": "mcp-7", "provider": "JIRA", "action": "JIRA:search", "description": "Search for issues in JIRA", "direction": "OUTGOING" }
+        { "id": "mcp-1", "provider": "TELCO", "action": "TELCO:get_bbk_by_address", "description": "Belirli bir adres için BBK numarasını al", "direction": "OUTGOING" },
+        { "id": "mcp-2", "provider": "TELCO", "action": "TELCO:get_inventory", "description": "BBK konumunda hat kullanılabilirliğini kontrol et", "direction": "OUTGOING" },
+        { "id": "mcp-3", "provider": "TELCO", "action": "TELCO:get_product_by_speed", "description": "Bir BBK için mevcut ürünleri getir", "direction": "OUTGOING" },
+        { "id": "mcp-4", "provider": "TELCO", "action": "TELCO:create_order", "description": "Telekom aboneliği siparişi oluştur", "direction": "OUTGOING" },
+        { "id": "mcp-5", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Google Drive'da dosya ara", "direction": "OUTGOING" },
+        { "id": "mcp-6", "provider": "SLACK", "action": "SLACK:search", "description": "Slack'te mesaj ara", "direction": "INCOMING" },
+        { "id": "mcp-7", "provider": "JIRA", "action": "JIRA:search", "description": "JIRA'da sorun ara", "direction": "OUTGOING" }
       ]
     },
     "knowledge_score": 0.35
@@ -118,19 +118,19 @@
     "context": {
       "ai_assistant_info": {
         "name": "Inventory Agent",
-        "description": "Handles inventory management and reordering",
-        "job": "GreyCollar AI Assistant"
+        "description": "Stok yönetimi ve yeniden siparişi yönetir",
+        "job": "GreyCollar Yapay Zeka Asistanı"
       },
       "knowledge_base": [
-        { "type": "TEXT", "text": "Battery product id is btr-123." },
-        { "type": "TEXT", "text": "If Battery stock falls below 50 units, order 100 units." },
-        { "type": "TEXT", "text": "Warehouse location is building C, shelf 4." },
-        { "type": "TEXT", "text": "Reorder threshold for batteries is 50 units." },
-        { "type": "QA", "question": "Who approves purchase orders?", "answer": "Purchase orders above $500 need manager approval. Manager email is manager@company.com." },
-        { "type": "TEXT", "text": "Primary supplier for batteries is SupplyCo. Lead time is 3 business days." }
+        { "type": "TEXT", "text": "Pil ürün kimliği btr-123'tür." },
+        { "type": "TEXT", "text": "Pil stoğu 50 birimin altına düşerse 100 birim sipariş edin." },
+        { "type": "TEXT", "text": "Depo konumu C binası, raf 4'tür." },
+        { "type": "TEXT", "text": "Piller için yeniden sipariş eşiği 50 birimdir." },
+        { "type": "QA", "question": "Satın alma siparişlerini kim onaylar?", "answer": "500 doların üzerindeki satın alma siparişleri için yönetici onayı gereklidir. Yönetici e-posta adresi manager@company.com'dur." },
+        { "type": "TEXT", "text": "Piller için birincil tedarikçi SupplyCo'dur. Teslim süresi 3 iş günüdür." }
       ],
       "Blueprints": [
-        { "id": "bp-inv-1", "name": "Reorder Process" }
+        { "id": "bp-inv-1", "name": "Yeniden Sipariş Süreci" }
       ],
       "steps": [
         { "action": "INVENTORY:check_stock", "status": "COMPLETED", "parameters": { "productId": "btr-123" }, "result": "{\"stock\": 12, \"threshold\": 50}" },
@@ -138,22 +138,22 @@
         { "action": "INVENTORY:create_purchase_order", "status": "COMPLETED", "parameters": { "productId": "btr-123", "quantity": 100 } }
       ],
       "actions": [
-        { "action": "PLATFORM:llm", "lib": "llm", "description": "Send a message to the Language Model for AI processing", "icon": "mdi:brain" },
-        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Extract data from a website URL", "icon": "mdi:web" },
-        { "action": "PLATFORM:decision", "lib": "decision", "description": "A decision node that branches the flow based on conditions", "icon": "mdi:source-branch" },
-        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Interact with the user and get their response", "icon": "mdi:account-question" },
-        { "action": "PLATFORM:complete", "description": "Mark the workflow as complete", "icon": "mdi:check" },
-        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Ask a supervisor for guidance or approval", "icon": "mdi:account-supervisor" },
-        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Send a message to the user", "icon": "mdi:message-text" }
+        { "action": "PLATFORM:llm", "lib": "llm", "description": "Yapay zeka işleme için Dil Modeline mesaj gönder", "icon": "mdi:brain" },
+        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Bir web sitesi URL'sinden veri çıkar", "icon": "mdi:web" },
+        { "action": "PLATFORM:decision", "lib": "decision", "description": "Koşullara göre akışı dallandıran bir karar düğümü", "icon": "mdi:source-branch" },
+        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Kullanıcıyla etkileşime geç ve yanıtını al", "icon": "mdi:account-question" },
+        { "action": "PLATFORM:complete", "description": "İş akışını tamamlandı olarak işaretle", "icon": "mdi:check" },
+        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Yönlendirme veya onay için denetçiye sor", "icon": "mdi:account-supervisor" },
+        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Kullanıcıya mesaj gönder", "icon": "mdi:message-text" }
       ],
       "mcps": [
-        { "id": "mcp-1", "provider": "INVENTORY", "action": "INVENTORY:check_stock", "description": "Check current stock level for a product", "direction": "OUTGOING" },
-        { "id": "mcp-2", "provider": "INVENTORY", "action": "INVENTORY:create_purchase_order", "description": "Create a purchase order for a product", "direction": "OUTGOING" },
-        { "id": "mcp-3", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Search for files in Google Drive", "direction": "OUTGOING" },
-        { "id": "mcp-4", "provider": "SLACK", "action": "SLACK:search", "description": "Search for messages in Slack", "direction": "INCOMING" },
-        { "id": "mcp-5", "provider": "JIRA", "action": "JIRA:search", "description": "Search for issues in JIRA", "direction": "OUTGOING" },
-        { "id": "mcp-6", "provider": "EMAIL", "action": "EMAIL:send", "description": "Send an email", "direction": "OUTGOING" },
-        { "id": "mcp-7", "provider": "GITHUB", "action": "GITHUB:search", "description": "Search for repositories in GitHub", "direction": "OUTGOING" }
+        { "id": "mcp-1", "provider": "INVENTORY", "action": "INVENTORY:check_stock", "description": "Bir ürün için mevcut stok seviyesini kontrol et", "direction": "OUTGOING" },
+        { "id": "mcp-2", "provider": "INVENTORY", "action": "INVENTORY:create_purchase_order", "description": "Bir ürün için satın alma siparişi oluştur", "direction": "OUTGOING" },
+        { "id": "mcp-3", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Google Drive'da dosya ara", "direction": "OUTGOING" },
+        { "id": "mcp-4", "provider": "SLACK", "action": "SLACK:search", "description": "Slack'te mesaj ara", "direction": "INCOMING" },
+        { "id": "mcp-5", "provider": "JIRA", "action": "JIRA:search", "description": "JIRA'da sorun ara", "direction": "OUTGOING" },
+        { "id": "mcp-6", "provider": "EMAIL", "action": "EMAIL:send", "description": "E-posta gönder", "direction": "OUTGOING" },
+        { "id": "mcp-7", "provider": "GITHUB", "action": "GITHUB:search", "description": "GitHub'da depo ara", "direction": "OUTGOING" }
       ]
     },
     "knowledge_score": 0.92
@@ -162,36 +162,36 @@
     "context": {
       "ai_assistant_info": {
         "name": "HR Agent",
-        "description": "Handles HR onboarding for new employees",
-        "job": "GreyCollar AI Assistant"
+        "description": "Yeni çalışanlar için İK işe alım sürecini yönetir",
+        "job": "GreyCollar Yapay Zeka Asistanı"
       },
       "knowledge_base": [
-        { "type": "TEXT", "text": "Battery product id is btr-123." },
-        { "type": "TEXT", "text": "Default ISP speed limit is 16mbps for residential addresses." },
-        { "type": "TEXT", "text": "Warehouse location is building C, shelf 4." }
+        { "type": "TEXT", "text": "Pil ürün kimliği btr-123'tür." },
+        { "type": "TEXT", "text": "Konut adresleri için varsayılan İSS hız limiti 16 Mbps'dir." },
+        { "type": "TEXT", "text": "Depo konumu C binası, raf 4'tür." }
       ],
       "Blueprints": [],
       "steps": [
-        { "action": "PLATFORM:user_interaction", "status": "COMPLETED", "parameters": { "question": "What is the new employee's full name?" }, "result": "John Smith" },
+        { "action": "PLATFORM:user_interaction", "status": "COMPLETED", "parameters": { "question": "Yeni çalışanın tam adı nedir?" }, "result": "John Smith" },
         { "action": "EMAIL:send", "status": "COMPLETED", "parameters": { "to": "hr@company.com", "subject": "New employee onboarding: John Smith" } }
       ],
       "actions": [
-        { "action": "PLATFORM:llm", "lib": "llm", "description": "Send a message to the Language Model for AI processing", "icon": "mdi:brain" },
-        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Extract data from a website URL", "icon": "mdi:web" },
-        { "action": "PLATFORM:decision", "lib": "decision", "description": "A decision node that branches the flow based on conditions", "icon": "mdi:source-branch" },
-        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Interact with the user and get their response", "icon": "mdi:account-question" },
-        { "action": "PLATFORM:complete", "description": "Mark the workflow as complete", "icon": "mdi:check" },
-        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Ask a supervisor for guidance or approval", "icon": "mdi:account-supervisor" },
-        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Send a message to the user", "icon": "mdi:message-text" }
+        { "action": "PLATFORM:llm", "lib": "llm", "description": "Yapay zeka işleme için Dil Modeline mesaj gönder", "icon": "mdi:brain" },
+        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Bir web sitesi URL'sinden veri çıkar", "icon": "mdi:web" },
+        { "action": "PLATFORM:decision", "lib": "decision", "description": "Koşullara göre akışı dallandıran bir karar düğümü", "icon": "mdi:source-branch" },
+        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Kullanıcıyla etkileşime geç ve yanıtını al", "icon": "mdi:account-question" },
+        { "action": "PLATFORM:complete", "description": "İş akışını tamamlandı olarak işaretle", "icon": "mdi:check" },
+        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Yönlendirme veya onay için denetçiye sor", "icon": "mdi:account-supervisor" },
+        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Kullanıcıya mesaj gönder", "icon": "mdi:message-text" }
       ],
       "mcps": [
-        { "id": "mcp-1", "provider": "EMAIL", "action": "EMAIL:send", "description": "Send an email", "direction": "OUTGOING" },
-        { "id": "mcp-2", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Search for files in Google Drive", "direction": "OUTGOING" },
-        { "id": "mcp-3", "provider": "SLACK", "action": "SLACK:search", "description": "Search for messages in Slack", "direction": "INCOMING" },
-        { "id": "mcp-4", "provider": "JIRA", "action": "JIRA:search", "description": "Search for issues in JIRA", "direction": "OUTGOING" },
-        { "id": "mcp-5", "provider": "GITHUB", "action": "GITHUB:search", "description": "Search for repositories in GitHub", "direction": "OUTGOING" },
-        { "id": "mcp-6", "provider": "TELCO", "action": "TELCO:get_bbk_by_address", "description": "Get BBK number for a given address", "direction": "OUTGOING" },
-        { "id": "mcp-7", "provider": "TELCO", "action": "TELCO:create_order", "description": "Create a telecom subscription order", "direction": "OUTGOING" }
+        { "id": "mcp-1", "provider": "EMAIL", "action": "EMAIL:send", "description": "E-posta gönder", "direction": "OUTGOING" },
+        { "id": "mcp-2", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Google Drive'da dosya ara", "direction": "OUTGOING" },
+        { "id": "mcp-3", "provider": "SLACK", "action": "SLACK:search", "description": "Slack'te mesaj ara", "direction": "INCOMING" },
+        { "id": "mcp-4", "provider": "JIRA", "action": "JIRA:search", "description": "JIRA'da sorun ara", "direction": "OUTGOING" },
+        { "id": "mcp-5", "provider": "GITHUB", "action": "GITHUB:search", "description": "GitHub'da depo ara", "direction": "OUTGOING" },
+        { "id": "mcp-6", "provider": "TELCO", "action": "TELCO:get_bbk_by_address", "description": "Belirli bir adres için BBK numarasını al", "direction": "OUTGOING" },
+        { "id": "mcp-7", "provider": "TELCO", "action": "TELCO:create_order", "description": "Telekom aboneliği siparişi oluştur", "direction": "OUTGOING" }
       ]
     },
     "knowledge_score": 0.05
@@ -200,40 +200,40 @@
     "context": {
       "ai_assistant_info": {
         "name": "Invoicing Agent",
-        "description": "Handles invoice creation and billing",
-        "job": "GreyCollar AI Assistant"
+        "description": "Fatura oluşturma ve faturalandırmayı yönetir",
+        "job": "GreyCollar Yapay Zeka Asistanı"
       },
       "knowledge_base": [
-        { "type": "QA", "question": "What is the VAT rate?", "answer": "VAT rate is 18% for standard products, 8% for food items." },
-        { "type": "TEXT", "text": "Invoice template requires: customer name, order number, line items, subtotal, VAT amount, and total." },
-        { "type": "QA", "question": "What currency should invoices be in?", "answer": "All invoices are in USD unless the customer account is set to EUR." },
-        { "type": "TEXT", "text": "Invoice payment terms are net 30 days. Late payment penalty is 2% per month." },
-        { "type": "TEXT", "text": "Invoice number format: INV-YYYY-NNNN. Sequence resets each fiscal year." }
+        { "type": "QA", "question": "KDV oranı nedir?", "answer": "KDV oranı standart ürünler için %18, gıda ürünleri için %8'dir." },
+        { "type": "TEXT", "text": "Fatura şablonu şunları gerektirir: müşteri adı, sipariş numarası, kalem listesi, ara toplam, KDV tutarı ve toplam." },
+        { "type": "QA", "question": "Faturalar hangi para biriminde olmalıdır?", "answer": "Müşteri hesabı EUR olarak ayarlanmadıkça tüm faturalar USD cinsindendir." },
+        { "type": "TEXT", "text": "Fatura ödeme koşulları net 30 gündür. Geç ödeme cezası aylık %2'dir." },
+        { "type": "TEXT", "text": "Fatura numarası formatı: INV-YYYY-NNNN. Sıra numarası her mali yılın başında sıfırlanır." }
       ],
       "Blueprints": [
-        { "id": "bp-inv-1", "name": "Invoice Creation" }
+        { "id": "bp-inv-1", "name": "Fatura Oluşturma" }
       ],
       "steps": [
-        { "action": "PLATFORM:user_interaction", "status": "COMPLETED", "parameters": { "question": "Please provide customer name and order details." }, "result": "Customer: Acme Corp, Order: 3x Widget A at $50 each" },
+        { "action": "PLATFORM:user_interaction", "status": "COMPLETED", "parameters": { "question": "Lütfen müşteri adını ve sipariş ayrıntılarını sağlayın." }, "result": "Customer: Acme Corp, Order: 3x Widget A at $50 each" },
         { "action": "BILLING:create_invoice", "status": "COMPLETED", "parameters": { "customer": "Acme Corp", "items": [{ "name": "Widget A", "qty": 3, "price": 50 }] } }
       ],
       "actions": [
-        { "action": "PLATFORM:llm", "lib": "llm", "description": "Send a message to the Language Model for AI processing", "icon": "mdi:brain" },
-        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Extract data from a website URL", "icon": "mdi:web" },
-        { "action": "PLATFORM:decision", "lib": "decision", "description": "A decision node that branches the flow based on conditions", "icon": "mdi:source-branch" },
-        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Interact with the user and get their response", "icon": "mdi:account-question" },
-        { "action": "PLATFORM:complete", "description": "Mark the workflow as complete", "icon": "mdi:check" },
-        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Ask a supervisor for guidance or approval", "icon": "mdi:account-supervisor" },
-        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Send a message to the user", "icon": "mdi:message-text" }
+        { "action": "PLATFORM:llm", "lib": "llm", "description": "Yapay zeka işleme için Dil Modeline mesaj gönder", "icon": "mdi:brain" },
+        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Bir web sitesi URL'sinden veri çıkar", "icon": "mdi:web" },
+        { "action": "PLATFORM:decision", "lib": "decision", "description": "Koşullara göre akışı dallandıran bir karar düğümü", "icon": "mdi:source-branch" },
+        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Kullanıcıyla etkileşime geç ve yanıtını al", "icon": "mdi:account-question" },
+        { "action": "PLATFORM:complete", "description": "İş akışını tamamlandı olarak işaretle", "icon": "mdi:check" },
+        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Yönlendirme veya onay için denetçiye sor", "icon": "mdi:account-supervisor" },
+        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Kullanıcıya mesaj gönder", "icon": "mdi:message-text" }
       ],
       "mcps": [
-        { "id": "mcp-1", "provider": "BILLING", "action": "BILLING:create_invoice", "description": "Create a new invoice", "direction": "OUTGOING" },
-        { "id": "mcp-2", "provider": "BILLING", "action": "BILLING:send_invoice", "description": "Send invoice to customer by email", "direction": "OUTGOING" },
-        { "id": "mcp-3", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Search for files in Google Drive", "direction": "OUTGOING" },
-        { "id": "mcp-4", "provider": "SLACK", "action": "SLACK:search", "description": "Search for messages in Slack", "direction": "INCOMING" },
-        { "id": "mcp-5", "provider": "JIRA", "action": "JIRA:search", "description": "Search for issues in JIRA", "direction": "OUTGOING" },
-        { "id": "mcp-6", "provider": "EMAIL", "action": "EMAIL:send", "description": "Send an email", "direction": "OUTGOING" },
-        { "id": "mcp-7", "provider": "GITHUB", "action": "GITHUB:search", "description": "Search for repositories in GitHub", "direction": "OUTGOING" }
+        { "id": "mcp-1", "provider": "BILLING", "action": "BILLING:create_invoice", "description": "Yeni bir fatura oluştur", "direction": "OUTGOING" },
+        { "id": "mcp-2", "provider": "BILLING", "action": "BILLING:send_invoice", "description": "Faturayı müşteriye e-posta ile gönder", "direction": "OUTGOING" },
+        { "id": "mcp-3", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Google Drive'da dosya ara", "direction": "OUTGOING" },
+        { "id": "mcp-4", "provider": "SLACK", "action": "SLACK:search", "description": "Slack'te mesaj ara", "direction": "INCOMING" },
+        { "id": "mcp-5", "provider": "JIRA", "action": "JIRA:search", "description": "JIRA'da sorun ara", "direction": "OUTGOING" },
+        { "id": "mcp-6", "provider": "EMAIL", "action": "EMAIL:send", "description": "E-posta gönder", "direction": "OUTGOING" },
+        { "id": "mcp-7", "provider": "GITHUB", "action": "GITHUB:search", "description": "GitHub'da depo ara", "direction": "OUTGOING" }
       ]
     },
     "knowledge_score": 0.88
@@ -242,35 +242,35 @@
     "context": {
       "ai_assistant_info": {
         "name": "Payroll Agent",
-        "description": "Handles monthly payroll processing for all departments",
-        "job": "GreyCollar AI Assistant"
+        "description": "Tüm departmanlar için aylık bordro işlemlerini yönetir",
+        "job": "GreyCollar Yapay Zeka Asistanı"
       },
       "knowledge_base": [
-        { "type": "TEXT", "text": "Default ISP speed limit is 16mbps for residential addresses." },
-        { "type": "QA", "question": "What is the ISP default speed?", "answer": "Default speed is 16mbps for residential." },
-        { "type": "TEXT", "text": "ISP contracts are renewed annually." }
+        { "type": "TEXT", "text": "Konut adresleri için varsayılan İSS hız limiti 16 Mbps'dir." },
+        { "type": "QA", "question": "Varsayılan İSS hızı nedir?", "answer": "Konutlar için varsayılan hız 16 Mbps'dir." },
+        { "type": "TEXT", "text": "İSS sözleşmeleri yıllık olarak yenilenir." }
       ],
       "Blueprints": [],
       "steps": [
         { "action": "PAYROLL:calculate", "status": "COMPLETED", "parameters": { "month": "2026-05", "department": "Engineering" } }
       ],
       "actions": [
-        { "action": "PLATFORM:llm", "lib": "llm", "description": "Send a message to the Language Model for AI processing", "icon": "mdi:brain" },
-        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Extract data from a website URL", "icon": "mdi:web" },
-        { "action": "PLATFORM:decision", "lib": "decision", "description": "A decision node that branches the flow based on conditions", "icon": "mdi:source-branch" },
-        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Interact with the user and get their response", "icon": "mdi:account-question" },
-        { "action": "PLATFORM:complete", "description": "Mark the workflow as complete", "icon": "mdi:check" },
-        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Ask a supervisor for guidance or approval", "icon": "mdi:account-supervisor" },
-        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Send a message to the user", "icon": "mdi:message-text" }
+        { "action": "PLATFORM:llm", "lib": "llm", "description": "Yapay zeka işleme için Dil Modeline mesaj gönder", "icon": "mdi:brain" },
+        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Bir web sitesi URL'sinden veri çıkar", "icon": "mdi:web" },
+        { "action": "PLATFORM:decision", "lib": "decision", "description": "Koşullara göre akışı dallandıran bir karar düğümü", "icon": "mdi:source-branch" },
+        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Kullanıcıyla etkileşime geç ve yanıtını al", "icon": "mdi:account-question" },
+        { "action": "PLATFORM:complete", "description": "İş akışını tamamlandı olarak işaretle", "icon": "mdi:check" },
+        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Yönlendirme veya onay için denetçiye sor", "icon": "mdi:account-supervisor" },
+        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Kullanıcıya mesaj gönder", "icon": "mdi:message-text" }
       ],
       "mcps": [
-        { "id": "mcp-1", "provider": "PAYROLL", "action": "PAYROLL:calculate", "description": "Calculate payroll for a department", "direction": "OUTGOING" },
-        { "id": "mcp-2", "provider": "PAYROLL", "action": "PAYROLL:approve", "description": "Approve payroll run", "direction": "OUTGOING" },
-        { "id": "mcp-3", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Search for files in Google Drive", "direction": "OUTGOING" },
-        { "id": "mcp-4", "provider": "SLACK", "action": "SLACK:search", "description": "Search for messages in Slack", "direction": "INCOMING" },
-        { "id": "mcp-5", "provider": "JIRA", "action": "JIRA:search", "description": "Search for issues in JIRA", "direction": "OUTGOING" },
-        { "id": "mcp-6", "provider": "EMAIL", "action": "EMAIL:send", "description": "Send an email", "direction": "OUTGOING" },
-        { "id": "mcp-7", "provider": "GITHUB", "action": "GITHUB:search", "description": "Search for repositories in GitHub", "direction": "OUTGOING" }
+        { "id": "mcp-1", "provider": "PAYROLL", "action": "PAYROLL:calculate", "description": "Bir departman için bordroyu hesapla", "direction": "OUTGOING" },
+        { "id": "mcp-2", "provider": "PAYROLL", "action": "PAYROLL:approve", "description": "Bordro çalışmasını onayla", "direction": "OUTGOING" },
+        { "id": "mcp-3", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Google Drive'da dosya ara", "direction": "OUTGOING" },
+        { "id": "mcp-4", "provider": "SLACK", "action": "SLACK:search", "description": "Slack'te mesaj ara", "direction": "INCOMING" },
+        { "id": "mcp-5", "provider": "JIRA", "action": "JIRA:search", "description": "JIRA'da sorun ara", "direction": "OUTGOING" },
+        { "id": "mcp-6", "provider": "EMAIL", "action": "EMAIL:send", "description": "E-posta gönder", "direction": "OUTGOING" },
+        { "id": "mcp-7", "provider": "GITHUB", "action": "GITHUB:search", "description": "GitHub'da depo ara", "direction": "OUTGOING" }
       ]
     },
     "knowledge_score": 0.05
@@ -279,39 +279,39 @@
     "context": {
       "ai_assistant_info": {
         "name": "IT Support Agent",
-        "description": "Handles IT asset tracking and equipment registration",
-        "job": "GreyCollar AI Assistant"
+        "description": "BT varlık takibi ve ekipman kaydını yönetir",
+        "job": "GreyCollar Yapay Zeka Asistanı"
       },
       "knowledge_base": [
-        { "type": "QA", "question": "What laptops do we use?", "answer": "Engineers use MacBook Pro 14-inch (M3). Support staff use Dell Latitude 5540." },
-        { "type": "TEXT", "text": "All IT assets must be registered in the asset management system within 24 hours of receipt." },
-        { "type": "TEXT", "text": "Asset tag format: ASSET-YYYY-NNNN. Print and affix to device before registration." },
-        { "type": "QA", "question": "What is the asset registration process?", "answer": "Scan serial number, assign asset tag, record to ERP system, assign to employee." }
+        { "type": "QA", "question": "Hangi dizüstü bilgisayarları kullanıyoruz?", "answer": "Mühendisler MacBook Pro 14 inç (M3) kullanır. Destek personeli Dell Latitude 5540 kullanır." },
+        { "type": "TEXT", "text": "Tüm BT varlıkları teslim alındıktan sonra 24 saat içinde varlık yönetim sistemine kaydedilmelidir." },
+        { "type": "TEXT", "text": "Varlık etiketi formatı: ASSET-YYYY-NNNN. Kayıt öncesinde yazdırın ve cihaza yapıştırın." },
+        { "type": "QA", "question": "Varlık kayıt süreci nedir?", "answer": "Seri numarasını tarayın, varlık etiketi atayın, ERP sistemine kaydedin, çalışana atayın." }
       ],
       "Blueprints": [
-        { "id": "bp-it-1", "name": "Asset Registration" }
+        { "id": "bp-it-1", "name": "Varlık Kaydı" }
       ],
       "steps": [
-        { "action": "PLATFORM:user_interaction", "status": "COMPLETED", "parameters": { "question": "Please provide the device serial number." }, "result": "C02XY1234" },
+        { "action": "PLATFORM:user_interaction", "status": "COMPLETED", "parameters": { "question": "Lütfen cihaz seri numarasını sağlayın." }, "result": "C02XY1234" },
         { "action": "IT:register_asset", "status": "COMPLETED", "parameters": { "assetType": "laptop", "serial": "C02XY1234", "model": "MacBook Pro 14" } }
       ],
       "actions": [
-        { "action": "PLATFORM:llm", "lib": "llm", "description": "Send a message to the Language Model for AI processing", "icon": "mdi:brain" },
-        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Extract data from a website URL", "icon": "mdi:web" },
-        { "action": "PLATFORM:decision", "lib": "decision", "description": "A decision node that branches the flow based on conditions", "icon": "mdi:source-branch" },
-        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Interact with the user and get their response", "icon": "mdi:account-question" },
-        { "action": "PLATFORM:complete", "description": "Mark the workflow as complete", "icon": "mdi:check" },
-        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Ask a supervisor for guidance or approval", "icon": "mdi:account-supervisor" },
-        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Send a message to the user", "icon": "mdi:message-text" }
+        { "action": "PLATFORM:llm", "lib": "llm", "description": "Yapay zeka işleme için Dil Modeline mesaj gönder", "icon": "mdi:brain" },
+        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Bir web sitesi URL'sinden veri çıkar", "icon": "mdi:web" },
+        { "action": "PLATFORM:decision", "lib": "decision", "description": "Koşullara göre akışı dallandıran bir karar düğümü", "icon": "mdi:source-branch" },
+        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Kullanıcıyla etkileşime geç ve yanıtını al", "icon": "mdi:account-question" },
+        { "action": "PLATFORM:complete", "description": "İş akışını tamamlandı olarak işaretle", "icon": "mdi:check" },
+        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Yönlendirme veya onay için denetçiye sor", "icon": "mdi:account-supervisor" },
+        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Kullanıcıya mesaj gönder", "icon": "mdi:message-text" }
       ],
       "mcps": [
-        { "id": "mcp-1", "provider": "IT", "action": "IT:register_asset", "description": "Register an IT asset in the system", "direction": "OUTGOING" },
-        { "id": "mcp-2", "provider": "IT", "action": "IT:assign_asset", "description": "Assign an asset to an employee", "direction": "OUTGOING" },
-        { "id": "mcp-3", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Search for files in Google Drive", "direction": "OUTGOING" },
-        { "id": "mcp-4", "provider": "SLACK", "action": "SLACK:search", "description": "Search for messages in Slack", "direction": "INCOMING" },
-        { "id": "mcp-5", "provider": "JIRA", "action": "JIRA:search", "description": "Search for issues in JIRA", "direction": "OUTGOING" },
-        { "id": "mcp-6", "provider": "EMAIL", "action": "EMAIL:send", "description": "Send an email", "direction": "OUTGOING" },
-        { "id": "mcp-7", "provider": "GITHUB", "action": "GITHUB:search", "description": "Search for repositories in GitHub", "direction": "OUTGOING" }
+        { "id": "mcp-1", "provider": "IT", "action": "IT:register_asset", "description": "Sisteme bir BT varlığı kaydet", "direction": "OUTGOING" },
+        { "id": "mcp-2", "provider": "IT", "action": "IT:assign_asset", "description": "Bir çalışana varlık ata", "direction": "OUTGOING" },
+        { "id": "mcp-3", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Google Drive'da dosya ara", "direction": "OUTGOING" },
+        { "id": "mcp-4", "provider": "SLACK", "action": "SLACK:search", "description": "Slack'te mesaj ara", "direction": "INCOMING" },
+        { "id": "mcp-5", "provider": "JIRA", "action": "JIRA:search", "description": "JIRA'da sorun ara", "direction": "OUTGOING" },
+        { "id": "mcp-6", "provider": "EMAIL", "action": "EMAIL:send", "description": "E-posta gönder", "direction": "OUTGOING" },
+        { "id": "mcp-7", "provider": "GITHUB", "action": "GITHUB:search", "description": "GitHub'da depo ara", "direction": "OUTGOING" }
       ]
     },
     "knowledge_score": 0.78
@@ -320,34 +320,34 @@
     "context": {
       "ai_assistant_info": {
         "name": "Customer Support Agent",
-        "description": "Handles customer support tickets and issue resolution",
-        "job": "GreyCollar AI Assistant"
+        "description": "Müşteri destek biletlerini ve sorun çözümünü yönetir",
+        "job": "GreyCollar Yapay Zeka Asistanı"
       },
       "knowledge_base": [
-        { "type": "QA", "question": "What is the VAT rate?", "answer": "VAT rate is 18% for standard products." },
-        { "type": "TEXT", "text": "Invoice payment terms are net 30 days." }
+        { "type": "QA", "question": "KDV oranı nedir?", "answer": "KDV oranı standart ürünler için %18'dir." },
+        { "type": "TEXT", "text": "Fatura ödeme koşulları net 30 gündür." }
       ],
       "Blueprints": [],
       "steps": [
         { "action": "SUPPORT:create_ticket", "status": "COMPLETED", "parameters": { "issue": "Login page not loading for user", "priority": "HIGH" } }
       ],
       "actions": [
-        { "action": "PLATFORM:llm", "lib": "llm", "description": "Send a message to the Language Model for AI processing", "icon": "mdi:brain" },
-        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Extract data from a website URL", "icon": "mdi:web" },
-        { "action": "PLATFORM:decision", "lib": "decision", "description": "A decision node that branches the flow based on conditions", "icon": "mdi:source-branch" },
-        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Interact with the user and get their response", "icon": "mdi:account-question" },
-        { "action": "PLATFORM:complete", "description": "Mark the workflow as complete", "icon": "mdi:check" },
-        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Ask a supervisor for guidance or approval", "icon": "mdi:account-supervisor" },
-        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Send a message to the user", "icon": "mdi:message-text" }
+        { "action": "PLATFORM:llm", "lib": "llm", "description": "Yapay zeka işleme için Dil Modeline mesaj gönder", "icon": "mdi:brain" },
+        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Bir web sitesi URL'sinden veri çıkar", "icon": "mdi:web" },
+        { "action": "PLATFORM:decision", "lib": "decision", "description": "Koşullara göre akışı dallandıran bir karar düğümü", "icon": "mdi:source-branch" },
+        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Kullanıcıyla etkileşime geç ve yanıtını al", "icon": "mdi:account-question" },
+        { "action": "PLATFORM:complete", "description": "İş akışını tamamlandı olarak işaretle", "icon": "mdi:check" },
+        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Yönlendirme veya onay için denetçiye sor", "icon": "mdi:account-supervisor" },
+        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Kullanıcıya mesaj gönder", "icon": "mdi:message-text" }
       ],
       "mcps": [
-        { "id": "mcp-1", "provider": "SUPPORT", "action": "SUPPORT:create_ticket", "description": "Create a new support ticket", "direction": "OUTGOING" },
-        { "id": "mcp-2", "provider": "SUPPORT", "action": "SUPPORT:update_ticket", "description": "Update an existing support ticket", "direction": "OUTGOING" },
-        { "id": "mcp-3", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Search for files in Google Drive", "direction": "OUTGOING" },
-        { "id": "mcp-4", "provider": "SLACK", "action": "SLACK:search", "description": "Search for messages in Slack", "direction": "INCOMING" },
-        { "id": "mcp-5", "provider": "JIRA", "action": "JIRA:search", "description": "Search for issues in JIRA", "direction": "OUTGOING" },
-        { "id": "mcp-6", "provider": "EMAIL", "action": "EMAIL:send", "description": "Send an email", "direction": "OUTGOING" },
-        { "id": "mcp-7", "provider": "GITHUB", "action": "GITHUB:search", "description": "Search for repositories in GitHub", "direction": "OUTGOING" }
+        { "id": "mcp-1", "provider": "SUPPORT", "action": "SUPPORT:create_ticket", "description": "Yeni bir destek bileti oluştur", "direction": "OUTGOING" },
+        { "id": "mcp-2", "provider": "SUPPORT", "action": "SUPPORT:update_ticket", "description": "Mevcut bir destek biletini güncelle", "direction": "OUTGOING" },
+        { "id": "mcp-3", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Google Drive'da dosya ara", "direction": "OUTGOING" },
+        { "id": "mcp-4", "provider": "SLACK", "action": "SLACK:search", "description": "Slack'te mesaj ara", "direction": "INCOMING" },
+        { "id": "mcp-5", "provider": "JIRA", "action": "JIRA:search", "description": "JIRA'da sorun ara", "direction": "OUTGOING" },
+        { "id": "mcp-6", "provider": "EMAIL", "action": "EMAIL:send", "description": "E-posta gönder", "direction": "OUTGOING" },
+        { "id": "mcp-7", "provider": "GITHUB", "action": "GITHUB:search", "description": "GitHub'da depo ara", "direction": "OUTGOING" }
       ]
     },
     "knowledge_score": 0.1
@@ -356,39 +356,39 @@
     "context": {
       "ai_assistant_info": {
         "name": "Facility Agent",
-        "description": "Handles facility management and maintenance requests",
-        "job": "GreyCollar AI Assistant"
+        "description": "Tesis yönetimi ve bakım taleplerini yönetir",
+        "job": "GreyCollar Yapay Zeka Asistanı"
       },
       "knowledge_base": [
-        { "type": "TEXT", "text": "Office cleaning is scheduled every Monday and Thursday mornings." },
-        { "type": "TEXT", "text": "HVAC maintenance contract is with CoolAir Ltd. Emergency contact: +90 212 555 0199." },
-        { "type": "QA", "question": "Who handles building access requests?", "answer": "Building access requests go to facilities@company.com with employee ID and reason." },
-        { "type": "TEXT", "text": "Maintenance requests must be submitted with room number, issue description, and urgency level." }
+        { "type": "TEXT", "text": "Ofis temizliği her Pazartesi ve Perşembe sabahları planlanmıştır." },
+        { "type": "TEXT", "text": "HVAC bakım sözleşmesi CoolAir Ltd. ile yapılmıştır. Acil iletişim: +90 212 555 0199." },
+        { "type": "QA", "question": "Bina erişim taleplerini kim yönetir?", "answer": "Bina erişim talepleri, çalışan kimliği ve gerekçe ile birlikte facilities@company.com adresine iletilir." },
+        { "type": "TEXT", "text": "Bakım talepleri oda numarası, sorun açıklaması ve aciliyet düzeyi ile birlikte sunulmalıdır." }
       ],
       "Blueprints": [
-        { "id": "bp-fac-1", "name": "Maintenance Request" }
+        { "id": "bp-fac-1", "name": "Bakım Talebi" }
       ],
       "steps": [
-        { "action": "PLATFORM:user_interaction", "status": "COMPLETED", "parameters": { "question": "Please describe the issue and provide the room number." }, "result": "HVAC not working in room 302" },
+        { "action": "PLATFORM:user_interaction", "status": "COMPLETED", "parameters": { "question": "Lütfen sorunu açıklayın ve oda numarasını belirtin." }, "result": "HVAC not working in room 302" },
         { "action": "FACILITY:submit_request", "status": "COMPLETED", "parameters": { "issue": "HVAC not working in room 302", "urgency": "HIGH", "vendor": "CoolAir Ltd" } }
       ],
       "actions": [
-        { "action": "PLATFORM:llm", "lib": "llm", "description": "Send a message to the Language Model for AI processing", "icon": "mdi:brain" },
-        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Extract data from a website URL", "icon": "mdi:web" },
-        { "action": "PLATFORM:decision", "lib": "decision", "description": "A decision node that branches the flow based on conditions", "icon": "mdi:source-branch" },
-        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Interact with the user and get their response", "icon": "mdi:account-question" },
-        { "action": "PLATFORM:complete", "description": "Mark the workflow as complete", "icon": "mdi:check" },
-        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Ask a supervisor for guidance or approval", "icon": "mdi:account-supervisor" },
-        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Send a message to the user", "icon": "mdi:message-text" }
+        { "action": "PLATFORM:llm", "lib": "llm", "description": "Yapay zeka işleme için Dil Modeline mesaj gönder", "icon": "mdi:brain" },
+        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Bir web sitesi URL'sinden veri çıkar", "icon": "mdi:web" },
+        { "action": "PLATFORM:decision", "lib": "decision", "description": "Koşullara göre akışı dallandıran bir karar düğümü", "icon": "mdi:source-branch" },
+        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Kullanıcıyla etkileşime geç ve yanıtını al", "icon": "mdi:account-question" },
+        { "action": "PLATFORM:complete", "description": "İş akışını tamamlandı olarak işaretle", "icon": "mdi:check" },
+        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Yönlendirme veya onay için denetçiye sor", "icon": "mdi:account-supervisor" },
+        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Kullanıcıya mesaj gönder", "icon": "mdi:message-text" }
       ],
       "mcps": [
-        { "id": "mcp-1", "provider": "FACILITY", "action": "FACILITY:submit_request", "description": "Submit a facility maintenance request", "direction": "OUTGOING" },
-        { "id": "mcp-2", "provider": "EMAIL", "action": "EMAIL:send", "description": "Send an email", "direction": "OUTGOING" },
-        { "id": "mcp-3", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Search for files in Google Drive", "direction": "OUTGOING" },
-        { "id": "mcp-4", "provider": "SLACK", "action": "SLACK:search", "description": "Search for messages in Slack", "direction": "INCOMING" },
-        { "id": "mcp-5", "provider": "JIRA", "action": "JIRA:search", "description": "Search for issues in JIRA", "direction": "OUTGOING" },
-        { "id": "mcp-6", "provider": "TELCO", "action": "TELCO:get_bbk_by_address", "description": "Get BBK number for a given address", "direction": "OUTGOING" },
-        { "id": "mcp-7", "provider": "GITHUB", "action": "GITHUB:search", "description": "Search for repositories in GitHub", "direction": "OUTGOING" }
+        { "id": "mcp-1", "provider": "FACILITY", "action": "FACILITY:submit_request", "description": "Tesis bakım talebi gönder", "direction": "OUTGOING" },
+        { "id": "mcp-2", "provider": "EMAIL", "action": "EMAIL:send", "description": "E-posta gönder", "direction": "OUTGOING" },
+        { "id": "mcp-3", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Google Drive'da dosya ara", "direction": "OUTGOING" },
+        { "id": "mcp-4", "provider": "SLACK", "action": "SLACK:search", "description": "Slack'te mesaj ara", "direction": "INCOMING" },
+        { "id": "mcp-5", "provider": "JIRA", "action": "JIRA:search", "description": "JIRA'da sorun ara", "direction": "OUTGOING" },
+        { "id": "mcp-6", "provider": "TELCO", "action": "TELCO:get_bbk_by_address", "description": "Belirli bir adres için BBK numarasını al", "direction": "OUTGOING" },
+        { "id": "mcp-7", "provider": "GITHUB", "action": "GITHUB:search", "description": "GitHub'da depo ara", "direction": "OUTGOING" }
       ]
     },
     "knowledge_score": 0.82
@@ -397,34 +397,34 @@
     "context": {
       "ai_assistant_info": {
         "name": "Sales Agent",
-        "description": "Handles sales pipeline management and CRM updates",
-        "job": "GreyCollar AI Assistant"
+        "description": "Satış hattı yönetimi ve CRM güncellemelerini yönetir",
+        "job": "GreyCollar Yapay Zeka Asistanı"
       },
       "knowledge_base": [
-        { "type": "TEXT", "text": "Maintenance windows must be approved by the infrastructure team." },
-        { "type": "TEXT", "text": "Server backup runs every night at 02:00 UTC." }
+        { "type": "TEXT", "text": "Bakım pencereleri altyapı ekibi tarafından onaylanmalıdır." },
+        { "type": "TEXT", "text": "Sunucu yedeklemesi her gece 02:00 UTC'de çalışır." }
       ],
       "Blueprints": [],
       "steps": [
         { "action": "CRM:update_deal", "status": "COMPLETED", "parameters": { "dealId": "deal-789", "stage": "Negotiation" } }
       ],
       "actions": [
-        { "action": "PLATFORM:llm", "lib": "llm", "description": "Send a message to the Language Model for AI processing", "icon": "mdi:brain" },
-        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Extract data from a website URL", "icon": "mdi:web" },
-        { "action": "PLATFORM:decision", "lib": "decision", "description": "A decision node that branches the flow based on conditions", "icon": "mdi:source-branch" },
-        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Interact with the user and get their response", "icon": "mdi:account-question" },
-        { "action": "PLATFORM:complete", "description": "Mark the workflow as complete", "icon": "mdi:check" },
-        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Ask a supervisor for guidance or approval", "icon": "mdi:account-supervisor" },
-        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Send a message to the user", "icon": "mdi:message-text" }
+        { "action": "PLATFORM:llm", "lib": "llm", "description": "Yapay zeka işleme için Dil Modeline mesaj gönder", "icon": "mdi:brain" },
+        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Bir web sitesi URL'sinden veri çıkar", "icon": "mdi:web" },
+        { "action": "PLATFORM:decision", "lib": "decision", "description": "Koşullara göre akışı dallandıran bir karar düğümü", "icon": "mdi:source-branch" },
+        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Kullanıcıyla etkileşime geç ve yanıtını al", "icon": "mdi:account-question" },
+        { "action": "PLATFORM:complete", "description": "İş akışını tamamlandı olarak işaretle", "icon": "mdi:check" },
+        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Yönlendirme veya onay için denetçiye sor", "icon": "mdi:account-supervisor" },
+        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Kullanıcıya mesaj gönder", "icon": "mdi:message-text" }
       ],
       "mcps": [
-        { "id": "mcp-1", "provider": "CRM", "action": "CRM:update_deal", "description": "Update a deal stage in CRM", "direction": "OUTGOING" },
-        { "id": "mcp-2", "provider": "CRM", "action": "CRM:create_deal", "description": "Create a new deal in CRM", "direction": "OUTGOING" },
-        { "id": "mcp-3", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Search for files in Google Drive", "direction": "OUTGOING" },
-        { "id": "mcp-4", "provider": "SLACK", "action": "SLACK:search", "description": "Search for messages in Slack", "direction": "INCOMING" },
-        { "id": "mcp-5", "provider": "JIRA", "action": "JIRA:search", "description": "Search for issues in JIRA", "direction": "OUTGOING" },
-        { "id": "mcp-6", "provider": "EMAIL", "action": "EMAIL:send", "description": "Send an email", "direction": "OUTGOING" },
-        { "id": "mcp-7", "provider": "GITHUB", "action": "GITHUB:search", "description": "Search for repositories in GitHub", "direction": "OUTGOING" }
+        { "id": "mcp-1", "provider": "CRM", "action": "CRM:update_deal", "description": "CRM'de bir anlaşma aşamasını güncelle", "direction": "OUTGOING" },
+        { "id": "mcp-2", "provider": "CRM", "action": "CRM:create_deal", "description": "CRM'de yeni bir anlaşma oluştur", "direction": "OUTGOING" },
+        { "id": "mcp-3", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Google Drive'da dosya ara", "direction": "OUTGOING" },
+        { "id": "mcp-4", "provider": "SLACK", "action": "SLACK:search", "description": "Slack'te mesaj ara", "direction": "INCOMING" },
+        { "id": "mcp-5", "provider": "JIRA", "action": "JIRA:search", "description": "JIRA'da sorun ara", "direction": "OUTGOING" },
+        { "id": "mcp-6", "provider": "EMAIL", "action": "EMAIL:send", "description": "E-posta gönder", "direction": "OUTGOING" },
+        { "id": "mcp-7", "provider": "GITHUB", "action": "GITHUB:search", "description": "GitHub'da depo ara", "direction": "OUTGOING" }
       ]
     },
     "knowledge_score": 0.05
@@ -433,29 +433,29 @@
     "context": {
       "ai_assistant_info": {
         "name": "Reporting Agent",
-        "description": "Handles business reporting and analytics",
-        "job": "GreyCollar AI Assistant"
+        "description": "İş raporlama ve analitiği yönetir",
+        "job": "GreyCollar Yapay Zeka Asistanı"
       },
       "knowledge_base": [],
       "Blueprints": [],
       "steps": [],
       "actions": [
-        { "action": "PLATFORM:llm", "lib": "llm", "description": "Send a message to the Language Model for AI processing", "icon": "mdi:brain" },
-        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Extract data from a website URL", "icon": "mdi:web" },
-        { "action": "PLATFORM:decision", "lib": "decision", "description": "A decision node that branches the flow based on conditions", "icon": "mdi:source-branch" },
-        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Interact with the user and get their response", "icon": "mdi:account-question" },
-        { "action": "PLATFORM:complete", "description": "Mark the workflow as complete", "icon": "mdi:check" },
-        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Ask a supervisor for guidance or approval", "icon": "mdi:account-supervisor" },
-        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Send a message to the user", "icon": "mdi:message-text" }
+        { "action": "PLATFORM:llm", "lib": "llm", "description": "Yapay zeka işleme için Dil Modeline mesaj gönder", "icon": "mdi:brain" },
+        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Bir web sitesi URL'sinden veri çıkar", "icon": "mdi:web" },
+        { "action": "PLATFORM:decision", "lib": "decision", "description": "Koşullara göre akışı dallandıran bir karar düğümü", "icon": "mdi:source-branch" },
+        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Kullanıcıyla etkileşime geç ve yanıtını al", "icon": "mdi:account-question" },
+        { "action": "PLATFORM:complete", "description": "İş akışını tamamlandı olarak işaretle", "icon": "mdi:check" },
+        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Yönlendirme veya onay için denetçiye sor", "icon": "mdi:account-supervisor" },
+        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Kullanıcıya mesaj gönder", "icon": "mdi:message-text" }
       ],
       "mcps": [
-        { "id": "mcp-1", "provider": "ANALYTICS", "action": "ANALYTICS:run_report", "description": "Run an analytics report", "direction": "OUTGOING" },
-        { "id": "mcp-2", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Search for files in Google Drive", "direction": "OUTGOING" },
-        { "id": "mcp-3", "provider": "SLACK", "action": "SLACK:search", "description": "Search for messages in Slack", "direction": "INCOMING" },
-        { "id": "mcp-4", "provider": "JIRA", "action": "JIRA:search", "description": "Search for issues in JIRA", "direction": "OUTGOING" },
-        { "id": "mcp-5", "provider": "EMAIL", "action": "EMAIL:send", "description": "Send an email", "direction": "OUTGOING" },
-        { "id": "mcp-6", "provider": "TELCO", "action": "TELCO:get_bbk_by_address", "description": "Get BBK number for a given address", "direction": "OUTGOING" },
-        { "id": "mcp-7", "provider": "GITHUB", "action": "GITHUB:search", "description": "Search for repositories in GitHub", "direction": "OUTGOING" }
+        { "id": "mcp-1", "provider": "ANALYTICS", "action": "ANALYTICS:run_report", "description": "Bir analiz raporu çalıştır", "direction": "OUTGOING" },
+        { "id": "mcp-2", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Google Drive'da dosya ara", "direction": "OUTGOING" },
+        { "id": "mcp-3", "provider": "SLACK", "action": "SLACK:search", "description": "Slack'te mesaj ara", "direction": "INCOMING" },
+        { "id": "mcp-4", "provider": "JIRA", "action": "JIRA:search", "description": "JIRA'da sorun ara", "direction": "OUTGOING" },
+        { "id": "mcp-5", "provider": "EMAIL", "action": "EMAIL:send", "description": "E-posta gönder", "direction": "OUTGOING" },
+        { "id": "mcp-6", "provider": "TELCO", "action": "TELCO:get_bbk_by_address", "description": "Belirli bir adres için BBK numarasını al", "direction": "OUTGOING" },
+        { "id": "mcp-7", "provider": "GITHUB", "action": "GITHUB:search", "description": "GitHub'da depo ara", "direction": "OUTGOING" }
       ]
     },
     "knowledge_score": 0.05
@@ -464,35 +464,35 @@
     "context": {
       "ai_assistant_info": {
         "name": "Legal Agent",
-        "description": "Handles legal document review and contract management",
-        "job": "GreyCollar AI Assistant"
+        "description": "Hukuki belge incelemesi ve sözleşme yönetimini yönetir",
+        "job": "GreyCollar Yapay Zeka Asistanı"
       },
       "knowledge_base": [
-        { "type": "TEXT", "text": "Battery product id is btr-123." },
-        { "type": "TEXT", "text": "Manager email address is manager@company.com." },
-        { "type": "TEXT", "text": "Warehouse location is building C, shelf 4." }
+        { "type": "TEXT", "text": "Pil ürün kimliği btr-123'tür." },
+        { "type": "TEXT", "text": "Yönetici e-posta adresi manager@company.com'dur." },
+        { "type": "TEXT", "text": "Depo konumu C binası, raf 4'tür." }
       ],
       "Blueprints": [],
       "steps": [
         { "action": "LEGAL:review_contract", "status": "COMPLETED", "parameters": { "contractId": "ctr-456", "type": "NDA" } }
       ],
       "actions": [
-        { "action": "PLATFORM:llm", "lib": "llm", "description": "Send a message to the Language Model for AI processing", "icon": "mdi:brain" },
-        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Extract data from a website URL", "icon": "mdi:web" },
-        { "action": "PLATFORM:decision", "lib": "decision", "description": "A decision node that branches the flow based on conditions", "icon": "mdi:source-branch" },
-        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Interact with the user and get their response", "icon": "mdi:account-question" },
-        { "action": "PLATFORM:complete", "description": "Mark the workflow as complete", "icon": "mdi:check" },
-        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Ask a supervisor for guidance or approval", "icon": "mdi:account-supervisor" },
-        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Send a message to the user", "icon": "mdi:message-text" }
+        { "action": "PLATFORM:llm", "lib": "llm", "description": "Yapay zeka işleme için Dil Modeline mesaj gönder", "icon": "mdi:brain" },
+        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Bir web sitesi URL'sinden veri çıkar", "icon": "mdi:web" },
+        { "action": "PLATFORM:decision", "lib": "decision", "description": "Koşullara göre akışı dallandıran bir karar düğümü", "icon": "mdi:source-branch" },
+        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Kullanıcıyla etkileşime geç ve yanıtını al", "icon": "mdi:account-question" },
+        { "action": "PLATFORM:complete", "description": "İş akışını tamamlandı olarak işaretle", "icon": "mdi:check" },
+        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Yönlendirme veya onay için denetçiye sor", "icon": "mdi:account-supervisor" },
+        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Kullanıcıya mesaj gönder", "icon": "mdi:message-text" }
       ],
       "mcps": [
-        { "id": "mcp-1", "provider": "LEGAL", "action": "LEGAL:review_contract", "description": "Review a legal contract", "direction": "OUTGOING" },
-        { "id": "mcp-2", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Search for files in Google Drive", "direction": "OUTGOING" },
-        { "id": "mcp-3", "provider": "SLACK", "action": "SLACK:search", "description": "Search for messages in Slack", "direction": "INCOMING" },
-        { "id": "mcp-4", "provider": "JIRA", "action": "JIRA:search", "description": "Search for issues in JIRA", "direction": "OUTGOING" },
-        { "id": "mcp-5", "provider": "EMAIL", "action": "EMAIL:send", "description": "Send an email", "direction": "OUTGOING" },
-        { "id": "mcp-6", "provider": "TELCO", "action": "TELCO:get_bbk_by_address", "description": "Get BBK number for a given address", "direction": "OUTGOING" },
-        { "id": "mcp-7", "provider": "GITHUB", "action": "GITHUB:search", "description": "Search for repositories in GitHub", "direction": "OUTGOING" }
+        { "id": "mcp-1", "provider": "LEGAL", "action": "LEGAL:review_contract", "description": "Hukuki bir sözleşmeyi incele", "direction": "OUTGOING" },
+        { "id": "mcp-2", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Google Drive'da dosya ara", "direction": "OUTGOING" },
+        { "id": "mcp-3", "provider": "SLACK", "action": "SLACK:search", "description": "Slack'te mesaj ara", "direction": "INCOMING" },
+        { "id": "mcp-4", "provider": "JIRA", "action": "JIRA:search", "description": "JIRA'da sorun ara", "direction": "OUTGOING" },
+        { "id": "mcp-5", "provider": "EMAIL", "action": "EMAIL:send", "description": "E-posta gönder", "direction": "OUTGOING" },
+        { "id": "mcp-6", "provider": "TELCO", "action": "TELCO:get_bbk_by_address", "description": "Belirli bir adres için BBK numarasını al", "direction": "OUTGOING" },
+        { "id": "mcp-7", "provider": "GITHUB", "action": "GITHUB:search", "description": "GitHub'da depo ara", "direction": "OUTGOING" }
       ]
     },
     "knowledge_score": 0.05
@@ -501,36 +501,36 @@
     "context": {
       "ai_assistant_info": {
         "name": "ISP Agent",
-        "description": "Handles ISP internet subscriptions",
-        "job": "GreyCollar AI Assistant"
+        "description": "İSS internet aboneliklerini yönetir",
+        "job": "GreyCollar Yapay Zeka Asistanı"
       },
       "knowledge_base": [
-        { "type": "TEXT", "text": "Default speed limit is 16mbps for residential addresses." },
-        { "type": "TEXT", "text": "Business addresses get 100mbps by default." },
-        { "type": "QA", "question": "What is the BBK number?", "answer": "BBK is the infrastructure identifier used to check line availability at an address." },
-        { "type": "TEXT", "text": "ISP contracts are renewed annually. Early termination fee is 3 months." }
+        { "type": "TEXT", "text": "Konut adresleri için varsayılan hız limiti 16 Mbps'dir." },
+        { "type": "TEXT", "text": "İş adresleri varsayılan olarak 100 Mbps alır." },
+        { "type": "QA", "question": "BBK numarası nedir?", "answer": "BBK, bir adreste hat kullanılabilirliğini kontrol etmek için kullanılan altyapı tanımlayıcısıdır." },
+        { "type": "TEXT", "text": "İSS sözleşmeleri yıllık olarak yenilenir. Erken fesih ücreti 3 aydır." }
       ],
       "Blueprints": [
-        { "id": "bp-isp-1", "name": "ISP Subscription Setup" }
+        { "id": "bp-isp-1", "name": "İSS Aboneliği Kurulumu" }
       ],
       "steps": [],
       "actions": [
-        { "action": "PLATFORM:llm", "lib": "llm", "description": "Send a message to the Language Model for AI processing", "icon": "mdi:brain" },
-        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Extract data from a website URL", "icon": "mdi:web" },
-        { "action": "PLATFORM:decision", "lib": "decision", "description": "A decision node that branches the flow based on conditions", "icon": "mdi:source-branch" },
-        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Interact with the user and get their response", "icon": "mdi:account-question" },
-        { "action": "PLATFORM:complete", "description": "Mark the workflow as complete", "icon": "mdi:check" },
-        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Ask a supervisor for guidance or approval", "icon": "mdi:account-supervisor" },
-        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Send a message to the user", "icon": "mdi:message-text" }
+        { "action": "PLATFORM:llm", "lib": "llm", "description": "Yapay zeka işleme için Dil Modeline mesaj gönder", "icon": "mdi:brain" },
+        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Bir web sitesi URL'sinden veri çıkar", "icon": "mdi:web" },
+        { "action": "PLATFORM:decision", "lib": "decision", "description": "Koşullara göre akışı dallandıran bir karar düğümü", "icon": "mdi:source-branch" },
+        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Kullanıcıyla etkileşime geç ve yanıtını al", "icon": "mdi:account-question" },
+        { "action": "PLATFORM:complete", "description": "İş akışını tamamlandı olarak işaretle", "icon": "mdi:check" },
+        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Yönlendirme veya onay için denetçiye sor", "icon": "mdi:account-supervisor" },
+        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Kullanıcıya mesaj gönder", "icon": "mdi:message-text" }
       ],
       "mcps": [
-        { "id": "mcp-1", "provider": "TELCO", "action": "TELCO:get_bbk_by_address", "description": "Get BBK number for a given address", "direction": "OUTGOING" },
-        { "id": "mcp-2", "provider": "TELCO", "action": "TELCO:get_inventory", "description": "Check line availability at a BBK location", "direction": "OUTGOING" },
-        { "id": "mcp-3", "provider": "TELCO", "action": "TELCO:get_product_by_speed", "description": "Fetch available products for a BBK", "direction": "OUTGOING" },
-        { "id": "mcp-4", "provider": "TELCO", "action": "TELCO:create_order", "description": "Create a telecom subscription order", "direction": "OUTGOING" },
-        { "id": "mcp-5", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Search for files in Google Drive", "direction": "OUTGOING" },
-        { "id": "mcp-6", "provider": "SLACK", "action": "SLACK:search", "description": "Search for messages in Slack", "direction": "INCOMING" },
-        { "id": "mcp-7", "provider": "JIRA", "action": "JIRA:search", "description": "Search for issues in JIRA", "direction": "OUTGOING" }
+        { "id": "mcp-1", "provider": "TELCO", "action": "TELCO:get_bbk_by_address", "description": "Belirli bir adres için BBK numarasını al", "direction": "OUTGOING" },
+        { "id": "mcp-2", "provider": "TELCO", "action": "TELCO:get_inventory", "description": "BBK konumunda hat kullanılabilirliğini kontrol et", "direction": "OUTGOING" },
+        { "id": "mcp-3", "provider": "TELCO", "action": "TELCO:get_product_by_speed", "description": "Bir BBK için mevcut ürünleri getir", "direction": "OUTGOING" },
+        { "id": "mcp-4", "provider": "TELCO", "action": "TELCO:create_order", "description": "Telekom aboneliği siparişi oluştur", "direction": "OUTGOING" },
+        { "id": "mcp-5", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Google Drive'da dosya ara", "direction": "OUTGOING" },
+        { "id": "mcp-6", "provider": "SLACK", "action": "SLACK:search", "description": "Slack'te mesaj ara", "direction": "INCOMING" },
+        { "id": "mcp-7", "provider": "JIRA", "action": "JIRA:search", "description": "JIRA'da sorun ara", "direction": "OUTGOING" }
       ]
     },
     "knowledge_score": 0.65
@@ -539,38 +539,38 @@
     "context": {
       "ai_assistant_info": {
         "name": "ISP Agent",
-        "description": "Handles ISP internet subscriptions",
-        "job": "GreyCollar AI Assistant"
+        "description": "İSS internet aboneliklerini yönetir",
+        "job": "GreyCollar Yapay Zeka Asistanı"
       },
       "knowledge_base": [
-        { "type": "TEXT", "text": "Default speed limit is 16mbps for residential addresses." },
-        { "type": "TEXT", "text": "Business addresses get 100mbps by default." },
-        { "type": "QA", "question": "What is the BBK number?", "answer": "BBK is the infrastructure identifier used to check line availability at an address." },
-        { "type": "TEXT", "text": "ISP contracts are renewed annually. Early termination fee is 3 months." },
-        { "type": "QA", "question": "How to check address availability?", "answer": "Use TELCO:get_bbk_by_address then TELCO:get_inventory to verify available slots." },
-        { "type": "TEXT", "text": "Residential plans: 16mbps, 50mbps, 100mbps, 250mbps." }
+        { "type": "TEXT", "text": "Konut adresleri için varsayılan hız limiti 16 Mbps'dir." },
+        { "type": "TEXT", "text": "İş adresleri varsayılan olarak 100 Mbps alır." },
+        { "type": "QA", "question": "BBK numarası nedir?", "answer": "BBK, bir adreste hat kullanılabilirliğini kontrol etmek için kullanılan altyapı tanımlayıcısıdır." },
+        { "type": "TEXT", "text": "İSS sözleşmeleri yıllık olarak yenilenir. Erken fesih ücreti 3 aydır." },
+        { "type": "QA", "question": "Adres kullanılabilirliği nasıl kontrol edilir?", "answer": "Mevcut slotları doğrulamak için TELCO:get_bbk_by_address ardından TELCO:get_inventory kullanın." },
+        { "type": "TEXT", "text": "Konut planları: 16 Mbps, 50 Mbps, 100 Mbps, 250 Mbps." }
       ],
       "Blueprints": [
-        { "id": "bp-isp-1", "name": "ISP Subscription Setup" }
+        { "id": "bp-isp-1", "name": "İSS Aboneliği Kurulumu" }
       ],
       "steps": [],
       "actions": [
-        { "action": "PLATFORM:llm", "lib": "llm", "description": "Send a message to the Language Model for AI processing", "icon": "mdi:brain" },
-        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Extract data from a website URL", "icon": "mdi:web" },
-        { "action": "PLATFORM:decision", "lib": "decision", "description": "A decision node that branches the flow based on conditions", "icon": "mdi:source-branch" },
-        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Interact with the user and get their response", "icon": "mdi:account-question" },
-        { "action": "PLATFORM:complete", "description": "Mark the workflow as complete", "icon": "mdi:check" },
-        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Ask a supervisor for guidance or approval", "icon": "mdi:account-supervisor" },
-        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Send a message to the user", "icon": "mdi:message-text" }
+        { "action": "PLATFORM:llm", "lib": "llm", "description": "Yapay zeka işleme için Dil Modeline mesaj gönder", "icon": "mdi:brain" },
+        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Bir web sitesi URL'sinden veri çıkar", "icon": "mdi:web" },
+        { "action": "PLATFORM:decision", "lib": "decision", "description": "Koşullara göre akışı dallandıran bir karar düğümü", "icon": "mdi:source-branch" },
+        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Kullanıcıyla etkileşime geç ve yanıtını al", "icon": "mdi:account-question" },
+        { "action": "PLATFORM:complete", "description": "İş akışını tamamlandı olarak işaretle", "icon": "mdi:check" },
+        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Yönlendirme veya onay için denetçiye sor", "icon": "mdi:account-supervisor" },
+        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Kullanıcıya mesaj gönder", "icon": "mdi:message-text" }
       ],
       "mcps": [
-        { "id": "mcp-1", "provider": "TELCO", "action": "TELCO:get_bbk_by_address", "description": "Get BBK number for a given address", "direction": "OUTGOING" },
-        { "id": "mcp-2", "provider": "TELCO", "action": "TELCO:get_inventory", "description": "Check line availability at a BBK location", "direction": "OUTGOING" },
-        { "id": "mcp-3", "provider": "TELCO", "action": "TELCO:get_product_by_speed", "description": "Fetch available products for a BBK", "direction": "OUTGOING" },
-        { "id": "mcp-4", "provider": "TELCO", "action": "TELCO:create_order", "description": "Create a telecom subscription order", "direction": "OUTGOING" },
-        { "id": "mcp-5", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Search for files in Google Drive", "direction": "OUTGOING" },
-        { "id": "mcp-6", "provider": "SLACK", "action": "SLACK:search", "description": "Search for messages in Slack", "direction": "INCOMING" },
-        { "id": "mcp-7", "provider": "JIRA", "action": "JIRA:search", "description": "Search for issues in JIRA", "direction": "OUTGOING" }
+        { "id": "mcp-1", "provider": "TELCO", "action": "TELCO:get_bbk_by_address", "description": "Belirli bir adres için BBK numarasını al", "direction": "OUTGOING" },
+        { "id": "mcp-2", "provider": "TELCO", "action": "TELCO:get_inventory", "description": "BBK konumunda hat kullanılabilirliğini kontrol et", "direction": "OUTGOING" },
+        { "id": "mcp-3", "provider": "TELCO", "action": "TELCO:get_product_by_speed", "description": "Bir BBK için mevcut ürünleri getir", "direction": "OUTGOING" },
+        { "id": "mcp-4", "provider": "TELCO", "action": "TELCO:create_order", "description": "Telekom aboneliği siparişi oluştur", "direction": "OUTGOING" },
+        { "id": "mcp-5", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Google Drive'da dosya ara", "direction": "OUTGOING" },
+        { "id": "mcp-6", "provider": "SLACK", "action": "SLACK:search", "description": "Slack'te mesaj ara", "direction": "INCOMING" },
+        { "id": "mcp-7", "provider": "JIRA", "action": "JIRA:search", "description": "JIRA'da sorun ara", "direction": "OUTGOING" }
       ]
     },
     "knowledge_score": 0.6
@@ -579,41 +579,41 @@
     "context": {
       "ai_assistant_info": {
         "name": "ISP Agent",
-        "description": "Handles ISP internet subscriptions",
-        "job": "GreyCollar AI Assistant"
+        "description": "İSS internet aboneliklerini yönetir",
+        "job": "GreyCollar Yapay Zeka Asistanı"
       },
       "knowledge_base": [
-        { "type": "TEXT", "text": "Default speed limit is 16mbps for residential addresses." },
-        { "type": "TEXT", "text": "Business addresses get 100mbps by default." },
-        { "type": "QA", "question": "What is the BBK number?", "answer": "BBK is the infrastructure identifier used to check line availability at an address." },
-        { "type": "TEXT", "text": "ISP contracts are renewed annually. Early termination fee is 3 months." },
-        { "type": "QA", "question": "How to check address availability?", "answer": "Use TELCO:get_bbk_by_address then TELCO:get_inventory to verify available slots." },
-        { "type": "TEXT", "text": "Residential plans: 16mbps, 50mbps, 100mbps, 250mbps." }
+        { "type": "TEXT", "text": "Konut adresleri için varsayılan hız limiti 16 Mbps'dir." },
+        { "type": "TEXT", "text": "İş adresleri varsayılan olarak 100 Mbps alır." },
+        { "type": "QA", "question": "BBK numarası nedir?", "answer": "BBK, bir adreste hat kullanılabilirliğini kontrol etmek için kullanılan altyapı tanımlayıcısıdır." },
+        { "type": "TEXT", "text": "İSS sözleşmeleri yıllık olarak yenilenir. Erken fesih ücreti 3 aydır." },
+        { "type": "QA", "question": "Adres kullanılabilirliği nasıl kontrol edilir?", "answer": "Mevcut slotları doğrulamak için TELCO:get_bbk_by_address ardından TELCO:get_inventory kullanın." },
+        { "type": "TEXT", "text": "Konut planları: 16 Mbps, 50 Mbps, 100 Mbps, 250 Mbps." }
       ],
       "Blueprints": [
-        { "id": "bp-isp-1", "name": "ISP Subscription Setup" }
+        { "id": "bp-isp-1", "name": "İSS Aboneliği Kurulumu" }
       ],
       "steps": [
-        { "action": "PLATFORM:user_interaction", "status": "COMPLETED", "parameters": { "question": "What is your address?" }, "result": "Kadikoy, Istanbul" },
+        { "action": "PLATFORM:user_interaction", "status": "COMPLETED", "parameters": { "question": "Adresiniz nedir?" }, "result": "Kadikoy, Istanbul" },
         { "action": "TELCO:get_bbk_by_address", "status": "COMPLETED", "parameters": { "address": "Kadikoy, Istanbul" }, "result": "{\"bbk\": \"TUR-34710-00234\"}" }
       ],
       "actions": [
-        { "action": "PLATFORM:llm", "lib": "llm", "description": "Send a message to the Language Model for AI processing", "icon": "mdi:brain" },
-        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Extract data from a website URL", "icon": "mdi:web" },
-        { "action": "PLATFORM:decision", "lib": "decision", "description": "A decision node that branches the flow based on conditions", "icon": "mdi:source-branch" },
-        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Interact with the user and get their response", "icon": "mdi:account-question" },
-        { "action": "PLATFORM:complete", "description": "Mark the workflow as complete", "icon": "mdi:check" },
-        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Ask a supervisor for guidance or approval", "icon": "mdi:account-supervisor" },
-        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Send a message to the user", "icon": "mdi:message-text" }
+        { "action": "PLATFORM:llm", "lib": "llm", "description": "Yapay zeka işleme için Dil Modeline mesaj gönder", "icon": "mdi:brain" },
+        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Bir web sitesi URL'sinden veri çıkar", "icon": "mdi:web" },
+        { "action": "PLATFORM:decision", "lib": "decision", "description": "Koşullara göre akışı dallandıran bir karar düğümü", "icon": "mdi:source-branch" },
+        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Kullanıcıyla etkileşime geç ve yanıtını al", "icon": "mdi:account-question" },
+        { "action": "PLATFORM:complete", "description": "İş akışını tamamlandı olarak işaretle", "icon": "mdi:check" },
+        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Yönlendirme veya onay için denetçiye sor", "icon": "mdi:account-supervisor" },
+        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Kullanıcıya mesaj gönder", "icon": "mdi:message-text" }
       ],
       "mcps": [
-        { "id": "mcp-1", "provider": "TELCO", "action": "TELCO:get_bbk_by_address", "description": "Get BBK number for a given address", "direction": "OUTGOING" },
-        { "id": "mcp-2", "provider": "TELCO", "action": "TELCO:get_inventory", "description": "Check line availability at a BBK location", "direction": "OUTGOING" },
-        { "id": "mcp-3", "provider": "TELCO", "action": "TELCO:get_product_by_speed", "description": "Fetch available products for a BBK", "direction": "OUTGOING" },
-        { "id": "mcp-4", "provider": "TELCO", "action": "TELCO:create_order", "description": "Create a telecom subscription order", "direction": "OUTGOING" },
-        { "id": "mcp-5", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Search for files in Google Drive", "direction": "OUTGOING" },
-        { "id": "mcp-6", "provider": "SLACK", "action": "SLACK:search", "description": "Search for messages in Slack", "direction": "INCOMING" },
-        { "id": "mcp-7", "provider": "JIRA", "action": "JIRA:search", "description": "Search for issues in JIRA", "direction": "OUTGOING" }
+        { "id": "mcp-1", "provider": "TELCO", "action": "TELCO:get_bbk_by_address", "description": "Belirli bir adres için BBK numarasını al", "direction": "OUTGOING" },
+        { "id": "mcp-2", "provider": "TELCO", "action": "TELCO:get_inventory", "description": "BBK konumunda hat kullanılabilirliğini kontrol et", "direction": "OUTGOING" },
+        { "id": "mcp-3", "provider": "TELCO", "action": "TELCO:get_product_by_speed", "description": "Bir BBK için mevcut ürünleri getir", "direction": "OUTGOING" },
+        { "id": "mcp-4", "provider": "TELCO", "action": "TELCO:create_order", "description": "Telekom aboneliği siparişi oluştur", "direction": "OUTGOING" },
+        { "id": "mcp-5", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Google Drive'da dosya ara", "direction": "OUTGOING" },
+        { "id": "mcp-6", "provider": "SLACK", "action": "SLACK:search", "description": "Slack'te mesaj ara", "direction": "INCOMING" },
+        { "id": "mcp-7", "provider": "JIRA", "action": "JIRA:search", "description": "JIRA'da sorun ara", "direction": "OUTGOING" }
       ]
     },
     "knowledge_score": 0.72
@@ -622,43 +622,43 @@
     "context": {
       "ai_assistant_info": {
         "name": "ISP Agent",
-        "description": "Handles ISP internet subscriptions",
-        "job": "GreyCollar AI Assistant"
+        "description": "İSS internet aboneliklerini yönetir",
+        "job": "GreyCollar Yapay Zeka Asistanı"
       },
       "knowledge_base": [
-        { "type": "TEXT", "text": "Default speed limit is 16mbps for residential addresses." },
-        { "type": "TEXT", "text": "Business addresses get 100mbps by default." },
-        { "type": "QA", "question": "What is the BBK number?", "answer": "BBK is the infrastructure identifier used to check line availability at an address." },
-        { "type": "TEXT", "text": "ISP contracts are renewed annually. Early termination fee is 3 months." },
-        { "type": "QA", "question": "How to check address availability?", "answer": "Use TELCO:get_bbk_by_address then TELCO:get_inventory to verify available slots." },
-        { "type": "TEXT", "text": "Residential plans: 16mbps, 50mbps, 100mbps, 250mbps." }
+        { "type": "TEXT", "text": "Konut adresleri için varsayılan hız limiti 16 Mbps'dir." },
+        { "type": "TEXT", "text": "İş adresleri varsayılan olarak 100 Mbps alır." },
+        { "type": "QA", "question": "BBK numarası nedir?", "answer": "BBK, bir adreste hat kullanılabilirliğini kontrol etmek için kullanılan altyapı tanımlayıcısıdır." },
+        { "type": "TEXT", "text": "İSS sözleşmeleri yıllık olarak yenilenir. Erken fesih ücreti 3 aydır." },
+        { "type": "QA", "question": "Adres kullanılabilirliği nasıl kontrol edilir?", "answer": "Mevcut slotları doğrulamak için TELCO:get_bbk_by_address ardından TELCO:get_inventory kullanın." },
+        { "type": "TEXT", "text": "Konut planları: 16 Mbps, 50 Mbps, 100 Mbps, 250 Mbps." }
       ],
       "Blueprints": [
-        { "id": "bp-isp-1", "name": "ISP Subscription Setup" }
+        { "id": "bp-isp-1", "name": "İSS Aboneliği Kurulumu" }
       ],
       "steps": [
-        { "action": "PLATFORM:user_interaction", "status": "COMPLETED", "parameters": { "question": "What is your address?" }, "result": "Kadikoy, Istanbul" },
+        { "action": "PLATFORM:user_interaction", "status": "COMPLETED", "parameters": { "question": "Adresiniz nedir?" }, "result": "Kadikoy, Istanbul" },
         { "action": "TELCO:get_bbk_by_address", "status": "COMPLETED", "parameters": { "address": "Kadikoy, Istanbul" }, "result": "{\"bbk\": \"TUR-34710-00234\"}" },
         { "action": "TELCO:get_inventory", "status": "COMPLETED", "parameters": { "bbk": "TUR-34710-00234" }, "result": "{\"available\": true, \"slots\": 6}" },
         { "action": "TELCO:get_product_by_speed", "status": "COMPLETED", "parameters": { "bbk": "TUR-34710-00234" }, "result": "[{\"id\": \"P100\", \"speed\": 100}, {\"id\": \"P250\", \"speed\": 250}]" }
       ],
       "actions": [
-        { "action": "PLATFORM:llm", "lib": "llm", "description": "Send a message to the Language Model for AI processing", "icon": "mdi:brain" },
-        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Extract data from a website URL", "icon": "mdi:web" },
-        { "action": "PLATFORM:decision", "lib": "decision", "description": "A decision node that branches the flow based on conditions", "icon": "mdi:source-branch" },
-        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Interact with the user and get their response", "icon": "mdi:account-question" },
-        { "action": "PLATFORM:complete", "description": "Mark the workflow as complete", "icon": "mdi:check" },
-        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Ask a supervisor for guidance or approval", "icon": "mdi:account-supervisor" },
-        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Send a message to the user", "icon": "mdi:message-text" }
+        { "action": "PLATFORM:llm", "lib": "llm", "description": "Yapay zeka işleme için Dil Modeline mesaj gönder", "icon": "mdi:brain" },
+        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Bir web sitesi URL'sinden veri çıkar", "icon": "mdi:web" },
+        { "action": "PLATFORM:decision", "lib": "decision", "description": "Koşullara göre akışı dallandıran bir karar düğümü", "icon": "mdi:source-branch" },
+        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Kullanıcıyla etkileşime geç ve yanıtını al", "icon": "mdi:account-question" },
+        { "action": "PLATFORM:complete", "description": "İş akışını tamamlandı olarak işaretle", "icon": "mdi:check" },
+        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Yönlendirme veya onay için denetçiye sor", "icon": "mdi:account-supervisor" },
+        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Kullanıcıya mesaj gönder", "icon": "mdi:message-text" }
       ],
       "mcps": [
-        { "id": "mcp-1", "provider": "TELCO", "action": "TELCO:get_bbk_by_address", "description": "Get BBK number for a given address", "direction": "OUTGOING" },
-        { "id": "mcp-2", "provider": "TELCO", "action": "TELCO:get_inventory", "description": "Check line availability at a BBK location", "direction": "OUTGOING" },
-        { "id": "mcp-3", "provider": "TELCO", "action": "TELCO:get_product_by_speed", "description": "Fetch available products for a BBK", "direction": "OUTGOING" },
-        { "id": "mcp-4", "provider": "TELCO", "action": "TELCO:create_order", "description": "Create a telecom subscription order", "direction": "OUTGOING" },
-        { "id": "mcp-5", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Search for files in Google Drive", "direction": "OUTGOING" },
-        { "id": "mcp-6", "provider": "SLACK", "action": "SLACK:search", "description": "Search for messages in Slack", "direction": "INCOMING" },
-        { "id": "mcp-7", "provider": "JIRA", "action": "JIRA:search", "description": "Search for issues in JIRA", "direction": "OUTGOING" }
+        { "id": "mcp-1", "provider": "TELCO", "action": "TELCO:get_bbk_by_address", "description": "Belirli bir adres için BBK numarasını al", "direction": "OUTGOING" },
+        { "id": "mcp-2", "provider": "TELCO", "action": "TELCO:get_inventory", "description": "BBK konumunda hat kullanılabilirliğini kontrol et", "direction": "OUTGOING" },
+        { "id": "mcp-3", "provider": "TELCO", "action": "TELCO:get_product_by_speed", "description": "Bir BBK için mevcut ürünleri getir", "direction": "OUTGOING" },
+        { "id": "mcp-4", "provider": "TELCO", "action": "TELCO:create_order", "description": "Telekom aboneliği siparişi oluştur", "direction": "OUTGOING" },
+        { "id": "mcp-5", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Google Drive'da dosya ara", "direction": "OUTGOING" },
+        { "id": "mcp-6", "provider": "SLACK", "action": "SLACK:search", "description": "Slack'te mesaj ara", "direction": "INCOMING" },
+        { "id": "mcp-7", "provider": "JIRA", "action": "JIRA:search", "description": "JIRA'da sorun ara", "direction": "OUTGOING" }
       ]
     },
     "knowledge_score": 0.84
@@ -667,36 +667,36 @@
     "context": {
       "ai_assistant_info": {
         "name": "Inventory Agent",
-        "description": "Handles inventory management and reordering",
-        "job": "GreyCollar AI Assistant"
+        "description": "Stok yönetimi ve yeniden siparişi yönetir",
+        "job": "GreyCollar Yapay Zeka Asistanı"
       },
       "knowledge_base": [
-        { "type": "TEXT", "text": "Battery product id is btr-123." },
-        { "type": "TEXT", "text": "If Battery stock falls below 50 units, order 100 units." },
-        { "type": "TEXT", "text": "Warehouse location is building C, shelf 4." },
-        { "type": "QA", "question": "Who approves purchase orders?", "answer": "Purchase orders above $500 need manager approval." }
+        { "type": "TEXT", "text": "Pil ürün kimliği btr-123'tür." },
+        { "type": "TEXT", "text": "Pil stoğu 50 birimin altına düşerse 100 birim sipariş edin." },
+        { "type": "TEXT", "text": "Depo konumu C binası, raf 4'tür." },
+        { "type": "QA", "question": "Satın alma siparişlerini kim onaylar?", "answer": "500 doların üzerindeki satın alma siparişleri için yönetici onayı gereklidir." }
       ],
       "Blueprints": [
-        { "id": "bp-inv-1", "name": "Reorder Process" }
+        { "id": "bp-inv-1", "name": "Yeniden Sipariş Süreci" }
       ],
       "steps": [],
       "actions": [
-        { "action": "PLATFORM:llm", "lib": "llm", "description": "Send a message to the Language Model for AI processing", "icon": "mdi:brain" },
-        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Extract data from a website URL", "icon": "mdi:web" },
-        { "action": "PLATFORM:decision", "lib": "decision", "description": "A decision node that branches the flow based on conditions", "icon": "mdi:source-branch" },
-        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Interact with the user and get their response", "icon": "mdi:account-question" },
-        { "action": "PLATFORM:complete", "description": "Mark the workflow as complete", "icon": "mdi:check" },
-        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Ask a supervisor for guidance or approval", "icon": "mdi:account-supervisor" },
-        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Send a message to the user", "icon": "mdi:message-text" }
+        { "action": "PLATFORM:llm", "lib": "llm", "description": "Yapay zeka işleme için Dil Modeline mesaj gönder", "icon": "mdi:brain" },
+        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Bir web sitesi URL'sinden veri çıkar", "icon": "mdi:web" },
+        { "action": "PLATFORM:decision", "lib": "decision", "description": "Koşullara göre akışı dallandıran bir karar düğümü", "icon": "mdi:source-branch" },
+        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Kullanıcıyla etkileşime geç ve yanıtını al", "icon": "mdi:account-question" },
+        { "action": "PLATFORM:complete", "description": "İş akışını tamamlandı olarak işaretle", "icon": "mdi:check" },
+        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Yönlendirme veya onay için denetçiye sor", "icon": "mdi:account-supervisor" },
+        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Kullanıcıya mesaj gönder", "icon": "mdi:message-text" }
       ],
       "mcps": [
-        { "id": "mcp-1", "provider": "INVENTORY", "action": "INVENTORY:check_stock", "description": "Check current stock level for a product", "direction": "OUTGOING" },
-        { "id": "mcp-2", "provider": "INVENTORY", "action": "INVENTORY:create_purchase_order", "description": "Create a purchase order for a product", "direction": "OUTGOING" },
-        { "id": "mcp-3", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Search for files in Google Drive", "direction": "OUTGOING" },
-        { "id": "mcp-4", "provider": "SLACK", "action": "SLACK:search", "description": "Search for messages in Slack", "direction": "INCOMING" },
-        { "id": "mcp-5", "provider": "JIRA", "action": "JIRA:search", "description": "Search for issues in JIRA", "direction": "OUTGOING" },
-        { "id": "mcp-6", "provider": "EMAIL", "action": "EMAIL:send", "description": "Send an email", "direction": "OUTGOING" },
-        { "id": "mcp-7", "provider": "GITHUB", "action": "GITHUB:search", "description": "Search for repositories in GitHub", "direction": "OUTGOING" }
+        { "id": "mcp-1", "provider": "INVENTORY", "action": "INVENTORY:check_stock", "description": "Bir ürün için mevcut stok seviyesini kontrol et", "direction": "OUTGOING" },
+        { "id": "mcp-2", "provider": "INVENTORY", "action": "INVENTORY:create_purchase_order", "description": "Bir ürün için satın alma siparişi oluştur", "direction": "OUTGOING" },
+        { "id": "mcp-3", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Google Drive'da dosya ara", "direction": "OUTGOING" },
+        { "id": "mcp-4", "provider": "SLACK", "action": "SLACK:search", "description": "Slack'te mesaj ara", "direction": "INCOMING" },
+        { "id": "mcp-5", "provider": "JIRA", "action": "JIRA:search", "description": "JIRA'da sorun ara", "direction": "OUTGOING" },
+        { "id": "mcp-6", "provider": "EMAIL", "action": "EMAIL:send", "description": "E-posta gönder", "direction": "OUTGOING" },
+        { "id": "mcp-7", "provider": "GITHUB", "action": "GITHUB:search", "description": "GitHub'da depo ara", "direction": "OUTGOING" }
       ]
     },
     "knowledge_score": 0.55
@@ -705,39 +705,39 @@
     "context": {
       "ai_assistant_info": {
         "name": "Inventory Agent",
-        "description": "Handles inventory management and reordering",
-        "job": "GreyCollar AI Assistant"
+        "description": "Stok yönetimi ve yeniden siparişi yönetir",
+        "job": "GreyCollar Yapay Zeka Asistanı"
       },
       "knowledge_base": [
-        { "type": "TEXT", "text": "Battery product id is btr-123." },
-        { "type": "TEXT", "text": "If Battery stock falls below 50 units, order 100 units." },
-        { "type": "TEXT", "text": "Warehouse location is building C, shelf 4." },
-        { "type": "QA", "question": "Who approves purchase orders?", "answer": "Purchase orders above $500 need manager approval." }
+        { "type": "TEXT", "text": "Pil ürün kimliği btr-123'tür." },
+        { "type": "TEXT", "text": "Pil stoğu 50 birimin altına düşerse 100 birim sipariş edin." },
+        { "type": "TEXT", "text": "Depo konumu C binası, raf 4'tür." },
+        { "type": "QA", "question": "Satın alma siparişlerini kim onaylar?", "answer": "500 doların üzerindeki satın alma siparişleri için yönetici onayı gereklidir." }
       ],
       "Blueprints": [
-        { "id": "bp-inv-1", "name": "Reorder Process" }
+        { "id": "bp-inv-1", "name": "Yeniden Sipariş Süreci" }
       ],
       "steps": [
         { "action": "INVENTORY:check_stock", "status": "COMPLETED", "parameters": { "productId": "btr-123" }, "result": "{\"stock\": 12, \"threshold\": 50}" },
         { "action": "PLATFORM:decision", "status": "COMPLETED", "parameters": { "condition": "stock < threshold" }, "result": "true" }
       ],
       "actions": [
-        { "action": "PLATFORM:llm", "lib": "llm", "description": "Send a message to the Language Model for AI processing", "icon": "mdi:brain" },
-        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Extract data from a website URL", "icon": "mdi:web" },
-        { "action": "PLATFORM:decision", "lib": "decision", "description": "A decision node that branches the flow based on conditions", "icon": "mdi:source-branch" },
-        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Interact with the user and get their response", "icon": "mdi:account-question" },
-        { "action": "PLATFORM:complete", "description": "Mark the workflow as complete", "icon": "mdi:check" },
-        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Ask a supervisor for guidance or approval", "icon": "mdi:account-supervisor" },
-        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Send a message to the user", "icon": "mdi:message-text" }
+        { "action": "PLATFORM:llm", "lib": "llm", "description": "Yapay zeka işleme için Dil Modeline mesaj gönder", "icon": "mdi:brain" },
+        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Bir web sitesi URL'sinden veri çıkar", "icon": "mdi:web" },
+        { "action": "PLATFORM:decision", "lib": "decision", "description": "Koşullara göre akışı dallandıran bir karar düğümü", "icon": "mdi:source-branch" },
+        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Kullanıcıyla etkileşime geç ve yanıtını al", "icon": "mdi:account-question" },
+        { "action": "PLATFORM:complete", "description": "İş akışını tamamlandı olarak işaretle", "icon": "mdi:check" },
+        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Yönlendirme veya onay için denetçiye sor", "icon": "mdi:account-supervisor" },
+        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Kullanıcıya mesaj gönder", "icon": "mdi:message-text" }
       ],
       "mcps": [
-        { "id": "mcp-1", "provider": "INVENTORY", "action": "INVENTORY:check_stock", "description": "Check current stock level for a product", "direction": "OUTGOING" },
-        { "id": "mcp-2", "provider": "INVENTORY", "action": "INVENTORY:create_purchase_order", "description": "Create a purchase order for a product", "direction": "OUTGOING" },
-        { "id": "mcp-3", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Search for files in Google Drive", "direction": "OUTGOING" },
-        { "id": "mcp-4", "provider": "SLACK", "action": "SLACK:search", "description": "Search for messages in Slack", "direction": "INCOMING" },
-        { "id": "mcp-5", "provider": "JIRA", "action": "JIRA:search", "description": "Search for issues in JIRA", "direction": "OUTGOING" },
-        { "id": "mcp-6", "provider": "EMAIL", "action": "EMAIL:send", "description": "Send an email", "direction": "OUTGOING" },
-        { "id": "mcp-7", "provider": "GITHUB", "action": "GITHUB:search", "description": "Search for repositories in GitHub", "direction": "OUTGOING" }
+        { "id": "mcp-1", "provider": "INVENTORY", "action": "INVENTORY:check_stock", "description": "Bir ürün için mevcut stok seviyesini kontrol et", "direction": "OUTGOING" },
+        { "id": "mcp-2", "provider": "INVENTORY", "action": "INVENTORY:create_purchase_order", "description": "Bir ürün için satın alma siparişi oluştur", "direction": "OUTGOING" },
+        { "id": "mcp-3", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Google Drive'da dosya ara", "direction": "OUTGOING" },
+        { "id": "mcp-4", "provider": "SLACK", "action": "SLACK:search", "description": "Slack'te mesaj ara", "direction": "INCOMING" },
+        { "id": "mcp-5", "provider": "JIRA", "action": "JIRA:search", "description": "JIRA'da sorun ara", "direction": "OUTGOING" },
+        { "id": "mcp-6", "provider": "EMAIL", "action": "EMAIL:send", "description": "E-posta gönder", "direction": "OUTGOING" },
+        { "id": "mcp-7", "provider": "GITHUB", "action": "GITHUB:search", "description": "GitHub'da depo ara", "direction": "OUTGOING" }
       ]
     },
     "knowledge_score": 0.75
@@ -746,41 +746,41 @@
     "context": {
       "ai_assistant_info": {
         "name": "Inventory Agent",
-        "description": "Handles inventory management and reordering",
-        "job": "GreyCollar AI Assistant"
+        "description": "Stok yönetimi ve yeniden siparişi yönetir",
+        "job": "GreyCollar Yapay Zeka Asistanı"
       },
       "knowledge_base": [
-        { "type": "TEXT", "text": "Battery product id is btr-123." },
-        { "type": "TEXT", "text": "If Battery stock falls below 50 units, order 100 units." },
-        { "type": "TEXT", "text": "Warehouse location is building C, shelf 4." },
-        { "type": "QA", "question": "Who approves purchase orders?", "answer": "Purchase orders above $500 need manager approval." }
+        { "type": "TEXT", "text": "Pil ürün kimliği btr-123'tür." },
+        { "type": "TEXT", "text": "Pil stoğu 50 birimin altına düşerse 100 birim sipariş edin." },
+        { "type": "TEXT", "text": "Depo konumu C binası, raf 4'tür." },
+        { "type": "QA", "question": "Satın alma siparişlerini kim onaylar?", "answer": "500 doların üzerindeki satın alma siparişleri için yönetici onayı gereklidir." }
       ],
       "Blueprints": [
-        { "id": "bp-inv-1", "name": "Reorder Process" }
+        { "id": "bp-inv-1", "name": "Yeniden Sipariş Süreci" }
       ],
       "steps": [
         { "action": "INVENTORY:check_stock", "status": "COMPLETED", "parameters": { "productId": "btr-123" }, "result": "{\"stock\": 12, \"threshold\": 50}" },
         { "action": "PLATFORM:decision", "status": "COMPLETED", "parameters": { "condition": "stock < threshold" }, "result": "true" },
         { "action": "INVENTORY:create_purchase_order", "status": "COMPLETED", "parameters": { "productId": "btr-123", "quantity": 100 }, "result": "{\"orderId\": \"PO-2026-0042\", \"status\": \"PENDING_APPROVAL\"}" },
-        { "action": "PLATFORM:ask_supervisor", "status": "COMPLETED", "parameters": { "question": "Purchase order PO-2026-0042 for 100 batteries requires your approval." }, "result": "Approved" }
+        { "action": "PLATFORM:ask_supervisor", "status": "COMPLETED", "parameters": { "question": "PO-2026-0042 numaralı 100 adet pil satın alma siparişi onayınızı gerektiriyor." }, "result": "Approved" }
       ],
       "actions": [
-        { "action": "PLATFORM:llm", "lib": "llm", "description": "Send a message to the Language Model for AI processing", "icon": "mdi:brain" },
-        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Extract data from a website URL", "icon": "mdi:web" },
-        { "action": "PLATFORM:decision", "lib": "decision", "description": "A decision node that branches the flow based on conditions", "icon": "mdi:source-branch" },
-        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Interact with the user and get their response", "icon": "mdi:account-question" },
-        { "action": "PLATFORM:complete", "description": "Mark the workflow as complete", "icon": "mdi:check" },
-        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Ask a supervisor for guidance or approval", "icon": "mdi:account-supervisor" },
-        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Send a message to the user", "icon": "mdi:message-text" }
+        { "action": "PLATFORM:llm", "lib": "llm", "description": "Yapay zeka işleme için Dil Modeline mesaj gönder", "icon": "mdi:brain" },
+        { "action": "PLATFORM:scrape_website", "lib": "scrapper", "description": "Bir web sitesi URL'sinden veri çıkar", "icon": "mdi:web" },
+        { "action": "PLATFORM:decision", "lib": "decision", "description": "Koşullara göre akışı dallandıran bir karar düğümü", "icon": "mdi:source-branch" },
+        { "action": "PLATFORM:user_interaction", "lib": "interaction", "description": "Kullanıcıyla etkileşime geç ve yanıtını al", "icon": "mdi:account-question" },
+        { "action": "PLATFORM:complete", "description": "İş akışını tamamlandı olarak işaretle", "icon": "mdi:check" },
+        { "action": "PLATFORM:ask_supervisor", "lib": "ask_supervisor", "description": "Yönlendirme veya onay için denetçiye sor", "icon": "mdi:account-supervisor" },
+        { "action": "PLATFORM:message_user", "lib": "message_user", "description": "Kullanıcıya mesaj gönder", "icon": "mdi:message-text" }
       ],
       "mcps": [
-        { "id": "mcp-1", "provider": "INVENTORY", "action": "INVENTORY:check_stock", "description": "Check current stock level for a product", "direction": "OUTGOING" },
-        { "id": "mcp-2", "provider": "INVENTORY", "action": "INVENTORY:create_purchase_order", "description": "Create a purchase order for a product", "direction": "OUTGOING" },
-        { "id": "mcp-3", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Search for files in Google Drive", "direction": "OUTGOING" },
-        { "id": "mcp-4", "provider": "SLACK", "action": "SLACK:search", "description": "Search for messages in Slack", "direction": "INCOMING" },
-        { "id": "mcp-5", "provider": "JIRA", "action": "JIRA:search", "description": "Search for issues in JIRA", "direction": "OUTGOING" },
-        { "id": "mcp-6", "provider": "EMAIL", "action": "EMAIL:send", "description": "Send an email", "direction": "OUTGOING" },
-        { "id": "mcp-7", "provider": "GITHUB", "action": "GITHUB:search", "description": "Search for repositories in GitHub", "direction": "OUTGOING" }
+        { "id": "mcp-1", "provider": "INVENTORY", "action": "INVENTORY:check_stock", "description": "Bir ürün için mevcut stok seviyesini kontrol et", "direction": "OUTGOING" },
+        { "id": "mcp-2", "provider": "INVENTORY", "action": "INVENTORY:create_purchase_order", "description": "Bir ürün için satın alma siparişi oluştur", "direction": "OUTGOING" },
+        { "id": "mcp-3", "provider": "GOOGLE DRIVE", "action": "GDRIVE:search", "description": "Google Drive'da dosya ara", "direction": "OUTGOING" },
+        { "id": "mcp-4", "provider": "SLACK", "action": "SLACK:search", "description": "Slack'te mesaj ara", "direction": "INCOMING" },
+        { "id": "mcp-5", "provider": "JIRA", "action": "JIRA:search", "description": "JIRA'da sorun ara", "direction": "OUTGOING" },
+        { "id": "mcp-6", "provider": "EMAIL", "action": "EMAIL:send", "description": "E-posta gönder", "direction": "OUTGOING" },
+        { "id": "mcp-7", "provider": "GITHUB", "action": "GITHUB:search", "description": "GitHub'da depo ara", "direction": "OUTGOING" }
       ]
     },
     "knowledge_score": 0.92

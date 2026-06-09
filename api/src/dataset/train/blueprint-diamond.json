@@ -1,10 +1,10 @@
 [
   {
-    "content": "I wanna buy battery.",
+    "content": "Pil satın almak istiyorum.",
     "decision": "BLUEPRINT",
     "Blueprint": {
-      "title": "Product Order",
-      "description": "Check product availability, if not exist, create order.",
+      "title": "Ürün Siparişi",
+      "description": "Ürün mevcudiyetini kontrol et, mevcut değilse sipariş oluştur.",
       "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n    Order.Create()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
@@ -14,7 +14,7 @@
           "properties": {
             "action": "GREY:check_product_count",
             "icon": "mdi:check",
-            "prompt": "Check Product Availability"
+            "prompt": "Ürün Mevcudiyetini Kontrol Et"
           },
           "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -25,7 +25,7 @@
           "properties": {
             "action": "PLATFORM:decision",
             "icon": "mdi:source-branch",
-            "prompt": "Make Decision"
+            "prompt": "Karar Ver"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
@@ -37,7 +37,7 @@
           "properties": {
             "action": "GREY:create_order",
             "icon": "mdi:cart-plus",
-            "prompt": "Create Order"
+            "prompt": "Sipariş Oluştur"
           },
           "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -48,7 +48,7 @@
           "properties": {
             "action": "GREY:send_email",
             "icon": "mdi:email",
-            "prompt": "Send Email"
+            "prompt": "E-posta Gönder"
           },
           "next": null,
           "createdAt": "2025-06-19T06:03:00Z"
@@ -59,7 +59,7 @@
           "properties": {
             "action": "GREY:reduce_product_count",
             "icon": "mdi:minus",
-            "prompt": "Reduce Product Quantity"
+            "prompt": "Ürün Miktarını Azalt"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -69,11 +69,11 @@
     "existing": false
   },
   {
-    "content": "I want to get internet subscription for my home.",
+    "content": "Evim için internet aboneliği almak istiyorum.",
     "decision": "BLUEPRINT",
     "Blueprint": {
-      "title": "Basic Internet Subscription Setup",
-      "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+      "title": "Temel İnternet Aboneliği Kurulumu",
+      "description": "Kullanıcının konut adresine göre internet paketleri sun ve seçilen paketi kur.",
       "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
@@ -83,10 +83,10 @@
           "properties": {
             "action": "PLATFORM:user_interaction",
             "parameters": {
-              "question": "What is your address?"
+              "question": "Adresiniz nedir?"
             },
             "icon": "mdi:map-marker",
-            "prompt": "Get User Address"
+            "prompt": "Kullanıcı Adresini Al"
           },
           "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -96,9 +96,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_bbk_by_address",
-            "description": "Retrieve BBK number based on the user's residential address information",
+            "description": "Kullanıcının konut adresi bilgisine dayanarak BBK numarasını al",
             "icon": "mdi:map-marker",
-            "prompt": "Get BBK No by Address"
+            "prompt": "Adrese Göre BBK No Al"
           },
           "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -108,9 +108,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_inventory",
-            "description": "Check inventory availability for the given BBK number and address",
+            "description": "Verilen BBK numarası ve adres için envanter uygunluğunu kontrol et",
             "icon": "mdi:server",
-            "prompt": "Get Inventory"
+            "prompt": "Envanteri Al"
           },
           "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -120,9 +120,9 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
-            "description": "Decide based on inventory availability whether to proceed with product selection",
+            "description": "Ürün seçimine devam edilip edilmeyeceğine envanter uygunluğuna göre karar ver",
             "icon": "mdi:source-branch",
-            "prompt": "Check if product is available"
+            "prompt": "Ürünün mevcut olup olmadığını kontrol et"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
@@ -133,9 +133,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_product_by_speed",
-            "description": "Retrieve available internet products based on speed requirements",
+            "description": "Hız gereksinimlerine göre mevcut internet ürünlerini getir",
             "icon": "mdi:speedometer",
-            "prompt": "Get Product by Speed"
+            "prompt": "Hıza Göre Ürün Al"
           },
           "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -145,9 +145,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
-            "description": "Wait for user to select a product from the available options",
+            "description": "Kullanıcının mevcut seçeneklerden bir ürün seçmesini bekle",
             "icon": "mdi:user",
-            "prompt": "User selected product"
+            "prompt": "Kullanıcı ürün seçti"
           },
           "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -157,9 +157,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_allocation",
-            "description": "Assign a port for the selected internet product and create an order",
+            "description": "Seçilen internet ürünü için port ata ve sipariş oluştur",
             "icon": "mdi:link",
-            "prompt": "Assign Port"
+            "prompt": "Port Ata"
           },
           "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -169,9 +169,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:configuration",
-            "description": "Configure the assigned port with necessary settings",
+            "description": "Atanan portu gerekli ayarlarla yapılandır",
             "icon": "mdi:settings",
-            "prompt": "Configure Port"
+            "prompt": "Portu Yapılandır"
           },
           "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -181,9 +181,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_connection",
-            "description": "Connect the assigned port to the user's residence",
+            "description": "Atanan portu kullanıcının konutuna bağla",
             "icon": "mdi:ethernet",
-            "prompt": "Connect Port"
+            "prompt": "Portu Bağla"
           },
           "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -193,9 +193,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the internet subscription setup process as complete ",
+            "description": "İnternet aboneliği kurulum sürecini tamamlandı olarak işaretle",
             "icon": "mdi:check",
-            "prompt": "Complete"
+            "prompt": "Tamamla"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -205,17 +205,17 @@
     "existing": false
   },
   {
-    "content": "What's the weather like in Paris tomorrow?",
+    "content": "Yarın Paris'te hava nasıl olacak?",
     "decision": "UNREVELANT",
     "existing": false
   },
   {
-    "content": "Hello, how are you?",
+    "content": "Merhaba, nasılsınız?",
     "decision": "UNREVELANT",
     "existing": false
   },
   {
-    "content": "Hi",
+    "content": "Merhaba",
     "decision": "UNREVELANT",
     "existing": false
   }

@@ -446,7 +446,7 @@ async function step({
         sessionId: parameters.sessionId,
         agentId: parameters.agentId,
         role: "ASSISTANT",
-        content: "I need to ask my supervisor for more information.",
+        content: "Daha fazla bilgi için yöneticime danışmam gerekiyor.",
       });
       await taskFn.updateStep({
         stepId,

@@ -20,9 +20,10 @@ const templateConfig = {
   login: {
     variant: "modern",
     image:
-      "https://cdn.nucleoid.com/media/3b7f96ee-c245-4c93-97b8-d5503340f262.png",
-    icon: "https://cdn.nucleoid.com/greycollar/media/icon.png",
-    largeIcon: "https://cdn.nucleoid.com/greycollar/media/icon.png",
+      "https://upload.wikimedia.org/wikipedia/commons/9/9f/T%C3%BCrk_Telekom_logo.svg",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/9/9f/T%C3%BCrk_Telekom_logo.svg",
+    largeIcon:
+      "https://upload.wikimedia.org/wikipedia/commons/9/9f/T%C3%BCrk_Telekom_logo.svg",
   },
   projectBar: {
     label: "Team",

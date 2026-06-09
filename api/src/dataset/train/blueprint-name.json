@@ -1,16 +1,16 @@
 [
   {
-    "title": "Product Stock Management",
-    "description": "If product is not available, create order. if available reduce product count.",
-    "content": "If product is not available, create order. if available reduce product count.",
+    "title": "Ürün Stok Yönetimi",
+    "description": "Ürün mevcut değilse sipariş oluştur. Mevcutsa ürün sayısını azalt.",
+    "content": "Ürün mevcut değilse sipariş oluştur. Mevcutsa ürün sayısını azalt.",
     "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n    Order.Create()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "history": [
       {
-        "content": "If product is not available, create order. if available reduce product count.",
+        "content": "Ürün mevcut değilse sipariş oluştur. Mevcutsa ürün sayısını azalt.",
         "role": "user"
       },
       {
-        "content": "Here’s the flow for your request.",
+        "content": "İsteğiniz için akışı hazırladım.",
         "role": "assistant"
       }
     ]

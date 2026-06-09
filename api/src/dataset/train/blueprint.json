@@ -2,8 +2,8 @@
   {
     "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "title": "Product Order",
-      "description": "Check product availability, if not exist, create order.",
+      "title": "Ürün Siparişi",
+      "description": "Ürün mevcudiyetini kontrol et, mevcut değilse sipariş oluştur.",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -12,7 +12,7 @@
           "properties": {
             "action": "GREY:check_product_count",
             "icon": "mdi:check",
-            "prompt": "Check Product Availability"
+            "prompt": "Ürün Mevcudiyetini Kontrol Et"
           },
           "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -23,7 +23,7 @@
           "properties": {
             "action": "PLATFORM:decision",
             "icon": "mdi:source-branch",
-            "prompt": "Make Decision"
+            "prompt": "Karar Ver"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
@@ -35,7 +35,7 @@
           "properties": {
             "action": "GREY:create_order",
             "icon": "mdi:cart-plus",
-            "prompt": "Create Order"
+            "prompt": "Sipariş Oluştur"
           },
           "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -46,7 +46,7 @@
           "properties": {
             "action": "GREY:send_email",
             "icon": "mdi:email",
-            "prompt": "Send Email"
+            "prompt": "E-posta Gönder"
           },
           "next": null,
           "createdAt": "2025-06-19T06:03:00Z"
@@ -57,34 +57,34 @@
           "properties": {
             "action": "GREY:reduce_product_count",
             "icon": "mdi:minus",
-            "prompt": "Reduce Product Quantity"
+            "prompt": "Ürün Miktarını Azalt"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
         }
       ]
     },
-    "content": "Check battery availability, if not exist, create order.",
+    "content": "Pil mevcudiyetini kontrol et, mevcut değilse sipariş oluştur.",
     "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n    Order.Create()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "knowledge": [
       {
         "id": "66f2e2e0-dd81-4a1c-9474-089558b43084",
         "type": "TEXT",
-        "text": "Battery product id is btr-123",
+        "text": "Pil ürün kimliği btr-123'tür",
         "status": "COMPLETED",
         "createdAt": "1970-01-20T22:08:14.337Z"
       },
       {
         "id": "94e582fd-9190-4fb8-936a-327424ac6c77",
         "type": "TEXT",
-        "text": "If Battery is not available, order 10 Battery",
+        "text": "Pil mevcut değilse 10 Pil sipariş et",
         "status": "COMPLETED",
         "createdAt": "1970-01-20T22:08:14.337Z"
       },
       {
         "id": "18a6dc62-9c58-49db-ae61-eef9042102b2",
         "type": "TEXT",
-        "text": "Manager email address is halilibrahimcengel7@gmail.com.",
+        "text": "Yönetici e-posta adresi halilibrahimcengel7@gmail.com.",
         "status": "COMPLETED",
         "createdAt": "1970-01-20T22:08:14.337Z"
       }
@@ -92,16 +92,16 @@
     "task": {
       "id": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
       "status": "COMPLETED",
-      "description": "Check product availability, if not exist, create order.",
+      "description": "Ürün mevcudiyetini kontrol et, mevcut değilse sipariş oluştur.",
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
-    "answer": "Checking stock for btr-123. I'll order 10 units if needed."
+    "answer": "btr-123 stoğu kontrol ediliyor. Gerekirse 10 adet sipariş edeceğim."
   },
   {
     "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "title": "Product Order",
-      "description": "Check product availability, if not exist, create order.",
+      "title": "Ürün Siparişi",
+      "description": "Ürün mevcudiyetini kontrol et, mevcut değilse sipariş oluştur.",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -110,7 +110,7 @@
           "properties": {
             "action": "GREY:check_product_count",
             "icon": "mdi:check",
-            "prompt": "Check Product Availability"
+            "prompt": "Ürün Mevcudiyetini Kontrol Et"
           },
           "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -121,7 +121,7 @@
           "properties": {
             "action": "PLATFORM:decision",
             "icon": "mdi:source-branch",
-            "prompt": "Make Decision"
+            "prompt": "Karar Ver"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
@@ -133,7 +133,7 @@
           "properties": {
             "action": "GREY:create_order",
             "icon": "mdi:cart-plus",
-            "prompt": "Create Order"
+            "prompt": "Sipariş Oluştur"
           },
           "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -144,7 +144,7 @@
           "properties": {
             "action": "GREY:send_email",
             "icon": "mdi:email",
-            "prompt": "Send Email"
+            "prompt": "E-posta Gönder"
           },
           "next": null,
           "createdAt": "2025-06-19T06:03:00Z"
@@ -155,34 +155,34 @@
           "properties": {
             "action": "GREY:reduce_product_count",
             "icon": "mdi:minus",
-            "prompt": "Reduce Product Quantity"
+            "prompt": "Ürün Miktarını Azalt"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
         }
       ]
     },
-    "content": "Do we have enough batteries in stock?",
+    "content": "Stokta yeterli pil var mı?",
     "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n    Order.Create()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "knowledge": [
       {
         "id": "66f2e2e0-dd81-4a1c-9474-089558b43084",
         "type": "TEXT",
-        "text": "Battery product id is btr-123",
+        "text": "Pil ürün kimliği btr-123'tür",
         "status": "COMPLETED",
         "createdAt": "1970-01-20T22:08:14.337Z"
       },
       {
         "id": "94e582fd-9190-4fb8-936a-327424ac6c77",
         "type": "TEXT",
-        "text": "If Battery is not available, order 10 Battery",
+        "text": "Pil mevcut değilse 10 Pil sipariş et",
         "status": "COMPLETED",
         "createdAt": "1970-01-20T22:08:14.337Z"
       },
       {
         "id": "18a6dc62-9c58-49db-ae61-eef9042102b2",
         "type": "TEXT",
-        "text": "Manager email address is halilibrahimcengel7@gmail.com.",
+        "text": "Yönetici e-posta adresi halilibrahimcengel7@gmail.com.",
         "status": "COMPLETED",
         "createdAt": "1970-01-20T22:08:14.337Z"
       }
@@ -190,16 +190,16 @@
     "task": {
       "id": "a77ff167-c4f2-44dc-9e8f-e9e645682447",
       "status": "COMPLETED",
-      "description": "Check product availability, if not exist, create order.",
+      "description": "Ürün mevcudiyetini kontrol et, mevcut değilse sipariş oluştur.",
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
-    "answer": "Checking battery stock now. I'll order 10 units of btr-123 if it's low."
+    "answer": "Pil stoğu kontrol ediliyor. Az ise btr-123'ten 10 adet sipariş edeceğim."
   },
   {
     "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "title": "Product Order",
-      "description": "Check product availability, if not exist, create order.",
+      "title": "Ürün Siparişi",
+      "description": "Ürün mevcudiyetini kontrol et, mevcut değilse sipariş oluştur.",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -208,7 +208,7 @@
           "properties": {
             "action": "GREY:check_product_count",
             "icon": "mdi:check",
-            "prompt": "Check Product Availability"
+            "prompt": "Ürün Mevcudiyetini Kontrol Et"
           },
           "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -219,7 +219,7 @@
           "properties": {
             "action": "PLATFORM:decision",
             "icon": "mdi:source-branch",
-            "prompt": "Make Decision"
+            "prompt": "Karar Ver"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
@@ -231,7 +231,7 @@
           "properties": {
             "action": "GREY:create_order",
             "icon": "mdi:cart-plus",
-            "prompt": "Create Order"
+            "prompt": "Sipariş Oluştur"
           },
           "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -242,7 +242,7 @@
           "properties": {
             "action": "GREY:send_email",
             "icon": "mdi:email",
-            "prompt": "Send Email"
+            "prompt": "E-posta Gönder"
           },
           "next": null,
           "createdAt": "2025-06-19T06:03:00Z"
@@ -253,34 +253,34 @@
           "properties": {
             "action": "GREY:reduce_product_count",
             "icon": "mdi:minus",
-            "prompt": "Reduce Product Quantity"
+            "prompt": "Ürün Miktarını Azalt"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
         }
       ]
     },
-    "content": "I need to restock batteries",
+    "content": "Pilleri yeniden stoklam gerekiyor",
     "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n    Order.Create()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "knowledge": [
       {
         "id": "66f2e2e0-dd81-4a1c-9474-089558b43084",
         "type": "TEXT",
-        "text": "Battery product id is btr-123",
+        "text": "Pil ürün kimliği btr-123'tür",
         "status": "COMPLETED",
         "createdAt": "1970-01-20T22:08:14.337Z"
       },
       {
         "id": "94e582fd-9190-4fb8-936a-327424ac6c77",
         "type": "TEXT",
-        "text": "If Battery is not available, order 10 Battery",
+        "text": "Pil mevcut değilse 10 Pil sipariş et",
         "status": "COMPLETED",
         "createdAt": "1970-01-20T22:08:14.337Z"
       },
       {
         "id": "18a6dc62-9c58-49db-ae61-eef9042102b2",
         "type": "TEXT",
-        "text": "Manager email address is halilibrahimcengel7@gmail.com.",
+        "text": "Yönetici e-posta adresi halilibrahimcengel7@gmail.com.",
         "status": "COMPLETED",
         "createdAt": "1970-01-20T22:08:14.337Z"
       }
@@ -288,16 +288,16 @@
     "task": {
       "id": "a77ff167-c4f2-44dc-9e8f-e9e645682448",
       "status": "COMPLETED",
-      "description": "Check product availability, if not exist, create order.",
+      "description": "Ürün mevcudiyetini kontrol et, mevcut değilse sipariş oluştur.",
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
-    "answer": "Starting restock check. I'll order 10 units of btr-123 if stock is low. Manager will get an email."
+    "answer": "Stok kontrolü başlatılıyor. Stok azsa btr-123'ten 10 adet sipariş edeceğim. Yöneticiye e-posta gönderilecek."
   },
   {
     "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "title": "Product Order",
-      "description": "Check product availability, if not exist, create order.",
+      "title": "Ürün Siparişi",
+      "description": "Ürün mevcudiyetini kontrol et, mevcut değilse sipariş oluştur.",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -306,7 +306,7 @@
           "properties": {
             "action": "GREY:check_product_count",
             "icon": "mdi:check",
-            "prompt": "Check Product Availability"
+            "prompt": "Ürün Mevcudiyetini Kontrol Et"
           },
           "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -317,7 +317,7 @@
           "properties": {
             "action": "PLATFORM:decision",
             "icon": "mdi:source-branch",
-            "prompt": "Make Decision"
+            "prompt": "Karar Ver"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
@@ -329,7 +329,7 @@
           "properties": {
             "action": "GREY:create_order",
             "icon": "mdi:cart-plus",
-            "prompt": "Create Order"
+            "prompt": "Sipariş Oluştur"
           },
           "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -340,7 +340,7 @@
           "properties": {
             "action": "GREY:send_email",
             "icon": "mdi:email",
-            "prompt": "Send Email"
+            "prompt": "E-posta Gönder"
           },
           "next": null,
           "createdAt": "2025-06-19T06:03:00Z"
@@ -351,34 +351,34 @@
           "properties": {
             "action": "GREY:reduce_product_count",
             "icon": "mdi:minus",
-            "prompt": "Reduce Product Quantity"
+            "prompt": "Ürün Miktarını Azalt"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
         }
       ]
     },
-    "content": "Order batteries please",
+    "content": "Lütfen pil sipariş et",
     "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n    Order.Create()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "knowledge": [
       {
         "id": "66f2e2e0-dd81-4a1c-9474-089558b43084",
         "type": "TEXT",
-        "text": "Battery product id is btr-123",
+        "text": "Pil ürün kimliği btr-123'tür",
         "status": "COMPLETED",
         "createdAt": "1970-01-20T22:08:14.337Z"
       },
       {
         "id": "94e582fd-9190-4fb8-936a-327424ac6c77",
         "type": "TEXT",
-        "text": "If Battery is not available, order 10 Battery",
+        "text": "Pil mevcut değilse 10 Pil sipariş et",
         "status": "COMPLETED",
         "createdAt": "1970-01-20T22:08:14.337Z"
       },
       {
         "id": "18a6dc62-9c58-49db-ae61-eef9042102b2",
         "type": "TEXT",
-        "text": "Manager email address is halilibrahimcengel7@gmail.com.",
+        "text": "Yönetici e-posta adresi halilibrahimcengel7@gmail.com.",
         "status": "COMPLETED",
         "createdAt": "1970-01-20T22:08:14.337Z"
       }
@@ -386,16 +386,16 @@
     "task": {
       "id": "a77ff167-c4f2-44dc-9e8f-e9e645682449",
       "status": "COMPLETED",
-      "description": "Check product availability, if not exist, create order.",
+      "description": "Ürün mevcudiyetini kontrol et, mevcut değilse sipariş oluştur.",
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
-    "answer": "Checking stock for btr-123. I'll place an order for 10 units if needed. Manager gets an email."
+    "answer": "btr-123 stoğu kontrol ediliyor. Gerekirse 10 adet sipariş vereceğim. Yönetici e-posta alacak."
   },
   {
     "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "title": "Basic Internet Subscription Setup",
-      "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+      "title": "Temel İnternet Aboneliği Kurulumu",
+      "description": "Kullanıcının konut adresine göre internet paketleri sun ve seçilen teklifi kur.",
       "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
@@ -404,9 +404,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_bbk_by_address",
-            "description": "Retrieve BBK number based on the user's residential address information",
+            "description": "Kullanıcının konut adresi bilgisine göre BBK numarasını al",
             "icon": "mdi:map-marker",
-            "prompt": "Get BBK No by Address"
+            "prompt": "Adrese Göre BBK No Al"
           },
           "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -416,9 +416,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_inventory",
-            "description": "Check inventory availability for the given BBK number and address",
+            "description": "Verilen BBK numarası ve adres için envanter mevcudiyetini kontrol et",
             "icon": "mdi:server",
-            "prompt": "Get Inventory"
+            "prompt": "Envanteri Al"
           },
           "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -428,9 +428,9 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
-            "description": "Decide based on inventory availability whether to proceed with product selection",
+            "description": "Ürün seçimine devam edip etmeyeceğini belirlemek için envanter mevcudiyetine göre karar ver",
             "icon": "mdi:source-branch",
-            "prompt": "Check if product is available"
+            "prompt": "Ürünün mevcut olup olmadığını kontrol et"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
@@ -441,9 +441,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the process as complete when no products are available",
+            "description": "Ürün mevcut olmadığında süreci tamamlandı olarak işaretle",
             "icon": "mdi:check",
-            "prompt": "Complete"
+            "prompt": "Tamamla"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -453,9 +453,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_product_by_speed",
-            "description": "Retrieve available internet products based on speed requirements",
+            "description": "Hız gereksinimlerine göre mevcut internet ürünlerini getir",
             "icon": "mdi:speedometer",
-            "prompt": "Get Product by Speed"
+            "prompt": "Hıza Göre Ürün Al"
           },
           "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -466,11 +466,11 @@
           "properties": {
             "action": "PLATFORM:user_interaction",
             "parameters": {
-              "question": "What is your address?"
+              "question": "Adresiniz nedir?"
             },
-            "description": "Wait for user to select a product from the available options",
+            "description": "Kullanıcının mevcut seçeneklerden ürün seçmesini bekle",
             "icon": "mdi:user",
-            "prompt": "Provide available options and waiting for user to select a product"
+            "prompt": "Mevcut seçenekleri göster ve kullanıcının ürün seçmesini bekle"
           },
           "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -480,9 +480,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_allocation",
-            "description": "Assign a port for the selected internet product and create an order",
+            "description": "Seçilen internet ürünü için port tahsis et ve sipariş oluştur",
             "icon": "mdi:link",
-            "prompt": "Assign Port"
+            "prompt": "Port Tahsis Et"
           },
           "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -492,9 +492,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Notify user about port allocation completion",
+            "description": "Kullanıcıya port tahsisinin tamamlandığını bildir",
             "icon": "mdi:bell",
-            "prompt": "Notify user about port allocation"
+            "prompt": "Kullanıcıya port tahsisi hakkında bilgi ver"
           },
           "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -504,9 +504,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:configuration",
-            "description": "Configure the assigned port with necessary settings",
+            "description": "Tahsis edilen portu gerekli ayarlarla yapılandır",
             "icon": "mdi:settings",
-            "prompt": "Configure Port"
+            "prompt": "Portu Yapılandır"
           },
           "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -516,9 +516,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_connection",
-            "description": "Connect the assigned port to the user's residence",
+            "description": "Tahsis edilen portu kullanıcının konutuna bağla",
             "icon": "mdi:ethernet",
-            "prompt": "Connect Port"
+            "prompt": "Portu Bağla"
           },
           "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -528,30 +528,30 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the internet subscription setup process as complete",
+            "description": "İnternet aboneliği kurulum sürecini tamamlandı olarak işaretle",
             "icon": "mdi:check",
-            "prompt": "Complete"
+            "prompt": "Tamamla"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
         }
       ]
     },
-    "content": "I want to setup internet subscription at my address.",
+    "content": "Adresimde internet aboneliği kurmak istiyorum.",
     "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "task": {
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
       "status": "COMPLETED",
-      "description": "Setup internet subscription at user's address.",
+      "description": "Kullanıcının adresinde internet aboneliği kur.",
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
-    "answer": "Internet subscription is being initiated."
+    "answer": "İnternet aboneliği başlatılıyor."
   },
   {
     "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "title": "Basic Internet Subscription Setup",
-      "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+      "title": "Temel İnternet Aboneliği Kurulumu",
+      "description": "Kullanıcının konut adresine göre internet paketleri sun ve seçilen teklifi kur.",
       "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
@@ -560,9 +560,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_bbk_by_address",
-            "description": "Retrieve BBK number based on the user's residential address information",
+            "description": "Kullanıcının konut adresi bilgisine göre BBK numarasını al",
             "icon": "mdi:map-marker",
-            "prompt": "Get BBK No by Address"
+            "prompt": "Adrese Göre BBK No Al"
           },
           "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -572,9 +572,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_inventory",
-            "description": "Check inventory availability for the given BBK number and address",
+            "description": "Verilen BBK numarası ve adres için envanter mevcudiyetini kontrol et",
             "icon": "mdi:server",
-            "prompt": "Get Inventory"
+            "prompt": "Envanteri Al"
           },
           "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -584,9 +584,9 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
-            "description": "Decide based on inventory availability whether to proceed with product selection",
+            "description": "Ürün seçimine devam edip etmeyeceğini belirlemek için envanter mevcudiyetine göre karar ver",
             "icon": "mdi:source-branch",
-            "prompt": "Check if product is available"
+            "prompt": "Ürünün mevcut olup olmadığını kontrol et"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
@@ -597,9 +597,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the process as complete when no products are available",
+            "description": "Ürün mevcut olmadığında süreci tamamlandı olarak işaretle",
             "icon": "mdi:check",
-            "prompt": "Complete"
+            "prompt": "Tamamla"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -609,9 +609,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_product_by_speed",
-            "description": "Retrieve available internet products based on speed requirements",
+            "description": "Hız gereksinimlerine göre mevcut internet ürünlerini getir",
             "icon": "mdi:speedometer",
-            "prompt": "Get Product by Speed"
+            "prompt": "Hıza Göre Ürün Al"
           },
           "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -621,9 +621,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Notify user about available products",
+            "description": "Kullanıcıya mevcut ürünler hakkında bilgi ver",
             "icon": "mdi:bell",
-            "prompt": "Notify user about available products"
+            "prompt": "Kullanıcıya mevcut ürünler hakkında bilgi ver"
           },
           "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -633,9 +633,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
-            "description": "Wait for user to select a product from the available options",
+            "description": "Kullanıcının mevcut seçeneklerden ürün seçmesini bekle",
             "icon": "mdi:user",
-            "prompt": "Waiting for user to select a product"
+            "prompt": "Kullanıcının ürün seçmesi bekleniyor"
           },
           "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -645,9 +645,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_allocation",
-            "description": "Assign a port for the selected internet product and create an order",
+            "description": "Seçilen internet ürünü için port tahsis et ve sipariş oluştur",
             "icon": "mdi:link",
-            "prompt": "Assign Port"
+            "prompt": "Port Tahsis Et"
           },
           "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -657,9 +657,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Notify user about port allocation completion",
+            "description": "Kullanıcıya port tahsisinin tamamlandığını bildir",
             "icon": "mdi:bell",
-            "prompt": "Notify user about port allocation"
+            "prompt": "Kullanıcıya port tahsisi hakkında bilgi ver"
           },
           "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -669,9 +669,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:configuration",
-            "description": "Configure the assigned port with necessary settings",
+            "description": "Tahsis edilen portu gerekli ayarlarla yapılandır",
             "icon": "mdi:settings",
-            "prompt": "Configure Port"
+            "prompt": "Portu Yapılandır"
           },
           "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -681,9 +681,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_connection",
-            "description": "Connect the assigned port to the user's residence",
+            "description": "Tahsis edilen portu kullanıcının konutuna bağla",
             "icon": "mdi:ethernet",
-            "prompt": "Connect the assigned port to the user's residence"
+            "prompt": "Tahsis edilen portu kullanıcının konutuna bağla"
           },
           "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -693,30 +693,30 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the internet subscription setup process as complete",
+            "description": "İnternet aboneliği kurulum sürecini tamamlandı olarak işaretle",
             "icon": "mdi:check",
-            "prompt": "Complete"
+            "prompt": "Tamamla"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
         }
       ]
     },
-    "content": "I need internet at home",
+    "content": "Evde internete ihtiyacım var",
     "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "task": {
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793558",
       "status": "COMPLETED",
-      "description": "Setup internet subscription at user's address.",
+      "description": "Kullanıcının adresinde internet aboneliği kur.",
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
-    "answer": "Internet subscription is being initiated."
+    "answer": "İnternet aboneliği başlatılıyor."
   },
   {
     "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "title": "Basic Internet Subscription Setup",
-      "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+      "title": "Temel İnternet Aboneliği Kurulumu",
+      "description": "Kullanıcının konut adresine göre internet paketleri sun ve seçilen teklifi kur.",
       "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
@@ -725,9 +725,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_bbk_by_address",
-            "description": "Retrieve BBK number based on the user's residential address information",
+            "description": "Kullanıcının konut adresi bilgisine göre BBK numarasını al",
             "icon": "mdi:map-marker",
-            "prompt": "Get BBK No by Address"
+            "prompt": "Adrese Göre BBK No Al"
           },
           "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -737,9 +737,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_inventory",
-            "description": "Check inventory availability for the given BBK number and address",
+            "description": "Verilen BBK numarası ve adres için envanter mevcudiyetini kontrol et",
             "icon": "mdi:server",
-            "prompt": "Get Inventory"
+            "prompt": "Envanteri Al"
           },
           "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -749,9 +749,9 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
-            "description": "Decide based on inventory availability whether to proceed with product selection",
+            "description": "Ürün seçimine devam edip etmeyeceğini belirlemek için envanter mevcudiyetine göre karar ver",
             "icon": "mdi:source-branch",
-            "prompt": "Check if product is available"
+            "prompt": "Ürünün mevcut olup olmadığını kontrol et"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
@@ -762,9 +762,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the process as complete when no products are available",
+            "description": "Ürün mevcut olmadığında süreci tamamlandı olarak işaretle",
             "icon": "mdi:check",
-            "prompt": "Complete"
+            "prompt": "Tamamla"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -774,9 +774,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_product_by_speed",
-            "description": "Retrieve available internet products based on speed requirements",
+            "description": "Hız gereksinimlerine göre mevcut internet ürünlerini getir",
             "icon": "mdi:speedometer",
-            "prompt": "Get Product by Speed"
+            "prompt": "Hıza Göre Ürün Al"
           },
           "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -785,22 +785,10 @@
           "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
           "type": "NORMAL",
           "properties": {
-            "action": "PLATFORM:message_user",
-            "description": "Notify user about available products",
-            "icon": "mdi:bell",
-            "prompt": "Notify user about available products"
-          },
-          "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b0270-c493-7072-9d50-87952c5dc547",
-          "type": "NORMAL",
-          "properties": {
             "action": "PLATFORM:user_interaction",
-            "description": "Wait for user to select a product from the available options",
+            "description": "Kullanıcının mevcut seçeneklerden ürün seçmesini bekle",
             "icon": "mdi:user",
-            "prompt": "Please select a product."
+            "prompt": "Lütfen bir ürün seçin."
           },
           "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -810,9 +798,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_allocation",
-            "description": "Assign a port for the selected internet product and create an order",
+            "description": "Seçilen internet ürünü için port tahsis et ve sipariş oluştur",
             "icon": "mdi:link",
-            "prompt": "Assign Port"
+            "prompt": "Port Tahsis Et"
           },
           "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -822,9 +810,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Notify user about port allocation completion",
+            "description": "Kullanıcıya port tahsisinin tamamlandığını bildir",
             "icon": "mdi:bell",
-            "prompt": "Notify user about port allocation"
+            "prompt": "Kullanıcıya port tahsisi hakkında bilgi ver"
           },
           "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -834,9 +822,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:configuration",
-            "description": "Configure the assigned port with necessary settings",
+            "description": "Tahsis edilen portu gerekli ayarlarla yapılandır",
             "icon": "mdi:settings",
-            "prompt": "Configure Port"
+            "prompt": "Portu Yapılandır"
           },
           "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -846,9 +834,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_connection",
-            "description": "Connect the assigned port to the user's residence",
+            "description": "Tahsis edilen portu kullanıcının konutuna bağla",
             "icon": "mdi:ethernet",
-            "prompt": "Connect Port"
+            "prompt": "Portu Bağla"
           },
           "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -858,30 +846,30 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the internet subscription setup process as complete",
+            "description": "İnternet aboneliği kurulum sürecini tamamlandı olarak işaretle",
             "icon": "mdi:check",
-            "prompt": "Complete"
+            "prompt": "Tamamla"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
         }
       ]
     },
-    "content": "Can you get me internet service?",
+    "content": "Bana internet hizmeti sağlayabilir misiniz?",
     "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "task": {
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793559",
       "status": "COMPLETED",
-      "description": "Setup internet subscription at user's address.",
+      "description": "Kullanıcının adresinde internet aboneliği kur.",
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
-    "answer": "Internet subscription is being initiated."
+    "answer": "İnternet aboneliği başlatılıyor."
   },
   {
     "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "title": "Basic Internet Subscription Setup",
-      "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+      "title": "Temel İnternet Aboneliği Kurulumu",
+      "description": "Kullanıcının konut adresine göre internet paketleri sun ve seçilen teklifi kur.",
       "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
@@ -890,9 +878,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_bbk_by_address",
-            "description": "Retrieve BBK number based on the user's residential address information",
+            "description": "Kullanıcının konut adresi bilgisine göre BBK numarasını al",
             "icon": "mdi:map-marker",
-            "prompt": "Get BBK No by Address"
+            "prompt": "Adrese Göre BBK No Al"
           },
           "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -902,9 +890,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_inventory",
-            "description": "Check inventory availability for the given BBK number and address",
+            "description": "Verilen BBK numarası ve adres için envanter mevcudiyetini kontrol et",
             "icon": "mdi:server",
-            "prompt": "Get Inventory"
+            "prompt": "Envanteri Al"
           },
           "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -914,9 +902,9 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
-            "description": "Decide based on inventory availability whether to proceed with product selection",
+            "description": "Ürün seçimine devam edip etmeyeceğini belirlemek için envanter mevcudiyetine göre karar ver",
             "icon": "mdi:source-branch",
-            "prompt": "Check if product is available"
+            "prompt": "Ürünün mevcut olup olmadığını kontrol et"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
@@ -927,9 +915,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the process as complete when no products are available",
+            "description": "Ürün mevcut olmadığında süreci tamamlandı olarak işaretle",
             "icon": "mdi:check",
-            "prompt": "Complete"
+            "prompt": "Tamamla"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -939,9 +927,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_product_by_speed",
-            "description": "Retrieve available internet products based on speed requirements",
+            "description": "Hız gereksinimlerine göre mevcut internet ürünlerini getir",
             "icon": "mdi:speedometer",
-            "prompt": "Get Product by Speed"
+            "prompt": "Hıza Göre Ürün Al"
           },
           "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -951,9 +939,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Notify user about available products",
+            "description": "Kullanıcıya mevcut ürünler hakkında bilgi ver",
             "icon": "mdi:bell",
-            "prompt": "Notify user about available products"
+            "prompt": "Kullanıcıya mevcut ürünler hakkında bilgi ver"
           },
           "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -963,9 +951,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
-            "description": "Wait for user to select a product from the available options",
+            "description": "Kullanıcının mevcut seçeneklerden ürün seçmesini bekle",
             "icon": "mdi:user",
-            "prompt": "Waiting for user to select a product"
+            "prompt": "Kullanıcının ürün seçmesi bekleniyor"
           },
           "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -975,9 +963,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_allocation",
-            "description": "Assign a port for the selected internet product and create an order",
+            "description": "Seçilen internet ürünü için port tahsis et ve sipariş oluştur",
             "icon": "mdi:link",
-            "prompt": "Assign Port"
+            "prompt": "Port Tahsis Et"
           },
           "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -987,9 +975,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Notify user about port allocation completion",
+            "description": "Kullanıcıya port tahsisinin tamamlandığını bildir",
             "icon": "mdi:bell",
-            "prompt": "Notify user about port allocation"
+            "prompt": "Kullanıcıya port tahsisi hakkında bilgi ver"
           },
           "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -999,9 +987,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:configuration",
-            "description": "Configure the assigned port with necessary settings",
+            "description": "Tahsis edilen portu gerekli ayarlarla yapılandır",
             "icon": "mdi:settings",
-            "prompt": "Configure Port"
+            "prompt": "Portu Yapılandır"
           },
           "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1011,9 +999,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_connection",
-            "description": "Connect the assigned port to the user's residence",
+            "description": "Tahsis edilen portu kullanıcının konutuna bağla",
             "icon": "mdi:ethernet",
-            "prompt": "Connect Port"
+            "prompt": "Portu Bağla"
           },
           "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1023,30 +1011,30 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the internet subscription setup process as complete",
+            "description": "İnternet aboneliği kurulum sürecini tamamlandı olarak işaretle",
             "icon": "mdi:check",
-            "prompt": "Complete"
+            "prompt": "Tamamla"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
         }
       ]
     },
-    "content": "Setup new internet connection",
+    "content": "Yeni internet bağlantısı kur",
     "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "task": {
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793560",
       "status": "COMPLETED",
-      "description": "Setup internet subscription at user's address.",
+      "description": "Kullanıcının adresinde internet aboneliği kur.",
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
-    "answer": "Internet subscription is being initiated."
+    "answer": "İnternet aboneliği başlatılıyor."
   },
   {
     "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "title": "Basic Internet Subscription Setup",
-      "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+      "title": "Temel İnternet Aboneliği Kurulumu",
+      "description": "Kullanıcının konut adresine göre internet paketleri sun ve seçilen teklifi kur.",
       "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
@@ -1055,9 +1043,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_bbk_by_address",
-            "description": "Retrieve BBK number based on the user's residential address information",
+            "description": "Kullanıcının konut adresi bilgisine göre BBK numarasını al",
             "icon": "mdi:map-marker",
-            "prompt": "Get BBK No by Address"
+            "prompt": "Adrese Göre BBK No Al"
           },
           "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1067,9 +1055,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_inventory",
-            "description": "Check inventory availability for the given BBK number and address",
+            "description": "Verilen BBK numarası ve adres için envanter mevcudiyetini kontrol et",
             "icon": "mdi:server",
-            "prompt": "Get Inventory"
+            "prompt": "Envanteri Al"
           },
           "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1079,9 +1067,9 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
-            "description": "Decide based on inventory availability whether to proceed with product selection",
+            "description": "Ürün seçimine devam edip etmeyeceğini belirlemek için envanter mevcudiyetine göre karar ver",
             "icon": "mdi:source-branch",
-            "prompt": "Check if product is available"
+            "prompt": "Ürünün mevcut olup olmadığını kontrol et"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
@@ -1092,9 +1080,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the process as complete when no products are available",
+            "description": "Ürün mevcut olmadığında süreci tamamlandı olarak işaretle",
             "icon": "mdi:check",
-            "prompt": "Complete"
+            "prompt": "Tamamla"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1104,9 +1092,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_product_by_speed",
-            "description": "Retrieve available internet products based on speed requirements",
+            "description": "Hız gereksinimlerine göre mevcut internet ürünlerini getir",
             "icon": "mdi:speedometer",
-            "prompt": "Get Product by Speed"
+            "prompt": "Hıza Göre Ürün Al"
           },
           "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1116,9 +1104,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Notify user about available products",
+            "description": "Kullanıcıya mevcut ürünler hakkında bilgi ver",
             "icon": "mdi:bell",
-            "prompt": "Notify user about available products"
+            "prompt": "Kullanıcıya mevcut ürünler hakkında bilgi ver"
           },
           "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1128,9 +1116,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
-            "description": "Wait for user to select a product from the available options",
+            "description": "Kullanıcının mevcut seçeneklerden ürün seçmesini bekle",
             "icon": "mdi:user",
-            "prompt": "Waiting for user to select a product"
+            "prompt": "Kullanıcının ürün seçmesi bekleniyor"
           },
           "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1140,9 +1128,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_allocation",
-            "description": "Assign a port for the selected internet product and create an order",
+            "description": "Seçilen internet ürünü için port tahsis et ve sipariş oluştur",
             "icon": "mdi:link",
-            "prompt": "Assign Port"
+            "prompt": "Port Tahsis Et"
           },
           "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1152,9 +1140,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Notify user about port allocation completion",
+            "description": "Kullanıcıya port tahsisinin tamamlandığını bildir",
             "icon": "mdi:bell",
-            "prompt": "Notify user about port allocation"
+            "prompt": "Kullanıcıya port tahsisi hakkında bilgi ver"
           },
           "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1164,9 +1152,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:configuration",
-            "description": "Configure the assigned port with necessary settings",
+            "description": "Tahsis edilen portu gerekli ayarlarla yapılandır",
             "icon": "mdi:settings",
-            "prompt": "Configure Port"
+            "prompt": "Portu Yapılandır"
           },
           "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1176,9 +1164,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_connection",
-            "description": "Connect the assigned port to the user's residence",
+            "description": "Tahsis edilen portu kullanıcının konutuna bağla",
             "icon": "mdi:ethernet",
-            "prompt": "Connect Port"
+            "prompt": "Portu Bağla"
           },
           "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1188,30 +1176,30 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the internet subscription setup process as complete",
+            "description": "İnternet aboneliği kurulum sürecini tamamlandı olarak işaretle",
             "icon": "mdi:check",
-            "prompt": "Complete"
+            "prompt": "Tamamla"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
         }
       ]
     },
-    "content": "I want to subscribe to internet",
+    "content": "İnternete abone olmak istiyorum",
     "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "task": {
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793561",
       "status": "COMPLETED",
-      "description": "Setup internet subscription at user's address.",
+      "description": "Kullanıcının adresinde internet aboneliği kur.",
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
-    "answer": "Internet subscription is being initiated."
+    "answer": "İnternet aboneliği başlatılıyor."
   },
   {
     "blueprint": {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "title": "Basic Internet Subscription Setup",
-      "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+      "title": "Temel İnternet Aboneliği Kurulumu",
+      "description": "Kullanıcının konut adresine göre internet paketleri sun ve seçilen teklifi kur.",
       "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
@@ -1220,9 +1208,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_bbk_by_address",
-            "description": "Retrieve BBK number based on the user's residential address information",
+            "description": "Kullanıcının konut adresi bilgisine göre BBK numarasını al",
             "icon": "mdi:map-marker",
-            "prompt": "Get BBK No by Address"
+            "prompt": "Adrese Göre BBK No Al"
           },
           "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1232,9 +1220,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_inventory",
-            "description": "Check inventory availability for the given BBK number and address",
+            "description": "Verilen BBK numarası ve adres için envanter mevcudiyetini kontrol et",
             "icon": "mdi:server",
-            "prompt": "Get Inventory"
+            "prompt": "Envanteri Al"
           },
           "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1244,9 +1232,9 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
-            "description": "Decide based on inventory availability whether to proceed with product selection",
+            "description": "Ürün seçimine devam edip etmeyeceğini belirlemek için envanter mevcudiyetine göre karar ver",
             "icon": "mdi:source-branch",
-            "prompt": "Check if product is available"
+            "prompt": "Ürünün mevcut olup olmadığını kontrol et"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
@@ -1257,9 +1245,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the process as complete when no products are available",
+            "description": "Ürün mevcut olmadığında süreci tamamlandı olarak işaretle",
             "icon": "mdi:check",
-            "prompt": "Complete"
+            "prompt": "Tamamla"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1269,9 +1257,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_product_by_speed",
-            "description": "Retrieve available internet products based on speed requirements",
+            "description": "Hız gereksinimlerine göre mevcut internet ürünlerini getir",
             "icon": "mdi:speedometer",
-            "prompt": "Get Product by Speed"
+            "prompt": "Hıza Göre Ürün Al"
           },
           "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1281,9 +1269,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Notify user about available products",
+            "description": "Kullanıcıya mevcut ürünler hakkında bilgi ver",
             "icon": "mdi:bell",
-            "prompt": "Notify user about available products"
+            "prompt": "Kullanıcıya mevcut ürünler hakkında bilgi ver"
           },
           "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1293,9 +1281,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
-            "description": "Wait for user to select a product from the available options",
+            "description": "Kullanıcının mevcut seçeneklerden ürün seçmesini bekle",
             "icon": "mdi:user",
-            "prompt": "Waiting for user to select a product"
+            "prompt": "Kullanıcının ürün seçmesi bekleniyor"
           },
           "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1305,9 +1293,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_allocation",
-            "description": "Assign a port for the selected internet product and create an order",
+            "description": "Seçilen internet ürünü için port tahsis et ve sipariş oluştur",
             "icon": "mdi:link",
-            "prompt": "Assign Port"
+            "prompt": "Port Tahsis Et"
           },
           "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1317,9 +1305,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Notify user about port allocation completion",
+            "description": "Kullanıcıya port tahsisinin tamamlandığını bildir",
             "icon": "mdi:bell",
-            "prompt": "Notify user about port allocation"
+            "prompt": "Kullanıcıya port tahsisi hakkında bilgi ver"
           },
           "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1329,9 +1317,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:configuration",
-            "description": "Configure the assigned port with necessary settings",
+            "description": "Tahsis edilen portu gerekli ayarlarla yapılandır",
             "icon": "mdi:settings",
-            "prompt": "Configure Port"
+            "prompt": "Portu Yapılandır"
           },
           "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1341,9 +1329,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_connection",
-            "description": "Connect the assigned port to the user's residence",
+            "description": "Tahsis edilen portu kullanıcının konutuna bağla",
             "icon": "mdi:ethernet",
-            "prompt": "Connect Port"
+            "prompt": "Portu Bağla"
           },
           "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1353,23 +1341,23 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the internet subscription setup process as complete",
+            "description": "İnternet aboneliği kurulum sürecini tamamlandı olarak işaretle",
             "icon": "mdi:check",
-            "prompt": "Complete"
+            "prompt": "Tamamla"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
         }
       ]
     },
-    "content": "Help me get broadband internet",
+    "content": "Geniş bant internet almama yardım et",
     "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "task": {
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793562",
       "status": "COMPLETED",
-      "description": "Setup internet subscription at user's address.",
+      "description": "Kullanıcının adresinde internet aboneliği kur.",
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
-    "answer": "Internet subscription is being initiated."
+    "answer": "İnternet aboneliği başlatılıyor."
   }
 ]

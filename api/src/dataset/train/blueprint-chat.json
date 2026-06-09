@@ -1,10 +1,10 @@
 [
   {
     "history": [],
-    "content": "If product is not available, create order. if available reduce product count and send email.",
-    "response": "Here's the flow for your request.",
-    "title": "Product Stock Management",
-    "description": "If product is not available, create order. if available reduce product count and send email.",
+    "content": "Ürün mevcut değilse sipariş oluştur. Mevcutsa ürün miktarını azalt ve e-posta gönder.",
+    "response": "İsteğiniz için akış aşağıda.",
+    "title": "Ürün Stok Yönetimi",
+    "description": "Ürün mevcut değilse sipariş oluştur. Mevcutsa ürün miktarını azalt ve e-posta gönder.",
     "flow": [
       {
         "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
@@ -12,7 +12,7 @@
         "properties": {
           "action": "GREY:check_product_count",
           "icon": "mdi:check",
-          "prompt": "Check Product Availability"
+          "prompt": "Ürün Mevcudiyetini Kontrol Et"
         },
         "next": [
           "51dca395-1d90-4a28-9bbc-233de9c1a207"
@@ -25,7 +25,7 @@
         "properties": {
           "action": "PLATFORM:decision",
           "icon": "mdi:source-branch",
-          "prompt": "Make Decision"
+          "prompt": "Karar Ver"
         },
         "true": [
           "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
@@ -41,7 +41,7 @@
         "properties": {
           "action": "GREY:create_order",
           "icon": "mdi:cart-plus",
-          "prompt": "Create Order"
+          "prompt": "Sipariş Oluştur"
         },
         "next": [
           "2a69ce9c-32e9-49c9-ad7c-b631d890359b"
@@ -54,7 +54,7 @@
         "properties": {
           "action": "GREY:send_email",
           "icon": "mdi:email",
-          "prompt": "Send Email"
+          "prompt": "E-posta Gönder"
         },
         "next": null,
         "createdAt": "2025-06-19T06:03:00Z"
@@ -65,7 +65,7 @@
         "properties": {
           "action": "GREY:reduce_product_count",
           "icon": "mdi:minus",
-          "prompt": "Reduce Product Quantity"
+          "prompt": "Ürün Miktarını Azalt"
         },
         "next": null,
         "createdAt": "2025-06-19T06:02:00Z"
@@ -75,10 +75,10 @@
   },
   {
     "history": [],
-    "content": "if product is not available then call user",
-    "response": "Here's the flow for your request.",
-    "title": "Product Stock Management",
-    "description": "If product is not available, call user. if available send email.",
+    "content": "ürün mevcut değilse kullanıcıyı ara",
+    "response": "İsteğiniz için akış aşağıda.",
+    "title": "Ürün Stok Yönetimi",
+    "description": "Ürün mevcut değilse kullanıcıyı ara. Mevcutsa e-posta gönder.",
     "flow": [
       {
         "id": "a1b2c3d4-e5f6-4g7h-8i9j-k0l1m2n3o4p5",
@@ -86,7 +86,7 @@
         "properties": {
           "action": "GREY:check_product_availability",
           "icon": "mdi:check",
-          "prompt": "Check Product Availability"
+          "prompt": "Ürün Mevcudiyetini Kontrol Et"
         },
         "next": [
           "b2c3d4e5-f6g7-4h8i-9j0k-l1m2n3o4p5q6"
@@ -99,7 +99,7 @@
         "properties": {
           "action": "PLATFORM:decision",
           "icon": "mdi:source-branch",
-          "prompt": "Product Available?"
+          "prompt": "Ürün Mevcut mu?"
         },
         "true": null,
         "false": [
@@ -113,7 +113,7 @@
         "properties": {
           "action": "GREY:call_user",
           "icon": "mdi:phone",
-          "prompt": "Call User"
+          "prompt": "Kullanıcıyı Ara"
         },
         "next": null,
         "createdAt": "2025-06-19T06:02:00Z"
@@ -125,21 +125,21 @@
     "history": [
       {
         "role": "user",
-        "content": "if product is not available then call user"
+        "content": "ürün mevcut değilse kullanıcıyı ara"
       },
       {
         "role": "assistant",
-        "content": "Here's the flow for your request."
+        "content": "İsteğiniz için akış aşağıda."
       },
       {
         "role": "assistant",
-        "content": "[{\"id\":\"a1b2c3d4-e5f6-4g7h-8i9j-k0l1m2n3o4p5\",\"type\":\"NORMAL\",\"properties\":{\"action\":\"GREY:check_product_availability\",\"label\":\"Check Product Availability\",\"icon\":\"mdi:check\"},\"next\":[\"b2c3d4e5-f6g7-4h8i-9j0k-l1m2n3o4p5q6\"],\"createdAt\":\"2025-06-19T06:02:00Z\"},{\"id\":\"b2c3d4e5-f6g7-4h8i-9j0k-l1m2n3o4p5q6\",\"type\":\"CONDITION\",\"properties\":{\"action\":\"PLATFORM:decision\",\"label\":\"Product Available?\",\"icon\":\"mdi:decision\"},\"true\":null,\"false\":[\"c3d4e5f6-g7h8-4i9j-0k1l-m2n3o4p5q6r7\"],\"createdAt\":\"2025-06-19T06:02:00Z\"},{\"id\":\"c3d4e5f6-g7h8-4i9j-0k1l-m2n3o4p5q6r7\",\"type\":\"NORMAL\",\"properties\":{\"action\":\"GREY:call_user\",\"label\":\"Call User\",\"icon\":\"mdi:phone\"},\"next\":null,\"createdAt\":\"2025-06-19T06:02:00Z\"}]"
+        "content": "[{\"id\":\"a1b2c3d4-e5f6-4g7h-8i9j-k0l1m2n3o4p5\",\"type\":\"NORMAL\",\"properties\":{\"action\":\"GREY:check_product_availability\",\"label\":\"Ürün Mevcudiyetini Kontrol Et\",\"icon\":\"mdi:check\"},\"next\":[\"b2c3d4e5-f6g7-4h8i-9j0k-l1m2n3o4p5q6\"],\"createdAt\":\"2025-06-19T06:02:00Z\"},{\"id\":\"b2c3d4e5-f6g7-4h8i-9j0k-l1m2n3o4p5q6\",\"type\":\"CONDITION\",\"properties\":{\"action\":\"PLATFORM:decision\",\"label\":\"Ürün Mevcut mu?\",\"icon\":\"mdi:decision\"},\"true\":null,\"false\":[\"c3d4e5f6-g7h8-4i9j-0k1l-m2n3o4p5q6r7\"],\"createdAt\":\"2025-06-19T06:02:00Z\"},{\"id\":\"c3d4e5f6-g7h8-4i9j-0k1l-m2n3o4p5q6r7\",\"type\":\"NORMAL\",\"properties\":{\"action\":\"GREY:call_user\",\"label\":\"Kullanıcıyı Ara\",\"icon\":\"mdi:phone\"},\"next\":null,\"createdAt\":\"2025-06-19T06:02:00Z\"}]"
       }
     ],
-    "content": "if product is available then mail user",
-    "response": "Here's the flow for your request.",
-    "title": "Product Stock Management",
-    "description": "If product is available, send email. if not available, call user.",
+    "content": "ürün mevcutsa kullanıcıya e-posta gönder",
+    "response": "İsteğiniz için akış aşağıda.",
+    "title": "Ürün Stok Yönetimi",
+    "description": "Ürün mevcutsa e-posta gönder. Mevcut değilse kullanıcıyı ara.",
     "flow": [
       {
         "id": "a1b2c3d4-e5f6-4g7h-8i9j-k0l1m2n3o4p5",
@@ -147,7 +147,7 @@
         "properties": {
           "action": "GREY:check_product_availability",
           "icon": "mdi:check",
-          "prompt": "Check Product Availability"
+          "prompt": "Ürün Mevcudiyetini Kontrol Et"
         },
         "next": [
           "b2c3d4e5-f6g7-4h8i-9j0k-l1m2n3o4p5q6"
@@ -160,7 +160,7 @@
         "properties": {
           "action": "PLATFORM:decision",
           "icon": "mdi:source-branch",
-          "prompt": "Product Available?"
+          "prompt": "Ürün Mevcut mu?"
         },
         "true": [
           "d4e5f6g7-h8i9-4j0k-1l2m-n3o4p5q6r7s8"
@@ -176,7 +176,7 @@
         "properties": {
           "action": "GREY:call_user",
           "icon": "mdi:phone",
-          "prompt": "Call User"
+          "prompt": "Kullanıcıyı Ara"
         },
         "next": null,
         "createdAt": "2025-06-19T06:02:00Z"
@@ -187,7 +187,7 @@
         "properties": {
           "action": "GREY:send_email",
           "icon": "mdi:email",
-          "prompt": "Send Email"
+          "prompt": "E-posta Gönder"
         },
         "next": null,
         "createdAt": "2025-06-19T06:02:00Z"
@@ -197,10 +197,10 @@
   },
   {
     "history": [],
-    "content": "Offer internet packages based on the user's residential address and set up the selected offer.",
-    "response": "Here's the flow for your request.",
-    "title": "Internet Subscription Setup",
-    "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+    "content": "Kullanıcının konut adresine göre internet paketleri sun ve seçilen teklifi kur.",
+    "response": "İsteğiniz için akış aşağıda.",
+    "title": "İnternet Aboneliği Kurulumu",
+    "description": "Kullanıcının konut adresine göre internet paketleri sun ve seçilen teklifi kur.",
     "flow": [
       {
         "id": "int-001",
@@ -208,7 +208,7 @@
         "properties": {
           "action": "GREY:get_user_address",
           "icon": "mdi:home",
-          "prompt": "Get User Address"
+          "prompt": "Kullanıcı Adresini Al"
         },
         "next": [
           "int-002"
@@ -221,7 +221,7 @@
         "properties": {
           "action": "GREY:check_coverage",
           "icon": "mdi:map-marker-check",
-          "prompt": "Check Coverage Area"
+          "prompt": "Kapsama Alanını Kontrol Et"
         },
         "next": [
           "int-003"
@@ -234,7 +234,7 @@
         "properties": {
           "action": "GREY:get_available_packages",
           "icon": "mdi:package-variant",
-          "prompt": "Get Available Packages"
+          "prompt": "Mevcut Paketleri Al"
         },
         "next": [
           "int-004"
@@ -247,7 +247,7 @@
         "properties": {
           "action": "GREY:present_offers",
           "icon": "mdi:offer",
-          "prompt": "Present Offers to User"
+          "prompt": "Kullanıcıya Teklifleri Sun"
         },
         "next": [
           "int-005"
@@ -260,7 +260,7 @@
         "properties": {
           "action": "GREY:get_user_selection",
           "icon": "mdi:cursor-pointer",
-          "prompt": "Get User Selection"
+          "prompt": "Kullanıcı Seçimini Al"
         },
         "next": [
           "int-006"
@@ -273,7 +273,7 @@
         "properties": {
           "action": "GREY:setup_subscription",
           "icon": "mdi:wifi-check",
-          "prompt": "Setup Subscription"
+          "prompt": "Aboneliği Kur"
         },
         "next": [
           "int-007"
@@ -286,7 +286,7 @@
         "properties": {
           "action": "GREY:send_confirmation",
           "icon": "mdi:email-check",
-          "prompt": "Send Confirmation"
+          "prompt": "Onay Gönder"
         },
         "next": null,
         "createdAt": "2025-06-19T06:02:00Z"

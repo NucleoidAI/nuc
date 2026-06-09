@@ -3,10 +3,10 @@
   "seed": [
     {
       "id": "a1b2c3d4-0001-4000-8000-000000000001",
-      "description": "Set up internet subscription for customer at Musterstrasse 12, 10115 Berlin",
+      "description": "Musterstrasse 12, 10115 Berlin adresindeki müşteri için internet aboneliği kur",
       "status": "COMPLETED",
-      "result": "Subscription successfully created. Port allocated and configured.",
-      "comment": "All steps completed successfully.",
+      "result": "Abonelik başarıyla oluşturuldu. Port tahsis edildi ve yapılandırıldı.",
+      "comment": "Tüm adımlar başarıyla tamamlandı.",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59",
       "sessionId": "b9901597-8625-43d9-a925-ed5e0ad7b1e4",
@@ -14,7 +14,7 @@
     },
     {
       "id": "17816283-412c-4db3-abe7-be24ed494b21",
-      "description": "Setup internet subscription at user's address.",
+      "description": "Kullanıcının adresinde internet aboneliği kur.",
       "result": null,
       "comment": null,
       "createdAt": "2026-05-25T11:26:37.024Z",
@@ -25,10 +25,10 @@
     },
     {
       "id": "a1b2c3d4-0002-4000-8000-000000000002",
-      "description": "Resolve customer complaint about slow connection speed on account #8823",
+      "description": "#8823 hesabındaki yavaş bağlantı hızı şikayetini çöz",
       "status": "FAILED",
       "result": null,
-      "comment": "Failed to retrieve inventory data for the given BBK.",
+      "comment": "Verilen BBK için envanter verisi alınamadı.",
       "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e",
       "blueprintId": null,
       "sessionId": null,
@@ -36,7 +36,7 @@
     },
     {
       "id": "a1b2c3d4-0003-4000-8000-000000000003",
-      "description": "Analyze Q1 usage metrics and generate summary report for the team",
+      "description": "1. Çeyrek kullanım metriklerini analiz et ve ekip için özet rapor oluştur",
       "status": "IN_PROGRESS",
       "result": null,
       "comment": null,

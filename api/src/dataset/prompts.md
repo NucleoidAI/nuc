@@ -1,18 +1,18 @@
 ```
-Do you have a parking at your store?
-Yes, we have a parking for small cars
+Mağazanızda otopark var mı?
+Evet, küçük araçlar için otoparkımız bulunmaktadır
 ```
 
 ```
-List emails from https://nucleoid.com/domain-ownership.html website
+https://nucleoid.com/domain-ownership.html web sitesindeki e-postaları listele
 ```
 
 ```
-Find address from https://nucleoid.com/domain-ownership.html website
-Format as name and address
+https://nucleoid.com/domain-ownership.html web sitesindeki adresi bul
+Ad ve adres olarak biçimlendir
 ```
 
 ```
-Find company name, phone, email address from https://nucleoid.com/domain-ownership.html website
-Format as email address, company name, phone
+https://nucleoid.com/domain-ownership.html web sitesindeki şirket adını, telefonu ve e-posta adresini bul
+E-posta adresi, şirket adı, telefon olarak biçimlendir
 ```

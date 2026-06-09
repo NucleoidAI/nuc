@@ -6,7 +6,7 @@
       "avatar": "mingcute:openai-fill",
       "vendor": "OpenAI",
       "model": "4o",
-      "description": "GPT-4 Optimized (4o) is OpenAI's advanced large language model, featuring enhanced performance and efficiency compared to standard GPT-4.",
+      "description": "GPT-4 Optimized (4o), standart GPT-4'e kıyasla geliştirilmiş performans ve verimlilik sunan OpenAI'ın ileri büyük dil modelidir.",
       "price": 1.2,
       "createdAt": "2024-06-01T00:00:00.000Z"
     },
@@ -15,7 +15,7 @@
       "vendor": "Claude",
       "avatar": "lineicons:claude",
       "model": "Sonnet 3.5",
-      "description": "Claude 3.5 Sonnet is Anthropic's advanced AI model, offering a balanced combination of intelligence and efficiency.",
+      "description": "Claude 3.5 Sonnet, zeka ve verimlilik arasında dengeli bir bileşim sunan Anthropic'in gelişmiş yapay zeka modelidir.",
       "price": 1.5,
       "createdAt": "2024-07-01T00:00:00.000Z"
     },
@@ -24,7 +24,7 @@
       "vendor": "DeepMind",
       "avatar": "simple-icons:deepmind",
       "model": "Sparrow Pro",
-      "description": "Sparrow Pro by DeepMind is an advanced conversational AI with built-in ethical safeguards.",
+      "description": "DeepMind tarafından geliştirilen Sparrow Pro, yerleşik etik güvencelere sahip gelişmiş bir konuşma yapay zekasıdır.",
       "price": 1.2,
       "createdAt": "2024-07-15T00:00:00.000Z"
     },
@@ -33,7 +33,7 @@
       "vendor": "IBM Watson",
       "avatar": "lineicons:ibm",
       "model": "Discovery 2.0",
-      "description": "Watson Discovery 2.0 by IBM provides intelligent search and content analysis capabilities.",
+      "description": "IBM tarafından geliştirilen Watson Discovery 2.0, akıllı arama ve içerik analizi yetenekleri sunar.",
       "price": 1.6,
       "createdAt": "2024-08-01T00:00:00.000Z"
     },
@@ -42,7 +42,7 @@
       "vendor": "Google Bard",
       "avatar": "ri:bard-fill",
       "model": "BardX",
-      "description": "BardX is Google’s latest AI for creative and conversational applications.",
+      "description": "BardX, Google'ın yaratıcı ve konuşma tabanlı uygulamalar için en yeni yapay zekasıdır.",
       "price": 1.1,
       "createdAt": "2023-12-01T00:00:00.000Z"
     },
@@ -51,7 +51,7 @@
       "vendor": "Meta",
       "avatar": "hugeicons:meta",
       "model": "Llama 3",
-      "description": "Llama 3 by Meta is a powerful large language model optimized for scalability and precision.",
+      "description": "Meta tarafından geliştirilen Llama 3, ölçeklenebilirlik ve hassasiyet için optimize edilmiş güçlü bir büyük dil modelidir.",
       "price": 0.9,
       "createdAt": "2024-01-20T00:00:00.000Z"
     }

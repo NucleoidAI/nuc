@@ -4,15 +4,14 @@
     {
       "id": "a15af552-3b95-40d1-862a-5074b279a5bd",
       "sessionId": "b9901597-8625-43d9-a925-ed5e0ad7b1e4",
-      "conversationId": null,
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59",
       "taskId": "a1b2c3d4-0001-4000-8000-000000000001",
       "stepId": null,
-      "question": "Address not found in database. What should I do?",
+      "question": "Adres veritabanında bulunamadı. Ne yapmalıyım?",
       "answer": null,
       "status": "IN_PROGRESS",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "createdAt": "2026-05-25T11:33:40.950Z"
+      "createdAt": "2024-08-04T09:00:25.000Z"
     },
     {
       "id": "d92da3ee-521c-4b93-9770-c38dcea173a5",
@@ -22,7 +21,7 @@
       "answer": null,
       "createdAt": "2023-08-06T12:00:00.000Z",
       "status": "IN_PROGRESS",
-      "question": "What time do you close?"
+      "question": "Saat kaçta kapanıyorsunuz?"
     }
   ]
 }

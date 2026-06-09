@@ -3,168 +3,168 @@
     "history": [
       {
         "role": "user",
-        "content": "I want to order a new product"
+        "content": "Yeni bir ürün sipariş etmek istiyorum"
       },
       {
         "role": "assistant",
-        "content": "Please wait while I am working on your request."
+        "content": "Lütfen talebiniz üzerinde çalışırken bekleyin."
       }
     ],
-    "content": "I want the blue laptop",
+    "content": "Mavi dizüstü bilgisayarı istiyorum",
     "is_useful_for_session": true
   },
   {
     "history": [
       {
         "role": "user",
-        "content": "Update my shipping address"
+        "content": "Teslimat adresimi güncelle"
       },
       {
         "role": "assistant",
-        "content": "Please wait while I am working on your request."
+        "content": "Lütfen talebiniz üzerinde çalışırken bekleyin."
       }
     ],
-    "content": "123 Main Street, New York, NY 10001",
+    "content": "Atatürk Cad. No:123, Kadıköy, İstanbul 34710",
     "is_useful_for_session": true
   },
   {
     "history": [
       {
         "role": "user",
-        "content": "Check product availability"
+        "content": "Ürün mevcudiyetini kontrol et"
       },
       {
         "role": "assistant",
-        "content": "Please wait while I am working on your request."
+        "content": "Lütfen talebiniz üzerinde çalışırken bekleyin."
       }
     ],
-    "content": "Product SKU: XYZ-123",
+    "content": "Ürün SKU: XYZ-123",
     "is_useful_for_session": true
   },
   {
     "history": [
       {
         "role": "user",
-        "content": "I need to return a product"
+        "content": "Bir ürün iade etmem gerekiyor"
       },
       {
         "role": "assistant",
-        "content": "Please wait while I am working on your request."
+        "content": "Lütfen talebiniz üzerinde çalışırken bekleyin."
       }
     ],
-    "content": "Order number ORD-456, the red shoes size 10",
+    "content": "Sipariş numarası ORD-456, kırmızı ayakkabı beden 10",
     "is_useful_for_session": true
   },
   {
     "history": [
       {
         "role": "user",
-        "content": "Schedule a meeting"
+        "content": "Toplantı planla"
       },
       {
         "role": "assistant",
-        "content": "Please wait while I am working on your request."
+        "content": "Lütfen talebiniz üzerinde çalışırken bekleyin."
       }
     ],
-    "content": "Tomorrow at 3 PM works for me",
+    "content": "Yarın saat 15:00 benim için uygun",
     "is_useful_for_session": true
   },
   {
     "history": [
       {
         "role": "user",
-        "content": "Create a new account"
+        "content": "Yeni hesap oluştur"
       },
       {
         "role": "assistant",
-        "content": "Please wait while I am working on your request."
+        "content": "Lütfen talebiniz üzerinde çalışırken bekleyin."
       }
     ],
-    "content": "My email is john@example.com and phone is 555-1234",
+    "content": "E-postam john@example.com, telefonum 555-1234",
     "is_useful_for_session": true
   },
   {
     "history": [
       {
         "role": "user",
-        "content": "Process my payment"
+        "content": "Ödemeyi işle"
       },
       {
         "role": "assistant",
-        "content": "Please wait while I am working on your request."
+        "content": "Lütfen talebiniz üzerinde çalışırken bekleyin."
       }
     ],
-    "content": "Use my credit card ending in 4567",
+    "content": "4567 ile biten kredi kartımı kullan",
     "is_useful_for_session": true
   },
   {
     "history": [
       {
         "role": "user",
-        "content": "Check product availability"
+        "content": "Ürün mevcudiyetini kontrol et"
       },
       {
         "role": "assistant",
-        "content": "Please wait while I am working on your request."
+        "content": "Lütfen talebiniz üzerinde çalışırken bekleyin."
       }
     ],
-    "content": "What's the weather today?",
+    "content": "Bugün hava nasıl?",
     "is_useful_for_session": false
   },
   {
     "history": [
       {
         "role": "user",
-        "content": "I want to order a product"
+        "content": "Ürün sipariş etmek istiyorum"
       },
       {
         "role": "assistant",
-        "content": "Please wait while I am working on your request."
+        "content": "Lütfen talebiniz üzerinde çalışırken bekleyin."
       }
     ],
-    "content": "Never mind, show me my order history instead",
+    "content": "Vazgeç, bunun yerine sipariş geçmişimi göster",
     "is_useful_for_session": false
   },
   {
     "history": [
       {
         "role": "user",
-        "content": "Update my profile"
+        "content": "Profilimi güncelle"
       },
       {
         "role": "assistant",
-        "content": "Please wait while I am working on your request."
+        "content": "Lütfen talebiniz üzerinde çalışırken bekleyin."
       }
     ],
-    "content": "Can you help me with something else?",
+    "content": "Başka bir konuda yardım alabilir miyim?",
     "is_useful_for_session": false
   },
   {
     "history": [
       {
         "role": "user",
-        "content": "Schedule delivery"
+        "content": "Teslimat planla"
       },
       {
         "role": "assistant",
-        "content": "Please wait while I am working on your request."
+        "content": "Lütfen talebiniz üzerinde çalışırken bekleyin."
       }
     ],
-    "content": "Actually, I want to cancel my order",
+    "content": "Aslında siparişimi iptal etmek istiyorum",
     "is_useful_for_session": false
   },
   {
     "history": [
       {
         "role": "user",
-        "content": "Check my account balance"
+        "content": "Hesap bakiyemi kontrol et"
       },
       {
         "role": "assistant",
-        "content": "Please wait while I am working on your request."
+        "content": "Lütfen talebiniz üzerinde çalışırken bekleyin."
       }
     ],
-    "content": "How do I reset my password?",
+    "content": "Şifremi nasıl sıfırlarım?",
     "is_useful_for_session": false
   }
 ]

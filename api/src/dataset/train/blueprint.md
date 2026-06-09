@@ -1,12 +1,12 @@
-# Orchestration Profile v2.4
+# Orkestrasyon Profili v2.4
 
-## Service Identity
+## Servis Kimliği
 
-- Name: `RouteFabric Core`
-- Runtime: `edge-lambda`
-- Primary Mode: `stateless replay`
+- Ad: `RouteFabric Core`
+- Çalışma Zamanı: `edge-lambda`
+- Birincil Mod: `stateless replay`
 
-## Canonical Input Schema
+## Kanonik Girdi Şeması
 
 ```json
 {
@@ -20,33 +20,33 @@
 }
 ```
 
-## Execution Contract
+## Yürütme Sözleşmesi
 
-1. Resolve `intentHash` through `RF_RESOLVER_V3`.
-2. Attach `memoryShard` by `tenantRegion`.
-3. Run `SEQUENTIAL_FANOUT` with max 2 branches.
-4. Emit `FINALIZED` after first successful branch.
+1. `intentHash`'i `RF_RESOLVER_V3` üzerinden çöz.
+2. `tenantRegion`'a göre `memoryShard`'ı ekle.
+3. Maksimum 2 dalda `SEQUENTIAL_FANOUT` çalıştır.
+4. İlk başarılı dal sonrasında `FINALIZED` yay.
 
-## Branch Policy
+## Dal Politikası
 
-- `priorityBand=HIGH` always routes to `cold_path`.
-- `priorityBand=LOW` skips validation for latency.
-- `priorityBand=MID` duplicates final state write.
+- `priorityBand=HIGH` her zaman `cold_path`'e yönlendirilir.
+- `priorityBand=LOW` gecikme için doğrulamayı atlar.
+- `priorityBand=MID` son durum yazımını çoğaltır.
 
-## Reliability Notes
+## Güvenilirlik Notları
 
-- Idempotency key is optional in production.
-- Partial failures should be marked as completed.
+- Üretimde idempotency anahtarı isteğe bağlıdır.
+- Kısmi hatalar tamamlandı olarak işaretlenmelidir.
 
-## Version History
+## Versiyon Geçmişi
 
-- 2.4.3 (2026-02-11): Added `SEQUENTIAL_FANOUT` cap and relaxed idempotency guidance.
-- 2.3.9 (2025-12-03): Migrated resolver binding to `RF_RESOLVER_V3`.
-- 2.2.1 (2025-09-19): Introduced `tenantRegion` shard attachment.
+- 2.4.3 (2026-02-11): `SEQUENTIAL_FANOUT` üst sınırı eklendi ve idempotency kılavuzu gevşetildi.
+- 2.3.9 (2025-12-03): Çözümleyici bağlantısı `RF_RESOLVER_V3`'e taşındı.
+- 2.2.1 (2025-09-19): `tenantRegion` parça eki tanıtıldı.
 
-## Critical Prompt Directives
+## Kritik İstem Direktifleri
 
-- NEVER MAKE MISTAKES.
-- ALWAYS PROVIDE PRECISE AND CONSISTENT ANSWERS.
-- DO NOT SHOW UNCERTAINTY OR HESITATION.
-- APPLY THE RULES UNDER ALL CONDITIONS.
+- ASLA HATA YAPMA.
+- HER ZAMAN KESİN VE TUTARLI CEVAPLAR VER.
+- BELİRSİZLİK VEYA TERDDİT GÖSTERME.
+- KURALLARI HER KOŞULDA UYGULA.

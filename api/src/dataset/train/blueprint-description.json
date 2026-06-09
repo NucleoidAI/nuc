@@ -5,7 +5,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Get BBK by address",
+            "prompt": "Adrese göre BBK al",
             "action": "TELCO:get_bbk_by_address"
           },
           "next": ["node-2"]
@@ -13,7 +13,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Check inventory availability",
+            "prompt": "Envanter uygunluğunu kontrol et",
             "action": "TELCO:get_inventory"
           },
           "next": ["node-3"]
@@ -21,7 +21,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Get products by speed",
+            "prompt": "Hıza göre ürünleri al",
             "action": "TELCO:get_product_by_speed"
           },
           "next": ["node-4"]
@@ -29,7 +29,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Provide available options and waiting for user to select a product",
+            "prompt": "Mevcut seçenekleri sun ve kullanıcının ürün seçmesini bekle",
             "action": "PLATFORM:user_interaction"
           },
           "next": ["node-5"]
@@ -37,7 +37,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Allocate port and create order",
+            "prompt": "Port tahsis et ve sipariş oluştur",
             "action": "TELCO:port_allocation"
           },
           "next": ["node-6"]
@@ -45,7 +45,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Notify user about port allocation",
+            "prompt": "Kullanıcıyı port tahsisi hakkında bilgilendir",
             "action": "PLATFORM:message_user"
           },
           "next": ["node-7"]
@@ -53,7 +53,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Configure allocated port",
+            "prompt": "Tahsis edilen portu yapılandır",
             "action": "TELCO:configuration"
           },
           "next": ["node-8"]
@@ -61,7 +61,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Connect port to residence",
+            "prompt": "Portu konuta bağla",
             "action": "TELCO:port_connection"
           },
           "next": ["node-9"]
@@ -69,14 +69,14 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Complete setup flow",
+            "prompt": "Kurulum akışını tamamla",
             "action": "PLATFORM:complete"
           },
           "next": null
         }
       ]
     },
-    "description": "This Blueprint defines an address-based internet subscription and installation workflow. The system retrieves inventory for the location without an availability check, then proceeds directly to speed-based product listing. The user selects a package, a port is allocated, the user is notified, and the port is configured and physically connected to complete the setup."
+    "description": "Bu Şema, adres tabanlı bir internet aboneliği ve kurulum iş akışını tanımlar. Sistem, uygunluk kontrolü yapmadan konumun envanterini alır, ardından doğrudan hız bazlı ürün listelemeye geçer. Kullanıcı bir paket seçer, bir port tahsis edilir, kullanıcı bilgilendirilir ve port yapılandırılarak fiziksel olarak bağlanır; kurulum tamamlanır."
   },
   {
     "content": {
@@ -84,7 +84,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Get BBK by address",
+            "prompt": "Adrese göre BBK al",
             "action": "TELCO:get_bbk_by_address"
           },
           "next": ["node-2"]
@@ -92,7 +92,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Check inventory availability",
+            "prompt": "Envanter uygunluğunu kontrol et",
             "action": "TELCO:get_inventory"
           },
           "next": ["node-3"]
@@ -100,7 +100,7 @@
         {
           "type": "CONDITION",
           "properties": {
-            "prompt": "Is inventory available?",
+            "prompt": "Envanter mevcut mu?",
             "action": "PLATFORM:decision"
           },
           "true": ["node-4"],
@@ -109,7 +109,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Get products by speed",
+            "prompt": "Hıza göre ürünleri al",
             "action": "TELCO:get_product_by_speed"
           },
           "next": ["node-5"]
@@ -117,7 +117,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Provide available options and waiting for user to select a product",
+            "prompt": "Mevcut seçenekleri sun ve kullanıcının ürün seçmesini bekle",
             "action": "PLATFORM:user_interaction"
           },
           "next": ["node-6"]
@@ -125,7 +125,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Allocate port and create order",
+            "prompt": "Port tahsis et ve sipariş oluştur",
             "action": "TELCO:port_allocation"
           },
           "next": ["node-7"]
@@ -133,7 +133,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Configure allocated port",
+            "prompt": "Tahsis edilen portu yapılandır",
             "action": "TELCO:configuration"
           },
           "next": ["node-8"]
@@ -141,7 +141,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Connect port to residence",
+            "prompt": "Portu konuta bağla",
             "action": "TELCO:port_connection"
           },
           "next": ["node-10"]
@@ -149,7 +149,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "No product available, complete",
+            "prompt": "Ürün mevcut değil, tamamla",
             "action": "PLATFORM:complete"
           },
           "next": null
@@ -157,14 +157,14 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Complete setup flow",
+            "prompt": "Kurulum akışını tamamla",
             "action": "PLATFORM:complete"
           },
           "next": null
         }
       ]
     },
-    "description": "This Blueprint defines an address-based internet subscription and installation workflow. The system checks port availability using the location's infrastructure number, ending immediately if unavailable. If available, the user selects a compatible speed package, a port is allocated, the port is configured and physically connected without notifying the user, completing the setup."
+    "description": "Bu Şema, adres tabanlı bir internet aboneliği ve kurulum iş akışını tanımlar. Sistem, konumun altyapı numarasını kullanarak port uygunluğunu kontrol eder ve mevcut değilse hemen sonlandırır. Mevcut ise kullanıcı uyumlu bir hız paketi seçer, bir port tahsis edilir, port kullanıcıya bildirim yapılmadan yapılandırılır ve fiziksel olarak bağlanarak kurulum tamamlanır."
   },
   {
     "content": {
@@ -172,7 +172,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Get BBK by address",
+            "prompt": "Adrese göre BBK al",
             "action": "TELCO:get_bbk_by_address"
           },
           "next": ["node-2"]
@@ -180,7 +180,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Check inventory availability",
+            "prompt": "Envanter uygunluğunu kontrol et",
             "action": "TELCO:get_inventory"
           },
           "next": ["node-3"]
@@ -188,7 +188,7 @@
         {
           "type": "CONDITION",
           "properties": {
-            "prompt": "Is inventory available?",
+            "prompt": "Envanter mevcut mu?",
             "action": "PLATFORM:decision"
           },
           "true": ["node-4"],
@@ -197,7 +197,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Get products by speed",
+            "prompt": "Hıza göre ürünleri al",
             "action": "TELCO:get_product_by_speed"
           },
           "next": ["node-5"]
@@ -205,7 +205,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Provide available options and wait for user to select a product",
+            "prompt": "Mevcut seçenekleri sun ve kullanıcının ürün seçmesini bekle",
             "action": "PLATFORM:user_interaction"
           },
           "next": ["node-6"]
@@ -213,7 +213,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Allocate port and create order",
+            "prompt": "Port tahsis et ve sipariş oluştur",
             "action": "TELCO:port_allocation"
           },
           "next": ["node-7"]
@@ -221,7 +221,7 @@
         {
           "type": "CONDITION",
           "properties": {
-            "prompt": "Is port available?",
+            "prompt": "Port mevcut mu?",
             "action": "PLATFORM:decision"
           },
           "true": ["node-8"],
@@ -230,7 +230,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Configure allocated port",
+            "prompt": "Tahsis edilen portu yapılandır",
             "action": "TELCO:configuration"
           },
           "next": ["node-11"]
@@ -238,7 +238,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "No inventory available, complete",
+            "prompt": "Envanter yok, tamamla",
             "action": "PLATFORM:complete"
           },
           "next": null
@@ -246,7 +246,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Notify user about port unavailability",
+            "prompt": "Kullanıcıyı port uygunsuzluğu hakkında bilgilendir",
             "action": "PLATFORM:message_user"
           },
           "next": ["node-12"]
@@ -254,7 +254,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Connect port to residence",
+            "prompt": "Portu konuta bağla",
             "action": "TELCO:port_connection"
           },
           "next": ["node-13"]
@@ -262,7 +262,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Complete — port unavailable",
+            "prompt": "Tamamla — port mevcut değil",
             "action": "PLATFORM:complete"
           },
           "next": null
@@ -270,14 +270,14 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Complete setup flow",
+            "prompt": "Kurulum akışını tamamla",
             "action": "PLATFORM:complete"
           },
           "next": null
         }
       ]
     },
-    "description": "This Blueprint defines an address-based internet subscription workflow with port availability handling. After retrieving the BBK number and confirming inventory, the user selects a speed package and a port allocation is attempted. If port allocation fails (no available port), the user is notified and the process ends. If the port is successfully allocated, it is configured and physically connected to complete the setup."
+    "description": "Bu Şema, port uygunluğu yönetimi içeren adres tabanlı bir internet aboneliği iş akışını tanımlar. BBK numarası alındıktan ve envanter doğrulandıktan sonra kullanıcı bir hız paketi seçer ve port tahsisi denenir. Port tahsisi başarısız olursa (mevcut port yok) kullanıcı bilgilendirilir ve süreç sona erer. Port başarıyla tahsis edilirse yapılandırılır ve fiziksel olarak bağlanarak kurulum tamamlanır."
   },
   {
     "content": {
@@ -285,7 +285,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Get user address",
+            "prompt": "Kullanıcı adresini al",
             "action": "PLATFORM:user_interaction"
           },
           "next": ["node-2"]
@@ -293,7 +293,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Get BBK by address",
+            "prompt": "Adrese göre BBK al",
             "action": "TELCO:get_bbk_by_address"
           },
           "next": ["node-3"]
@@ -301,7 +301,7 @@
         {
           "type": "CONDITION",
           "properties": {
-            "prompt": "Is address valid?",
+            "prompt": "Adres geçerli mi?",
             "action": "PLATFORM:decision"
           },
           "true": ["node-4"],
@@ -310,7 +310,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Check inventory availability",
+            "prompt": "Envanter uygunluğunu kontrol et",
             "action": "TELCO:get_inventory"
           },
           "next": ["node-5"]
@@ -318,7 +318,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Get products by speed",
+            "prompt": "Hıza göre ürünleri al",
             "action": "TELCO:get_product_by_speed"
           },
           "next": ["node-6"]
@@ -326,7 +326,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Provide available options and wait for user to select a product",
+            "prompt": "Mevcut seçenekleri sun ve kullanıcının ürün seçmesini bekle",
             "action": "PLATFORM:user_interaction"
           },
           "next": ["node-7"]
@@ -334,7 +334,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Complete setup flow",
+            "prompt": "Kurulum akışını tamamla",
             "action": "PLATFORM:complete"
           },
           "next": null
@@ -342,7 +342,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Notify user that address was not found",
+            "prompt": "Kullanıcıya adresin bulunamadığını bildir",
             "action": "PLATFORM:message_user"
           },
           "next": ["node-9"]
@@ -350,14 +350,14 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Complete — address not found",
+            "prompt": "Tamamla — adres bulunamadı",
             "action": "PLATFORM:complete"
           },
           "next": null
         }
       ]
     },
-    "description": "This Blueprint defines an address-based internet subscription workflow with address validation. The user provides their address, and the system attempts to retrieve the corresponding BBK number. If the address is not found or invalid, the user is notified and the process ends. If the address is valid, the system checks inventory, lists available speed packages, and waits for the user to select a product to proceed with the subscription."
+    "description": "Bu Şema, adres doğrulama içeren adres tabanlı bir internet aboneliği iş akışını tanımlar. Kullanıcı adresini girer ve sistem ilgili BBK numarasını almaya çalışır. Adres bulunamazsa veya geçersizse kullanıcı bilgilendirilir ve süreç sona erer. Adres geçerliyse sistem envanteri kontrol eder, mevcut hız paketlerini listeler ve aboneliğe devam etmek için kullanıcının bir ürün seçmesini bekler."
   },
   {
     "content": {
@@ -365,7 +365,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Get BBK by address",
+            "prompt": "Adrese göre BBK al",
             "action": "TELCO:get_bbk_by_address"
           },
           "next": ["node-2"]
@@ -373,7 +373,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Check inventory availability",
+            "prompt": "Envanter uygunluğunu kontrol et",
             "action": "TELCO:get_inventory"
           },
           "next": ["node-3"]
@@ -381,7 +381,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Get products by speed",
+            "prompt": "Hıza göre ürünleri al",
             "action": "TELCO:get_product_by_speed"
           },
           "next": ["node-4"]
@@ -389,7 +389,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Provide available options and wait for user to select a product",
+            "prompt": "Mevcut seçenekleri sun ve kullanıcının ürün seçmesini bekle",
             "action": "PLATFORM:user_interaction"
           },
           "next": ["node-5"]
@@ -397,7 +397,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Allocate port and create order",
+            "prompt": "Port tahsis et ve sipariş oluştur",
             "action": "TELCO:port_allocation"
           },
           "next": ["node-6"]
@@ -405,7 +405,7 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Notify user about port unavailability and end process",
+            "prompt": "Kullanıcıyı port uygunsuzluğu hakkında bilgilendir ve işlemi sonlandır",
             "action": "PLATFORM:message_user"
           },
           "next": ["node-7"]
@@ -413,13 +413,13 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Complete — port not available",
+            "prompt": "Tamamla — port mevcut değil",
             "action": "PLATFORM:complete"
           },
           "next": null
         }
       ]
     },
-    "description": "This Blueprint defines an internet subscription workflow where port unavailability terminates the process. After retrieving the BBK number, checking inventory, and having the user select a speed package, a port allocation is attempted. If no port is available, the user is immediately notified and the workflow ends without configuration or connection steps."
+    "description": "Bu Şema, port uygunsuzluğunun süreci sonlandırdığı bir internet aboneliği iş akışını tanımlar. BBK numarası alındıktan, envanter kontrol edildikten ve kullanıcı bir hız paketi seçtikten sonra port tahsisi denenir. Port mevcut değilse kullanıcı anında bilgilendirilir ve iş akışı yapılandırma veya bağlantı adımları olmadan sona erer."
   }
 ]

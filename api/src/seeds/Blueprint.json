@@ -3,8 +3,8 @@
   "seed": [
     {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "title": "Basic Internet Subscription Setup",
-      "description": "This Blueprint defines an address-based internet subscription and installation workflow. The system checks port availability using the location's infrastructure number, ending immediately if unavailable. If available, the user selects a compatible speed package, a port is allocated, an order is created, and the user is notified before the port is configured and physically connected to complete the setup.",
+      "title": "Temel İnternet Aboneliği Kurulumu",
+      "description": "Bu Şema, adres tabanlı bir internet aboneliği ve kurulum iş akışını tanımlar. Sistem, port uygunluğunu konumun altyapı numarasını kullanarak kontrol eder ve mevcut değilse hemen sonlandırır. Mevcut ise kullanıcı uyumlu bir hız paketi seçer, bir port tahsis edilir, sipariş oluşturulur ve kullanıcı bilgilendirildikten sonra port yapılandırılır ve fiziksel olarak bağlanarak kurulum tamamlanır.",
       "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    CreateOrder(selectedProduct, User.Address)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
@@ -13,9 +13,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_bbk_by_address",
-            "description": "Retrieve BBK number based on the user's residential address information",
-            "prompt": "Get BBK by address",
-            "label": "Get BBK No by Address",
+            "description": "Kullanıcının konut adresi bilgisine dayanarak BBK numarasını al",
+            "prompt": "Adrese göre BBK al",
+            "label": "Adrese Göre BBK No Al",
             "icon": "mdi:map-marker",
             "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
@@ -27,9 +27,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_inventory",
-            "description": "Check inventory availability for the given BBK number and address",
-            "prompt": "Check inventory availability",
-            "label": "Get Inventory",
+            "description": "Verilen BBK numarası ve adres için envanter uygunluğunu kontrol et",
+            "prompt": "Envanter uygunluğunu kontrol et",
+            "label": "Envanter Al",
             "icon": "mdi:server",
             "pseudocode": "BEGIN_CONTEXT\ninventory = GetInventory(bbk)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
@@ -41,9 +41,9 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
-            "description": "Decide based on inventory availability whether to proceed with product selection",
-            "prompt": "Is inventory available?",
-            "label": "Check if product is available",
+            "description": "Ürün seçimine devam edilip edilmeyeceğine envanter uygunluğuna göre karar ver",
+            "prompt": "Envanter mevcut mu?",
+            "label": "Ürünün mevcut olup olmadığını kontrol et",
             "icon": "mdi:source-branch",
             "pseudocode": "BEGIN_CONTEXT\nIF inventory.Available == TRUE THEN\n    // handle true path\nELSE\n    // handle false path\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE"
           },
@@ -56,9 +56,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the process as complete when no products are available",
-            "prompt": "No product available, complete",
-            "label": "Complete",
+            "description": "Ürün mevcut olmadığında işlemi tamamlandı olarak işaretle",
+            "prompt": "Ürün mevcut değil, tamamla",
+            "label": "Tamamla",
             "icon": "mdi:check",
             "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
           },
@@ -70,9 +70,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_product_by_speed",
-            "description": "Retrieve available internet products based on speed requirements",
-            "prompt": "Get products by speed",
-            "label": "Get Product by Speed",
+            "description": "Hız gereksinimlerine göre mevcut internet ürünlerini getir",
+            "prompt": "Hıza göre ürünleri al",
+            "label": "Hıza Göre Ürün Al",
             "icon": "mdi:speedometer",
             "pseudocode": "BEGIN_CONTEXT\nproducts = GetProductBySpeed()\nEND_CONTEXT\n\nEND_MESSAGE"
           },
@@ -84,9 +84,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
-            "description": "Wait for user to select a product from the available options",
-            "prompt": "Provide available options and waiting for user to select a product",
-            "label": "User selected product",
+            "description": "Kullanıcının mevcut seçeneklerden bir ürün seçmesini bekle",
+            "prompt": "Mevcut seçenekleri sun ve kullanıcının ürün seçmesini bekle",
+            "label": "Kullanıcı ürün seçti",
             "icon": "mdi:user",
             "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection(products)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
@@ -98,9 +98,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_allocation",
-            "description": "Assign a port for the selected internet product and create an order",
-            "prompt": "Allocate port and create order",
-            "label": "Assign Port",
+            "description": "Seçilen internet ürünü için port ata ve sipariş oluştur",
+            "prompt": "Port tahsis et ve sipariş oluştur",
+            "label": "Port Ata",
             "icon": "mdi:link",
             "pseudocode": "BEGIN_CONTEXT\nport = PortAllocation(selectedProduct, User.Address)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
@@ -112,11 +112,11 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Notify user about port allocation completion",
-            "prompt": "Notify user about port allocation",
-            "label": "Notify Port Allocation",
+            "description": "Kullanıcıya port tahsisinin tamamlandığını bildir",
+            "prompt": "Kullanıcıyı port tahsisi hakkında bilgilendir",
+            "label": "Port Tahsisini Bildir",
             "icon": "mdi:bell",
-            "pseudocode": "BEGIN_CONTEXT\nMessageUser(\"Notify user about port allocation\")\nEND_CONTEXT\n\nEND_MESSAGE"
+            "pseudocode": "BEGIN_CONTEXT\nMessageUser(\"Kullanıcıyı port tahsisi hakkında bilgilendir\")\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -126,9 +126,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:configuration",
-            "description": "Configure the assigned port with necessary settings",
-            "prompt": "Configure allocated port",
-            "label": "Configure Port",
+            "description": "Atanan portu gerekli ayarlarla yapılandır",
+            "prompt": "Tahsis edilen portu yapılandır",
+            "label": "Portu Yapılandır",
             "icon": "mdi:settings",
             "pseudocode": "BEGIN_CONTEXT\nconfiguration = Configuration(port)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
@@ -140,9 +140,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_connection",
-            "description": "Connect the assigned port to the user's residence",
-            "prompt": "Connect port to residence",
-            "label": "Connect Port",
+            "description": "Atanan portu kullanıcının konutuna bağla",
+            "prompt": "Portu konuta bağla",
+            "label": "Portu Bağla",
             "icon": "mdi:ethernet",
             "pseudocode": "BEGIN_CONTEXT\nPortConnection(port)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
@@ -154,9 +154,9 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the internet subscription setup process as complete",
-            "prompt": "Complete setup flow",
-            "label": "Complete",
+            "description": "İnternet aboneliği kurulum sürecini tamamlandı olarak işaretle",
+            "prompt": "Kurulum akışını tamamla",
+            "label": "Tamamla",
             "icon": "mdi:check",
             "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
           },

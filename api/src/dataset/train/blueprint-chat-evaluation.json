@@ -1,22 +1,22 @@
 [
   {
-    "question": "Where is the parking lot?",
-    "answer": "The parking lot is located at the back of the building.",
+    "question": "Otopark nerede?",
+    "answer": "Otopark binanın arka tarafında bulunmaktadır.",
     "is_answer_known": true
   },
   {
-    "question": "How do I submit a vacation request?",
-    "answer": "You can ask your manager for a vacation request.",
+    "question": "İzin talebini nasıl gönderirim?",
+    "answer": "İzin talebi için müdürünüze başvurabilirsiniz.",
     "is_answer_known": false
   },
   {
-    "question": "What are the key components of an effective financial strategy?",
-    "answer": "The key components of an effective financial strategy are: 1. Cost reduction, 2. Revenue growth, 3. Profit maximization.",
+    "question": "Etkili bir finansal stratejinin temel bileşenleri nelerdir?",
+    "answer": "Etkili bir finansal stratejinin temel bileşenleri şunlardır: 1. Maliyet azaltma, 2. Gelir artışı, 3. Kâr maksimizasyonu.",
     "is_answer_known": true
   },
   {
-    "question": "What is the policy for handling customer complaints?",
-    "answer": "You can ask your manager for the policy for handling customer complaints.",
+    "question": "Müşteri şikayetlerini ele alma politikası nedir?",
+    "answer": "Müşteri şikayetlerini ele alma politikası için müdürünüze başvurabilirsiniz.",
     "is_answer_known": false
   }
 ]

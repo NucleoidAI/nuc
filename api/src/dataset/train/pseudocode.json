@@ -1,22 +1,22 @@
 [
   {
-    "content": "Check product availability, if not exist, create order.",
+    "content": "Ürün mevcudiyetini kontrol et, mevcut değilse sipariş oluştur.",
     "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n    Order.Create()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE"
   },
   {
-    "content": "Check the parking lot; if there are no spaces available, put the person in line.",
+    "content": "Otoparkı kontrol et; müsait yer yoksa kişiyi sıraya al.",
     "pseudocode": "BEGIN_CONTEXT\nIF ParkingLot.Spaces == 0 THEN\n    Queue.Add(Person)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE"
   },
   {
-    "content": "Human beings are mortal.",
+    "content": "İnsanlar ölümlüdür.",
     "pseudocode": "BEGIN_CONTEXT\nIF Entity.Type == Human THEN\n    Entity.IsMortal = TRUE\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE"
   },
   {
-    "content": "If it rains, the ground becomes wet.",
+    "content": "Yağmur yağarsa zemin ıslanır.",
     "pseudocode": "BEGIN_CONTEXT\nIF Weather == Rain THEN\n    Ground.State = Wet\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE"
   },
   {
-    "content": "If an employee works more than 40 hours in a week, they receive overtime pay.",
+    "content": "Bir çalışan haftada 40 saatten fazla çalışırsa fazla mesai ücreti alır.",
     "pseudocode": "BEGIN_CONTEXT\nIF Employee.WeeklyHours > 40 THEN\n    Employee.Pay += CalculateOvertime(Employee)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE"
   }
 ]

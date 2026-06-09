@@ -5,7 +5,7 @@
             "id": "ffd6dfa4-45ba-4da2-bc5c-5a529610b52f",
             "role": "ASSISTANT",
             "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-            "content": "Hi! I'm here to assist you with your coffee needs.",
+            "content": "Merhaba! Kahve ihtiyaçlarınızda size yardımcı olmak için buradayım.",
             "createdAt": "2023-08-05T12:00:00Z",
             "status": "READ",
             "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f"
@@ -14,7 +14,7 @@
             "id": "eef6dfa4-45ba-4da2-bc5c-5a529610b52f",
             "role": "USER",
             "userId": "1001",
-            "content": "How do I make a great iced Americano ?",
+            "content": "Mükemmel bir buzlu Americano nasıl yapılır?",
             "createdAt": "2023-08-05T12:00:10Z",
             "status": "READ",
             "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f"
@@ -23,7 +23,7 @@
             "id": "bbf6dfa4-45ba-4da2-bc5c-5a529610b52f",
             "role": "ASSISTANT",
             "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-            "content": "To make a great iced Americano, follow these steps:\n\n1. Brew a double shot of espresso.\n2. Fill a glass with ice cubes.\n3. Pour the hot espresso over the ice.\n4. Add cold water to taste, typically about equal to the amount of espresso.\n5. Stir and enjoy!",
+            "content": "Mükemmel bir buzlu Americano yapmak için şu adımları izleyin:\n\n1. Çift shot espresso demlayın.\n2. Bir bardağı buz küpleriyle doldurun.\n3. Sıcak espressoyu buzun üzerine dökün.\n4. Espresso miktarına yakın soğuk su ekleyin.\n5. Karıştırın ve tadını çıkarın!",
             "createdAt": "2023-08-05T12:00:20Z",
             "status": "READ",
             "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f"
@@ -41,7 +41,7 @@
             "id": "e2256e48-3a97-4bed-941c-aa9266044935",
             "role": "ASSISTANT",
             "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-            "content": "The Philips 5400 LatteGo is a great choice for making iced Americano. You can prepare great Americanos by setting the coffee intensity to the 3rd degree. Here are a few additional tips specific to your machine:\n\n1. Use freshly ground coffee beans.\n2. Use filtered water.\n3. Pre-chill your glass.\n4. Adjust water for stronger flavor.\n5. Try adding a splash of syrup or milk.",
+            "content": "Philips 5400 LatteGo, buzlu Americano yapmak için harika bir seçimdir. Kahve yoğunluğunu 3. dereceye ayarlayarak harika Americanolar hazırlayabilirsiniz. Makinenize özel birkaç ek ipucu:\n\n1. Taze çekilmiş kahve çekirdeği kullanın.\n2. Filtrelenmiş su kullanın.\n3. Bardağınızı önceden soğutun.\n4. Daha güçlü bir tat için suyu ayarlayın.\n5. Bir tutam şurup veya süt eklemeyi deneyin.",
             "createdAt": "2023-08-05T12:00:40Z",
             "status": "READ",
             "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f"
@@ -50,7 +50,7 @@
             "id": "a5423326-9c64-4413-b6c7-5abbb3da6001",
             "role": "USER",
             "userId": "1001",
-            "content": "Thanks for the tips!",
+            "content": "İpuçları için teşekkürler!",
             "createdAt": "2023-08-05T12:00:45.000Z",
             "status": "READ",
             "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
@@ -60,7 +60,7 @@
             "id": "8a7d99a4-6ca8-41c2-aa0c-2631e6d51fb6",
             "role": "ASSISTANT",
             "agentId": "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
-            "content": "How can I assist you today?",
+            "content": "Bugün size nasıl yardımcı olabilirim?",
             "createdAt": "2023-08-05T12:00:00Z",
             "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729"
         },
@@ -68,7 +68,7 @@
             "id": "f2edf125-d4c5-40cd-aede-8b08c6900ccd",
             "role": "USER",
             "userId": "1001",
-            "content": "How can I improve my company's cash flow management?",
+            "content": "Şirketimin nakit akışı yönetimini nasıl iyileştirebilirim?",
             "createdAt": "2023-08-05T12:00:10Z",
             "status": "READ",
             "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729"
@@ -77,7 +77,7 @@
             "id": "70811003-d2a8-4698-98d9-10fc05badaa2",
             "role": "ASSISTANT",
             "agentId": "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
-            "content": "Improving cash flow management involves several strategies. Here are a few key steps:\n\n1. Monitor your cash flow regularly.\n2. Optimize your billing process to reduce delays.\n3. Negotiate better terms with suppliers.\n4. Manage your inventory efficiently.\n5. Consider short-term financing options.",
+            "content": "Nakit akışı yönetimini iyileştirmek çeşitli stratejiler gerektirir. İşte birkaç temel adım:\n\n1. Nakit akışınızı düzenli olarak takip edin.\n2. Gecikmeleri azaltmak için faturalama sürecinizi optimize edin.\n3. Tedarikçilerle daha iyi koşullar müzakere edin.\n4. Envanterinizi etkin biçimde yönetin.\n5. Kısa vadeli finansman seçeneklerini değerlendirin.",
             "createdAt": "2023-08-05T12:00:20Z",
             "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729"
         },
@@ -93,7 +93,7 @@
             "id": "7e2c9dc1-6ee7-448f-9bc7-e814d59f72ee",
             "role": "USER",
             "userId": "1001",
-            "content": "Can you provide specific tips for optimizing the billing process?",
+            "content": "Faturalama sürecini optimize etmek için özel ipuçları verebilir misiniz?",
             "createdAt": "2023-08-05T12:00:40Z",
             "status": "READ",
             "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729"
@@ -102,7 +102,7 @@
             "id": "58e85ef5-185f-46f5-a60c-e0ada3bedd35",
             "role": "ASSISTANT",
             "agentId": "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
-            "content": "Absolutely! Here are some tips to optimize your billing process:\n\n1. Automate invoicing to reduce errors and save time.\n2. Send invoices promptly and follow up on overdue payments.\n3. Offer multiple payment methods to make it easier for clients.\n4. Set clear payment terms and conditions.\n5. Keep track of outstanding invoices and manage receivables proactively.",
+            "content": "Kesinlikle! Faturalama sürecinizi optimize etmek için bazı ipuçları:\n\n1. Hata azaltmak ve zaman kazanmak için faturalamayı otomatikleştirin.\n2. Faturaları zamanında gönderin ve vadesi geçmiş ödemeleri takip edin.\n3. Müşterilerin kolayca ödeme yapabilmesi için birden fazla ödeme yöntemi sunun.\n4. Net ödeme koşulları ve şartları belirleyin.\n5. Bekleyen faturaları takip edin ve alacakları proaktif olarak yönetin.",
             "createdAt": "2023-08-05T12:00:50Z",
             "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729"
         },
@@ -110,7 +110,7 @@
             "id": "4300b489-0b75-4c5f-aed4-18d6b5758090",
             "role": "USER",
             "userId": "1001",
-            "content": "Thank you !",
+            "content": "Teşekkür ederim!",
             "createdAt": "2023-08-05T13:00:00Z",
             "status": "RECEIVED",
             "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729"
@@ -119,7 +119,7 @@
             "id": "fdce5ab7-bc4c-41a1-93bc-7a63f5203ed3",
             "role": "USER",
             "userId": "1001",
-            "content": "Have a good day",
+            "content": "İyi günler",
             "createdAt": "2023-08-05T13:10:00Z",
             "status": "RECEIVED",
             "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729"

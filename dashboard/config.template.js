@@ -20,10 +20,10 @@ const templateConfig = {
   login: {
     variant: "modern",
     image:
-      "https://upload.wikimedia.org/wikipedia/commons/9/9f/T%C3%BCrk_Telekom_logo.svg",
-    icon: "https://upload.wikimedia.org/wikipedia/commons/9/9f/T%C3%BCrk_Telekom_logo.svg",
+      "https://companieslogo.com/img/orig/TTKOM.IS-802a5da1.png?t=1720244494",
+    icon: "https://companieslogo.com/img/orig/TTKOM.IS-802a5da1.png?t=1720244494",
     largeIcon:
-      "https://upload.wikimedia.org/wikipedia/commons/9/9f/T%C3%BCrk_Telekom_logo.svg",
+      "https://companieslogo.com/img/orig/TTKOM.IS-802a5da1.png?t=1720244494",
   },
   projectBar: {
     label: "Team",

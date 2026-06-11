@@ -34,7 +34,7 @@
       "device_card_no": "1",
       "hgw_serial_no": "HGW001",
       "device_serial_number": "123",
-      "speed_limit": "16mbps"
+      "speed_limit": "1000mbps"
     },
     {
       "bbk_no": "988",
@@ -44,7 +44,7 @@
       "device_card_no": "16",
       "hgw_serial_no": "HGW002",
       "device_serial_number": "HWTC495AE59E",
-      "speed_limit": "8mbps"
+      "speed_limit": "1000mbps"
     },
     {
       "bbk_no": "989",
@@ -54,7 +54,7 @@
       "device_card_no": "3",
       "hgw_serial_no": "HGW003",
       "device_serial_number": "789",
-      "speed_limit": "24mbps"
+      "speed_limit": "1000mbps"
     },
     {
       "bbk_no": "990",
@@ -64,39 +64,39 @@
       "device_card_no": "4",
       "hgw_serial_no": "HGW004",
       "device_serial_number": "1234567890",
-      "speed_limit": "16mbps"
+      "speed_limit": "1000mbps"
     }
   ],
   "ports": [
     {
       "port_no": "1",
       "status": "Allocated",
-      "speed_limit": "16mbps",
+      "speed_limit": "1000mbps",
       "bbk_no": "987"
     },
     {
       "port_no": "3",
       "status": "Allocated",
-      "speed_limit": "24mbps",
+      "speed_limit": "1000mbps",
       "bbk_no": "989"
     },
     {
       "port_no": "5",
       "status": "Available",
-      "speed_limit": "24mbps",
+      "speed_limit": "1000mbps",
       "bbk_no": "989"
     },
     {
       "bbk_no": "988",
       "port_no": "4",
       "status": "Available",
-      "speed_limit": "8mbps"
+      "speed_limit": "1000mbps"
     },
     {
       "bbk_no": "990",
       "port_no": "9",
       "status": "Available",
-      "speed_limit": "16mbps"
+      "speed_limit": "1000mbps"
     }
   ],
   "port_allocations": [
@@ -106,7 +106,7 @@
       "bbk_no": "987",
       "port_no": "1",
       "status": "Connected",
-      "speed_limit": "16mbps"
+      "speed_limit": "1000mbps"
     },
     {
       "device_serial_number": "789",
@@ -114,39 +114,39 @@
       "bbk_no": "989",
       "port_no": "3",
       "status": "Connected",
-      "speed_limit": "16mbps"
+      "speed_limit": "1000mbps"
     }
   ],
   "products": [
     {
-      "speed_limit": "8mbps",
-      "product_description": "8 Mbps Internet 12 Months Unlimited",
-      "speed_profile": "51200/8192"
+      "speed_limit": "1000mbps",
+      "product_description": "1000 Mbps İnternet 12 Ay Sınırsız",
+      "speed_profile": "1024000/1024000"
     },
     {
-      "speed_limit": "8mbps",
-      "product_description": "8 Mbps Internet 6 Months Unlimited",
-      "speed_profile": "51200/8192"
+      "speed_limit": "1000mbps",
+      "product_description": "1000 Mbps İnternet 6 Ay Sınırsız",
+      "speed_profile": "1024000/1024000"
     },
     {
-      "speed_limit": "16mbps",
-      "product_description": "16 Mbps Internet 12 Months Unlimited",
-      "speed_profile": "8192/16384"
+      "speed_limit": "1000mbps",
+      "product_description": "1000 Mbps İnternet 12 Ay Sınırsız",
+      "speed_profile": "1024000/1024000"
     },
     {
-      "speed_limit": "16mbps",
-      "speed_profile": "8192/16384",
-      "product_description": "16 Mbps Internet 6 Months Unlimited"
+      "speed_limit": "1000mbps",
+      "speed_profile": "1024000/1024000",
+      "product_description": "1000 Mbps İnternet 6 Ay Sınırsız"
     },
     {
-      "speed_limit": "24mbps",
-      "speed_profile": "102400/51200",
-      "product_description": "24 Mbps Internet 12 Months Unlimited"
+      "speed_limit": "1000mbps",
+      "speed_profile": "1024000/1024000",
+      "product_description": "1000 Mbps İnternet 12 Ay Sınırsız"
     },
     {
-      "speed_limit": "24mbps",
-      "speed_profile": "102400/51200",
-      "product_description": "24 Mbps Internet 6 Months Unlimited"
+      "speed_limit": "1000mbps",
+      "speed_profile": "1024000/1024000",
+      "product_description": "1000 Mbps İnternet 6 Ay Sınırsız"
     }
   ]
 }

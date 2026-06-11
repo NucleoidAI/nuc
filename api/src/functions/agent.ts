@@ -268,7 +268,7 @@ async function task({ taskId }: { taskId: string }) {
         sessionId,
         agentId,
         role: "ASSISTANT",
-        content: "Task has been completed.",
+        content: "Görev tamamlandı.",
       });
     }
 
@@ -301,7 +301,7 @@ async function task({ taskId }: { taskId: string }) {
         sessionId,
         agentId,
         role: "ASSISTANT",
-        content: comment || "Task has been completed.",
+        content: comment || "Görev tamamlandı.",
       });
     }
 

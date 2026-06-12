@@ -2,7 +2,7 @@
   "name": "greycollar",
   "version": "0.0.15",
   "description": "GreyCollar is a supervised agentic AI platform designed to automate tasks, manage workflows, and provide insights.",
-  "main": "server.ts",
+  "main": "link-server",
   "author": "GreyCollar Team",
   "private": "true",
   "scripts": {
@@ -11,7 +11,7 @@
     "debug:mcp": "cd ./mcp && bun run debug",
     "dev:api": "cd ./api && bun run dev",
     "dev:dashboard": "cd ./dashboard && bun run dev",
-    "dev:main": "bun run server.ts",
+    "dev:main": "link-server",
     "dev": "concurrently -n \"events,api,dashboard,communication\" \"bun run dev:events\" \"bun run dev:api\" \"bun run dev:dashboard\" \"bun run dev:communication\"",
     "install:dashboard": "cd ./dashboard && bun install",
     "install:communication": "cd ./communication && bun install",
@@ -34,13 +34,14 @@
     "build:server-dashboard": "cd ./server-dashboard && bun run build",
     "serve:api": "cd ./api && bun server.ts",
     "preserve": "cd ./mcp && bun run db:reset",
-    "serve": "concurrently -n \"main,api\" \"DASHBOARD_DIST=./dashboard/dist bun run server.ts\" \"bun run serve:api\"",
+    "serve": "concurrently -n \"main,api\" \"link-server \" \"bun run serve:api\"",
     "lint:dashboard": "cd ./dashboard && bun run lint",
     "lint": "bun run lint:dashboard",
     "typecheck:dashboard": "cd ./dashboard && bun run typecheck",
     "typecheck": "bun run typecheck:dashboard"
   },
   "dependencies": {
+    "@canmingir/link": "^1.2.48",
     "concurrently": "^9.1.2"
   },
   "devDependencies": {

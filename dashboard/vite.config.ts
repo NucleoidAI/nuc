@@ -1,6 +1,6 @@
+import type { Connect } from "vite";
 import { defineConfig } from "vite";
 import { vite } from "@canmingir/link/vite";
-import type { Connect } from "vite";
 
 const redirectRoot: {
   name: string;

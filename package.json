@@ -2,7 +2,7 @@
   "name": "greycollar",
   "version": "0.0.15",
   "description": "GreyCollar is a supervised agentic AI platform designed to automate tasks, manage workflows, and provide insights.",
-  "main": "server.js",
+  "main": "server.ts",
   "author": "GreyCollar Team",
   "private": "true",
   "scripts": {
@@ -11,8 +11,8 @@
     "debug:mcp": "cd ./mcp && bun run debug",
     "dev:api": "cd ./api && bun run dev",
     "dev:dashboard": "cd ./dashboard && bun run dev",
-    "dev:main": "bun run server.js",
-    "dev": "concurrently -n \"events,main,api,dashboard,communication\" \"bun run dev:events\" \"bun run server.js\" \"bun run dev:api\" \"bun run dev:dashboard\" \"bun run dev:communication\"",
+    "dev:main": "bun run server.ts",
+    "dev": "concurrently -n \"events,api,dashboard,communication\" \"bun run dev:events\" \"bun run dev:api\" \"bun run dev:dashboard\" \"bun run dev:communication\"",
     "install:dashboard": "cd ./dashboard && bun install",
     "install:communication": "cd ./communication && bun install",
     "install:server-dashboard": "cd ./server-dashboard && bun install",
@@ -34,16 +34,16 @@
     "build:server-dashboard": "cd ./server-dashboard && bun run build",
     "serve:api": "cd ./api && bun server.ts",
     "preserve": "cd ./mcp && bun run db:reset",
-    "serve": "concurrently -n \"main,api,dashboard\" \"bun run server.js\" \"bun run serve:api\" \"bunx @nucleoidai/http-server start --port 5173\"",
+    "serve": "concurrently -n \"main,api\" \"DASHBOARD_DIST=./dashboard/dist bun run server.ts\" \"bun run serve:api\"",
     "lint:dashboard": "cd ./dashboard && bun run lint",
     "lint": "bun run lint:dashboard",
     "typecheck:dashboard": "cd ./dashboard && bun run typecheck",
     "typecheck": "bun run typecheck:dashboard"
   },
   "dependencies": {
-    "concurrently": "^9.1.2",
-    "cors": "^2.8.5",
-    "express": "^4.21.2",
-    "http-proxy-middleware": "^3.0.3"
+    "concurrently": "^9.1.2"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.14"
   }
 }

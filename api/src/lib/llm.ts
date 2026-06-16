@@ -78,6 +78,7 @@ async function generate({
   return await llm.generate({
     model,
     messages,
+    cacheable: [policy, dataset].filter(Boolean),
     temperature,
     max_tokens,
   });

@@ -27,18 +27,39 @@ function extractJsonFormat(systemPrompts: { text: string }[]): string | null {
   return null;
 }
 
+function supportsPromptCaching(modelId: string): boolean {
+  return (
+    /anthropic\.claude-(opus-4|sonnet-4|haiku-4|3-7-sonnet)/.test(modelId) ||
+    /amazon\.nova-/.test(modelId)
+  );
+}
+
 async function generate({
   model = process.env.PLATFORM_LLM_MODEL || "meta.llama3-3-70b-instruct-v1:0",
   messages = [],
+  cacheable = [],
 }: {
   model?: string;
   messages?: { role: "user" | "assistant" | "system"; content: string }[];
+  cacheable?: { role: "system"; content: string }[];
 }) {
-  const systemPrompts: { text: string }[] = [];
+  const cacheableContents = new Set(cacheable.map((m) => m.content));
+  const systemPrompts: (
+    | { text: string }
+    | { cachePoint: { type: "default" } }
+  )[] = [];
   const conversationMessages: Message[] = [];
+
+  for (const c of cacheable) {
+    systemPrompts.push({ text: c.content });
+  }
+  if (cacheable.length > 0 && supportsPromptCaching(model)) {
+    systemPrompts.push({ cachePoint: { type: "default" } });
+  }
 
   for (const msg of messages) {
     if (msg.role === "system") {
+      if (cacheableContents.has(msg.content)) continue;
       systemPrompts.push({ text: msg.content });
     } else {
       conversationMessages.push({
@@ -48,7 +69,9 @@ async function generate({
     }
   }
 
-  const jsonFormat = extractJsonFormat(systemPrompts);
+  const jsonFormat = extractJsonFormat(
+    systemPrompts.filter((p): p is { text: string } => "text" in p),
+  );
 
   const command = new ConverseCommand({
     modelId: model,
@@ -79,10 +102,20 @@ async function generate({
   const response = await bedrock.send(command);
 
   if (response.usage) {
-    const { inputTokens, outputTokens } = response.usage;
+    const {
+      inputTokens,
+      outputTokens,
+      cacheReadInputTokens,
+      cacheWriteInputTokens,
+    } = response.usage as typeof response.usage & {
+      cacheReadInputTokens?: number;
+      cacheWriteInputTokens?: number;
+    };
     console.info({
       prompt_tokens: inputTokens,
       completion_tokens: outputTokens,
+      cache_read_tokens: cacheReadInputTokens ?? 0,
+      cache_write_tokens: cacheWriteInputTokens ?? 0,
     });
   }
 

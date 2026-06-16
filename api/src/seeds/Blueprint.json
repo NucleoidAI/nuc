@@ -4,7 +4,7 @@
     {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
-      "description": "This Blueprint defines an address-based internet subscription and installation workflow. The system checks port availability using the location's infrastructure number, ending immediately if unavailable. If available, the user selects a compatible speed package, a port is allocated, an order is created, and the user is notified before the port is configured and physically connected to complete the setup.",
+      "description": "• Checks port availability at the user's residential address\n• Presents compatible internet speed packages for user selection\n• Allocates a port and creates the subscription order\n• Notifies the user and completes port configuration and physical connection",
       "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    CreateOrder(selectedProduct, User.Address)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
@@ -13,7 +13,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_bbk_by_address",
-            "description": "Retrieve BBK number based on the user's residential address information",
+            "description": "• Resolves the BBK number for a given residential address\n• Identifies the corresponding network access point",
             "prompt": "Get BBK by address",
             "label": "Get BBK No by Address",
             "icon": "mdi:map-marker",
@@ -27,7 +27,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_inventory",
-            "description": "Check inventory availability for the given BBK number and address",
+            "description": "• Queries available port inventory at the resolved BBK location\n• Returns availability status to gate the next workflow step",
             "prompt": "Check inventory availability",
             "label": "Get Inventory",
             "icon": "mdi:server",
@@ -41,7 +41,7 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
-            "description": "Decide based on inventory availability whether to proceed with product selection",
+            "description": "• Evaluates inventory availability status\n• Routes to product selection if available, terminates early if not",
             "prompt": "Is inventory available?",
             "label": "Check if product is available",
             "icon": "mdi:source-branch",
@@ -56,7 +56,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the process as complete when no products are available",
+            "description": "• Ends the workflow when no port inventory is available at the user's address",
             "prompt": "No product available, complete",
             "label": "Complete",
             "icon": "mdi:check",
@@ -70,7 +70,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_product_by_speed",
-            "description": "Retrieve available internet products based on speed requirements",
+            "description": "• Fetches the internet product catalog filtered by compatible speed tiers\n• Prepares available options to present to the user",
             "prompt": "Get products by speed",
             "label": "Get Product by Speed",
             "icon": "mdi:speedometer",
@@ -84,7 +84,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
-            "description": "Wait for user to select a product from the available options",
+            "description": "• Presents available product options to the user\n• Pauses the workflow until the user makes a selection",
             "prompt": "Provide available options and waiting for user to select a product",
             "label": "User selected product",
             "icon": "mdi:user",
@@ -98,7 +98,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_allocation",
-            "description": "Assign a port for the selected internet product and create an order",
+            "description": "• Reserves a network port for the user's selected product\n• Ties the port reservation to the user's address",
             "prompt": "Allocate port and create order",
             "label": "Assign Port",
             "icon": "mdi:link",
@@ -112,7 +112,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Notify user about port allocation completion",
+            "description": "• Sends a confirmation notification to the user\n• Confirms that port allocation has been completed successfully",
             "prompt": "Notify user about port allocation",
             "label": "Notify Port Allocation",
             "icon": "mdi:bell",
@@ -126,7 +126,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:configuration",
-            "description": "Configure the assigned port with necessary settings",
+            "description": "• Applies network configuration parameters to the allocated port\n• Makes the port service-ready for physical connection",
             "prompt": "Configure allocated port",
             "label": "Configure Port",
             "icon": "mdi:settings",
@@ -140,7 +140,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_connection",
-            "description": "Connect the assigned port to the user's residence",
+            "description": "• Establishes the physical network connection to the user's premises\n• Activates the service at the residential address",
             "prompt": "Connect port to residence",
             "label": "Connect Port",
             "icon": "mdi:ethernet",
@@ -154,7 +154,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the internet subscription setup process as complete",
+            "description": "• Marks the entire subscription setup workflow as successfully completed",
             "prompt": "Complete setup flow",
             "label": "Complete",
             "icon": "mdi:check",

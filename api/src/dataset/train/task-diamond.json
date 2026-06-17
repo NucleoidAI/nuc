@@ -1,5 +1,4 @@
 {
-  "blocking": "true",
   "data": [
     {
       "id": "0cbfbecd-5e0d-4924-b5fd-6de262285936",
@@ -20,7 +19,9 @@
               "icon": "mdi:check",
               "prompt": "Check Product Availability"
             },
-            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+            "next": [
+              "51dca395-1d90-4a28-9bbc-233de9c1a207"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -31,8 +32,12 @@
               "icon": "mdi:source-branch",
               "prompt": "Make Decision"
             },
-            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
-            "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
+            "true": [
+              "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
+            ],
+            "false": [
+              "5be22de7-9673-448d-a1b5-dc23a8789b5c"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -114,6 +119,25 @@
           "status": "COMPLETED",
           "createdAt": "1970-01-20T22:08:14.337Z"
         }
+      ],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
       ],
       "steps": [
         {
@@ -216,7 +240,9 @@
               "icon": "mdi:map-marker",
               "prompt": "Get User Address"
             },
-            "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
+            "next": [
+              "76ccda2d-f11f-408c-8087-66c377600d0b"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -227,7 +253,9 @@
               "icon": "mdi:map-marker",
               "prompt": "Get BBK No by Address"
             },
-            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+            "next": [
+              "51dca395-1d90-4a28-9bbc-233de9c1a207"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -238,7 +266,9 @@
               "icon": "mdi:server",
               "prompt": "Get Inventory"
             },
-            "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
+            "next": [
+              "019b209c-2e5a-777f-a04a-11960363fb25"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -249,8 +279,12 @@
               "icon": "mdi:source-branch",
               "prompt": "Is inventory available?"
             },
-            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
-            "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
+            "true": [
+              "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
+            ],
+            "false": [
+              "019b20a6-1aa6-7510-b222-66535e50dfb3"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -272,7 +306,9 @@
               "icon": "mdi:speedometer",
               "prompt": "Get products by speed"
             },
-            "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
+            "next": [
+              "019c8a58-10e3-713f-9484-78d04923040f"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -283,7 +319,9 @@
               "icon": "mdi:cursor-pointer",
               "prompt": "Provide available products and wait for user to select a product"
             },
-            "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
+            "next": [
+              "019b3302-7846-75c2-9ab7-897c18b8ccee"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -294,7 +332,9 @@
               "icon": "mdi:link",
               "prompt": "Allocate port and create order"
             },
-            "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+            "next": [
+              "019b3305-7846-75c2-9ab7-897c18b8cce1"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -305,7 +345,9 @@
               "icon": "mdi:bell",
               "prompt": "Notify user about port allocation"
             },
-            "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
+            "next": [
+              "019b209e-3122-75ce-9ba6-674b6184f68d"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -316,7 +358,9 @@
               "icon": "mdi:settings",
               "prompt": "Configure allocated port"
             },
-            "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
+            "next": [
+              "019b32f6-5878-73fb-8411-55916778d9a4"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -327,7 +371,9 @@
               "icon": "mdi:ethernet",
               "prompt": "Connect port to residence"
             },
-            "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
+            "next": [
+              "019b32f6-bd02-734e-bd3a-aec89d79609c"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -344,6 +390,25 @@
         ]
       },
       "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
       "steps": [
         {
           "taskId": "c99hh389-e6h4-66fe-b1h0-g1g867804668",
@@ -413,7 +478,9 @@
               "icon": "mdi:map-marker",
               "prompt": "Get User Address"
             },
-            "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
+            "next": [
+              "76ccda2d-f11f-408c-8087-66c377600d0b"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -424,7 +491,9 @@
               "icon": "mdi:map-marker",
               "prompt": "Get BBK No by Address"
             },
-            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+            "next": [
+              "51dca395-1d90-4a28-9bbc-233de9c1a207"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -435,7 +504,9 @@
               "icon": "mdi:server",
               "prompt": "Get Inventory"
             },
-            "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
+            "next": [
+              "019b209c-2e5a-777f-a04a-11960363fb25"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -446,8 +517,12 @@
               "icon": "mdi:source-branch",
               "prompt": "Is inventory available?"
             },
-            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
-            "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
+            "true": [
+              "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
+            ],
+            "false": [
+              "019b20a6-1aa6-7510-b222-66535e50dfb3"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -469,7 +544,9 @@
               "icon": "mdi:speedometer",
               "prompt": "Get products by speed"
             },
-            "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
+            "next": [
+              "019c8a58-10e3-713f-9484-78d04923040f"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -480,7 +557,9 @@
               "icon": "mdi:cursor-pointer",
               "prompt": "Provide available products and wait for user to select a product"
             },
-            "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
+            "next": [
+              "019b3302-7846-75c2-9ab7-897c18b8ccee"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -491,7 +570,9 @@
               "icon": "mdi:link",
               "prompt": "Allocate port and create order"
             },
-            "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+            "next": [
+              "019b3305-7846-75c2-9ab7-897c18b8cce1"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -502,7 +583,9 @@
               "icon": "mdi:bell",
               "prompt": "Notify user about port allocation"
             },
-            "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
+            "next": [
+              "019b209e-3122-75ce-9ba6-674b6184f68d"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -513,7 +596,9 @@
               "icon": "mdi:settings",
               "prompt": "Configure allocated port"
             },
-            "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
+            "next": [
+              "019b32f6-5878-73fb-8411-55916778d9a4"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -524,7 +609,9 @@
               "icon": "mdi:ethernet",
               "prompt": "Connect port to residence"
             },
-            "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
+            "next": [
+              "019b32f6-bd02-734e-bd3a-aec89d79609c"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -541,6 +628,25 @@
         ]
       },
       "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
       "steps": [
         {
           "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
@@ -698,7 +804,9 @@
               "icon": "mdi:map-marker",
               "prompt": "Get User Address"
             },
-            "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
+            "next": [
+              "76ccda2d-f11f-408c-8087-66c377600d0b"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -709,7 +817,9 @@
               "icon": "mdi:map-marker",
               "prompt": "Get BBK No by Address"
             },
-            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+            "next": [
+              "51dca395-1d90-4a28-9bbc-233de9c1a207"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -720,7 +830,9 @@
               "icon": "mdi:server",
               "prompt": "Get Inventory"
             },
-            "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
+            "next": [
+              "019b209c-2e5a-777f-a04a-11960363fb25"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -731,8 +843,12 @@
               "icon": "mdi:source-branch",
               "prompt": "Is inventory available?"
             },
-            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
-            "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
+            "true": [
+              "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
+            ],
+            "false": [
+              "019b20a6-1aa6-7510-b222-66535e50dfb3"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -754,7 +870,9 @@
               "icon": "mdi:speedometer",
               "prompt": "Get products by speed"
             },
-            "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
+            "next": [
+              "019c8a58-10e3-713f-9484-78d04923040f"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -765,7 +883,9 @@
               "icon": "mdi:cursor-pointer",
               "prompt": "Provide available products and wait for user to select a product"
             },
-            "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
+            "next": [
+              "019b3302-7846-75c2-9ab7-897c18b8ccee"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -776,7 +896,9 @@
               "icon": "mdi:link",
               "prompt": "Allocate port and create order"
             },
-            "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+            "next": [
+              "019b3305-7846-75c2-9ab7-897c18b8cce1"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -787,7 +909,9 @@
               "icon": "mdi:bell",
               "prompt": "Notify user about port allocation"
             },
-            "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
+            "next": [
+              "019b209e-3122-75ce-9ba6-674b6184f68d"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -798,7 +922,9 @@
               "icon": "mdi:settings",
               "prompt": "Configure allocated port"
             },
-            "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
+            "next": [
+              "019b32f6-5878-73fb-8411-55916778d9a4"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -809,7 +935,9 @@
               "icon": "mdi:ethernet",
               "prompt": "Connect port to residence"
             },
-            "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
+            "next": [
+              "019b32f6-bd02-734e-bd3a-aec89d79609c"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -826,6 +954,25 @@
         ]
       },
       "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
       "steps": [
         {
           "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
@@ -967,7 +1114,9 @@
               "icon": "mdi:credit-card",
               "prompt": "Process Payment"
             },
-            "next": ["node-pay-002"],
+            "next": [
+              "node-pay-002"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -978,7 +1127,9 @@
               "icon": "mdi:check",
               "prompt": "Update Order Status"
             },
-            "next": ["node-pay-003"],
+            "next": [
+              "node-pay-003"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -989,7 +1140,9 @@
               "icon": "mdi:bell",
               "prompt": "Notify User"
             },
-            "next": ["node-pay-004"],
+            "next": [
+              "node-pay-004"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1006,6 +1159,25 @@
         ]
       },
       "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
       "steps": [
         {
           "taskId": "task-pay-001",
@@ -1068,7 +1240,9 @@
               "icon": "mdi:account",
               "prompt": "Get Employee Record"
             },
-            "next": ["node-hr-002"],
+            "next": [
+              "node-hr-002"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1079,7 +1253,9 @@
               "icon": "mdi:currency-usd",
               "prompt": "Update Salary"
             },
-            "next": ["node-hr-003"],
+            "next": [
+              "node-hr-003"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1090,7 +1266,9 @@
               "icon": "mdi:email",
               "prompt": "Notify Payroll"
             },
-            "next": ["node-hr-004"],
+            "next": [
+              "node-hr-004"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1107,6 +1285,25 @@
         ]
       },
       "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
       "steps": [
         {
           "taskId": "task-hr-001",
@@ -1157,7 +1354,9 @@
               "icon": "mdi:account-group",
               "prompt": "Get Customer Segment"
             },
-            "next": ["node-email-002"],
+            "next": [
+              "node-email-002"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1168,7 +1367,9 @@
               "icon": "mdi:email-edit",
               "prompt": "Create Campaign"
             },
-            "next": ["node-email-003"],
+            "next": [
+              "node-email-003"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1179,7 +1380,9 @@
               "icon": "mdi:send",
               "prompt": "Send Campaign"
             },
-            "next": ["node-email-004"],
+            "next": [
+              "node-email-004"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1196,6 +1399,25 @@
         ]
       },
       "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
       "steps": [
         {
           "taskId": "task-email-001",
@@ -1265,7 +1487,9 @@
               "icon": "mdi:account-plus",
               "prompt": "Create User"
             },
-            "next": ["node-auth-002"],
+            "next": [
+              "node-auth-002"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1276,7 +1500,9 @@
               "icon": "mdi:shield-account",
               "prompt": "Assign Role"
             },
-            "next": ["node-auth-003"],
+            "next": [
+              "node-auth-003"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1287,7 +1513,9 @@
               "icon": "mdi:bell",
               "prompt": "Notify User"
             },
-            "next": ["node-auth-004"],
+            "next": [
+              "node-auth-004"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1304,6 +1532,25 @@
         ]
       },
       "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
       "steps": [
         {
           "taskId": "task-auth-001",
@@ -1355,7 +1602,9 @@
               "icon": "mdi:file-chart",
               "prompt": "Generate Report"
             },
-            "next": ["node-erp-002"],
+            "next": [
+              "node-erp-002"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1366,7 +1615,9 @@
               "icon": "mdi:cloud-upload",
               "prompt": "Upload to Storage"
             },
-            "next": ["node-erp-003"],
+            "next": [
+              "node-erp-003"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1377,7 +1628,9 @@
               "icon": "mdi:email",
               "prompt": "Notify Team"
             },
-            "next": ["node-erp-004"],
+            "next": [
+              "node-erp-004"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1394,6 +1647,25 @@
         ]
       },
       "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
       "steps": [
         {
           "taskId": "task-erp-001",
@@ -1456,7 +1728,9 @@
               "icon": "mdi:card-account-details",
               "prompt": "Get Subscription"
             },
-            "next": ["node-sub-002"],
+            "next": [
+              "node-sub-002"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1467,7 +1741,9 @@
               "icon": "mdi:cancel",
               "prompt": "Cancel Subscription"
             },
-            "next": ["node-sub-003"],
+            "next": [
+              "node-sub-003"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1478,7 +1754,9 @@
               "icon": "mdi:cash-refund",
               "prompt": "Process Refund"
             },
-            "next": ["node-sub-004"],
+            "next": [
+              "node-sub-004"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1489,7 +1767,9 @@
               "icon": "mdi:bell",
               "prompt": "Notify User"
             },
-            "next": ["node-sub-005"],
+            "next": [
+              "node-sub-005"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1506,6 +1786,25 @@
         ]
       },
       "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
       "steps": [
         {
           "taskId": "task-sub-001",
@@ -1585,7 +1884,9 @@
               "icon": "mdi:package-variant",
               "prompt": "Get Products from ERP"
             },
-            "next": ["node-sync-002"],
+            "next": [
+              "node-sync-002"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1596,7 +1897,9 @@
               "icon": "mdi:store",
               "prompt": "Sync to E-commerce"
             },
-            "next": ["node-sync-003"],
+            "next": [
+              "node-sync-003"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1613,6 +1916,25 @@
         ]
       },
       "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
       "steps": [
         {
           "taskId": "task-sync-001",
@@ -1673,7 +1995,9 @@
               "icon": "mdi:warehouse",
               "prompt": "Check Stock Level"
             },
-            "next": ["node-wms-002"],
+            "next": [
+              "node-wms-002"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1684,7 +2008,9 @@
               "icon": "mdi:transfer",
               "prompt": "Transfer Stock"
             },
-            "next": ["node-wms-003"],
+            "next": [
+              "node-wms-003"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1701,6 +2027,25 @@
         ]
       },
       "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
       "steps": [
         {
           "taskId": "task-wms-001",
@@ -1764,7 +2109,9 @@
               "icon": "mdi:map-marker",
               "prompt": "Get User Address"
             },
-            "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
+            "next": [
+              "76ccda2d-f11f-408c-8087-66c377600d0b"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1775,7 +2122,9 @@
               "icon": "mdi:map-marker",
               "prompt": "Get BBK No by Address"
             },
-            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+            "next": [
+              "51dca395-1d90-4a28-9bbc-233de9c1a207"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1786,7 +2135,9 @@
               "icon": "mdi:server",
               "prompt": "Get Inventory"
             },
-            "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
+            "next": [
+              "019b209c-2e5a-777f-a04a-11960363fb25"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1797,8 +2148,12 @@
               "icon": "mdi:source-branch",
               "prompt": "Check if product is available"
             },
-            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
-            "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
+            "true": [
+              "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
+            ],
+            "false": [
+              "019b20a6-1aa6-7510-b222-66535e50dfb3"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1820,7 +2175,9 @@
               "icon": "mdi:speedometer",
               "prompt": "Get Product by Speed"
             },
-            "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
+            "next": [
+              "019c4c9f-6864-7329-a872-a65efbbdb4d1"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1831,7 +2188,9 @@
               "icon": "mdi:user",
               "prompt": "Notify user about available products"
             },
-            "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
+            "next": [
+              "019b0270-c493-7072-9d50-87952c5dc547"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1842,7 +2201,9 @@
               "icon": "mdi:user",
               "prompt": "Waiting for user to select a product"
             },
-            "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
+            "next": [
+              "019b3302-7846-75c2-9ab7-897c18b8ccee"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1853,7 +2214,9 @@
               "icon": "mdi:link",
               "prompt": "Assign Port"
             },
-            "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+            "next": [
+              "019b3305-7846-75c2-9ab7-897c18b8cce1"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1864,7 +2227,9 @@
               "icon": "mdi:bell",
               "prompt": "Notify user about port allocation"
             },
-            "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
+            "next": [
+              "019b209e-3122-75ce-9ba6-674b6184f68d"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1875,7 +2240,9 @@
               "icon": "mdi:settings",
               "prompt": "Configure Port"
             },
-            "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
+            "next": [
+              "019b32f6-5878-73fb-8411-55916778d9a4"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1886,7 +2253,9 @@
               "icon": "mdi:ethernet",
               "prompt": "Connect Port"
             },
-            "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
+            "next": [
+              "019b32f6-bd02-734e-bd3a-aec89d79609c"
+            ],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1903,6 +2272,25 @@
         ]
       },
       "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
       "steps": [
         {
           "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",

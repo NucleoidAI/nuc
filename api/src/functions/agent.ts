@@ -217,7 +217,7 @@ async function task({ taskId }: { taskId: string }) {
         sessionId ? conversations({ sessionId }) : Promise.resolve([]),
       ])
     ).flat(),
-    isBlocking ? actions.list() : actions.listNonBlocking(),
+    isBlocking ? actions.list() : actions.listNonBlockings(),
     mcpFn.list(),
   ];
 

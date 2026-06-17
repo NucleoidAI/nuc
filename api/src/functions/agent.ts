@@ -228,7 +228,7 @@ async function task({ taskId }: { taskId: string }) {
     result_score,
   } = await generate({
     dataset: isBlocking
-      ? dataset.train.taskDiamond
+      ? dataset.train.taskDiamondBlocking
       : dataset.train.taskDiamondNonBlocking,
     context,
     content: currentTask,

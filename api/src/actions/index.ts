@@ -14,7 +14,19 @@ function list() {
   };
 }
 
+function listNonBlocking() {
+  const filtered = actions.filter((a) => a.action !== "PLATFORM:ask_supervisor");
+  return {
+    role: "system",
+    content: { actions: filtered },
+  } as {
+    role: "user" | "system" | "assistant";
+    content: object;
+  };
+}
+
 export default {
   find,
   list,
+  listNonBlocking,
 };

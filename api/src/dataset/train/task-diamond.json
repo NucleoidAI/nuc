@@ -1,1857 +1,2415 @@
-[
-  {
-    "id": "0cbfbecd-5e0d-4924-b5fd-6de262285936",
-    "description": "Check product availability, if not exist, create order.",
-    "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n    Order.Create()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-    "Blueprint": {
-      "id": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "title": "Product Order",
+{
+  "data": [
+    {
+      "id": "0cbfbecd-5e0d-4924-b5fd-6de262285936",
       "description": "Check product availability, if not exist, create order.",
       "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n    Order.Create()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "nodes": [
-        {
-          "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:check_product_count",
-            "icon": "mdi:check",
-            "prompt": "Check Product Availability"
+      "Blueprint": {
+        "id": "ba6f7911-e232-469d-9060-2881852f6e59",
+        "title": "Product Order",
+        "description": "Check product availability, if not exist, create order.",
+        "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n    Order.Create()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:check_product_count",
+              "icon": "mdi:check",
+              "prompt": "Check Product Availability"
+            },
+            "next": [
+              "51dca395-1d90-4a28-9bbc-233de9c1a207"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
           },
-          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
-          "type": "CONDITION",
-          "properties": {
-            "action": "PLATFORM:decision",
-            "icon": "mdi:source-branch",
-            "prompt": "Make Decision"
+          {
+            "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "icon": "mdi:source-branch",
+              "prompt": "Make Decision"
+            },
+            "true": [
+              "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
+            ],
+            "false": [
+              "5be22de7-9673-448d-a1b5-dc23a8789b5c"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
           },
-          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
-          "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:create_order",
-            "icon": "mdi:cart-plus",
-            "prompt": "Create Order"
-          },
-          "next": "5be22de7-9673-448d-a1b5-dc23a8789b5c",
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "5be22de7-9673-448d-a1b5-dc23a8789b5c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check",
-            "prompt": "Complete Task"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "5be22de7-9673-448d-a1b5-dc23a8789b5c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:reduce_product_count",
-            "icon": "mdi:minus",
-            "prompt": "Reduce Product Quantity"
-          },
-          "next": "f5987e15-d014-4e45-bc3b-7b1f53c4472b",
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "2a69ce9c-32e9-49c9-ad7c-b631d890359b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:send_email",
-            "icon": "mdi:email",
-            "prompt": "Send Email"
-          },
-          "next": "2a69ce9c-32e9-49c9-ad7c-b631d890359b",
-          "createdAt": "2025-06-19T06:03:00Z"
-        },
-        {
-          "id": "f5987e15-d014-4e45-bc3b-7b1f53c4472b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check",
-            "prompt": "Complete Task"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        }
-      ]
-    },
-    "knowledge": [
-      {
-        "id": "66f2e2e0-dd81-4a1c-9474-089558b43084",
-        "type": "TEXT",
-        "text": "Battery product id is btr-123",
-        "status": "COMPLETED",
-        "createdAt": "1970-01-20T22:08:14.337Z"
-      },
-      {
-        "id": "94e582fd-9190-4fb8-936a-327424ac6c77",
-        "type": "TEXT",
-        "text": "If Battery is not available, order 10 Battery",
-        "status": "COMPLETED",
-        "createdAt": "1970-01-20T22:08:14.337Z"
-      },
-      {
-        "id": "18a6dc62-9c58-49db-ae61-eef9042102b2",
-        "type": "TEXT",
-        "text": "Manager email address is halilibrahimcengel7@gmail.com.",
-        "status": "COMPLETED",
-        "createdAt": "1970-01-20T22:08:14.337Z"
-      }
-    ],
-    "steps": [
-      {
-        "taskId": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
-        "action": "GREY:check_product_count",
-        "status": "COMPLETED",
-        "parameters": {
-          "productId": "btr-123"
-        },
-        "comment": "Checking product count"
-      },
-      {
-        "taskId": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
-        "action": "PLATFORM:decision",
-        "status": "COMPLETED",
-        "comment": "Making decision",
-        "parameters": {
-          "condition": "product_count <= 0",
-          "true": [
-            {
-              "taskId": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
+          {
+            "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+            "type": "NORMAL",
+            "properties": {
               "action": "GREY:create_order",
-              "status": "COMPLETED",
-              "parameters": {
-                "productId": "btr-123",
-                "quantity": 10
-              },
-              "comment": "Creating order"
+              "icon": "mdi:cart-plus",
+              "prompt": "Create Order"
             },
-            {
-              "taskId": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
-              "action": "PLATFORM:message_user",
-              "status": "COMPLETED",
-              "parameters": {
-                "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
-                "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-                "message": "Order created."
-              },
-              "comment": "Notifying user about product order creation"
-            },
-            {
-              "taskId": "a777ff167-c4f2-44dc-9e8f-e9e645682446",
-              "action": "GREY:send_email",
-              "status": "COMPLETED",
-              "parameters": {
-                "subject": "Product Order",
-                "text": "Product order created",
-                "to": "halilibrahimcengel7@gmail.com"
-              },
-              "comment": "Sending email"
-            },
-            {
-              "taskId": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
+            "next": "5be22de7-9673-448d-a1b5-dc23a8789b5c",
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "5be22de7-9673-448d-a1b5-dc23a8789b5c",
+            "type": "NORMAL",
+            "properties": {
               "action": "PLATFORM:complete",
-              "status": "COMPLETED",
-              "parameters": {},
-              "comment": "Completing task"
-            }
-          ],
-          "false": [
-            {
-              "taskId": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
+              "icon": "mdi:check",
+              "prompt": "Complete Task"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "5be22de7-9673-448d-a1b5-dc23a8789b5c",
+            "type": "NORMAL",
+            "properties": {
               "action": "GREY:reduce_product_count",
-              "status": "COMPLETED",
-              "parameters": {
-                "productId": "btr-123",
-                "quantity": 1
-              },
-              "comment": "Reducing product count"
+              "icon": "mdi:minus",
+              "prompt": "Reduce Product Quantity"
             },
-            {
-              "taskId": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
+            "next": "f5987e15-d014-4e45-bc3b-7b1f53c4472b",
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "2a69ce9c-32e9-49c9-ad7c-b631d890359b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "icon": "mdi:email",
+              "prompt": "Send Email"
+            },
+            "next": "2a69ce9c-32e9-49c9-ad7c-b631d890359b",
+            "createdAt": "2025-06-19T06:03:00Z"
+          },
+          {
+            "id": "f5987e15-d014-4e45-bc3b-7b1f53c4472b",
+            "type": "NORMAL",
+            "properties": {
               "action": "PLATFORM:complete",
-              "status": "COMPLETED",
-              "parameters": {},
-              "comment": "Completing task"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  {
-    "id": "2efhdhff-7g2f-6b46-d7hf-8fg484407b58",
-    "description": "Setup internet subscription at user's address.",
-    "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
-    "pseudocode": "BEGIN_CONTEXT \nUser.Address = GetUserAddress()\nbbk = GetBBKByAddress(User.Address)\nIF bbk == NULL THEN\n    NotifyUser(\"Address not found. Please call support center.\")\n    Complete()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-    "blueprint": {
-      "id": "ca7g8022-f343-570e-a171-3992963g7f70",
-      "title": "Basic Internet Subscription Setup",
-      "description": "Offer internet packages based on the user's residential address and provide available internet packages for the selected address.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n ShowProducts(products)\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "nodes": [
-        {
-          "id": "019b9433-3de3-7545-a40a-854419ae8be1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction",
-            "icon": "mdi:map-marker",
-            "prompt": "Get User Address"
-          },
-          "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_bbk_by_address",
-            "icon": "mdi:map-marker",
-            "prompt": "Get BBK No by Address"
-          },
-          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_inventory",
-            "icon": "mdi:server",
-            "prompt": "Get Inventory"
-          },
-          "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b209c-2e5a-777f-a04a-11960363fb25",
-          "type": "CONDITION",
-          "properties": {
-            "action": "PLATFORM:decision",
-            "icon": "mdi:source-branch",
-            "prompt": "Is inventory available?"
-          },
-          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
-          "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check",
-            "prompt": "No product available, complete"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_product_by_speed",
-            "icon": "mdi:speedometer",
-            "prompt": "Get products by speed"
-          },
-          "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019c8a58-10e3-713f-9484-78d04923040f",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction",
-            "icon": "mdi:cursor-pointer",
-            "prompt": "Provide available products and wait for user to select a product"
-          },
-          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_allocation",
-            "icon": "mdi:link",
-            "prompt": "Allocate port and create order"
-          },
-          "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:bell",
-            "prompt": "Notify user about port allocation"
-          },
-          "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:configuration",
-            "icon": "mdi:settings",
-            "prompt": "Configure allocated port"
-          },
-          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b32f6-5878-73fb-8411-55916778d9a4",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_connection",
-            "icon": "mdi:ethernet",
-            "prompt": "Connect port to residence"
-          },
-          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check",
-            "prompt": "Complete setup flow"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        }
-      ]
-    },
-    "knowledge": [],
-    "steps": [
-      {
-        "taskId": "c99hh389-e6h4-66fe-b1h0-g1g867804668",
-        "action": "PLATFORM:user_interaction",
-        "status": "COMPLETED",
-        "parameters": {
-          "question": "What is your address?"
-        },
-        "comment": "User provided address"
-      },
-      {
-        "taskId": "c99hh389-e6h4-66fe-b1h0-g1g867804668",
-        "action": "TELCO:get_bbk_by_address",
-        "status": "COMPLETED",
-        "parameters": {
-          "address": "Atatürk Caddesi No:45, Ankara"
-        },
-        "result": "{\"error\":\"ADDRESS_NOT_FOUND\"}",
-        "comment": "Address not found in database"
-      },
-      {
-        "taskId": "c99hh389-e6h4-66fe-b1h0-g1g867804668",
-        "action": "PLATFORM:ask_supervisor",
-        "status": "COMPLETED",
-        "parameters": {
-          "question": "Address not found in database. What should I do?",
-          "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
-          "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-        },
-        "comment": "Asking supervisor for next step"
-      },
-      {
-        "taskId": "c99hh389-e6h4-66fe-b1h0-g1g867804668",
-        "action": "PLATFORM:message_user",
-        "status": "COMPLETED",
-        "parameters": {
-          "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
-          "message": "Sorry, we couldn't find your address. Please call 444 1 444 for help."
-        },
-        "comment": "Notifying user to call support center"
-      },
-      {
-        "taskId": "c99hh389-e6h4-66fe-b1h0-g1g867804668",
-        "action": "PLATFORM:complete",
-        "status": "COMPLETED",
-        "comment": "Doing supervisor's instructions and complete the task"
-      }
-    ]
-  },
-  {
-    "id": "1dcgcfde-6f1e-5a35-c6ge-7ef373396a47",
-    "description": "Setup internet subscription at user's address.",
-    "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
-    "pseudocode": "BEGIN_CONTEXT \nUser.Address = GetUserAddress()\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-    "blueprint": {
-      "id": "ca7g8022-f343-570e-a171-3992963g7f70",
-      "title": "Basic Internet Subscription Setup",
-      "description": "Offer internet packages based on the user's residential address and provide available internet packages for the selected address.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n ShowProducts(products)\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "nodes": [
-        {
-          "id": "019b9433-3de3-7545-a40a-854419ae8be1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction",
-            "icon": "mdi:map-marker",
-            "prompt": "Get User Address"
-          },
-          "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_bbk_by_address",
-            "icon": "mdi:map-marker",
-            "prompt": "Get BBK No by Address"
-          },
-          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_inventory",
-            "icon": "mdi:server",
-            "prompt": "Get Inventory"
-          },
-          "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b209c-2e5a-777f-a04a-11960363fb25",
-          "type": "CONDITION",
-          "properties": {
-            "action": "PLATFORM:decision",
-            "icon": "mdi:source-branch",
-            "prompt": "Is inventory available?"
-          },
-          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
-          "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check",
-            "prompt": "No product available, complete"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_product_by_speed",
-            "icon": "mdi:speedometer",
-            "prompt": "Get products by speed"
-          },
-          "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019c8a58-10e3-713f-9484-78d04923040f",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction",
-            "icon": "mdi:cursor-pointer",
-            "prompt": "Provide available products and wait for user to select a product"
-          },
-          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_allocation",
-            "icon": "mdi:link",
-            "prompt": "Allocate port and create order"
-          },
-          "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:bell",
-            "prompt": "Notify user about port allocation"
-          },
-          "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:configuration",
-            "icon": "mdi:settings",
-            "prompt": "Configure allocated port"
-          },
-          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b32f6-5878-73fb-8411-55916778d9a4",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_connection",
-            "icon": "mdi:ethernet",
-            "prompt": "Connect port to residence"
-          },
-          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check",
-            "prompt": "Complete setup flow"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        }
-      ]
-    },
-    "knowledge": [],
-    "steps": [
-      {
-        "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-        "action": "PLATFORM:user_interaction",
-        "status": "COMPLETED",
-        "parameters": {
-          "question": "What is your address?"
-        },
-        "comment": "User selected address"
-      },
-      {
-        "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-        "action": "TELCO:get_bbk_by_address",
-        "status": "COMPLETED",
-        "parameters": {
-          "address": "123 Main Street, Istanbul"
-        },
-        "result": "{\"error\":\"INVALID_ADDRESS\"}",
-        "comment": "Address could not be validated in the system"
-      },
-      {
-        "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-        "action": "PLATFORM:ask_supervisor",
-        "status": "COMPLETED",
-        "parameters": {
-          "question": "Address '123 Main Street, Istanbul' is not valid according to the system. What should I do?",
-          "sessionId": "123456019b6e75-8a07-72f2-8adf-82cd88f6b7cc7890",
-          "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-        },
-        "comment": "Asking supervisor to next step"
-      },
-      {
-        "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-        "action": "PLATFORM:user_interaction",
-        "status": "COMPLETED",
-        "parameters": {
-          "question": "What is your address?"
-        },
-        "comment": "User selected address"
-      },
-      {
-        "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-        "action": "TELCO:get_bbk_by_address",
-        "status": "COMPLETED",
-        "parameters": {
-          "address": "Gazi Mustafa Kemal Bulvarı, Istanbul"
-        },
-        "comment": "Getting BBK number by address"
-      },
-      {
-        "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-        "action": "TELCO:get_inventory",
-        "status": "COMPLETED",
-        "parameters": {
-          "bbk": "BBK-12345"
-        },
-        "comment": "Checking inventory availability"
-      },
-      {
-        "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-        "action": "PLATFORM:decision",
-        "status": "COMPLETED",
-        "comment": "Making decision",
-        "parameters": {
-          "condition": "inventory.Available == TRUE",
-          "true": [
-            {
-              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-              "action": "TELCO:get_product_by_speed",
-              "status": "COMPLETED",
-              "parameters": {
-                "speed_limit": 100
-              },
-              "comment": "Getting products by speed"
+              "icon": "mdi:check",
+              "prompt": "Complete Task"
             },
-            {
-              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "66f2e2e0-dd81-4a1c-9474-089558b43084",
+          "type": "TEXT",
+          "text": "Battery product id is btr-123",
+          "status": "COMPLETED",
+          "createdAt": "1970-01-20T22:08:14.337Z"
+        },
+        {
+          "id": "94e582fd-9190-4fb8-936a-327424ac6c77",
+          "type": "TEXT",
+          "text": "If Battery is not available, order 10 Battery",
+          "status": "COMPLETED",
+          "createdAt": "1970-01-20T22:08:14.337Z"
+        },
+        {
+          "id": "18a6dc62-9c58-49db-ae61-eef9042102b2",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com.",
+          "status": "COMPLETED",
+          "createdAt": "1970-01-20T22:08:14.337Z"
+        }
+      ],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
+      "steps": [
+        {
+          "taskId": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
+          "action": "GREY:check_product_count",
+          "status": "COMPLETED",
+          "parameters": {
+            "productId": "btr-123"
+          },
+          "comment": "Checking product count"
+        },
+        {
+          "taskId": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
+          "action": "PLATFORM:decision",
+          "status": "COMPLETED",
+          "comment": "Making decision",
+          "parameters": {
+            "condition": "product_count <= 0",
+            "true": [
+              {
+                "taskId": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
+                "action": "GREY:create_order",
+                "status": "COMPLETED",
+                "parameters": {
+                  "productId": "btr-123",
+                  "quantity": 10
+                },
+                "comment": "Creating order"
+              },
+              {
+                "taskId": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
+                "action": "PLATFORM:message_user",
+                "status": "COMPLETED",
+                "parameters": {
+                  "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
+                  "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+                  "message": "Order created."
+                },
+                "comment": "Notifying user about product order creation"
+              },
+              {
+                "taskId": "a777ff167-c4f2-44dc-9e8f-e9e645682446",
+                "action": "GREY:send_email",
+                "status": "COMPLETED",
+                "parameters": {
+                  "subject": "Product Order",
+                  "text": "Product order created",
+                  "to": "halilibrahimcengel7@gmail.com"
+                },
+                "comment": "Sending email"
+              },
+              {
+                "taskId": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
+                "action": "PLATFORM:complete",
+                "status": "COMPLETED",
+                "parameters": {},
+                "comment": "Completing task"
+              }
+            ],
+            "false": [
+              {
+                "taskId": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
+                "action": "GREY:reduce_product_count",
+                "status": "COMPLETED",
+                "parameters": {
+                  "productId": "btr-123",
+                  "quantity": 1
+                },
+                "comment": "Reducing product count"
+              },
+              {
+                "taskId": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
+                "action": "PLATFORM:complete",
+                "status": "COMPLETED",
+                "parameters": {},
+                "comment": "Completing task"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "2efhdhff-7g2f-6b46-d7hf-8fg484407b58",
+      "description": "Setup internet subscription at user's address.",
+      "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
+      "pseudocode": "BEGIN_CONTEXT \nUser.Address = GetUserAddress()\nbbk = GetBBKByAddress(User.Address)\nIF bbk == NULL THEN\n    NotifyUser(\"Address not found. Please call support center.\")\n    Complete()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "blueprint": {
+        "id": "ca7g8022-f343-570e-a171-3992963g7f70",
+        "title": "Basic Internet Subscription Setup",
+        "description": "Offer internet packages based on the user's residential address and provide available internet packages for the selected address.",
+        "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n ShowProducts(products)\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "019b9433-3de3-7545-a40a-854419ae8be1",
+            "type": "NORMAL",
+            "properties": {
               "action": "PLATFORM:user_interaction",
-              "status": "COMPLETED",
-              "parameters": {
-                "question": "Here are your options: 100mbps (6 months), 100mbps (3 months), 50mbps (12 months), 50mbps (6 months), 50mbps (3 months), 25mbps (12 months), 25mbps (3 months), 25mbps (6 months)."
-              },
-              "comment": "Waiting for user to select a product"
+              "icon": "mdi:map-marker",
+              "prompt": "Get User Address"
             },
-            {
-              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-              "action": "TELCO:port_allocation",
-              "status": "COMPLETED",
-              "parameters": {
-                "device_serial_number": "SN-789456",
-                "bbk_no": "BBK-12345",
-                "speed_limit": "1gbps"
-              },
-              "result": "{\"error\":\"NOT_AVAILABLE_PORT\"}",
-              "comment": "Port allocation returned no available port"
+            "next": [
+              "76ccda2d-f11f-408c-8087-66c377600d0b"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_bbk_by_address",
+              "icon": "mdi:map-marker",
+              "prompt": "Get BBK No by Address"
             },
-            {
-              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-              "action": "PLATFORM:ask_supervisor",
-              "status": "COMPLETED",
-              "parameters": {
-                "question": "There is an error in the port allocation. What should i do?",
-                "sessionId": "123456019b6e75-8a07-72f2-8adf-82cd88f6b7cc7890",
-                "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-              },
-              "comment": "Asking supervisor to next step"
+            "next": [
+              "51dca395-1d90-4a28-9bbc-233de9c1a207"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_inventory",
+              "icon": "mdi:server",
+              "prompt": "Get Inventory"
             },
-            {
-              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-              "action": "PLATFORM:message_user",
-              "status": "COMPLETED",
-              "parameters": {
-                "sessionId": "123456019b6e75-8a07-72f2-8adf-82cd88f6b7cc7890",
-                "message": "Sorry, we couldn't assign a port. Please try again later."
-              },
-              "comment": "Notifying user to we are not able to allocate the port"
+            "next": [
+              "019b209c-2e5a-777f-a04a-11960363fb25"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209c-2e5a-777f-a04a-11960363fb25",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "icon": "mdi:source-branch",
+              "prompt": "Is inventory available?"
             },
-            {
-              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+            "true": [
+              "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
+            ],
+            "false": [
+              "019b20a6-1aa6-7510-b222-66535e50dfb3"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
+            "type": "NORMAL",
+            "properties": {
               "action": "PLATFORM:complete",
-              "status": "COMPLETED",
-              "comment": "Doing supervisor's instructions and complete the task"
-            }
-          ],
-          "false": [
-            {
-              "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-              "action": "PLATFORM:complete",
-              "status": "COMPLETED",
-              "parameters": {},
-              "comment": "Completing task - inventory not available"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  {
-    "id": "5hkjgmih-8h4g-7d57-e9jh-0igf495519d60",
-    "description": "Setup internet subscription for a US residential address with full notification flow.",
-    "sessionId": "029c8g97-0c29-94h4-0cfg-04ef00h8d9ee",
-    "pseudocode": "BEGIN_CONTEXT \nUser.Address = GetUserAddress()\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\n    Complete()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-    "blueprint": {
-      "id": "ca7g8022-f343-570e-a171-3992963g7f70",
-      "title": "Basic Internet Subscription Setup",
-      "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    ShowProducts(products)\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\n    Complete()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "nodes": [
-        {
-          "id": "019b9433-3de3-7545-a40a-854419ae8be1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction",
-            "icon": "mdi:map-marker",
-            "prompt": "Get User Address"
+              "icon": "mdi:check",
+              "prompt": "No product available, complete"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
           },
-          "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_bbk_by_address",
-            "icon": "mdi:map-marker",
-            "prompt": "Get BBK No by Address"
-          },
-          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_inventory",
-            "icon": "mdi:server",
-            "prompt": "Get Inventory"
-          },
-          "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b209c-2e5a-777f-a04a-11960363fb25",
-          "type": "CONDITION",
-          "properties": {
-            "action": "PLATFORM:decision",
-            "icon": "mdi:source-branch",
-            "prompt": "Is inventory available?"
-          },
-          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
-          "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check",
-            "prompt": "No product available, complete"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_product_by_speed",
-            "icon": "mdi:speedometer",
-            "prompt": "Get products by speed"
-          },
-          "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019c8a58-10e3-713f-9484-78d04923040f",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction",
-            "icon": "mdi:cursor-pointer",
-            "prompt": "Provide available products and wait for user to select a product"
-          },
-          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_allocation",
-            "icon": "mdi:link",
-            "prompt": "Allocate port and create order"
-          },
-          "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:bell",
-            "prompt": "Notify user about port allocation"
-          },
-          "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:configuration",
-            "icon": "mdi:settings",
-            "prompt": "Configure allocated port"
-          },
-          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b32f6-5878-73fb-8411-55916778d9a4",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_connection",
-            "icon": "mdi:ethernet",
-            "prompt": "Connect port to residence"
-          },
-          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check",
-            "prompt": "Complete setup flow"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        }
-      ]
-    },
-    "knowledge": [],
-    "steps": [
-      {
-        "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
-        "action": "PLATFORM:user_interaction",
-        "status": "COMPLETED",
-        "parameters": {
-          "question": "What is your address?"
-        },
-        "result": "2555 Wentwood Ct, Cumming, GA 30041",
-        "comment": "User provided US residential address"
-      },
-      {
-        "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
-        "action": "TELCO:get_bbk_by_address",
-        "status": "COMPLETED",
-        "parameters": {
-          "address": "2555 Wentwood Ct, Cumming, GA 30041"
-        },
-        "comment": "BBK number 990 retrieved successfully"
-      },
-      {
-        "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
-        "action": "TELCO:get_inventory",
-        "status": "COMPLETED",
-        "parameters": {
-          "bbk": "990"
-        },
-        "comment": "Inventory is available for BBK 990"
-      },
-      {
-        "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
-        "action": "PLATFORM:decision",
-        "status": "COMPLETED",
-        "comment": "Inventory available, proceeding with product selection",
-        "parameters": {
-          "condition": "inventory.Available == TRUE",
-          "true": [
-            {
-              "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+          {
+            "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+            "type": "NORMAL",
+            "properties": {
               "action": "TELCO:get_product_by_speed",
-              "status": "COMPLETED",
-              "parameters": {
-                "speed_limit": "16mbps"
-              },
-              "comment": "Retrieved available internet packages for 16mbps"
+              "icon": "mdi:speedometer",
+              "prompt": "Get products by speed"
             },
-            {
-              "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+            "next": [
+              "019c8a58-10e3-713f-9484-78d04923040f"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019c8a58-10e3-713f-9484-78d04923040f",
+            "type": "NORMAL",
+            "properties": {
               "action": "PLATFORM:user_interaction",
-              "status": "COMPLETED",
-              "parameters": {
-                "question": "2 Options: 16 Mbps (12 months), 16 Mbps (6 months). Select one."
-              },
-              "comment": "User selected 16 Mbps (12 months)"
+              "icon": "mdi:cursor-pointer",
+              "prompt": "Provide available products and wait for user to select a product"
             },
-            {
-              "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+            "next": [
+              "019b3302-7846-75c2-9ab7-897c18b8ccee"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
+            "type": "NORMAL",
+            "properties": {
               "action": "TELCO:port_allocation",
-              "status": "COMPLETED",
-              "parameters": {
-                "device_serial_number": "1234567890",
-                "bbk_no": "990",
-                "speed_limit": "16mbps",
-                "speed_profile": "51200/8192"
-              },
-              "comment": "Port 4 allocated successfully for BBK 990"
+              "icon": "mdi:link",
+              "prompt": "Allocate port and create order"
             },
-            {
-              "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+            "next": [
+              "019b3305-7846-75c2-9ab7-897c18b8cce1"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+            "type": "NORMAL",
+            "properties": {
               "action": "PLATFORM:message_user",
-              "status": "COMPLETED",
-              "parameters": {
-                "sessionId": "029c8g97-0c29-94h4-0cfg-04ef00h8d9ee",
-                "message": "A port has been assigned."
-              },
-              "comment": "Notified user about port allocation completion"
+              "icon": "mdi:bell",
+              "prompt": "Notify user about port allocation"
             },
-            {
-              "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+            "next": [
+              "019b209e-3122-75ce-9ba6-674b6184f68d"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
+            "type": "NORMAL",
+            "properties": {
               "action": "TELCO:configuration",
-              "status": "COMPLETED",
-              "parameters": {
-                "device_serial_number": "1234567890",
-                "port_no": "4",
-                "hgw_serial_no": "HGW001",
-                "device_tid": "HUA_06TTIM_TEST1",
-                "device_card_no": "1",
-                "speed_limit": "16mbps",
-                "speed_profile": "51200/8192"
-              },
-              "comment": "Port configured successfully for device 1234567890"
+              "icon": "mdi:settings",
+              "prompt": "Configure allocated port"
             },
-            {
-              "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+            "next": [
+              "019b32f6-5878-73fb-8411-55916778d9a4"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-5878-73fb-8411-55916778d9a4",
+            "type": "NORMAL",
+            "properties": {
               "action": "TELCO:port_connection",
-              "status": "COMPLETED",
-              "parameters": {
-                "assignment_id": "TH990"
-              },
-              "comment": "Port connected successfully to the residence"
+              "icon": "mdi:ethernet",
+              "prompt": "Connect port to residence"
             },
-            {
-              "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+            "next": [
+              "019b32f6-bd02-734e-bd3a-aec89d79609c"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
+            "type": "NORMAL",
+            "properties": {
               "action": "PLATFORM:complete",
-              "status": "COMPLETED",
-              "comment": "Internet subscription has been successfully completed."
-            }
-          ],
-          "false": [
-            {
-              "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
-              "action": "PLATFORM:complete",
-              "status": "COMPLETED",
-              "parameters": {},
-              "comment": "Completing task - inventory not available"
-            }
-          ]
+              "icon": "mdi:check",
+              "prompt": "Complete setup flow"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
+      "steps": [
+        {
+          "taskId": "c99hh389-e6h4-66fe-b1h0-g1g867804668",
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "What is your address?"
+          },
+          "comment": "User provided address"
+        },
+        {
+          "taskId": "c99hh389-e6h4-66fe-b1h0-g1g867804668",
+          "action": "TELCO:get_bbk_by_address",
+          "status": "COMPLETED",
+          "parameters": {
+            "address": "Atatürk Caddesi No:45, Ankara"
+          },
+          "result": "{\"error\":\"ADDRESS_NOT_FOUND\"}",
+          "comment": "Address not found in database"
+        },
+        {
+          "taskId": "c99hh389-e6h4-66fe-b1h0-g1g867804668",
+          "action": "PLATFORM:ask_supervisor",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Address not found in database. What should I do?",
+            "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
+            "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+          },
+          "comment": "Asking supervisor for next step"
+        },
+        {
+          "taskId": "c99hh389-e6h4-66fe-b1h0-g1g867804668",
+          "action": "PLATFORM:message_user",
+          "status": "COMPLETED",
+          "parameters": {
+            "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
+            "message": "Sorry, we couldn't find your address. Please call 444 1 444 for help."
+          },
+          "comment": "Notifying user to call support center"
+        },
+        {
+          "taskId": "c99hh389-e6h4-66fe-b1h0-g1g867804668",
+          "action": "PLATFORM:complete",
+          "status": "COMPLETED",
+          "comment": "Doing supervisor's instructions and complete the task"
         }
-      }
-    ]
-  },
-  {
-    "id": "6aab1234-1a2b-4c3d-8e5f-0f1234567890",
-    "description": "Process customer payment for order.",
-    "sessionId": "019b6e75-0001-0001-0001-000000000001",
-    "pseudocode": "BEGIN_CONTEXT\nPayment.Process(order.id, amount)\nIF Payment.Status == SUCCESS THEN\n    Order.Update(status=PAID)\n    NotifyUser()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-    "blueprint": {
-      "id": "bp-0001-0001-0001-0001-000000000001",
-      "title": "Payment Processing",
-      "description": "Process payment for a customer order and update order status.",
+      ]
+    },
+    {
+      "id": "1dcgcfde-6f1e-5a35-c6ge-7ef373396a47",
+      "description": "Setup internet subscription at user's address.",
+      "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
+      "pseudocode": "BEGIN_CONTEXT \nUser.Address = GetUserAddress()\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "blueprint": {
+        "id": "ca7g8022-f343-570e-a171-3992963g7f70",
+        "title": "Basic Internet Subscription Setup",
+        "description": "Offer internet packages based on the user's residential address and provide available internet packages for the selected address.",
+        "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n ShowProducts(products)\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "019b9433-3de3-7545-a40a-854419ae8be1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "icon": "mdi:map-marker",
+              "prompt": "Get User Address"
+            },
+            "next": [
+              "76ccda2d-f11f-408c-8087-66c377600d0b"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_bbk_by_address",
+              "icon": "mdi:map-marker",
+              "prompt": "Get BBK No by Address"
+            },
+            "next": [
+              "51dca395-1d90-4a28-9bbc-233de9c1a207"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_inventory",
+              "icon": "mdi:server",
+              "prompt": "Get Inventory"
+            },
+            "next": [
+              "019b209c-2e5a-777f-a04a-11960363fb25"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209c-2e5a-777f-a04a-11960363fb25",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "icon": "mdi:source-branch",
+              "prompt": "Is inventory available?"
+            },
+            "true": [
+              "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
+            ],
+            "false": [
+              "019b20a6-1aa6-7510-b222-66535e50dfb3"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check",
+              "prompt": "No product available, complete"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_product_by_speed",
+              "icon": "mdi:speedometer",
+              "prompt": "Get products by speed"
+            },
+            "next": [
+              "019c8a58-10e3-713f-9484-78d04923040f"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019c8a58-10e3-713f-9484-78d04923040f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "icon": "mdi:cursor-pointer",
+              "prompt": "Provide available products and wait for user to select a product"
+            },
+            "next": [
+              "019b3302-7846-75c2-9ab7-897c18b8ccee"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_allocation",
+              "icon": "mdi:link",
+              "prompt": "Allocate port and create order"
+            },
+            "next": [
+              "019b3305-7846-75c2-9ab7-897c18b8cce1"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell",
+              "prompt": "Notify user about port allocation"
+            },
+            "next": [
+              "019b209e-3122-75ce-9ba6-674b6184f68d"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:configuration",
+              "icon": "mdi:settings",
+              "prompt": "Configure allocated port"
+            },
+            "next": [
+              "019b32f6-5878-73fb-8411-55916778d9a4"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-5878-73fb-8411-55916778d9a4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_connection",
+              "icon": "mdi:ethernet",
+              "prompt": "Connect port to residence"
+            },
+            "next": [
+              "019b32f6-bd02-734e-bd3a-aec89d79609c"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check",
+              "prompt": "Complete setup flow"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
+      "steps": [
+        {
+          "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "What is your address?"
+          },
+          "comment": "User selected address"
+        },
+        {
+          "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+          "action": "TELCO:get_bbk_by_address",
+          "status": "COMPLETED",
+          "parameters": {
+            "address": "123 Main Street, Istanbul"
+          },
+          "result": "{\"error\":\"INVALID_ADDRESS\"}",
+          "comment": "Address could not be validated in the system"
+        },
+        {
+          "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+          "action": "PLATFORM:ask_supervisor",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Address '123 Main Street, Istanbul' is not valid according to the system. What should I do?",
+            "sessionId": "123456019b6e75-8a07-72f2-8adf-82cd88f6b7cc7890",
+            "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+          },
+          "comment": "Asking supervisor to next step"
+        },
+        {
+          "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "What is your address?"
+          },
+          "comment": "User selected address"
+        },
+        {
+          "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+          "action": "TELCO:get_bbk_by_address",
+          "status": "COMPLETED",
+          "parameters": {
+            "address": "Gazi Mustafa Kemal Bulvarı, Istanbul"
+          },
+          "comment": "Getting BBK number by address"
+        },
+        {
+          "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+          "action": "TELCO:get_inventory",
+          "status": "COMPLETED",
+          "parameters": {
+            "bbk": "BBK-12345"
+          },
+          "comment": "Checking inventory availability"
+        },
+        {
+          "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+          "action": "PLATFORM:decision",
+          "status": "COMPLETED",
+          "comment": "Making decision",
+          "parameters": {
+            "condition": "inventory.Available == TRUE",
+            "true": [
+              {
+                "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+                "action": "TELCO:get_product_by_speed",
+                "status": "COMPLETED",
+                "parameters": {
+                  "speed_limit": 100
+                },
+                "comment": "Getting products by speed"
+              },
+              {
+                "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+                "action": "PLATFORM:user_interaction",
+                "status": "COMPLETED",
+                "parameters": {
+                  "question": "Here are your options: 100mbps (6 months), 100mbps (3 months), 50mbps (12 months), 50mbps (6 months), 50mbps (3 months), 25mbps (12 months), 25mbps (3 months), 25mbps (6 months)."
+                },
+                "comment": "Waiting for user to select a product"
+              },
+              {
+                "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+                "action": "TELCO:port_allocation",
+                "status": "COMPLETED",
+                "parameters": {
+                  "device_serial_number": "SN-789456",
+                  "bbk_no": "BBK-12345",
+                  "speed_limit": "1gbps"
+                },
+                "result": "{\"error\":\"NOT_AVAILABLE_PORT\"}",
+                "comment": "Port allocation returned no available port"
+              },
+              {
+                "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+                "action": "PLATFORM:ask_supervisor",
+                "status": "COMPLETED",
+                "parameters": {
+                  "question": "There is an error in the port allocation. What should i do?",
+                  "sessionId": "123456019b6e75-8a07-72f2-8adf-82cd88f6b7cc7890",
+                  "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+                },
+                "comment": "Asking supervisor to next step"
+              },
+              {
+                "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+                "action": "PLATFORM:message_user",
+                "status": "COMPLETED",
+                "parameters": {
+                  "sessionId": "123456019b6e75-8a07-72f2-8adf-82cd88f6b7cc7890",
+                  "message": "Sorry, we couldn't assign a port. Please try again later."
+                },
+                "comment": "Notifying user to we are not able to allocate the port"
+              },
+              {
+                "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+                "action": "PLATFORM:complete",
+                "status": "COMPLETED",
+                "comment": "Doing supervisor's instructions and complete the task"
+              }
+            ],
+            "false": [
+              {
+                "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+                "action": "PLATFORM:complete",
+                "status": "COMPLETED",
+                "parameters": {},
+                "comment": "Completing task - inventory not available"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "5hkjgmih-8h4g-7d57-e9jh-0igf495519d60",
+      "description": "Setup internet subscription for a US residential address with full notification flow.",
+      "sessionId": "029c8g97-0c29-94h4-0cfg-04ef00h8d9ee",
+      "pseudocode": "BEGIN_CONTEXT \nUser.Address = GetUserAddress()\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\n    Complete()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "blueprint": {
+        "id": "ca7g8022-f343-570e-a171-3992963g7f70",
+        "title": "Basic Internet Subscription Setup",
+        "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+        "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    ShowProducts(products)\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\n    Complete()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "019b9433-3de3-7545-a40a-854419ae8be1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "icon": "mdi:map-marker",
+              "prompt": "Get User Address"
+            },
+            "next": [
+              "76ccda2d-f11f-408c-8087-66c377600d0b"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_bbk_by_address",
+              "icon": "mdi:map-marker",
+              "prompt": "Get BBK No by Address"
+            },
+            "next": [
+              "51dca395-1d90-4a28-9bbc-233de9c1a207"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_inventory",
+              "icon": "mdi:server",
+              "prompt": "Get Inventory"
+            },
+            "next": [
+              "019b209c-2e5a-777f-a04a-11960363fb25"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209c-2e5a-777f-a04a-11960363fb25",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "icon": "mdi:source-branch",
+              "prompt": "Is inventory available?"
+            },
+            "true": [
+              "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
+            ],
+            "false": [
+              "019b20a6-1aa6-7510-b222-66535e50dfb3"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check",
+              "prompt": "No product available, complete"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_product_by_speed",
+              "icon": "mdi:speedometer",
+              "prompt": "Get products by speed"
+            },
+            "next": [
+              "019c8a58-10e3-713f-9484-78d04923040f"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019c8a58-10e3-713f-9484-78d04923040f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "icon": "mdi:cursor-pointer",
+              "prompt": "Provide available products and wait for user to select a product"
+            },
+            "next": [
+              "019b3302-7846-75c2-9ab7-897c18b8ccee"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_allocation",
+              "icon": "mdi:link",
+              "prompt": "Allocate port and create order"
+            },
+            "next": [
+              "019b3305-7846-75c2-9ab7-897c18b8cce1"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell",
+              "prompt": "Notify user about port allocation"
+            },
+            "next": [
+              "019b209e-3122-75ce-9ba6-674b6184f68d"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:configuration",
+              "icon": "mdi:settings",
+              "prompt": "Configure allocated port"
+            },
+            "next": [
+              "019b32f6-5878-73fb-8411-55916778d9a4"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-5878-73fb-8411-55916778d9a4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_connection",
+              "icon": "mdi:ethernet",
+              "prompt": "Connect port to residence"
+            },
+            "next": [
+              "019b32f6-bd02-734e-bd3a-aec89d79609c"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check",
+              "prompt": "Complete setup flow"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
+      "steps": [
+        {
+          "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "What is your address?"
+          },
+          "result": "2555 Wentwood Ct, Cumming, GA 30041",
+          "comment": "User provided US residential address"
+        },
+        {
+          "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+          "action": "TELCO:get_bbk_by_address",
+          "status": "COMPLETED",
+          "parameters": {
+            "address": "2555 Wentwood Ct, Cumming, GA 30041"
+          },
+          "comment": "BBK number 990 retrieved successfully"
+        },
+        {
+          "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+          "action": "TELCO:get_inventory",
+          "status": "COMPLETED",
+          "parameters": {
+            "bbk": "990"
+          },
+          "comment": "Inventory is available for BBK 990"
+        },
+        {
+          "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+          "action": "PLATFORM:decision",
+          "status": "COMPLETED",
+          "comment": "Inventory available, proceeding with product selection",
+          "parameters": {
+            "condition": "inventory.Available == TRUE",
+            "true": [
+              {
+                "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+                "action": "TELCO:get_product_by_speed",
+                "status": "COMPLETED",
+                "parameters": {
+                  "speed_limit": "16mbps"
+                },
+                "comment": "Retrieved available internet packages for 16mbps"
+              },
+              {
+                "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+                "action": "PLATFORM:user_interaction",
+                "status": "COMPLETED",
+                "parameters": {
+                  "question": "2 Options: 16 Mbps (12 months), 16 Mbps (6 months). Select one."
+                },
+                "comment": "User selected 16 Mbps (12 months)"
+              },
+              {
+                "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+                "action": "TELCO:port_allocation",
+                "status": "COMPLETED",
+                "parameters": {
+                  "device_serial_number": "1234567890",
+                  "bbk_no": "990",
+                  "speed_limit": "16mbps",
+                  "speed_profile": "51200/8192"
+                },
+                "comment": "Port 4 allocated successfully for BBK 990"
+              },
+              {
+                "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+                "action": "PLATFORM:message_user",
+                "status": "COMPLETED",
+                "parameters": {
+                  "sessionId": "029c8g97-0c29-94h4-0cfg-04ef00h8d9ee",
+                  "message": "A port has been assigned."
+                },
+                "comment": "Notified user about port allocation completion"
+              },
+              {
+                "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+                "action": "TELCO:configuration",
+                "status": "COMPLETED",
+                "parameters": {
+                  "device_serial_number": "1234567890",
+                  "port_no": "4",
+                  "hgw_serial_no": "HGW001",
+                  "device_tid": "HUA_06TTIM_TEST1",
+                  "device_card_no": "1",
+                  "speed_limit": "16mbps",
+                  "speed_profile": "51200/8192"
+                },
+                "comment": "Port configured successfully for device 1234567890"
+              },
+              {
+                "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+                "action": "TELCO:port_connection",
+                "status": "COMPLETED",
+                "parameters": {
+                  "assignment_id": "TH990"
+                },
+                "comment": "Port connected successfully to the residence"
+              },
+              {
+                "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+                "action": "PLATFORM:complete",
+                "status": "COMPLETED",
+                "comment": "Internet subscription has been successfully completed."
+              }
+            ],
+            "false": [
+              {
+                "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+                "action": "PLATFORM:complete",
+                "status": "COMPLETED",
+                "parameters": {},
+                "comment": "Completing task - inventory not available"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "6aab1234-1a2b-4c3d-8e5f-0f1234567890",
+      "description": "Process customer payment for order.",
+      "sessionId": "019b6e75-0001-0001-0001-000000000001",
       "pseudocode": "BEGIN_CONTEXT\nPayment.Process(order.id, amount)\nIF Payment.Status == SUCCESS THEN\n    Order.Update(status=PAID)\n    NotifyUser()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "nodes": [
-        {
-          "id": "node-pay-001",
-          "type": "NORMAL",
-          "properties": { "action": "BILLING:process_payment", "icon": "mdi:credit-card", "prompt": "Process Payment" },
-          "next": ["node-pay-002"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "node-pay-002",
-          "type": "NORMAL",
-          "properties": { "action": "GREY:update_order_status", "icon": "mdi:check", "prompt": "Update Order Status" },
-          "next": ["node-pay-003"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "node-pay-003",
-          "type": "NORMAL",
-          "properties": { "action": "PLATFORM:message_user", "icon": "mdi:bell", "prompt": "Notify User" },
-          "next": ["node-pay-004"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "node-pay-004",
-          "type": "NORMAL",
-          "properties": { "action": "PLATFORM:complete", "icon": "mdi:check", "prompt": "Complete" },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        }
-      ]
-    },
-    "knowledge": [],
-    "steps": [
-      {
-        "taskId": "task-pay-001",
-        "action": "BILLING:process_payment",
-        "status": "COMPLETED",
-        "parameters": { "orderId": "ORD-2026-0091", "amount": 249.99, "currency": "TRY" },
-        "result": "{\"error\":\"PAYMENT_DECLINED\"}",
-        "comment": "Payment gateway rejected the transaction"
-      },
-      {
-        "taskId": "task-pay-001",
-        "action": "PLATFORM:ask_supervisor",
-        "status": "COMPLETED",
-        "parameters": {
-          "question": "Payment for order ORD-2026-0091 was declined by the card issuer. Should I retry, cancel the order, or contact the customer?",
-          "sessionId": "019b6e75-0001-0001-0001-000000000001",
-          "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-        },
-        "comment": "Asking supervisor how to handle payment failure"
-      },
-      {
-        "taskId": "task-pay-001",
-        "action": "PLATFORM:message_user",
-        "status": "COMPLETED",
-        "parameters": {
-          "sessionId": "019b6e75-0001-0001-0001-000000000001",
-          "message": "Your payment could not be processed. Please update your payment method or contact support."
-        },
-        "comment": "Notified customer about payment failure per supervisor instruction"
-      },
-      {
-        "taskId": "task-pay-001",
-        "action": "PLATFORM:complete",
-        "status": "COMPLETED",
-        "comment": "Task completed following supervisor instructions"
-      }
-    ]
-  },
-  {
-    "id": "7bbc2345-2b3c-5d4e-9f6g-1g2345678901",
-    "description": "Update employee salary record in HR system.",
-    "sessionId": "019b6e75-0002-0002-0002-000000000002",
-    "pseudocode": "BEGIN_CONTEXT\nemployee = HR.GetEmployee(employeeId)\nHR.UpdateSalary(employeeId, newSalary)\nHR.NotifyPayroll()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
-    "blueprint": {
-      "id": "bp-0002-0002-0002-0002-000000000002",
-      "title": "Employee Salary Update",
-      "description": "Update an employee's salary record and notify the payroll department.",
-      "pseudocode": "BEGIN_CONTEXT\nemployee = HR.GetEmployee(employeeId)\nHR.UpdateSalary(employeeId, newSalary)\nHR.NotifyPayroll()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "nodes": [
-        {
-          "id": "node-hr-001",
-          "type": "NORMAL",
-          "properties": { "action": "HR:get_employee", "icon": "mdi:account", "prompt": "Get Employee Record" },
-          "next": ["node-hr-002"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "node-hr-002",
-          "type": "NORMAL",
-          "properties": { "action": "HR:update_salary", "icon": "mdi:currency-usd", "prompt": "Update Salary" },
-          "next": ["node-hr-003"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "node-hr-003",
-          "type": "NORMAL",
-          "properties": { "action": "HR:notify_payroll", "icon": "mdi:email", "prompt": "Notify Payroll" },
-          "next": ["node-hr-004"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "node-hr-004",
-          "type": "NORMAL",
-          "properties": { "action": "PLATFORM:complete", "icon": "mdi:check", "prompt": "Complete" },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        }
-      ]
-    },
-    "knowledge": [],
-    "steps": [
-      {
-        "taskId": "task-hr-001",
-        "action": "HR:get_employee",
-        "status": "COMPLETED",
-        "parameters": { "employeeId": "EMP-99234" },
-        "result": "{\"error\":\"EMPLOYEE_NOT_FOUND\"}",
-        "comment": "Employee not found in HR system"
-      },
-      {
-        "taskId": "task-hr-001",
-        "action": "PLATFORM:ask_supervisor",
-        "status": "COMPLETED",
-        "parameters": {
-          "question": "Employee ID EMP-99234 does not exist in the HR system. Should I create a new record, check for a different ID, or cancel the salary update?",
-          "sessionId": "019b6e75-0002-0002-0002-000000000002",
-          "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-        },
-        "comment": "Asking supervisor how to proceed with missing employee record"
-      },
-      {
-        "taskId": "task-hr-001",
-        "action": "PLATFORM:complete",
-        "status": "COMPLETED",
-        "comment": "Task completed following supervisor instructions"
-      }
-    ]
-  },
-  {
-    "id": "8ccd3456-3c4d-6e5f-0g7h-2h3456789012",
-    "description": "Send promotional email campaign to customer segment.",
-    "sessionId": "019b6e75-0003-0003-0003-000000000003",
-    "pseudocode": "BEGIN_CONTEXT\nsegment = CRM.GetSegment(segmentId)\ncampaign = EMAIL.CreateCampaign(segment)\nEMAIL.Send(campaign)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
-    "blueprint": {
-      "id": "bp-0003-0003-0003-0003-000000000003",
-      "title": "Email Campaign",
-      "description": "Send a promotional email campaign to a customer segment.",
-      "pseudocode": "BEGIN_CONTEXT\nsegment = CRM.GetSegment(segmentId)\ncampaign = EMAIL.CreateCampaign(segment)\nEMAIL.Send(campaign)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "nodes": [
-        {
-          "id": "node-email-001",
-          "type": "NORMAL",
-          "properties": { "action": "CRM:get_segment", "icon": "mdi:account-group", "prompt": "Get Customer Segment" },
-          "next": ["node-email-002"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "node-email-002",
-          "type": "NORMAL",
-          "properties": { "action": "EMAIL:create_campaign", "icon": "mdi:email-edit", "prompt": "Create Campaign" },
-          "next": ["node-email-003"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "node-email-003",
-          "type": "NORMAL",
-          "properties": { "action": "EMAIL:send_campaign", "icon": "mdi:send", "prompt": "Send Campaign" },
-          "next": ["node-email-004"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "node-email-004",
-          "type": "NORMAL",
-          "properties": { "action": "PLATFORM:complete", "icon": "mdi:check", "prompt": "Complete" },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        }
-      ]
-    },
-    "knowledge": [],
-    "steps": [
-      {
-        "taskId": "task-email-001",
-        "action": "CRM:get_segment",
-        "status": "COMPLETED",
-        "parameters": { "segmentId": "SEG-PREMIUM-2026" },
-        "comment": "Retrieved 4,200 customers in premium segment"
-      },
-      {
-        "taskId": "task-email-001",
-        "action": "EMAIL:create_campaign",
-        "status": "COMPLETED",
-        "parameters": { "segmentId": "SEG-PREMIUM-2026", "templateId": "PROMO-SUMMER-01" },
-        "comment": "Campaign created successfully"
-      },
-      {
-        "taskId": "task-email-001",
-        "action": "EMAIL:send_campaign",
-        "status": "COMPLETED",
-        "parameters": { "campaignId": "CAMP-2026-0055" },
-        "result": "{\"error\":\"RATE_LIMIT_EXCEEDED\",\"sent\":0,\"limit\":1000,\"requested\":4200}",
-        "comment": "Send limit exceeded, campaign could not be delivered"
-      },
-      {
-        "taskId": "task-email-001",
-        "action": "PLATFORM:ask_supervisor",
-        "status": "COMPLETED",
-        "parameters": {
-          "question": "Campaign CAMP-2026-0055 could not be sent because the daily email limit (1,000) is exceeded. The segment has 4,200 recipients. Should I split the send across multiple days or request a limit increase?",
-          "sessionId": "019b6e75-0003-0003-0003-000000000003",
-          "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-        },
-        "comment": "Asking supervisor how to handle email rate limit"
-      },
-      {
-        "taskId": "task-email-001",
-        "action": "PLATFORM:complete",
-        "status": "COMPLETED",
-        "comment": "Task completed following supervisor instructions"
-      }
-    ]
-  },
-  {
-    "id": "9dde4567-4d5e-7f6g-1h8i-3i4567890123",
-    "description": "Create a new user account and assign role permissions.",
-    "sessionId": "019b6e75-0004-0004-0004-000000000004",
-    "pseudocode": "BEGIN_CONTEXT\nuser = AUTH.CreateUser(email, password)\nAUTH.AssignRole(user.id, role)\nNotifyUser()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
-    "blueprint": {
-      "id": "bp-0004-0004-0004-0004-000000000004",
-      "title": "User Account Creation",
-      "description": "Create a new user account and assign the appropriate role.",
-      "pseudocode": "BEGIN_CONTEXT\nuser = AUTH.CreateUser(email, password)\nAUTH.AssignRole(user.id, role)\nNotifyUser()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "nodes": [
-        {
-          "id": "node-auth-001",
-          "type": "NORMAL",
-          "properties": { "action": "AUTH:create_user", "icon": "mdi:account-plus", "prompt": "Create User" },
-          "next": ["node-auth-002"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "node-auth-002",
-          "type": "NORMAL",
-          "properties": { "action": "AUTH:assign_role", "icon": "mdi:shield-account", "prompt": "Assign Role" },
-          "next": ["node-auth-003"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "node-auth-003",
-          "type": "NORMAL",
-          "properties": { "action": "PLATFORM:message_user", "icon": "mdi:bell", "prompt": "Notify User" },
-          "next": ["node-auth-004"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "node-auth-004",
-          "type": "NORMAL",
-          "properties": { "action": "PLATFORM:complete", "icon": "mdi:check", "prompt": "Complete" },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        }
-      ]
-    },
-    "knowledge": [],
-    "steps": [
-      {
-        "taskId": "task-auth-001",
-        "action": "AUTH:create_user",
-        "status": "COMPLETED",
-        "parameters": { "email": "john.doe@example.com", "role": "ADMIN" },
-        "result": "{\"error\":\"DUPLICATE_EMAIL\",\"existingUserId\":\"USR-00412\"}",
-        "comment": "User with this email already exists in the system"
-      },
-      {
-        "taskId": "task-auth-001",
-        "action": "PLATFORM:ask_supervisor",
-        "status": "COMPLETED",
-        "parameters": {
-          "question": "Cannot create account: john.doe@example.com already exists. Should I update the existing account's role to ADMIN, or is a different email address intended?",
-          "sessionId": "019b6e75-0004-0004-0004-000000000004",
-          "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-        },
-        "comment": "Asking supervisor how to handle duplicate email"
-      },
-      {
-        "taskId": "task-auth-001",
-        "action": "PLATFORM:complete",
-        "status": "COMPLETED",
-        "comment": "Task completed following supervisor instructions"
-      }
-    ]
-  },
-  {
-    "id": "0eef5678-5e6f-8g7h-2i9j-4j5678901234",
-    "description": "Export monthly financial report and upload to cloud storage.",
-    "sessionId": "019b6e75-0005-0005-0005-000000000005",
-    "pseudocode": "BEGIN_CONTEXT\nreport = ERP.GenerateReport(month, year)\nSTORAGE.Upload(report, destination)\nNotifyTeam()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
-    "blueprint": {
-      "id": "bp-0005-0005-0005-0005-000000000005",
-      "title": "Monthly Financial Report Export",
-      "description": "Generate monthly financial report and upload to cloud storage.",
-      "pseudocode": "BEGIN_CONTEXT\nreport = ERP.GenerateReport(month, year)\nSTORAGE.Upload(report, destination)\nNotifyTeam()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "nodes": [
-        {
-          "id": "node-erp-001",
-          "type": "NORMAL",
-          "properties": { "action": "ERP:generate_report", "icon": "mdi:file-chart", "prompt": "Generate Report" },
-          "next": ["node-erp-002"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "node-erp-002",
-          "type": "NORMAL",
-          "properties": { "action": "STORAGE:upload_file", "icon": "mdi:cloud-upload", "prompt": "Upload to Storage" },
-          "next": ["node-erp-003"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "node-erp-003",
-          "type": "NORMAL",
-          "properties": { "action": "GREY:notify_team", "icon": "mdi:email", "prompt": "Notify Team" },
-          "next": ["node-erp-004"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "node-erp-004",
-          "type": "NORMAL",
-          "properties": { "action": "PLATFORM:complete", "icon": "mdi:check", "prompt": "Complete" },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        }
-      ]
-    },
-    "knowledge": [],
-    "steps": [
-      {
-        "taskId": "task-erp-001",
-        "action": "ERP:generate_report",
-        "status": "COMPLETED",
-        "parameters": { "month": 5, "year": 2026, "type": "FINANCIAL_SUMMARY" },
-        "comment": "Report generated successfully, 842 transactions included"
-      },
-      {
-        "taskId": "task-erp-001",
-        "action": "STORAGE:upload_file",
-        "status": "COMPLETED",
-        "parameters": { "fileId": "RPT-2026-05-FIN", "destination": "gs://finance-reports/2026/05/" },
-        "result": "{\"error\":\"PERMISSION_DENIED\",\"bucket\":\"finance-reports\"}",
-        "comment": "Upload rejected due to insufficient permissions on the target bucket"
-      },
-      {
-        "taskId": "task-erp-001",
-        "action": "PLATFORM:ask_supervisor",
-        "status": "COMPLETED",
-        "parameters": {
-          "question": "Cannot upload the May 2026 financial report to cloud storage: permission denied on bucket finance-reports. Should I upload to an alternative location or request access to be granted?",
-          "sessionId": "019b6e75-0005-0005-0005-000000000005",
-          "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-        },
-        "comment": "Asking supervisor how to handle storage permission error"
-      },
-      {
-        "taskId": "task-erp-001",
-        "action": "PLATFORM:complete",
-        "status": "COMPLETED",
-        "comment": "Task completed following supervisor instructions"
-      }
-    ]
-  },
-  {
-    "id": "1ffg6789-6f7g-9h8i-3j0k-5k6789012345",
-    "description": "Cancel customer subscription and process refund.",
-    "sessionId": "019b6e75-0006-0006-0006-000000000006",
-    "pseudocode": "BEGIN_CONTEXT\nsubscription = BILLING.GetSubscription(customerId)\nBILLING.CancelSubscription(subscription.id)\nBILLING.ProcessRefund(subscription.id)\nNotifyUser()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
-    "blueprint": {
-      "id": "bp-0006-0006-0006-0006-000000000006",
-      "title": "Subscription Cancellation and Refund",
-      "description": "Cancel a customer subscription and process a prorated refund.",
-      "pseudocode": "BEGIN_CONTEXT\nsubscription = BILLING.GetSubscription(customerId)\nBILLING.CancelSubscription(subscription.id)\nBILLING.ProcessRefund(subscription.id)\nNotifyUser()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "nodes": [
-        {
-          "id": "node-sub-001",
-          "type": "NORMAL",
-          "properties": { "action": "BILLING:get_subscription", "icon": "mdi:card-account-details", "prompt": "Get Subscription" },
-          "next": ["node-sub-002"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "node-sub-002",
-          "type": "NORMAL",
-          "properties": { "action": "BILLING:cancel_subscription", "icon": "mdi:cancel", "prompt": "Cancel Subscription" },
-          "next": ["node-sub-003"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "node-sub-003",
-          "type": "NORMAL",
-          "properties": { "action": "BILLING:process_refund", "icon": "mdi:cash-refund", "prompt": "Process Refund" },
-          "next": ["node-sub-004"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "node-sub-004",
-          "type": "NORMAL",
-          "properties": { "action": "PLATFORM:message_user", "icon": "mdi:bell", "prompt": "Notify User" },
-          "next": ["node-sub-005"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "node-sub-005",
-          "type": "NORMAL",
-          "properties": { "action": "PLATFORM:complete", "icon": "mdi:check", "prompt": "Complete" },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        }
-      ]
-    },
-    "knowledge": [],
-    "steps": [
-      {
-        "taskId": "task-sub-001",
-        "action": "BILLING:get_subscription",
-        "status": "COMPLETED",
-        "parameters": { "customerId": "CUST-88412" },
-        "comment": "Active annual subscription found, 7 months remaining"
-      },
-      {
-        "taskId": "task-sub-001",
-        "action": "BILLING:cancel_subscription",
-        "status": "COMPLETED",
-        "parameters": { "subscriptionId": "SUB-2025-88412" },
-        "comment": "Subscription cancelled successfully"
-      },
-      {
-        "taskId": "task-sub-001",
-        "action": "BILLING:process_refund",
-        "status": "COMPLETED",
-        "parameters": { "subscriptionId": "SUB-2025-88412", "amount": 420.00 },
-        "result": "{\"error\":\"REFUND_EXCEEDS_THRESHOLD\",\"amount\":420.00,\"threshold\":200.00}",
-        "comment": "Refund amount exceeds automatic approval threshold, manual approval required"
-      },
-      {
-        "taskId": "task-sub-001",
-        "action": "PLATFORM:ask_supervisor",
-        "status": "COMPLETED",
-        "parameters": {
-          "question": "Refund of 420.00 TRY for customer CUST-88412 exceeds the 200.00 TRY automatic threshold and requires manual approval. Please approve or adjust the refund amount.",
-          "sessionId": "019b6e75-0006-0006-0006-000000000006",
-          "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-        },
-        "comment": "Asking supervisor to approve large refund"
-      },
-      {
-        "taskId": "task-sub-001",
-        "action": "PLATFORM:message_user",
-        "status": "COMPLETED",
-        "parameters": {
-          "sessionId": "019b6e75-0006-0006-0006-000000000006",
-          "message": "Your subscription has been cancelled. Your refund of 420.00 TRY is being processed and will arrive within 3-5 business days."
-        },
-        "comment": "Notified customer about cancellation and refund status"
-      },
-      {
-        "taskId": "task-sub-001",
-        "action": "PLATFORM:complete",
-        "status": "COMPLETED",
-        "comment": "Task completed following supervisor instructions"
-      }
-    ]
-  },
-  {
-    "id": "2ggh7890-7g8h-0i9j-4k1l-6l7890123456",
-    "description": "Sync product catalog from ERP to e-commerce platform.",
-    "sessionId": "019b6e75-0007-0007-0007-000000000007",
-    "pseudocode": "BEGIN_CONTEXT\nproducts = ERP.GetProducts(categoryId)\nFOR EACH product IN products\n    ECOMMERCE.UpsertProduct(product)\nEND_FOR\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
-    "blueprint": {
-      "id": "bp-0007-0007-0007-0007-000000000007",
-      "title": "Product Catalog Sync",
-      "description": "Sync product catalog from ERP system to e-commerce platform.",
-      "pseudocode": "BEGIN_CONTEXT\nproducts = ERP.GetProducts(categoryId)\nFOR EACH product IN products\n    ECOMMERCE.UpsertProduct(product)\nEND_FOR\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "nodes": [
-        {
-          "id": "node-sync-001",
-          "type": "NORMAL",
-          "properties": { "action": "ERP:get_products", "icon": "mdi:package-variant", "prompt": "Get Products from ERP" },
-          "next": ["node-sync-002"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "node-sync-002",
-          "type": "NORMAL",
-          "properties": { "action": "ECOMMERCE:upsert_products", "icon": "mdi:store", "prompt": "Sync to E-commerce" },
-          "next": ["node-sync-003"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "node-sync-003",
-          "type": "NORMAL",
-          "properties": { "action": "PLATFORM:complete", "icon": "mdi:check", "prompt": "Complete" },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        }
-      ]
-    },
-    "knowledge": [],
-    "steps": [
-      {
-        "taskId": "task-sync-001",
-        "action": "ERP:get_products",
-        "status": "COMPLETED",
-        "parameters": { "categoryId": "CAT-ELECTRONICS" },
-        "comment": "Retrieved 312 products from ERP"
-      },
-      {
-        "taskId": "task-sync-001",
-        "action": "ECOMMERCE:upsert_products",
-        "status": "COMPLETED",
-        "parameters": { "productCount": 312, "categoryId": "CAT-ELECTRONICS" },
-        "result": "{\"error\":\"SERVICE_UNAVAILABLE\",\"retryAfter\":\"2026-06-04T22:00:00Z\"}",
-        "comment": "E-commerce platform returned service unavailable during scheduled maintenance"
-      },
-      {
-        "taskId": "task-sync-001",
-        "action": "PLATFORM:ask_supervisor",
-        "status": "COMPLETED",
-        "parameters": {
-          "question": "The e-commerce platform API is unavailable due to scheduled maintenance until 22:00 today. The product sync for 312 electronics items cannot proceed. Should I reschedule the sync for after maintenance or abort the task?",
-          "sessionId": "019b6e75-0007-0007-0007-000000000007",
-          "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-        },
-        "comment": "Asking supervisor how to handle API downtime"
-      },
-      {
-        "taskId": "task-sync-001",
-        "action": "PLATFORM:complete",
-        "status": "COMPLETED",
-        "comment": "Task completed following supervisor instructions"
-      }
-    ]
-  },
-  {
-    "id": "3hhi8901-8h9i-1j0k-5l2m-7m8901234567",
-    "description": "Transfer stock between two warehouse locations.",
-    "sessionId": "019b6e75-0008-0008-0008-000000000008",
-    "pseudocode": "BEGIN_CONTEXT\nstock = WMS.CheckStock(productId, sourceWarehouse)\nIF stock.quantity >= requestedQty THEN\n    WMS.TransferStock(productId, sourceWarehouse, targetWarehouse, requestedQty)\n    Complete()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-    "blueprint": {
-      "id": "bp-0008-0008-0008-0008-000000000008",
-      "title": "Warehouse Stock Transfer",
-      "description": "Transfer stock between warehouse locations.",
-      "pseudocode": "BEGIN_CONTEXT\nstock = WMS.CheckStock(productId, sourceWarehouse)\nIF stock.quantity >= requestedQty THEN\n    WMS.TransferStock(productId, sourceWarehouse, targetWarehouse, requestedQty)\n    Complete()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "nodes": [
-        {
-          "id": "node-wms-001",
-          "type": "NORMAL",
-          "properties": { "action": "WMS:check_stock", "icon": "mdi:warehouse", "prompt": "Check Stock Level" },
-          "next": ["node-wms-002"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "node-wms-002",
-          "type": "NORMAL",
-          "properties": { "action": "WMS:transfer_stock", "icon": "mdi:transfer", "prompt": "Transfer Stock" },
-          "next": ["node-wms-003"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "node-wms-003",
-          "type": "NORMAL",
-          "properties": { "action": "PLATFORM:complete", "icon": "mdi:check", "prompt": "Complete" },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        }
-      ]
-    },
-    "knowledge": [],
-    "steps": [
-      {
-        "taskId": "task-wms-001",
-        "action": "WMS:check_stock",
-        "status": "COMPLETED",
-        "parameters": { "productId": "SKU-445566", "warehouseId": "WH-ISTANBUL-01" },
-        "comment": "Stock check completed: 15 units available, 50 units requested"
-      },
-      {
-        "taskId": "task-wms-001",
-        "action": "WMS:transfer_stock",
-        "status": "COMPLETED",
-        "parameters": { "productId": "SKU-445566", "sourceWarehouse": "WH-ISTANBUL-01", "targetWarehouse": "WH-ANKARA-01", "quantity": 50 },
-        "result": "{\"error\":\"INSUFFICIENT_STOCK\",\"available\":15,\"requested\":50}",
-        "comment": "Transfer could not be fulfilled due to insufficient stock"
-      },
-      {
-        "taskId": "task-wms-001",
-        "action": "PLATFORM:ask_supervisor",
-        "status": "COMPLETED",
-        "parameters": {
-          "question": "Cannot complete stock transfer: only 15 units of SKU-445566 available at WH-ISTANBUL-01, but 50 units requested for WH-ANKARA-01. Should I transfer the available 15 units, source from another warehouse, or cancel the transfer?",
-          "sessionId": "019b6e75-0008-0008-0008-000000000008",
-          "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-        },
-        "comment": "Asking supervisor how to handle insufficient stock"
-      },
-      {
-        "taskId": "task-wms-001",
-        "action": "PLATFORM:complete",
-        "status": "COMPLETED",
-        "comment": "Task completed following supervisor instructions"
-      }
-    ]
-  },
-  {
-    "id": "3fgidgef-7g3f-6c46-d8ig-9hf484408c59",
-    "description": "Setup internet subscription at user's address.",
-    "sessionId": "019b7f86-9b18-83g3-9beg-93de99g7c8dd",
-    "pseudocode": "BEGIN_CONTEXT \nUser.Address = GetUserAddress()\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-    "blueprint": {
-      "id": "ca7g8022-f343-570e-a171-3992963g7f70",
-      "title": "Basic Internet Subscription Setup",
-      "description": "Offer internet packages based on the user's residential address and provide available internet packages for the selected address.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n ShowProducts(products)\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "nodes": [
-        {
-          "id": "019b9433-3de3-7545-a40a-854419ae8be1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction",
-            "icon": "mdi:map-marker",
-            "prompt": "Get User Address"
-          },
-          "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_bbk_by_address",
-            "icon": "mdi:map-marker",
-            "prompt": "Get BBK No by Address"
-          },
-          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_inventory",
-            "icon": "mdi:server",
-            "prompt": "Get Inventory"
-          },
-          "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b209c-2e5a-777f-a04a-11960363fb25",
-          "type": "CONDITION",
-          "properties": {
-            "action": "PLATFORM:decision",
-            "icon": "mdi:source-branch",
-            "prompt": "Check if product is available"
-          },
-          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
-          "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check",
-            "prompt": "Complete"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_product_by_speed",
-            "icon": "mdi:speedometer",
-            "prompt": "Get Product by Speed"
-          },
-          "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:user",
-            "prompt": "Notify user about available products"
-          },
-          "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b0270-c493-7072-9d50-87952c5dc547",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction",
-            "icon": "mdi:user",
-            "prompt": "Waiting for user to select a product"
-          },
-          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_allocation",
-            "icon": "mdi:link",
-            "prompt": "Assign Port"
-          },
-          "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:bell",
-            "prompt": "Notify user about port allocation"
-          },
-          "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:configuration",
-            "icon": "mdi:settings",
-            "prompt": "Configure Port"
-          },
-          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b32f6-5878-73fb-8411-55916778d9a4",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_connection",
-            "icon": "mdi:ethernet",
-            "prompt": "Connect Port"
-          },
-          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check",
-            "prompt": "Complete"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        }
-      ]
-    },
-    "knowledge": [],
-    "steps": [
-      {
-        "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
-        "action": "PLATFORM:user_interaction",
-        "status": "COMPLETED",
-        "parameters": {
-          "question": "What is your address?"
-        },
-        "comment": "User provided address"
-      },
-      {
-        "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
-        "action": "TELCO:get_bbk_by_address",
-        "status": "COMPLETED",
-        "parameters": {
-          "address": "Küçükbakkalköy Mahallesi, Vedat Günyol Caddesi, No. 12, Ataşehir, İstanbul"
-        },
-        "comment": "BBK number retrieved successfully"
-      },
-      {
-        "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
-        "action": "TELCO:get_inventory",
-        "status": "COMPLETED",
-        "parameters": {
-          "bbk": "987"
-        },
-        "comment": "Inventory is available"
-      },
-      {
-        "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
-        "action": "PLATFORM:decision",
-        "status": "COMPLETED",
-        "comment": "Inventory available, proceeding with product selection",
-        "parameters": {
-          "condition": "inventory.Available == TRUE",
-          "true": [
-            {
-              "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
-              "action": "TELCO:get_product_by_speed",
-              "status": "COMPLETED",
-              "parameters": {
-                "speed_limit": "16mbps"
-              },
-              "comment": "Retrieved available internet packages"
+      "blueprint": {
+        "id": "bp-0001-0001-0001-0001-000000000001",
+        "title": "Payment Processing",
+        "description": "Process payment for a customer order and update order status.",
+        "pseudocode": "BEGIN_CONTEXT\nPayment.Process(order.id, amount)\nIF Payment.Status == SUCCESS THEN\n    Order.Update(status=PAID)\n    NotifyUser()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "node-pay-001",
+            "type": "NORMAL",
+            "properties": {
+              "action": "BILLING:process_payment",
+              "icon": "mdi:credit-card",
+              "prompt": "Process Payment"
             },
-            {
-              "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
-              "action": "PLATFORM:user_interaction",
-              "status": "COMPLETED",
-              "parameters": {
-                "question": "2 Options: 16 Mbps (12 months), 16 Mbps (6 months). Please select a product"
-              },
-              "comment": "Waiting for user to select a product"
+            "next": [
+              "node-pay-002"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "node-pay-002",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:update_order_status",
+              "icon": "mdi:check",
+              "prompt": "Update Order Status"
             },
-            {
-              "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
-              "action": "TELCO:port_allocation",
-              "status": "COMPLETED",
-              "parameters": {
-                "device_serial_number": "123",
-                "bbk_no": "987",
-                "speed_limit": "16mbps",
-                "speed_profile": "51200/8192"
-              },
-              "comment": "Port allocated successfully"
-            },
-            {
-              "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+            "next": [
+              "node-pay-003"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "node-pay-003",
+            "type": "NORMAL",
+            "properties": {
               "action": "PLATFORM:message_user",
-              "status": "COMPLETED",
-              "parameters": {
-                "sessionId": "019b7f86-9b18-83g3-9beg-93de99g7c8dd",
-                "message": "A port has been assigned."
-              },
-              "comment": "Notified user about port allocation completion"
+              "icon": "mdi:bell",
+              "prompt": "Notify User"
             },
-            {
-              "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
-              "action": "TELCO:configuration",
-              "status": "COMPLETED",
-              "parameters": {
-                "device_serial_number": "123",
-                "port_no": "4",
-                "hgw_serial_no": "HGW001",
-                "device_tid": "HUA_06TTIM_TEST1",
-                "device_card_no": "1",
-                "speed_limit": "16mbps",
-                "speed_profile": "51200/8192"
-              },
-              "comment": "Port configured successfully"
-            },
-            {
-              "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
-              "action": "TELCO:port_connection",
-              "status": "COMPLETED",
-              "parameters": {
-                "assignment_id": "TH001"
-              },
-              "comment": "Port connected successfully"
-            },
-            {
-              "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+            "next": [
+              "node-pay-004"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "node-pay-004",
+            "type": "NORMAL",
+            "properties": {
               "action": "PLATFORM:complete",
-              "status": "COMPLETED",
-              "comment": "Internet subscription has been successfully completed."
-            }
-          ],
-          "false": [
-            {
-              "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
-              "action": "PLATFORM:complete",
-              "status": "COMPLETED",
-              "parameters": {},
-              "comment": "Completing task - inventory not available"
-            }
-          ]
+              "icon": "mdi:check",
+              "prompt": "Complete"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
+      "steps": [
+        {
+          "taskId": "task-pay-001",
+          "action": "BILLING:process_payment",
+          "status": "COMPLETED",
+          "parameters": {
+            "orderId": "ORD-2026-0091",
+            "amount": 249.99,
+            "currency": "TRY"
+          },
+          "result": "{\"error\":\"PAYMENT_DECLINED\"}",
+          "comment": "Payment gateway rejected the transaction"
+        },
+        {
+          "taskId": "task-pay-001",
+          "action": "PLATFORM:ask_supervisor",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Payment for order ORD-2026-0091 was declined by the card issuer. Should I retry, cancel the order, or contact the customer?",
+            "sessionId": "019b6e75-0001-0001-0001-000000000001",
+            "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+          },
+          "comment": "Asking supervisor how to handle payment failure"
+        },
+        {
+          "taskId": "task-pay-001",
+          "action": "PLATFORM:message_user",
+          "status": "COMPLETED",
+          "parameters": {
+            "sessionId": "019b6e75-0001-0001-0001-000000000001",
+            "message": "Your payment could not be processed. Please update your payment method or contact support."
+          },
+          "comment": "Notified customer about payment failure per supervisor instruction"
+        },
+        {
+          "taskId": "task-pay-001",
+          "action": "PLATFORM:complete",
+          "status": "COMPLETED",
+          "comment": "Task completed following supervisor instructions"
         }
-      }
-    ]
-  }
-]
+      ]
+    },
+    {
+      "id": "7bbc2345-2b3c-5d4e-9f6g-1g2345678901",
+      "description": "Update employee salary record in HR system.",
+      "sessionId": "019b6e75-0002-0002-0002-000000000002",
+      "pseudocode": "BEGIN_CONTEXT\nemployee = HR.GetEmployee(employeeId)\nHR.UpdateSalary(employeeId, newSalary)\nHR.NotifyPayroll()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "blueprint": {
+        "id": "bp-0002-0002-0002-0002-000000000002",
+        "title": "Employee Salary Update",
+        "description": "Update an employee's salary record and notify the payroll department.",
+        "pseudocode": "BEGIN_CONTEXT\nemployee = HR.GetEmployee(employeeId)\nHR.UpdateSalary(employeeId, newSalary)\nHR.NotifyPayroll()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "node-hr-001",
+            "type": "NORMAL",
+            "properties": {
+              "action": "HR:get_employee",
+              "icon": "mdi:account",
+              "prompt": "Get Employee Record"
+            },
+            "next": [
+              "node-hr-002"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "node-hr-002",
+            "type": "NORMAL",
+            "properties": {
+              "action": "HR:update_salary",
+              "icon": "mdi:currency-usd",
+              "prompt": "Update Salary"
+            },
+            "next": [
+              "node-hr-003"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "node-hr-003",
+            "type": "NORMAL",
+            "properties": {
+              "action": "HR:notify_payroll",
+              "icon": "mdi:email",
+              "prompt": "Notify Payroll"
+            },
+            "next": [
+              "node-hr-004"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "node-hr-004",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check",
+              "prompt": "Complete"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
+      "steps": [
+        {
+          "taskId": "task-hr-001",
+          "action": "HR:get_employee",
+          "status": "COMPLETED",
+          "parameters": {
+            "employeeId": "EMP-99234"
+          },
+          "result": "{\"error\":\"EMPLOYEE_NOT_FOUND\"}",
+          "comment": "Employee not found in HR system"
+        },
+        {
+          "taskId": "task-hr-001",
+          "action": "PLATFORM:ask_supervisor",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Employee ID EMP-99234 does not exist in the HR system. Should I create a new record, check for a different ID, or cancel the salary update?",
+            "sessionId": "019b6e75-0002-0002-0002-000000000002",
+            "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+          },
+          "comment": "Asking supervisor how to proceed with missing employee record"
+        },
+        {
+          "taskId": "task-hr-001",
+          "action": "PLATFORM:complete",
+          "status": "COMPLETED",
+          "comment": "Task completed following supervisor instructions"
+        }
+      ]
+    },
+    {
+      "id": "8ccd3456-3c4d-6e5f-0g7h-2h3456789012",
+      "description": "Send promotional email campaign to customer segment.",
+      "sessionId": "019b6e75-0003-0003-0003-000000000003",
+      "pseudocode": "BEGIN_CONTEXT\nsegment = CRM.GetSegment(segmentId)\ncampaign = EMAIL.CreateCampaign(segment)\nEMAIL.Send(campaign)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "blueprint": {
+        "id": "bp-0003-0003-0003-0003-000000000003",
+        "title": "Email Campaign",
+        "description": "Send a promotional email campaign to a customer segment.",
+        "pseudocode": "BEGIN_CONTEXT\nsegment = CRM.GetSegment(segmentId)\ncampaign = EMAIL.CreateCampaign(segment)\nEMAIL.Send(campaign)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "node-email-001",
+            "type": "NORMAL",
+            "properties": {
+              "action": "CRM:get_segment",
+              "icon": "mdi:account-group",
+              "prompt": "Get Customer Segment"
+            },
+            "next": [
+              "node-email-002"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "node-email-002",
+            "type": "NORMAL",
+            "properties": {
+              "action": "EMAIL:create_campaign",
+              "icon": "mdi:email-edit",
+              "prompt": "Create Campaign"
+            },
+            "next": [
+              "node-email-003"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "node-email-003",
+            "type": "NORMAL",
+            "properties": {
+              "action": "EMAIL:send_campaign",
+              "icon": "mdi:send",
+              "prompt": "Send Campaign"
+            },
+            "next": [
+              "node-email-004"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "node-email-004",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check",
+              "prompt": "Complete"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
+      "steps": [
+        {
+          "taskId": "task-email-001",
+          "action": "CRM:get_segment",
+          "status": "COMPLETED",
+          "parameters": {
+            "segmentId": "SEG-PREMIUM-2026"
+          },
+          "comment": "Retrieved 4,200 customers in premium segment"
+        },
+        {
+          "taskId": "task-email-001",
+          "action": "EMAIL:create_campaign",
+          "status": "COMPLETED",
+          "parameters": {
+            "segmentId": "SEG-PREMIUM-2026",
+            "templateId": "PROMO-SUMMER-01"
+          },
+          "comment": "Campaign created successfully"
+        },
+        {
+          "taskId": "task-email-001",
+          "action": "EMAIL:send_campaign",
+          "status": "COMPLETED",
+          "parameters": {
+            "campaignId": "CAMP-2026-0055"
+          },
+          "result": "{\"error\":\"RATE_LIMIT_EXCEEDED\",\"sent\":0,\"limit\":1000,\"requested\":4200}",
+          "comment": "Send limit exceeded, campaign could not be delivered"
+        },
+        {
+          "taskId": "task-email-001",
+          "action": "PLATFORM:ask_supervisor",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Campaign CAMP-2026-0055 could not be sent because the daily email limit (1,000) is exceeded. The segment has 4,200 recipients. Should I split the send across multiple days or request a limit increase?",
+            "sessionId": "019b6e75-0003-0003-0003-000000000003",
+            "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+          },
+          "comment": "Asking supervisor how to handle email rate limit"
+        },
+        {
+          "taskId": "task-email-001",
+          "action": "PLATFORM:complete",
+          "status": "COMPLETED",
+          "comment": "Task completed following supervisor instructions"
+        }
+      ]
+    },
+    {
+      "id": "9dde4567-4d5e-7f6g-1h8i-3i4567890123",
+      "description": "Create a new user account and assign role permissions.",
+      "sessionId": "019b6e75-0004-0004-0004-000000000004",
+      "pseudocode": "BEGIN_CONTEXT\nuser = AUTH.CreateUser(email, password)\nAUTH.AssignRole(user.id, role)\nNotifyUser()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "blueprint": {
+        "id": "bp-0004-0004-0004-0004-000000000004",
+        "title": "User Account Creation",
+        "description": "Create a new user account and assign the appropriate role.",
+        "pseudocode": "BEGIN_CONTEXT\nuser = AUTH.CreateUser(email, password)\nAUTH.AssignRole(user.id, role)\nNotifyUser()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "node-auth-001",
+            "type": "NORMAL",
+            "properties": {
+              "action": "AUTH:create_user",
+              "icon": "mdi:account-plus",
+              "prompt": "Create User"
+            },
+            "next": [
+              "node-auth-002"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "node-auth-002",
+            "type": "NORMAL",
+            "properties": {
+              "action": "AUTH:assign_role",
+              "icon": "mdi:shield-account",
+              "prompt": "Assign Role"
+            },
+            "next": [
+              "node-auth-003"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "node-auth-003",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell",
+              "prompt": "Notify User"
+            },
+            "next": [
+              "node-auth-004"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "node-auth-004",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check",
+              "prompt": "Complete"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
+      "steps": [
+        {
+          "taskId": "task-auth-001",
+          "action": "AUTH:create_user",
+          "status": "COMPLETED",
+          "parameters": {
+            "email": "john.doe@example.com",
+            "role": "ADMIN"
+          },
+          "result": "{\"error\":\"DUPLICATE_EMAIL\",\"existingUserId\":\"USR-00412\"}",
+          "comment": "User with this email already exists in the system"
+        },
+        {
+          "taskId": "task-auth-001",
+          "action": "PLATFORM:ask_supervisor",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Cannot create account: john.doe@example.com already exists. Should I update the existing account's role to ADMIN, or is a different email address intended?",
+            "sessionId": "019b6e75-0004-0004-0004-000000000004",
+            "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+          },
+          "comment": "Asking supervisor how to handle duplicate email"
+        },
+        {
+          "taskId": "task-auth-001",
+          "action": "PLATFORM:complete",
+          "status": "COMPLETED",
+          "comment": "Task completed following supervisor instructions"
+        }
+      ]
+    },
+    {
+      "id": "0eef5678-5e6f-8g7h-2i9j-4j5678901234",
+      "description": "Export monthly financial report and upload to cloud storage.",
+      "sessionId": "019b6e75-0005-0005-0005-000000000005",
+      "pseudocode": "BEGIN_CONTEXT\nreport = ERP.GenerateReport(month, year)\nSTORAGE.Upload(report, destination)\nNotifyTeam()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "blueprint": {
+        "id": "bp-0005-0005-0005-0005-000000000005",
+        "title": "Monthly Financial Report Export",
+        "description": "Generate monthly financial report and upload to cloud storage.",
+        "pseudocode": "BEGIN_CONTEXT\nreport = ERP.GenerateReport(month, year)\nSTORAGE.Upload(report, destination)\nNotifyTeam()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "node-erp-001",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ERP:generate_report",
+              "icon": "mdi:file-chart",
+              "prompt": "Generate Report"
+            },
+            "next": [
+              "node-erp-002"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "node-erp-002",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STORAGE:upload_file",
+              "icon": "mdi:cloud-upload",
+              "prompt": "Upload to Storage"
+            },
+            "next": [
+              "node-erp-003"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "node-erp-003",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:notify_team",
+              "icon": "mdi:email",
+              "prompt": "Notify Team"
+            },
+            "next": [
+              "node-erp-004"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "node-erp-004",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check",
+              "prompt": "Complete"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
+      "steps": [
+        {
+          "taskId": "task-erp-001",
+          "action": "ERP:generate_report",
+          "status": "COMPLETED",
+          "parameters": {
+            "month": 5,
+            "year": 2026,
+            "type": "FINANCIAL_SUMMARY"
+          },
+          "comment": "Report generated successfully, 842 transactions included"
+        },
+        {
+          "taskId": "task-erp-001",
+          "action": "STORAGE:upload_file",
+          "status": "COMPLETED",
+          "parameters": {
+            "fileId": "RPT-2026-05-FIN",
+            "destination": "gs://finance-reports/2026/05/"
+          },
+          "result": "{\"error\":\"PERMISSION_DENIED\",\"bucket\":\"finance-reports\"}",
+          "comment": "Upload rejected due to insufficient permissions on the target bucket"
+        },
+        {
+          "taskId": "task-erp-001",
+          "action": "PLATFORM:ask_supervisor",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Cannot upload the May 2026 financial report to cloud storage: permission denied on bucket finance-reports. Should I upload to an alternative location or request access to be granted?",
+            "sessionId": "019b6e75-0005-0005-0005-000000000005",
+            "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+          },
+          "comment": "Asking supervisor how to handle storage permission error"
+        },
+        {
+          "taskId": "task-erp-001",
+          "action": "PLATFORM:complete",
+          "status": "COMPLETED",
+          "comment": "Task completed following supervisor instructions"
+        }
+      ]
+    },
+    {
+      "id": "1ffg6789-6f7g-9h8i-3j0k-5k6789012345",
+      "description": "Cancel customer subscription and process refund.",
+      "sessionId": "019b6e75-0006-0006-0006-000000000006",
+      "pseudocode": "BEGIN_CONTEXT\nsubscription = BILLING.GetSubscription(customerId)\nBILLING.CancelSubscription(subscription.id)\nBILLING.ProcessRefund(subscription.id)\nNotifyUser()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "blueprint": {
+        "id": "bp-0006-0006-0006-0006-000000000006",
+        "title": "Subscription Cancellation and Refund",
+        "description": "Cancel a customer subscription and process a prorated refund.",
+        "pseudocode": "BEGIN_CONTEXT\nsubscription = BILLING.GetSubscription(customerId)\nBILLING.CancelSubscription(subscription.id)\nBILLING.ProcessRefund(subscription.id)\nNotifyUser()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "node-sub-001",
+            "type": "NORMAL",
+            "properties": {
+              "action": "BILLING:get_subscription",
+              "icon": "mdi:card-account-details",
+              "prompt": "Get Subscription"
+            },
+            "next": [
+              "node-sub-002"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "node-sub-002",
+            "type": "NORMAL",
+            "properties": {
+              "action": "BILLING:cancel_subscription",
+              "icon": "mdi:cancel",
+              "prompt": "Cancel Subscription"
+            },
+            "next": [
+              "node-sub-003"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "node-sub-003",
+            "type": "NORMAL",
+            "properties": {
+              "action": "BILLING:process_refund",
+              "icon": "mdi:cash-refund",
+              "prompt": "Process Refund"
+            },
+            "next": [
+              "node-sub-004"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "node-sub-004",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell",
+              "prompt": "Notify User"
+            },
+            "next": [
+              "node-sub-005"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "node-sub-005",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check",
+              "prompt": "Complete"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
+      "steps": [
+        {
+          "taskId": "task-sub-001",
+          "action": "BILLING:get_subscription",
+          "status": "COMPLETED",
+          "parameters": {
+            "customerId": "CUST-88412"
+          },
+          "comment": "Active annual subscription found, 7 months remaining"
+        },
+        {
+          "taskId": "task-sub-001",
+          "action": "BILLING:cancel_subscription",
+          "status": "COMPLETED",
+          "parameters": {
+            "subscriptionId": "SUB-2025-88412"
+          },
+          "comment": "Subscription cancelled successfully"
+        },
+        {
+          "taskId": "task-sub-001",
+          "action": "BILLING:process_refund",
+          "status": "COMPLETED",
+          "parameters": {
+            "subscriptionId": "SUB-2025-88412",
+            "amount": 420.0
+          },
+          "result": "{\"error\":\"REFUND_EXCEEDS_THRESHOLD\",\"amount\":420.00,\"threshold\":200.00}",
+          "comment": "Refund amount exceeds automatic approval threshold, manual approval required"
+        },
+        {
+          "taskId": "task-sub-001",
+          "action": "PLATFORM:ask_supervisor",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Refund of 420.00 TRY for customer CUST-88412 exceeds the 200.00 TRY automatic threshold and requires manual approval. Please approve or adjust the refund amount.",
+            "sessionId": "019b6e75-0006-0006-0006-000000000006",
+            "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+          },
+          "comment": "Asking supervisor to approve large refund"
+        },
+        {
+          "taskId": "task-sub-001",
+          "action": "PLATFORM:message_user",
+          "status": "COMPLETED",
+          "parameters": {
+            "sessionId": "019b6e75-0006-0006-0006-000000000006",
+            "message": "Your subscription has been cancelled. Your refund of 420.00 TRY is being processed and will arrive within 3-5 business days."
+          },
+          "comment": "Notified customer about cancellation and refund status"
+        },
+        {
+          "taskId": "task-sub-001",
+          "action": "PLATFORM:complete",
+          "status": "COMPLETED",
+          "comment": "Task completed following supervisor instructions"
+        }
+      ]
+    },
+    {
+      "id": "2ggh7890-7g8h-0i9j-4k1l-6l7890123456",
+      "description": "Sync product catalog from ERP to e-commerce platform.",
+      "sessionId": "019b6e75-0007-0007-0007-000000000007",
+      "pseudocode": "BEGIN_CONTEXT\nproducts = ERP.GetProducts(categoryId)\nFOR EACH product IN products\n    ECOMMERCE.UpsertProduct(product)\nEND_FOR\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "blueprint": {
+        "id": "bp-0007-0007-0007-0007-000000000007",
+        "title": "Product Catalog Sync",
+        "description": "Sync product catalog from ERP system to e-commerce platform.",
+        "pseudocode": "BEGIN_CONTEXT\nproducts = ERP.GetProducts(categoryId)\nFOR EACH product IN products\n    ECOMMERCE.UpsertProduct(product)\nEND_FOR\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "node-sync-001",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ERP:get_products",
+              "icon": "mdi:package-variant",
+              "prompt": "Get Products from ERP"
+            },
+            "next": [
+              "node-sync-002"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "node-sync-002",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ECOMMERCE:upsert_products",
+              "icon": "mdi:store",
+              "prompt": "Sync to E-commerce"
+            },
+            "next": [
+              "node-sync-003"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "node-sync-003",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check",
+              "prompt": "Complete"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
+      "steps": [
+        {
+          "taskId": "task-sync-001",
+          "action": "ERP:get_products",
+          "status": "COMPLETED",
+          "parameters": {
+            "categoryId": "CAT-ELECTRONICS"
+          },
+          "comment": "Retrieved 312 products from ERP"
+        },
+        {
+          "taskId": "task-sync-001",
+          "action": "ECOMMERCE:upsert_products",
+          "status": "COMPLETED",
+          "parameters": {
+            "productCount": 312,
+            "categoryId": "CAT-ELECTRONICS"
+          },
+          "result": "{\"error\":\"SERVICE_UNAVAILABLE\",\"retryAfter\":\"2026-06-04T22:00:00Z\"}",
+          "comment": "E-commerce platform returned service unavailable during scheduled maintenance"
+        },
+        {
+          "taskId": "task-sync-001",
+          "action": "PLATFORM:ask_supervisor",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "The e-commerce platform API is unavailable due to scheduled maintenance until 22:00 today. The product sync for 312 electronics items cannot proceed. Should I reschedule the sync for after maintenance or abort the task?",
+            "sessionId": "019b6e75-0007-0007-0007-000000000007",
+            "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+          },
+          "comment": "Asking supervisor how to handle API downtime"
+        },
+        {
+          "taskId": "task-sync-001",
+          "action": "PLATFORM:complete",
+          "status": "COMPLETED",
+          "comment": "Task completed following supervisor instructions"
+        }
+      ]
+    },
+    {
+      "id": "3hhi8901-8h9i-1j0k-5l2m-7m8901234567",
+      "description": "Transfer stock between two warehouse locations.",
+      "sessionId": "019b6e75-0008-0008-0008-000000000008",
+      "pseudocode": "BEGIN_CONTEXT\nstock = WMS.CheckStock(productId, sourceWarehouse)\nIF stock.quantity >= requestedQty THEN\n    WMS.TransferStock(productId, sourceWarehouse, targetWarehouse, requestedQty)\n    Complete()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "blueprint": {
+        "id": "bp-0008-0008-0008-0008-000000000008",
+        "title": "Warehouse Stock Transfer",
+        "description": "Transfer stock between warehouse locations.",
+        "pseudocode": "BEGIN_CONTEXT\nstock = WMS.CheckStock(productId, sourceWarehouse)\nIF stock.quantity >= requestedQty THEN\n    WMS.TransferStock(productId, sourceWarehouse, targetWarehouse, requestedQty)\n    Complete()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "node-wms-001",
+            "type": "NORMAL",
+            "properties": {
+              "action": "WMS:check_stock",
+              "icon": "mdi:warehouse",
+              "prompt": "Check Stock Level"
+            },
+            "next": [
+              "node-wms-002"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "node-wms-002",
+            "type": "NORMAL",
+            "properties": {
+              "action": "WMS:transfer_stock",
+              "icon": "mdi:transfer",
+              "prompt": "Transfer Stock"
+            },
+            "next": [
+              "node-wms-003"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "node-wms-003",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check",
+              "prompt": "Complete"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
+      "steps": [
+        {
+          "taskId": "task-wms-001",
+          "action": "WMS:check_stock",
+          "status": "COMPLETED",
+          "parameters": {
+            "productId": "SKU-445566",
+            "warehouseId": "WH-ISTANBUL-01"
+          },
+          "comment": "Stock check completed: 15 units available, 50 units requested"
+        },
+        {
+          "taskId": "task-wms-001",
+          "action": "WMS:transfer_stock",
+          "status": "COMPLETED",
+          "parameters": {
+            "productId": "SKU-445566",
+            "sourceWarehouse": "WH-ISTANBUL-01",
+            "targetWarehouse": "WH-ANKARA-01",
+            "quantity": 50
+          },
+          "result": "{\"error\":\"INSUFFICIENT_STOCK\",\"available\":15,\"requested\":50}",
+          "comment": "Transfer could not be fulfilled due to insufficient stock"
+        },
+        {
+          "taskId": "task-wms-001",
+          "action": "PLATFORM:ask_supervisor",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Cannot complete stock transfer: only 15 units of SKU-445566 available at WH-ISTANBUL-01, but 50 units requested for WH-ANKARA-01. Should I transfer the available 15 units, source from another warehouse, or cancel the transfer?",
+            "sessionId": "019b6e75-0008-0008-0008-000000000008",
+            "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+          },
+          "comment": "Asking supervisor how to handle insufficient stock"
+        },
+        {
+          "taskId": "task-wms-001",
+          "action": "PLATFORM:complete",
+          "status": "COMPLETED",
+          "comment": "Task completed following supervisor instructions"
+        }
+      ]
+    },
+    {
+      "id": "3fgidgef-7g3f-6c46-d8ig-9hf484408c59",
+      "description": "Setup internet subscription at user's address.",
+      "sessionId": "019b7f86-9b18-83g3-9beg-93de99g7c8dd",
+      "pseudocode": "BEGIN_CONTEXT \nUser.Address = GetUserAddress()\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "blueprint": {
+        "id": "ca7g8022-f343-570e-a171-3992963g7f70",
+        "title": "Basic Internet Subscription Setup",
+        "description": "Offer internet packages based on the user's residential address and provide available internet packages for the selected address.",
+        "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n ShowProducts(products)\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "019b9433-3de3-7545-a40a-854419ae8be1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "icon": "mdi:map-marker",
+              "prompt": "Get User Address"
+            },
+            "next": [
+              "76ccda2d-f11f-408c-8087-66c377600d0b"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_bbk_by_address",
+              "icon": "mdi:map-marker",
+              "prompt": "Get BBK No by Address"
+            },
+            "next": [
+              "51dca395-1d90-4a28-9bbc-233de9c1a207"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_inventory",
+              "icon": "mdi:server",
+              "prompt": "Get Inventory"
+            },
+            "next": [
+              "019b209c-2e5a-777f-a04a-11960363fb25"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209c-2e5a-777f-a04a-11960363fb25",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "icon": "mdi:source-branch",
+              "prompt": "Check if product is available"
+            },
+            "true": [
+              "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
+            ],
+            "false": [
+              "019b20a6-1aa6-7510-b222-66535e50dfb3"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check",
+              "prompt": "Complete"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_product_by_speed",
+              "icon": "mdi:speedometer",
+              "prompt": "Get Product by Speed"
+            },
+            "next": [
+              "019c4c9f-6864-7329-a872-a65efbbdb4d1"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:user",
+              "prompt": "Notify user about available products"
+            },
+            "next": [
+              "019b0270-c493-7072-9d50-87952c5dc547"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b0270-c493-7072-9d50-87952c5dc547",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "icon": "mdi:user",
+              "prompt": "Waiting for user to select a product"
+            },
+            "next": [
+              "019b3302-7846-75c2-9ab7-897c18b8ccee"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_allocation",
+              "icon": "mdi:link",
+              "prompt": "Assign Port"
+            },
+            "next": [
+              "019b3305-7846-75c2-9ab7-897c18b8cce1"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell",
+              "prompt": "Notify user about port allocation"
+            },
+            "next": [
+              "019b209e-3122-75ce-9ba6-674b6184f68d"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:configuration",
+              "icon": "mdi:settings",
+              "prompt": "Configure Port"
+            },
+            "next": [
+              "019b32f6-5878-73fb-8411-55916778d9a4"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-5878-73fb-8411-55916778d9a4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_connection",
+              "icon": "mdi:ethernet",
+              "prompt": "Connect Port"
+            },
+            "next": [
+              "019b32f6-bd02-734e-bd3a-aec89d79609c"
+            ],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check",
+              "prompt": "Complete"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
+      "steps": [
+        {
+          "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "What is your address?"
+          },
+          "comment": "User provided address"
+        },
+        {
+          "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+          "action": "TELCO:get_bbk_by_address",
+          "status": "COMPLETED",
+          "parameters": {
+            "address": "Küçükbakkalköy Mahallesi, Vedat Günyol Caddesi, No. 12, Ataşehir, İstanbul"
+          },
+          "comment": "BBK number retrieved successfully"
+        },
+        {
+          "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+          "action": "TELCO:get_inventory",
+          "status": "COMPLETED",
+          "parameters": {
+            "bbk": "987"
+          },
+          "comment": "Inventory is available"
+        },
+        {
+          "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+          "action": "PLATFORM:decision",
+          "status": "COMPLETED",
+          "comment": "Inventory available, proceeding with product selection",
+          "parameters": {
+            "condition": "inventory.Available == TRUE",
+            "true": [
+              {
+                "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+                "action": "TELCO:get_product_by_speed",
+                "status": "COMPLETED",
+                "parameters": {
+                  "speed_limit": "16mbps"
+                },
+                "comment": "Retrieved available internet packages"
+              },
+              {
+                "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+                "action": "PLATFORM:user_interaction",
+                "status": "COMPLETED",
+                "parameters": {
+                  "question": "2 Options: 16 Mbps (12 months), 16 Mbps (6 months). Please select a product"
+                },
+                "comment": "Waiting for user to select a product"
+              },
+              {
+                "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+                "action": "TELCO:port_allocation",
+                "status": "COMPLETED",
+                "parameters": {
+                  "device_serial_number": "123",
+                  "bbk_no": "987",
+                  "speed_limit": "16mbps",
+                  "speed_profile": "51200/8192"
+                },
+                "comment": "Port allocated successfully"
+              },
+              {
+                "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+                "action": "PLATFORM:message_user",
+                "status": "COMPLETED",
+                "parameters": {
+                  "sessionId": "019b7f86-9b18-83g3-9beg-93de99g7c8dd",
+                  "message": "A port has been assigned."
+                },
+                "comment": "Notified user about port allocation completion"
+              },
+              {
+                "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+                "action": "TELCO:configuration",
+                "status": "COMPLETED",
+                "parameters": {
+                  "device_serial_number": "123",
+                  "port_no": "4",
+                  "hgw_serial_no": "HGW001",
+                  "device_tid": "HUA_06TTIM_TEST1",
+                  "device_card_no": "1",
+                  "speed_limit": "16mbps",
+                  "speed_profile": "51200/8192"
+                },
+                "comment": "Port configured successfully"
+              },
+              {
+                "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+                "action": "TELCO:port_connection",
+                "status": "COMPLETED",
+                "parameters": {
+                  "assignment_id": "TH001"
+                },
+                "comment": "Port connected successfully"
+              },
+              {
+                "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+                "action": "PLATFORM:complete",
+                "status": "COMPLETED",
+                "comment": "Internet subscription has been successfully completed."
+              }
+            ],
+            "false": [
+              {
+                "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+                "action": "PLATFORM:complete",
+                "status": "COMPLETED",
+                "parameters": {},
+                "comment": "Completing task - inventory not available"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

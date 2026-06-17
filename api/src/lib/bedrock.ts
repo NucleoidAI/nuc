@@ -99,7 +99,24 @@ async function generate({
     }),
   });
 
-  const response = await bedrock.send(command);
+  let response;
+  try {
+    response = await bedrock.send(command);
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    if (msg.includes("http2") || msg.includes("did not get a response")) {
+      const freshClient = new BedrockRuntimeClient({
+        region: process.env.AWS_REGION || "us-east-1",
+        credentials: {
+          accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
+          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
+        },
+      });
+      response = await freshClient.send(command);
+    } else {
+      throw err;
+    }
+  }
 
   if (response.usage) {
     const {

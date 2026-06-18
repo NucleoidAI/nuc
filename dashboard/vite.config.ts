@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import { vite } from "@canmingir/link/vite";
 
-export default () => {
-  return defineConfig(vite());
+export default async () => {
+  const config = await vite();
+  return defineConfig(config);
 };

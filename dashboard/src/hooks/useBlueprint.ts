@@ -48,6 +48,25 @@ function useBlueprint() {
     };
   };
 
+  const getBlueprintsByAgent = (
+    agentId: string,
+    fetchState: DependencyArray = []
+  ) => {
+    const eventDependencies = [blueprintUpserted, blueprintPatched];
+
+    const { data, loading, error, fetch } = Api(
+      () => (agentId ? http.get(`/agents/${agentId}/blueprints`) : null),
+      [...eventDependencies, ...fetchState]
+    );
+
+    return {
+      Blueprint: data,
+      loading,
+      error,
+      fetch,
+    };
+  };
+
   const getBlueprintWithId = (id: string, fetchState: DependencyArray = []) => {
     const { data, loading, error, fetch } = Api(
       () => (id ? http.get(`/blueprints/${id}`) : null),
@@ -164,6 +183,7 @@ function useBlueprint() {
 
   return {
     getBlueprint,
+    getBlueprintsByAgent,
     getBlueprintWithNode,
     createBlueprint,
     upsertBlueprint,

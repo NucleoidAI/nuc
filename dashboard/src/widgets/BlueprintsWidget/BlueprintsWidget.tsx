@@ -24,9 +24,9 @@ function BlueprintsWidget({
     Blueprint: null,
   });
 
-  const { getBlueprint, removeBlueprint } = useBlueprint();
+  const { getBlueprintsByAgent, removeBlueprint } = useBlueprint();
 
-  const { Blueprint, loading } = getBlueprint([
+  const { Blueprint, loading } = getBlueprintsByAgent(agentId, [
     blueprintUpsertedEvent.Blueprint,
     blueprintRemovedEvent.Blueprint,
   ]);

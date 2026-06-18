@@ -1,4 +1,5 @@
 import Blueprint from "../schemas/Blueprint";
+import BlueprintModel from "../models/Blueprint";
 import Agent from "../models/Agent";
 import Joi from "joi";
 import Session from "../models/Session";
@@ -182,6 +183,28 @@ router.post("/:agentId/blueprints", async (req, res) => {
   const response = await agentFn.blueprintName({ history, content, agentId });
 
   res.json(response);
+});
+
+router.get("/:agentId/blueprints", async (req, res) => {
+  const { projectId: teamId } = req.session;
+  const { agentId } = Joi.attempt(
+    req.params,
+    Joi.object({ agentId: Joi.string().guid().required() })
+  );
+
+  const agent = await Agent.findByPk(agentId);
+
+  if (!agent) {
+    return res.status(404).end();
+  }
+
+  if (agent.teamId !== teamId) {
+    return res.status(401).end();
+  }
+
+  const blueprints = await BlueprintModel.findAll({ where: { agentId } });
+
+  res.json(blueprints);
 });
 
 export default router;

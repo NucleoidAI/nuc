@@ -16,8 +16,8 @@ const DiffButton = ({
       onClick={onShowDiff}
       sx={{
         position: "absolute",
-        top: 16,
-        right: validationErrors?.length ? 350 : 176,
+        top: 60,
+        right: validationErrors?.length ? 350 : 180,
         zIndex: 2,
         minWidth: 150,
         borderRadius: 2,

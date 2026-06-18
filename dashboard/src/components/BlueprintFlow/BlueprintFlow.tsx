@@ -86,6 +86,7 @@ export default function BlueprintFlow({
           setShowValidationErrors={onShowValidationErrors}
           handleSaveFlow={onSave}
           isSubmitting={isSubmitting}
+          hasLocalChanges={hasLocalChanges}
         />
       )}
 

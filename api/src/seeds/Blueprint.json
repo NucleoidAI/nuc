@@ -164,6 +164,71 @@
           "createdAt": "2025-06-19T06:02:00Z"
         }
       ]
+    },
+    {
+      "id": "019f4a01-1c4a-7a10-9b21-2d4e5f6a7b8c",
+      "title": "Meeting Summary and Action Items",
+      "description": "This Blueprint retrieves a meeting transcript from the user's Google Drive, uses an LLM to extract a concise meeting summary and the action items that are specifically assigned to the user, and finally sends the results to the user's email.",
+      "pseudocode": "BEGIN_CONTEXT\ntranscript = GetMeetingTranscript(User.Query)\nresult = ExtractActionItemsAndSummary(transcript, User)\nSendEmail(User.Email, \"Meeting Summary & Action Items\", result)\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "019f4a02-1111-4222-8333-444455556666",
+      "nodes": [
+        {
+          "id": "019f4a01-2a01-7a10-9b21-3a4b5c6d7e8f",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GDRIVE:search",
+            "description": "Search Google Drive for the meeting transcript document",
+            "prompt": "Get meeting transcript from Google Drive",
+            "label": "Get Meeting Transcript",
+            "icon": "mdi:file-document",
+            "pseudocode": "BEGIN_CONTEXT\ntranscript = GetMeetingTranscript(User.Query)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f4a01-3b02-7a10-9b21-4a5b6c7d8e9f"],
+          "createdAt": "2026-06-18T10:00:00Z"
+        },
+        {
+          "id": "019f4a01-3b02-7a10-9b21-4a5b6c7d8e9f",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:llm",
+            "description": "Use the LLM to produce a meeting summary and the action items that belong to the current user",
+            "prompt": "Extract action items and meeting summary for the user from the transcript",
+            "label": "Extract Action Items and Meeting Summary",
+            "icon": "mdi:brain",
+            "pseudocode": "BEGIN_CONTEXT\nresult = ExtractActionItemsAndSummary(transcript, User)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f4a01-4c03-7a10-9b21-5a6b7c8d9eaf"],
+          "createdAt": "2026-06-18T10:00:00Z"
+        },
+        {
+          "id": "019f4a01-4c03-7a10-9b21-5a6b7c8d9eaf",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:send_email",
+            "description": "Send the meeting summary and the user's action items by email",
+            "prompt": "Send meeting summary and action items via email",
+            "label": "Send Email",
+            "icon": "mdi:email-send",
+            "pseudocode": "BEGIN_CONTEXT\nSendEmail(User.Email, \"Meeting Summary & Action Items\", result)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f4a01-5d04-7a10-9b21-6a7b8c9daebf"],
+          "createdAt": "2026-06-18T10:00:00Z"
+        },
+        {
+          "id": "019f4a01-5d04-7a10-9b21-6a7b8c9daebf",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "Mark the meeting summary workflow as complete",
+            "prompt": "Complete meeting summary flow",
+            "label": "Complete",
+            "icon": "mdi:check",
+            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": null,
+          "createdAt": "2026-06-18T10:00:00Z"
+        }
+      ]
     }
   ]
 }

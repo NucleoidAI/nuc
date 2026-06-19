@@ -240,8 +240,7 @@ const ChatDrawer = ({
                     letterSpacing: 0.5,
                     textTransform: "uppercase",
                     color: (theme) => alpha(theme.palette.text.secondary, 0.7),
-                    borderColor: (theme) =>
-                      alpha(theme.palette.divider, 0.3),
+                    borderColor: (theme) => alpha(theme.palette.divider, 0.3),
                     "&.Mui-selected": {
                       color: (theme) => theme.palette.primary.light,
                       bgcolor: (theme) =>

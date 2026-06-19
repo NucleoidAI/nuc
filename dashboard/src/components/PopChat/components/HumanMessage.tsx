@@ -1,8 +1,8 @@
 import Editor from "@monaco-editor/react";
 import { alpha } from "@mui/material/styles";
-import { memo, useMemo } from "react";
-
 import { Box, Stack, Typography } from "@mui/material";
+
+import { memo, useMemo } from "react";
 
 function tryParseJson(content: string): boolean {
   const trimmed = content.trim();
@@ -25,7 +25,10 @@ const HumanMessage = memo(
     selectedId: string;
     messageRef: React.RefObject<HTMLDivElement>;
   }) => {
-    const isJson = useMemo(() => tryParseJson(message.content), [message.content]);
+    const isJson = useMemo(
+      () => tryParseJson(message.content),
+      [message.content]
+    );
 
     const formattedJson = useMemo(() => {
       if (!isJson) return null;

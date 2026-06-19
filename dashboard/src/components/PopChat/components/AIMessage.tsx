@@ -33,7 +33,8 @@ const JsonViewer: React.FC<{ content: string }> = memo(({ content }) => {
   return (
     <Box
       sx={{
-        border: (theme) => `1px solid ${alpha(theme.palette.primary.main, 0.25)}`,
+        border: (theme) =>
+          `1px solid ${alpha(theme.palette.primary.main, 0.25)}`,
         borderRadius: 1,
         overflow: "hidden",
         bgcolor: "#1e1e1e",
@@ -128,8 +129,7 @@ const AIMessage: React.FC<{
             },
             "& li": { marginBottom: "0.25em", lineHeight: 1.6 },
             "& blockquote": {
-              borderLeft: (theme) =>
-                `3px solid ${theme.palette.primary.main}`,
+              borderLeft: (theme) => `3px solid ${theme.palette.primary.main}`,
               paddingLeft: "1em",
               marginLeft: 0,
               fontStyle: "italic",

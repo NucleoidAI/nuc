@@ -1,10 +1,7 @@
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import { BlueprintFlowMiniPreview } from "./BlueprintFlowMiniPreview";
-import Chip from "@mui/material/Chip";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import LockIcon from "@mui/icons-material/Lock";
-import LockOpenIcon from "@mui/icons-material/LockOpen";
 import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
 import TaskIcon from "@mui/icons-material/Task";
 
@@ -104,7 +101,9 @@ const BlueprintCard = ({
 
             <ListItemText
               primary={<Typography color="inherit">{item.title}</Typography>}
-              secondary={item.description}
+              secondary={
+                "Checks port availability at the user's residential address. Presents compatible internet speed packages for user selection. Allocates a port and creates the subscription order. Notifies the user and completes port configuration and physical connection"
+              }
               slotProps={{
                 primary: {
                   typography: "subtitle1",
@@ -115,21 +114,6 @@ const BlueprintCard = ({
                   color: "text.disabled",
                 },
               }}
-            />
-
-            <Chip
-              size="small"
-              icon={
-                item.blocking !== false ? (
-                  <LockIcon fontSize="small" />
-                ) : (
-                  <LockOpenIcon fontSize="small" />
-                )
-              }
-              label={item.blocking !== false ? "Blocking" : "Non-blocking"}
-              color={item.blocking !== false ? "warning" : "success"}
-              variant="outlined"
-              sx={{ alignSelf: "flex-start" }}
             />
           </Box>
         </Box>

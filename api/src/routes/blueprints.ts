@@ -32,6 +32,20 @@ router.get("/:id", async (req, res) => {
   res.status(200).json(blueprintWithNodes);
 });
 
+router.post("/generate-description", async (req, res) => {
+  const { projectId: teamId } = req.session;
+
+  if (!teamId) {
+    return res.status(400);
+  }
+
+  const { nodes } = BlueprintSchema.generateDescription.parse(req.body);
+
+  const description = await bluePrint.generateDescription({ nodes });
+
+  res.status(200).json({ description });
+});
+
 router.put("/:blueprintId", async (req, res) => {
   const { projectId: teamId } = req.session;
   const { blueprintId } = req.params;

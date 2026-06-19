@@ -265,12 +265,12 @@ async function upsertPseudocode({
             }),
           )
         : undefined,
-      nodes?.length
+      nodes?.length && !description
         ? agentFn.blueprintDescription({ nodes })
         : Promise.resolve(undefined),
     ]);
 
-  const finalDescription = generatedDescription ?? description;
+  const finalDescription = description ?? generatedDescription;
 
   const result = await upsert(
     title,
@@ -286,6 +286,15 @@ async function upsertPseudocode({
 
   return { ...result, pseudocode };
 }
+
+async function generateDescription({ nodes }: { nodes: NodeType[] }) {
+  if (!nodes?.length) {
+    return "";
+  }
+
+  return agentFn.blueprintDescription({ nodes });
+}
+
 export default {
   getWithNodes,
   upsert,
@@ -294,4 +303,5 @@ export default {
   list,
   get,
   patch,
+  generateDescription,
 };

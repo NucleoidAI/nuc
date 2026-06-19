@@ -14,7 +14,7 @@ import {
   FlowDefinition,
   buildDefinitionGraph,
 } from "../../components/BlueprintFlow/helper";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 interface AIResponse {
   flow: FlowDefinition;
@@ -27,6 +27,41 @@ interface Blueprint {
   agentId: string;
   pseudocode?: string;
   blocking?: boolean;
+}
+
+function graphToNodes(graphData: DefinitionGraph) {
+  return Object.values(graphData.nodes).map((node) => {
+    const baseNode = {
+      id: node.id,
+      type: node.nodeType,
+      properties: {
+        label: node.label || node.raw?.properties?.label,
+        prompt: node.raw?.properties?.prompt,
+        pseudocode: node.raw?.properties?.pseudocode,
+        icon: node.icon || node.raw?.properties?.icon,
+        action: node.action || node.raw?.properties?.action,
+        description: node.description || node.raw?.properties?.description,
+      },
+      createdAt: node.createdAt,
+    };
+
+    if (node.nodeType === "CONDITION") {
+      return {
+        ...baseNode,
+        true: node.trueNext || node.raw?.true || [],
+        false: node.falseNext || node.raw?.false || [],
+      };
+    }
+
+    return {
+      ...baseNode,
+      next: Array.isArray(node.next)
+        ? node.next
+        : node.next
+        ? [node.next]
+        : null,
+    };
+  });
 }
 
 function BlueprintFlowWidget({
@@ -42,12 +77,16 @@ function BlueprintFlowWidget({
   agentId,
   readOnly = false,
   teamId,
+  onDescriptionChange,
+  onDescriptionLoadingChange,
 }: {
   aiResponse?: AIResponse;
   setAiResponse?: (response: AIResponse | null) => void;
   blueprint: Blueprint;
   taskId?: string;
   setSelectedItem?: (item: Blueprint) => void;
+  onDescriptionChange?: (description: string) => void;
+  onDescriptionLoadingChange?: (loading: boolean) => void;
   usedNodeIds?: Set<string>;
   lastUsedNodeId?: string | null;
   failedNodeId?: string | null;
@@ -67,8 +106,12 @@ function BlueprintFlowWidget({
   const [showDiffPanel, setShowDiffPanel] = useState(false);
   const [baselineNodes, setBaselineNodes] = useState(null);
 
-  const { getBlueprintWithNode, upsertBlueprint, patchBlueprint } =
-    useBlueprint();
+  const {
+    getBlueprintWithNode,
+    upsertBlueprint,
+    patchBlueprint,
+    generateDescription,
+  } = useBlueprint();
   const { blueprintNodes, loading } = getBlueprintWithNode(blueprint?.id);
   const { getMCPs } = useMCPs();
   const { mcps } = getMCPs();
@@ -145,6 +188,30 @@ function BlueprintFlowWidget({
     lastUsedNodeId,
     failedNodeId,
   ]);
+
+  const [localDescription, setLocalDescription] = useState("");
+  const descriptionRequestRef = useRef(0);
+
+  useEffect(() => {
+    if (!hasLocalChanges || !graphData) return;
+
+    const requestId = ++descriptionRequestRef.current;
+    const timer = setTimeout(async () => {
+      onDescriptionLoadingChange?.(true);
+      const description = await generateDescription(graphToNodes(graphData));
+
+      if (requestId !== descriptionRequestRef.current) return;
+
+      setLocalDescription(description);
+      if (onDescriptionChange) {
+        onDescriptionChange(description);
+      }
+      onDescriptionLoadingChange?.(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [graphData, hasLocalChanges]);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -930,7 +997,6 @@ function BlueprintFlowWidget({
   };
 
   const handleSaveFlow = async () => {
-    setIsSubmitting(true);
     if (!graphData) return;
 
     const agentId = blueprintNodes?.agentId || blueprint?.agentId;
@@ -943,63 +1009,53 @@ function BlueprintFlowWidget({
       return;
     }
 
-    const updatedNodes = Object.values(graphData.nodes).map((node) => {
-      const baseNode = {
-        id: node.id,
-        type: node.nodeType,
-        properties: {
-          label: node.label || node.raw?.properties?.label,
-          prompt: node.raw?.properties?.prompt,
-          pseudocode: node.raw?.properties?.pseudocode,
-          icon: node.icon || node.raw?.properties?.icon,
-          action: node.action || node.raw?.properties?.action,
-          description: node.description || node.raw?.properties?.description,
-        },
-        createdAt: node.createdAt,
-      };
+    setIsSubmitting(true);
 
-      if (node.nodeType === "CONDITION") {
-        return {
-          ...baseNode,
-          true: node.trueNext || node.raw?.true || [],
-          false: node.falseNext || node.raw?.false || [],
-        };
-      } else {
-        return {
-          ...baseNode,
-          next: Array.isArray(node.next)
-            ? node.next
-            : node.next
-            ? [node.next]
-            : null,
-        };
+    try {
+      const updatedNodes = graphToNodes(graphData);
+      descriptionRequestRef.current++;
+      let generatedDescription = "";
+      if (hasLocalChanges) {
+        onDescriptionLoadingChange?.(true);
+        generatedDescription = await generateDescription(updatedNodes);
+        onDescriptionLoadingChange?.(false);
       }
-    });
 
-    const response = await upsertBlueprint(
-      blueprintNodes?.id || blueprint?.id,
-      blueprintNodes?.title || blueprint?.title || "Newly Created Blueprint",
-      blueprintNodes?.description ||
-        blueprint?.description ||
-        "Blueprint created from flow",
-      agentId,
-      updatedNodes,
-      taskId,
-      blueprintNodes?.messages,
-      blocking
-    );
+      if (generatedDescription) {
+        setLocalDescription(generatedDescription);
+        if (onDescriptionChange) {
+          onDescriptionChange(generatedDescription);
+        }
+      }
 
-    if (setSelectedItem && response?.Blueprint) {
-      setSelectedItem(response.Blueprint);
+      const response = await upsertBlueprint(
+        blueprintNodes?.id || blueprint?.id,
+        blueprintNodes?.title || blueprint?.title || "Newly Created Blueprint",
+        generatedDescription ||
+          localDescription ||
+          blueprintNodes?.description ||
+          blueprint?.description ||
+          "Blueprint created from flow",
+        agentId,
+        updatedNodes,
+        taskId,
+        blueprintNodes?.messages,
+        blocking
+      );
+
+      if (setSelectedItem && response?.Blueprint) {
+        setSelectedItem(response.Blueprint);
+      }
+
+      setHasLocalChanges(false);
+      setShowDiffPanel(false);
+      if (setAiResponse) {
+        setAiResponse(null);
+      }
+      setSaveSuccess(true);
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setHasLocalChanges(false);
-    setShowDiffPanel(false);
-    if (setAiResponse) {
-      setAiResponse(null);
-    }
-    setSaveSuccess(true);
-    setIsSubmitting(false);
   };
 
   const handleBlockingChange = async (value: boolean) => {

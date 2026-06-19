@@ -150,6 +150,18 @@ function useBlueprint() {
     return { Blueprint: response?.data };
   };
 
+  const generateDescription = async (nodes: NodeType[]): Promise<string> => {
+    if (!nodes?.length) {
+      return "";
+    }
+
+    const response = await http.post("/blueprints/generate-description", {
+      nodes,
+    });
+
+    return response?.data?.description ?? "";
+  };
+
   const removeBlueprint = async (blueprintId: string, agentId: string) => {
     const response = await http.delete(`/blueprints/${blueprintId}`, {
       data: {
@@ -170,6 +182,7 @@ function useBlueprint() {
     patchBlueprint,
     removeBlueprint,
     getBlueprintWithId,
+    generateDescription,
   };
 }
 

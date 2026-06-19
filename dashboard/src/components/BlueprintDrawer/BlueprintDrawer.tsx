@@ -61,6 +61,7 @@ const BlueprintDrawer = ({
 }) => {
   const [title, setTitle] = useState(selectedItem?.title);
   const [description, setDescription] = useState(selectedItem?.description);
+  const [descriptionLoading, setDescriptionLoading] = useState(false);
   const [showKnowledge, setShowKnowledge] = useState(false);
 
   useEffect(() => {
@@ -92,6 +93,8 @@ const BlueprintDrawer = ({
         failedNodeId={failedNodeId}
         agentId={agentId}
         teamId={teamId}
+        onDescriptionChange={setDescription}
+        onDescriptionLoadingChange={setDescriptionLoading}
       />
 
       <Box
@@ -110,7 +113,9 @@ const BlueprintDrawer = ({
         <BlueprintChatTitle
           title={title}
           description={description}
+          descriptionLoading={descriptionLoading}
           setTitle={setTitle}
+          showKnowledge={showKnowledge}
         />
 
         {showKnowledge && (

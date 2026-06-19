@@ -4,6 +4,7 @@ import blueprintChatEvaluation from "./train/blueprint-chat-evaluation.json";
 import blueprintDescription from "./train/blueprint-description.json";
 import blueprintDiamond from "./train/blueprint-diamond.json";
 import blueprintName from "./train/blueprint-name.json";
+import blueprintSkill from "./train/blueprint-skill.json";
 import chat from "./train/chat.json";
 import humanInLoop from "./train/human-in-loop.json";
 import knowledgeScore from "./train/knowledge-score.json";
@@ -83,6 +84,12 @@ export default {
       role: "system" as const,
       content: JSON.stringify({
         train: blueprintDescription,
+      }),
+    },
+    blueprintSkill: {
+      role: "system" as const,
+      content: JSON.stringify({
+        train: blueprintSkill,
       }),
     },
     blueprintDiamond: {

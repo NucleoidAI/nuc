@@ -46,6 +46,20 @@ router.post("/generate-description", async (req, res) => {
   res.status(200).json({ description });
 });
 
+router.post("/generate-skill", async (req, res) => {
+  const { projectId: teamId } = req.session;
+
+  if (!teamId) {
+    return res.status(400);
+  }
+
+  const { nodes } = BlueprintSchema.generateSkill.parse(req.body);
+
+  const skill = await bluePrint.generateSkill({ nodes });
+
+  res.status(200).json({ skill });
+});
+
 router.put("/:blueprintId", async (req, res) => {
   const { projectId: teamId } = req.session;
   const { blueprintId } = req.params;

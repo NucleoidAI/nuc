@@ -832,6 +832,24 @@ async function blueprintDescription({ nodes }: { nodes: object[] }) {
   return response.description as string;
 }
 
+async function blueprintSkill({ nodes }: { nodes: object[] }) {
+  const context = [
+    {
+      role: "system" as const,
+      content: { nodes },
+    },
+  ];
+
+  const response = await generate({
+    dataset: dataset.train.blueprintSkill,
+    context,
+    content: nodes,
+    json_format: "{ skill: <SKILL> }",
+  });
+
+  return response.skill as string;
+}
+
 export default {
   teamChat,
   chat,
@@ -842,4 +860,5 @@ export default {
   evaluateSupervisionAnswer,
   toPseudo,
   blueprintDescription,
+  blueprintSkill,
 };

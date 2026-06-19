@@ -84,6 +84,28 @@ const Blueprint = {
       })
     ),
   }),
+  generateSkill: z.object({
+    nodes: z.array(
+      z.object({
+        id: z.string(),
+        properties: z
+          .object({
+            label: z.string(),
+            prompt: z.string().optional(),
+            icon: z.string(),
+            action: z.string().optional(),
+            description: z.string().optional(),
+            pseudocode: z.string().optional(),
+          })
+          .optional(),
+        type: z.string(),
+        next: z.array(z.string()).nullish(),
+        true: z.array(z.string()).nullish(),
+        false: z.array(z.string()).nullish(),
+        createdAt: z.string().optional(),
+      })
+    ),
+  }),
 };
 
 export default Blueprint;

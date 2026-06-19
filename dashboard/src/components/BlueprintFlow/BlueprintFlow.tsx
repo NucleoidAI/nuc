@@ -9,8 +9,8 @@ import SuccessSnackbar from "./Validation/SuccessSnackbar";
 import ValidationButtons from "./Validation/ValidationButtons";
 import ValidationErrorView from "./Validation/ValidationErrorView";
 import { blueprintFlowPlugin } from "./BlueprintFlowPlugin";
-import { Box, Chip, Tooltip } from "@mui/material";
 
+import { Box, Chip, Tooltip } from "@mui/material";
 import React, { useRef } from "react";
 
 export default function BlueprintFlow({

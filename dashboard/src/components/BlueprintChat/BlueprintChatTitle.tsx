@@ -1,27 +1,38 @@
 import AddIcon from "@mui/icons-material/Add";
 import { BlueprintCommands } from "../ChatInput/chat.config";
+import BulletDescription from "../BulletDescription/BulletDescription";
 import EditIcon from "@mui/icons-material/Edit";
+import SkillMd from "../SkillMd/SkillMd";
 
 import {
   Box,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
   TextField,
+  Typography,
   useTheme,
 } from "@mui/material";
 import {
   GlassCard,
+  GlassCardContent,
   GlassCardHeader,
   Iconify,
 } from "@canmingir/link/platform/components";
 import { MCPElement, MCPScopeElement } from "./MCPElement";
 import React, { useState } from "react";
 
-const BlueprintChatTitle = ({ title, description, setTitle }) => {
+const BlueprintChatTitle = ({
+  title,
+  description,
+  descriptionLoading,
+  setTitle,
+  showKnowledge,
+}) => {
   const theme = useTheme();
   const [isEditing, setIsEditing] = useState(false);
 
@@ -37,9 +48,7 @@ const BlueprintChatTitle = ({ title, description, setTitle }) => {
     setIsEditing(false);
   };
 
-  const renderDescriptionContent = () => {
-    if (!description) return null;
-
+  const highlightText = (text) => {
     try {
       const availableMCPs = BlueprintCommands[0]?.next?.list || [];
       const availableScopes = [];
@@ -56,7 +65,7 @@ const BlueprintChatTitle = ({ title, description, setTitle }) => {
       });
 
       const matches = [];
-      const modifiedDescription = description;
+      const modifiedDescription = text;
 
       availableMCPs.forEach((mcp) => {
         const regex = new RegExp(`\\b${mcp.name}\\b`, "gi");
@@ -140,10 +149,33 @@ const BlueprintChatTitle = ({ title, description, setTitle }) => {
         );
       }
 
-      return description;
+      return text;
     } catch (error) {
-      return description;
+      return text;
     }
+  };
+
+  const renderDescriptionContent = () => {
+    if (!description && !descriptionLoading) return null;
+
+    return (
+      <Box>
+        {description && (
+          <BulletDescription
+            description={description}
+            renderItem={highlightText}
+          />
+        )}
+        {descriptionLoading && (
+          <CircularProgress
+            sx={{ ml: 1 }}
+            color="inherit"
+            size={14}
+            thickness={5}
+          />
+        )}
+      </Box>
+    );
   };
 
   const renderTitleContent = () => {
@@ -256,10 +288,10 @@ const BlueprintChatTitle = ({ title, description, setTitle }) => {
       <GlassCard>
         <GlassCardHeader
           sx={{
-            p: 2,
+            p: 1.5,
+            width: 500,
           }}
           title={renderTitleContent()}
-          subheader={renderDescriptionContent()}
           action={
             <IconButton
               onClick={handleEditClick}
@@ -287,6 +319,40 @@ const BlueprintChatTitle = ({ title, description, setTitle }) => {
           }
         />
       </GlassCard>
+      {!showKnowledge && (
+        <GlassCard sx={{ mt: 1 }}>
+          <GlassCardHeader
+            sx={{
+              p: 1,
+              width: 500,
+            }}
+            title={
+              <Typography variant="subtitle2" color="text.secondary">
+                {"SKILL.md"}
+              </Typography>
+            }
+          />
+          <GlassCardContent>
+            <Box
+              sx={{
+                p: 1,
+                width: 500,
+              }}
+            >
+              {renderDescriptionContent()}
+            </Box>
+
+            <Box
+              sx={{
+                p: 1,
+                width: 500,
+              }}
+            >
+              <SkillMd />
+            </Box>
+          </GlassCardContent>
+        </GlassCard>
+      )}
       <Dialog
         open={isEditing}
         onClose={handleCancelClick}

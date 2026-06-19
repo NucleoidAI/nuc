@@ -829,8 +829,6 @@ async function blueprintDescription({ nodes }: { nodes: object[] }) {
     json_format: "{ description: <DESCRIPTION> }",
   });
 
-  console.log("[agent] blueprintDescription:", response);
-
   return response.description as string;
 }
 

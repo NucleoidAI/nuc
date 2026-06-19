@@ -76,7 +76,7 @@
         }
       ]
     },
-    "description": "This Blueprint defines an address-based internet subscription and installation workflow. The system retrieves inventory for the location without an availability check, then proceeds directly to speed-based product listing. The user selects a package, a port is allocated, the user is notified, and the port is configured and physically connected to complete the setup."
+    "description": "**Internet Subscription — Direct Setup With Notification**\n\nUse this Blueprint when a new internet subscription is initiated for a known address with no inventory availability gate.\n\nFlow: Retrieve BBK → Check inventory (no gate) → List speed products → User selects package → Allocate port → Notify user → Configure port → Connect port to residence.\n\nExits once the port is physically connected. No branching; all steps execute unconditionally."
   },
   {
     "content": {
@@ -164,7 +164,7 @@
         }
       ]
     },
-    "description": "This Blueprint defines an address-based internet subscription and installation workflow. The system checks port availability using the location's infrastructure number, ending immediately if unavailable. If available, the user selects a compatible speed package, a port is allocated, the port is configured and physically connected without notifying the user, completing the setup."
+    "description": "**Internet Subscription — Availability-Gated, Silent Setup**\n\nUse this Blueprint when a new subscription requires inventory validation before proceeding and no user notification is needed after port allocation.\n\nFlow: Retrieve BBK → Check inventory → [No inventory: end] → List speed products → User selects package → Allocate port → Configure port → Connect port to residence.\n\nExits silently after port connection. Exits early if inventory is unavailable."
   },
   {
     "content": {
@@ -277,7 +277,7 @@
         }
       ]
     },
-    "description": "This Blueprint defines an address-based internet subscription workflow with port availability handling. After retrieving the BBK number and confirming inventory, the user selects a speed package and a port allocation is attempted. If port allocation fails (no available port), the user is notified and the process ends. If the port is successfully allocated, it is configured and physically connected to complete the setup."
+    "description": "**Internet Subscription — Dual Availability Check (Inventory + Port)**\n\nUse this Blueprint when both inventory and port availability must be verified before completing a subscription.\n\nFlow: Retrieve BBK → Check inventory → [No inventory: end] → List speed products → User selects package → Allocate port → [No port: notify user, end] → Configure port → Connect port to residence.\n\nExits after port connection. Exits early if inventory is unavailable, or notifies the user and exits if port allocation fails."
   },
   {
     "content": {
@@ -357,7 +357,7 @@
         }
       ]
     },
-    "description": "This Blueprint defines an address-based internet subscription workflow with address validation. The user provides their address, and the system attempts to retrieve the corresponding BBK number. If the address is not found or invalid, the user is notified and the process ends. If the address is valid, the system checks inventory, lists available speed packages, and waits for the user to select a product to proceed with the subscription."
+    "description": "**Internet Subscription — User-Provided Address With Validation**\n\nUse this Blueprint when the user's address is unknown and must be collected and validated before retrieving infrastructure data.\n\nFlow: Collect address from user → Retrieve BBK → [Invalid address: notify user, end] → Check inventory → List speed products → User selects package.\n\nExits once the user selects a product. Exits early with a notification if the address is not found in the system."
   },
   {
     "content": {
@@ -420,6 +420,6 @@
         }
       ]
     },
-    "description": "This Blueprint defines an internet subscription workflow where port unavailability terminates the process. After retrieving the BBK number, checking inventory, and having the user select a speed package, a port allocation is attempted. If no port is available, the user is immediately notified and the workflow ends without configuration or connection steps."
+    "description": "**Internet Subscription — Port Unavailability Terminates Flow**\n\nUse this Blueprint when a subscription attempt should end immediately if no port is available, skipping configuration and connection steps.\n\nFlow: Retrieve BBK → Check inventory → List speed products → User selects package → Allocate port → Notify user of unavailability → End.\n\nExits after notifying the user that no port is available. Does not proceed to port configuration or connection."
   }
 ]

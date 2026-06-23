@@ -63,8 +63,16 @@ router.post("/generate-skill", async (req, res) => {
 router.put("/:blueprintId", async (req, res) => {
   const { projectId: teamId } = req.session;
   const { blueprintId } = req.params;
-  const { title, description, agentId, nodes, taskId, messages, blocking } =
-    BlueprintSchema.upsert.parse(req.body);
+  const {
+    title,
+    description,
+    agentId,
+    nodes,
+    taskId,
+    messages,
+    blocking,
+    skill,
+  } = BlueprintSchema.upsert.parse(req.body);
 
   if (agentId) {
     const { teamId: agentTeamId } = await agentData.get({
@@ -88,6 +96,7 @@ router.put("/:blueprintId", async (req, res) => {
       createdAt: new Date(msg.createdAt),
     })),
     blocking,
+    skill,
   });
 
   await event.publish("BLUEPRINT_CREATED", {

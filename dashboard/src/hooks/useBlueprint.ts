@@ -118,7 +118,8 @@ function useBlueprint() {
       content: string;
       createdAt: string | Date;
     }>,
-    blocking?: boolean
+    blocking?: boolean,
+    skill?: string
   ) => {
     if (!blueprintId) {
       blueprintId = uuidv4();
@@ -132,6 +133,7 @@ function useBlueprint() {
       taskId,
       messages,
       ...(blocking !== undefined && { blocking }),
+      ...(skill !== undefined && { skill }),
     });
     if (response?.data) {
       publish("BLUEPRINT_UPSERTED", { Blueprint: response.data });
@@ -162,6 +164,18 @@ function useBlueprint() {
     return response?.data?.description ?? "";
   };
 
+  const generateSkill = async (nodes: NodeType[]): Promise<string> => {
+    if (!nodes?.length) {
+      return "";
+    }
+
+    const response = await http.post("/blueprints/generate-skill", {
+      nodes,
+    });
+
+    return response?.data?.skill ?? "";
+  };
+
   const removeBlueprint = async (blueprintId: string, agentId: string) => {
     const response = await http.delete(`/blueprints/${blueprintId}`, {
       data: {
@@ -183,6 +197,7 @@ function useBlueprint() {
     removeBlueprint,
     getBlueprintWithId,
     generateDescription,
+    generateSkill,
   };
 }
 

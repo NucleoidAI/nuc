@@ -17,7 +17,7 @@ const BlueprintKnowledge = ({
   return (
     <GlassCard
       sx={{
-        mt: -1,
+        mt: -0.5,
         height: "85vh",
         overflow: "hidden",
         position: "relative",

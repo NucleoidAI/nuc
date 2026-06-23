@@ -55,7 +55,7 @@ const BlueprintSkill = ({ skill, skillLoading, showKnowledge }) => {
   return (
     <>
       {!showKnowledge && (
-        <GlassCard sx={{ mt: -1 }}>
+        <GlassCard sx={{ mt: -0.5 }}>
           <GlassCardHeader
             sx={{
               p: 1,

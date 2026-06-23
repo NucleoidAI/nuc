@@ -119,8 +119,8 @@ const BlueprintCard = ({
         <Box
           sx={{
             position: "absolute",
-            right: 84,
-            bottom: 22,
+            right: 78,
+            bottom: 12,
           }}
         >
           <Fab
@@ -136,7 +136,7 @@ const BlueprintCard = ({
           sx={{
             position: "absolute",
             right: 28,
-            bottom: 22,
+            bottom: 12,
           }}
         >
           <Fab

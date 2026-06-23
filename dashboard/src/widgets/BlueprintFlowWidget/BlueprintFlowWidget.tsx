@@ -119,7 +119,6 @@ function BlueprintFlowWidget({
   const {
     getBlueprintWithNode,
     upsertBlueprint,
-    patchBlueprint,
     generateDescription,
     generateSkill,
   } = useBlueprint();

@@ -4,7 +4,6 @@ import BlueprintKnowledge from "../BlueprintKnowledge/BlueprintKnowledge";
 import BlueprintSkill from "../BlueprintSkill/BlueprintSkill";
 import { DrawerLayout } from "@canmingir/link/layouts";
 import { FlowDefinition } from "../BlueprintFlow/helper";
-import Knowledge from "../../widgets/Knowledge/Knowledge";
 import SettingsDialog from "../SettingsDialog/SettingsDialog";
 import SettingsIcon from "@mui/icons-material/Settings";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";

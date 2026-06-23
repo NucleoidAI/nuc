@@ -27,6 +27,7 @@ interface Blueprint {
   agentId: string;
   pseudocode?: string;
   blocking?: boolean;
+  skill?: string;
 }
 
 function graphToNodes(graphData: DefinitionGraph) {
@@ -79,6 +80,8 @@ function BlueprintFlowWidget({
   teamId,
   onDescriptionChange,
   onDescriptionLoadingChange,
+  onSkillChange,
+  onSkillLoadingChange,
 }: {
   aiResponse?: AIResponse;
   setAiResponse?: (response: AIResponse | null) => void;
@@ -87,6 +90,8 @@ function BlueprintFlowWidget({
   setSelectedItem?: (item: Blueprint) => void;
   onDescriptionChange?: (description: string) => void;
   onDescriptionLoadingChange?: (loading: boolean) => void;
+  onSkillChange?: (skill: string) => void;
+  onSkillLoadingChange?: (loading: boolean) => void;
   usedNodeIds?: Set<string>;
   lastUsedNodeId?: string | null;
   failedNodeId?: string | null;
@@ -111,6 +116,7 @@ function BlueprintFlowWidget({
     upsertBlueprint,
     patchBlueprint,
     generateDescription,
+    generateSkill,
   } = useBlueprint();
   const { blueprintNodes, loading } = getBlueprintWithNode(blueprint?.id);
   const { getMCPs } = useMCPs();
@@ -190,7 +196,9 @@ function BlueprintFlowWidget({
   ]);
 
   const [localDescription, setLocalDescription] = useState("");
+  const [localSkill, setLocalSkill] = useState("");
   const descriptionRequestRef = useRef(0);
+  const skillRequestRef = useRef(0);
 
   useEffect(() => {
     if (!hasLocalChanges || !graphData) return;
@@ -207,6 +215,27 @@ function BlueprintFlowWidget({
         onDescriptionChange(description);
       }
       onDescriptionLoadingChange?.(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [graphData, hasLocalChanges]);
+
+  useEffect(() => {
+    if (!hasLocalChanges || !graphData) return;
+
+    const requestId = ++skillRequestRef.current;
+    const timer = setTimeout(async () => {
+      onSkillLoadingChange?.(true);
+      const skill = await generateSkill(graphToNodes(graphData));
+
+      if (requestId !== skillRequestRef.current) return;
+
+      setLocalSkill(skill);
+      if (onSkillChange) {
+        onSkillChange(skill);
+      }
+      onSkillLoadingChange?.(false);
     }, 500);
 
     return () => clearTimeout(timer);
@@ -252,6 +281,15 @@ function BlueprintFlowWidget({
       setBlocking(blueprintNodes.blocking);
     }
   }, [blueprintNodes?.blocking]);
+
+  useEffect(() => {
+    if (hasLocalChanges) return;
+    if (blueprintNodes?.skill) {
+      setLocalSkill(blueprintNodes.skill);
+      onSkillChange?.(blueprintNodes.skill);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [blueprintNodes?.skill, hasLocalChanges]);
 
   useEffect(
     () => {
@@ -1014,17 +1052,31 @@ function BlueprintFlowWidget({
     try {
       const updatedNodes = graphToNodes(graphData);
       descriptionRequestRef.current++;
+      skillRequestRef.current++;
       let generatedDescription = "";
+      let generatedSkill = "";
       if (hasLocalChanges) {
         onDescriptionLoadingChange?.(true);
-        generatedDescription = await generateDescription(updatedNodes);
+        onSkillLoadingChange?.(true);
+        [generatedDescription, generatedSkill] = await Promise.all([
+          generateDescription(updatedNodes),
+          generateSkill(updatedNodes),
+        ]);
         onDescriptionLoadingChange?.(false);
+        onSkillLoadingChange?.(false);
       }
 
       if (generatedDescription) {
         setLocalDescription(generatedDescription);
         if (onDescriptionChange) {
           onDescriptionChange(generatedDescription);
+        }
+      }
+
+      if (generatedSkill) {
+        setLocalSkill(generatedSkill);
+        if (onSkillChange) {
+          onSkillChange(generatedSkill);
         }
       }
 
@@ -1040,7 +1092,8 @@ function BlueprintFlowWidget({
         updatedNodes,
         taskId,
         blueprintNodes?.messages,
-        blocking
+        blocking,
+        generatedSkill || localSkill || blueprintNodes?.skill || undefined
       );
 
       if (setSelectedItem && response?.Blueprint) {

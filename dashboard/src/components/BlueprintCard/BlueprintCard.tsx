@@ -101,9 +101,7 @@ const BlueprintCard = ({
 
             <ListItemText
               primary={<Typography color="inherit">{item.title}</Typography>}
-              secondary={
-                "Checks port availability at the user's residential address. Presents compatible internet speed packages for user selection. Allocates a port and creates the subscription order. Notifies the user and completes port configuration and physical connection"
-              }
+              secondary={item.description}
               slotProps={{
                 primary: {
                   typography: "subtitle1",

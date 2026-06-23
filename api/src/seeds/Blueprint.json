@@ -4,9 +4,10 @@
     {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
-      "description": "• Checks port availability at the user's residential address\n• Presents compatible internet speed packages for user selection\n• Allocates a port and creates the subscription order\n• Notifies the user and completes port configuration and physical connection",
+      "description": "Checks port availability at the user's residential address. Presents compatible internet speed packages for user selection. Allocates a port and creates the subscription order. Notifies the user and completes port configuration and physical connection",
       "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    CreateOrder(selectedProduct, User.Address)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "skill": "**Internet Subscription — Availability-Gated, Silent Setup**\n\nUse this Blueprint when a new subscription requires inventory validation before proceeding and no user notification is needed after port allocation.\n\nFlow: Retrieve BBK → Check inventory → [No inventory: end] → List speed products → User selects package → Allocate port → Configure port → Connect port to residence.\n\nExits silently after port connection. Exits early if inventory is unavailable.",
       "nodes": [
         {
           "id": "76ccda2d-f11f-408c-8087-66c377600d0b",

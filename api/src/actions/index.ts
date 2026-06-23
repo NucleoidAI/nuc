@@ -14,8 +14,10 @@ function list() {
   };
 }
 
-function listNonBlocking() {
-  const filtered = actions.filter((a) => a.action !== "PLATFORM:ask_supervisor");
+function listNonBlockings() {
+  const filtered = actions.filter(
+    (a) => a.action !== "PLATFORM:ask_supervisor",
+  );
   return {
     role: "system",
     content: { actions: filtered },
@@ -28,5 +30,5 @@ function listNonBlocking() {
 export default {
   find,
   list,
-  listNonBlocking,
+  listNonBlockings,
 };

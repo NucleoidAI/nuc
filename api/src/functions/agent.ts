@@ -217,7 +217,7 @@ async function task({ taskId }: { taskId: string }) {
         sessionId ? conversations({ sessionId }) : Promise.resolve([]),
       ])
     ).flat(),
-    isBlocking ? actions.list() : actions.listNonBlocking(),
+    isBlocking ? actions.list() : actions.listNonBlockings(),
     mcpFn.list(),
   ];
 
@@ -228,7 +228,7 @@ async function task({ taskId }: { taskId: string }) {
     result_score,
   } = await generate({
     dataset: isBlocking
-      ? dataset.train.taskDiamond
+      ? dataset.train.taskDiamondBlocking
       : dataset.train.taskDiamondNonBlocking,
     context,
     content: currentTask,

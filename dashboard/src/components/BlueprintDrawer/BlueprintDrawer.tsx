@@ -4,7 +4,11 @@ import BlueprintKnowledge from "../BlueprintKnowledge/BlueprintKnowledge";
 import BlueprintSkill from "../BlueprintSkill/BlueprintSkill";
 import { DrawerLayout } from "@canmingir/link/layouts";
 import { FlowDefinition } from "../BlueprintFlow/helper";
+import Knowledge from "../../widgets/Knowledge/Knowledge";
+import SettingsDialog from "../SettingsDialog/SettingsDialog";
+import SettingsIcon from "@mui/icons-material/Settings";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
+import useBlueprint from "../../hooks/useBlueprint";
 
 import { Box, Fab, Grid, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -60,6 +64,18 @@ const BlueprintDrawer = ({
   const [skill, setSkill] = useState(selectedItem?.skill);
   const [skillLoading, setSkillLoading] = useState(false);
   const [showKnowledge, setShowKnowledge] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [settingsTab, setSettingsTab] = useState(0);
+  const [blocking, setBlocking] = useState<boolean>(true);
+
+  const { patchBlueprint } = useBlueprint();
+
+  const handleBlockingChange = async (value: boolean) => {
+    setBlocking(value);
+    if (selectedItem?.id) {
+      await patchBlueprint(selectedItem.id, { blocking: value });
+    }
+  };
 
   useEffect(() => {
     setTitle(selectedItem?.title);
@@ -90,6 +106,8 @@ const BlueprintDrawer = ({
         failedNodeId={failedNodeId}
         agentId={agentId}
         teamId={teamId}
+        blocking={blocking}
+        onBlockingChange={handleBlockingChange}
         onSkillChange={setSkill}
         onSkillLoadingChange={setSkillLoading}
       />
@@ -142,6 +160,30 @@ const BlueprintDrawer = ({
           <StickyNote2Icon />
         </Fab>
       </Tooltip>
+
+      <Tooltip title="Settings" placement="left">
+        <Fab
+          color="primary"
+          onClick={() => setShowSettings((prev) => !prev)}
+          sx={{
+            position: "absolute",
+            bottom: 24,
+            right: 72,
+            zIndex: 10,
+          }}
+        >
+          <SettingsIcon />
+        </Fab>
+      </Tooltip>
+
+      <SettingsDialog
+        showSettings={showSettings}
+        setShowSettings={setShowSettings}
+        settingsTab={settingsTab}
+        setSettingsTab={setSettingsTab}
+        blocking={blocking}
+        setBlocking={handleBlockingChange}
+      />
     </Box>
   );
 

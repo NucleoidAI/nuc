@@ -9,17 +9,19 @@ const ValidationButtons = ({
   setShowValidationErrors,
   handleSaveFlow,
   isSubmitting,
+  hasLocalChanges,
 }: {
   validationErrors: ValidationError[];
   setShowValidationErrors: (show: boolean) => void;
   handleSaveFlow: () => void;
   isSubmitting?: boolean;
+  hasLocalChanges?: boolean;
 }) => {
   return (
     <Box
       sx={{
         position: "absolute",
-        top: 16,
+        top: hasLocalChanges ? 60 : 16,
         right: 16,
         zIndex: 1000,
         display: "flex",

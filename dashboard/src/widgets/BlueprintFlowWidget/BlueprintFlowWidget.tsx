@@ -78,6 +78,8 @@ function BlueprintFlowWidget({
   agentId,
   readOnly = false,
   teamId,
+  blocking: blockingProp,
+  onBlockingChange: onBlockingChangeProp,
   onDescriptionChange,
   onDescriptionLoadingChange,
   onSkillChange,
@@ -99,12 +101,15 @@ function BlueprintFlowWidget({
   agentId?: string;
   readOnly?: boolean;
   teamId?: string;
+  blocking?: boolean;
+  onBlockingChange?: (value: boolean) => void;
 }) {
   const [graphData, setGraphData] = useState<DefinitionGraph | null>(null);
   const [hasLocalChanges, setHasLocalChanges] = useState(false);
-  const [blocking, setBlocking] = useState<boolean>(
+  const [blockingInternal, setBlockingInternal] = useState<boolean>(
     blueprint?.blocking ?? true
   );
+  const blocking = blockingProp !== undefined ? blockingProp : blockingInternal;
   const [validationErrors, setValidationErrors] = useState([]);
   const [showValidationErrors, setShowValidationErrors] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -276,11 +281,19 @@ function BlueprintFlowWidget({
   const [showSampleFlow, setShowSampleFlow] = useState(false);
   const [nodePseudocode, setNodePseudocode] = useState("");
 
-  useEffect(() => {
-    if (blueprintNodes?.blocking !== undefined) {
-      setBlocking(blueprintNodes.blocking);
-    }
-  }, [blueprintNodes?.blocking]);
+  useEffect(
+    () => {
+      if (blueprintNodes?.blocking !== undefined) {
+        if (onBlockingChangeProp) {
+          onBlockingChangeProp(blueprintNodes.blocking);
+        } else {
+          setBlockingInternal(blueprintNodes.blocking);
+        }
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [blueprintNodes?.blocking]
+  );
 
   useEffect(() => {
     if (hasLocalChanges) return;
@@ -1111,14 +1124,6 @@ function BlueprintFlowWidget({
     }
   };
 
-  const handleBlockingChange = async (value: boolean) => {
-    setBlocking(value);
-    const id = blueprintNodes?.id || blueprint?.id;
-    if (id) {
-      await patchBlueprint(id, { blocking: value });
-    }
-  };
-
   const handleFlowChange = (updatedGraphData) => {
     setGraphData(updatedGraphData);
     setHasLocalChanges(true);
@@ -1193,8 +1198,6 @@ function BlueprintFlowWidget({
           onSaveSuccessChange={setSaveSuccess}
           isSuperviseFlow={isSuperviseFlow}
           isSubmitting={isSubmitting}
-          blocking={blocking}
-          onBlockingChange={handleBlockingChange}
         />
       )}
 

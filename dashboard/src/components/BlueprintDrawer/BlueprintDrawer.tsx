@@ -1,16 +1,12 @@
 import BlueprintChatTitle from "../BlueprintChat/BlueprintChatTitle";
 import BlueprintFlowWidget from "../../widgets/BlueprintFlowWidget/BlueprintFlowWidget";
-import CloseIcon from "@mui/icons-material/Close";
+import BlueprintKnowledge from "../BlueprintKnowledge/BlueprintKnowledge";
+import BlueprintSkill from "../BlueprintSkill/BlueprintSkill";
 import { DrawerLayout } from "@canmingir/link/layouts";
 import { FlowDefinition } from "../BlueprintFlow/helper";
-import Knowledge from "../../widgets/Knowledge/Knowledge";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 
-import { Box, Fab, Grid, IconButton, Tooltip } from "@mui/material";
-import {
-  GlassCard,
-  GlassCardContent,
-} from "@canmingir/link/platform/components";
+import { Box, Fab, Grid, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
 const BlueprintDrawer = ({
@@ -35,6 +31,7 @@ const BlueprintDrawer = ({
     description: string;
     agentId: string;
     pseudocode?: string;
+    skill?: string;
   };
   handleAiResponse?: (response: {
     flow: FlowDefinition;
@@ -60,13 +57,13 @@ const BlueprintDrawer = ({
   teamId?: string;
 }) => {
   const [title, setTitle] = useState(selectedItem?.title);
-  const [description, setDescription] = useState(selectedItem?.description);
-  const [descriptionLoading, setDescriptionLoading] = useState(false);
+  const [skill, setSkill] = useState(selectedItem?.skill);
+  const [skillLoading, setSkillLoading] = useState(false);
   const [showKnowledge, setShowKnowledge] = useState(false);
 
   useEffect(() => {
     setTitle(selectedItem?.title);
-    setDescription(selectedItem?.description);
+    setSkill(selectedItem?.skill);
   }, [selectedItem]);
 
   const flowContent = (
@@ -93,8 +90,8 @@ const BlueprintDrawer = ({
         failedNodeId={failedNodeId}
         agentId={agentId}
         teamId={teamId}
-        onDescriptionChange={setDescription}
-        onDescriptionLoadingChange={setDescriptionLoading}
+        onSkillChange={setSkill}
+        onSkillLoadingChange={setSkillLoading}
       />
 
       <Box
@@ -110,11 +107,11 @@ const BlueprintDrawer = ({
           maxHeight: "calc(100% - 32px)",
         }}
       >
-        <BlueprintChatTitle
-          title={title}
-          description={description}
-          descriptionLoading={descriptionLoading}
-          setTitle={setTitle}
+        <BlueprintChatTitle title={title} setTitle={setTitle} />
+
+        <BlueprintSkill
+          skill={skill}
+          skillLoading={skillLoading}
           showKnowledge={showKnowledge}
         />
 

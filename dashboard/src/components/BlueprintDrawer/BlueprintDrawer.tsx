@@ -116,30 +116,12 @@ const BlueprintDrawer = ({
         />
 
         {showKnowledge && (
-          <GlassCard
-            sx={{
-              height: "85vh",
-              overflow: "hidden",
-              position: "relative",
-            }}
-          >
-            <GlassCardContent>
-              <Tooltip title="Close" placement="right">
-                <IconButton
-                  size="small"
-                  onClick={() => setShowKnowledge(false)}
-                  sx={{ position: "absolute", top: 8, right: 8, zIndex: 99 }}
-                >
-                  <CloseIcon />
-                </IconButton>
-              </Tooltip>
-              <Knowledge
-                agentId={selectedItem?.agentId || agentId}
-                blueprintId={selectedItem?.id}
-                teamId={teamId}
-              />
-            </GlassCardContent>
-          </GlassCard>
+          <BlueprintKnowledge
+            setShowKnowledge={setShowKnowledge}
+            selectedItem={selectedItem}
+            agentId={agentId}
+            teamId={teamId}
+          />
         )}
       </Box>
 

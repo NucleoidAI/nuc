@@ -4,6 +4,7 @@ import NodeEditorWidget from "../NodeEditorWidget/NodeEditorWidget";
 import SampleFlow from "../../components/BlueprintFlow/Samples/SampleFlow";
 import SampleNode from "../../components/BlueprintFlow/Samples/SampleNode";
 import { calculateNodeChanges } from "../../components/BlueprintFlow/DiffPanel/diffHelper";
+import { publish } from "@nucleoidai/react-event";
 import useBlueprint from "../../hooks/useBlueprint";
 import useMCPs from "../../hooks/useMCPs";
 import { v4 as uuid } from "uuid";
@@ -116,12 +117,7 @@ function BlueprintFlowWidget({
   const [showDiffPanel, setShowDiffPanel] = useState(false);
   const [baselineNodes, setBaselineNodes] = useState(null);
 
-  const {
-    getBlueprintWithNode,
-    upsertBlueprint,
-    generateDescription,
-    generateSkill,
-  } = useBlueprint();
+  const { getBlueprintWithNode, upsertBlueprint, generate } = useBlueprint();
   const { blueprintNodes, loading } = getBlueprintWithNode(blueprint?.id);
   const { getMCPs } = useMCPs();
   const { mcps } = getMCPs();
@@ -201,45 +197,45 @@ function BlueprintFlowWidget({
 
   const [localDescription, setLocalDescription] = useState("");
   const [localSkill, setLocalSkill] = useState("");
-  const descriptionRequestRef = useRef(0);
-  const skillRequestRef = useRef(0);
+  const generateRequestRef = useRef(0);
+  const generationRef = useRef<Promise<{
+    description: string;
+    skill: string;
+  }> | null>(null);
+
+  const runGenerate = (
+    requestId: number,
+    nodes: ReturnType<typeof graphToNodes>
+  ) => {
+    onDescriptionLoadingChange?.(true);
+    onSkillLoadingChange?.(true);
+    publish("BLUEPRINT", "GENERATING", { generating: true });
+
+    const promise = generate(nodes).then((result) => {
+      if (requestId === generateRequestRef.current) {
+        setLocalDescription(result.description);
+        onDescriptionChange?.(result.description);
+        setLocalSkill(result.skill);
+        onSkillChange?.(result.skill);
+
+        onDescriptionLoadingChange?.(false);
+        onSkillLoadingChange?.(false);
+        generationRef.current = null;
+        publish("BLUEPRINT", "GENERATING", { generating: false });
+      }
+      return result;
+    });
+
+    generationRef.current = promise;
+    return promise;
+  };
 
   useEffect(() => {
     if (!hasLocalChanges || !graphData) return;
 
-    const requestId = ++descriptionRequestRef.current;
-    const timer = setTimeout(async () => {
-      onDescriptionLoadingChange?.(true);
-      const description = await generateDescription(graphToNodes(graphData));
-
-      if (requestId !== descriptionRequestRef.current) return;
-
-      setLocalDescription(description);
-      if (onDescriptionChange) {
-        onDescriptionChange(description);
-      }
-      onDescriptionLoadingChange?.(false);
-    }, 500);
-
-    return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [graphData, hasLocalChanges]);
-
-  useEffect(() => {
-    if (!hasLocalChanges || !graphData) return;
-
-    const requestId = ++skillRequestRef.current;
-    const timer = setTimeout(async () => {
-      onSkillLoadingChange?.(true);
-      const skill = await generateSkill(graphToNodes(graphData));
-
-      if (requestId !== skillRequestRef.current) return;
-
-      setLocalSkill(skill);
-      if (onSkillChange) {
-        onSkillChange(skill);
-      }
-      onSkillLoadingChange?.(false);
+    const requestId = ++generateRequestRef.current;
+    const timer = setTimeout(() => {
+      runGenerate(requestId, graphToNodes(graphData));
     }, 500);
 
     return () => clearTimeout(timer);
@@ -1063,39 +1059,21 @@ function BlueprintFlowWidget({
 
     try {
       const updatedNodes = graphToNodes(graphData);
-      descriptionRequestRef.current++;
-      skillRequestRef.current++;
-      let generatedDescription = "";
-      let generatedSkill = "";
-      if (hasLocalChanges) {
-        onDescriptionLoadingChange?.(true);
-        onSkillLoadingChange?.(true);
-        [generatedDescription, generatedSkill] = await Promise.all([
-          generateDescription(updatedNodes),
-          generateSkill(updatedNodes),
-        ]);
-        onDescriptionLoadingChange?.(false);
-        onSkillLoadingChange?.(false);
-      }
+      let generated = generationRef.current
+        ? await generationRef.current
+        : null;
 
-      if (generatedDescription) {
-        setLocalDescription(generatedDescription);
-        if (onDescriptionChange) {
-          onDescriptionChange(generatedDescription);
-        }
-      }
-
-      if (generatedSkill) {
-        setLocalSkill(generatedSkill);
-        if (onSkillChange) {
-          onSkillChange(generatedSkill);
-        }
+      if (!generated && hasLocalChanges) {
+        generated = await runGenerate(
+          ++generateRequestRef.current,
+          updatedNodes
+        );
       }
 
       const response = await upsertBlueprint(
         blueprintNodes?.id || blueprint?.id,
         blueprintNodes?.title || blueprint?.title || "Newly Created Blueprint",
-        generatedDescription ||
+        generated?.description ||
           localDescription ||
           blueprintNodes?.description ||
           blueprint?.description ||
@@ -1105,7 +1083,7 @@ function BlueprintFlowWidget({
         taskId,
         blueprintNodes?.messages,
         blocking,
-        generatedSkill || localSkill || blueprintNodes?.skill || undefined
+        generated?.skill || localSkill || blueprintNodes?.skill || undefined
       );
 
       if (setSelectedItem && response?.Blueprint) {

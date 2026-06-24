@@ -152,28 +152,21 @@ function useBlueprint() {
     return { Blueprint: response?.data };
   };
 
-  const generateDescription = async (nodes: NodeType[]): Promise<string> => {
+  const generate = async (
+    nodes: NodeType[]
+  ): Promise<{ description: string; skill: string }> => {
     if (!nodes?.length) {
-      return "";
+      return { description: "", skill: "" };
     }
 
-    const response = await http.post("/blueprints/generate-description", {
+    const response = await http.post("/blueprints/generate", {
       nodes,
     });
 
-    return response?.data?.description ?? "";
-  };
-
-  const generateSkill = async (nodes: NodeType[]): Promise<string> => {
-    if (!nodes?.length) {
-      return "";
-    }
-
-    const response = await http.post("/blueprints/generate-skill", {
-      nodes,
-    });
-
-    return response?.data?.skill ?? "";
+    return {
+      description: response?.data?.description ?? "",
+      skill: response?.data?.skill ?? "",
+    };
   };
 
   const removeBlueprint = async (blueprintId: string, agentId: string) => {
@@ -196,8 +189,7 @@ function useBlueprint() {
     patchBlueprint,
     removeBlueprint,
     getBlueprintWithId,
-    generateDescription,
-    generateSkill,
+    generate,
   };
 }
 

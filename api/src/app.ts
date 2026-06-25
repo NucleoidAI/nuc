@@ -2,6 +2,7 @@ import "express";
 
 import agentFn from "./functions/agent";
 import agents from "./routes/agents";
+import blueprintChat from "./routes/blueprintChat";
 import blueprints from "./routes/blueprints";
 import communications from "./routes/communications";
 import engines from "./routes/engines";
@@ -53,6 +54,7 @@ function createApp() {
   app.use("/statistics", statistics);
   app.use("/agents", agents);
   app.use("/blueprints", blueprints);
+  app.use("/blueprint-chat", blueprintChat);
   app.use("/mcps", mcps);
   app.use("/communications", communications);
 

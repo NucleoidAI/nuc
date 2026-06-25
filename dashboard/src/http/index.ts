@@ -1,61 +1,82 @@
 import axios from "axios";
-import axiosRetry from "axios-retry";
 import config from "../../config";
-import { publish } from "@nucleoidai/react-event";
+import http from "@canmingir/link/platform/http";
 import { storage } from "@nucleoidjs/webstorage";
 
-const instance = axios.create({
-  baseURL: config.api,
-  headers: {
-    common: {
-      "Content-Type": "application/json",
-    },
-  },
-});
+type QueueEntry = {
+  resolve: (token: string) => void;
+  reject: (err: unknown) => void;
+};
 
-axiosRetry(instance, { retries: 3 });
+let isRefreshing = false;
+let queue: QueueEntry[] = [];
 
-instance.interceptors.request.use((request) => {
-  const accessToken = storage.get("link", "accessToken");
-  if (!accessToken) {
-    window.location.href =
-      config.base === "/" ? "/login" : `${config.base}/login`;
+function processQueue(err: unknown, token: string | null) {
+  queue.forEach((entry) => (err ? entry.reject(err) : entry.resolve(token!)));
+  queue = [];
+}
+
+async function refreshAccessToken(): Promise<string> {
+  const identityProvider = storage.get("link", "identityProvider");
+  const { data } = await axios.post(`${config.api}/oauth`, {
+    refreshToken: storage.get("link", "refreshToken"),
+    appId: config.appId,
+    projectId: storage.get("projectId"),
+    identityProvider,
+    ...(identityProvider === "DEMO" && {
+      username: "admin",
+      password: "admin",
+    }),
+  });
+  storage.set("link", "accessToken", data.accessToken);
+  if (data.refreshToken) {
+    storage.set("link", "refreshToken", data.refreshToken);
   }
-  request.headers["Authorization"] = `Bearer ${accessToken}`;
-  return request;
-});
+  return data.accessToken;
+}
 
-instance.interceptors.response.use(
-  (response) => {
-    const accessToken = storage.get("link", "accessToken");
-    if (!accessToken) {
-      window.location.href = "/login";
+// Fallback interceptor: handles 401s that axios-auth-refresh skipped
+// (e.g. when shouldRefresh returned false due to clock skew)
+http.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (
+      error.response?.status !== 401 ||
+      originalRequest._retried ||
+      originalRequest.skipAuthRefresh
+    ) {
+      return Promise.reject(error);
     }
-    response.headers["Authorization"] = `Bearer ${accessToken}`;
-    return response;
-  },
-  (error) => {
-    if (error.response) {
-      if (error.response.status === 400) {
-        publish("GLOBAL_MESSAGE_POSTED", {
-          status: true,
-          message: `BAD REQUEST: ${JSON.stringify(error.response.data)}`,
-          severity: "warning",
-        });
-      } else if (error.response.status >= 500) {
-        publish("GLOBAL_MESSAGE_POSTED", {
-          status: true,
-          message: `SERVER ERROR: ${error.response.status}`,
-          severity: "warning",
-        });
-      } else {
-        console.error("API Error:", error.response.status, error.response.data);
-      }
-    } else {
-      console.error("Network or unknown error:", error.message);
+
+    if (isRefreshing) {
+      return new Promise<string>((resolve, reject) => {
+        queue.push({ resolve, reject });
+      }).then((token) => {
+        originalRequest.headers["Authorization"] = `Bearer ${token}`;
+        return http(originalRequest);
+      });
     }
-    return Promise.reject(error);
+
+    originalRequest._retried = true;
+    isRefreshing = true;
+
+    try {
+      const newToken = await refreshAccessToken();
+      processQueue(null, newToken);
+      originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
+      return http(originalRequest);
+    } catch (refreshError) {
+      processQueue(refreshError, null);
+      storage.remove("link", "accessToken");
+      storage.remove("link", "refreshToken");
+      window.location.href = `${window.location.origin}${config.base}/login`;
+      return Promise.reject(refreshError);
+    } finally {
+      isRefreshing = false;
+    }
   }
 );
 
-export default instance;
+export default http;

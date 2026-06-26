@@ -130,6 +130,7 @@ const BlueprintDrawer = ({
           skill={skill}
           skillLoading={skillLoading}
           showKnowledge={showKnowledge}
+          blueprintId={selectedItem?.id}
         />
 
         {showKnowledge && (

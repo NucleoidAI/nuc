@@ -1,17 +1,35 @@
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import React from "react";
-import ReactMarkdown from "react-markdown";
-import SkillMd from "../SkillMd/SkillMd";
-import remarkGfm from "remark-gfm";
+import ToolsWidget from "../../widgets/ToolsWidget/ToolsWidget";
 
-import { Box, CircularProgress, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Collapse,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  useTheme,
+} from "@mui/material";
 import {
   GlassCard,
   GlassCardContent,
-  GlassCardHeader,
 } from "@canmingir/link/platform/components";
 
-const BlueprintSkill = ({ skill, skillLoading, showKnowledge }) => {
+const BlueprintSkill = ({
+  skill,
+  skillLoading,
+  showKnowledge,
+  blueprintId,
+}) => {
   const theme = useTheme();
+  const [expanded, setExpanded] = React.useState(false);
+  const skillBullets = (skill || "")
+    .split("\n")
+    .map((line) => line.replace(/^\s*([#>*-]|\d+\.)\s*/, "").trim())
+    .filter((line) => line.length > 0);
+
   const renderSkillContent = () => {
     if (!skill && !skillLoading) return null;
 
@@ -20,25 +38,23 @@ const BlueprintSkill = ({ skill, skillLoading, showKnowledge }) => {
         sx={{
           fontSize: "0.875rem",
           color: theme.palette.text.secondary,
-          "& p": { m: 0, mb: 0.5 },
-          "& ul": { pl: 2, m: 0, mb: 0.5 },
-          "& h1, & h2, & h3": {
-            fontSize: "0.95rem",
-            fontWeight: 600,
-            m: 0,
-            mb: 0.5,
-            color: theme.palette.text.primary,
-          },
-          "& code": {
-            fontFamily: "monospace",
-            backgroundColor: theme.palette.action.hover,
-            borderRadius: 0.5,
-            px: 0.5,
-          },
         }}
       >
         {skill && (
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>{skill}</ReactMarkdown>
+          <List dense disablePadding sx={{ listStyleType: "disc", pl: 2.5 }}>
+            {skillBullets.map((bullet, index) => (
+              <ListItem
+                key={index}
+                disableGutters
+                sx={{ display: "list-item", py: 0.25 }}
+              >
+                <ListItemText
+                  primary={bullet}
+                  slotProps={{ primary: { fontSize: "0.875rem" } }}
+                />
+              </ListItem>
+            ))}
+          </List>
         )}
         {skillLoading && (
           <CircularProgress
@@ -56,17 +72,6 @@ const BlueprintSkill = ({ skill, skillLoading, showKnowledge }) => {
     <>
       {!showKnowledge && (
         <GlassCard sx={{ mt: -0.5 }}>
-          <GlassCardHeader
-            sx={{
-              p: 1,
-              width: 500,
-            }}
-            title={
-              <Typography variant="subtitle2" color="text.secondary">
-                {"SKILL.md"}
-              </Typography>
-            }
-          />
           <GlassCardContent>
             <Box
               sx={{
@@ -74,7 +79,28 @@ const BlueprintSkill = ({ skill, skillLoading, showKnowledge }) => {
                 width: 500,
               }}
             >
-              {renderSkillContent()}
+              <ListItemButton
+                onClick={() => setExpanded((prev) => !prev)}
+                sx={{
+                  borderRadius: 1.5,
+                  border: `1px solid ${theme.palette.divider}`,
+                }}
+              >
+                <ListItemText
+                  primary="SKILL.md"
+                  slotProps={{ primary: { fontWeight: 600 } }}
+                />
+                <ExpandMoreIcon
+                  sx={{
+                    transition: "transform 0.2s ease-in-out",
+                    transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
+                  }}
+                />
+              </ListItemButton>
+
+              <Collapse in={expanded} timeout="auto" unmountOnExit>
+                <Box sx={{ pt: 1 }}>{renderSkillContent()}</Box>
+              </Collapse>
             </Box>
 
             <Box
@@ -83,7 +109,7 @@ const BlueprintSkill = ({ skill, skillLoading, showKnowledge }) => {
                 width: 500,
               }}
             >
-              <SkillMd />
+              <ToolsWidget blueprintId={blueprintId} />
             </Box>
           </GlassCardContent>
         </GlassCard>

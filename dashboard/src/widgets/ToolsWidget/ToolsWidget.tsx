@@ -1,7 +1,8 @@
 import CloseIcon from "@mui/icons-material/Close";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Iconify } from "@canmingir/link/platform/components";
-import { isValidIntegration } from "../../widgets/NodeEditorWidget/helper";
+import { isValidIntegration } from "../NodeEditorWidget/helper";
+import useBlueprint from "../../hooks/useBlueprint";
 import useMCPs from "../../hooks/useMCPs";
 
 import {
@@ -20,7 +21,7 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 
-type SkillMdType = {
+type ToolsType = {
   id: string;
   name: string;
   icon: string;
@@ -30,15 +31,25 @@ type SkillMdType = {
   description?: string;
 };
 
-const SkillMd = () => {
+const ToolsWidget = ({ blueprintId }: { blueprintId?: string }) => {
   const theme = useTheme();
-  const [selectedSkill, setSelectedSkill] = useState<SkillMdType | null>(null);
+  const [selectedSkill, setSelectedSkill] = useState<ToolsType | null>(null);
   const [expanded, setExpanded] = useState(false);
 
   const { getMCPs, getActions } = useMCPs();
+  const { getBlueprintWithNode } = useBlueprint();
 
   const { mcps } = getMCPs();
   const { actions } = getActions();
+  const { blueprintNodes } = getBlueprintWithNode(blueprintId || "");
+
+  const usedActions = new Set<string>(
+    Array.isArray(blueprintNodes?.nodes)
+      ? blueprintNodes.nodes
+          .map((node) => node?.properties?.action)
+          .filter((action): action is string => typeof action === "string")
+      : []
+  );
 
   const transformedActions = Array.isArray(actions?.content?.actions)
     ? actions.content.actions
@@ -67,7 +78,9 @@ const SkillMd = () => {
     ? mcps.content.mcps.filter(isValidIntegration)
     : [];
 
-  const allIntegrations = [...transformedActions, ...integrationsList];
+  const allIntegrations = [...transformedActions, ...integrationsList].filter(
+    (integration) => usedActions.has(integration.action)
+  );
 
   const handleClose = () => setSelectedSkill(null);
 
@@ -76,8 +89,8 @@ const SkillMd = () => {
       <ListItemButton
         onClick={() => setExpanded((prev) => !prev)}
         sx={{
+          mt: -1,
           borderRadius: 1.5,
-          mb: 0.5,
           border: `1px solid ${theme.palette.divider}`,
         }}
       >
@@ -96,7 +109,7 @@ const SkillMd = () => {
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <List
           disablePadding
-          sx={{ maxHeight: 320, overflowY: "auto", pr: 0.5 }}
+          sx={{ maxHeight: 320, overflowY: "auto", pr: 0.5, mt: 0.5 }}
         >
           {allIntegrations.map((skill) => (
             <ListItemButton
@@ -121,8 +134,14 @@ const SkillMd = () => {
               <ListItemText
                 primary={skill.action}
                 secondary={skill.description}
-                primaryTypographyProps={{ fontWeight: 600 }}
-                secondaryTypographyProps={{ noWrap: true }}
+                slotProps={{
+                  primary: {
+                    fontWeight: 600,
+                  },
+                  secondary: {
+                    noWrap: true,
+                  },
+                }}
               />
             </ListItemButton>
           ))}
@@ -183,4 +202,4 @@ const SkillMd = () => {
   );
 };
 
-export default SkillMd;
+export default ToolsWidget;

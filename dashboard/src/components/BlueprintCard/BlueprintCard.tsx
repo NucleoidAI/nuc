@@ -118,9 +118,11 @@ const BlueprintCard = ({
 
         <Box
           sx={{
-            position: "absolute",
-            right: 78,
-            bottom: 12,
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "flex-end",
+            gap: 1,
+            mt: -1,
           }}
         >
           <Fab
@@ -130,15 +132,7 @@ const BlueprintCard = ({
           >
             <AccountTreeIcon />
           </Fab>
-        </Box>
 
-        <Box
-          sx={{
-            position: "absolute",
-            right: 28,
-            bottom: 12,
-          }}
-        >
           <Fab
             color="default"
             data-cy="edit-icon"

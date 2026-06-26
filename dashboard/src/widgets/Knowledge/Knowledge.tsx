@@ -55,13 +55,15 @@ function Knowledge({
 
   const isLoading = useLoading(isKnowledgeLoading);
 
-  const ALL_KNOWLEDGE_TYPES = ["ALL", "URL", "TEXT", "QA"].sort((a, b) => {
-    if (a === "ALL") return -1;
-    if (b === "ALL") return 1;
-    if (a === "URL") return -1;
-    if (b === "URL") return 1;
-    return 0;
-  });
+  const ALL_KNOWLEDGE_TYPES = ["ALL", "URL", "TEXT", "QA", "DATA"].sort(
+    (a, b) => {
+      if (a === "ALL") return -1;
+      if (b === "ALL") return 1;
+      if (a === "URL") return -1;
+      if (b === "URL") return 1;
+      return 0;
+    }
+  );
 
   const ADD_ITEM_TYPES = ALL_KNOWLEDGE_TYPES.filter((type) => type !== "ALL");
 

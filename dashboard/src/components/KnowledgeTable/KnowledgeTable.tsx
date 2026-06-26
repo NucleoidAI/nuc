@@ -57,6 +57,13 @@ function KnowledgeTable({
           { id: "date", label: "Date" },
           { id: "", label: "" },
         ];
+      case "DATA":
+        return [
+          { id: "text", label: "Data" },
+          { id: "status", label: "Status" },
+          { id: "date", label: "Date" },
+          { id: "", label: "" },
+        ];
       default:
         return [{ id: "status", label: "Status" }];
     }
@@ -131,6 +138,7 @@ function KnowledgeTable({
                             {row.type === "QA" &&
                               `Q: ${row.question} A: ${row.answer}`}
                             {row.type === "TASK" && row.Task.description}
+                            {row.type === "DATA" && row.text}
                           </div>
                         </TableCell>
                         <TableCell sx={{ whiteSpace: "nowrap" }}>
@@ -171,6 +179,27 @@ function KnowledgeTable({
                       <>
                         <TableCell>{row.question}</TableCell>
                         <TableCell>{row.answer}</TableCell>
+                        <TableCell sx={{ whiteSpace: "nowrap" }}>
+                          {getStatus(row)}
+                        </TableCell>
+                        <TableCell sx={{ whiteSpace: "nowrap" }}>
+                          {new Date(row.createdAt).toLocaleDateString()}
+                        </TableCell>
+                      </>
+                    )}
+                    {selectedType === "DATA" && (
+                      <>
+                        <TableCell>
+                          <div
+                            style={{
+                              wordBreak: "break-all",
+                              fontFamily: "monospace",
+                              fontSize: "0.75rem",
+                            }}
+                          >
+                            {row.text}
+                          </div>
+                        </TableCell>
                         <TableCell sx={{ whiteSpace: "nowrap" }}>
                           {getStatus(row)}
                         </TableCell>

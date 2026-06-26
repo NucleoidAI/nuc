@@ -141,6 +141,18 @@ function AddItemDialog({
         ? Yup.string()
             .required("URL cannot be an empty field")
             .url("Enter a valid URL")
+        : currentType === "DATA"
+        ? Yup.string()
+            .required("Data cannot be an empty field")
+            .test("valid-json", "Enter valid JSON", (value) => {
+              if (!value) return false;
+              try {
+                JSON.parse(value);
+                return true;
+              } catch {
+                return false;
+              }
+            })
         : currentType !== "QA"
         ? Yup.string()
             .required(`${currentType} cannot be an empty field`)
@@ -185,6 +197,8 @@ function AddItemDialog({
     if (currentType === "URL") {
       item.url = data.inputValue;
     } else if (currentType === "TEXT") {
+      item.text = data.inputValue;
+    } else if (currentType === "DATA") {
       item.text = data.inputValue;
     } else if (currentType === "QA") {
       item.question = data.question;
@@ -391,6 +405,13 @@ function AddItemDialog({
               name="inputValue"
               label={`Enter ${currentType}`}
               data-cy="add-item-input"
+              multiline={currentType === "DATA"}
+              rows={currentType === "DATA" ? 6 : 1}
+              inputProps={
+                currentType === "DATA"
+                  ? { style: { fontFamily: "monospace", fontSize: "0.75rem" } }
+                  : undefined
+              }
             />
           )}
           {currentType === "QA" && (

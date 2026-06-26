@@ -16,7 +16,7 @@ async function create({
   teamId?: string;
   agentId?: string;
   knowledge: {
-    type: "QA" | "URL" | "TEXT" | "TASK";
+    type: "QA" | "URL" | "TEXT" | "TASK" | "DATA";
     url?: string;
     text?: string;
     question?: string;
@@ -41,6 +41,17 @@ async function create({
 
   if (knowledge.type === "TEXT" && !knowledge.text) {
     throw new Error("INVALID_TEXT_KNOWLEDGE");
+  }
+
+  if (knowledge.type === "DATA") {
+    if (!knowledge.text) {
+      throw new Error("INVALID_DATA_KNOWLEDGE");
+    }
+    try {
+      JSON.parse(knowledge.text);
+    } catch {
+      throw new Error("INVALID_DATA_KNOWLEDGE_JSON");
+    }
   }
 
   if (knowledge.type === "URL" && knowledge.url) {

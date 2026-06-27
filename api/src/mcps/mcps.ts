@@ -492,6 +492,81 @@ const MCPs = [
     },
   },
   {
+    id: "a1b2c3d4-e5f6-4a1b-8001-100000000001",
+    action: "ORDER:find_product",
+    provider: "ORDER",
+    description: "Find a product by its ID or name. Returns product details.",
+    direction: "OUTGOING",
+    icon: "mdi:magnify",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        product_id: {
+          type: "string",
+          description: "The product ID to search for (e.g. prd-1).",
+        },
+        name: {
+          type: "string",
+          description: "The product name to search for (e.g. product-1).",
+        },
+      },
+      required: [],
+    },
+  },
+  {
+    id: "a1b2c3d4-e5f6-4a1b-8002-100000000002",
+    action: "ORDER:assign_certificate",
+    provider: "ORDER",
+    description:
+      "Assign a compliance certificate to a product. Certificate must be a valid type (e.g. FFC, CE).",
+    direction: "OUTGOING",
+    icon: "mdi:certificate-outline",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        product_id: {
+          type: "string",
+          description: "The product ID to assign the certificate to.",
+        },
+        certificate: {
+          type: "string",
+          description: "The certificate type to assign (e.g. FFC, CE).",
+        },
+      },
+      required: ["product_id", "certificate"],
+    },
+  },
+  {
+    id: "a1b2c3d4-e5f6-4a1b-8003-100000000003",
+    action: "ORDER:create_po",
+    provider: "ORDER",
+    description:
+      "Create a Purchase Order (PO) for a product. Returns the created purchase order details.",
+    direction: "OUTGOING",
+    icon: "mdi:file-document-plus",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        product_id: {
+          type: "string",
+          description: "The ID of the product to create the PO for.",
+        },
+        city: {
+          type: "string",
+          description: "The city where the order will be delivered.",
+        },
+        quantity: {
+          type: "number",
+          description: "The quantity of the product to order.",
+        },
+      },
+      required: ["product_id", "city", "quantity"],
+    },
+  },
+  {
     id: "d4k0j5i6-1j2h-0i9k-6l5m-4h3i2j1k0l9g",
     action: "PROJECT_NOTIFIER:notify_project_open",
     provider: "PROJECT_NOTIFIER",

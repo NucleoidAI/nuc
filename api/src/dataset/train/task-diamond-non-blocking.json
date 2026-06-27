@@ -2379,6 +2379,587 @@
           }
         }
       ]
+    },
+    {
+      "id": "ord0001a-1a1a-4001-a001-100000000001",
+      "description": "Order product-1 with CE compliance certificate successfully.",
+      "sessionId": "019b6e75-0009-0009-0009-000000000009",
+      "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\nAssignCertificate(product.id)\nPO.Create(product.id)\nLLM.WriteProcess()\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "blueprint": {
+        "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+        "title": "Order and Compliance",
+        "description": "Find product, assign compliance certificate, create purchase order, write process to LLM, and send email.",
+        "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\nAssignCertificate(product.id)\nPO.Create(product.id)\nLLM.WriteProcess()\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "parameters": {
+                "question": "Which product would you like to order?"
+              },
+              "description": "Ask user to select a product",
+              "prompt": "Ask user which product they want to order",
+              "label": "Select a Product",
+              "icon": "mdi:account-question"
+            },
+            "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "description": "Search and retrieve the product details",
+              "prompt": "Find the product by identifier",
+              "label": "Find Product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "description": "Assign a compliance certificate to the product",
+              "prompt": "Assign a compliance certificate to the product",
+              "label": "Assign Certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "description": "Create a Purchase Order for the certified product",
+              "prompt": "Create a purchase order for the product",
+              "label": "Create Purchase Order",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["f5e5d5c5-a5b5-4555-8555-555555555555"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f5e5d5c5-a5b5-4555-8555-555555555555",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:llm",
+              "description": "Write and summarize the order process using LLM",
+              "prompt": "Summarize the completed order process",
+              "label": "Write Process to LLM",
+              "icon": "mdi:robot"
+            },
+            "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "description": "Send email notification about the completed purchase order",
+              "prompt": "Send email to notify about the purchase order",
+              "label": "Send Email",
+              "icon": "mdi:email"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "b1c2d3e4-f5a6-4b1c-9001-200000000001",
+          "type": "DATA",
+          "text": "{\"product_id\": \"prd-1\", \"product_name\": \"product-1\", \"certificate\": \"CE\"}",
+          "status": "COMPLETED",
+          "createdAt": "2025-06-26T06:00:00.000Z"
+        },
+        {
+          "id": "b1c2d3e4-f5a6-4b1c-9002-200000000002",
+          "type": "DATA",
+          "text": "{\"product_id\": \"prd-2\", \"product_name\": \"product-2\", \"certificate\": \"CE\"}",
+          "status": "COMPLETED",
+          "createdAt": "2025-06-26T06:00:00.000Z"
+        }
+      ],
+      "tools": [
+        "GREY:send_email",
+        "ORDER:find_product",
+        "ORDER:assign_certificate",
+        "ORDER:create_po"
+      ],
+      "steps": [
+        {
+          "taskId": "task-ord-001",
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Which product would you like to order?"
+          },
+          "comment": "User selected product-1"
+        },
+        {
+          "taskId": "task-ord-001",
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "name": "product-1"
+          },
+          "result": "{\"id\": \"prd-1\", \"name\": \"product-1\"}",
+          "comment": "Product product-1 found (prd-1). Checked all DATA knowledge entries to find the certificate for prd-1: DATA entry 1 is {\"product_id\":\"prd-1\",\"certificate\":\"CE\"} — product_id matches prd-1. Certificate for prd-1 is CE. Proceeding to assign CE."
+        },
+        {
+          "taskId": "task-ord-001",
+          "action": "ORDER:assign_certificate",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "prd-1",
+            "certificate": "CE"
+          },
+          "result": "{\"product_id\": \"prd-1\", \"certificate\": \"CE\", \"assigned\": true}",
+          "comment": "CE certificate assigned to prd-1. Source: DATA knowledge entry where product_id=prd-1 and certificate=CE."
+        },
+        {
+          "taskId": "task-ord-001",
+          "action": "ORDER:create_po",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "prd-1",
+            "city": "Atlanta",
+            "quantity": 1
+          },
+          "result": "{\"order_id\": \"PO-2026-001\", \"product_id\": \"prd-1\", \"city\": \"Atlanta\", \"quantity\": 1, \"status\": \"CREATED\"}",
+          "comment": "Purchase order created for product-1"
+        },
+        {
+          "taskId": "task-ord-001",
+          "action": "PLATFORM:llm",
+          "status": "COMPLETED",
+          "comment": "LLM summarized the completed order and compliance process"
+        },
+        {
+          "taskId": "task-ord-001",
+          "action": "GREY:send_email",
+          "status": "COMPLETED",
+          "parameters": {
+            "to": "customer@example.com",
+            "subject": "Purchase Order Confirmed - product-1",
+            "body": "Your order for product-1 (PO-2026-001) has been created with CE certificate compliance."
+          },
+          "comment": "Email sent confirming the purchase order"
+        },
+        {
+          "taskId": "task-ord-001",
+          "action": "PLATFORM:complete",
+          "status": "COMPLETED",
+          "comment": "Order and compliance process completed successfully"
+        }
+      ]
+    },
+    {
+      "id": "ord0002b-2b2b-4002-b002-200000000002",
+      "description": "Order product-3 fails because no certificate found in knowledge base, supervisor notified.",
+      "sessionId": "019b6e75-0010-0010-0010-000000000010",
+      "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\nAssignCertificate(product.id)\nPO.Create(product.id)\nLLM.WriteProcess()\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "blueprint": {
+        "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+        "title": "Order and Compliance",
+        "description": "Find product, assign compliance certificate, create purchase order, write process to LLM, and send email.",
+        "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\nAssignCertificate(product.id)\nPO.Create(product.id)\nLLM.WriteProcess()\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "parameters": {
+                "question": "Which product would you like to order?"
+              },
+              "description": "Ask user to select a product",
+              "prompt": "Ask user which product they want to order",
+              "label": "Select a Product",
+              "icon": "mdi:account-question"
+            },
+            "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "description": "Search and retrieve the product details",
+              "prompt": "Find the product by identifier",
+              "label": "Find Product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "description": "Assign a compliance certificate to the product",
+              "prompt": "Assign a compliance certificate to the product",
+              "label": "Assign Certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "description": "Create a Purchase Order for the certified product",
+              "prompt": "Create a purchase order for the product",
+              "label": "Create Purchase Order",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["f5e5d5c5-a5b5-4555-8555-555555555555"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f5e5d5c5-a5b5-4555-8555-555555555555",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:llm",
+              "description": "Write and summarize the order process using LLM",
+              "prompt": "Summarize the completed order process",
+              "label": "Write Process to LLM",
+              "icon": "mdi:robot"
+            },
+            "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "description": "Send email notification about the completed purchase order",
+              "prompt": "Send email to notify about the purchase order",
+              "label": "Send Email",
+              "icon": "mdi:email"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "b1c2d3e4-f5a6-4b1c-9001-200000000001",
+          "type": "DATA",
+          "text": "{\"product_id\": \"prd-1\", \"product_name\": \"product-1\", \"certificate\": \"CE\"}",
+          "status": "COMPLETED",
+          "createdAt": "2025-06-26T06:00:00.000Z"
+        },
+        {
+          "id": "b1c2d3e4-f5a6-4b1c-9002-200000000002",
+          "type": "DATA",
+          "text": "{\"product_id\": \"prd-2\", \"product_name\": \"product-2\", \"certificate\": \"CE\"}",
+          "status": "COMPLETED",
+          "createdAt": "2025-06-26T06:00:00.000Z"
+        }
+      ],
+      "tools": [
+        "GREY:send_email",
+        "ORDER:find_product",
+        "ORDER:assign_certificate",
+        "ORDER:create_po"
+      ],
+      "steps": [
+        {
+          "taskId": "task-ord-002",
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Which product would you like to order?"
+          },
+          "comment": "User selected product-3"
+        },
+        {
+          "taskId": "task-ord-002",
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "name": "product-3"
+          },
+          "result": "{\"id\": \"prd-3\", \"name\": \"product-3\"}",
+          "comment": "Product product-3 found (prd-3). Checked all DATA knowledge entries to find the certificate for prd-3: DATA entry 1 is {\"product_id\":\"prd-1\",\"certificate\":\"CE\"} — this belongs to prd-1, NOT prd-3. DATA entry 2 is {\"product_id\":\"prd-2\",\"certificate\":\"CE\"} — this belongs to prd-2, NOT prd-3. No DATA entry has product_id=prd-3. The CE certificate belongs to prd-1 and prd-2 only. Cannot use CE for prd-3. Must ask supervisor for the correct certificate."
+        },
+        {
+          "taskId": "task-ord-002",
+          "action": "PLATFORM:ask_supervisor",
+          "status": "COMPLETED",
+          "parameters": {
+            "sessionId": "019b6e75-0010-0010-0010-000000000010",
+            "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+            "blueprintId": "f4e3d2c1-b0a0-4000-8000-100000000001",
+            "taskId": "task-ord-002",
+            "question": "Cannot assign certificate for product-3 (prd-3): no DATA knowledge entry found for prd-3. Knowledge base contains certificate data only for prd-1 (CE) and prd-2 (CE) — those certificates belong to different products and cannot be used for prd-3. What certificate should be assigned to prd-3?"
+          },
+          "comment": "[Non-blocking] Escalated to supervisor — CE belongs to prd-1 and prd-2, not prd-3. No DATA entry for prd-3 exists in knowledge base."
+        },
+        {
+          "taskId": "task-ord-002",
+          "action": "ORDER:assign_certificate",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "prd-3",
+            "certificate": "FFC"
+          },
+          "result": "{\"product_id\": \"prd-3\", \"certificate\": \"FFC\", \"assigned\": true}",
+          "comment": "FFC certificate assigned to product-3 per supervisor instruction"
+        },
+        {
+          "taskId": "task-ord-002",
+          "action": "ORDER:create_po",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "prd-3",
+            "city": "Chicago",
+            "quantity": 1
+          },
+          "result": "{\"order_id\": \"PO-2026-002\", \"product_id\": \"prd-3\", \"city\": \"Chicago\", \"quantity\": 1, \"status\": \"CREATED\"}",
+          "comment": "Purchase order created for product-3"
+        },
+        {
+          "taskId": "task-ord-002",
+          "action": "PLATFORM:llm",
+          "status": "COMPLETED",
+          "comment": "LLM summarized the completed order and compliance process"
+        },
+        {
+          "taskId": "task-ord-002",
+          "action": "GREY:send_email",
+          "status": "COMPLETED",
+          "parameters": {
+            "to": "customer@example.com",
+            "subject": "Purchase Order Confirmed - product-3",
+            "body": "Your order for product-3 (PO-2026-002) has been created with FFC certificate compliance per supervisor approval."
+          },
+          "comment": "Email sent confirming the purchase order"
+        },
+        {
+          "taskId": "task-ord-002",
+          "action": "PLATFORM:complete",
+          "status": "COMPLETED",
+          "comment": "Task completed following supervisor instructions"
+        }
+      ]
+    },
+    {
+      "id": "ord0003c-3c3c-4003-c003-300000000003",
+      "description": "Order product-4 fails because no certificate found in knowledge base, supervisor assigns FFC.",
+      "sessionId": "019b6e75-0011-0011-0011-000000000011",
+      "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\nAssignCertificate(product.id)\nPO.Create(product.id)\nLLM.WriteProcess()\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "blueprint": {
+        "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+        "title": "Order and Compliance",
+        "description": "Find product, assign compliance certificate, create purchase order, write process to LLM, and send email.",
+        "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\nAssignCertificate(product.id)\nPO.Create(product.id)\nLLM.WriteProcess()\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "parameters": {
+                "question": "Which product would you like to order?"
+              },
+              "description": "Ask user to select a product",
+              "prompt": "Ask user which product they want to order",
+              "label": "Select a Product",
+              "icon": "mdi:account-question"
+            },
+            "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "description": "Search and retrieve the product details",
+              "prompt": "Find the product by identifier",
+              "label": "Find Product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "description": "Assign a compliance certificate to the product",
+              "prompt": "Assign a compliance certificate to the product",
+              "label": "Assign Certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "description": "Create a Purchase Order for the certified product",
+              "prompt": "Create a purchase order for the product",
+              "label": "Create Purchase Order",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["f5e5d5c5-a5b5-4555-8555-555555555555"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f5e5d5c5-a5b5-4555-8555-555555555555",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:llm",
+              "description": "Write and summarize the order process using LLM",
+              "prompt": "Summarize the completed order process",
+              "label": "Write Process to LLM",
+              "icon": "mdi:robot"
+            },
+            "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "description": "Send email notification about the completed purchase order",
+              "prompt": "Send email to notify about the purchase order",
+              "label": "Send Email",
+              "icon": "mdi:email"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "b1c2d3e4-f5a6-4b1c-9001-200000000001",
+          "type": "DATA",
+          "text": "{\"product_id\": \"prd-1\", \"product_name\": \"product-1\", \"certificate\": \"CE\"}",
+          "status": "COMPLETED",
+          "createdAt": "2025-06-26T06:00:00.000Z"
+        },
+        {
+          "id": "b1c2d3e4-f5a6-4b1c-9002-200000000002",
+          "type": "DATA",
+          "text": "{\"product_id\": \"prd-2\", \"product_name\": \"product-2\", \"certificate\": \"CE\"}",
+          "status": "COMPLETED",
+          "createdAt": "2025-06-26T06:00:00.000Z"
+        }
+      ],
+      "tools": [
+        "GREY:send_email",
+        "ORDER:find_product",
+        "ORDER:assign_certificate",
+        "ORDER:create_po"
+      ],
+      "steps": [
+        {
+          "taskId": "task-ord-003",
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Which product would you like to order?"
+          },
+          "comment": "User selected product-4"
+        },
+        {
+          "taskId": "task-ord-003",
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "name": "product-4"
+          },
+          "result": "{\"id\": \"prd-4\", \"name\": \"product-4\"}",
+          "comment": "Product product-4 found (prd-4). Checked all DATA knowledge entries to find the certificate for prd-4: DATA entry 1 is {\"product_id\":\"prd-1\",\"certificate\":\"CE\"} — this belongs to prd-1, NOT prd-4. DATA entry 2 is {\"product_id\":\"prd-2\",\"certificate\":\"CE\"} — this belongs to prd-2, NOT prd-4. No DATA entry has product_id=prd-4. CE belongs to prd-1 and prd-2 only, cannot use it for prd-4. Must ask supervisor."
+        },
+        {
+          "taskId": "task-ord-003",
+          "action": "PLATFORM:ask_supervisor",
+          "status": "COMPLETED",
+          "parameters": {
+            "sessionId": "019b6e75-0011-0011-0011-000000000011",
+            "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+            "blueprintId": "f4e3d2c1-b0a0-4000-8000-100000000001",
+            "taskId": "task-ord-003",
+            "question": "Cannot assign certificate for product-4 (prd-4): no DATA knowledge entry found for prd-4. Knowledge base contains certificate data only for prd-1 (CE) and prd-2 (CE) — those certificates belong to different products and cannot be used for prd-4. What certificate should be assigned to prd-4?"
+          },
+          "comment": "[Non-blocking] Escalated to supervisor — CE belongs to prd-1 and prd-2, not prd-4. No DATA entry for prd-4 exists in knowledge base."
+        },
+        {
+          "taskId": "task-ord-003",
+          "action": "ORDER:assign_certificate",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "prd-4",
+            "certificate": "FFC"
+          },
+          "result": "{\"product_id\": \"prd-4\", \"certificate\": \"FFC\", \"assigned\": true}",
+          "comment": "FFC certificate assigned to prd-4 per supervisor instruction"
+        },
+        {
+          "taskId": "task-ord-003",
+          "action": "ORDER:create_po",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "prd-4",
+            "city": "New York",
+            "quantity": 1
+          },
+          "result": "{\"order_id\": \"PO-2026-003\", \"product_id\": \"prd-4\", \"city\": \"New York\", \"quantity\": 1, \"status\": \"CREATED\"}",
+          "comment": "Purchase order created for product-4"
+        },
+        {
+          "taskId": "task-ord-003",
+          "action": "PLATFORM:llm",
+          "status": "COMPLETED",
+          "comment": "LLM summarized the completed order and compliance process"
+        },
+        {
+          "taskId": "task-ord-003",
+          "action": "GREY:send_email",
+          "status": "COMPLETED",
+          "parameters": {
+            "to": "customer@example.com",
+            "subject": "Purchase Order Confirmed - product-4",
+            "body": "Your order for product-4 (PO-2026-003) has been created with FFC certificate compliance per supervisor approval."
+          },
+          "comment": "Email sent confirming the purchase order"
+        },
+        {
+          "taskId": "task-ord-003",
+          "action": "PLATFORM:complete",
+          "status": "COMPLETED",
+          "comment": "Task completed following supervisor instructions"
+        }
+      ]
     }
   ]
 }

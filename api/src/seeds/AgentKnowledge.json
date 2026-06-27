@@ -75,6 +75,16 @@
       "id": "019ae40e-388c-70a8-8bde-97139f47bc3e",
       "knowledgeId": "019ae3fb-df10-70e1-9575-06860872a022",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+    },
+    {
+      "id": "c1d2e3f4-a5b6-4c1d-9001-300000000001",
+      "knowledgeId": "b1c2d3e4-f5a6-4b1c-9001-200000000001",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
+    },
+    {
+      "id": "c1d2e3f4-a5b6-4c1d-9002-300000000002",
+      "knowledgeId": "b1c2d3e4-f5a6-4b1c-9002-200000000002",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
     }
   ]
 }

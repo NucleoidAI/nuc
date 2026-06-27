@@ -164,6 +164,102 @@
           "createdAt": "2025-06-19T06:02:00Z"
         }
       ]
+    },
+    {
+      "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+      "title": "Order and Compliance",
+      "description": "Find product, assign compliance certificate, create purchase order, write process to LLM, and send email.",
+      "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\nAssignCertificate(product.id)\nPO.Create(product.id)\nLLM.WriteProcess()\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "nodes": [
+        {
+          "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "parameters": {
+              "question": "Which product would you like to order?"
+            },
+            "description": "Ask user to select a product",
+            "prompt": "Ask user which product they want to order",
+            "label": "Select a Product",
+            "icon": "mdi:account-question",
+            "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:find_product",
+            "description": "Search and retrieve the product details",
+            "prompt": "Find the product by identifier",
+            "label": "Find Product",
+            "icon": "mdi:magnify",
+            "pseudocode": "BEGIN_CONTEXT\nproduct = FindProduct()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:assign_certificate",
+            "description": "Assign a compliance certificate to the product",
+            "prompt": "Assign a compliance certificate to the product",
+            "label": "Assign Certificate",
+            "icon": "mdi:certificate-outline",
+            "pseudocode": "BEGIN_CONTEXT\ncertificate = AssignCertificate(product.id)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:create_po",
+            "description": "Create a Purchase Order for the certified product",
+            "prompt": "Create a purchase order for the product",
+            "label": "Create Purchase Order",
+            "icon": "mdi:file-document-plus",
+            "pseudocode": "BEGIN_CONTEXT\nPO.Create(product.id)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["f5e5d5c5-a5b5-4555-8555-555555555555"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f5e5d5c5-a5b5-4555-8555-555555555555",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:llm",
+            "description": "Write and summarize the order process using LLM",
+            "prompt": "Summarize the completed order process",
+            "label": "Write Process to LLM",
+            "icon": "mdi:robot",
+            "pseudocode": "BEGIN_CONTEXT\nLLM.WriteProcess()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:send_email",
+            "description": "Send email notification about the completed purchase order",
+            "prompt": "Send email to notify about the purchase order",
+            "label": "Send Email",
+            "icon": "mdi:email",
+            "pseudocode": "BEGIN_CONTEXT\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": null,
+          "createdAt": "2025-06-26T06:00:00Z"
+        }
+      ]
     }
   ]
 }

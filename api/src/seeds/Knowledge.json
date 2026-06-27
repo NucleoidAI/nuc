@@ -115,6 +115,20 @@
       "text": "Business hours are 9am to 5pm, Monday to Friday.",
       "status": "COMPLETED",
       "createdAt": "1970-01-20T22:08:14.337Z"
+    },
+    {
+      "id": "b1c2d3e4-f5a6-4b1c-9001-200000000001",
+      "type": "DATA",
+      "text": "{\"product_id\": \"prd-1\", \"product_name\": \"product-1\", \"certificate\": \"CE\"}",
+      "status": "COMPLETED",
+      "createdAt": "2025-06-26T06:00:00.000Z"
+    },
+    {
+      "id": "b1c2d3e4-f5a6-4b1c-9002-200000000002",
+      "type": "DATA",
+      "text": "{\"product_id\": \"prd-2\", \"product_name\": \"product-2\", \"certificate\": \"CE\"}",
+      "status": "COMPLETED",
+      "createdAt": "2025-06-26T06:00:00.000Z"
     }
   ]
 }

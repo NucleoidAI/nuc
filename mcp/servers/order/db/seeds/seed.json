@@ -1,0 +1,43 @@
+{
+  "products": [
+    { "id": "prd-1", "name": "product-1" },
+    { "id": "prd-2", "name": "product-2" },
+    { "id": "prd-3", "name": "product-3" },
+    { "id": "prd-4", "name": "product-4" }
+  ],
+  "certificates": [
+    "FFC",
+    "CE"
+  ],
+  "product_certificates": [
+    { "product_id": "prd-1", "certificate": "FFC" },
+    { "product_id": "prd-2", "certificate": "CE" }
+  ],
+  "cities": [
+    "Atlanta",
+    "New York",
+    "Chicago",
+    "Houston",
+    "San Francisco"
+  ],
+  "purchase_orders": [
+    {
+      "order_id": "po-1001",
+      "product_id": "prd-1",
+      "city": "Atlanta",
+      "quantity": 5
+    },
+    {
+      "order_id": "po-1002",
+      "product_id": "prd-2",
+      "city": "Chicago",
+      "quantity": 10
+    },
+    {
+      "order_id": "po-1003",
+      "product_id": "prd-3",
+      "city": "New York",
+      "quantity": 2
+    }
+  ]
+}

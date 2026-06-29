@@ -36,3 +36,7 @@ export interface CreatePOInput {
   city: string;
   quantity: number;
 }
+
+export interface GetProductVendorInput {
+  product_id: string;
+}

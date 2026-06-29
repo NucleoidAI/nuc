@@ -6,9 +6,11 @@ import { v4 as uuid } from "uuid";
 async function create({
   type,
   agentId,
+  blueprintId,
 }: {
   type: string;
   agentId: string;
+  blueprintId?: string;
 }) {
   const sessionId = uuid();
 
@@ -16,12 +18,14 @@ async function create({
     id: sessionId,
     type,
     agentId,
+    ...(blueprintId && { blueprintId }),
   });
 
   await event.publish("SESSION_INITIATED", {
     id: sessionId,
     type,
     agentId,
+    blueprintId,
   });
 
   return session;
@@ -69,6 +73,10 @@ async function addConversation({
   return conversation;
 }
 
+async function get({ sessionId }: { sessionId: string }) {
+  return await Session.findByPk(sessionId);
+}
+
 async function listConversations({ sessionId }: { sessionId: string }) {
   return await Conversation.findAll({
     where: { sessionId },
@@ -78,6 +86,7 @@ async function listConversations({ sessionId }: { sessionId: string }) {
 
 export default {
   create,
+  get,
   addConversation,
   listConversations,
 };

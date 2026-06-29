@@ -189,6 +189,9 @@ async function task({ taskId }: { taskId: string }) {
   const { agentId, description, sessionId, blueprintId } = await taskFn.get({
     taskId,
   });
+
+  console.log(agentId, blueprintId, sessionId);
+
   const currentTask = {
     description,
     blueprintId,
@@ -207,6 +210,8 @@ async function task({ taskId }: { taskId: string }) {
   const blueprint = blueprintId ? await blueprintFn.get({ blueprintId }) : null;
   const isBlocking = blueprint?.blocking !== false;
 
+  const { inheritedSteps: inherited } = await taskFn.get({ taskId });
+
   const context = [
     ...(
       await Promise.all([
@@ -217,6 +222,18 @@ async function task({ taskId }: { taskId: string }) {
         sessionId ? conversations({ sessionId }) : Promise.resolve([]),
       ])
     ).flat(),
+    ...(inherited?.length
+      ? [
+          {
+            role: "system" as const,
+            content: {
+              inherited_context_steps: inherited,
+              inherited_context_note:
+                "These steps were completed by a previous agent before this task was handed off. They are provided as context only — do NOT re-execute them. Follow your own blueprint.",
+            },
+          },
+        ]
+      : []),
     isBlocking ? actions.list() : actions.listNonBlockings(),
     mcpFn.list(),
   ];
@@ -236,6 +253,9 @@ async function task({ taskId }: { taskId: string }) {
       "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
   });
 
+  console.log("next action", action);
+  console.log("comment", comment);
+
   const resultScore =
     result_score != null ? parseFloat(String(result_score)) : undefined;
 
@@ -250,12 +270,15 @@ async function task({ taskId }: { taskId: string }) {
 
   const isDuplicateStep =
     action !== "PLATFORM:complete" &&
+    action !== "PLATFORM:handoff" &&
     currentTask.steps.some(
       (s) =>
         s.status === "COMPLETED" &&
         s.action === action &&
         stableStringify(s.parameters) === stableStringify(parameters),
     );
+
+  console.log(isDuplicateStep);
 
   if (isDuplicateStep) {
     const steps = await taskFn.listSteps({ taskId });
@@ -313,6 +336,49 @@ async function task({ taskId }: { taskId: string }) {
     return await taskFn.update({
       taskId,
       result,
+      comment,
+      status: "COMPLETED",
+    });
+  } else if (action === "PLATFORM:handoff") {
+    const handoffParams = parameters as {
+      targetAgentId: string;
+      targetBlueprintId?: string;
+      context: string;
+    };
+
+    if (handoffParams.targetAgentId === agentId) {
+      return await taskFn.update({
+        taskId,
+        status: "FAILED",
+        comment:
+          "Self-handoff detected: agent attempted to hand off to itself. Follow the assigned blueprint instead.",
+      });
+    }
+
+    const newTask = await taskFn.create({
+      agentId: handoffParams.targetAgentId,
+      description: handoffParams.context,
+      blueprintId: handoffParams.targetBlueprintId,
+      sessionId,
+    });
+
+    await taskFn.transferSteps({
+      fromTaskId: taskId,
+      toTaskId: newTask.id,
+    });
+
+    const handoffResult = `Handed off to agent ${handoffParams.targetAgentId}`;
+
+    await stepScoreFn.create({
+      taskId,
+      parameters: { description, blueprintId },
+      output: handoffResult,
+      status: "COMPLETED",
+    });
+
+    return await taskFn.update({
+      taskId,
+      result: handoffResult,
       comment,
       status: "COMPLETED",
     });
@@ -668,7 +734,6 @@ async function chat({
   });
 
   const conversationsData = await conversations({ sessionId });
-  const blueprintsData = await Blueprints({ agentId });
 
   const agentDataResult = await agentData.get({ agentId });
 
@@ -704,14 +769,29 @@ async function chat({
     return;
   }
 
-  const blueprintDecision = await blueprintDiamond({
-    content: content,
-    Blueprints: blueprintsData,
-  });
+  const sessionInstance = await session.get({ sessionId });
+  const pinnedBlueprintId: string | null = sessionInstance?.blueprintId ?? null;
 
-  if (blueprintDecision.decision === "BLUEPRINT" && task.length === 0) {
+  let selectedBlueprintId: string | null = null;
+  let blueprintDecision: { decision: string; blueprintId?: string } | null =
+    null;
+
+  if (pinnedBlueprintId) {
+    selectedBlueprintId = pinnedBlueprintId;
+  } else {
+    const blueprintsData = await Blueprints({ agentId });
+    blueprintDecision = await blueprintDiamond({
+      content,
+      Blueprints: blueprintsData,
+    });
+    if (blueprintDecision.decision === "BLUEPRINT") {
+      selectedBlueprintId = blueprintDecision.blueprintId ?? null;
+    }
+  }
+
+  if (selectedBlueprintId && task.length === 0) {
     const blueprintData = await blueprintFn.get({
-      blueprintId: blueprintDecision.blueprintId,
+      blueprintId: selectedBlueprintId,
       includeLabels: false,
     });
 
@@ -727,7 +807,7 @@ async function chat({
       description:
         blueprintToTaskResponse.task?.description ||
         blueprintToTaskResponse.task,
-      blueprintId: blueprintDecision.blueprintId,
+      blueprintId: selectedBlueprintId,
       sessionId,
     });
 
@@ -760,7 +840,7 @@ async function chat({
 
     if (
       evaluation?.is_answer_known ||
-      blueprintDecision.decision === "UNREVELANT"
+      blueprintDecision?.decision === "UNREVELANT"
     ) {
       if (task.length > 0) {
         await taskFn.update({
@@ -796,7 +876,7 @@ async function chat({
         sessionId,
         conversationId: conversation.id,
         question: content,
-        blueprintId: blueprintDecision.blueprintId,
+        blueprintId: blueprintDecision?.blueprintId,
         agentId,
       });
     }

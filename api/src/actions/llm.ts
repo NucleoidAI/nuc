@@ -1,37 +1,12 @@
-let llm;
-
-if (process.env.PLATFORM_LLM === "OPENAI") {
-  llm = require("../lib/openai").default;
-}
-
-if (process.env.PLATFORM_LLM === "MOCK") {
-  llm = require("../lib/mock").default;
-}
-
-if (process.env.PLATFORM_LLM === "AZURE") {
-  llm = require("../lib/azure").default;
-}
-
-if (process.env.PLATFORM_LLM === "ANTHROPIC") {
-  llm = require("../lib/anthropic").default;
-}
+import { generate } from "../lib/llm";
 
 async function run({ context, parameters: { message } }) {
-  const { result } = await llm.generate({
-    messages: [
-      {
-        role: "assistant",
-        content: JSON.stringify(context),
-      },
-      {
-        role: "assistant",
-        content: JSON.stringify(message),
-      },
-      {
-        role: "system",
-        content: "json_format: { result: <RESULT_IN_NLP> }",
-      },
-    ],
+  const { result } = await generate({
+    context: context
+      ? [{ role: "assistant" as const, content: context }]
+      : [],
+    content: message,
+    json_format: "{ result: <RESULT_IN_NLP> }",
   });
 
   return result;

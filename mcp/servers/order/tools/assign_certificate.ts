@@ -6,7 +6,7 @@ import logger from "../../../logger/logger.js";
 export const assignCertificateTool: Tool<AssignCertificateInput> = {
   name: "ORDER:assign_certificate",
   description:
-    "Assign a compliance certificate to a product. If the product already has a certificate, it will be updated. Certificate must be a valid type (e.g. FFC, CE).",
+    "Assign a compliance certificate to a product. If the product already has a certificate, it will be updated. The certificate type must be provided by the user or supervisor.",
   inputSchema: {
     type: "object",
     properties: {
@@ -16,7 +16,7 @@ export const assignCertificateTool: Tool<AssignCertificateInput> = {
       },
       certificate: {
         type: "string",
-        description: "The certificate type to assign (e.g. FFC, CE).",
+        description: "The certificate type to assign. Must be obtained from the knowledge base or supervisor.",
       },
     },
     required: ["product_id", "certificate"],
@@ -60,7 +60,6 @@ export const assignCertificateTool: Tool<AssignCertificateInput> = {
               type: "text",
               text: JSON.stringify({
                 error: "INVALID_CERTIFICATE",
-                valid_certificates: validCertificates,
               }),
             },
           ],

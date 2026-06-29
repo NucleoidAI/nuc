@@ -1,4 +1,6 @@
 import NodeEditorDrawer from "../../components/NodeEditor/NodeEditorDrawer";
+import useAgents from "../../hooks/useAgents";
+import useBlueprint from "../../hooks/useBlueprint";
 import useMCPs from "../../hooks/useMCPs";
 
 import React, { useEffect, useState } from "react";
@@ -25,6 +27,10 @@ const NodeEditorWidget = ({
   editMode,
   editingNode,
   pseudocode,
+  handoffTargetAgentId = "",
+  setHandoffTargetAgentId,
+  handoffTargetBlueprintId = "",
+  setHandoffTargetBlueprintId,
 }: {
   drawerOpen: boolean;
   handleDrawerClose: () => void;
@@ -98,6 +104,10 @@ const NodeEditorWidget = ({
   editMode?: boolean;
   agentId: string;
   teamId?: string;
+  handoffTargetAgentId?: string;
+  setHandoffTargetAgentId?: (id: string) => void;
+  handoffTargetBlueprintId?: string;
+  setHandoffTargetBlueprintId?: (id: string) => void;
   editingNode?: {
     id: string;
     label?: string;
@@ -137,6 +147,19 @@ const NodeEditorWidget = ({
   }, [drawerOpen]);
 
   const { getMCPs, getActions } = useMCPs();
+  const { getTeamAgents } = useAgents();
+  const { getBlueprint } = useBlueprint();
+
+  const { agents } = getTeamAgents([]);
+  const availableAgents: Array<{ id: string; name: string; icon?: string }> =
+    Array.isArray(agents) ? agents : [];
+
+  const { Blueprint: agentBlueprints } = getBlueprint(
+    [],
+    handoffTargetAgentId || undefined
+  );
+  const availableAgentBlueprints: Array<{ id: string; title: string }> =
+    Array.isArray(agentBlueprints) ? agentBlueprints : [];
 
   const { mcps } = getMCPs();
   const { actions } = getActions();
@@ -243,6 +266,12 @@ const NodeEditorWidget = ({
       nextIntegration={nextIntegration}
       handleSubmit={handleSubmit}
       editMode={editMode}
+      availableAgents={availableAgents}
+      handoffTargetAgentId={handoffTargetAgentId}
+      setHandoffTargetAgentId={setHandoffTargetAgentId}
+      handoffTargetBlueprintId={handoffTargetBlueprintId}
+      setHandoffTargetBlueprintId={setHandoffTargetBlueprintId}
+      availableAgentBlueprints={availableAgentBlueprints}
     />
   );
 };

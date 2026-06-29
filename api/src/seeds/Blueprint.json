@@ -200,6 +200,20 @@
             "icon": "mdi:magnify",
             "pseudocode": "BEGIN_CONTEXT\nproduct = FindProduct()\nEND_CONTEXT\n\nEND_MESSAGE"
           },
+          "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:check_product_certificate",
+            "description": "Check whether the product already has a compliance certificate assigned",
+            "prompt": "Check if the product has a compliance certificate",
+            "label": "Check Certificate",
+            "icon": "mdi:certificate-outline",
+            "pseudocode": "BEGIN_CONTEXT\ncertificate = CheckCertificate(product.id)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
           "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
@@ -228,20 +242,6 @@
             "icon": "mdi:file-document-plus",
             "pseudocode": "BEGIN_CONTEXT\nPO.Create(product.id)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
-          "next": ["f5e5d5c5-a5b5-4555-8555-555555555555"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "f5e5d5c5-a5b5-4555-8555-555555555555",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:llm",
-            "description": "Write and summarize the order process using LLM",
-            "prompt": "Summarize the completed order process",
-            "label": "Write Process to LLM",
-            "icon": "mdi:robot",
-            "pseudocode": "BEGIN_CONTEXT\nLLM.WriteProcess()\nEND_CONTEXT\n\nEND_MESSAGE"
-          },
           "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
@@ -258,6 +258,71 @@
           },
           "next": null,
           "createdAt": "2025-06-26T06:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "c2b1a0d9-e8f7-4c2b-9100-300000000001",
+      "title": "Compliance Certificate Request",
+      "description": "Find the vendor of a product that is missing a compliance certificate and send them an email requesting the certificate, then notify the user.",
+      "pseudocode": "BEGIN_CONTEXT\nvendor = GetProductVendor(product.id)\nEmail.Send(vendor.email)\nMessageUser()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "nodes": [
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000002",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:get_product_vendor",
+            "description": "Find the vendor of the product that is missing a compliance certificate",
+            "prompt": "Get the vendor information for the product",
+            "label": "Get Product Vendor",
+            "icon": "mdi:domain",
+            "pseudocode": "BEGIN_CONTEXT\nvendor = GetProductVendor(product.id)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000003"],
+          "createdAt": "2025-06-29T08:00:00Z"
+        },
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000003",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:send_email",
+            "description": "Send an email to the vendor requesting the compliance certificate for the product",
+            "prompt": "Send certificate request email to vendor",
+            "label": "Email Vendor",
+            "icon": "mdi:email",
+            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(vendor.email)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000004"],
+          "createdAt": "2025-06-29T08:00:00Z"
+        },
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000004",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Notify the user that the vendor has been contacted for the compliance certificate",
+            "prompt": "Notify user that vendor was contacted",
+            "label": "Notify User",
+            "icon": "mdi:bell",
+            "pseudocode": "BEGIN_CONTEXT\nMessageUser()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000005"],
+          "createdAt": "2025-06-29T08:00:00Z"
+        },
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000005",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "Mark the compliance certificate request as complete",
+            "prompt": "Complete compliance certificate request",
+            "label": "Complete",
+            "icon": "mdi:check",
+            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": null,
+          "createdAt": "2025-06-29T08:00:00Z"
         }
       ]
     }

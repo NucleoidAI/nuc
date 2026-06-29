@@ -86,6 +86,29 @@
     "icon": "mdi:check"
   },
   {
+    "action": "PLATFORM:handoff",
+    "description": "Transfer this task to another agent's blueprint and continue in the same session",
+    "icon": "mdi:account-arrow-right",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "targetAgentId": {
+          "type": "string",
+          "description": "The ID of the target agent to hand off to."
+        },
+        "targetBlueprintId": {
+          "type": "string",
+          "description": "The ID of the target agent's blueprint (optional)."
+        },
+        "context": {
+          "type": "string",
+          "description": "A summary of the current task context to pass to the target agent."
+        }
+      },
+      "required": ["targetAgentId", "context"]
+    }
+  },
+  {
     "action": "PLATFORM:ask_supervisor",
     "lib": "ask_supervisor",
     "description": "Ask a supervisor for guidance or approval",

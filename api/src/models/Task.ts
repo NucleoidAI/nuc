@@ -55,6 +55,10 @@ class Task extends Model {
   @Column(DataType.UUID)
   declare sessionId: string | null;
 
+  @AllowNull(true)
+  @Column(DataType.JSON)
+  declare inheritedSteps: object[] | null;
+
   declare Agent?: any;
 
   declare Blueprint?: any;

@@ -4,9 +4,15 @@ import path from "path";
 const DB_PATH = path.join(__dirname, "database.json");
 
 interface Database {
+  vendors: Array<{
+    id: string;
+    name: string;
+    email: string;
+  }>;
   products: Array<{
     id: string;
     name: string;
+    vendor_id: string;
   }>;
   certificates: string[];
   product_certificates: Array<{

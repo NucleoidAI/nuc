@@ -1,39 +1,17 @@
 {
   "products": [
-    {
-      "id": "prd-1",
-      "name": "product-1"
-    },
-    {
-      "id": "prd-2",
-      "name": "product-2"
-    },
-    {
-      "id": "prd-3",
-      "name": "product-3"
-    },
-    {
-      "id": "prd-4",
-      "name": "product-4"
-    }
+    { "id": "prd-1", "name": "product-1" },
+    { "id": "prd-2", "name": "product-2" },
+    { "id": "prd-3", "name": "product-3" },
+    { "id": "prd-4", "name": "product-4" }
   ],
   "certificates": [
     "FFC",
     "CE"
   ],
   "product_certificates": [
-    {
-      "product_id": "prd-1",
-      "certificate": "FFC"
-    },
-    {
-      "product_id": "prd-2",
-      "certificate": "CE"
-    },
-    {
-      "product_id": "prd-3",
-      "certificate": "CE"
-    }
+    { "product_id": "prd-1", "certificate": "FFC" },
+    { "product_id": "prd-2", "certificate": "CE" }
   ],
   "cities": [
     "Atlanta",

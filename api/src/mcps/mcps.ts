@@ -513,6 +513,39 @@ const MCPs = [
       },
       required: [],
     },
+    outputSchema: {
+      type: "object",
+      properties: {
+        product_id: {
+          type: "string",
+          description: "The ID of the found product.",
+        },
+        name: {
+          type: "string",
+          description: "The name of the found product.",
+        },
+      },
+    },
+  },
+  {
+    id: "a1b2c3d4-e5f6-4a1b-8004-100000000004",
+    action: "ORDER:check_product_certificate",
+    provider: "ORDER",
+    description:
+      "Check if a product has an assigned compliance certificate. Returns the certificate type if it exists, or indicates no certificate is present.",
+    direction: "OUTGOING",
+    icon: "mdi:certificate-outline",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        product_id: {
+          type: "string",
+          description: "The product ID to check the certificate for.",
+        },
+      },
+      required: ["product_id"],
+    },
   },
   {
     id: "a1b2c3d4-e5f6-4a1b-8002-100000000002",
@@ -533,9 +566,30 @@ const MCPs = [
         certificate: {
           type: "string",
           description: "The certificate type to assign (e.g. FFC, CE).",
+          nullable: true,
         },
       },
       required: ["product_id", "certificate"],
+    },
+  },
+  {
+    id: "a1b2c3d4-e5f6-4a1b-8005-100000000005",
+    action: "ORDER:get_product_vendor",
+    provider: "ORDER",
+    description:
+      "Get the vendor information for a product by its ID. Returns vendor details including name and email.",
+    direction: "OUTGOING",
+    icon: "mdi:domain",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        product_id: {
+          type: "string",
+          description: "The product ID to look up the vendor for (e.g. prd-1).",
+        },
+      },
+      required: ["product_id"],
     },
   },
   {

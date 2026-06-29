@@ -1427,18 +1427,6 @@
             "icon": "mdi:file-document-plus",
             "prompt": "Create Purchase Order"
           },
-          "next": ["f5e5d5c5-a5b5-4555-8555-555555555555"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "f5e5d5c5-a5b5-4555-8555-555555555555",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:llm",
-            "description": "Write and summarize the order process using LLM",
-            "icon": "mdi:robot",
-            "prompt": "Write Process to LLM"
-          },
           "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
@@ -1536,18 +1524,6 @@
             "description": "Create a Purchase Order for the certified product",
             "icon": "mdi:file-document-plus",
             "prompt": "Create Purchase Order"
-          },
-          "next": ["f5e5d5c5-a5b5-4555-8555-555555555555"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "f5e5d5c5-a5b5-4555-8555-555555555555",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:llm",
-            "description": "Write and summarize the order process using LLM",
-            "icon": "mdi:robot",
-            "prompt": "Write Process to LLM"
           },
           "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
           "createdAt": "2025-06-26T06:00:00Z"
@@ -1647,18 +1623,6 @@
             "icon": "mdi:file-document-plus",
             "prompt": "Create Purchase Order"
           },
-          "next": ["f5e5d5c5-a5b5-4555-8555-555555555555"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "f5e5d5c5-a5b5-4555-8555-555555555555",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:llm",
-            "description": "Write and summarize the order process using LLM",
-            "icon": "mdi:robot",
-            "prompt": "Write Process to LLM"
-          },
           "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
@@ -1757,18 +1721,6 @@
             "icon": "mdi:file-document-plus",
             "prompt": "Create Purchase Order"
           },
-          "next": ["f5e5d5c5-a5b5-4555-8555-555555555555"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "f5e5d5c5-a5b5-4555-8555-555555555555",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:llm",
-            "description": "Write and summarize the order process using LLM",
-            "icon": "mdi:robot",
-            "prompt": "Write Process to LLM"
-          },
           "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
@@ -1811,5 +1763,197 @@
       "blueprintId": "f4e3d2c1-b0a0-4000-8000-100000000001"
     },
     "answer": "Starting compliance-gated order flow. Finding product, then checking certificate. If valid, PO will be opened and manager notified."
+  },
+  {
+    "blueprint": {
+      "id": "c2b1a0d9-e8f7-4c2b-9100-300000000001",
+      "title": "Compliance Certificate Notification",
+      "description": "Check the compliance certificate status of a product and inform the user about the result.",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "nodes": [
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000002",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:check_product_certificate",
+            "description": "Check whether the product has a valid compliance certificate assigned",
+            "icon": "mdi:certificate-outline",
+            "prompt": "Check Compliance Certificate"
+          },
+          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000003"],
+          "createdAt": "2025-06-29T08:00:00Z"
+        },
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000003",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Inform the user about the compliance certificate status of the product",
+            "icon": "mdi:bell",
+            "prompt": "Notify User"
+          },
+          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000004"],
+          "createdAt": "2025-06-29T08:00:00Z"
+        },
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000004",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "Mark the compliance check workflow as complete",
+            "icon": "mdi:check",
+            "prompt": "Complete"
+          },
+          "next": null,
+          "createdAt": "2025-06-29T08:00:00Z"
+        }
+      ]
+    },
+    "content": "Check product compliance certificate and inform the user about the result.",
+    "pseudocode": "BEGIN_CONTEXT\ncertificate = CheckProductCertificate(product.id)\nMessageUser(certificate)\nEND_CONTEXT\n\nEND_MESSAGE",
+    "knowledge": [
+      {
+        "id": "d2e3f4a5-0001-4001-8001-cccccccccccc",
+        "type": "TEXT",
+        "text": "Compliance certificates must be verified before any order or regulatory step.",
+        "status": "COMPLETED",
+        "createdAt": "2025-06-29T08:00:00Z"
+      }
+    ],
+    "task": {
+      "id": "f2a3b4c5-d6e7-4002-8002-200000000001",
+      "status": "COMPLETED",
+      "description": "Verify compliance certificate for the product and notify the user.",
+      "blueprintId": "c2b1a0d9-e8f7-4c2b-9100-300000000001"
+    },
+    "answer": "Checking product compliance certificate and notifying the user about the result."
+  },
+  {
+    "blueprint": {
+      "id": "c2b1a0d9-e8f7-4c2b-9100-300000000001",
+      "title": "Compliance Certificate Notification",
+      "description": "Check the compliance certificate status of a product and inform the user about the result.",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "nodes": [
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000002",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:check_product_certificate",
+            "description": "Check whether the product has a valid compliance certificate assigned",
+            "icon": "mdi:certificate-outline",
+            "prompt": "Check Compliance Certificate"
+          },
+          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000003"],
+          "createdAt": "2025-06-29T08:00:00Z"
+        },
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000003",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Inform the user about the compliance certificate status of the product",
+            "icon": "mdi:bell",
+            "prompt": "Notify User"
+          },
+          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000004"],
+          "createdAt": "2025-06-29T08:00:00Z"
+        },
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000004",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "Mark the compliance check workflow as complete",
+            "icon": "mdi:check",
+            "prompt": "Complete"
+          },
+          "next": null,
+          "createdAt": "2025-06-29T08:00:00Z"
+        }
+      ]
+    },
+    "content": "I need to verify whether the product has a compliance certificate.",
+    "pseudocode": "BEGIN_CONTEXT\ncertificate = CheckProductCertificate(product.id)\nMessageUser(certificate)\nEND_CONTEXT\n\nEND_MESSAGE",
+    "knowledge": [
+      {
+        "id": "d2e3f4a5-0001-4001-8001-cccccccccccc",
+        "type": "TEXT",
+        "text": "Compliance certificates must be verified before any order or regulatory step.",
+        "status": "COMPLETED",
+        "createdAt": "2025-06-29T08:00:00Z"
+      }
+    ],
+    "task": {
+      "id": "f2a3b4c5-d6e7-4002-8002-200000000002",
+      "status": "COMPLETED",
+      "description": "Verify compliance certificate for the product and notify the user.",
+      "blueprintId": "c2b1a0d9-e8f7-4c2b-9100-300000000001"
+    },
+    "answer": "I'll check the product's compliance certificate right away and inform you of the findings."
+  },
+  {
+    "blueprint": {
+      "id": "c2b1a0d9-e8f7-4c2b-9100-300000000001",
+      "title": "Compliance Certificate Notification",
+      "description": "Check the compliance certificate status of a product and inform the user about the result.",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "nodes": [
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000002",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:check_product_certificate",
+            "description": "Check whether the product has a valid compliance certificate assigned",
+            "icon": "mdi:certificate-outline",
+            "prompt": "Check Compliance Certificate"
+          },
+          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000003"],
+          "createdAt": "2025-06-29T08:00:00Z"
+        },
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000003",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Inform the user about the compliance certificate status of the product",
+            "icon": "mdi:bell",
+            "prompt": "Notify User"
+          },
+          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000004"],
+          "createdAt": "2025-06-29T08:00:00Z"
+        },
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000004",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "Mark the compliance check workflow as complete",
+            "icon": "mdi:check",
+            "prompt": "Complete"
+          },
+          "next": null,
+          "createdAt": "2025-06-29T08:00:00Z"
+        }
+      ]
+    },
+    "content": "Run a compliance check on the product and send the result to the user.",
+    "pseudocode": "BEGIN_CONTEXT\ncertificate = CheckProductCertificate(product.id)\nMessageUser(certificate)\nEND_CONTEXT\n\nEND_MESSAGE",
+    "knowledge": [
+      {
+        "id": "d2e3f4a5-0001-4001-8001-cccccccccccc",
+        "type": "TEXT",
+        "text": "Compliance certificates must be verified before any order or regulatory step.",
+        "status": "COMPLETED",
+        "createdAt": "2025-06-29T08:00:00Z"
+      }
+    ],
+    "task": {
+      "id": "f2a3b4c5-d6e7-4002-8002-200000000003",
+      "status": "COMPLETED",
+      "description": "Verify compliance certificate for the product and notify the user.",
+      "blueprintId": "c2b1a0d9-e8f7-4c2b-9100-300000000001"
+    },
+    "answer": "Running compliance certificate check now. Once verified, I'll send the result directly to the user."
   }
 ]

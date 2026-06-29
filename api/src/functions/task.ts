@@ -230,6 +230,30 @@ async function listSteps({ taskId }: { taskId: string }) {
     }));
 }
 
+async function transferSteps({
+  fromTaskId,
+  toTaskId,
+}: {
+  fromTaskId: string;
+  toTaskId: string;
+}) {
+  const steps = await Step.findAll({ where: { taskId: fromTaskId } });
+  if (!steps.length) return;
+
+  await Task.update(
+    {
+      inheritedSteps: steps.map((s) => ({
+        action: s.action,
+        parameters: s.parameters,
+        result: s.result,
+        comment: s.comment,
+        status: s.status,
+      })),
+    },
+    { where: { id: toTaskId } },
+  );
+}
+
 export default {
   create,
   get,
@@ -240,4 +264,5 @@ export default {
   updateStep,
   updateStepComment,
   listSteps,
+  transferSteps,
 };

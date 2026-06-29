@@ -119,14 +119,33 @@ function createApp() {
 
     await event.subscribe<{ taskId: string }>(
       "TASK_SUPERVISING_RESPONDED",
-      async ({ taskId }) => {
+      async ({ taskId, type }) => {
         const steps = await taskFn.listSteps({ taskId });
 
-        const supervisedStep = steps.find(
+        const sortedSteps = [...steps].sort(
+          (a, b) =>
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+        );
+
+        const supervisedIndex = sortedSteps.findIndex(
           (step) => step.status === "SUPERVISED_NEEDED",
         );
 
-        if (supervisedStep) {
+        if (supervisedIndex === -1) return;
+
+        const supervisedStep = sortedSteps[supervisedIndex];
+
+        if (type === "KNOWLEDGE") {
+          const previousStep = sortedSteps[supervisedIndex - 1];
+          if (!previousStep) return;
+
+          agentFn.step({
+            stepId: previousStep.id,
+            action: previousStep.action,
+            parameters: previousStep.parameters,
+            comment: previousStep.comment,
+          });
+        } else {
           agentFn.step({
             stepId: supervisedStep.id,
             action: "SUPERVISOR_RESPONDED",

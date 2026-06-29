@@ -624,6 +624,26 @@ const MCPs = [
     },
   },
   {
+    id: "b8f1a2c3-d4e5-4f6a-9b0c-1d2e3f4a5b6c",
+    action: "GREY:knowledge_lookup",
+    provider: "GREY",
+    description:
+      "Look up all knowledge entries for an agent by agentId. Returns every knowledge item including TEXT, QA, and DATA types. Always use this before making decisions that depend on facts that may have been updated by a supervisor, such as product certificates or policies.",
+    direction: "OUTGOING",
+    icon: "mdi:book-search",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        agentId: {
+          type: "string",
+          description: "The ID of the agent whose knowledge to retrieve.",
+        },
+      },
+      required: ["agentId"],
+    },
+  },
+  {
     id: "d4k0j5i6-1j2h-0i9k-6l5m-4h3i2j1k0l9g",
     action: "PROJECT_NOTIFIER:notify_project_open",
     provider: "PROJECT_NOTIFIER",

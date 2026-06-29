@@ -823,10 +823,10 @@
             "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
             "type": "NORMAL",
             "properties": {
-              "action": "ORDER:check_product_certificate",
-              "prompt": "Check if the product has a compliance certificate",
-              "label": "Check Certificate",
-              "icon": "mdi:certificate-outline"
+              "action": "GREY:knowledge_lookup",
+              "prompt": "Look up compliance certificate for the product from agent knowledge",
+              "label": "Knowledge Lookup",
+              "icon": "mdi:book-search"
             },
             "next": ["f3e3d3c4-a3b3-4333-8333-444444444444"],
             "createdAt": "2025-06-26T06:00:00Z"
@@ -943,7 +943,7 @@
         "TELCO:port_allocation",
         "TELCO:port_connection",
         "ORDER:find_product",
-        "ORDER:check_product_certificate",
+        "GREY:knowledge_lookup",
         "ORDER:assign_certificate",
         "ORDER:create_po"
       ],
@@ -970,7 +970,7 @@
         },
         {
           "taskId": "task-oc-001",
-          "action": "ORDER:check_product_certificate",
+          "action": "GREY:knowledge_lookup",
           "status": "COMPLETED",
           "parameters": {
             "product_id": "prd-1"
@@ -1083,10 +1083,10 @@
             "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
             "type": "NORMAL",
             "properties": {
-              "action": "ORDER:check_product_certificate",
-              "prompt": "Check if the product has a compliance certificate",
-              "label": "Check Certificate",
-              "icon": "mdi:certificate-outline"
+              "action": "GREY:knowledge_lookup",
+              "prompt": "Look up compliance certificate for the product from agent knowledge",
+              "label": "Knowledge Lookup",
+              "icon": "mdi:book-search"
             },
             "next": ["f3e3d3c4-a3b3-4333-8333-444444444444"],
             "createdAt": "2025-06-26T06:00:00Z"
@@ -1203,7 +1203,7 @@
         "TELCO:port_allocation",
         "TELCO:port_connection",
         "ORDER:find_product",
-        "ORDER:check_product_certificate",
+        "GREY:knowledge_lookup",
         "ORDER:assign_certificate",
         "ORDER:create_po"
       ],
@@ -1230,7 +1230,7 @@
         },
         {
           "taskId": "task-oc-002",
-          "action": "ORDER:check_product_certificate",
+          "action": "GREY:knowledge_lookup",
           "status": "COMPLETED",
           "parameters": {
             "product_id": "prd-3"
@@ -1278,6 +1278,241 @@
               }
             ]
           }
+        }
+      ]
+    },
+    {
+      "id": "order-cert-block-003",
+      "description": "Create a purchase order for product-3 (prd-3) — no certificate in knowledge initially. Blueprint has no handoff node. Agent asks supervisor; supervisor adds certificate to knowledge base only (blueprint NOT changed). Agent resumes, re-checks certificate with updated knowledge, finds it, and completes the order.",
+      "sessionId": "019b6e75-oc03-oc03-oc03-oc0300000003",
+      "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\ncertificate = CheckCertificate(product.id)\n// No certificate found in knowledge -> AskSupervisor\n// Supervisor adds certificate to knowledge base (blueprint NOT changed)\n// Agent resumes with updated knowledge\ncertificate = CheckCertificate(product.id) // re-checked with updated knowledge\nAssignCertificate(product.id, certificate.certificate)\nPO.Create(product.id)\nEmail.Send()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "Blueprint": {
+        "id": "a1b2c3d4-e5f6-4000-8000-100000000002",
+        "title": "Order and Compliance (No Handoff)",
+        "description": "Find product, check and assign compliance certificate, create purchase order, and send email.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "n0-a1b2-0000",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "prompt": "Ask user which product they want to order",
+              "label": "Select a Product",
+              "icon": "mdi:account-question"
+            },
+            "next": ["n1-a1b2-1111"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "n1-a1b2-1111",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "prompt": "Find the product by identifier",
+              "label": "Find Product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["n2-a1b2-2222"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "n2-a1b2-2222",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:knowledge_lookup",
+              "prompt": "Look up compliance certificate for the product from agent knowledge",
+              "label": "Knowledge Lookup",
+              "icon": "mdi:book-search"
+            },
+            "next": ["n4-a1b2-4444"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "n4-a1b2-4444",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "prompt": "Assign a compliance certificate to the product",
+              "label": "Assign Certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["n5-a1b2-5555"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "n5-a1b2-5555",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "prompt": "Create a purchase order for the product",
+              "label": "Create Purchase Order",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["n6-a1b2-6666"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "n6-a1b2-6666",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "prompt": "Send email to notify about the purchase order",
+              "label": "Send Email",
+              "icon": "mdi:email"
+            },
+            "next": ["n8-a1b2-8888"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "n8-a1b2-8888",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "prompt": "Complete task after order creation",
+              "label": "Complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "kn-c3-001",
+          "type": "TEXT",
+          "text": "prd-1 has FFC compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-c3-002",
+          "type": "TEXT",
+          "text": "prd-2 has CE compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-c3-003",
+          "type": "TEXT",
+          "text": "prd-3 and prd-4 have no compliance certificate assigned",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-c3-004",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-c3-005",
+          "type": "TEXT",
+          "text": "prd-3 has ISO 9001 compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-29T08:00:00Z"
+        }
+      ],
+      "tools": [
+        "GREY:send_email",
+        "ORDER:find_product",
+        "GREY:knowledge_lookup",
+        "ORDER:assign_certificate",
+        "ORDER:create_po"
+      ],
+      "steps": [
+        {
+          "taskId": "task-oc-003",
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Which product would you like to order?"
+          },
+          "result": "product-3",
+          "comment": "User selected product-3"
+        },
+        {
+          "taskId": "task-oc-003",
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "name": "product-3"
+          },
+          "result": "{\"id\": \"prd-3\", \"name\": \"product-3\"}",
+          "comment": "Found product-3 with ID prd-3"
+        },
+        {
+          "taskId": "task-oc-003",
+          "action": "GREY:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "prd-3"
+          },
+          "result": "{\"product_id\": \"prd-3\", \"certificate\": null, \"has_certificate\": false}",
+          "comment": "No certificate found for prd-3 — knowledge base had no entry for prd-3 certificate at this point"
+        },
+        {
+          "taskId": "task-oc-003",
+          "action": "PLATFORM:ask_supervisor",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Product prd-3 has no compliance certificate in the knowledge base. How should I proceed?",
+            "sessionId": "019b6e75-oc03-oc03-oc03-oc0300000003",
+            "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
+          },
+          "comment": "Supervisor added 'prd-3 has ISO 9001 compliance certificate' to the knowledge base. Blueprint was NOT changed."
+        },
+        {
+          "taskId": "task-oc-003",
+          "action": "GREY:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "prd-3"
+          },
+          "result": "{\"product_id\": \"prd-3\", \"certificate\": \"ISO 9001\", \"has_certificate\": true}",
+          "comment": "Re-checked certificate after supervisor updated knowledge base — ISO 9001 now found for prd-3"
+        },
+        {
+          "taskId": "task-oc-003",
+          "action": "ORDER:assign_certificate",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "prd-3",
+            "certificate": "ISO 9001"
+          },
+          "result": "{\"product_id\": \"prd-3\", \"certificate\": \"ISO 9001\", \"assigned\": true}",
+          "comment": "Assigned ISO 9001 certificate to prd-3"
+        },
+        {
+          "taskId": "task-oc-003",
+          "action": "ORDER:create_po",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "prd-3",
+            "city": "Atlanta",
+            "quantity": 1
+          },
+          "result": "{\"order_id\": \"po-2003\", \"product_id\": \"prd-3\", \"city\": \"Atlanta\", \"quantity\": 1}",
+          "comment": "Purchase order po-2003 created for prd-3"
+        },
+        {
+          "taskId": "task-oc-003",
+          "action": "GREY:send_email",
+          "status": "COMPLETED",
+          "parameters": {
+            "to": "halilibrahimcengel7@gmail.com",
+            "subject": "Purchase Order Created",
+            "text": "Purchase order po-2003 has been created for product prd-3 with ISO 9001 certificate."
+          },
+          "comment": "Email sent to manager"
+        },
+        {
+          "taskId": "task-oc-003",
+          "action": "PLATFORM:complete",
+          "status": "COMPLETED",
+          "comment": "Order and compliance process completed — supervisor knowledge update resolved the blocking condition"
         }
       ]
     },
@@ -1367,7 +1602,7 @@
       ],
       "tools": [
         "ORDER:find_product",
-        "ORDER:check_product_certificate",
+        "GREY:knowledge_lookup",
         "ORDER:get_product_vendor",
         "ORDER:create_po",
         "GREY:send_email"
@@ -1390,7 +1625,7 @@
           "comment": "Found prd-3"
         },
         {
-          "action": "ORDER:check_product_certificate",
+          "action": "GREY:knowledge_lookup",
           "status": "COMPLETED",
           "parameters": { "product_id": "prd-3" },
           "result": "{\"product_id\": \"prd-3\", \"certificate\": null, \"has_certificate\": false}",

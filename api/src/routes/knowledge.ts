@@ -53,6 +53,7 @@ router.post("/", async (req, res) => {
   if (taskId) {
     await event.publish("TASK_SUPERVISING_RESPONDED", {
       taskId,
+      type: "KNOWLEDGE",
     });
   }
 

@@ -207,12 +207,12 @@
           "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
           "type": "NORMAL",
           "properties": {
-            "action": "ORDER:check_product_certificate",
-            "description": "Check whether the product already has a compliance certificate assigned",
-            "prompt": "Check if the product has a compliance certificate",
+            "action": "GREY:knowledge_lookup",
+            "description": "Look up the agent's knowledge base to find the product's compliance certificate. This reflects live knowledge updates from the supervisor.",
+            "prompt": "Look up compliance certificate for the product from agent knowledge",
             "label": "Check Certificate",
-            "icon": "mdi:certificate-outline",
-            "pseudocode": "BEGIN_CONTEXT\ncertificate = CheckCertificate(product.id)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:book-search",
+            "pseudocode": "BEGIN_CONTEXT\ncertificate = KnowledgeLookup(agentId, product.id)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
           "createdAt": "2025-06-26T06:00:00Z"

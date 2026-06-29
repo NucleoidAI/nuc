@@ -1,10 +1,7 @@
-import BlueprintDrawer from "../BlueprintDrawer/BlueprintDrawer";
 import { Iconify } from "@canmingir/link/platform/components";
 import SupervisingChat from "../SupervisingChat";
-import SupervisingTypeDialog from "../SupervisingTypeDialog";
 import useBlueprint from "../../hooks/useBlueprint";
-import { useEvent } from "@nucleoidai/react-event";
-import useTasks from "../../hooks/useTasks";
+import { useState } from "react";
 
 import {
   Box,
@@ -18,11 +15,9 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
 
 const SupervisingCard = ({
   supervise,
@@ -38,188 +33,10 @@ const SupervisingCard = ({
   };
   agentId?: string;
 }) => {
-  const [knowledgeChatOpen, setKnowledgeChatOpen] = useState(false);
-
-  const [aiResponse, setAiResponse] = useState(null);
-
-  const [blueprintDrawerOpen, setBlueprintDrawerOpen] = useState(false);
-
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
 
   const { getBlueprintWithId } = useBlueprint();
-
-  const [blueprintSelectedItem, setBlueprintSelectedItem] = useState(null);
-
   const { blueprint } = getBlueprintWithId(supervise.blueprintId || "");
-
-  const [aiResponded] = useEvent("AI_RESPONDED", null);
-
-  const { getSteps, steps } = useTasks(agentId, [aiResponded]);
-
-  useEffect(
-    () => {
-      if (supervise.taskId) {
-        getSteps(supervise.taskId);
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [supervise.taskId, aiResponded]
-  );
-
-  const handleOpenDialog = () => {
-    setDialogOpen(true);
-  };
-
-  const handleCloseDialog = () => {
-    setDialogOpen(false);
-  };
-
-  const handleSelectKnowledge = () => {
-    setDialogOpen(false);
-    setKnowledgeChatOpen(true);
-  };
-
-  const handleSelectBlueprint = (blueprint: {
-    id: string;
-    title: string;
-    description: string;
-    agentId: string;
-  }) => {
-    setDialogOpen(false);
-    setBlueprintDrawerOpen(true);
-    setBlueprintSelectedItem(blueprint);
-  };
-
-  const { usedNodeIds, lastUsedNodeId, failedNodeId } = useMemo(() => {
-    if (!steps || steps.length === 0 || !blueprint?.nodes)
-      return {
-        usedNodeIds: new Set<string>(),
-        lastUsedNodeId: null as string | null,
-        failedNodeId: null as string | null,
-      };
-
-    let askSupervisorIndex = -1;
-    for (let i = steps.length - 1; i >= 0; i--) {
-      if (steps[i]?.action === "PLATFORM:ask_supervisor") {
-        askSupervisorIndex = i;
-        break;
-      }
-    }
-
-    const stepsBeforeAsk =
-      askSupervisorIndex > 0 ? steps.slice(0, askSupervisorIndex) : steps;
-
-    const nodeMap = new Map<string, (typeof blueprint.nodes)[number]>();
-    blueprint.nodes.forEach((node) => nodeMap.set(node.id, node));
-
-    const referencedIds = new Set<string>();
-    blueprint.nodes.forEach((node) => {
-      (node.next || []).forEach((id: string) => referencedIds.add(id));
-      (node.true || []).forEach((id: string) => referencedIds.add(id));
-      (node.false || []).forEach((id: string) => referencedIds.add(id));
-    });
-
-    let possibleNextIds = new Set<string>(
-      blueprint.nodes.filter((n) => !referencedIds.has(n.id)).map((n) => n.id)
-    );
-
-    const getChildren = (node: (typeof blueprint.nodes)[number]) => {
-      const next = Array.isArray(node.next)
-        ? node.next
-        : node.next
-        ? [node.next]
-        : [];
-      return new Set<string>([
-        ...next,
-        ...(node.true || []),
-        ...(node.false || []),
-      ]);
-    };
-
-    const stepActions = new Set(
-      stepsBeforeAsk.map((s) => s?.action).filter(Boolean)
-    );
-
-    const expandFrontier = (ids: Set<string>): Set<string> => {
-      const expanded = new Set<string>();
-      const queue = [...ids];
-      const visited = new Set<string>();
-
-      while (queue.length > 0) {
-        const id = queue.shift()!;
-        if (visited.has(id)) continue;
-        visited.add(id);
-
-        const node = nodeMap.get(id);
-        if (!node) continue;
-
-        if (stepActions.has(node.properties?.action)) {
-          expanded.add(id);
-        } else {
-          for (const childId of getChildren(node)) {
-            if (!visited.has(childId)) queue.push(childId);
-          }
-        }
-      }
-
-      return expanded;
-    };
-
-    const usedIds = new Set<string>();
-    let lastId: string | null = null;
-    let failedId: string | null = null;
-
-    possibleNextIds = expandFrontier(possibleNextIds);
-
-    for (const step of stepsBeforeAsk) {
-      if (!step?.action) continue;
-
-      let matched: (typeof blueprint.nodes)[number] | null = null;
-      for (const nodeId of possibleNextIds) {
-        const node = nodeMap.get(nodeId);
-        if (node?.properties?.action === step.action) {
-          matched = node;
-          break;
-        }
-      }
-
-      if (matched) {
-        const isDecisionNode =
-          matched.type === "CONDITION" ||
-          matched.properties?.action === "PLATFORM:decision";
-        if (step.status === "FAILED") {
-          failedId = matched.id;
-        } else if (!isDecisionNode) {
-          usedIds.add(matched.id);
-          lastId = matched.id;
-        }
-
-        possibleNextIds = expandFrontier(getChildren(matched));
-      }
-    }
-
-    blueprint.nodes.forEach((node: (typeof blueprint.nodes)[number]) => {
-      if (
-        node.type !== "CONDITION" &&
-        node.properties?.action !== "PLATFORM:decision"
-      )
-        return;
-      const children = getChildren(node);
-      const anyChildUsed = [...children].some((childId) => {
-        const child = nodeMap.get(childId);
-        return child && usedIds.has(childId);
-      });
-      if (anyChildUsed) {
-        usedIds.add(node.id);
-      }
-    });
-
-    return {
-      usedNodeIds: usedIds,
-      lastUsedNodeId: failedId ? null : lastId,
-      failedNodeId: failedId,
-    };
-  }, [steps, blueprint]);
 
   return (
     <>
@@ -236,7 +53,7 @@ const SupervisingCard = ({
             flexDirection: "row",
             gap: 2,
             padding: 2,
-            minHeight: 180,
+            minHeight: 140,
           }}
         >
           <Box
@@ -292,27 +109,10 @@ const SupervisingCard = ({
                 {supervise.question}
               </Typography>
             </Box>
-
-            <TextField
-              data-cy="supervising-answer"
-              variant="outlined"
-              label="Answer"
-              value={supervise.answer ? `${supervise.answer}` : ""}
-              fullWidth
-              sx={{
-                "& .MuiOutlinedInput-input": {
-                  cursor: "default",
-                },
-              }}
-              slotProps={{
-                input: {
-                  readOnly: true,
-                  style: { cursor: "text" },
-                },
-              }}
-            />
           </Box>
+
           <Divider orientation="vertical" flexItem />
+
           <Box
             sx={{
               display: "flex",
@@ -337,11 +137,7 @@ const SupervisingCard = ({
                 <TableBody>
                   <TableRow>
                     <TableCell sx={{ textAlign: "center" }}>
-                      <Typography
-                        sx={{
-                          mt: 1,
-                        }}
-                      >
+                      <Typography sx={{ mt: 1 }}>
                         {(() => {
                           switch (supervise.status) {
                             case "IN_PROGRESS":
@@ -359,21 +155,14 @@ const SupervisingCard = ({
               </Table>
             </TableContainer>
 
-            <Tooltip title="Open supervising options">
+            <Tooltip title="Resolve Supervise">
               <Fab
-                sx={{
-                  alignSelf: "center",
-                  textAlign: "center",
-                }}
+                sx={{ alignSelf: "center" }}
                 color="inherit"
-                onClick={handleOpenDialog}
+                onClick={() => setChatOpen(true)}
               >
                 <Iconify
-                  icon={
-                    supervise.status === "IN_PROGRESS"
-                      ? "solar:reply-2-bold-duotone"
-                      : "solar:check-read-line-duotone"
-                  }
+                  icon="solar:reply-2-bold-duotone"
                   sx={{ width: 26, height: 26 }}
                 />
               </Fab>
@@ -381,33 +170,12 @@ const SupervisingCard = ({
           </Box>
         </Box>
       </Card>
-      <SupervisingTypeDialog
-        open={dialogOpen}
-        onClose={handleCloseDialog}
-        onSelectKnowledge={handleSelectKnowledge}
-        onSelectBlueprint={(blueprint) => handleSelectBlueprint(blueprint)}
-        blueprint={blueprint}
-        usedNodeIds={usedNodeIds}
-        lastUsedNodeId={lastUsedNodeId}
-        failedNodeId={failedNodeId}
-        supervise={supervise}
-      />
+
       <SupervisingChat
-        open={knowledgeChatOpen}
-        handleClose={() => setKnowledgeChatOpen(false)}
+        open={chatOpen}
+        handleClose={() => setChatOpen(false)}
         supervise={supervise}
-      />
-      <BlueprintDrawer
-        drawerOpen={blueprintDrawerOpen}
-        handleDrawerClose={() => setBlueprintDrawerOpen(false)}
-        selectedItem={blueprintSelectedItem}
-        taskId={supervise.taskId}
-        setSelectedItem={setBlueprintSelectedItem}
-        setAiResponse={setAiResponse}
-        aiResponse={aiResponse}
-        usedNodeIds={usedNodeIds}
-        lastUsedNodeId={lastUsedNodeId}
-        failedNodeId={failedNodeId}
+        agentId={agentId}
       />
     </>
   );

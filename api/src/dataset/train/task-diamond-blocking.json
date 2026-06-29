@@ -19,9 +19,7 @@
               "icon": "mdi:check",
               "prompt": "Check Product Availability"
             },
-            "next": [
-              "51dca395-1d90-4a28-9bbc-233de9c1a207"
-            ],
+            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -32,12 +30,8 @@
               "icon": "mdi:source-branch",
               "prompt": "Make Decision"
             },
-            "true": [
-              "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-            ],
-            "false": [
-              "5be22de7-9673-448d-a1b5-dc23a8789b5c"
-            ],
+            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+            "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -240,9 +234,7 @@
               "icon": "mdi:map-marker",
               "prompt": "Get User Address"
             },
-            "next": [
-              "76ccda2d-f11f-408c-8087-66c377600d0b"
-            ],
+            "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -253,9 +245,7 @@
               "icon": "mdi:map-marker",
               "prompt": "Get BBK No by Address"
             },
-            "next": [
-              "51dca395-1d90-4a28-9bbc-233de9c1a207"
-            ],
+            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -266,9 +256,7 @@
               "icon": "mdi:server",
               "prompt": "Get Inventory"
             },
-            "next": [
-              "019b209c-2e5a-777f-a04a-11960363fb25"
-            ],
+            "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -279,12 +267,8 @@
               "icon": "mdi:source-branch",
               "prompt": "Is inventory available?"
             },
-            "true": [
-              "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-            ],
-            "false": [
-              "019b20a6-1aa6-7510-b222-66535e50dfb3"
-            ],
+            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+            "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -306,9 +290,7 @@
               "icon": "mdi:speedometer",
               "prompt": "Get products by speed"
             },
-            "next": [
-              "019c8a58-10e3-713f-9484-78d04923040f"
-            ],
+            "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -319,9 +301,7 @@
               "icon": "mdi:cursor-pointer",
               "prompt": "Provide available products and wait for user to select a product"
             },
-            "next": [
-              "019b3302-7846-75c2-9ab7-897c18b8ccee"
-            ],
+            "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -332,9 +312,7 @@
               "icon": "mdi:link",
               "prompt": "Allocate port and create order"
             },
-            "next": [
-              "019b3305-7846-75c2-9ab7-897c18b8cce1"
-            ],
+            "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -345,9 +323,7 @@
               "icon": "mdi:bell",
               "prompt": "Notify user about port allocation"
             },
-            "next": [
-              "019b209e-3122-75ce-9ba6-674b6184f68d"
-            ],
+            "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -358,9 +334,7 @@
               "icon": "mdi:settings",
               "prompt": "Configure allocated port"
             },
-            "next": [
-              "019b32f6-5878-73fb-8411-55916778d9a4"
-            ],
+            "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -371,9 +345,7 @@
               "icon": "mdi:ethernet",
               "prompt": "Connect port to residence"
             },
-            "next": [
-              "019b32f6-bd02-734e-bd3a-aec89d79609c"
-            ],
+            "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -478,9 +450,7 @@
               "icon": "mdi:map-marker",
               "prompt": "Get User Address"
             },
-            "next": [
-              "76ccda2d-f11f-408c-8087-66c377600d0b"
-            ],
+            "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -491,9 +461,7 @@
               "icon": "mdi:map-marker",
               "prompt": "Get BBK No by Address"
             },
-            "next": [
-              "51dca395-1d90-4a28-9bbc-233de9c1a207"
-            ],
+            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -504,9 +472,7 @@
               "icon": "mdi:server",
               "prompt": "Get Inventory"
             },
-            "next": [
-              "019b209c-2e5a-777f-a04a-11960363fb25"
-            ],
+            "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -517,12 +483,8 @@
               "icon": "mdi:source-branch",
               "prompt": "Is inventory available?"
             },
-            "true": [
-              "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-            ],
-            "false": [
-              "019b20a6-1aa6-7510-b222-66535e50dfb3"
-            ],
+            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+            "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -544,9 +506,7 @@
               "icon": "mdi:speedometer",
               "prompt": "Get products by speed"
             },
-            "next": [
-              "019c8a58-10e3-713f-9484-78d04923040f"
-            ],
+            "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -557,9 +517,7 @@
               "icon": "mdi:cursor-pointer",
               "prompt": "Provide available products and wait for user to select a product"
             },
-            "next": [
-              "019b3302-7846-75c2-9ab7-897c18b8ccee"
-            ],
+            "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -570,9 +528,7 @@
               "icon": "mdi:link",
               "prompt": "Allocate port and create order"
             },
-            "next": [
-              "019b3305-7846-75c2-9ab7-897c18b8cce1"
-            ],
+            "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -583,9 +539,7 @@
               "icon": "mdi:bell",
               "prompt": "Notify user about port allocation"
             },
-            "next": [
-              "019b209e-3122-75ce-9ba6-674b6184f68d"
-            ],
+            "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -596,9 +550,7 @@
               "icon": "mdi:settings",
               "prompt": "Configure allocated port"
             },
-            "next": [
-              "019b32f6-5878-73fb-8411-55916778d9a4"
-            ],
+            "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -609,9 +561,7 @@
               "icon": "mdi:ethernet",
               "prompt": "Connect port to residence"
             },
-            "next": [
-              "019b32f6-bd02-734e-bd3a-aec89d79609c"
-            ],
+            "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -787,9 +737,7 @@
               "icon": "mdi:cart-plus",
               "prompt": "Create Order"
             },
-            "next": [
-              "node-hnd-002"
-            ],
+            "next": ["node-hnd-002"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -856,9 +804,7 @@
               "label": "Select a Product",
               "icon": "mdi:account-question"
             },
-            "next": [
-              "f1e1d1c1-a1b1-4111-8111-111111111111"
-            ],
+            "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
@@ -870,9 +816,7 @@
               "label": "Find Product",
               "icon": "mdi:magnify"
             },
-            "next": [
-              "f3e3d3c3-a3b3-4333-8333-333333333333"
-            ],
+            "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
@@ -884,9 +828,7 @@
               "label": "Check Certificate",
               "icon": "mdi:certificate-outline"
             },
-            "next": [
-              "f3e3d3c4-a3b3-4333-8333-444444444444"
-            ],
+            "next": ["f3e3d3c4-a3b3-4333-8333-444444444444"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
@@ -898,12 +840,8 @@
               "label": "Is Certificate Found?",
               "icon": "mdi:source-branch"
             },
-            "true": [
-              "f2e2d2c2-a2b2-4222-8222-222222222222"
-            ],
-            "false": [
-              "f3e3d3c5-a3b3-4333-8333-555555555555"
-            ],
+            "true": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+            "false": ["f3e3d3c5-a3b3-4333-8333-555555555555"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
@@ -915,9 +853,7 @@
               "label": "Assign Certificate",
               "icon": "mdi:certificate-outline"
             },
-            "next": [
-              "f4e4d4c4-a4b4-4444-8444-444444444444"
-            ],
+            "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
@@ -941,9 +877,7 @@
               "label": "Create Purchase Order",
               "icon": "mdi:file-document-plus"
             },
-            "next": [
-              "f6e6d6c6-a6b6-4666-8666-666666666666"
-            ],
+            "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
@@ -1130,9 +1064,7 @@
               "label": "Select a Product",
               "icon": "mdi:account-question"
             },
-            "next": [
-              "f1e1d1c1-a1b1-4111-8111-111111111111"
-            ],
+            "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
@@ -1144,9 +1076,7 @@
               "label": "Find Product",
               "icon": "mdi:magnify"
             },
-            "next": [
-              "f3e3d3c3-a3b3-4333-8333-333333333333"
-            ],
+            "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
@@ -1158,9 +1088,7 @@
               "label": "Check Certificate",
               "icon": "mdi:certificate-outline"
             },
-            "next": [
-              "f3e3d3c4-a3b3-4333-8333-444444444444"
-            ],
+            "next": ["f3e3d3c4-a3b3-4333-8333-444444444444"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
@@ -1172,12 +1100,8 @@
               "label": "Is Certificate Found?",
               "icon": "mdi:source-branch"
             },
-            "true": [
-              "f2e2d2c2-a2b2-4222-8222-222222222222"
-            ],
-            "false": [
-              "f3e3d3c5-a3b3-4333-8333-555555555555"
-            ],
+            "true": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+            "false": ["f3e3d3c5-a3b3-4333-8333-555555555555"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
@@ -1189,9 +1113,7 @@
               "label": "Assign Certificate",
               "icon": "mdi:certificate-outline"
             },
-            "next": [
-              "f4e4d4c4-a4b4-4444-8444-444444444444"
-            ],
+            "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
@@ -1215,9 +1137,7 @@
               "label": "Create Purchase Order",
               "icon": "mdi:file-document-plus"
             },
-            "next": [
-              "f6e6d6c6-a6b6-4666-8666-666666666666"
-            ],
+            "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
@@ -1456,7 +1376,9 @@
         {
           "action": "PLATFORM:user_interaction",
           "status": "COMPLETED",
-          "parameters": { "question": "Which product would you like to order?" },
+          "parameters": {
+            "question": "Which product would you like to order?"
+          },
           "result": "product-3",
           "comment": "User selected product-3"
         },

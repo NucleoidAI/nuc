@@ -78,11 +78,17 @@ async function create({
   }
 
   const knowledgeInstance = await Knowledge.create(knowledge);
-  await AgentKnowledge.create({
-    knowledgeId: knowledgeInstance.id,
-    agentId,
-    teamId,
-  });
+  try {
+    await AgentKnowledge.create({
+      knowledgeId: knowledgeInstance.id,
+      agentId,
+      teamId,
+    });
+  } catch (err: any) {
+    if (err.name !== "SequelizeUniqueConstraintError") {
+      throw err;
+    }
+  }
 
   const knowledgeJson = knowledgeInstance.toJSON();
   const knowledgeData = {

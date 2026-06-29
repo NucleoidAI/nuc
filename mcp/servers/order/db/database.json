@@ -1,9 +1,26 @@
 {
+  "vendors": [
+    {
+      "id": "vnd-1",
+      "name": "Vendor Alpha",
+      "email": "alpha@vendor.com"
+    },
+    {
+      "id": "vnd-2",
+      "name": "Vendor Beta",
+      "email": "beta@vendor.com"
+    },
+    {
+      "id": "vnd-3",
+      "name": "Vendor Gamma",
+      "email": "gamma@vendor.com"
+    }
+  ],
   "products": [
-    { "id": "prd-1", "name": "product-1" },
-    { "id": "prd-2", "name": "product-2" },
-    { "id": "prd-3", "name": "product-3" },
-    { "id": "prd-4", "name": "product-4" }
+    { "id": "prd-1", "name": "product-1", "vendor_id": "vnd-1" },
+    { "id": "prd-2", "name": "product-2", "vendor_id": "vnd-2" },
+    { "id": "prd-3", "name": "product-3", "vendor_id": "vnd-3" },
+    { "id": "prd-4", "name": "product-4", "vendor_id": "vnd-1" }
   ],
   "certificates": [
     "FFC",

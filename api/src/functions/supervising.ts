@@ -75,12 +75,18 @@ async function update({
     blueprintId,
     teamId,
   });
-  await AgentKnowledge.create({
-    knowledgeId: knowledgeInstance.id,
-    agentId,
-    teamId,
-    blueprintId,
-  });
+  try {
+    await AgentKnowledge.create({
+      knowledgeId: knowledgeInstance.id,
+      agentId,
+      teamId,
+      blueprintId,
+    });
+  } catch (err: any) {
+    if (err.name !== "SequelizeUniqueConstraintError") {
+      throw err;
+    }
+  }
 
   const knowledgeJson = knowledgeInstance.toJSON();
 

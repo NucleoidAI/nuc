@@ -322,6 +322,123 @@
     "existing": false
   },
   {
+    "content": "I want to order item to Atlanta.",
+    "decision": "BLUEPRINT",
+    "Blueprint": {
+      "title": "Order and Compliance",
+      "description": "Find product, check certificate, assign if found or handoff if missing, create purchase order, and send email.",
+      "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\ncertificate = CheckCertificate(product.id)\nIF certificate.has_certificate == TRUE THEN\n    AssignCertificate(product.id)\n    PO.Create(product.id)\n    Email.Send()\nELSE\n    Handoff(complianceAgent)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "nodes": [
+        {
+          "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "parameters": {
+              "question": "Which product would you like to order?"
+            },
+            "description": "Ask user to select a product",
+            "icon": "mdi:account-question",
+            "prompt": "Select a Product"
+          },
+          "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:find_product",
+            "description": "Search and retrieve the product details",
+            "icon": "mdi:magnify",
+            "prompt": "Find Product"
+          },
+          "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:check_product_certificate",
+            "description": "Check whether the product has a compliance certificate assigned",
+            "icon": "mdi:certificate-outline",
+            "prompt": "Check Certificate"
+          },
+          "next": ["f3e3d3c4-a3b3-4333-8333-444444444444"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f3e3d3c4-a3b3-4333-8333-444444444444",
+          "type": "CONDITION",
+          "properties": {
+            "action": "PLATFORM:decision",
+            "description": "Decide based on certificate existence whether to assign or handoff",
+            "icon": "mdi:source-branch",
+            "prompt": "Is Certificate Found?"
+          },
+          "true": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+          "false": ["f3e3d3c5-a3b3-4333-8333-555555555555"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:assign_certificate",
+            "description": "Assign a compliance certificate to the product",
+            "icon": "mdi:certificate-outline",
+            "prompt": "Assign Certificate"
+          },
+          "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:create_po",
+            "description": "Create a Purchase Order for the certified product",
+            "icon": "mdi:file-document-plus",
+            "prompt": "Create Purchase Order"
+          },
+          "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:send_email",
+            "description": "Send email notification about the completed purchase order",
+            "icon": "mdi:email",
+            "prompt": "Send Email"
+          },
+          "next": null,
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f3e3d3c5-a3b3-4333-8333-555555555555",
+          "type": "HANDOFF",
+          "properties": {
+            "action": "PLATFORM:handoff",
+            "parameters": {
+              "targetAgentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+              "context": "Product has no compliance certificate. Cannot proceed with order without certification."
+            },
+            "description": "Handoff to compliance agent when product has no certificate",
+            "icon": "mdi:account-arrow-right",
+            "prompt": "Handoff - No Certificate"
+          },
+          "next": null,
+          "createdAt": "2025-06-26T06:00:00Z"
+        }
+      ]
+    },
+    "existing": true
+  },
+  {
     "content": "What's the weather like in Paris tomorrow?",
     "decision": "UNREVELANT",
     "existing": false

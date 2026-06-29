@@ -61,6 +61,24 @@ function useSupervisings() {
     return response?.data;
   };
 
+  const resolveSupervising = async (supervisingId: string, answer: string) => {
+    const response = await http.patch(`/supervisings/${supervisingId}/demo`, {
+      answer,
+      status: "ANSWERED",
+    });
+
+    return response?.data;
+  };
+
+  const submitSupervising = async (supervisingId: string) => {
+    const response = await http.patch(
+      `/supervisings/${supervisingId}/demo/submit`,
+      { status: "ANSWERED" }
+    );
+
+    return response?.data;
+  };
+
   const getAgentSupervising = useCallback((agentId?: string) => {
     if (!agentId) return;
 
@@ -106,6 +124,8 @@ function useSupervisings() {
     createSupervising,
     updateSupervising,
     evaluateSupervising,
+    resolveSupervising,
+    submitSupervising,
     getAgentSupervisingByStatus,
     getAgentSupervising,
   };

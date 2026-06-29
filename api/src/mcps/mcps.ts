@@ -198,14 +198,17 @@ const MCPs = [
         to: {
           type: "string",
           description: "The email address of the recipient.",
+          nullable: true,
         },
         subject: {
           type: "string",
           description: "The subject of the email.",
+          nullable: true,
         },
         text: {
           type: "string",
           description: "The body of the email.",
+          nullable: true,
         },
       },
       required: ["to", "subject", "text"],

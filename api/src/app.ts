@@ -14,6 +14,7 @@ import platform from "@canmingir/link-express";
 import projects from "./routes/projects";
 import sessions from "./routes/sessions";
 import statistics from "./routes/statistics";
+import Step from "./models/Step";
 import stepScores from "./routes/stepScores";
 import supervisings from "./routes/supervisings";
 import taskFn from "./functions/task";
@@ -135,9 +136,20 @@ function createApp() {
 
         const supervisedStep = sortedSteps[supervisedIndex];
 
+        console.log("supervisedstep", supervisedStep);
+
         if (type === "KNOWLEDGE") {
           const previousStep = sortedSteps[supervisedIndex - 1];
+          console.log("previousStep", previousStep);
           if (!previousStep) return;
+
+          await Step.update(
+            {
+              result: supervisedStep.comment || "Completed",
+              status: "COMPLETED",
+            },
+            { where: { id: supervisedStep.id } },
+          );
 
           agentFn.step({
             stepId: previousStep.id,

@@ -445,7 +445,11 @@ const SupervisingChat = ({
     try {
       await createKnowledge(
         { type: resolveResponse.data.type, text: resolveResponse.data.text },
-        agentId || ""
+        agentId || "",
+        undefined,
+        null,
+        null,
+        supervise?.taskId
       );
       await submitSupervising(supervise.id);
       setMessages((prev) => [

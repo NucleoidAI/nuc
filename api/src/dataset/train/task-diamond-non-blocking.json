@@ -864,10 +864,10 @@
             "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
             "type": "NORMAL",
             "properties": {
-              "action": "ORDER:check_product_certificate",
-              "prompt": "Check if the product has a compliance certificate",
-              "label": "Check Certificate",
-              "icon": "mdi:certificate-outline"
+              "action": "GREY:knowledge_lookup",
+              "prompt": "Look up compliance certificate for the product from agent knowledge",
+              "label": "Knowledge Lookup",
+              "icon": "mdi:book-search"
             },
             "next": [
               "f3e3d3c4-a3b3-4333-8333-444444444444"
@@ -994,7 +994,7 @@
         "TELCO:port_allocation",
         "TELCO:port_connection",
         "ORDER:find_product",
-        "ORDER:check_product_certificate",
+        "GREY:knowledge_lookup",
         "ORDER:assign_certificate",
         "ORDER:create_po"
       ],
@@ -1021,13 +1021,13 @@
         },
         {
           "taskId": "task-nb-001",
-          "action": "ORDER:check_product_certificate",
+          "action": "GREY:knowledge_lookup",
           "status": "COMPLETED",
           "parameters": {
             "product_id": "prd-2"
           },
           "result": "{\"product_id\": \"prd-2\", \"certificate\": \"CE\", \"has_certificate\": true}",
-          "comment": "Product prd-2 has CE compliance certificate"
+          "comment": "Product prd-2 has CE compliance certificate (from knowledge)"
         },
         {
           "taskId": "task-nb-001",
@@ -1137,10 +1137,10 @@
             "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
             "type": "NORMAL",
             "properties": {
-              "action": "ORDER:check_product_certificate",
-              "prompt": "Check if the product has a compliance certificate",
-              "label": "Check Certificate",
-              "icon": "mdi:certificate-outline"
+              "action": "GREY:knowledge_lookup",
+              "prompt": "Look up compliance certificate for the product from agent knowledge",
+              "label": "Knowledge Lookup",
+              "icon": "mdi:book-search"
             },
             "next": [
               "f3e3d3c4-a3b3-4333-8333-444444444444"
@@ -1267,7 +1267,7 @@
         "TELCO:port_allocation",
         "TELCO:port_connection",
         "ORDER:find_product",
-        "ORDER:check_product_certificate",
+        "GREY:knowledge_lookup",
         "ORDER:assign_certificate",
         "ORDER:create_po"
       ],
@@ -1294,13 +1294,13 @@
         },
         {
           "taskId": "task-nb-002",
-          "action": "ORDER:check_product_certificate",
+          "action": "GREY:knowledge_lookup",
           "status": "COMPLETED",
           "parameters": {
             "product_id": "prd-4"
           },
           "result": "{\"product_id\": \"prd-4\", \"certificate\": null, \"has_certificate\": false}",
-          "comment": "Product prd-4 has no compliance certificate"
+          "comment": "Product prd-4 has no compliance certificate (from knowledge)"
         },
         {
           "taskId": "task-nb-002",

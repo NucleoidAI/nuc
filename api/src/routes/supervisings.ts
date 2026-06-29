@@ -202,14 +202,15 @@ router.patch("/:supervisingId/demo", async (req, res) => {
         {
           id: "f3e3d3c3-a3b3-4333-8333-333333333333",
           properties: {
-            label: "Check Certificate",
-            prompt: "Check if the product has a compliance certificate",
-            icon: "mdi:certificate-outline",
-            action: "ORDER:check_product_certificate",
+            label: "Knowledge Lookup",
+            prompt:
+              "Look up compliance certificate for the product from agent knowledge",
+            icon: "mdi:book-search",
+            action: "GREY:knowledge_lookup",
             description:
-              "Check whether the product already has a compliance certificate assigned",
+              "Look up compliance certificate for the product from agent knowledge",
             pseudocode:
-              "BEGIN_CONTEXT\ncertificate = CheckCertificate(product.id)\nEND_CONTEXT\n\nEND_MESSAGE",
+              "BEGIN_CONTEXT\ncertificate = KnowledgeLookup(product.id)\nEND_CONTEXT\n\nEND_MESSAGE",
           },
           type: "NORMAL",
           next: ["83a2a833-57bc-41b0-8871-be0dd2866ac7"],
@@ -325,14 +326,15 @@ router.patch("/:supervisingId/demo", async (req, res) => {
         {
           id: "f3e3d3c3-a3b3-4333-8333-333333333333",
           properties: {
-            label: "Check Certificate",
-            prompt: "Check if the product has a compliance certificate",
-            icon: "mdi:certificate-outline",
-            action: "ORDER:check_product_certificate",
+            label: "Knowledge Lookup",
+            prompt:
+              "Look up compliance certificate for the product from agent knowledge",
+            icon: "mdi:book-search",
+            action: "GREY:knowledge_lookup",
             description:
-              "Check whether the product already has a compliance certificate assigned",
+              "Look up compliance certificate for the product from agent knowledge",
             pseudocode:
-              "BEGIN_CONTEXT\ncertificate = CheckCertificate(product.id)\nEND_CONTEXT\n\nEND_MESSAGE",
+              "BEGIN_CONTEXT\ncertificate = KnowledgeLookup(product.id)\nEND_CONTEXT\n\nEND_MESSAGE",
           },
           type: "NORMAL",
           next: ["83a2a833-57bc-41b0-8871-be0dd2866ac7"],
@@ -452,6 +454,7 @@ router.patch("/:supervisingId/demo/submit", async (req, res) => {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
+  /*
   if (supervisingInstance.taskId) {
     event
       .publish("TASK_SUPERVISING_RESPONDED", {
@@ -460,6 +463,7 @@ router.patch("/:supervisingId/demo/submit", async (req, res) => {
       })
       .catch(() => {});
   }
+      */
 
   const updatedSupervising = await supervising.update({
     teamId,

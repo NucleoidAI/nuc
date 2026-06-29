@@ -92,11 +92,13 @@ async function update({
 
   await event.publish("KNOWLEDGE", "CREATED", knowledgeJson);
 
+  /*
   if (knowledgeJson?.taskId) {
     await event.publish("TASK_SUPERVISING_RESPONDED", {
       taskId: knowledgeJson.taskId,
     });
   }
+    */
 
   await event.publish("SUPERVISING_ANSWERED", {
     teamId,

@@ -1,5 +1,4 @@
 import { assignCertificateTool } from "./assign_certificate";
-import { checkProductCertificateTool } from "./check_product_certificate";
 import { createPOTool } from "./create_po";
 import { findProductTool } from "./find_product";
 import { getProductVendorTool } from "./get_product_vendor";
@@ -7,7 +6,6 @@ import { getProductVendorTool } from "./get_product_vendor";
 export const tools = [
   findProductTool,
   assignCertificateTool,
-  checkProductCertificateTool,
   createPOTool,
   getProductVendorTool,
 ];

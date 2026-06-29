@@ -108,6 +108,7 @@ async function create({
   if (knowledgeData.taskId) {
     await event.publish("TASK_SUPERVISING_RESPONDED", {
       taskId: knowledgeData.taskId,
+      type: "KNOWLEDGE",
     });
   }
 

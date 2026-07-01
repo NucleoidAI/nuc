@@ -10,7 +10,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import SupervisingChat from "../SupervisingChat";
 import useBlueprint from "../../hooks/useBlueprint";
-
+import { v4 as uuid } from "uuid";
 import { Box, Fab, Grid, IconButton, Tooltip } from "@mui/material";
 import {
   GlassCard,
@@ -293,11 +293,8 @@ const BlueprintDrawer = ({
             open={editBlueprintOpen}
             handleClose={() => setEditBlueprintOpen(false)}
             title="Edit Blueprint"
-            supervise={{
-              id: selectedItem.id,
-              blueprintId: selectedItem.id,
-            }}
             agentId={agentId || selectedItem?.agentId}
+            sessionId={uuid()}
           />
         )}
       </Box>

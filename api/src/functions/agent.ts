@@ -269,8 +269,7 @@ async function task({ taskId }: { taskId: string }) {
     );
 
   const stepsByTime = [...currentTask.steps].sort(
-    (a, b) =>
-      new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
   );
 
   const isDuplicateStep =
@@ -627,7 +626,7 @@ async function blueprintChatSufficiency({
   }[];
   content: string;
   decision: "KNOWLEDGE" | "BLUEPRINT";
-}): Promise<{ sufficient: boolean; question?: string }> {
+}): Promise<{ sufficient: boolean; answer?: string }> {
   const context = [
     {
       role: "system" as const,
@@ -640,11 +639,24 @@ async function blueprintChatSufficiency({
     dataset: dataset.train.blueprintChatSufficiency,
     context,
     content,
-    json_format:
-      "{ sufficient: <true|false>, question: <QUESTION_IF_NOT_SUFFICIENT> }",
+    json_format: "{ sufficient: <true|false>, answer: <ANSWER> }",
   });
 
-  return response as { sufficient: boolean; question?: string };
+  return response as { sufficient: boolean; answer?: string };
+}
+
+async function blueprintChatKnowledge({
+  content,
+}: {
+  content: string;
+}): Promise<{ knowledge: string }> {
+  const response = await generate({
+    dataset: dataset.train.blueprintChatKnowledge,
+    content,
+    json_format: "{ knowledge: <EXTRACTED_KNOWLEDGE> }",
+  });
+
+  return response as { knowledge: string };
 }
 
 async function Blueprint({
@@ -991,6 +1003,7 @@ export default {
   blueprintName,
   blueprintChatDecision,
   blueprintChatSufficiency,
+  blueprintChatKnowledge,
   evaluateSupervisionAnswer,
   toPseudo,
   blueprintDescription,

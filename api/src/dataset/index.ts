@@ -3,6 +3,7 @@ import blueprintChat from "./train/blueprint-chat.json";
 import blueprintChatDecision from "./train/blueprint-chat-decision.json";
 import blueprintChatSufficiency from "./train/blueprint-chat-sufficiency.json";
 import blueprintChatEvaluation from "./train/blueprint-chat-evaluation.json";
+import blueprintChatKnowledge from "./train/blueprint-chat-knowledge.json";
 import blueprintDescription from "./train/blueprint-description.json";
 import blueprintDiamond from "./train/blueprint-diamond.json";
 import blueprintName from "./train/blueprint-name.json";
@@ -85,6 +86,12 @@ export default {
       role: "system" as const,
       content: JSON.stringify({
         train: blueprintChatEvaluation,
+      }),
+    },
+    blueprintChatKnowledge: {
+      role: "system" as const,
+      content: JSON.stringify({
+        train: blueprintChatKnowledge,
       }),
     },
     blueprintName: {

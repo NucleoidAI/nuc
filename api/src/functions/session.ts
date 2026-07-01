@@ -4,15 +4,17 @@ import { event } from "@canmingir/link-express/event/client";
 import { v4 as uuid } from "uuid";
 
 async function create({
+  id,
   type,
   agentId,
   blueprintId,
 }: {
+  id?: string;
   type: string;
   agentId: string;
   blueprintId?: string;
 }) {
-  const sessionId = uuid();
+  const sessionId = id ?? uuid();
 
   const session = await Session.create({
     id: sessionId,

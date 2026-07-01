@@ -4,7 +4,6 @@ import { Iconify } from "@canmingir/link/platform/components";
 import InlineChatInput from "../../widgets/ChatInput/InlineChatInput";
 import PopupChatWidget from "../../widgets/PopupChatWidget/PopupChatWidget";
 import useBlueprint from "../../hooks/useBlueprint";
-import useKnowledge from "../../hooks/useKnowledge";
 import useSupervisings from "../../hooks/useSupervisings";
 import { RawNode, layoutFlow } from "../BlueprintCard/BlueprintFlowMiniPreview";
 import {
@@ -27,7 +26,8 @@ import {
   alpha,
   useTheme,
 } from "@mui/material";
-import React, { memo, useCallback, useMemo } from "react";
+import React, { memo, useCallback, useMemo, useRef } from "react";
+import { v4 as uuid } from "uuid";
 
 /* ------------------------------------------------------------------ */
 /* Mini diff SVG renderer                                               */
@@ -313,24 +313,13 @@ function DiffFlowSvg({
 type ResolveResponse =
   | {
       kind: "knowledge";
-      data: {
-        id: string;
-        type: string;
-        text: string;
-        status: string;
-        createdAt: string;
-      };
+      knowledge: string;
     }
   | {
       kind: "blueprint";
-      data: {
-        id: string;
-        title: string;
-        description: string;
-        agentId: string;
-        //eslint-disable-next-line
-        nodes: any[];
-      };
+      //eslint-disable-next-line
+      flow: any[];
+      response: string;
     };
 
 /* ------------------------------------------------------------------ */
@@ -346,6 +335,7 @@ const SupervisingChat = ({
   supervise,
   agentId,
   title,
+  blueprintId,
 }: {
   open: boolean;
   handleClose: () => void;
@@ -354,7 +344,8 @@ const SupervisingChat = ({
   loading?: boolean;
   agentId?: string;
   title?: string;
-  supervise: {
+  blueprintId?: string;
+  supervise?: {
     id: string;
     question?: string;
     conversationId?: string;
@@ -366,12 +357,12 @@ const SupervisingChat = ({
   const WELCOME =
     "Welcome to the Supervising Chat! Describe the situation and I'll help you resolve it.";
 
-  const { resolveSupervising, submitSupervising } = useSupervisings();
-  const { createKnowledge } = useKnowledge();
-  const { getBlueprintWithId, upsertBlueprint } = useBlueprint();
+  const { blueprintChat } = useSupervisings();
+  const { getBlueprintWithId } = useBlueprint();
   const { blueprint: currentBlueprint } = getBlueprintWithId(
-    supervise.blueprintId || ""
+    blueprintId || supervise?.blueprintId
   );
+  const sessionId = useRef(uuid());
 
   const theme = useTheme();
 
@@ -388,39 +379,56 @@ const SupervisingChat = ({
 
   const handleMessageSend = useCallback(
     async (message: string) => {
-      if (!message || !supervise.id) return;
+      if (!message) return;
 
       setMessages((prev) => [...prev, { role: "USER", content: message }]);
       setIsEvaluating(true);
 
       try {
-        const result = await resolveSupervising(supervise.id, message);
+        const result = await blueprintChat({
+          supervisingId: supervise?.id,
+          agentId,
+          content: message,
+          sessionId: sessionId.current,
+          blueprintId: blueprintId || supervise?.blueprintId,
+        });
 
-        if (result?.nodes) {
-          setResolveResponse({ kind: "blueprint", data: result });
-          setMessages((prev) => [
-            ...prev,
-            {
-              role: "ASSISTANT",
-              content: `Blueprint suggestion found: "${result.title}". Review the diff below and choose to approve or reject.`,
-            },
-          ]);
-        } else if (result?.type) {
-          setResolveResponse({ kind: "knowledge", data: result });
+        if (!result?.decision) {
           setMessages((prev) => [
             ...prev,
             {
               role: "ASSISTANT",
               content:
-                "Knowledge data found. Review it below and save to the knowledge base if it looks correct.",
+                result?.answer ??
+                "No actionable result returned. Please try again.",
             },
           ]);
-        } else {
+        } else if (result.decision === "BLUEPRINT") {
+          setResolveResponse({
+            kind: "blueprint",
+            flow: result.flow,
+            response: result.response,
+          });
           setMessages((prev) => [
             ...prev,
             {
               role: "ASSISTANT",
-              content: "No actionable result returned. Please try again.",
+              content:
+                result.response ??
+                "Blueprint suggestion ready. Review the diff below.",
+            },
+          ]);
+        } else if (result.decision === "KNOWLEDGE") {
+          setResolveResponse({
+            kind: "knowledge",
+            knowledge: result.knowledge,
+          });
+          setMessages((prev) => [
+            ...prev,
+            {
+              role: "ASSISTANT",
+              content:
+                "Knowledge extracted. Review it below and save if correct.",
             },
           ]);
         }
@@ -436,7 +444,7 @@ const SupervisingChat = ({
         setIsEvaluating(false);
       }
     },
-    [supervise.id, resolveSupervising]
+    [supervise?.id, supervise?.blueprintId, agentId, blueprintChat]
   );
 
   /* ---- knowledge handlers ---------------------------------------- */
@@ -445,15 +453,6 @@ const SupervisingChat = ({
     if (resolveResponse?.kind !== "knowledge") return;
     setIsSaving(true);
     try {
-      await createKnowledge(
-        { type: resolveResponse.data.type, text: resolveResponse.data.text },
-        agentId || "",
-        undefined,
-        null,
-        null,
-        supervise?.taskId
-      );
-      await submitSupervising(supervise.id);
       setMessages((prev) => [
         ...prev,
         { role: "ASSISTANT", content: "Knowledge saved successfully!" },
@@ -478,15 +477,6 @@ const SupervisingChat = ({
     if (resolveResponse?.kind !== "blueprint") return;
     setIsSaving(true);
     try {
-      const { data } = resolveResponse;
-      await upsertBlueprint(
-        supervise.blueprintId || data.id,
-        data.title,
-        data.description,
-        data.agentId || agentId || "",
-        data.nodes,
-        supervise.taskId
-      );
       setMessages((prev) => [
         ...prev,
         { role: "ASSISTANT", content: "Blueprint updated successfully!" },
@@ -512,14 +502,13 @@ const SupervisingChat = ({
       }
 
       const old: RawNode[] = (currentBlueprint?.nodes as RawNode[]) || [];
-      const next: RawNode[] = (resolveResponse.data.nodes as RawNode[]) || [];
+      const next: RawNode[] = (resolveResponse.flow as RawNode[]) || [];
 
       //eslint-disable-next-line
       const stats = calculateDiffStats(old as any, next as any);
       //eslint-disable-next-line
       const newCM = calculateNodeChanges(old as any, next as any);
 
-      // For old side: mark removed nodes
       const oldCM = new Map<string, { changeType: string }>();
       old.forEach((n) => {
         const ct = newCM.get(n.id)?.changeType;
@@ -619,7 +608,7 @@ const SupervisingChat = ({
           </Box>
 
           {/* Question */}
-          {supervise.question && (
+          {supervise?.question && (
             <Box
               sx={{
                 p: 2,
@@ -652,7 +641,7 @@ const SupervisingChat = ({
                   p: 1.5,
                 }}
               >
-                {supervise.question}
+                {supervise?.question}
               </Typography>
             </Box>
           )}
@@ -710,7 +699,7 @@ const SupervisingChat = ({
                     Knowledge Data
                   </Typography>
                   <Chip
-                    label={resolveResponse.data.type}
+                    label="KNOWLEDGE"
                     size="small"
                     color="info"
                     variant="outlined"
@@ -730,7 +719,7 @@ const SupervisingChat = ({
                     border: `1px solid ${theme.palette.divider}`,
                   }}
                 >
-                  {resolveResponse.data.text}
+                  {resolveResponse.knowledge}
                 </Box>
                 <Box sx={{ display: "flex", gap: 1 }}>
                   <Button
@@ -787,7 +776,7 @@ const SupervisingChat = ({
                     variant="subtitle2"
                     sx={{ fontWeight: 600, color: "warning.dark", flex: 1 }}
                   >
-                    {resolveResponse.data.title}
+                    {resolveResponse.response}
                   </Typography>
                   {diffStats.added > 0 && (
                     <Chip
@@ -855,7 +844,7 @@ const SupervisingChat = ({
                         <DiffFlowSvg
                           nodes={oldNodes}
                           changeMap={oldChangeMap}
-                          uid={`old-${resolveResponse.data.id}`}
+                          uid={`old-${supervise?.id}`}
                         />
                       ) : (
                         <Box
@@ -909,7 +898,7 @@ const SupervisingChat = ({
                       <DiffFlowSvg
                         nodes={newNodes}
                         changeMap={newChangeMap}
-                        uid={`new-${resolveResponse.data.id}`}
+                        uid={`new-${supervise?.id}`}
                       />
                     </Box>
                   </Box>
@@ -1024,8 +1013,8 @@ const SupervisingChat = ({
         readOnly={true}
         openPopChat={popChatOpen}
         setOpenPopChat={setPopChatOpen}
-        conversationId={supervise.conversationId}
-        sessionId={supervise.sessionId}
+        conversationId={supervise?.conversationId}
+        sessionId={supervise?.sessionId}
       />
     </>
   );

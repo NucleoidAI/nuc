@@ -70,6 +70,30 @@ function useSupervisings() {
     return response?.data;
   };
 
+  const blueprintChat = async ({
+    supervisingId,
+    agentId,
+    content,
+    sessionId,
+    blueprintId,
+  }: {
+    supervisingId?: string;
+    agentId?: string;
+    content: string;
+    sessionId: string;
+    blueprintId?: string;
+  }) => {
+    const response = await http.post(`/blueprint-chat`, {
+      supervisingId,
+      agentId,
+      content,
+      sessionId,
+      blueprintId,
+    });
+
+    return response?.data;
+  };
+
   const submitSupervising = async (supervisingId: string) => {
     const response = await http.patch(
       `/supervisings/${supervisingId}/demo/submit`,
@@ -126,6 +150,7 @@ function useSupervisings() {
     evaluateSupervising,
     resolveSupervising,
     submitSupervising,
+    blueprintChat,
     getAgentSupervisingByStatus,
     getAgentSupervising,
   };

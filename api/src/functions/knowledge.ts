@@ -106,9 +106,18 @@ async function create({
   await event.publish("KNOWLEDGE", "CREATED", knowledgeData);
 
   if (knowledgeData.taskId) {
+    const answer =
+      knowledgeData.type === "QA"
+        ? `Q: ${knowledgeData.question}\nA: ${knowledgeData.answer}`
+        : knowledgeData.text ||
+          knowledgeData.content ||
+          knowledgeData.answer ||
+          "";
+
     await event.publish("TASK_SUPERVISING_RESPONDED", {
       taskId: knowledgeData.taskId,
       type: "KNOWLEDGE",
+      answer,
     });
   }
 

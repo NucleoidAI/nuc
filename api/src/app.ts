@@ -14,7 +14,6 @@ import platform from "@canmingir/link-express";
 import projects from "./routes/projects";
 import sessions from "./routes/sessions";
 import statistics from "./routes/statistics";
-import Step from "./models/Step";
 import stepScores from "./routes/stepScores";
 import supervisings from "./routes/supervisings";
 import taskFn from "./functions/task";
@@ -118,9 +117,9 @@ function createApp() {
       agentFn.step({ stepId, action, parameters, comment, resultScore }),
     );
 
-    await event.subscribe<{ taskId: string }>(
+    await event.subscribe<{ taskId: string; type: string; answer?: string }>(
       "TASK_SUPERVISING_RESPONDED",
-      async ({ taskId, type }) => {
+      async ({ taskId, type, answer }) => {
         const steps = await taskFn.listSteps({ taskId });
 
         const sortedSteps = [...steps].sort(
@@ -136,26 +135,11 @@ function createApp() {
 
         const supervisedStep = sortedSteps[supervisedIndex];
 
-        console.log("supervisedstep", supervisedStep);
-
         if (type === "KNOWLEDGE") {
-          const previousStep = sortedSteps[supervisedIndex - 1];
-          console.log("previousStep", previousStep);
-          if (!previousStep) return;
-
-          await Step.update(
-            {
-              result: supervisedStep.comment || "Completed",
-              status: "COMPLETED",
-            },
-            { where: { id: supervisedStep.id } },
-          );
-
-          agentFn.step({
-            stepId: previousStep.id,
-            action: previousStep.action,
-            parameters: previousStep.parameters,
-            comment: previousStep.comment,
+          await taskFn.updateStep({
+            stepId: supervisedStep.id,
+            result: answer || supervisedStep.comment || "Completed",
+            status: "COMPLETED",
           });
         } else {
           agentFn.step({

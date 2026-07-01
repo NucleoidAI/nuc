@@ -2,11 +2,13 @@ import BlueprintChatTitle from "../BlueprintChat/BlueprintChatTitle";
 import BlueprintFlowWidget from "../../widgets/BlueprintFlowWidget/BlueprintFlowWidget";
 import CloseIcon from "@mui/icons-material/Close";
 import { DrawerLayout } from "@canmingir/link/layouts";
+import EditNoteIcon from "@mui/icons-material/EditNote";
 import { FlowDefinition } from "../BlueprintFlow/helper";
 import Knowledge from "../../widgets/Knowledge/Knowledge";
 import SettingsDialog from "../SettingsDialog/SettingsDialog";
 import SettingsIcon from "@mui/icons-material/Settings";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
+import SupervisingChat from "../SupervisingChat";
 import useBlueprint from "../../hooks/useBlueprint";
 
 import { Box, Fab, Grid, IconButton, Tooltip } from "@mui/material";
@@ -29,6 +31,7 @@ const BlueprintDrawer = ({
   lastUsedNodeId,
   failedNodeId,
   teamId,
+  supervise,
 }: {
   drawerOpen: boolean;
   handleDrawerClose: () => void;
@@ -61,6 +64,16 @@ const BlueprintDrawer = ({
   lastUsedNodeId?: string | null;
   failedNodeId?: string | null;
   teamId?: string;
+  supervise?: {
+    id: string;
+    question?: string;
+    answer?: string;
+    status: string;
+    blueprintId?: string;
+    taskId?: string;
+    conversationId?: string;
+    sessionId?: string;
+  };
 }) => {
   const [title, setTitle] = useState(selectedItem?.title);
   const [description, setDescription] = useState(selectedItem?.description);
@@ -68,6 +81,10 @@ const BlueprintDrawer = ({
   const [showSettings, setShowSettings] = useState(false);
   const [settingsTab, setSettingsTab] = useState(0);
   const [blocking, setBlocking] = useState<boolean>(true);
+  const [superviseChatOpen, setSuperviseChatOpen] = useState<boolean>(
+    !!supervise
+  );
+  const [editBlueprintOpen, setEditBlueprintOpen] = useState(false);
 
   const { patchBlueprint } = useBlueprint();
 
@@ -82,6 +99,10 @@ const BlueprintDrawer = ({
     setTitle(selectedItem?.title);
     setDescription(selectedItem?.description);
   }, [selectedItem]);
+
+  useEffect(() => {
+    if (supervise) setSuperviseChatOpen(true);
+  }, [supervise]);
 
   const flowContent = (
     <Box
@@ -176,6 +197,21 @@ const BlueprintDrawer = ({
         </Fab>
       </Tooltip>
 
+      <Tooltip title="Edit Blueprint" placement="left">
+        <Fab
+          color="primary"
+          onClick={() => setEditBlueprintOpen((prev) => !prev)}
+          sx={{
+            position: "absolute",
+            bottom: 24,
+            right: 120,
+            zIndex: 10,
+          }}
+        >
+          <EditNoteIcon />
+        </Fab>
+      </Tooltip>
+
       <Tooltip title="Settings" placement="left">
         <Fab
           color="primary"
@@ -242,6 +278,28 @@ const BlueprintDrawer = ({
             {flowContent}
           </Grid>
         </Grid>
+
+        {supervise && (
+          <SupervisingChat
+            open={superviseChatOpen}
+            handleClose={() => setSuperviseChatOpen(false)}
+            supervise={supervise}
+            agentId={agentId}
+          />
+        )}
+
+        {selectedItem?.id && (
+          <SupervisingChat
+            open={editBlueprintOpen}
+            handleClose={() => setEditBlueprintOpen(false)}
+            title="Edit Blueprint"
+            supervise={{
+              id: selectedItem.id,
+              blueprintId: selectedItem.id,
+            }}
+            agentId={agentId || selectedItem?.agentId}
+          />
+        )}
       </Box>
     </DrawerLayout>
   );

@@ -1,5 +1,5 @@
+import BlueprintDrawer from "../BlueprintDrawer/BlueprintDrawer";
 import { Iconify } from "@canmingir/link/platform/components";
-import SupervisingChat from "../SupervisingChat";
 import useBlueprint from "../../hooks/useBlueprint";
 import { useState } from "react";
 
@@ -33,7 +33,7 @@ const SupervisingCard = ({
   };
   agentId?: string;
 }) => {
-  const [chatOpen, setChatOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const { getBlueprintWithId } = useBlueprint();
   const { blueprint } = getBlueprintWithId(supervise.blueprintId || "");
@@ -159,7 +159,7 @@ const SupervisingCard = ({
               <Fab
                 sx={{ alignSelf: "center" }}
                 color="inherit"
-                onClick={() => setChatOpen(true)}
+                onClick={() => setDrawerOpen(true)}
               >
                 <Iconify
                   icon="solar:reply-2-bold-duotone"
@@ -171,12 +171,15 @@ const SupervisingCard = ({
         </Box>
       </Card>
 
-      <SupervisingChat
-        open={chatOpen}
-        handleClose={() => setChatOpen(false)}
-        supervise={supervise}
-        agentId={agentId}
-      />
+      {drawerOpen && (
+        <BlueprintDrawer
+          drawerOpen={drawerOpen}
+          handleDrawerClose={() => setDrawerOpen(false)}
+          selectedItem={blueprint}
+          agentId={agentId}
+          supervise={supervise}
+        />
+      )}
     </>
   );
 };

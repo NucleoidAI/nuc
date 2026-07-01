@@ -268,14 +268,26 @@ async function task({ taskId }: { taskId: string }) {
         : v,
     );
 
+  const stepsByTime = [...currentTask.steps].sort(
+    (a, b) =>
+      new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+  );
+
   const isDuplicateStep =
     action !== "PLATFORM:complete" &&
     action !== "PLATFORM:handoff" &&
-    currentTask.steps.some(
-      (s) =>
+    stepsByTime.some(
+      (s, idx) =>
         s.status === "COMPLETED" &&
         s.action === action &&
-        stableStringify(s.parameters) === stableStringify(parameters),
+        stableStringify(s.parameters) === stableStringify(parameters) &&
+        !stepsByTime
+          .slice(idx + 1)
+          .some(
+            (later) =>
+              later.action === "PLATFORM:ask_supervisor" &&
+              later.status === "COMPLETED",
+          ),
     );
 
   console.log(isDuplicateStep);
@@ -355,16 +367,21 @@ async function task({ taskId }: { taskId: string }) {
       });
     }
 
+    const stepsToInherit = await taskFn.listSteps({ taskId });
+    const inheritedSteps = stepsToInherit.map((s) => ({
+      action: s.action,
+      parameters: s.parameters,
+      result: s.result,
+      comment: s.comment,
+      status: s.status,
+    }));
+
     const newTask = await taskFn.create({
       agentId: handoffParams.targetAgentId,
       description: handoffParams.context,
       blueprintId: handoffParams.targetBlueprintId,
       sessionId,
-    });
-
-    await taskFn.transferSteps({
-      fromTaskId: taskId,
-      toTaskId: newTask.id,
+      inheritedSteps,
     });
 
     const handoffResult = `Handed off to agent ${handoffParams.targetAgentId}`;

@@ -345,6 +345,7 @@ const SupervisingChat = ({
   loading = false,
   supervise,
   agentId,
+  title,
 }: {
   open: boolean;
   handleClose: () => void;
@@ -352,6 +353,7 @@ const SupervisingChat = ({
   closeButton?: boolean;
   loading?: boolean;
   agentId?: string;
+  title?: string;
   supervise: {
     id: string;
     question?: string;
@@ -582,7 +584,7 @@ const SupervisingChat = ({
             }}
           >
             <Typography variant="h6" sx={{ fontWeight: 600 }}>
-              Resolve Supervise
+              {title ?? "Resolve Supervise"}
             </Typography>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <Tooltip title="See Full Conversation">

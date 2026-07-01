@@ -596,6 +596,57 @@ async function step({
   }
 }
 
+async function blueprintChatDecision({
+  history,
+  content,
+}: {
+  history?: {
+    role: "system" | "user" | "assistant";
+    content: string;
+  }[];
+  content: string;
+}): Promise<{ decision: "KNOWLEDGE" | "BLUEPRINT" }> {
+  const response = await generate({
+    dataset: dataset.train.blueprintChatDecision,
+    context: history,
+    content,
+    json_format: '{ decision: <"KNOWLEDGE"|"BLUEPRINT"> }',
+  });
+
+  return response as { decision: "KNOWLEDGE" | "BLUEPRINT" };
+}
+
+async function blueprintChatSufficiency({
+  history,
+  content,
+  decision,
+}: {
+  history?: {
+    role: "system" | "user" | "assistant";
+    content: string;
+  }[];
+  content: string;
+  decision: "KNOWLEDGE" | "BLUEPRINT";
+}): Promise<{ sufficient: boolean; question?: string }> {
+  const context = [
+    {
+      role: "system" as const,
+      content: JSON.stringify({ decision }),
+    },
+    ...(history ?? []),
+  ];
+
+  const response = await generate({
+    dataset: dataset.train.blueprintChatSufficiency,
+    context,
+    content,
+    json_format:
+      "{ sufficient: <true|false>, question: <QUESTION_IF_NOT_SUFFICIENT> }",
+  });
+
+  return response as { sufficient: boolean; question?: string };
+}
+
 async function Blueprint({
   history,
   content,
@@ -938,6 +989,8 @@ export default {
   step,
   Blueprint,
   blueprintName,
+  blueprintChatDecision,
+  blueprintChatSufficiency,
   evaluateSupervisionAnswer,
   toPseudo,
   blueprintDescription,

@@ -358,7 +358,7 @@ const SupervisingChat = ({
     "Welcome to the Supervising Chat! Describe the situation and I'll help you resolve it.";
 
   const { blueprintChat } = useSupervisings();
-  const { getBlueprintWithId } = useBlueprint();
+  const { getBlueprintWithId, upsertBlueprint } = useBlueprint();
   const { blueprint: currentBlueprint } = getBlueprintWithId(
     blueprintId || supervise?.blueprintId
   );
@@ -475,8 +475,17 @@ const SupervisingChat = ({
 
   const handleApproveBlueprint = async () => {
     if (resolveResponse?.kind !== "blueprint") return;
+    const targetBlueprintId = blueprintId || supervise?.blueprintId;
+    if (!targetBlueprintId || !currentBlueprint || !agentId) return;
     setIsSaving(true);
     try {
+      await upsertBlueprint(
+        targetBlueprintId,
+        currentBlueprint.title,
+        currentBlueprint.description,
+        agentId,
+        resolveResponse.flow
+      );
       setMessages((prev) => [
         ...prev,
         { role: "ASSISTANT", content: "Blueprint updated successfully!" },

@@ -133,17 +133,6 @@ router.post("/", async (req, res) => {
         }))
       : blueprint.flow;
 
-    let updatedBlueprint = null;
-    if (blueprintId && referenceBlueprint) {
-      updatedBlueprint = await blueprintFn.upsert(
-        referenceBlueprint.title,
-        referenceBlueprint.description,
-        agentId,
-        blueprintId,
-        normalizedFlow
-      );
-    }
-
     if (supervisingInstance) {
       await supervisingFn.update({
         teamId,
@@ -161,8 +150,8 @@ router.post("/", async (req, res) => {
       decision,
       answer,
       ...blueprint,
+      flow: normalizedFlow,
       referenceBlueprint,
-      updatedBlueprint,
     });
   }
 });

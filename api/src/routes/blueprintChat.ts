@@ -54,12 +54,18 @@ router.post("/", async (req, res) => {
       content: c.content ?? "",
     }));
   } else {
-    await sessionFn.create({ id: sessionId, type: "CHAT", agentId });
+    await sessionFn.create({
+      id: sessionId,
+      type: "CHAT",
+      agentId,
+      blueprintId,
+    });
     await sessionFn.addConversation({
       sessionId,
       agentId,
       role: "USER",
       content,
+      blueprintId,
     });
   }
 

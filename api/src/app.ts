@@ -73,25 +73,31 @@ function createApp() {
       agentId: string;
       sessionId: string;
       content: string;
-    }>("SESSION_USER_MESSAGED", async ({ agentId, sessionId, content }) => {
-      try {
-        await agentFn.chat({
-          agentId,
-          sessionId,
-          content,
-        });
-      } catch (error) {
-        platform.logger.error(error);
-        const errorMessage =
-          error instanceof Error && error.message
-            ? error.message
-            : "An error occurred while processing your message.";
-        await event.publish("ERROR_OCCURRED", {
-          sessionId,
-          message: errorMessage,
-        });
-      }
-    });
+      blueprintId?: string;
+    }>(
+      "SESSION_USER_MESSAGED",
+      async ({ agentId, sessionId, content, blueprintId }) => {
+        try {
+          if (!blueprintId) {
+            await agentFn.chat({
+              agentId,
+              sessionId,
+              content,
+            });
+          }
+        } catch (error) {
+          platform.logger.error(error);
+          const errorMessage =
+            error instanceof Error && error.message
+              ? error.message
+              : "An error occurred while processing your message.";
+          await event.publish("ERROR_OCCURRED", {
+            sessionId,
+            message: errorMessage,
+          });
+        }
+      },
+    );
 
     await event.subscribe<{
       sessionId: string;

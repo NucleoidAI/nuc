@@ -38,11 +38,13 @@ async function addConversation({
   role,
   agentId,
   content,
+  blueprintId,
 }: {
   sessionId: string;
   agentId: string;
   role: string;
   content: string;
+  blueprintId?: string;
 }) {
   const session = await Session.findByPk(sessionId);
 
@@ -62,6 +64,7 @@ async function addConversation({
       sessionId,
       conversationId: conversation.id,
       content,
+      ...(blueprintId && { blueprintId }),
     });
   } else {
     await event.publish("AI_ASSISTANT_MESSAGED", {
@@ -69,6 +72,7 @@ async function addConversation({
       sessionId,
       conversationId: conversation.id,
       content,
+      ...(blueprintId && { blueprintId }),
     });
   }
 

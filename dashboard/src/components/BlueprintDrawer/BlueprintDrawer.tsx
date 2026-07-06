@@ -288,13 +288,14 @@ const BlueprintDrawer = ({
           />
         )}
 
-        {selectedItem?.id && (
+        {editBlueprintOpen && (
           <SupervisingChat
             open={editBlueprintOpen}
             handleClose={() => setEditBlueprintOpen(false)}
             title="Edit Blueprint"
             agentId={agentId || selectedItem?.agentId}
             sessionId={uuid()}
+            blueprintId={selectedItem?.id}
           />
         )}
       </Box>

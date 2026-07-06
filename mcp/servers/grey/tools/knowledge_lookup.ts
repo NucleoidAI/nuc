@@ -7,16 +7,11 @@ const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY || "greycollar-internal";
 export const knowledgeLookupTool: Tool<any> = {
   name: "GREY:knowledge_lookup",
   description:
-    "Look up all knowledge entries for an agent by agentId. Returns every knowledge item the agent has, including TEXT, QA, and DATA types. Always use this before making decisions that depend on facts that may have been updated by a supervisor, such as product certificates or policies.",
+    "Look up all knowledge entries for this agent. Returns every knowledge item the agent has, including TEXT, QA, and DATA types. Always use this before making decisions that depend on facts that may have been updated by a supervisor, such as product certificates or policies.",
   inputSchema: {
     type: "object",
-    properties: {
-      agentId: {
-        type: "string",
-        description: "The ID of the agent whose knowledge to retrieve.",
-      },
-    },
-    required: ["agentId"],
+    properties: {},
+    required: [],
   },
   handler: async (args: any) => {
     logger.info(

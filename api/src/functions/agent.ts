@@ -504,7 +504,12 @@ async function step({
         parameters,
       });
     } else if (actionType === "MCP") {
-      result = await mcpClient.callTool(action, parameters);
+      let mcpParameters = parameters as Record<string, unknown>;
+      if (action === "GREY:knowledge_lookup" && !mcpParameters.agentId) {
+        const task = await taskFn.get({ taskId });
+        mcpParameters = { ...mcpParameters, agentId: task.agentId };
+      }
+      result = await mcpClient.callTool(action, mcpParameters);
     }
 
     let resultString;
@@ -593,6 +598,39 @@ async function step({
       }
     }
   }
+}
+
+async function blueprintChatContext({
+  agentId,
+  blueprintId,
+  supervising,
+}: {
+  agentId: string;
+  blueprintId?: string | null;
+  supervising?: {
+    id: string;
+    question: string;
+    status: string;
+    taskId?: string | null;
+    blueprintId?: string | null;
+  } | null;
+}): Promise<{ role: "system"; content: string }[]> {
+  const [agentInfo, agentKnowledge, referenceBlueprint] = await Promise.all([
+    info({ agentId }),
+    knowledge({ agentId }),
+    blueprintId ? blueprintFn.getWithNodes(blueprintId) : Promise.resolve(null),
+  ]);
+
+  return [
+    { role: "system", content: JSON.stringify(agentInfo.content) },
+    { role: "system", content: JSON.stringify(agentKnowledge.content) },
+    ...(referenceBlueprint
+      ? [{ role: "system" as const, content: JSON.stringify({ referenceBlueprint }) }]
+      : []),
+    ...(supervising
+      ? [{ role: "system" as const, content: JSON.stringify({ supervising }) }]
+      : []),
+  ];
 }
 
 async function blueprintChatDecision({
@@ -1017,6 +1055,7 @@ export default {
   step,
   Blueprint,
   blueprintName,
+  blueprintChatContext,
   blueprintChatDecision,
   blueprintChatSufficiency,
   blueprintChatKnowledge,

@@ -43,7 +43,22 @@ router.post("/", async (req, res) => {
   const blueprintId =
     bodyBlueprintId ?? supervisingInstance?.blueprintId ?? null;
 
-  const existingSession = await sessionFn.get({ sessionId });
+  const [existingSession, systemContext] = await Promise.all([
+    sessionFn.get({ sessionId }),
+    agentFn.blueprintChatContext({
+      agentId,
+      blueprintId,
+      supervising: supervisingInstance
+        ? {
+            id: supervisingInstance.id,
+            question: supervisingInstance.question,
+            status: supervisingInstance.status,
+            taskId: supervisingInstance.taskId,
+            blueprintId: supervisingInstance.blueprintId,
+          }
+        : null,
+    }),
+  ]);
 
   let history: { role: "user" | "assistant"; content: string }[] = [];
 
@@ -54,30 +69,21 @@ router.post("/", async (req, res) => {
       content: c.content ?? "",
     }));
   } else {
-    await sessionFn.create({
-      id: sessionId,
-      type: "CHAT",
-      agentId,
-      blueprintId,
-    });
-    await sessionFn.addConversation({
-      sessionId,
-      agentId,
-      role: "USER",
-      content,
-      blueprintId,
-    });
+    await sessionFn.create({ id: sessionId, type: "CHAT", agentId, blueprintId });
+    await sessionFn.addConversation({ sessionId, agentId, role: "USER", content, blueprintId });
   }
 
+  const fullHistory = [...systemContext, ...history];
+
   const { decision } = await agentFn.blueprintChatDecision({
-    history,
+    history: fullHistory,
     content,
   });
 
   console.log("[BLUEPRINT CHAT] Decision:", decision);
 
   const { sufficient, answer } = await agentFn.blueprintChatSufficiency({
-    history,
+    history: fullHistory,
     content,
     decision,
   });
@@ -112,7 +118,7 @@ router.post("/", async (req, res) => {
       : null;
 
     const blueprint = await agentFn.Blueprint({
-      history,
+      history: fullHistory,
       content,
       existingBlueprint: referenceBlueprint,
     });

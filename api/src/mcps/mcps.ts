@@ -608,19 +608,14 @@ const MCPs = [
     action: "GREY:knowledge_lookup",
     provider: "GREY",
     description:
-      "Look up all knowledge entries for an agent by agentId. Returns every knowledge item including TEXT, QA, and DATA types. Always use this before making decisions that depend on facts that may have been updated by a supervisor, such as product certificates or policies.",
+      "Look up all knowledge entries for this agent. Returns every knowledge item including TEXT, QA, and DATA types. Always use this before making decisions that depend on facts that may have been updated by a supervisor, such as product certificates or policies.",
     direction: "OUTGOING",
     icon: "mdi:book-search",
     lib: "mcp",
     inputSchema: {
       type: "object",
-      properties: {
-        agentId: {
-          type: "string",
-          description: "The ID of the agent whose knowledge to retrieve.",
-        },
-      },
-      required: ["agentId"],
+      properties: {},
+      required: [],
     },
   },
   {

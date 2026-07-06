@@ -29,7 +29,10 @@
   },
   {
     "history": [
-      { "role": "user", "content": "We have discounts for customers." },
+      {
+        "role": "user",
+        "content": "We have discounts for customers."
+      },
       {
         "role": "assistant",
         "content": "Can you provide more details about the discounts? For example, what percentage, who qualifies, and under what conditions?"
@@ -69,7 +72,10 @@
   },
   {
     "history": [
-      { "role": "user", "content": "Add an approval step." },
+      {
+        "role": "user",
+        "content": "Add an approval step."
+      },
       {
         "role": "assistant",
         "content": "Where in the flow should the approval step be added, who needs to approve, and what happens if it is approved or rejected?"
@@ -110,7 +116,10 @@
   },
   {
     "history": [
-      { "role": "user", "content": "Check inventory." },
+      {
+        "role": "user",
+        "content": "Check inventory."
+      },
       {
         "role": "assistant",
         "content": "What should happen after checking inventory?"
@@ -127,5 +136,93 @@
     "decision": "BLUEPRINT",
     "sufficient": true,
     "answer": "I'll add it to the blueprint."
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": "{\"supervising\":{\"id\":\"sup-001\",\"question\":\"Product prd-3 has no compliance certificate in the knowledge base. The blueprint requires a certificate to proceed with purchase order creation. Should I add a certificate to the knowledge base, hand off to compliance, or pause until certified?\",\"status\":\"PENDING\",\"taskId\":\"task-001\",\"blueprintId\":\"bp-001\"}}"
+      }
+    ],
+    "content": "Add it.",
+    "decision": "KNOWLEDGE",
+    "sufficient": false,
+    "answer": "What is the certificate identifier and which product should it be assigned to?"
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": "{\"supervising\":{\"id\":\"sup-001\",\"question\":\"Product prd-3 has no compliance certificate in the knowledge base. The blueprint requires a certificate to proceed with purchase order creation. Should I add a certificate to the knowledge base, hand off to compliance, or pause until certified?\",\"status\":\"PENDING\",\"taskId\":\"task-001\",\"blueprintId\":\"bp-001\"}}"
+      }
+    ],
+    "content": "Add CE-2024-001 certificate for product prd-3.",
+    "decision": "KNOWLEDGE",
+    "sufficient": true
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": "{\"supervising\":{\"id\":\"sup-001\",\"question\":\"Product prd-3 has no compliance certificate in the knowledge base. The blueprint requires a certificate to proceed with purchase order creation. Should I add a certificate to the knowledge base, hand off to compliance, or pause until certified?\",\"status\":\"PENDING\",\"taskId\":\"task-001\",\"blueprintId\":\"bp-001\"}}"
+      }
+    ],
+    "content": "Hand off to compliance.",
+    "decision": "BLUEPRINT",
+    "sufficient": true
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": "{\"supervising\":{\"id\":\"sup-001\",\"question\":\"Product prd-3 has no compliance certificate in the knowledge base. The blueprint requires a certificate to proceed with purchase order creation. Should I add a certificate to the knowledge base, hand off to compliance, or pause until certified?\",\"status\":\"PENDING\",\"taskId\":\"task-001\",\"blueprintId\":\"bp-001\"}}"
+      }
+    ],
+    "content": "Modify the flow.",
+    "decision": "BLUEPRINT",
+    "sufficient": false,
+    "answer": "How should the flow be modified? Should it hand off to a compliance agent, add a wait step, or follow a different path?"
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": "{\"supervising\":{\"id\":\"sup-001\",\"question\":\"Product prd-3 has no compliance certificate in the knowledge base. The blueprint requires a certificate to proceed with purchase order creation. Should I add a certificate to the knowledge base, hand off to compliance, or pause until certified?\",\"status\":\"PENDING\",\"taskId\":\"task-001\",\"blueprintId\":\"bp-001\"}}"
+      },
+      {
+        "role": "user",
+        "content": "Modify the flow."
+      },
+      {
+        "role": "assistant",
+        "content": "How should the flow be modified? Should it hand off to a compliance agent, add a wait step, or follow a different path?"
+      }
+    ],
+    "content": "When no certificate is found, hand off to the compliance manager agent.",
+    "decision": "BLUEPRINT",
+    "sufficient": true
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": "{\"supervising\":{\"id\":\"sup-002\",\"question\":\"Customer payment failed 3 times. The current flow has no retry logic. Should I add a retry step or notify the finance team directly?\",\"status\":\"PENDING\",\"taskId\":\"task-002\",\"blueprintId\":\"bp-002\"}}"
+      }
+    ],
+    "content": "Retry 3 times with a 5-minute interval, then notify the finance team via email if all retries fail.",
+    "decision": "BLUEPRINT",
+    "sufficient": true
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": "{\"supervising\":{\"id\":\"sup-002\",\"question\":\"Customer payment failed 3 times. The current flow has no retry logic. Should I add a retry step or notify the finance team directly?\",\"status\":\"PENDING\",\"taskId\":\"task-002\",\"blueprintId\":\"bp-002\"}}"
+      }
+    ],
+    "content": "The customer prefers bank transfer.",
+    "decision": "KNOWLEDGE",
+    "sufficient": false,
+    "answer": "What is the customer identifier and what are the bank transfer details to store in the knowledge base?"
   }
 ]

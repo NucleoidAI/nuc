@@ -3,13 +3,15 @@
     "history": [],
     "content": "Our refund policy allows returns within 30 days of purchase for unused items.",
     "decision": "KNOWLEDGE",
-    "sufficient": true
+    "sufficient": true,
+    "answer": "I'll add it to the knowledge base."
   },
   {
     "history": [],
     "content": "The API base URL is https://api.example.com/v2 and all requests require a Bearer token.",
     "decision": "KNOWLEDGE",
-    "sufficient": true
+    "sufficient": true,
+    "answer": "I'll add it to the knowledge base."
   },
   {
     "history": [],
@@ -28,17 +30,22 @@
   {
     "history": [
       { "role": "user", "content": "We have discounts for customers." },
-      { "role": "assistant", "content": "Can you provide more details about the discounts? For example, what percentage, who qualifies, and under what conditions?" }
+      {
+        "role": "assistant",
+        "content": "Can you provide more details about the discounts? For example, what percentage, who qualifies, and under what conditions?"
+      }
     ],
     "content": "Premium customers get 20% off on orders above $200.",
     "decision": "KNOWLEDGE",
-    "sufficient": true
+    "sufficient": true,
+    "answer": "I'll add it to the knowledge base."
   },
   {
     "history": [],
     "content": "When a new user registers, create a CRM record, send a welcome email, and assign them to the default sales rep.",
     "decision": "BLUEPRINT",
-    "sufficient": true
+    "sufficient": true,
+    "answer": "I'll add it to the blueprint."
   },
   {
     "history": [],
@@ -63,11 +70,15 @@
   {
     "history": [
       { "role": "user", "content": "Add an approval step." },
-      { "role": "assistant", "content": "Where in the flow should the approval step be added, who needs to approve, and what happens if it is approved or rejected?" }
+      {
+        "role": "assistant",
+        "content": "Where in the flow should the approval step be added, who needs to approve, and what happens if it is approved or rejected?"
+      }
     ],
     "content": "After the order is created, the manager must approve it. If approved continue, if rejected cancel the order.",
     "decision": "BLUEPRINT",
-    "sufficient": true
+    "sufficient": true,
+    "answer": "I'll add it to the blueprint."
   },
   {
     "history": [],
@@ -80,7 +91,8 @@
     "history": [],
     "content": "Orders above $500 automatically get a 10% discount and skip manual review.",
     "decision": "KNOWLEDGE",
-    "sufficient": true
+    "sufficient": true,
+    "answer": "I'll add it to the knowledge base."
   },
   {
     "history": [],
@@ -93,15 +105,27 @@
     "history": [],
     "content": "The support team SLA is 2 hours for critical tickets and 24 hours for standard tickets.",
     "decision": "KNOWLEDGE",
-    "sufficient": true
+    "sufficient": true,
+    "answer": "I'll add it to the knowledge base."
   },
   {
     "history": [
       { "role": "user", "content": "Check inventory." },
-      { "role": "assistant", "content": "What should happen after checking inventory?" }
+      {
+        "role": "assistant",
+        "content": "What should happen after checking inventory?"
+      }
     ],
     "content": "If stock is below 10 units, automatically create a restock purchase order.",
     "decision": "BLUEPRINT",
-    "sufficient": true
+    "sufficient": true,
+    "answer": "I'll add it to the blueprint."
+  },
+  {
+    "history": [],
+    "content": "If certificate not found, then complete flow",
+    "decision": "BLUEPRINT",
+    "sufficient": true,
+    "answer": "I'll add it to the blueprint."
   }
 ]

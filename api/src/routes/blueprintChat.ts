@@ -74,11 +74,16 @@ router.post("/", async (req, res) => {
     content,
   });
 
+  console.log("[BLUEPRINT CHAT] Decision:", decision);
+
   const { sufficient, answer } = await agentFn.blueprintChatSufficiency({
     history,
     content,
     decision,
   });
+
+  console.log("[BLUEPRINT CHAT] Sufficient:", sufficient);
+  console.log("[BLUEPRINT CHAT] Answer:", answer);
 
   if (!sufficient) {
     return res.status(200).json({ answer });

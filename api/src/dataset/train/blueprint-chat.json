@@ -11,6 +11,7 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:check_product_count",
+          "label": "Check Product Availability",
           "icon": "mdi:check",
           "prompt": "Check Product Availability"
         },
@@ -24,6 +25,7 @@
         "type": "CONDITION",
         "properties": {
           "action": "PLATFORM:decision",
+          "label": "Product Available?",
           "icon": "mdi:source-branch",
           "prompt": "Make Decision"
         },
@@ -40,6 +42,7 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:create_order",
+          "label": "Create Order",
           "icon": "mdi:cart-plus",
           "prompt": "Create Order"
         },
@@ -53,6 +56,7 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:send_email",
+          "label": "Send Email",
           "icon": "mdi:email",
           "prompt": "Send Email"
         },
@@ -64,6 +68,7 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:reduce_product_count",
+          "label": "Reduce Product Quantity",
           "icon": "mdi:minus",
           "prompt": "Reduce Product Quantity"
         },
@@ -85,6 +90,7 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:check_product_availability",
+          "label": "Check Product Availability",
           "icon": "mdi:check",
           "prompt": "Check Product Availability"
         },
@@ -98,6 +104,7 @@
         "type": "CONDITION",
         "properties": {
           "action": "PLATFORM:decision",
+          "label": "Product Available?",
           "icon": "mdi:source-branch",
           "prompt": "Product Available?"
         },
@@ -112,6 +119,7 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:call_user",
+          "label": "Call User",
           "icon": "mdi:phone",
           "prompt": "Call User"
         },
@@ -146,6 +154,7 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:check_product_availability",
+          "label": "Check Product Availability",
           "icon": "mdi:check",
           "prompt": "Check Product Availability"
         },
@@ -159,6 +168,7 @@
         "type": "CONDITION",
         "properties": {
           "action": "PLATFORM:decision",
+          "label": "Product Available?",
           "icon": "mdi:source-branch",
           "prompt": "Product Available?"
         },
@@ -175,6 +185,7 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:call_user",
+          "label": "Call User",
           "icon": "mdi:phone",
           "prompt": "Call User"
         },
@@ -186,6 +197,7 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:send_email",
+          "label": "Send Email",
           "icon": "mdi:email",
           "prompt": "Send Email"
         },
@@ -207,6 +219,7 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:get_user_address",
+          "label": "Get User Address",
           "icon": "mdi:home",
           "prompt": "Get User Address"
         },
@@ -220,6 +233,7 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:check_coverage",
+          "label": "Check Coverage Area",
           "icon": "mdi:map-marker-check",
           "prompt": "Check Coverage Area"
         },
@@ -233,6 +247,7 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:get_available_packages",
+          "label": "Get Available Packages",
           "icon": "mdi:package-variant",
           "prompt": "Get Available Packages"
         },
@@ -246,6 +261,7 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:present_offers",
+          "label": "Present Offers to User",
           "icon": "mdi:offer",
           "prompt": "Present Offers to User"
         },
@@ -259,6 +275,7 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:get_user_selection",
+          "label": "Get User Selection",
           "icon": "mdi:cursor-pointer",
           "prompt": "Get User Selection"
         },
@@ -272,6 +289,7 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:setup_subscription",
+          "label": "Setup Subscription",
           "icon": "mdi:wifi-check",
           "prompt": "Setup Subscription"
         },
@@ -285,6 +303,7 @@
         "type": "NORMAL",
         "properties": {
           "action": "GREY:send_confirmation",
+          "label": "Send Confirmation",
           "icon": "mdi:email-check",
           "prompt": "Send Confirmation"
         },
@@ -293,5 +312,169 @@
       }
     ],
     "pseudocode": "BEGIN_CONTEXT\nAddress = User.GetAddress()\nCoverage = Coverage.Check(Address)\nPackages = Packages.GetAvailable(Coverage)\nOffers.Present(Packages)\nSelection = User.GetSelection()\nSubscription.Setup(Selection)\nConfirmation.Send()\nEND_CONTEXT"
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": {
+          "existingBlueprint": {
+            "title": "Order and Compliance",
+            "description": "Find product, check certificate, assign certificate, create purchase order, send email.",
+            "nodes": [
+              {
+                "id": "node-001",
+                "type": "NORMAL",
+                "properties": {
+                  "action": "ORDER:find_product",
+                  "label": "Find Product",
+                  "icon": "mdi:magnify",
+                  "prompt": "Find the product"
+                },
+                "next": ["node-002"],
+                "createdAt": "2025-06-26T06:00:00Z"
+              },
+              {
+                "id": "node-002",
+                "type": "NORMAL",
+                "properties": {
+                  "action": "GREY:check_certificate",
+                  "label": "Check Certificate",
+                  "icon": "mdi:book-search",
+                  "prompt": "Check certificate for the product"
+                },
+                "next": ["node-003"],
+                "createdAt": "2025-06-26T06:00:00Z"
+              },
+              {
+                "id": "node-003",
+                "type": "NORMAL",
+                "properties": {
+                  "action": "ORDER:assign_certificate",
+                  "label": "Assign Certificate",
+                  "icon": "mdi:certificate-outline",
+                  "prompt": "Assign certificate to the product"
+                },
+                "next": ["node-004"],
+                "createdAt": "2025-06-26T06:00:00Z"
+              },
+              {
+                "id": "node-004",
+                "type": "NORMAL",
+                "properties": {
+                  "action": "ORDER:create_po",
+                  "label": "Create Purchase Order",
+                  "icon": "mdi:file-document-plus",
+                  "prompt": "Create purchase order"
+                },
+                "next": ["node-005"],
+                "createdAt": "2025-06-26T06:00:00Z"
+              },
+              {
+                "id": "node-005",
+                "type": "NORMAL",
+                "properties": {
+                  "action": "GREY:send_email",
+                  "label": "Send Email",
+                  "icon": "mdi:email",
+                  "prompt": "Send email notification"
+                },
+                "next": null,
+                "createdAt": "2025-06-26T06:00:00Z"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "content": "If certificate not found then complete flow",
+    "response": "I've updated the blueprint to add a condition after the certificate check. If the certificate is not found, the flow completes immediately. Otherwise it continues with assigning the certificate and creating the purchase order.",
+    "flow": [
+      {
+        "id": "node-001",
+        "type": "NORMAL",
+        "properties": {
+          "action": "ORDER:find_product",
+          "label": "Find Product",
+          "icon": "mdi:magnify",
+          "prompt": "Find the product"
+        },
+        "next": ["node-002"],
+        "createdAt": "2025-06-26T06:00:00Z"
+      },
+      {
+        "id": "node-002",
+        "type": "NORMAL",
+        "properties": {
+          "action": "GREY:check_certificate",
+          "label": "Check Certificate",
+          "icon": "mdi:book-search",
+          "prompt": "Check certificate for the product"
+        },
+        "next": ["node-cond-001"],
+        "createdAt": "2025-06-26T06:00:00Z"
+      },
+      {
+        "id": "node-cond-001",
+        "type": "CONDITION",
+        "properties": {
+          "action": "PLATFORM:decision",
+          "label": "Certificate Found?",
+          "icon": "mdi:source-branch",
+          "prompt": "Is the certificate found?"
+        },
+        "true": ["node-003"],
+        "false": ["node-end-001"],
+        "createdAt": "2025-07-06T06:00:00Z"
+      },
+      {
+        "id": "node-end-001",
+        "type": "NORMAL",
+        "properties": {
+          "action": "GREY:complete_flow",
+          "label": "Complete Flow",
+          "icon": "mdi:check-circle",
+          "prompt": "Complete the flow"
+        },
+        "next": null,
+        "createdAt": "2025-07-06T06:00:00Z"
+      },
+      {
+        "id": "node-003",
+        "type": "NORMAL",
+        "properties": {
+          "action": "ORDER:assign_certificate",
+          "label": "Assign Certificate",
+          "icon": "mdi:certificate-outline",
+          "prompt": "Assign certificate to the product"
+        },
+        "next": ["node-004"],
+        "createdAt": "2025-06-26T06:00:00Z"
+      },
+      {
+        "id": "node-004",
+        "type": "NORMAL",
+        "properties": {
+          "action": "ORDER:create_po",
+          "label": "Create Purchase Order",
+          "icon": "mdi:file-document-plus",
+          "prompt": "Create purchase order"
+        },
+        "next": ["node-005"],
+        "createdAt": "2025-06-26T06:00:00Z"
+      },
+      {
+        "id": "node-005",
+        "type": "NORMAL",
+        "properties": {
+          "action": "GREY:send_email",
+          "label": "Send Email",
+          "icon": "mdi:email",
+          "prompt": "Send email notification"
+        },
+        "next": null,
+        "createdAt": "2025-06-26T06:00:00Z"
+      }
+    ]
   }
 ]

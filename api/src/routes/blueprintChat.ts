@@ -111,7 +111,27 @@ router.post("/", async (req, res) => {
       ? await blueprintFn.getWithNodes(blueprintId)
       : null;
 
-    const blueprint = await agentFn.Blueprint({ history, content });
+    const blueprint = await agentFn.Blueprint({
+      history,
+      content,
+      existingBlueprint: referenceBlueprint,
+    });
+
+    type FlowNode = {
+      properties?: { label?: string; prompt?: string; [key: string]: unknown };
+      [key: string]: unknown;
+    };
+    const normalizedFlow = Array.isArray(blueprint.flow)
+      ? blueprint.flow.map((node: FlowNode) => ({
+          ...node,
+          properties: node.properties
+            ? {
+                ...node.properties,
+                label: node.properties.label ?? node.properties.prompt,
+              }
+            : node.properties,
+        }))
+      : blueprint.flow;
 
     let updatedBlueprint = null;
     if (blueprintId && referenceBlueprint) {
@@ -120,7 +140,7 @@ router.post("/", async (req, res) => {
         referenceBlueprint.description,
         agentId,
         blueprintId,
-        blueprint.flow,
+        normalizedFlow
       );
     }
 

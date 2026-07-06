@@ -662,16 +662,32 @@ async function blueprintChatKnowledge({
 async function Blueprint({
   history,
   content,
+  existingBlueprint,
 }: {
   history?: {
     role: "system" | "user" | "assistant";
     content: string;
   }[];
   content: string;
+  existingBlueprint?: object | null;
 }) {
+  const context = [
+    ...(existingBlueprint
+      ? [
+          {
+            role: "system" as const,
+            content: {
+              existingBlueprint,
+            },
+          },
+        ]
+      : []),
+    ...(history ?? []),
+  ];
+
   const response = await generate({
     dataset: dataset.train.blueprintChat,
-    context: history,
+    context,
     content,
     json_format: "{ response: <RESPONSE>, flow: [<FLOW>] }",
   });

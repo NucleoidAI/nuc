@@ -49,6 +49,15 @@ async function generate({
   }
 
   const jsonFormat = extractJsonFormat(systemPrompts);
+  const isQwen = model.startsWith("qwen.");
+
+  const useToolConfig = jsonFormat && !isQwen;
+
+  if (isQwen && jsonFormat) {
+    systemPrompts.push({
+      text: `You MUST respond with ONLY valid RFC 8259 JSON (all keys double-quoted) matching this exact format, no explanation, no markdown: ${jsonFormat}`,
+    });
+  }
 
   const command = new ConverseCommand({
     modelId: model,
@@ -58,7 +67,7 @@ async function generate({
       temperature: 0,
       maxTokens: 8192,
     },
-    ...(jsonFormat && {
+    ...(useToolConfig && {
       toolConfig: {
         tools: [
           {
@@ -166,33 +175,40 @@ function unwrapSchemaValues(obj: unknown): unknown {
 }
 
 function parseJSONFromLLMResponse(content: string): unknown {
+  // Attempt 1: direct parse
   try {
     return JSON.parse(content);
   } catch {
-    console.error(
-      "Failed to parse LLM response as JSON:",
-      content.substring(0, 500),
-    );
+    /* fall through */
   }
 
+  // Attempt 2: JSON inside a code block
   const codeBlockMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
   if (codeBlockMatch) {
     try {
       return JSON.parse(codeBlockMatch[1].trim());
     } catch {
-      console.error(
-        "Failed to parse LLM response as JSON:",
-        codeBlockMatch[1].trim(),
-      );
+      /* fall through */
     }
   }
 
+  // Attempt 3: extract first JSON-like object/array, then try quoting unquoted keys
   const jsonMatch = content.match(/(\{[\s\S]*\}|\[[\s\S]*\])/);
   if (jsonMatch) {
     try {
       return JSON.parse(jsonMatch[1]);
     } catch {
-      console.error("Failed to parse LLM response as JSON:", jsonMatch[1]);
+      /* fall through */
+    }
+
+    try {
+      const quoted = jsonMatch[1].replace(
+        /([{,]\s*)([a-zA-Z_$][\w$]*)(\s*:)/g,
+        '$1"$2"$3',
+      );
+      return JSON.parse(quoted);
+    } catch {
+      /* fall through */
     }
   }
 

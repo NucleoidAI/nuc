@@ -1902,6 +1902,286 @@
           }
         }
       ]
+    },
+    {
+      "id": "telco-port-fail-001",
+      "description": "Setup internet subscription for user address. Port allocation fails with NOT_AVAILABLE_PORT error — agent asks supervisor, supervisor instructs to notify user and complete.",
+      "sessionId": "039d9f86-9b12-4a7c-b8d1-2f3e4a5b6c7d",
+      "pseudocode": "BEGIN_CONTEXT \nUser.Address = GetUserAddress()\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    result = PortAllocation(selectedProduct.serial_number)\n    IF result.error == \"NOT_AVAILABLE_PORT\" THEN\n        AskSupervisor()\n        NotifyUser()\n        Complete()\n    END_IF\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "blueprint": {
+        "id": "ca7g8022-f343-570e-a171-3992963g7f70",
+        "title": "Basic Internet Subscription Setup",
+        "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "019b9433-3de3-7545-a40a-854419ae8be1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "icon": "mdi:map-marker",
+              "prompt": "Get User Address"
+            },
+            "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_bbk_by_address",
+              "icon": "mdi:map-marker",
+              "prompt": "Get BBK No by Address"
+            },
+            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_inventory",
+              "icon": "mdi:server",
+              "prompt": "Get Inventory"
+            },
+            "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209c-2e5a-777f-a04a-11960363fb25",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "icon": "mdi:source-branch",
+              "prompt": "Is inventory available?"
+            },
+            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+            "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check",
+              "prompt": "No product available, complete"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_product_by_speed",
+              "icon": "mdi:speedometer",
+              "prompt": "Get products by speed"
+            },
+            "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019c8a58-10e3-713f-9484-78d04923040f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "icon": "mdi:cursor-pointer",
+              "prompt": "Provide available products and wait for user to select a product"
+            },
+            "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_allocation",
+              "icon": "mdi:link",
+              "prompt": "Allocate port and create order"
+            },
+            "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell",
+              "prompt": "Notify user about port allocation"
+            },
+            "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:configuration",
+              "icon": "mdi:settings",
+              "prompt": "Configure allocated port"
+            },
+            "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-5878-73fb-8411-55916778d9a4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_connection",
+              "icon": "mdi:ethernet",
+              "prompt": "Connect port to residence"
+            },
+            "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check",
+              "prompt": "Complete setup flow"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
+      "steps": [
+        {
+          "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "What is your address?"
+          },
+          "result": "Bağcılar Mahallesi Hürriyet Caddesi No:12, İstanbul",
+          "comment": "User provided address"
+        },
+        {
+          "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
+          "action": "TELCO:get_bbk_by_address",
+          "status": "COMPLETED",
+          "parameters": {
+            "address": "Bağcılar Mahallesi Hürriyet Caddesi No:12, İstanbul"
+          },
+          "result": "{\"bbk\": \"988\"}",
+          "comment": "BBK number 988 retrieved successfully"
+        },
+        {
+          "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
+          "action": "TELCO:get_inventory",
+          "status": "COMPLETED",
+          "parameters": {
+            "bbk": "988"
+          },
+          "result": "{\"available\": true}",
+          "comment": "Inventory is available for BBK 988"
+        },
+        {
+          "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
+          "action": "PLATFORM:decision",
+          "status": "COMPLETED",
+          "comment": "Inventory available, proceeding with product selection",
+          "parameters": {
+            "condition": "inventory.Available == TRUE",
+            "true": [
+              {
+                "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
+                "action": "TELCO:get_product_by_speed",
+                "status": "COMPLETED",
+                "parameters": {
+                  "speed_limit": "8mbps"
+                },
+                "comment": "Retrieved available internet packages for 8mbps"
+              },
+              {
+                "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
+                "action": "PLATFORM:user_interaction",
+                "status": "COMPLETED",
+                "parameters": {
+                  "question": "2 Options: 8 Mbps (12 months), 8 Mbps (6 months). Select one."
+                },
+                "result": "8 Mbps (12 months)",
+                "comment": "User selected 8 Mbps (12 months)"
+              },
+              {
+                "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
+                "action": "TELCO:port_allocation",
+                "status": "FAILED",
+                "parameters": {
+                  "device_serial_number": "HWTC495AE59E",
+                  "bbk_no": "988",
+                  "speed_limit": "8mbps",
+                  "speed_profile": "8192/1024"
+                },
+                "result": "{\"error\":\"NOT_AVAILABLE_PORT\"}",
+                "comment": "Port allocation failed — no available port for BBK 988"
+              },
+              {
+                "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
+                "action": "PLATFORM:ask_supervisor",
+                "status": "COMPLETED",
+                "parameters": {
+                  "question": "Port allocation failed with NOT_AVAILABLE_PORT for BBK 988. There are no available ports at this location. How should I proceed?",
+                  "sessionId": "039d9f86-9b12-4a7c-b8d1-2f3e4a5b6c7d",
+                  "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+                },
+                "comment": "Supervisor instructed to notify user that no ports are available at this address and complete the task"
+              },
+              {
+                "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
+                "action": "PLATFORM:message_user",
+                "status": "COMPLETED",
+                "parameters": {
+                  "sessionId": "039d9f86-9b12-4a7c-b8d1-2f3e4a5b6c7d",
+                  "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+                  "message": "Unfortunately, there are no available ports at your address at this time. Please contact our support team at 444 1 444 for further assistance."
+                },
+                "comment": "User notified that port allocation is not possible at their location"
+              },
+              {
+                "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
+                "action": "PLATFORM:complete",
+                "status": "COMPLETED",
+                "parameters": {},
+                "comment": "Completing task per supervisor's instruction — no available port at this address"
+              }
+            ],
+            "false": [
+              {
+                "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
+                "action": "PLATFORM:complete",
+                "status": "COMPLETED",
+                "parameters": {},
+                "comment": "Completing task - inventory not available"
+              }
+            ]
+          }
+        }
+      ]
     }
   ]
 }

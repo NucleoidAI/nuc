@@ -198,14 +198,17 @@ const MCPs = [
         to: {
           type: "string",
           description: "The email address of the recipient.",
+          nullable: true,
         },
         subject: {
           type: "string",
           description: "The subject of the email.",
+          nullable: true,
         },
         text: {
           type: "string",
           description: "The body of the email.",
+          nullable: true,
         },
       },
       required: ["to", "subject", "text"],
@@ -489,6 +492,130 @@ const MCPs = [
         "qos_profile",
         "status",
       ],
+    },
+  },
+  {
+    id: "a1b2c3d4-e5f6-4a1b-8001-100000000001",
+    action: "ORDER:find_product",
+    provider: "ORDER",
+    description: "Find a product by its ID or name. Returns product details.",
+    direction: "OUTGOING",
+    icon: "mdi:magnify",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        product_id: {
+          type: "string",
+          description: "The product ID to search for (e.g. prd-1).",
+        },
+        name: {
+          type: "string",
+          description: "The product name to search for (e.g. product-1).",
+        },
+      },
+      required: [],
+    },
+    outputSchema: {
+      type: "object",
+      properties: {
+        product_id: {
+          type: "string",
+          description: "The ID of the found product.",
+        },
+        name: {
+          type: "string",
+          description: "The name of the found product.",
+        },
+      },
+    },
+  },
+  {
+    id: "a1b2c3d4-e5f6-4a1b-8002-100000000002",
+    action: "ORDER:assign_certificate",
+    provider: "ORDER",
+    description:
+      "Assign a compliance certificate to a product. Certificate must be a valid type (e.g. FFC, CE).",
+    direction: "OUTGOING",
+    icon: "mdi:certificate-outline",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        product_id: {
+          type: "string",
+          description: "The product ID to assign the certificate to.",
+        },
+        certificate: {
+          type: "string",
+          description: "The certificate type to assign (e.g. FFC, CE).",
+          nullable: true,
+        },
+      },
+      required: ["product_id", "certificate"],
+    },
+  },
+  {
+    id: "a1b2c3d4-e5f6-4a1b-8005-100000000005",
+    action: "ORDER:get_product_vendor",
+    provider: "ORDER",
+    description:
+      "Get the vendor information for a product by its ID. Returns vendor details including name and email.",
+    direction: "OUTGOING",
+    icon: "mdi:domain",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        product_id: {
+          type: "string",
+          description: "The product ID to look up the vendor for (e.g. prd-1).",
+        },
+      },
+      required: ["product_id"],
+    },
+  },
+  {
+    id: "a1b2c3d4-e5f6-4a1b-8003-100000000003",
+    action: "ORDER:create_po",
+    provider: "ORDER",
+    description:
+      "Create a Purchase Order (PO) for a product. Returns the created purchase order details.",
+    direction: "OUTGOING",
+    icon: "mdi:file-document-plus",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        product_id: {
+          type: "string",
+          description: "The ID of the product to create the PO for.",
+        },
+        city: {
+          type: "string",
+          description: "The city where the order will be delivered.",
+        },
+        quantity: {
+          type: "number",
+          description: "The quantity of the product to order.",
+        },
+      },
+      required: ["product_id", "city", "quantity"],
+    },
+  },
+  {
+    id: "b8f1a2c3-d4e5-4f6a-9b0c-1d2e3f4a5b6c",
+    action: "GREY:knowledge_lookup",
+    provider: "GREY",
+    description:
+      "Look up all knowledge entries for this agent. Returns every knowledge item including TEXT, QA, and DATA types. Always use this before making decisions that depend on facts that may have been updated by a supervisor, such as product certificates or policies.",
+    direction: "OUTGOING",
+    icon: "mdi:book-search",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {},
+      required: [],
     },
   },
   {

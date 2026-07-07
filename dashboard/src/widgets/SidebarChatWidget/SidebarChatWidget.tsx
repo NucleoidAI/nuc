@@ -35,6 +35,15 @@ const SidebarChatWidget = ({
     createSession,
     getSession,
   } = useSession(agentId);
+
+  const handleBlueprintChange = useCallback(
+    (blueprintId: string) => {
+      setSelectedBlueprint(blueprintId);
+      setMessages([]);
+      createSession(blueprintId || undefined);
+    },
+    [createSession]
+  );
   const { getBlueprint } = useBlueprint();
   const { Blueprint } = getBlueprint();
 
@@ -105,7 +114,7 @@ const SidebarChatWidget = ({
         Blueprint ? (Array.isArray(Blueprint) ? Blueprint : [Blueprint]) : []
       }
       selectedBlueprint={selectedBlueprint}
-      onBlueprintChange={setSelectedBlueprint}
+      onBlueprintChange={handleBlueprintChange}
       onSessionSelect={handleSessionSelect}
       onNewSession={handleNewSession}
       beta={beta}

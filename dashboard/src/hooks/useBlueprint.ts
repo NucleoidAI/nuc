@@ -28,11 +28,13 @@ function useBlueprint() {
   const [blueprintUpserted] = useEvent("BLUEPRINT_UPSERTED", null);
   const [blueprintPatched] = useEvent("BLUEPRINT_PATCHED", null);
 
-  const getBlueprint = (fetchState: DependencyArray = []) => {
+  const getBlueprint = (fetchState: DependencyArray = [], agentId?: string) => {
     const eventDependencies = [blueprintUpserted, blueprintPatched];
 
+    const url = agentId ? `/agents/${agentId}/blueprints` : `/blueprints`;
+
     const { data, loading, error, fetch } = Api(
-      () => http.get(`/blueprints`),
+      () => http.get(url),
       [...eventDependencies, ...fetchState]
     );
 

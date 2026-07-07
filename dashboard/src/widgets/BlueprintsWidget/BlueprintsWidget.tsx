@@ -23,13 +23,20 @@ function BlueprintsWidget({
   const [blueprintRemovedEvent] = useEvent("BLUEPRINT_REMOVED", {
     Blueprint: null,
   });
+  const [blueprintPatchedEvent] = useEvent("BLUEPRINT_PATCHED", {
+    Blueprint: null,
+  });
 
   const { getBlueprintsByAgent, removeBlueprint } = useBlueprint();
 
-  const { Blueprint, loading } = getBlueprintsByAgent(agentId, [
-    blueprintUpsertedEvent.Blueprint,
-    blueprintRemovedEvent.Blueprint,
-  ]);
+  const { Blueprint, loading } = getBlueprintsByAgent(
+    [
+      blueprintUpsertedEvent.Blueprint,
+      blueprintRemovedEvent.Blueprint,
+      blueprintPatchedEvent.Blueprint,
+    ],
+    agentId
+  );
 
   const isLoading = useLoading(loading);
 

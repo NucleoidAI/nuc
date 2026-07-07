@@ -1,6 +1,7 @@
 import Blueprint from "../schemas/Blueprint";
 import BlueprintModel from "../models/Blueprint";
 import Agent from "../models/Agent";
+import BlueprintModel from "../models/Blueprint";
 import Joi from "joi";
 import Session from "../models/Session";
 import Supervising from "../models/Supervising";
@@ -173,6 +174,25 @@ router.post("/blueprints", async (req, res) => {
     response: response.response,
     flow: response.flow,
   });
+});
+
+router.get("/:agentId/blueprints", async (req, res) => {
+  const { projectId: teamId } = req.session;
+  const { agentId } = req.params;
+
+  const agent = await Agent.findByPk(agentId);
+
+  if (!agent) {
+    return res.status(404).json({ message: "Agent not found" });
+  }
+
+  if (agent.teamId !== teamId) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const blueprints = await BlueprintModel.findAll({ where: { agentId } });
+
+  res.json(blueprints);
 });
 
 router.post("/:agentId/blueprints", async (req, res) => {

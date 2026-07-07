@@ -4,6 +4,7 @@ import llama from "./llama";
 import openai from "./openai";
 import bedrock from "./bedrock";
 import mock from "./mock";
+import openrouter from "./openrouter";
 
 let llm;
 
@@ -13,6 +14,8 @@ if (process.env.PLATFORM_LLM === "OPENAI") {
   llm = azure;
 } else if (process.env.PLATFORM_LLM === "ANTHROPIC") {
   llm = anthropic;
+} else if (process.env.PLATFORM_LLM === "OPENROUTER") {
+  llm = openrouter;
 } else if (process.env.PLATFORM_LLM === "MOCK") {
   llm = mock;
 } else if (

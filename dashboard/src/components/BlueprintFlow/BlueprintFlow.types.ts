@@ -32,6 +32,4 @@ export interface BlueprintFlowProps {
   onSaveSuccessChange: (value: boolean) => void;
   isSuperviseFlow?: boolean;
   isSubmitting?: boolean;
-  blocking?: boolean;
-  onBlockingChange?: (value: boolean) => void;
 }

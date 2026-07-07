@@ -1,0 +1,112 @@
+[
+  {
+    "content": "When a user signs up, send them a welcome email.",
+    "decision": "BLUEPRINT"
+  },
+  {
+    "content": "If a payment fails, retry 3 times before notifying the customer.",
+    "decision": "BLUEPRINT"
+  },
+  {
+    "content": "Add a step to verify stock before creating an order.",
+    "decision": "BLUEPRINT"
+  },
+  {
+    "content": "The process should first check inventory, then create the order if available.",
+    "decision": "BLUEPRINT"
+  },
+  {
+    "content": "Change the flow so it sends a notification after each completed step.",
+    "decision": "BLUEPRINT"
+  },
+  {
+    "content": "Our product prices are updated every Monday at 9am.",
+    "decision": "KNOWLEDGE"
+  },
+  {
+    "content": "The customer ID format is CUS-XXXXXX where X is a digit.",
+    "decision": "KNOWLEDGE"
+  },
+  {
+    "content": "We offer three subscription tiers: Basic, Pro, and Enterprise.",
+    "decision": "KNOWLEDGE"
+  },
+  {
+    "content": "Refund requests must be submitted within 30 days of purchase.",
+    "decision": "KNOWLEDGE"
+  },
+  {
+    "content": "Our support team works Monday through Friday, 9am to 6pm.",
+    "decision": "KNOWLEDGE"
+  },
+  {
+    "content": "The API base URL is https://api.example.com/v2.",
+    "decision": "KNOWLEDGE"
+  },
+  {
+    "content": "If the order total exceeds $500, apply a 10% discount automatically.",
+    "decision": "BLUEPRINT"
+  },
+  {
+    "content": "When a ticket is marked resolved, notify the assigned agent via email.",
+    "decision": "BLUEPRINT"
+  },
+  {
+    "content": "Premium customers get priority support with a 2-hour response SLA.",
+    "decision": "KNOWLEDGE"
+  },
+  {
+    "content": "The minimum order quantity is 5 units.",
+    "decision": "KNOWLEDGE"
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": "{\"supervising\":{\"id\":\"sup-001\",\"question\":\"Product prd-3 has no compliance certificate in the knowledge base. The blueprint requires a certificate to proceed with purchase order creation. Should I add a certificate to the knowledge base, hand off to compliance, or pause until certified?\",\"status\":\"PENDING\",\"taskId\":\"task-001\",\"blueprintId\":\"bp-001\"}}"
+      }
+    ],
+    "content": "Add the CE certificate for product prd-3 to the knowledge base.",
+    "decision": "KNOWLEDGE"
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": "{\"supervising\":{\"id\":\"sup-001\",\"question\":\"Product prd-3 has no compliance certificate in the knowledge base. The blueprint requires a certificate to proceed with purchase order creation. Should I add a certificate to the knowledge base, hand off to compliance, or pause until certified?\",\"status\":\"PENDING\",\"taskId\":\"task-001\",\"blueprintId\":\"bp-001\"}}"
+      }
+    ],
+    "content": "Hand off to the compliance manager agent when no certificate is found.",
+    "decision": "BLUEPRINT"
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": "{\"supervising\":{\"id\":\"sup-001\",\"question\":\"Product prd-3 has no compliance certificate in the knowledge base. The blueprint requires a certificate to proceed with purchase order creation. Should I add a certificate to the knowledge base, hand off to compliance, or pause until certified?\",\"status\":\"PENDING\",\"taskId\":\"task-001\",\"blueprintId\":\"bp-001\"}}"
+      }
+    ],
+    "content": "Modify the blueprint so it always checks compliance before creating a purchase order.",
+    "decision": "BLUEPRINT"
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": "{\"supervising\":{\"id\":\"sup-002\",\"question\":\"Customer payment failed 3 times. The current flow has no retry logic. Should I add a retry step or notify the finance team directly?\",\"status\":\"PENDING\",\"taskId\":\"task-002\",\"blueprintId\":\"bp-002\"}}"
+      }
+    ],
+    "content": "Add the customer's preferred payment method to the knowledge base: bank transfer.",
+    "decision": "KNOWLEDGE"
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": "{\"supervising\":{\"id\":\"sup-002\",\"question\":\"Customer payment failed 3 times. The current flow has no retry logic. Should I add a retry step or notify the finance team directly?\",\"status\":\"PENDING\",\"taskId\":\"task-002\",\"blueprintId\":\"bp-002\"}}"
+      }
+    ],
+    "content": "Add a retry step after payment failure, retrying up to 3 times before notifying finance.",
+    "decision": "BLUEPRINT"
+  }
+]

@@ -1,0 +1,228 @@
+[
+  {
+    "history": [],
+    "content": "Our refund policy allows returns within 30 days of purchase for unused items.",
+    "decision": "KNOWLEDGE",
+    "sufficient": true,
+    "answer": "I'll add it to the knowledge base."
+  },
+  {
+    "history": [],
+    "content": "The API base URL is https://api.example.com/v2 and all requests require a Bearer token.",
+    "decision": "KNOWLEDGE",
+    "sufficient": true,
+    "answer": "I'll add it to the knowledge base."
+  },
+  {
+    "history": [],
+    "content": "We have discounts for customers.",
+    "decision": "KNOWLEDGE",
+    "sufficient": false,
+    "answer": "Can you provide more details about the discounts? For example, what percentage, who qualifies, and under what conditions?"
+  },
+  {
+    "history": [],
+    "content": "Response times vary.",
+    "decision": "KNOWLEDGE",
+    "sufficient": false,
+    "answer": "What are the specific response time values? For example, what is the SLA for different customer tiers or request types?"
+  },
+  {
+    "history": [
+      {
+        "role": "user",
+        "content": "We have discounts for customers."
+      },
+      {
+        "role": "assistant",
+        "content": "Can you provide more details about the discounts? For example, what percentage, who qualifies, and under what conditions?"
+      }
+    ],
+    "content": "Premium customers get 20% off on orders above $200.",
+    "decision": "KNOWLEDGE",
+    "sufficient": true,
+    "answer": "I'll add it to the knowledge base."
+  },
+  {
+    "history": [],
+    "content": "When a new user registers, create a CRM record, send a welcome email, and assign them to the default sales rep.",
+    "decision": "BLUEPRINT",
+    "sufficient": true,
+    "answer": "I'll add it to the blueprint."
+  },
+  {
+    "history": [],
+    "content": "If payment fails, retry 3 times with a 10-minute interval, then notify the finance team via Slack.",
+    "decision": "BLUEPRINT",
+    "sufficient": true
+  },
+  {
+    "history": [],
+    "content": "Send notifications when something happens.",
+    "decision": "BLUEPRINT",
+    "sufficient": false,
+    "answer": "What event should trigger the notification, what should the notification say, and who should receive it?"
+  },
+  {
+    "history": [],
+    "content": "Add an approval step.",
+    "decision": "BLUEPRINT",
+    "sufficient": false,
+    "answer": "Where in the flow should the approval step be added, who needs to approve, and what happens if it is approved or rejected?"
+  },
+  {
+    "history": [
+      {
+        "role": "user",
+        "content": "Add an approval step."
+      },
+      {
+        "role": "assistant",
+        "content": "Where in the flow should the approval step be added, who needs to approve, and what happens if it is approved or rejected?"
+      }
+    ],
+    "content": "After the order is created, the manager must approve it. If approved continue, if rejected cancel the order.",
+    "decision": "BLUEPRINT",
+    "sufficient": true,
+    "answer": "I'll add it to the blueprint."
+  },
+  {
+    "history": [],
+    "content": "Check inventory.",
+    "decision": "BLUEPRINT",
+    "sufficient": false,
+    "answer": "What should happen after checking inventory? For example, should the flow proceed if stock is available, or create a purchase order if it is not?"
+  },
+  {
+    "history": [],
+    "content": "Orders above $500 automatically get a 10% discount and skip manual review.",
+    "decision": "KNOWLEDGE",
+    "sufficient": true,
+    "answer": "I'll add it to the knowledge base."
+  },
+  {
+    "history": [],
+    "content": "Update the process.",
+    "decision": "BLUEPRINT",
+    "sufficient": false,
+    "answer": "Which part of the process should be updated, and what change do you want to make?"
+  },
+  {
+    "history": [],
+    "content": "The support team SLA is 2 hours for critical tickets and 24 hours for standard tickets.",
+    "decision": "KNOWLEDGE",
+    "sufficient": true,
+    "answer": "I'll add it to the knowledge base."
+  },
+  {
+    "history": [
+      {
+        "role": "user",
+        "content": "Check inventory."
+      },
+      {
+        "role": "assistant",
+        "content": "What should happen after checking inventory?"
+      }
+    ],
+    "content": "If stock is below 10 units, automatically create a restock purchase order.",
+    "decision": "BLUEPRINT",
+    "sufficient": true,
+    "answer": "I'll add it to the blueprint."
+  },
+  {
+    "history": [],
+    "content": "If certificate not found, then complete flow",
+    "decision": "BLUEPRINT",
+    "sufficient": true,
+    "answer": "I'll add it to the blueprint."
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": "{\"supervising\":{\"id\":\"sup-001\",\"question\":\"Product prd-3 has no compliance certificate in the knowledge base. The blueprint requires a certificate to proceed with purchase order creation. Should I add a certificate to the knowledge base, hand off to compliance, or pause until certified?\",\"status\":\"PENDING\",\"taskId\":\"task-001\",\"blueprintId\":\"bp-001\"}}"
+      }
+    ],
+    "content": "Add it.",
+    "decision": "KNOWLEDGE",
+    "sufficient": false,
+    "answer": "What is the certificate identifier and which product should it be assigned to?"
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": "{\"supervising\":{\"id\":\"sup-001\",\"question\":\"Product prd-3 has no compliance certificate in the knowledge base. The blueprint requires a certificate to proceed with purchase order creation. Should I add a certificate to the knowledge base, hand off to compliance, or pause until certified?\",\"status\":\"PENDING\",\"taskId\":\"task-001\",\"blueprintId\":\"bp-001\"}}"
+      }
+    ],
+    "content": "Add CE certificate for product prd-3.",
+    "decision": "KNOWLEDGE",
+    "sufficient": true
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": "{\"supervising\":{\"id\":\"sup-001\",\"question\":\"Product prd-3 has no compliance certificate in the knowledge base. The blueprint requires a certificate to proceed with purchase order creation. Should I add a certificate to the knowledge base, hand off to compliance, or pause until certified?\",\"status\":\"PENDING\",\"taskId\":\"task-001\",\"blueprintId\":\"bp-001\"}}"
+      }
+    ],
+    "content": "Hand off to compliance.",
+    "decision": "BLUEPRINT",
+    "sufficient": true
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": "{\"supervising\":{\"id\":\"sup-001\",\"question\":\"Product prd-3 has no compliance certificate in the knowledge base. The blueprint requires a certificate to proceed with purchase order creation. Should I add a certificate to the knowledge base, hand off to compliance, or pause until certified?\",\"status\":\"PENDING\",\"taskId\":\"task-001\",\"blueprintId\":\"bp-001\"}}"
+      }
+    ],
+    "content": "Modify the flow.",
+    "decision": "BLUEPRINT",
+    "sufficient": false,
+    "answer": "How should the flow be modified? Should it hand off to a compliance agent, add a wait step, or follow a different path?"
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": "{\"supervising\":{\"id\":\"sup-001\",\"question\":\"Product prd-3 has no compliance certificate in the knowledge base. The blueprint requires a certificate to proceed with purchase order creation. Should I add a certificate to the knowledge base, hand off to compliance, or pause until certified?\",\"status\":\"PENDING\",\"taskId\":\"task-001\",\"blueprintId\":\"bp-001\"}}"
+      },
+      {
+        "role": "user",
+        "content": "Modify the flow."
+      },
+      {
+        "role": "assistant",
+        "content": "How should the flow be modified? Should it hand off to a compliance agent, add a wait step, or follow a different path?"
+      }
+    ],
+    "content": "When no certificate is found, hand off to the compliance manager agent.",
+    "decision": "BLUEPRINT",
+    "sufficient": true
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": "{\"supervising\":{\"id\":\"sup-002\",\"question\":\"Customer payment failed 3 times. The current flow has no retry logic. Should I add a retry step or notify the finance team directly?\",\"status\":\"PENDING\",\"taskId\":\"task-002\",\"blueprintId\":\"bp-002\"}}"
+      }
+    ],
+    "content": "Retry 3 times with a 5-minute interval, then notify the finance team via email if all retries fail.",
+    "decision": "BLUEPRINT",
+    "sufficient": true
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": "{\"supervising\":{\"id\":\"sup-002\",\"question\":\"Customer payment failed 3 times. The current flow has no retry logic. Should I add a retry step or notify the finance team directly?\",\"status\":\"PENDING\",\"taskId\":\"task-002\",\"blueprintId\":\"bp-002\"}}"
+      }
+    ],
+    "content": "The customer prefers bank transfer.",
+    "decision": "KNOWLEDGE",
+    "sufficient": false,
+    "answer": "What is the customer identifier and what are the bank transfer details to store in the knowledge base?"
+  }
+]

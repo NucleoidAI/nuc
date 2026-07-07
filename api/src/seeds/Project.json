@@ -6,6 +6,13 @@
       "coach": "Elijah",
       "icon": ":fa6-brands:galactic-republic:",
       "organizationId": "1c063446-7e78-432a-a273-34f481d0f0c3"
+    },
+    {
+      "id": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "name": "Order & Compliance Team",
+      "coach": "Sophia",
+      "icon": ":ph:briefcase-duotone:",
+      "organizationId": "dfb990bb-81dd-4584-82ce-050eb8f6a12f"
     }
   ]
 }

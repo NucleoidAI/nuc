@@ -11,6 +11,8 @@ type NodeType = {
     prompt?: string;
     description?: string;
     pseudocode?: string;
+    targetAgentId?: string;
+    targetBlueprintId?: string;
   };
   type: string;
   next?: string[] | null;

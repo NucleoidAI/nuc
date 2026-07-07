@@ -27,6 +27,10 @@ class Session extends Model {
   @Column(DataType.UUID)
   declare agentId: string;
 
+  @AllowNull(true)
+  @Column(DataType.UUID)
+  declare blueprintId: string | null;
+
   declare agent?: any;
 
   declare conversations?: any[];

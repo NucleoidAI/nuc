@@ -166,6 +166,167 @@
       ]
     },
     {
+      "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+      "title": "Order and Compliance",
+      "description": "Find product, assign compliance certificate, create purchase order, write process to LLM, and send email.",
+      "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\nAssignCertificate(product.id)\nPO.Create(product.id)\nLLM.WriteProcess()\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "nodes": [
+        {
+          "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "parameters": {
+              "question": "Which product would you like to order?"
+            },
+            "description": "Ask user to select a product",
+            "prompt": "Ask user which product they want to order",
+            "label": "Select a Product",
+            "icon": "mdi:account-question",
+            "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:find_product",
+            "description": "Search and retrieve the product details",
+            "prompt": "Find the product by identifier",
+            "label": "Find Product",
+            "icon": "mdi:magnify",
+            "pseudocode": "BEGIN_CONTEXT\nproduct = FindProduct()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:knowledge_lookup",
+            "description": "Look up the agent's knowledge base to find the product's compliance certificate. This reflects live knowledge updates from the supervisor.",
+            "prompt": "Look up compliance certificate for the product from agent knowledge",
+            "label": "Check Certificate",
+            "icon": "mdi:book-search",
+            "pseudocode": "BEGIN_CONTEXT\ncertificate = KnowledgeLookup(agentId, product.id)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:assign_certificate",
+            "description": "Assign a compliance certificate to the product",
+            "prompt": "Assign a compliance certificate to the product",
+            "label": "Assign Certificate",
+            "icon": "mdi:certificate-outline",
+            "pseudocode": "BEGIN_CONTEXT\ncertificate = AssignCertificate(product.id)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:create_po",
+            "description": "Create a Purchase Order for the certified product",
+            "prompt": "Create a purchase order for the product",
+            "label": "Create Purchase Order",
+            "icon": "mdi:file-document-plus",
+            "pseudocode": "BEGIN_CONTEXT\nPO.Create(product.id)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:send_email",
+            "description": "Send email notification about the completed purchase order",
+            "prompt": "Send email to notify about the purchase order",
+            "label": "Send Email",
+            "icon": "mdi:email",
+            "pseudocode": "BEGIN_CONTEXT\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": null,
+          "createdAt": "2025-06-26T06:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "c2b1a0d9-e8f7-4c2b-9100-300000000001",
+      "title": "Compliance Certificate Request",
+      "description": "Find the vendor of a product that is missing a compliance certificate and send them an email requesting the certificate, then notify the user.",
+      "pseudocode": "BEGIN_CONTEXT\nvendor = GetProductVendor(product.id)\nEmail.Send(vendor.email)\nMessageUser()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "nodes": [
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000002",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:get_product_vendor",
+            "description": "Find the vendor of the product that is missing a compliance certificate",
+            "prompt": "Get the vendor information for the product",
+            "label": "Get Product Vendor",
+            "icon": "mdi:domain",
+            "pseudocode": "BEGIN_CONTEXT\nvendor = GetProductVendor(product.id)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000003"],
+          "createdAt": "2025-06-29T08:00:00Z"
+        },
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000003",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:send_email",
+            "description": "Send an email to the vendor requesting the compliance certificate for the product",
+            "prompt": "Send certificate request email to vendor",
+            "label": "Email Vendor",
+            "icon": "mdi:email",
+            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(vendor.email)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000004"],
+          "createdAt": "2025-06-29T08:00:00Z"
+        },
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000004",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Notify the user that the vendor has been contacted for the compliance certificate",
+            "prompt": "Notify user that vendor was contacted",
+            "label": "Notify User",
+            "icon": "mdi:bell",
+            "pseudocode": "BEGIN_CONTEXT\nMessageUser()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000005"],
+          "createdAt": "2025-06-29T08:00:00Z"
+        },
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000005",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "Mark the compliance certificate request as complete",
+            "prompt": "Complete compliance certificate request",
+            "label": "Complete",
+            "icon": "mdi:check",
+            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": null,
+          "createdAt": "2025-06-29T08:00:00Z"
+        }
+      ]
+    },
+    {
       "id": "019f4a01-1c4a-7a10-9b21-2d4e5f6a7b8c",
       "title": "Meeting Summary and Action Items",
       "description": "This Blueprint retrieves a meeting transcript from the user's Google Drive, uses an LLM to extract a concise meeting summary and the action items that are specifically assigned to the user, and finally sends the results to the user's email.",

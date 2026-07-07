@@ -189,6 +189,9 @@ async function task({ taskId }: { taskId: string }) {
   const { agentId, description, sessionId, blueprintId } = await taskFn.get({
     taskId,
   });
+
+  console.log(agentId, blueprintId, sessionId);
+
   const currentTask = {
     description,
     blueprintId,
@@ -207,6 +210,8 @@ async function task({ taskId }: { taskId: string }) {
   const blueprint = blueprintId ? await blueprintFn.get({ blueprintId }) : null;
   const isBlocking = blueprint?.blocking !== false;
 
+  const { inheritedSteps: inherited } = await taskFn.get({ taskId });
+
   const context = [
     ...(
       await Promise.all([
@@ -217,6 +222,16 @@ async function task({ taskId }: { taskId: string }) {
         sessionId ? conversations({ sessionId }) : Promise.resolve([]),
       ])
     ).flat(),
+    ...(inherited?.length
+      ? [
+          {
+            role: "system" as const,
+            content: {
+              inherited_context_steps: inherited,
+            },
+          },
+        ]
+      : []),
     isBlocking ? actions.list() : actions.listNonBlockings(),
     mcpFn.list(),
   ];
@@ -236,54 +251,11 @@ async function task({ taskId }: { taskId: string }) {
       "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
   });
 
+  console.log("next action", action);
+  console.log("comment", comment);
+
   const resultScore =
     result_score != null ? parseFloat(String(result_score)) : undefined;
-
-  const stableStringify = (val: unknown): string =>
-    JSON.stringify(val, (_, v) =>
-      v && typeof v === "object" && !Array.isArray(v)
-        ? Object.fromEntries(
-            Object.entries(v).sort(([a], [b]) => a.localeCompare(b)),
-          )
-        : v,
-    );
-
-  const isDuplicateStep =
-    action !== "PLATFORM:complete" &&
-    currentTask.steps.some(
-      (s) =>
-        s.status === "COMPLETED" &&
-        s.action === action &&
-        stableStringify(s.parameters) === stableStringify(parameters),
-    );
-
-  if (isDuplicateStep) {
-    const steps = await taskFn.listSteps({ taskId });
-    const result = steps.length ? steps[steps.length - 1].result : undefined;
-
-    await stepScoreFn.create({
-      taskId,
-      parameters: { description, blueprintId },
-      output: result ?? comment ?? null,
-      status: "COMPLETED",
-    });
-
-    if (sessionId) {
-      await session.addConversation({
-        sessionId,
-        agentId,
-        role: "ASSISTANT",
-        content: "Task has been completed.",
-      });
-    }
-
-    return await taskFn.update({
-      taskId,
-      result,
-      comment,
-      status: "COMPLETED",
-    });
-  }
 
   if (action === "PLATFORM:complete") {
     const steps = await taskFn.listSteps({ taskId });
@@ -313,6 +285,54 @@ async function task({ taskId }: { taskId: string }) {
     return await taskFn.update({
       taskId,
       result,
+      comment,
+      status: "COMPLETED",
+    });
+  } else if (action === "PLATFORM:handoff") {
+    const handoffParams = parameters as {
+      targetAgentId: string;
+      targetBlueprintId?: string;
+      context: string;
+    };
+
+    if (handoffParams.targetAgentId === agentId) {
+      return await taskFn.update({
+        taskId,
+        status: "FAILED",
+        comment:
+          "Self-handoff detected: agent attempted to hand off to itself. Follow the assigned blueprint instead.",
+      });
+    }
+
+    const stepsToInherit = await taskFn.listSteps({ taskId });
+    const inheritedSteps = stepsToInherit.map((s) => ({
+      action: s.action,
+      parameters: s.parameters,
+      result: s.result,
+      comment: s.comment,
+      status: s.status,
+    }));
+
+    const newTask = await taskFn.create({
+      agentId: handoffParams.targetAgentId,
+      description: handoffParams.context,
+      blueprintId: handoffParams.targetBlueprintId,
+      sessionId,
+      inheritedSteps,
+    });
+
+    const handoffResult = `Handed off to agent ${handoffParams.targetAgentId}`;
+
+    await stepScoreFn.create({
+      taskId,
+      parameters: { description, blueprintId },
+      output: handoffResult,
+      status: "COMPLETED",
+    });
+
+    return await taskFn.update({
+      taskId,
+      result: handoffResult,
       comment,
       status: "COMPLETED",
     });
@@ -422,7 +442,12 @@ async function step({
         parameters,
       });
     } else if (actionType === "MCP") {
-      result = await mcpClient.callTool(action, parameters);
+      let mcpParameters = parameters as Record<string, unknown>;
+      if (action === "GREY:knowledge_lookup" && !mcpParameters.agentId) {
+        const task = await taskFn.get({ taskId });
+        mcpParameters = { ...mcpParameters, agentId: task.agentId };
+      }
+      result = await mcpClient.callTool(action, mcpParameters);
     }
 
     let resultString;
@@ -513,7 +538,45 @@ async function step({
   }
 }
 
-async function Blueprint({
+async function blueprintChatContext({
+  agentId,
+  blueprintId,
+  supervising,
+}: {
+  agentId: string;
+  blueprintId?: string | null;
+  supervising?: {
+    id: string;
+    question: string;
+    status: string;
+    taskId?: string | null;
+    blueprintId?: string | null;
+  } | null;
+}): Promise<{ role: "system"; content: string }[]> {
+  const [agentInfo, agentKnowledge, referenceBlueprint] = await Promise.all([
+    info({ agentId }),
+    knowledge({ agentId }),
+    blueprintId ? blueprintFn.getWithNodes(blueprintId) : Promise.resolve(null),
+  ]);
+
+  return [
+    { role: "system", content: JSON.stringify(agentInfo.content) },
+    { role: "system", content: JSON.stringify(agentKnowledge.content) },
+    ...(referenceBlueprint
+      ? [
+          {
+            role: "system" as const,
+            content: JSON.stringify({ referenceBlueprint }),
+          },
+        ]
+      : []),
+    ...(supervising
+      ? [{ role: "system" as const, content: JSON.stringify({ supervising }) }]
+      : []),
+  ];
+}
+
+async function blueprintChatDecision({
   history,
   content,
 }: {
@@ -522,13 +585,143 @@ async function Blueprint({
     content: string;
   }[];
   content: string;
+}): Promise<{ decision: "KNOWLEDGE" | "BLUEPRINT" }> {
+  const response = await generate({
+    dataset: dataset.train.blueprintChatDecision,
+    context: history,
+    content,
+    json_format: '{ decision: <"KNOWLEDGE"|"BLUEPRINT"> }',
+  });
+
+  return response as { decision: "KNOWLEDGE" | "BLUEPRINT" };
+}
+
+async function blueprintChatSufficiency({
+  history,
+  content,
+  decision,
+}: {
+  history?: {
+    role: "system" | "user" | "assistant";
+    content: string;
+  }[];
+  content: string;
+  decision: "KNOWLEDGE" | "BLUEPRINT";
+}): Promise<{ sufficient: boolean; answer?: string }> {
+  const context = [
+    {
+      role: "system" as const,
+      content: JSON.stringify({ decision }),
+    },
+    ...(history ?? []),
+  ];
+
+  const response = await generate({
+    dataset: dataset.train.blueprintChatSufficiency,
+    context,
+    content,
+    json_format: "{ sufficient: <true|false>, answer: <ANSWER> }",
+  });
+
+  return response as { sufficient: boolean; answer?: string };
+}
+
+async function blueprintChatKnowledge({
+  content,
+}: {
+  content: string;
+}): Promise<{ knowledge: string }> {
+  const response = await generate({
+    dataset: dataset.train.blueprintChatKnowledge,
+    content,
+    json_format: "{ knowledge: <EXTRACTED_KNOWLEDGE> }",
+  });
+
+  return response as { knowledge: string };
+}
+
+function sanitizeFlow(flow: unknown[]): unknown[] {
+  const idSet = new Set<string>();
+  const deduped: unknown[] = [];
+
+  for (const node of flow) {
+    if (!node || typeof node !== "object") continue;
+    const n = node as Record<string, unknown>;
+    const id = n.id as string;
+    if (!id || idSet.has(id)) continue;
+    idSet.add(id);
+    deduped.push(n);
+  }
+
+  return deduped.map((node) => {
+    const n = node as Record<string, unknown>;
+    const id = n.id as string;
+
+    const sanitizeRefs = (refs: unknown): string[] | null => {
+      if (!Array.isArray(refs)) return null;
+      const filtered = refs.filter(
+        (ref) => typeof ref === "string" && ref !== id && idSet.has(ref),
+      );
+      return filtered.length ? filtered : null;
+    };
+
+    const result: Record<string, unknown> = { ...n };
+
+    if (Array.isArray(n.next)) {
+      result.next = sanitizeRefs(n.next);
+    }
+
+    const props = n.properties as Record<string, unknown> | undefined;
+    if (props) {
+      const updated: Record<string, unknown> = { ...props };
+      if (Array.isArray(props.true)) updated.true = sanitizeRefs(props.true);
+      if (Array.isArray(props.false)) updated.false = sanitizeRefs(props.false);
+      result.properties = updated;
+    }
+
+    if (Array.isArray(n.true)) result.true = sanitizeRefs(n.true);
+    if (Array.isArray(n.false)) result.false = sanitizeRefs(n.false);
+
+    return result;
+  });
+}
+
+async function Blueprint({
+  history,
+  content,
+  existingBlueprint,
+}: {
+  history?: {
+    role: "system" | "user" | "assistant";
+    content: string;
+  }[];
+  content: string;
+  existingBlueprint?: object | null;
 }) {
+  const context = [
+    ...(existingBlueprint
+      ? [
+          {
+            role: "system" as const,
+            content: {
+              existingBlueprint,
+            },
+          },
+        ]
+      : []),
+    ...(history ?? []),
+  ];
+
   const response = await generate({
     dataset: dataset.train.blueprintChat,
-    context: history,
+    context,
     content,
     json_format: "{ response: <RESPONSE>, flow: [<FLOW>] }",
   });
+
+  if (Array.isArray(response.flow)) {
+    response.flow = sanitizeFlow(response.flow);
+  }
 
   return response;
 }
@@ -668,7 +861,6 @@ async function chat({
   });
 
   const conversationsData = await conversations({ sessionId });
-  const blueprintsData = await Blueprints({ agentId });
 
   const agentDataResult = await agentData.get({ agentId });
 
@@ -704,14 +896,29 @@ async function chat({
     return;
   }
 
-  const blueprintDecision = await blueprintDiamond({
-    content: content,
-    Blueprints: blueprintsData,
-  });
+  const sessionInstance = await session.get({ sessionId });
+  const pinnedBlueprintId: string | null = sessionInstance?.blueprintId ?? null;
 
-  if (blueprintDecision.decision === "BLUEPRINT" && task.length === 0) {
+  let selectedBlueprintId: string | null = null;
+  let blueprintDecision: { decision: string; blueprintId?: string } | null =
+    null;
+
+  if (pinnedBlueprintId) {
+    selectedBlueprintId = pinnedBlueprintId;
+  } else {
+    const blueprintsData = await Blueprints({ agentId });
+    blueprintDecision = await blueprintDiamond({
+      content,
+      Blueprints: blueprintsData,
+    });
+    if (blueprintDecision.decision === "BLUEPRINT") {
+      selectedBlueprintId = blueprintDecision.blueprintId ?? null;
+    }
+  }
+
+  if (selectedBlueprintId && task.length === 0) {
     const blueprintData = await blueprintFn.get({
-      blueprintId: blueprintDecision.blueprintId,
+      blueprintId: selectedBlueprintId,
       includeLabels: false,
     });
 
@@ -727,7 +934,7 @@ async function chat({
       description:
         blueprintToTaskResponse.task?.description ||
         blueprintToTaskResponse.task,
-      blueprintId: blueprintDecision.blueprintId,
+      blueprintId: selectedBlueprintId,
       sessionId,
     });
 
@@ -760,7 +967,7 @@ async function chat({
 
     if (
       evaluation?.is_answer_known ||
-      blueprintDecision.decision === "UNREVELANT"
+      blueprintDecision?.decision === "UNREVELANT"
     ) {
       if (task.length > 0) {
         await taskFn.update({
@@ -796,7 +1003,7 @@ async function chat({
         sessionId,
         conversationId: conversation.id,
         question: content,
-        blueprintId: blueprintDecision.blueprintId,
+        blueprintId: blueprintDecision?.blueprintId,
         agentId,
       });
     }
@@ -841,6 +1048,10 @@ export default {
   step,
   Blueprint,
   blueprintName,
+  blueprintChatContext,
+  blueprintChatDecision,
+  blueprintChatSufficiency,
+  blueprintChatKnowledge,
   evaluateSupervisionAnswer,
   toPseudo,
   blueprintDescription,

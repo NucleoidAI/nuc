@@ -1,4 +1,5 @@
 import { generate } from "../lib/llm";
+import dataset from "../dataset";
 
 async function run({
   context,
@@ -14,10 +15,9 @@ async function run({
   const { condition, true: trueActions, false: falseActions } = parameters;
 
   const { result } = await generate({
-    context: context
-      ? [{ role: "system" as const, content: context }]
-      : [],
-    content: `Evaluate this condition based on the context above and return true or false: "${condition}"`,
+    dataset: dataset.train.decision,
+    context: context ? [{ role: "system" as const, content: context }] : [],
+    content: { context, condition },
     json_format: "{ result: <true|false> }",
   });
 

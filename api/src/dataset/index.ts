@@ -1,4 +1,5 @@
 import Blueprint from "./train/blueprint.json";
+import decision from "./train/decision.json";
 import blueprintChat from "./train/blueprint-chat.json";
 import blueprintChatDecision from "./train/blueprint-chat-decision.json";
 import blueprintChatSufficiency from "./train/blueprint-chat-sufficiency.json";
@@ -116,6 +117,12 @@ export default {
       role: "system" as const,
       content: JSON.stringify({
         train: knowledgeScore,
+      }),
+    },
+    decision: {
+      role: "system" as const,
+      content: JSON.stringify({
+        train: decision,
       }),
     },
   },

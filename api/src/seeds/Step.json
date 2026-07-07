@@ -1,5 +1,5 @@
 {
-  "sequence": 14,
+  "sequence": 18,
   "seed": [
     {
       "id": "0c129e3a-012b-4d0f-849a-e111341ce437",
@@ -127,6 +127,64 @@
       "taskId": "a1b2c3d4-0003-4000-8000-000000000003",
       "knowledgeScore": null,
       "createdAt": "2026-05-13T08:16:00Z"
+    },
+
+    {
+      "id": "c2c3d4e5-0001-4000-8000-000000000001",
+      "action": "PLATFORM:user_interaction",
+      "parameters": {
+        "question": "Which product would you like to order?",
+        "taskId": "b2c3d4e5-0001-4000-8000-000000000001",
+        "blueprintId": "f4e3d2c1-b0a0-4000-8000-100000000001",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
+      },
+      "result": "prd-4",
+      "comment": "User selected Widget Pro X1 (prd-4) for purchase order processing",
+      "status": "COMPLETED",
+      "taskId": "b2c3d4e5-0001-4000-8000-000000000001",
+      "knowledgeScore": null,
+      "createdAt": "2026-07-01T09:30:00.000Z"
+    },
+    {
+      "id": "c2c3d4e5-0002-4000-8000-000000000002",
+      "action": "ORDER:find_product",
+      "parameters": { "productId": "prd-4" },
+      "result": "{\"id\":\"prd-4\",\"name\":\"Widget Pro X1\",\"vendor\":\"GlobalParts Ltd\",\"vendorEmail\":\"compliance@globalparts.com\",\"category\":\"industrial\"}",
+      "comment": "Found product details for prd-4 Widget Pro X1",
+      "status": "COMPLETED",
+      "taskId": "b2c3d4e5-0001-4000-8000-000000000001",
+      "knowledgeScore": null,
+      "createdAt": "2026-07-01T09:31:00.000Z"
+    },
+    {
+      "id": "c2c3d4e5-0003-4000-8000-000000000003",
+      "action": "GREY:knowledge_lookup",
+      "parameters": {
+        "query": "compliance certificate prd-4 Widget Pro X1",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
+      },
+      "result": "{\"found\":true,\"text\":\"Product prd-4 (Widget Pro X1) does not have a compliance certificate on record. No certificate has been assigned or approved for this product.\"}",
+      "comment": "Knowledge base confirms no compliance certificate exists for prd-4",
+      "status": "COMPLETED",
+      "taskId": "b2c3d4e5-0001-4000-8000-000000000001",
+      "knowledgeScore": 0.95,
+      "createdAt": "2026-07-01T09:32:00.000Z"
+    },
+    {
+      "id": "c2c3d4e5-0004-4000-8000-000000000004",
+      "action": "PLATFORM:ask_supervisor",
+      "parameters": {
+        "question": "Widget Pro X1 does not have a compliance certificate on record. Should I proceed with assigning a temporary certificate or escalate to the compliance manager?",
+        "taskId": "b2c3d4e5-0001-4000-8000-000000000001",
+        "blueprintId": "f4e3d2c1-b0a0-4000-8000-100000000001",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
+      },
+      "result": "{\"id\":\"e5f6a7b8-9012-4000-8000-000000000001\",\"status\":\"IN_PROGRESS\",\"createdAt\":\"2026-07-01T09:35:00.000Z\",\"question\":\"Widget Pro X1 does not have a compliance certificate on record. Should I proceed with assigning a temporary certificate or escalate to the compliance manager?\",\"agentId\":\"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\",\"blueprintId\":\"f4e3d2c1-b0a0-4000-8000-100000000001\",\"taskId\":\"b2c3d4e5-0001-4000-8000-000000000001\"}",
+      "comment": "Escalating to supervisor — no certificate found for prd-4, cannot proceed without compliance approval",
+      "status": "SUPERVISED_NEEDED",
+      "taskId": "b2c3d4e5-0001-4000-8000-000000000001",
+      "knowledgeScore": null,
+      "createdAt": "2026-07-01T09:35:00.000Z"
     }
   ]
 }

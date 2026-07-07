@@ -30,7 +30,7 @@
       "conversationId": null,
       "blueprintId": "f4e3d2c1-b0a0-4000-8000-100000000001",
       "taskId": "b2c3d4e5-0001-4000-8000-000000000001",
-      "stepId": null,
+      "stepId": "c2c3d4e5-0004-4000-8000-000000000004",
       "question": "Widget Pro X1 does not have a compliance certificate on record. Should I proceed with assigning a temporary certificate or escalate to the compliance manager?",
       "answer": null,
       "status": "IN_PROGRESS",

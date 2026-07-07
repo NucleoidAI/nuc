@@ -1,8 +1,7 @@
 import BlueprintDrawer from "../BlueprintDrawer/BlueprintDrawer";
 import { Iconify } from "@canmingir/link/platform/components";
+import http from "@canmingir/link/platform/http";
 import useBlueprint from "../../hooks/useBlueprint";
-import { useState } from "react";
-
 import {
   Box,
   Card,
@@ -18,6 +17,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { useEffect, useState } from "react";
 
 const SupervisingCard = ({
   supervise,
@@ -34,9 +34,49 @@ const SupervisingCard = ({
   agentId?: string;
 }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [usedNodeIds, setUsedNodeIds] = useState<Set<string> | undefined>();
+  const [lastUsedNodeId, setLastUsedNodeId] = useState<string | null>(null);
+  const [failedNodeId, setFailedNodeId] = useState<string | null>(null);
 
   const { getBlueprintWithId } = useBlueprint();
   const { blueprint } = getBlueprintWithId(supervise.blueprintId || "");
+
+  useEffect(() => {
+    if (!drawerOpen || !supervise.taskId || !blueprint?.nodes?.length) return;
+
+    http.get(`/tasks/${supervise.taskId}/steps`).then((res) => {
+      const steps: { action: string; status: string }[] = res?.data ?? [];
+      if (!steps.length) return;
+
+      const nodes: { id: string; properties?: { action?: string } }[] =
+        blueprint.nodes;
+
+      const actionToNodeId = new Map<string, string>();
+      nodes.forEach((n) => {
+        if (n.properties?.action) actionToNodeId.set(n.properties.action, n.id);
+      });
+
+      const used = new Set<string>();
+      let lastUsed: string | null = null;
+      let supervisionNodeId: string | null = null;
+
+      steps.forEach((step) => {
+        const nodeId = actionToNodeId.get(step.action);
+        if (!nodeId) return;
+
+        if (step.action === "PLATFORM:ask_supervisor") {
+          supervisionNodeId = nodeId;
+        } else if (step.status === "COMPLETED") {
+          used.add(nodeId);
+          lastUsed = nodeId;
+        }
+      });
+
+      setUsedNodeIds(used.size > 0 ? used : undefined);
+      setLastUsedNodeId(supervisionNodeId ?? lastUsed);
+      setFailedNodeId(supervisionNodeId);
+    });
+  }, [drawerOpen, supervise.taskId, blueprint]);
 
   return (
     <>
@@ -178,6 +218,9 @@ const SupervisingCard = ({
           selectedItem={blueprint}
           agentId={agentId}
           supervise={supervise}
+          usedNodeIds={usedNodeIds}
+          lastUsedNodeId={lastUsedNodeId}
+          failedNodeId={failedNodeId}
         />
       )}
     </>

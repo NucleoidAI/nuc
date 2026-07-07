@@ -113,11 +113,15 @@ const SettingsDialog = ({
                 Force workflow
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                When enabled, the agent must follow the blueprint nodes in strict
-                order, like a workflow. Steps cannot be skipped or reordered.
+                When enabled, the agent must follow the blueprint nodes in
+                strict order, like a workflow. Steps cannot be skipped or
+                reordered.
               </Typography>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                <AccountTreeIcon fontSize="small" color={force ? "primary" : "disabled"} />
+                <AccountTreeIcon
+                  fontSize="small"
+                  color={force ? "primary" : "disabled"}
+                />
                 <Typography variant="body2">
                   {force ? "Force enabled" : "Force disabled"}
                 </Typography>

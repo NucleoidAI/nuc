@@ -51,8 +51,8 @@ function useBlueprint() {
   };
 
   const getBlueprintsByAgent = (
-    agentId: string,
-    fetchState: DependencyArray = []
+    fetchState: DependencyArray = [],
+    agentId: string
   ) => {
     const eventDependencies = [blueprintUpserted, blueprintPatched];
 

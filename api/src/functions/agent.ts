@@ -185,6 +185,77 @@ async function teamChat({
   });
 }
 
+async function forceTask({
+  blueprint,
+  currentTask,
+  context,
+  isBlocking,
+}: {
+  blueprint: { nodes: any[] };
+  currentTask: { description: string; blueprintId: string; steps: any[] };
+  context: {
+    role: "user" | "system" | "assistant";
+    content: object | string;
+  }[];
+  isBlocking: boolean;
+}) {
+  const nodes = blueprint.nodes;
+
+  const allNextIds = new Set(
+    nodes.flatMap((n) => [
+      ...(Array.isArray(n.next) ? n.next : n.next ? [n.next] : []),
+      ...(n.true || []),
+      ...(n.false || []),
+    ]),
+  );
+  const rootNode = nodes.find((n) => !allNextIds.has(n.id));
+
+  const completedSteps = currentTask.steps.filter((s) =>
+    ["COMPLETED", "WAITING_FOR_USER"].includes(s.status),
+  );
+
+  let currentNode = rootNode;
+  for (const step of completedSteps) {
+    if (!currentNode || currentNode.properties?.action !== step.action) break;
+    if (currentNode.type === "CONDITION") {
+      const tookTrue = step.result === "true";
+      const nextIds = tookTrue
+        ? currentNode.true || []
+        : currentNode.false || [];
+      currentNode = nextIds.length
+        ? nodes.find((n) => nextIds.includes(n.id))
+        : undefined;
+    } else {
+      const nextIds = Array.isArray(currentNode.next)
+        ? currentNode.next
+        : currentNode.next
+        ? [currentNode.next]
+        : [];
+      currentNode = nextIds.length
+        ? nodes.find((n) => nextIds.includes(n.id))
+        : undefined;
+    }
+  }
+
+  const forcedAction = currentNode?.properties?.action;
+
+  const result = await generate({
+    dataset: isBlocking
+      ? dataset.train.forceTaskDiamondBlocking
+      : dataset.train.forceTaskDiamondNonBlocking,
+    context,
+    content: { ...currentTask, forced_action: forcedAction },
+    json_format:
+      "{ next_step: { parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
+  });
+
+  if (forcedAction) {
+    result.next_step.action = forcedAction;
+  }
+
+  return result;
+}
+
 async function task({ taskId }: { taskId: string }) {
   const { agentId, description, sessionId, blueprintId } = await taskFn.get({
     taskId,
@@ -209,6 +280,7 @@ async function task({ taskId }: { taskId: string }) {
 
   const blueprint = blueprintId ? await blueprintFn.get({ blueprintId }) : null;
   const isBlocking = blueprint?.blocking !== false;
+  const isForce = blueprint?.force === true;
 
   const { inheritedSteps: inherited } = await taskFn.get({ taskId });
 
@@ -241,15 +313,18 @@ async function task({ taskId }: { taskId: string }) {
   const {
     next_step: { action, parameters, comment },
     result_score,
-  } = await generate({
-    dataset: isBlocking
-      ? dataset.train.taskDiamondBlocking
-      : dataset.train.taskDiamondNonBlocking,
-    context,
-    content: currentTask,
-    json_format:
-      "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
-  });
+  } =
+    isForce && blueprint?.nodes?.length
+      ? await forceTask({ blueprint, currentTask, context, isBlocking })
+      : await generate({
+          dataset: isBlocking
+            ? dataset.train.taskDiamondBlocking
+            : dataset.train.taskDiamondNonBlocking,
+          context,
+          content: currentTask,
+          json_format:
+            "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
+        });
 
   console.log("next action", action);
   console.log("comment", comment);

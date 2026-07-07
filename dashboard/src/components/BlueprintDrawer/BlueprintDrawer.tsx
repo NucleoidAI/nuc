@@ -10,6 +10,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import SupervisingChat from "../SupervisingChat";
 import useBlueprint from "../../hooks/useBlueprint";
+import useSupervisings from "../../hooks/useSupervisings";
 import { v4 as uuid } from "uuid";
 import { Box, Fab, Grid, IconButton, Tooltip } from "@mui/material";
 import {
@@ -87,6 +88,19 @@ const BlueprintDrawer = ({
   const [editBlueprintOpen, setEditBlueprintOpen] = useState(false);
 
   const { patchBlueprint } = useBlueprint();
+  const { approveBlueprintChat } = useSupervisings();
+
+  const handleManualResolve = async (decision: "BLUEPRINT" | "KNOWLEDGE") => {
+    if (!supervise?.id) return;
+    await approveBlueprintChat({
+      supervisingId: supervise.id,
+      decision,
+      answer:
+        decision === "BLUEPRINT"
+          ? "Blueprint manually updated"
+          : "Knowledge manually added",
+    });
+  };
 
   const handleBlockingChange = async (value: boolean) => {
     setBlocking(value);
@@ -130,6 +144,7 @@ const BlueprintDrawer = ({
         teamId={teamId}
         blocking={blocking}
         onBlockingChange={handleBlockingChange}
+        onSave={supervise ? () => handleManualResolve("BLUEPRINT") : undefined}
       />
 
       <Box
@@ -173,6 +188,9 @@ const BlueprintDrawer = ({
                 agentId={selectedItem?.agentId || agentId}
                 blueprintId={selectedItem?.id}
                 teamId={teamId}
+                onItemAdded={
+                  supervise ? () => handleManualResolve("KNOWLEDGE") : undefined
+                }
               />
             </GlassCardContent>
           </GlassCard>

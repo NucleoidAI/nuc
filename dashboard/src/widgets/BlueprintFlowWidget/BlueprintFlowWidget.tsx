@@ -44,6 +44,7 @@ function BlueprintFlowWidget({
   teamId,
   blocking: blockingProp,
   onBlockingChange: onBlockingChangeProp,
+  onSave,
 }: {
   aiResponse?: AIResponse;
   setAiResponse?: (response: AIResponse | null) => void;
@@ -59,6 +60,7 @@ function BlueprintFlowWidget({
   teamId?: string;
   blocking?: boolean;
   onBlockingChange?: (value: boolean) => void;
+  onSave?: () => void;
 }) {
   const [graphData, setGraphData] = useState<DefinitionGraph | null>(null);
   const [hasLocalChanges, setHasLocalChanges] = useState(false);
@@ -1126,6 +1128,7 @@ function BlueprintFlowWidget({
     }
     setSaveSuccess(true);
     setIsSubmitting(false);
+    onSave?.();
   };
 
   const handleFlowChange = (updatedGraphData) => {

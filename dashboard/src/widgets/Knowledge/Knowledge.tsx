@@ -19,10 +19,12 @@ function Knowledge({
   agentId,
   teamId,
   blueprintId,
+  onItemAdded,
 }: {
   agentId?: string;
   teamId?: string;
   blueprintId?: string;
+  onItemAdded?: () => void;
 }) {
   const {
     getAgentKnowledges,
@@ -220,7 +222,11 @@ function Knowledge({
           selectedType={selectedType === "ALL" ? "URL" : selectedType}
           open={open}
           setOpen={setOpen}
-          addItem={createKnowledge}
+          addItem={async (...args: Parameters<typeof createKnowledge>) => {
+            const result = await createKnowledge(...args);
+            onItemAdded?.();
+            return result;
+          }}
           agentId={agentId}
           teamId={teamId}
           blueprintId={blueprintId}

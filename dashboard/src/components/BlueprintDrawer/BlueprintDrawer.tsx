@@ -82,6 +82,7 @@ const BlueprintDrawer = ({
   const [showSettings, setShowSettings] = useState(false);
   const [settingsTab, setSettingsTab] = useState(0);
   const [blocking, setBlocking] = useState<boolean>(true);
+  const [force, setForce] = useState<boolean>(false);
   const [superviseChatOpen, setSuperviseChatOpen] = useState<boolean>(
     !!supervise
   );
@@ -106,6 +107,13 @@ const BlueprintDrawer = ({
     setBlocking(value);
     if (selectedItem?.id) {
       await patchBlueprint(selectedItem.id, { blocking: value });
+    }
+  };
+
+  const handleForceChange = async (value: boolean) => {
+    setForce(value);
+    if (selectedItem?.id) {
+      await patchBlueprint(selectedItem.id, { force: value });
     }
   };
 
@@ -144,6 +152,8 @@ const BlueprintDrawer = ({
         teamId={teamId}
         blocking={blocking}
         onBlockingChange={handleBlockingChange}
+        force={force}
+        onForceChange={handleForceChange}
         onSave={supervise ? () => handleManualResolve("BLUEPRINT") : undefined}
       />
 
@@ -252,6 +262,8 @@ const BlueprintDrawer = ({
         setSettingsTab={setSettingsTab}
         blocking={blocking}
         setBlocking={handleBlockingChange}
+        force={force}
+        setForce={handleForceChange}
       />
     </Box>
   );

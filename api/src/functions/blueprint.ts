@@ -52,6 +52,7 @@ async function upsert(
   nodes?: NodeType[],
   messages?: Array<{ role: string; content: string; createdAt: Date }>,
   blocking?: boolean,
+  force?: boolean,
 ) {
   let Blueprint;
 
@@ -64,6 +65,7 @@ async function upsert(
       agentId,
       nodes: nodes || null,
       ...(blocking !== undefined && { blocking }),
+      ...(force !== undefined && { force }),
     });
 
     Blueprint = existingBlueprint;
@@ -75,6 +77,7 @@ async function upsert(
       agentId,
       nodes: nodes || null,
       ...(blocking !== undefined && { blocking }),
+      ...(force !== undefined && { force }),
     });
   }
 
@@ -191,12 +194,14 @@ async function patch({
   title,
   description,
   blocking,
+  force,
 }: {
   blueprintId: string;
   pseudocode?: string;
   title?: string;
   description?: string;
   blocking?: boolean;
+  force?: boolean;
 }) {
   const Blueprint = await BluePrint.findByPk(blueprintId);
 
@@ -209,6 +214,7 @@ async function patch({
     ...(title && { title }),
     ...(description && { description }),
     ...(blocking !== undefined && { blocking }),
+    ...(force !== undefined && { force }),
   });
 
   return Blueprint.toJSON();
@@ -222,6 +228,7 @@ async function upsertPseudocode({
   nodes,
   messages,
   blocking,
+  force,
 }: {
   id: string;
   title: string;
@@ -230,6 +237,7 @@ async function upsertPseudocode({
   nodes?: NodeType[];
   messages?: Array<{ role: string; content: string; createdAt: Date }>;
   blocking?: boolean;
+  force?: boolean;
 }) {
   const existingNodes = new Map(
     (await BluePrint.findByPk(id))?.nodes?.map((n) => [n.id, n]) || [],
@@ -282,6 +290,7 @@ async function upsertPseudocode({
     nodesWithPseudocode,
     messages,
     blocking,
+    force,
   );
 
   await patch({ blueprintId: id, pseudocode });

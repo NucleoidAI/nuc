@@ -1,4 +1,6 @@
+import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import CloseIcon from "@mui/icons-material/Close";
+import Divider from "@mui/material/Divider";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import React from "react";
@@ -23,6 +25,8 @@ const SettingsDialog = ({
   setSettingsTab,
   blocking,
   setBlocking,
+  force,
+  setForce,
 }) => {
   return (
     <Dialog
@@ -101,6 +105,36 @@ const SettingsDialog = ({
                 {blocking
                   ? "Errors escalate to supervisor and halt the flow."
                   : "Errors are skipped and the flow continues."}
+              </Typography>
+
+              <Divider sx={{ my: 3 }} />
+
+              <Typography variant="subtitle2" gutterBottom>
+                Force workflow
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                When enabled, the agent must follow the blueprint nodes in strict
+                order, like a workflow. Steps cannot be skipped or reordered.
+              </Typography>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                <AccountTreeIcon fontSize="small" color={force ? "primary" : "disabled"} />
+                <Typography variant="body2">
+                  {force ? "Force enabled" : "Force disabled"}
+                </Typography>
+                <Switch
+                  checked={!!force}
+                  onChange={(e) => setForce(e.target.checked)}
+                  color="primary"
+                />
+              </Box>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ mt: 1.5, display: "block" }}
+              >
+                {force
+                  ? "Agent must execute blueprint nodes in the defined order."
+                  : "Agent may use blueprint nodes as guidance but is not required to follow them."}
               </Typography>
             </Box>
           )}

@@ -35,7 +35,7 @@ router.get("/:id", async (req, res) => {
 router.put("/:blueprintId", async (req, res) => {
   const { projectId: teamId } = req.session;
   const { blueprintId } = req.params;
-  const { title, description, agentId, nodes, taskId, messages, blocking } =
+  const { title, description, agentId, nodes, taskId, messages, blocking, force } =
     BlueprintSchema.upsert.parse(req.body);
 
   if (agentId) {
@@ -60,6 +60,7 @@ router.put("/:blueprintId", async (req, res) => {
       createdAt: new Date(msg.createdAt),
     })),
     blocking,
+    force,
   });
 
   await event.publish("BLUEPRINT_CREATED", {
@@ -71,9 +72,9 @@ router.put("/:blueprintId", async (req, res) => {
 
 router.patch("/:blueprintId", async (req, res) => {
   const { blueprintId } = req.params;
-  const { blocking } = req.body;
+  const { blocking, force } = req.body;
 
-  const result = await bluePrint.patch({ blueprintId, blocking });
+  const result = await bluePrint.patch({ blueprintId, blocking, force });
 
   res.status(200).json(result);
 });

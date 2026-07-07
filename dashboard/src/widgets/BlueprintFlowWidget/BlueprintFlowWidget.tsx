@@ -27,6 +27,7 @@ interface Blueprint {
   agentId: string;
   pseudocode?: string;
   blocking?: boolean;
+  force?: boolean;
 }
 
 function BlueprintFlowWidget({
@@ -44,6 +45,8 @@ function BlueprintFlowWidget({
   teamId,
   blocking: blockingProp,
   onBlockingChange: onBlockingChangeProp,
+  force: forceProp,
+  onForceChange: onForceChangeProp,
   onSave,
 }: {
   aiResponse?: AIResponse;
@@ -60,6 +63,8 @@ function BlueprintFlowWidget({
   teamId?: string;
   blocking?: boolean;
   onBlockingChange?: (value: boolean) => void;
+  force?: boolean;
+  onForceChange?: (value: boolean) => void;
   onSave?: () => void;
 }) {
   const [graphData, setGraphData] = useState<DefinitionGraph | null>(null);
@@ -68,6 +73,10 @@ function BlueprintFlowWidget({
     blueprint?.blocking ?? true
   );
   const blocking = blockingProp !== undefined ? blockingProp : blockingInternal;
+  const [forceInternal, setForceInternal] = useState<boolean>(
+    blueprint?.force ?? false
+  );
+  const force = forceProp !== undefined ? forceProp : forceInternal;
   const [validationErrors, setValidationErrors] = useState([]);
   const [showValidationErrors, setShowValidationErrors] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -200,6 +209,20 @@ function BlueprintFlowWidget({
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [blueprintNodes?.blocking]
+  );
+
+  useEffect(
+    () => {
+      if (blueprintNodes?.force !== undefined) {
+        if (onForceChangeProp) {
+          onForceChangeProp(blueprintNodes.force);
+        } else {
+          setForceInternal(blueprintNodes.force);
+        }
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [blueprintNodes?.force]
   );
 
   useEffect(
@@ -1114,7 +1137,8 @@ function BlueprintFlowWidget({
       updatedNodes,
       taskId,
       blueprintNodes?.messages,
-      blocking
+      blocking,
+      force
     );
 
     if (setSelectedItem && response?.Blueprint) {

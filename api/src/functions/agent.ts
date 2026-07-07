@@ -228,8 +228,6 @@ async function task({ taskId }: { taskId: string }) {
             role: "system" as const,
             content: {
               inherited_context_steps: inherited,
-              inherited_context_note:
-                "These steps were completed by a previous agent before this task was handed off. They are provided as context only — do NOT re-execute them. Follow your own blueprint.",
             },
           },
         ]
@@ -258,66 +256,6 @@ async function task({ taskId }: { taskId: string }) {
 
   const resultScore =
     result_score != null ? parseFloat(String(result_score)) : undefined;
-
-  const stableStringify = (val: unknown): string =>
-    JSON.stringify(val, (_, v) =>
-      v && typeof v === "object" && !Array.isArray(v)
-        ? Object.fromEntries(
-            Object.entries(v).sort(([a], [b]) => a.localeCompare(b)),
-          )
-        : v,
-    );
-
-  const stepsByTime = [...currentTask.steps].sort(
-    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-  );
-
-  const isDuplicateStep =
-    action !== "PLATFORM:complete" &&
-    action !== "PLATFORM:handoff" &&
-    stepsByTime.some(
-      (s, idx) =>
-        s.status === "COMPLETED" &&
-        s.action === action &&
-        stableStringify(s.parameters) === stableStringify(parameters) &&
-        !stepsByTime
-          .slice(idx + 1)
-          .some(
-            (later) =>
-              later.action === "PLATFORM:ask_supervisor" &&
-              later.status === "COMPLETED",
-          ),
-    );
-
-  console.log(isDuplicateStep);
-
-  if (isDuplicateStep) {
-    const steps = await taskFn.listSteps({ taskId });
-    const result = steps.length ? steps[steps.length - 1].result : undefined;
-
-    await stepScoreFn.create({
-      taskId,
-      parameters: { description, blueprintId },
-      output: result ?? comment ?? null,
-      status: "COMPLETED",
-    });
-
-    if (sessionId) {
-      await session.addConversation({
-        sessionId,
-        agentId,
-        role: "ASSISTANT",
-        content: "Task has been completed.",
-      });
-    }
-
-    return await taskFn.update({
-      taskId,
-      result,
-      comment,
-      status: "COMPLETED",
-    });
-  }
 
   if (action === "PLATFORM:complete") {
     const steps = await taskFn.listSteps({ taskId });
@@ -625,7 +563,12 @@ async function blueprintChatContext({
     { role: "system", content: JSON.stringify(agentInfo.content) },
     { role: "system", content: JSON.stringify(agentKnowledge.content) },
     ...(referenceBlueprint
-      ? [{ role: "system" as const, content: JSON.stringify({ referenceBlueprint }) }]
+      ? [
+          {
+            role: "system" as const,
+            content: JSON.stringify({ referenceBlueprint }),
+          },
+        ]
       : []),
     ...(supervising
       ? [{ role: "system" as const, content: JSON.stringify({ supervising }) }]
@@ -697,6 +640,52 @@ async function blueprintChatKnowledge({
   return response as { knowledge: string };
 }
 
+function sanitizeFlow(flow: unknown[]): unknown[] {
+  const idSet = new Set<string>();
+  const deduped: unknown[] = [];
+
+  for (const node of flow) {
+    if (!node || typeof node !== "object") continue;
+    const n = node as Record<string, unknown>;
+    const id = n.id as string;
+    if (!id || idSet.has(id)) continue;
+    idSet.add(id);
+    deduped.push(n);
+  }
+
+  return deduped.map((node) => {
+    const n = node as Record<string, unknown>;
+    const id = n.id as string;
+
+    const sanitizeRefs = (refs: unknown): string[] | null => {
+      if (!Array.isArray(refs)) return null;
+      const filtered = refs.filter(
+        (ref) => typeof ref === "string" && ref !== id && idSet.has(ref),
+      );
+      return filtered.length ? filtered : null;
+    };
+
+    const result: Record<string, unknown> = { ...n };
+
+    if (Array.isArray(n.next)) {
+      result.next = sanitizeRefs(n.next);
+    }
+
+    const props = n.properties as Record<string, unknown> | undefined;
+    if (props) {
+      const updated: Record<string, unknown> = { ...props };
+      if (Array.isArray(props.true)) updated.true = sanitizeRefs(props.true);
+      if (Array.isArray(props.false)) updated.false = sanitizeRefs(props.false);
+      result.properties = updated;
+    }
+
+    if (Array.isArray(n.true)) result.true = sanitizeRefs(n.true);
+    if (Array.isArray(n.false)) result.false = sanitizeRefs(n.false);
+
+    return result;
+  });
+}
+
 async function Blueprint({
   history,
   content,
@@ -729,6 +718,10 @@ async function Blueprint({
     content,
     json_format: "{ response: <RESPONSE>, flow: [<FLOW>] }",
   });
+
+  if (Array.isArray(response.flow)) {
+    response.flow = sanitizeFlow(response.flow);
+  }
 
   return response;
 }

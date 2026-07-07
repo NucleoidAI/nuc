@@ -48,6 +48,7 @@ async function update({
   status,
   taskId,
   blueprintId,
+  type,
 }: {
   teamId: string;
   supervisingId: string;
@@ -57,6 +58,7 @@ async function update({
   answer: string;
   taskId?: string;
   blueprintId?: string;
+  type?: "KNOWLEDGE" | "BLUEPRINT";
 }) {
   await Supervising.update(
     { status, answer },
@@ -66,50 +68,41 @@ async function update({
   const updatedSupervising = await Supervising.findByPk(supervisingId);
   const { sessionId, conversationId } = updatedSupervising;
 
-  const knowledgeInstance = await Knowledge.create({
-    type: "QA",
-    question,
-    answer,
-    agentId,
-    taskId,
-    blueprintId,
-    teamId,
-  });
-  try {
-    await AgentKnowledge.create({
-      knowledgeId: knowledgeInstance.id,
+  if (type === "KNOWLEDGE") {
+    const knowledgeInstance = await Knowledge.create({
+      type: "QA",
+      question,
+      answer,
       agentId,
-      teamId,
+      taskId,
       blueprintId,
+      teamId,
     });
-  } catch (err: any) {
-    if (err.name !== "SequelizeUniqueConstraintError") {
-      throw err;
+    try {
+      await AgentKnowledge.create({
+        knowledgeId: knowledgeInstance.id,
+        agentId,
+        teamId,
+        blueprintId,
+      });
+    } catch (err: any) {
+      if (err.name !== "SequelizeUniqueConstraintError") {
+        throw err;
+      }
     }
+
+    const knowledgeJson = knowledgeInstance.toJSON();
+
+    await event.publish("KNOWLEDGE", "CREATED", knowledgeJson);
   }
-
-  const knowledgeJson = knowledgeInstance.toJSON();
-
-  await event.publish("KNOWLEDGE", "CREATED", knowledgeJson);
-
-  /*
-  if (knowledgeJson?.taskId) {
-    await event.publish("TASK_SUPERVISING_RESPONDED", {
-      taskId: knowledgeJson.taskId,
-    });
-  }
-    */
 
   await event.publish("SUPERVISING_ANSWERED", {
-    teamId,
-    supervisingId,
     sessionId,
-    conversationId,
     agentId,
     question,
     answer,
-    status,
-    blueprintId,
+    type,
+    taskId,
   });
 
   return updatedSupervising;

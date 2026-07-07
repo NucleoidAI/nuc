@@ -70,6 +70,24 @@ function useSupervisings() {
     return response?.data;
   };
 
+  const approveBlueprintChat = async ({
+    supervisingId,
+    decision,
+    answer,
+  }: {
+    supervisingId: string;
+    decision: "KNOWLEDGE" | "BLUEPRINT";
+    answer: string;
+  }) => {
+    const response = await http.post(`/blueprint-chat/approve`, {
+      supervisingId,
+      decision,
+      answer,
+    });
+
+    return response?.data;
+  };
+
   const blueprintChat = async ({
     supervisingId,
     agentId,
@@ -151,6 +169,7 @@ function useSupervisings() {
     resolveSupervising,
     submitSupervising,
     blueprintChat,
+    approveBlueprintChat,
     getAgentSupervisingByStatus,
     getAgentSupervising,
   };

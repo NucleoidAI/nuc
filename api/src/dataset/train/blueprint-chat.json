@@ -476,5 +476,200 @@
         "createdAt": "2025-06-26T06:00:00Z"
       }
     ]
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": {
+          "existingBlueprint": {
+            "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+            "title": "Order and Compliance",
+            "description": "Ask user to select product, find product, check compliance certificate via knowledge base, assign certificate, create purchase order, send email.",
+            "nodes": [
+              {
+                "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
+                "type": "NORMAL",
+                "properties": {
+                  "action": "PLATFORM:user_interaction",
+                  "parameters": { "question": "Which product would you like to order?" },
+                  "label": "Select a Product",
+                  "icon": "mdi:account-question",
+                  "prompt": "Ask user which product they want to order"
+                },
+                "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+                "createdAt": "2025-06-26T06:00:00Z"
+              },
+              {
+                "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+                "type": "NORMAL",
+                "properties": {
+                  "action": "ORDER:find_product",
+                  "label": "Find Product",
+                  "icon": "mdi:magnify",
+                  "prompt": "Find the product by identifier"
+                },
+                "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+                "createdAt": "2025-06-26T06:00:00Z"
+              },
+              {
+                "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
+                "type": "NORMAL",
+                "properties": {
+                  "action": "GREY:knowledge_lookup",
+                  "label": "Check Certificate",
+                  "icon": "mdi:book-search",
+                  "prompt": "Look up compliance certificate for the product from agent knowledge"
+                },
+                "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+                "createdAt": "2025-06-26T06:00:00Z"
+              },
+              {
+                "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+                "type": "NORMAL",
+                "properties": {
+                  "action": "ORDER:assign_certificate",
+                  "label": "Assign Certificate",
+                  "icon": "mdi:certificate-outline",
+                  "prompt": "Assign a compliance certificate to the product"
+                },
+                "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+                "createdAt": "2025-06-26T06:00:00Z"
+              },
+              {
+                "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+                "type": "NORMAL",
+                "properties": {
+                  "action": "ORDER:create_po",
+                  "label": "Create Purchase Order",
+                  "icon": "mdi:file-document-plus",
+                  "prompt": "Create a purchase order for the product"
+                },
+                "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+                "createdAt": "2025-06-26T06:00:00Z"
+              },
+              {
+                "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+                "type": "NORMAL",
+                "properties": {
+                  "action": "GREY:send_email",
+                  "label": "Send Email",
+                  "icon": "mdi:email",
+                  "prompt": "Send email notification about the purchase order"
+                },
+                "next": null,
+                "createdAt": "2025-06-26T06:00:00Z"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "content": "If no certificate is found in the knowledge base, hand off to a compliance agent instead of assigning it.",
+    "response": "I've updated the blueprint to add a condition after the knowledge lookup. If no certificate is found, the flow hands off to a compliance agent. If found, it continues with assigning the certificate, creating the purchase order, and sending the email.",
+    "flow": [
+      {
+        "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
+        "type": "NORMAL",
+        "properties": {
+          "action": "PLATFORM:user_interaction",
+          "parameters": { "question": "Which product would you like to order?" },
+          "label": "Select a Product",
+          "icon": "mdi:account-question",
+          "prompt": "Ask user which product they want to order"
+        },
+        "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+        "createdAt": "2025-06-26T06:00:00Z"
+      },
+      {
+        "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+        "type": "NORMAL",
+        "properties": {
+          "action": "ORDER:find_product",
+          "label": "Find Product",
+          "icon": "mdi:magnify",
+          "prompt": "Find the product by identifier"
+        },
+        "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+        "createdAt": "2025-06-26T06:00:00Z"
+      },
+      {
+        "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
+        "type": "NORMAL",
+        "properties": {
+          "action": "GREY:knowledge_lookup",
+          "label": "Check Certificate",
+          "icon": "mdi:book-search",
+          "prompt": "Look up compliance certificate for the product from agent knowledge"
+        },
+        "next": ["fcond001-c0nd-4000-8000-c0ndition0001"],
+        "createdAt": "2025-06-26T06:00:00Z"
+      },
+      {
+        "id": "fcond001-c0nd-4000-8000-c0ndition0001",
+        "type": "CONDITION",
+        "properties": {
+          "action": "PLATFORM:decision",
+          "label": "Certificate Found?",
+          "icon": "mdi:source-branch",
+          "prompt": "Is a valid compliance certificate available in the knowledge base?"
+        },
+        "true": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+        "false": ["fhand001-h4nd-4000-8000-h4nd0ff00001"],
+        "createdAt": "2025-07-06T06:00:00Z"
+      },
+      {
+        "id": "fhand001-h4nd-4000-8000-h4nd0ff00001",
+        "type": "NORMAL",
+        "properties": {
+          "action": "PLATFORM:handoff",
+          "parameters": {
+            "targetAgent": "compliance_agent",
+            "reason": "No valid certificate found in knowledge base for product"
+          },
+          "label": "Hand Off to Compliance Agent",
+          "icon": "mdi:transfer",
+          "prompt": "Hand off to compliance agent because no certificate was found"
+        },
+        "next": null,
+        "createdAt": "2025-07-06T06:00:00Z"
+      },
+      {
+        "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+        "type": "NORMAL",
+        "properties": {
+          "action": "ORDER:assign_certificate",
+          "label": "Assign Certificate",
+          "icon": "mdi:certificate-outline",
+          "prompt": "Assign a compliance certificate to the product"
+        },
+        "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+        "createdAt": "2025-06-26T06:00:00Z"
+      },
+      {
+        "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+        "type": "NORMAL",
+        "properties": {
+          "action": "ORDER:create_po",
+          "label": "Create Purchase Order",
+          "icon": "mdi:file-document-plus",
+          "prompt": "Create a purchase order for the product"
+        },
+        "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+        "createdAt": "2025-06-26T06:00:00Z"
+      },
+      {
+        "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+        "type": "NORMAL",
+        "properties": {
+          "action": "GREY:send_email",
+          "label": "Send Email",
+          "icon": "mdi:email",
+          "prompt": "Send email notification about the purchase order"
+        },
+        "next": null,
+        "createdAt": "2025-06-26T06:00:00Z"
+      }
+    ]
   }
 ]

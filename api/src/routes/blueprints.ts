@@ -66,13 +66,6 @@ router.put("/:blueprintId", async (req, res) => {
     Blueprint: result,
   });
 
-  if (taskId) {
-    await event.publish("TASK_SUPERVISING_RESPONDED", {
-      taskId,
-      blueprintId,
-    });
-  }
-
   res.status(200).json(result);
 });
 

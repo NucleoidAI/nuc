@@ -103,12 +103,45 @@ function createApp() {
       sessionId: string;
       agentId: string;
       question: string;
-    }>("SUPERVISING_ANSWERED", ({ sessionId, agentId, question }) =>
-      agentFn.chat({
-        agentId,
-        sessionId,
-        content: question,
-      }),
+      type: string;
+      taskId: string;
+      answer: string;
+    }>(
+      "SUPERVISING_ANSWERED",
+      async ({ sessionId, agentId, question, answer, type, taskId }) => {
+        const steps = await taskFn.listSteps({ taskId });
+
+        const sortedSteps = [...steps].sort(
+          (a, b) =>
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+        );
+
+        console.log("steps", steps);
+
+        const supervisedIndex = sortedSteps.findIndex(
+          (step) => step.status === "SUPERVISED_NEEDED",
+        );
+
+        console.log("supervisedIndex", supervisedIndex);
+
+        if (supervisedIndex === -1) return;
+
+        const supervisedStep = sortedSteps[supervisedIndex];
+
+        if (type === "KNOWLEDGE") {
+          await taskFn.updateStep({
+            stepId: supervisedStep.id,
+            result: answer || supervisedStep.comment || "Completed",
+            status: "COMPLETED",
+          });
+        } else {
+          await taskFn.updateStep({
+            stepId: supervisedStep.id,
+            result: answer || supervisedStep.comment || "Completed",
+            status: "COMPLETED",
+          });
+        }
+      },
     );
 
     await event.subscribe<{ taskId: string }>("TASK_CREATED", ({ taskId }) =>
@@ -123,41 +156,6 @@ function createApp() {
       resultScore?: number;
     }>("STEP_ADDED", ({ stepId, action, parameters, comment, resultScore }) =>
       agentFn.step({ stepId, action, parameters, comment, resultScore }),
-    );
-
-    await event.subscribe<{ taskId: string; type: string; answer?: string }>(
-      "TASK_SUPERVISING_RESPONDED",
-      async ({ taskId, type, answer }) => {
-        const steps = await taskFn.listSteps({ taskId });
-
-        const sortedSteps = [...steps].sort(
-          (a, b) =>
-            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-        );
-
-        const supervisedIndex = sortedSteps.findIndex(
-          (step) => step.status === "SUPERVISED_NEEDED",
-        );
-
-        if (supervisedIndex === -1) return;
-
-        const supervisedStep = sortedSteps[supervisedIndex];
-
-        if (type === "KNOWLEDGE") {
-          await taskFn.updateStep({
-            stepId: supervisedStep.id,
-            result: answer || supervisedStep.comment || "Completed",
-            status: "COMPLETED",
-          });
-        } else {
-          agentFn.step({
-            stepId: supervisedStep.id,
-            action: "SUPERVISOR_RESPONDED",
-            parameters: supervisedStep.parameters,
-            comment: supervisedStep.comment,
-          });
-        }
-      },
     );
 
     await event.subscribe<{ taskId: string }>("STEP_COMPLETED", ({ taskId }) =>

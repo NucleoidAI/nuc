@@ -5,6 +5,7 @@ import blueprintFn from "../functions/blueprint";
 import express from "express";
 import sessionFn from "../functions/session";
 import supervisingFn from "../functions/supervising";
+import { event } from "@canmingir/link-express/event/client";
 
 const router = express.Router();
 
@@ -69,8 +70,19 @@ router.post("/", async (req, res) => {
       content: c.content ?? "",
     }));
   } else {
-    await sessionFn.create({ id: sessionId, type: "CHAT", agentId, blueprintId });
-    await sessionFn.addConversation({ sessionId, agentId, role: "USER", content, blueprintId });
+    await sessionFn.create({
+      id: sessionId,
+      type: "CHAT",
+      agentId,
+      blueprintId,
+    });
+    await sessionFn.addConversation({
+      sessionId,
+      agentId,
+      role: "USER",
+      content,
+      blueprintId,
+    });
   }
 
   const fullHistory = [...systemContext, ...history];
@@ -97,20 +109,6 @@ router.post("/", async (req, res) => {
 
   if (decision === "KNOWLEDGE") {
     const { knowledge } = await agentFn.blueprintChatKnowledge({ content });
-
-    if (supervisingInstance) {
-      await supervisingFn.update({
-        teamId,
-        supervisingId,
-        agentId: supervisingInstance.agentId,
-        question: supervisingInstance.question,
-        answer: knowledge,
-        status: "ANSWERED",
-        blueprintId: supervisingInstance.blueprintId,
-        taskId: supervisingInstance.taskId,
-      });
-    }
-
     return res.status(200).json({ decision, answer, knowledge });
   } else if (decision === "BLUEPRINT") {
     const referenceBlueprint = blueprintId
@@ -139,19 +137,6 @@ router.post("/", async (req, res) => {
         }))
       : blueprint.flow;
 
-    if (supervisingInstance) {
-      await supervisingFn.update({
-        teamId,
-        supervisingId,
-        agentId: supervisingInstance.agentId,
-        question: supervisingInstance.question,
-        answer: blueprint.response,
-        status: "ANSWERED",
-        blueprintId: supervisingInstance.blueprintId ?? blueprintId,
-        taskId: supervisingInstance.taskId,
-      });
-    }
-
     return res.status(200).json({
       decision,
       answer,
@@ -160,6 +145,38 @@ router.post("/", async (req, res) => {
       referenceBlueprint,
     });
   }
+});
+
+router.post("/approve", async (req, res) => {
+  const teamId = req.session.projectId;
+
+  const { supervisingId, decision, answer } = Joi.attempt(
+    req.body,
+    Joi.object({
+      supervisingId: Joi.string().uuid().required(),
+      decision: Joi.string().valid("KNOWLEDGE", "BLUEPRINT").required(),
+      answer: Joi.string().required(),
+    }),
+  );
+
+  const supervisingInstance = await Supervising.findByPk(supervisingId);
+  if (!supervisingInstance) {
+    return res.status(404).end();
+  }
+
+  await supervisingFn.update({
+    teamId,
+    supervisingId,
+    agentId: supervisingInstance.agentId,
+    question: supervisingInstance.question,
+    answer,
+    status: "ANSWERED",
+    type: decision,
+    blueprintId: supervisingInstance.blueprintId,
+    taskId: supervisingInstance.taskId,
+  });
+
+  return res.status(200).end();
 });
 
 export default router;

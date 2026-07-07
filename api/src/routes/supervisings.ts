@@ -454,17 +454,6 @@ router.patch("/:supervisingId/demo/submit", async (req, res) => {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  /*
-  if (supervisingInstance.taskId) {
-    event
-      .publish("TASK_SUPERVISING_RESPONDED", {
-        taskId: supervisingInstance.taskId,
-        blueprintId: supervisingInstance.blueprintId,
-      })
-      .catch(() => {});
-  }
-      */
-
   const updatedSupervising = await supervising.update({
     teamId,
     supervisingId,

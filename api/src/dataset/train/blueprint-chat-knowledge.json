@@ -60,8 +60,8 @@
     "knowledge": "Data is stored in the EU region by default."
   },
   {
-    "content": "Add CE-2024-001 certificate for product prd-3.",
-    "knowledge": "Product prd-3 has compliance certificate CE-2024-001."
+    "content": "Add CE certificate for product prd-3.",
+    "knowledge": "Product prd-3 has compliance certificate CE."
   },
   {
     "content": "Product prd-5 is certified under ISO-9001 standard.",

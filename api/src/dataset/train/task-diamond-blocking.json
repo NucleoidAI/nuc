@@ -1518,7 +1518,7 @@
     },
     {
       "id": "compliance-handoff-001",
-      "description": "Product prd-3 has no compliance certificate. Cannot proceed with purchase order without certification. Please contact the vendor to request the certificate.",
+      "description": "Product prd-3 has no compliance certificate in the knowledge base. Order cannot proceed without certification. Please assign the appropriate certificate or coordinate with vendor GlobalParts Ltd (compliance@globalparts.com) to obtain it.",
       "sessionId": "019b6e75-oc02-oc02-oc02-oc0200000002",
       "pseudocode": "BEGIN_CONTEXT\nvendor = GetProductVendor(product.id)\nEmail.Send(vendor.email)\nMessageUser()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "Blueprint": {
@@ -1629,18 +1629,29 @@
           "status": "COMPLETED",
           "parameters": { "product_id": "prd-3" },
           "result": "{\"product_id\": \"prd-3\", \"certificate\": null, \"has_certificate\": false}",
-          "comment": "prd-3 has no certificate"
+          "comment": "prd-3 has no certificate in knowledge base"
         },
         {
           "action": "PLATFORM:ask_supervisor",
           "status": "COMPLETED",
           "parameters": {
-            "question": "Product prd-3 has no compliance certificate. How should I proceed?"
+            "question": "Product prd-3 has no compliance certificate in the knowledge base. Should I manually assign a certificate (e.g., ISO 9001) or proceed with a handoff to the compliance agent to contact vendor GlobalParts Ltd (compliance@globalparts.com)?",
+            "sessionId": "019b6e75-oc02-oc02-oc02-oc0200000002",
+            "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
           },
-          "comment": "Supervisor instructed handoff to compliance agent"
+          "comment": "Supervisor instructed handoff to compliance agent for vendor coordination"
+        },
+        {
+          "action": "PLATFORM:handoff",
+          "status": "COMPLETED",
+          "parameters": {
+            "targetAgentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+            "targetBlueprintId": "c2b1a0d9-e8f7-4c2b-9100-300000000001",
+            "context": "Product prd-3 has no compliance certificate in the knowledge base. Order cannot proceed without certification. Please assign the appropriate certificate or coordinate with vendor GlobalParts Ltd (compliance@globalparts.com) to obtain it."
+          },
+          "comment": "Handing off to compliance agent as per supervisor's instruction"
         }
       ],
-      "inherited_context_note": "These steps were completed by a previous agent before this task was handed off. They are provided as context only — do NOT re-execute them. Follow your own blueprint.",
       "steps": [
         {
           "taskId": "task-compliance-001",
@@ -1650,7 +1661,7 @@
             "product_id": "prd-3"
           },
           "result": "{\"vendor\": {\"id\": \"vnd-3\", \"name\": \"GlobalParts Ltd\", \"email\": \"compliance@globalparts.com\"}}",
-          "comment": "Blueprint step 1: retrieved vendor info for prd-3"
+          "comment": "Starting my own blueprint from step 1 — the inherited context shows what the previous agent did, I do not need to re-ask the supervisor. My blueprint begins with getting the product vendor."
         },
         {
           "taskId": "task-compliance-001",

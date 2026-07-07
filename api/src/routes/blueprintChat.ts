@@ -150,12 +150,13 @@ router.post("/", async (req, res) => {
 router.post("/approve", async (req, res) => {
   const teamId = req.session.projectId;
 
-  const { supervisingId, decision, answer } = Joi.attempt(
+  const { supervisingId, decision, answer, knowledge } = Joi.attempt(
     req.body,
     Joi.object({
       supervisingId: Joi.string().uuid().required(),
       decision: Joi.string().valid("KNOWLEDGE", "BLUEPRINT").required(),
       answer: Joi.string().required(),
+      knowledge: Joi.string().optional(),
     }),
   );
 
@@ -170,6 +171,7 @@ router.post("/approve", async (req, res) => {
     agentId: supervisingInstance.agentId,
     question: supervisingInstance.question,
     answer,
+    knowledge,
     status: "ANSWERED",
     type: decision,
     blueprintId: supervisingInstance.blueprintId,

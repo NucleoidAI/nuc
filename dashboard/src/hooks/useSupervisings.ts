@@ -74,15 +74,18 @@ function useSupervisings() {
     supervisingId,
     decision,
     answer,
+    knowledge,
   }: {
     supervisingId: string;
     decision: "KNOWLEDGE" | "BLUEPRINT";
     answer: string;
+    knowledge?: string;
   }) => {
     const response = await http.post(`/blueprint-chat/approve`, {
       supervisingId,
       decision,
       answer,
+      knowledge,
     });
 
     return response?.data;

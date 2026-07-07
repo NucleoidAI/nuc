@@ -1692,6 +1692,216 @@
           "comment": "Blueprint step 4: compliance certificate request completed"
         }
       ]
+    },
+    {
+      "id": "order-cert-block-004",
+      "description": "Create a purchase order for product-4 (prd-4). Knowledge base explicitly states prd-4 has no compliance certificate assigned.",
+      "sessionId": "019b6e75-oc04-oc04-oc04-oc0400000004",
+      "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\ncertificate = CheckCertificate(product.id)\n// Knowledge base explicitly says prd-4 has no certificate\n// Do NOT infer or assume from other products\n// Follow blueprint decision: false branch -> AskSupervisor\nIF certificate.has_certificate == TRUE THEN\n    AssignCertificate(product.id, certificate.certificate)\n    PO.Create(product.id)\n    Email.Send()\nELSE\n    AskSupervisor()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "Blueprint": {
+        "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+        "title": "Order and Compliance",
+        "description": "Find product, assign compliance certificate, create purchase order, and send email.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "prompt": "Ask user which product they want to order",
+              "label": "Select a Product",
+              "icon": "mdi:account-question"
+            },
+            "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "prompt": "Find the product by identifier",
+              "label": "Find Product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:knowledge_lookup",
+              "prompt": "Look up compliance certificate for the product from agent knowledge",
+              "label": "Knowledge Lookup",
+              "icon": "mdi:book-search"
+            },
+            "next": ["f3e3d3c4-a3b3-4333-8333-444444444444"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f3e3d3c4-a3b3-4333-8333-444444444444",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "prompt": "Is certificate found?",
+              "label": "Is Certificate Found?",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+            "false": ["f3e3d3c5-a3b3-4333-8333-555555555555"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "prompt": "Assign a compliance certificate to the product",
+              "label": "Assign Certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f3e3d3c5-a3b3-4333-8333-555555555555",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:ask_supervisor",
+              "prompt": "No certificate found — ask supervisor how to proceed",
+              "label": "Ask Supervisor",
+              "icon": "mdi:account-question"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "prompt": "Create a purchase order for the product",
+              "label": "Create Purchase Order",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "prompt": "Send email to notify about the purchase order",
+              "label": "Send Email",
+              "icon": "mdi:email"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "kn-c4-001",
+          "type": "TEXT",
+          "text": "prd-1 has FFC compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-c4-002",
+          "type": "TEXT",
+          "text": "prd-2 has CE compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-c4-003",
+          "type": "TEXT",
+          "text": "prd-3 and prd-4 have no compliance certificate assigned",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-c4-004",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        }
+      ],
+      "tools": [
+        "ORDER:find_product",
+        "GREY:knowledge_lookup",
+        "ORDER:assign_certificate",
+        "ORDER:create_po",
+        "GREY:send_email"
+      ],
+      "steps": [
+        {
+          "taskId": "task-oc-004",
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Which product would you like to order?"
+          },
+          "result": "product-4",
+          "comment": "User selected product-4"
+        },
+        {
+          "taskId": "task-oc-004",
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "name": "product-4"
+          },
+          "result": "{\"id\": \"prd-4\", \"name\": \"product-4\"}",
+          "comment": "Found product-4 with ID prd-4"
+        },
+        {
+          "taskId": "task-oc-004",
+          "action": "GREY:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "prd-4"
+          },
+          "result": "{\"product_id\": \"prd-4\", \"certificate\": null, \"has_certificate\": false}",
+          "comment": "Knowledge base explicitly states prd-4 has no compliance certificate. Other products like prd-2 (CE) exist but I must NOT infer or assume a certificate for prd-4 — the knowledge base is the only authoritative source."
+        },
+        {
+          "taskId": "task-oc-004",
+          "action": "PLATFORM:decision",
+          "status": "COMPLETED",
+          "comment": "No certificate found for prd-4 — taking the false branch as defined in blueprint",
+          "parameters": {
+            "condition": "certificate.has_certificate == TRUE",
+            "true": [
+              {
+                "taskId": "task-oc-004",
+                "action": "ORDER:assign_certificate",
+                "status": "SKIPPED",
+                "comment": "True branch not taken — prd-4 has no certificate in knowledge base"
+              }
+            ],
+            "false": [
+              {
+                "taskId": "task-oc-004",
+                "action": "PLATFORM:ask_supervisor",
+                "status": "COMPLETED",
+                "parameters": {
+                  "question": "Product prd-4 has no compliance certificate in the knowledge base. How should I proceed?",
+                  "sessionId": "019b6e75-oc04-oc04-oc04-oc0400000004",
+                  "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
+                },
+                "comment": "Blueprint false branch: asking supervisor because knowledge base has no certificate for prd-4. I will not assume CE or any other certificate from other products."
+              }
+            ]
+          }
+        }
+      ]
     }
   ]
 }

@@ -4,6 +4,7 @@ import { Iconify } from "@canmingir/link/platform/components";
 import InlineChatInput from "../../widgets/ChatInput/InlineChatInput";
 import PopupChatWidget from "../../widgets/PopupChatWidget/PopupChatWidget";
 import useBlueprint from "../../hooks/useBlueprint";
+import useKnowledge from "../../hooks/useKnowledge";
 import useSupervisings from "../../hooks/useSupervisings";
 import { RawNode, layoutFlow } from "../BlueprintCard/BlueprintFlowMiniPreview";
 import {
@@ -314,6 +315,7 @@ type ResolveResponse =
   | {
       kind: "knowledge";
       knowledge: string;
+      answer: string;
     }
   | {
       kind: "blueprint";
@@ -359,6 +361,7 @@ const SupervisingChat = ({
 
   const { blueprintChat, approveBlueprintChat } = useSupervisings();
   const { getBlueprintWithId, upsertBlueprint } = useBlueprint();
+  const { createKnowledge } = useKnowledge();
   const { blueprint: currentBlueprint } = getBlueprintWithId(
     blueprintId || supervise?.blueprintId
   );
@@ -422,6 +425,7 @@ const SupervisingChat = ({
           setResolveResponse({
             kind: "knowledge",
             knowledge: result.knowledge,
+            answer: result.answer ?? "",
           });
           setMessages((prev) => [
             ...prev,
@@ -453,11 +457,19 @@ const SupervisingChat = ({
     if (resolveResponse?.kind !== "knowledge") return;
     setIsSaving(true);
     try {
-      await approveBlueprintChat({
-        supervisingId: supervise.id,
-        decision: "KNOWLEDGE",
-        answer: resolveResponse.knowledge,
-      });
+      if (supervise?.id) {
+        await approveBlueprintChat({
+          supervisingId: supervise.id,
+          decision: "KNOWLEDGE",
+          answer: resolveResponse.answer,
+          knowledge: resolveResponse.knowledge,
+        });
+      } else {
+        await createKnowledge(
+          { type: "TEXT", text: resolveResponse.knowledge, blueprintId: blueprintId },
+          agentId
+        );
+      }
       setMessages((prev) => [
         ...prev,
         { role: "ASSISTANT", content: "Knowledge saved successfully!" },
@@ -491,11 +503,13 @@ const SupervisingChat = ({
         agentId,
         resolveResponse.flow
       );
-      await approveBlueprintChat({
-        supervisingId: supervise.id,
-        decision: "BLUEPRINT",
-        answer: resolveResponse.response,
-      });
+      if (supervise?.id) {
+        await approveBlueprintChat({
+          supervisingId: supervise.id,
+          decision: "BLUEPRINT",
+          answer: resolveResponse.response,
+        });
+      }
       setMessages((prev) => [
         ...prev,
         { role: "ASSISTANT", content: "Blueprint updated successfully!" },
@@ -551,7 +565,10 @@ const SupervisingChat = ({
     <>
       <Backdrop
         open={open}
-        onClick={handleClose}
+        onClick={(e) => {
+          if (window.getSelection()?.toString()) return;
+          handleClose();
+        }}
         sx={{
           zIndex: 9998,
           backgroundColor: alpha(theme.palette.common.black, 0.2),
@@ -654,6 +671,7 @@ const SupervisingChat = ({
                   color: theme.palette.text.primary,
                   lineHeight: 1.5,
                   fontStyle: "italic",
+                  userSelect: "text",
                   background: `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.background.default}80 100%)`,
                   border: `1px solid ${theme.palette.divider}30`,
                   borderRadius: 1.5,
@@ -735,6 +753,7 @@ const SupervisingChat = ({
                     mb: 1.5,
                     maxHeight: 100,
                     overflow: "auto",
+                    userSelect: "text",
                     border: `1px solid ${theme.palette.divider}`,
                   }}
                 >

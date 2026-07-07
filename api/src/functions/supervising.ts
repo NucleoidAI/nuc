@@ -45,6 +45,7 @@ async function update({
   agentId,
   question,
   answer,
+  knowledge,
   status,
   taskId,
   blueprintId,
@@ -56,6 +57,7 @@ async function update({
   agentId: string;
   question: string;
   answer: string;
+  knowledge?: string;
   taskId?: string;
   blueprintId?: string;
   type?: "KNOWLEDGE" | "BLUEPRINT";
@@ -70,9 +72,8 @@ async function update({
 
   if (type === "KNOWLEDGE") {
     const knowledgeInstance = await Knowledge.create({
-      type: "QA",
-      question,
-      answer,
+      type: "TEXT",
+      text: knowledge ?? answer,
       agentId,
       taskId,
       blueprintId,

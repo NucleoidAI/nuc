@@ -188,7 +188,8 @@ const MCPs = [
     id: "019ae325-2257-77df-97fa-e8808943634f",
     action: "GREY:send_email",
     provider: "GREY",
-    description: "Send an email",
+    description:
+      "Send an email. Prefer passing 'template' + 'data' to render a predefined, nicely formatted HTML email instead of composing 'text'/'html' manually.",
     direction: "OUTGOING",
     icon: "mdi:email-send",
     lib: "mcp",
@@ -202,16 +203,31 @@ const MCPs = [
         },
         subject: {
           type: "string",
-          description: "The subject of the email.",
+          description: "The subject of the email. Not needed when 'template' is set - the template supplies its own subject.",
           nullable: true,
         },
         text: {
           type: "string",
-          description: "The body of the email.",
+          description: "The plain-text body of the email. Not needed when 'template' is set - the template supplies its own text body.",
+          nullable: true,
+        },
+        html: {
+          type: "string",
+          description: "The HTML body of the email. Not needed when 'template' is set.",
+          nullable: true,
+        },
+        template: {
+          type: "string",
+          description: "Name of a predefined email template to render instead of manually composing text/html. Available: 'meeting_summary'.",
+          nullable: true,
+        },
+        data: {
+          type: "object",
+          description: "Structured data to render into the template named by 'template'. For 'meeting_summary': { meetingName, meetingDate, summary, key_topics, decisions, action_items: [{owner, task}], speaker_highlights: [{id, summary}] }.",
           nullable: true,
         },
       },
-      required: ["to", "subject", "text"],
+      required: ["to"],
     },
   },
   {

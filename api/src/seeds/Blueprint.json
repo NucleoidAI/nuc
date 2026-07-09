@@ -394,11 +394,11 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:send_email",
-            "description": "Email the resolved meeting summary to all meeting participants",
-            "prompt": "Send one email to all meeting participants (join every participant's email from meeting metadata into a comma-separated 'to' field). Use the meeting name/date in the subject. Format the body from the resolved summary: overall summary, key topics, decisions, action items (with owner names), and per-speaker highlights.",
+            "description": "Email the resolved meeting summary to all meeting participants using the 'meeting_summary' template",
+            "prompt": "Send one email to all meeting participants (join every participant's email from meeting metadata into a comma-separated 'to' field). Do NOT compose subject/text/html manually - instead pass template: 'meeting_summary' and data: { meetingName, meetingDate, summary, key_topics, decisions, action_items: [{owner, task}], speaker_highlights: [{id, summary}] } built from the resolved summary and meeting metadata. The template renders the formatted email.",
             "label": "Send Email",
             "icon": "mdi:email-send",
-            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(to: participants.emails, subject, body: resolved)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(to: participants.emails, template: \"meeting_summary\", data: resolved)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": ["019f414b-0006-4000-8000-000000000006"],
           "createdAt": "2026-07-08T10:00:00Z"

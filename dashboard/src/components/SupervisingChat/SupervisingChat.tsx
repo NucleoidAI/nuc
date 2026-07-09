@@ -466,7 +466,11 @@ const SupervisingChat = ({
         });
       } else {
         await createKnowledge(
-          { type: "TEXT", text: resolveResponse.knowledge, blueprintId: blueprintId },
+          {
+            type: "TEXT",
+            text: resolveResponse.knowledge,
+            blueprintId: blueprintId,
+          },
           agentId
         );
       }

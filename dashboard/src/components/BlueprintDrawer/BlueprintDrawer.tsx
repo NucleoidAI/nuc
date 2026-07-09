@@ -324,7 +324,6 @@ const BlueprintDrawer = ({
             handleClose={() => setEditBlueprintOpen(false)}
             title="Edit Blueprint"
             agentId={agentId || selectedItem?.agentId}
-            sessionId={uuid()}
             blueprintId={selectedItem?.id}
           />
         )}

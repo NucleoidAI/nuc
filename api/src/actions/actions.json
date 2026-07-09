@@ -303,11 +303,15 @@
   {
     "action": "PLATFORM:summarize_meeting_by_speaker",
     "lib": "summarize_meeting_by_speaker",
-    "description": "Produce a structured meeting summary (key topics, decisions, action items) attributed by speaker ID. First summarizes each participant's individual transcript separately (small, word-capped output), then combines those short summaries - keeps every LLM call's output well within token limits regardless of meeting length",
+    "description": "Produce a structured meeting summary (key topics, decisions, action items) attributed by speaker ID. First summarizes each participant's individual transcript separately (small, word-capped output), then combines those short summaries plus the full transcript as background reference - keeps every LLM call's output well within token limits regardless of meeting length",
     "icon": "mdi:text-box-check",
     "inputSchema": {
       "type": "object",
       "properties": {
+        "full_meeting_transcript": {
+          "type": "string",
+          "description": "Combined transcript from transcribe_meeting, used as background reference when combining per-speaker summaries."
+        },
         "speaker_transcripts": {
           "type": "array",
           "description": "Each participant's individual transcript, from transcribe_meeting's output. Pass this array through unchanged.",
@@ -325,7 +329,7 @@
           "description": "Language for the summary output (e.g. 'tr', 'en'). Defaults to 'tr'."
         }
       },
-      "required": ["speaker_transcripts"]
+      "required": ["full_meeting_transcript", "speaker_transcripts"]
     },
     "outputSchema": {
       "type": "object",

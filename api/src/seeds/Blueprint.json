@@ -329,8 +329,8 @@
     {
       "id": "019f414b-0000-4000-8000-000000000001",
       "title": "Meeting Recording Transcription & Summary",
-      "description": "Converts per-participant PCM recordings to WAV, transcribes each one, produces a structured meeting summary attributed by speaker ID (key topics, decisions, action items), resolves participant IDs to real names in that summary, and emails the summary to all participants.",
-      "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath)\nsummary = SummarizeMeetingBySpeaker(transcripts.speaker_transcripts)\nresolved = ResolveParticipants(summary, participants)\nEmail.Send(to: participants.emails, subject, body: resolved)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "description": "Converts per-participant PCM recordings to WAV, transcribes each one, produces a structured meeting summary attributed by speaker ID (key topics, decisions, action items), resolves participant IDs to real names in that summary, and emails it to all participants.",
+      "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath)\nsummary = SummarizeMeetingBySpeaker(transcripts.full_meeting_transcript, transcripts.speaker_transcripts)\nresolved = ResolveParticipants(summary, participants)\nEmail.Send(to: participants.emails, subject, body: resolved)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "019f4a02-1111-4222-8333-444455556666",
       "nodes": [
         {
@@ -366,11 +366,11 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:summarize_meeting_by_speaker",
-            "description": "Produce a structured meeting summary (key topics, decisions, action items) attributed by speaker ID, using each participant's individual transcript",
-            "prompt": "Pass speaker_transcripts from the previous step through unchanged to produce a speaker-attributed meeting summary",
+            "description": "Produce a structured meeting summary (key topics, decisions, action items) attributed by speaker ID, using each participant's individual transcript plus the full meeting transcript as background reference",
+            "prompt": "Pass full_meeting_transcript and speaker_transcripts from the previous step through unchanged to produce a speaker-attributed meeting summary",
             "label": "Summarize Meeting By Speaker",
             "icon": "mdi:text-box-check",
-            "pseudocode": "BEGIN_CONTEXT\nsummary = SummarizeMeetingBySpeaker(transcripts.speaker_transcripts)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "pseudocode": "BEGIN_CONTEXT\nsummary = SummarizeMeetingBySpeaker(transcripts.full_meeting_transcript, transcripts.speaker_transcripts)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": ["019f414b-0004-4000-8000-000000000004"],
           "createdAt": "2026-07-08T10:00:00Z"

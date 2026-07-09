@@ -29,13 +29,21 @@ async function summarizeSpeaker(
 }
 
 async function run({
-  parameters: { speaker_transcripts, language },
+  parameters: { full_meeting_transcript, speaker_transcripts, language },
 }: {
   parameters: {
+    full_meeting_transcript?: string;
     speaker_transcripts?: { id: string; transcript: string }[];
     language?: string;
   };
 }) {
+  if (!full_meeting_transcript) {
+    return {
+      error:
+        "full_meeting_transcript is required (combined transcript from transcribe_meeting)",
+    };
+  }
+
   if (!speaker_transcripts?.length) {
     return {
       error:
@@ -55,12 +63,16 @@ async function run({
     .map(({ id, summary }) => `=== Speaker ${id} ===\n${summary}`)
     .join("\n\n");
 
+  // full_meeting_transcript is passed only as background reference (e.g. to
+  // catch cross-speaker context the per-speaker summaries missed) - the
+  // model is told not to quote it, since the per-speaker summaries above are
+  // what keep this call's output small and bounded.
   const result = await generate({
     policy: {
       role: "system",
-      content: `You are a meeting summarizer. You receive a short summary of what each participant said, labeled by speaker ID. Combine them into a structured meeting summary in ${lang}. Attribute decisions and action items to the responsible speaker ID.`,
+      content: `You are a meeting summarizer. You receive a short summary of what each participant said, labeled by speaker ID, plus the full meeting transcript as background reference only. Combine them into a structured meeting summary in ${lang}. Attribute decisions and action items to the responsible speaker ID. Use the full transcript only to catch context the per-speaker summaries missed - never quote or reproduce it, and keep every output field short.`,
     },
-    content: `Per-speaker summaries:\n\n${speakerSummaryBlock}`,
+    content: `Per-speaker summaries:\n\n${speakerSummaryBlock}\n\nFull meeting transcript (background reference only - do not quote):\n${full_meeting_transcript}`,
     json_format:
       '{ summary: "<overall meeting summary, at most 200 words>", key_topics: ["<topic>"], decisions: ["<speaker id>: <decision>"], action_items: [{ owner_id: "<speaker id>", task: "<task>" }] }',
     max_tokens: 2048,

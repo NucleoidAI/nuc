@@ -1,29 +1,45 @@
 import { generate } from "../lib/llm";
 
-// Keeps each chunk's labeled output comfortably under the LLM provider's
-// max output token cap (Bedrock is hardcoded to 8192 tokens, see lib/bedrock.ts).
+// Some models (small/coder-specialized ones especially) tend to ignore
+// "add a label to every line" instructions on large text and just echo the
+// input back unchanged. Asking the model to reproduce the transcript at all
+// invites that failure. Instead we split the transcript into sentences
+// ourselves and ask the model only for a short array of speaker IDs (one per
+// sentence) - there's no transcript text in the output to echo, so the
+// model has nothing to do but the labeling task. This also keeps output
+// tiny regardless of meeting length, avoiding token-limit truncation.
 const CHUNK_CHAR_LIMIT = 6000;
-const OVERLAP_LINES = 3;
+const OVERLAP_SENTENCES = 3;
 
-function splitIntoChunks(transcript: string, maxChars: number): string[] {
-  const lines = transcript.split("\n");
-  const chunks: string[] = [];
-  let current: string[] = [];
-  let currentLength = 0;
+function splitIntoSentences(transcript: string): string[] {
+  const sentences = transcript.match(/[^.!?\n]+[.!?\n]+|[^.!?\n]+$/g) ?? [
+    transcript,
+  ];
+  return sentences.map((s) => s.trim()).filter(Boolean);
+}
 
-  for (const line of lines) {
-    const lineLength = line.length + 1;
-    if (currentLength + lineLength > maxChars && current.length > 0) {
-      chunks.push(current.join("\n"));
-      current = current.slice(-OVERLAP_LINES);
-      currentLength = current.reduce((sum, l) => sum + l.length + 1, 0);
+function chunkSentences(
+  sentences: string[],
+  maxChars: number
+): { context: string[]; target: string[] }[] {
+  const chunks: { context: string[]; target: string[] }[] = [];
+  let target: string[] = [];
+  let targetLength = 0;
+  let previousTail: string[] = [];
+
+  for (const sentence of sentences) {
+    if (targetLength + sentence.length > maxChars && target.length > 0) {
+      chunks.push({ context: previousTail, target });
+      previousTail = target.slice(-OVERLAP_SENTENCES);
+      target = [];
+      targetLength = 0;
     }
-    current.push(line);
-    currentLength += lineLength;
+    target.push(sentence);
+    targetLength += sentence.length;
   }
 
-  if (current.length > 0) {
-    chunks.push(current.join("\n"));
+  if (target.length > 0) {
+    chunks.push({ context: previousTail, target });
   }
 
   return chunks;
@@ -54,39 +70,43 @@ async function run({
   const speakerBlock = speaker_transcripts
     .map(({ id, transcript }) => `=== Speaker ${id} ===\n${transcript}`)
     .join("\n\n");
+  const knownSpeakerIds = new Set(speaker_transcripts.map((s) => s.id));
 
-  const chunks = splitIntoChunks(full_meeting_transcript, CHUNK_CHAR_LIMIT);
-  const labeledChunks: string[] = [];
+  const sentences = splitIntoSentences(full_meeting_transcript);
+  const chunks = chunkSentences(sentences, CHUNK_CHAR_LIMIT);
+  const labeledLines: string[] = [];
 
-  for (const chunk of chunks) {
-    const precedingContext = labeledChunks.length
-      ? labeledChunks[labeledChunks.length - 1]
-          .split("\n")
-          .slice(-OVERLAP_LINES)
-          .join("\n")
-      : "";
+  for (const { context, target } of chunks) {
+    const numberedTarget = target.map((s, i) => `${i + 1}. ${s}`).join("\n");
+    const numberedContext = context.map((s, i) => `${i + 1}. ${s}`).join("\n");
 
     const result = await generate({
       policy: {
         role: "system",
         content:
-          "You are a meeting transcript editor. You are given each participant's individual transcript, and a segment of the main meeting transcript. Determine which speaker said each line of the main transcript segment by matching its content against the per-speaker transcripts, and prefix each line with that speaker's ID. Preserve the original text and line order exactly - only add speaker labels, do not summarize, translate, or omit any line. If a line's speaker cannot be determined, prefix it with 'UNKNOWN'.",
+          "You identify which speaker said each numbered sentence of a meeting transcript, by matching it against each participant's individual transcript. Respond with ONLY an array of speaker IDs - one per TARGET sentence, in the same order, nothing else. Do not include the sentence text. If a sentence's speaker cannot be determined, use 'UNKNOWN'.",
       },
       content: `Per-speaker transcripts (for matching content to speakers):\n\n${speakerBlock}\n\n${
-        precedingContext
-          ? `Already-labeled preceding context (do NOT repeat this in your output, it is only for continuity):\n${precedingContext}\n\n`
+        context.length
+          ? `Context (already labeled earlier, shown only for continuity - do NOT include these in your output):\n${numberedContext}\n\n`
           : ""
-      }Main meeting transcript segment to label (label every line below, in order):\n${chunk}`,
-      json_format:
-        '{ labeled_segment: "<only this segment, with a speaker label prefixed on each line>" }',
-      max_tokens: 8192,
+      }TARGET sentences - return exactly ${
+        target.length
+      } speaker IDs, one per sentence, in this order:\n${numberedTarget}`,
+      json_format: `{ speaker_ids: ["<speaker id or UNKNOWN for sentence 1>", "<speaker id or UNKNOWN for sentence 2>", "... exactly ${target.length} items total"] }`,
+      max_tokens: 2048,
     });
 
-    labeledChunks.push((result as { labeled_segment: string }).labeled_segment);
+    const ids = (result as { speaker_ids?: string[] }).speaker_ids ?? [];
+    target.forEach((sentence, i) => {
+      const id = ids[i];
+      const label = id && knownSpeakerIds.has(id) ? id : "UNKNOWN";
+      labeledLines.push(`${label}: ${sentence}`);
+    });
   }
 
   return {
-    final_transcript: labeledChunks.join("\n"),
+    final_transcript: labeledLines.join("\n"),
   };
 }
 

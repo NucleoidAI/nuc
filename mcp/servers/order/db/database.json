@@ -17,40 +17,18 @@
     }
   ],
   "products": [
-    {
-      "id": "prd-1",
-      "name": "product-1",
-      "vendor_id": "vnd-1"
-    },
-    {
-      "id": "prd-2",
-      "name": "product-2",
-      "vendor_id": "vnd-2"
-    },
-    {
-      "id": "prd-3",
-      "name": "product-3",
-      "vendor_id": "vnd-3"
-    },
-    {
-      "id": "prd-4",
-      "name": "product-4",
-      "vendor_id": "vnd-1"
-    }
+    { "id": "prd-1", "name": "product-1", "vendor_id": "vnd-1" },
+    { "id": "prd-2", "name": "product-2", "vendor_id": "vnd-2" },
+    { "id": "prd-3", "name": "product-3", "vendor_id": "vnd-3" },
+    { "id": "prd-4", "name": "product-4", "vendor_id": "vnd-1" }
   ],
   "certificates": [
     "FFC",
     "CE"
   ],
   "product_certificates": [
-    {
-      "product_id": "prd-1",
-      "certificate": "FFC"
-    },
-    {
-      "product_id": "prd-2",
-      "certificate": "CE"
-    }
+    { "product_id": "prd-1", "certificate": "FFC" },
+    { "product_id": "prd-2", "certificate": "CE" }
   ],
   "cities": [
     "Atlanta",
@@ -77,12 +55,6 @@
       "product_id": "prd-3",
       "city": "New York",
       "quantity": 2
-    },
-    {
-      "order_id": "po-1004",
-      "product_id": "prd-3",
-      "city": "Atlanta",
-      "quantity": "1"
     }
   ]
 }

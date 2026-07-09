@@ -1,5 +1,5 @@
 {
-  "sequence": 10,
+  "sequence": 11,
   "seed": [
     {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
@@ -327,67 +327,95 @@
       ]
     },
     {
-      "id": "019f4a01-1c4a-7a10-9b21-2d4e5f6a7b8c",
-      "title": "Meeting Summary and Action Items",
-      "description": "This Blueprint retrieves a meeting transcript from the user's Google Drive, uses an LLM to extract a concise meeting summary and the action items that are specifically assigned to the user, and finally sends the results to the user's email.",
-      "pseudocode": "BEGIN_CONTEXT\ntranscript = GetMeetingTranscript(User.Query)\nresult = ExtractActionItemsAndSummary(transcript, User)\nSendEmail(User.Email, \"Meeting Summary & Action Items\", result)\nEND_CONTEXT\n\nEND_MESSAGE",
+      "id": "019f414b-0000-4000-8000-000000000001",
+      "title": "Meeting Recording Transcription & Summary",
+      "description": "Converts per-participant PCM recordings to WAV, transcribes each one, merges them into a chronological transcript with speaker attribution, resolves participant IDs to real names, and produces a structured meeting summary with key topics, decisions, and action items.",
+      "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath)\nmerged = MergeTranscripts(transcripts)\nresolved = ResolveParticipants(merged.final_transcript, participants)\nsummary = SummarizeMeeting(resolved.transcript)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "019f4a02-1111-4222-8333-444455556666",
       "nodes": [
         {
-          "id": "019f4a01-2a01-7a10-9b21-3a4b5c6d7e8f",
+          "id": "019f414b-0001-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
-            "action": "GDRIVE:search",
-            "description": "Search Google Drive for the meeting transcript document",
-            "prompt": "Get meeting transcript from Google Drive",
-            "label": "Get Meeting Transcript",
-            "icon": "mdi:file-document",
-            "pseudocode": "BEGIN_CONTEXT\ntranscript = GetMeetingTranscript(User.Query)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "action": "PLATFORM:pcm_to_wav",
+            "description": "Convert all PCM audio files in the meeting directory to WAV format",
+            "prompt": "Convert PCM files to WAV",
+            "label": "Convert PCM to WAV",
+            "icon": "mdi:waveform",
+            "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
-          "next": ["019f4a01-3b02-7a10-9b21-4a5b6c7d8e9f"],
-          "createdAt": "2026-06-18T10:00:00Z"
+          "next": ["019f414b-0002-4000-8000-000000000002"],
+          "createdAt": "2026-07-08T10:00:00Z"
         },
         {
-          "id": "019f4a01-3b02-7a10-9b21-4a5b6c7d8e9f",
+          "id": "019f414b-0002-4000-8000-000000000002",
           "type": "NORMAL",
           "properties": {
-            "action": "PLATFORM:llm",
-            "description": "Use the LLM to produce a meeting summary and the action items that belong to the current user",
-            "prompt": "Extract action items and meeting summary for the user from the transcript",
-            "label": "Extract Action Items and Meeting Summary",
-            "icon": "mdi:brain",
-            "pseudocode": "BEGIN_CONTEXT\nresult = ExtractActionItemsAndSummary(transcript, User)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "action": "PLATFORM:transcribe_meeting",
+            "description": "Transcribe each WAV file individually and collect per-speaker transcripts",
+            "prompt": "Transcribe all WAV files in the meeting directory",
+            "label": "Transcribe Meeting",
+            "icon": "mdi:microphone-multiple",
+            "pseudocode": "BEGIN_CONTEXT\ntranscripts = TranscribeMeeting(directoryPath)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
-          "next": ["019f4a01-4c03-7a10-9b21-5a6b7c8d9eaf"],
-          "createdAt": "2026-06-18T10:00:00Z"
+          "next": ["019f414b-0003-4000-8000-000000000003"],
+          "createdAt": "2026-07-08T10:00:00Z"
         },
         {
-          "id": "019f4a01-4c03-7a10-9b21-5a6b7c8d9eaf",
+          "id": "019f414b-0003-4000-8000-000000000003",
           "type": "NORMAL",
           "properties": {
-            "action": "GREY:send_email",
-            "description": "Send the meeting summary and the user's action items by email",
-            "prompt": "Send meeting summary and action items via email",
-            "label": "Send Email",
-            "icon": "mdi:email-send",
-            "pseudocode": "BEGIN_CONTEXT\nSendEmail(User.Email, \"Meeting Summary & Action Items\", result)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "action": "PLATFORM:merge_transcripts",
+            "description": "Merge per-speaker VTT transcripts into a single chronological transcript using speaker IDs",
+            "prompt": "Merge all speaker transcripts into a unified meeting transcript",
+            "label": "Merge Transcripts",
+            "icon": "mdi:text-account",
+            "pseudocode": "BEGIN_CONTEXT\nmerged = MergeTranscripts(transcripts)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
-          "next": ["019f4a01-5d04-7a10-9b21-6a7b8c9daebf"],
-          "createdAt": "2026-06-18T10:00:00Z"
+          "next": ["019f414b-0004-4000-8000-000000000004"],
+          "createdAt": "2026-07-08T10:00:00Z"
         },
         {
-          "id": "019f4a01-5d04-7a10-9b21-6a7b8c9daebf",
+          "id": "019f414b-0004-4000-8000-000000000004",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:resolve_participants",
+            "description": "Replace numeric participant IDs in the transcript with real participant names from meeting metadata",
+            "prompt": "Resolve participant IDs to real names using meeting metadata",
+            "label": "Resolve Participants",
+            "icon": "mdi:account-convert",
+            "pseudocode": "BEGIN_CONTEXT\nresolved = ResolveParticipants(merged.final_transcript, participants)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f414b-0005-4000-8000-000000000005"],
+          "createdAt": "2026-07-08T10:00:00Z"
+        },
+        {
+          "id": "019f414b-0005-4000-8000-000000000005",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:summarize_meeting",
+            "description": "Summarize the resolved transcript into key topics, decisions, and action items",
+            "prompt": "Produce a structured meeting summary with key topics, decisions, and action items",
+            "label": "Summarize Meeting",
+            "icon": "mdi:text-box-check",
+            "pseudocode": "BEGIN_CONTEXT\nsummary = SummarizeMeeting(resolved.transcript)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f414b-0006-4000-8000-000000000006"],
+          "createdAt": "2026-07-08T10:00:00Z"
+        },
+        {
+          "id": "019f414b-0006-4000-8000-000000000006",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the meeting summary workflow as complete",
+            "description": "Mark the meeting transcription and summary workflow as complete",
             "prompt": "Complete meeting summary flow",
             "label": "Complete",
             "icon": "mdi:check",
             "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": null,
-          "createdAt": "2026-06-18T10:00:00Z"
+          "createdAt": "2026-07-08T10:00:00Z"
         }
       ]
     }

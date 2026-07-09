@@ -133,6 +133,234 @@
     }
   },
   {
+    "action": "PLATFORM:asr",
+    "lib": "asr",
+    "description": "Transcribe an audio file using ASR. Returns the transcription in VTT format directly.",
+    "icon": "mdi:microphone-message",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "inputPath": {
+          "type": "string",
+          "description": "Absolute path to the audio file to transcribe."
+        }
+      },
+      "required": ["inputPath"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "success": { "type": "boolean" },
+        "transcription": {
+          "type": "string",
+          "description": "The transcription in VTT format."
+        },
+        "error": { "type": "string" }
+      }
+    }
+  },
+  {
+    "action": "PLATFORM:file_inspector",
+    "lib": "file_inspector",
+    "description": "Inspect files or directories using an absolute path. Supports checking existence, reading content, getting metadata, or listing directory entries.",
+    "icon": "mdi:file-search",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "filePath": {
+          "type": "string",
+          "description": "The absolute path to the file or directory."
+        },
+        "operation": {
+          "type": "string",
+          "enum": ["exists", "read", "stat", "list"],
+          "description": "Operation to perform: 'exists' checks if the path exists, 'read' returns file content, 'stat' returns file metadata, 'list' lists directory contents."
+        }
+      },
+      "required": ["filePath"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "exists": { "type": "boolean" },
+        "content": { "type": "string" },
+        "isFile": { "type": "boolean" },
+        "isDirectory": { "type": "boolean" },
+        "size": { "type": "number" },
+        "created": { "type": "string" },
+        "modified": { "type": "string" },
+        "entries": { "type": "array" },
+        "error": { "type": "string" }
+      }
+    }
+  },
+  {
+    "action": "PLATFORM:pcm_to_wav",
+    "lib": "pcm_to_wav",
+    "description": "Convert all PCM audio files (.pcm) in a directory to WAV format",
+    "icon": "mdi:waveform",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "directoryPath": {
+          "type": "string",
+          "description": "Absolute path to the directory containing .pcm files."
+        }
+      },
+      "required": ["directoryPath"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "success": { "type": "boolean" },
+        "converted": {
+          "type": "array",
+          "description": "List of output .wav file paths."
+        },
+        "errors": { "type": "array" },
+        "totalFound": { "type": "number" },
+        "totalConverted": { "type": "number" },
+        "message": { "type": "string" }
+      }
+    }
+  },
+  {
+    "action": "PLATFORM:transcribe_meeting",
+    "lib": "transcribe_meeting",
+    "description": "Transcribe all WAV audio files in a directory one by one and return individual and combined transcripts",
+    "icon": "mdi:microphone-multiple",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "directoryPath": {
+          "type": "string",
+          "description": "Absolute path to the directory containing .wav files."
+        }
+      },
+      "required": ["directoryPath"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "full_meeting_transcript": {
+          "type": "string",
+          "description": "Combined transcript of all audio files in order."
+        },
+        "error": { "type": "string" }
+      },
+      "additionalProperties": {
+        "type": "string",
+        "description": "Individual transcript keyed as user_<filename>_transcript."
+      }
+    }
+  },
+  {
+    "action": "PLATFORM:merge_transcripts",
+    "lib": "merge_transcripts",
+    "description": "Merge per-speaker VTT transcripts into a single chronological meeting transcript with speaker attribution (who said what)",
+    "icon": "mdi:text-account",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "full_meeting_transcript": {
+          "type": "string",
+          "description": "Combined transcript from transcribe_meeting (optional, used as context)."
+        }
+      },
+      "additionalProperties": {
+        "type": "string",
+        "description": "Individual speaker transcripts keyed as user_<id>_transcript."
+      }
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "final_transcript": {
+          "type": "string",
+          "description": "Unified chronological transcript with speaker labels."
+        },
+        "error": { "type": "string" }
+      }
+    }
+  },
+  {
+    "action": "PLATFORM:resolve_participants",
+    "lib": "resolve_participants",
+    "description": "Replace participant IDs in a transcript with their real names using a participants list from metadata",
+    "icon": "mdi:account-convert",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "transcript": {
+          "type": "string",
+          "description": "The transcript containing participant IDs as speaker labels."
+        },
+        "participants": {
+          "type": "array",
+          "description": "Array of participant objects from meeting metadata.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" }
+            },
+            "required": ["id", "name"]
+          }
+        }
+      },
+      "required": ["transcript", "participants"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "transcript": {
+          "type": "string",
+          "description": "Transcript with IDs replaced by participant names."
+        },
+        "error": { "type": "string" }
+      }
+    }
+  },
+  {
+    "action": "PLATFORM:summarize_meeting",
+    "lib": "summarize_meeting",
+    "description": "Summarize a meeting transcript into key topics, decisions, and action items",
+    "icon": "mdi:text-box-check",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "transcript": {
+          "type": "string",
+          "description": "The full meeting transcript to summarize."
+        },
+        "language": {
+          "type": "string",
+          "description": "Language for the summary output (e.g. 'tr', 'en'). Defaults to 'tr'."
+        }
+      },
+      "required": ["transcript"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "summary": { "type": "string" },
+        "key_topics": { "type": "array", "items": { "type": "string" } },
+        "decisions": { "type": "array", "items": { "type": "string" } },
+        "action_items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "owner": { "type": "string" },
+              "task": { "type": "string" }
+            }
+          }
+        },
+        "error": { "type": "string" }
+      }
+    }
+  },
+  {
     "action": "PLATFORM:message_user",
     "lib": "message_user",
     "description": "Send a message to the user",

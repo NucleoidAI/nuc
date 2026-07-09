@@ -8,11 +8,13 @@ async function create({
   type,
   agentId,
   blueprintId,
+  variables,
 }: {
   id?: string;
   type: string;
   agentId: string;
   blueprintId?: string;
+  variables?: Record<string, unknown>;
 }) {
   const sessionId = id ?? uuid();
 
@@ -28,6 +30,7 @@ async function create({
     type,
     agentId,
     blueprintId,
+    ...(variables && { variables }),
   });
 
   return session;

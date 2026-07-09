@@ -57,8 +57,14 @@ async function run({
     return { error: "No .wav files found in directory" };
   }
 
-  const result: Record<string, string> = {};
+  // The recording pipeline saves the whole-meeting mix under the meeting's
+  // own ID (same name as the directory) rather than a participant ID - it's
+  // not a speaker and must not be treated as one.
+  const meetingId = path.basename(directoryPath);
+
+  const speakerTranscripts: { id: string; transcript: string }[] = [];
   const fullParts: string[] = [];
+  let mixTranscript: string | null = null;
 
   for (const file of wavFiles) {
     const stem = path.basename(file, ".wav");
@@ -69,7 +75,11 @@ async function run({
         endpointUrl,
         authHeader,
       );
-      result[`user_${stem}_transcript`] = transcription;
+      if (stem === meetingId) {
+        mixTranscript = transcription;
+      } else {
+        speakerTranscripts.push({ id: stem, transcript: transcription });
+      }
       fullParts.push(transcription);
     } catch (err: unknown) {
       const axiosErr = err as {
@@ -85,8 +95,8 @@ async function run({
   }
 
   return {
-    full_meeting_transcript: fullParts.join("\n\n"),
-    ...result,
+    full_meeting_transcript: mixTranscript ?? fullParts.join("\n\n"),
+    speaker_transcripts: speakerTranscripts,
   };
 }
 

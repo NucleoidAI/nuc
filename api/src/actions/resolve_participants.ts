@@ -1,25 +1,51 @@
+function deepResolve(
+  value: unknown,
+  replacements: [string, string][]
+): unknown {
+  if (typeof value === "string") {
+    return replacements.reduce(
+      (text, [id, name]) => text.split(id).join(name),
+      value
+    );
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((item) => deepResolve(item, replacements));
+  }
+
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>).map(([key, val]) => [
+        key,
+        deepResolve(val, replacements),
+      ])
+    );
+  }
+
+  return value;
+}
+
 async function run({
-  parameters: { transcript, participants },
+  parameters: { content, participants },
 }: {
   parameters: {
-    transcript: string;
+    content: unknown;
     participants: { id: string; name: string }[];
   };
 }) {
-  if (!transcript) {
-    return { error: "transcript is required" };
+  if (content === undefined || content === null) {
+    return { error: "content is required" };
   }
 
   if (!participants?.length) {
     return { error: "participants array is required" };
   }
 
-  let resolved = transcript;
-  for (const { id, name } of participants) {
-    resolved = resolved.replaceAll(`${id}:`, `${name}:`);
-  }
+  const replacements = participants.map(
+    ({ id, name }) => [id, name] as [string, string]
+  );
 
-  return { transcript: resolved };
+  return { content: deepResolve(content, replacements) };
 }
 
 export default { run };

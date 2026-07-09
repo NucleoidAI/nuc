@@ -329,8 +329,8 @@
     {
       "id": "019f414b-0000-4000-8000-000000000001",
       "title": "Meeting Recording Transcription & Summary",
-      "description": "Converts per-participant PCM recordings to WAV, transcribes each one, merges them into a chronological transcript with speaker attribution, resolves participant IDs to real names, and produces a structured meeting summary with key topics, decisions, and action items.",
-      "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath)\nmerged = MergeTranscripts(transcripts)\nresolved = ResolveParticipants(merged.final_transcript, participants)\nsummary = SummarizeMeeting(resolved.transcript)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "description": "Converts per-participant PCM recordings to WAV, transcribes each one, produces a structured meeting summary attributed by speaker ID (key topics, decisions, action items), resolves participant IDs to real names in that summary, and emails the summary to all participants.",
+      "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath)\nsummary = SummarizeMeetingBySpeaker(transcripts.speaker_transcripts)\nresolved = ResolveParticipants(summary, participants)\nEmail.Send(to: participants.emails, subject, body: resolved)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "019f4a02-1111-4222-8333-444455556666",
       "nodes": [
         {
@@ -365,12 +365,12 @@
           "id": "019f414b-0003-4000-8000-000000000003",
           "type": "NORMAL",
           "properties": {
-            "action": "PLATFORM:merge_transcripts",
-            "description": "Merge per-speaker VTT transcripts into a single chronological transcript using speaker IDs",
-            "prompt": "Merge all speaker transcripts into a unified meeting transcript",
-            "label": "Merge Transcripts",
-            "icon": "mdi:text-account",
-            "pseudocode": "BEGIN_CONTEXT\nmerged = MergeTranscripts(transcripts)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "action": "PLATFORM:summarize_meeting_by_speaker",
+            "description": "Produce a structured meeting summary (key topics, decisions, action items) attributed by speaker ID, using each participant's individual transcript",
+            "prompt": "Pass speaker_transcripts from the previous step through unchanged to produce a speaker-attributed meeting summary",
+            "label": "Summarize Meeting By Speaker",
+            "icon": "mdi:text-box-check",
+            "pseudocode": "BEGIN_CONTEXT\nsummary = SummarizeMeetingBySpeaker(transcripts.speaker_transcripts)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": ["019f414b-0004-4000-8000-000000000004"],
           "createdAt": "2026-07-08T10:00:00Z"
@@ -380,11 +380,11 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:resolve_participants",
-            "description": "Replace numeric participant IDs in the transcript with real participant names from meeting metadata",
-            "prompt": "Resolve participant IDs to real names using meeting metadata",
+            "description": "Replace numeric participant IDs with real participant names, anywhere they appear in the meeting summary",
+            "prompt": "Resolve participant IDs to real names in the meeting summary using meeting metadata",
             "label": "Resolve Participants",
             "icon": "mdi:account-convert",
-            "pseudocode": "BEGIN_CONTEXT\nresolved = ResolveParticipants(merged.final_transcript, participants)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "pseudocode": "BEGIN_CONTEXT\nresolved = ResolveParticipants(summary, participants)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": ["019f414b-0005-4000-8000-000000000005"],
           "createdAt": "2026-07-08T10:00:00Z"
@@ -393,12 +393,12 @@
           "id": "019f414b-0005-4000-8000-000000000005",
           "type": "NORMAL",
           "properties": {
-            "action": "PLATFORM:summarize_meeting",
-            "description": "Summarize the resolved transcript into key topics, decisions, and action items",
-            "prompt": "Produce a structured meeting summary with key topics, decisions, and action items",
-            "label": "Summarize Meeting",
-            "icon": "mdi:text-box-check",
-            "pseudocode": "BEGIN_CONTEXT\nsummary = SummarizeMeeting(resolved.transcript)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "action": "GREY:send_email",
+            "description": "Email the resolved meeting summary to all meeting participants",
+            "prompt": "Send one email to all meeting participants (join every participant's email from meeting metadata into a comma-separated 'to' field). Use the meeting name/date in the subject. Format the body from the resolved summary: overall summary, key topics, decisions, action items (with owner names), and per-speaker highlights.",
+            "label": "Send Email",
+            "icon": "mdi:email-send",
+            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(to: participants.emails, subject, body: resolved)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": ["019f414b-0006-4000-8000-000000000006"],
           "createdAt": "2026-07-08T10:00:00Z"

@@ -246,31 +246,48 @@
           "type": "string",
           "description": "Combined transcript of all audio files in order."
         },
+        "speaker_transcripts": {
+          "type": "array",
+          "description": "Each participant's individual transcript.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "transcript": { "type": "string" }
+            },
+            "required": ["id", "transcript"]
+          }
+        },
         "error": { "type": "string" }
-      },
-      "additionalProperties": {
-        "type": "string",
-        "description": "Individual transcript keyed as user_<filename>_transcript."
       }
     }
   },
   {
     "action": "PLATFORM:merge_transcripts",
     "lib": "merge_transcripts",
-    "description": "Merge per-speaker VTT transcripts into a single chronological meeting transcript with speaker attribution (who said what)",
+    "description": "Label the main meeting transcript with speaker attribution by cross-referencing each participant's individual transcript (who said what), processed in chunks to stay within LLM output token limits",
     "icon": "mdi:text-account",
     "inputSchema": {
       "type": "object",
       "properties": {
         "full_meeting_transcript": {
           "type": "string",
-          "description": "Combined transcript from transcribe_meeting (optional, used as context)."
+          "description": "Combined transcript from transcribe_meeting, to be labeled with speakers."
+        },
+        "speaker_transcripts": {
+          "type": "array",
+          "description": "Each participant's individual transcript, from transcribe_meeting's output. Pass this array through unchanged.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "transcript": { "type": "string" }
+            },
+            "required": ["id", "transcript"]
+          }
         }
       },
-      "additionalProperties": {
-        "type": "string",
-        "description": "Individual speaker transcripts keyed as user_<id>_transcript."
-      }
+      "required": ["full_meeting_transcript", "speaker_transcripts"]
     },
     "outputSchema": {
       "type": "object",
@@ -284,16 +301,72 @@
     }
   },
   {
+    "action": "PLATFORM:summarize_meeting_by_speaker",
+    "lib": "summarize_meeting_by_speaker",
+    "description": "Produce a structured meeting summary (key topics, decisions, action items) attributed by speaker ID. First summarizes each participant's individual transcript separately (small, word-capped output), then combines those short summaries - keeps every LLM call's output well within token limits regardless of meeting length",
+    "icon": "mdi:text-box-check",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "speaker_transcripts": {
+          "type": "array",
+          "description": "Each participant's individual transcript, from transcribe_meeting's output. Pass this array through unchanged.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "transcript": { "type": "string" }
+            },
+            "required": ["id", "transcript"]
+          }
+        },
+        "language": {
+          "type": "string",
+          "description": "Language for the summary output (e.g. 'tr', 'en'). Defaults to 'tr'."
+        }
+      },
+      "required": ["speaker_transcripts"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "summary": { "type": "string" },
+        "key_topics": { "type": "array", "items": { "type": "string" } },
+        "decisions": { "type": "array", "items": { "type": "string" } },
+        "action_items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "owner_id": { "type": "string" },
+              "task": { "type": "string" }
+            }
+          }
+        },
+        "speaker_highlights": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "summary": { "type": "string" }
+            }
+          }
+        },
+        "error": { "type": "string" }
+      }
+    }
+  },
+  {
     "action": "PLATFORM:resolve_participants",
     "lib": "resolve_participants",
-    "description": "Replace participant IDs in a transcript with their real names using a participants list from metadata",
+    "description": "Replace participant IDs with their real names, anywhere they appear (recursively) inside a text transcript or a structured summary object, using a participants list from metadata",
     "icon": "mdi:account-convert",
     "inputSchema": {
       "type": "object",
       "properties": {
-        "transcript": {
-          "type": "string",
-          "description": "The transcript containing participant IDs as speaker labels."
+        "content": {
+          "description": "The transcript string or structured summary object (e.g. output of summarize_meeting_by_speaker) containing participant IDs to resolve."
         },
         "participants": {
           "type": "array",
@@ -308,14 +381,13 @@
           }
         }
       },
-      "required": ["transcript", "participants"]
+      "required": ["content", "participants"]
     },
     "outputSchema": {
       "type": "object",
       "properties": {
-        "transcript": {
-          "type": "string",
-          "description": "Transcript with IDs replaced by participant names."
+        "content": {
+          "description": "The same input shape (string or object), with IDs replaced by participant names."
         },
         "error": { "type": "string" }
       }

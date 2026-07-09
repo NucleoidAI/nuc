@@ -1346,6 +1346,175 @@
           }
         }
       ]
+    },
+    {
+      "id": "4a1c9e2b-7d3f-4b8a-9e6c-2f5a8d1b3c7e",
+      "description": "Transcribe a meeting recording, produce a speaker-attributed summary, resolve participant names, and email the summary to all participants.",
+      "sessionId": "019f414b-8a07-72f2-8adf-82cd88f6b7cc",
+      "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath)\nsummary = SummarizeMeetingBySpeaker(transcripts.full_meeting_transcript, transcripts.speaker_transcripts)\nresolved = ResolveParticipants(summary, participants)\nEmail.Send(to: participants.emails, template: \"meeting_summary\", data: resolved)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "blueprint": {
+        "id": "019f414b-0000-4000-8000-000000000001",
+        "title": "Meeting Recording Transcription & Summary",
+        "description": "Converts per-participant PCM recordings to WAV, transcribes each one, produces a structured meeting summary attributed by speaker ID, resolves participant IDs to real names in that summary, and emails it to all participants.",
+        "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath)\nsummary = SummarizeMeetingBySpeaker(transcripts.full_meeting_transcript, transcripts.speaker_transcripts)\nresolved = ResolveParticipants(summary, participants)\nEmail.Send(to: participants.emails, template: \"meeting_summary\", data: resolved)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+        "agentId": "019f4a02-1111-4222-8333-444455556666",
+        "nodes": [
+          {
+            "id": "019f414b-0001-4000-8000-000000000001",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:pcm_to_wav",
+              "prompt": "Convert PCM files to WAV"
+            },
+            "next": [
+              "019f414b-0002-4000-8000-000000000002"
+            ]
+          },
+          {
+            "id": "019f414b-0002-4000-8000-000000000002",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:transcribe_meeting",
+              "prompt": "Transcribe all WAV files in the meeting directory"
+            },
+            "next": [
+              "019f414b-0003-4000-8000-000000000003"
+            ]
+          },
+          {
+            "id": "019f414b-0003-4000-8000-000000000003",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:summarize_meeting_by_speaker",
+              "prompt": "Produce a speaker-attributed meeting summary"
+            },
+            "next": [
+              "019f414b-0004-4000-8000-000000000004"
+            ]
+          },
+          {
+            "id": "019f414b-0004-4000-8000-000000000004",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:resolve_participants",
+              "prompt": "Resolve participant IDs to real names in the summary"
+            },
+            "next": [
+              "019f414b-0005-4000-8000-000000000005"
+            ]
+          },
+          {
+            "id": "019f414b-0005-4000-8000-000000000005",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "prompt": "Email the resolved meeting summary to all participants using the meeting_summary template"
+            },
+            "next": [
+              "019f414b-0006-4000-8000-000000000006"
+            ]
+          },
+          {
+            "id": "019f414b-0006-4000-8000-000000000006",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "prompt": "Complete meeting summary flow"
+            },
+            "next": null
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "b1a2c3d4-1111-4222-8333-444455556601",
+          "type": "TEXT",
+          "text": "Meeting name: Retrospective Meeting. Meeting date: 2026-07-08.",
+          "status": "COMPLETED",
+          "createdAt": "1970-01-20T22:08:14.337Z"
+        },
+        {
+          "id": "b1a2c3d4-1111-4222-8333-444455556602",
+          "type": "TEXT",
+          "text": "Participants: [{\"id\":\"16780288\",\"name\":\"Ayşe Kaya\",\"email\":\"ayse.kaya@example.com\"},{\"id\":\"16782336\",\"name\":\"Mehmet Yılmaz\",\"email\":\"mehmet.yilmaz@example.com\"},{\"id\":\"16783360\",\"name\":\"Halil Cengel\",\"email\":\"halil.cengel@example.com\"}]",
+          "status": "COMPLETED",
+          "createdAt": "1970-01-20T22:08:14.337Z"
+        }
+      ],
+      "tools": [
+        "PLATFORM:pcm_to_wav",
+        "PLATFORM:transcribe_meeting",
+        "PLATFORM:summarize_meeting_by_speaker",
+        "PLATFORM:resolve_participants",
+        "GREY:send_email",
+        "PLATFORM:complete"
+      ],
+      "steps": [
+        {
+          "taskId": "4a1c9e2b-7d3f-4b8a-9e6c-2f5a8d1b3c7e",
+          "action": "PLATFORM:resolve_participants",
+          "status": "COMPLETED",
+          "parameters": {
+            "participants": [
+              {
+                "id": "16780288",
+                "name": "Ayşe Kaya"
+              },
+              {
+                "id": "16782336",
+                "name": "Mehmet Yılmaz"
+              },
+              {
+                "id": "16783360",
+                "name": "Halil Cengel"
+              }
+            ]
+          },
+          "result": "{\"content\":{\"summary\":\"Ekip son review toplantılarındaki düşük katılımı ve Smart TV entegrasyon çalışmalarını değerlendirdi.\",\"key_topics\":[\"Düşük toplantı katılımı\",\"Smart TV entegrasyonu\"],\"decisions\":[\"Mehmet Yılmaz: Gelecek ay için hatırlatma maili gönderilecek\"],\"action_items\":[{\"owner_id\":\"Mehmet Yılmaz\",\"task\":\"Hatırlatma maili gönder\"}],\"speaker_highlights\":[{\"id\":\"Ayşe Kaya\",\"summary\":\"Katılım azlığından endişe duydu.\"}]}}",
+          "comment": "Resolving participant IDs to real names in the summary"
+        },
+        {
+          "taskId": "4a1c9e2b-7d3f-4b8a-9e6c-2f5a8d1b3c7e",
+          "action": "GREY:send_email",
+          "status": "COMPLETED",
+          "parameters": {
+            "to": "ayse.kaya@example.com, mehmet.yilmaz@example.com, halil.cengel@example.com",
+            "template": "meeting_summary",
+            "data": {
+              "meetingName": "Retrospective Meeting",
+              "meetingDate": "2026-07-08",
+              "summary": "Ekip son review toplantılarındaki düşük katılımı ve Smart TV entegrasyon çalışmalarını değerlendirdi.",
+              "key_topics": [
+                "Düşük toplantı katılımı",
+                "Smart TV entegrasyonu"
+              ],
+              "decisions": [
+                "Mehmet Yılmaz: Gelecek ay için hatırlatma maili gönderilecek"
+              ],
+              "action_items": [
+                {
+                  "owner": "Mehmet Yılmaz",
+                  "task": "Hatırlatma maili gönder"
+                }
+              ],
+              "speaker_highlights": [
+                {
+                  "id": "Ayşe Kaya",
+                  "summary": "Katılım azlığından endişe duydu."
+                }
+              ]
+            }
+          },
+          "comment": "Emailing the resolved meeting summary to every participant (comma-separated addresses in to) using the meeting_summary template instead of composing subject/text manually"
+        },
+        {
+          "taskId": "4a1c9e2b-7d3f-4b8a-9e6c-2f5a8d1b3c7e",
+          "action": "PLATFORM:complete",
+          "status": "COMPLETED",
+          "parameters": {},
+          "comment": "Completing meeting summary flow"
+        }
+      ]
     }
   ]
 }

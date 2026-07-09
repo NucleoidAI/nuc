@@ -20,26 +20,127 @@ function escapeHtml(value: string): string {
     .replace(/"/g, "&quot;");
 }
 
-function renderListSection(title: string, items: string[]): string {
+const AVATAR_COLORS = ["#6366f1", "#0ea5e9", "#f59e0b", "#10b981", "#ec4899", "#8b5cf6"];
+
+function avatarColor(seed: string): string {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
+  return AVATAR_COLORS[hash % AVATAR_COLORS.length];
+}
+
+function initial(name: string): string {
+  return escapeHtml(name.trim().charAt(0).toUpperCase() || "?");
+}
+
+function sectionHeader(emoji: string, title: string): string {
+  return `<h2 style="margin:0 0 14px;font-size:13px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:#0f172a;"><span style="margin-right:8px;">${emoji}</span>${title}</h2>`;
+}
+
+function renderChecklistSection(emoji: string, title: string, items: string[]): string {
   if (!items.length) return "";
   const rows = items
     .map(
-      (item) =>
-        `<li style="margin-bottom:8px;color:#334155;line-height:1.5;">${escapeHtml(
-          item,
-        )}</li>`,
+      (item) => `
+        <tr>
+          <td width="22" valign="top" style="padding:0 8px 10px 0;color:#10b981;font-size:14px;">✔️</td>
+          <td valign="top" style="padding:0 0 10px;color:#334155;font-size:14px;line-height:1.5;">${escapeHtml(item)}</td>
+        </tr>`,
     )
     .join("");
   return `
     <tr>
-      <td style="padding:0 32px 24px;">
-        <h2 style="margin:0 0 12px;font-size:16px;color:#0f172a;">${title}</h2>
-        <ul style="margin:0;padding-left:20px;">${rows}</ul>
+      <td style="padding:0 32px 26px;">
+        ${sectionHeader(emoji, title)}
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table>
       </td>
     </tr>`;
 }
 
-function renderMeetingSummary(data: MeetingSummaryData): {
+function renderTopicsSection(items: string[]): string {
+  if (!items.length) return "";
+  const pills = items
+    .map(
+      (item) =>
+        `<span style="display:inline-block;background:#eef2ff;color:#4338ca;padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;margin:0 8px 8px 0;">${escapeHtml(item)}</span>`,
+    )
+    .join("");
+  return `
+    <tr>
+      <td style="padding:0 32px 26px;">
+        ${sectionHeader("🏷️", "Konular")}
+        <div>${pills}</div>
+      </td>
+    </tr>`;
+}
+
+function renderActionItemsSection(
+  items: { owner: string; task: string }[],
+): string {
+  if (!items.length) return "";
+  const rows = items
+    .map(({ owner, task }) => {
+      const color = avatarColor(owner);
+      return `
+        <tr>
+          <td style="padding:0 0 12px;">
+            <table role="presentation" cellpadding="0" cellspacing="0">
+              <tr>
+                <td width="30" valign="top" style="padding-right:10px;">
+                  <div style="width:26px;height:26px;line-height:26px;border-radius:50%;background:${color};color:#ffffff;font-size:12px;font-weight:700;text-align:center;">${initial(owner)}</div>
+                </td>
+                <td valign="top" style="color:#334155;font-size:14px;line-height:1.5;">
+                  <span style="font-weight:700;color:#0f172a;">${escapeHtml(owner)}</span> — ${escapeHtml(task)}
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>`;
+    })
+    .join("");
+  return `
+    <tr>
+      <td style="padding:0 32px 26px;">
+        ${sectionHeader("📌", "Aksiyon Maddeleri")}
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table>
+      </td>
+    </tr>`;
+}
+
+function renderSpeakerHighlightsSection(
+  items: { id: string; summary: string }[],
+): string {
+  if (!items.length) return "";
+  const rows = items
+    .map(({ id, summary }) => {
+      const color = avatarColor(id);
+      return `
+        <tr>
+          <td style="padding:0 0 14px;">
+            <table role="presentation" cellpadding="0" cellspacing="0">
+              <tr>
+                <td width="34" valign="top" style="padding-right:10px;">
+                  <div style="width:30px;height:30px;line-height:30px;border-radius:50%;background:${color};color:#ffffff;font-size:13px;font-weight:700;text-align:center;">${initial(id)}</div>
+                </td>
+                <td valign="top">
+                  <div style="font-weight:700;color:#0f172a;font-size:13px;margin-bottom:2px;">${escapeHtml(id)}</div>
+                  <div style="color:#64748b;font-size:13px;line-height:1.5;">${escapeHtml(summary)}</div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>`;
+    })
+    .join("");
+  return `
+    <tr>
+      <td style="padding:0 32px 8px;">
+        ${sectionHeader("🗣️", "Konuşmacı Özetleri")}
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table>
+      </td>
+    </tr>`;
+}
+
+export function renderMeetingSummary(data: MeetingSummaryData): {
   subject: string;
   text: string;
   html: string;
@@ -51,11 +152,14 @@ function renderMeetingSummary(data: MeetingSummaryData): {
 
   const keyTopics = data.key_topics ?? [];
   const decisions = data.decisions ?? [];
-  const actionItems = data.action_items ?? [];
+  const actionItems = (data.action_items ?? []).map((item) => ({
+    owner: item.owner ?? item.owner_id ?? "-",
+    task: item.task,
+  }));
   const speakerHighlights = data.speaker_highlights ?? [];
 
   const actionItemLines = actionItems.map(
-    (item) => `${item.owner ?? item.owner_id ?? "-"}: ${item.task}`,
+    (item) => `${item.owner}: ${item.task}`,
   );
   const speakerHighlightLines = speakerHighlights.map(
     (item) => `${item.id}: ${item.summary}`,
@@ -78,21 +182,18 @@ function renderMeetingSummary(data: MeetingSummaryData): {
     .join("\n");
 
   const html = `
-<div style="background:#f1f5f9;padding:32px 0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;">
+<div style="background:#eef1f6;padding:40px 16px;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
     <tr>
       <td align="center">
-        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(15,23,42,0.08);">
           <tr>
-            <td style="background:#0f172a;padding:24px 32px;">
-              <h1 style="margin:0;font-size:20px;color:#ffffff;">${escapeHtml(
-                title,
-              )}</h1>
+            <td style="background:linear-gradient(135deg,#4f46e5,#0ea5e9);padding:28px 32px;">
+              <div style="font-size:26px;line-height:1;margin-bottom:10px;">🗓️</div>
+              <h1 style="margin:0;font-size:21px;color:#ffffff;">${escapeHtml(title)}</h1>
               ${
                 data.meetingDate
-                  ? `<p style="margin:4px 0 0;color:#94a3b8;font-size:13px;">${escapeHtml(
-                      data.meetingDate,
-                    )}</p>`
+                  ? `<p style="margin:6px 0 0;color:#e0e7ff;font-size:13px;">${escapeHtml(data.meetingDate)}</p>`
                   : ""
               }
             </td>
@@ -100,21 +201,23 @@ function renderMeetingSummary(data: MeetingSummaryData): {
           ${
             data.summary
               ? `<tr>
-            <td style="padding:24px 32px 8px;">
-              <p style="margin:0;color:#334155;line-height:1.6;font-size:14px;">${escapeHtml(
-                data.summary,
-              )}</p>
+            <td style="padding:24px 32px 0;">
+              <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px 18px;">
+                ${sectionHeader("📝", "Özet")}
+                <p style="margin:0;color:#334155;line-height:1.6;font-size:14px;">${escapeHtml(data.summary)}</p>
+              </div>
             </td>
-          </tr>`
+          </tr>
+          <tr><td style="height:26px;"></td></tr>`
               : ""
           }
-          ${renderListSection("Konular", keyTopics)}
-          ${renderListSection("Kararlar", decisions)}
-          ${renderListSection("Aksiyon Maddeleri", actionItemLines)}
-          ${renderListSection("Konuşmacı Özetleri", speakerHighlightLines)}
+          ${renderTopicsSection(keyTopics)}
+          ${renderChecklistSection("✅", "Kararlar", decisions)}
+          ${renderActionItemsSection(actionItems)}
+          ${renderSpeakerHighlightsSection(speakerHighlights)}
           <tr>
-            <td style="padding:16px 32px 24px;border-top:1px solid #e2e8f0;">
-              <p style="margin:0;color:#94a3b8;font-size:12px;">Bu özet otomatik olarak oluşturulmuştur.</p>
+            <td style="padding:18px 32px 24px;border-top:1px solid #e2e8f0;">
+              <p style="margin:0;color:#94a3b8;font-size:12px;">🤖 Bu özet otomatik olarak oluşturulmuştur.</p>
             </td>
           </tr>
         </table>

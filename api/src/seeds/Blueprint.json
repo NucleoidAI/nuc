@@ -332,6 +332,8 @@
       "description": "Converts per-participant PCM recordings to WAV, transcribes each one, produces a structured meeting summary attributed by speaker ID (key topics, decisions, action items), resolves participant IDs to real names in that summary, and emails it to all participants.",
       "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath)\nsummary = SummarizeMeetingBySpeaker(transcripts.full_meeting_transcript, transcripts.speaker_transcripts)\nresolved = ResolveParticipants(summary, participants)\nEmail.Send(to: participants.emails, subject, body: resolved)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "019f4a02-1111-4222-8333-444455556666",
+      "blocking": false,
+      "force": true,
       "nodes": [
         {
           "id": "019f414b-0001-4000-8000-000000000001",

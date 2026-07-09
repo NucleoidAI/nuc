@@ -1,5 +1,14 @@
 import { generate } from "../lib/llm";
 
+const LANGUAGE_NAMES: Record<string, string> = {
+  tr: "Turkish",
+  en: "English",
+};
+
+function languageName(code: string): string {
+  return LANGUAGE_NAMES[code.toLowerCase()] ?? code;
+}
+
 async function run({
   parameters: { transcript, language },
 }: {
@@ -12,12 +21,12 @@ async function run({
     return { error: "transcript is required" };
   }
 
-  const lang = language ?? "tr";
+  const lang = languageName(language ?? "tr");
 
   const result = await generate({
     policy: {
       role: "system",
-      content: `You are a meeting summarizer. Produce the summary in ${lang}. Be concise and structured.`,
+      content: `You are a meeting summarizer. Respond entirely in ${lang} - every word of your output must be in ${lang}, regardless of what language the transcript is in. Be concise and structured.`,
     },
     content: `Summarize the following meeting transcript. Include: key topics discussed, decisions made, and action items with owners.\n\n${transcript}`,
     json_format:

@@ -1,5 +1,14 @@
 import { generate } from "../lib/llm";
 
+const LANGUAGE_NAMES: Record<string, string> = {
+  tr: "Turkish",
+  en: "English",
+};
+
+function languageName(code: string): string {
+  return LANGUAGE_NAMES[code.toLowerCase()] ?? code;
+}
+
 // A single LLM call given the whole meeting is unreliable: models tend to
 // ignore vague "be concise" instructions on large prompts and echo the
 // transcript back, blowing past output token limits. Instead we summarize
@@ -14,7 +23,7 @@ async function summarizeSpeaker(
   const result = await generate({
     policy: {
       role: "system",
-      content: `You summarize one meeting participant's contribution in ${lang}. Write at most 120 words. Do not quote the transcript verbatim (no quoted excerpt longer than 5 words) - paraphrase only.`,
+      content: `You summarize one meeting participant's contribution. Respond entirely in ${lang} - every word of your output must be in ${lang}, regardless of what language the transcript is in. Write at most 120 words. Do not quote the transcript verbatim (no quoted excerpt longer than 5 words) - paraphrase only.`,
     },
     content: `Speaker ${id}'s individual transcript:\n${transcript}`,
     json_format:
@@ -51,7 +60,7 @@ async function run({
     };
   }
 
-  const lang = language ?? "tr";
+  const lang = languageName(language ?? "tr");
 
   const speakerSummaries = await Promise.all(
     speaker_transcripts.map(({ id, transcript }) =>
@@ -70,7 +79,7 @@ async function run({
   const result = await generate({
     policy: {
       role: "system",
-      content: `You are a meeting summarizer. You receive a short summary of what each participant said, labeled by speaker ID, plus the full meeting transcript as background reference only. Combine them into a structured meeting summary in ${lang}. Attribute decisions and action items to the responsible speaker ID. Use the full transcript only to catch context the per-speaker summaries missed - never quote or reproduce it, and keep every output field short.`,
+      content: `You are a meeting summarizer. You receive a short summary of what each participant said, labeled by speaker ID, plus the full meeting transcript as background reference only. Combine them into a structured meeting summary. Respond entirely in ${lang} - every word of every output field must be in ${lang}, regardless of what language the transcript is in. Attribute decisions and action items to the responsible speaker ID. Use the full transcript only to catch context the per-speaker summaries missed - never quote or reproduce it, and keep every output field short.`,
     },
     content: `Per-speaker summaries:\n\n${speakerSummaryBlock}\n\nFull meeting transcript (background reference only - do not quote):\n${full_meeting_transcript}`,
     json_format:

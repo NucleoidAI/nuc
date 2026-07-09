@@ -11,7 +11,6 @@ import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import SupervisingChat from "../SupervisingChat";
 import useBlueprint from "../../hooks/useBlueprint";
 import useSupervisings from "../../hooks/useSupervisings";
-import { v4 as uuid } from "uuid";
 import { Box, Fab, Grid, IconButton, Tooltip } from "@mui/material";
 import {
   GlassCard,

@@ -2,7 +2,7 @@ import OpenAI from "openai";
 
 const openrouter = new OpenAI({
   apiKey: process.env.OPENROUTER_API_KEY || "",
-  baseURL: "https://openrouter.ai/api/v1",
+  baseURL: process.env.PLATFORM_LLM_URL || "https://openrouter.ai/api/v1",
   defaultHeaders: {
     "HTTP-Referer": process.env.OPENROUTER_SITE_URL || "",
     "X-Title": process.env.OPENROUTER_SITE_NAME || "GreyCollar",
@@ -23,7 +23,7 @@ function parseJsonContent(content: string): unknown {
       "Failed to parse OpenRouter response as JSON: " +
         (err instanceof Error ? err.message : String(err)) +
         "\nResponse content:\n" +
-        cleaned
+        cleaned,
     );
   }
 }
@@ -69,7 +69,7 @@ async function generate({
       (err as { status?: number })?.status === 400
     ) {
       console.warn(
-        `Model ${model} does not support response_format, retrying without it.`
+        `Model ${model} does not support response_format, retrying without it.`,
       );
       const response = await openrouter.chat.completions.create(params);
       const choice = response.choices[0];

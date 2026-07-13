@@ -129,23 +129,87 @@ async function generate({
 
   const textBlock = outputContent?.find((block) => "text" in block);
   if (textBlock && "text" in textBlock && textBlock.text) {
-    try {
-      const parsed = JSON.parse(textBlock.text);
-      if (parsed.type === "function" && parsed.parameters) {
-        const params = unwrapSchemaValues(parsed.parameters);
-        const outerKeyMatch = jsonFormat?.match(/^\{\s*(\w+)\s*:/);
-        const outerKey = outerKeyMatch?.[1];
-        if (outerKey && !(outerKey in params)) {
-          return { [outerKey]: params };
-        }
-        return params;
+    const parsed = parseWithBraceRepair(textBlock.text);
+    if (
+      parsed &&
+      typeof parsed === "object" &&
+      (parsed as { type?: unknown }).type === "function" &&
+      (parsed as { parameters?: unknown }).parameters
+    ) {
+      const params = unwrapSchemaValues(
+        (parsed as { parameters: unknown }).parameters,
+      );
+      const outerKeyMatch = jsonFormat?.match(/^\{\s*(\w+)\s*:/);
+      const outerKey = outerKeyMatch?.[1];
+      if (
+        outerKey &&
+        params &&
+        typeof params === "object" &&
+        !(outerKey in params)
+      ) {
+        return { [outerKey]: params };
       }
-    } catch {}
+      return params;
+    }
 
     return parseJSONFromLLMResponse(textBlock.text);
   }
 
   throw new Error("Bedrock is not responding");
+}
+
+// Llama on Bedrock occasionally drops the final closing brace(s) when it
+// emits its fake tool-call JSON as plain text. This repairs unbalanced
+// braces/brackets (tracked outside of string literals) before re-parsing.
+function repairUnbalancedJSON(content: string): string | null {
+  const stack: string[] = [];
+  let inString = false;
+  let escaped = false;
+
+  for (const ch of content) {
+    if (escaped) {
+      escaped = false;
+      continue;
+    }
+    if (ch === "\\" && inString) {
+      escaped = true;
+      continue;
+    }
+    if (ch === '"') {
+      inString = !inString;
+      continue;
+    }
+    if (inString) continue;
+
+    if (ch === "{" || ch === "[") stack.push(ch);
+    else if (ch === "}" && stack[stack.length - 1] === "{") stack.pop();
+    else if (ch === "]" && stack[stack.length - 1] === "[") stack.pop();
+  }
+
+  if (stack.length === 0 && !inString) return null;
+
+  let repaired = content;
+  if (inString) repaired += '"';
+  for (let i = stack.length - 1; i >= 0; i--) {
+    repaired += stack[i] === "{" ? "}" : "]";
+  }
+  return repaired;
+}
+
+function parseWithBraceRepair(content: string): unknown {
+  try {
+    return JSON.parse(content);
+  } catch {
+    const repaired = repairUnbalancedJSON(content);
+    if (repaired) {
+      try {
+        return JSON.parse(repaired);
+      } catch {
+        /* fall through */
+      }
+    }
+  }
+  return undefined;
 }
 
 function unwrapSchemaValues(obj: unknown): unknown {
@@ -207,6 +271,16 @@ function parseJSONFromLLMResponse(content: string): unknown {
         '$1"$2"$3',
       );
       return JSON.parse(quoted);
+    } catch {
+      /* fall through */
+    }
+  }
+
+  // Attempt 4: repair unbalanced braces/brackets (e.g. a dropped closing brace)
+  const repaired = repairUnbalancedJSON(content);
+  if (repaired) {
+    try {
+      return JSON.parse(repaired);
     } catch {
       /* fall through */
     }

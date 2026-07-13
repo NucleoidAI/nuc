@@ -20,10 +20,9 @@ const templateConfig = {
   login: {
     variant: "modern",
     image:
-      "https://companieslogo.com/img/orig/TTKOM.IS-802a5da1.png?t=1720244494",
-    icon: "https://companieslogo.com/img/orig/TTKOM.IS-802a5da1.png?t=1720244494",
-    largeIcon:
-      "https://companieslogo.com/img/orig/TTKOM.IS-802a5da1.png?t=1720244494",
+      "https://cdn.nucleoid.com/media/3b7f96ee-c245-4c93-97b8-d5503340f262.png",
+    icon: "https://cdn.nucleoid.com/greycollar/media/icon.png",
+    largeIcon: "https://cdn.nucleoid.com/greycollar/media/icon.png",
   },
   projectBar: {
     label: "Team",

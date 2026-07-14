@@ -472,6 +472,8 @@ async function step({
 
   let taskId = "";
 
+  console.debug(`[agent.step] dispatching stepId=${stepId} action=${action} actionType=${actionType}`);
+
   try {
     let actionFn;
     let result;
@@ -507,6 +509,8 @@ async function step({
     ) {
       const steps = await taskFn.listSteps({ taskId });
 
+      console.debug(`[agent.step] calling actionFn.run for action=${action} stepId=${stepId}`);
+
       result = await actionFn.run({
         context: steps
           .filter((step) => step.result)
@@ -516,6 +520,8 @@ async function step({
           .join("\n"),
         parameters,
       });
+
+      console.debug(`[agent.step] actionFn.run returned for action=${action} stepId=${stepId}`);
     } else if (actionType === "MCP") {
       let mcpParameters = parameters as Record<string, unknown>;
       if (action === "GREY:knowledge_lookup" && !mcpParameters.agentId) {

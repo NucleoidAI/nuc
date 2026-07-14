@@ -55,13 +55,25 @@ async function run({
   };
 }) {
   const client = getClient(region);
+  const clientRegion = region || process.env.AWS_REGION || "us-east-1";
+
+  console.debug(
+    `[create_vm] start name=${name} instanceType=${instanceType} region=${clientRegion} amiId=${amiId || "(resolve latest)"}`,
+  );
 
   try {
-    const imageId = amiId || (await resolveLatestAmazonLinuxAmi(client));
+    let imageId = amiId;
+    if (!imageId) {
+      console.debug("[create_vm] resolving latest Amazon Linux 2023 AMI...");
+      imageId = await resolveLatestAmazonLinuxAmi(client);
+      console.debug(`[create_vm] resolved AMI: ${imageId}`);
+    }
 
     if (!imageId) {
       return { error: "No AMI provided and no Amazon Linux 2023 AMI found" };
     }
+
+    console.debug(`[create_vm] calling RunInstancesCommand with AMI ${imageId}...`);
 
     const { Instances } = await client.send(
       new RunInstancesCommand({
@@ -81,6 +93,8 @@ async function run({
       }),
     );
 
+    console.debug("[create_vm] RunInstancesCommand returned");
+
     const instance = Instances?.[0];
 
     if (!instance) {
@@ -98,6 +112,7 @@ async function run({
       availabilityZone: instance.Placement?.AvailabilityZone,
     };
   } catch (error) {
+    console.debug(`[create_vm] error: ${(error as Error).message}`);
     return { error: (error as Error).message };
   }
 }

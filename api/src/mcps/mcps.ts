@@ -635,6 +635,80 @@ const MCPs = [
     },
   },
   {
+    id: "019f6a14-0000-4000-8000-000000000001",
+    action: "ACTIVEDIRECTORY:create_employee",
+    provider: "ACTIVE DIRECTORY",
+    description:
+      "Create a new employee user account in Active Directory. Returns the created employee details.",
+    direction: "OUTGOING",
+    icon: "mdi:microsoft-windows",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        first_name: {
+          type: "string",
+          description: "The first name of the employee.",
+        },
+        last_name: {
+          type: "string",
+          description: "The last name of the employee.",
+        },
+        employee_id: {
+          type: "string",
+          description: "The employee ID (e.g. E10501).",
+        },
+        department: {
+          type: "string",
+          description: "The department the employee belongs to.",
+          nullable: true,
+        },
+        job_role: {
+          type: "string",
+          description: "The job role of the employee (e.g. Software Engineer).",
+          nullable: true,
+        },
+        manager: {
+          type: "string",
+          description: "The full name of the employee's manager.",
+          nullable: true,
+        },
+        location: {
+          type: "string",
+          description: "The office location of the employee.",
+          nullable: true,
+        },
+      },
+      required: ["first_name", "last_name", "employee_id"],
+    },
+  },
+  {
+    id: "019f6a14-0000-4000-8000-000000000002",
+    action: "SERVICENOW:approve_employee_request",
+    provider: "SERVICENOW",
+    description:
+      "Approve an employee onboarding request in ServiceNow by its request number. Returns the updated request details.",
+    direction: "OUTGOING",
+    icon: "mdi:cloud-check-outline",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        request_number: {
+          type: "string",
+          description:
+            "The ServiceNow request number to approve (e.g. REQ0010042).",
+        },
+        comments: {
+          type: "string",
+          description: "Optional approval comments.",
+          nullable: true,
+        },
+      },
+      required: ["request_number"],
+    },
+  },
+  {
     id: "d4k0j5i6-1j2h-0i9k-6l5m-4h3i2j1k0l9g",
     action: "PROJECT_NOTIFIER:notify_project_open",
     provider: "PROJECT_NOTIFIER",

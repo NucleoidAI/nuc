@@ -196,6 +196,44 @@ function repairUnbalancedJSON(content: string): string | null {
   return repaired;
 }
 
+// Quotes unquoted object keys (e.g. `{ next_step: ... }`) while tracking
+// string literals, so `Word:` sequences inside string values are untouched —
+// a plain regex would corrupt them.
+function quoteUnquotedKeys(content: string): string {
+  let result = "";
+  let inString = false;
+  let escaped = false;
+  let i = 0;
+
+  while (i < content.length) {
+    const ch = content[i];
+    if (inString) {
+      result += ch;
+      if (escaped) escaped = false;
+      else if (ch === "\\") escaped = true;
+      else if (ch === '"') inString = false;
+      i++;
+      continue;
+    }
+    if (ch === '"') {
+      inString = true;
+      result += ch;
+      i++;
+      continue;
+    }
+    const keyMatch = /^([A-Za-z_$][\w$]*)(\s*:)/.exec(content.slice(i));
+    if (keyMatch) {
+      result += `"${keyMatch[1]}"${keyMatch[2]}`;
+      i += keyMatch[0].length;
+      continue;
+    }
+    result += ch;
+    i++;
+  }
+
+  return result;
+}
+
 function parseWithBraceRepair(content: string): unknown {
   try {
     return JSON.parse(content);
@@ -265,14 +303,21 @@ function parseJSONFromLLMResponse(content: string): unknown {
       /* fall through */
     }
 
+    const quoted = quoteUnquotedKeys(jsonMatch[1]);
     try {
-      const quoted = jsonMatch[1].replace(
-        /([{,]\s*)([a-zA-Z_$][\w$]*)(\s*:)/g,
-        '$1"$2"$3',
-      );
       return JSON.parse(quoted);
     } catch {
       /* fall through */
+    }
+
+    // Quoted keys but still unbalanced braces — repair those too
+    const quotedRepaired = repairUnbalancedJSON(quoted);
+    if (quotedRepaired) {
+      try {
+        return JSON.parse(quotedRepaired);
+      } catch {
+        /* fall through */
+      }
     }
   }
 

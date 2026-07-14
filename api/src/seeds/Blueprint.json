@@ -602,6 +602,99 @@
           "createdAt": "2026-07-13T10:00:00Z"
         }
       ]
+    },
+    {
+      "id": "019f6a10-0000-4000-8000-000000000001",
+      "title": "Employee Onboarding",
+      "description": "Handles new employee onboarding. The agent takes the incoming employee's information (first name, last name, employee ID, department, job role, manager, location, ServiceNow request number), creates the employee's user account in Active Directory via the Active Directory MCP, approves the corresponding employee request in ServiceNow via the ServiceNow MCP, looks up the manager's email address from the agent's knowledge, emails the created account details to the manager, and sends a welcome email to the new employee's address.",
+      "pseudocode": "BEGIN_CONTEXT\naccount = CreateEmployee(employee)\nServiceNow.ApproveRequest(employee.requestNumber)\nmanagerEmail = KnowledgeLookup(agentId)\nEmail.Send(managerEmail, account)\nEmail.Send(account.mail, welcome)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "019f6a11-0000-4000-8000-000000000001",
+      "nodes": [
+        {
+          "id": "019f6a10-0002-4000-8000-000000000002",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ACTIVEDIRECTORY:create_employee",
+            "description": "Create the employee's user account in Active Directory with the collected information",
+            "prompt": "Create the employee in Active Directory using the employee information provided in the incoming message (first_name, last_name and employee_id are required; department, job_role, manager and location are optional)",
+            "label": "Create Employee in Active Directory",
+            "icon": "mdi:microsoft-windows",
+            "pseudocode": "BEGIN_CONTEXT\naccount = CreateEmployee(employee)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f6a10-0003-4000-8000-000000000003"],
+          "createdAt": "2026-07-14T10:00:00Z"
+        },
+        {
+          "id": "019f6a10-0003-4000-8000-000000000003",
+          "type": "NORMAL",
+          "properties": {
+            "action": "SERVICENOW:approve_employee_request",
+            "description": "Approve the employee onboarding request in ServiceNow now that the Active Directory account has been created",
+            "prompt": "Approve the employee's onboarding request in ServiceNow using the request_number provided in the incoming message",
+            "label": "Approve Request in ServiceNow",
+            "icon": "mdi:cloud-check-outline",
+            "pseudocode": "BEGIN_CONTEXT\nServiceNow.ApproveRequest(employee.requestNumber)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f6a10-0005-4000-8000-000000000005"],
+          "createdAt": "2026-07-14T10:00:00Z"
+        },
+        {
+          "id": "019f6a10-0005-4000-8000-000000000005",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:knowledge_lookup",
+            "description": "Look up the agent's knowledge base to find the manager's email address for onboarding notifications",
+            "prompt": "Look up the manager's email address from agent knowledge",
+            "label": "Get Manager Email",
+            "icon": "mdi:book-search",
+            "pseudocode": "BEGIN_CONTEXT\nmanagerEmail = KnowledgeLookup(agentId)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f6a10-0006-4000-8000-000000000006"],
+          "createdAt": "2026-07-14T10:00:00Z"
+        },
+        {
+          "id": "019f6a10-0006-4000-8000-000000000006",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:send_email",
+            "description": "Email the created Active Directory account details to the manager's email address found in the knowledge base",
+            "prompt": "Send an email to the manager's email address from the knowledge lookup, with a subject like 'New Employee Onboarded' and a body containing the created employee account details (name, sAM account name, email, employee ID, department, title, office, groups) from the Active Directory creation step",
+            "label": "Email Manager",
+            "icon": "mdi:email-send",
+            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(managerEmail, account)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f6a10-0007-4000-8000-000000000007"],
+          "createdAt": "2026-07-14T10:00:00Z"
+        },
+        {
+          "id": "019f6a10-0007-4000-8000-000000000007",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:send_email",
+            "description": "Send a welcome email to the new employee's email address letting them know they have been onboarded",
+            "prompt": "Send a welcome email to the new employee's email address ('mail' field from the Active Directory creation step), with a subject like 'Welcome to the company' and a friendly body confirming they have been onboarded, including their account details (sAM account name, email, department, title, office)",
+            "label": "Email New Employee",
+            "icon": "mdi:email-heart-outline",
+            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(account.mail, welcome)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f6a10-0004-4000-8000-000000000004"],
+          "createdAt": "2026-07-14T10:00:00Z"
+        },
+        {
+          "id": "019f6a10-0004-4000-8000-000000000004",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "Mark the employee onboarding workflow as complete",
+            "prompt": "Complete employee onboarding flow",
+            "label": "Complete",
+            "icon": "mdi:check",
+            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": null,
+          "createdAt": "2026-07-14T10:00:00Z"
+        }
+      ]
     }
   ]
 }

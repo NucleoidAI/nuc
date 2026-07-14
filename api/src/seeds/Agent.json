@@ -66,6 +66,14 @@
       "description": "An agent specialized in managing order lifecycles, tracking fulfillment status, and coordinating between customers and operations."
     },
     {
+      "id": "019f6a11-0000-4000-8000-000000000001",
+      "name": "onboarding_agent",
+      "icon": "ph:user-plus-duotone",
+      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
+      "aiEngineId": "289a3c9a-f23b-421a-ac6e-f14052a2d57c",
+      "description": "An onboarding agent that collects new employee information and creates their user account in Active Directory."
+    },
+    {
       "id": "0780b66b-9e22-4e52-9ade-858fc81a5361",
       "name": "compliant_manager",
       "icon": "ph:shield-check-duotone",

@@ -129,6 +129,13 @@
       "text": "{\"product_id\": \"prd-2\", \"product_name\": \"product-2\", \"certificate\": \"CE\"}",
       "status": "COMPLETED",
       "createdAt": "2025-06-26T06:00:00.000Z"
+    },
+    {
+      "id": "019f6a16-0000-4000-8000-000000000001",
+      "type": "TEXT",
+      "text": "The manager's email address is halilcengel@greycollar.ai. Onboarding notifications should be sent to this address.",
+      "status": "COMPLETED",
+      "createdAt": "2026-07-14T10:00:00.000Z"
     }
   ]
 }

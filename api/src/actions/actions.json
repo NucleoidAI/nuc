@@ -437,6 +437,100 @@
     }
   },
   {
+    "action": "PLATFORM:create_vm",
+    "lib": "create_vm",
+    "description": "Create a virtual machine (EC2 instance) on AWS. If no AMI is given, the latest Amazon Linux 2023 image is used.",
+    "icon": "mdi:server-plus",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name tag for the instance."
+        },
+        "instanceType": {
+          "type": "string",
+          "description": "EC2 instance type (e.g. 't3.micro', 't3.small'). Defaults to 't3.micro'."
+        },
+        "amiId": {
+          "type": "string",
+          "description": "AMI ID to launch from. Defaults to the latest Amazon Linux 2023 AMI."
+        },
+        "keyName": {
+          "type": "string",
+          "description": "Name of an existing EC2 key pair for SSH access (optional)."
+        },
+        "subnetId": {
+          "type": "string",
+          "description": "Subnet ID to launch into (optional)."
+        },
+        "securityGroupIds": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Security group IDs to attach (optional)."
+        },
+        "region": {
+          "type": "string",
+          "description": "AWS region. Defaults to the AWS_REGION environment variable."
+        }
+      },
+      "required": ["name"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "success": { "type": "boolean" },
+        "instanceId": { "type": "string" },
+        "imageId": { "type": "string" },
+        "instanceType": { "type": "string" },
+        "state": {
+          "type": "string",
+          "description": "Instance state right after launch (usually 'pending')."
+        },
+        "privateIp": { "type": "string" },
+        "publicIp": { "type": "string" },
+        "availabilityZone": { "type": "string" },
+        "error": { "type": "string" }
+      }
+    }
+  },
+  {
+    "action": "PLATFORM:terminate_vm",
+    "lib": "terminate_vm",
+    "description": "Terminate a virtual machine (EC2 instance) on AWS by instance ID. Termination is permanent and cannot be undone.",
+    "icon": "mdi:server-remove",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "instanceId": {
+          "type": "string",
+          "description": "The ID of the EC2 instance to terminate (e.g. 'i-0abc123def456...')."
+        },
+        "region": {
+          "type": "string",
+          "description": "AWS region the instance is in. Defaults to the AWS_REGION environment variable."
+        }
+      },
+      "required": ["instanceId"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "success": { "type": "boolean" },
+        "instanceId": { "type": "string" },
+        "previousState": {
+          "type": "string",
+          "description": "Instance state before termination (e.g. 'running')."
+        },
+        "currentState": {
+          "type": "string",
+          "description": "Instance state after the request (usually 'shutting-down')."
+        },
+        "error": { "type": "string" }
+      }
+    }
+  },
+  {
     "action": "PLATFORM:message_user",
     "lib": "message_user",
     "description": "Send a message to the user",

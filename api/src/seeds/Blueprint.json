@@ -420,6 +420,188 @@
           "createdAt": "2026-07-08T10:00:00Z"
         }
       ]
+    },
+    {
+      "id": "019f5c00-0000-4000-8000-000000000001",
+      "title": "VM Provisioning Request",
+      "description": "Handles a virtual machine provisioning request. The agent collects VM requirements from the user, creates the VM on AWS, and shares the instance details with the user.",
+      "pseudocode": "BEGIN_CONTEXT\nrequirements = WaitForUserInput()\nvm = CreateVM(requirements)\nMessageUser(vm)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "3c8f1d5e-7b2a-4e91-a6d4-58c0f9b3e712",
+      "nodes": [
+        {
+          "id": "019f5c00-0001-4000-8000-000000000001",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "parameters": {
+              "question": "What are the requirements for the VM? Please provide a name and optionally the instance type (e.g. t3.micro) and region."
+            },
+            "description": "Ask the user for the VM requirements (name, instance type, region)",
+            "prompt": "Ask user for VM requirements",
+            "label": "Collect VM Requirements",
+            "icon": "mdi:account-question",
+            "pseudocode": "BEGIN_CONTEXT\nrequirements = WaitForUserInput()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f5c00-0004-4000-8000-000000000004"],
+          "createdAt": "2026-07-13T10:00:00Z"
+        },
+        {
+          "id": "019f5c00-0004-4000-8000-000000000004",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:create_vm",
+            "description": "Create the EC2 instance on AWS with the requirements collected from the user",
+            "prompt": "Create the VM on AWS using the collected requirements (name is required; instanceType and region are optional)",
+            "label": "Create VM",
+            "icon": "mdi:server-plus",
+            "pseudocode": "BEGIN_CONTEXT\nvm = CreateVM(requirements)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f5c00-0005-4000-8000-000000000005"],
+          "createdAt": "2026-07-13T10:00:00Z"
+        },
+        {
+          "id": "019f5c00-0005-4000-8000-000000000005",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Share the created VM details (instance ID, type, state, IPs) with the user",
+            "prompt": "Notify the user with the created VM details from the previous step",
+            "label": "Share VM Details",
+            "icon": "mdi:bell",
+            "pseudocode": "BEGIN_CONTEXT\nMessageUser(vm)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f5c00-0007-4000-8000-000000000007"],
+          "createdAt": "2026-07-13T10:00:00Z"
+        },
+        {
+          "id": "019f5c00-0007-4000-8000-000000000007",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "Mark the VM provisioning workflow as complete",
+            "prompt": "Complete VM provisioning flow",
+            "label": "Complete",
+            "icon": "mdi:check",
+            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": null,
+          "createdAt": "2026-07-13T10:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "019f5c01-0000-4000-8000-000000000001",
+      "title": "VM Termination Request",
+      "description": "Handles a virtual machine termination request. The agent collects the instance ID from the user, confirms the termination since it is permanent, terminates the VM on AWS, and shares the result with the user.",
+      "pseudocode": "BEGIN_CONTEXT\ninstanceId = WaitForUserInput()\nconfirmation = WaitForUserConfirmation(instanceId)\nIF confirmation.Confirmed == TRUE THEN\n    result = TerminateVM(instanceId)\n    MessageUser(result)\nELSE\n    MessageUser(\"Termination cancelled\")\nEND_IF\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "3c8f1d5e-7b2a-4e91-a6d4-58c0f9b3e712",
+      "nodes": [
+        {
+          "id": "019f5c01-0001-4000-8000-000000000001",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "parameters": {
+              "question": "Which VM would you like to terminate? Please provide the instance ID (e.g. i-0abc123...) and optionally the region."
+            },
+            "description": "Ask the user for the instance ID of the VM to terminate",
+            "prompt": "Ask user for the instance ID to terminate",
+            "label": "Collect Instance ID",
+            "icon": "mdi:account-question",
+            "pseudocode": "BEGIN_CONTEXT\ninstanceId = WaitForUserInput()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f5c01-0002-4000-8000-000000000002"],
+          "createdAt": "2026-07-13T10:00:00Z"
+        },
+        {
+          "id": "019f5c01-0002-4000-8000-000000000002",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "parameters": {
+              "question": "Termination is permanent and cannot be undone. Are you sure you want to terminate this instance? (yes/no)"
+            },
+            "description": "Ask the user to confirm the termination since it is permanent and cannot be undone",
+            "prompt": "Ask user to confirm terminating the instance",
+            "label": "Confirm Termination",
+            "icon": "mdi:alert-circle-check",
+            "pseudocode": "BEGIN_CONTEXT\nconfirmation = WaitForUserConfirmation(instanceId)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f5c01-0003-4000-8000-000000000003"],
+          "createdAt": "2026-07-13T10:00:00Z"
+        },
+        {
+          "id": "019f5c01-0003-4000-8000-000000000003",
+          "type": "CONDITION",
+          "properties": {
+            "action": "PLATFORM:decision",
+            "description": "Decide based on the user's confirmation whether to proceed with the termination",
+            "prompt": "Did the user confirm the termination?",
+            "label": "Check Confirmation",
+            "icon": "mdi:source-branch",
+            "pseudocode": "BEGIN_CONTEXT\nIF confirmation.Confirmed == TRUE THEN\n    // handle true path\nELSE\n    // handle false path\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "true": ["019f5c01-0004-4000-8000-000000000004"],
+          "false": ["019f5c01-0006-4000-8000-000000000006"],
+          "createdAt": "2026-07-13T10:00:00Z"
+        },
+        {
+          "id": "019f5c01-0004-4000-8000-000000000004",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:terminate_vm",
+            "description": "Terminate the EC2 instance on AWS with the instance ID collected from the user",
+            "prompt": "Terminate the VM on AWS using the collected instance ID (region is optional)",
+            "label": "Terminate VM",
+            "icon": "mdi:server-remove",
+            "pseudocode": "BEGIN_CONTEXT\nresult = TerminateVM(instanceId)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f5c01-0005-4000-8000-000000000005"],
+          "createdAt": "2026-07-13T10:00:00Z"
+        },
+        {
+          "id": "019f5c01-0005-4000-8000-000000000005",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Share the termination result (instance ID, previous and current state) with the user",
+            "prompt": "Notify the user with the termination result from the previous step",
+            "label": "Share Termination Result",
+            "icon": "mdi:bell",
+            "pseudocode": "BEGIN_CONTEXT\nMessageUser(result)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f5c01-0007-4000-8000-000000000007"],
+          "createdAt": "2026-07-13T10:00:00Z"
+        },
+        {
+          "id": "019f5c01-0006-4000-8000-000000000006",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Inform the user that the termination was cancelled",
+            "prompt": "Notify the user that the termination was cancelled and no instance was terminated",
+            "label": "Notify Cancellation",
+            "icon": "mdi:bell-off",
+            "pseudocode": "BEGIN_CONTEXT\nMessageUser(\"Termination cancelled\")\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f5c01-0007-4000-8000-000000000007"],
+          "createdAt": "2026-07-13T10:00:00Z"
+        },
+        {
+          "id": "019f5c01-0007-4000-8000-000000000007",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "Mark the VM termination workflow as complete",
+            "prompt": "Complete VM termination flow",
+            "label": "Complete",
+            "icon": "mdi:check",
+            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": null,
+          "createdAt": "2026-07-13T10:00:00Z"
+        }
+      ]
     }
   ]
 }

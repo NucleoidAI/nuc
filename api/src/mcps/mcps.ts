@@ -709,6 +709,66 @@ const MCPs = [
     },
   },
   {
+    id: "019f7a30-0000-4000-8000-000000000001",
+    action: "SERVICENOW:create_incident",
+    provider: "SERVICENOW",
+    description:
+      "Create an incident in ServiceNow. Requires a short description and the caller's name. Returns the created incident details including its incident number.",
+    direction: "OUTGOING",
+    icon: "mdi:alert-circle-outline",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        shortDescription: {
+          type: "string",
+          description: "A short summary of the incident.",
+        },
+        caller: {
+          type: "string",
+          description: "Name of the person reporting the incident.",
+        },
+        description: {
+          type: "string",
+          description: "Detailed description of the incident.",
+          nullable: true,
+        },
+        priority: {
+          type: "number",
+          enum: [1, 2, 3, 4],
+          description:
+            "Incident priority: 1=Critical, 2=High, 3=Moderate (default), 4=Low.",
+          nullable: true,
+        },
+        assignmentGroup: {
+          type: "string",
+          enum: [
+            "Service Desk",
+            "Network Operations",
+            "Hardware Support",
+            "Application Support",
+            "Database Administration",
+          ],
+          description:
+            "Group the incident is assigned to. Defaults to 'Service Desk'.",
+          nullable: true,
+        },
+        assignee: {
+          type: "string",
+          description: "Name of the person the incident is assigned to.",
+          nullable: true,
+        },
+        state: {
+          type: "string",
+          enum: ["New", "In Progress", "On Hold", "Resolved", "Closed"],
+          description: "Incident state. Defaults to 'New'.",
+          nullable: true,
+        },
+      },
+      required: ["shortDescription", "caller"],
+    },
+  },
+  {
     id: "d4k0j5i6-1j2h-0i9k-6l5m-4h3i2j1k0l9g",
     action: "PROJECT_NOTIFIER:notify_project_open",
     provider: "PROJECT_NOTIFIER",

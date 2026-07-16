@@ -606,8 +606,8 @@
     {
       "id": "019f7a20-0000-4000-8000-000000000001",
       "title": "VM Metrics Health Check",
-      "description": "Evaluates OTLP metrics (resourceMetrics payload) that arrive from a virtual machine at regular intervals. The agent looks up the metric reference ranges from its knowledge base, deterministically evaluates every incoming metric data point against those ranges with the evaluate_metrics tool, and if any metric is outside its reference range it sends an alert email listing the violations; if all metrics are within range the run completes silently.",
-      "pseudocode": "BEGIN_CONTEXT\nreferences = KnowledgeLookup(agentId)\nevaluation = EvaluateMetrics(metrics, references)\nIF evaluation.hasViolations == TRUE THEN\n    Email.Send(alertEmail, evaluation.violations)\nEND_IF\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "description": "Evaluates OTLP metrics (resourceMetrics payload) that arrive from a virtual machine at regular intervals. The agent looks up the metric reference ranges from its knowledge base, deterministically evaluates every incoming metric data point against those ranges with the evaluate_metrics tool, and if any metric is outside its reference range it creates a ServiceNow incident listing the violations; if all metrics are within range the run completes silently.",
+      "pseudocode": "BEGIN_CONTEXT\nreferences = KnowledgeLookup(agentId)\nevaluation = EvaluateMetrics(metrics, references)\nIF evaluation.hasViolations == TRUE THEN\n    ServiceNow.CreateIncident(evaluation.violations)\nEND_IF\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
       "blocking": false,
       "nodes": [
@@ -672,12 +672,12 @@
           "id": "019f7a20-0004-4000-8000-000000000004",
           "type": "NORMAL",
           "properties": {
-            "action": "GREY:send_email",
-            "description": "Send an alert email listing every metric that is outside its reference range",
-            "prompt": "Send an alert email to the VM metric alert email address from agent knowledge, with a subject like 'VM Metric Alert: <host>' and a body that lists, for each violation from the evaluation step: the metric name, its attributes, the observed value, the allowed reference range (min/max or expected value), the unit, and the measurement timestamp",
-            "label": "Send Alert Email",
-            "icon": "mdi:email-alert",
-            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(alertEmail, evaluation.violations)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "action": "SERVICENOW:create_incident",
+            "description": "Create a ServiceNow incident listing every metric that is outside its reference range",
+            "prompt": "Create a ServiceNow incident for the metric violations: shortDescription = 'VM Metric Alert: <host>' (host from the evaluation step), caller = 'VM Monitoring Agent', priority = 2, and description listing, for each violation from the evaluation step: the metric name, its attributes, the observed value, the allowed reference range (min/max or expected value), the unit, and the measurement timestamp",
+            "label": "Create Incident",
+            "icon": "mdi:alert-circle-outline",
+            "pseudocode": "BEGIN_CONTEXT\nServiceNow.CreateIncident(evaluation.violations)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": ["019f7a20-0005-4000-8000-000000000005"],
           "createdAt": "2026-07-16T10:00:00Z"

@@ -82,19 +82,6 @@
       "createdAt": "2026-05-11T11:32:00Z"
     },
     {
-      "id": "c1d2e3f4-0007-4000-8000-000000000007",
-      "taskId": "a1b2c3d4-0003-4000-8000-000000000003",
-      "stepId": "b1c2d3e4-0007-4000-8000-000000000007",
-      "parameters": { "url": "https://internal/metrics/q1" },
-      "output": null,
-      "hallucinationScore": null,
-      "superviseScore": null,
-      "resultScore": null,
-      "knowledgeScore": null,
-      "status": "SUPERVISED",
-      "createdAt": "2026-05-13T08:16:00Z"
-    },
-    {
       "id": "c1d2e3f4-1001-4000-8000-000000000001",
       "taskId": "17816283-412c-4db3-abe7-be24ed494b21",
       "stepId": "0c129e3a-012b-4d0f-849a-e111341ce437",

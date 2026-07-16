@@ -81,6 +81,10 @@ async function run({
 
     const { Instances } = await client.send(
       new RunInstancesCommand({
+        LaunchTemplate: {
+          LaunchTemplateId: "lt-0bb60b7532394e758",
+          Version: "$Latest",
+        },
         ImageId: imageId,
         InstanceType: instanceType as _InstanceType,
         MinCount: 1,

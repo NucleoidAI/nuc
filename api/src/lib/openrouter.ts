@@ -1,5 +1,7 @@
 import OpenAI from "openai";
 
+import { LLMMeta, logLLM } from "./llmLog";
+
 const openrouter = new OpenAI({
   apiKey: process.env.OPENROUTER_API_KEY || "",
   baseURL: process.env.PLATFORM_LLM_URL || "https://openrouter.ai/api/v1",
@@ -33,11 +35,13 @@ async function generate({
   messages = [],
   temperature = 0,
   max_tokens,
+  meta,
 }: {
   model?: string;
   messages?: { role: string; content: string }[];
   temperature?: number;
   max_tokens?: number;
+  meta?: LLMMeta;
 }) {
   const params: Parameters<typeof openrouter.chat.completions.create>[0] = {
     model,
@@ -49,11 +53,16 @@ async function generate({
 
   // Try with json_object response_format first; not all models support it.
   let content: string | null = null;
+  const startedAt = Date.now();
+  let response: OpenAI.ChatCompletion | null = null;
   try {
-    const response = await openrouter.chat.completions.create({
+    response = (await openrouter.chat.completions.create({
       ...params,
       response_format: { type: "json_object" },
-    });
+    })) as OpenAI.ChatCompletion;
+
+    console.debug("[openrouter] response:", JSON.stringify(response));
+
     const choice = response.choices[0];
     content = choice.message.content;
     if (response.usage) {
@@ -71,7 +80,9 @@ async function generate({
       console.warn(
         `Model ${model} does not support response_format, retrying without it.`,
       );
-      const response = await openrouter.chat.completions.create(params);
+      response = (await openrouter.chat.completions.create(
+        params
+      )) as OpenAI.ChatCompletion;
       const choice = response.choices[0];
       content = choice.message.content;
       if (response.usage) {
@@ -81,6 +92,25 @@ async function generate({
     } else {
       throw err;
     }
+  }
+
+  if (response) {
+    // OpenRouter includes cost in usage; not part of the OpenAI SDK types.
+    const usage = response.usage as
+      | (OpenAI.CompletionUsage & { cost?: number })
+      | undefined;
+    logLLM({
+      provider: "openrouter",
+      model: response.model || model,
+      messages,
+      response,
+      inputTokens: usage?.prompt_tokens,
+      outputTokens: usage?.completion_tokens,
+      totalTokens: usage?.total_tokens,
+      cost: usage?.cost,
+      durationMs: Date.now() - startedAt,
+      meta,
+    });
   }
 
   if (content) {

@@ -245,7 +245,7 @@ async function upsertPseudocode({
 
   const [pseudocode, nodesWithPseudocode, generatedDescription] =
     await Promise.all([
-      agentFn.toPseudo({ content: description }),
+      agentFn.toPseudo({ content: description, meta: { agentId } }),
       nodes
         ? Promise.all(
             nodes.map((node) => {
@@ -262,7 +262,7 @@ async function upsertPseudocode({
                   },
                 } as typeof node;
               }
-              return agentFn.toPseudo({ content }).then(
+              return agentFn.toPseudo({ content, meta: { agentId } }).then(
                 (nodePseudocode) =>
                   ({
                     ...node,
@@ -276,7 +276,7 @@ async function upsertPseudocode({
           )
         : undefined,
       nodes?.length
-        ? agentFn.blueprintDescription({ nodes })
+        ? agentFn.blueprintDescription({ nodes, meta: { agentId } })
         : Promise.resolve(undefined),
     ]);
 

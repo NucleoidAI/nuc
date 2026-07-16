@@ -1,6 +1,8 @@
 import { Anthropic } from "@anthropic-ai/sdk";
 import { MessageParam } from "@anthropic-ai/sdk/resources/messages/messages.mjs";
 
+import { LLMMeta, logLLM } from "./llmLog";
+
 const apiKey = process.env.ANTHROPIC_API_KEY;
 if (!apiKey || apiKey.trim() === "") {
   throw new Error(
@@ -16,11 +18,13 @@ async function generate({
   messages = [],
   temperature = 0,
   max_tokens = 4096,
+  meta,
 }: {
   model?: string;
   messages?: { role: "user" | "assistant" | "system"; content: string }[];
   temperature?: number;
   max_tokens?: number;
+  meta?: LLMMeta;
 }) {
   const systemMessages = messages.filter((msg) => msg.role === "system");
   const conversationMessages = messages.filter((msg) => msg.role !== "system");
@@ -46,12 +50,26 @@ async function generate({
     ...(systemPrompt && { system: systemPrompt }),
   };
 
-  const { usage, content } = await anthropic.messages.create(params);
+  const startedAt = Date.now();
+  const reponse = await anthropic.messages.create(params);
+
+  const { content, usage } = reponse;
 
   if (usage) {
     const { input_tokens, output_tokens } = usage;
     console.info({ input_tokens, output_tokens });
   }
+
+  logLLM({
+    provider: "anthropic",
+    model: reponse.model || model,
+    messages,
+    response: reponse,
+    inputTokens: usage?.input_tokens,
+    outputTokens: usage?.output_tokens,
+    durationMs: Date.now() - startedAt,
+    meta,
+  });
 
   if (content) {
     let textContent = content

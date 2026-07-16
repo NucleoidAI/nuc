@@ -4,6 +4,7 @@ import Agents from "./src/pages/agents";
 import Callback from "./src/pages/callback";
 import Chat from "./src/pages/chat";
 import Container from "./src/Container";
+import Cost from "./src/pages/cost";
 import Dashboard from "./src/pages/dashboard";
 import KnowledgeBase from "./src/pages/knowledgeBase";
 import MCPs from "./src/pages/mcps";
@@ -41,6 +42,7 @@ const routes = [
           },
           { path: "/agents/:agentId", element: <Agent /> },
           { path: "/task-scores", element: <TaskScores /> },
+          { path: "/cost", element: <Cost /> },
           { path: "/teams/add", element: <AddTeam /> },
           { path: "/mcps/callback", element: <Callback /> },
         ],

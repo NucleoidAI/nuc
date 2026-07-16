@@ -1,9 +1,11 @@
 import { generate } from "../lib/llm";
+import type { LLMMeta } from "../lib/llmLog";
 import dataset from "../dataset";
 
 async function run({
   context,
   parameters,
+  meta,
 }: {
   context: string;
   parameters: {
@@ -11,6 +13,7 @@ async function run({
     true: string[];
     false: string[];
   };
+  meta?: LLMMeta;
 }) {
   const { condition, true: trueActions, false: falseActions } = parameters;
 
@@ -19,6 +22,7 @@ async function run({
     context: context ? [{ role: "system" as const, content: context }] : [],
     content: { context, condition },
     json_format: "{ result: <true|false> }",
+    meta: { ...meta, source: "action:decision" },
   });
 
   const isTrue = result === true || result === "true";

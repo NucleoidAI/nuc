@@ -168,6 +168,7 @@ router.post("/blueprints", async (req, res) => {
   const response = await agentFn.Blueprint({
     history,
     content,
+    meta: { teamId: req.session.projectId },
   });
 
   res.json({

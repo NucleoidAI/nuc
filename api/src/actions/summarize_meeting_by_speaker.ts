@@ -1,4 +1,5 @@
 import { generate } from "../lib/llm";
+import type { LLMMeta } from "../lib/llmLog";
 
 const LANGUAGE_NAMES: Record<string, string> = {
   tr: "Turkish",
@@ -18,7 +19,8 @@ function languageName(code: string): string {
 async function summarizeSpeaker(
   id: string,
   transcript: string,
-  lang: string
+  lang: string,
+  meta?: LLMMeta
 ): Promise<{ id: string; summary: string }> {
   const result = await generate({
     policy: {
@@ -29,6 +31,7 @@ async function summarizeSpeaker(
     json_format:
       '{ speaker_summary: "<at most 120 words, no verbatim quotes>" }',
     max_tokens: 1024,
+    meta: { ...meta, source: "action:summarize_meeting_by_speaker" },
   });
 
   return {
@@ -39,12 +42,14 @@ async function summarizeSpeaker(
 
 async function run({
   parameters: { full_meeting_transcript, speaker_transcripts, language },
+  meta,
 }: {
   parameters: {
     full_meeting_transcript?: string;
     speaker_transcripts?: { id: string; transcript: string }[];
     language?: string;
   };
+  meta?: LLMMeta;
 }) {
   if (!full_meeting_transcript) {
     return {
@@ -64,7 +69,7 @@ async function run({
 
   const speakerSummaries = await Promise.all(
     speaker_transcripts.map(({ id, transcript }) =>
-      summarizeSpeaker(id, transcript, lang)
+      summarizeSpeaker(id, transcript, lang, meta)
     )
   );
 
@@ -85,6 +90,7 @@ async function run({
     json_format:
       '{ summary: "<overall meeting summary, at most 200 words>", key_topics: ["<topic>"], decisions: ["<speaker id>: <decision>"], action_items: [{ owner_id: "<speaker id>", task: "<task>" }] }',
     max_tokens: 2048,
+    meta: { ...meta, source: "action:summarize_meeting_by_speaker" },
   });
 
   const combined = result as {

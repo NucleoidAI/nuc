@@ -87,9 +87,12 @@ router.post("/", async (req, res) => {
 
   const fullHistory = [...systemContext, ...history];
 
+  const llmMeta = { agentId, sessionId, teamId };
+
   const { decision } = await agentFn.blueprintChatDecision({
     history: fullHistory,
     content,
+    meta: llmMeta,
   });
 
   console.log("[BLUEPRINT CHAT] Decision:", decision);
@@ -98,6 +101,7 @@ router.post("/", async (req, res) => {
     history: fullHistory,
     content,
     decision,
+    meta: llmMeta,
   });
 
   console.log("[BLUEPRINT CHAT] Sufficient:", sufficient);
@@ -108,7 +112,10 @@ router.post("/", async (req, res) => {
   }
 
   if (decision === "KNOWLEDGE") {
-    const { knowledge } = await agentFn.blueprintChatKnowledge({ content });
+    const { knowledge } = await agentFn.blueprintChatKnowledge({
+      content,
+      meta: llmMeta,
+    });
     return res.status(200).json({ decision, answer, knowledge });
   } else if (decision === "BLUEPRINT") {
     const referenceBlueprint = blueprintId
@@ -119,6 +126,7 @@ router.post("/", async (req, res) => {
       history: fullHistory,
       content,
       existingBlueprint: referenceBlueprint,
+      meta: llmMeta,
     });
 
     type FlowNode = {

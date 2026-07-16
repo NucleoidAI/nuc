@@ -1,3 +1,4 @@
+import type { LLMMeta } from "./llmLog";
 import anthropic from "./anthropic";
 import azure from "./azure";
 import llama from "./llama";
@@ -36,6 +37,7 @@ async function generate({
   json_format,
   temperature = 0,
   max_tokens,
+  meta,
 }: {
   model?: string;
   policy?: {
@@ -54,6 +56,7 @@ async function generate({
   json_format: string;
   temperature?: number;
   max_tokens?: number;
+  meta?: LLMMeta;
 }) {
   const messages = [
     ...context.map(({ role, content }) => ({
@@ -83,6 +86,7 @@ async function generate({
     messages,
     temperature,
     max_tokens,
+    meta,
   });
 }
 

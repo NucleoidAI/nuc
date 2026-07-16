@@ -4,6 +4,7 @@ import agentData from "./agentData";
 import blueprintFn from "./blueprint";
 import dataset from "../dataset";
 import { generate } from "../lib/llm";
+import type { LLMMeta } from "../lib/llmLog";
 import knowledgeFn from "./knowledge";
 import mcpFn from "./mcp";
 import message from "./message";
@@ -93,11 +94,13 @@ async function steps({ taskId }) {
 
 async function scoring({
   context,
+  meta,
 }: {
   context: {
     role: "user" | "system" | "assistant";
     content: object | string;
   }[];
+  meta?: LLMMeta;
 }) {
   const merged: Record<string, unknown> = {};
   for (const { content } of context) {
@@ -110,6 +113,7 @@ async function scoring({
     dataset: dataset.train.knowledgeScore,
     content: merged,
     json_format: "{ knowledge_score: <0.0-1.0> }",
+    meta: { ...meta, source: "agent.scoring" },
   });
 
   const parsed = parseFloat(String(knowledge_score));
@@ -154,6 +158,7 @@ async function teamChat({
     content,
     json_format:
       "{ resource: <RESOURCE>, function: <FUNCTION>, parameters: <PARAMETERS> }",
+    meta: { teamId, source: "agent.teamChat" },
   });
 
   let data;
@@ -176,6 +181,7 @@ async function teamChat({
           )})=${JSON.stringify(data)} ${content}`
         : content,
     json_format: "{ response: <RESPONSE> }",
+    meta: { teamId, source: "agent.teamChat" },
   });
 
   await message.create({
@@ -190,6 +196,7 @@ async function forceTask({
   currentTask,
   context,
   isBlocking,
+  meta,
 }: {
   blueprint: { nodes: any[] };
   currentTask: { description: string; blueprintId: string; steps: any[] };
@@ -198,6 +205,7 @@ async function forceTask({
     content: object | string;
   }[];
   isBlocking: boolean;
+  meta?: LLMMeta;
 }) {
   const nodes = blueprint.nodes;
 
@@ -247,6 +255,7 @@ async function forceTask({
     content: { ...currentTask, forced_action: forcedAction },
     json_format:
       "{ next_step: { parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
+    meta: { ...meta, source: "agent.forceTask" },
   });
 
   if (forcedAction) {
@@ -308,14 +317,16 @@ async function task({ taskId }: { taskId: string }) {
     mcpFn.list(),
   ];
 
-  const knowledgeScore = await scoring({ context });
+  const meta: LLMMeta = { agentId, sessionId, taskId };
+
+  const knowledgeScore = await scoring({ context, meta });
 
   const {
     next_step: { action, parameters, comment },
     result_score,
   } =
     isForce && blueprint?.nodes?.length
-      ? await forceTask({ blueprint, currentTask, context, isBlocking })
+      ? await forceTask({ blueprint, currentTask, context, isBlocking, meta })
       : await generate({
           dataset: isBlocking
             ? dataset.train.taskDiamondBlocking
@@ -324,6 +335,7 @@ async function task({ taskId }: { taskId: string }) {
           content: currentTask,
           json_format:
             "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
+          meta: { ...meta, source: "agent.task" },
         });
 
   console.log("next action", action);
@@ -519,6 +531,7 @@ async function step({
           )
           .join("\n"),
         parameters,
+        meta: { taskId },
       });
 
       console.debug(`[agent.step] actionFn.run returned for action=${action} stepId=${stepId}`);
@@ -660,18 +673,21 @@ async function blueprintChatContext({
 async function blueprintChatDecision({
   history,
   content,
+  meta,
 }: {
   history?: {
     role: "system" | "user" | "assistant";
     content: string;
   }[];
   content: string;
+  meta?: LLMMeta;
 }): Promise<{ decision: "KNOWLEDGE" | "BLUEPRINT" }> {
   const response = await generate({
     dataset: dataset.train.blueprintChatDecision,
     context: history,
     content,
     json_format: '{ decision: <"KNOWLEDGE"|"BLUEPRINT"> }',
+    meta: { ...meta, source: "agent.blueprintChatDecision" },
   });
 
   return response as { decision: "KNOWLEDGE" | "BLUEPRINT" };
@@ -681,6 +697,7 @@ async function blueprintChatSufficiency({
   history,
   content,
   decision,
+  meta,
 }: {
   history?: {
     role: "system" | "user" | "assistant";
@@ -688,6 +705,7 @@ async function blueprintChatSufficiency({
   }[];
   content: string;
   decision: "KNOWLEDGE" | "BLUEPRINT";
+  meta?: LLMMeta;
 }): Promise<{ sufficient: boolean; answer?: string }> {
   const context = [
     {
@@ -702,6 +720,7 @@ async function blueprintChatSufficiency({
     context,
     content,
     json_format: "{ sufficient: <true|false>, answer: <ANSWER> }",
+    meta: { ...meta, source: "agent.blueprintChatSufficiency" },
   });
 
   return response as { sufficient: boolean; answer?: string };
@@ -709,13 +728,16 @@ async function blueprintChatSufficiency({
 
 async function blueprintChatKnowledge({
   content,
+  meta,
 }: {
   content: string;
+  meta?: LLMMeta;
 }): Promise<{ knowledge: string }> {
   const response = await generate({
     dataset: dataset.train.blueprintChatKnowledge,
     content,
     json_format: "{ knowledge: <EXTRACTED_KNOWLEDGE> }",
+    meta: { ...meta, source: "agent.blueprintChatKnowledge" },
   });
 
   return response as { knowledge: string };
@@ -771,6 +793,7 @@ async function Blueprint({
   history,
   content,
   existingBlueprint,
+  meta,
 }: {
   history?: {
     role: "system" | "user" | "assistant";
@@ -778,6 +801,7 @@ async function Blueprint({
   }[];
   content: string;
   existingBlueprint?: object | null;
+  meta?: LLMMeta;
 }) {
   const context = [
     ...(existingBlueprint
@@ -798,6 +822,7 @@ async function Blueprint({
     context,
     content,
     json_format: "{ response: <RESPONSE>, flow: [<FLOW>] }",
+    meta: { ...meta, source: "agent.Blueprint" },
   });
 
   if (Array.isArray(response.flow)) {
@@ -826,6 +851,7 @@ async function blueprintName({
     context,
     content,
     json_format: "{ title: <TITLE>, description: <DESCRIPTION> }",
+    meta: { agentId, source: "agent.blueprintName" },
   });
 
   return response;
@@ -836,6 +862,7 @@ async function blueprintToTask({
   content,
   knowledge,
   Blueprint,
+  meta,
 }: {
   history?: {
     role: "system" | "user" | "assistant";
@@ -844,6 +871,7 @@ async function blueprintToTask({
   content: string;
   knowledge: Array<[]>;
   Blueprint: object;
+  meta?: LLMMeta;
 }) {
   const context = [
     {
@@ -861,6 +889,7 @@ async function blueprintToTask({
     context,
     content,
     json_format: "{ task: <TASK> ,answer: <ANSWER> }",
+    meta: { ...meta, source: "agent.blueprintToTask" },
   });
 
   return response;
@@ -869,9 +898,11 @@ async function blueprintToTask({
 async function blueprintDiamond({
   content,
   Blueprints,
+  meta,
 }: {
   content: string;
   Blueprints: Array<[]>;
+  meta?: LLMMeta;
 }) {
   const context = [
     {
@@ -888,6 +919,7 @@ async function blueprintDiamond({
     content,
     json_format:
       "{ decision: <DECISION>,existing: <EXISTING>,blueprintId: <BLUEPRINT_ID> }",
+    meta: { ...meta, source: "agent.blueprintDiamond" },
   });
   return response;
 }
@@ -923,6 +955,7 @@ async function evaluateSupervisionAnswer({
     json_format: `{
       "is_answer_known": <true|false>,
     }`,
+    meta: { agentId, source: "agent.evaluateSupervisionAnswer" },
   });
 
   return evaluation;
@@ -991,6 +1024,7 @@ async function chat({
     blueprintDecision = await blueprintDiamond({
       content,
       Blueprints: blueprintsData,
+      meta: { agentId, sessionId },
     });
     if (blueprintDecision.decision === "BLUEPRINT") {
       selectedBlueprintId = blueprintDecision.blueprintId ?? null;
@@ -1008,6 +1042,7 @@ async function chat({
       knowledge: knowledgeData,
       content: content,
       Blueprint: blueprintData,
+      meta: { agentId, sessionId },
     });
 
     await taskFn.create({
@@ -1044,6 +1079,7 @@ async function chat({
       context,
       content,
       json_format: "{ evaluation: { is_answer_known: <true|false> } }",
+      meta: { agentId, sessionId, source: "agent.chat.evaluation" },
     });
 
     if (
@@ -1064,6 +1100,7 @@ async function chat({
         context,
         content,
         json_format: "{ answer: <ANSWER_IN_NLP>, confidence: <0-1> }",
+        meta: { agentId, sessionId, source: "agent.chat.answer" },
       });
 
       await session.addConversation({
@@ -1091,18 +1128,31 @@ async function chat({
   }
 }
 
-async function toPseudo({ content }: { content: string }) {
+async function toPseudo({
+  content,
+  meta,
+}: {
+  content: string;
+  meta?: LLMMeta;
+}) {
   const response = await generate({
     dataset: dataset.train.pseudocode,
     context: [],
     content,
     json_format: "{ pseudocode: <PSEUDO> }",
+    meta: { ...meta, source: "agent.toPseudo" },
   });
 
   return response.pseudocode;
 }
 
-async function blueprintDescription({ nodes }: { nodes: object[] }) {
+async function blueprintDescription({
+  nodes,
+  meta,
+}: {
+  nodes: object[];
+  meta?: LLMMeta;
+}) {
   const context = [
     {
       role: "system" as const,
@@ -1115,6 +1165,7 @@ async function blueprintDescription({ nodes }: { nodes: object[] }) {
     context,
     content: nodes,
     json_format: "{ description: <DESCRIPTION> }",
+    meta: { ...meta, source: "agent.blueprintDescription" },
   });
 
   console.log("[agent] blueprintDescription:", response);

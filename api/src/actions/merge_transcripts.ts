@@ -1,4 +1,5 @@
 import { generate } from "../lib/llm";
+import type { LLMMeta } from "../lib/llmLog";
 
 // Some models (small/coder-specialized ones especially) tend to ignore
 // "add a label to every line" instructions on large text and just echo the
@@ -47,11 +48,13 @@ function chunkSentences(
 
 async function run({
   parameters: { full_meeting_transcript, speaker_transcripts },
+  meta,
 }: {
   parameters: {
     full_meeting_transcript?: string;
     speaker_transcripts?: { id: string; transcript: string }[];
   };
+  meta?: LLMMeta;
 }) {
   if (!full_meeting_transcript) {
     return {
@@ -95,6 +98,7 @@ async function run({
       } speaker IDs, one per sentence, in this order:\n${numberedTarget}`,
       json_format: `{ speaker_ids: ["<speaker id or UNKNOWN for sentence 1>", "<speaker id or UNKNOWN for sentence 2>", "... exactly ${target.length} items total"] }`,
       max_tokens: 2048,
+      meta: { ...meta, source: "action:merge_transcripts" },
     });
 
     const ids = (result as { speaker_ids?: string[] }).speaker_ids ?? [];

@@ -4,6 +4,8 @@ import {
   Message,
 } from "@aws-sdk/client-bedrock-runtime";
 
+import { LLMMeta, logLLM } from "./llmLog";
+
 const bedrock = new BedrockRuntimeClient({
   region: process.env.AWS_REGION || "us-east-1",
   credentials: {
@@ -30,9 +32,11 @@ function extractJsonFormat(systemPrompts: { text: string }[]): string | null {
 async function generate({
   model = process.env.PLATFORM_LLM_MODEL || "meta.llama3-3-70b-instruct-v1:0",
   messages = [],
+  meta,
 }: {
   model?: string;
   messages?: { role: "user" | "assistant" | "system"; content: string }[];
+  meta?: LLMMeta;
 }) {
   const systemPrompts: { text: string }[] = [];
   const conversationMessages: Message[] = [];
@@ -88,6 +92,7 @@ async function generate({
   let response;
   try {
     response = await bedrock.send(command);
+    console.debug("[bedrock] response:", JSON.stringify(response));
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
     if (msg.includes("http2") || msg.includes("did not get a response")) {
@@ -111,6 +116,18 @@ async function generate({
       completion_tokens: outputTokens,
     });
   }
+
+  logLLM({
+    provider: "bedrock",
+    model,
+    messages,
+    response,
+    inputTokens: response.usage?.inputTokens,
+    outputTokens: response.usage?.outputTokens,
+    totalTokens: response.usage?.totalTokens,
+    durationMs: response.metrics?.latencyMs,
+    meta,
+  });
 
   if (response.stopReason === "max_tokens") {
     console.error("Response was truncated due to max_tokens limit");

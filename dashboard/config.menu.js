@@ -31,6 +31,11 @@ const menuConfig = {
           path: "/task-scores",
         },
         {
+          title: "Cost",
+          icon: "solar:wallet-money-bold-duotone",
+          path: "/cost",
+        },
+        {
           title: "Monitoring",
           icon: "ic:outline-dashboard",
           path: "/monitoring",

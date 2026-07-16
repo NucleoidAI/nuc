@@ -136,6 +136,55 @@
       "text": "The manager's email address is halilcengel@greycollar.ai. Onboarding notifications should be sent to this address.",
       "status": "COMPLETED",
       "createdAt": "2026-07-14T10:00:00.000Z"
+    },
+    {
+      "id": "019f7a21-0000-4000-8000-000000000001",
+      "type": "DATA",
+      "text": "{\"reference_range\":{\"metric\":\"system.cpu.utilization\",\"attributes\":{\"state\":\"used\"},\"min\":0.0,\"max\":0.85,\"unit\":\"1\"}}",
+      "status": "COMPLETED",
+      "createdAt": "2026-07-16T10:00:00.000Z"
+    },
+    {
+      "id": "019f7a21-0000-4000-8000-000000000003",
+      "type": "DATA",
+      "text": "{\"reference_range\":{\"metric\":\"system.memory.utilization\",\"min\":0.0,\"max\":0.90,\"unit\":\"1\"}}",
+      "status": "COMPLETED",
+      "createdAt": "2026-07-16T10:00:00.000Z"
+    },
+    {
+      "id": "019f7a21-0000-4000-8000-000000000004",
+      "type": "DATA",
+      "text": "{\"reference_range\":{\"metric\":\"system.filesystem.utilization\",\"attributes\":{\"mountpoint\":\"/\"},\"min\":0.0,\"max\":0.85,\"unit\":\"1\"}}",
+      "status": "COMPLETED",
+      "createdAt": "2026-07-16T10:00:00.000Z"
+    },
+    {
+      "id": "019f7a21-0000-4000-8000-000000000005",
+      "type": "DATA",
+      "text": "{\"reference_range\":{\"metric\":\"system.uptime\",\"min\":3600,\"max\":null,\"unit\":\"s\"}}",
+      "status": "COMPLETED",
+      "createdAt": "2026-07-16T10:00:00.000Z"
+    },
+    {
+      "id": "019f7a21-0000-4000-8000-000000000006",
+      "type": "DATA",
+      "text": "{\"reference_range\":{\"metric\":\"httpcheck.status\",\"expected\":1,\"unit\":\"1\"}}",
+      "status": "COMPLETED",
+      "createdAt": "2026-07-16T10:00:00.000Z"
+    },
+    {
+      "id": "019f7a21-0000-4000-8000-000000000007",
+      "type": "DATA",
+      "text": "{\"reference_range\":{\"metric\":\"httpcheck.duration\",\"min\":0,\"max\":500,\"unit\":\"ms\"}}",
+      "status": "COMPLETED",
+      "createdAt": "2026-07-16T10:00:00.000Z"
+    },
+    {
+      "id": "019f7a21-0000-4000-8000-000000000002",
+      "type": "TEXT",
+      "text": "VM metric alert emails should be sent to halilibrahimcengel7@gmail.com.",
+      "status": "COMPLETED",
+      "createdAt": "2026-07-16T10:00:00.000Z"
     }
   ]
 }

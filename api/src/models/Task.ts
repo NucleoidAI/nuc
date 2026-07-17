@@ -25,7 +25,7 @@ class Task extends Model {
   declare description: string;
 
   @AllowNull(true)
-  @Column(DataType.STRING)
+  @Column(DataType.TEXT)
   declare result: string | null;
 
   @AllowNull(true)

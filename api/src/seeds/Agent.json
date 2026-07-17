@@ -42,14 +42,6 @@
       "description": "A reliable analysis agent focused on processing information, generating insights, and supporting structured decision-making."
     },
     {
-      "id": "ef906c5d-cafe-4518-9edc-b80c605df58e",
-      "name": "service_agent",
-      "icon": "ph:fire-simple-duotone",
-      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
-      "aiEngineId": "289a3c9a-f23b-421a-ac6e-f14052a2d57c",
-      "description": "A service-focused agent engineered for request handling, issue support, and streamlined communication across system interactions."
-    },
-    {
       "id": "3c8f1d5e-7b2a-4e91-a6d4-58c0f9b3e712",
       "name": "technical_support_agent",
       "icon": "ph:wrench-duotone",

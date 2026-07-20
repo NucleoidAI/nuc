@@ -255,6 +255,25 @@ function BlueprintFlowWidget({
     [blueprintNodes, aiResponse, hasLocalChanges, blueprint?.id]
   );
 
+  useEffect(
+    () => {
+      if (!blueprintNodes) return;
+
+      const titleChanged =
+        blueprint?.title !== undefined &&
+        blueprint.title !== blueprintNodes.title;
+      const descriptionChanged =
+        blueprint?.description !== undefined &&
+        blueprint.description !== blueprintNodes.description;
+
+      if (titleChanged || descriptionChanged) {
+        setHasLocalChanges(true);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [blueprint?.title, blueprint?.description, blueprintNodes]
+  );
+
   useEffect(() => {
     if (graphData && mcps?.content?.mcps) {
       const validationResult = validateFlow(graphData, mcps.content.mcps);
@@ -1129,9 +1148,9 @@ function BlueprintFlowWidget({
 
     const response = await upsertBlueprint(
       blueprintNodes?.id || blueprint?.id,
-      blueprintNodes?.title || blueprint?.title || "Newly Created Blueprint",
-      blueprintNodes?.description ||
-        blueprint?.description ||
+      blueprint?.title || blueprintNodes?.title || "Newly Created Blueprint",
+      blueprint?.description ||
+        blueprintNodes?.description ||
         "Blueprint created from flow",
       agentId,
       updatedNodes,
@@ -1188,6 +1207,7 @@ function BlueprintFlowWidget({
   const isEmptyState =
     !loading &&
     !aiResponse?.flow &&
+    (!graphData?.nodes || Object.keys(graphData.nodes).length === 0) &&
     (!blueprintNodes?.nodes || blueprintNodes.nodes.length === 0);
 
   return (

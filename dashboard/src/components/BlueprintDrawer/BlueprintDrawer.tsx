@@ -138,6 +138,8 @@ const BlueprintDrawer = ({
       <BlueprintFlowWidget
         blueprint={{
           ...selectedItem,
+          title,
+          description,
           agentId: selectedItem?.agentId || agentId,
         }}
         aiResponse={aiResponse}

@@ -2,6 +2,8 @@ import FormData from "form-data";
 import axios from "axios";
 import fs from "fs";
 import path from "path";
+import asrOutput from "../../../asr_output.json";
+const MOCK = true;
 
 async function transcribeFile(
   filePath: string,
@@ -30,6 +32,14 @@ async function run({
 }: {
   parameters: { directoryPath: string };
 }) {
+  if (MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 20_000));
+    return {
+      full_meeting_transcript: asrOutput.full_meeting_transcript,
+      speaker_transcripts: asrOutput.speaker_transcripts,
+    };
+  }
+
   if (!path.isAbsolute(directoryPath)) {
     return { error: "directoryPath must be an absolute path" };
   }

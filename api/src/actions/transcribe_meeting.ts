@@ -3,7 +3,7 @@ import axios from "axios";
 import fs from "fs";
 import path from "path";
 import asrOutput from "../../../asr_output.json";
-const MOCK = true;
+const MOCK = false;
 
 async function transcribeFile(
   filePath: string,

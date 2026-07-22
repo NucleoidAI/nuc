@@ -3,7 +3,7 @@ import axios from "axios";
 import fs from "fs";
 import path from "path";
 
-const PROVIDER: "elevenlabs" | "local-whisper" = "elevenlabs";
+const PROVIDER: "elevenlabs" | "local-whisper" = "local-whisper";
 
 async function run({
   parameters: { inputPath },

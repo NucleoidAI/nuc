@@ -113,16 +113,36 @@ router.get("/:agentId/sessions", async (req, res) => {
   const agent = await Agent.findByPk(agentId);
 
   if (!agent) {
-    res.status(404);
+    return res.status(404).end();
   }
 
-  if (agent && agent.teamId !== teamId) {
-    res.status(401);
+  if (agent.teamId !== teamId) {
+    return res.status(401).end();
   }
 
-  const sessions = await Session.findAll({ where: { agentId } });
+  const sessions = await Session.findAll({
+    where: { agentId },
+    include: [
+      {
+        association: "conversations",
+        separate: true,
+        order: [["createdAt", "ASC"]],
+      },
+    ],
+  });
 
-  res.json(sessions);
+  const sorted = sessions
+    .map((session) => session.toJSON())
+    .filter((session) => session.conversations.length > 0)
+    .sort((a, b) => {
+      const aLast = a.conversations[a.conversations.length - 1]?.createdAt;
+      const bLast = b.conversations[b.conversations.length - 1]?.createdAt;
+
+      return new Date(bLast).getTime() - new Date(aLast).getTime();
+    })
+    .slice(0, 5);
+
+  res.json(sorted);
 });
 
 router.get("/:agentId/supervisings", async (req, res) => {

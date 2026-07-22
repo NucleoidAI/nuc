@@ -1,6 +1,7 @@
-import SidebarChat from "../../components/SidebarChat";
+import { SidebarChat } from "@canmingir/link/platform/components";
 import useAgent from "../../hooks/useAgent";
 import useBlueprint from "../../hooks/useBlueprint";
+import useChatSessions from "../../hooks/useChatSessions";
 import useSession from "../../hooks/useSession";
 
 import { useCallback, useEffect, useState } from "react";
@@ -51,6 +52,16 @@ const SidebarChatWidget = ({
   const { agent } = getAgent(agentId);
 
   const [messages, setMessages] = useState([]);
+
+  const currentSessionId = sessionId || conversationId;
+
+  const { storedSessions, refresh, clearAll } = useChatSessions(
+    currentSessionId,
+    agentId,
+    messages,
+    agent?.icon,
+    agent?.name
+  );
 
   useEffect(() => {
     if (conversations.length > 0) {
@@ -118,6 +129,9 @@ const SidebarChatWidget = ({
       onSessionSelect={handleSessionSelect}
       onNewSession={handleNewSession}
       beta={beta}
+      storedSessions={storedSessions}
+      refreshSessions={refresh}
+      clearAllSessions={clearAll}
     />
   );
 };

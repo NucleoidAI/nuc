@@ -1,31 +1,57 @@
 import type { LLMMeta } from "./llmLog";
-import anthropic from "./anthropic";
-import azure from "./azure";
-import llama from "./llama";
-import openai from "./openai";
-import bedrock from "./bedrock";
-import mock from "./mock";
-import openrouter from "./openrouter";
+import type { LLMAdapter } from "./types";
 
-let llm;
+type ProviderKey =
+  | "OPENAI"
+  | "ANTHROPIC"
+  | "OPENROUTER"
+  | "BEDROCK"
+  | "LOCAL"
+  | "MOCK";
 
-if (process.env.PLATFORM_LLM === "OPENAI") {
-  llm = openai;
-} else if (process.env.PLATFORM_LLM === "AZURE") {
-  llm = azure;
-} else if (process.env.PLATFORM_LLM === "ANTHROPIC") {
-  llm = anthropic;
-} else if (process.env.PLATFORM_LLM === "OPENROUTER") {
-  llm = openrouter;
-} else if (process.env.PLATFORM_LLM === "MOCK") {
-  llm = mock;
-} else if (
-  process.env.PLATFORM_LLM === "LLAMA" &&
-  process.env.LLM_PROVIDER === "BEDROCK"
-) {
-  llm = bedrock;
-} else {
-  llm = llama;
+const PROVIDER_LOADERS: Record<
+  ProviderKey,
+  () => Promise<{ default: LLMAdapter }>
+> = {
+  OPENAI: () => import("./openai"),
+  ANTHROPIC: () => import("./anthropic"),
+  OPENROUTER: () => import("./openrouter"),
+  BEDROCK: () => import("./bedrock"),
+  LOCAL: () => import("./local"),
+  MOCK: () => import("./mock"),
+};
+
+function parseProviderModel(raw: string): {
+  provider: ProviderKey;
+  model?: string;
+} {
+  const slashIdx = raw.indexOf("/");
+  const providerPart = slashIdx === -1 ? raw : raw.slice(0, slashIdx);
+  const modelPart = slashIdx === -1 ? undefined : raw.slice(slashIdx + 1);
+  const provider = providerPart.trim().toUpperCase() as ProviderKey;
+
+  if (!(provider in PROVIDER_LOADERS)) {
+    throw new Error(
+      `Unknown LLM provider "${providerPart}" in PLATFORM_LLM="${raw}". ` +
+        `Expected "<provider>/<model>" (or just "<provider>") where provider is one of: ` +
+        Object.keys(PROVIDER_LOADERS).join(", "),
+    );
+  }
+
+  return { provider, model: modelPart };
+}
+
+const { provider, model: configuredModel } = parseProviderModel(
+  process.env.PLATFORM_LLM || "local",
+);
+
+let llmPromise: Promise<LLMAdapter> | null = null;
+
+function getLLM(): Promise<LLMAdapter> {
+  if (!llmPromise) {
+    llmPromise = PROVIDER_LOADERS[provider]().then((mod) => mod.default);
+  }
+  return llmPromise;
 }
 
 async function generate({
@@ -63,9 +89,9 @@ async function generate({
       role,
       content: JSON.stringify(content),
     })),
-    { role: "user", content: JSON.stringify(content) },
+    { role: "user" as const, content: JSON.stringify(content) },
     {
-      role: "system",
+      role: "system" as const,
       content: `json_format: ${json_format}`,
     },
   ].map(({ role, content }) => ({
@@ -81,8 +107,10 @@ async function generate({
     messages.unshift(policy);
   }
 
+  const llm = await getLLM();
+
   return await llm.generate({
-    model,
+    model: model ?? configuredModel,
     messages,
     temperature,
     max_tokens,

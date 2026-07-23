@@ -1,3 +1,5 @@
+import type { GenerateParams, LLMAdapter } from "./types";
+
 type Message = {
   role: "user" | "assistant" | "system";
   content: string;
@@ -48,14 +50,7 @@ function extractLastUserContent(messages: Message[]): string {
   return tryParseString(lastUserMessage.content).toLowerCase();
 }
 
-async function generate({
-  messages = [],
-}: {
-  model?: string;
-  messages?: Message[];
-  temperature?: number;
-  max_tokens?: number;
-}) {
+async function generate({ messages = [] }: GenerateParams) {
   const jsonFormat = extractJsonFormat(messages);
   const userContent = extractLastUserContent(messages);
   const isHelloMessage = userContent.includes("hello");
@@ -119,4 +114,4 @@ async function generate({
   };
 }
 
-export default { generate };
+export default { generate } satisfies LLMAdapter;

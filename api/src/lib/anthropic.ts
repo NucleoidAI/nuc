@@ -1,7 +1,9 @@
 import { Anthropic } from "@anthropic-ai/sdk";
 import { MessageParam } from "@anthropic-ai/sdk/resources/messages/messages.mjs";
 
-import { LLMMeta, logLLM } from "./llmLog";
+import { logLLM } from "./llmLog";
+import { parseJsonContent } from "./jsonParse";
+import type { GenerateParams, LLMAdapter } from "./types";
 
 const apiKey = process.env.ANTHROPIC_API_KEY;
 if (!apiKey || apiKey.trim() === "") {
@@ -19,13 +21,7 @@ async function generate({
   temperature = 0,
   max_tokens = 4096,
   meta,
-}: {
-  model?: string;
-  messages?: { role: "user" | "assistant" | "system"; content: string }[];
-  temperature?: number;
-  max_tokens?: number;
-  meta?: LLMMeta;
-}) {
+}: GenerateParams) {
   const systemMessages = messages.filter((msg) => msg.role === "system");
   const conversationMessages = messages.filter((msg) => msg.role !== "system");
 
@@ -72,30 +68,19 @@ async function generate({
   });
 
   if (content) {
-    let textContent = content
+    const textContent = content
       .filter((block) => block.type === "text")
       .map((block) => block.text)
       .join("")
       .trim();
 
-    textContent = textContent
-      .replace(/^```(?:json|JSON)?\s*\n?/i, "")
-      .replace(/\n?```\s*$/i, "")
-      .trim();
-
-    try {
-      return JSON.parse(textContent);
-    } catch (err) {
-      throw new Error(
-        "Failed to parse Claude response as JSON: " +
-          (err instanceof Error ? err.message : String(err)) +
-          "\nResponse content:\n" +
-          textContent
-      );
-    }
+    return parseJsonContent(textContent, "anthropic") as Record<
+      string,
+      unknown
+    >;
   } else {
     throw new Error("Claude is not responding");
   }
 }
 
-export default { generate };
+export default { generate } satisfies LLMAdapter;

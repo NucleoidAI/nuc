@@ -4,7 +4,9 @@ import {
   Message,
 } from "@aws-sdk/client-bedrock-runtime";
 
-import { LLMMeta, logLLM } from "./llmLog";
+import { logLLM } from "./llmLog";
+import { parseJsonContent } from "./jsonParse";
+import type { GenerateParams, LLMAdapter } from "./types";
 
 const bedrock = new BedrockRuntimeClient({
   region: process.env.AWS_REGION || "us-east-1",
@@ -30,14 +32,10 @@ function extractJsonFormat(systemPrompts: { text: string }[]): string | null {
 }
 
 async function generate({
-  model = process.env.PLATFORM_LLM_MODEL || "meta.llama3-3-70b-instruct-v1:0",
+  model = "meta.llama3-3-70b-instruct-v1:0",
   messages = [],
   meta,
-}: {
-  model?: string;
-  messages?: { role: "user" | "assistant" | "system"; content: string }[];
-  meta?: LLMMeta;
-}) {
+}: GenerateParams): Promise<Record<string, unknown>> {
   const systemPrompts: { text: string }[] = [];
   const conversationMessages: Message[] = [];
 
@@ -141,7 +139,7 @@ async function generate({
 
   const toolUseBlock = outputContent?.find((block) => "toolUse" in block);
   if (toolUseBlock && "toolUse" in toolUseBlock) {
-    return toolUseBlock.toolUse?.input;
+    return toolUseBlock.toolUse?.input as Record<string, unknown>;
   }
 
   const textBlock = outputContent?.find((block) => "text" in block);
@@ -166,10 +164,10 @@ async function generate({
       ) {
         return { [outerKey]: params };
       }
-      return params;
+      return params as Record<string, unknown>;
     }
 
-    return parseJSONFromLLMResponse(textBlock.text);
+    return parseJSONFromLLMResponse(textBlock.text) as Record<string, unknown>;
   }
 
   throw new Error("Bedrock is not responding");
@@ -294,14 +292,15 @@ function unwrapSchemaValues(obj: unknown): unknown {
 }
 
 function parseJSONFromLLMResponse(content: string): unknown {
-  // Attempt 1: direct parse
+  // Attempt 1: direct parse, tolerating a leading/trailing markdown fence
+  // (shared with the other adapters' JSON parsing).
   try {
-    return JSON.parse(content);
+    return parseJsonContent(content, "bedrock");
   } catch {
     /* fall through */
   }
 
-  // Attempt 2: JSON inside a code block
+  // Attempt 2: JSON inside a code block anywhere in the response
   const codeBlockMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
   if (codeBlockMatch) {
     try {
@@ -360,4 +359,4 @@ function parseJSONFromLLMResponse(content: string): unknown {
   );
 }
 
-export default { generate };
+export default { generate } satisfies LLMAdapter;

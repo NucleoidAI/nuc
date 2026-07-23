@@ -3,6 +3,7 @@ import { LLMMeta } from "./llmLog";
 type GenerateParams = {
   model?: string;
   messages: { role: "user" | "assistant" | "system"; content: string }[];
+  responseFormat?: string;
   temperature?: number;
   max_tokens?: number;
   meta?: LLMMeta;

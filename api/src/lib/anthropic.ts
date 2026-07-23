@@ -2,7 +2,7 @@ import { Anthropic } from "@anthropic-ai/sdk";
 import { MessageParam } from "@anthropic-ai/sdk/resources/messages/messages.mjs";
 
 import { logLLM } from "./llmLog";
-import { parseJsonContent } from "./jsonParse";
+import { parseJsonWithRepair } from "./jsonParse";
 import type { GenerateParams, LLMAdapter } from "./types";
 
 const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -18,6 +18,7 @@ const anthropic = new Anthropic({
 async function generate({
   model = "claude-haiku-4-5-20251001",
   messages = [],
+  responseFormat,
   temperature = 0,
   max_tokens = 4096,
   meta,
@@ -31,11 +32,14 @@ async function generate({
       : undefined;
 
   // TODO: Find a better way to handle json_output enforcement for Claude responses.
-  const lastSystemMsg = systemMessages[systemMessages.length - 1];
-  if (lastSystemMsg && lastSystemMsg.content.includes("json_format:")) {
-    systemPrompt =
-      systemPrompt +
-      "\n\nIMPORTANT: You MUST respond with ONLY valid JSON that matches the format specified. Do NOT include any text before or after the JSON. Do NOT wrap the JSON in markdown code blocks. Output ONLY the raw JSON object.";
+  if (responseFormat) {
+    systemPrompt = [
+      systemPrompt,
+      `json_format: ${responseFormat}`,
+      "IMPORTANT: You MUST respond with ONLY valid JSON that matches the format specified. Do NOT include any text before or after the JSON. Do NOT wrap the JSON in markdown code blocks. Output ONLY the raw JSON object.",
+    ]
+      .filter(Boolean)
+      .join("\n\n");
   }
 
   const params = {
@@ -74,7 +78,7 @@ async function generate({
       .join("")
       .trim();
 
-    return parseJsonContent(textContent, "anthropic") as Record<
+    return parseJsonWithRepair(textContent, "anthropic") as Record<
       string,
       unknown
     >;

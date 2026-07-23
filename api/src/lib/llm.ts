@@ -54,6 +54,10 @@ function getLLM(): Promise<LLMAdapter> {
   return llmPromise;
 }
 
+function toContentString(content: string | object | object[]): string {
+  return typeof content === "string" ? content : JSON.stringify(content);
+}
+
 async function generate({
   model,
   dataset,
@@ -87,17 +91,10 @@ async function generate({
   const messages = [
     ...context.map(({ role, content }) => ({
       role,
-      content: JSON.stringify(content),
+      content: toContentString(content),
     })),
-    { role: "user" as const, content: JSON.stringify(content) },
-    {
-      role: "system" as const,
-      content: `json_format: ${json_format}`,
-    },
-  ].map(({ role, content }) => ({
-    role,
-    content: JSON.stringify(content),
-  }));
+    { role: "user" as const, content: toContentString(content) },
+  ];
 
   if (dataset) {
     messages.unshift(dataset);
@@ -112,6 +109,7 @@ async function generate({
   return await llm.generate({
     model: model ?? configuredModel,
     messages,
+    responseFormat: json_format,
     temperature,
     max_tokens,
     meta,

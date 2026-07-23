@@ -1,20 +1,15 @@
 import OpenAI from "openai";
 
 import { logLLM } from "./llmLog";
-import { parseJsonContent } from "./jsonParse";
+import { parseJsonWithRepair } from "./jsonParse";
 import type { GenerateParams, LLMAdapter } from "./types";
 
 type OpenAICompatibleOptions = {
   providerLabel: string;
   client: OpenAI;
   defaultModel: string;
-  // OpenRouter proxies models that don't all support response_format —
-  // retry once without it instead of failing the call.
   jsonModeFallback?: boolean;
-  // Some local/self-hosted models ignore response_format entirely and need
-  // the JSON instruction spelled out in a system message instead.
   forceJsonSystemPrompt?: boolean;
-  // OpenRouter reports request cost in `usage.cost`; the other providers don't.
   extractCost?: boolean;
 };
 
@@ -43,20 +38,31 @@ function createOpenAICompatibleAdapter(
     async generate({
       model = defaultModel,
       messages = [],
+      responseFormat,
       temperature = 0,
       max_tokens,
       meta,
     }: GenerateParams) {
-      const chatMessages = forceJsonSystemPrompt
-        ? [
-            ...messages,
-            {
-              role: "system" as const,
-              content:
-                "IMPORTANT: You MUST respond with ONLY valid JSON that matches the format specified. Do NOT include any text before or after the JSON. Do NOT wrap the JSON in markdown code blocks. Output ONLY the raw JSON object.",
-            },
-          ]
-        : messages;
+      const chatMessages = [
+        ...messages,
+        ...(responseFormat
+          ? [
+              {
+                role: "system" as const,
+                content: `Respond with ONLY valid JSON matching this format: ${responseFormat}`,
+              },
+            ]
+          : []),
+        ...(forceJsonSystemPrompt
+          ? [
+              {
+                role: "system" as const,
+                content:
+                  "IMPORTANT: You MUST respond with ONLY valid JSON that matches the format specified. Do NOT include any text before or after the JSON. Do NOT wrap the JSON in markdown code blocks. Output ONLY the raw JSON object.",
+              },
+            ]
+          : []),
+      ];
 
       const baseParams: Parameters<typeof client.chat.completions.create>[0] = {
         model,
@@ -115,7 +121,7 @@ function createOpenAICompatibleAdapter(
         throw new Error(`${providerLabel} is not responding`);
       }
 
-      return parseJsonContent(content, providerLabel) as Record<
+      return parseJsonWithRepair(content, providerLabel) as Record<
         string,
         unknown
       >;

@@ -22,7 +22,7 @@ async function run({
     context: context ? [{ role: "system" as const, content: context }] : [],
     content: { context, condition },
     json_format: "{ result: <true|false> }",
-    meta: { ...meta, source: "action:decision" },
+    meta,
   });
 
   const isTrue = result === true || result === "true";

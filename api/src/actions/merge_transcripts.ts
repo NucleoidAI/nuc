@@ -98,7 +98,7 @@ async function run({
       } speaker IDs, one per sentence, in this order:\n${numberedTarget}`,
       json_format: `{ speaker_ids: ["<speaker id or UNKNOWN for sentence 1>", "<speaker id or UNKNOWN for sentence 2>", "... exactly ${target.length} items total"] }`,
       max_tokens: 2048,
-      meta: { ...meta, source: "action:merge_transcripts" },
+      meta,
     });
 
     const ids = (result as { speaker_ids?: string[] }).speaker_ids ?? [];

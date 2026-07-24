@@ -35,7 +35,7 @@ async function run({
     json_format:
       '{ summary: "<overall summary>", key_topics: ["<topic>"], decisions: ["<decision>"], action_items: [{ owner: "<name>", task: "<task>" }] }',
     max_tokens: 4096,
-    meta: { ...meta, source: "action:summarize_meeting" },
+    meta,
   });
 
   return result as {

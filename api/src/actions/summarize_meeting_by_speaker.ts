@@ -31,7 +31,7 @@ async function summarizeSpeaker(
     json_format:
       '{ speaker_summary: "<at most 120 words, no verbatim quotes>" }',
     max_tokens: 1024,
-    meta: { ...meta, source: "action:summarize_meeting_by_speaker" },
+    meta,
   });
 
   return {
@@ -90,7 +90,7 @@ async function run({
     json_format:
       '{ summary: "<overall meeting summary, at most 200 words>", key_topics: ["<topic>"], decisions: ["<speaker id>: <decision>"], action_items: [{ owner_id: "<speaker id>", task: "<task>" }] }',
     max_tokens: 2048,
-    meta: { ...meta, source: "action:summarize_meeting_by_speaker" },
+    meta,
   });
 
   const combined = result as {

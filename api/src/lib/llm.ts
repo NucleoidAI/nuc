@@ -1,3 +1,4 @@
+import { basename } from "node:path";
 import type { LLMMeta } from "./llmLog";
 import type { LLMAdapter } from "./types";
 
@@ -58,6 +59,31 @@ function toContentString(content: string | object | object[]): string {
   return typeof content === "string" ? content : JSON.stringify(content);
 }
 
+function inferSource(): string | undefined {
+  const originalPrepareStackTrace = Error.prepareStackTrace;
+  try {
+    const holder: { stack?: NodeJS.CallSite[] } = {};
+    Error.prepareStackTrace = (_err, stack) =>
+      stack as unknown as NodeJS.CallSite[];
+    Error.captureStackTrace(holder, generate);
+    const caller = holder.stack?.[0];
+    if (!caller) return undefined;
+
+    const fnName = caller.getFunctionName() ?? caller.getMethodName() ?? null;
+    const fileName = caller.getFileName();
+    const fileLabel = fileName
+      ? basename(fileName).replace(/\.[cm]?[jt]sx?$/, "")
+      : null;
+
+    if (fileLabel && fnName) return `${fileLabel}:${fnName}`;
+    return fnName ?? fileLabel ?? undefined;
+  } catch {
+    return undefined;
+  } finally {
+    Error.prepareStackTrace = originalPrepareStackTrace;
+  }
+}
+
 async function generate({
   model,
   dataset,
@@ -88,6 +114,8 @@ async function generate({
   max_tokens?: number;
   meta?: LLMMeta;
 }) {
+  const resolvedSource = meta?.source ? undefined : inferSource();
+
   const messages = [
     ...context.map(({ role, content }) => ({
       role,
@@ -112,7 +140,7 @@ async function generate({
     responseFormat: json_format,
     temperature,
     max_tokens,
-    meta,
+    meta: resolvedSource ? { ...meta, source: resolvedSource } : meta,
   });
 }
 

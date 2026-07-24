@@ -113,7 +113,7 @@ async function scoring({
     dataset: dataset.train.knowledgeScore,
     content: merged,
     json_format: "{ knowledge_score: <0.0-1.0> }",
-    meta: { ...meta, source: "agent.scoring" },
+    meta,
   });
 
   const parsed = parseFloat(String(knowledge_score));
@@ -255,7 +255,7 @@ async function forceTask({
     content: { ...currentTask, forced_action: forcedAction },
     json_format:
       "{ next_step: { parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
-    meta: { ...meta, source: "agent.forceTask" },
+    meta,
   });
 
   if (forcedAction) {
@@ -335,7 +335,7 @@ async function task({ taskId }: { taskId: string }) {
           content: currentTask,
           json_format:
             "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
-          meta: { ...meta, source: "agent.task" },
+          meta,
         });
 
   console.log("next action", action);
@@ -687,7 +687,7 @@ async function blueprintChatDecision({
     context: history,
     content,
     json_format: '{ decision: <"KNOWLEDGE"|"BLUEPRINT"> }',
-    meta: { ...meta, source: "agent.blueprintChatDecision" },
+    meta,
   });
 
   return response as { decision: "KNOWLEDGE" | "BLUEPRINT" };
@@ -720,7 +720,7 @@ async function blueprintChatSufficiency({
     context,
     content,
     json_format: "{ sufficient: <true|false>, answer: <ANSWER> }",
-    meta: { ...meta, source: "agent.blueprintChatSufficiency" },
+    meta,
   });
 
   return response as { sufficient: boolean; answer?: string };
@@ -737,7 +737,7 @@ async function blueprintChatKnowledge({
     dataset: dataset.train.blueprintChatKnowledge,
     content,
     json_format: "{ knowledge: <EXTRACTED_KNOWLEDGE> }",
-    meta: { ...meta, source: "agent.blueprintChatKnowledge" },
+    meta,
   });
 
   return response as { knowledge: string };
@@ -822,7 +822,7 @@ async function Blueprint({
     context,
     content,
     json_format: "{ response: <RESPONSE>, flow: [<FLOW>] }",
-    meta: { ...meta, source: "agent.Blueprint" },
+    meta,
   });
 
   if (Array.isArray(response.flow)) {
@@ -889,7 +889,7 @@ async function blueprintToTask({
     context,
     content,
     json_format: "{ task: <TASK> ,answer: <ANSWER> }",
-    meta: { ...meta, source: "agent.blueprintToTask" },
+    meta,
   });
 
   return response;
@@ -919,7 +919,7 @@ async function blueprintDiamond({
     content,
     json_format:
       "{ decision: <DECISION>,existing: <EXISTING>,blueprintId: <BLUEPRINT_ID> }",
-    meta: { ...meta, source: "agent.blueprintDiamond" },
+    meta,
   });
   return response;
 }
@@ -1140,7 +1140,7 @@ async function toPseudo({
     context: [],
     content,
     json_format: "{ pseudocode: <PSEUDO> }",
-    meta: { ...meta, source: "agent.toPseudo" },
+    meta,
   });
 
   return response.pseudocode;
@@ -1165,7 +1165,7 @@ async function blueprintDescription({
     context,
     content: nodes,
     json_format: "{ description: <DESCRIPTION> }",
-    meta: { ...meta, source: "agent.blueprintDescription" },
+    meta,
   });
 
   console.log("[agent] blueprintDescription:", response);

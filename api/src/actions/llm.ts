@@ -14,7 +14,7 @@ async function run({
     context: context ? [{ role: "assistant" as const, content: context }] : [],
     content: message,
     json_format: "{ result: <RESULT_IN_NLP> }",
-    meta: { ...meta, source: "action:llm" },
+    meta,
   });
 
   return result;

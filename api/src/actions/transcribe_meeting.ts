@@ -1,28 +1,70 @@
-import FormData from "form-data";
-import axios from "axios";
 import fs from "fs";
+import os from "os";
 import path from "path";
+import crypto from "crypto";
+import { execFile } from "child_process";
+import { promisify } from "util";
+import asrOutput from "../../../asr_output.json";
+const MOCK = false;
+
+const execFileAsync = promisify(execFile);
+
+async function compressToMp3(filePath: string): Promise<string> {
+  const outPath = path.join(os.tmpdir(), `${crypto.randomUUID()}.mp3`);
+  await execFileAsync("ffmpeg", [
+    "-y",
+    "-i",
+    filePath,
+    "-ac",
+    "1",
+    "-b:a",
+    "64k",
+    outPath,
+  ]);
+  return outPath;
+}
 
 async function transcribeFile(
   filePath: string,
   endpointUrl: string,
-  authHeader: Record<string, string>,
+  apiKey: string | undefined
 ): Promise<string> {
-  const form = new FormData();
-  form.append("model_id", "scribe_v2");
-  form.append("file", fs.createReadStream(filePath), {
-    filename: path.basename(filePath),
-    contentType: "audio/wav",
-  });
+  const model = process.env.ASR_MODEL || "gpt-4o-transcribe";
 
-  const response = await axios({
-    method: "POST",
-    url: endpointUrl,
-    headers: { ...authHeader, ...form.getHeaders() },
-    data: form,
-  });
+  const headers: Record<string, string> = {};
+  if (apiKey) {
+    headers["Authorization"] = `Bearer ${apiKey}`;
+  }
 
-  return (response.data as { text: string }).text;
+  const mp3Path = await compressToMp3(filePath);
+  try {
+    const audioBuffer = await fs.promises.readFile(mp3Path);
+    const form = new FormData();
+    form.append(
+      "file",
+      new Blob([audioBuffer], { type: "audio/mpeg" }),
+      path.basename(mp3Path)
+    );
+    form.append("model", model);
+
+    const response = await fetch(endpointUrl, {
+      method: "POST",
+      headers,
+      body: form,
+    });
+
+    if (!response.ok) {
+      const details = await response.text();
+      throw new Error(
+        `ASR transcription failed (${response.status}): ${details}`
+      );
+    }
+
+    const result = (await response.json()) as { text: string };
+    return result.text;
+  } finally {
+    await fs.promises.unlink(mp3Path).catch(() => {});
+  }
 }
 
 async function run({
@@ -30,6 +72,14 @@ async function run({
 }: {
   parameters: { directoryPath: string };
 }) {
+  if (MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 20_000));
+    return {
+      full_meeting_transcript: asrOutput.full_meeting_transcript,
+      speaker_transcripts: asrOutput.speaker_transcripts,
+    };
+  }
+
   if (!path.isAbsolute(directoryPath)) {
     return { error: "directoryPath must be an absolute path" };
   }
@@ -43,10 +93,10 @@ async function run({
     return { error: "ASR_ENDPOINT_URL environment variable is not set" };
   }
 
-  const authHeader: Record<string, string> = {};
-  if (process.env.ASR_API_KEY) {
-    authHeader["xi-api-key"] = process.env.ASR_API_KEY;
-  }
+  const apiKey =
+    process.env.ASR_API_KEY ||
+    process.env.OPENAI_API_KEY ||
+    process.env.OPENROUTER_API_KEY;
 
   const wavFiles = fs
     .readdirSync(directoryPath)
@@ -70,11 +120,7 @@ async function run({
     const stem = path.basename(file, ".wav");
     const filePath = path.join(directoryPath, file);
     try {
-      const transcription = await transcribeFile(
-        filePath,
-        endpointUrl,
-        authHeader,
-      );
+      const transcription = await transcribeFile(filePath, endpointUrl, apiKey);
       if (stem === meetingId) {
         mixTranscript = transcription;
       } else {
@@ -82,15 +128,8 @@ async function run({
       }
       fullParts.push(transcription);
     } catch (err: unknown) {
-      const axiosErr = err as {
-        response?: { status: number; data: unknown };
-        message: string;
-      };
-      return {
-        error: `Failed on file ${file}: ${axiosErr.message}`,
-        status: axiosErr.response?.status,
-        details: axiosErr.response?.data,
-      };
+      const message = err instanceof Error ? err.message : String(err);
+      return { error: `Failed on file ${file}: ${message}` };
     }
   }
 

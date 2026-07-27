@@ -121,11 +121,11 @@ const SidebarChatWidget = ({
       agent={agent}
       selectedConversationId={conversationId || null}
       sound={sound}
-      Blueprints={
+      Presets={
         Blueprint ? (Array.isArray(Blueprint) ? Blueprint : [Blueprint]) : []
       }
-      selectedBlueprint={selectedBlueprint}
-      onBlueprintChange={handleBlueprintChange}
+      selectedPreset={selectedBlueprint}
+      onPresetChange={handleBlueprintChange}
       onSessionSelect={handleSessionSelect}
       onNewSession={handleNewSession}
       beta={beta}

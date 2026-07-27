@@ -58,5 +58,55 @@
   {
     "content": "The minimum order quantity is 5 units.",
     "decision": "KNOWLEDGE"
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": "{\"supervising\":{\"id\":\"sup-001\",\"question\":\"Product prd-3 has no compliance certificate in the knowledge base. The blueprint requires a certificate to proceed with purchase order creation. Should I add a certificate to the knowledge base, hand off to compliance, or pause until certified?\",\"status\":\"PENDING\",\"taskId\":\"task-001\",\"blueprintId\":\"bp-001\"}}"
+      }
+    ],
+    "content": "Add the CE certificate for product prd-3 to the knowledge base.",
+    "decision": "KNOWLEDGE"
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": "{\"supervising\":{\"id\":\"sup-001\",\"question\":\"Product prd-3 has no compliance certificate in the knowledge base. The blueprint requires a certificate to proceed with purchase order creation. Should I add a certificate to the knowledge base, hand off to compliance, or pause until certified?\",\"status\":\"PENDING\",\"taskId\":\"task-001\",\"blueprintId\":\"bp-001\"}}"
+      }
+    ],
+    "content": "Hand off to the compliance manager agent when no certificate is found.",
+    "decision": "BLUEPRINT"
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": "{\"supervising\":{\"id\":\"sup-001\",\"question\":\"Product prd-3 has no compliance certificate in the knowledge base. The blueprint requires a certificate to proceed with purchase order creation. Should I add a certificate to the knowledge base, hand off to compliance, or pause until certified?\",\"status\":\"PENDING\",\"taskId\":\"task-001\",\"blueprintId\":\"bp-001\"}}"
+      }
+    ],
+    "content": "Modify the blueprint so it always checks compliance before creating a purchase order.",
+    "decision": "BLUEPRINT"
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": "{\"supervising\":{\"id\":\"sup-002\",\"question\":\"Customer payment failed 3 times. The current flow has no retry logic. Should I add a retry step or notify the finance team directly?\",\"status\":\"PENDING\",\"taskId\":\"task-002\",\"blueprintId\":\"bp-002\"}}"
+      }
+    ],
+    "content": "Add the customer's preferred payment method to the knowledge base: bank transfer.",
+    "decision": "KNOWLEDGE"
+  },
+  {
+    "history": [
+      {
+        "role": "system",
+        "content": "{\"supervising\":{\"id\":\"sup-002\",\"question\":\"Customer payment failed 3 times. The current flow has no retry logic. Should I add a retry step or notify the finance team directly?\",\"status\":\"PENDING\",\"taskId\":\"task-002\",\"blueprintId\":\"bp-002\"}}"
+      }
+    ],
+    "content": "Add a retry step after payment failure, retrying up to 3 times before notifying finance.",
+    "decision": "BLUEPRINT"
   }
 ]

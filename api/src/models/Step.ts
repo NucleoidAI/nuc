@@ -33,7 +33,7 @@ class Step extends Model {
   declare result: Buffer | null;
 
   @AllowNull(true)
-  @Column(DataType.STRING(100))
+  @Column(DataType.TEXT)
   declare comment: string | null;
 
   @AllowNull(false)

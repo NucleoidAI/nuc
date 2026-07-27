@@ -3,7 +3,6 @@ import { AuthenticationError } from "@canmingir/link-express/error";
 import Joi from "joi";
 import Knowledge from "../models/Knowledge";
 import agentData from "../functions/agentData";
-import { event } from "@canmingir/link-express/event/client";
 import express from "express";
 import knowledge from "../functions/knowledge";
 import schemas from "../schemas";
@@ -49,12 +48,6 @@ router.post("/", async (req, res) => {
       organizationId,
     },
   });
-
-  if (taskId) {
-    await event.publish("TASK_SUPERVISING_RESPONDED", {
-      taskId,
-    });
-  }
 
   res.status(201).json(createdKnowledge);
 });

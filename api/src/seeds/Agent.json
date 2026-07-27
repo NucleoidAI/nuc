@@ -18,6 +18,14 @@
       "description": "A agent optimized for support tasks and user assistance."
     },
     {
+      "id": "019f4a02-1111-4222-8333-444455556666",
+      "name": "meeting_agent",
+      "icon": "mdi:account-voice",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "aiEngineId": "289a3c9a-f23b-421a-ac6e-f14052a2d57c",
+      "description": "An agent that retrieves meeting transcripts, extracts personalized summaries and action items, and delivers them via email."
+    },
+    {
       "id": "7a222222-9696-498f-9aaf-b4cf5b2ca043",
       "name": "assist_agent",
       "icon": "ph:coffee-bean-duotone",
@@ -34,12 +42,36 @@
       "description": "A reliable analysis agent focused on processing information, generating insights, and supporting structured decision-making."
     },
     {
-      "id": "ef906c5d-cafe-4518-9edc-b80c605df58e",
-      "name": "service_agent",
-      "icon": "ph:fire-simple-duotone",
+      "id": "3c8f1d5e-7b2a-4e91-a6d4-58c0f9b3e712",
+      "name": "technical_support_agent",
+      "icon": "ph:wrench-duotone",
       "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
       "aiEngineId": "289a3c9a-f23b-421a-ac6e-f14052a2d57c",
-      "description": "A service-focused agent engineered for request handling, issue support, and streamlined communication across system interactions."
+      "description": "A technical support agent specialized in troubleshooting issues, resolving infrastructure requests, and guiding users through technical solutions."
+    },
+    {
+      "id": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "name": "order_management",
+      "icon": "ph:shopping-cart-duotone",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "aiEngineId": "289a3c9a-f23b-421a-ac6e-f14052a2d57c",
+      "description": "An agent specialized in managing order lifecycles, tracking fulfillment status, and coordinating between customers and operations."
+    },
+    {
+      "id": "019f6a11-0000-4000-8000-000000000001",
+      "name": "onboarding_agent",
+      "icon": "ph:user-plus-duotone",
+      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
+      "aiEngineId": "289a3c9a-f23b-421a-ac6e-f14052a2d57c",
+      "description": "An onboarding agent that collects new employee information and creates their user account in Active Directory."
+    },
+    {
+      "id": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "name": "compliant_manager",
+      "icon": "ph:shield-check-duotone",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "aiEngineId": "d9c93323-3baf-4623-a96c-b85db99b4441",
+      "description": "An agent focused on compliance monitoring, policy enforcement, and regulatory adherence across business processes."
     }
   ]
 }

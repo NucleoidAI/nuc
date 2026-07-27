@@ -86,6 +86,29 @@
     "icon": "mdi:check"
   },
   {
+    "action": "PLATFORM:handoff",
+    "description": "Transfer this task to another agent's blueprint and continue in the same session",
+    "icon": "mdi:account-arrow-right",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "targetAgentId": {
+          "type": "string",
+          "description": "The ID of the target agent to hand off to."
+        },
+        "targetBlueprintId": {
+          "type": "string",
+          "description": "The ID of the target agent's blueprint (optional)."
+        },
+        "context": {
+          "type": "string",
+          "description": "A summary of the current task context to pass to the target agent."
+        }
+      },
+      "required": ["targetAgentId", "context"]
+    }
+  },
+  {
     "action": "PLATFORM:ask_supervisor",
     "lib": "ask_supervisor",
     "description": "Ask a supervisor for guidance or approval",
@@ -107,6 +130,459 @@
         }
       },
       "required": ["question"]
+    }
+  },
+  {
+    "action": "PLATFORM:asr",
+    "lib": "asr",
+    "description": "Transcribe an audio file using ASR. Returns the transcription in VTT format directly.",
+    "icon": "mdi:microphone-message",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "inputPath": {
+          "type": "string",
+          "description": "Absolute path to the audio file to transcribe."
+        }
+      },
+      "required": ["inputPath"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "success": { "type": "boolean" },
+        "transcription": {
+          "type": "string",
+          "description": "The transcription in VTT format."
+        },
+        "error": { "type": "string" }
+      }
+    }
+  },
+  {
+    "action": "PLATFORM:file_inspector",
+    "lib": "file_inspector",
+    "description": "Inspect files or directories using an absolute path. Supports checking existence, reading content, getting metadata, or listing directory entries.",
+    "icon": "mdi:file-search",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "filePath": {
+          "type": "string",
+          "description": "The absolute path to the file or directory."
+        },
+        "operation": {
+          "type": "string",
+          "enum": ["exists", "read", "stat", "list"],
+          "description": "Operation to perform: 'exists' checks if the path exists, 'read' returns file content, 'stat' returns file metadata, 'list' lists directory contents."
+        }
+      },
+      "required": ["filePath"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "exists": { "type": "boolean" },
+        "content": { "type": "string" },
+        "isFile": { "type": "boolean" },
+        "isDirectory": { "type": "boolean" },
+        "size": { "type": "number" },
+        "created": { "type": "string" },
+        "modified": { "type": "string" },
+        "entries": { "type": "array" },
+        "error": { "type": "string" }
+      }
+    }
+  },
+  {
+    "action": "PLATFORM:pcm_to_wav",
+    "lib": "pcm_to_wav",
+    "description": "Convert all PCM audio files (.pcm) in a directory to WAV format",
+    "icon": "mdi:waveform",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "directoryPath": {
+          "type": "string",
+          "description": "Absolute path to the directory containing .pcm files."
+        }
+      },
+      "required": ["directoryPath"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "success": { "type": "boolean" },
+        "converted": {
+          "type": "array",
+          "description": "List of output .wav file paths."
+        },
+        "errors": { "type": "array" },
+        "totalFound": { "type": "number" },
+        "totalConverted": { "type": "number" },
+        "message": { "type": "string" }
+      }
+    }
+  },
+  {
+    "action": "PLATFORM:transcribe_meeting",
+    "lib": "transcribe_meeting",
+    "description": "Transcribe all WAV audio files in a directory one by one and return individual and combined transcripts",
+    "icon": "mdi:microphone-multiple",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "directoryPath": {
+          "type": "string",
+          "description": "Absolute path to the directory containing .wav files."
+        }
+      },
+      "required": ["directoryPath"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "full_meeting_transcript": {
+          "type": "string",
+          "description": "Combined transcript of all audio files in order."
+        },
+        "speaker_transcripts": {
+          "type": "array",
+          "description": "Each participant's individual transcript.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "transcript": { "type": "string" }
+            },
+            "required": ["id", "transcript"]
+          }
+        },
+        "error": { "type": "string" }
+      }
+    }
+  },
+  {
+    "action": "PLATFORM:merge_transcripts",
+    "lib": "merge_transcripts",
+    "description": "Label the main meeting transcript with speaker attribution by cross-referencing each participant's individual transcript (who said what), processed in chunks to stay within LLM output token limits",
+    "icon": "mdi:text-account",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "full_meeting_transcript": {
+          "type": "string",
+          "description": "Combined transcript from transcribe_meeting, to be labeled with speakers."
+        },
+        "speaker_transcripts": {
+          "type": "array",
+          "description": "Each participant's individual transcript, from transcribe_meeting's output. Pass this array through unchanged.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "transcript": { "type": "string" }
+            },
+            "required": ["id", "transcript"]
+          }
+        }
+      },
+      "required": ["full_meeting_transcript", "speaker_transcripts"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "final_transcript": {
+          "type": "string",
+          "description": "Unified chronological transcript with speaker labels."
+        },
+        "error": { "type": "string" }
+      }
+    }
+  },
+  {
+    "action": "PLATFORM:summarize_meeting_by_speaker",
+    "lib": "summarize_meeting_by_speaker",
+    "description": "Produce a structured meeting summary (key topics, decisions, action items) attributed by speaker ID. First summarizes each participant's individual transcript separately (small, word-capped output), then combines those short summaries plus the full transcript as background reference - keeps every LLM call's output well within token limits regardless of meeting length",
+    "icon": "mdi:text-box-check",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "full_meeting_transcript": {
+          "type": "string",
+          "description": "Combined transcript from transcribe_meeting, used as background reference when combining per-speaker summaries."
+        },
+        "speaker_transcripts": {
+          "type": "array",
+          "description": "Each participant's individual transcript, from transcribe_meeting's output. Pass this array through unchanged.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "transcript": { "type": "string" }
+            },
+            "required": ["id", "transcript"]
+          }
+        },
+        "language": {
+          "type": "string",
+          "description": "Language for the summary output (e.g. 'tr', 'en'). Defaults to 'tr'."
+        }
+      },
+      "required": ["full_meeting_transcript", "speaker_transcripts"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "summary": { "type": "string" },
+        "key_topics": { "type": "array", "items": { "type": "string" } },
+        "decisions": { "type": "array", "items": { "type": "string" } },
+        "action_items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "owner_id": { "type": "string" },
+              "task": { "type": "string" }
+            }
+          }
+        },
+        "speaker_highlights": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "summary": { "type": "string" }
+            }
+          }
+        },
+        "error": { "type": "string" }
+      }
+    }
+  },
+  {
+    "action": "PLATFORM:resolve_participants",
+    "lib": "resolve_participants",
+    "description": "Replace participant IDs with their real names, anywhere they appear (recursively) inside a text transcript or a structured summary object, using a participants list from metadata",
+    "icon": "mdi:account-convert",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "description": "The transcript string or structured summary object (e.g. output of summarize_meeting_by_speaker) containing participant IDs to resolve."
+        },
+        "participants": {
+          "type": "array",
+          "description": "Array of participant objects from meeting metadata.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" }
+            },
+            "required": ["id", "name"]
+          }
+        }
+      },
+      "required": ["content", "participants"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "description": "The same input shape (string or object), with IDs replaced by participant names."
+        },
+        "error": { "type": "string" }
+      }
+    }
+  },
+  {
+    "action": "PLATFORM:summarize_meeting",
+    "lib": "summarize_meeting",
+    "description": "Summarize a meeting transcript into key topics, decisions, and action items",
+    "icon": "mdi:text-box-check",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "transcript": {
+          "type": "string",
+          "description": "The full meeting transcript to summarize."
+        },
+        "language": {
+          "type": "string",
+          "description": "Language for the summary output (e.g. 'tr', 'en'). Defaults to 'tr'."
+        }
+      },
+      "required": ["transcript"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "summary": { "type": "string" },
+        "key_topics": { "type": "array", "items": { "type": "string" } },
+        "decisions": { "type": "array", "items": { "type": "string" } },
+        "action_items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "owner": { "type": "string" },
+              "task": { "type": "string" }
+            }
+          }
+        },
+        "error": { "type": "string" }
+      }
+    }
+  },
+  {
+    "action": "PLATFORM:create_vm",
+    "lib": "create_vm",
+    "description": "Create a virtual machine (EC2 instance) on AWS. If no AMI is given, the latest Amazon Linux 2023 image is used.",
+    "icon": "mdi:server-plus",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name tag for the instance."
+        },
+        "instanceType": {
+          "type": "string",
+          "description": "EC2 instance type (e.g. 't3.micro', 't3.small'). Defaults to 't3.micro'."
+        },
+        "amiId": {
+          "type": "string",
+          "description": "AMI ID to launch from. Defaults to the latest Amazon Linux 2023 AMI."
+        },
+        "keyName": {
+          "type": "string",
+          "description": "Name of an existing EC2 key pair for SSH access (optional)."
+        },
+        "subnetId": {
+          "type": "string",
+          "description": "Subnet ID to launch into (optional)."
+        },
+        "securityGroupIds": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Security group IDs to attach (optional)."
+        },
+        "region": {
+          "type": "string",
+          "description": "AWS region. Defaults to the AWS_REGION environment variable."
+        }
+      },
+      "required": ["name"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "success": { "type": "boolean" },
+        "instanceId": { "type": "string" },
+        "imageId": { "type": "string" },
+        "instanceType": { "type": "string" },
+        "state": {
+          "type": "string",
+          "description": "Instance state right after launch (usually 'pending')."
+        },
+        "privateIp": { "type": "string" },
+        "publicIp": { "type": "string" },
+        "availabilityZone": { "type": "string" },
+        "error": { "type": "string" }
+      }
+    }
+  },
+  {
+    "action": "PLATFORM:terminate_vm",
+    "lib": "terminate_vm",
+    "description": "Terminate a virtual machine (EC2 instance) on AWS by instance ID. Termination is permanent and cannot be undone.",
+    "icon": "mdi:server-remove",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "instanceId": {
+          "type": "string",
+          "description": "The ID of the EC2 instance to terminate (e.g. 'i-0abc123def456...')."
+        },
+        "region": {
+          "type": "string",
+          "description": "AWS region the instance is in. Defaults to the AWS_REGION environment variable."
+        }
+      },
+      "required": ["instanceId"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "success": { "type": "boolean" },
+        "instanceId": { "type": "string" },
+        "previousState": {
+          "type": "string",
+          "description": "Instance state before termination (e.g. 'running')."
+        },
+        "currentState": {
+          "type": "string",
+          "description": "Instance state after the request (usually 'shutting-down')."
+        },
+        "error": { "type": "string" }
+      }
+    }
+  },
+  {
+    "action": "PLATFORM:evaluate_metrics",
+    "lib": "evaluate_metrics",
+    "description": "Deterministically evaluate an OTLP resourceMetrics payload against metric reference ranges. Pass the incoming OTLP payload as 'metrics' and the reference ranges (e.g. from agent knowledge) as 'reference_ranges'. Each data point is matched to its reference by metric name and attributes, then checked against min/max bounds or an expected value. Returns the out-of-range metrics as violations.",
+    "icon": "mdi:chart-bell-curve",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "metrics": {
+          "type": ["object", "string"],
+          "description": "OTLP resourceMetrics payload from the incoming message, either as a JSON object with a 'resourceMetrics' array or as a JSON string."
+        },
+        "reference_ranges": {
+          "type": ["array", "object", "string"],
+          "description": "Reference ranges to evaluate against, e.g. from agent knowledge. A list of objects with 'metric' and optional 'attributes', 'min', 'max', 'expected', 'unit'. A single range object or a JSON string is also accepted."
+        }
+      },
+      "required": ["metrics", "reference_ranges"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "host": {
+          "type": "string",
+          "description": "host.name from the resource attributes."
+        },
+        "checked": {
+          "type": "number",
+          "description": "Number of data points evaluated against a reference."
+        },
+        "hasViolations": {
+          "type": "boolean",
+          "description": "True when at least one metric is outside its reference range."
+        },
+        "violations": {
+          "type": "array",
+          "description": "Out-of-range metrics with observed value, allowed range and timestamp.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "metric": { "type": "string" },
+              "attributes": { "type": "object" },
+              "value": { "type": "number" },
+              "min": { "type": ["number", "null"] },
+              "max": { "type": ["number", "null"] },
+              "expected": { "type": "number" },
+              "unit": { "type": "string" },
+              "timeUnixNano": { "type": "string" }
+            }
+          }
+        },
+        "error": { "type": "string" }
+      }
     }
   },
   {

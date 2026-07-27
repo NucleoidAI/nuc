@@ -122,7 +122,8 @@ function useKnowledge() {
     agentId: string,
     teamId?: string,
     blueprintId?: string,
-    organizationId?: string
+    organizationId?: string,
+    taskId?: string
   ) => {
     const response = await http.post("/knowledge", {
       url: knowledge.url,
@@ -134,6 +135,7 @@ function useKnowledge() {
       blueprintId: blueprintId || knowledge.blueprintId,
       organizationId: organizationId || knowledge.organizationId,
       type: knowledge.type,
+      taskId: taskId,
     });
 
     if (response && response.data) {

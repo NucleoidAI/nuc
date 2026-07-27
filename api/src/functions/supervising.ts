@@ -45,9 +45,11 @@ async function update({
   agentId,
   question,
   answer,
+  knowledge,
   status,
   taskId,
   blueprintId,
+  type,
 }: {
   teamId: string;
   supervisingId: string;
@@ -55,8 +57,10 @@ async function update({
   agentId: string;
   question: string;
   answer: string;
+  knowledge?: string;
   taskId?: string;
   blueprintId?: string;
+  type?: "KNOWLEDGE" | "BLUEPRINT";
 }) {
   await Supervising.update(
     { status, answer },
@@ -66,42 +70,40 @@ async function update({
   const updatedSupervising = await Supervising.findByPk(supervisingId);
   const { sessionId, conversationId } = updatedSupervising;
 
-  const knowledgeInstance = await Knowledge.create({
-    type: "QA",
-    question,
-    answer,
-    agentId,
-    taskId,
-    blueprintId,
-    teamId,
-  });
-  await AgentKnowledge.create({
-    knowledgeId: knowledgeInstance.id,
-    agentId,
-    teamId,
-    blueprintId,
-  });
-
-  const knowledgeJson = knowledgeInstance.toJSON();
-
-  await event.publish("KNOWLEDGE", "CREATED", knowledgeJson);
-
-  if (knowledgeJson?.taskId) {
-    await event.publish("TASK_SUPERVISING_RESPONDED", {
-      taskId: knowledgeJson.taskId,
+  if (type === "KNOWLEDGE") {
+    const knowledgeInstance = await Knowledge.create({
+      type: "TEXT",
+      text: knowledge ?? answer,
+      agentId,
+      taskId,
+      blueprintId,
+      teamId,
     });
+    try {
+      await AgentKnowledge.create({
+        knowledgeId: knowledgeInstance.id,
+        agentId,
+        teamId,
+        blueprintId,
+      });
+    } catch (err: any) {
+      if (err.name !== "SequelizeUniqueConstraintError") {
+        throw err;
+      }
+    }
+
+    const knowledgeJson = knowledgeInstance.toJSON();
+
+    await event.publish("KNOWLEDGE", "CREATED", knowledgeJson);
   }
 
   await event.publish("SUPERVISING_ANSWERED", {
-    teamId,
-    supervisingId,
     sessionId,
-    conversationId,
     agentId,
     question,
     answer,
-    status,
-    blueprintId,
+    type,
+    taskId,
   });
 
   return updatedSupervising;

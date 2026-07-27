@@ -1,5 +1,5 @@
 {
-  "sequence": 10,
+  "sequence": 11,
   "seed": [
     {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
@@ -162,6 +162,632 @@
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
+        }
+      ]
+    },
+    {
+      "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+      "title": "Order and Compliance",
+      "description": "Find product, assign compliance certificate, create purchase order, write process to LLM, and send email.",
+      "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\nAssignCertificate(product.id)\nPO.Create(product.id)\nLLM.WriteProcess()\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "nodes": [
+        {
+          "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "parameters": {
+              "question": "Which product would you like to order?"
+            },
+            "description": "Ask user to select a product",
+            "prompt": "Ask user which product they want to order",
+            "label": "Select a Product",
+            "icon": "mdi:account-question",
+            "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:find_product",
+            "description": "Search and retrieve the product details",
+            "prompt": "Find the product by identifier",
+            "label": "Find Product",
+            "icon": "mdi:magnify",
+            "pseudocode": "BEGIN_CONTEXT\nproduct = FindProduct()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:knowledge_lookup",
+            "description": "Look up the agent's knowledge base to find the product's compliance certificate. This reflects live knowledge updates from the supervisor.",
+            "prompt": "Look up compliance certificate for the product from agent knowledge",
+            "label": "Check Certificate",
+            "icon": "mdi:book-search",
+            "pseudocode": "BEGIN_CONTEXT\ncertificate = KnowledgeLookup(agentId, product.id)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:assign_certificate",
+            "description": "Assign a compliance certificate to the product",
+            "prompt": "Assign a compliance certificate to the product",
+            "label": "Assign Certificate",
+            "icon": "mdi:certificate-outline",
+            "pseudocode": "BEGIN_CONTEXT\ncertificate = AssignCertificate(product.id)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:create_po",
+            "description": "Create a Purchase Order for the certified product",
+            "prompt": "Create a purchase order for the product",
+            "label": "Create Purchase Order",
+            "icon": "mdi:file-document-plus",
+            "pseudocode": "BEGIN_CONTEXT\nPO.Create(product.id)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:send_email",
+            "description": "Send email notification about the completed purchase order",
+            "prompt": "Send email to notify about the purchase order",
+            "label": "Send Email",
+            "icon": "mdi:email",
+            "pseudocode": "BEGIN_CONTEXT\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": null,
+          "createdAt": "2025-06-26T06:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "c2b1a0d9-e8f7-4c2b-9100-300000000001",
+      "title": "Compliance Certificate Request",
+      "description": "Find the vendor of a product that is missing a compliance certificate and send them an email requesting the certificate, then notify the user.",
+      "pseudocode": "BEGIN_CONTEXT\nvendor = GetProductVendor(product.id)\nEmail.Send(vendor.email)\nMessageUser()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "nodes": [
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000002",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:get_product_vendor",
+            "description": "Find the vendor of the product that is missing a compliance certificate",
+            "prompt": "Get the vendor information for the product",
+            "label": "Get Product Vendor",
+            "icon": "mdi:domain",
+            "pseudocode": "BEGIN_CONTEXT\nvendor = GetProductVendor(product.id)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000003"],
+          "createdAt": "2025-06-29T08:00:00Z"
+        },
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000003",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:send_email",
+            "description": "Send an email to the vendor requesting the compliance certificate for the product",
+            "prompt": "Send certificate request email to vendor",
+            "label": "Email Vendor",
+            "icon": "mdi:email",
+            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(vendor.email)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000004"],
+          "createdAt": "2025-06-29T08:00:00Z"
+        },
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000004",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Notify the user that the vendor has been contacted for the compliance certificate",
+            "prompt": "Notify user that vendor was contacted",
+            "label": "Notify User",
+            "icon": "mdi:bell",
+            "pseudocode": "BEGIN_CONTEXT\nMessageUser()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000005"],
+          "createdAt": "2025-06-29T08:00:00Z"
+        },
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000005",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "Mark the compliance certificate request as complete",
+            "prompt": "Complete compliance certificate request",
+            "label": "Complete",
+            "icon": "mdi:check",
+            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": null,
+          "createdAt": "2025-06-29T08:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "019f414b-0000-4000-8000-000000000001",
+      "title": "Meeting Recording Transcription & Summary",
+      "description": "Converts per-participant PCM recordings to WAV, transcribes each one, produces a structured meeting summary attributed by speaker ID (key topics, decisions, action items), resolves participant IDs to real names in that summary, and emails it to all participants.",
+      "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath)\nsummary = SummarizeMeetingBySpeaker(transcripts.full_meeting_transcript, transcripts.speaker_transcripts)\nresolved = ResolveParticipants(summary, participants)\nEmail.Send(to: participants.emails, subject, body: resolved)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "019f4a02-1111-4222-8333-444455556666",
+      "blocking": false,
+      "force": true,
+      "nodes": [
+        {
+          "id": "019f414b-0001-4000-8000-000000000001",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:pcm_to_wav",
+            "description": "Convert all PCM audio files in the meeting directory to WAV format",
+            "prompt": "Convert PCM files to WAV",
+            "label": "Convert PCM to WAV",
+            "icon": "mdi:waveform",
+            "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f414b-0002-4000-8000-000000000002"],
+          "createdAt": "2026-07-08T10:00:00Z"
+        },
+        {
+          "id": "019f414b-0002-4000-8000-000000000002",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:transcribe_meeting",
+            "description": "Transcribe each WAV file individually and collect per-speaker transcripts",
+            "prompt": "Transcribe all WAV files in the meeting directory",
+            "label": "Transcribe Meeting",
+            "icon": "mdi:microphone-multiple",
+            "pseudocode": "BEGIN_CONTEXT\ntranscripts = TranscribeMeeting(directoryPath)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f414b-0003-4000-8000-000000000003"],
+          "createdAt": "2026-07-08T10:00:00Z"
+        },
+        {
+          "id": "019f414b-0003-4000-8000-000000000003",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:summarize_meeting_by_speaker",
+            "description": "Produce a structured meeting summary (key topics, decisions, action items) attributed by speaker ID, using each participant's individual transcript plus the full meeting transcript as background reference",
+            "prompt": "Pass full_meeting_transcript and speaker_transcripts from the previous step through unchanged to produce a speaker-attributed meeting summary",
+            "label": "Summarize Meeting By Speaker",
+            "icon": "mdi:text-box-check",
+            "pseudocode": "BEGIN_CONTEXT\nsummary = SummarizeMeetingBySpeaker(transcripts.full_meeting_transcript, transcripts.speaker_transcripts)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f414b-0004-4000-8000-000000000004"],
+          "createdAt": "2026-07-08T10:00:00Z"
+        },
+        {
+          "id": "019f414b-0004-4000-8000-000000000004",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:resolve_participants",
+            "description": "Replace numeric participant IDs with real participant names, anywhere they appear in the meeting summary",
+            "prompt": "Resolve participant IDs to real names in the meeting summary using meeting metadata",
+            "label": "Resolve Participants",
+            "icon": "mdi:account-convert",
+            "pseudocode": "BEGIN_CONTEXT\nresolved = ResolveParticipants(summary, participants)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f414b-0005-4000-8000-000000000005"],
+          "createdAt": "2026-07-08T10:00:00Z"
+        },
+        {
+          "id": "019f414b-0005-4000-8000-000000000005",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:send_email",
+            "description": "Email the resolved meeting summary to all meeting participants using the 'meeting_summary' template",
+            "prompt": "Send one email to all meeting participants (join every participant's email from meeting metadata into a comma-separated 'to' field). Do NOT compose subject/text/html manually - instead pass template: 'meeting_summary' and data: { meetingName, meetingDate, summary, key_topics, decisions, action_items: [{owner, task}], speaker_highlights: [{id, summary}] } built from the resolved summary and meeting metadata. The template renders the formatted email.",
+            "label": "Send Email",
+            "icon": "mdi:email-send",
+            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(to: participants.emails, template: \"meeting_summary\", data: resolved)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f414b-0006-4000-8000-000000000006"],
+          "createdAt": "2026-07-08T10:00:00Z"
+        },
+        {
+          "id": "019f414b-0006-4000-8000-000000000006",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "Mark the meeting transcription and summary workflow as complete",
+            "prompt": "Complete meeting summary flow",
+            "label": "Complete",
+            "icon": "mdi:check",
+            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": null,
+          "createdAt": "2026-07-08T10:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "019f5c00-0000-4000-8000-000000000001",
+      "title": "VM Provisioning Request",
+      "description": "Handles a virtual machine provisioning request. The agent collects VM requirements from the user, creates the VM on AWS, and shares the instance details with the user.",
+      "pseudocode": "BEGIN_CONTEXT\nrequirements = WaitForUserInput()\nvm = CreateVM(requirements)\nMessageUser(vm)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "3c8f1d5e-7b2a-4e91-a6d4-58c0f9b3e712",
+      "nodes": [
+        {
+          "id": "019f5c00-0001-4000-8000-000000000001",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "parameters": {
+              "question": "What are the requirements for the VM? Please provide a name and optionally the instance type (e.g. t3.micro) and region."
+            },
+            "description": "Ask the user for the VM requirements (name, instance type, region)",
+            "prompt": "Ask user for VM requirements",
+            "label": "Collect VM Requirements",
+            "icon": "mdi:account-question",
+            "pseudocode": "BEGIN_CONTEXT\nrequirements = WaitForUserInput()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f5c00-0004-4000-8000-000000000004"],
+          "createdAt": "2026-07-13T10:00:00Z"
+        },
+        {
+          "id": "019f5c00-0004-4000-8000-000000000004",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:create_vm",
+            "description": "Create the EC2 instance on AWS with the requirements collected from the user",
+            "prompt": "Create the VM on AWS using the collected requirements (name is required; instanceType and region are optional)",
+            "label": "Create VM",
+            "icon": "mdi:server-plus",
+            "pseudocode": "BEGIN_CONTEXT\nvm = CreateVM(requirements)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f5c00-0005-4000-8000-000000000005"],
+          "createdAt": "2026-07-13T10:00:00Z"
+        },
+        {
+          "id": "019f5c00-0005-4000-8000-000000000005",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Share the created VM details (instance ID, type, state, IPs) with the user",
+            "prompt": "Notify the user with the created VM details from the previous step",
+            "label": "Share VM Details",
+            "icon": "mdi:bell",
+            "pseudocode": "BEGIN_CONTEXT\nMessageUser(vm)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f5c00-0007-4000-8000-000000000007"],
+          "createdAt": "2026-07-13T10:00:00Z"
+        },
+        {
+          "id": "019f5c00-0007-4000-8000-000000000007",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "Mark the VM provisioning workflow as complete",
+            "prompt": "Complete VM provisioning flow",
+            "label": "Complete",
+            "icon": "mdi:check",
+            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": null,
+          "createdAt": "2026-07-13T10:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "019f5c01-0000-4000-8000-000000000001",
+      "title": "VM Termination Request",
+      "description": "Handles a virtual machine termination request. The agent collects the instance ID from the user, confirms the termination since it is permanent, terminates the VM on AWS, and shares the result with the user.",
+      "pseudocode": "BEGIN_CONTEXT\ninstanceId = WaitForUserInput()\nconfirmation = WaitForUserConfirmation(instanceId)\nIF confirmation.Confirmed == TRUE THEN\n    result = TerminateVM(instanceId)\n    MessageUser(result)\nELSE\n    MessageUser(\"Termination cancelled\")\nEND_IF\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "3c8f1d5e-7b2a-4e91-a6d4-58c0f9b3e712",
+      "nodes": [
+        {
+          "id": "019f5c01-0001-4000-8000-000000000001",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "parameters": {
+              "question": "Which VM would you like to terminate? Please provide the instance ID (e.g. i-0abc123...) and optionally the region."
+            },
+            "description": "Ask the user for the instance ID of the VM to terminate",
+            "prompt": "Ask user for the instance ID to terminate",
+            "label": "Collect Instance ID",
+            "icon": "mdi:account-question",
+            "pseudocode": "BEGIN_CONTEXT\ninstanceId = WaitForUserInput()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f5c01-0002-4000-8000-000000000002"],
+          "createdAt": "2026-07-13T10:00:00Z"
+        },
+        {
+          "id": "019f5c01-0002-4000-8000-000000000002",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "parameters": {
+              "question": "Termination is permanent and cannot be undone. Are you sure you want to terminate this instance? (yes/no)"
+            },
+            "description": "Ask the user to confirm the termination since it is permanent and cannot be undone",
+            "prompt": "Ask user to confirm terminating the instance",
+            "label": "Confirm Termination",
+            "icon": "mdi:alert-circle-check",
+            "pseudocode": "BEGIN_CONTEXT\nconfirmation = WaitForUserConfirmation(instanceId)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f5c01-0003-4000-8000-000000000003"],
+          "createdAt": "2026-07-13T10:00:00Z"
+        },
+        {
+          "id": "019f5c01-0003-4000-8000-000000000003",
+          "type": "CONDITION",
+          "properties": {
+            "action": "PLATFORM:decision",
+            "description": "Decide based on the user's confirmation whether to proceed with the termination",
+            "prompt": "Did the user confirm the termination?",
+            "label": "Check Confirmation",
+            "icon": "mdi:source-branch",
+            "pseudocode": "BEGIN_CONTEXT\nIF confirmation.Confirmed == TRUE THEN\n    // handle true path\nELSE\n    // handle false path\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "true": ["019f5c01-0004-4000-8000-000000000004"],
+          "false": ["019f5c01-0006-4000-8000-000000000006"],
+          "createdAt": "2026-07-13T10:00:00Z"
+        },
+        {
+          "id": "019f5c01-0004-4000-8000-000000000004",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:terminate_vm",
+            "description": "Terminate the EC2 instance on AWS with the instance ID collected from the user",
+            "prompt": "Terminate the VM on AWS using the collected instance ID (region is optional)",
+            "label": "Terminate VM",
+            "icon": "mdi:server-remove",
+            "pseudocode": "BEGIN_CONTEXT\nresult = TerminateVM(instanceId)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f5c01-0005-4000-8000-000000000005"],
+          "createdAt": "2026-07-13T10:00:00Z"
+        },
+        {
+          "id": "019f5c01-0005-4000-8000-000000000005",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Share the termination result (instance ID, previous and current state) with the user",
+            "prompt": "Notify the user with the termination result from the previous step",
+            "label": "Share Termination Result",
+            "icon": "mdi:bell",
+            "pseudocode": "BEGIN_CONTEXT\nMessageUser(result)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f5c01-0007-4000-8000-000000000007"],
+          "createdAt": "2026-07-13T10:00:00Z"
+        },
+        {
+          "id": "019f5c01-0006-4000-8000-000000000006",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Inform the user that the termination was cancelled",
+            "prompt": "Notify the user that the termination was cancelled and no instance was terminated",
+            "label": "Notify Cancellation",
+            "icon": "mdi:bell-off",
+            "pseudocode": "BEGIN_CONTEXT\nMessageUser(\"Termination cancelled\")\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f5c01-0007-4000-8000-000000000007"],
+          "createdAt": "2026-07-13T10:00:00Z"
+        },
+        {
+          "id": "019f5c01-0007-4000-8000-000000000007",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "Mark the VM termination workflow as complete",
+            "prompt": "Complete VM termination flow",
+            "label": "Complete",
+            "icon": "mdi:check",
+            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": null,
+          "createdAt": "2026-07-13T10:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "019f7a20-0000-4000-8000-000000000001",
+      "title": "VM Metrics Health Check",
+      "description": "Evaluates OTLP metrics (resourceMetrics payload) that arrive from a virtual machine at regular intervals. The agent looks up the metric reference ranges from its knowledge base, deterministically evaluates every incoming metric data point against those ranges with the evaluate_metrics tool, and if any metric is outside its reference range it creates a ServiceNow incident listing the violations; if all metrics are within range the run completes silently.",
+      "pseudocode": "BEGIN_CONTEXT\nreferences = KnowledgeLookup(agentId)\nevaluation = EvaluateMetrics(metrics, references)\nIF evaluation.hasViolations == TRUE THEN\n    ServiceNow.CreateIncident(evaluation.violations)\nEND_IF\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
+      "blocking": false,
+      "nodes": [
+        {
+          "id": "019f7a20-0001-4000-8000-000000000001",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:knowledge_lookup",
+            "description": "Look up the metric reference ranges (reference_ranges) from the agent's knowledge base",
+            "prompt": "Look up the metric reference ranges (reference_ranges) from agent knowledge",
+            "label": "Get Reference Ranges",
+            "icon": "mdi:book-search",
+            "pseudocode": "BEGIN_CONTEXT\nreferences = KnowledgeLookup(agentId)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f7a20-0002-4000-8000-000000000002"],
+          "createdAt": "2026-07-16T10:00:00Z"
+        },
+        {
+          "id": "019f7a20-0002-4000-8000-000000000002",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:evaluate_metrics",
+            "description": "Deterministically evaluate every metric data point in the incoming OTLP resourceMetrics payload against the reference ranges from the knowledge lookup",
+            "prompt": "Call evaluate_metrics with two parameters: 'metrics' = the OTLP resourceMetrics payload from the incoming message, and 'reference_ranges' = the reference ranges returned by the knowledge lookup step. It returns host, checked, hasViolations and the violations list.",
+            "label": "Evaluate Metrics",
+            "icon": "mdi:chart-bell-curve",
+            "pseudocode": "BEGIN_CONTEXT\nevaluation = EvaluateMetrics(metrics, references)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f7a20-0003-4000-8000-000000000003"],
+          "createdAt": "2026-07-16T10:00:00Z"
+        },
+        {
+          "id": "019f7a20-0003-4000-8000-000000000003",
+          "type": "CONDITION",
+          "properties": {
+            "action": "PLATFORM:decision",
+            "description": "Decide based on the evaluate_metrics result whether any metric is outside its reference range",
+            "prompt": "Is hasViolations true in the evaluate_metrics result (is the violations list non-empty)?",
+            "label": "Check for Violations",
+            "icon": "mdi:source-branch",
+            "pseudocode": "BEGIN_CONTEXT\nIF evaluation.hasViolations == TRUE THEN\n    // handle true path\nELSE\n    // handle false path\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "true": ["019f7a20-0004-4000-8000-000000000004"],
+          "false": ["019f7a20-0006-4000-8000-000000000006"],
+          "createdAt": "2026-07-16T10:00:00Z"
+        },
+        {
+          "id": "019f7a20-0006-4000-8000-000000000006",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "End the task when every metric is within its reference range and no alert is needed",
+            "prompt": "All metrics are within their reference ranges, no alert needed, complete the task",
+            "label": "Complete (Metrics OK)",
+            "icon": "mdi:check-circle",
+            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": null,
+          "createdAt": "2026-07-16T10:00:00Z"
+        },
+        {
+          "id": "019f7a20-0004-4000-8000-000000000004",
+          "type": "NORMAL",
+          "properties": {
+            "action": "SERVICENOW:create_incident",
+            "description": "Create a ServiceNow incident listing every metric that is outside its reference range",
+            "prompt": "Create a ServiceNow incident for the metric violations: shortDescription = 'VM Metric Alert: <host>' (host from the evaluation step), caller = 'VM Monitoring Agent', priority = 2, and description listing, for each violation from the evaluation step: the metric name, its attributes, the observed value, the allowed reference range (min/max or expected value), the unit, and the measurement timestamp",
+            "label": "Create Incident",
+            "icon": "mdi:alert-circle-outline",
+            "pseudocode": "BEGIN_CONTEXT\nServiceNow.CreateIncident(evaluation.violations)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f7a20-0005-4000-8000-000000000005"],
+          "createdAt": "2026-07-16T10:00:00Z"
+        },
+        {
+          "id": "019f7a20-0005-4000-8000-000000000005",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "Mark the VM metrics health check as complete",
+            "prompt": "Complete VM metrics health check flow",
+            "label": "Complete",
+            "icon": "mdi:check",
+            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": null,
+          "createdAt": "2026-07-16T10:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "019f6a10-0000-4000-8000-000000000001",
+      "title": "Employee Onboarding",
+      "description": "Handles new employee onboarding. The agent takes the incoming employee's information (first name, last name, employee ID, department, job role, manager, location, ServiceNow request number), creates the employee's user account in Active Directory via the Active Directory MCP, approves the corresponding employee request in ServiceNow via the ServiceNow MCP, looks up the manager's email address from the agent's knowledge, emails the created account details to the manager, and sends a welcome email to the new employee's address.",
+      "pseudocode": "BEGIN_CONTEXT\naccount = CreateEmployee(employee)\nServiceNow.ApproveRequest(employee.requestNumber)\nmanagerEmail = KnowledgeLookup(agentId)\nEmail.Send(managerEmail, account)\nEmail.Send(account.mail, welcome)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "019f6a11-0000-4000-8000-000000000001",
+      "nodes": [
+        {
+          "id": "019f6a10-0002-4000-8000-000000000002",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ACTIVEDIRECTORY:create_employee",
+            "description": "Create the employee's user account in Active Directory with the collected information",
+            "prompt": "Create the employee in Active Directory using the employee information provided in the incoming message (first_name, last_name and employee_id are required; department, job_role, manager and location are optional)",
+            "label": "Create Employee in Active Directory",
+            "icon": "mdi:microsoft-windows",
+            "pseudocode": "BEGIN_CONTEXT\naccount = CreateEmployee(employee)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f6a10-0003-4000-8000-000000000003"],
+          "createdAt": "2026-07-14T10:00:00Z"
+        },
+        {
+          "id": "019f6a10-0003-4000-8000-000000000003",
+          "type": "NORMAL",
+          "properties": {
+            "action": "SERVICENOW:approve_employee_request",
+            "description": "Approve the employee onboarding request in ServiceNow now that the Active Directory account has been created",
+            "prompt": "Approve the employee's onboarding request in ServiceNow using the request_number provided in the incoming message",
+            "label": "Approve Request in ServiceNow",
+            "icon": "mdi:cloud-check-outline",
+            "pseudocode": "BEGIN_CONTEXT\nServiceNow.ApproveRequest(employee.requestNumber)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f6a10-0005-4000-8000-000000000005"],
+          "createdAt": "2026-07-14T10:00:00Z"
+        },
+        {
+          "id": "019f6a10-0005-4000-8000-000000000005",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:knowledge_lookup",
+            "description": "Look up the agent's knowledge base to find the manager's email address for onboarding notifications",
+            "prompt": "Look up the manager's email address from agent knowledge",
+            "label": "Get Manager Email",
+            "icon": "mdi:book-search",
+            "pseudocode": "BEGIN_CONTEXT\nmanagerEmail = KnowledgeLookup(agentId)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f6a10-0006-4000-8000-000000000006"],
+          "createdAt": "2026-07-14T10:00:00Z"
+        },
+        {
+          "id": "019f6a10-0006-4000-8000-000000000006",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:send_email",
+            "description": "Email the created Active Directory account details to the manager's email address found in the knowledge base",
+            "prompt": "Send an email to the manager's email address from the knowledge lookup, with a subject like 'New Employee Onboarded' and a body containing the created employee account details (name, sAM account name, email, employee ID, department, title, office, groups) from the Active Directory creation step",
+            "label": "Email Manager",
+            "icon": "mdi:email-send",
+            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(managerEmail, account)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f6a10-0007-4000-8000-000000000007"],
+          "createdAt": "2026-07-14T10:00:00Z"
+        },
+        {
+          "id": "019f6a10-0007-4000-8000-000000000007",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:send_email",
+            "description": "Send a welcome email to the new employee's email address letting them know they have been onboarded",
+            "prompt": "Send a welcome email to the new employee's email address ('mail' field from the Active Directory creation step), with a subject like 'Welcome to the company' and a friendly body confirming they have been onboarded, including their account details (sAM account name, email, department, title, office)",
+            "label": "Email New Employee",
+            "icon": "mdi:email-heart-outline",
+            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(account.mail, welcome)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f6a10-0004-4000-8000-000000000004"],
+          "createdAt": "2026-07-14T10:00:00Z"
+        },
+        {
+          "id": "019f6a10-0004-4000-8000-000000000004",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "Mark the employee onboarding workflow as complete",
+            "prompt": "Complete employee onboarding flow",
+            "label": "Complete",
+            "icon": "mdi:check",
+            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": null,
+          "createdAt": "2026-07-14T10:00:00Z"
         }
       ]
     }

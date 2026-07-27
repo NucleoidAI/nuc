@@ -1,5 +1,7 @@
 import Blueprint from "../schemas/Blueprint";
+import BlueprintModel from "../models/Blueprint";
 import Agent from "../models/Agent";
+import BlueprintModel from "../models/Blueprint";
 import Joi from "joi";
 import Session from "../models/Session";
 import Supervising from "../models/Supervising";
@@ -111,16 +113,36 @@ router.get("/:agentId/sessions", async (req, res) => {
   const agent = await Agent.findByPk(agentId);
 
   if (!agent) {
-    res.status(404);
+    return res.status(404).end();
   }
 
-  if (agent && agent.teamId !== teamId) {
-    res.status(401);
+  if (agent.teamId !== teamId) {
+    return res.status(401).end();
   }
 
-  const sessions = await Session.findAll({ where: { agentId } });
+  const sessions = await Session.findAll({
+    where: { agentId },
+    include: [
+      {
+        association: "conversations",
+        separate: true,
+        order: [["createdAt", "ASC"]],
+      },
+    ],
+  });
 
-  res.json(sessions);
+  const sorted = sessions
+    .map((session) => session.toJSON())
+    .filter((session) => session.conversations.length > 0)
+    .sort((a, b) => {
+      const aLast = a.conversations[a.conversations.length - 1]?.createdAt;
+      const bLast = b.conversations[b.conversations.length - 1]?.createdAt;
+
+      return new Date(bLast).getTime() - new Date(aLast).getTime();
+    })
+    .slice(0, 5);
+
+  res.json(sorted);
 });
 
 router.get("/:agentId/supervisings", async (req, res) => {
@@ -166,12 +188,32 @@ router.post("/blueprints", async (req, res) => {
   const response = await agentFn.Blueprint({
     history,
     content,
+    meta: { teamId: req.session.projectId },
   });
 
   res.json({
     response: response.response,
     flow: response.flow,
   });
+});
+
+router.get("/:agentId/blueprints", async (req, res) => {
+  const { projectId: teamId } = req.session;
+  const { agentId } = req.params;
+
+  const agent = await Agent.findByPk(agentId);
+
+  if (!agent) {
+    return res.status(404).json({ message: "Agent not found" });
+  }
+
+  if (agent.teamId !== teamId) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const blueprints = await BlueprintModel.findAll({ where: { agentId } });
+
+  res.json(blueprints);
 });
 
 router.post("/:agentId/blueprints", async (req, res) => {
@@ -182,6 +224,28 @@ router.post("/:agentId/blueprints", async (req, res) => {
   const response = await agentFn.blueprintName({ history, content, agentId });
 
   res.json(response);
+});
+
+router.get("/:agentId/blueprints", async (req, res) => {
+  const { projectId: teamId } = req.session;
+  const { agentId } = Joi.attempt(
+    req.params,
+    Joi.object({ agentId: Joi.string().guid().required() })
+  );
+
+  const agent = await Agent.findByPk(agentId);
+
+  if (!agent) {
+    return res.status(404).end();
+  }
+
+  if (agent.teamId !== teamId) {
+    return res.status(401).end();
+  }
+
+  const blueprints = await BlueprintModel.findAll({ where: { agentId } });
+
+  res.json(blueprints);
 });
 
 export default router;

@@ -16,7 +16,7 @@ async function create({
   teamId?: string;
   agentId?: string;
   knowledge: {
-    type: "QA" | "URL" | "TEXT" | "TASK";
+    type: "QA" | "URL" | "TEXT" | "TASK" | "DATA";
     url?: string;
     text?: string;
     question?: string;
@@ -43,6 +43,17 @@ async function create({
     throw new Error("INVALID_TEXT_KNOWLEDGE");
   }
 
+  if (knowledge.type === "DATA") {
+    if (!knowledge.text) {
+      throw new Error("INVALID_DATA_KNOWLEDGE");
+    }
+    try {
+      JSON.parse(knowledge.text);
+    } catch {
+      throw new Error("INVALID_DATA_KNOWLEDGE_JSON");
+    }
+  }
+
   if (knowledge.type === "URL" && knowledge.url) {
     knowledge.content = await scrapper.run({
       parameters: { url: knowledge.url },
@@ -67,11 +78,17 @@ async function create({
   }
 
   const knowledgeInstance = await Knowledge.create(knowledge);
-  await AgentKnowledge.create({
-    knowledgeId: knowledgeInstance.id,
-    agentId,
-    teamId,
-  });
+  try {
+    await AgentKnowledge.create({
+      knowledgeId: knowledgeInstance.id,
+      agentId,
+      teamId,
+    });
+  } catch (err: any) {
+    if (err.name !== "SequelizeUniqueConstraintError") {
+      throw err;
+    }
+  }
 
   const knowledgeJson = knowledgeInstance.toJSON();
   const knowledgeData = {
@@ -87,12 +104,6 @@ async function create({
   };
 
   await event.publish("KNOWLEDGE", "CREATED", knowledgeData);
-
-  if (knowledgeData.taskId) {
-    await event.publish("TASK_SUPERVISING_RESPONDED", {
-      taskId: knowledgeData.taskId,
-    });
-  }
 
   return knowledgeInstance;
 }

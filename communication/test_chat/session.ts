@@ -61,6 +61,9 @@ const setup = async (io: Server) => {
       console.log("Token:", token);
 
       const requestedSessionId = socket.handshake.query.sessionId as string;
+      const requestedBlueprintId = socket.handshake.query.blueprintId as
+        | string
+        | undefined;
       let session: Session;
 
       if (requestedSessionId) {
@@ -69,13 +72,13 @@ const setup = async (io: Server) => {
           if (existing) {
             session = { id: requestedSessionId, agentId };
           } else {
-            session = await createSession(token, agentId);
+            session = await createSession(token, agentId, requestedBlueprintId);
           }
         } catch {
-          session = await createSession(token, agentId);
+          session = await createSession(token, agentId, requestedBlueprintId);
         }
       } else {
-        session = await createSession(token, agentId);
+        session = await createSession(token, agentId, requestedBlueprintId);
       }
 
       const agent: Agent = await getAgent(token, agentId);
@@ -158,18 +161,21 @@ const setup = async (io: Server) => {
     console.error("Socket error:", err);
   });
 
-  await event.subscribe<{ sessionId: string; content: string }>(
-    "AI_ASSISTANT_MESSAGED",
-    ({ sessionId, content }) => {
-      console.log("subscribed AI_MESSAGED", sessionId, content);
-      const socketId = sockets[sessionId];
-      if (socketId) {
-        io.to(socketId).emit("ai_message", {
-          content,
-        });
-      }
-    },
-  );
+  await event.subscribe<{
+    sessionId: string;
+    content: string;
+    blueprintId?: string;
+  }>("AI_ASSISTANT_MESSAGED", ({ sessionId, content, blueprintId }) => {
+    if (blueprintId) {
+      return;
+    }
+    const socketId = sockets[sessionId];
+    if (socketId) {
+      io.to(socketId).emit("ai_message", {
+        content,
+      });
+    }
+  });
 
   await event.subscribe<{ sessionId: string; message: string }>(
     "ERROR_OCCURRED",

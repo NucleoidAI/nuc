@@ -1,0 +1,45 @@
+{
+  "sequence": 1,
+  "seed": [
+    {
+      "id": "b1f7f6a0-1111-4e2a-9c3d-0a1b2c3d4e01",
+      "provider": "openai",
+      "model": "gpt-5-chat-latest",
+      "inputPricePerMillion": 1.25,
+      "outputPricePerMillion": 10.0,
+      "createdAt": "2026-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "b1f7f6a0-1111-4e2a-9c3d-0a1b2c3d4e02",
+      "provider": "bedrock",
+      "model": "qwen/qwen3-next-80b-a3b-instruct",
+      "inputPricePerMillion": 0.18,
+      "outputPricePerMillion": 1.45,
+      "createdAt": "2026-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "019f6a96-5f95-771e-a41f-b475d34fd284",
+      "provider": "bedrock",
+      "model": "qwen.qwen3-next-80b-a3b ",
+      "inputPricePerMillion": 0.18,
+      "outputPricePerMillion": 1.45,
+      "createdAt": "2026-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "b1f7f6a0-1111-4e2a-9c3d-0a1b2c3d4e03",
+      "provider": "bedrock",
+      "model": "meta.llama3-3-70b-instruct-v1:0",
+      "inputPricePerMillion": 0.72,
+      "outputPricePerMillion": 0.72,
+      "createdAt": "2026-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "b1f7f6a0-1111-4e2a-9c3d-0a1b2c3d4e04",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "inputPricePerMillion": 1.0,
+      "outputPricePerMillion": 5.0,
+      "createdAt": "2026-01-01T00:00:00.000Z"
+    }
+  ]
+}

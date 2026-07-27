@@ -47,6 +47,12 @@ const NodeEditorDrawer = ({
   handleSubmit,
   editMode,
   pseudocode,
+  availableAgents = [],
+  handoffTargetAgentId = "",
+  setHandoffTargetAgentId,
+  handoffTargetBlueprintId = "",
+  setHandoffTargetBlueprintId,
+  availableAgentBlueprints = [],
 }: {
   drawerOpen: boolean;
   handleDrawerClose: () => void;
@@ -226,6 +232,12 @@ const NodeEditorDrawer = ({
   handleSubmit: () => void;
   editMode?: boolean;
   pseudocode?: string;
+  availableAgents?: Array<{ id: string; name: string; icon?: string }>;
+  handoffTargetAgentId?: string;
+  setHandoffTargetAgentId?: (id: string) => void;
+  handoffTargetBlueprintId?: string;
+  setHandoffTargetBlueprintId?: (id: string) => void;
+  availableAgentBlueprints?: Array<{ id: string; title: string }>;
 }) => {
   const theme = useTheme();
   const [integrationPage, setIntegrationPage] = useState(1);
@@ -313,8 +325,60 @@ const NodeEditorDrawer = ({
         >
           <MenuItem value="NORMAL">Normal</MenuItem>
           <MenuItem value="CONDITION">Condition</MenuItem>
+          <MenuItem value="HANDOFF">Handoff</MenuItem>
         </Select>
       </FormControl>
+
+      {newNodeType === "HANDOFF" && (
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <FormControl fullWidth>
+            <InputLabel id="handoff-agent-label">Target Agent</InputLabel>
+            <Select
+              labelId="handoff-agent-label"
+              id="handoff-agent-select"
+              value={handoffTargetAgentId}
+              label="Target Agent"
+              onChange={(e) => setHandoffTargetAgentId?.(e.target.value)}
+              MenuProps={{
+                sx: { zIndex: (theme) => theme.zIndex.modal + 3 },
+              }}
+            >
+              {availableAgents.map((agent) => (
+                <MenuItem key={agent.id} value={agent.id}>
+                  {agent.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          {availableAgentBlueprints.length > 0 && (
+            <FormControl fullWidth>
+              <InputLabel id="handoff-blueprint-label">
+                Target Blueprint (optional)
+              </InputLabel>
+              <Select
+                labelId="handoff-blueprint-label"
+                id="handoff-blueprint-select"
+                value={handoffTargetBlueprintId}
+                label="Target Blueprint (optional)"
+                onChange={(e) => setHandoffTargetBlueprintId?.(e.target.value)}
+                MenuProps={{
+                  sx: { zIndex: (theme) => theme.zIndex.modal + 3 },
+                }}
+              >
+                <MenuItem value="">
+                  <em>None (agent decides)</em>
+                </MenuItem>
+                {availableAgentBlueprints.map((bp) => (
+                  <MenuItem key={bp.id} value={bp.id}>
+                    {bp.title}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
+        </Box>
+      )}
 
       {selectedParentNode?.nodeType === "CONDITION" && (
         <FormControl fullWidth>
@@ -377,7 +441,7 @@ const NodeEditorDrawer = ({
         </Box>
       )}
 
-      {newNodeType !== "CONDITION" && (
+      {newNodeType !== "CONDITION" && newNodeType !== "HANDOFF" && (
         <Box>
           {availableIntegrations.length === 0 && !searchQuery ? (
             <></>
@@ -519,6 +583,7 @@ const NodeEditorDrawer = ({
       )}
 
       {newNodeType !== "CONDITION" &&
+        newNodeType !== "HANDOFF" &&
         (parentIntegration || nextIntegration) && (
           <Box
             sx={{
@@ -631,100 +696,104 @@ const NodeEditorDrawer = ({
           </Box>
         )}
 
-      {selectedIntegration?.id && newNodeType !== "CONDITION" && (
-        <Box
-          sx={{
-            p: 2,
-            border: "1px solid",
-            borderColor: "divider",
-            borderRadius: 1,
-            bgcolor: "background.paper",
-          }}
-        >
-          <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
-            Selected Integration Details
-          </Typography>
-
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="subtitle2" color="primary" gutterBottom>
-              {selectedIntegration.action}
+      {selectedIntegration?.id &&
+        newNodeType !== "CONDITION" &&
+        newNodeType !== "HANDOFF" && (
+          <Box
+            sx={{
+              p: 2,
+              border: "1px solid",
+              borderColor: "divider",
+              borderRadius: 1,
+              bgcolor: "background.paper",
+            }}
+          >
+            <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+              Selected Integration Details
             </Typography>
-            <Typography variant="body2" color="text.secondary" paragraph>
-              {selectedIntegration.description}
-            </Typography>
-          </Box>
 
-          {selectedIntegration.inputSchema?.properties && (
             <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
-                Input Schema
+              <Typography variant="subtitle2" color="primary" gutterBottom>
+                {selectedIntegration.action}
               </Typography>
-              <Box sx={{ pl: 2 }}>
-                {Object.entries(selectedIntegration.inputSchema.properties).map(
-                  ([key, value]: [
-                    string,
-                    {
-                      type: string;
-                      description?: string;
-                      nullable?: boolean;
-                    }
-                  ]) => (
-                    <Box key={key} sx={{ mb: 0.5 }}>
-                      <Typography variant="body2" component="span">
-                        <strong>{key}:</strong>{" "}
-                        <Typography
-                          component="span"
-                          variant="body2"
-                          color="text.secondary"
-                        >
-                          {value.type}
-                          {value.description && ` - ${value.description}`}
-                        </Typography>
-                      </Typography>
-                    </Box>
-                  )
-                )}
-              </Box>
+              <Typography variant="body2" color="text.secondary" paragraph>
+                {selectedIntegration.description}
+              </Typography>
             </Box>
-          )}
 
-          {selectedIntegration.outputSchema?.properties && (
-            <Box>
-              <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
-                Output Schema
-              </Typography>
-              <Box sx={{ pl: 2 }}>
-                {Object.entries(
-                  selectedIntegration.outputSchema.properties
-                ).map(
-                  ([key, value]: [
-                    string,
-                    {
-                      type: string;
-                      description?: string;
-                      nullable?: boolean;
-                    }
-                  ]) => (
-                    <Box key={key} sx={{ mb: 0.5 }}>
-                      <Typography variant="body2" component="span">
-                        <strong>{key}:</strong>{" "}
-                        <Typography
-                          component="span"
-                          variant="body2"
-                          color="text.secondary"
-                        >
-                          {value.type}
-                          {value.description && ` - ${value.description}`}
+            {selectedIntegration.inputSchema?.properties && (
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+                  Input Schema
+                </Typography>
+                <Box sx={{ pl: 2 }}>
+                  {Object.entries(
+                    selectedIntegration.inputSchema.properties
+                  ).map(
+                    ([key, value]: [
+                      string,
+                      {
+                        type: string;
+                        description?: string;
+                        nullable?: boolean;
+                      }
+                    ]) => (
+                      <Box key={key} sx={{ mb: 0.5 }}>
+                        <Typography variant="body2" component="span">
+                          <strong>{key}:</strong>{" "}
+                          <Typography
+                            component="span"
+                            variant="body2"
+                            color="text.secondary"
+                          >
+                            {value.type}
+                            {value.description && ` - ${value.description}`}
+                          </Typography>
                         </Typography>
-                      </Typography>
-                    </Box>
-                  )
-                )}
+                      </Box>
+                    )
+                  )}
+                </Box>
               </Box>
-            </Box>
-          )}
-        </Box>
-      )}
+            )}
+
+            {selectedIntegration.outputSchema?.properties && (
+              <Box>
+                <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+                  Output Schema
+                </Typography>
+                <Box sx={{ pl: 2 }}>
+                  {Object.entries(
+                    selectedIntegration.outputSchema.properties
+                  ).map(
+                    ([key, value]: [
+                      string,
+                      {
+                        type: string;
+                        description?: string;
+                        nullable?: boolean;
+                      }
+                    ]) => (
+                      <Box key={key} sx={{ mb: 0.5 }}>
+                        <Typography variant="body2" component="span">
+                          <strong>{key}:</strong>{" "}
+                          <Typography
+                            component="span"
+                            variant="body2"
+                            color="text.secondary"
+                          >
+                            {value.type}
+                            {value.description && ` - ${value.description}`}
+                          </Typography>
+                        </Typography>
+                      </Box>
+                    )
+                  )}
+                </Box>
+              </Box>
+            )}
+          </Box>
+        )}
 
       <Button
         size="large"
@@ -732,7 +801,10 @@ const NodeEditorDrawer = ({
         onClick={handleSubmit}
         disabled={
           !newNodeLabel ||
-          (newNodeType !== "CONDITION" && !selectedIntegration?.id)
+          (newNodeType === "HANDOFF" && !handoffTargetAgentId) ||
+          (newNodeType !== "CONDITION" &&
+            newNodeType !== "HANDOFF" &&
+            !selectedIntegration?.id)
         }
       >
         {editMode ? "Edit Node" : "Add Node"}

@@ -19,10 +19,12 @@ function Knowledge({
   agentId,
   teamId,
   blueprintId,
+  onItemAdded,
 }: {
   agentId?: string;
   teamId?: string;
   blueprintId?: string;
+  onItemAdded?: () => void;
 }) {
   const {
     getAgentKnowledges,
@@ -55,13 +57,15 @@ function Knowledge({
 
   const isLoading = useLoading(isKnowledgeLoading);
 
-  const ALL_KNOWLEDGE_TYPES = ["ALL", "URL", "TEXT", "QA"].sort((a, b) => {
-    if (a === "ALL") return -1;
-    if (b === "ALL") return 1;
-    if (a === "URL") return -1;
-    if (b === "URL") return 1;
-    return 0;
-  });
+  const ALL_KNOWLEDGE_TYPES = ["ALL", "URL", "TEXT", "QA", "DATA"].sort(
+    (a, b) => {
+      if (a === "ALL") return -1;
+      if (b === "ALL") return 1;
+      if (a === "URL") return -1;
+      if (b === "URL") return 1;
+      return 0;
+    }
+  );
 
   const ADD_ITEM_TYPES = ALL_KNOWLEDGE_TYPES.filter((type) => type !== "ALL");
 
@@ -218,7 +222,11 @@ function Knowledge({
           selectedType={selectedType === "ALL" ? "URL" : selectedType}
           open={open}
           setOpen={setOpen}
-          addItem={createKnowledge}
+          addItem={async (...args: Parameters<typeof createKnowledge>) => {
+            const result = await createKnowledge(...args);
+            onItemAdded?.();
+            return result;
+          }}
           agentId={agentId}
           teamId={teamId}
           blueprintId={blueprintId}

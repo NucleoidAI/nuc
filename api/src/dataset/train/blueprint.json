@@ -1371,5 +1371,589 @@
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
     },
     "answer": "Internet subscription is being initiated."
+  },
+  {
+    "blueprint": {
+      "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+      "title": "Order and Compliance",
+      "description": "Find product, assign compliance certificate, create purchase order, write process to LLM, and send email.",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "nodes": [
+        {
+          "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "parameters": {
+              "question": "Which product would you like to order?"
+            },
+            "description": "Ask user to select a product",
+            "icon": "mdi:account-question",
+            "prompt": "Select a Product"
+          },
+          "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:find_product",
+            "description": "Search and retrieve the product details",
+            "icon": "mdi:magnify",
+            "prompt": "Find Product"
+          },
+          "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:assign_certificate",
+            "description": "Assign a compliance certificate to the product",
+            "icon": "mdi:certificate-outline",
+            "prompt": "Assign Certificate"
+          },
+          "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:create_po",
+            "description": "Create a Purchase Order for the certified product",
+            "icon": "mdi:file-document-plus",
+            "prompt": "Create Purchase Order"
+          },
+          "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:send_email",
+            "description": "Send email notification about the completed purchase order",
+            "icon": "mdi:email",
+            "prompt": "Send Email"
+          },
+          "next": null,
+          "createdAt": "2025-06-26T06:00:00Z"
+        }
+      ]
+    },
+    "content": "Process an order with compliance certificate check.",
+    "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\nAssignCertificate(product.id)\nPO.Create(product.id)\nLLM.WriteProcess()\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE",
+    "knowledge": [
+      {
+        "id": "c1d2e3f4-0001-4001-8001-aaaaaaaaaaaa",
+        "type": "TEXT",
+        "text": "Product compliance certificate is required before creating a purchase order.",
+        "status": "COMPLETED",
+        "createdAt": "2025-06-26T06:00:00Z"
+      },
+      {
+        "id": "c1d2e3f4-0002-4002-8002-bbbbbbbbbbbb",
+        "type": "TEXT",
+        "text": "Manager email address is halilibrahimcengel7@gmail.com.",
+        "status": "COMPLETED",
+        "createdAt": "2025-06-26T06:00:00Z"
+      }
+    ],
+    "task": {
+      "id": "e1f2a3b4-c5d6-4001-8001-100000000001",
+      "status": "COMPLETED",
+      "description": "Process order and compliance check for the product.",
+      "blueprintId": "f4e3d2c1-b0a0-4000-8000-100000000001"
+    },
+    "answer": "Starting order compliance process. I'll find the product, verify its certificate, and create a PO if compliant."
+  },
+  {
+    "blueprint": {
+      "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+      "title": "Order and Compliance",
+      "description": "Find product, assign compliance certificate, create purchase order, write process to LLM, and send email.",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "nodes": [
+        {
+          "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "parameters": {
+              "question": "Which product would you like to order?"
+            },
+            "description": "Ask user to select a product",
+            "icon": "mdi:account-question",
+            "prompt": "Select a Product"
+          },
+          "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:find_product",
+            "description": "Search and retrieve the product details",
+            "icon": "mdi:magnify",
+            "prompt": "Find Product"
+          },
+          "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:assign_certificate",
+            "description": "Assign a compliance certificate to the product",
+            "icon": "mdi:certificate-outline",
+            "prompt": "Assign Certificate"
+          },
+          "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:create_po",
+            "description": "Create a Purchase Order for the certified product",
+            "icon": "mdi:file-document-plus",
+            "prompt": "Create Purchase Order"
+          },
+          "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:send_email",
+            "description": "Send email notification about the completed purchase order",
+            "icon": "mdi:email",
+            "prompt": "Send Email"
+          },
+          "next": null,
+          "createdAt": "2025-06-26T06:00:00Z"
+        }
+      ]
+    },
+    "content": "I need to create a purchase order but first verify the product certificate.",
+    "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\nAssignCertificate(product.id)\nPO.Create(product.id)\nLLM.WriteProcess()\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE",
+    "knowledge": [
+      {
+        "id": "c1d2e3f4-0001-4001-8001-aaaaaaaaaaaa",
+        "type": "TEXT",
+        "text": "Product compliance certificate is required before creating a purchase order.",
+        "status": "COMPLETED",
+        "createdAt": "2025-06-26T06:00:00Z"
+      },
+      {
+        "id": "c1d2e3f4-0002-4002-8002-bbbbbbbbbbbb",
+        "type": "TEXT",
+        "text": "Manager email address is halilibrahimcengel7@gmail.com.",
+        "status": "COMPLETED",
+        "createdAt": "2025-06-26T06:00:00Z"
+      }
+    ],
+    "task": {
+      "id": "e1f2a3b4-c5d6-4001-8001-100000000002",
+      "status": "COMPLETED",
+      "description": "Process order and compliance check for the product.",
+      "blueprintId": "f4e3d2c1-b0a0-4000-8000-100000000001"
+    },
+    "answer": "I'll find the product, check its compliance certificate, and if valid, I'll open a PO and notify via email."
+  },
+  {
+    "blueprint": {
+      "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+      "title": "Order and Compliance",
+      "description": "Find product, assign compliance certificate, create purchase order, write process to LLM, and send email.",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "nodes": [
+        {
+          "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "parameters": {
+              "question": "Which product would you like to order?"
+            },
+            "description": "Ask user to select a product",
+            "icon": "mdi:account-question",
+            "prompt": "Select a Product"
+          },
+          "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:find_product",
+            "description": "Search and retrieve the product details",
+            "icon": "mdi:magnify",
+            "prompt": "Find Product"
+          },
+          "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:assign_certificate",
+            "description": "Assign a compliance certificate to the product",
+            "icon": "mdi:certificate-outline",
+            "prompt": "Assign Certificate"
+          },
+          "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:create_po",
+            "description": "Create a Purchase Order for the certified product",
+            "icon": "mdi:file-document-plus",
+            "prompt": "Create Purchase Order"
+          },
+          "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:send_email",
+            "description": "Send email notification about the completed purchase order",
+            "icon": "mdi:email",
+            "prompt": "Send Email"
+          },
+          "next": null,
+          "createdAt": "2025-06-26T06:00:00Z"
+        }
+      ]
+    },
+    "content": "Check if product is compliant and open a PO.",
+    "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\nAssignCertificate(product.id)\nPO.Create(product.id)\nLLM.WriteProcess()\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE",
+    "knowledge": [
+      {
+        "id": "c1d2e3f4-0001-4001-8001-aaaaaaaaaaaa",
+        "type": "TEXT",
+        "text": "Product compliance certificate is required before creating a purchase order.",
+        "status": "COMPLETED",
+        "createdAt": "2025-06-26T06:00:00Z"
+      },
+      {
+        "id": "c1d2e3f4-0002-4002-8002-bbbbbbbbbbbb",
+        "type": "TEXT",
+        "text": "Manager email address is halilibrahimcengel7@gmail.com.",
+        "status": "COMPLETED",
+        "createdAt": "2025-06-26T06:00:00Z"
+      }
+    ],
+    "task": {
+      "id": "e1f2a3b4-c5d6-4001-8001-100000000003",
+      "status": "COMPLETED",
+      "description": "Process order and compliance check for the product.",
+      "blueprintId": "f4e3d2c1-b0a0-4000-8000-100000000001"
+    },
+    "answer": "Checking product compliance certificate now. PO will be created and manager will be emailed if certificate is valid."
+  },
+  {
+    "blueprint": {
+      "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+      "title": "Order and Compliance",
+      "description": "Find product, assign compliance certificate, create purchase order, write process to LLM, and send email.",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "nodes": [
+        {
+          "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "parameters": {
+              "question": "Which product would you like to order?"
+            },
+            "description": "Ask user to select a product",
+            "icon": "mdi:account-question",
+            "prompt": "Select a Product"
+          },
+          "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:find_product",
+            "description": "Search and retrieve the product details",
+            "icon": "mdi:magnify",
+            "prompt": "Find Product"
+          },
+          "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:assign_certificate",
+            "description": "Assign a compliance certificate to the product",
+            "icon": "mdi:certificate-outline",
+            "prompt": "Assign Certificate"
+          },
+          "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:create_po",
+            "description": "Create a Purchase Order for the certified product",
+            "icon": "mdi:file-document-plus",
+            "prompt": "Create Purchase Order"
+          },
+          "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:send_email",
+            "description": "Send email notification about the completed purchase order",
+            "icon": "mdi:email",
+            "prompt": "Send Email"
+          },
+          "next": null,
+          "createdAt": "2025-06-26T06:00:00Z"
+        }
+      ]
+    },
+    "content": "Order a product after verifying its compliance certificate and notify the manager.",
+    "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\nAssignCertificate(product.id)\nPO.Create(product.id)\nLLM.WriteProcess()\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE",
+    "knowledge": [
+      {
+        "id": "c1d2e3f4-0001-4001-8001-aaaaaaaaaaaa",
+        "type": "TEXT",
+        "text": "Product compliance certificate is required before creating a purchase order.",
+        "status": "COMPLETED",
+        "createdAt": "2025-06-26T06:00:00Z"
+      },
+      {
+        "id": "c1d2e3f4-0002-4002-8002-bbbbbbbbbbbb",
+        "type": "TEXT",
+        "text": "Manager email address is halilibrahimcengel7@gmail.com.",
+        "status": "COMPLETED",
+        "createdAt": "2025-06-26T06:00:00Z"
+      }
+    ],
+    "task": {
+      "id": "e1f2a3b4-c5d6-4001-8001-100000000004",
+      "status": "COMPLETED",
+      "description": "Process order and compliance check for the product.",
+      "blueprintId": "f4e3d2c1-b0a0-4000-8000-100000000001"
+    },
+    "answer": "Starting compliance-gated order flow. Finding product, then checking certificate. If valid, PO will be opened and manager notified."
+  },
+  {
+    "blueprint": {
+      "id": "c2b1a0d9-e8f7-4c2b-9100-300000000001",
+      "title": "Compliance Certificate Notification",
+      "description": "Check the compliance certificate status of a product and inform the user about the result.",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "nodes": [
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000002",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:knowledge_lookup",
+            "description": "Look up compliance certificate for the product from agent knowledge",
+            "icon": "mdi:book-search",
+            "prompt": "Knowledge Lookup"
+          },
+          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000003"],
+          "createdAt": "2025-06-29T08:00:00Z"
+        },
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000003",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Inform the user about the compliance certificate status of the product",
+            "icon": "mdi:bell",
+            "prompt": "Notify User"
+          },
+          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000004"],
+          "createdAt": "2025-06-29T08:00:00Z"
+        },
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000004",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "Mark the compliance check workflow as complete",
+            "icon": "mdi:check",
+            "prompt": "Complete"
+          },
+          "next": null,
+          "createdAt": "2025-06-29T08:00:00Z"
+        }
+      ]
+    },
+    "content": "Check product compliance certificate and inform the user about the result.",
+    "pseudocode": "BEGIN_CONTEXT\ncertificate = KnowledgeLookup(product.id)\nMessageUser(certificate)\nEND_CONTEXT\n\nEND_MESSAGE",
+    "knowledge": [
+      {
+        "id": "d2e3f4a5-0001-4001-8001-cccccccccccc",
+        "type": "TEXT",
+        "text": "Compliance certificates must be verified before any order or regulatory step.",
+        "status": "COMPLETED",
+        "createdAt": "2025-06-29T08:00:00Z"
+      }
+    ],
+    "task": {
+      "id": "f2a3b4c5-d6e7-4002-8002-200000000001",
+      "status": "COMPLETED",
+      "description": "Verify compliance certificate for the product and notify the user.",
+      "blueprintId": "c2b1a0d9-e8f7-4c2b-9100-300000000001"
+    },
+    "answer": "Checking product compliance certificate and notifying the user about the result."
+  },
+  {
+    "blueprint": {
+      "id": "c2b1a0d9-e8f7-4c2b-9100-300000000001",
+      "title": "Compliance Certificate Notification",
+      "description": "Check the compliance certificate status of a product and inform the user about the result.",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "nodes": [
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000002",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:knowledge_lookup",
+            "description": "Look up compliance certificate for the product from agent knowledge",
+            "icon": "mdi:book-search",
+            "prompt": "Knowledge Lookup"
+          },
+          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000003"],
+          "createdAt": "2025-06-29T08:00:00Z"
+        },
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000003",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Inform the user about the compliance certificate status of the product",
+            "icon": "mdi:bell",
+            "prompt": "Notify User"
+          },
+          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000004"],
+          "createdAt": "2025-06-29T08:00:00Z"
+        },
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000004",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "Mark the compliance check workflow as complete",
+            "icon": "mdi:check",
+            "prompt": "Complete"
+          },
+          "next": null,
+          "createdAt": "2025-06-29T08:00:00Z"
+        }
+      ]
+    },
+    "content": "I need to verify whether the product has a compliance certificate.",
+    "pseudocode": "BEGIN_CONTEXT\ncertificate = KnowledgeLookup(product.id)\nMessageUser(certificate)\nEND_CONTEXT\n\nEND_MESSAGE",
+    "knowledge": [
+      {
+        "id": "d2e3f4a5-0001-4001-8001-cccccccccccc",
+        "type": "TEXT",
+        "text": "Compliance certificates must be verified before any order or regulatory step.",
+        "status": "COMPLETED",
+        "createdAt": "2025-06-29T08:00:00Z"
+      }
+    ],
+    "task": {
+      "id": "f2a3b4c5-d6e7-4002-8002-200000000002",
+      "status": "COMPLETED",
+      "description": "Verify compliance certificate for the product and notify the user.",
+      "blueprintId": "c2b1a0d9-e8f7-4c2b-9100-300000000001"
+    },
+    "answer": "I'll check the product's compliance certificate right away and inform you of the findings."
+  },
+  {
+    "blueprint": {
+      "id": "c2b1a0d9-e8f7-4c2b-9100-300000000001",
+      "title": "Compliance Certificate Notification",
+      "description": "Check the compliance certificate status of a product and inform the user about the result.",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "nodes": [
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000002",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:knowledge_lookup",
+            "description": "Look up compliance certificate for the product from agent knowledge",
+            "icon": "mdi:book-search",
+            "prompt": "Knowledge Lookup"
+          },
+          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000003"],
+          "createdAt": "2025-06-29T08:00:00Z"
+        },
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000003",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Inform the user about the compliance certificate status of the product",
+            "icon": "mdi:bell",
+            "prompt": "Notify User"
+          },
+          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000004"],
+          "createdAt": "2025-06-29T08:00:00Z"
+        },
+        {
+          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000004",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "Mark the compliance check workflow as complete",
+            "icon": "mdi:check",
+            "prompt": "Complete"
+          },
+          "next": null,
+          "createdAt": "2025-06-29T08:00:00Z"
+        }
+      ]
+    },
+    "content": "Run a compliance check on the product and send the result to the user.",
+    "pseudocode": "BEGIN_CONTEXT\ncertificate = KnowledgeLookup(product.id)\nMessageUser(certificate)\nEND_CONTEXT\n\nEND_MESSAGE",
+    "knowledge": [
+      {
+        "id": "d2e3f4a5-0001-4001-8001-cccccccccccc",
+        "type": "TEXT",
+        "text": "Compliance certificates must be verified before any order or regulatory step.",
+        "status": "COMPLETED",
+        "createdAt": "2025-06-29T08:00:00Z"
+      }
+    ],
+    "task": {
+      "id": "f2a3b4c5-d6e7-4002-8002-200000000003",
+      "status": "COMPLETED",
+      "description": "Verify compliance certificate for the product and notify the user.",
+      "blueprintId": "c2b1a0d9-e8f7-4c2b-9100-300000000001"
+    },
+    "answer": "Running compliance certificate check now. Once verified, I'll send the result directly to the user."
   }
 ]

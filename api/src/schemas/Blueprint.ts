@@ -6,6 +6,7 @@ const Blueprint = {
     description: z.string(),
     agentId: z.string().uuid(),
     blocking: z.boolean().optional(),
+    force: z.boolean().optional(),
     taskId: z.string().uuid().optional(),
     nodes: z
       .array(

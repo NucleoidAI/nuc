@@ -19,9 +19,7 @@
               "icon": "mdi:check",
               "prompt": "Check Product Availability"
             },
-            "next": [
-              "51dca395-1d90-4a28-9bbc-233de9c1a207"
-            ],
+            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -32,12 +30,8 @@
               "icon": "mdi:source-branch",
               "prompt": "Make Decision"
             },
-            "true": [
-              "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-            ],
-            "false": [
-              "5be22de7-9673-448d-a1b5-dc23a8789b5c"
-            ],
+            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+            "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -240,9 +234,7 @@
               "icon": "mdi:map-marker",
               "prompt": "Get User Address"
             },
-            "next": [
-              "76ccda2d-f11f-408c-8087-66c377600d0b"
-            ],
+            "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -253,9 +245,7 @@
               "icon": "mdi:map-marker",
               "prompt": "Get BBK No by Address"
             },
-            "next": [
-              "51dca395-1d90-4a28-9bbc-233de9c1a207"
-            ],
+            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -266,9 +256,7 @@
               "icon": "mdi:server",
               "prompt": "Get Inventory"
             },
-            "next": [
-              "019b209c-2e5a-777f-a04a-11960363fb25"
-            ],
+            "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -279,12 +267,8 @@
               "icon": "mdi:source-branch",
               "prompt": "Is inventory available?"
             },
-            "true": [
-              "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-            ],
-            "false": [
-              "019b20a6-1aa6-7510-b222-66535e50dfb3"
-            ],
+            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+            "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -306,9 +290,7 @@
               "icon": "mdi:speedometer",
               "prompt": "Get products by speed"
             },
-            "next": [
-              "019c8a58-10e3-713f-9484-78d04923040f"
-            ],
+            "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -319,9 +301,7 @@
               "icon": "mdi:cursor-pointer",
               "prompt": "Provide available products and wait for user to select a product"
             },
-            "next": [
-              "019b3302-7846-75c2-9ab7-897c18b8ccee"
-            ],
+            "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -332,9 +312,7 @@
               "icon": "mdi:link",
               "prompt": "Allocate port and create order"
             },
-            "next": [
-              "019b3305-7846-75c2-9ab7-897c18b8cce1"
-            ],
+            "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -345,9 +323,7 @@
               "icon": "mdi:bell",
               "prompt": "Notify user about port allocation"
             },
-            "next": [
-              "019b209e-3122-75ce-9ba6-674b6184f68d"
-            ],
+            "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -358,9 +334,7 @@
               "icon": "mdi:settings",
               "prompt": "Configure allocated port"
             },
-            "next": [
-              "019b32f6-5878-73fb-8411-55916778d9a4"
-            ],
+            "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -371,9 +345,7 @@
               "icon": "mdi:ethernet",
               "prompt": "Connect port to residence"
             },
-            "next": [
-              "019b32f6-bd02-734e-bd3a-aec89d79609c"
-            ],
+            "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -459,332 +431,6 @@
       ]
     },
     {
-      "id": "1dcgcfde-6f1e-5a35-c6ge-7ef373396a47",
-      "description": "Setup internet subscription at user's address.",
-      "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
-      "pseudocode": "BEGIN_CONTEXT \nUser.Address = GetUserAddress()\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-      "blueprint": {
-        "id": "ca7g8022-f343-570e-a171-3992963g7f70",
-        "title": "Basic Internet Subscription Setup",
-        "description": "Offer internet packages based on the user's residential address and provide available internet packages for the selected address.",
-        "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n ShowProducts(products)\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-        "nodes": [
-          {
-            "id": "019b9433-3de3-7545-a40a-854419ae8be1",
-            "type": "NORMAL",
-            "properties": {
-              "action": "PLATFORM:user_interaction",
-              "icon": "mdi:map-marker",
-              "prompt": "Get User Address"
-            },
-            "next": [
-              "76ccda2d-f11f-408c-8087-66c377600d0b"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
-            "type": "NORMAL",
-            "properties": {
-              "action": "TELCO:get_bbk_by_address",
-              "icon": "mdi:map-marker",
-              "prompt": "Get BBK No by Address"
-            },
-            "next": [
-              "51dca395-1d90-4a28-9bbc-233de9c1a207"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
-            "type": "NORMAL",
-            "properties": {
-              "action": "TELCO:get_inventory",
-              "icon": "mdi:server",
-              "prompt": "Get Inventory"
-            },
-            "next": [
-              "019b209c-2e5a-777f-a04a-11960363fb25"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "019b209c-2e5a-777f-a04a-11960363fb25",
-            "type": "CONDITION",
-            "properties": {
-              "action": "PLATFORM:decision",
-              "icon": "mdi:source-branch",
-              "prompt": "Is inventory available?"
-            },
-            "true": [
-              "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-            ],
-            "false": [
-              "019b20a6-1aa6-7510-b222-66535e50dfb3"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
-            "type": "NORMAL",
-            "properties": {
-              "action": "PLATFORM:complete",
-              "icon": "mdi:check",
-              "prompt": "No product available, complete"
-            },
-            "next": null,
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
-            "type": "NORMAL",
-            "properties": {
-              "action": "TELCO:get_product_by_speed",
-              "icon": "mdi:speedometer",
-              "prompt": "Get products by speed"
-            },
-            "next": [
-              "019c8a58-10e3-713f-9484-78d04923040f"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "019c8a58-10e3-713f-9484-78d04923040f",
-            "type": "NORMAL",
-            "properties": {
-              "action": "PLATFORM:user_interaction",
-              "icon": "mdi:cursor-pointer",
-              "prompt": "Provide available products and wait for user to select a product"
-            },
-            "next": [
-              "019b3302-7846-75c2-9ab7-897c18b8ccee"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
-            "type": "NORMAL",
-            "properties": {
-              "action": "TELCO:port_allocation",
-              "icon": "mdi:link",
-              "prompt": "Allocate port and create order"
-            },
-            "next": [
-              "019b3305-7846-75c2-9ab7-897c18b8cce1"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
-            "type": "NORMAL",
-            "properties": {
-              "action": "PLATFORM:message_user",
-              "icon": "mdi:bell",
-              "prompt": "Notify user about port allocation"
-            },
-            "next": [
-              "019b209e-3122-75ce-9ba6-674b6184f68d"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
-            "type": "NORMAL",
-            "properties": {
-              "action": "TELCO:configuration",
-              "icon": "mdi:settings",
-              "prompt": "Configure allocated port"
-            },
-            "next": [
-              "019b32f6-5878-73fb-8411-55916778d9a4"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "019b32f6-5878-73fb-8411-55916778d9a4",
-            "type": "NORMAL",
-            "properties": {
-              "action": "TELCO:port_connection",
-              "icon": "mdi:ethernet",
-              "prompt": "Connect port to residence"
-            },
-            "next": [
-              "019b32f6-bd02-734e-bd3a-aec89d79609c"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
-            "type": "NORMAL",
-            "properties": {
-              "action": "PLATFORM:complete",
-              "icon": "mdi:check",
-              "prompt": "Complete setup flow"
-            },
-            "next": null,
-            "createdAt": "2025-06-19T06:02:00Z"
-          }
-        ]
-      },
-      "knowledge": [],
-      "tools": [
-        "DISCORD:search",
-        "GDRIVE:search",
-        "GITHUB:search",
-        "GREY:check_product_count",
-        "GREY:create_order",
-        "GREY:reduce_product_count",
-        "GREY:send_email",
-        "JIRA:search",
-        "PROJECT_NOTIFIER:notify_project_open",
-        "SLACK:search",
-        "TELCO:configuration",
-        "TELCO:get_address",
-        "TELCO:get_bbk_by_address",
-        "TELCO:get_inventory",
-        "TELCO:get_product_by_speed",
-        "TELCO:port_allocation",
-        "TELCO:port_connection"
-      ],
-      "steps": [
-        {
-          "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-          "action": "PLATFORM:user_interaction",
-          "status": "COMPLETED",
-          "parameters": {
-            "question": "What is your address?"
-          },
-          "comment": "User selected address"
-        },
-        {
-          "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-          "action": "TELCO:get_bbk_by_address",
-          "status": "COMPLETED",
-          "parameters": {
-            "address": "123 Main Street, Istanbul"
-          },
-          "result": "{\"error\":\"INVALID_ADDRESS\"}",
-          "comment": "Address could not be validated in the system"
-        },
-        {
-          "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-          "action": "PLATFORM:ask_supervisor",
-          "status": "COMPLETED",
-          "parameters": {
-            "question": "Address '123 Main Street, Istanbul' is not valid according to the system. What should I do?",
-            "sessionId": "123456019b6e75-8a07-72f2-8adf-82cd88f6b7cc7890",
-            "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-          },
-          "comment": "Asking supervisor to next step"
-        },
-        {
-          "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-          "action": "PLATFORM:user_interaction",
-          "status": "COMPLETED",
-          "parameters": {
-            "question": "What is your address?"
-          },
-          "comment": "User selected address"
-        },
-        {
-          "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-          "action": "TELCO:get_bbk_by_address",
-          "status": "COMPLETED",
-          "parameters": {
-            "address": "Gazi Mustafa Kemal Bulvarı, Istanbul"
-          },
-          "comment": "Getting BBK number by address"
-        },
-        {
-          "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-          "action": "TELCO:get_inventory",
-          "status": "COMPLETED",
-          "parameters": {
-            "bbk": "BBK-12345"
-          },
-          "comment": "Checking inventory availability"
-        },
-        {
-          "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-          "action": "PLATFORM:decision",
-          "status": "COMPLETED",
-          "comment": "Making decision",
-          "parameters": {
-            "condition": "inventory.Available == TRUE",
-            "true": [
-              {
-                "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-                "action": "TELCO:get_product_by_speed",
-                "status": "COMPLETED",
-                "parameters": {
-                  "speed_limit": 100
-                },
-                "comment": "Getting products by speed"
-              },
-              {
-                "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-                "action": "PLATFORM:user_interaction",
-                "status": "COMPLETED",
-                "parameters": {
-                  "question": "Here are your options: 100mbps (6 months), 100mbps (3 months), 50mbps (12 months), 50mbps (6 months), 50mbps (3 months), 25mbps (12 months), 25mbps (3 months), 25mbps (6 months)."
-                },
-                "comment": "Waiting for user to select a product"
-              },
-              {
-                "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-                "action": "TELCO:port_allocation",
-                "status": "COMPLETED",
-                "parameters": {
-                  "device_serial_number": "SN-789456",
-                  "bbk_no": "BBK-12345",
-                  "speed_limit": "1gbps"
-                },
-                "result": "{\"error\":\"NOT_AVAILABLE_PORT\"}",
-                "comment": "Port allocation returned no available port"
-              },
-              {
-                "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-                "action": "PLATFORM:ask_supervisor",
-                "status": "COMPLETED",
-                "parameters": {
-                  "question": "There is an error in the port allocation. What should i do?",
-                  "sessionId": "123456019b6e75-8a07-72f2-8adf-82cd88f6b7cc7890",
-                  "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-                },
-                "comment": "Asking supervisor to next step"
-              },
-              {
-                "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-                "action": "PLATFORM:message_user",
-                "status": "COMPLETED",
-                "parameters": {
-                  "sessionId": "123456019b6e75-8a07-72f2-8adf-82cd88f6b7cc7890",
-                  "message": "Sorry, we couldn't assign a port. Please try again later."
-                },
-                "comment": "Notifying user to we are not able to allocate the port"
-              },
-              {
-                "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-                "action": "PLATFORM:complete",
-                "status": "COMPLETED",
-                "comment": "Doing supervisor's instructions and complete the task"
-              }
-            ],
-            "false": [
-              {
-                "taskId": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-                "action": "PLATFORM:complete",
-                "status": "COMPLETED",
-                "parameters": {},
-                "comment": "Completing task - inventory not available"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
       "id": "5hkjgmih-8h4g-7d57-e9jh-0igf495519d60",
       "description": "Setup internet subscription for a US residential address with full notification flow.",
       "sessionId": "029c8g97-0c29-94h4-0cfg-04ef00h8d9ee",
@@ -804,9 +450,7 @@
               "icon": "mdi:map-marker",
               "prompt": "Get User Address"
             },
-            "next": [
-              "76ccda2d-f11f-408c-8087-66c377600d0b"
-            ],
+            "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -817,9 +461,7 @@
               "icon": "mdi:map-marker",
               "prompt": "Get BBK No by Address"
             },
-            "next": [
-              "51dca395-1d90-4a28-9bbc-233de9c1a207"
-            ],
+            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -830,9 +472,7 @@
               "icon": "mdi:server",
               "prompt": "Get Inventory"
             },
-            "next": [
-              "019b209c-2e5a-777f-a04a-11960363fb25"
-            ],
+            "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -843,12 +483,8 @@
               "icon": "mdi:source-branch",
               "prompt": "Is inventory available?"
             },
-            "true": [
-              "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-            ],
-            "false": [
-              "019b20a6-1aa6-7510-b222-66535e50dfb3"
-            ],
+            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+            "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -870,9 +506,7 @@
               "icon": "mdi:speedometer",
               "prompt": "Get products by speed"
             },
-            "next": [
-              "019c8a58-10e3-713f-9484-78d04923040f"
-            ],
+            "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -883,9 +517,7 @@
               "icon": "mdi:cursor-pointer",
               "prompt": "Provide available products and wait for user to select a product"
             },
-            "next": [
-              "019b3302-7846-75c2-9ab7-897c18b8ccee"
-            ],
+            "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -896,9 +528,7 @@
               "icon": "mdi:link",
               "prompt": "Allocate port and create order"
             },
-            "next": [
-              "019b3305-7846-75c2-9ab7-897c18b8cce1"
-            ],
+            "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -909,9 +539,7 @@
               "icon": "mdi:bell",
               "prompt": "Notify user about port allocation"
             },
-            "next": [
-              "019b209e-3122-75ce-9ba6-674b6184f68d"
-            ],
+            "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -922,9 +550,7 @@
               "icon": "mdi:settings",
               "prompt": "Configure allocated port"
             },
-            "next": [
-              "019b32f6-5878-73fb-8411-55916778d9a4"
-            ],
+            "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -935,9 +561,7 @@
               "icon": "mdi:ethernet",
               "prompt": "Connect port to residence"
             },
-            "next": [
-              "019b32f6-bd02-734e-bd3a-aec89d79609c"
-            ],
+            "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -1095,70 +719,211 @@
       ]
     },
     {
-      "id": "6aab1234-1a2b-4c3d-8e5f-0f1234567890",
-      "description": "Process customer payment for order.",
-      "sessionId": "019b6e75-0001-0001-0001-000000000001",
-      "pseudocode": "BEGIN_CONTEXT\nPayment.Process(order.id, amount)\nIF Payment.Status == SUCCESS THEN\n    Order.Update(status=PAID)\n    NotifyUser()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-      "blueprint": {
-        "id": "bp-0001-0001-0001-0001-000000000001",
-        "title": "Payment Processing",
-        "description": "Process payment for a customer order and update order status.",
-        "pseudocode": "BEGIN_CONTEXT\nPayment.Process(order.id, amount)\nIF Payment.Status == SUCCESS THEN\n    Order.Update(status=PAID)\n    NotifyUser()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "id": "hnd-0001-0001-0001-0001-000000000001",
+      "description": "Customer needs billing support after order is created.",
+      "sessionId": "session-hnd-0001",
+      "pseudocode": "BEGIN_CONTEXT\nOrder.Create()\nHandoff(BillingAgent, context)\nEND_CONTEXT\n\nEND_MESSAGE",
+      "Blueprint": {
+        "id": "bp-hnd-0001-0001-0001-0001-000000000001",
+        "title": "Order and Billing Handoff",
+        "description": "Create the order, then hand off to the billing agent for payment processing.",
+        "agentId": "agent-sales-001",
         "nodes": [
           {
-            "id": "node-pay-001",
+            "id": "node-hnd-001",
             "type": "NORMAL",
             "properties": {
-              "action": "BILLING:process_payment",
-              "icon": "mdi:credit-card",
-              "prompt": "Process Payment"
+              "action": "GREY:create_order",
+              "icon": "mdi:cart-plus",
+              "prompt": "Create Order"
             },
-            "next": [
-              "node-pay-002"
-            ],
+            "next": ["node-hnd-002"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
-            "id": "node-pay-002",
-            "type": "NORMAL",
+            "id": "node-hnd-002",
+            "type": "HANDOFF",
             "properties": {
-              "action": "GREY:update_order_status",
-              "icon": "mdi:check",
-              "prompt": "Update Order Status"
-            },
-            "next": [
-              "node-pay-003"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "node-pay-003",
-            "type": "NORMAL",
-            "properties": {
-              "action": "PLATFORM:message_user",
-              "icon": "mdi:bell",
-              "prompt": "Notify User"
-            },
-            "next": [
-              "node-pay-004"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "node-pay-004",
-            "type": "NORMAL",
-            "properties": {
-              "action": "PLATFORM:complete",
-              "icon": "mdi:check",
-              "prompt": "Complete"
-            },
-            "next": null,
-            "createdAt": "2025-06-19T06:02:00Z"
+              "label": "Hand off to Billing Agent",
+              "icon": "mdi:account-arrow-right",
+              "targetAgentId": "agent-billing-001",
+              "targetBlueprintId": "bp-billing-payment-001",
+              "prompt": "Transfer to billing agent for payment"
+            }
           }
         ]
       },
       "knowledge": [],
+      "tools": [
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:send_email"
+      ],
+      "steps": [
+        {
+          "taskId": "task-hnd-001",
+          "action": "GREY:create_order",
+          "status": "COMPLETED",
+          "parameters": {
+            "productId": "prd-001",
+            "quantity": 1
+          },
+          "result": "{\"orderId\": \"ORD-2026-0099\", \"status\": \"CREATED\"}",
+          "comment": "Order created successfully"
+        },
+        {
+          "taskId": "task-hnd-001",
+          "action": "PLATFORM:handoff",
+          "status": "COMPLETED",
+          "parameters": {
+            "targetAgentId": "agent-billing-001",
+            "targetBlueprintId": "bp-billing-payment-001",
+            "context": "Order ORD-2026-0099 has been created for product prd-001. Customer needs to complete payment. Please process the payment for this order."
+          },
+          "comment": "Handing off to billing agent for payment processing"
+        }
+      ]
+    },
+    {
+      "id": "order-cert-block-001",
+      "description": "Create a purchase order for product-1 (prd-1).",
+      "sessionId": "019b6e75-oc01-oc01-oc01-oc0100000001",
+      "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\ncertificate = CheckCertificate(product.id)\nIF certificate.has_certificate == TRUE THEN\n    AssignCertificate(product.id, certificate.certificate)\n    PO.Create(product.id)\n    Email.Send()\nELSE\n    Handoff(complianceAgent)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "Blueprint": {
+        "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+        "title": "Order and Compliance",
+        "description": "Find product, assign compliance certificate, create purchase order, and send email.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "prompt": "Ask user which product they want to order",
+              "label": "Select a Product",
+              "icon": "mdi:account-question"
+            },
+            "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "prompt": "Find the product by identifier",
+              "label": "Find Product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:knowledge_lookup",
+              "prompt": "Look up compliance certificate for the product from agent knowledge",
+              "label": "Knowledge Lookup",
+              "icon": "mdi:book-search"
+            },
+            "next": ["f3e3d3c4-a3b3-4333-8333-444444444444"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f3e3d3c4-a3b3-4333-8333-444444444444",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "prompt": "Is certificate found?",
+              "label": "Is Certificate Found?",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+            "false": ["f3e3d3c5-a3b3-4333-8333-555555555555"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "prompt": "Assign a compliance certificate to the product",
+              "label": "Assign Certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f3e3d3c5-a3b3-4333-8333-555555555555",
+            "type": "HANDOFF",
+            "properties": {
+              "action": "PLATFORM:handoff",
+              "prompt": "Handoff to compliance agent",
+              "label": "Handoff - No Certificate",
+              "icon": "mdi:account-arrow-right"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "prompt": "Create a purchase order for the product",
+              "label": "Create Purchase Order",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "prompt": "Send email to notify about the purchase order",
+              "label": "Send Email",
+              "icon": "mdi:email"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "kn-cert-001",
+          "type": "TEXT",
+          "text": "prd-1 has FFC compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-cert-002",
+          "type": "TEXT",
+          "text": "prd-2 has CE compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-cert-003",
+          "type": "TEXT",
+          "text": "prd-3 and prd-4 have no compliance certificate assigned",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-cert-004",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        }
+      ],
       "tools": [
         "DISCORD:search",
         "GDRIVE:search",
@@ -1176,929 +941,977 @@
         "TELCO:get_inventory",
         "TELCO:get_product_by_speed",
         "TELCO:port_allocation",
-        "TELCO:port_connection"
+        "TELCO:port_connection",
+        "ORDER:find_product",
+        "GREY:knowledge_lookup",
+        "ORDER:assign_certificate",
+        "ORDER:create_po"
       ],
       "steps": [
         {
-          "taskId": "task-pay-001",
-          "action": "BILLING:process_payment",
+          "taskId": "task-oc-001",
+          "action": "PLATFORM:user_interaction",
           "status": "COMPLETED",
           "parameters": {
-            "orderId": "ORD-2026-0091",
-            "amount": 249.99,
-            "currency": "TRY"
+            "question": "Which product would you like to order?"
           },
-          "result": "{\"error\":\"PAYMENT_DECLINED\"}",
-          "comment": "Payment gateway rejected the transaction"
+          "result": "product-1",
+          "comment": "User selected product-1"
         },
         {
-          "taskId": "task-pay-001",
+          "taskId": "task-oc-001",
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "name": "product-1"
+          },
+          "result": "{\"id\": \"prd-1\", \"name\": \"product-1\"}",
+          "comment": "Found product-1 with ID prd-1"
+        },
+        {
+          "taskId": "task-oc-001",
+          "action": "GREY:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "prd-1"
+          },
+          "result": "{\"product_id\": \"prd-1\", \"certificate\": \"FFC\", \"has_certificate\": true}",
+          "comment": "Product prd-1 has FFC compliance certificate"
+        },
+        {
+          "taskId": "task-oc-001",
+          "action": "PLATFORM:decision",
+          "status": "COMPLETED",
+          "comment": "Certificate found for prd-1, proceeding with order creation",
+          "parameters": {
+            "condition": "certificate.has_certificate == TRUE",
+            "true": [
+              {
+                "taskId": "task-oc-001",
+                "action": "ORDER:assign_certificate",
+                "status": "COMPLETED",
+                "parameters": {
+                  "product_id": "prd-1",
+                  "certificate": "FFC"
+                },
+                "result": "{\"product_id\": \"prd-1\", \"certificate\": \"FFC\", \"assigned\": true}",
+                "comment": "Confirmed FFC certificate for prd-1"
+              },
+              {
+                "taskId": "task-oc-001",
+                "action": "ORDER:create_po",
+                "status": "COMPLETED",
+                "parameters": {
+                  "product_id": "prd-1",
+                  "city": "Atlanta",
+                  "quantity": 1
+                },
+                "result": "{\"order_id\": \"po-2001\", \"product_id\": \"prd-1\", \"city\": \"Atlanta\", \"quantity\": 1}",
+                "comment": "Purchase order po-2001 created for prd-1"
+              },
+              {
+                "taskId": "task-oc-001",
+                "action": "GREY:send_email",
+                "status": "COMPLETED",
+                "parameters": {
+                  "to": "halilibrahimcengel7@gmail.com",
+                  "subject": "Purchase Order Created",
+                  "text": "Purchase order po-2001 has been created for product prd-1 with FFC certificate."
+                },
+                "comment": "Email sent to manager about completed purchase order"
+              },
+              {
+                "taskId": "task-oc-001",
+                "action": "PLATFORM:complete",
+                "status": "COMPLETED",
+                "comment": "Order and compliance process completed successfully"
+              }
+            ],
+            "false": [
+              {
+                "taskId": "task-oc-001",
+                "action": "PLATFORM:handoff",
+                "status": "COMPLETED",
+                "parameters": {
+                  "targetAgentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+                  "targetBlueprintId": "c2b1a0d9-e8f7-4c2b-9100-300000000001",
+                  "context": "Product prd-1 has no compliance certificate. Cannot proceed with order without certification."
+                },
+                "comment": "Handing off to compliance agent for certificate assignment"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "order-cert-block-002",
+      "description": "Create a purchase order for product-3 (prd-3) — no certificate in knowledge, agent asks supervisor who adds a decision node to the blueprint, agent then follows updated blueprint and handoffs to compliance agent.",
+      "sessionId": "019b6e75-oc02-oc02-oc02-oc0200000002",
+      "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\ncertificate = CheckCertificate(product.id)\n// No certificate in knowledge -> AskSupervisor\n// Supervisor adds decision node to blueprint\nIF certificate.has_certificate == TRUE THEN\n    AssignCertificate(product.id, certificate.certificate)\n    PO.Create(product.id)\n    Email.Send()\nELSE\n    Handoff(complianceAgent)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "Blueprint": {
+        "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+        "title": "Order and Compliance",
+        "description": "Find product, assign compliance certificate, create purchase order, and send email.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "prompt": "Ask user which product they want to order",
+              "label": "Select a Product",
+              "icon": "mdi:account-question"
+            },
+            "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "prompt": "Find the product by identifier",
+              "label": "Find Product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:knowledge_lookup",
+              "prompt": "Look up compliance certificate for the product from agent knowledge",
+              "label": "Knowledge Lookup",
+              "icon": "mdi:book-search"
+            },
+            "next": ["f3e3d3c4-a3b3-4333-8333-444444444444"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f3e3d3c4-a3b3-4333-8333-444444444444",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "prompt": "Is certificate found?",
+              "label": "Is Certificate Found?",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+            "false": ["f3e3d3c5-a3b3-4333-8333-555555555555"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "prompt": "Assign a compliance certificate to the product",
+              "label": "Assign Certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f3e3d3c5-a3b3-4333-8333-555555555555",
+            "type": "HANDOFF",
+            "properties": {
+              "action": "PLATFORM:handoff",
+              "prompt": "Handoff to compliance agent",
+              "label": "Handoff - No Certificate",
+              "icon": "mdi:account-arrow-right"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "prompt": "Create a purchase order for the product",
+              "label": "Create Purchase Order",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "prompt": "Send email to notify about the purchase order",
+              "label": "Send Email",
+              "icon": "mdi:email"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "kn-cert-001",
+          "type": "TEXT",
+          "text": "prd-1 has FFC compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-cert-002",
+          "type": "TEXT",
+          "text": "prd-2 has CE compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-cert-003",
+          "type": "TEXT",
+          "text": "prd-3 and prd-4 have no compliance certificate assigned",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-cert-004",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        }
+      ],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection",
+        "ORDER:find_product",
+        "GREY:knowledge_lookup",
+        "ORDER:assign_certificate",
+        "ORDER:create_po"
+      ],
+      "steps": [
+        {
+          "taskId": "task-oc-002",
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Which product would you like to order?"
+          },
+          "result": "product-3",
+          "comment": "User selected product-3"
+        },
+        {
+          "taskId": "task-oc-002",
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "name": "product-3"
+          },
+          "result": "{\"id\": \"prd-3\", \"name\": \"product-3\"}",
+          "comment": "Found product-3 with ID prd-3"
+        },
+        {
+          "taskId": "task-oc-002",
+          "action": "GREY:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "prd-3"
+          },
+          "result": "{\"product_id\": \"prd-3\", \"certificate\": null, \"has_certificate\": false}",
+          "comment": "Product prd-3 has no compliance certificate"
+        },
+        {
+          "taskId": "task-oc-002",
           "action": "PLATFORM:ask_supervisor",
           "status": "COMPLETED",
           "parameters": {
-            "question": "Payment for order ORD-2026-0091 was declined by the card issuer. Should I retry, cancel the order, or contact the customer?",
-            "sessionId": "019b6e75-0001-0001-0001-000000000001",
-            "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+            "question": "Product prd-3 has no compliance certificate in the knowledge base and the blueprint has no path defined for this case. How should I proceed?",
+            "sessionId": "019b6e75-oc02-oc02-oc02-oc0200000002",
+            "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
           },
-          "comment": "Asking supervisor how to handle payment failure"
+          "comment": "Supervisor added a decision node to the blueprint: if certificate found proceed with order, otherwise handoff to compliance agent"
         },
         {
-          "taskId": "task-pay-001",
+          "taskId": "task-oc-002",
+          "action": "PLATFORM:decision",
+          "status": "COMPLETED",
+          "comment": "Decision node added by supervisor to blueprint — no certificate found for prd-3, taking false branch",
+          "parameters": {
+            "condition": "certificate.has_certificate == TRUE",
+            "true": [
+              {
+                "taskId": "task-oc-002",
+                "action": "ORDER:assign_certificate",
+                "status": "SKIPPED",
+                "comment": "True branch not taken — prd-3 has no certificate"
+              }
+            ],
+            "false": [
+              {
+                "taskId": "task-oc-002",
+                "action": "PLATFORM:handoff",
+                "status": "COMPLETED",
+                "parameters": {
+                  "targetAgentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+                  "targetBlueprintId": "c2b1a0d9-e8f7-4c2b-9100-300000000001",
+                  "context": "Product prd-3 has no compliance certificate. Cannot proceed with purchase order without certification. Please assign the appropriate certificate."
+                },
+                "comment": "Handing off to compliance agent per supervisor's blueprint update"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "order-cert-block-003",
+      "description": "Create a purchase order for product-3 (prd-3) — no certificate in knowledge initially. Blueprint has no handoff node. Agent asks supervisor; supervisor adds certificate to knowledge base only (blueprint NOT changed). Agent resumes, re-checks certificate with updated knowledge, finds it, and completes the order.",
+      "sessionId": "019b6e75-oc03-oc03-oc03-oc0300000003",
+      "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\ncertificate = CheckCertificate(product.id)\n// No certificate found in knowledge -> AskSupervisor\n// Supervisor adds certificate to knowledge base (blueprint NOT changed)\n// Agent resumes with updated knowledge\ncertificate = CheckCertificate(product.id) // re-checked with updated knowledge\nAssignCertificate(product.id, certificate.certificate)\nPO.Create(product.id)\nEmail.Send()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "Blueprint": {
+        "id": "a1b2c3d4-e5f6-4000-8000-100000000002",
+        "title": "Order and Compliance (No Handoff)",
+        "description": "Find product, check and assign compliance certificate, create purchase order, and send email.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "n0-a1b2-0000",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "prompt": "Ask user which product they want to order",
+              "label": "Select a Product",
+              "icon": "mdi:account-question"
+            },
+            "next": ["n1-a1b2-1111"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "n1-a1b2-1111",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "prompt": "Find the product by identifier",
+              "label": "Find Product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["n2-a1b2-2222"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "n2-a1b2-2222",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:knowledge_lookup",
+              "prompt": "Look up compliance certificate for the product from agent knowledge",
+              "label": "Knowledge Lookup",
+              "icon": "mdi:book-search"
+            },
+            "next": ["n4-a1b2-4444"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "n4-a1b2-4444",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "prompt": "Assign a compliance certificate to the product",
+              "label": "Assign Certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["n5-a1b2-5555"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "n5-a1b2-5555",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "prompt": "Create a purchase order for the product",
+              "label": "Create Purchase Order",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["n6-a1b2-6666"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "n6-a1b2-6666",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "prompt": "Send email to notify about the purchase order",
+              "label": "Send Email",
+              "icon": "mdi:email"
+            },
+            "next": ["n8-a1b2-8888"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "n8-a1b2-8888",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "prompt": "Complete task after order creation",
+              "label": "Complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "kn-c3-001",
+          "type": "TEXT",
+          "text": "prd-1 has FFC compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-c3-002",
+          "type": "TEXT",
+          "text": "prd-2 has CE compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-c3-003",
+          "type": "TEXT",
+          "text": "prd-3 and prd-4 have no compliance certificate assigned",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-c3-004",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-c3-005",
+          "type": "TEXT",
+          "text": "prd-3 has ISO 9001 compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-29T08:00:00Z"
+        }
+      ],
+      "tools": [
+        "GREY:send_email",
+        "ORDER:find_product",
+        "GREY:knowledge_lookup",
+        "ORDER:assign_certificate",
+        "ORDER:create_po"
+      ],
+      "steps": [
+        {
+          "taskId": "task-oc-003",
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Which product would you like to order?"
+          },
+          "result": "product-3",
+          "comment": "User selected product-3"
+        },
+        {
+          "taskId": "task-oc-003",
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "name": "product-3"
+          },
+          "result": "{\"id\": \"prd-3\", \"name\": \"product-3\"}",
+          "comment": "Found product-3 with ID prd-3"
+        },
+        {
+          "taskId": "task-oc-003",
+          "action": "GREY:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "prd-3"
+          },
+          "result": "{\"product_id\": \"prd-3\", \"certificate\": null, \"has_certificate\": false}",
+          "comment": "No certificate found for prd-3 — knowledge base had no entry for prd-3 certificate at this point"
+        },
+        {
+          "taskId": "task-oc-003",
+          "action": "PLATFORM:ask_supervisor",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Product prd-3 has no compliance certificate in the knowledge base. How should I proceed?",
+            "sessionId": "019b6e75-oc03-oc03-oc03-oc0300000003",
+            "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
+          },
+          "comment": "Supervisor added 'prd-3 has ISO 9001 compliance certificate' to the knowledge base. Blueprint was NOT changed."
+        },
+        {
+          "taskId": "task-oc-003",
+          "action": "GREY:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "prd-3"
+          },
+          "result": "{\"product_id\": \"prd-3\", \"certificate\": \"ISO 9001\", \"has_certificate\": true}",
+          "comment": "Re-checked certificate after supervisor updated knowledge base — ISO 9001 now found for prd-3"
+        },
+        {
+          "taskId": "task-oc-003",
+          "action": "ORDER:assign_certificate",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "prd-3",
+            "certificate": "ISO 9001"
+          },
+          "result": "{\"product_id\": \"prd-3\", \"certificate\": \"ISO 9001\", \"assigned\": true}",
+          "comment": "Assigned ISO 9001 certificate to prd-3"
+        },
+        {
+          "taskId": "task-oc-003",
+          "action": "ORDER:create_po",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "prd-3",
+            "city": "Atlanta",
+            "quantity": 1
+          },
+          "result": "{\"order_id\": \"po-2003\", \"product_id\": \"prd-3\", \"city\": \"Atlanta\", \"quantity\": 1}",
+          "comment": "Purchase order po-2003 created for prd-3"
+        },
+        {
+          "taskId": "task-oc-003",
+          "action": "GREY:send_email",
+          "status": "COMPLETED",
+          "parameters": {
+            "to": "halilibrahimcengel7@gmail.com",
+            "subject": "Purchase Order Created",
+            "text": "Purchase order po-2003 has been created for product prd-3 with ISO 9001 certificate."
+          },
+          "comment": "Email sent to manager"
+        },
+        {
+          "taskId": "task-oc-003",
+          "action": "PLATFORM:complete",
+          "status": "COMPLETED",
+          "comment": "Order and compliance process completed — supervisor knowledge update resolved the blocking condition"
+        }
+      ]
+    },
+    {
+      "id": "compliance-handoff-001",
+      "description": "Product prd-3 has no compliance certificate in the knowledge base. Order cannot proceed without certification. Please assign the appropriate certificate or coordinate with vendor GlobalParts Ltd (compliance@globalparts.com) to obtain it.",
+      "sessionId": "019b6e75-oc02-oc02-oc02-oc0200000002",
+      "pseudocode": "BEGIN_CONTEXT\nvendor = GetProductVendor(product.id)\nEmail.Send(vendor.email)\nMessageUser()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "Blueprint": {
+        "id": "c2b1a0d9-e8f7-4c2b-9100-300000000001",
+        "title": "Compliance Certificate Request",
+        "description": "Find the vendor of a product missing a compliance certificate and send them an email requesting the certificate, then notify the user.",
+        "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+        "nodes": [
+          {
+            "id": "c2b1a0d9-e8f7-4c2b-9100-300000000002",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:get_product_vendor",
+              "prompt": "Get the vendor information for the product",
+              "label": "Get Product Vendor",
+              "icon": "mdi:domain"
+            },
+            "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000003"],
+            "createdAt": "2025-06-29T08:00:00Z"
+          },
+          {
+            "id": "c2b1a0d9-e8f7-4c2b-9100-300000000003",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "prompt": "Send certificate request email to vendor",
+              "label": "Email Vendor",
+              "icon": "mdi:email"
+            },
+            "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000004"],
+            "createdAt": "2025-06-29T08:00:00Z"
+          },
+          {
+            "id": "c2b1a0d9-e8f7-4c2b-9100-300000000004",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "prompt": "Notify user that vendor was contacted",
+              "label": "Notify User",
+              "icon": "mdi:bell"
+            },
+            "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000005"],
+            "createdAt": "2025-06-29T08:00:00Z"
+          },
+          {
+            "id": "c2b1a0d9-e8f7-4c2b-9100-300000000005",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "prompt": "Complete compliance certificate request",
+              "label": "Complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-29T08:00:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "kn-cert-001",
+          "type": "TEXT",
+          "text": "prd-1 has FFC compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-cert-002",
+          "type": "TEXT",
+          "text": "prd-2 has CE compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-cert-003",
+          "type": "TEXT",
+          "text": "prd-3 and prd-4 have no compliance certificate assigned",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        }
+      ],
+      "tools": [
+        "ORDER:find_product",
+        "GREY:knowledge_lookup",
+        "ORDER:get_product_vendor",
+        "ORDER:create_po",
+        "GREY:send_email"
+      ],
+      "inherited_context_steps": [
+        {
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Which product would you like to order?"
+          },
+          "result": "product-3",
+          "comment": "User selected product-3"
+        },
+        {
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": { "name": "product-3" },
+          "result": "{\"id\": \"prd-3\", \"name\": \"product-3\"}",
+          "comment": "Found prd-3"
+        },
+        {
+          "action": "GREY:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": { "product_id": "prd-3" },
+          "result": "{\"product_id\": \"prd-3\", \"certificate\": null, \"has_certificate\": false}",
+          "comment": "prd-3 has no certificate in knowledge base"
+        },
+        {
+          "action": "PLATFORM:ask_supervisor",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Product prd-3 has no compliance certificate in the knowledge base. Should I manually assign a certificate (e.g., ISO 9001) or proceed with a handoff to the compliance agent to contact vendor GlobalParts Ltd (compliance@globalparts.com)?",
+            "sessionId": "019b6e75-oc02-oc02-oc02-oc0200000002",
+            "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
+          },
+          "comment": "Supervisor instructed handoff to compliance agent for vendor coordination"
+        },
+        {
+          "action": "PLATFORM:handoff",
+          "status": "COMPLETED",
+          "parameters": {
+            "targetAgentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+            "targetBlueprintId": "c2b1a0d9-e8f7-4c2b-9100-300000000001",
+            "context": "Product prd-3 has no compliance certificate in the knowledge base. Order cannot proceed without certification. Please assign the appropriate certificate or coordinate with vendor GlobalParts Ltd (compliance@globalparts.com) to obtain it."
+          },
+          "comment": "Handing off to compliance agent as per supervisor's instruction"
+        }
+      ],
+      "steps": [
+        {
+          "taskId": "task-compliance-001",
+          "action": "ORDER:get_product_vendor",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "prd-3"
+          },
+          "result": "{\"vendor\": {\"id\": \"vnd-3\", \"name\": \"GlobalParts Ltd\", \"email\": \"compliance@globalparts.com\"}}",
+          "comment": "Starting my own blueprint from step 1 — the inherited context shows what the previous agent did, I do not need to re-ask the supervisor. My blueprint begins with getting the product vendor."
+        },
+        {
+          "taskId": "task-compliance-001",
+          "action": "GREY:send_email",
+          "status": "COMPLETED",
+          "parameters": {
+            "to": "compliance@globalparts.com",
+            "subject": "Compliance Certificate Required for product-3",
+            "text": "Dear GlobalParts Ltd, product prd-3 is missing a compliance certificate required for purchase order processing. Please provide the necessary certificate at your earliest convenience."
+          },
+          "comment": "Blueprint step 2: emailed vendor requesting compliance certificate"
+        },
+        {
+          "taskId": "task-compliance-001",
           "action": "PLATFORM:message_user",
           "status": "COMPLETED",
           "parameters": {
-            "sessionId": "019b6e75-0001-0001-0001-000000000001",
-            "message": "Your payment could not be processed. Please update your payment method or contact support."
+            "sessionId": "019b6e75-oc02-oc02-oc02-oc0200000002",
+            "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+            "message": "The vendor (GlobalParts Ltd) has been contacted at compliance@globalparts.com to provide the compliance certificate for product-3. The purchase order will proceed once the certificate is received."
           },
-          "comment": "Notified customer about payment failure per supervisor instruction"
+          "comment": "Blueprint step 3: notified user that vendor was contacted"
         },
         {
-          "taskId": "task-pay-001",
+          "taskId": "task-compliance-001",
           "action": "PLATFORM:complete",
           "status": "COMPLETED",
-          "comment": "Task completed following supervisor instructions"
+          "comment": "Blueprint step 4: compliance certificate request completed"
         }
       ]
     },
     {
-      "id": "7bbc2345-2b3c-5d4e-9f6g-1g2345678901",
-      "description": "Update employee salary record in HR system.",
-      "sessionId": "019b6e75-0002-0002-0002-000000000002",
-      "pseudocode": "BEGIN_CONTEXT\nemployee = HR.GetEmployee(employeeId)\nHR.UpdateSalary(employeeId, newSalary)\nHR.NotifyPayroll()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
-      "blueprint": {
-        "id": "bp-0002-0002-0002-0002-000000000002",
-        "title": "Employee Salary Update",
-        "description": "Update an employee's salary record and notify the payroll department.",
-        "pseudocode": "BEGIN_CONTEXT\nemployee = HR.GetEmployee(employeeId)\nHR.UpdateSalary(employeeId, newSalary)\nHR.NotifyPayroll()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
-        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "id": "order-cert-block-004",
+      "description": "Create a purchase order for product-4 (prd-4). Knowledge base explicitly states prd-4 has no compliance certificate assigned.",
+      "sessionId": "019b6e75-oc04-oc04-oc04-oc0400000004",
+      "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\ncertificate = CheckCertificate(product.id)\n// Knowledge base explicitly says prd-4 has no certificate\n// Do NOT infer or assume from other products\n// Follow blueprint decision: false branch -> AskSupervisor\nIF certificate.has_certificate == TRUE THEN\n    AssignCertificate(product.id, certificate.certificate)\n    PO.Create(product.id)\n    Email.Send()\nELSE\n    AskSupervisor()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "Blueprint": {
+        "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+        "title": "Order and Compliance",
+        "description": "Find product, assign compliance certificate, create purchase order, and send email.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
         "nodes": [
           {
-            "id": "node-hr-001",
+            "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
             "type": "NORMAL",
             "properties": {
-              "action": "HR:get_employee",
-              "icon": "mdi:account",
-              "prompt": "Get Employee Record"
+              "action": "PLATFORM:user_interaction",
+              "prompt": "Ask user which product they want to order",
+              "label": "Select a Product",
+              "icon": "mdi:account-question"
             },
-            "next": [
-              "node-hr-002"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
+            "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+            "createdAt": "2025-06-26T06:00:00Z"
           },
           {
-            "id": "node-hr-002",
+            "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
             "type": "NORMAL",
             "properties": {
-              "action": "HR:update_salary",
-              "icon": "mdi:currency-usd",
-              "prompt": "Update Salary"
+              "action": "ORDER:find_product",
+              "prompt": "Find the product by identifier",
+              "label": "Find Product",
+              "icon": "mdi:magnify"
             },
-            "next": [
-              "node-hr-003"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
+            "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+            "createdAt": "2025-06-26T06:00:00Z"
           },
           {
-            "id": "node-hr-003",
+            "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
             "type": "NORMAL",
             "properties": {
-              "action": "HR:notify_payroll",
-              "icon": "mdi:email",
-              "prompt": "Notify Payroll"
+              "action": "GREY:knowledge_lookup",
+              "prompt": "Look up compliance certificate for the product from agent knowledge",
+              "label": "Knowledge Lookup",
+              "icon": "mdi:book-search"
             },
-            "next": [
-              "node-hr-004"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
+            "next": ["f3e3d3c4-a3b3-4333-8333-444444444444"],
+            "createdAt": "2025-06-26T06:00:00Z"
           },
           {
-            "id": "node-hr-004",
+            "id": "f3e3d3c4-a3b3-4333-8333-444444444444",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "prompt": "Is certificate found?",
+              "label": "Is Certificate Found?",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+            "false": ["f3e3d3c5-a3b3-4333-8333-555555555555"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
             "type": "NORMAL",
             "properties": {
-              "action": "PLATFORM:complete",
-              "icon": "mdi:check",
-              "prompt": "Complete"
+              "action": "ORDER:assign_certificate",
+              "prompt": "Assign a compliance certificate to the product",
+              "label": "Assign Certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f3e3d3c5-a3b3-4333-8333-555555555555",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:ask_supervisor",
+              "prompt": "No certificate found — ask supervisor how to proceed",
+              "label": "Ask Supervisor",
+              "icon": "mdi:account-question"
             },
             "next": null,
-            "createdAt": "2025-06-19T06:02:00Z"
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "prompt": "Create a purchase order for the product",
+              "label": "Create Purchase Order",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "prompt": "Send email to notify about the purchase order",
+              "label": "Send Email",
+              "icon": "mdi:email"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
           }
         ]
       },
-      "knowledge": [],
+      "knowledge": [
+        {
+          "id": "kn-c4-001",
+          "type": "TEXT",
+          "text": "prd-1 has FFC compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-c4-002",
+          "type": "TEXT",
+          "text": "prd-2 has CE compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-c4-003",
+          "type": "TEXT",
+          "text": "prd-3 and prd-4 have no compliance certificate assigned",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-c4-004",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        }
+      ],
       "tools": [
-        "DISCORD:search",
-        "GDRIVE:search",
-        "GITHUB:search",
-        "GREY:check_product_count",
-        "GREY:create_order",
-        "GREY:reduce_product_count",
-        "GREY:send_email",
-        "JIRA:search",
-        "PROJECT_NOTIFIER:notify_project_open",
-        "SLACK:search",
-        "TELCO:configuration",
-        "TELCO:get_address",
-        "TELCO:get_bbk_by_address",
-        "TELCO:get_inventory",
-        "TELCO:get_product_by_speed",
-        "TELCO:port_allocation",
-        "TELCO:port_connection"
+        "ORDER:find_product",
+        "GREY:knowledge_lookup",
+        "ORDER:assign_certificate",
+        "ORDER:create_po",
+        "GREY:send_email"
       ],
       "steps": [
         {
-          "taskId": "task-hr-001",
-          "action": "HR:get_employee",
+          "taskId": "task-oc-004",
+          "action": "PLATFORM:user_interaction",
           "status": "COMPLETED",
           "parameters": {
-            "employeeId": "EMP-99234"
+            "question": "Which product would you like to order?"
           },
-          "result": "{\"error\":\"EMPLOYEE_NOT_FOUND\"}",
-          "comment": "Employee not found in HR system"
+          "result": "product-4",
+          "comment": "User selected product-4"
         },
         {
-          "taskId": "task-hr-001",
-          "action": "PLATFORM:ask_supervisor",
+          "taskId": "task-oc-004",
+          "action": "ORDER:find_product",
           "status": "COMPLETED",
           "parameters": {
-            "question": "Employee ID EMP-99234 does not exist in the HR system. Should I create a new record, check for a different ID, or cancel the salary update?",
-            "sessionId": "019b6e75-0002-0002-0002-000000000002",
-            "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+            "name": "product-4"
           },
-          "comment": "Asking supervisor how to proceed with missing employee record"
+          "result": "{\"id\": \"prd-4\", \"name\": \"product-4\"}",
+          "comment": "Found product-4 with ID prd-4"
         },
         {
-          "taskId": "task-hr-001",
-          "action": "PLATFORM:complete",
+          "taskId": "task-oc-004",
+          "action": "GREY:knowledge_lookup",
           "status": "COMPLETED",
-          "comment": "Task completed following supervisor instructions"
-        }
-      ]
-    },
-    {
-      "id": "8ccd3456-3c4d-6e5f-0g7h-2h3456789012",
-      "description": "Send promotional email campaign to customer segment.",
-      "sessionId": "019b6e75-0003-0003-0003-000000000003",
-      "pseudocode": "BEGIN_CONTEXT\nsegment = CRM.GetSegment(segmentId)\ncampaign = EMAIL.CreateCampaign(segment)\nEMAIL.Send(campaign)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
-      "blueprint": {
-        "id": "bp-0003-0003-0003-0003-000000000003",
-        "title": "Email Campaign",
-        "description": "Send a promotional email campaign to a customer segment.",
-        "pseudocode": "BEGIN_CONTEXT\nsegment = CRM.GetSegment(segmentId)\ncampaign = EMAIL.CreateCampaign(segment)\nEMAIL.Send(campaign)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
-        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-        "nodes": [
-          {
-            "id": "node-email-001",
-            "type": "NORMAL",
-            "properties": {
-              "action": "CRM:get_segment",
-              "icon": "mdi:account-group",
-              "prompt": "Get Customer Segment"
-            },
-            "next": [
-              "node-email-002"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
+          "parameters": {
+            "product_id": "prd-4"
           },
-          {
-            "id": "node-email-002",
-            "type": "NORMAL",
-            "properties": {
-              "action": "EMAIL:create_campaign",
-              "icon": "mdi:email-edit",
-              "prompt": "Create Campaign"
-            },
-            "next": [
-              "node-email-003"
+          "result": "{\"product_id\": \"prd-4\", \"certificate\": null, \"has_certificate\": false}",
+          "comment": "Knowledge base explicitly states prd-4 has no compliance certificate. Other products like prd-2 (CE) exist but I must NOT infer or assume a certificate for prd-4 — the knowledge base is the only authoritative source."
+        },
+        {
+          "taskId": "task-oc-004",
+          "action": "PLATFORM:decision",
+          "status": "COMPLETED",
+          "comment": "No certificate found for prd-4 — taking the false branch as defined in blueprint",
+          "parameters": {
+            "condition": "certificate.has_certificate == TRUE",
+            "true": [
+              {
+                "taskId": "task-oc-004",
+                "action": "ORDER:assign_certificate",
+                "status": "SKIPPED",
+                "comment": "True branch not taken — prd-4 has no certificate in knowledge base"
+              }
             ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "node-email-003",
-            "type": "NORMAL",
-            "properties": {
-              "action": "EMAIL:send_campaign",
-              "icon": "mdi:send",
-              "prompt": "Send Campaign"
-            },
-            "next": [
-              "node-email-004"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "node-email-004",
-            "type": "NORMAL",
-            "properties": {
-              "action": "PLATFORM:complete",
-              "icon": "mdi:check",
-              "prompt": "Complete"
-            },
-            "next": null,
-            "createdAt": "2025-06-19T06:02:00Z"
+            "false": [
+              {
+                "taskId": "task-oc-004",
+                "action": "PLATFORM:ask_supervisor",
+                "status": "COMPLETED",
+                "parameters": {
+                  "question": "Product prd-4 has no compliance certificate in the knowledge base. How should I proceed?",
+                  "sessionId": "019b6e75-oc04-oc04-oc04-oc0400000004",
+                  "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
+                },
+                "comment": "Blueprint false branch: asking supervisor because knowledge base has no certificate for prd-4. I will not assume CE or any other certificate from other products."
+              }
+            ]
           }
-        ]
-      },
-      "knowledge": [],
-      "tools": [
-        "DISCORD:search",
-        "GDRIVE:search",
-        "GITHUB:search",
-        "GREY:check_product_count",
-        "GREY:create_order",
-        "GREY:reduce_product_count",
-        "GREY:send_email",
-        "JIRA:search",
-        "PROJECT_NOTIFIER:notify_project_open",
-        "SLACK:search",
-        "TELCO:configuration",
-        "TELCO:get_address",
-        "TELCO:get_bbk_by_address",
-        "TELCO:get_inventory",
-        "TELCO:get_product_by_speed",
-        "TELCO:port_allocation",
-        "TELCO:port_connection"
-      ],
-      "steps": [
-        {
-          "taskId": "task-email-001",
-          "action": "CRM:get_segment",
-          "status": "COMPLETED",
-          "parameters": {
-            "segmentId": "SEG-PREMIUM-2026"
-          },
-          "comment": "Retrieved 4,200 customers in premium segment"
-        },
-        {
-          "taskId": "task-email-001",
-          "action": "EMAIL:create_campaign",
-          "status": "COMPLETED",
-          "parameters": {
-            "segmentId": "SEG-PREMIUM-2026",
-            "templateId": "PROMO-SUMMER-01"
-          },
-          "comment": "Campaign created successfully"
-        },
-        {
-          "taskId": "task-email-001",
-          "action": "EMAIL:send_campaign",
-          "status": "COMPLETED",
-          "parameters": {
-            "campaignId": "CAMP-2026-0055"
-          },
-          "result": "{\"error\":\"RATE_LIMIT_EXCEEDED\",\"sent\":0,\"limit\":1000,\"requested\":4200}",
-          "comment": "Send limit exceeded, campaign could not be delivered"
-        },
-        {
-          "taskId": "task-email-001",
-          "action": "PLATFORM:ask_supervisor",
-          "status": "COMPLETED",
-          "parameters": {
-            "question": "Campaign CAMP-2026-0055 could not be sent because the daily email limit (1,000) is exceeded. The segment has 4,200 recipients. Should I split the send across multiple days or request a limit increase?",
-            "sessionId": "019b6e75-0003-0003-0003-000000000003",
-            "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-          },
-          "comment": "Asking supervisor how to handle email rate limit"
-        },
-        {
-          "taskId": "task-email-001",
-          "action": "PLATFORM:complete",
-          "status": "COMPLETED",
-          "comment": "Task completed following supervisor instructions"
         }
       ]
     },
     {
-      "id": "9dde4567-4d5e-7f6g-1h8i-3i4567890123",
-      "description": "Create a new user account and assign role permissions.",
-      "sessionId": "019b6e75-0004-0004-0004-000000000004",
-      "pseudocode": "BEGIN_CONTEXT\nuser = AUTH.CreateUser(email, password)\nAUTH.AssignRole(user.id, role)\nNotifyUser()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
-      "blueprint": {
-        "id": "bp-0004-0004-0004-0004-000000000004",
-        "title": "User Account Creation",
-        "description": "Create a new user account and assign the appropriate role.",
-        "pseudocode": "BEGIN_CONTEXT\nuser = AUTH.CreateUser(email, password)\nAUTH.AssignRole(user.id, role)\nNotifyUser()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
-        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-        "nodes": [
-          {
-            "id": "node-auth-001",
-            "type": "NORMAL",
-            "properties": {
-              "action": "AUTH:create_user",
-              "icon": "mdi:account-plus",
-              "prompt": "Create User"
-            },
-            "next": [
-              "node-auth-002"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "node-auth-002",
-            "type": "NORMAL",
-            "properties": {
-              "action": "AUTH:assign_role",
-              "icon": "mdi:shield-account",
-              "prompt": "Assign Role"
-            },
-            "next": [
-              "node-auth-003"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "node-auth-003",
-            "type": "NORMAL",
-            "properties": {
-              "action": "PLATFORM:message_user",
-              "icon": "mdi:bell",
-              "prompt": "Notify User"
-            },
-            "next": [
-              "node-auth-004"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "node-auth-004",
-            "type": "NORMAL",
-            "properties": {
-              "action": "PLATFORM:complete",
-              "icon": "mdi:check",
-              "prompt": "Complete"
-            },
-            "next": null,
-            "createdAt": "2025-06-19T06:02:00Z"
-          }
-        ]
-      },
-      "knowledge": [],
-      "tools": [
-        "DISCORD:search",
-        "GDRIVE:search",
-        "GITHUB:search",
-        "GREY:check_product_count",
-        "GREY:create_order",
-        "GREY:reduce_product_count",
-        "GREY:send_email",
-        "JIRA:search",
-        "PROJECT_NOTIFIER:notify_project_open",
-        "SLACK:search",
-        "TELCO:configuration",
-        "TELCO:get_address",
-        "TELCO:get_bbk_by_address",
-        "TELCO:get_inventory",
-        "TELCO:get_product_by_speed",
-        "TELCO:port_allocation",
-        "TELCO:port_connection"
-      ],
-      "steps": [
-        {
-          "taskId": "task-auth-001",
-          "action": "AUTH:create_user",
-          "status": "COMPLETED",
-          "parameters": {
-            "email": "john.doe@example.com",
-            "role": "ADMIN"
-          },
-          "result": "{\"error\":\"DUPLICATE_EMAIL\",\"existingUserId\":\"USR-00412\"}",
-          "comment": "User with this email already exists in the system"
-        },
-        {
-          "taskId": "task-auth-001",
-          "action": "PLATFORM:ask_supervisor",
-          "status": "COMPLETED",
-          "parameters": {
-            "question": "Cannot create account: john.doe@example.com already exists. Should I update the existing account's role to ADMIN, or is a different email address intended?",
-            "sessionId": "019b6e75-0004-0004-0004-000000000004",
-            "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-          },
-          "comment": "Asking supervisor how to handle duplicate email"
-        },
-        {
-          "taskId": "task-auth-001",
-          "action": "PLATFORM:complete",
-          "status": "COMPLETED",
-          "comment": "Task completed following supervisor instructions"
-        }
-      ]
-    },
-    {
-      "id": "0eef5678-5e6f-8g7h-2i9j-4j5678901234",
-      "description": "Export monthly financial report and upload to cloud storage.",
-      "sessionId": "019b6e75-0005-0005-0005-000000000005",
-      "pseudocode": "BEGIN_CONTEXT\nreport = ERP.GenerateReport(month, year)\nSTORAGE.Upload(report, destination)\nNotifyTeam()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
-      "blueprint": {
-        "id": "bp-0005-0005-0005-0005-000000000005",
-        "title": "Monthly Financial Report Export",
-        "description": "Generate monthly financial report and upload to cloud storage.",
-        "pseudocode": "BEGIN_CONTEXT\nreport = ERP.GenerateReport(month, year)\nSTORAGE.Upload(report, destination)\nNotifyTeam()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
-        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-        "nodes": [
-          {
-            "id": "node-erp-001",
-            "type": "NORMAL",
-            "properties": {
-              "action": "ERP:generate_report",
-              "icon": "mdi:file-chart",
-              "prompt": "Generate Report"
-            },
-            "next": [
-              "node-erp-002"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "node-erp-002",
-            "type": "NORMAL",
-            "properties": {
-              "action": "STORAGE:upload_file",
-              "icon": "mdi:cloud-upload",
-              "prompt": "Upload to Storage"
-            },
-            "next": [
-              "node-erp-003"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "node-erp-003",
-            "type": "NORMAL",
-            "properties": {
-              "action": "GREY:notify_team",
-              "icon": "mdi:email",
-              "prompt": "Notify Team"
-            },
-            "next": [
-              "node-erp-004"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "node-erp-004",
-            "type": "NORMAL",
-            "properties": {
-              "action": "PLATFORM:complete",
-              "icon": "mdi:check",
-              "prompt": "Complete"
-            },
-            "next": null,
-            "createdAt": "2025-06-19T06:02:00Z"
-          }
-        ]
-      },
-      "knowledge": [],
-      "tools": [
-        "DISCORD:search",
-        "GDRIVE:search",
-        "GITHUB:search",
-        "GREY:check_product_count",
-        "GREY:create_order",
-        "GREY:reduce_product_count",
-        "GREY:send_email",
-        "JIRA:search",
-        "PROJECT_NOTIFIER:notify_project_open",
-        "SLACK:search",
-        "TELCO:configuration",
-        "TELCO:get_address",
-        "TELCO:get_bbk_by_address",
-        "TELCO:get_inventory",
-        "TELCO:get_product_by_speed",
-        "TELCO:port_allocation",
-        "TELCO:port_connection"
-      ],
-      "steps": [
-        {
-          "taskId": "task-erp-001",
-          "action": "ERP:generate_report",
-          "status": "COMPLETED",
-          "parameters": {
-            "month": 5,
-            "year": 2026,
-            "type": "FINANCIAL_SUMMARY"
-          },
-          "comment": "Report generated successfully, 842 transactions included"
-        },
-        {
-          "taskId": "task-erp-001",
-          "action": "STORAGE:upload_file",
-          "status": "COMPLETED",
-          "parameters": {
-            "fileId": "RPT-2026-05-FIN",
-            "destination": "gs://finance-reports/2026/05/"
-          },
-          "result": "{\"error\":\"PERMISSION_DENIED\",\"bucket\":\"finance-reports\"}",
-          "comment": "Upload rejected due to insufficient permissions on the target bucket"
-        },
-        {
-          "taskId": "task-erp-001",
-          "action": "PLATFORM:ask_supervisor",
-          "status": "COMPLETED",
-          "parameters": {
-            "question": "Cannot upload the May 2026 financial report to cloud storage: permission denied on bucket finance-reports. Should I upload to an alternative location or request access to be granted?",
-            "sessionId": "019b6e75-0005-0005-0005-000000000005",
-            "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-          },
-          "comment": "Asking supervisor how to handle storage permission error"
-        },
-        {
-          "taskId": "task-erp-001",
-          "action": "PLATFORM:complete",
-          "status": "COMPLETED",
-          "comment": "Task completed following supervisor instructions"
-        }
-      ]
-    },
-    {
-      "id": "1ffg6789-6f7g-9h8i-3j0k-5k6789012345",
-      "description": "Cancel customer subscription and process refund.",
-      "sessionId": "019b6e75-0006-0006-0006-000000000006",
-      "pseudocode": "BEGIN_CONTEXT\nsubscription = BILLING.GetSubscription(customerId)\nBILLING.CancelSubscription(subscription.id)\nBILLING.ProcessRefund(subscription.id)\nNotifyUser()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
-      "blueprint": {
-        "id": "bp-0006-0006-0006-0006-000000000006",
-        "title": "Subscription Cancellation and Refund",
-        "description": "Cancel a customer subscription and process a prorated refund.",
-        "pseudocode": "BEGIN_CONTEXT\nsubscription = BILLING.GetSubscription(customerId)\nBILLING.CancelSubscription(subscription.id)\nBILLING.ProcessRefund(subscription.id)\nNotifyUser()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
-        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-        "nodes": [
-          {
-            "id": "node-sub-001",
-            "type": "NORMAL",
-            "properties": {
-              "action": "BILLING:get_subscription",
-              "icon": "mdi:card-account-details",
-              "prompt": "Get Subscription"
-            },
-            "next": [
-              "node-sub-002"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "node-sub-002",
-            "type": "NORMAL",
-            "properties": {
-              "action": "BILLING:cancel_subscription",
-              "icon": "mdi:cancel",
-              "prompt": "Cancel Subscription"
-            },
-            "next": [
-              "node-sub-003"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "node-sub-003",
-            "type": "NORMAL",
-            "properties": {
-              "action": "BILLING:process_refund",
-              "icon": "mdi:cash-refund",
-              "prompt": "Process Refund"
-            },
-            "next": [
-              "node-sub-004"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "node-sub-004",
-            "type": "NORMAL",
-            "properties": {
-              "action": "PLATFORM:message_user",
-              "icon": "mdi:bell",
-              "prompt": "Notify User"
-            },
-            "next": [
-              "node-sub-005"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "node-sub-005",
-            "type": "NORMAL",
-            "properties": {
-              "action": "PLATFORM:complete",
-              "icon": "mdi:check",
-              "prompt": "Complete"
-            },
-            "next": null,
-            "createdAt": "2025-06-19T06:02:00Z"
-          }
-        ]
-      },
-      "knowledge": [],
-      "tools": [
-        "DISCORD:search",
-        "GDRIVE:search",
-        "GITHUB:search",
-        "GREY:check_product_count",
-        "GREY:create_order",
-        "GREY:reduce_product_count",
-        "GREY:send_email",
-        "JIRA:search",
-        "PROJECT_NOTIFIER:notify_project_open",
-        "SLACK:search",
-        "TELCO:configuration",
-        "TELCO:get_address",
-        "TELCO:get_bbk_by_address",
-        "TELCO:get_inventory",
-        "TELCO:get_product_by_speed",
-        "TELCO:port_allocation",
-        "TELCO:port_connection"
-      ],
-      "steps": [
-        {
-          "taskId": "task-sub-001",
-          "action": "BILLING:get_subscription",
-          "status": "COMPLETED",
-          "parameters": {
-            "customerId": "CUST-88412"
-          },
-          "comment": "Active annual subscription found, 7 months remaining"
-        },
-        {
-          "taskId": "task-sub-001",
-          "action": "BILLING:cancel_subscription",
-          "status": "COMPLETED",
-          "parameters": {
-            "subscriptionId": "SUB-2025-88412"
-          },
-          "comment": "Subscription cancelled successfully"
-        },
-        {
-          "taskId": "task-sub-001",
-          "action": "BILLING:process_refund",
-          "status": "COMPLETED",
-          "parameters": {
-            "subscriptionId": "SUB-2025-88412",
-            "amount": 420.0
-          },
-          "result": "{\"error\":\"REFUND_EXCEEDS_THRESHOLD\",\"amount\":420.00,\"threshold\":200.00}",
-          "comment": "Refund amount exceeds automatic approval threshold, manual approval required"
-        },
-        {
-          "taskId": "task-sub-001",
-          "action": "PLATFORM:ask_supervisor",
-          "status": "COMPLETED",
-          "parameters": {
-            "question": "Refund of 420.00 TRY for customer CUST-88412 exceeds the 200.00 TRY automatic threshold and requires manual approval. Please approve or adjust the refund amount.",
-            "sessionId": "019b6e75-0006-0006-0006-000000000006",
-            "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-          },
-          "comment": "Asking supervisor to approve large refund"
-        },
-        {
-          "taskId": "task-sub-001",
-          "action": "PLATFORM:message_user",
-          "status": "COMPLETED",
-          "parameters": {
-            "sessionId": "019b6e75-0006-0006-0006-000000000006",
-            "message": "Your subscription has been cancelled. Your refund of 420.00 TRY is being processed and will arrive within 3-5 business days."
-          },
-          "comment": "Notified customer about cancellation and refund status"
-        },
-        {
-          "taskId": "task-sub-001",
-          "action": "PLATFORM:complete",
-          "status": "COMPLETED",
-          "comment": "Task completed following supervisor instructions"
-        }
-      ]
-    },
-    {
-      "id": "2ggh7890-7g8h-0i9j-4k1l-6l7890123456",
-      "description": "Sync product catalog from ERP to e-commerce platform.",
-      "sessionId": "019b6e75-0007-0007-0007-000000000007",
-      "pseudocode": "BEGIN_CONTEXT\nproducts = ERP.GetProducts(categoryId)\nFOR EACH product IN products\n    ECOMMERCE.UpsertProduct(product)\nEND_FOR\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
-      "blueprint": {
-        "id": "bp-0007-0007-0007-0007-000000000007",
-        "title": "Product Catalog Sync",
-        "description": "Sync product catalog from ERP system to e-commerce platform.",
-        "pseudocode": "BEGIN_CONTEXT\nproducts = ERP.GetProducts(categoryId)\nFOR EACH product IN products\n    ECOMMERCE.UpsertProduct(product)\nEND_FOR\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
-        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-        "nodes": [
-          {
-            "id": "node-sync-001",
-            "type": "NORMAL",
-            "properties": {
-              "action": "ERP:get_products",
-              "icon": "mdi:package-variant",
-              "prompt": "Get Products from ERP"
-            },
-            "next": [
-              "node-sync-002"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "node-sync-002",
-            "type": "NORMAL",
-            "properties": {
-              "action": "ECOMMERCE:upsert_products",
-              "icon": "mdi:store",
-              "prompt": "Sync to E-commerce"
-            },
-            "next": [
-              "node-sync-003"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "node-sync-003",
-            "type": "NORMAL",
-            "properties": {
-              "action": "PLATFORM:complete",
-              "icon": "mdi:check",
-              "prompt": "Complete"
-            },
-            "next": null,
-            "createdAt": "2025-06-19T06:02:00Z"
-          }
-        ]
-      },
-      "knowledge": [],
-      "tools": [
-        "DISCORD:search",
-        "GDRIVE:search",
-        "GITHUB:search",
-        "GREY:check_product_count",
-        "GREY:create_order",
-        "GREY:reduce_product_count",
-        "GREY:send_email",
-        "JIRA:search",
-        "PROJECT_NOTIFIER:notify_project_open",
-        "SLACK:search",
-        "TELCO:configuration",
-        "TELCO:get_address",
-        "TELCO:get_bbk_by_address",
-        "TELCO:get_inventory",
-        "TELCO:get_product_by_speed",
-        "TELCO:port_allocation",
-        "TELCO:port_connection"
-      ],
-      "steps": [
-        {
-          "taskId": "task-sync-001",
-          "action": "ERP:get_products",
-          "status": "COMPLETED",
-          "parameters": {
-            "categoryId": "CAT-ELECTRONICS"
-          },
-          "comment": "Retrieved 312 products from ERP"
-        },
-        {
-          "taskId": "task-sync-001",
-          "action": "ECOMMERCE:upsert_products",
-          "status": "COMPLETED",
-          "parameters": {
-            "productCount": 312,
-            "categoryId": "CAT-ELECTRONICS"
-          },
-          "result": "{\"error\":\"SERVICE_UNAVAILABLE\",\"retryAfter\":\"2026-06-04T22:00:00Z\"}",
-          "comment": "E-commerce platform returned service unavailable during scheduled maintenance"
-        },
-        {
-          "taskId": "task-sync-001",
-          "action": "PLATFORM:ask_supervisor",
-          "status": "COMPLETED",
-          "parameters": {
-            "question": "The e-commerce platform API is unavailable due to scheduled maintenance until 22:00 today. The product sync for 312 electronics items cannot proceed. Should I reschedule the sync for after maintenance or abort the task?",
-            "sessionId": "019b6e75-0007-0007-0007-000000000007",
-            "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-          },
-          "comment": "Asking supervisor how to handle API downtime"
-        },
-        {
-          "taskId": "task-sync-001",
-          "action": "PLATFORM:complete",
-          "status": "COMPLETED",
-          "comment": "Task completed following supervisor instructions"
-        }
-      ]
-    },
-    {
-      "id": "3hhi8901-8h9i-1j0k-5l2m-7m8901234567",
-      "description": "Transfer stock between two warehouse locations.",
-      "sessionId": "019b6e75-0008-0008-0008-000000000008",
-      "pseudocode": "BEGIN_CONTEXT\nstock = WMS.CheckStock(productId, sourceWarehouse)\nIF stock.quantity >= requestedQty THEN\n    WMS.TransferStock(productId, sourceWarehouse, targetWarehouse, requestedQty)\n    Complete()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-      "blueprint": {
-        "id": "bp-0008-0008-0008-0008-000000000008",
-        "title": "Warehouse Stock Transfer",
-        "description": "Transfer stock between warehouse locations.",
-        "pseudocode": "BEGIN_CONTEXT\nstock = WMS.CheckStock(productId, sourceWarehouse)\nIF stock.quantity >= requestedQty THEN\n    WMS.TransferStock(productId, sourceWarehouse, targetWarehouse, requestedQty)\n    Complete()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
-        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-        "nodes": [
-          {
-            "id": "node-wms-001",
-            "type": "NORMAL",
-            "properties": {
-              "action": "WMS:check_stock",
-              "icon": "mdi:warehouse",
-              "prompt": "Check Stock Level"
-            },
-            "next": [
-              "node-wms-002"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "node-wms-002",
-            "type": "NORMAL",
-            "properties": {
-              "action": "WMS:transfer_stock",
-              "icon": "mdi:transfer",
-              "prompt": "Transfer Stock"
-            },
-            "next": [
-              "node-wms-003"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "node-wms-003",
-            "type": "NORMAL",
-            "properties": {
-              "action": "PLATFORM:complete",
-              "icon": "mdi:check",
-              "prompt": "Complete"
-            },
-            "next": null,
-            "createdAt": "2025-06-19T06:02:00Z"
-          }
-        ]
-      },
-      "knowledge": [],
-      "tools": [
-        "DISCORD:search",
-        "GDRIVE:search",
-        "GITHUB:search",
-        "GREY:check_product_count",
-        "GREY:create_order",
-        "GREY:reduce_product_count",
-        "GREY:send_email",
-        "JIRA:search",
-        "PROJECT_NOTIFIER:notify_project_open",
-        "SLACK:search",
-        "TELCO:configuration",
-        "TELCO:get_address",
-        "TELCO:get_bbk_by_address",
-        "TELCO:get_inventory",
-        "TELCO:get_product_by_speed",
-        "TELCO:port_allocation",
-        "TELCO:port_connection"
-      ],
-      "steps": [
-        {
-          "taskId": "task-wms-001",
-          "action": "WMS:check_stock",
-          "status": "COMPLETED",
-          "parameters": {
-            "productId": "SKU-445566",
-            "warehouseId": "WH-ISTANBUL-01"
-          },
-          "comment": "Stock check completed: 15 units available, 50 units requested"
-        },
-        {
-          "taskId": "task-wms-001",
-          "action": "WMS:transfer_stock",
-          "status": "COMPLETED",
-          "parameters": {
-            "productId": "SKU-445566",
-            "sourceWarehouse": "WH-ISTANBUL-01",
-            "targetWarehouse": "WH-ANKARA-01",
-            "quantity": 50
-          },
-          "result": "{\"error\":\"INSUFFICIENT_STOCK\",\"available\":15,\"requested\":50}",
-          "comment": "Transfer could not be fulfilled due to insufficient stock"
-        },
-        {
-          "taskId": "task-wms-001",
-          "action": "PLATFORM:ask_supervisor",
-          "status": "COMPLETED",
-          "parameters": {
-            "question": "Cannot complete stock transfer: only 15 units of SKU-445566 available at WH-ISTANBUL-01, but 50 units requested for WH-ANKARA-01. Should I transfer the available 15 units, source from another warehouse, or cancel the transfer?",
-            "sessionId": "019b6e75-0008-0008-0008-000000000008",
-            "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-          },
-          "comment": "Asking supervisor how to handle insufficient stock"
-        },
-        {
-          "taskId": "task-wms-001",
-          "action": "PLATFORM:complete",
-          "status": "COMPLETED",
-          "comment": "Task completed following supervisor instructions"
-        }
-      ]
-    },
-    {
-      "id": "3fgidgef-7g3f-6c46-d8ig-9hf484408c59",
-      "description": "Setup internet subscription at user's address.",
-      "sessionId": "019b7f86-9b18-83g3-9beg-93de99g7c8dd",
-      "pseudocode": "BEGIN_CONTEXT \nUser.Address = GetUserAddress()\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+      "id": "telco-port-fail-001",
+      "description": "Setup internet subscription for user address. Port allocation fails with NOT_AVAILABLE_PORT error — agent asks supervisor, supervisor instructs to notify user and complete.",
+      "sessionId": "039d9f86-9b12-4a7c-b8d1-2f3e4a5b6c7d",
+      "pseudocode": "BEGIN_CONTEXT \nUser.Address = GetUserAddress()\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    result = PortAllocation(selectedProduct.serial_number)\n    IF result.error == \"NOT_AVAILABLE_PORT\" THEN\n        AskSupervisor()\n        NotifyUser()\n        Complete()\n    END_IF\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "blueprint": {
         "id": "ca7g8022-f343-570e-a171-3992963g7f70",
         "title": "Basic Internet Subscription Setup",
-        "description": "Offer internet packages based on the user's residential address and provide available internet packages for the selected address.",
-        "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n ShowProducts(products)\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+        "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
         "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
         "nodes": [
           {
@@ -2109,9 +1922,7 @@
               "icon": "mdi:map-marker",
               "prompt": "Get User Address"
             },
-            "next": [
-              "76ccda2d-f11f-408c-8087-66c377600d0b"
-            ],
+            "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -2122,9 +1933,7 @@
               "icon": "mdi:map-marker",
               "prompt": "Get BBK No by Address"
             },
-            "next": [
-              "51dca395-1d90-4a28-9bbc-233de9c1a207"
-            ],
+            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -2135,9 +1944,7 @@
               "icon": "mdi:server",
               "prompt": "Get Inventory"
             },
-            "next": [
-              "019b209c-2e5a-777f-a04a-11960363fb25"
-            ],
+            "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -2146,14 +1953,10 @@
             "properties": {
               "action": "PLATFORM:decision",
               "icon": "mdi:source-branch",
-              "prompt": "Check if product is available"
+              "prompt": "Is inventory available?"
             },
-            "true": [
-              "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-            ],
-            "false": [
-              "019b20a6-1aa6-7510-b222-66535e50dfb3"
-            ],
+            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+            "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -2162,7 +1965,7 @@
             "properties": {
               "action": "PLATFORM:complete",
               "icon": "mdi:check",
-              "prompt": "Complete"
+              "prompt": "No product available, complete"
             },
             "next": null,
             "createdAt": "2025-06-19T06:02:00Z"
@@ -2173,37 +1976,20 @@
             "properties": {
               "action": "TELCO:get_product_by_speed",
               "icon": "mdi:speedometer",
-              "prompt": "Get Product by Speed"
+              "prompt": "Get products by speed"
             },
-            "next": [
-              "019c4c9f-6864-7329-a872-a65efbbdb4d1"
-            ],
+            "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
-            "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
-            "type": "NORMAL",
-            "properties": {
-              "action": "PLATFORM:message_user",
-              "icon": "mdi:user",
-              "prompt": "Notify user about available products"
-            },
-            "next": [
-              "019b0270-c493-7072-9d50-87952c5dc547"
-            ],
-            "createdAt": "2025-06-19T06:02:00Z"
-          },
-          {
-            "id": "019b0270-c493-7072-9d50-87952c5dc547",
+            "id": "019c8a58-10e3-713f-9484-78d04923040f",
             "type": "NORMAL",
             "properties": {
               "action": "PLATFORM:user_interaction",
-              "icon": "mdi:user",
-              "prompt": "Waiting for user to select a product"
+              "icon": "mdi:cursor-pointer",
+              "prompt": "Provide available products and wait for user to select a product"
             },
-            "next": [
-              "019b3302-7846-75c2-9ab7-897c18b8ccee"
-            ],
+            "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -2212,11 +1998,9 @@
             "properties": {
               "action": "TELCO:port_allocation",
               "icon": "mdi:link",
-              "prompt": "Assign Port"
+              "prompt": "Allocate port and create order"
             },
-            "next": [
-              "019b3305-7846-75c2-9ab7-897c18b8cce1"
-            ],
+            "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -2227,9 +2011,7 @@
               "icon": "mdi:bell",
               "prompt": "Notify user about port allocation"
             },
-            "next": [
-              "019b209e-3122-75ce-9ba6-674b6184f68d"
-            ],
+            "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -2238,11 +2020,9 @@
             "properties": {
               "action": "TELCO:configuration",
               "icon": "mdi:settings",
-              "prompt": "Configure Port"
+              "prompt": "Configure allocated port"
             },
-            "next": [
-              "019b32f6-5878-73fb-8411-55916778d9a4"
-            ],
+            "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -2251,11 +2031,9 @@
             "properties": {
               "action": "TELCO:port_connection",
               "icon": "mdi:ethernet",
-              "prompt": "Connect Port"
+              "prompt": "Connect port to residence"
             },
-            "next": [
-              "019b32f6-bd02-734e-bd3a-aec89d79609c"
-            ],
+            "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -2264,7 +2042,7 @@
             "properties": {
               "action": "PLATFORM:complete",
               "icon": "mdi:check",
-              "prompt": "Complete"
+              "prompt": "Complete setup flow"
             },
             "next": null,
             "createdAt": "2025-06-19T06:02:00Z"
@@ -2293,34 +2071,37 @@
       ],
       "steps": [
         {
-          "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+          "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
           "action": "PLATFORM:user_interaction",
           "status": "COMPLETED",
           "parameters": {
             "question": "What is your address?"
           },
+          "result": "Bağcılar Mahallesi Hürriyet Caddesi No:12, İstanbul",
           "comment": "User provided address"
         },
         {
-          "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+          "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
           "action": "TELCO:get_bbk_by_address",
           "status": "COMPLETED",
           "parameters": {
-            "address": "Küçükbakkalköy Mahallesi, Vedat Günyol Caddesi, No. 12, Ataşehir, İstanbul"
+            "address": "Bağcılar Mahallesi Hürriyet Caddesi No:12, İstanbul"
           },
-          "comment": "BBK number retrieved successfully"
+          "result": "{\"bbk\": \"988\"}",
+          "comment": "BBK number 988 retrieved successfully"
         },
         {
-          "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+          "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
           "action": "TELCO:get_inventory",
           "status": "COMPLETED",
           "parameters": {
-            "bbk": "987"
+            "bbk": "988"
           },
-          "comment": "Inventory is available"
+          "result": "{\"available\": true}",
+          "comment": "Inventory is available for BBK 988"
         },
         {
-          "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+          "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
           "action": "PLATFORM:decision",
           "status": "COMPLETED",
           "comment": "Inventory available, proceeding with product selection",
@@ -2328,79 +2109,70 @@
             "condition": "inventory.Available == TRUE",
             "true": [
               {
-                "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+                "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
                 "action": "TELCO:get_product_by_speed",
                 "status": "COMPLETED",
                 "parameters": {
-                  "speed_limit": "16mbps"
+                  "speed_limit": "8mbps"
                 },
-                "comment": "Retrieved available internet packages"
+                "comment": "Retrieved available internet packages for 8mbps"
               },
               {
-                "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+                "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
                 "action": "PLATFORM:user_interaction",
                 "status": "COMPLETED",
                 "parameters": {
-                  "question": "2 Options: 16 Mbps (12 months), 16 Mbps (6 months). Please select a product"
+                  "question": "2 Options: 8 Mbps (12 months), 8 Mbps (6 months). Select one."
                 },
-                "comment": "Waiting for user to select a product"
+                "result": "8 Mbps (12 months)",
+                "comment": "User selected 8 Mbps (12 months)"
               },
               {
-                "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+                "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
                 "action": "TELCO:port_allocation",
+                "status": "FAILED",
+                "parameters": {
+                  "device_serial_number": "HWTC495AE59E",
+                  "bbk_no": "988",
+                  "speed_limit": "8mbps",
+                  "speed_profile": "8192/1024"
+                },
+                "result": "{\"error\":\"NOT_AVAILABLE_PORT\"}",
+                "comment": "Port allocation failed — no available port for BBK 988"
+              },
+              {
+                "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
+                "action": "PLATFORM:ask_supervisor",
                 "status": "COMPLETED",
                 "parameters": {
-                  "device_serial_number": "123",
-                  "bbk_no": "987",
-                  "speed_limit": "16mbps",
-                  "speed_profile": "51200/8192"
+                  "question": "Port allocation failed with NOT_AVAILABLE_PORT for BBK 988. There are no available ports at this location. How should I proceed?",
+                  "sessionId": "039d9f86-9b12-4a7c-b8d1-2f3e4a5b6c7d",
+                  "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
                 },
-                "comment": "Port allocated successfully"
+                "comment": "Supervisor instructed to notify user that no ports are available at this address and complete the task"
               },
               {
-                "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+                "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
                 "action": "PLATFORM:message_user",
                 "status": "COMPLETED",
                 "parameters": {
-                  "sessionId": "019b7f86-9b18-83g3-9beg-93de99g7c8dd",
-                  "message": "A port has been assigned."
+                  "sessionId": "039d9f86-9b12-4a7c-b8d1-2f3e4a5b6c7d",
+                  "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+                  "message": "Unfortunately, there are no available ports at your address at this time. Please contact our support team at 444 1 444 for further assistance."
                 },
-                "comment": "Notified user about port allocation completion"
+                "comment": "User notified that port allocation is not possible at their location"
               },
               {
-                "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
-                "action": "TELCO:configuration",
-                "status": "COMPLETED",
-                "parameters": {
-                  "device_serial_number": "123",
-                  "port_no": "4",
-                  "hgw_serial_no": "HGW001",
-                  "device_tid": "HUA_06TTIM_TEST1",
-                  "device_card_no": "1",
-                  "speed_limit": "16mbps",
-                  "speed_profile": "51200/8192"
-                },
-                "comment": "Port configured successfully"
-              },
-              {
-                "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
-                "action": "TELCO:port_connection",
-                "status": "COMPLETED",
-                "parameters": {
-                  "assignment_id": "TH001"
-                },
-                "comment": "Port connected successfully"
-              },
-              {
-                "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+                "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
                 "action": "PLATFORM:complete",
                 "status": "COMPLETED",
-                "comment": "Internet subscription has been successfully completed."
+                "parameters": {},
+                "comment": "Completing task per supervisor's instruction — no available port at this address"
               }
             ],
             "false": [
               {
-                "taskId": "d99ii389-f7i5-77gf-c2i1-h2h978915779",
+                "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
                 "action": "PLATFORM:complete",
                 "status": "COMPLETED",
                 "parameters": {},

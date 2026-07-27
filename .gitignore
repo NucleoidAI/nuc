@@ -10,3 +10,7 @@ api/dist
 communication/dist
 server_setup/*
 server_setup/.*
+tmp/*
+metadata.json
+asr_output.json
+greycollar_server_setup_v8

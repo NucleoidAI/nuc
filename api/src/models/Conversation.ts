@@ -26,7 +26,7 @@ class Conversation extends Model {
   declare role: "ASSISTANT" | "USER";
 
   @AllowNull(true)
-  @Column(DataType.STRING(1000))
+  @Column(DataType.TEXT)
   declare content: string | null;
 
   @AllowNull(false)

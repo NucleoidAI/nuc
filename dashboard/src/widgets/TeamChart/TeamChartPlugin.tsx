@@ -317,7 +317,7 @@ export const teamChartPlugin = {
                 }}
               >
                 <Chip
-                  label="Team Leader"
+                  label="Team Leader / Triage"
                   size="small"
                   sx={{
                     backgroundColor: (theme) =>

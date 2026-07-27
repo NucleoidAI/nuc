@@ -1,6 +1,10 @@
 import { Anthropic } from "@anthropic-ai/sdk";
 import { MessageParam } from "@anthropic-ai/sdk/resources/messages/messages.mjs";
 
+import { logLLM } from "./llmLog";
+import { parseJsonWithRepair } from "./jsonParse";
+import type { GenerateParams, LLMAdapter } from "./types";
+
 const apiKey = process.env.ANTHROPIC_API_KEY;
 if (!apiKey || apiKey.trim() === "") {
   throw new Error(
@@ -14,14 +18,11 @@ const anthropic = new Anthropic({
 async function generate({
   model = "claude-haiku-4-5-20251001",
   messages = [],
+  responseFormat,
   temperature = 0,
   max_tokens = 4096,
-}: {
-  model?: string;
-  messages?: { role: "user" | "assistant" | "system"; content: string }[];
-  temperature?: number;
-  max_tokens?: number;
-}) {
+  meta,
+}: GenerateParams) {
   const systemMessages = messages.filter((msg) => msg.role === "system");
   const conversationMessages = messages.filter((msg) => msg.role !== "system");
 
@@ -31,11 +32,14 @@ async function generate({
       : undefined;
 
   // TODO: Find a better way to handle json_output enforcement for Claude responses.
-  const lastSystemMsg = systemMessages[systemMessages.length - 1];
-  if (lastSystemMsg && lastSystemMsg.content.includes("json_format:")) {
-    systemPrompt =
-      systemPrompt +
-      "\n\nIMPORTANT: You MUST respond with ONLY valid JSON that matches the format specified. Do NOT include any text before or after the JSON. Do NOT wrap the JSON in markdown code blocks. Output ONLY the raw JSON object.";
+  if (responseFormat) {
+    systemPrompt = [
+      systemPrompt,
+      `json_format: ${responseFormat}`,
+      "IMPORTANT: You MUST respond with ONLY valid JSON that matches the format specified. Do NOT include any text before or after the JSON. Do NOT wrap the JSON in markdown code blocks. Output ONLY the raw JSON object.",
+    ]
+      .filter(Boolean)
+      .join("\n\n");
   }
 
   const params = {
@@ -46,38 +50,41 @@ async function generate({
     ...(systemPrompt && { system: systemPrompt }),
   };
 
-  const { usage, content } = await anthropic.messages.create(params);
+  const startedAt = Date.now();
+  const reponse = await anthropic.messages.create(params);
+
+  const { content, usage } = reponse;
 
   if (usage) {
     const { input_tokens, output_tokens } = usage;
     console.info({ input_tokens, output_tokens });
   }
 
+  logLLM({
+    provider: "anthropic",
+    model: reponse.model || model,
+    messages,
+    response: reponse,
+    inputTokens: usage?.input_tokens,
+    outputTokens: usage?.output_tokens,
+    durationMs: Date.now() - startedAt,
+    meta,
+  });
+
   if (content) {
-    let textContent = content
+    const textContent = content
       .filter((block) => block.type === "text")
       .map((block) => block.text)
       .join("")
       .trim();
 
-    textContent = textContent
-      .replace(/^```(?:json|JSON)?\s*\n?/i, "")
-      .replace(/\n?```\s*$/i, "")
-      .trim();
-
-    try {
-      return JSON.parse(textContent);
-    } catch (err) {
-      throw new Error(
-        "Failed to parse Claude response as JSON: " +
-          (err instanceof Error ? err.message : String(err)) +
-          "\nResponse content:\n" +
-          textContent
-      );
-    }
+    return parseJsonWithRepair(textContent, "anthropic") as Record<
+      string,
+      unknown
+    >;
   } else {
     throw new Error("Claude is not responding");
   }
 }
 
-export default { generate };
+export default { generate } satisfies LLMAdapter;

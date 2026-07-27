@@ -27,13 +27,16 @@ function BlueprintsWidget({
     Blueprint: null,
   });
 
-  const { getBlueprint, removeBlueprint } = useBlueprint();
+  const { getBlueprintsByAgent, removeBlueprint } = useBlueprint();
 
-  const { Blueprint, loading } = getBlueprint([
-    blueprintUpsertedEvent.Blueprint,
-    blueprintRemovedEvent.Blueprint,
-    blueprintPatchedEvent.Blueprint,
-  ]);
+  const { Blueprint, loading } = getBlueprintsByAgent(
+    [
+      blueprintUpsertedEvent.Blueprint,
+      blueprintRemovedEvent.Blueprint,
+      blueprintPatchedEvent.Blueprint,
+    ],
+    agentId
+  );
 
   const isLoading = useLoading(loading);
 

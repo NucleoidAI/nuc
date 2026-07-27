@@ -5,27 +5,27 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 const SESSIONS_STORAGE_KEY = "sidebar-chat-sessions";
 const MAX_SESSIONS = 5;
 
-export interface StoredSession {
+export type StoredSession = {
   sessionId: string;
   agentId?: string;
   messages: { id?: string; content: string; role: string }[];
   lastUpdated: number;
   agentIcon?: string;
   agentName?: string;
-}
+};
 
-interface BackendConversation {
+type BackendConversation = {
   id: string;
   role: "ASSISTANT" | "USER";
   content: string | null;
   createdAt: string;
-}
+};
 
-interface BackendSession {
+type BackendSession = {
   id: string;
   agentId: string;
   conversations: BackendConversation[];
-}
+};
 
 // Only used to remember which session a reconnecting socket should resume;
 // the visible session list itself is fetched from the backend below.

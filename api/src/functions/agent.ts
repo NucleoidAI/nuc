@@ -392,12 +392,8 @@ async function task({ taskId }: { taskId: string }) {
     }
 
     const stepsToInherit = await taskFn.listSteps({ taskId });
-    const inheritedSteps = stepsToInherit.map((s) => ({
-      action: s.action,
-      parameters: s.parameters,
-      result: s.result,
-      comment: s.comment,
-      status: s.status,
+    const inheritedSteps = stepsToInherit.map(({ s }) => ({
+      s,
     }));
 
     const newTask = await taskFn.create({
@@ -484,7 +480,9 @@ async function step({
 
   let taskId = "";
 
-  console.debug(`[agent.step] dispatching stepId=${stepId} action=${action} actionType=${actionType}`);
+  console.debug(
+    `[agent.step] dispatching stepId=${stepId} action=${action} actionType=${actionType}`,
+  );
 
   try {
     let actionFn;
@@ -521,7 +519,9 @@ async function step({
     ) {
       const steps = await taskFn.listSteps({ taskId });
 
-      console.debug(`[agent.step] calling actionFn.run for action=${action} stepId=${stepId}`);
+      console.debug(
+        `[agent.step] calling actionFn.run for action=${action} stepId=${stepId}`,
+      );
 
       result = await actionFn.run({
         context: steps
@@ -534,7 +534,9 @@ async function step({
         meta: { taskId },
       });
 
-      console.debug(`[agent.step] actionFn.run returned for action=${action} stepId=${stepId}`);
+      console.debug(
+        `[agent.step] actionFn.run returned for action=${action} stepId=${stepId}`,
+      );
     } else if (actionType === "MCP") {
       let mcpParameters = parameters as Record<string, unknown>;
       if (action === "GREY:knowledge_lookup" && !mcpParameters.agentId) {

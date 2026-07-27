@@ -19,11 +19,9 @@ const LOG_ATTRIBUTES = [
 
 type CostSource = "provider" | "pricing" | null;
 
-// Provider-reported cost (e.g. OpenRouter) wins; otherwise the cost is
-// computed from the ModelPricing table (USD per 1M tokens).
 function resolveCost(
   log: LLMLog,
-  pricingMap: Map<string, ModelPricing>
+  pricingMap: Map<string, ModelPricing>,
 ): { cost: number | null; costSource: CostSource } {
   if (log.cost != null) {
     return { cost: log.cost, costSource: "provider" };
@@ -42,9 +40,6 @@ function resolveCost(
   return { cost, costSource: "pricing" };
 }
 
-// LLM usage of an agent's most recent tasks: each task with its logs and
-// aggregated token/cost totals. Heavy columns (messages, response) are
-// intentionally excluded.
 async function listByAgent({
   agentId,
   taskLimit = 50,
@@ -73,7 +68,10 @@ async function listByAgent({
   ]);
 
   const pricingMap = new Map(
-    pricings.map((pricing) => [`${pricing.provider}:${pricing.model}`, pricing])
+    pricings.map((pricing) => [
+      `${pricing.provider}:${pricing.model}`,
+      pricing,
+    ]),
   );
 
   const logsByTask = new Map<string, LLMLog[]>();
@@ -103,7 +101,7 @@ async function listByAgent({
         totalTokens: 0,
         cost: 0,
         calls: 0,
-      }
+      },
     );
 
     return {

@@ -28,17 +28,38 @@ function useBlueprint() {
   const [blueprintUpserted] = useEvent("BLUEPRINT_UPSERTED", null);
   const [blueprintPatched] = useEvent("BLUEPRINT_PATCHED", null);
 
-  const getBlueprint = (fetchState: DependencyArray = []) => {
+  const getBlueprint = (fetchState: DependencyArray = [], agentId?: string) => {
     const eventDependencies = [blueprintUpserted, blueprintPatched];
 
+    const url = agentId ? `/agents/${agentId}/blueprints` : `/blueprints`;
+
     const { data, loading, error, fetch } = Api(
-      () => http.get(`/blueprints`),
+      () => http.get(url),
       [...eventDependencies, ...fetchState]
     );
 
     if (data) {
       publish("BLUEPRINT_LOADED", { Blueprint: data });
     }
+
+    return {
+      Blueprint: data,
+      loading,
+      error,
+      fetch,
+    };
+  };
+
+  const getBlueprintsByAgent = (
+    fetchState: DependencyArray = [],
+    agentId: string
+  ) => {
+    const eventDependencies = [blueprintUpserted, blueprintPatched];
+
+    const { data, loading, error, fetch } = Api(
+      () => (agentId ? http.get(`/agents/${agentId}/blueprints`) : null),
+      [...eventDependencies, ...fetchState]
+    );
 
     return {
       Blueprint: data,
@@ -119,7 +140,8 @@ function useBlueprint() {
       createdAt: string | Date;
     }>,
     blocking?: boolean,
-    skill?: string
+    skill?: string,
+    force?: boolean
   ) => {
     if (!blueprintId) {
       blueprintId = uuidv4();
@@ -134,6 +156,7 @@ function useBlueprint() {
       messages,
       ...(blocking !== undefined && { blocking }),
       ...(skill !== undefined && { skill }),
+      ...(force !== undefined && { force }),
     });
     if (response?.data) {
       publish("BLUEPRINT_UPSERTED", { Blueprint: response.data });
@@ -143,7 +166,7 @@ function useBlueprint() {
 
   const patchBlueprint = async (
     blueprintId: string,
-    fields: { blocking?: boolean }
+    fields: { blocking?: boolean; force?: boolean }
   ) => {
     const response = await http.patch(`/blueprints/${blueprintId}`, fields);
     if (response?.data) {
@@ -183,6 +206,7 @@ function useBlueprint() {
 
   return {
     getBlueprint,
+    getBlueprintsByAgent,
     getBlueprintWithNode,
     createBlueprint,
     upsertBlueprint,

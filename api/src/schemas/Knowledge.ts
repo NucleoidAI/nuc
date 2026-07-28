@@ -2,7 +2,7 @@ import Joi from "joi";
 
 const Knowledge = {
   create: Joi.object({
-    type: Joi.string().valid("QA", "URL", "TEXT").required(),
+    type: Joi.string().valid("QA", "URL", "TEXT", "DATA").required(),
     agentId: Joi.string().guid({ version: ["uuidv4"] }),
     teamId: Joi.string().guid({ version: ["uuidv4"] }),
     blueprintId: Joi.string().guid({ version: ["uuidv4"] }),

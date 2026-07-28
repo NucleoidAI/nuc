@@ -1,27 +1,87 @@
-import anthropic from "./anthropic";
-import azure from "./azure";
-import llama from "./llama";
-import openai from "./openai";
-import bedrock from "./bedrock";
-import mock from "./mock";
+import { basename } from "node:path";
+import type { LLMMeta } from "./llmLog";
+import type { LLMAdapter } from "./types";
 
-let llm;
+type ProviderKey =
+  | "OPENAI"
+  | "ANTHROPIC"
+  | "OPENROUTER"
+  | "BEDROCK"
+  | "LOCAL"
+  | "MOCK";
 
-if (process.env.PLATFORM_LLM === "OPENAI") {
-  llm = openai;
-} else if (process.env.PLATFORM_LLM === "AZURE") {
-  llm = azure;
-} else if (process.env.PLATFORM_LLM === "ANTHROPIC") {
-  llm = anthropic;
-} else if (process.env.PLATFORM_LLM === "MOCK") {
-  llm = mock;
-} else if (
-  process.env.PLATFORM_LLM === "LLAMA" &&
-  process.env.LLM_PROVIDER === "BEDROCK"
-) {
-  llm = bedrock;
-} else {
-  llm = llama;
+const PROVIDER_LOADERS: Record<
+  ProviderKey,
+  () => Promise<{ default: LLMAdapter }>
+> = {
+  OPENAI: () => import("./openai"),
+  ANTHROPIC: () => import("./anthropic"),
+  OPENROUTER: () => import("./openrouter"),
+  BEDROCK: () => import("./bedrock"),
+  LOCAL: () => import("./local"),
+  MOCK: () => import("./mock"),
+};
+
+function parseProviderModel(raw: string): {
+  provider: ProviderKey;
+  model?: string;
+} {
+  const slashIdx = raw.indexOf("/");
+  const providerPart = slashIdx === -1 ? raw : raw.slice(0, slashIdx);
+  const modelPart = slashIdx === -1 ? undefined : raw.slice(slashIdx + 1);
+  const provider = providerPart.trim().toUpperCase() as ProviderKey;
+
+  if (!(provider in PROVIDER_LOADERS)) {
+    throw new Error(
+      `Unknown LLM provider "${providerPart}" in PLATFORM_LLM="${raw}". ` +
+        `Expected "<provider>/<model>" (or just "<provider>") where provider is one of: ` +
+        Object.keys(PROVIDER_LOADERS).join(", "),
+    );
+  }
+
+  return { provider, model: modelPart };
+}
+
+const { provider, model: configuredModel } = parseProviderModel(
+  process.env.PLATFORM_LLM || "local",
+);
+
+let llmPromise: Promise<LLMAdapter> | null = null;
+
+function getLLM(): Promise<LLMAdapter> {
+  if (!llmPromise) {
+    llmPromise = PROVIDER_LOADERS[provider]().then((mod) => mod.default);
+  }
+  return llmPromise;
+}
+
+function toContentString(content: string | object | object[]): string {
+  return typeof content === "string" ? content : JSON.stringify(content);
+}
+
+function inferSource(): string | undefined {
+  const originalPrepareStackTrace = Error.prepareStackTrace;
+  try {
+    const holder: { stack?: NodeJS.CallSite[] } = {};
+    Error.prepareStackTrace = (_err, stack) =>
+      stack as unknown as NodeJS.CallSite[];
+    Error.captureStackTrace(holder, generate);
+    const caller = holder.stack?.[0];
+    if (!caller) return undefined;
+
+    const fnName = caller.getFunctionName() ?? caller.getMethodName() ?? null;
+    const fileName = caller.getFileName();
+    const fileLabel = fileName
+      ? basename(fileName).replace(/\.[cm]?[jt]sx?$/, "")
+      : null;
+
+    if (fileLabel && fnName) return `${fileLabel}:${fnName}`;
+    return fnName ?? fileLabel ?? undefined;
+  } catch {
+    return undefined;
+  } finally {
+    Error.prepareStackTrace = originalPrepareStackTrace;
+  }
 }
 
 async function generate({
@@ -33,6 +93,7 @@ async function generate({
   json_format,
   temperature = 0,
   max_tokens,
+  meta,
 }: {
   model?: string;
   policy?: {
@@ -51,21 +112,17 @@ async function generate({
   json_format: string;
   temperature?: number;
   max_tokens?: number;
+  meta?: LLMMeta;
 }) {
+  const resolvedSource = meta?.source ? undefined : inferSource();
+
   const messages = [
     ...context.map(({ role, content }) => ({
       role,
-      content: JSON.stringify(content),
+      content: toContentString(content),
     })),
-    { role: "user", content: JSON.stringify(content) },
-    {
-      role: "system",
-      content: `json_format: ${json_format}`,
-    },
-  ].map(({ role, content }) => ({
-    role,
-    content: JSON.stringify(content),
-  }));
+    { role: "user" as const, content: toContentString(content) },
+  ];
 
   if (dataset) {
     messages.unshift(dataset);
@@ -75,11 +132,15 @@ async function generate({
     messages.unshift(policy);
   }
 
+  const llm = await getLLM();
+
   return await llm.generate({
-    model,
+    model: model ?? configuredModel,
     messages,
+    responseFormat: json_format,
     temperature,
     max_tokens,
+    meta: resolvedSource ? { ...meta, source: resolvedSource } : meta,
   });
 }
 

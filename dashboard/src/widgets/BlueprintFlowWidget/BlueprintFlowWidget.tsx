@@ -29,6 +29,7 @@ interface Blueprint {
   pseudocode?: string;
   blocking?: boolean;
   skill?: string;
+  force?: boolean;
 }
 
 function graphToNodes(graphData: DefinitionGraph) {
@@ -43,6 +44,11 @@ function graphToNodes(graphData: DefinitionGraph) {
         icon: node.icon || node.raw?.properties?.icon,
         action: node.action || node.raw?.properties?.action,
         description: node.description || node.raw?.properties?.description,
+        ...(node.nodeType === "HANDOFF" && {
+          targetAgentId: node.raw?.properties?.targetAgentId,
+          targetBlueprintId:
+            node.raw?.properties?.targetBlueprintId || undefined,
+        }),
       },
       createdAt: node.createdAt,
     };
@@ -53,6 +59,8 @@ function graphToNodes(graphData: DefinitionGraph) {
         true: node.trueNext || node.raw?.true || [],
         false: node.falseNext || node.raw?.false || [],
       };
+    } else if (node.nodeType === "HANDOFF") {
+      return baseNode;
     }
 
     return {
@@ -85,6 +93,9 @@ function BlueprintFlowWidget({
   onDescriptionLoadingChange,
   onSkillChange,
   onSkillLoadingChange,
+  force: forceProp,
+  onForceChange: onForceChangeProp,
+  onSave,
 }: {
   aiResponse?: AIResponse;
   setAiResponse?: (response: AIResponse | null) => void;
@@ -104,6 +115,9 @@ function BlueprintFlowWidget({
   teamId?: string;
   blocking?: boolean;
   onBlockingChange?: (value: boolean) => void;
+  force?: boolean;
+  onForceChange?: (value: boolean) => void;
+  onSave?: () => void;
 }) {
   const [graphData, setGraphData] = useState<DefinitionGraph | null>(null);
   const [hasLocalChanges, setHasLocalChanges] = useState(false);
@@ -111,6 +125,10 @@ function BlueprintFlowWidget({
     blueprint?.blocking ?? true
   );
   const blocking = blockingProp !== undefined ? blockingProp : blockingInternal;
+  const [forceInternal, setForceInternal] = useState<boolean>(
+    blueprint?.force ?? false
+  );
+  const force = forceProp !== undefined ? forceProp : forceInternal;
   const [validationErrors, setValidationErrors] = useState([]);
   const [showValidationErrors, setShowValidationErrors] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -249,6 +267,8 @@ function BlueprintFlowWidget({
   const [newNodeLabel, setNewNodeLabel] = useState("");
   const [newNodePrompt, setNewNodePrompt] = useState("");
   const [newNodeType, setNewNodeType] = useState("NORMAL");
+  const [handoffTargetAgentId, setHandoffTargetAgentId] = useState("");
+  const [handoffTargetBlueprintId, setHandoffTargetBlueprintId] = useState("");
   const [selectedBranch, setSelectedBranch] = useState<"true" | "false">(
     "true"
   );
@@ -301,6 +321,20 @@ function BlueprintFlowWidget({
 
   useEffect(
     () => {
+      if (blueprintNodes?.force !== undefined) {
+        if (onForceChangeProp) {
+          onForceChangeProp(blueprintNodes.force);
+        } else {
+          setForceInternal(blueprintNodes.force);
+        }
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [blueprintNodes?.force]
+  );
+
+  useEffect(
+    () => {
       if (aiResponse?.flow) {
         const cleanData = buildDefinitionGraph(aiResponse.flow);
         setGraphData(cleanData);
@@ -327,6 +361,25 @@ function BlueprintFlowWidget({
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [blueprintNodes, aiResponse, hasLocalChanges, blueprint?.id]
+  );
+
+  useEffect(
+    () => {
+      if (!blueprintNodes) return;
+
+      const titleChanged =
+        blueprint?.title !== undefined &&
+        blueprint.title !== blueprintNodes.title;
+      const descriptionChanged =
+        blueprint?.description !== undefined &&
+        blueprint.description !== blueprintNodes.description;
+
+      if (titleChanged || descriptionChanged) {
+        setHasLocalChanges(true);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [blueprint?.title, blueprint?.description, blueprintNodes]
   );
 
   useEffect(() => {
@@ -362,6 +415,13 @@ function BlueprintFlowWidget({
     setNewNodePrompt(nodePrompt);
     setNewNodeType(nodeType);
     setNodePseudocode(node?.raw?.properties?.pseudocode || "");
+
+    if (nodeType === "HANDOFF") {
+      setHandoffTargetAgentId(node?.raw?.properties?.targetAgentId || "");
+      setHandoffTargetBlueprintId(
+        node?.raw?.properties?.targetBlueprintId || ""
+      );
+    }
 
     if (graphData?.nodes) {
       const parentNode = Object.values(graphData.nodes).find((n) => {
@@ -399,14 +459,20 @@ function BlueprintFlowWidget({
     const nodeIcon =
       newNodeType === "CONDITION"
         ? "mdi:help-circle-outline"
+        : newNodeType === "HANDOFF"
+        ? "mdi:account-arrow-right"
         : "mdi:cube-outline";
     const actionType =
       newNodeType === "CONDITION"
         ? "PLATFORM:decision"
+        : newNodeType === "HANDOFF"
+        ? "PLATFORM:handoff"
         : selectedIntegration?.action;
     const descriptionText =
       newNodeType === "CONDITION"
         ? "A decision node that branches the flow based on conditions."
+        : newNodeType === "HANDOFF"
+        ? "Transfer this task to another agent's blueprint."
         : selectedIntegration?.description || "";
     setGraphData((prevData) => {
       if (!prevData) return prevData;
@@ -489,6 +555,36 @@ function BlueprintFlowWidget({
             false: undefined,
           },
         };
+      } else if (newNodeType === "HANDOFF") {
+        updatedNode = {
+          ...nodeToUpdate,
+          label: newNodeLabel,
+          description: descriptionText,
+          action: actionType,
+          icon: nodeIcon,
+          nodeType: newNodeType,
+          connectorType: "default" as const,
+          next: null,
+          trueNext: undefined,
+          falseNext: undefined,
+          raw: {
+            ...nodeToUpdate.raw,
+            type: newNodeType,
+            properties: {
+              ...nodeToUpdate.raw?.properties,
+              label: newNodeLabel,
+              prompt: newNodePrompt,
+              description: descriptionText,
+              action: actionType,
+              icon: nodeIcon,
+              targetAgentId: handoffTargetAgentId,
+              targetBlueprintId: handoffTargetBlueprintId || undefined,
+            },
+            next: null,
+            true: undefined,
+            false: undefined,
+          },
+        };
       } else {
         updatedNode = {
           ...nodeToUpdate,
@@ -537,6 +633,8 @@ function BlueprintFlowWidget({
     setNewNodeType("NORMAL");
     setSelectedBranch("true");
     setInheritedNextBranch("none");
+    setHandoffTargetAgentId("");
+    setHandoffTargetBlueprintId("");
     setSelectedIntegration({
       id: "",
       action: "",
@@ -565,15 +663,21 @@ function BlueprintFlowWidget({
     const nodeIcon =
       newNodeType === "CONDITION"
         ? "mdi:source-branch"
+        : newNodeType === "HANDOFF"
+        ? "mdi:account-arrow-right"
         : selectedIntegration?.icon;
     const actionType =
       newNodeType === "CONDITION"
         ? "PLATFORM:decision"
+        : newNodeType === "HANDOFF"
+        ? "PLATFORM:handoff"
         : selectedIntegration?.action;
 
     const descriptionText =
       newNodeType === "CONDITION"
         ? "A decision node that branches the flow based on conditions."
+        : newNodeType === "HANDOFF"
+        ? "Transfer this task to another agent's blueprint."
         : selectedIntegration?.description || "";
     if (selectedParentNode.id === "starter") {
       const firstNode =
@@ -602,6 +706,33 @@ function BlueprintFlowWidget({
                 },
                 true: [],
                 false: [],
+                createdAt: currentTime,
+              },
+            }
+          : newNodeType === "HANDOFF"
+          ? {
+              id: newId,
+              label: newNodeLabel,
+              description: descriptionText,
+              nodeType: newNodeType,
+              action: actionType,
+              icon: nodeIcon,
+              createdAt: currentTime,
+              connectorType: "default" as const,
+              next: null,
+              raw: {
+                id: newId,
+                type: newNodeType,
+                properties: {
+                  action: actionType,
+                  label: newNodeLabel,
+                  prompt: newNodePrompt,
+                  description: descriptionText,
+                  icon: nodeIcon,
+                  targetAgentId: handoffTargetAgentId,
+                  targetBlueprintId: handoffTargetBlueprintId || undefined,
+                },
+                next: null,
                 createdAt: currentTime,
               },
             }
@@ -716,6 +847,33 @@ function BlueprintFlowWidget({
                       ? [inheritedNext]
                       : []
                     : [],
+                createdAt: currentTime,
+              },
+            }
+          : newNodeType === "HANDOFF"
+          ? {
+              id: newId,
+              label: newNodeLabel,
+              description: descriptionText,
+              nodeType: newNodeType,
+              action: actionType,
+              icon: nodeIcon,
+              createdAt: currentTime,
+              connectorType: "default" as const,
+              next: null,
+              raw: {
+                id: newId,
+                type: newNodeType,
+                properties: {
+                  action: actionType,
+                  label: newNodeLabel,
+                  prompt: newNodePrompt,
+                  description: descriptionText,
+                  icon: nodeIcon,
+                  targetAgentId: handoffTargetAgentId,
+                  targetBlueprintId: handoffTargetBlueprintId || undefined,
+                },
+                next: null,
                 createdAt: currentTime,
               },
             }
@@ -1072,7 +1230,7 @@ function BlueprintFlowWidget({
 
       const response = await upsertBlueprint(
         blueprintNodes?.id || blueprint?.id,
-        blueprintNodes?.title || blueprint?.title || "Newly Created Blueprint",
+        blueprint?.title || blueprintNodes?.title || "Newly Created Blueprint",
         generated?.description ||
           localDescription ||
           blueprintNodes?.description ||
@@ -1083,7 +1241,8 @@ function BlueprintFlowWidget({
         taskId,
         blueprintNodes?.messages,
         blocking,
-        generated?.skill || localSkill || blueprintNodes?.skill || undefined
+        generated?.skill || localSkill || blueprintNodes?.skill || undefined,
+        force
       );
 
       if (setSelectedItem && response?.Blueprint) {
@@ -1096,6 +1255,7 @@ function BlueprintFlowWidget({
         setAiResponse(null);
       }
       setSaveSuccess(true);
+      onSave?.();
     } finally {
       setIsSubmitting(false);
     }
@@ -1134,6 +1294,7 @@ function BlueprintFlowWidget({
   const isEmptyState =
     !loading &&
     !aiResponse?.flow &&
+    (!graphData?.nodes || Object.keys(graphData.nodes).length === 0) &&
     (!blueprintNodes?.nodes || blueprintNodes.nodes.length === 0);
 
   return (
@@ -1205,6 +1366,10 @@ function BlueprintFlowWidget({
         }
         agentId={agentId || blueprintNodes?.agentId || ""}
         teamId={teamId}
+        handoffTargetAgentId={handoffTargetAgentId}
+        setHandoffTargetAgentId={setHandoffTargetAgentId}
+        handoffTargetBlueprintId={handoffTargetBlueprintId}
+        setHandoffTargetBlueprintId={setHandoffTargetBlueprintId}
       />
     </>
   );

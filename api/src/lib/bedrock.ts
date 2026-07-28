@@ -4,6 +4,14 @@ import {
   Message,
 } from "@aws-sdk/client-bedrock-runtime";
 
+import { logLLM } from "./llmLog";
+import {
+  parseJsonWithRepair,
+  parseWithBraceRepair,
+  unwrapSchemaValues,
+} from "./jsonParse";
+import type { GenerateParams, LLMAdapter } from "./types";
+
 const bedrock = new BedrockRuntimeClient({
   region: process.env.AWS_REGION || "us-east-1",
   credentials: {
@@ -12,28 +20,12 @@ const bedrock = new BedrockRuntimeClient({
   },
 });
 
-function extractJsonFormat(systemPrompts: { text: string }[]): string | null {
-  for (const prompt of systemPrompts) {
-    let text = prompt.text;
-    try {
-      const parsed = JSON.parse(text);
-      if (typeof parsed === "string") text = parsed;
-    } catch {
-      // not JSON-stringified, use as-is
-    }
-    const match = text.match(/^json_format:\s*(.+)/s);
-    if (match) return match[1].trim();
-  }
-  return null;
-}
-
 async function generate({
-  model = process.env.PLATFORM_LLM_MODEL || "meta.llama3-3-70b-instruct-v1:0",
+  model = "meta.llama3-3-70b-instruct-v1:0",
   messages = [],
-}: {
-  model?: string;
-  messages?: { role: "user" | "assistant" | "system"; content: string }[];
-}) {
+  responseFormat,
+  meta,
+}: GenerateParams): Promise<Record<string, unknown>> {
   const systemPrompts: { text: string }[] = [];
   const conversationMessages: Message[] = [];
 
@@ -48,7 +40,16 @@ async function generate({
     }
   }
 
-  const jsonFormat = extractJsonFormat(systemPrompts);
+  const jsonFormat = responseFormat ?? null;
+  const isQwen = model.startsWith("qwen.");
+
+  const useToolConfig = jsonFormat && !isQwen;
+
+  if (isQwen && jsonFormat) {
+    systemPrompts.push({
+      text: `You MUST respond with ONLY valid RFC 8259 JSON (all keys double-quoted) matching this exact format, no explanation, no markdown: ${jsonFormat}`,
+    });
+  }
 
   const command = new ConverseCommand({
     modelId: model,
@@ -58,7 +59,7 @@ async function generate({
       temperature: 0,
       maxTokens: 8192,
     },
-    ...(jsonFormat && {
+    ...(useToolConfig && {
       toolConfig: {
         tools: [
           {
@@ -79,6 +80,7 @@ async function generate({
   let response;
   try {
     response = await bedrock.send(command);
+    console.debug("[bedrock] response:", JSON.stringify(response));
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
     if (msg.includes("http2") || msg.includes("did not get a response")) {
@@ -103,6 +105,18 @@ async function generate({
     });
   }
 
+  logLLM({
+    provider: "bedrock",
+    model,
+    messages,
+    response,
+    inputTokens: response.usage?.inputTokens,
+    outputTokens: response.usage?.outputTokens,
+    totalTokens: response.usage?.totalTokens,
+    durationMs: response.metrics?.latencyMs,
+    meta,
+  });
+
   if (response.stopReason === "max_tokens") {
     console.error("Response was truncated due to max_tokens limit");
     throw new Error(
@@ -115,97 +129,41 @@ async function generate({
 
   const toolUseBlock = outputContent?.find((block) => "toolUse" in block);
   if (toolUseBlock && "toolUse" in toolUseBlock) {
-    return toolUseBlock.toolUse?.input;
+    return toolUseBlock.toolUse?.input as Record<string, unknown>;
   }
 
   const textBlock = outputContent?.find((block) => "text" in block);
   if (textBlock && "text" in textBlock && textBlock.text) {
-    try {
-      const parsed = JSON.parse(textBlock.text);
-      if (parsed.type === "function" && parsed.parameters) {
-        const params = unwrapSchemaValues(parsed.parameters);
-        const outerKeyMatch = jsonFormat?.match(/^\{\s*(\w+)\s*:/);
-        const outerKey = outerKeyMatch?.[1];
-        if (outerKey && !(outerKey in params)) {
-          return { [outerKey]: params };
-        }
-        return params;
+    const parsed = parseWithBraceRepair(textBlock.text);
+    if (
+      parsed &&
+      typeof parsed === "object" &&
+      (parsed as { type?: unknown }).type === "function" &&
+      (parsed as { parameters?: unknown }).parameters
+    ) {
+      const params = unwrapSchemaValues(
+        (parsed as { parameters: unknown }).parameters,
+      );
+      const outerKeyMatch = jsonFormat?.match(/^\{\s*(\w+)\s*:/);
+      const outerKey = outerKeyMatch?.[1];
+      if (
+        outerKey &&
+        params &&
+        typeof params === "object" &&
+        !(outerKey in params)
+      ) {
+        return { [outerKey]: params };
       }
-    } catch {}
+      return params as Record<string, unknown>;
+    }
 
-    return parseJSONFromLLMResponse(textBlock.text);
+    return parseJsonWithRepair(textBlock.text, "bedrock") as Record<
+      string,
+      unknown
+    >;
   }
 
   throw new Error("Bedrock is not responding");
 }
 
-function unwrapSchemaValues(obj: unknown): unknown {
-  if (obj && typeof obj === "object" && !Array.isArray(obj)) {
-    const o = obj as Record<string, unknown>;
-    if ("type" in o && "value" in o) {
-      return unwrapSchemaValues(o.value);
-    }
-    return Object.fromEntries(
-      Object.entries(o).map(([k, v]) => [k, unwrapSchemaValues(v)]),
-    );
-  }
-  if (typeof obj === "string") {
-    const trimmed = obj.trim();
-    if (
-      (trimmed.startsWith("{") && trimmed.endsWith("}")) ||
-      (trimmed.startsWith("[") && trimmed.endsWith("]"))
-    ) {
-      try {
-        return unwrapSchemaValues(JSON.parse(trimmed));
-      } catch {
-        // not valid JSON, return as-is
-      }
-    }
-  }
-  return obj;
-}
-
-function parseJSONFromLLMResponse(content: string): unknown {
-  try {
-    return JSON.parse(content);
-  } catch {
-    console.error(
-      "Failed to parse LLM response as JSON:",
-      content.substring(0, 500),
-    );
-  }
-
-  const codeBlockMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
-  if (codeBlockMatch) {
-    try {
-      return JSON.parse(codeBlockMatch[1].trim());
-    } catch {
-      console.error(
-        "Failed to parse LLM response as JSON:",
-        codeBlockMatch[1].trim(),
-      );
-    }
-  }
-
-  const jsonMatch = content.match(/(\{[\s\S]*\}|\[[\s\S]*\])/);
-  if (jsonMatch) {
-    try {
-      return JSON.parse(jsonMatch[1]);
-    } catch {
-      console.error("Failed to parse LLM response as JSON:", jsonMatch[1]);
-    }
-  }
-
-  console.error(
-    "Failed to parse LLM response as JSON:",
-    content.substring(0, 500),
-  );
-  throw new SyntaxError(
-    `Failed to parse LLM response as JSON. Content starts with: ${content.substring(
-      0,
-      100,
-    )}`,
-  );
-}
-
-export default { generate };
+export default { generate } satisfies LLMAdapter;

@@ -8,11 +8,13 @@ async function create({
   description,
   blueprintId,
   sessionId,
+  inheritedSteps,
 }: {
   agentId: string;
   description: string;
   blueprintId?: string;
   sessionId?: string;
+  inheritedSteps?: object[];
 }) {
   const task = await Task.create({
     agentId,
@@ -20,6 +22,7 @@ async function create({
     status: "IN_PROGRESS",
     blueprintId,
     sessionId,
+    inheritedSteps: inheritedSteps?.length ? inheritedSteps : null,
   });
 
   await event.publish("TASK_CREATED", {

@@ -42,6 +42,11 @@ class Blueprint extends Model {
   @Column(DataType.BOOLEAN)
   declare blocking: boolean;
 
+  @Default(false)
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  declare force: boolean;
+
   @AllowNull(true)
   @Column({
     type: DataType.JSONB,

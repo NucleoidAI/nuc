@@ -13,6 +13,7 @@ const BlueprintKnowledge = ({
   selectedItem,
   agentId,
   teamId,
+  onItemAdded,
 }) => {
   return (
     <GlassCard
@@ -37,6 +38,7 @@ const BlueprintKnowledge = ({
           agentId={selectedItem?.agentId || agentId}
           blueprintId={selectedItem?.id}
           teamId={teamId}
+          onItemAdded={onItemAdded}
         />
       </GlassCardContent>
     </GlassCard>

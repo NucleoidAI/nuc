@@ -188,7 +188,8 @@ const MCPs = [
     id: "019ae325-2257-77df-97fa-e8808943634f",
     action: "GREY:send_email",
     provider: "GREY",
-    description: "Send an email",
+    description:
+      "Send an email. Prefer passing 'template' + 'data' to render a predefined, nicely formatted HTML email instead of composing 'text'/'html' manually.",
     direction: "OUTGOING",
     icon: "mdi:email-send",
     lib: "mcp",
@@ -198,17 +199,35 @@ const MCPs = [
         to: {
           type: "string",
           description: "The email address of the recipient.",
+          nullable: true,
         },
         subject: {
           type: "string",
-          description: "The subject of the email.",
+          description: "The subject of the email. Not needed when 'template' is set - the template supplies its own subject.",
+          nullable: true,
         },
         text: {
           type: "string",
-          description: "The body of the email.",
+          description: "The plain-text body of the email. Not needed when 'template' is set - the template supplies its own text body.",
+          nullable: true,
+        },
+        html: {
+          type: "string",
+          description: "The HTML body of the email. Not needed when 'template' is set.",
+          nullable: true,
+        },
+        template: {
+          type: "string",
+          description: "Name of a predefined email template to render instead of manually composing text/html. Available: 'meeting_summary'.",
+          nullable: true,
+        },
+        data: {
+          type: "object",
+          description: "Structured data to render into the template named by 'template'. For 'meeting_summary': { meetingName, meetingDate, summary, key_topics, decisions, action_items: [{owner, task}], speaker_highlights: [{id, summary}] }.",
+          nullable: true,
         },
       },
-      required: ["to", "subject", "text"],
+      required: ["to"],
     },
   },
   {
@@ -489,6 +508,264 @@ const MCPs = [
         "qos_profile",
         "status",
       ],
+    },
+  },
+  {
+    id: "a1b2c3d4-e5f6-4a1b-8001-100000000001",
+    action: "ORDER:find_product",
+    provider: "ORDER",
+    description: "Find a product by its ID or name. Returns product details.",
+    direction: "OUTGOING",
+    icon: "mdi:magnify",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        product_id: {
+          type: "string",
+          description: "The product ID to search for (e.g. prd-1).",
+        },
+        name: {
+          type: "string",
+          description: "The product name to search for (e.g. product-1).",
+        },
+      },
+      required: [],
+    },
+    outputSchema: {
+      type: "object",
+      properties: {
+        product_id: {
+          type: "string",
+          description: "The ID of the found product.",
+        },
+        name: {
+          type: "string",
+          description: "The name of the found product.",
+        },
+      },
+    },
+  },
+  {
+    id: "a1b2c3d4-e5f6-4a1b-8002-100000000002",
+    action: "ORDER:assign_certificate",
+    provider: "ORDER",
+    description:
+      "Assign a compliance certificate to a product. Certificate must be a valid type (e.g. FFC, CE).",
+    direction: "OUTGOING",
+    icon: "mdi:certificate-outline",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        product_id: {
+          type: "string",
+          description: "The product ID to assign the certificate to.",
+        },
+        certificate: {
+          type: "string",
+          description: "The certificate type to assign (e.g. FFC, CE).",
+          nullable: true,
+        },
+      },
+      required: ["product_id", "certificate"],
+    },
+  },
+  {
+    id: "a1b2c3d4-e5f6-4a1b-8005-100000000005",
+    action: "ORDER:get_product_vendor",
+    provider: "ORDER",
+    description:
+      "Get the vendor information for a product by its ID. Returns vendor details including name and email.",
+    direction: "OUTGOING",
+    icon: "mdi:domain",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        product_id: {
+          type: "string",
+          description: "The product ID to look up the vendor for (e.g. prd-1).",
+        },
+      },
+      required: ["product_id"],
+    },
+  },
+  {
+    id: "a1b2c3d4-e5f6-4a1b-8003-100000000003",
+    action: "ORDER:create_po",
+    provider: "ORDER",
+    description:
+      "Create a Purchase Order (PO) for a product. Returns the created purchase order details.",
+    direction: "OUTGOING",
+    icon: "mdi:file-document-plus",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        product_id: {
+          type: "string",
+          description: "The ID of the product to create the PO for.",
+        },
+        city: {
+          type: "string",
+          description: "The city where the order will be delivered.",
+        },
+        quantity: {
+          type: "number",
+          description: "The quantity of the product to order.",
+        },
+      },
+      required: ["product_id", "city", "quantity"],
+    },
+  },
+  {
+    id: "b8f1a2c3-d4e5-4f6a-9b0c-1d2e3f4a5b6c",
+    action: "GREY:knowledge_lookup",
+    provider: "GREY",
+    description:
+      "Look up all knowledge entries for this agent. Returns every knowledge item including TEXT, QA, and DATA types. Always use this before making decisions that depend on facts that may have been updated by a supervisor, such as product certificates or policies.",
+    direction: "OUTGOING",
+    icon: "mdi:book-search",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    id: "019f6a14-0000-4000-8000-000000000001",
+    action: "ACTIVEDIRECTORY:create_employee",
+    provider: "ACTIVE DIRECTORY",
+    description:
+      "Create a new employee user account in Active Directory. Returns the created employee details.",
+    direction: "OUTGOING",
+    icon: "mdi:microsoft-windows",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        first_name: {
+          type: "string",
+          description: "The first name of the employee.",
+        },
+        last_name: {
+          type: "string",
+          description: "The last name of the employee.",
+        },
+        employee_id: {
+          type: "string",
+          description: "The employee ID (e.g. E10501).",
+        },
+        department: {
+          type: "string",
+          description: "The department the employee belongs to.",
+          nullable: true,
+        },
+        job_role: {
+          type: "string",
+          description: "The job role of the employee (e.g. Software Engineer).",
+          nullable: true,
+        },
+        manager: {
+          type: "string",
+          description: "The full name of the employee's manager.",
+          nullable: true,
+        },
+        location: {
+          type: "string",
+          description: "The office location of the employee.",
+          nullable: true,
+        },
+      },
+      required: ["first_name", "last_name", "employee_id"],
+    },
+  },
+  {
+    id: "019f6a14-0000-4000-8000-000000000002",
+    action: "SERVICENOW:approve_employee_request",
+    provider: "SERVICENOW",
+    description:
+      "Approve an employee onboarding request in ServiceNow by its request number. Returns the updated request details.",
+    direction: "OUTGOING",
+    icon: "mdi:cloud-check-outline",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        request_number: {
+          type: "string",
+          description:
+            "The ServiceNow request number to approve (e.g. REQ0010042).",
+        },
+        comments: {
+          type: "string",
+          description: "Optional approval comments.",
+          nullable: true,
+        },
+      },
+      required: ["request_number"],
+    },
+  },
+  {
+    id: "019f7a30-0000-4000-8000-000000000001",
+    action: "SERVICENOW:create_incident",
+    provider: "SERVICENOW",
+    description:
+      "Create an incident in ServiceNow. Requires a short description and the caller's name. Returns the created incident details including its incident number.",
+    direction: "OUTGOING",
+    icon: "mdi:alert-circle-outline",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        shortDescription: {
+          type: "string",
+          description: "A short summary of the incident.",
+        },
+        caller: {
+          type: "string",
+          description: "Name of the person reporting the incident.",
+        },
+        description: {
+          type: "string",
+          description: "Detailed description of the incident.",
+          nullable: true,
+        },
+        priority: {
+          type: "number",
+          enum: [1, 2, 3, 4],
+          description:
+            "Incident priority: 1=Critical, 2=High, 3=Moderate (default), 4=Low.",
+          nullable: true,
+        },
+        assignmentGroup: {
+          type: "string",
+          enum: [
+            "Service Desk",
+            "Network Operations",
+            "Hardware Support",
+            "Application Support",
+            "Database Administration",
+          ],
+          description:
+            "Group the incident is assigned to. Defaults to 'Service Desk'.",
+          nullable: true,
+        },
+        assignee: {
+          type: "string",
+          description: "Name of the person the incident is assigned to.",
+          nullable: true,
+        },
+        state: {
+          type: "string",
+          enum: ["New", "In Progress", "On Hold", "Resolved", "Closed"],
+          description: "Incident state. Defaults to 'New'.",
+          nullable: true,
+        },
+      },
+      required: ["shortDescription", "caller"],
     },
   },
   {

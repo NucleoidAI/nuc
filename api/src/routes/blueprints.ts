@@ -61,6 +61,7 @@ router.put("/:blueprintId", async (req, res) => {
     messages,
     blocking,
     skill,
+    force,
   } = BlueprintSchema.upsert.parse(req.body);
 
   if (agentId) {
@@ -86,27 +87,21 @@ router.put("/:blueprintId", async (req, res) => {
     })),
     blocking,
     skill,
+    force,
   });
 
   await event.publish("BLUEPRINT_CREATED", {
     Blueprint: result,
   });
 
-  if (taskId) {
-    await event.publish("TASK_SUPERVISING_RESPONDED", {
-      taskId,
-      blueprintId,
-    });
-  }
-
   res.status(200).json(result);
 });
 
 router.patch("/:blueprintId", async (req, res) => {
   const { blueprintId } = req.params;
-  const { blocking } = req.body;
+  const { blocking, force } = req.body;
 
-  const result = await bluePrint.patch({ blueprintId, blocking });
+  const result = await bluePrint.patch({ blueprintId, blocking, force });
 
   res.status(200).json(result);
 });

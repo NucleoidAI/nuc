@@ -3,12 +3,14 @@ import BlueprintFlowWidget from "../../widgets/BlueprintFlowWidget/BlueprintFlow
 import BlueprintKnowledge from "../BlueprintKnowledge/BlueprintKnowledge";
 import BlueprintSkill from "../BlueprintSkill/BlueprintSkill";
 import { DrawerLayout } from "@canmingir/link/layouts";
+import EditNoteIcon from "@mui/icons-material/EditNote";
 import { FlowDefinition } from "../BlueprintFlow/helper";
 import SettingsDialog from "../SettingsDialog/SettingsDialog";
 import SettingsIcon from "@mui/icons-material/Settings";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
+import SupervisingChat from "../SupervisingChat";
 import useBlueprint from "../../hooks/useBlueprint";
-
+import useSupervisings from "../../hooks/useSupervisings";
 import { Box, Fab, Grid, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
@@ -25,6 +27,7 @@ const BlueprintDrawer = ({
   lastUsedNodeId,
   failedNodeId,
   teamId,
+  supervise,
 }: {
   drawerOpen: boolean;
   handleDrawerClose: () => void;
@@ -58,16 +61,45 @@ const BlueprintDrawer = ({
   lastUsedNodeId?: string | null;
   failedNodeId?: string | null;
   teamId?: string;
+  supervise?: {
+    id: string;
+    question?: string;
+    answer?: string;
+    status: string;
+    blueprintId?: string;
+    taskId?: string;
+    conversationId?: string;
+    sessionId?: string;
+  };
 }) => {
   const [title, setTitle] = useState(selectedItem?.title);
+  const [description, setDescription] = useState(selectedItem?.description);
   const [skill, setSkill] = useState(selectedItem?.skill);
   const [skillLoading, setSkillLoading] = useState(false);
   const [showKnowledge, setShowKnowledge] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [settingsTab, setSettingsTab] = useState(0);
   const [blocking, setBlocking] = useState<boolean>(true);
+  const [force, setForce] = useState<boolean>(false);
+  const [superviseChatOpen, setSuperviseChatOpen] = useState<boolean>(
+    !!supervise
+  );
+  const [editBlueprintOpen, setEditBlueprintOpen] = useState(false);
 
   const { patchBlueprint } = useBlueprint();
+  const { approveBlueprintChat } = useSupervisings();
+
+  const handleManualResolve = async (decision: "BLUEPRINT" | "KNOWLEDGE") => {
+    if (!supervise?.id) return;
+    await approveBlueprintChat({
+      supervisingId: supervise.id,
+      decision,
+      answer:
+        decision === "BLUEPRINT"
+          ? "Blueprint manually updated"
+          : "Knowledge manually added",
+    });
+  };
 
   const handleBlockingChange = async (value: boolean) => {
     setBlocking(value);
@@ -76,10 +108,22 @@ const BlueprintDrawer = ({
     }
   };
 
+  const handleForceChange = async (value: boolean) => {
+    setForce(value);
+    if (selectedItem?.id) {
+      await patchBlueprint(selectedItem.id, { force: value });
+    }
+  };
+
   useEffect(() => {
     setTitle(selectedItem?.title);
+    setDescription(selectedItem?.description);
     setSkill(selectedItem?.skill);
   }, [selectedItem]);
+
+  useEffect(() => {
+    if (supervise) setSuperviseChatOpen(true);
+  }, [supervise]);
 
   const flowContent = (
     <Box
@@ -94,6 +138,8 @@ const BlueprintDrawer = ({
       <BlueprintFlowWidget
         blueprint={{
           ...selectedItem,
+          title,
+          description,
           agentId: selectedItem?.agentId || agentId,
         }}
         aiResponse={aiResponse}
@@ -109,6 +155,9 @@ const BlueprintDrawer = ({
         onBlockingChange={handleBlockingChange}
         onSkillChange={setSkill}
         onSkillLoadingChange={setSkillLoading}
+        force={force}
+        onForceChange={handleForceChange}
+        onSave={supervise ? () => handleManualResolve("BLUEPRINT") : undefined}
       />
 
       <Box
@@ -139,6 +188,9 @@ const BlueprintDrawer = ({
             selectedItem={selectedItem}
             agentId={agentId}
             teamId={teamId}
+            onItemAdded={
+              supervise ? () => handleManualResolve("KNOWLEDGE") : undefined
+            }
           />
         )}
       </Box>
@@ -158,6 +210,21 @@ const BlueprintDrawer = ({
           }}
         >
           <StickyNote2Icon />
+        </Fab>
+      </Tooltip>
+
+      <Tooltip title="Edit Blueprint" placement="left">
+        <Fab
+          color="primary"
+          onClick={() => setEditBlueprintOpen((prev) => !prev)}
+          sx={{
+            position: "absolute",
+            bottom: 24,
+            right: 120,
+            zIndex: 10,
+          }}
+        >
+          <EditNoteIcon />
         </Fab>
       </Tooltip>
 
@@ -183,6 +250,8 @@ const BlueprintDrawer = ({
         setSettingsTab={setSettingsTab}
         blocking={blocking}
         setBlocking={handleBlockingChange}
+        force={force}
+        setForce={handleForceChange}
       />
     </Box>
   );
@@ -227,6 +296,25 @@ const BlueprintDrawer = ({
             {flowContent}
           </Grid>
         </Grid>
+
+        {supervise && (
+          <SupervisingChat
+            open={superviseChatOpen}
+            handleClose={() => setSuperviseChatOpen(false)}
+            supervise={supervise}
+            agentId={agentId}
+          />
+        )}
+
+        {editBlueprintOpen && (
+          <SupervisingChat
+            open={editBlueprintOpen}
+            handleClose={() => setEditBlueprintOpen(false)}
+            title="Edit Blueprint"
+            agentId={agentId || selectedItem?.agentId}
+            blueprintId={selectedItem?.id}
+          />
+        )}
       </Box>
     </DrawerLayout>
   );

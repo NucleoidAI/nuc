@@ -155,6 +155,318 @@ router.patch("/:supervisingId", async (req, res) => {
   res.status(200).json(updatedSupervising);
 });
 
+router.patch("/:supervisingId/demo", async (req, res) => {
+  const { answer, status } = Joi.attempt(req.body, schemas.Supervising.patch);
+
+  let response;
+
+  if (answer.includes("handoff")) {
+    response = {
+      id: "f4e3d2c1-b0a0-4000-8000-100000000001",
+      title: "Order and Compliance",
+      description:
+        "This workflow manages the procurement process for a product requiring compliance certification. It begins by prompting the user to select a product, retrieves the product details, and checks whether a compliance certificate is already assigned. If a certificate exists, the system assigns one, then creates a purchase order and sends a confirmation email. If no certificate is found, the task is handed off to a dedicated compliance manager agent for further handling.",
+      agentId: "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      blocking: true,
+      nodes: [
+        {
+          id: "f0e0d0c0-a0b0-4000-8000-000000000000",
+          properties: {
+            label: "Select a Product",
+            prompt: "Ask user which product they want to order",
+            icon: "mdi:account-question",
+            action: "PLATFORM:user_interaction",
+            description: "Ask user to select a product",
+            pseudocode:
+              "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nEND_CONTEXT\n\nEND_MESSAGE",
+          },
+          type: "NORMAL",
+          next: ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+          createdAt: "2025-06-26T06:00:00Z",
+        },
+        {
+          id: "f1e1d1c1-a1b1-4111-8111-111111111111",
+          properties: {
+            label: "Find Product",
+            prompt: "Find the product by identifier",
+            icon: "mdi:magnify",
+            action: "ORDER:find_product",
+            description: "Search and retrieve the product details",
+            pseudocode:
+              "BEGIN_CONTEXT\nproduct = FindProduct()\nEND_CONTEXT\n\nEND_MESSAGE",
+          },
+          type: "NORMAL",
+          next: ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+          createdAt: "2025-06-26T06:00:00Z",
+        },
+        {
+          id: "f3e3d3c3-a3b3-4333-8333-333333333333",
+          properties: {
+            label: "Knowledge Lookup",
+            prompt:
+              "Look up compliance certificate for the product from agent knowledge",
+            icon: "mdi:book-search",
+            action: "GREY:knowledge_lookup",
+            description:
+              "Look up compliance certificate for the product from agent knowledge",
+            pseudocode:
+              "BEGIN_CONTEXT\ncertificate = KnowledgeLookup(product.id)\nEND_CONTEXT\n\nEND_MESSAGE",
+          },
+          type: "NORMAL",
+          next: ["83a2a833-57bc-41b0-8871-be0dd2866ac7"],
+          createdAt: "2025-06-26T06:00:00Z",
+        },
+        {
+          id: "f2e2d2c2-a2b2-4222-8222-222222222222",
+          properties: {
+            label: "Assign Certificate",
+            prompt: "Assign a compliance certificate to the product",
+            icon: "mdi:certificate-outline",
+            action: "ORDER:assign_certificate",
+            description: "Assign a compliance certificate to the product",
+            pseudocode:
+              "BEGIN_CONTEXT\ncertificate = AssignCertificate(product.id)\nEND_CONTEXT\n\nEND_MESSAGE",
+          },
+          type: "NORMAL",
+          next: ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+          createdAt: "2025-06-26T06:00:00Z",
+        },
+        {
+          id: "f4e4d4c4-a4b4-4444-8444-444444444444",
+          properties: {
+            label: "Create Purchase Order",
+            prompt: "Create a purchase order for the product",
+            icon: "mdi:file-document-plus",
+            action: "ORDER:create_po",
+            description: "Create a Purchase Order for the certified product",
+            pseudocode:
+              "BEGIN_CONTEXT\nPO.Create(product.id)\nEND_CONTEXT\n\nEND_MESSAGE",
+          },
+          type: "NORMAL",
+          next: ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+          createdAt: "2025-06-26T06:00:00Z",
+        },
+        {
+          id: "f6e6d6c6-a6b6-4666-8666-666666666666",
+          properties: {
+            label: "Send Email",
+            prompt: "Send email to notify about the purchase order",
+            icon: "mdi:email",
+            action: "GREY:send_email",
+            description:
+              "Send email notification about the completed purchase order",
+            pseudocode:
+              "BEGIN_CONTEXT\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE",
+          },
+          type: "NORMAL",
+          next: null,
+          createdAt: "2025-06-26T06:00:00Z",
+        },
+        {
+          id: "83a2a833-57bc-41b0-8871-be0dd2866ac7",
+          properties: {
+            label: "If certificate exists",
+            prompt: "If product has certificate",
+            icon: "mdi:source-branch",
+            action: "PLATFORM:decision",
+            description:
+              "A decision node that branches the flow based on conditions.",
+            pseudocode:
+              "BEGIN_CONTEXT\nIF Product.CertificateExists == TRUE THEN\n    // Proceed with certificate-related logic\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+          },
+          type: "CONDITION",
+          true: ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+          false: ["26ca02ed-92d9-49ce-b152-ca8536e92202"],
+          createdAt: "2026-06-29T16:47:27.253Z",
+        },
+        {
+          id: "26ca02ed-92d9-49ce-b152-ca8536e92202",
+          properties: {
+            label: "Handoff to compliant_manager_agent",
+            prompt: "",
+            icon: "mdi:account-arrow-right",
+            action: "PLATFORM:handoff",
+            description: "Transfer this task to another agent's blueprint.",
+          },
+          type: "HANDOFF",
+          createdAt: "2026-06-29T16:47:50.254Z",
+        },
+      ],
+      Nodes: [
+        {
+          id: "f0e0d0c0-a0b0-4000-8000-000000000000",
+          properties: {
+            label: "Select a Product",
+            prompt: "Ask user which product they want to order",
+            icon: "mdi:account-question",
+            action: "PLATFORM:user_interaction",
+            description: "Ask user to select a product",
+            pseudocode:
+              "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nEND_CONTEXT\n\nEND_MESSAGE",
+          },
+          type: "NORMAL",
+          next: ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+          createdAt: "2025-06-26T06:00:00Z",
+        },
+        {
+          id: "f1e1d1c1-a1b1-4111-8111-111111111111",
+          properties: {
+            label: "Find Product",
+            prompt: "Find the product by identifier",
+            icon: "mdi:magnify",
+            action: "ORDER:find_product",
+            description: "Search and retrieve the product details",
+            pseudocode:
+              "BEGIN_CONTEXT\nproduct = FindProduct()\nEND_CONTEXT\n\nEND_MESSAGE",
+          },
+          type: "NORMAL",
+          next: ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+          createdAt: "2025-06-26T06:00:00Z",
+        },
+        {
+          id: "f3e3d3c3-a3b3-4333-8333-333333333333",
+          properties: {
+            label: "Knowledge Lookup",
+            prompt:
+              "Look up compliance certificate for the product from agent knowledge",
+            icon: "mdi:book-search",
+            action: "GREY:knowledge_lookup",
+            description:
+              "Look up compliance certificate for the product from agent knowledge",
+            pseudocode:
+              "BEGIN_CONTEXT\ncertificate = KnowledgeLookup(product.id)\nEND_CONTEXT\n\nEND_MESSAGE",
+          },
+          type: "NORMAL",
+          next: ["83a2a833-57bc-41b0-8871-be0dd2866ac7"],
+          createdAt: "2025-06-26T06:00:00Z",
+        },
+        {
+          id: "f2e2d2c2-a2b2-4222-8222-222222222222",
+          properties: {
+            label: "Assign Certificate",
+            prompt: "Assign a compliance certificate to the product",
+            icon: "mdi:certificate-outline",
+            action: "ORDER:assign_certificate",
+            description: "Assign a compliance certificate to the product",
+            pseudocode:
+              "BEGIN_CONTEXT\ncertificate = AssignCertificate(product.id)\nEND_CONTEXT\n\nEND_MESSAGE",
+          },
+          type: "NORMAL",
+          next: ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+          createdAt: "2025-06-26T06:00:00Z",
+        },
+        {
+          id: "f4e4d4c4-a4b4-4444-8444-444444444444",
+          properties: {
+            label: "Create Purchase Order",
+            prompt: "Create a purchase order for the product",
+            icon: "mdi:file-document-plus",
+            action: "ORDER:create_po",
+            description: "Create a Purchase Order for the certified product",
+            pseudocode:
+              "BEGIN_CONTEXT\nPO.Create(product.id)\nEND_CONTEXT\n\nEND_MESSAGE",
+          },
+          type: "NORMAL",
+          next: ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+          createdAt: "2025-06-26T06:00:00Z",
+        },
+        {
+          id: "f6e6d6c6-a6b6-4666-8666-666666666666",
+          properties: {
+            label: "Send Email",
+            prompt: "Send email to notify about the purchase order",
+            icon: "mdi:email",
+            action: "GREY:send_email",
+            description:
+              "Send email notification about the completed purchase order",
+            pseudocode:
+              "BEGIN_CONTEXT\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE",
+          },
+          type: "NORMAL",
+          next: null,
+          createdAt: "2025-06-26T06:00:00Z",
+        },
+        {
+          id: "83a2a833-57bc-41b0-8871-be0dd2866ac7",
+          properties: {
+            label: "If certificate exists",
+            prompt: "If product has certificate",
+            icon: "mdi:source-branch",
+            action: "PLATFORM:decision",
+            description:
+              "A decision node that branches the flow based on conditions.",
+            pseudocode:
+              "BEGIN_CONTEXT\nIF Product.CertificateExists == TRUE THEN\n    // Proceed with certificate-related logic\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+          },
+          type: "CONDITION",
+          true: ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+          false: ["26ca02ed-92d9-49ce-b152-ca8536e92202"],
+          createdAt: "2026-06-29T16:47:27.253Z",
+        },
+        {
+          id: "26ca02ed-92d9-49ce-b152-ca8536e92202",
+          properties: {
+            label: "Handoff to compliant_manager_agent",
+            prompt: "",
+            icon: "mdi:account-arrow-right",
+            action: "PLATFORM:handoff",
+            description: "Transfer this task to another agent's blueprint.",
+          },
+          type: "HANDOFF",
+          createdAt: "2026-06-29T16:47:50.254Z",
+        },
+      ],
+      pseudocode:
+        "BEGIN_CONTEXT\nIF Product.Exists == TRUE THEN\n    Certificate.Assign(Product)\n    PurchaseOrder.Create(Product)\n    Process.WriteToLLM()\n    Email.Send()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
+    };
+  } else {
+    response = {
+      id: "b1c2d3e4-f5a6-4b1c-9001-200000000009",
+      type: "DATA",
+      text: '{"product_id": "prd-4", "product_name": "product-4", "certificate": "CE"}',
+      status: "COMPLETED",
+      createdAt: "2025-06-26T06:00:00.000Z",
+    };
+  }
+
+  return res.status(200).json(response);
+});
+
+router.patch("/:supervisingId/demo/submit", async (req, res) => {
+  const { supervisingId } = req.params;
+  const teamId = req.session.projectId;
+
+  const { answer, status } = Joi.attempt(req.body, schemas.Supervising.patch);
+
+  const supervisingInstance = await Supervising.findByPk(supervisingId);
+
+  if (!supervisingInstance) {
+    return res.status(404).json({ error: "Supervising not found" });
+  }
+
+  const agent = await Agent.findByPk(supervisingInstance.agentId);
+
+  if (!agent) {
+    return res.status(404).json({ error: "Agent not found" });
+  }
+
+  if (agent.teamId !== teamId) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  const updatedSupervising = await supervising.update({
+    teamId,
+    supervisingId,
+    agentId: agent.id,
+    question: supervisingInstance.question,
+    answer,
+    status,
+    taskId: supervisingInstance.taskId,
+  });
+
+  res.status(200).json(updatedSupervising);
+});
+
 router.post("/:supervisingId/evaluate", async (req, res) => {
   const { supervisingId } = req.params;
   const teamId = req.session.projectId;

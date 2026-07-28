@@ -1,6 +1,11 @@
-import BlueprintSelector from "../BlueprintSelector";
 import Draggable from "react-draggable";
+import { Head } from "./components";
+
 import { Iconify } from "@canmingir/link/platform/components";
+import { LoadingMessage } from "@canmingir/link/platform/components";
+import { MessageList } from "@canmingir/link/platform/components";
+import { PresetSelector } from "@canmingir/link/platform/components";
+
 import { Scrollbar } from "@canmingir/link/platform/components";
 import Stack from "@mui/material/Stack";
 import { alpha } from "@mui/material/styles";
@@ -9,7 +14,6 @@ import { useEvent } from "@nucleoidai/react-event";
 import useSound from "use-sound";
 
 import { Box, Fab, IconButton, TextField } from "@mui/material";
-import { Head, LoadingMessage, MessageList } from "./components";
 import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 
 const sub = { item: null };
@@ -152,6 +156,8 @@ const PopChat = ({
 
   if (!open) return null;
 
+  console.log("blueprints", Blueprints);
+
   return (
     <Draggable cancel={".noDrag"}>
       <Box sx={readOnly ? styles.readOnlyBoxHeader : styles.boxHeader}>
@@ -164,10 +170,10 @@ const PopChat = ({
         />
 
         {Blueprints.length > 0 && !readOnly && (
-          <BlueprintSelector
-            Blueprints={Blueprints}
-            selectedBlueprint={selectedBlueprint}
-            onBlueprintChange={onBlueprintChange}
+          <PresetSelector
+            Presets={Blueprints}
+            selectedPreset={selectedBlueprint}
+            onPresetChange={onBlueprintChange}
           />
         )}
 

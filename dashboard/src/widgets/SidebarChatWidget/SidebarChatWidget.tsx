@@ -1,6 +1,7 @@
-import SidebarChat from "../../components/SidebarChat";
+import { SidebarChat } from "@canmingir/link/platform/components";
 import useAgent from "../../hooks/useAgent";
 import useBlueprint from "../../hooks/useBlueprint";
+import useChatSessions from "../../hooks/useChatSessions";
 import useSession from "../../hooks/useSession";
 
 import { useCallback, useEffect, useState } from "react";
@@ -35,6 +36,15 @@ const SidebarChatWidget = ({
     createSession,
     getSession,
   } = useSession(agentId);
+
+  const handleBlueprintChange = useCallback(
+    (blueprintId: string) => {
+      setSelectedBlueprint(blueprintId);
+      setMessages([]);
+      createSession(blueprintId || undefined);
+    },
+    [createSession]
+  );
   const { getBlueprint } = useBlueprint();
   const { Blueprint } = getBlueprint();
 
@@ -42,6 +52,16 @@ const SidebarChatWidget = ({
   const { agent } = getAgent(agentId);
 
   const [messages, setMessages] = useState([]);
+
+  const currentSessionId = sessionId || conversationId;
+
+  const { storedSessions, refresh, clearAll } = useChatSessions(
+    currentSessionId,
+    agentId,
+    messages,
+    agent?.icon,
+    agent?.name
+  );
 
   useEffect(() => {
     if (conversations.length > 0) {
@@ -101,14 +121,17 @@ const SidebarChatWidget = ({
       agent={agent}
       selectedConversationId={conversationId || null}
       sound={sound}
-      Blueprints={
+      Presets={
         Blueprint ? (Array.isArray(Blueprint) ? Blueprint : [Blueprint]) : []
       }
-      selectedBlueprint={selectedBlueprint}
-      onBlueprintChange={setSelectedBlueprint}
+      selectedPreset={selectedBlueprint}
+      onPresetChange={handleBlueprintChange}
       onSessionSelect={handleSessionSelect}
       onNewSession={handleNewSession}
       beta={beta}
+      storedSessions={storedSessions}
+      refreshSessions={refresh}
+      clearAllSessions={clearAll}
     />
   );
 };

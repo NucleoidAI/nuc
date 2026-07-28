@@ -1,17 +1,34 @@
-import { useCallback, useEffect, useState } from "react";
+import http from "@canmingir/link/platform/http";
+
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 const SESSIONS_STORAGE_KEY = "sidebar-chat-sessions";
 const MAX_SESSIONS = 5;
 
-export interface StoredSession {
+export type StoredSession = {
   sessionId: string;
   agentId?: string;
   messages: { id?: string; content: string; role: string }[];
   lastUpdated: number;
   agentIcon?: string;
   agentName?: string;
-}
+};
 
+type BackendConversation = {
+  id: string;
+  role: "ASSISTANT" | "USER";
+  content: string | null;
+  createdAt: string;
+};
+
+type BackendSession = {
+  id: string;
+  agentId: string;
+  conversations: BackendConversation[];
+};
+
+// Only used to remember which session a reconnecting socket should resume;
+// the visible session list itself is fetched from the backend below.
 export const readSessions = (): StoredSession[] => {
   const raw = localStorage.getItem(SESSIONS_STORAGE_KEY);
   return raw ? JSON.parse(raw) : [];
@@ -48,6 +65,30 @@ const upsertSession = (
   writeSessions(sessions.slice(0, MAX_SESSIONS));
 };
 
+const toStoredSession = (
+  session: BackendSession,
+  agentIcon?: string,
+  agentName?: string
+): StoredSession => {
+  const lastConversation =
+    session.conversations[session.conversations.length - 1];
+
+  return {
+    sessionId: session.id,
+    agentId: session.agentId,
+    messages: session.conversations.map((c) => ({
+      id: c.id,
+      content: c.content ?? "",
+      role: c.role,
+    })),
+    lastUpdated: lastConversation
+      ? new Date(lastConversation.createdAt).getTime()
+      : 0,
+    agentIcon,
+    agentName,
+  };
+};
+
 export default function useChatSessions(
   currentSessionId: string | undefined,
   agentId: string | undefined,
@@ -55,21 +96,76 @@ export default function useChatSessions(
   agentIcon?: string,
   agentName?: string
 ) {
-  const [storedSessions, setStoredSessions] =
-    useState<StoredSession[]>(readSessions);
+  const [fetchedSessions, setFetchedSessions] = useState<StoredSession[]>([]);
+  const [dismissedIds, setDismissedIds] = useState<Set<string>>(new Set());
 
-  const refresh = useCallback(() => setStoredSessions(readSessions()), []);
+  const fetchSessions = useCallback(() => {
+    if (!agentId) return;
+    http
+      .get(`/agents/${agentId}/sessions`)
+      .then((response) => {
+        const sessions = (response?.data || []).map((session: BackendSession) =>
+          toStoredSession(session, agentIcon, agentName)
+        );
+        setFetchedSessions(sessions);
+      })
+      .catch(() => {
+        // keep whatever was previously loaded
+      });
+  }, [agentId, agentIcon, agentName]);
+
+  useEffect(() => {
+    setDismissedIds(new Set());
+    fetchSessions();
+  }, [fetchSessions]);
 
   useEffect(() => {
     if (history.length === 0 || !currentSessionId) return;
     upsertSession(currentSessionId, agentId, history, agentIcon, agentName);
-    refresh();
-  }, [history, currentSessionId, agentId, agentIcon, agentName, refresh]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [history, currentSessionId, agentId, agentIcon, agentName]);
+
+  const refresh = useCallback(() => {
+    setDismissedIds(new Set());
+    fetchSessions();
+  }, [fetchSessions]);
 
   const clearAll = useCallback(() => {
-    writeSessions([]);
-    setStoredSessions([]);
-  }, []);
+    setDismissedIds(
+      (prev) => new Set([...prev, ...fetchedSessions.map((s) => s.sessionId)])
+    );
+  }, [fetchedSessions]);
+
+  const storedSessions = useMemo(() => {
+    const visible = fetchedSessions.filter(
+      (s) => !dismissedIds.has(s.sessionId)
+    );
+
+    if (currentSessionId && history.length > 0) {
+      const liveSession: StoredSession = {
+        sessionId: currentSessionId,
+        agentId,
+        messages: history,
+        lastUpdated: Date.now(),
+        agentIcon,
+        agentName,
+      };
+
+      const rest = visible.filter((s) => s.sessionId !== currentSessionId);
+
+      return [liveSession, ...rest].slice(0, MAX_SESSIONS);
+    }
+
+    return visible.slice(0, MAX_SESSIONS);
+  }, [
+    fetchedSessions,
+    dismissedIds,
+    currentSessionId,
+    history,
+    agentId,
+    agentIcon,
+    agentName,
+  ]);
 
   return { storedSessions, refresh, clearAll };
 }

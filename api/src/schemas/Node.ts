@@ -29,6 +29,19 @@ const NormalNode = z.object({
   }),
 });
 
-const Node = z.discriminatedUnion("type", [ConditionNode, NormalNode]);
+const HandoffNode = z.object({
+  id: z.string(),
+  type: z.literal("HANDOFF").describe("Handoff node — transfers task to another agent"),
+  properties: z.object({
+    label: z.string(),
+    icon: z.string(),
+    targetAgentId: z.string().optional().describe("Target agent ID to hand off to"),
+    targetBlueprintId: z.string().optional().describe("Target blueprint ID (optional)"),
+    prompt: z.string().optional(),
+    pseudocode: z.string().optional(),
+  }),
+});
+
+const Node = z.discriminatedUnion("type", [ConditionNode, NormalNode, HandoffNode]);
 
 export default Node;

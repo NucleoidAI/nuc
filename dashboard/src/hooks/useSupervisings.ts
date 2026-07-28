@@ -61,6 +61,69 @@ function useSupervisings() {
     return response?.data;
   };
 
+  const resolveSupervising = async (supervisingId: string, answer: string) => {
+    const response = await http.patch(`/supervisings/${supervisingId}/demo`, {
+      answer,
+      status: "ANSWERED",
+    });
+
+    return response?.data;
+  };
+
+  const approveBlueprintChat = async ({
+    supervisingId,
+    decision,
+    answer,
+    knowledge,
+  }: {
+    supervisingId: string;
+    decision: "KNOWLEDGE" | "BLUEPRINT";
+    answer: string;
+    knowledge?: string;
+  }) => {
+    const response = await http.post(`/blueprint-chat/approve`, {
+      supervisingId,
+      decision,
+      answer,
+      knowledge,
+    });
+
+    return response?.data;
+  };
+
+  const blueprintChat = async ({
+    supervisingId,
+    agentId,
+    content,
+    sessionId,
+    blueprintId,
+  }: {
+    supervisingId?: string;
+    agentId?: string;
+    content: string;
+    sessionId: string;
+    blueprintId?: string;
+  }) => {
+    const response = await http.post(`/blueprint-chat`, {
+      supervisingId,
+      agentId,
+      content,
+      sessionId,
+      blueprintId,
+    });
+
+    return response?.data;
+  };
+
+  const submitSupervising = async (supervisingId: string) => {
+    const response = await http.patch(
+      `/supervisings/${supervisingId}/demo/submit`,
+      { status: "ANSWERED" }
+    );
+
+    return response?.data;
+  };
+
   const getAgentSupervising = useCallback((agentId?: string) => {
     if (!agentId) return;
 
@@ -106,6 +169,10 @@ function useSupervisings() {
     createSupervising,
     updateSupervising,
     evaluateSupervising,
+    resolveSupervising,
+    submitSupervising,
+    blueprintChat,
+    approveBlueprintChat,
     getAgentSupervisingByStatus,
     getAgentSupervising,
   };

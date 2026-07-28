@@ -5,7 +5,7 @@ import { useEvent } from "@nucleoidai/react-event";
 import useSession from "../../hooks/useSession";
 
 import { Badge, Fab } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 const PopupChatWidget = ({
   readOnly,
@@ -28,8 +28,23 @@ const PopupChatWidget = ({
   const [unreadMessages, setUnreadMessages] = useState(false);
   const [selectedBlueprint, setSelectedBlueprint] = useState("");
 
-  const { conversations, sendMessage, getSession, error, clearError } =
-    useSession(agentId);
+  const {
+    conversations,
+    sendMessage,
+    getSession,
+    createSession,
+    error,
+    clearError,
+  } = useSession(agentId);
+
+  const handleBlueprintChange = useCallback(
+    (blueprintId: string) => {
+      setSelectedBlueprint(blueprintId);
+      setMessages([]);
+      createSession(blueprintId || undefined);
+    },
+    [createSession]
+  );
   const { getBlueprint } = useBlueprint();
   const { Blueprint } = getBlueprint();
 
@@ -87,7 +102,7 @@ const PopupChatWidget = ({
         sound={sound}
         Blueprints={Array.isArray(Blueprint) ? Blueprint : [Blueprint]}
         selectedBlueprint={selectedBlueprint}
-        onBlueprintChange={setSelectedBlueprint}
+        onBlueprintChange={handleBlueprintChange}
         sx={{}}
       />
       {!open && !readOnly && (

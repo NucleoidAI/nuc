@@ -25,7 +25,7 @@ class Task extends Model {
   declare description: string;
 
   @AllowNull(true)
-  @Column(DataType.STRING)
+  @Column(DataType.TEXT)
   declare result: string | null;
 
   @AllowNull(true)
@@ -54,6 +54,10 @@ class Task extends Model {
   @AllowNull(true)
   @Column(DataType.UUID)
   declare sessionId: string | null;
+
+  @AllowNull(true)
+  @Column(DataType.JSON)
+  declare inheritedSteps: object[] | null;
 
   declare Agent?: any;
 

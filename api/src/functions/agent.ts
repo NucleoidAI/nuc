@@ -4,6 +4,7 @@ import agentData from "./agentData";
 import blueprintFn from "./blueprint";
 import dataset from "../dataset";
 import { generate } from "../lib/llm";
+import type { LLMMeta } from "../lib/llmLog";
 import knowledgeFn from "./knowledge";
 import mcpFn from "./mcp";
 import message from "./message";
@@ -93,11 +94,13 @@ async function steps({ taskId }) {
 
 async function scoring({
   context,
+  meta,
 }: {
   context: {
     role: "user" | "system" | "assistant";
     content: object | string;
   }[];
+  meta?: LLMMeta;
 }) {
   const merged: Record<string, unknown> = {};
   for (const { content } of context) {
@@ -110,6 +113,7 @@ async function scoring({
     dataset: dataset.train.knowledgeScore,
     content: merged,
     json_format: "{ knowledge_score: <0.0-1.0> }",
+    meta,
   });
 
   const parsed = parseFloat(String(knowledge_score));
@@ -154,6 +158,7 @@ async function teamChat({
     content,
     json_format:
       "{ resource: <RESOURCE>, function: <FUNCTION>, parameters: <PARAMETERS> }",
+    meta: { teamId, source: "agent.teamChat" },
   });
 
   let data;
@@ -176,6 +181,7 @@ async function teamChat({
           )})=${JSON.stringify(data)} ${content}`
         : content,
     json_format: "{ response: <RESPONSE> }",
+    meta: { teamId, source: "agent.teamChat" },
   });
 
   await message.create({
@@ -185,10 +191,87 @@ async function teamChat({
   });
 }
 
+async function forceTask({
+  blueprint,
+  currentTask,
+  context,
+  isBlocking,
+  meta,
+}: {
+  blueprint: { nodes: any[] };
+  currentTask: { description: string; blueprintId: string; steps: any[] };
+  context: {
+    role: "user" | "system" | "assistant";
+    content: object | string;
+  }[];
+  isBlocking: boolean;
+  meta?: LLMMeta;
+}) {
+  const nodes = blueprint.nodes;
+
+  const allNextIds = new Set(
+    nodes.flatMap((n) => [
+      ...(Array.isArray(n.next) ? n.next : n.next ? [n.next] : []),
+      ...(n.true || []),
+      ...(n.false || []),
+    ]),
+  );
+  const rootNode = nodes.find((n) => !allNextIds.has(n.id));
+
+  const completedSteps = currentTask.steps.filter((s) =>
+    ["COMPLETED", "WAITING_FOR_USER"].includes(s.status),
+  );
+
+  let currentNode = rootNode;
+  for (const step of completedSteps) {
+    if (!currentNode || currentNode.properties?.action !== step.action) break;
+    if (currentNode.type === "CONDITION") {
+      const tookTrue = step.result === "true";
+      const nextIds = tookTrue
+        ? currentNode.true || []
+        : currentNode.false || [];
+      currentNode = nextIds.length
+        ? nodes.find((n) => nextIds.includes(n.id))
+        : undefined;
+    } else {
+      const nextIds = Array.isArray(currentNode.next)
+        ? currentNode.next
+        : currentNode.next
+        ? [currentNode.next]
+        : [];
+      currentNode = nextIds.length
+        ? nodes.find((n) => nextIds.includes(n.id))
+        : undefined;
+    }
+  }
+
+  const forcedAction = currentNode?.properties?.action;
+
+  const result = await generate({
+    dataset: isBlocking
+      ? dataset.train.forceTaskDiamondBlocking
+      : dataset.train.forceTaskDiamondNonBlocking,
+    context,
+    content: { ...currentTask, forced_action: forcedAction },
+    json_format:
+      "{ next_step: { parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
+    meta,
+  });
+
+  if (forcedAction) {
+    result.next_step.action = forcedAction;
+  }
+
+  return result;
+}
+
 async function task({ taskId }: { taskId: string }) {
   const { agentId, description, sessionId, blueprintId } = await taskFn.get({
     taskId,
   });
+
+  console.log(agentId, blueprintId, sessionId);
+
   const currentTask = {
     description,
     blueprintId,
@@ -206,6 +289,9 @@ async function task({ taskId }: { taskId: string }) {
 
   const blueprint = blueprintId ? await blueprintFn.get({ blueprintId }) : null;
   const isBlocking = blueprint?.blocking !== false;
+  const isForce = blueprint?.force === true;
+
+  const { inheritedSteps: inherited } = await taskFn.get({ taskId });
 
   const context = [
     ...(
@@ -217,73 +303,46 @@ async function task({ taskId }: { taskId: string }) {
         sessionId ? conversations({ sessionId }) : Promise.resolve([]),
       ])
     ).flat(),
+    ...(inherited?.length
+      ? [
+          {
+            role: "system" as const,
+            content: {
+              inherited_context_steps: inherited,
+            },
+          },
+        ]
+      : []),
     isBlocking ? actions.list() : actions.listNonBlockings(),
     mcpFn.list(),
   ];
 
-  const knowledgeScore = await scoring({ context });
+  const meta: LLMMeta = { agentId, sessionId, taskId };
+
+  const knowledgeScore = await scoring({ context, meta });
 
   const {
     next_step: { action, parameters, comment },
     result_score,
-  } = await generate({
-    dataset: isBlocking
-      ? dataset.train.taskDiamondBlocking
-      : dataset.train.taskDiamondNonBlocking,
-    context,
-    content: currentTask,
-    json_format:
-      "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
-  });
+  } =
+    isForce && blueprint?.nodes?.length
+      ? await forceTask({ blueprint, currentTask, context, isBlocking, meta })
+      : await generate({
+          dataset: isBlocking
+            ? dataset.train.taskDiamondBlocking
+            : dataset.train.taskDiamondNonBlocking,
+          context,
+          content: currentTask,
+          json_format:
+            "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
+          meta,
+        });
+
+  console.log("next action", action);
+  console.log("comment", comment);
 
   const resultScore =
     result_score != null ? parseFloat(String(result_score)) : undefined;
-
-  const stableStringify = (val: unknown): string =>
-    JSON.stringify(val, (_, v) =>
-      v && typeof v === "object" && !Array.isArray(v)
-        ? Object.fromEntries(
-            Object.entries(v).sort(([a], [b]) => a.localeCompare(b)),
-          )
-        : v,
-    );
-
-  const isDuplicateStep =
-    action !== "PLATFORM:complete" &&
-    currentTask.steps.some(
-      (s) =>
-        s.status === "COMPLETED" &&
-        s.action === action &&
-        stableStringify(s.parameters) === stableStringify(parameters),
-    );
-
-  if (isDuplicateStep) {
-    const steps = await taskFn.listSteps({ taskId });
-    const result = steps.length ? steps[steps.length - 1].result : undefined;
-
-    await stepScoreFn.create({
-      taskId,
-      parameters: { description, blueprintId },
-      output: result ?? comment ?? null,
-      status: "COMPLETED",
-    });
-
-    if (sessionId) {
-      await session.addConversation({
-        sessionId,
-        agentId,
-        role: "ASSISTANT",
-        content: "Task has been completed.",
-      });
-    }
-
-    return await taskFn.update({
-      taskId,
-      result,
-      comment,
-      status: "COMPLETED",
-    });
-  }
 
   if (action === "PLATFORM:complete") {
     const steps = await taskFn.listSteps({ taskId });
@@ -313,6 +372,50 @@ async function task({ taskId }: { taskId: string }) {
     return await taskFn.update({
       taskId,
       result,
+      comment,
+      status: "COMPLETED",
+    });
+  } else if (action === "PLATFORM:handoff") {
+    const handoffParams = parameters as {
+      targetAgentId: string;
+      targetBlueprintId?: string;
+      context: string;
+    };
+
+    if (handoffParams.targetAgentId === agentId) {
+      return await taskFn.update({
+        taskId,
+        status: "FAILED",
+        comment:
+          "Self-handoff detected: agent attempted to hand off to itself. Follow the assigned blueprint instead.",
+      });
+    }
+
+    const stepsToInherit = await taskFn.listSteps({ taskId });
+    const inheritedSteps = stepsToInherit.map(({ s }) => ({
+      s,
+    }));
+
+    const newTask = await taskFn.create({
+      agentId: handoffParams.targetAgentId,
+      description: handoffParams.context,
+      blueprintId: handoffParams.targetBlueprintId,
+      sessionId,
+      inheritedSteps,
+    });
+
+    const handoffResult = `Handed off to agent ${handoffParams.targetAgentId}`;
+
+    await stepScoreFn.create({
+      taskId,
+      parameters: { description, blueprintId },
+      output: handoffResult,
+      status: "COMPLETED",
+    });
+
+    return await taskFn.update({
+      taskId,
+      result: handoffResult,
       comment,
       status: "COMPLETED",
     });
@@ -377,6 +480,10 @@ async function step({
 
   let taskId = "";
 
+  console.debug(
+    `[agent.step] dispatching stepId=${stepId} action=${action} actionType=${actionType}`,
+  );
+
   try {
     let actionFn;
     let result;
@@ -412,6 +519,10 @@ async function step({
     ) {
       const steps = await taskFn.listSteps({ taskId });
 
+      console.debug(
+        `[agent.step] calling actionFn.run for action=${action} stepId=${stepId}`,
+      );
+
       result = await actionFn.run({
         context: steps
           .filter((step) => step.result)
@@ -420,9 +531,19 @@ async function step({
           )
           .join("\n"),
         parameters,
+        meta: { taskId },
       });
+
+      console.debug(
+        `[agent.step] actionFn.run returned for action=${action} stepId=${stepId}`,
+      );
     } else if (actionType === "MCP") {
-      result = await mcpClient.callTool(action, parameters);
+      let mcpParameters = parameters as Record<string, unknown>;
+      if (action === "GREY:knowledge_lookup" && !mcpParameters.agentId) {
+        const task = await taskFn.get({ taskId });
+        mcpParameters = { ...mcpParameters, agentId: task.agentId };
+      }
+      result = await mcpClient.callTool(action, mcpParameters);
     }
 
     let resultString;
@@ -513,22 +634,202 @@ async function step({
   }
 }
 
-async function Blueprint({
+async function blueprintChatContext({
+  agentId,
+  blueprintId,
+  supervising,
+}: {
+  agentId: string;
+  blueprintId?: string | null;
+  supervising?: {
+    id: string;
+    question: string;
+    status: string;
+    taskId?: string | null;
+    blueprintId?: string | null;
+  } | null;
+}): Promise<{ role: "system"; content: string }[]> {
+  const [agentInfo, agentKnowledge, referenceBlueprint] = await Promise.all([
+    info({ agentId }),
+    knowledge({ agentId }),
+    blueprintId ? blueprintFn.getWithNodes(blueprintId) : Promise.resolve(null),
+  ]);
+
+  return [
+    { role: "system", content: JSON.stringify(agentInfo.content) },
+    { role: "system", content: JSON.stringify(agentKnowledge.content) },
+    ...(referenceBlueprint
+      ? [
+          {
+            role: "system" as const,
+            content: JSON.stringify({ referenceBlueprint }),
+          },
+        ]
+      : []),
+    ...(supervising
+      ? [{ role: "system" as const, content: JSON.stringify({ supervising }) }]
+      : []),
+  ];
+}
+
+async function blueprintChatDecision({
   history,
   content,
+  meta,
 }: {
   history?: {
     role: "system" | "user" | "assistant";
     content: string;
   }[];
   content: string;
-}) {
+  meta?: LLMMeta;
+}): Promise<{ decision: "KNOWLEDGE" | "BLUEPRINT" }> {
   const response = await generate({
-    dataset: dataset.train.blueprintChat,
+    dataset: dataset.train.blueprintChatDecision,
     context: history,
     content,
-    json_format: "{ response: <RESPONSE>, flow: [<FLOW>] }",
+    json_format: '{ decision: <"KNOWLEDGE"|"BLUEPRINT"> }',
+    meta,
   });
+
+  return response as { decision: "KNOWLEDGE" | "BLUEPRINT" };
+}
+
+async function blueprintChatSufficiency({
+  history,
+  content,
+  decision,
+  meta,
+}: {
+  history?: {
+    role: "system" | "user" | "assistant";
+    content: string;
+  }[];
+  content: string;
+  decision: "KNOWLEDGE" | "BLUEPRINT";
+  meta?: LLMMeta;
+}): Promise<{ sufficient: boolean; answer?: string }> {
+  const context = [
+    {
+      role: "system" as const,
+      content: JSON.stringify({ decision }),
+    },
+    ...(history ?? []),
+  ];
+
+  const response = await generate({
+    dataset: dataset.train.blueprintChatSufficiency,
+    context,
+    content,
+    json_format: "{ sufficient: <true|false>, answer: <ANSWER> }",
+    meta,
+  });
+
+  return response as { sufficient: boolean; answer?: string };
+}
+
+async function blueprintChatKnowledge({
+  content,
+  meta,
+}: {
+  content: string;
+  meta?: LLMMeta;
+}): Promise<{ knowledge: string }> {
+  const response = await generate({
+    dataset: dataset.train.blueprintChatKnowledge,
+    content,
+    json_format: "{ knowledge: <EXTRACTED_KNOWLEDGE> }",
+    meta,
+  });
+
+  return response as { knowledge: string };
+}
+
+function sanitizeFlow(flow: unknown[]): unknown[] {
+  const idSet = new Set<string>();
+  const deduped: unknown[] = [];
+
+  for (const node of flow) {
+    if (!node || typeof node !== "object") continue;
+    const n = node as Record<string, unknown>;
+    const id = n.id as string;
+    if (!id || idSet.has(id)) continue;
+    idSet.add(id);
+    deduped.push(n);
+  }
+
+  return deduped.map((node) => {
+    const n = node as Record<string, unknown>;
+    const id = n.id as string;
+
+    const sanitizeRefs = (refs: unknown): string[] | null => {
+      if (!Array.isArray(refs)) return null;
+      const filtered = refs.filter(
+        (ref) => typeof ref === "string" && ref !== id && idSet.has(ref),
+      );
+      return filtered.length ? filtered : null;
+    };
+
+    const result: Record<string, unknown> = { ...n };
+
+    if (Array.isArray(n.next)) {
+      result.next = sanitizeRefs(n.next);
+    }
+
+    const props = n.properties as Record<string, unknown> | undefined;
+    if (props) {
+      const updated: Record<string, unknown> = { ...props };
+      if (Array.isArray(props.true)) updated.true = sanitizeRefs(props.true);
+      if (Array.isArray(props.false)) updated.false = sanitizeRefs(props.false);
+      result.properties = updated;
+    }
+
+    if (Array.isArray(n.true)) result.true = sanitizeRefs(n.true);
+    if (Array.isArray(n.false)) result.false = sanitizeRefs(n.false);
+
+    return result;
+  });
+}
+
+async function Blueprint({
+  history,
+  content,
+  existingBlueprint,
+  meta,
+}: {
+  history?: {
+    role: "system" | "user" | "assistant";
+    content: string;
+  }[];
+  content: string;
+  existingBlueprint?: object | null;
+  meta?: LLMMeta;
+}) {
+  const context = [
+    ...(existingBlueprint
+      ? [
+          {
+            role: "system" as const,
+            content: {
+              existingBlueprint,
+            },
+          },
+        ]
+      : []),
+    ...(history ?? []),
+  ];
+
+  const response = await generate({
+    dataset: dataset.train.blueprintChat,
+    context,
+    content,
+    json_format: "{ response: <RESPONSE>, flow: [<FLOW>] }",
+    meta,
+  });
+
+  if (Array.isArray(response.flow)) {
+    response.flow = sanitizeFlow(response.flow);
+  }
 
   return response;
 }
@@ -552,6 +853,7 @@ async function blueprintName({
     context,
     content,
     json_format: "{ title: <TITLE>, description: <DESCRIPTION> }",
+    meta: { agentId, source: "agent.blueprintName" },
   });
 
   return response;
@@ -562,6 +864,7 @@ async function blueprintToTask({
   content,
   knowledge,
   Blueprint,
+  meta,
 }: {
   history?: {
     role: "system" | "user" | "assistant";
@@ -570,6 +873,7 @@ async function blueprintToTask({
   content: string;
   knowledge: Array<[]>;
   Blueprint: object;
+  meta?: LLMMeta;
 }) {
   const context = [
     {
@@ -587,6 +891,7 @@ async function blueprintToTask({
     context,
     content,
     json_format: "{ task: <TASK> ,answer: <ANSWER> }",
+    meta,
   });
 
   return response;
@@ -595,9 +900,11 @@ async function blueprintToTask({
 async function blueprintDiamond({
   content,
   Blueprints,
+  meta,
 }: {
   content: string;
   Blueprints: Array<[]>;
+  meta?: LLMMeta;
 }) {
   const context = [
     {
@@ -614,6 +921,7 @@ async function blueprintDiamond({
     content,
     json_format:
       "{ decision: <DECISION>,existing: <EXISTING>,blueprintId: <BLUEPRINT_ID> }",
+    meta,
   });
   return response;
 }
@@ -649,6 +957,7 @@ async function evaluateSupervisionAnswer({
     json_format: `{
       "is_answer_known": <true|false>,
     }`,
+    meta: { agentId, source: "agent.evaluateSupervisionAnswer" },
   });
 
   return evaluation;
@@ -668,7 +977,6 @@ async function chat({
   });
 
   const conversationsData = await conversations({ sessionId });
-  const blueprintsData = await Blueprints({ agentId });
 
   const agentDataResult = await agentData.get({ agentId });
 
@@ -704,14 +1012,30 @@ async function chat({
     return;
   }
 
-  const blueprintDecision = await blueprintDiamond({
-    content: content,
-    Blueprints: blueprintsData,
-  });
+  const sessionInstance = await session.get({ sessionId });
+  const pinnedBlueprintId: string | null = sessionInstance?.blueprintId ?? null;
 
-  if (blueprintDecision.decision === "BLUEPRINT" && task.length === 0) {
+  let selectedBlueprintId: string | null = null;
+  let blueprintDecision: { decision: string; blueprintId?: string } | null =
+    null;
+
+  if (pinnedBlueprintId) {
+    selectedBlueprintId = pinnedBlueprintId;
+  } else {
+    const blueprintsData = await Blueprints({ agentId });
+    blueprintDecision = await blueprintDiamond({
+      content,
+      Blueprints: blueprintsData,
+      meta: { agentId, sessionId },
+    });
+    if (blueprintDecision.decision === "BLUEPRINT") {
+      selectedBlueprintId = blueprintDecision.blueprintId ?? null;
+    }
+  }
+
+  if (selectedBlueprintId && task.length === 0) {
     const blueprintData = await blueprintFn.get({
-      blueprintId: blueprintDecision.blueprintId,
+      blueprintId: selectedBlueprintId,
       includeLabels: false,
     });
 
@@ -720,6 +1044,7 @@ async function chat({
       knowledge: knowledgeData,
       content: content,
       Blueprint: blueprintData,
+      meta: { agentId, sessionId },
     });
 
     await taskFn.create({
@@ -727,7 +1052,7 @@ async function chat({
       description:
         blueprintToTaskResponse.task?.description ||
         blueprintToTaskResponse.task,
-      blueprintId: blueprintDecision.blueprintId,
+      blueprintId: selectedBlueprintId,
       sessionId,
     });
 
@@ -756,11 +1081,12 @@ async function chat({
       context,
       content,
       json_format: "{ evaluation: { is_answer_known: <true|false> } }",
+      meta: { agentId, sessionId, source: "agent.chat.evaluation" },
     });
 
     if (
       evaluation?.is_answer_known ||
-      blueprintDecision.decision === "UNREVELANT"
+      blueprintDecision?.decision === "UNREVELANT"
     ) {
       if (task.length > 0) {
         await taskFn.update({
@@ -776,6 +1102,7 @@ async function chat({
         context,
         content,
         json_format: "{ answer: <ANSWER_IN_NLP>, confidence: <0-1> }",
+        meta: { agentId, sessionId, source: "agent.chat.answer" },
       });
 
       await session.addConversation({
@@ -796,25 +1123,38 @@ async function chat({
         sessionId,
         conversationId: conversation.id,
         question: content,
-        blueprintId: blueprintDecision.blueprintId,
+        blueprintId: blueprintDecision?.blueprintId,
         agentId,
       });
     }
   }
 }
 
-async function toPseudo({ content }: { content: string }) {
+async function toPseudo({
+  content,
+  meta,
+}: {
+  content: string;
+  meta?: LLMMeta;
+}) {
   const response = await generate({
     dataset: dataset.train.pseudocode,
     context: [],
     content,
     json_format: "{ pseudocode: <PSEUDO> }",
+    meta,
   });
 
   return response.pseudocode;
 }
 
-async function blueprintDescription({ nodes }: { nodes: object[] }) {
+async function blueprintDescription({
+  nodes,
+  meta,
+}: {
+  nodes: object[];
+  meta?: LLMMeta;
+}) {
   const context = [
     {
       role: "system" as const,
@@ -827,6 +1167,7 @@ async function blueprintDescription({ nodes }: { nodes: object[] }) {
     context,
     content: nodes,
     json_format: "{ description: <DESCRIPTION> }",
+    meta,
   });
 
   return response.description as string;
@@ -857,6 +1198,10 @@ export default {
   step,
   Blueprint,
   blueprintName,
+  blueprintChatContext,
+  blueprintChatDecision,
+  blueprintChatSufficiency,
+  blueprintChatKnowledge,
   evaluateSupervisionAnswer,
   toPseudo,
   blueprintDescription,

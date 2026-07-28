@@ -1,62 +1,18 @@
-type Message = {
-  role: "user" | "assistant" | "system";
-  content: string;
-};
+import type { GenerateParams, LLMAdapter } from "./types";
 
-function tryParseString(value: string): string {
-  let parsed: unknown = value;
-
-  for (let i = 0; i < 3; i++) {
-    if (typeof parsed !== "string") {
-      break;
-    }
-
-    try {
-      parsed = JSON.parse(parsed);
-    } catch {
-      break;
-    }
-  }
-
-  if (typeof parsed === "string") {
-    return parsed;
-  }
-
-  return JSON.stringify(parsed);
-}
-
-function extractJsonFormat(messages: Message[]): string {
-  const formatMessage = messages
-    .map((message) => tryParseString(message.content))
-    .find((content) => content.includes("json_format:"));
-
-  if (!formatMessage) {
-    return "";
-  }
-
-  return formatMessage.toLowerCase();
-}
-
-function extractLastUserContent(messages: Message[]): string {
+function extractLastUserContent(messages: GenerateParams["messages"]): string {
   const lastUserMessage = [...messages]
     .reverse()
     .find((message) => message.role === "user");
-  if (!lastUserMessage) {
-    return "";
-  }
 
-  return tryParseString(lastUserMessage.content).toLowerCase();
+  return (lastUserMessage?.content ?? "").toLowerCase();
 }
 
 async function generate({
   messages = [],
-}: {
-  model?: string;
-  messages?: Message[];
-  temperature?: number;
-  max_tokens?: number;
-}) {
-  const jsonFormat = extractJsonFormat(messages);
+  responseFormat = "",
+}: GenerateParams) {
+  const jsonFormat = responseFormat.toLowerCase();
   const userContent = extractLastUserContent(messages);
   const isHelloMessage = userContent.includes("hello");
 
@@ -119,4 +75,4 @@ async function generate({
   };
 }
 
-export default { generate };
+export default { generate } satisfies LLMAdapter;

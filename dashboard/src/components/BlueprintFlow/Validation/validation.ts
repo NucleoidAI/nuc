@@ -103,7 +103,7 @@ function validateSchemaCompatibility(
     matchingProperties.length > 0 || contextuallyAvailable.length > 0;
 
   return {
-    isCompatible: hasAtLeastOneMatch,
+    isCompatible: missingProperties.length === 0 || hasAtLeastOneMatch,
     missingProperties,
     matchingProperties,
     contextuallyAvailable,

@@ -4,24 +4,33 @@ import { event } from "@canmingir/link-express/event/client";
 import { v4 as uuid } from "uuid";
 
 async function create({
+  id,
   type,
   agentId,
+  blueprintId,
+  variables,
 }: {
+  id?: string;
   type: string;
   agentId: string;
+  blueprintId?: string;
+  variables?: Record<string, unknown>;
 }) {
-  const sessionId = uuid();
+  const sessionId = id ?? uuid();
 
   const session = await Session.create({
     id: sessionId,
     type,
     agentId,
+    ...(blueprintId && { blueprintId }),
   });
 
   await event.publish("SESSION_INITIATED", {
     id: sessionId,
     type,
     agentId,
+    blueprintId,
+    ...(variables && { variables }),
   });
 
   return session;
@@ -32,11 +41,13 @@ async function addConversation({
   role,
   agentId,
   content,
+  blueprintId,
 }: {
   sessionId: string;
   agentId: string;
   role: string;
   content: string;
+  blueprintId?: string;
 }) {
   const session = await Session.findByPk(sessionId);
 
@@ -56,6 +67,7 @@ async function addConversation({
       sessionId,
       conversationId: conversation.id,
       content,
+      ...(blueprintId && { blueprintId }),
     });
   } else {
     await event.publish("AI_ASSISTANT_MESSAGED", {
@@ -63,10 +75,15 @@ async function addConversation({
       sessionId,
       conversationId: conversation.id,
       content,
+      ...(blueprintId && { blueprintId }),
     });
   }
 
   return conversation;
+}
+
+async function get({ sessionId }: { sessionId: string }) {
+  return await Session.findByPk(sessionId);
 }
 
 async function listConversations({ sessionId }: { sessionId: string }) {
@@ -78,6 +95,7 @@ async function listConversations({ sessionId }: { sessionId: string }) {
 
 export default {
   create,
+  get,
   addConversation,
   listConversations,
 };

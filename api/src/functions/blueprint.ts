@@ -11,6 +11,8 @@ type NodeType = {
     prompt?: string;
     description?: string;
     pseudocode?: string;
+    targetAgentId?: string;
+    targetBlueprintId?: string;
   };
   type: string;
   next?: string[] | null;
@@ -51,6 +53,7 @@ async function upsert(
   messages?: Array<{ role: string; content: string; createdAt: Date }>,
   blocking?: boolean,
   skill?: string,
+  force?: boolean,
 ) {
   let Blueprint;
 
@@ -64,6 +67,7 @@ async function upsert(
       nodes: nodes || null,
       ...(blocking !== undefined && { blocking }),
       ...(skill !== undefined && { skill }),
+      ...(force !== undefined && { force }),
     });
 
     Blueprint = existingBlueprint;
@@ -76,6 +80,7 @@ async function upsert(
       nodes: nodes || null,
       ...(blocking !== undefined && { blocking }),
       ...(skill !== undefined && { skill }),
+      ...(force !== undefined && { force }),
     });
   }
 
@@ -193,6 +198,7 @@ async function patch({
   description,
   blocking,
   skill,
+  force,
 }: {
   blueprintId: string;
   pseudocode?: string;
@@ -200,6 +206,7 @@ async function patch({
   description?: string;
   blocking?: boolean;
   skill?: string;
+  force?: boolean;
 }) {
   const Blueprint = await BluePrint.findByPk(blueprintId);
 
@@ -213,6 +220,7 @@ async function patch({
     ...(description && { description }),
     ...(blocking !== undefined && { blocking }),
     ...(skill !== undefined && { skill }),
+    ...(force !== undefined && { force }),
   });
 
   return Blueprint.toJSON();
@@ -227,6 +235,7 @@ async function upsertPseudocode({
   messages,
   blocking,
   skill,
+  force,
 }: {
   id: string;
   title: string;
@@ -236,13 +245,14 @@ async function upsertPseudocode({
   messages?: Array<{ role: string; content: string; createdAt: Date }>;
   blocking?: boolean;
   skill?: string;
+  force?: boolean;
 }) {
   const existingNodes = new Map(
     (await BluePrint.findByPk(id))?.nodes?.map((n) => [n.id, n]) || [],
   );
 
   const [pseudocode, nodesWithPseudocode] = await Promise.all([
-    agentFn.toPseudo({ content: description }),
+    agentFn.toPseudo({ content: description, meta: { agentId } }),
     nodes
       ? Promise.all(
           nodes.map((node) => {
@@ -259,7 +269,7 @@ async function upsertPseudocode({
                 },
               } as typeof node;
             }
-            return agentFn.toPseudo({ content }).then(
+            return agentFn.toPseudo({ content, meta: { agentId } }).then(
               (nodePseudocode) =>
                 ({
                   ...node,
@@ -283,6 +293,7 @@ async function upsertPseudocode({
     messages,
     blocking,
     skill,
+    force,
   );
 
   await patch({ blueprintId: id, pseudocode });

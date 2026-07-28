@@ -172,6 +172,7 @@
       "description": "Find product, assign compliance certificate, create purchase order, write process to LLM, and send email.",
       "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\nAssignCertificate(product.id)\nPO.Create(product.id)\nLLM.WriteProcess()\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "skill": "**Product Order — Certificate-Backed Purchase**\n\nUse this Blueprint when a product order must have a compliance certificate assigned before a purchase order can be created.\n\nFlow: Ask user to select a product → Find product → Check certificate via knowledge lookup → Assign certificate → Create purchase order → Send email.\n\nExits after emailing confirmation of the completed purchase order.",
       "nodes": [
         {
           "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
@@ -268,6 +269,7 @@
       "description": "Find the vendor of a product that is missing a compliance certificate and send them an email requesting the certificate, then notify the user.",
       "pseudocode": "BEGIN_CONTEXT\nvendor = GetProductVendor(product.id)\nEmail.Send(vendor.email)\nMessageUser()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "skill": "**Compliance Certificate Request — Vendor Follow-up**\n\nUse this Blueprint when a product is missing its compliance certificate and the vendor must be contacted directly to obtain it.\n\nFlow: Get product vendor → Email vendor requesting certificate → Notify user that the vendor was contacted → Complete.\n\nExits after notifying the user; the certificate itself arrives out of band once the vendor responds.",
       "nodes": [
         {
           "id": "c2b1a0d9-e8f7-4c2b-9100-300000000002",
@@ -335,6 +337,7 @@
       "agentId": "019f4a02-1111-4222-8333-444455556666",
       "blocking": false,
       "force": true,
+      "skill": "**Meeting Recording — Transcribe & Summarize**\n\nUse this Blueprint when per-participant meeting recordings need to be transcribed and turned into a speaker-attributed summary distributed to all participants.\n\nFlow: Convert PCM to WAV → Transcribe meeting → Summarize meeting by speaker → Resolve participant IDs to names → Send email to all participants → Complete.\n\nExits after emailing the resolved summary to every meeting participant.",
       "nodes": [
         {
           "id": "019f414b-0001-4000-8000-000000000001",
@@ -428,6 +431,7 @@
       "description": "Handles a virtual machine provisioning request. The agent collects VM requirements from the user, creates the VM on AWS, and shares the instance details with the user.",
       "pseudocode": "BEGIN_CONTEXT\nrequirements = WaitForUserInput()\nvm = CreateVM(requirements)\nMessageUser(vm)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "3c8f1d5e-7b2a-4e91-a6d4-58c0f9b3e712",
+      "skill": "**VM Provisioning — Collect & Create**\n\nUse this Blueprint when a user requests a new virtual machine and its requirements need to be gathered before provisioning.\n\nFlow: Collect VM requirements from user → Create VM on AWS → Share VM details with user → Complete.\n\nExits after sharing the created VM's instance details with the user.",
       "nodes": [
         {
           "id": "019f5c00-0001-4000-8000-000000000001",
@@ -496,6 +500,7 @@
       "description": "Handles a virtual machine termination request. The agent collects the instance ID from the user, confirms the termination since it is permanent, terminates the VM on AWS, and shares the result with the user.",
       "pseudocode": "BEGIN_CONTEXT\ninstanceId = WaitForUserInput()\nconfirmation = WaitForUserConfirmation(instanceId)\nIF confirmation.Confirmed == TRUE THEN\n    result = TerminateVM(instanceId)\n    MessageUser(result)\nELSE\n    MessageUser(\"Termination cancelled\")\nEND_IF\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "3c8f1d5e-7b2a-4e91-a6d4-58c0f9b3e712",
+      "skill": "**VM Termination — Confirmation-Gated**\n\nUse this Blueprint when a user requests VM termination and explicit confirmation is required before this irreversible action proceeds.\n\nFlow: Collect instance ID → Confirm termination → [Not confirmed: notify cancellation, end] → Terminate VM → Share termination result.\n\nExits after sharing the termination result, or exits early with a cancellation notice if the user declines to confirm.",
       "nodes": [
         {
           "id": "019f5c01-0001-4000-8000-000000000001",
@@ -611,6 +616,7 @@
       "pseudocode": "BEGIN_CONTEXT\nreferences = KnowledgeLookup(agentId)\nevaluation = EvaluateMetrics(metrics, references)\nIF evaluation.hasViolations == TRUE THEN\n    ServiceNow.CreateIncident(evaluation.violations)\nEND_IF\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
       "blocking": false,
+      "skill": "**VM Metrics Health Check — Threshold-Gated Alerting**\n\nUse this Blueprint when incoming OTLP metrics from a VM need to be evaluated against reference ranges and should only raise an alert on a violation.\n\nFlow: Get reference ranges from knowledge → Evaluate metrics against ranges → [No violations: complete silently] → Create ServiceNow incident for violations → Complete.\n\nExits silently when all metrics are within range. Exits after creating an incident when any metric falls outside its reference range.",
       "nodes": [
         {
           "id": "019f7a20-0001-4000-8000-000000000001",
@@ -705,6 +711,7 @@
       "description": "Handles new employee onboarding. The agent takes the incoming employee's information (first name, last name, employee ID, department, job role, manager, location, ServiceNow request number), creates the employee's user account in Active Directory via the Active Directory MCP, approves the corresponding employee request in ServiceNow via the ServiceNow MCP, looks up the manager's email address from the agent's knowledge, emails the created account details to the manager, and sends a welcome email to the new employee's address.",
       "pseudocode": "BEGIN_CONTEXT\naccount = CreateEmployee(employee)\nServiceNow.ApproveRequest(employee.requestNumber)\nmanagerEmail = KnowledgeLookup(agentId)\nEmail.Send(managerEmail, account)\nEmail.Send(account.mail, welcome)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "019f6a11-0000-4000-8000-000000000001",
+      "skill": "**Employee Onboarding — AD Provisioning & Notifications**\n\nUse this Blueprint when a new employee request needs an Active Directory account created, its ServiceNow request approved, and the manager and employee notified.\n\nFlow: Create employee in Active Directory → Approve request in ServiceNow → Get manager email from knowledge → Email manager with account details → Email new employee a welcome message → Complete.\n\nExits after sending the welcome email to the new employee.",
       "nodes": [
         {
           "id": "019f6a10-0002-4000-8000-000000000002",

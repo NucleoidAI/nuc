@@ -1,4 +1,6 @@
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import MarkdownRenderer from "../MarkdownRenderer/MarkdownRenderer";
+
 import React from "react";
 import ToolsWidget from "../../widgets/ToolsWidget/ToolsWidget";
 
@@ -6,8 +8,6 @@ import {
   Box,
   CircularProgress,
   Collapse,
-  List,
-  ListItem,
   ListItemButton,
   ListItemText,
   useTheme,
@@ -25,37 +25,13 @@ const BlueprintSkill = ({
 }) => {
   const theme = useTheme();
   const [expanded, setExpanded] = React.useState(false);
-  const skillBullets = (skill || "")
-    .split("\n")
-    .map((line) => line.replace(/^\s*([#>*-]|\d+\.)\s*/, "").trim())
-    .filter((line) => line.length > 0);
 
   const renderSkillContent = () => {
     if (!skill && !skillLoading) return null;
 
     return (
-      <Box
-        sx={{
-          fontSize: "0.875rem",
-          color: theme.palette.text.secondary,
-        }}
-      >
-        {skill && (
-          <List dense disablePadding sx={{ listStyleType: "disc", pl: 2.5 }}>
-            {skillBullets.map((bullet, index) => (
-              <ListItem
-                key={index}
-                disableGutters
-                sx={{ display: "list-item", py: 0.25 }}
-              >
-                <ListItemText
-                  primary={bullet}
-                  slotProps={{ primary: { fontSize: "0.875rem" } }}
-                />
-              </ListItem>
-            ))}
-          </List>
-        )}
+      <Box sx={{ display: "flex", alignItems: "flex-start" }}>
+        {skill && <MarkdownRenderer>{skill}</MarkdownRenderer>}
         {skillLoading && (
           <CircularProgress
             sx={{ ml: 1 }}

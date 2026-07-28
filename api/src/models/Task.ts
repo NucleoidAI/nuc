@@ -21,7 +21,7 @@ class Task extends Model {
   declare id: string;
 
   @AllowNull(false)
-  @Column(DataType.STRING)
+  @Column(DataType.TEXT)
   declare description: string;
 
   @AllowNull(true)
@@ -29,7 +29,7 @@ class Task extends Model {
   declare result: string | null;
 
   @AllowNull(true)
-  @Column(DataType.STRING)
+  @Column(DataType.TEXT)
   declare comment: string | null;
 
   @AllowNull(false)

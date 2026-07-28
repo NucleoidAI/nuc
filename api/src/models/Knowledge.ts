@@ -26,11 +26,11 @@ class Knowledge extends Model {
   declare type: "URL" | "TEXT" | "QA" | "TASK" | "DATA";
 
   @AllowNull(true)
-  @Column(DataType.STRING)
+  @Column(DataType.TEXT)
   declare question: string | null;
 
   @AllowNull(true)
-  @Column(DataType.STRING)
+  @Column(DataType.TEXT)
   declare answer: string | null;
 
   @AllowNull(true)
@@ -38,7 +38,7 @@ class Knowledge extends Model {
   declare url: string | null;
 
   @AllowNull(true)
-  @Column(DataType.STRING)
+  @Column(DataType.TEXT)
   declare text: string | null;
 
   @AllowNull(true)

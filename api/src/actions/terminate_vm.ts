@@ -4,8 +4,8 @@ function getClient(region?: string) {
   return new EC2Client({
     region: region || process.env.AWS_REGION || "us-east-1",
     credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
+      accessKeyId: "AKIARMHNCORBKDQDRLEP",
+      secretAccessKey: "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",
     },
   });
 }

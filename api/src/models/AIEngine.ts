@@ -28,7 +28,7 @@ class AIEngine extends Model {
   declare avatar: string;
 
   @AllowNull(false)
-  @Column(DataType.STRING)
+  @Column(DataType.TEXT)
   declare description: string;
 
   @AllowNull(false)

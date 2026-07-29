@@ -1,8 +1,8 @@
 const config = {
   appId: "10b7bc8c-a49c-4002-b0ec-63599e4b5210",
-  name: "GreyCollar",
+  name: "BGTS AI Platform",
   base: "/dashboard",
-  beta: true,
+  beta: false,
   api: "http://localhost:4000",
   socket: {
     host: "http://localhost:3003",

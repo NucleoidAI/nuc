@@ -1,8 +1,8 @@
 const config = {
   appId: "10b7bc8c-a49c-4002-b0ec-63599e4b5210",
-  name: "GreyCollar",
+  name: "BGTSAI Platform",
   base: "/dashboard",
-  beta: true,
+  beta: false,
   api: "https://greycollar.nuc.land/api",
   socket: {
     host: "https://communication.land.greycollar.ai",

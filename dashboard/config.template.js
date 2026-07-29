@@ -20,9 +20,10 @@ const templateConfig = {
   login: {
     variant: "modern",
     image:
-      "https://cdn.nucleoid.com/media/3b7f96ee-c245-4c93-97b8-d5503340f262.png",
-    icon: "https://cdn.nucleoid.com/greycollar/media/icon.png",
-    largeIcon: "https://cdn.nucleoid.com/greycollar/media/icon.png",
+      "https://cdn.nucleoid.com/media/c4f30ffe-00b7-4f14-975f-82a4cf8d2207.png",
+    icon: "https://cdn.nucleoid.com/media/c4f30ffe-00b7-4f14-975f-82a4cf8d2207.png",
+    largeIcon:
+      "https://cdn.nucleoid.com/media/c4f30ffe-00b7-4f14-975f-82a4cf8d2207.png",
   },
   projectBar: {
     label: "Team",

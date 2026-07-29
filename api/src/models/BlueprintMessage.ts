@@ -24,7 +24,7 @@ class BlueprintMessage extends Model {
   declare blueprintId: string;
 
   @AllowNull(false)
-  @Column(DataType.STRING)
+  @Column(DataType.TEXT)
   declare content: string;
 
   @AllowNull(false)

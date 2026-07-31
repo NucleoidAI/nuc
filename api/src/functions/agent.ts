@@ -9,6 +9,7 @@ import knowledgeFn from "./knowledge";
 import mcpFn from "./mcp";
 import message from "./message";
 import messagesFunc from "./message";
+import { resolveParameterRefs } from "../lib/parameterRefs";
 import platform from "@canmingir/link-express";
 import session from "./session";
 import stepScoreFn from "./stepScore";
@@ -322,7 +323,7 @@ async function task({ taskId }: { taskId: string }) {
   const knowledgeScore = await scoring({ context, meta });
 
   const {
-    next_step: { action, parameters, comment },
+    next_step: { action, parameters: rawParameters, comment },
     result_score,
   } =
     isForce && blueprint?.nodes?.length
@@ -340,6 +341,23 @@ async function task({ taskId }: { taskId: string }) {
 
   console.log("next action", action);
   console.log("comment", comment);
+
+  let parameters: Record<string, unknown>;
+  try {
+    parameters = resolveParameterRefs(rawParameters, {
+      steps: currentTask.steps,
+      inherited_steps: inherited ?? [],
+    });
+  } catch (err) {
+    return await taskFn.update({
+      taskId,
+      status: "FAILED",
+      comment:
+        err instanceof Error
+          ? err.message
+          : "Failed to resolve parameter references",
+    });
+  }
 
   const resultScore =
     result_score != null ? parseFloat(String(result_score)) : undefined;

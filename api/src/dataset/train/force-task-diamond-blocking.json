@@ -1,1 +1,143 @@
-[]
+{
+  "data": [
+    {
+      "id": "3af941c6-424f-410d-9444-6c7c23b476c2",
+      "description": "Check product availability and create an order for it if needed.",
+      "knowledge": [
+        {
+          "type": "TEXT",
+          "text": "Battery product id is btr-123."
+        }
+      ],
+      "tools": ["GREY:check_product_count", "GREY:create_order", "PLATFORM:complete"],
+      "steps": [
+        {
+          "action": "GREY:check_product_count",
+          "status": "COMPLETED",
+          "parameters": {
+            "productId": "btr-123"
+          },
+          "result": "0",
+          "comment": "Checking product count"
+        }
+      ],
+      "forced_action": "GREY:create_order",
+      "next_step": {
+        "parameters": {
+          "productId": { "$ref": "steps[0].parameters.productId" },
+          "quantity": 10
+        },
+        "comment": "The productId was already given in steps[0].parameters when checking availability - reuse it via $ref instead of retyping it",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "9b1c2d3e-4f5a-4b6c-8d7e-9f0a1b2c3d4e",
+      "description": "Look up infrastructure inventory by address and allocate a port for the customer.",
+      "knowledge": [],
+      "tools": [
+        "PLATFORM:user_interaction",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:port_allocation",
+        "PLATFORM:complete"
+      ],
+      "steps": [
+        {
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": { "question": "What is your address?" },
+          "result": "2555 Wentwood Ct, Cumming, GA 30041",
+          "comment": "User provided address"
+        },
+        {
+          "action": "TELCO:get_bbk_by_address",
+          "status": "COMPLETED",
+          "parameters": {
+            "address": { "$ref": "steps[0].result" }
+          },
+          "result": "{\"bbk_no\":\"990\"}",
+          "comment": "Reusing the address the user already gave (steps[0].result) via $ref instead of retyping it"
+        },
+        {
+          "action": "TELCO:get_inventory",
+          "status": "COMPLETED",
+          "parameters": {
+            "bbk_no": { "$ref": "steps[1].result.bbk_no" }
+          },
+          "result": "{\"infrastructure_type\":\"FIBER\",\"topology\":\"PON\",\"upstream_device_name\":\"OLT-12\",\"upstream_device_card_no\":\"3\",\"upstream_device_port_no\":\"7\",\"device_serial_number\":\"SN-778812\",\"port_available\":\"true\",\"hgw_serial_no\":\"HGW-4471\"}",
+          "comment": "Reusing the bbk_no get_bbk_by_address already resolved (steps[1].result.bbk_no) via $ref instead of retyping it"
+        }
+      ],
+      "forced_action": "TELCO:port_allocation",
+      "next_step": {
+        "parameters": {
+          "device_serial_number": { "$ref": "steps[2].result.device_serial_number" },
+          "bbk_no": { "$ref": "steps[1].result.bbk_no" },
+          "speed_limit": "100mbps"
+        },
+        "comment": "device_serial_number came from get_inventory (steps[2].result) and bbk_no from get_bbk_by_address (steps[1].result) - reuse both via $ref instead of retyping them",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "1c2d3e4f-5a6b-4c7d-8e9f-0a1b2c3d4e5f",
+      "description": "Allocate a port for the customer's device and connect it.",
+      "knowledge": [],
+      "tools": ["TELCO:port_allocation", "TELCO:port_connection", "PLATFORM:complete"],
+      "steps": [
+        {
+          "action": "TELCO:port_allocation",
+          "status": "COMPLETED",
+          "parameters": {
+            "device_serial_number": "SN-778812",
+            "bbk_no": "990",
+            "speed_limit": "100mbps"
+          },
+          "result": "{\"assignment_id\":\"AGN-99213\",\"bbk_no\":\"990\",\"customer_no\":\"CUS-5521\",\"port_no\":\"12\",\"status\":\"ALLOCATED\",\"assignment_date\":\"2026-08-01\",\"speed_limit\":\"100mbps\",\"device_serial_number\":\"SN-778812\"}",
+          "comment": "Port allocated for device SN-778812"
+        }
+      ],
+      "forced_action": "TELCO:port_connection",
+      "next_step": {
+        "parameters": {
+          "assignment_id": { "$ref": "steps[0].result.assignment_id" }
+        },
+        "comment": "port_allocation already returned assignment_id (steps[0].result) - reuse it via $ref instead of retyping it",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "2d3e4f5a-6b7c-4d8e-9f0a-1b2c3d4e5f6a",
+      "description": "Find a product by name and look up its vendor information.",
+      "knowledge": [],
+      "tools": ["PLATFORM:user_interaction", "ORDER:find_product", "ORDER:get_product_vendor", "PLATFORM:complete"],
+      "steps": [
+        {
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": { "question": "Which product would you like to order?" },
+          "result": "product-1",
+          "comment": "User selected product-1"
+        },
+        {
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "name": { "$ref": "steps[0].result" }
+          },
+          "result": "{\"id\": \"prd-1\", \"name\": \"product-1\"}",
+          "comment": "Reusing the product name the user already gave (steps[0].result) via $ref instead of retyping it"
+        }
+      ],
+      "forced_action": "ORDER:get_product_vendor",
+      "next_step": {
+        "parameters": {
+          "product_id": { "$ref": "steps[1].result.id" }
+        },
+        "comment": "find_product already resolved the product id (steps[1].result.id) - reuse it via $ref instead of retyping it",
+        "result_score": 0.95
+      }
+    }
+  ]
+}

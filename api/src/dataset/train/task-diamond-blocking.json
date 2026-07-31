@@ -156,10 +156,10 @@
                 "action": "GREY:create_order",
                 "status": "COMPLETED",
                 "parameters": {
-                  "productId": "btr-123",
+                  "productId": { "$ref": "steps[0].parameters.productId" },
                   "quantity": 10
                 },
-                "comment": "Creating order"
+                "comment": "Reusing the productId already given to check_product_count (steps[0]) via $ref instead of retyping it"
               },
               {
                 "taskId": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
@@ -197,10 +197,10 @@
                 "action": "GREY:reduce_product_count",
                 "status": "COMPLETED",
                 "parameters": {
-                  "productId": "btr-123",
+                  "productId": { "$ref": "steps[0].parameters.productId" },
                   "quantity": 1
                 },
-                "comment": "Reducing product count"
+                "comment": "Reusing the productId already given to check_product_count (steps[0]) via $ref instead of retyping it"
               },
               {
                 "taskId": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
@@ -963,20 +963,20 @@
           "action": "ORDER:find_product",
           "status": "COMPLETED",
           "parameters": {
-            "name": "product-1"
+            "name": { "$ref": "steps[0].result" }
           },
           "result": "{\"id\": \"prd-1\", \"name\": \"product-1\"}",
-          "comment": "Found product-1 with ID prd-1"
+          "comment": "Reusing the product name the user already gave (steps[0].result) via $ref instead of retyping it"
         },
         {
           "taskId": "task-oc-001",
           "action": "GREY:knowledge_lookup",
           "status": "COMPLETED",
           "parameters": {
-            "product_id": "prd-1"
+            "product_id": { "$ref": "steps[1].result.id" }
           },
           "result": "{\"product_id\": \"prd-1\", \"certificate\": \"FFC\", \"has_certificate\": true}",
-          "comment": "Product prd-1 has FFC compliance certificate"
+          "comment": "Reusing the product id find_product already resolved (steps[1].result.id) via $ref instead of retyping it"
         },
         {
           "taskId": "task-oc-001",
@@ -991,23 +991,23 @@
                 "action": "ORDER:assign_certificate",
                 "status": "COMPLETED",
                 "parameters": {
-                  "product_id": "prd-1",
-                  "certificate": "FFC"
+                  "product_id": { "$ref": "steps[1].result.id" },
+                  "certificate": { "$ref": "steps[2].result.certificate" }
                 },
                 "result": "{\"product_id\": \"prd-1\", \"certificate\": \"FFC\", \"assigned\": true}",
-                "comment": "Confirmed FFC certificate for prd-1"
+                "comment": "Reusing product_id (steps[1].result.id) and certificate (steps[2].result.certificate) via $ref instead of retyping them"
               },
               {
                 "taskId": "task-oc-001",
                 "action": "ORDER:create_po",
                 "status": "COMPLETED",
                 "parameters": {
-                  "product_id": "prd-1",
+                  "product_id": { "$ref": "steps[1].result.id" },
                   "city": "Atlanta",
                   "quantity": 1
                 },
                 "result": "{\"order_id\": \"po-2001\", \"product_id\": \"prd-1\", \"city\": \"Atlanta\", \"quantity\": 1}",
-                "comment": "Purchase order po-2001 created for prd-1"
+                "comment": "Reusing product_id (steps[1].result.id) via $ref instead of retyping it"
               },
               {
                 "taskId": "task-oc-001",

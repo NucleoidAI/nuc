@@ -1,70 +1,69 @@
 import fs from "fs";
-import os from "os";
 import path from "path";
-import crypto from "crypto";
-import { execFile } from "child_process";
-import { promisify } from "util";
 import asrOutput from "../../../asr_output.json";
-const MOCK = true;
+const MOCK = false;
 
-const execFileAsync = promisify(execFile);
+const POLL_INTERVAL_MS = 3_000;
+const POLL_TIMEOUT_MS = 15 * 60_000;
 
-async function compressToMp3(filePath: string): Promise<string> {
-  const outPath = path.join(os.tmpdir(), `${crypto.randomUUID()}.mp3`);
-  await execFileAsync("ffmpeg", [
-    "-y",
-    "-i",
-    filePath,
-    "-ac",
-    "1",
-    "-b:a",
-    "64k",
-    outPath,
-  ]);
-  return outPath;
+async function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function transcribeFile(
   filePath: string,
-  endpointUrl: string,
-  apiKey: string | undefined,
+  baseUrl: string,
 ): Promise<string> {
-  const model = process.env.ASR_MODEL || "gpt-4o-transcribe";
+  const audioBuffer = await fs.promises.readFile(filePath);
+  const form = new FormData();
+  form.append(
+    "file",
+    new Blob([audioBuffer], { type: "audio/wav" }),
+    path.basename(filePath),
+  );
 
-  const headers: Record<string, string> = {};
-  if (apiKey) {
-    headers["Authorization"] = `Bearer ${apiKey}`;
+  const submitResponse = await fetch(`${baseUrl}/transcribe`, {
+    method: "POST",
+    body: form,
+  });
+
+  if (!submitResponse.ok) {
+    const details = await submitResponse.text();
+    throw new Error(
+      `ASR job submission failed (${submitResponse.status}): ${details}`,
+    );
   }
 
-  const mp3Path = await compressToMp3(filePath);
-  try {
-    const audioBuffer = await fs.promises.readFile(mp3Path);
-    const form = new FormData();
-    form.append(
-      "file",
-      new Blob([audioBuffer], { type: "audio/mpeg" }),
-      path.basename(mp3Path),
-    );
-    form.append("model", model);
+  const { job_id: jobId } = (await submitResponse.json()) as {
+    job_id?: string;
+  };
+  if (!jobId) {
+    throw new Error("ASR job submission did not return a job_id");
+  }
 
-    const response = await fetch(endpointUrl, {
-      method: "POST",
-      headers,
-      body: form,
-    });
+  const deadline = Date.now() + POLL_TIMEOUT_MS;
+  while (Date.now() < deadline) {
+    const resultResponse = await fetch(`${baseUrl}/result/${jobId}`);
 
-    if (!response.ok) {
-      const details = await response.text();
+    if (!resultResponse.ok) {
+      const details = await resultResponse.text();
       throw new Error(
-        `ASR transcription failed (${response.status}): ${details}`,
+        `ASR result fetch failed (${resultResponse.status}): ${details}`,
       );
     }
 
-    const result = (await response.json()) as { text: string };
-    return result.text;
-  } finally {
-    await fs.promises.unlink(mp3Path).catch(() => {});
+    const result = (await resultResponse.json()) as {
+      transcript?: string;
+    };
+
+    if (result.transcript) {
+      return result.transcript;
+    }
+
+    await sleep(POLL_INTERVAL_MS);
   }
+
+  throw new Error(`ASR job ${jobId} timed out after ${POLL_TIMEOUT_MS}ms`);
 }
 
 async function run({
@@ -88,15 +87,10 @@ async function run({
     return { error: `Directory does not exist: ${directoryPath}` };
   }
 
-  const endpointUrl = process.env.ASR_ENDPOINT_URL;
-  if (!endpointUrl) {
+  const baseUrl = process.env.ASR_ENDPOINT_URL;
+  if (!baseUrl) {
     return { error: "ASR_ENDPOINT_URL environment variable is not set" };
   }
-
-  const apiKey =
-    process.env.ASR_API_KEY ||
-    process.env.OPENAI_API_KEY ||
-    process.env.OPENROUTER_API_KEY;
 
   const wavFiles = fs
     .readdirSync(directoryPath)
@@ -120,7 +114,7 @@ async function run({
     const stem = path.basename(file, ".wav");
     const filePath = path.join(directoryPath, file);
     try {
-      const transcription = await transcribeFile(filePath, endpointUrl, apiKey);
+      const transcription = await transcribeFile(filePath, baseUrl);
       if (stem === meetingId) {
         mixTranscript = transcription;
       } else {

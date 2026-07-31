@@ -154,4 +154,29 @@ describe("resolveParameterRefs", () => {
       "{not json but starts with brace"
     );
   });
+
+  it("resolves a whole-result $ref to a structured object, not a JSON-text blob", () => {
+    const resultSource = {
+      steps: [
+        {
+          result: JSON.stringify({ summary: "ok", ids: ["16780288"] }),
+        },
+      ],
+    };
+
+    assert.deepEqual(
+      resolveParameterRefs(
+        { content: { $ref: "steps[0].result" } },
+        resultSource
+      ),
+      { content: { summary: "ok", ids: ["16780288"] } }
+    );
+  });
+
+  it("keeps a whole-result $ref as a raw string when the result is a plain scalar", () => {
+    assert.deepEqual(
+      resolveParameterRefs({ productId: { $ref: "steps[0].result" } }, source),
+      { productId: "5" }
+    );
+  });
 });

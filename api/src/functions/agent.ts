@@ -16,9 +16,6 @@ import stepScoreFn from "./stepScore";
 import supervising from "./supervising";
 import taskFn from "./task";
 
-const PARAMETER_REF_HINT =
-  'a literal value, or { "$ref": "steps[i].result" } / { "$ref": "steps[i].parameters.<field>" } to reuse a value already present in context.steps instead of retyping it';
-
 async function messages({ teamId }: { teamId: string }) {
   const messageInstances = await messagesFunc.listMessages({ teamId });
 
@@ -257,7 +254,8 @@ async function forceTask({
       : dataset.train.forceTaskDiamondNonBlocking,
     context,
     content: { ...currentTask, forced_action: forcedAction },
-    json_format: `{ next_step: { parameters: <PARAMETER: ${PARAMETER_REF_HINT}>, comment: <COMMENT> }, result_score: <0.0-1.0> }`,
+    json_format:
+      "{ next_step: { parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
     meta,
   });
 
@@ -336,7 +334,8 @@ async function task({ taskId }: { taskId: string }) {
             : dataset.train.taskDiamondNonBlocking,
           context,
           content: currentTask,
-          json_format: `{ next_step: { action: <ACTION>, parameters: <PARAMETER: ${PARAMETER_REF_HINT}>, comment: <COMMENT> }, result_score: <0.0-1.0> }`,
+          json_format:
+            "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
           meta,
         });
 

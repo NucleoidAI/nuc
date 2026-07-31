@@ -9,11 +9,15 @@ import knowledgeFn from "./knowledge";
 import mcpFn from "./mcp";
 import message from "./message";
 import messagesFunc from "./message";
+import { resolveParameterRefs } from "../lib/parameterRefs";
 import platform from "@canmingir/link-express";
 import session from "./session";
 import stepScoreFn from "./stepScore";
 import supervising from "./supervising";
 import taskFn from "./task";
+
+const PARAMETER_REF_HINT =
+  'a literal value, or { "$ref": "steps[i].result" } / { "$ref": "steps[i].parameters.<field>" } to reuse a value already present in context.steps instead of retyping it';
 
 async function messages({ teamId }: { teamId: string }) {
   const messageInstances = await messagesFunc.listMessages({ teamId });
@@ -253,8 +257,7 @@ async function forceTask({
       : dataset.train.forceTaskDiamondNonBlocking,
     context,
     content: { ...currentTask, forced_action: forcedAction },
-    json_format:
-      "{ next_step: { parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
+    json_format: `{ next_step: { parameters: <PARAMETER: ${PARAMETER_REF_HINT}>, comment: <COMMENT> }, result_score: <0.0-1.0> }`,
     meta,
   });
 
@@ -322,7 +325,7 @@ async function task({ taskId }: { taskId: string }) {
   const knowledgeScore = await scoring({ context, meta });
 
   const {
-    next_step: { action, parameters, comment },
+    next_step: { action, parameters: rawParameters, comment },
     result_score,
   } =
     isForce && blueprint?.nodes?.length
@@ -333,13 +336,29 @@ async function task({ taskId }: { taskId: string }) {
             : dataset.train.taskDiamondNonBlocking,
           context,
           content: currentTask,
-          json_format:
-            "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
+          json_format: `{ next_step: { action: <ACTION>, parameters: <PARAMETER: ${PARAMETER_REF_HINT}>, comment: <COMMENT> }, result_score: <0.0-1.0> }`,
           meta,
         });
 
   console.log("next action", action);
   console.log("comment", comment);
+
+  let parameters: Record<string, unknown>;
+  try {
+    parameters = resolveParameterRefs(rawParameters, {
+      steps: currentTask.steps,
+      inherited_steps: inherited ?? [],
+    });
+  } catch (err) {
+    return await taskFn.update({
+      taskId,
+      status: "FAILED",
+      comment:
+        err instanceof Error
+          ? err.message
+          : "Failed to resolve parameter references",
+    });
+  }
 
   const resultScore =
     result_score != null ? parseFloat(String(result_score)) : undefined;

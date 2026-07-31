@@ -5,7 +5,7 @@ import crypto from "crypto";
 import { execFile } from "child_process";
 import { promisify } from "util";
 import asrOutput from "../../../asr_output.json";
-const MOCK = false;
+const MOCK = true;
 
 const execFileAsync = promisify(execFile);
 
@@ -27,7 +27,7 @@ async function compressToMp3(filePath: string): Promise<string> {
 async function transcribeFile(
   filePath: string,
   endpointUrl: string,
-  apiKey: string | undefined
+  apiKey: string | undefined,
 ): Promise<string> {
   const model = process.env.ASR_MODEL || "gpt-4o-transcribe";
 
@@ -43,7 +43,7 @@ async function transcribeFile(
     form.append(
       "file",
       new Blob([audioBuffer], { type: "audio/mpeg" }),
-      path.basename(mp3Path)
+      path.basename(mp3Path),
     );
     form.append("model", model);
 
@@ -56,7 +56,7 @@ async function transcribeFile(
     if (!response.ok) {
       const details = await response.text();
       throw new Error(
-        `ASR transcription failed (${response.status}): ${details}`
+        `ASR transcription failed (${response.status}): ${details}`,
       );
     }
 

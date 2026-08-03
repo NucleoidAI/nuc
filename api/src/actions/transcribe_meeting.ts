@@ -71,6 +71,8 @@ async function run({
 }: {
   parameters: { directoryPath: string };
 }) {
+  console.log("transcribe_meeting", directoryPath);
+  console.log("MOCK", MOCK);
   if (MOCK) {
     await new Promise((resolve) => setTimeout(resolve, 20_000));
     return {
@@ -80,14 +82,22 @@ async function run({
   }
 
   if (!path.isAbsolute(directoryPath)) {
+    console.log("directoryPath", directoryPath);
+    console.log(
+      "path.isAbsolute(directoryPath)",
+      path.isAbsolute(directoryPath),
+    );
     return { error: "directoryPath must be an absolute path" };
   }
 
   if (!fs.existsSync(directoryPath)) {
+    console.log("directoryPath", directoryPath);
+    console.log("fs.existsSync(directoryPath)", fs.existsSync(directoryPath));
     return { error: `Directory does not exist: ${directoryPath}` };
   }
 
   const baseUrl = process.env.ASR_ENDPOINT_URL;
+  console.log("baseUrl", baseUrl);
   if (!baseUrl) {
     return { error: "ASR_ENDPOINT_URL environment variable is not set" };
   }
@@ -96,6 +106,8 @@ async function run({
     .readdirSync(directoryPath)
     .filter((f) => f.toLowerCase().endsWith(".wav"))
     .sort();
+
+  console.log("wavFiles", wavFiles);
 
   if (wavFiles.length === 0) {
     return { error: "No .wav files found in directory" };
@@ -106,6 +118,8 @@ async function run({
   // not a speaker and must not be treated as one.
   const meetingId = path.basename(directoryPath);
 
+  console.log("meetingId", meetingId);
+
   const speakerTranscripts: { id: string; transcript: string }[] = [];
   const fullParts: string[] = [];
   let mixTranscript: string | null = null;
@@ -113,8 +127,10 @@ async function run({
   for (const file of wavFiles) {
     const stem = path.basename(file, ".wav");
     const filePath = path.join(directoryPath, file);
+    console.log("filePath", filePath);
     try {
       const transcription = await transcribeFile(filePath, baseUrl);
+      console.log("transcription", transcription);
       if (stem === meetingId) {
         mixTranscript = transcription;
       } else {

@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import asrOutput from "../../../asr_output.json";
 const MOCK = false;
 
 const POLL_INTERVAL_MS = 3_000;
@@ -74,6 +73,12 @@ async function run({
   console.log("transcribe_meeting", directoryPath);
   console.log("MOCK", MOCK);
   if (MOCK) {
+    const asrOutput = JSON.parse(
+      await fs.promises.readFile(
+        path.join(__dirname, "../../../asr_output.json"),
+        "utf8",
+      ),
+    );
     await new Promise((resolve) => setTimeout(resolve, 20_000));
     return {
       full_meeting_transcript: asrOutput.full_meeting_transcript,

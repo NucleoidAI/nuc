@@ -1,3 +1,4 @@
+import type { DefinitionGraph } from "../../components/BlueprintFlow/helper";
 import NodeEditorDrawer from "../../components/NodeEditor/NodeEditorDrawer";
 import useAgents from "../../hooks/useAgents";
 import useBlueprint from "../../hooks/useBlueprint";
@@ -43,21 +44,7 @@ const NodeEditorWidget = ({
     trueNext?: string[];
     falseNext?: string[];
   };
-  graphData: {
-    nodes: Record<
-      string,
-      {
-        id: string;
-        label?: string;
-        action?: string;
-        nodeType?: string;
-        next?: string | string[];
-        trueNext?: string[];
-        falseNext?: string[];
-      }
-    >;
-    roots: string[];
-  };
+  graphData: DefinitionGraph;
   newNodeLabel: string;
   setNewNodeLabel: (label: string) => void;
   newNodePrompt: string;
@@ -180,7 +167,7 @@ const NodeEditorWidget = ({
             type: "object",
             properties: {},
           },
-          outputSchema: {
+          outputSchema: action.outputSchema || {
             type: "object",
             properties: {},
           },

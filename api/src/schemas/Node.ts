@@ -26,6 +26,12 @@ const NormalNode = z.object({
     prompt: z.string().optional(),
     icon: z.string(),
     pseudocode: z.string().optional(),
+    parameters: z
+      .record(z.string(), z.unknown())
+      .optional()
+      .describe(
+        "Bound/literal parameter values for this step's action; keys not present are left for the LLM to fill"
+      ),
   }),
 });
 

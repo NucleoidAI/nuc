@@ -678,6 +678,145 @@ type FlowGraphNode = import("./helper").DefinitionGraphNode & {
   [key: string]: unknown;
 };
 
+export type NodeFields = { inputs: string[]; outputs: string[] };
+
+const FieldsPanel = styled("div")(({ theme }) => ({
+  position: "absolute",
+  top: "calc(100% + 10px)",
+  left: 0,
+  width: "100%",
+  minWidth: 260,
+  display: "flex",
+  gap: 12,
+  padding: "8px 10px",
+  borderRadius: 10,
+  background: theme.palette.background.paper,
+  border: `1px solid ${theme.palette.divider}`,
+  boxShadow: "0 4px 14px rgba(0,0,0,0.18)",
+  zIndex: 25,
+  cursor: "default",
+}));
+
+const FieldColumn = styled("div")({
+  flex: 1,
+  minWidth: 0,
+  display: "flex",
+  flexDirection: "column",
+  gap: 4,
+});
+
+const ColumnLabel = styled("div")(({ theme }) => ({
+  fontSize: 10,
+  fontWeight: 700,
+  textTransform: "uppercase",
+  letterSpacing: "0.05em",
+  color: theme.palette.text.secondary,
+}));
+
+const FieldRow = styled("div")<{ align: "left" | "right" }>(({ align }) => ({
+  display: "flex",
+  alignItems: "center",
+  gap: 6,
+  flexDirection: align === "right" ? "row-reverse" : "row",
+}));
+
+const Dot = styled("div")<{ variant: "in" | "out"; bound?: string }>(
+  ({ variant, bound, theme }) => ({
+    flexShrink: 0,
+    width: 10,
+    height: 10,
+    borderRadius: "50%",
+    background:
+      bound === "true"
+        ? theme.palette.primary.main
+        : variant === "out"
+        ? theme.palette.secondary.main
+        : theme.palette.grey[400],
+    border: `2px solid ${theme.palette.background.paper}`,
+    boxShadow: `0 0 0 1px ${theme.palette.divider}`,
+    cursor: "crosshair",
+    pointerEvents: "auto",
+  })
+);
+
+const FieldLabel = styled("div")<{ align: "left" | "right" }>(
+  ({ align, theme }) => ({
+    fontSize: 11,
+    color: theme.palette.text.primary,
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    textAlign: align,
+  })
+);
+
+function NodeHandles({
+  node,
+  fields,
+  boundFields,
+  onHandleDragStart,
+}: {
+  node: FlowGraphNode;
+  fields: NodeFields;
+  boundFields?: Set<string>;
+  onHandleDragStart?: (
+    nodeId: string,
+    field: string,
+    e: React.MouseEvent
+  ) => void;
+}) {
+  return (
+    <FieldsPanel onMouseDown={(e) => e.stopPropagation()}>
+      <FieldColumn>
+        <ColumnLabel>Inputs</ColumnLabel>
+        {fields.inputs.length === 0 && (
+          <FieldLabel align="left" style={{ opacity: 0.5 }}>
+            —
+          </FieldLabel>
+        )}
+        {fields.inputs.map((field) => (
+          <FieldRow key={`in-${field}`} align="left">
+            <Dot
+              variant="in"
+              bound={boundFields?.has(field) ? "true" : "false"}
+              data-handle-type="in"
+              data-node-id={node.id}
+              data-field={field}
+              title={`Input: ${field}`}
+            />
+            <FieldLabel align="left" title={field}>
+              {field}
+            </FieldLabel>
+          </FieldRow>
+        ))}
+      </FieldColumn>
+
+      <FieldColumn>
+        <ColumnLabel style={{ textAlign: "right" }}>Outputs</ColumnLabel>
+        {fields.outputs.map((field) => (
+          <FieldRow key={`out-${field}`} align="right">
+            <Dot
+              variant="out"
+              data-handle-type="out"
+              data-node-id={node.id}
+              data-field={field}
+              title={`Output: ${field === "result" ? "result (raw)" : field}`}
+              onMouseDown={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                onHandleDragStart?.(node.id, field, e);
+              }}
+            />
+            <FieldLabel align="right" title={field}>
+              {field === "result" ? "result" : field}
+            </FieldLabel>
+          </FieldRow>
+        ))}
+      </FieldColumn>
+    </FieldsPanel>
+  );
+}
+
 function FlowNodeRenderer({
   node,
   nodeStyle,
@@ -688,10 +827,28 @@ function FlowNodeRenderer({
     onEdit?: (node: FlowGraphNode) => void;
     onSwapBranch?: (node: FlowGraphNode) => void;
     onDelete?: (node: FlowGraphNode) => void;
+    force?: boolean;
+    nodeFields?: Record<string, NodeFields>;
+    boundFieldsByNode?: Record<string, Set<string>>;
+    onHandleDragStart?: (
+      nodeId: string,
+      field: string,
+      e: React.MouseEvent
+    ) => void;
     [key: string]: unknown;
   };
 }) {
-  const { onAdd, onEdit, onSwapBranch, onDelete } = nodeStyle || {};
+  const {
+    onAdd,
+    onEdit,
+    onSwapBranch,
+    onDelete,
+    force,
+    nodeFields,
+    boundFieldsByNode,
+    onHandleDragStart,
+  } = nodeStyle || {};
+  const fields = node.nodeType === "NORMAL" ? nodeFields?.[node.id] : undefined;
   const isReadOnly = !onAdd && !onEdit && !onSwapBranch && !onDelete;
   const [contextMenu, setContextMenu] = useState<{
     mouseX: number;
@@ -730,6 +887,16 @@ function FlowNodeRenderer({
 
   return (
     <NodeWrapper onContextMenu={handleContextMenu}>
+      {force &&
+        fields &&
+        (fields.inputs.length > 0 || fields.outputs.length > 0) && (
+          <NodeHandles
+            node={node}
+            fields={fields}
+            boundFields={boundFieldsByNode?.[node.id]}
+            onHandleDragStart={onHandleDragStart}
+          />
+        )}
       <HighlightOverlay
         changetype={changeType}
         haserror={hasError ? "true" : "false"}

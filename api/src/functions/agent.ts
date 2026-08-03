@@ -247,6 +247,7 @@ async function forceTask({
   }
 
   const forcedAction = currentNode?.properties?.action;
+  const boundParameters = currentNode?.properties?.parameters;
 
   const result = await generate({
     dataset: isBlocking
@@ -262,6 +263,15 @@ async function forceTask({
   if (forcedAction) {
     result.next_step.action = forcedAction;
   }
+
+  if (boundParameters && Object.keys(boundParameters).length) {
+    result.next_step.parameters = {
+      ...result.next_step.parameters,
+      ...boundParameters,
+    };
+  }
+
+  result.next_step.nodeId = currentNode?.id ?? null;
 
   return result;
 }
@@ -323,7 +333,7 @@ async function task({ taskId }: { taskId: string }) {
   const knowledgeScore = await scoring({ context, meta });
 
   const {
-    next_step: { action, parameters: rawParameters, comment },
+    next_step: { action, parameters: rawParameters, comment, nodeId },
     result_score,
   } =
     isForce && blueprint?.nodes?.length
@@ -342,11 +352,16 @@ async function task({ taskId }: { taskId: string }) {
   console.log("next action", action);
   console.log("comment", comment);
 
+  const byNode = Object.fromEntries(
+    currentTask.steps.filter((s) => s.nodeId).map((s) => [s.nodeId, s]),
+  );
+
   let parameters: Record<string, unknown>;
   try {
     parameters = resolveParameterRefs(rawParameters, {
       steps: currentTask.steps,
       inherited_steps: inherited ?? [],
+      byNode,
     });
   } catch (err) {
     return await taskFn.update({
@@ -453,6 +468,7 @@ async function task({ taskId }: { taskId: string }) {
       comment,
       knowledgeScore,
       resultScore,
+      nodeId,
     });
   } else if (action === "PLATFORM:message_user") {
     parameters.sessionId = sessionId;
@@ -466,6 +482,7 @@ async function task({ taskId }: { taskId: string }) {
     comment,
     knowledgeScore,
     resultScore,
+    nodeId,
   });
 }
 

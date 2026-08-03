@@ -12,7 +12,7 @@
     "dev:api": "cd ./api && bun run dev",
     "dev:dashboard": "cd ./dashboard && bun run dev",
     "dev:main": "link-server",
-    "dev": "concurrently -n \"events,api,dashboard,communication\" \"bun run dev:events\" \"bun run dev:api\" \"bun run dev:dashboard\" \"bun run dev:communication\"",
+    "dev": "dotenv -e .env.local -- concurrently -n \"events,api,dashboard,communication\" \"bun run dev:events\" \"bun run dev:api\" \"bun run dev:dashboard\" \"bun run dev:communication\"",
     "install:dashboard": "cd ./dashboard && bun install",
     "install:communication": "cd ./communication && bun install",
     "install:server-dashboard": "cd ./server-dashboard && bun install",
@@ -46,6 +46,7 @@
     "concurrently": "^9.1.2"
   },
   "devDependencies": {
-    "@types/bun": "^1.3.14"
+    "@types/bun": "^1.3.14",
+    "dotenv-cli": "^11.0.0"
   }
 }

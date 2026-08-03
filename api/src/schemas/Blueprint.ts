@@ -20,6 +20,9 @@ const Blueprint = {
               action: z.string().optional(),
               description: z.string().optional(),
               pseudocode: z.string().optional(),
+              parameters: z.record(z.string(), z.unknown()).optional(),
+              targetAgentId: z.string().optional(),
+              targetBlueprintId: z.string().optional(),
             })
             .optional(),
           type: z.string(),

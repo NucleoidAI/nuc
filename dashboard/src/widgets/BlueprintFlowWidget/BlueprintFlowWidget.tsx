@@ -1,6 +1,7 @@
 import BlueprintFlow from "../../components/BlueprintFlow/BlueprintFlow";
 import BlueprintFlowSkeleton from "../../components/Skeletons/BlueprintFlowSkeleton";
 import NodeEditorWidget from "../NodeEditorWidget/NodeEditorWidget";
+import type { ParameterBinding } from "../../components/BlueprintFlow/NodeConnectionOverlay";
 import SampleFlow from "../../components/BlueprintFlow/Samples/SampleFlow";
 import SampleNode from "../../components/BlueprintFlow/Samples/SampleNode";
 import { calculateNodeChanges } from "../../components/BlueprintFlow/DiffPanel/diffHelper";
@@ -12,9 +13,11 @@ import { validateFlow } from "../../components/BlueprintFlow/Validation/validati
 import {
   DefinitionGraph,
   FlowDefinition,
+  buildByNodeRef,
   buildDefinitionGraph,
+  getAncestorNodes,
 } from "../../components/BlueprintFlow/helper";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 interface AIResponse {
   flow: FlowDefinition;
@@ -69,6 +72,10 @@ function BlueprintFlowWidget({
 }) {
   const [graphData, setGraphData] = useState<DefinitionGraph | null>(null);
   const [hasLocalChanges, setHasLocalChanges] = useState(false);
+  const hasLocalChangesRef = useRef(hasLocalChanges);
+  useEffect(() => {
+    hasLocalChangesRef.current = hasLocalChanges;
+  }, [hasLocalChanges]);
   const [blockingInternal, setBlockingInternal] = useState<boolean>(
     blueprint?.blocking ?? true
   );
@@ -242,7 +249,7 @@ function BlueprintFlowWidget({
         if (blueprintNodes?.nodes && blueprintNodes.nodes.length > 0) {
           setShowDiffPanel(true);
         }
-      } else if (blueprintNodes && !hasLocalChanges) {
+      } else if (blueprintNodes && !hasLocalChangesRef.current) {
         const initialData = buildDefinitionGraph(blueprintNodes);
         setGraphData(initialData);
         setBaselineNodes({
@@ -251,8 +258,12 @@ function BlueprintFlowWidget({
         });
       }
     },
+    // Deliberately excludes hasLocalChanges: this effect must only re-run when
+    // the fetched blueprint itself changes, not when the flip-to-false after a
+    // save flips it — otherwise it races the still-stale blueprintNodes fetch
+    // and clobbers the just-saved graphData with pre-save data.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [blueprintNodes, aiResponse, hasLocalChanges, blueprint?.id]
+    [blueprintNodes, aiResponse, blueprint?.id]
   );
 
   useEffect(
@@ -1092,6 +1103,78 @@ function BlueprintFlowWidget({
     setHasLocalChanges(true);
   };
 
+  const handleConnectParameter = ({
+    sourceNodeId,
+    sourceField,
+    targetNodeId,
+    targetField,
+  }: ParameterBinding) => {
+    setGraphData((prev) => {
+      if (!prev) return prev;
+      const targetNode = prev.nodes[targetNodeId];
+      if (!targetNode) return prev;
+
+      const ancestors = getAncestorNodes(prev, targetNodeId);
+      if (!ancestors.some((n) => n.id === sourceNodeId)) return prev;
+
+      const existingParams =
+        (targetNode.raw?.properties?.parameters as
+          | Record<string, unknown>
+          | undefined) || {};
+
+      const currentNodes = { ...prev.nodes };
+      currentNodes[targetNodeId] = {
+        ...targetNode,
+        raw: {
+          ...targetNode.raw,
+          properties: {
+            ...targetNode.raw?.properties,
+            parameters: {
+              ...existingParams,
+              [targetField]: buildByNodeRef(sourceNodeId, sourceField),
+            },
+          },
+        },
+      };
+
+      return { ...prev, nodes: currentNodes };
+    });
+    setHasLocalChanges(true);
+  };
+
+  const handleDisconnectParameter = (
+    targetNodeId: string,
+    targetField: string
+  ) => {
+    setGraphData((prev) => {
+      if (!prev) return prev;
+      const targetNode = prev.nodes[targetNodeId];
+      if (!targetNode) return prev;
+
+      const existingParams = {
+        ...((targetNode.raw?.properties?.parameters as
+          | Record<string, unknown>
+          | undefined) || {}),
+      };
+      delete existingParams[targetField];
+
+      const currentNodes = { ...prev.nodes };
+      currentNodes[targetNodeId] = {
+        ...targetNode,
+        raw: {
+          ...targetNode.raw,
+          properties: {
+            ...targetNode.raw?.properties,
+            parameters: existingParams,
+          },
+        },
+      };
+
+      return { ...prev, nodes: currentNodes };
+    });
+    setHasLocalChanges(true);
+  };
+
   const handleSaveFlow = async () => {
     setIsSubmitting(true);
     if (!graphData) return;
@@ -1117,6 +1200,11 @@ function BlueprintFlowWidget({
           icon: node.icon || node.raw?.properties?.icon,
           action: node.action || node.raw?.properties?.action,
           description: node.description || node.raw?.properties?.description,
+          ...(node.nodeType === "NORMAL" &&
+            node.raw?.properties?.parameters &&
+            Object.keys(node.raw.properties.parameters).length > 0 && {
+              parameters: node.raw.properties.parameters,
+            }),
           ...(node.nodeType === "HANDOFF" && {
             targetAgentId: node.raw?.properties?.targetAgentId,
             targetBlueprintId:
@@ -1162,6 +1250,14 @@ function BlueprintFlowWidget({
 
     if (setSelectedItem && response?.Blueprint) {
       setSelectedItem(response.Blueprint);
+    }
+
+    if (response?.Blueprint?.nodes) {
+      setGraphData(buildDefinitionGraph(response.Blueprint));
+      setBaselineNodes({
+        blueprintId: response.Blueprint.id,
+        nodes: response.Blueprint.nodes || [],
+      });
     }
 
     setHasLocalChanges(false);
@@ -1249,6 +1345,9 @@ function BlueprintFlowWidget({
           onSaveSuccessChange={setSaveSuccess}
           isSuperviseFlow={isSuperviseFlow}
           isSubmitting={isSubmitting}
+          force={force}
+          onConnectParameter={handleConnectParameter}
+          onDisconnectParameter={handleDisconnectParameter}
         />
       )}
 

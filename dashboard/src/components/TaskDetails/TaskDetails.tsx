@@ -243,7 +243,6 @@ const TaskDetails = ({
                           setStep(step);
                           setStepResult(true);
                         }}
-                        disabled={step.status === "IN_PROGRESS"}
                       >
                         <Iconify icon="material-symbols:folder-eye-outline" />
                       </Fab>

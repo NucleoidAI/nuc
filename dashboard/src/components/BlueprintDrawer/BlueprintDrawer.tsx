@@ -1,3 +1,4 @@
+import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import BlueprintChatTitle from "../BlueprintChat/BlueprintChatTitle";
 import BlueprintFlowWidget from "../../widgets/BlueprintFlowWidget/BlueprintFlowWidget";
 import CloseIcon from "@mui/icons-material/Close";
@@ -81,7 +82,7 @@ const BlueprintDrawer = ({
   const [showSettings, setShowSettings] = useState(false);
   const [settingsTab, setSettingsTab] = useState(0);
   const [blocking, setBlocking] = useState<boolean>(true);
-  const [force, setForce] = useState<boolean>(false);
+  const [showConnections, setShowConnections] = useState<boolean>(false);
   const [superviseChatOpen, setSuperviseChatOpen] = useState<boolean>(
     !!supervise
   );
@@ -106,13 +107,6 @@ const BlueprintDrawer = ({
     setBlocking(value);
     if (selectedItem?.id) {
       await patchBlueprint(selectedItem.id, { blocking: value });
-    }
-  };
-
-  const handleForceChange = async (value: boolean) => {
-    setForce(value);
-    if (selectedItem?.id) {
-      await patchBlueprint(selectedItem.id, { force: value });
     }
   };
 
@@ -153,8 +147,7 @@ const BlueprintDrawer = ({
         teamId={teamId}
         blocking={blocking}
         onBlockingChange={handleBlockingChange}
-        force={force}
-        onForceChange={handleForceChange}
+        showConnections={showConnections}
         onSave={supervise ? () => handleManualResolve("BLUEPRINT") : undefined}
       />
 
@@ -241,6 +234,28 @@ const BlueprintDrawer = ({
         </Fab>
       </Tooltip>
 
+      <Tooltip
+        title={
+          showConnections
+            ? "Hide parameter connections"
+            : "Show parameter connections"
+        }
+        placement="left"
+      >
+        <Fab
+          color={showConnections ? "primary" : "default"}
+          onClick={() => setShowConnections((prev) => !prev)}
+          sx={{
+            position: "absolute",
+            bottom: 24,
+            right: 168,
+            zIndex: 10,
+          }}
+        >
+          <AccountTreeIcon />
+        </Fab>
+      </Tooltip>
+
       <Tooltip title="Settings" placement="left">
         <Fab
           color="primary"
@@ -263,8 +278,6 @@ const BlueprintDrawer = ({
         setSettingsTab={setSettingsTab}
         blocking={blocking}
         setBlocking={handleBlockingChange}
-        force={force}
-        setForce={handleForceChange}
       />
     </Box>
   );

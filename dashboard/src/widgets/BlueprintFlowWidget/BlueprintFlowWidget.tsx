@@ -30,7 +30,6 @@ interface Blueprint {
   agentId: string;
   pseudocode?: string;
   blocking?: boolean;
-  force?: boolean;
 }
 
 function BlueprintFlowWidget({
@@ -48,8 +47,7 @@ function BlueprintFlowWidget({
   teamId,
   blocking: blockingProp,
   onBlockingChange: onBlockingChangeProp,
-  force: forceProp,
-  onForceChange: onForceChangeProp,
+  showConnections: showConnectionsProp,
   onSave,
 }: {
   aiResponse?: AIResponse;
@@ -66,8 +64,7 @@ function BlueprintFlowWidget({
   teamId?: string;
   blocking?: boolean;
   onBlockingChange?: (value: boolean) => void;
-  force?: boolean;
-  onForceChange?: (value: boolean) => void;
+  showConnections?: boolean;
   onSave?: () => void;
 }) {
   const [graphData, setGraphData] = useState<DefinitionGraph | null>(null);
@@ -80,10 +77,7 @@ function BlueprintFlowWidget({
     blueprint?.blocking ?? true
   );
   const blocking = blockingProp !== undefined ? blockingProp : blockingInternal;
-  const [forceInternal, setForceInternal] = useState<boolean>(
-    blueprint?.force ?? false
-  );
-  const force = forceProp !== undefined ? forceProp : forceInternal;
+  const showConnections = showConnectionsProp ?? false;
   const [validationErrors, setValidationErrors] = useState([]);
   const [showValidationErrors, setShowValidationErrors] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -174,6 +168,7 @@ function BlueprintFlowWidget({
   const [editingNodeId, setEditingNodeId] = useState<string | null>(null);
   const [newNodeLabel, setNewNodeLabel] = useState("");
   const [newNodePrompt, setNewNodePrompt] = useState("");
+  const [newNodeForce, setNewNodeForce] = useState(false);
   const [newNodeType, setNewNodeType] = useState("NORMAL");
   const [handoffTargetAgentId, setHandoffTargetAgentId] = useState("");
   const [handoffTargetBlueprintId, setHandoffTargetBlueprintId] = useState("");
@@ -216,20 +211,6 @@ function BlueprintFlowWidget({
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [blueprintNodes?.blocking]
-  );
-
-  useEffect(
-    () => {
-      if (blueprintNodes?.force !== undefined) {
-        if (onForceChangeProp) {
-          onForceChangeProp(blueprintNodes.force);
-        } else {
-          setForceInternal(blueprintNodes.force);
-        }
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [blueprintNodes?.force]
   );
 
   useEffect(
@@ -300,6 +281,7 @@ function BlueprintFlowWidget({
     setSelectedParentNode(node);
     setNewNodeLabel("");
     setNewNodePrompt("");
+    setNewNodeForce(false);
     setNodePseudocode("");
     setNewNodeType("NORMAL");
     setSelectedBranch("true");
@@ -316,6 +298,7 @@ function BlueprintFlowWidget({
     const nodeType = node.nodeType || "NORMAL";
     setNewNodeLabel(nodeLabel);
     setNewNodePrompt(nodePrompt);
+    setNewNodeForce(Boolean(node?.raw?.properties?.force));
     setNewNodeType(nodeType);
     setNodePseudocode(node?.raw?.properties?.pseudocode || "");
 
@@ -416,6 +399,7 @@ function BlueprintFlowWidget({
               ...nodeToUpdate.raw?.properties,
               label: newNodeLabel,
               prompt: newNodePrompt,
+              force: newNodeForce,
               description: descriptionText,
               action: actionType,
               icon: nodeIcon,
@@ -449,6 +433,7 @@ function BlueprintFlowWidget({
               ...nodeToUpdate.raw?.properties,
               label: newNodeLabel,
               prompt: newNodePrompt,
+              force: newNodeForce,
               description: descriptionText,
               action: actionType,
               icon: nodeIcon,
@@ -477,6 +462,7 @@ function BlueprintFlowWidget({
               ...nodeToUpdate.raw?.properties,
               label: newNodeLabel,
               prompt: newNodePrompt,
+              force: newNodeForce,
               description: descriptionText,
               action: actionType,
               icon: nodeIcon,
@@ -503,6 +489,7 @@ function BlueprintFlowWidget({
               ...nodeToUpdate.raw?.properties,
               label: newNodeLabel,
               prompt: newNodePrompt,
+              force: newNodeForce,
               description: descriptionText,
               action: actionType,
               icon: nodeIcon,
@@ -532,6 +519,7 @@ function BlueprintFlowWidget({
     setSelectedParentNode(null);
     setNewNodeLabel("");
     setNewNodePrompt("");
+    setNewNodeForce(false);
     setNodePseudocode("");
     setNewNodeType("NORMAL");
     setSelectedBranch("true");
@@ -604,6 +592,7 @@ function BlueprintFlowWidget({
                   action: actionType,
                   label: newNodeLabel,
                   prompt: newNodePrompt,
+                  force: newNodeForce,
                   description: descriptionText,
                   icon: nodeIcon,
                 },
@@ -630,6 +619,7 @@ function BlueprintFlowWidget({
                   action: actionType,
                   label: newNodeLabel,
                   prompt: newNodePrompt,
+                  force: newNodeForce,
                   description: descriptionText,
                   icon: nodeIcon,
                   targetAgentId: handoffTargetAgentId,
@@ -656,6 +646,7 @@ function BlueprintFlowWidget({
                   action: actionType,
                   label: newNodeLabel,
                   prompt: newNodePrompt,
+                  force: newNodeForce,
                   description: descriptionText,
                   icon: nodeIcon,
                 },
@@ -731,6 +722,7 @@ function BlueprintFlowWidget({
                   action: actionType,
                   label: newNodeLabel,
                   prompt: newNodePrompt,
+                  force: newNodeForce,
                   description: descriptionText,
                   icon: nodeIcon,
                 },
@@ -771,6 +763,7 @@ function BlueprintFlowWidget({
                   action: actionType,
                   label: newNodeLabel,
                   prompt: newNodePrompt,
+                  force: newNodeForce,
                   description: descriptionText,
                   icon: nodeIcon,
                   targetAgentId: handoffTargetAgentId,
@@ -797,6 +790,7 @@ function BlueprintFlowWidget({
                   action: actionType,
                   label: newNodeLabel,
                   prompt: newNodePrompt,
+                  force: newNodeForce,
                   description: descriptionText,
                   icon: nodeIcon,
                 },
@@ -1114,6 +1108,10 @@ function BlueprintFlowWidget({
       const targetNode = prev.nodes[targetNodeId];
       if (!targetNode) return prev;
 
+      // Only force nodes have a guaranteed action, so only their inputs
+      // are meaningful to bind — other nodes' input handles are read-only.
+      if (!targetNode.raw?.properties?.force) return prev;
+
       const ancestors = getAncestorNodes(prev, targetNodeId);
       if (!ancestors.some((n) => n.id === sourceNodeId)) return prev;
 
@@ -1175,6 +1173,31 @@ function BlueprintFlowWidget({
     setHasLocalChanges(true);
   };
 
+  const handleToggleForceNode = (node: { id: string }) => {
+    setGraphData((prev) => {
+      if (!prev) return prev;
+      const targetNode = prev.nodes[node.id];
+      if (!targetNode) return prev;
+
+      const wasForced = Boolean(targetNode.raw?.properties?.force);
+
+      const currentNodes = { ...prev.nodes };
+      currentNodes[node.id] = {
+        ...targetNode,
+        raw: {
+          ...targetNode.raw,
+          properties: {
+            ...targetNode.raw?.properties,
+            force: !wasForced,
+          },
+        },
+      };
+
+      return { ...prev, nodes: currentNodes };
+    });
+    setHasLocalChanges(true);
+  };
+
   const handleSaveFlow = async () => {
     setIsSubmitting(true);
     if (!graphData) return;
@@ -1200,6 +1223,7 @@ function BlueprintFlowWidget({
           icon: node.icon || node.raw?.properties?.icon,
           action: node.action || node.raw?.properties?.action,
           description: node.description || node.raw?.properties?.description,
+          ...(node.raw?.properties?.force && { force: true }),
           ...(node.nodeType === "NORMAL" &&
             node.raw?.properties?.parameters &&
             Object.keys(node.raw.properties.parameters).length > 0 && {
@@ -1244,8 +1268,7 @@ function BlueprintFlowWidget({
       updatedNodes,
       taskId,
       blueprintNodes?.messages,
-      blocking,
-      force
+      blocking
     );
 
     if (setSelectedItem && response?.Blueprint) {
@@ -1345,9 +1368,10 @@ function BlueprintFlowWidget({
           onSaveSuccessChange={setSaveSuccess}
           isSuperviseFlow={isSuperviseFlow}
           isSubmitting={isSubmitting}
-          force={force}
+          showConnections={showConnections}
           onConnectParameter={handleConnectParameter}
           onDisconnectParameter={handleDisconnectParameter}
+          onToggleForceNode={handleToggleForceNode}
         />
       )}
 
@@ -1361,6 +1385,8 @@ function BlueprintFlowWidget({
         setNewNodeLabel={setNewNodeLabel}
         newNodePrompt={newNodePrompt}
         setNewNodePrompt={setNewNodePrompt}
+        newNodeForce={newNodeForce}
+        setNewNodeForce={setNewNodeForce}
         newNodeType={newNodeType}
         setNewNodeType={setNewNodeType}
         selectedBranch={selectedBranch}

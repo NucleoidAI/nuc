@@ -39,16 +39,17 @@ export default function BlueprintFlow({
   onSaveSuccessChange,
   isSubmitting,
   isSuperviseFlow = false,
-  force = false,
+  showConnections = false,
   onConnectParameter,
   onDisconnectParameter,
+  onToggleForceNode,
 }: BlueprintFlowProps) {
   const flowContainerRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState<DragState | null>(null);
   const allIntegrations = useAllIntegrations();
 
   const nodeFields: Record<string, NodeFields> = useMemo(() => {
-    if (!force || !graphData?.nodes) return {};
+    if (!showConnections || !graphData?.nodes) return {};
 
     const result: Record<string, NodeFields> = {};
     for (const node of Object.values(graphData.nodes)) {
@@ -73,10 +74,10 @@ export default function BlueprintFlow({
       }
     }
     return result;
-  }, [force, graphData, allIntegrations]);
+  }, [showConnections, graphData, allIntegrations]);
 
   const boundFieldsByNode: Record<string, Set<string>> = useMemo(() => {
-    if (!force || !graphData?.nodes) return {};
+    if (!showConnections || !graphData?.nodes) return {};
 
     const result: Record<string, Set<string>> = {};
     for (const node of Object.values(graphData.nodes)) {
@@ -94,7 +95,7 @@ export default function BlueprintFlow({
       if (bound.size) result[node.id] = bound;
     }
     return result;
-  }, [force, graphData]);
+  }, [showConnections, graphData]);
 
   return (
     <Box
@@ -128,15 +129,16 @@ export default function BlueprintFlow({
           onEdit: readOnly ? undefined : onEditNodeClick,
           onSwapBranch: readOnly ? undefined : onSwapBranchClick,
           onDelete: readOnly ? undefined : onDeleteNodeClick,
-          force: !readOnly && force,
+          showConnections: !readOnly && showConnections,
           nodeFields,
           boundFieldsByNode,
           onHandleDragStart: (nodeId: string, field: string) =>
             setDragging({ sourceNodeId: nodeId, sourceField: field }),
+          onToggleForce: readOnly ? undefined : onToggleForceNode,
         })}
       />
 
-      {!readOnly && force && (
+      {!readOnly && showConnections && (
         <NodeConnectionOverlay
           containerRef={flowContainerRef}
           graphData={graphData}

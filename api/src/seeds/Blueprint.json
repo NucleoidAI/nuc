@@ -676,6 +676,135 @@
           "createdAt": "2026-07-14T10:00:00Z"
         }
       ]
+    },
+    {
+      "id": "2a6b4b46-e24d-4f97-bfcb-0aeba53255fd",
+      "title": "Force Parameter Binding Proof",
+      "description": "Test-only blueprint proving force-mode parameter binding actually drives execution. Node 1 is fully bound/forced (no LLM involvement in its parameters): it reads a marker fixture file. Node 2 is a forced PLATFORM:message_user step whose 'message' parameter is $ref-bound to node 1's output content, not written by the LLM. Send this agent any message: whatever comes back to you should be EXACTLY the marker file's text, proving the byNode.$ref binding pulled the value straight across the graph.",
+      "pseudocode": "BEGIN_CONTEXT\nmarker = FileInspector(filePath: \"api/src/fixtures/force-binding-marker.txt\", operation: \"read\")\nMessageUser(message: marker.content)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "e9578e92-c5d9-4d6b-9615-fde3217f74ef",
+      "nodes": [
+        {
+          "id": "1e39e56d-2d97-4b7b-bcfa-cf4e907a07d1",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:file_inspector",
+            "description": "Read the force-binding marker fixture file from disk",
+            "prompt": "Read the marker fixture file",
+            "label": "Read Marker File",
+            "icon": "mdi:file-search",
+            "pseudocode": "BEGIN_CONTEXT\nmarker = FileInspector(filePath, operation: \"read\")\nEND_CONTEXT\n\nEND_MESSAGE",
+            "force": true,
+            "parameters": {
+              "filePath": "/Users/halilcengel/Developer/GreyCollar/api/src/fixtures/force-binding-marker.txt",
+              "operation": "read"
+            }
+          },
+          "next": ["a8f49637-b503-4743-81bd-82e6bb7c5de4"],
+          "createdAt": "2026-08-03T00:00:00Z"
+        },
+        {
+          "id": "a8f49637-b503-4743-81bd-82e6bb7c5de4",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Send the marker file's content back to the user — forced, and bound to node 1's output via $ref",
+            "prompt": "Send a message to the user",
+            "label": "Send Marker To User",
+            "icon": "mdi:message-text",
+            "pseudocode": "BEGIN_CONTEXT\nMessageUser(message: marker.content)\nEND_CONTEXT\n\nEND_MESSAGE",
+            "force": true,
+            "parameters": {
+              "message": {
+                "$ref": "byNode.1e39e56d-2d97-4b7b-bcfa-cf4e907a07d1.result.content"
+              }
+            }
+          },
+          "next": ["0605cf01-8160-4125-a4d4-455efdd209d0"],
+          "createdAt": "2026-08-03T00:00:00Z"
+        },
+        {
+          "id": "0605cf01-8160-4125-a4d4-455efdd209d0",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "Mark the force-binding proof workflow as complete",
+            "prompt": "Complete",
+            "label": "Complete",
+            "icon": "mdi:check",
+            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": null,
+          "createdAt": "2026-08-03T00:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "015e9381-929d-4437-81c7-ec01b3008073",
+      "title": "Translate User Text",
+      "description": "Asks the user for a piece of text, translates it into Turkish, English, and Spanish, then sends the translations back to the user. Nodes 2 (Translate) and 3 (Send Translations) are force nodes with their inputs left unbound — connect node 1's 'answer' output into node 2's 'text' input, and any of node 2's tr/en/es outputs into node 3's 'message' input, on the canvas.",
+      "pseudocode": "BEGIN_CONTEXT\ninput = AskUser(\"What text would you like translated?\")\ntranslations = Translate(input.answer)\nMessageUser(translations)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "871fd6e5-c5c8-43c4-98b8-598ac7fe8103",
+      "nodes": [
+        {
+          "id": "29975cca-ff68-4ffc-a423-23226d1c5071",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "description": "Ask the user for the text they want translated",
+            "prompt": "Ask the user: 'What text would you like translated?'",
+            "label": "Ask For Text",
+            "icon": "mdi:account-question",
+            "pseudocode": "BEGIN_CONTEXT\ninput = AskUser(\"What text would you like translated?\")\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["ae27094d-bb22-47e6-90b5-bf98810a9b57"],
+          "createdAt": "2026-08-04T00:00:00Z"
+        },
+        {
+          "id": "ae27094d-bb22-47e6-90b5-bf98810a9b57",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:translate",
+            "description": "Translate the user's text into Turkish, English, and Spanish",
+            "prompt": "Translate the text the user provided",
+            "label": "Translate",
+            "icon": "mdi:translate",
+            "pseudocode": "BEGIN_CONTEXT\ntranslations = Translate(input.answer)\nEND_CONTEXT\n\nEND_MESSAGE",
+            "force": true
+          },
+          "next": ["2a811fae-94ad-42cd-9433-0464854e860c"],
+          "createdAt": "2026-08-04T00:00:00Z"
+        },
+        {
+          "id": "2a811fae-94ad-42cd-9433-0464854e860c",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Send the translated text back to the user",
+            "prompt": "Send the user a message containing the Turkish, English, and Spanish translations from the previous step, clearly labeled by language",
+            "label": "Send Translations",
+            "icon": "mdi:message-text",
+            "pseudocode": "BEGIN_CONTEXT\nMessageUser(translations)\nEND_CONTEXT\n\nEND_MESSAGE",
+            "force": true
+          },
+          "next": ["fb70780d-7b5a-40b8-95a3-d5920f2d5678"],
+          "createdAt": "2026-08-04T00:00:00Z"
+        },
+        {
+          "id": "fb70780d-7b5a-40b8-95a3-d5920f2d5678",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "Mark the translation flow as complete",
+            "prompt": "Complete",
+            "label": "Complete",
+            "icon": "mdi:check",
+            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": null,
+          "createdAt": "2026-08-04T00:00:00Z"
+        }
+      ]
     }
   ]
 }

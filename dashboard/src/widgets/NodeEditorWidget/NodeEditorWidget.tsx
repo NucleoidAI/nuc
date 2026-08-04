@@ -16,6 +16,8 @@ const NodeEditorWidget = ({
   setNewNodeLabel,
   newNodePrompt,
   setNewNodePrompt,
+  newNodeForce,
+  setNewNodeForce,
   newNodeType,
   setNewNodeType,
   selectedBranch,
@@ -49,6 +51,8 @@ const NodeEditorWidget = ({
   setNewNodeLabel: (label: string) => void;
   newNodePrompt: string;
   setNewNodePrompt: (prompt: string) => void;
+  newNodeForce?: boolean;
+  setNewNodeForce?: (force: boolean) => void;
   newNodeType: string;
   setNewNodeType: (type: string) => void;
   selectedBranch: "true" | "false";
@@ -237,6 +241,8 @@ const NodeEditorWidget = ({
       setNewNodeLabel={setNewNodeLabel}
       newNodePrompt={newNodePrompt}
       setNewNodePrompt={setNewNodePrompt}
+      newNodeForce={newNodeForce}
+      setNewNodeForce={setNewNodeForce}
       newNodeType={newNodeType}
       setNewNodeType={setNewNodeType}
       selectedBranch={selectedBranch}

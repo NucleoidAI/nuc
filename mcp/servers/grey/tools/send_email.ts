@@ -313,11 +313,19 @@ export const sendEmailTool: Tool<any> = {
       if (!host) throw new Error("SMTP_HOST is not set");
       if (!from) throw new Error("SMTP_FROM (or SMTP_USER) is not set");
 
+      const secure = process.env.SMTP_SECURE
+        ? process.env.SMTP_SECURE === "true"
+        : port === 465;
+      const ignoreTLS = process.env.SMTP_IGNORE_TLS === "true";
+      const requireTLS = !secure && !ignoreTLS &&
+        process.env.SMTP_REQUIRE_TLS !== "false";
+
       const transporter = nodemailer.createTransport({
         host,
         port,
-        secure: port === 465,
-        requireTLS: port !== 465,
+        secure,
+        requireTLS,
+        ignoreTLS,
         auth: user && pass ? { user, pass } : undefined,
         connectionTimeout: 10_000,
         greetingTimeout: 10_000,

@@ -120,7 +120,7 @@ export default function BlueprintFlow({
         data={enrichedGraphData}
         plugin={blueprintFlowPlugin}
         editable={!readOnly}
-        height={isSuperviseFlow ? "50%" : "100%"}
+        height={"100%"}
         onChange={readOnly ? undefined : onFlowChange}
         variant="horizontal"
         style={() => ({

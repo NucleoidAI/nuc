@@ -29,6 +29,10 @@ class Blueprint extends Model {
   @Column(DataType.TEXT)
   declare description: string;
 
+  @AllowNull(true)
+  @Column(DataType.TEXT)
+  declare skill: string | null;
+
   @AllowNull(false)
   @Column(DataType.UUID)
   declare agentId: string;

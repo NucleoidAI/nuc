@@ -19,8 +19,6 @@ import { Box, Skeleton, useTheme } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const DRAWER_WIDTH = 400;
-
 const TABS = [
   {
     value: "profile",
@@ -165,12 +163,7 @@ function AgentLayout({
 
   return (
     <>
-      <Box
-        sx={{
-          transition: "margin 0.3s ease-in-out",
-          marginRight: chatOpen ? `${DRAWER_WIDTH}px` : 0,
-        }}
-      >
+      <Box>
         <Stack margin={2} sx={{ position: "relative", marginTop: 0 }}>
           {loading ? (
             <Skeleton variant="rectangular" height={200} />

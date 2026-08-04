@@ -1228,9 +1228,25 @@ async function blueprintDescription({
     meta,
   });
 
-  console.log("[agent] blueprintDescription:", response);
-
   return response.description as string;
+}
+
+async function blueprintSkill({ nodes }: { nodes: object[] }) {
+  const context = [
+    {
+      role: "system" as const,
+      content: { nodes },
+    },
+  ];
+
+  const response = await generate({
+    dataset: dataset.train.blueprintSkill,
+    context,
+    content: nodes,
+    json_format: "{ skill: <SKILL> }",
+  });
+
+  return response.skill as string;
 }
 
 export default {
@@ -1247,4 +1263,5 @@ export default {
   evaluateSupervisionAnswer,
   toPseudo,
   blueprintDescription,
+  blueprintSkill,
 };

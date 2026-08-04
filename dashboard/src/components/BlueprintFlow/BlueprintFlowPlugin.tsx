@@ -621,8 +621,8 @@ export const blueprintFlowPlugin = {
     const shadowLevel = 1;
     const minWidth = 300;
     const maxWidth = 300;
-    const minHeight = 180;
-    const maxHeight = 180;
+    const minHeight = 220;
+    const maxHeight = 220;
     const shape = 16;
 
     return {

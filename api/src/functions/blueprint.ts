@@ -53,6 +53,7 @@ async function upsert(
   nodes?: NodeType[],
   messages?: Array<{ role: string; content: string; createdAt: Date }>,
   blocking?: boolean,
+  skill?: string,
 ) {
   let Blueprint;
 
@@ -65,6 +66,7 @@ async function upsert(
       agentId,
       nodes: nodes || null,
       ...(blocking !== undefined && { blocking }),
+      ...(skill !== undefined && { skill }),
     });
 
     Blueprint = existingBlueprint;
@@ -76,6 +78,7 @@ async function upsert(
       agentId,
       nodes: nodes || null,
       ...(blocking !== undefined && { blocking }),
+      ...(skill !== undefined && { skill }),
     });
   }
 
@@ -192,12 +195,14 @@ async function patch({
   title,
   description,
   blocking,
+  skill,
 }: {
   blueprintId: string;
   pseudocode?: string;
   title?: string;
   description?: string;
   blocking?: boolean;
+  skill?: string;
 }) {
   const Blueprint = await BluePrint.findByPk(blueprintId);
 
@@ -210,6 +215,7 @@ async function patch({
     ...(title && { title }),
     ...(description && { description }),
     ...(blocking !== undefined && { blocking }),
+    ...(skill !== undefined && { skill }),
   });
 
   return Blueprint.toJSON();
@@ -223,6 +229,7 @@ async function upsertPseudocode({
   nodes,
   messages,
   blocking,
+  skill,
 }: {
   id: string;
   title: string;
@@ -231,64 +238,77 @@ async function upsertPseudocode({
   nodes?: NodeType[];
   messages?: Array<{ role: string; content: string; createdAt: Date }>;
   blocking?: boolean;
+  skill?: string;
 }) {
   const existingNodes = new Map(
     (await BluePrint.findByPk(id))?.nodes?.map((n) => [n.id, n]) || [],
   );
 
-  const [pseudocode, nodesWithPseudocode, generatedDescription] =
-    await Promise.all([
-      agentFn.toPseudo({ content: description, meta: { agentId } }),
-      nodes
-        ? Promise.all(
-            nodes.map((node) => {
-              const content = node.properties?.prompt;
-              if (!content) return node;
-              const prev = existingNodes.get(node.id);
-              const prevContent = prev?.properties?.prompt;
-              if (prev?.properties?.pseudocode && prevContent === content) {
-                return {
+  const [pseudocode, nodesWithPseudocode] = await Promise.all([
+    agentFn.toPseudo({ content: description, meta: { agentId } }),
+    nodes
+      ? Promise.all(
+          nodes.map((node) => {
+            const content = node.properties?.prompt;
+            if (!content) return node;
+            const prev = existingNodes.get(node.id);
+            const prevContent = prev?.properties?.prompt;
+            if (prev?.properties?.pseudocode && prevContent === content) {
+              return {
+                ...node,
+                properties: {
+                  ...node.properties,
+                  pseudocode: prev.properties.pseudocode,
+                },
+              } as typeof node;
+            }
+            return agentFn.toPseudo({ content, meta: { agentId } }).then(
+              (nodePseudocode) =>
+                ({
                   ...node,
                   properties: {
                     ...node.properties,
-                    pseudocode: prev.properties.pseudocode,
+                    pseudocode: nodePseudocode,
                   },
-                } as typeof node;
-              }
-              return agentFn.toPseudo({ content, meta: { agentId } }).then(
-                (nodePseudocode) =>
-                  ({
-                    ...node,
-                    properties: {
-                      ...node.properties,
-                      pseudocode: nodePseudocode,
-                    },
-                  } as typeof node),
-              );
-            }),
-          )
-        : undefined,
-      nodes?.length
-        ? agentFn.blueprintDescription({ nodes, meta: { agentId } })
-        : Promise.resolve(undefined),
-    ]);
-
-  const finalDescription = generatedDescription ?? description;
+                } as typeof node),
+            );
+          }),
+        )
+      : undefined,
+  ]);
 
   const result = await upsert(
     title,
-    finalDescription,
+    description,
     agentId,
     id,
     nodesWithPseudocode,
     messages,
     blocking,
+    skill,
   );
 
   await patch({ blueprintId: id, pseudocode });
 
   return { ...result, pseudocode };
 }
+
+async function generateDescription({ nodes }: { nodes: NodeType[] }) {
+  if (!nodes?.length) {
+    return "";
+  }
+
+  return agentFn.blueprintDescription({ nodes });
+}
+
+async function generateSkill({ nodes }: { nodes: NodeType[] }) {
+  if (!nodes?.length) {
+    return "";
+  }
+
+  return agentFn.blueprintSkill({ nodes });
+}
+
 export default {
   getWithNodes,
   upsert,
@@ -297,4 +317,6 @@ export default {
   list,
   get,
   patch,
+  generateDescription,
+  generateSkill,
 };

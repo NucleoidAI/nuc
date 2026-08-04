@@ -5,6 +5,7 @@ import type { ParameterBinding } from "../../components/BlueprintFlow/NodeConnec
 import SampleFlow from "../../components/BlueprintFlow/Samples/SampleFlow";
 import SampleNode from "../../components/BlueprintFlow/Samples/SampleNode";
 import { calculateNodeChanges } from "../../components/BlueprintFlow/DiffPanel/diffHelper";
+import { publish } from "@nucleoidai/react-event";
 import useBlueprint from "../../hooks/useBlueprint";
 import useMCPs from "../../hooks/useMCPs";
 import { v4 as uuid } from "uuid";
@@ -30,6 +31,55 @@ interface Blueprint {
   agentId: string;
   pseudocode?: string;
   blocking?: boolean;
+  skill?: string;
+}
+
+function graphToNodes(graphData: DefinitionGraph) {
+  return Object.values(graphData.nodes).map((node) => {
+    const baseNode = {
+      id: node.id,
+      type: node.nodeType,
+      properties: {
+        label: node.label || node.raw?.properties?.label,
+        prompt: node.raw?.properties?.prompt,
+        pseudocode: node.raw?.properties?.pseudocode,
+        icon: node.icon || node.raw?.properties?.icon,
+        action: node.action || node.raw?.properties?.action,
+        description: node.description || node.raw?.properties?.description,
+        ...(node.raw?.properties?.force && { force: true }),
+        ...(node.nodeType === "NORMAL" &&
+          node.raw?.properties?.parameters &&
+          Object.keys(node.raw.properties.parameters).length > 0 && {
+            parameters: node.raw.properties.parameters,
+          }),
+        ...(node.nodeType === "HANDOFF" && {
+          targetAgentId: node.raw?.properties?.targetAgentId,
+          targetBlueprintId:
+            node.raw?.properties?.targetBlueprintId || undefined,
+        }),
+      },
+      createdAt: node.createdAt,
+    };
+
+    if (node.nodeType === "CONDITION") {
+      return {
+        ...baseNode,
+        true: node.trueNext || node.raw?.true || [],
+        false: node.falseNext || node.raw?.false || [],
+      };
+    } else if (node.nodeType === "HANDOFF") {
+      return baseNode;
+    }
+
+    return {
+      ...baseNode,
+      next: Array.isArray(node.next)
+        ? node.next
+        : node.next
+        ? [node.next]
+        : null,
+    };
+  });
 }
 
 function BlueprintFlowWidget({
@@ -48,6 +98,10 @@ function BlueprintFlowWidget({
   blocking: blockingProp,
   onBlockingChange: onBlockingChangeProp,
   showConnections: showConnectionsProp,
+  onDescriptionChange,
+  onDescriptionLoadingChange,
+  onSkillChange,
+  onSkillLoadingChange,
   onSave,
 }: {
   aiResponse?: AIResponse;
@@ -55,6 +109,10 @@ function BlueprintFlowWidget({
   blueprint: Blueprint;
   taskId?: string;
   setSelectedItem?: (item: Blueprint) => void;
+  onDescriptionChange?: (description: string) => void;
+  onDescriptionLoadingChange?: (loading: boolean) => void;
+  onSkillChange?: (skill: string) => void;
+  onSkillLoadingChange?: (loading: boolean) => void;
   usedNodeIds?: Set<string>;
   lastUsedNodeId?: string | null;
   failedNodeId?: string | null;
@@ -84,7 +142,7 @@ function BlueprintFlowWidget({
   const [showDiffPanel, setShowDiffPanel] = useState(false);
   const [baselineNodes, setBaselineNodes] = useState(null);
 
-  const { getBlueprintWithNode, upsertBlueprint } = useBlueprint();
+  const { getBlueprintWithNode, upsertBlueprint, generate } = useBlueprint();
   const { blueprintNodes, loading } = getBlueprintWithNode(blueprint?.id);
   const { getMCPs } = useMCPs();
   const { mcps } = getMCPs();
@@ -162,6 +220,53 @@ function BlueprintFlowWidget({
     failedNodeId,
   ]);
 
+  const [localDescription, setLocalDescription] = useState("");
+  const [localSkill, setLocalSkill] = useState("");
+  const generateRequestRef = useRef(0);
+  const generationRef = useRef<Promise<{
+    description: string;
+    skill: string;
+  }> | null>(null);
+
+  const runGenerate = (
+    requestId: number,
+    nodes: ReturnType<typeof graphToNodes>
+  ) => {
+    onDescriptionLoadingChange?.(true);
+    onSkillLoadingChange?.(true);
+    publish("BLUEPRINT", "GENERATING", { generating: true });
+
+    const promise = generate(nodes).then((result) => {
+      if (requestId === generateRequestRef.current) {
+        setLocalDescription(result.description);
+        onDescriptionChange?.(result.description);
+        setLocalSkill(result.skill);
+        onSkillChange?.(result.skill);
+
+        onDescriptionLoadingChange?.(false);
+        onSkillLoadingChange?.(false);
+        generationRef.current = null;
+        publish("BLUEPRINT", "GENERATING", { generating: false });
+      }
+      return result;
+    });
+
+    generationRef.current = promise;
+    return promise;
+  };
+
+  useEffect(() => {
+    if (!hasLocalChanges || !graphData) return;
+
+    const requestId = ++generateRequestRef.current;
+    const timer = setTimeout(() => {
+      runGenerate(requestId, graphToNodes(graphData));
+    }, 500);
+
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [graphData, hasLocalChanges]);
+
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [selectedParentNode, setSelectedParentNode] = useState(null);
@@ -212,6 +317,15 @@ function BlueprintFlowWidget({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [blueprintNodes?.blocking]
   );
+
+  useEffect(() => {
+    if (hasLocalChanges) return;
+    if (blueprintNodes?.skill) {
+      setLocalSkill(blueprintNodes.skill);
+      onSkillChange?.(blueprintNodes.skill);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [blueprintNodes?.skill, hasLocalChanges]);
 
   useEffect(
     () => {
@@ -1199,7 +1313,6 @@ function BlueprintFlowWidget({
   };
 
   const handleSaveFlow = async () => {
-    setIsSubmitting(true);
     if (!graphData) return;
 
     const agentId = blueprintNodes?.agentId || blueprint?.agentId;
@@ -1212,85 +1325,59 @@ function BlueprintFlowWidget({
       return;
     }
 
-    const updatedNodes = Object.values(graphData.nodes).map((node) => {
-      const baseNode = {
-        id: node.id,
-        type: node.nodeType,
-        properties: {
-          label: node.label || node.raw?.properties?.label,
-          prompt: node.raw?.properties?.prompt,
-          pseudocode: node.raw?.properties?.pseudocode,
-          icon: node.icon || node.raw?.properties?.icon,
-          action: node.action || node.raw?.properties?.action,
-          description: node.description || node.raw?.properties?.description,
-          ...(node.raw?.properties?.force && { force: true }),
-          ...(node.nodeType === "NORMAL" &&
-            node.raw?.properties?.parameters &&
-            Object.keys(node.raw.properties.parameters).length > 0 && {
-              parameters: node.raw.properties.parameters,
-            }),
-          ...(node.nodeType === "HANDOFF" && {
-            targetAgentId: node.raw?.properties?.targetAgentId,
-            targetBlueprintId:
-              node.raw?.properties?.targetBlueprintId || undefined,
-          }),
-        },
-        createdAt: node.createdAt,
-      };
+    setIsSubmitting(true);
 
-      if (node.nodeType === "CONDITION") {
-        return {
-          ...baseNode,
-          true: node.trueNext || node.raw?.true || [],
-          false: node.falseNext || node.raw?.false || [],
-        };
-      } else if (node.nodeType === "HANDOFF") {
-        return baseNode;
-      } else {
-        return {
-          ...baseNode,
-          next: Array.isArray(node.next)
-            ? node.next
-            : node.next
-            ? [node.next]
-            : null,
-        };
+    try {
+      const updatedNodes = graphToNodes(graphData);
+      let generated = generationRef.current
+        ? await generationRef.current
+        : null;
+
+      if (!generated && hasLocalChanges) {
+        generated = await runGenerate(
+          ++generateRequestRef.current,
+          updatedNodes
+        );
       }
-    });
 
-    const response = await upsertBlueprint(
-      blueprintNodes?.id || blueprint?.id,
-      blueprint?.title || blueprintNodes?.title || "Newly Created Blueprint",
-      blueprint?.description ||
-        blueprintNodes?.description ||
-        "Blueprint created from flow",
-      agentId,
-      updatedNodes,
-      taskId,
-      blueprintNodes?.messages,
-      blocking
-    );
+      const response = await upsertBlueprint(
+        blueprintNodes?.id || blueprint?.id,
+        blueprint?.title || blueprintNodes?.title || "Newly Created Blueprint",
+        generated?.description ||
+          localDescription ||
+          blueprintNodes?.description ||
+          blueprint?.description ||
+          "Blueprint created from flow",
+        agentId,
+        updatedNodes,
+        taskId,
+        blueprintNodes?.messages,
+        blocking,
+        generated?.skill || localSkill || blueprintNodes?.skill || undefined
+      );
 
-    if (setSelectedItem && response?.Blueprint) {
-      setSelectedItem(response.Blueprint);
+      if (setSelectedItem && response?.Blueprint) {
+        setSelectedItem(response.Blueprint);
+      }
+
+      if (response?.Blueprint?.nodes) {
+        setGraphData(buildDefinitionGraph(response.Blueprint));
+        setBaselineNodes({
+          blueprintId: response.Blueprint.id,
+          nodes: response.Blueprint.nodes || [],
+        });
+      }
+
+      setHasLocalChanges(false);
+      setShowDiffPanel(false);
+      if (setAiResponse) {
+        setAiResponse(null);
+      }
+      setSaveSuccess(true);
+      onSave?.();
+    } finally {
+      setIsSubmitting(false);
     }
-
-    if (response?.Blueprint?.nodes) {
-      setGraphData(buildDefinitionGraph(response.Blueprint));
-      setBaselineNodes({
-        blueprintId: response.Blueprint.id,
-        nodes: response.Blueprint.nodes || [],
-      });
-    }
-
-    setHasLocalChanges(false);
-    setShowDiffPanel(false);
-    if (setAiResponse) {
-      setAiResponse(null);
-    }
-    setSaveSuccess(true);
-    setIsSubmitting(false);
-    onSave?.();
   };
 
   const handleFlowChange = (updatedGraphData) => {

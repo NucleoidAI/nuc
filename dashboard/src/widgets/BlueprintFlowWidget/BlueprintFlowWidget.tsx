@@ -229,6 +229,11 @@ function BlueprintFlowWidget({
     description: string;
     skill: string;
   }> | null>(null);
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingGenerateRef = useRef<{
+    requestId: number;
+    nodes: ReturnType<typeof graphToNodes>;
+  } | null>(null);
 
   const runGenerate = (
     requestId: number,
@@ -261,11 +266,21 @@ function BlueprintFlowWidget({
     if (!hasLocalChanges || !graphData) return;
 
     const requestId = ++generateRequestRef.current;
-    const timer = setTimeout(() => {
-      runGenerate(requestId, graphToNodes(graphData));
+    const nodes = graphToNodes(graphData);
+    pendingGenerateRef.current = { requestId, nodes };
+
+    debounceTimerRef.current = setTimeout(() => {
+      debounceTimerRef.current = null;
+      pendingGenerateRef.current = null;
+      runGenerate(requestId, nodes);
     }, 500);
 
-    return () => clearTimeout(timer);
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+        debounceTimerRef.current = null;
+      }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [graphData, hasLocalChanges]);
 
@@ -1336,19 +1351,20 @@ function BlueprintFlowWidget({
 
     try {
       const updatedNodes = graphToNodes(graphData);
-      let generated = generationRef.current
-        ? await generationRef.current
-        : null;
 
-      if (!generated && hasLocalChanges) {
-        generated = await runGenerate(
-          ++generateRequestRef.current,
-          updatedNodes
-        );
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+        debounceTimerRef.current = null;
+      }
+      if (pendingGenerateRef.current) {
+        const { requestId, nodes } = pendingGenerateRef.current;
+        pendingGenerateRef.current = null;
+        runGenerate(requestId, nodes);
       }
 
-      console.log("generated", generated);
-      console.log("blueprintNodes", blueprintNodes);
+      const generated = generationRef.current
+        ? await generationRef.current
+        : null;
 
       const response = await upsertBlueprint(
         blueprintNodes?.id || blueprint?.id,

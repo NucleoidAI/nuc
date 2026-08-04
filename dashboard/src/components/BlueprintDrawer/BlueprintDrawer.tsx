@@ -77,6 +77,7 @@ const BlueprintDrawer = ({
   const [description, setDescription] = useState(selectedItem?.description);
   const [skill, setSkill] = useState(selectedItem?.skill);
   const [skillLoading, setSkillLoading] = useState(false);
+  const [liveNodes, setLiveNodes] = useState([]);
   const [showKnowledge, setShowKnowledge] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [settingsTab, setSettingsTab] = useState(0);
@@ -150,6 +151,7 @@ const BlueprintDrawer = ({
         showConnections={showConnections}
         onSkillChange={setSkill}
         onSkillLoadingChange={setSkillLoading}
+        onNodesChange={setLiveNodes}
         onSave={supervise ? () => handleManualResolve("BLUEPRINT") : undefined}
       />
 
@@ -173,6 +175,7 @@ const BlueprintDrawer = ({
           skillLoading={skillLoading}
           showKnowledge={showKnowledge}
           blueprintId={selectedItem?.id}
+          nodes={liveNodes}
         />
 
         {showKnowledge && (

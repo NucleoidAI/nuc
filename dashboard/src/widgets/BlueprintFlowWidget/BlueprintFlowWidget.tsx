@@ -102,6 +102,7 @@ function BlueprintFlowWidget({
   onDescriptionLoadingChange,
   onSkillChange,
   onSkillLoadingChange,
+  onNodesChange,
   onSave,
 }: {
   aiResponse?: AIResponse;
@@ -113,6 +114,7 @@ function BlueprintFlowWidget({
   onDescriptionLoadingChange?: (loading: boolean) => void;
   onSkillChange?: (skill: string) => void;
   onSkillLoadingChange?: (loading: boolean) => void;
+  onNodesChange?: (nodes: ReturnType<typeof graphToNodes>) => void;
   usedNodeIds?: Set<string>;
   lastUsedNodeId?: string | null;
   failedNodeId?: string | null;
@@ -326,6 +328,11 @@ function BlueprintFlowWidget({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [blueprintNodes?.skill, hasLocalChanges]);
+
+  useEffect(() => {
+    onNodesChange?.(graphData ? graphToNodes(graphData) : []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [graphData]);
 
   useEffect(
     () => {
@@ -1339,6 +1346,9 @@ function BlueprintFlowWidget({
           updatedNodes
         );
       }
+
+      console.log("generated", generated);
+      console.log("blueprintNodes", blueprintNodes);
 
       const response = await upsertBlueprint(
         blueprintNodes?.id || blueprint?.id,

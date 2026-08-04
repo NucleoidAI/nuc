@@ -147,8 +147,13 @@ const MarkdownRenderer = ({ children, sx }: MarkdownRendererProps) => {
   };
 
   return (
-    <Box sx={{ fontSize: "0.875rem", color: theme.palette.text.secondary, ...sx }}>
-      <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+    <Box
+      sx={{ fontSize: "0.875rem", color: theme.palette.text.secondary, ...sx }}
+    >
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={markdownComponents}
+      >
         {children}
       </ReactMarkdown>
     </Box>

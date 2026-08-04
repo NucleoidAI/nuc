@@ -2,7 +2,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Iconify } from "@canmingir/link/platform/components";
 import { isValidIntegration } from "../NodeEditorWidget/helper";
-import useBlueprint from "../../hooks/useBlueprint";
 import useMCPs from "../../hooks/useMCPs";
 
 import {
@@ -31,21 +30,30 @@ type ToolsType = {
   description?: string;
 };
 
-const ToolsWidget = ({ blueprintId }: { blueprintId?: string }) => {
+type NodeType = {
+  properties?: {
+    action?: string;
+  };
+};
+
+const ToolsWidget = ({
+  nodes,
+}: {
+  blueprintId?: string;
+  nodes?: NodeType[];
+}) => {
   const theme = useTheme();
   const [selectedSkill, setSelectedSkill] = useState<ToolsType | null>(null);
   const [expanded, setExpanded] = useState(false);
 
   const { getMCPs, getActions } = useMCPs();
-  const { getBlueprintWithNode } = useBlueprint();
 
   const { mcps } = getMCPs();
   const { actions } = getActions();
-  const { blueprintNodes } = getBlueprintWithNode(blueprintId || "");
 
   const usedActions = new Set<string>(
-    Array.isArray(blueprintNodes?.nodes)
-      ? blueprintNodes.nodes
+    Array.isArray(nodes)
+      ? nodes
           .map((node) => node?.properties?.action)
           .filter((action): action is string => typeof action === "string")
       : []

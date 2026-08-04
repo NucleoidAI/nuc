@@ -22,6 +22,7 @@ const BlueprintSkill = ({
   skillLoading,
   showKnowledge,
   blueprintId,
+  nodes,
 }) => {
   const theme = useTheme();
   const [expanded, setExpanded] = React.useState(false);
@@ -85,7 +86,7 @@ const BlueprintSkill = ({
                 width: 500,
               }}
             >
-              <ToolsWidget blueprintId={blueprintId} />
+              <ToolsWidget blueprintId={blueprintId} nodes={nodes} />
             </Box>
           </GlassCardContent>
         </GlassCard>

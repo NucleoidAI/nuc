@@ -4,13 +4,11 @@ import NodeEditorWidget from "../NodeEditorWidget/NodeEditorWidget";
 import type { ParameterBinding } from "../../components/BlueprintFlow/NodeConnectionOverlay";
 import SampleFlow from "../../components/BlueprintFlow/Samples/SampleFlow";
 import SampleNode from "../../components/BlueprintFlow/Samples/SampleNode";
-import { calculateNodeChanges } from "../../components/BlueprintFlow/DiffPanel/diffHelper";
 import { publish } from "@nucleoidai/react-event";
 import useBlueprint from "../../hooks/useBlueprint";
 import useMCPs from "../../hooks/useMCPs";
 import { v4 as uuid } from "uuid";
 import { validateFlow } from "../../components/BlueprintFlow/Validation/validation";
-
 import {
   DefinitionGraph,
   FlowDefinition,
@@ -18,7 +16,12 @@ import {
   buildDefinitionGraph,
   getAncestorNodes,
 } from "../../components/BlueprintFlow/helper";
+
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import {
+  calculateDiffStats,
+  calculateNodeChanges,
+} from "../../components/BlueprintFlow/DiffPanel/diffHelper";
 
 interface AIResponse {
   flow: FlowDefinition;
@@ -143,6 +146,7 @@ function BlueprintFlowWidget({
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [showDiffPanel, setShowDiffPanel] = useState(false);
   const [baselineNodes, setBaselineNodes] = useState(null);
+  const lastSavedRef = useRef<{ title?: string; description?: string }>({});
 
   const { getBlueprintWithNode, upsertBlueprint, generate } = useBlueprint();
   const { blueprintNodes, loading } = getBlueprintWithNode(blueprint?.id);
@@ -152,21 +156,14 @@ function BlueprintFlowWidget({
   const hasDifferences = useMemo(() => {
     if (!baselineNodes?.nodes || !graphData?.nodes) return false;
 
-    const baselineCount = baselineNodes.nodes.length;
-    const currentCount = Object.keys(graphData.nodes).length;
+    const currentNodesArray = Object.values(graphData.nodes).map(
+      (node) => node.raw
+    );
 
-    if (baselineCount !== currentCount) return true;
-
-    const baselineIds = new Set(baselineNodes.nodes.map((n) => n.id));
-    const currentIds = new Set(Object.keys(graphData.nodes));
-
-    if (baselineIds.size !== currentIds.size) return true;
-    for (const id of currentIds) {
-      if (!baselineIds.has(id)) return true;
-    }
-
-    return false;
+    return calculateDiffStats(baselineNodes.nodes, currentNodesArray).total > 0;
   }, [baselineNodes, graphData]);
+
+  const isDirty = baselineNodes?.nodes ? hasDifferences : hasLocalChanges;
 
   const nodeChanges = useMemo(() => {
     if (!baselineNodes?.nodes || !graphData?.nodes) {
@@ -386,6 +383,13 @@ function BlueprintFlowWidget({
   useEffect(
     () => {
       if (!blueprintNodes) return;
+
+      if (
+        blueprintNodes.title === lastSavedRef.current.title &&
+        blueprintNodes.description === lastSavedRef.current.description
+      ) {
+        return;
+      }
 
       const titleChanged =
         blueprint?.title !== undefined &&
@@ -1125,7 +1129,7 @@ function BlueprintFlowWidget({
               next: newNext,
               raw: {
                 ...n.raw,
-                next: dedupedReplacement,
+                next: dedupedReplacement.length > 0 ? dedupedReplacement : null,
               },
             };
           }
@@ -1362,9 +1366,16 @@ function BlueprintFlowWidget({
         runGenerate(requestId, nodes);
       }
 
-      const generated = generationRef.current
-        ? await generationRef.current
-        : null;
+      let generated: { description: string; skill: string } | null = null;
+      try {
+        generated = generationRef.current ? await generationRef.current : null;
+      } catch (error) {
+        console.error(
+          "Blueprint description/skill generation failed; saving with the last known description/skill instead",
+          error
+        );
+        generationRef.current = null;
+      }
 
       const response = await upsertBlueprint(
         blueprintNodes?.id || blueprint?.id,
@@ -1381,6 +1392,11 @@ function BlueprintFlowWidget({
         blocking,
         generated?.skill || localSkill || blueprintNodes?.skill || undefined
       );
+
+      lastSavedRef.current = {
+        title: response?.Blueprint?.title,
+        description: response?.Blueprint?.description,
+      };
 
       if (setSelectedItem && response?.Blueprint) {
         setSelectedItem(response.Blueprint);
@@ -1401,6 +1417,8 @@ function BlueprintFlowWidget({
       }
       setSaveSuccess(true);
       onSave?.();
+    } catch (error) {
+      console.error("Failed to save blueprint", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -1463,7 +1481,7 @@ function BlueprintFlowWidget({
           drawerOpen={drawerOpen}
           readOnly={readOnly}
           hasLocalChanges={hasLocalChanges}
-          hasDifferences={hasDifferences}
+          hasDifferences={isDirty}
           validationErrors={validationErrors}
           showDiffPanel={showDiffPanel}
           showValidationErrors={showValidationErrors}

@@ -108,7 +108,7 @@ export default function BlueprintFlow({
     >
       {!readOnly &&
         baselineNodes.length > 0 &&
-        (hasLocalChanges || hasDifferences) &&
+        hasDifferences &&
         !drawerOpen && (
           <DiffButton
             onShowDiff={onShowDiff}
@@ -158,7 +158,7 @@ export default function BlueprintFlow({
         />
       )}
 
-      {!readOnly && hasLocalChanges && !drawerOpen && (
+      {!readOnly && hasDifferences && !drawerOpen && (
         <ValidationButtons
           validationErrors={validationErrors}
           setShowValidationErrors={onShowValidationErrors}

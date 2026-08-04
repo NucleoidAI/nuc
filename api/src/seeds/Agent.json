@@ -72,22 +72,6 @@
       "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
       "aiEngineId": "d9c93323-3baf-4623-a96c-b85db99b4441",
       "description": "An agent focused on compliance monitoring, policy enforcement, and regulatory adherence across business processes."
-    },
-    {
-      "id": "e9578e92-c5d9-4d6b-9615-fde3217f74ef",
-      "name": "force_binding_test_agent",
-      "icon": "mdi:test-tube",
-      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
-      "aiEngineId": "289a3c9a-f23b-421a-ac6e-f14052a2d57c",
-      "description": "Test-only agent proving that force-mode parameter binding works: reads a marker file, then is forced to send that exact file content as a user message via a byNode.$ref binding, regardless of what the LLM would otherwise have written."
-    },
-    {
-      "id": "871fd6e5-c5c8-43c4-98b8-598ac7fe8103",
-      "name": "translator_agent",
-      "icon": "mdi:translate",
-      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
-      "aiEngineId": "289a3c9a-f23b-421a-ac6e-f14052a2d57c",
-      "description": "Asks the user for a piece of text, then translates it into Turkish, English, and Spanish."
     }
   ]
 }

@@ -1,1 +1,0 @@
-FORCE_BINDING_PROOF_9f31 - if the "Send To User" step's message equals exactly this line, the byNode.$ref parameter binding pulled this value straight from the previous step's output, unedited by the LLM.

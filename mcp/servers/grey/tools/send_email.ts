@@ -32,17 +32,17 @@ function initial(name: string): string {
   return escapeHtml(name.trim().charAt(0).toUpperCase() || "?");
 }
 
-function sectionHeader(emoji: string, title: string): string {
-  return `<h2 style="margin:0 0 14px;font-size:13px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:#0f172a;"><span style="margin-right:8px;">${emoji}</span>${title}</h2>`;
+function sectionHeader(title: string): string {
+  return `<h2 style="margin:0 0 14px;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#1e293b;padding-left:10px;border-left:3px solid #1e293b;">${title}</h2>`;
 }
 
-function renderChecklistSection(emoji: string, title: string, items: string[]): string {
+function renderChecklistSection(title: string, items: string[]): string {
   if (!items.length) return "";
   const rows = items
     .map(
       (item) => `
         <tr>
-          <td width="22" valign="top" style="padding:0 8px 10px 0;color:#10b981;font-size:14px;">✔️</td>
+          <td width="20" valign="top" style="padding:0 8px 10px 0;color:#475569;font-size:14px;font-weight:700;">&#8226;</td>
           <td valign="top" style="padding:0 0 10px;color:#334155;font-size:14px;line-height:1.5;">${escapeHtml(item)}</td>
         </tr>`,
     )
@@ -50,7 +50,7 @@ function renderChecklistSection(emoji: string, title: string, items: string[]): 
   return `
     <tr>
       <td style="padding:0 32px 26px;">
-        ${sectionHeader(emoji, title)}
+        ${sectionHeader(title)}
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table>
       </td>
     </tr>`;
@@ -61,13 +61,13 @@ function renderTopicsSection(items: string[]): string {
   const pills = items
     .map(
       (item) =>
-        `<span style="display:inline-block;background:#eef2ff;color:#4338ca;padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;margin:0 8px 8px 0;">${escapeHtml(item)}</span>`,
+        `<span style="display:inline-block;background:#f1f5f9;color:#334155;padding:6px 14px;border-radius:4px;font-size:13px;font-weight:600;margin:0 8px 8px 0;border:1px solid #e2e8f0;">${escapeHtml(item)}</span>`,
     )
     .join("");
   return `
     <tr>
       <td style="padding:0 32px 26px;">
-        ${sectionHeader("🏷️", "Konular")}
+        ${sectionHeader("Konular")}
         <div>${pills}</div>
       </td>
     </tr>`;
@@ -100,7 +100,7 @@ function renderActionItemsSection(
   return `
     <tr>
       <td style="padding:0 32px 26px;">
-        ${sectionHeader("📌", "Aksiyon Maddeleri")}
+        ${sectionHeader("Aksiyon Maddeleri")}
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table>
       </td>
     </tr>`;
@@ -134,7 +134,7 @@ function renderSpeakerHighlightsSection(
   return `
     <tr>
       <td style="padding:0 32px 8px;">
-        ${sectionHeader("🗣️", "Konuşmacı Özetleri")}
+        ${sectionHeader("Konuşmacı Özetleri")}
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table>
       </td>
     </tr>`;
@@ -188,12 +188,12 @@ export function renderMeetingSummary(data: MeetingSummaryData): {
       <td align="center">
         <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(15,23,42,0.08);">
           <tr>
-            <td style="background:linear-gradient(135deg,#4f46e5,#0ea5e9);padding:28px 32px;">
-              <div style="font-size:26px;line-height:1;margin-bottom:10px;">🗓️</div>
-              <h1 style="margin:0;font-size:21px;color:#ffffff;">${escapeHtml(title)}</h1>
+            <td style="background:#0f172a;padding:32px;border-bottom:3px solid #334155;">
+              <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#94a3b8;">Toplantı Özeti</p>
+              <h1 style="margin:0;font-size:22px;font-weight:700;color:#f8fafc;">${escapeHtml(title)}</h1>
               ${
                 data.meetingDate
-                  ? `<p style="margin:6px 0 0;color:#e0e7ff;font-size:13px;">${escapeHtml(data.meetingDate)}</p>`
+                  ? `<p style="margin:8px 0 0;color:#cbd5e1;font-size:13px;">${escapeHtml(data.meetingDate)}</p>`
                   : ""
               }
             </td>
@@ -203,7 +203,7 @@ export function renderMeetingSummary(data: MeetingSummaryData): {
               ? `<tr>
             <td style="padding:24px 32px 0;">
               <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px 18px;">
-                ${sectionHeader("📝", "Özet")}
+                ${sectionHeader("Özet")}
                 <p style="margin:0;color:#334155;line-height:1.6;font-size:14px;">${escapeHtml(data.summary)}</p>
               </div>
             </td>
@@ -212,12 +212,12 @@ export function renderMeetingSummary(data: MeetingSummaryData): {
               : ""
           }
           ${renderTopicsSection(keyTopics)}
-          ${renderChecklistSection("✅", "Kararlar", decisions)}
+          ${renderChecklistSection("Kararlar", decisions)}
           ${renderActionItemsSection(actionItems)}
           ${renderSpeakerHighlightsSection(speakerHighlights)}
           <tr>
             <td style="padding:18px 32px 24px;border-top:1px solid #e2e8f0;">
-              <p style="margin:0;color:#94a3b8;font-size:12px;">🤖 Bu özet otomatik olarak oluşturulmuştur.</p>
+              <p style="margin:0;color:#94a3b8;font-size:12px;">Bu özet otomatik olarak oluşturulmuştur.</p>
             </td>
           </tr>
         </table>

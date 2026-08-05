@@ -5,6 +5,8 @@ const MOCK = false;
 const POLL_INTERVAL_MS = 3_000;
 const POLL_TIMEOUT_MS = 15 * 60_000;
 
+const MIX_FILE_STEM = "meeting-audio";
+
 async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -118,13 +120,6 @@ async function run({
     return { error: "No .wav files found in directory" };
   }
 
-  // The recording pipeline saves the whole-meeting mix under the meeting's
-  // own ID (same name as the directory) rather than a participant ID - it's
-  // not a speaker and must not be treated as one.
-  const meetingId = path.basename(directoryPath);
-
-  console.log("meetingId", meetingId);
-
   const speakerTranscripts: { id: string; transcript: string }[] = [];
   const fullParts: string[] = [];
   let mixTranscript: string | null = null;
@@ -136,7 +131,7 @@ async function run({
     try {
       const transcription = await transcribeFile(filePath, baseUrl);
       console.log("transcription", transcription);
-      if (stem === meetingId) {
+      if (stem.toLowerCase() === MIX_FILE_STEM) {
         mixTranscript = transcription;
       } else {
         speakerTranscripts.push({ id: stem, transcript: transcription });

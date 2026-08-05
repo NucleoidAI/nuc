@@ -3,7 +3,7 @@ import path from "path";
 const MOCK = false;
 
 const POLL_INTERVAL_MS = 3_000;
-const POLL_TIMEOUT_MS = 15 * 60_000;
+const POLL_TIMEOUT_MS = 55 * 60_000;
 
 const MIX_FILE_STEM = "meeting-audio";
 

@@ -304,20 +304,43 @@ export const sendEmailTool: Tool<any> = {
     try {
       logger.debug("Creating nodemailer transporter");
 
+      const host = process.env.SMTP_HOST;
+      const port = Number(process.env.SMTP_PORT ?? 587);
+      const user = process.env.SMTP_USER;
+      const pass = process.env.SMTP_PASS;
+      const from = process.env.SMTP_FROM ?? user;
+
+      if (!host) throw new Error("SMTP_HOST is not set");
+      if (!from) throw new Error("SMTP_FROM (or SMTP_USER) is not set");
+
+      const secure = process.env.SMTP_SECURE
+        ? process.env.SMTP_SECURE === "true"
+        : port === 465;
+      const ignoreTLS = process.env.SMTP_IGNORE_TLS === "true";
+      const requireTLS = !secure && !ignoreTLS &&
+        process.env.SMTP_REQUIRE_TLS !== "false";
+
       const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: "halilibrahimcengel7@gmail.com",
-          pass: "xncn gssx cjas mnxy",
-          //user: process.env.GMAIL_USER,
-          //pass: process.env.GMAIL_APP_PASSWORD,
+        host,
+        port,
+        secure,
+        requireTLS,
+        ignoreTLS,
+        auth: user && pass ? { user, pass } : undefined,
+        connectionTimeout: 10_000,
+        greetingTimeout: 10_000,
+        socketTimeout: 20_000,
+        tls: {
+          servername: process.env.SMTP_TLS_SERVERNAME || undefined,
+          rejectUnauthorized:
+            process.env.SMTP_TLS_REJECT_UNAUTHORIZED !== "false",
         },
       });
 
       logger.debug("Sending email via SMTP");
 
       const info = await transporter.sendMail({
-        from: "halilibrahimcengel7@gmail.com",
+        from,
         to: args.to,
         subject,
         text,

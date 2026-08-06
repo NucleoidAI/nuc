@@ -12,6 +12,7 @@ import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import SupervisingChat from "../SupervisingChat";
 import useBlueprint from "../../hooks/useBlueprint";
 import useSupervisings from "../../hooks/useSupervisings";
+
 import { Box, Fab, Grid, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
@@ -233,7 +234,7 @@ const BlueprintDrawer = ({
         placement="left"
       >
         <Fab
-          color={showConnections ? "primary" : "default"}
+          color="primary"
           onClick={() => setShowConnections((prev) => !prev)}
           sx={{
             position: "absolute",

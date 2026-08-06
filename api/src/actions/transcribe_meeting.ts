@@ -3,7 +3,8 @@ import path from "path";
 const MOCK = false;
 
 const POLL_INTERVAL_MS = 3_000;
-const POLL_TIMEOUT_MS = 55 * 60_000;
+const POLL_TIMEOUT_MS = 10 * 60_000;
+const MAX_CONSECUTIVE_SERVER_ERRORS = 5;
 
 const MIX_FILE_STEM = "meeting-audio";
 
@@ -43,22 +44,29 @@ async function transcribeFile(
   }
 
   const deadline = Date.now() + POLL_TIMEOUT_MS;
+  let consecutiveServerErrors = 0;
+
   while (Date.now() < deadline) {
     const resultResponse = await fetch(`${baseUrl}/result/${jobId}`);
 
-    if (!resultResponse.ok) {
-      const details = await resultResponse.text();
-      throw new Error(
-        `ASR result fetch failed (${resultResponse.status}): ${details}`,
-      );
+    if (resultResponse.status === 200) {
+      const result = (await resultResponse.json()) as {
+        transcript?: string;
+      };
+
+      return result.transcript ?? "";
     }
 
-    const result = (await resultResponse.json()) as {
-      transcript?: string;
-    };
-
-    if (result.transcript) {
-      return result.transcript;
+    if (resultResponse.status >= 500) {
+      consecutiveServerErrors += 1;
+      if (consecutiveServerErrors >= MAX_CONSECUTIVE_SERVER_ERRORS) {
+        const details = await resultResponse.text();
+        throw new Error(
+          `ASR result fetch failed ${consecutiveServerErrors} times in a row (${resultResponse.status}): ${details}`,
+        );
+      }
+    } else {
+      consecutiveServerErrors = 0;
     }
 
     await sleep(POLL_INTERVAL_MS);

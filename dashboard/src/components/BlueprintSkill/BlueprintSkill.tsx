@@ -1,6 +1,5 @@
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MarkdownRenderer from "../MarkdownRenderer/MarkdownRenderer";
-
 import React from "react";
 import ToolsWidget from "../../widgets/ToolsWidget/ToolsWidget";
 
@@ -77,16 +76,10 @@ const BlueprintSkill = ({
 
               <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <Box sx={{ pt: 1 }}>{renderSkillContent()}</Box>
+                <Box sx={{ pt: 2 }}>
+                  <ToolsWidget blueprintId={blueprintId} nodes={nodes} />
+                </Box>
               </Collapse>
-            </Box>
-
-            <Box
-              sx={{
-                p: 1,
-                width: 500,
-              }}
-            >
-              <ToolsWidget blueprintId={blueprintId} nodes={nodes} />
             </Box>
           </GlassCardContent>
         </GlassCard>

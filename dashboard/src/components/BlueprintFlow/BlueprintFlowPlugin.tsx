@@ -853,7 +853,7 @@ function NodeHandles({
   );
 
   return (
-    <FieldsPanel onMouseDown={(e) => e.stopPropagation()}>
+    <FieldsPanel sx={{ mt: -0.5 }} onMouseDown={(e) => e.stopPropagation()}>
       <FieldColumn align="left">
         <ColumnLabel align="left">
           <Iconify icon="mdi:arrow-down-left" width={10} height={10} />
@@ -873,9 +873,6 @@ function NodeHandles({
                 bound={bound}
                 interactive={isForceTarget ? "true" : "false"}
                 {...(isForceTarget && { "data-handle-type": "in" })}
-                // Always present, unlike data-handle-type: it lets the overlay
-                // locate input dots on non-force nodes (to draw implied
-                // passthrough lines) without making them drop targets.
                 data-in-handle=""
                 data-node-id={node.id}
                 data-field={field}
@@ -984,10 +981,6 @@ function FlowNodeRenderer({
     setContextMenu({ mouseX: e.clientX, mouseY: e.clientY });
   };
 
-  // The flow canvas treats any right-button mousedown as "start panning",
-  // which races the subsequent contextmenu event and can leave it stuck
-  // mid-drag. Stop it here so a right-click on a node only ever opens the
-  // menu.
   const handleMouseDownCapture = (e: React.MouseEvent) => {
     if (e.button === 2) {
       e.stopPropagation();

@@ -142,6 +142,7 @@ export default function BlueprintFlow({
         <NodeConnectionOverlay
           containerRef={flowContainerRef}
           graphData={graphData}
+          nodeFields={nodeFields}
           dragging={dragging}
           onDragEnd={() => setDragging(null)}
           onConnect={(binding) => onConnectParameter?.(binding)}

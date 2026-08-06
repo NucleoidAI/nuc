@@ -1,5 +1,3 @@
-import { styled } from "@mui/material/styles";
-
 import {
   Divider,
   ListItemIcon,
@@ -9,6 +7,7 @@ import {
 } from "@mui/material";
 import { Iconify, InfoNode } from "@canmingir/link/platform/components";
 import React, { useState } from "react";
+import { alpha, styled } from "@mui/material/styles";
 
 const AddButtonWrapper = styled("div")(({ theme }) => ({
   position: "absolute",
@@ -555,28 +554,36 @@ const SuperviseNeededBadge = styled("div")(({ theme }) => {
   };
 });
 
-const ForceLabel = styled("div")({
+const FORCE_COLOR = "#b8860b";
+
+const ForceBadge = styled("div")(({ theme }) => ({
   position: "absolute",
-  top: "-18px",
-  left: 0,
-  width: "100%",
-  textAlign: "center",
+  top: "-13px",
+  left: "50%",
+  transform: "translateX(-50%)",
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 3,
+  padding: "2px 8px 2px 6px",
+  borderRadius: 999,
   fontSize: 10,
   fontWeight: 700,
-  letterSpacing: "0.1em",
+  lineHeight: 1.6,
+  letterSpacing: "0.08em",
   textTransform: "uppercase",
-  color: "#b8860b",
+  whiteSpace: "nowrap",
+  color: FORCE_COLOR,
+  background: theme.palette.background.paper,
+  border: `1px solid ${FORCE_COLOR}`,
+  boxShadow: "0 1px 4px rgba(0, 0, 0, 0.18)",
   pointerEvents: "none",
   zIndex: 6,
-  "&::before": {
-    content: '"force"',
-  },
-});
+}));
 
 const NodeWrapper = styled("div", {
   shouldForwardProp: (prop) => prop !== "isforce",
 })<{ isforce?: boolean }>(({ isforce }) => {
-  const stepColor = isforce ? "#b8860b" : "#174f77";
+  const stepColor = isforce ? FORCE_COLOR : "#174f77";
   const steppedShadow = `
     1px 1px 0 ${stepColor},
     2px 2px 0 ${stepColor},
@@ -619,10 +626,10 @@ export const blueprintFlowPlugin = {
     const borderColor = "linear-gradient(135deg, #c684ff33, #078dee4d)";
     const borderRadius = 16;
     const shadowLevel = 1;
-    const minWidth = 300;
-    const maxWidth = 300;
-    const minHeight = 220;
-    const maxHeight = 220;
+    const minWidth = 420;
+    const maxWidth = 420;
+    const minHeight = 210;
+    const maxHeight = 210;
     const shape = 16;
 
     return {
@@ -702,65 +709,123 @@ const FieldsPanel = styled("div")(({ theme }) => ({
   width: "100%",
   minWidth: 260,
   display: "flex",
-  gap: 12,
-  padding: "8px 10px",
-  borderRadius: 10,
+  gap: 10,
+  padding: 10,
+  borderRadius: 12,
   background: theme.palette.background.paper,
   border: `1px solid ${theme.palette.divider}`,
-  boxShadow: "0 4px 14px rgba(0,0,0,0.18)",
+  boxShadow:
+    theme.palette.mode === "dark"
+      ? "0 6px 18px rgba(0,0,0,0.5)"
+      : "0 6px 18px rgba(0,0,0,0.12)",
   zIndex: 25,
   cursor: "default",
 }));
 
-const FieldColumn = styled("div")({
-  flex: 1,
-  minWidth: 0,
-  display: "flex",
-  flexDirection: "column",
-  gap: 4,
-});
+const FieldColumn = styled("div")<{ align: "left" | "right" }>(
+  ({ align, theme }) => ({
+    flex: 1,
+    minWidth: 0,
+    display: "flex",
+    flexDirection: "column",
+    gap: 2,
+    ...(align === "right" && {
+      paddingLeft: 10,
+      borderLeft: `1px solid ${theme.palette.divider}`,
+    }),
+  })
+);
 
-const ColumnLabel = styled("div")(({ theme }) => ({
-  fontSize: 10,
-  fontWeight: 700,
-  textTransform: "uppercase",
-  letterSpacing: "0.05em",
-  color: theme.palette.text.secondary,
-}));
+const ColumnLabel = styled("div")<{ align: "left" | "right" }>(
+  ({ align, theme }) => ({
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+    justifyContent: align === "right" ? "flex-end" : "flex-start",
+    marginBottom: 4,
+    fontSize: 9,
+    fontWeight: 800,
+    textTransform: "uppercase",
+    letterSpacing: "0.08em",
+    color: theme.palette.text.disabled,
+  })
+);
 
-const FieldRow = styled("div")<{ align: "left" | "right" }>(({ align }) => ({
+const FieldRow = styled("div")<{ align: "left" | "right" }>(
+  ({ align, theme }) => ({
+    display: "flex",
+    alignItems: "center",
+    gap: 6,
+    padding: "3px 4px",
+    borderRadius: 6,
+    flexDirection: align === "right" ? "row-reverse" : "row",
+    transition: "background-color 0.15s ease",
+    "&:hover": {
+      backgroundColor: theme.palette.action.hover,
+    },
+  })
+);
+
+const ForceHint = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
-  gap: 6,
-  flexDirection: align === "right" ? "row-reverse" : "row",
+  gap: 3,
+  marginTop: 4,
+  fontSize: 9,
+  fontWeight: 600,
+  letterSpacing: "0.02em",
+  color: theme.palette.text.disabled,
 }));
 
 const Dot = styled("div")<{
   variant: "in" | "out";
   bound?: string;
   interactive?: string;
-}>(({ variant, bound, interactive, theme }) => ({
-  flexShrink: 0,
-  width: 10,
-  height: 10,
-  borderRadius: "50%",
-  background:
-    bound === "true"
-      ? theme.palette.primary.main
-      : variant === "out"
+}>(({ variant, bound, interactive, theme }) => {
+  const isBound = bound === "true";
+  const disabled = interactive === "false";
+  const accent =
+    variant === "out"
       ? theme.palette.secondary.main
-      : theme.palette.grey[400],
-  border: `2px solid ${theme.palette.background.paper}`,
-  boxShadow: `0 0 0 1px ${theme.palette.divider}`,
-  cursor: interactive === "false" ? "not-allowed" : "crosshair",
-  opacity: interactive === "false" ? 0.4 : 1,
-  pointerEvents: "auto",
-}));
+      : theme.palette.primary.main;
 
-const FieldLabel = styled("div")<{ align: "left" | "right" }>(
-  ({ align, theme }) => ({
+  return {
+    position: "relative",
+    flexShrink: 0,
+    boxSizing: "content-box",
+    width: 9,
+    height: 9,
+    borderRadius: "50%",
+    background: isBound ? accent : theme.palette.background.paper,
+    border: `2px solid ${isBound ? accent : theme.palette.grey[400]}`,
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    cursor: disabled ? "not-allowed" : "crosshair",
+    opacity: disabled ? 0.35 : 1,
+    pointerEvents: "auto",
+    transition:
+      "transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease",
+    ...(!disabled && {
+      "&:hover": {
+        transform: "scale(1.35)",
+        borderColor: accent,
+        boxShadow: `0 0 0 2px ${
+          theme.palette.background.paper
+        }, 0 0 0 5px ${alpha(accent, 0.22)}`,
+      },
+    }),
+  };
+});
+
+const FieldLabel = styled("div")<{ align: "left" | "right"; bound?: string }>(
+  ({ align, bound, theme }) => ({
+    flex: 1,
+    minWidth: 0,
     fontSize: 11,
-    color: theme.palette.text.primary,
+    fontWeight: bound === "true" ? 600 : 400,
+    color:
+      bound === "true"
+        ? theme.palette.text.primary
+        : theme.palette.text.secondary,
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
@@ -789,37 +854,56 @@ function NodeHandles({
 
   return (
     <FieldsPanel onMouseDown={(e) => e.stopPropagation()}>
-      <FieldColumn>
-        <ColumnLabel>Inputs</ColumnLabel>
+      <FieldColumn align="left">
+        <ColumnLabel align="left">
+          <Iconify icon="mdi:arrow-down-left" width={10} height={10} />
+          Inputs
+        </ColumnLabel>
         {fields.inputs.length === 0 && (
-          <FieldLabel align="left" style={{ opacity: 0.5 }}>
+          <FieldLabel align="left" style={{ opacity: 0.5, padding: "3px 4px" }}>
             —
           </FieldLabel>
         )}
-        {fields.inputs.map((field) => (
-          <FieldRow key={`in-${field}`} align="left">
-            <Dot
-              variant="in"
-              bound={boundFields?.has(field) ? "true" : "false"}
-              interactive={isForceTarget ? "true" : "false"}
-              {...(isForceTarget && { "data-handle-type": "in" })}
-              data-node-id={node.id}
-              data-field={field}
-              title={
-                isForceTarget
-                  ? `Input: ${field}`
-                  : `Input: ${field} (read-only — only force nodes accept connections)`
-              }
-            />
-            <FieldLabel align="left" title={field}>
-              {field}
-            </FieldLabel>
-          </FieldRow>
-        ))}
+        {fields.inputs.map((field) => {
+          const bound = boundFields?.has(field) ? "true" : "false";
+          return (
+            <FieldRow key={`in-${field}`} align="left">
+              <Dot
+                variant="in"
+                bound={bound}
+                interactive={isForceTarget ? "true" : "false"}
+                {...(isForceTarget && { "data-handle-type": "in" })}
+                // Always present, unlike data-handle-type: it lets the overlay
+                // locate input dots on non-force nodes (to draw implied
+                // passthrough lines) without making them drop targets.
+                data-in-handle=""
+                data-node-id={node.id}
+                data-field={field}
+                title={
+                  isForceTarget
+                    ? `Input: ${field}`
+                    : `Input: ${field} (read-only — only force nodes accept connections)`
+                }
+              />
+              <FieldLabel align="left" bound={bound} title={field}>
+                {field}
+              </FieldLabel>
+            </FieldRow>
+          );
+        })}
+        {!isForceTarget && fields.inputs.length > 0 && (
+          <ForceHint title="Only force nodes accept parameter connections">
+            <Iconify icon="mdi:lock-outline" width={10} height={10} />
+            force only
+          </ForceHint>
+        )}
       </FieldColumn>
 
-      <FieldColumn>
-        <ColumnLabel style={{ textAlign: "right" }}>Outputs</ColumnLabel>
+      <FieldColumn align="right">
+        <ColumnLabel align="right">
+          Outputs
+          <Iconify icon="mdi:arrow-up-right" width={10} height={10} />
+        </ColumnLabel>
         {fields.outputs.map((field) => (
           <FieldRow key={`out-${field}`} align="right">
             <Dot
@@ -939,7 +1023,12 @@ function FlowNodeRenderer({
       onContextMenu={handleContextMenu}
       onMouseDownCapture={handleMouseDownCapture}
     >
-      {isForceNode && <ForceLabel />}
+      {isForceNode && (
+        <ForceBadge>
+          <Iconify icon="mdi:lightning-bolt" width={11} height={11} />
+          force
+        </ForceBadge>
+      )}
       {showConnections &&
         fields &&
         (fields.inputs.length > 0 || fields.outputs.length > 0) && (

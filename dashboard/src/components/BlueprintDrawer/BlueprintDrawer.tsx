@@ -16,6 +16,8 @@ import useSupervisings from "../../hooks/useSupervisings";
 import { Box, Fab, Grid, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
+const SHOW_CONNECTIONS_STORAGE_KEY = "blueprintShowConnections";
+
 const BlueprintDrawer = ({
   drawerOpen,
   handleDrawerClose,
@@ -83,11 +85,17 @@ const BlueprintDrawer = ({
   const [showSettings, setShowSettings] = useState(false);
   const [settingsTab, setSettingsTab] = useState(0);
   const [blocking, setBlocking] = useState<boolean>(true);
-  const [showConnections, setShowConnections] = useState<boolean>(false);
+  const [showConnections, setShowConnections] = useState<boolean>(
+    () => localStorage.getItem(SHOW_CONNECTIONS_STORAGE_KEY) === "true"
+  );
   const [superviseChatOpen, setSuperviseChatOpen] = useState<boolean>(
     !!supervise
   );
   const [editBlueprintOpen, setEditBlueprintOpen] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem(SHOW_CONNECTIONS_STORAGE_KEY, String(showConnections));
+  }, [showConnections]);
 
   const { patchBlueprint } = useBlueprint();
   const { approveBlueprintChat } = useSupervisings();

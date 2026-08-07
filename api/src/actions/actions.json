@@ -1,5 +1,30 @@
 [
   {
+    "action": "PLATFORM:translate",
+    "lib": "translate",
+    "description": "Translate text into Turkish, English, and Spanish, returned as separate fields so each language can be individually bound to downstream steps.",
+    "icon": "mdi:translate",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "description": "The text to translate."
+        }
+      },
+      "required": ["text"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "tr": { "type": "string", "description": "Turkish translation." },
+        "en": { "type": "string", "description": "English translation." },
+        "es": { "type": "string", "description": "Spanish translation." },
+        "error": { "type": "string" }
+      }
+    }
+  },
+  {
     "action": "PLATFORM:llm",
     "lib": "llm",
     "description": "Send a message to the Language Model for AI processing",

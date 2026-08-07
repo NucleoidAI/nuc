@@ -1548,6 +1548,217 @@
           "comment": "Completing meeting summary flow"
         }
       ]
+    },
+    {
+      "id": "f80fb2a6-ddea-4b32-a70f-9c1253524cd8",
+      "description": "Transcribe a meeting recording, produce a speaker-attributed summary, resolve participant names, and email the summary to all participants.",
+      "knowledge": [
+        {
+          "type": "TEXT",
+          "text": "Meeting name: Weekly Sync. Meeting date: 2026-07-30."
+        }
+      ],
+      "tools": [
+        "PLATFORM:pcm_to_wav",
+        "PLATFORM:transcribe_meeting",
+        "PLATFORM:summarize_meeting_by_speaker",
+        "PLATFORM:resolve_participants",
+        "GREY:send_email",
+        "PLATFORM:complete"
+      ],
+      "steps": [
+        {
+          "action": "PLATFORM:pcm_to_wav",
+          "status": "COMPLETED",
+          "parameters": {
+            "directoryPath": "/recordings/2026-07-30-weekly-sync"
+          },
+          "result": "{\"success\":true,\"converted\":[\"/recordings/2026-07-30-weekly-sync/1.wav\",\"/recordings/2026-07-30-weekly-sync/2.wav\"],\"totalFound\":2,\"totalConverted\":2}",
+          "comment": "Converting per-participant PCM recordings to WAV before transcription"
+        },
+        {
+          "action": "PLATFORM:transcribe_meeting",
+          "status": "COMPLETED",
+          "parameters": {
+            "directoryPath": "/recordings/2026-07-30-weekly-sync"
+          },
+          "result": "{\"full_meeting_transcript\":\"Speaker 1: Let's review this week's progress. Speaker 2: The integration tests are passing now.\",\"speaker_transcripts\":[{\"id\":\"1\",\"transcript\":\"Let's review this week's progress.\"},{\"id\":\"2\",\"transcript\":\"The integration tests are passing now.\"}]}",
+          "comment": "Transcribing all WAV files in the meeting directory"
+        }
+      ],
+      "next_step": {
+        "action": "PLATFORM:summarize_meeting_by_speaker",
+        "parameters": {
+          "full_meeting_transcript": {
+            "$ref": "steps[1].result.full_meeting_transcript"
+          },
+          "speaker_transcripts": {
+            "$ref": "steps[1].result.speaker_transcripts"
+          },
+          "language": "tr"
+        },
+        "comment": "steps[1] (transcribe_meeting) already produced full_meeting_transcript and speaker_transcripts - reuse them via $ref instead of retyping the transcript.",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "3c9d7a1e-5b6f-4a2c-9d0e-8f1a2b3c4d5e",
+      "description": "Transcribe a meeting recording, produce a speaker-attributed summary, resolve participant names, and email the summary to all participants.",
+      "knowledge": [
+        {
+          "type": "TEXT",
+          "text": "Meeting name: Sprint Planning. Meeting date: 2026-08-03."
+        }
+      ],
+      "tools": [
+        "PLATFORM:pcm_to_wav",
+        "PLATFORM:transcribe_meeting",
+        "PLATFORM:summarize_meeting_by_speaker",
+        "PLATFORM:resolve_participants",
+        "GREY:send_email",
+        "PLATFORM:complete"
+      ],
+      "steps": [
+        {
+          "action": "PLATFORM:pcm_to_wav",
+          "status": "COMPLETED",
+          "parameters": {
+            "directoryPath": "/recordings/2026-08-03-sprint-planning"
+          },
+          "result": "{\"success\":true,\"converted\":[\"/recordings/2026-08-03-sprint-planning/9001.wav\",\"/recordings/2026-08-03-sprint-planning/9002.wav\",\"/recordings/2026-08-03-sprint-planning/9003.wav\"],\"totalFound\":3,\"totalConverted\":3}",
+          "comment": "Converting per-participant PCM recordings to WAV before transcription"
+        },
+        {
+          "action": "PLATFORM:transcribe_meeting",
+          "status": "COMPLETED",
+          "parameters": {
+            "directoryPath": "/recordings/2026-08-03-sprint-planning"
+          },
+          "result": "{\"full_meeting_transcript\":\"[several thousand words of dialogue - omitted here, but present in full in the real step result]\",\"speaker_transcripts\":[{\"id\":\"9001\",\"transcript\":\"[long individual transcript segment]\"},{\"id\":\"9002\",\"transcript\":\"[long individual transcript segment]\"},{\"id\":\"9003\",\"transcript\":\"[long individual transcript segment]\"}]}",
+          "comment": "Transcribing all WAV files in the meeting directory"
+        },
+        {
+          "action": "PLATFORM:summarize_meeting_by_speaker",
+          "status": "FAILED",
+          "parameters": {
+            "full_meeting_transcript": "Ali: Bu sprintte neler yapacağız konuşalım. Zeynep: Öncelikle backlog'u gözden geçirelim. [transcript continues for thousands more words, typed out in full by mistake]",
+            "speaker_transcripts": [
+              {
+                "id": "9001",
+                "transcript": "Bu sprintte neler yapacağız konuşalım. [continues for hundreds more words]"
+              }
+            ],
+            "language": "tr"
+          },
+          "result": "Response was truncated due to max_tokens limit",
+          "comment": "The transcript was typed out by hand instead of using $ref, so the response ran out of tokens before finishing"
+        }
+      ],
+      "next_step": {
+        "action": "PLATFORM:summarize_meeting_by_speaker",
+        "parameters": {
+          "full_meeting_transcript": {
+            "$ref": "steps[1].result.full_meeting_transcript"
+          },
+          "speaker_transcripts": {
+            "$ref": "steps[1].result.speaker_transcripts"
+          },
+          "language": "tr"
+        },
+        "comment": "Retrying with $ref instead of retyping the transcript, since steps[1].result already has it",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "7aefdd59-0e9c-44eb-b1b9-1a6892560628",
+      "description": "Check product availability and create an order for it if needed.",
+      "knowledge": [
+        {
+          "type": "TEXT",
+          "text": "Battery product id is btr-123."
+        }
+      ],
+      "tools": [
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "PLATFORM:complete"
+      ],
+      "steps": [
+        {
+          "action": "GREY:check_product_count",
+          "status": "COMPLETED",
+          "parameters": {
+            "productId": "btr-123"
+          },
+          "result": "0",
+          "comment": "Checking product count"
+        }
+      ],
+      "next_step": {
+        "action": "GREY:create_order",
+        "parameters": {
+          "productId": {
+            "$ref": "steps[0].parameters.productId"
+          },
+          "quantity": 10
+        },
+        "comment": "The productId was already given in steps[0].parameters when checking availability - reuse it via $ref instead of retyping it",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "6f7a8b9c-0d1e-4f2a-8b3c-4d5e6f7a8b9c",
+      "description": "Create a new employee account and approve their onboarding request.",
+      "knowledge": [
+        {
+          "type": "TEXT",
+          "text": "New hire: Elif Demir, employee id E10501, department Engineering, manager Ahmet Yılmaz, location Istanbul."
+        }
+      ],
+      "tools": [
+        "PLATFORM:user_interaction",
+        "ACTIVEDIRECTORY:create_employee",
+        "SERVICENOW:approve_employee_request",
+        "PLATFORM:complete"
+      ],
+      "steps": [
+        {
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "What is the new hire's employee id?"
+          },
+          "result": "E10501",
+          "comment": "User confirmed employee id"
+        },
+        {
+          "action": "ACTIVEDIRECTORY:create_employee",
+          "status": "COMPLETED",
+          "parameters": {
+            "first_name": "Elif",
+            "last_name": "Demir",
+            "employee_id": {
+              "$ref": "steps[0].result"
+            },
+            "department": "Engineering",
+            "manager": "Ahmet Yılmaz",
+            "location": "Istanbul"
+          },
+          "result": "{\"employee_id\":\"E10501\",\"email\":\"elif.demir@example.com\",\"request_number\":\"REQ0010042\",\"status\":\"CREATED\"}",
+          "comment": "Reusing the employee id already confirmed by the user (steps[0].result) via $ref instead of retyping it"
+        }
+      ],
+      "next_step": {
+        "action": "SERVICENOW:approve_employee_request",
+        "parameters": {
+          "request_number": {
+            "$ref": "steps[1].result.request_number"
+          },
+          "comments": "Auto-approved after account creation"
+        },
+        "comment": "create_employee's result (steps[1]) already includes the ServiceNow request_number - reuse it via $ref instead of retyping it",
+        "result_score": 0.95
+      }
     }
   ]
 }

@@ -140,7 +140,7 @@ function useBlueprint() {
       createdAt: string | Date;
     }>,
     blocking?: boolean,
-    force?: boolean
+    skill?: string
   ) => {
     if (!blueprintId) {
       blueprintId = uuidv4();
@@ -154,7 +154,7 @@ function useBlueprint() {
       taskId,
       messages,
       ...(blocking !== undefined && { blocking }),
-      ...(force !== undefined && { force }),
+      ...(skill !== undefined && { skill }),
     });
     if (response?.data) {
       publish("BLUEPRINT_UPSERTED", { Blueprint: response.data });
@@ -164,13 +164,30 @@ function useBlueprint() {
 
   const patchBlueprint = async (
     blueprintId: string,
-    fields: { blocking?: boolean; force?: boolean }
+    fields: { blocking?: boolean }
   ) => {
     const response = await http.patch(`/blueprints/${blueprintId}`, fields);
     if (response?.data) {
       publish("BLUEPRINT_PATCHED", { Blueprint: response.data });
     }
     return { Blueprint: response?.data };
+  };
+
+  const generate = async (
+    nodes: NodeType[]
+  ): Promise<{ description: string; skill: string }> => {
+    if (!nodes?.length) {
+      return { description: "", skill: "" };
+    }
+
+    const response = await http.post("/blueprints/generate", {
+      nodes,
+    });
+
+    return {
+      description: response?.data?.description ?? "",
+      skill: response?.data?.skill ?? "",
+    };
   };
 
   const removeBlueprint = async (blueprintId: string, agentId: string) => {
@@ -194,6 +211,7 @@ function useBlueprint() {
     patchBlueprint,
     removeBlueprint,
     getBlueprintWithId,
+    generate,
   };
 }
 

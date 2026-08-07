@@ -1,3 +1,4 @@
+import type { DefinitionGraph } from "../../components/BlueprintFlow/helper";
 import NodeEditorDrawer from "../../components/NodeEditor/NodeEditorDrawer";
 import useAgents from "../../hooks/useAgents";
 import useBlueprint from "../../hooks/useBlueprint";
@@ -15,6 +16,8 @@ const NodeEditorWidget = ({
   setNewNodeLabel,
   newNodePrompt,
   setNewNodePrompt,
+  newNodeForce,
+  setNewNodeForce,
   newNodeType,
   setNewNodeType,
   selectedBranch,
@@ -43,25 +46,13 @@ const NodeEditorWidget = ({
     trueNext?: string[];
     falseNext?: string[];
   };
-  graphData: {
-    nodes: Record<
-      string,
-      {
-        id: string;
-        label?: string;
-        action?: string;
-        nodeType?: string;
-        next?: string | string[];
-        trueNext?: string[];
-        falseNext?: string[];
-      }
-    >;
-    roots: string[];
-  };
+  graphData: DefinitionGraph;
   newNodeLabel: string;
   setNewNodeLabel: (label: string) => void;
   newNodePrompt: string;
   setNewNodePrompt: (prompt: string) => void;
+  newNodeForce?: boolean;
+  setNewNodeForce?: (force: boolean) => void;
   newNodeType: string;
   setNewNodeType: (type: string) => void;
   selectedBranch: "true" | "false";
@@ -180,7 +171,7 @@ const NodeEditorWidget = ({
             type: "object",
             properties: {},
           },
-          outputSchema: {
+          outputSchema: action.outputSchema || {
             type: "object",
             properties: {},
           },
@@ -250,6 +241,8 @@ const NodeEditorWidget = ({
       setNewNodeLabel={setNewNodeLabel}
       newNodePrompt={newNodePrompt}
       setNewNodePrompt={setNewNodePrompt}
+      newNodeForce={newNodeForce}
+      setNewNodeForce={setNewNodeForce}
       newNodeType={newNodeType}
       setNewNodeType={setNewNodeType}
       selectedBranch={selectedBranch}

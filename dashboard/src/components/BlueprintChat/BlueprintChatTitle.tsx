@@ -3,7 +3,6 @@ import { BlueprintCommands } from "../ChatInput/chat.config";
 import EditIcon from "@mui/icons-material/Edit";
 
 import {
-  Box,
   Button,
   Dialog,
   DialogActions,
@@ -21,7 +20,7 @@ import {
 import { MCPElement, MCPScopeElement } from "./MCPElement";
 import React, { useState } from "react";
 
-const BlueprintChatTitle = ({ title, description, setTitle }) => {
+const BlueprintChatTitle = ({ title, setTitle }) => {
   const theme = useTheme();
   const [isEditing, setIsEditing] = useState(false);
 
@@ -35,115 +34,6 @@ const BlueprintChatTitle = ({ title, description, setTitle }) => {
 
   const handleCancelClick = () => {
     setIsEditing(false);
-  };
-
-  const renderDescriptionContent = () => {
-    if (!description) return null;
-
-    try {
-      const availableMCPs = BlueprintCommands[0]?.next?.list || [];
-      const availableScopes = [];
-
-      availableMCPs.forEach((mcp) => {
-        if (mcp.next?.list) {
-          mcp.next.list.forEach((scope) => {
-            availableScopes.push({
-              ...scope,
-              parentMCP: mcp,
-            });
-          });
-        }
-      });
-
-      const matches = [];
-      const modifiedDescription = description;
-
-      availableMCPs.forEach((mcp) => {
-        const regex = new RegExp(`\\b${mcp.name}\\b`, "gi");
-        const mcpMatches = modifiedDescription.match(regex);
-        if (mcpMatches) {
-          mcpMatches.forEach((match) => {
-            matches.push({
-              text: match,
-              type: "mcp",
-              data: mcp,
-              index: modifiedDescription
-                .toLowerCase()
-                .indexOf(match.toLowerCase()),
-            });
-          });
-        }
-      });
-
-      availableScopes.forEach((scope) => {
-        const regex = new RegExp(`\\b${scope.name}\\b`, "gi");
-        const scopeMatches = modifiedDescription.match(regex);
-        if (scopeMatches) {
-          scopeMatches.forEach((match) => {
-            matches.push({
-              text: match,
-              type: "scope",
-              data: scope,
-              index: modifiedDescription
-                .toLowerCase()
-                .indexOf(match.toLowerCase()),
-            });
-          });
-        }
-      });
-
-      if (matches.length > 0) {
-        matches.sort((a, b) => a.index - b.index);
-
-        const parts = [];
-        let lastIndex = 0;
-
-        matches.forEach((match) => {
-          const currentIndex = modifiedDescription
-            .toLowerCase()
-            .indexOf(match.text.toLowerCase(), lastIndex);
-
-          if (currentIndex > lastIndex) {
-            parts.push(modifiedDescription.substring(lastIndex, currentIndex));
-          }
-
-          parts.push(match);
-
-          lastIndex = currentIndex + match.text.length;
-        });
-
-        if (lastIndex < modifiedDescription.length) {
-          parts.push(modifiedDescription.substring(lastIndex));
-        }
-
-        return (
-          <>
-            {parts.map((part, index) => {
-              if (typeof part === "object" && part.type === "mcp") {
-                return (
-                  <MCPElement key={`desc-mcp-${index}`}>
-                    <Iconify icon={part.data.icon} sx={{ mr: 1 }} />
-                    {part.data.name}
-                  </MCPElement>
-                );
-              } else if (typeof part === "object" && part.type === "scope") {
-                return (
-                  <MCPScopeElement key={`desc-scope-${index}`}>
-                    <Iconify icon={part.data.icon} />
-                    {part.data.name}
-                  </MCPScopeElement>
-                );
-              }
-              return <span key={index}>{part}</span>;
-            })}
-          </>
-        );
-      }
-
-      return description;
-    } catch (error) {
-      return description;
-    }
   };
 
   const renderTitleContent = () => {
@@ -252,14 +142,14 @@ const BlueprintChatTitle = ({ title, description, setTitle }) => {
   };
 
   return (
-    <Box>
+    <>
       <GlassCard>
         <GlassCardHeader
           sx={{
-            p: 2,
+            p: 1.5,
+            width: 500,
           }}
           title={renderTitleContent()}
-          subheader={renderDescriptionContent()}
           action={
             <IconButton
               onClick={handleEditClick}
@@ -269,8 +159,8 @@ const BlueprintChatTitle = ({ title, description, setTitle }) => {
                 border: `1px solid ${theme.palette.primary.main}20`,
                 color: theme.palette.primary.main,
                 borderRadius: 1.5,
-                width: 36,
-                height: 36,
+                width: 28,
+                height: 28,
                 transition: "all 0.2s ease-in-out",
                 "&:hover": {
                   backgroundColor: theme.palette.primary.main + "20",
@@ -394,7 +284,7 @@ const BlueprintChatTitle = ({ title, description, setTitle }) => {
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </>
   );
 };
 

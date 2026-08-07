@@ -621,6 +621,12 @@ export const blueprintFlowPlugin = {
   style: ({ style }) => {
     const styleTokens = style || {};
 
+    const connectionsGap = styleTokens.showConnections
+      ? fieldsPanelHeight(
+          styleTokens.nodeFields as Record<string, NodeFields> | undefined
+        )
+      : 0;
+
     const bgFrom = undefined;
     const bgTo = undefined;
     const borderColor = "linear-gradient(135deg, #c684ff33, #078dee4d)";
@@ -646,7 +652,7 @@ export const blueprintFlowPlugin = {
       maxHeight,
       shape,
       borderRadius,
-      gap: styleTokens.gap ?? 6,
+      gap: (styleTokens.gap ?? 6) + connectionsGap,
       levelGap: styleTokens.levelGap ?? 15,
       startGap,
       endGap,
@@ -705,6 +711,19 @@ type FlowGraphNode = import("./helper").DefinitionGraphNode & {
 };
 
 export type NodeFields = { inputs: string[]; outputs: string[] };
+
+const FIELDS_PANEL_ROW_HEIGHT = 2;
+
+function fieldsPanelHeight(nodeFields?: Record<string, NodeFields>) {
+  const rows = Math.max(
+    0,
+    ...Object.values(nodeFields ?? {}).map((f) =>
+      Math.max(f.inputs.length, f.outputs.length)
+    )
+  );
+
+  return rows * FIELDS_PANEL_ROW_HEIGHT;
+}
 
 const FieldsPanel = styled("div")(({ theme }) => ({
   position: "absolute",
@@ -857,11 +876,6 @@ function NodeHandles({
           <Iconify icon="mdi:arrow-down-left" width={10} height={10} />
           Inputs
         </ColumnLabel>
-        {fields.inputs.length === 0 && (
-          <FieldLabel align="left" style={{ opacity: 0.5, padding: "3px 4px" }}>
-            —
-          </FieldLabel>
-        )}
         {fields.inputs.map((field) => {
           const bound = boundFields?.has(field) ? "true" : "false";
           return (

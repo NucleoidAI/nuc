@@ -1,10 +1,10 @@
-import MCPsWidget from "../widgets/MCPsWidget/MCPsWidget";
+import AgentMCP from "../widgets/AgentMCP/AgentMCP";
 import React from "react";
 
 function MCPs() {
   return (
     <>
-      <MCPsWidget />
+      <AgentMCP />
     </>
   );
 }

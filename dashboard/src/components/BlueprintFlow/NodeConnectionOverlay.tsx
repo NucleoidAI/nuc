@@ -134,18 +134,6 @@ export default function NodeConnectionOverlay({
       }
     }
 
-    const ancestorsOf = (nodeId: string) => {
-      const visited = new Set<string>();
-      const queue = [...(parentsById.get(nodeId) ?? [])];
-      while (queue.length) {
-        const id = queue.shift()!;
-        if (visited.has(id) || id === nodeId) continue;
-        visited.add(id);
-        queue.push(...(parentsById.get(id) ?? []));
-      }
-      return visited;
-    };
-
     const explicit = new Set(
       bindings.map((b) => `${b.targetNodeId}:${b.targetField}`)
     );
@@ -161,16 +149,16 @@ export default function NodeConnectionOverlay({
       const targetFields = nodeFields[node.id];
       if (!targetFields?.inputs.length) continue;
 
-      const ancestors = ancestorsOf(node.id);
-      if (!ancestors.size) continue;
+      const parents = parentsById.get(node.id);
+      if (!parents?.size) continue;
 
       for (const field of targetFields.inputs) {
         if (explicit.has(`${node.id}:${field}`)) continue;
 
-        for (const ancestorId of ancestors) {
-          if (nodeFields[ancestorId]?.outputs.includes(field)) {
+        for (const parentId of parents) {
+          if (nodeFields[parentId]?.outputs.includes(field)) {
             result.push({
-              sourceNodeId: ancestorId,
+              sourceNodeId: parentId,
               targetNodeId: node.id,
               field,
             });

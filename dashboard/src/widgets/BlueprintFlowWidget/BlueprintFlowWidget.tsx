@@ -372,10 +372,6 @@ function BlueprintFlowWidget({
         });
       }
     },
-    // Deliberately excludes hasLocalChanges: this effect must only re-run when
-    // the fetched blueprint itself changes, not when the flip-to-false after a
-    // save flips it — otherwise it races the still-stale blueprintNodes fetch
-    // and clobbers the just-saved graphData with pre-save data.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [blueprintNodes, aiResponse, blueprint?.id]
   );
@@ -1248,8 +1244,6 @@ function BlueprintFlowWidget({
       const targetNode = prev.nodes[targetNodeId];
       if (!targetNode) return prev;
 
-      // Only force nodes have a guaranteed action, so only their inputs
-      // are meaningful to bind — other nodes' input handles are read-only.
       if (!targetNode.raw?.properties?.force) return prev;
 
       const ancestors = getAncestorNodes(prev, targetNodeId);

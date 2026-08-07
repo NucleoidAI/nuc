@@ -192,12 +192,6 @@ async function teamChat({
   });
 }
 
-/**
- * Walks the blueprint graph in lockstep with the task's completed steps to
- * find the node the task is currently positioned at. Steps recorded after
- * this feature shipped carry a `nodeId`, which is matched directly; older
- * steps fall back to matching on the node's bound action string.
- */
 function resolveCurrentNode(
   nodes: any[],
   completedSteps: { action: string; result?: string; nodeId?: string | null }[],
@@ -242,11 +236,6 @@ function resolveCurrentNode(
   return currentNode;
 }
 
-/**
- * Runs the LLM for a node flagged `properties.force === true`, guaranteeing
- * the node's bound action is used instead of whatever the LLM would have
- * picked on its own.
- */
 async function forceNodeStep({
   currentNode,
   currentTask,
@@ -367,8 +356,6 @@ async function task({ taskId }: { taskId: string }) {
 
   const nodeId = currentNode?.id ?? null;
 
-  // Bound/literal parameters from the canvas connector always apply once a
-  // node is reached, independent of whether that node is force-executed.
   const boundParameters = currentNode?.properties?.parameters;
   const rawParameters =
     boundParameters && Object.keys(boundParameters).length

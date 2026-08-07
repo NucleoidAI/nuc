@@ -16,7 +16,8 @@ import useSupervisings from "../../hooks/useSupervisings";
 import { Box, Fab, Grid, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
-const SHOW_CONNECTIONS_STORAGE_KEY = "blueprintShowConnections";
+const SHOW_CONNECTIONS_STORAGE_KEY =
+  "greycollar.BlueprintDrawer.showConnections";
 
 const BlueprintDrawer = ({
   drawerOpen,

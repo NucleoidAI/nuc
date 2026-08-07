@@ -97,6 +97,15 @@ export default function BlueprintFlow({
     return result;
   }, [showConnections, graphData]);
 
+  const hasForceNode = useMemo(
+    () =>
+      Object.values(graphData?.nodes ?? {}).some(
+        (node) =>
+          (node.raw?.properties as { force?: boolean } | undefined)?.force
+      ),
+    [graphData]
+  );
+
   return (
     <Box
       ref={flowContainerRef}
@@ -132,6 +141,7 @@ export default function BlueprintFlow({
           showConnections: !readOnly && showConnections,
           nodeFields,
           boundFieldsByNode,
+          hasForceNode,
           onHandleDragStart: (nodeId: string, field: string) =>
             setDragging({ sourceNodeId: nodeId, sourceField: field }),
           onToggleForce: readOnly ? undefined : onToggleForceNode,

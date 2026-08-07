@@ -631,6 +631,8 @@ export const blueprintFlowPlugin = {
     const minHeight = 210;
     const maxHeight = 210;
     const shape = 16;
+    const endGap = -5;
+    const startGap = 3;
 
     return {
       ...styleTokens,
@@ -646,6 +648,8 @@ export const blueprintFlowPlugin = {
       borderRadius,
       gap: styleTokens.gap ?? 6,
       levelGap: styleTokens.levelGap ?? 15,
+      startGap,
+      endGap,
     };
   },
 
@@ -766,17 +770,6 @@ const FieldRow = styled("div")<{ align: "left" | "right" }>(
   })
 );
 
-const ForceHint = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  gap: 3,
-  marginTop: 4,
-  fontSize: 9,
-  fontWeight: 600,
-  letterSpacing: "0.02em",
-  color: theme.palette.text.disabled,
-}));
-
 const Dot = styled("div")<{
   variant: "in" | "out";
   bound?: string;
@@ -799,7 +792,7 @@ const Dot = styled("div")<{
     background: isBound ? accent : theme.palette.background.paper,
     border: `2px solid ${isBound ? accent : theme.palette.grey[400]}`,
     boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
-    cursor: disabled ? "not-allowed" : "crosshair",
+    cursor: disabled ? "default" : "crosshair",
     opacity: disabled ? 0.35 : 1,
     pointerEvents: "auto",
     transition:
@@ -837,11 +830,13 @@ function NodeHandles({
   node,
   fields,
   boundFields,
+  hasForceNode,
   onHandleDragStart,
 }: {
   node: FlowGraphNode;
   fields: NodeFields;
   boundFields?: Set<string>;
+  hasForceNode?: boolean;
   onHandleDragStart?: (
     nodeId: string,
     field: string,
@@ -853,7 +848,10 @@ function NodeHandles({
   );
 
   return (
-    <FieldsPanel sx={{ mt: -0.5 }} onMouseDown={(e) => e.stopPropagation()}>
+    <FieldsPanel
+      sx={{ mt: -1, ml: 0.6 }}
+      onMouseDown={(e) => e.stopPropagation()}
+    >
       <FieldColumn align="left">
         <ColumnLabel align="left">
           <Iconify icon="mdi:arrow-down-left" width={10} height={10} />
@@ -876,11 +874,7 @@ function NodeHandles({
                 data-in-handle=""
                 data-node-id={node.id}
                 data-field={field}
-                title={
-                  isForceTarget
-                    ? `Input: ${field}`
-                    : `Input: ${field} (read-only — only force nodes accept connections)`
-                }
+                {...(isForceTarget && { title: `Input: ${field}` })}
               />
               <FieldLabel align="left" bound={bound} title={field}>
                 {field}
@@ -888,12 +882,6 @@ function NodeHandles({
             </FieldRow>
           );
         })}
-        {!isForceTarget && fields.inputs.length > 0 && (
-          <ForceHint title="Only force nodes accept parameter connections">
-            <Iconify icon="mdi:lock-outline" width={10} height={10} />
-            force only
-          </ForceHint>
-        )}
       </FieldColumn>
 
       <FieldColumn align="right">
@@ -905,15 +893,22 @@ function NodeHandles({
           <FieldRow key={`out-${field}`} align="right">
             <Dot
               variant="out"
+              interactive={hasForceNode ? "true" : "false"}
               data-handle-type="out"
               data-node-id={node.id}
               data-field={field}
-              title={`Output: ${field === "result" ? "result (raw)" : field}`}
-              onMouseDown={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                onHandleDragStart?.(node.id, field, e);
-              }}
+              {...(hasForceNode && {
+                title: `Output: ${field === "result" ? "result (raw)" : field}`,
+              })}
+              onMouseDown={
+                hasForceNode
+                  ? (e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      onHandleDragStart?.(node.id, field, e);
+                    }
+                  : undefined
+              }
             />
             <FieldLabel align="right" title={field}>
               {field === "result" ? "result" : field}
@@ -938,6 +933,7 @@ function FlowNodeRenderer({
     showConnections?: boolean;
     nodeFields?: Record<string, NodeFields>;
     boundFieldsByNode?: Record<string, Set<string>>;
+    hasForceNode?: boolean;
     onHandleDragStart?: (
       nodeId: string,
       field: string,
@@ -955,6 +951,7 @@ function FlowNodeRenderer({
     showConnections,
     nodeFields,
     boundFieldsByNode,
+    hasForceNode,
     onHandleDragStart,
     onToggleForce,
   } = nodeStyle || {};
@@ -1029,6 +1026,7 @@ function FlowNodeRenderer({
             node={node}
             fields={fields}
             boundFields={boundFieldsByNode?.[node.id]}
+            hasForceNode={hasForceNode}
             onHandleDragStart={onHandleDragStart}
           />
         )}

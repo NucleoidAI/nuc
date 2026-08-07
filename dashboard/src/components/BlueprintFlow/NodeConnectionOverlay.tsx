@@ -52,6 +52,20 @@ function collectHandles(container: HTMLElement) {
   return map;
 }
 
+function sourceAnchor(rect: DOMRect, containerRect: DOMRect) {
+  return {
+    x: rect.right - containerRect.left,
+    y: rect.top + rect.height / 2 - containerRect.top,
+  };
+}
+
+function targetAnchor(rect: DOMRect, containerRect: DOMRect) {
+  return {
+    x: rect.left - containerRect.left,
+    y: rect.top + rect.height / 2 - containerRect.top,
+  };
+}
+
 function bezierPath(x1: number, y1: number, x2: number, y2: number) {
   const dx = Math.max(40, Math.abs(x2 - x1) / 2);
   return `M ${x1} ${y1} C ${x1 + dx} ${y1}, ${x2 - dx} ${y2}, ${x2} ${y2}`;
@@ -181,16 +195,11 @@ export default function NodeConnectionOverlay({
         const sourceEl = handles.get(`out:${b.sourceNodeId}:${b.sourceField}`);
         const targetEl = handles.get(`in:${b.targetNodeId}:${b.targetField}`);
         if (!sourceEl || !targetEl) continue;
-        const sr = sourceEl.getBoundingClientRect();
-        const tr = targetEl.getBoundingClientRect();
+        const s = sourceAnchor(sourceEl.getBoundingClientRect(), containerRect);
+        const t = targetAnchor(targetEl.getBoundingClientRect(), containerRect);
         nextPaths.push({
           id: `${b.targetNodeId}:${b.targetField}`,
-          d: bezierPath(
-            sr.left + sr.width / 2 - containerRect.left,
-            sr.top + sr.height / 2 - containerRect.top,
-            tr.left + tr.width / 2 - containerRect.left,
-            tr.top + tr.height / 2 - containerRect.top
-          ),
+          d: bezierPath(s.x, s.y, t.x, t.y),
           targetNodeId: b.targetNodeId,
           targetField: b.targetField,
         });
@@ -200,16 +209,11 @@ export default function NodeConnectionOverlay({
         const sourceEl = handles.get(`out:${ib.sourceNodeId}:${ib.field}`);
         const targetEl = handles.get(`in:${ib.targetNodeId}:${ib.field}`);
         if (!sourceEl || !targetEl) continue;
-        const sr = sourceEl.getBoundingClientRect();
-        const tr = targetEl.getBoundingClientRect();
+        const s = sourceAnchor(sourceEl.getBoundingClientRect(), containerRect);
+        const t = targetAnchor(targetEl.getBoundingClientRect(), containerRect);
         nextPaths.push({
           id: `implied:${ib.sourceNodeId}:${ib.targetNodeId}:${ib.field}`,
-          d: bezierPath(
-            sr.left + sr.width / 2 - containerRect.left,
-            sr.top + sr.height / 2 - containerRect.top,
-            tr.left + tr.width / 2 - containerRect.left,
-            tr.top + tr.height / 2 - containerRect.top
-          ),
+          d: bezierPath(s.x, s.y, t.x, t.y),
           targetNodeId: ib.targetNodeId,
           targetField: ib.field,
           implied: true,
@@ -224,12 +228,15 @@ export default function NodeConnectionOverlay({
           `out:${dragging.sourceNodeId}:${dragging.sourceField}`
         );
         if (sourceEl) {
-          const sr = sourceEl.getBoundingClientRect();
+          const s = sourceAnchor(
+            sourceEl.getBoundingClientRect(),
+            containerRect
+          );
           nextPaths.push({
             id: "__dragging__",
             d: bezierPath(
-              sr.left + sr.width / 2 - containerRect.left,
-              sr.top + sr.height / 2 - containerRect.top,
+              s.x,
+              s.y,
               mousePosRef.current.x - containerRect.left,
               mousePosRef.current.y - containerRect.top
             ),
@@ -293,31 +300,6 @@ export default function NodeConnectionOverlay({
         height="100%"
         style={{ position: "absolute", inset: 0, overflow: "visible" }}
       >
-        <defs>
-          <marker
-            id="binding-arrow"
-            markerWidth="5"
-            markerHeight="5"
-            refX="4"
-            refY="2.5"
-            orient="auto"
-          >
-            <path d="M0,0 L5,2.5 L0,5 Z" fill={theme.palette.primary.main} />
-          </marker>
-          <marker
-            id="binding-arrow-implied"
-            markerWidth="4.5"
-            markerHeight="4.5"
-            refX="4"
-            refY="2.25"
-            orient="auto"
-          >
-            <path
-              d="M0,0 L4.5,2.25 L0,4.5 Z"
-              fill={theme.palette.action.disabled}
-            />
-          </marker>
-        </defs>
         {paths.map((p) => {
           if (p.implied) {
             return (
@@ -329,7 +311,6 @@ export default function NodeConnectionOverlay({
                   strokeWidth={1.5}
                   strokeDasharray="2 4"
                   strokeLinecap="round"
-                  markerEnd="url(#binding-arrow-implied)"
                 />
                 <path
                   d={p.d}
@@ -356,7 +337,6 @@ export default function NodeConnectionOverlay({
                 }
                 strokeWidth={p.temp ? 1.5 : 2}
                 strokeDasharray={p.temp ? "4 4" : undefined}
-                markerEnd={p.temp ? undefined : "url(#binding-arrow)"}
               />
               {!p.temp && (
                 <path

@@ -14,6 +14,7 @@ export type MCPSkill = {
   provider: string;
   title?: string;
   description?: string;
+  action?: string;
   direction: "INCOMING" | "OUTGOING";
   icon?: string;
   oauth?: {

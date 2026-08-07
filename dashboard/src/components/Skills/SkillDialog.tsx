@@ -124,6 +124,12 @@ const SkillDialog = ({
       open={open}
       fullWidth
       maxWidth={"sm"}
+      slotProps={{
+        paper: {
+          tabIndex: -1,
+          sx: { "&:focus, &:focus-visible": { outline: "none" } },
+        },
+      }}
       onClose={(event: React.KeyboardEvent) =>
         event.key === "Escape" ? handleClose() : null
       }

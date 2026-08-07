@@ -10,10 +10,12 @@ const Skills = ({
   onSkillClick,
   id,
   oauth,
+  action,
 }: {
   title: string;
   description: string;
   icon: string;
+  action: string;
   onSkillClick: (skill: {
     title: string;
     description: string;
@@ -37,8 +39,10 @@ const Skills = ({
   return (
     <Card
       sx={{
-        height: 270,
+        height: 200,
         width: "100%",
+        display: "flex",
+        flexDirection: "column",
         transition: "transform 0.3s",
         "&:hover": { transform: "scale(1.05)", cursor: "pointer" },
       }}
@@ -49,13 +53,50 @@ const Skills = ({
           display: "flex",
           justifyContent: "flex-start",
           alignItems: "center",
-          padding: 2,
+          gap: 1,
+          padding: 1,
+          minWidth: 0,
         }}
       >
-        <Icon icon={icon} width="30" height="30" />
-      </Box>
-      <CardContent>
-        <Typography variant="h4" sx={{ mb: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexShrink: 0,
+            width: 56,
+            height: 56,
+            borderRadius: 2,
+            background: "linear-gradient(145deg, #3a3f4b, #1f232b)",
+            boxShadow:
+              "6px 6px 12px rgba(0, 0, 0, 0.55), -4px -4px 10px rgba(255, 255, 255, 0.06)",
+            transform: "perspective(300px) rotateX(12deg) rotateY(-12deg)",
+            transformStyle: "preserve-3d",
+            transition: "transform 0.3s",
+            "& svg": {
+              filter: "drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.35))",
+              transform: "translateZ(12px)",
+            },
+            "&:hover": {
+              transform: "perspective(300px) rotateX(0deg) rotateY(0deg)",
+            },
+          }}
+        >
+          <Icon icon={icon} width="30" height="30" />
+        </Box>
+        <Typography
+          variant="h6"
+          title={title}
+          sx={{
+            ml: 1,
+            minWidth: 0,
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+            wordBreak: "break-word",
+          }}
+        >
           {title
             ?.split(" ")
             .map(
@@ -64,7 +105,43 @@ const Skills = ({
             )
             .join(" ")}
         </Typography>
-        <Typography variant="body2">{description}</Typography>
+      </Box>
+      <CardContent
+        sx={{
+          flex: 1,
+          minHeight: 0,
+          overflow: "hidden",
+          pt: 0,
+        }}
+      >
+        <Typography
+          variant="subtitle1"
+          title={action}
+          sx={{
+            mb: 1,
+            display: "-webkit-box",
+            WebkitLineClamp: 1,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+            wordBreak: "break-word",
+          }}
+        >
+          {action}
+        </Typography>
+        <Typography
+          variant="body2"
+          title={description}
+          sx={{
+            display: "-webkit-box",
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            wordBreak: "break-word",
+          }}
+        >
+          {description}
+        </Typography>
       </CardContent>
     </Card>
   );

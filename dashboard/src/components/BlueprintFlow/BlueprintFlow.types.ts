@@ -1,4 +1,5 @@
 import { DefinitionGraph } from "./helper";
+import type { ParameterBinding } from "./NodeConnectionOverlay";
 import type { ValidationError } from "./Validation/validation";
 
 export type SavedNode = DefinitionGraph["nodes"][string]["raw"];
@@ -32,4 +33,10 @@ export interface BlueprintFlowProps {
   onSaveSuccessChange: (value: boolean) => void;
   isSuperviseFlow?: boolean;
   isSubmitting?: boolean;
+  /** Purely a canvas display preference — shows the input/output dots and
+   *  connector lines. Independent of whether any node is a force node. */
+  showConnections?: boolean;
+  onConnectParameter?: (binding: ParameterBinding) => void;
+  onDisconnectParameter?: (targetNodeId: string, targetField: string) => void;
+  onToggleForceNode?: (node: { id: string }) => void;
 }

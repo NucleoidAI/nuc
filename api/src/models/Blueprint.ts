@@ -29,6 +29,10 @@ class Blueprint extends Model {
   @Column(DataType.TEXT)
   declare description: string;
 
+  @AllowNull(true)
+  @Column(DataType.TEXT)
+  declare skill: string | null;
+
   @AllowNull(false)
   @Column(DataType.UUID)
   declare agentId: string;
@@ -37,11 +41,6 @@ class Blueprint extends Model {
   @AllowNull(false)
   @Column(DataType.BOOLEAN)
   declare blocking: boolean;
-
-  @Default(false)
-  @AllowNull(false)
-  @Column(DataType.BOOLEAN)
-  declare force: boolean;
 
   @AllowNull(true)
   @Column({

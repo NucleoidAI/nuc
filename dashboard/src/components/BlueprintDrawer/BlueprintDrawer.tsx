@@ -1,22 +1,23 @@
+import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import BlueprintChatTitle from "../BlueprintChat/BlueprintChatTitle";
 import BlueprintFlowWidget from "../../widgets/BlueprintFlowWidget/BlueprintFlowWidget";
-import CloseIcon from "@mui/icons-material/Close";
+import BlueprintKnowledge from "../BlueprintKnowledge/BlueprintKnowledge";
+import BlueprintSkill from "../BlueprintSkill/BlueprintSkill";
 import { DrawerLayout } from "@canmingir/link/layouts";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import { FlowDefinition } from "../BlueprintFlow/helper";
-import Knowledge from "../../widgets/Knowledge/Knowledge";
 import SettingsDialog from "../SettingsDialog/SettingsDialog";
 import SettingsIcon from "@mui/icons-material/Settings";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import SupervisingChat from "../SupervisingChat";
 import useBlueprint from "../../hooks/useBlueprint";
 import useSupervisings from "../../hooks/useSupervisings";
-import { Box, Fab, Grid, IconButton, Tooltip } from "@mui/material";
-import {
-  GlassCard,
-  GlassCardContent,
-} from "@canmingir/link/platform/components";
+
+import { Box, Fab, Grid, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
+
+const SHOW_CONNECTIONS_STORAGE_KEY =
+  "greycollar.BlueprintDrawer.showConnections";
 
 const BlueprintDrawer = ({
   drawerOpen,
@@ -41,6 +42,7 @@ const BlueprintDrawer = ({
     description: string;
     agentId: string;
     pseudocode?: string;
+    skill?: string;
   };
   handleAiResponse?: (response: {
     flow: FlowDefinition;
@@ -77,15 +79,24 @@ const BlueprintDrawer = ({
 }) => {
   const [title, setTitle] = useState(selectedItem?.title);
   const [description, setDescription] = useState(selectedItem?.description);
+  const [skill, setSkill] = useState(selectedItem?.skill);
+  const [skillLoading, setSkillLoading] = useState(false);
+  const [liveNodes, setLiveNodes] = useState([]);
   const [showKnowledge, setShowKnowledge] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [settingsTab, setSettingsTab] = useState(0);
   const [blocking, setBlocking] = useState<boolean>(true);
-  const [force, setForce] = useState<boolean>(false);
+  const [showConnections, setShowConnections] = useState<boolean>(
+    () => localStorage.getItem(SHOW_CONNECTIONS_STORAGE_KEY) === "true"
+  );
   const [superviseChatOpen, setSuperviseChatOpen] = useState<boolean>(
     !!supervise
   );
   const [editBlueprintOpen, setEditBlueprintOpen] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem(SHOW_CONNECTIONS_STORAGE_KEY, String(showConnections));
+  }, [showConnections]);
 
   const { patchBlueprint } = useBlueprint();
   const { approveBlueprintChat } = useSupervisings();
@@ -109,16 +120,10 @@ const BlueprintDrawer = ({
     }
   };
 
-  const handleForceChange = async (value: boolean) => {
-    setForce(value);
-    if (selectedItem?.id) {
-      await patchBlueprint(selectedItem.id, { force: value });
-    }
-  };
-
   useEffect(() => {
     setTitle(selectedItem?.title);
     setDescription(selectedItem?.description);
+    setSkill(selectedItem?.skill);
   }, [selectedItem]);
 
   useEffect(() => {
@@ -153,8 +158,10 @@ const BlueprintDrawer = ({
         teamId={teamId}
         blocking={blocking}
         onBlockingChange={handleBlockingChange}
-        force={force}
-        onForceChange={handleForceChange}
+        showConnections={showConnections}
+        onSkillChange={setSkill}
+        onSkillLoadingChange={setSkillLoading}
+        onNodesChange={setLiveNodes}
         onSave={supervise ? () => handleManualResolve("BLUEPRINT") : undefined}
       />
 
@@ -171,40 +178,26 @@ const BlueprintDrawer = ({
           maxHeight: "calc(100% - 32px)",
         }}
       >
-        <BlueprintChatTitle
-          title={title}
-          description={description}
-          setTitle={setTitle}
+        <BlueprintChatTitle title={title} setTitle={setTitle} />
+
+        <BlueprintSkill
+          skill={skill}
+          skillLoading={skillLoading}
+          showKnowledge={showKnowledge}
+          blueprintId={selectedItem?.id}
+          nodes={liveNodes}
         />
 
         {showKnowledge && (
-          <GlassCard
-            sx={{
-              height: "85vh",
-              overflow: "hidden",
-              position: "relative",
-            }}
-          >
-            <GlassCardContent>
-              <Tooltip title="Close" placement="right">
-                <IconButton
-                  size="small"
-                  onClick={() => setShowKnowledge(false)}
-                  sx={{ position: "absolute", top: 8, right: 8, zIndex: 99 }}
-                >
-                  <CloseIcon />
-                </IconButton>
-              </Tooltip>
-              <Knowledge
-                agentId={selectedItem?.agentId || agentId}
-                blueprintId={selectedItem?.id}
-                teamId={teamId}
-                onItemAdded={
-                  supervise ? () => handleManualResolve("KNOWLEDGE") : undefined
-                }
-              />
-            </GlassCardContent>
-          </GlassCard>
+          <BlueprintKnowledge
+            setShowKnowledge={setShowKnowledge}
+            selectedItem={selectedItem}
+            agentId={agentId}
+            teamId={teamId}
+            onItemAdded={
+              supervise ? () => handleManualResolve("KNOWLEDGE") : undefined
+            }
+          />
         )}
       </Box>
 
@@ -241,6 +234,28 @@ const BlueprintDrawer = ({
         </Fab>
       </Tooltip>
 
+      <Tooltip
+        title={
+          showConnections
+            ? "Hide parameter connections"
+            : "Show parameter connections"
+        }
+        placement="left"
+      >
+        <Fab
+          color="primary"
+          onClick={() => setShowConnections((prev) => !prev)}
+          sx={{
+            position: "absolute",
+            bottom: 24,
+            right: 168,
+            zIndex: 10,
+          }}
+        >
+          <AccountTreeIcon />
+        </Fab>
+      </Tooltip>
+
       <Tooltip title="Settings" placement="left">
         <Fab
           color="primary"
@@ -263,8 +278,6 @@ const BlueprintDrawer = ({
         setSettingsTab={setSettingsTab}
         blocking={blocking}
         setBlocking={handleBlockingChange}
-        force={force}
-        setForce={handleForceChange}
       />
     </Box>
   );

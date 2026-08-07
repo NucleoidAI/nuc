@@ -14,6 +14,7 @@ import {
   Pagination,
   Select,
   Stack,
+  Switch,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
@@ -30,6 +31,8 @@ const NodeEditorDrawer = ({
   setNewNodeLabel,
   newNodePrompt,
   setNewNodePrompt,
+  newNodeForce = false,
+  setNewNodeForce,
   newNodeType,
   setNewNodeType,
   selectedBranch,
@@ -69,6 +72,8 @@ const NodeEditorDrawer = ({
   setNewNodeLabel: (label: string) => void;
   newNodePrompt: string;
   setNewNodePrompt: (prompt: string) => void;
+  newNodeForce?: boolean;
+  setNewNodeForce?: (force: boolean) => void;
   newNodeType: string;
   setNewNodeType: (type: string) => void;
   selectedBranch: "true" | "false";
@@ -285,6 +290,32 @@ const NodeEditorDrawer = ({
           spellCheck: false,
         }}
       />
+
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          p: 1.5,
+          border: "1px solid",
+          borderColor: "divider",
+          borderRadius: 1,
+        }}
+      >
+        <Box>
+          <Typography variant="body2" fontWeight="bold">
+            Force node
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            The platform guarantees this node&apos;s action, regardless of the
+            agent.
+          </Typography>
+        </Box>
+        <Switch
+          checked={!!newNodeForce}
+          onChange={(e) => setNewNodeForce?.(e.target.checked)}
+        />
+      </Box>
 
       <Box
         sx={{

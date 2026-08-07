@@ -307,8 +307,8 @@ const NodeEditorDrawer = ({
             Force node
           </Typography>
           <Typography variant="caption" color="text.secondary">
-            Guarantees this node&apos;s action runs when reached — the agent
-            cannot substitute a different action.
+            The platform guarantees this node&apos;s action, regardless of the
+            agent.
           </Typography>
         </Box>
         <Switch

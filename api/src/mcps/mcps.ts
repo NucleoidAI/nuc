@@ -2,7 +2,7 @@ const MCPs = [
   {
     id: "8f828016-dd2e-4f76-bad5-2a0ca9b71d6f",
     action: "GDRIVE:search",
-    provider: "GOOGLE DRIVE",
+    provider: "Google Drive",
     description: "Search for files in Google Drive",
     icon: "mdi:google-drive",
     oauth: {
@@ -30,7 +30,7 @@ const MCPs = [
   {
     id: "1d49fadb-93e3-43cc-88e4-f3bfc2ea4f0e",
     action: "SLACK:search",
-    provider: "SLACK",
+    provider: "Slack",
     description: "Search for messages in Slack",
     icon: "mdi:slack",
     oauth: {
@@ -53,7 +53,7 @@ const MCPs = [
   {
     id: "9e35c8d5-df44-44d9-8f9e-b4f4f3b1043d",
     action: "DISCORD:search",
-    provider: "DISCORD",
+    provider: "Discord",
     description: "Search for messages in Discord",
     icon: "mdi:discord",
     oauth: {
@@ -76,7 +76,7 @@ const MCPs = [
   {
     id: "a0e40e76-1b2a-4a13-947f-939a9ad354b4",
     action: "JIRA:search",
-    provider: "JIRA",
+    provider: "Jira",
     description: "Search for issues in JIRA",
     icon: "mdi:jira",
     oauth: {
@@ -99,7 +99,7 @@ const MCPs = [
   {
     id: "fa1eec4e-35c0-4e0c-8b1b-36c0a4ea95ee",
     action: "GITHUB:search",
-    provider: "GITHUB",
+    provider: "Github",
     description: "Search for repositories on GitHub",
     icon: "mdi:github",
     oauth: {
@@ -690,7 +690,7 @@ const MCPs = [
   {
     id: "019f7a30-0000-4000-8000-000000000001",
     action: "SERVICENOW:create_incident",
-    provider: "SERVICENOW",
+    provider: "ServiceNow",
     description:
       "Create an incident in ServiceNow. Requires a short description and the caller's name. Returns the created incident details including its incident number.",
     direction: "OUTGOING",
@@ -778,7 +778,7 @@ const MCPs = [
   {
     id: "019f8b01-0000-4000-8000-000000000002",
     action: "SALESFORCE:search",
-    provider: "SALESFORCE",
+    provider: "Salesforce",
     description:
       "Search for records (accounts, contacts, opportunities) in Salesforce",
     icon: "mdi:salesforce",
@@ -806,7 +806,7 @@ const MCPs = [
   {
     id: "019f8b01-0000-4000-8000-000000000003",
     action: "SERVICENOW:search",
-    provider: "SERVICENOW",
+    provider: "ServiceNow",
     description:
       "Search for records (incidents, requests, tasks) in ServiceNow",
     icon: "mdi:cloud-check-outline",
@@ -863,7 +863,7 @@ const MCPs = [
   {
     id: "019f8b01-0000-4000-8000-000000000005",
     action: "HUBSPOT:search",
-    provider: "HUBSPOT",
+    provider: "Hubspot",
     description: "Search for records (contacts, companies, deals) in HubSpot",
     icon: "mdi:hubspot",
     oauth: {
@@ -890,7 +890,7 @@ const MCPs = [
   {
     id: "019f8b01-0000-4000-8000-000000000006",
     action: "ORACLE:search",
-    provider: "ORACLE",
+    provider: "Oracle",
     description: "Search for records in Oracle Cloud applications",
     icon: "simple-icons:oracle",
     oauth: {
@@ -917,7 +917,7 @@ const MCPs = [
   {
     id: "019f8b01-0000-4000-8000-000000000007",
     action: "MICROSOFT:search",
-    provider: "MICROSOFT",
+    provider: "Microsoft",
     description:
       "Search across Microsoft 365 (Outlook, SharePoint, OneDrive, Teams)",
     icon: "mdi:microsoft",
@@ -945,7 +945,7 @@ const MCPs = [
   {
     id: "069cde56-d094-4205-9d80-45b68fe7d2ea",
     action: "MICROSOFT:send_email",
-    provider: "MICROSOFT",
+    provider: "Microsoft",
     description:
       "Send an email through Outlook on behalf of the signed-in user.",
     direction: "OUTGOING",
@@ -992,7 +992,7 @@ const MCPs = [
   {
     id: "47e3ceae-2a41-40de-9c0f-0e34dfb897bb",
     action: "MICROSOFT:get_email_details",
-    provider: "MICROSOFT",
+    provider: "Microsoft",
     description:
       "Get the full content and metadata of an Outlook email by message ID.",
     direction: "OUTGOING",
@@ -1034,7 +1034,7 @@ const MCPs = [
   {
     id: "af42f446-85a7-4375-8f91-a6b0b8cecba1",
     action: "MICROSOFT:create_calendar_event",
-    provider: "MICROSOFT",
+    provider: "Microsoft",
     description: "Create a new event on the user's Outlook calendar.",
     direction: "OUTGOING",
     icon: "mdi:microsoft",
@@ -1082,7 +1082,7 @@ const MCPs = [
   {
     id: "713c0893-6220-493e-87f8-b2cd2d81d058",
     action: "MICROSOFT:get_calendar_events",
-    provider: "MICROSOFT",
+    provider: "Microsoft",
     description:
       "Get upcoming events on the user's calendar within a date range.",
     direction: "OUTGOING",
@@ -1118,7 +1118,7 @@ const MCPs = [
   {
     id: "a420d417-13af-4aaa-b37f-eb72fc365335",
     action: "MICROSOFT:update_calendar_event",
-    provider: "MICROSOFT",
+    provider: "Microsoft",
     description:
       "Update the time, subject, or attendees of an existing calendar event.",
     direction: "OUTGOING",
@@ -1153,7 +1153,7 @@ const MCPs = [
   {
     id: "69721577-2cba-4e84-b0f7-51b6d7be8cb0",
     action: "MICROSOFT:cancel_calendar_event",
-    provider: "MICROSOFT",
+    provider: "Microsoft",
     description: "Cancel an existing calendar event and notify attendees.",
     direction: "OUTGOING",
     icon: "mdi:microsoft",
@@ -1178,7 +1178,7 @@ const MCPs = [
   {
     id: "0a550194-99b9-469d-a20b-7eb6d9bdaf85",
     action: "MICROSOFT:create_teams_meeting",
-    provider: "MICROSOFT",
+    provider: "Microsoft",
     description:
       "Create an online Microsoft Teams meeting and get its join link.",
     direction: "OUTGOING",
@@ -1220,7 +1220,7 @@ const MCPs = [
   {
     id: "00987828-eca3-4884-9e79-0b936b4dd6b6",
     action: "MICROSOFT:send_teams_message",
-    provider: "MICROSOFT",
+    provider: "Microsoft",
     description: "Send a message to a Microsoft Teams channel or chat.",
     direction: "OUTGOING",
     icon: "mdi:microsoft",
@@ -1253,7 +1253,7 @@ const MCPs = [
   {
     id: "71b8481f-dec9-4206-9e1a-8c46f9a3bbf9",
     action: "MICROSOFT:get_teams_channel_messages",
-    provider: "MICROSOFT",
+    provider: "Microsoft",
     description: "Get recent messages posted in a Teams channel.",
     direction: "OUTGOING",
     icon: "mdi:microsoft",
@@ -1289,7 +1289,7 @@ const MCPs = [
   {
     id: "d659c62a-678f-4727-be4a-52c332c9d9a1",
     action: "MICROSOFT:create_teams_channel",
-    provider: "MICROSOFT",
+    provider: "Microsoft",
     description:
       "Create a new channel within an existing Microsoft Teams team.",
     direction: "OUTGOING",
@@ -1323,7 +1323,7 @@ const MCPs = [
   {
     id: "580a381f-4b1d-41eb-a9e6-c3d24c0b6aad",
     action: "MICROSOFT:upload_onedrive_file",
-    provider: "MICROSOFT",
+    provider: "Microsoft",
     description: "Upload a file to the user's OneDrive at a given folder path.",
     direction: "OUTGOING",
     icon: "mdi:microsoft",
@@ -1365,7 +1365,7 @@ const MCPs = [
   {
     id: "b682b953-dd7a-4ae3-bbe7-79badaeefe36",
     action: "MICROSOFT:download_onedrive_file",
-    provider: "MICROSOFT",
+    provider: "Microsoft",
     description: "Download a file from the user's OneDrive by file ID.",
     direction: "OUTGOING",
     icon: "mdi:microsoft",
@@ -1402,7 +1402,7 @@ const MCPs = [
   {
     id: "856661d6-048f-470b-a580-72bbacecb3b6",
     action: "MICROSOFT:share_onedrive_file",
-    provider: "MICROSOFT",
+    provider: "Microsoft",
     description:
       "Create a sharing link for a OneDrive file and optionally invite specific people.",
     direction: "OUTGOING",
@@ -1443,7 +1443,7 @@ const MCPs = [
   {
     id: "f5172228-ba21-44e0-8dab-8aa4b282ff2f",
     action: "MICROSOFT:list_onedrive_files",
-    provider: "MICROSOFT",
+    provider: "Microsoft",
     description: "List files and folders in a given OneDrive folder path.",
     direction: "OUTGOING",
     icon: "mdi:microsoft",
@@ -1476,7 +1476,7 @@ const MCPs = [
   {
     id: "9643f55f-151e-4af2-85a2-af19b8abb88e",
     action: "MICROSOFT:create_sharepoint_list_item",
-    provider: "MICROSOFT",
+    provider: "Microsoft",
     description: "Create a new item in a SharePoint list.",
     direction: "OUTGOING",
     icon: "mdi:microsoft",
@@ -1513,7 +1513,7 @@ const MCPs = [
   {
     id: "d82539a5-788b-4e56-80df-633f705f4cdc",
     action: "MICROSOFT:get_sharepoint_list_items",
-    provider: "MICROSOFT",
+    provider: "Microsoft",
     description: "Get items from a SharePoint list, optionally filtered.",
     direction: "OUTGOING",
     icon: "mdi:microsoft",
@@ -1553,7 +1553,7 @@ const MCPs = [
   {
     id: "d0c40d97-ba35-492a-926e-b7e898041169",
     action: "MICROSOFT:upload_sharepoint_document",
-    provider: "MICROSOFT",
+    provider: "Microsoft",
     description: "Upload a document to a SharePoint document library.",
     direction: "OUTGOING",
     icon: "mdi:microsoft",
@@ -1594,7 +1594,7 @@ const MCPs = [
   {
     id: "62b27862-f39c-4700-9065-6212b653013a",
     action: "MICROSOFT:create_sharepoint_site",
-    provider: "MICROSOFT",
+    provider: "Microsoft",
     description: "Create a new SharePoint team site.",
     direction: "OUTGOING",
     icon: "mdi:microsoft",
@@ -1632,7 +1632,7 @@ const MCPs = [
   {
     id: "b84432f5-fbd7-4932-b305-3536b3edf199",
     action: "MICROSOFT:get_user_profile",
-    provider: "MICROSOFT",
+    provider: "Microsoft",
     description:
       "Get Azure AD / Microsoft 365 profile details for a user by email or user ID.",
     direction: "OUTGOING",
@@ -1674,7 +1674,7 @@ const MCPs = [
   {
     id: "32811f6a-617c-41b5-a17e-ff29d3688f68",
     action: "MICROSOFT:create_planner_task",
-    provider: "MICROSOFT",
+    provider: "Microsoft",
     description: "Create a new task in a Microsoft Planner plan.",
     direction: "OUTGOING",
     icon: "mdi:microsoft",
@@ -1717,7 +1717,7 @@ const MCPs = [
   {
     id: "b0b12d2f-f822-436e-b8be-0405c1e4db85",
     action: "MICROSOFT:update_planner_task_status",
-    provider: "MICROSOFT",
+    provider: "Microsoft",
     description:
       "Update the completion percentage or bucket of a Planner task.",
     direction: "OUTGOING",
@@ -1747,7 +1747,7 @@ const MCPs = [
   {
     id: "8f97472e-4209-4915-b551-87e9bbb1bd18",
     action: "MICROSOFT:get_onedrive_storage_usage",
-    provider: "MICROSOFT",
+    provider: "Microsoft",
     description:
       "Get the current storage usage and quota for the user's OneDrive.",
     direction: "OUTGOING",
@@ -1776,7 +1776,7 @@ const MCPs = [
   {
     id: "019f8b01-0000-4000-8000-000000000008",
     action: "ATLASSIAN:search",
-    provider: "ATLASSIAN",
+    provider: "Atlassian",
     description: "Search across Atlassian products (Jira, Confluence)",
     icon: "mdi:atlassian",
     oauth: {
@@ -1834,7 +1834,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000001",
     action: "ZENDESK:create_ticket",
-    provider: "ZENDESK",
+    provider: "Zendesk",
     description:
       "Create a new support ticket in Zendesk. Returns the created ticket details including its ticket number.",
     direction: "OUTGOING",
@@ -1887,7 +1887,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000002",
     action: "ZENDESK:update_ticket_status",
-    provider: "ZENDESK",
+    provider: "Zendesk",
     description:
       "Update the status of an existing Zendesk ticket by its ticket ID.",
     direction: "OUTGOING",
@@ -1917,7 +1917,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000003",
     action: "ZENDESK:get_customer_tickets",
-    provider: "ZENDESK",
+    provider: "Zendesk",
     description: "Get all tickets associated with a customer's email address.",
     direction: "OUTGOING",
     icon: "simple-icons:zendesk",
@@ -1948,7 +1948,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000004",
     action: "ZENDESK:add_ticket_comment",
-    provider: "ZENDESK",
+    provider: "Zendesk",
     description: "Add a public or internal comment to an existing ticket.",
     direction: "OUTGOING",
     icon: "simple-icons:zendesk",
@@ -1976,7 +1976,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000005",
     action: "ZENDESK:assign_ticket",
-    provider: "ZENDESK",
+    provider: "Zendesk",
     description: "Assign a ticket to a specific agent or group.",
     direction: "OUTGOING",
     icon: "simple-icons:zendesk",
@@ -2004,7 +2004,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000006",
     action: "ZENDESK:merge_tickets",
-    provider: "ZENDESK",
+    provider: "Zendesk",
     description: "Merge one or more duplicate tickets into a primary ticket.",
     direction: "OUTGOING",
     icon: "simple-icons:zendesk",
@@ -2030,7 +2030,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000007",
     action: "ZENDESK:get_ticket_details",
-    provider: "ZENDESK",
+    provider: "Zendesk",
     description: "Get full details of a single ticket by its ID.",
     direction: "OUTGOING",
     icon: "simple-icons:zendesk",
@@ -2071,7 +2071,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000008",
     action: "ZENDESK:create_macro",
-    provider: "ZENDESK",
+    provider: "Zendesk",
     description:
       "Create a reusable macro that applies a predefined set of actions to tickets.",
     direction: "OUTGOING",
@@ -2099,7 +2099,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000009",
     action: "ZENDESK:search_knowledge_base",
-    provider: "ZENDESK",
+    provider: "Zendesk",
     description:
       "Search the Zendesk help center knowledge base for relevant articles.",
     direction: "OUTGOING",
@@ -2131,7 +2131,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000010",
     action: "ZENDESK:create_kb_article",
-    provider: "ZENDESK",
+    provider: "Zendesk",
     description: "Create a new article in the Zendesk help center.",
     direction: "OUTGOING",
     icon: "simple-icons:zendesk",
@@ -2173,7 +2173,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000011",
     action: "ZENDESK:get_customer_satisfaction_score",
-    provider: "ZENDESK",
+    provider: "Zendesk",
     description:
       "Get the CSAT (customer satisfaction) score and rating history for a ticket or agent.",
     direction: "OUTGOING",
@@ -2214,7 +2214,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000012",
     action: "ZENDESK:escalate_ticket",
-    provider: "ZENDESK",
+    provider: "Zendesk",
     description:
       "Escalate a ticket to a higher support tier or specialized team.",
     direction: "OUTGOING",
@@ -2243,7 +2243,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000013",
     action: "ZENDESK:close_ticket",
-    provider: "ZENDESK",
+    provider: "Zendesk",
     description: "Close a resolved ticket, optionally with a closing comment.",
     direction: "OUTGOING",
     icon: "simple-icons:zendesk",
@@ -2267,7 +2267,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000014",
     action: "ZENDESK:get_agent_workload",
-    provider: "ZENDESK",
+    provider: "Zendesk",
     description:
       "Get the current open ticket count and workload for a support agent.",
     direction: "OUTGOING",
@@ -2305,7 +2305,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000015",
     action: "ZENDESK:create_customer",
-    provider: "ZENDESK",
+    provider: "Zendesk",
     description: "Create a new customer (end-user) record in Zendesk.",
     direction: "OUTGOING",
     icon: "simple-icons:zendesk",
@@ -2343,7 +2343,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000001",
     action: "DOCUSIGN:create_envelope",
-    provider: "DOCUSIGN",
+    provider: "Docusign",
     description:
       "Create and send a DocuSign envelope for signature. Returns the created envelope details including its status.",
     direction: "OUTGOING",
@@ -2394,7 +2394,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000002",
     action: "DOCUSIGN:get_envelope_status",
-    provider: "DOCUSIGN",
+    provider: "Docusign",
     description:
       "Get the current status of a DocuSign envelope by its envelope ID.",
     direction: "OUTGOING",
@@ -2431,7 +2431,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000003",
     action: "DOCUSIGN:void_envelope",
-    provider: "DOCUSIGN",
+    provider: "Docusign",
     description:
       "Void an in-progress DocuSign envelope so it can no longer be signed.",
     direction: "OUTGOING",
@@ -2455,7 +2455,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000004",
     action: "DOCUSIGN:list_envelope_recipients",
-    provider: "DOCUSIGN",
+    provider: "Docusign",
     description:
       "List all recipients and their signing status for an envelope.",
     direction: "OUTGOING",
@@ -2487,7 +2487,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000005",
     action: "DOCUSIGN:resend_envelope",
-    provider: "DOCUSIGN",
+    provider: "Docusign",
     description:
       "Resend the signature request email for an envelope to recipients who haven't signed yet.",
     direction: "OUTGOING",
@@ -2507,7 +2507,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000006",
     action: "DOCUSIGN:download_signed_document",
-    provider: "DOCUSIGN",
+    provider: "Docusign",
     description:
       "Download the completed, signed document for a fully executed envelope.",
     direction: "OUTGOING",
@@ -2541,7 +2541,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000007",
     action: "DOCUSIGN:create_template",
-    provider: "DOCUSIGN",
+    provider: "Docusign",
     description:
       "Create a reusable envelope template with predefined documents and signer roles.",
     direction: "OUTGOING",
@@ -2575,7 +2575,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000008",
     action: "DOCUSIGN:get_template",
-    provider: "DOCUSIGN",
+    provider: "Docusign",
     description: "Get the details and roles of a saved envelope template.",
     direction: "OUTGOING",
     icon: "simple-icons:docusign",
@@ -2614,7 +2614,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000009",
     action: "DOCUSIGN:add_signer_to_envelope",
-    provider: "DOCUSIGN",
+    provider: "Docusign",
     description:
       "Add an additional signer to an envelope that hasn't been sent yet.",
     direction: "OUTGOING",
@@ -2648,7 +2648,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000010",
     action: "DOCUSIGN:get_envelope_audit_trail",
-    provider: "DOCUSIGN",
+    provider: "Docusign",
     description:
       "Get the full audit trail (view, sign, decline events) for an envelope.",
     direction: "OUTGOING",
@@ -2680,7 +2680,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000011",
     action: "DOCUSIGN:create_bulk_send",
-    provider: "DOCUSIGN",
+    provider: "Docusign",
     description:
       "Send the same envelope template to a large list of recipients in one batch.",
     direction: "OUTGOING",
@@ -2717,7 +2717,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000012",
     action: "DOCUSIGN:get_bulk_send_status",
-    provider: "DOCUSIGN",
+    provider: "Docusign",
     description: "Get the completion status of a bulk send batch.",
     direction: "OUTGOING",
     icon: "simple-icons:docusign",
@@ -2754,7 +2754,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000013",
     action: "DOCUSIGN:correct_envelope",
-    provider: "DOCUSIGN",
+    provider: "Docusign",
     description:
       "Correct recipient information or document content on an envelope that has already been sent but not yet completed.",
     direction: "OUTGOING",
@@ -2784,7 +2784,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000014",
     action: "DOCUSIGN:delete_envelope_draft",
-    provider: "DOCUSIGN",
+    provider: "Docusign",
     description:
       "Delete an envelope that is still in draft status and has not been sent.",
     direction: "OUTGOING",
@@ -2804,7 +2804,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000015",
     action: "DOCUSIGN:get_envelope_documents",
-    provider: "DOCUSIGN",
+    provider: "Docusign",
     description: "List all documents attached to an envelope.",
     direction: "OUTGOING",
     icon: "simple-icons:docusign",
@@ -2835,7 +2835,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000001",
     action: "NETSUITE:create_sales_order",
-    provider: "NETSUITE",
+    provider: "NetSuite",
     description:
       "Create a sales order in NetSuite for a customer. Returns the created sales order details.",
     direction: "OUTGOING",
@@ -2881,7 +2881,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000002",
     action: "NETSUITE:get_inventory_level",
-    provider: "NETSUITE",
+    provider: "NetSuite",
     description: "Get current inventory level for an item across locations.",
     direction: "OUTGOING",
     icon: "simple-icons:oracle",
@@ -2923,7 +2923,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000003",
     action: "NETSUITE:create_invoice",
-    provider: "NETSUITE",
+    provider: "NetSuite",
     description: "Create an invoice in NetSuite from an existing sales order.",
     direction: "OUTGOING",
     icon: "simple-icons:oracle",
@@ -2965,7 +2965,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000004",
     action: "NETSUITE:create_purchase_order",
-    provider: "NETSUITE",
+    provider: "NetSuite",
     description: "Create a purchase order for a vendor in NetSuite.",
     direction: "OUTGOING",
     icon: "simple-icons:oracle",
@@ -3006,7 +3006,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000005",
     action: "NETSUITE:get_customer_balance",
-    provider: "NETSUITE",
+    provider: "NetSuite",
     description:
       "Get a customer's current outstanding balance and credit limit.",
     direction: "OUTGOING",
@@ -3044,7 +3044,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000006",
     action: "NETSUITE:create_customer_record",
-    provider: "NETSUITE",
+    provider: "NetSuite",
     description: "Create a new customer record in NetSuite.",
     direction: "OUTGOING",
     icon: "simple-icons:oracle",
@@ -3082,7 +3082,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000007",
     action: "NETSUITE:get_item_details",
-    provider: "NETSUITE",
+    provider: "NetSuite",
     description:
       "Get item master details including pricing and unit of measure.",
     direction: "OUTGOING",
@@ -3124,7 +3124,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000008",
     action: "NETSUITE:create_vendor_bill",
-    provider: "NETSUITE",
+    provider: "NetSuite",
     description: "Create a vendor bill against a purchase order.",
     direction: "OUTGOING",
     icon: "simple-icons:oracle",
@@ -3161,7 +3161,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000009",
     action: "NETSUITE:get_vendor_bill_status",
-    provider: "NETSUITE",
+    provider: "NetSuite",
     description: "Get the approval and payment status of a vendor bill.",
     direction: "OUTGOING",
     icon: "simple-icons:oracle",
@@ -3194,7 +3194,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000010",
     action: "NETSUITE:run_financial_report",
-    provider: "NETSUITE",
+    provider: "NetSuite",
     description:
       "Run a standard financial report (e.g. P&L, Balance Sheet) for a given period.",
     direction: "OUTGOING",
@@ -3233,7 +3233,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000011",
     action: "NETSUITE:create_journal_entry",
-    provider: "NETSUITE",
+    provider: "NetSuite",
     description: "Create a manual journal entry across GL accounts.",
     direction: "OUTGOING",
     icon: "simple-icons:oracle",
@@ -3270,7 +3270,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000012",
     action: "NETSUITE:get_journal_entry",
-    provider: "NETSUITE",
+    provider: "NetSuite",
     description: "Get the details of a posted journal entry.",
     direction: "OUTGOING",
     icon: "simple-icons:oracle",
@@ -3307,7 +3307,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000013",
     action: "NETSUITE:update_sales_order",
-    provider: "NETSUITE",
+    provider: "NetSuite",
     description: "Update line items or quantities on an existing sales order.",
     direction: "OUTGOING",
     icon: "simple-icons:oracle",
@@ -3336,7 +3336,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000014",
     action: "NETSUITE:get_sales_order_status",
-    provider: "NETSUITE",
+    provider: "NetSuite",
     description: "Get the fulfillment and billing status of a sales order.",
     direction: "OUTGOING",
     icon: "simple-icons:oracle",
@@ -3369,7 +3369,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000015",
     action: "NETSUITE:create_credit_memo",
-    provider: "NETSUITE",
+    provider: "NetSuite",
     description:
       "Create a credit memo against an invoice for a return or billing correction.",
     direction: "OUTGOING",
@@ -3403,7 +3403,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000001",
     action: "STRIPE:create_customer",
-    provider: "STRIPE",
+    provider: "Stripe",
     description:
       "Create a new customer record in Stripe. Returns the created customer's ID.",
     direction: "OUTGOING",
@@ -3442,7 +3442,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000002",
     action: "STRIPE:create_charge",
-    provider: "STRIPE",
+    provider: "Stripe",
     description:
       "Create a charge against a customer's saved payment method. Returns the charge result.",
     direction: "OUTGOING",
@@ -3494,7 +3494,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000003",
     action: "STRIPE:get_payment_status",
-    provider: "STRIPE",
+    provider: "Stripe",
     description: "Get the status of a payment or charge by its ID.",
     direction: "OUTGOING",
     icon: "simple-icons:stripe",
@@ -3531,7 +3531,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000004",
     action: "STRIPE:create_subscription",
-    provider: "STRIPE",
+    provider: "Stripe",
     description:
       "Create a recurring subscription for a customer on a given price plan.",
     direction: "OUTGOING",
@@ -3569,7 +3569,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000005",
     action: "STRIPE:cancel_subscription",
-    provider: "STRIPE",
+    provider: "Stripe",
     description:
       "Cancel an active subscription, either immediately or at period end.",
     direction: "OUTGOING",
@@ -3595,7 +3595,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000006",
     action: "STRIPE:get_subscription_status",
-    provider: "STRIPE",
+    provider: "Stripe",
     description:
       "Get the current status and next billing date of a subscription.",
     direction: "OUTGOING",
@@ -3633,7 +3633,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000007",
     action: "STRIPE:create_refund",
-    provider: "STRIPE",
+    provider: "Stripe",
     description: "Issue a full or partial refund for a charge.",
     direction: "OUTGOING",
     icon: "simple-icons:stripe",
@@ -3671,7 +3671,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000008",
     action: "STRIPE:get_refund_status",
-    provider: "STRIPE",
+    provider: "Stripe",
     description: "Get the status of a previously issued refund.",
     direction: "OUTGOING",
     icon: "simple-icons:stripe",
@@ -3704,7 +3704,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000009",
     action: "STRIPE:create_invoice",
-    provider: "STRIPE",
+    provider: "Stripe",
     description:
       "Create a one-off invoice for a customer outside of a subscription.",
     direction: "OUTGOING",
@@ -3747,7 +3747,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000010",
     action: "STRIPE:get_invoice_status",
-    provider: "STRIPE",
+    provider: "Stripe",
     description: "Get the payment status of an invoice.",
     direction: "OUTGOING",
     icon: "simple-icons:stripe",
@@ -3780,7 +3780,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000011",
     action: "STRIPE:attach_payment_method",
-    provider: "STRIPE",
+    provider: "Stripe",
     description: "Attach a payment method (card, bank account) to a customer.",
     direction: "OUTGOING",
     icon: "simple-icons:stripe",
@@ -3803,7 +3803,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000012",
     action: "STRIPE:list_customer_payment_methods",
-    provider: "STRIPE",
+    provider: "Stripe",
     description: "List all payment methods saved on a customer's account.",
     direction: "OUTGOING",
     icon: "simple-icons:stripe",
@@ -3834,7 +3834,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000013",
     action: "STRIPE:create_payout",
-    provider: "STRIPE",
+    provider: "Stripe",
     description:
       "Trigger a payout of available balance to a connected bank account.",
     direction: "OUTGOING",
@@ -3872,7 +3872,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000014",
     action: "STRIPE:get_balance",
-    provider: "STRIPE",
+    provider: "Stripe",
     description:
       "Get the current available and pending balance on the Stripe account.",
     direction: "OUTGOING",
@@ -3901,7 +3901,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000015",
     action: "STRIPE:create_coupon",
-    provider: "STRIPE",
+    provider: "Stripe",
     description:
       "Create a discount coupon that can be applied to charges or subscriptions.",
     direction: "OUTGOING",
@@ -3938,7 +3938,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000001",
     action: "SNOWFLAKE:run_query",
-    provider: "SNOWFLAKE",
+    provider: "Snowflake",
     description:
       "Run a SQL query against a Snowflake warehouse and return the result rows.",
     direction: "OUTGOING",
@@ -3983,7 +3983,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000002",
     action: "SNOWFLAKE:get_table_schema",
-    provider: "SNOWFLAKE",
+    provider: "Snowflake",
     description: "Get the column schema for a table in Snowflake.",
     direction: "OUTGOING",
     icon: "simple-icons:snowflake",
@@ -4033,7 +4033,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000003",
     action: "SNOWFLAKE:list_tables",
-    provider: "SNOWFLAKE",
+    provider: "Snowflake",
     description: "List all tables within a database schema.",
     direction: "OUTGOING",
     icon: "simple-icons:snowflake",
@@ -4068,7 +4068,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000004",
     action: "SNOWFLAKE:create_table",
-    provider: "SNOWFLAKE",
+    provider: "Snowflake",
     description: "Create a new table with a given column definition.",
     direction: "OUTGOING",
     icon: "simple-icons:snowflake",
@@ -4102,7 +4102,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000005",
     action: "SNOWFLAKE:load_data_from_stage",
-    provider: "SNOWFLAKE",
+    provider: "Snowflake",
     description:
       "Load staged files (e.g. from S3) into a target table via COPY INTO.",
     direction: "OUTGOING",
@@ -4140,7 +4140,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000006",
     action: "SNOWFLAKE:get_warehouse_status",
-    provider: "SNOWFLAKE",
+    provider: "Snowflake",
     description:
       "Get the current running/suspended state and size of a warehouse.",
     direction: "OUTGOING",
@@ -4178,7 +4178,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000007",
     action: "SNOWFLAKE:resume_warehouse",
-    provider: "SNOWFLAKE",
+    provider: "Snowflake",
     description: "Resume a suspended warehouse so it can run queries.",
     direction: "OUTGOING",
     icon: "simple-icons:snowflake",
@@ -4197,7 +4197,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000008",
     action: "SNOWFLAKE:suspend_warehouse",
-    provider: "SNOWFLAKE",
+    provider: "Snowflake",
     description: "Suspend a running warehouse to stop compute billing.",
     direction: "OUTGOING",
     icon: "simple-icons:snowflake",
@@ -4216,7 +4216,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000009",
     action: "SNOWFLAKE:get_query_history",
-    provider: "SNOWFLAKE",
+    provider: "Snowflake",
     description: "Get recent query execution history for a warehouse or user.",
     direction: "OUTGOING",
     icon: "simple-icons:snowflake",
@@ -4258,7 +4258,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000010",
     action: "SNOWFLAKE:cancel_query",
-    provider: "SNOWFLAKE",
+    provider: "Snowflake",
     description: "Cancel a currently running query by its query ID.",
     direction: "OUTGOING",
     icon: "simple-icons:snowflake",
@@ -4277,7 +4277,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000011",
     action: "SNOWFLAKE:grant_role_access",
-    provider: "SNOWFLAKE",
+    provider: "Snowflake",
     description: "Grant a role access privileges on a database object.",
     direction: "OUTGOING",
     icon: "simple-icons:snowflake",
@@ -4304,7 +4304,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000012",
     action: "SNOWFLAKE:create_view",
-    provider: "SNOWFLAKE",
+    provider: "Snowflake",
     description: "Create a view from a SQL SELECT statement.",
     direction: "OUTGOING",
     icon: "simple-icons:snowflake",
@@ -4327,7 +4327,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000013",
     action: "SNOWFLAKE:get_view_definition",
-    provider: "SNOWFLAKE",
+    provider: "Snowflake",
     description: "Get the SQL definition of an existing view.",
     direction: "OUTGOING",
     icon: "simple-icons:snowflake",
@@ -4360,7 +4360,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000014",
     action: "SNOWFLAKE:clone_table",
-    provider: "SNOWFLAKE",
+    provider: "Snowflake",
     description: "Zero-copy clone a table into a new table name.",
     direction: "OUTGOING",
     icon: "simple-icons:snowflake",
@@ -4383,7 +4383,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000015",
     action: "SNOWFLAKE:get_storage_usage",
-    provider: "SNOWFLAKE",
+    provider: "Snowflake",
     description: "Get storage usage in bytes for a database or the account.",
     direction: "OUTGOING",
     icon: "simple-icons:snowflake",
@@ -4933,7 +4933,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000001",
     action: "TWILIO:send_sms",
-    provider: "TWILIO",
+    provider: "Twilio",
     description: "Send an SMS message to a phone number via Twilio.",
     direction: "OUTGOING",
     icon: "simple-icons:twilio",
@@ -4976,7 +4976,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000002",
     action: "TWILIO:make_call",
-    provider: "TWILIO",
+    provider: "Twilio",
     description: "Initiate an outbound voice call via Twilio.",
     direction: "OUTGOING",
     icon: "simple-icons:twilio",
@@ -5018,7 +5018,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000003",
     action: "TWILIO:get_message_status",
-    provider: "TWILIO",
+    provider: "Twilio",
     description: "Get the delivery status of a previously sent SMS message.",
     direction: "OUTGOING",
     icon: "simple-icons:twilio",
@@ -5054,7 +5054,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000004",
     action: "TWILIO:get_call_status",
-    provider: "TWILIO",
+    provider: "Twilio",
     description: "Get the status and duration of a previously placed call.",
     direction: "OUTGOING",
     icon: "simple-icons:twilio",
@@ -5091,7 +5091,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000005",
     action: "TWILIO:send_whatsapp_message",
-    provider: "TWILIO",
+    provider: "Twilio",
     description:
       "Send a WhatsApp message via the Twilio WhatsApp Business API.",
     direction: "OUTGOING",
@@ -5129,7 +5129,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000006",
     action: "TWILIO:create_conference_call",
-    provider: "TWILIO",
+    provider: "Twilio",
     description: "Create a conference call and dial in a list of participants.",
     direction: "OUTGOING",
     icon: "simple-icons:twilio",
@@ -5161,7 +5161,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000007",
     action: "TWILIO:lookup_phone_number",
-    provider: "TWILIO",
+    provider: "Twilio",
     description:
       "Look up carrier and line type information for a phone number.",
     direction: "OUTGOING",
@@ -5199,7 +5199,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000008",
     action: "TWILIO:send_verification_code",
-    provider: "TWILIO",
+    provider: "Twilio",
     description:
       "Send a one-time verification code to a phone number via Twilio Verify.",
     direction: "OUTGOING",
@@ -5239,7 +5239,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000009",
     action: "TWILIO:verify_code",
-    provider: "TWILIO",
+    provider: "Twilio",
     description:
       "Check a user-submitted verification code against a Twilio Verify request.",
     direction: "OUTGOING",
@@ -5273,7 +5273,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000010",
     action: "TWILIO:purchase_phone_number",
-    provider: "TWILIO",
+    provider: "Twilio",
     description:
       "Purchase a new phone number from Twilio's available number inventory.",
     direction: "OUTGOING",
@@ -5313,7 +5313,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000011",
     action: "TWILIO:release_phone_number",
-    provider: "TWILIO",
+    provider: "Twilio",
     description:
       "Release (deprovision) a phone number from the Twilio account.",
     direction: "OUTGOING",
@@ -5333,7 +5333,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000012",
     action: "TWILIO:get_call_recording",
-    provider: "TWILIO",
+    provider: "Twilio",
     description:
       "Get the recording URL for a completed call, if recording was enabled.",
     direction: "OUTGOING",
@@ -5367,7 +5367,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000013",
     action: "TWILIO:send_bulk_sms",
-    provider: "TWILIO",
+    provider: "Twilio",
     description: "Send the same SMS message to a list of recipients.",
     direction: "OUTGOING",
     icon: "simple-icons:twilio",
@@ -5407,7 +5407,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000014",
     action: "TWILIO:create_messaging_service",
-    provider: "TWILIO",
+    provider: "Twilio",
     description:
       "Create a messaging service to manage sender pools and delivery settings for a use case.",
     direction: "OUTGOING",
@@ -5437,7 +5437,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000015",
     action: "TWILIO:get_usage_report",
-    provider: "TWILIO",
+    provider: "Twilio",
     description:
       "Get usage and cost totals (SMS, voice minutes) for a given period.",
     direction: "OUTGOING",
@@ -6020,7 +6020,7 @@ const MCPs = [
   {
     id: "3b8ae30d-1ac3-41d2-8378-721580212e29",
     action: "ORACLE:create_purchase_order",
-    provider: "ORACLE",
+    provider: "Oracle",
     description: "Create a purchase order in Oracle Cloud Procurement.",
     direction: "OUTGOING",
     icon: "simple-icons:oracle",
@@ -6061,7 +6061,7 @@ const MCPs = [
   {
     id: "7fdaff02-a33a-4532-bc24-23ac122f23eb",
     action: "ORACLE:get_purchase_order_status",
-    provider: "ORACLE",
+    provider: "Oracle",
     description: "Get the current status of a purchase order.",
     direction: "OUTGOING",
     icon: "simple-icons:oracle",
@@ -6094,7 +6094,7 @@ const MCPs = [
   {
     id: "c86aeaf7-9216-4be9-a9eb-73c1db8284ec",
     action: "ORACLE:create_employee_record",
-    provider: "ORACLE",
+    provider: "Oracle",
     description: "Create a new employee record in Oracle HCM Cloud.",
     direction: "OUTGOING",
     icon: "simple-icons:oracle",
@@ -6132,7 +6132,7 @@ const MCPs = [
   {
     id: "a994c11f-05d9-4fb4-a6bf-a06277ae59ff",
     action: "ORACLE:get_employee_record",
-    provider: "ORACLE",
+    provider: "Oracle",
     description: "Get HR record details for an employee by employee ID.",
     direction: "OUTGOING",
     icon: "simple-icons:oracle",
@@ -6169,7 +6169,7 @@ const MCPs = [
   {
     id: "e083a88d-ff85-4237-b593-fde914e00786",
     action: "ORACLE:run_payroll_process",
-    provider: "ORACLE",
+    provider: "Oracle",
     description: "Trigger a payroll processing run for a given pay period.",
     direction: "OUTGOING",
     icon: "simple-icons:oracle",
@@ -6202,7 +6202,7 @@ const MCPs = [
   {
     id: "2c68a776-8012-489f-a5aa-2ef37e9c3fb5",
     action: "ORACLE:get_gl_journal_entries",
-    provider: "ORACLE",
+    provider: "Oracle",
     description:
       "Get general ledger journal entries for a given accounting period.",
     direction: "OUTGOING",
@@ -6234,7 +6234,7 @@ const MCPs = [
   {
     id: "115a7a51-f6fc-4fbd-89dc-3f8cfa4ac733",
     action: "ORACLE:create_gl_journal_entry",
-    provider: "ORACLE",
+    provider: "Oracle",
     description: "Create a manual general ledger journal entry.",
     direction: "OUTGOING",
     icon: "simple-icons:oracle",
@@ -6271,7 +6271,7 @@ const MCPs = [
   {
     id: "54c4a18f-4798-46a6-a0e2-dd25327a9210",
     action: "ORACLE:get_ar_invoice_status",
-    provider: "ORACLE",
+    provider: "Oracle",
     description: "Get the payment status of an accounts receivable invoice.",
     direction: "OUTGOING",
     icon: "simple-icons:oracle",
@@ -6304,7 +6304,7 @@ const MCPs = [
   {
     id: "d223c8ee-53bf-4d96-bc04-0fbeadfd130c",
     action: "ORACLE:create_ar_invoice",
-    provider: "ORACLE",
+    provider: "Oracle",
     description: "Create a new accounts receivable invoice for a customer.",
     direction: "OUTGOING",
     icon: "simple-icons:oracle",
@@ -6337,7 +6337,7 @@ const MCPs = [
   {
     id: "b397167b-4cbc-4a8c-bbdf-0718df9dcd92",
     action: "ORACLE:create_ap_invoice",
-    provider: "ORACLE",
+    provider: "Oracle",
     description: "Create a new accounts payable invoice for a vendor.",
     direction: "OUTGOING",
     icon: "simple-icons:oracle",
@@ -6370,7 +6370,7 @@ const MCPs = [
   {
     id: "e46bdd85-d62a-44df-821b-63aace286c2b",
     action: "ORACLE:get_ap_invoice_status",
-    provider: "ORACLE",
+    provider: "Oracle",
     description:
       "Get the approval and payment status of an accounts payable invoice.",
     direction: "OUTGOING",
@@ -6404,7 +6404,7 @@ const MCPs = [
   {
     id: "0e6a34f1-0065-49aa-8894-9dd45b5ed8d6",
     action: "ORACLE:create_sales_order",
-    provider: "ORACLE",
+    provider: "Oracle",
     description: "Create a sales order in Oracle Cloud SCM.",
     direction: "OUTGOING",
     icon: "simple-icons:oracle",
@@ -6441,7 +6441,7 @@ const MCPs = [
   {
     id: "064b0daa-5615-47b6-8715-9f9de98dc616",
     action: "ORACLE:get_inventory_balance",
-    provider: "ORACLE",
+    provider: "Oracle",
     description: "Get on-hand inventory balance for an item at a warehouse.",
     direction: "OUTGOING",
     icon: "simple-icons:oracle",
@@ -6479,7 +6479,7 @@ const MCPs = [
   {
     id: "5683c6e6-f687-403f-8ef7-dcd54d8bcc01",
     action: "ORACLE:create_expense_report",
-    provider: "ORACLE",
+    provider: "Oracle",
     description: "Create a new expense report for an employee.",
     direction: "OUTGOING",
     icon: "simple-icons:oracle",
@@ -6512,7 +6512,7 @@ const MCPs = [
   {
     id: "67c2cab9-6370-45e1-b672-efef48339b56",
     action: "ORACLE:approve_expense_report",
-    provider: "ORACLE",
+    provider: "Oracle",
     description: "Approve a submitted expense report.",
     direction: "OUTGOING",
     icon: "simple-icons:oracle",
@@ -6531,7 +6531,7 @@ const MCPs = [
   {
     id: "ec0730e3-8b1d-4a0a-8f3e-333a69d06f35",
     action: "ORACLE:get_financial_period_status",
-    provider: "ORACLE",
+    provider: "Oracle",
     description: "Get whether a financial accounting period is open or closed.",
     direction: "OUTGOING",
     icon: "simple-icons:oracle",
@@ -6564,7 +6564,7 @@ const MCPs = [
   {
     id: "aaafe618-55dc-4119-b888-3afb84c0f3e5",
     action: "HUBSPOT:create_contact",
-    provider: "HUBSPOT",
+    provider: "Hubspot",
     description: "Create a new contact record in HubSpot.",
     direction: "OUTGOING",
     icon: "mdi:hubspot",
@@ -6603,7 +6603,7 @@ const MCPs = [
   {
     id: "6b105cf2-54e6-43d5-bd89-099536bf59d2",
     action: "HUBSPOT:update_contact",
-    provider: "HUBSPOT",
+    provider: "Hubspot",
     description: "Update properties on an existing contact record.",
     direction: "OUTGOING",
     icon: "mdi:hubspot",
@@ -6626,7 +6626,7 @@ const MCPs = [
   {
     id: "834e92a9-179f-4bee-965e-5eb4afa1b278",
     action: "HUBSPOT:get_contact_details",
-    provider: "HUBSPOT",
+    provider: "Hubspot",
     description: "Get full property details for a contact by ID.",
     direction: "OUTGOING",
     icon: "mdi:hubspot",
@@ -6663,7 +6663,7 @@ const MCPs = [
   {
     id: "a531aadc-f989-463e-886f-7276f3f0ba1f",
     action: "HUBSPOT:create_company",
-    provider: "HUBSPOT",
+    provider: "Hubspot",
     description: "Create a new company record in HubSpot.",
     direction: "OUTGOING",
     icon: "mdi:hubspot",
@@ -6697,7 +6697,7 @@ const MCPs = [
   {
     id: "0f4f560b-24b1-4719-8cd2-62ef806347ff",
     action: "HUBSPOT:create_deal",
-    provider: "HUBSPOT",
+    provider: "Hubspot",
     description: "Create a new deal in a sales pipeline.",
     direction: "OUTGOING",
     icon: "mdi:hubspot",
@@ -6736,7 +6736,7 @@ const MCPs = [
   {
     id: "bbd4cdfe-1f71-49b1-8e5a-89336c25dbc5",
     action: "HUBSPOT:update_deal_stage",
-    provider: "HUBSPOT",
+    provider: "Hubspot",
     description: "Move a deal to a new pipeline stage.",
     direction: "OUTGOING",
     icon: "mdi:hubspot",
@@ -6759,7 +6759,7 @@ const MCPs = [
   {
     id: "3e341d27-620c-48a7-9695-67911f83c006",
     action: "HUBSPOT:get_deal_details",
-    provider: "HUBSPOT",
+    provider: "Hubspot",
     description: "Get details of a deal including amount and stage.",
     direction: "OUTGOING",
     icon: "mdi:hubspot",
@@ -6796,7 +6796,7 @@ const MCPs = [
   {
     id: "22d1c794-4a7d-44d0-a02e-f18ff5c9293e",
     action: "HUBSPOT:create_task",
-    provider: "HUBSPOT",
+    provider: "Hubspot",
     description: "Create a follow-up task associated with a contact or deal.",
     direction: "OUTGOING",
     icon: "mdi:hubspot",
@@ -6835,7 +6835,7 @@ const MCPs = [
   {
     id: "2cbd6486-f7e5-4127-b821-ce91c3123271",
     action: "HUBSPOT:log_email_activity",
-    provider: "HUBSPOT",
+    provider: "Hubspot",
     description:
       "Log a sent or received email activity on a contact's timeline.",
     direction: "OUTGOING",
@@ -6865,7 +6865,7 @@ const MCPs = [
   {
     id: "6d9abdf2-c11e-4b97-b1df-4d1b012bb587",
     action: "HUBSPOT:create_marketing_email",
-    provider: "HUBSPOT",
+    provider: "Hubspot",
     description: "Create a new marketing email in HubSpot's email tool.",
     direction: "OUTGOING",
     icon: "mdi:hubspot",
@@ -6898,7 +6898,7 @@ const MCPs = [
   {
     id: "c39e60e0-fc8c-4f1e-afdc-570349048be9",
     action: "HUBSPOT:get_email_campaign_stats",
-    provider: "HUBSPOT",
+    provider: "Hubspot",
     description:
       "Get open, click, and bounce statistics for a marketing email campaign.",
     direction: "OUTGOING",
@@ -6936,7 +6936,7 @@ const MCPs = [
   {
     id: "24a27fa8-7b5b-4926-b862-6db086974caa",
     action: "HUBSPOT:create_form",
-    provider: "HUBSPOT",
+    provider: "Hubspot",
     description: "Create a new lead capture form.",
     direction: "OUTGOING",
     icon: "mdi:hubspot",
@@ -6965,7 +6965,7 @@ const MCPs = [
   {
     id: "57b6d9f5-c326-4282-af4e-d26274e49962",
     action: "HUBSPOT:get_form_submissions",
-    provider: "HUBSPOT",
+    provider: "Hubspot",
     description: "Get recent submissions for a given form.",
     direction: "OUTGOING",
     icon: "mdi:hubspot",
@@ -6996,7 +6996,7 @@ const MCPs = [
   {
     id: "0b9f8e8d-7227-44a5-b42d-253a1511b365",
     action: "HUBSPOT:enroll_contact_in_workflow",
-    provider: "HUBSPOT",
+    provider: "Hubspot",
     description:
       "Enroll a contact in an automated marketing or sales workflow.",
     direction: "OUTGOING",
@@ -7020,7 +7020,7 @@ const MCPs = [
   {
     id: "5238aafb-9a81-404d-bdf6-90054cb110b9",
     action: "HUBSPOT:create_ticket",
-    provider: "HUBSPOT",
+    provider: "Hubspot",
     description: "Create a support ticket in HubSpot's Service Hub.",
     direction: "OUTGOING",
     icon: "mdi:hubspot",
@@ -7054,7 +7054,7 @@ const MCPs = [
   {
     id: "949b12af-965d-4fd7-a18f-ca1528d8fa80",
     action: "HUBSPOT:get_pipeline_summary",
-    provider: "HUBSPOT",
+    provider: "Hubspot",
     description: "Get a summary of open deal value grouped by pipeline stage.",
     direction: "OUTGOING",
     icon: "mdi:hubspot",
@@ -7086,7 +7086,7 @@ const MCPs = [
   {
     id: "58ba208b-2438-48e8-99b8-8a7655116d87",
     action: "SALESFORCE:create_lead",
-    provider: "SALESFORCE",
+    provider: "Salesforce",
     description: "Create a new lead record in Salesforce.",
     direction: "OUTGOING",
     icon: "mdi:salesforce",
@@ -7124,7 +7124,7 @@ const MCPs = [
   {
     id: "f8bb9460-65da-4637-8e92-efd8a9aabc1f",
     action: "SALESFORCE:convert_lead",
-    provider: "SALESFORCE",
+    provider: "Salesforce",
     description:
       "Convert a qualified lead into an account, contact, and opportunity.",
     direction: "OUTGOING",
@@ -7162,7 +7162,7 @@ const MCPs = [
   {
     id: "67160372-c720-46c4-a0b3-775064d5d83d",
     action: "SALESFORCE:create_account",
-    provider: "SALESFORCE",
+    provider: "Salesforce",
     description: "Create a new account (company) record.",
     direction: "OUTGOING",
     icon: "mdi:salesforce",
@@ -7191,7 +7191,7 @@ const MCPs = [
   {
     id: "af692126-a39c-4f84-b3db-d0d9d1e4ac57",
     action: "SALESFORCE:create_contact",
-    provider: "SALESFORCE",
+    provider: "Salesforce",
     description: "Create a new contact record associated with an account.",
     direction: "OUTGOING",
     icon: "mdi:salesforce",
@@ -7230,7 +7230,7 @@ const MCPs = [
   {
     id: "8ba807ba-f711-4da8-b9fd-d7e2179183ee",
     action: "SALESFORCE:create_case",
-    provider: "SALESFORCE",
+    provider: "Salesforce",
     description: "Create a new support case for a customer.",
     direction: "OUTGOING",
     icon: "mdi:salesforce",
@@ -7264,7 +7264,7 @@ const MCPs = [
   {
     id: "68ac14f5-de20-4f32-b032-3fdff9322717",
     action: "SALESFORCE:update_case_status",
-    provider: "SALESFORCE",
+    provider: "Salesforce",
     description: "Update the status of an existing support case.",
     direction: "OUTGOING",
     icon: "mdi:salesforce",
@@ -7287,7 +7287,7 @@ const MCPs = [
   {
     id: "555ce9a4-b1e2-438b-92a6-69cae8b4298e",
     action: "SALESFORCE:get_case_details",
-    provider: "SALESFORCE",
+    provider: "Salesforce",
     description: "Get full details of a support case.",
     direction: "OUTGOING",
     icon: "mdi:salesforce",
@@ -7324,7 +7324,7 @@ const MCPs = [
   {
     id: "ac62e546-7274-440b-b105-aed19fbfefd5",
     action: "SALESFORCE:create_campaign",
-    provider: "SALESFORCE",
+    provider: "Salesforce",
     description: "Create a new marketing campaign record.",
     direction: "OUTGOING",
     icon: "mdi:salesforce",
@@ -7353,7 +7353,7 @@ const MCPs = [
   {
     id: "11894e59-3966-450d-ac2d-3e65ee574a82",
     action: "SALESFORCE:add_lead_to_campaign",
-    provider: "SALESFORCE",
+    provider: "Salesforce",
     description: "Add a lead as a member of a campaign.",
     direction: "OUTGOING",
     icon: "mdi:salesforce",
@@ -7376,7 +7376,7 @@ const MCPs = [
   {
     id: "21f46206-dc5d-443c-9c96-e2620bcf9e84",
     action: "SALESFORCE:create_task",
-    provider: "SALESFORCE",
+    provider: "Salesforce",
     description: "Create a follow-up task associated with a record.",
     direction: "OUTGOING",
     icon: "mdi:salesforce",
@@ -7415,7 +7415,7 @@ const MCPs = [
   {
     id: "da2e4509-3cf7-425e-af80-f663adf245a2",
     action: "SALESFORCE:log_activity",
-    provider: "SALESFORCE",
+    provider: "Salesforce",
     description: "Log a call or meeting activity on a record's timeline.",
     direction: "OUTGOING",
     icon: "mdi:salesforce",
@@ -7444,7 +7444,7 @@ const MCPs = [
   {
     id: "2a85d2cb-bf70-43fe-9297-be64971bd4c3",
     action: "SALESFORCE:run_report",
-    provider: "SALESFORCE",
+    provider: "Salesforce",
     description: "Run a saved Salesforce report and return summary results.",
     direction: "OUTGOING",
     icon: "mdi:salesforce",
@@ -7477,7 +7477,7 @@ const MCPs = [
   {
     id: "fdf01a03-6a2b-4f87-8857-67fd24d6f51d",
     action: "SALESFORCE:get_forecast_summary",
-    provider: "SALESFORCE",
+    provider: "Salesforce",
     description: "Get the current sales forecast summary for a period.",
     direction: "OUTGOING",
     icon: "mdi:salesforce",
@@ -7506,7 +7506,7 @@ const MCPs = [
   {
     id: "4cae696d-0228-4c08-bd19-7643fbf340a8",
     action: "SALESFORCE:create_quote",
-    provider: "SALESFORCE",
+    provider: "Salesforce",
     description: "Create a price quote associated with an opportunity.",
     direction: "OUTGOING",
     icon: "mdi:salesforce",
@@ -7540,7 +7540,7 @@ const MCPs = [
   {
     id: "4dd4ac37-87b6-479f-b765-8b7107bc1597",
     action: "SERVICENOW:update_incident_status",
-    provider: "SERVICENOW",
+    provider: "ServiceNow",
     description: "Update the state of an existing incident.",
     direction: "OUTGOING",
     icon: "mdi:cloud-check-outline",
@@ -7564,7 +7564,7 @@ const MCPs = [
   {
     id: "9f720004-01b1-49c4-9973-c6ea17ce9a5d",
     action: "SERVICENOW:get_incident_details",
-    provider: "SERVICENOW",
+    provider: "ServiceNow",
     description: "Get full details of an incident by its incident number.",
     direction: "OUTGOING",
     icon: "mdi:cloud-check-outline",
@@ -7601,7 +7601,7 @@ const MCPs = [
   {
     id: "1ffc814f-67f4-4eeb-a9ed-04716b3c73b2",
     action: "SERVICENOW:create_change_request",
-    provider: "SERVICENOW",
+    provider: "ServiceNow",
     description:
       "Create a change request for a planned infrastructure or application change.",
     direction: "OUTGOING",
@@ -7635,7 +7635,7 @@ const MCPs = [
   {
     id: "9bfa0246-f417-462c-8fe1-66f50528ec17",
     action: "SERVICENOW:approve_change_request",
-    provider: "SERVICENOW",
+    provider: "ServiceNow",
     description: "Approve a pending change request by its change number.",
     direction: "OUTGOING",
     icon: "mdi:cloud-check-outline",
@@ -7654,7 +7654,7 @@ const MCPs = [
   {
     id: "ff0cad2d-90d7-4032-8955-7159eb270f9c",
     action: "SERVICENOW:create_problem_record",
-    provider: "SERVICENOW",
+    provider: "ServiceNow",
     description: "Create a problem record for root-cause investigation.",
     direction: "OUTGOING",
     icon: "mdi:cloud-check-outline",
@@ -7683,7 +7683,7 @@ const MCPs = [
   {
     id: "dc31af0c-87d4-49b4-a9ba-415da718ab70",
     action: "SERVICENOW:link_problem_to_incident",
-    provider: "SERVICENOW",
+    provider: "ServiceNow",
     description: "Link an existing problem record to a related incident.",
     direction: "OUTGOING",
     icon: "mdi:cloud-check-outline",
@@ -7706,7 +7706,7 @@ const MCPs = [
   {
     id: "c286c661-be8d-4b8d-afa2-1e56a7f31f09",
     action: "SERVICENOW:create_catalog_request",
-    provider: "SERVICENOW",
+    provider: "ServiceNow",
     description:
       "Submit a request from the service catalog (e.g. new laptop, software access).",
     direction: "OUTGOING",
@@ -7740,7 +7740,7 @@ const MCPs = [
   {
     id: "8abfa539-094c-4f29-9778-885b769ab8b5",
     action: "SERVICENOW:get_catalog_request_status",
-    provider: "SERVICENOW",
+    provider: "ServiceNow",
     description: "Get the fulfillment status of a service catalog request.",
     direction: "OUTGOING",
     icon: "mdi:cloud-check-outline",
@@ -7773,7 +7773,7 @@ const MCPs = [
   {
     id: "8c970c64-47fd-49f1-8e97-2097d1547195",
     action: "SERVICENOW:create_knowledge_article",
-    provider: "SERVICENOW",
+    provider: "ServiceNow",
     description: "Create a new knowledge base article.",
     direction: "OUTGOING",
     icon: "mdi:cloud-check-outline",
@@ -7806,7 +7806,7 @@ const MCPs = [
   {
     id: "dc3c023e-c98d-4e10-950b-0fbfabb18d7b",
     action: "SERVICENOW:search_cmdb_ci",
-    provider: "SERVICENOW",
+    provider: "ServiceNow",
     description:
       "Search the Configuration Management Database (CMDB) for configuration items.",
     direction: "OUTGOING",
@@ -7838,7 +7838,7 @@ const MCPs = [
   {
     id: "2cb46043-4bd1-43e9-af86-a5a727349e76",
     action: "SERVICENOW:update_cmdb_ci",
-    provider: "SERVICENOW",
+    provider: "ServiceNow",
     description: "Update attributes on a configuration item in the CMDB.",
     direction: "OUTGOING",
     icon: "mdi:cloud-check-outline",
@@ -7861,7 +7861,7 @@ const MCPs = [
   {
     id: "539d3524-f650-408b-8b63-f0839f6a3422",
     action: "SERVICENOW:create_service_request",
-    provider: "SERVICENOW",
+    provider: "ServiceNow",
     description: "Create a general IT service request not tied to the catalog.",
     direction: "OUTGOING",
     icon: "mdi:cloud-check-outline",
@@ -7894,7 +7894,7 @@ const MCPs = [
   {
     id: "52d20d03-5dc4-4c3d-a659-493e41053185",
     action: "SERVICENOW:get_sla_breach_report",
-    provider: "SERVICENOW",
+    provider: "ServiceNow",
     description:
       "Get a report of tickets that have breached or are approaching SLA deadlines.",
     direction: "OUTGOING",
@@ -7927,7 +7927,7 @@ const MCPs = [
   {
     id: "785f3c37-9825-4bd3-a06e-d64c1648eb98",
     action: "SERVICENOW:assign_incident",
-    provider: "SERVICENOW",
+    provider: "ServiceNow",
     description: "Assign an incident to a specific agent or assignment group.",
     direction: "OUTGOING",
     icon: "mdi:cloud-check-outline",
@@ -7956,7 +7956,7 @@ const MCPs = [
   {
     id: "2c4a422a-da00-489e-b324-b27299731fa1",
     action: "ATLASSIAN:create_jira_issue",
-    provider: "ATLASSIAN",
+    provider: "Atlassian",
     description:
       "Create a new issue in a Jira project. Returns the created issue key.",
     direction: "OUTGOING",
@@ -8011,7 +8011,7 @@ const MCPs = [
   {
     id: "92b06cce-e5f1-4f6c-ac56-15aa2fc56039",
     action: "ATLASSIAN:get_jira_issue",
-    provider: "ATLASSIAN",
+    provider: "Atlassian",
     description: "Get the full details of a Jira issue by its issue key.",
     direction: "OUTGOING",
     icon: "mdi:atlassian",
@@ -8052,7 +8052,7 @@ const MCPs = [
   {
     id: "91c8f3a2-3f35-49e4-a376-fa7835078ea1",
     action: "ATLASSIAN:update_jira_issue",
-    provider: "ATLASSIAN",
+    provider: "Atlassian",
     description:
       "Update the summary, description, or priority of an existing Jira issue.",
     direction: "OUTGOING",
@@ -8088,7 +8088,7 @@ const MCPs = [
   {
     id: "984ed1bd-f6c9-4ab2-bd5a-4e1d5cd4dd83",
     action: "ATLASSIAN:transition_jira_issue",
-    provider: "ATLASSIAN",
+    provider: "Atlassian",
     description:
       "Move a Jira issue to a different workflow status (e.g. In Progress, Done).",
     direction: "OUTGOING",
@@ -8118,7 +8118,7 @@ const MCPs = [
   {
     id: "2aa58751-52b6-4920-bb35-7e560acd73f9",
     action: "ATLASSIAN:assign_jira_issue",
-    provider: "ATLASSIAN",
+    provider: "Atlassian",
     description: "Assign a Jira issue to a specific user.",
     direction: "OUTGOING",
     icon: "mdi:atlassian",
@@ -8142,7 +8142,7 @@ const MCPs = [
   {
     id: "5b1d2a2f-e153-4acf-9f3e-b42c09d46597",
     action: "ATLASSIAN:add_jira_comment",
-    provider: "ATLASSIAN",
+    provider: "Atlassian",
     description: "Add a comment to an existing Jira issue.",
     direction: "OUTGOING",
     icon: "mdi:atlassian",
@@ -8175,7 +8175,7 @@ const MCPs = [
   {
     id: "fd85a848-b67c-4cba-84ea-9d727fd041fa",
     action: "ATLASSIAN:search_jira_issues",
-    provider: "ATLASSIAN",
+    provider: "Atlassian",
     description: "Search Jira issues using a JQL query.",
     direction: "OUTGOING",
     icon: "mdi:atlassian",
@@ -8212,7 +8212,7 @@ const MCPs = [
   {
     id: "9c8c7c76-1c59-41f4-9be7-de1b115acad6",
     action: "ATLASSIAN:link_jira_issues",
-    provider: "ATLASSIAN",
+    provider: "Atlassian",
     description:
       "Create a link between two Jira issues (e.g. blocks, relates to, duplicates).",
     direction: "OUTGOING",
@@ -8242,7 +8242,7 @@ const MCPs = [
   {
     id: "680d4c0c-d87f-4db9-9b4e-d5ff33d31f98",
     action: "ATLASSIAN:create_jira_sprint",
-    provider: "ATLASSIAN",
+    provider: "Atlassian",
     description: "Create a new sprint on a Jira board.",
     direction: "OUTGOING",
     icon: "mdi:atlassian",
@@ -8285,7 +8285,7 @@ const MCPs = [
   {
     id: "2def1557-c359-4465-a838-80625b51bac8",
     action: "ATLASSIAN:create_confluence_page",
-    provider: "ATLASSIAN",
+    provider: "Atlassian",
     description: "Create a new page in a Confluence space.",
     direction: "OUTGOING",
     icon: "mdi:atlassian",
@@ -8331,7 +8331,7 @@ const MCPs = [
   {
     id: "05ea7c44-6bf0-4394-8e58-f4010dae234d",
     action: "ATLASSIAN:update_confluence_page",
-    provider: "ATLASSIAN",
+    provider: "Atlassian",
     description: "Update the title or body of an existing Confluence page.",
     direction: "OUTGOING",
     icon: "mdi:atlassian",
@@ -8360,7 +8360,7 @@ const MCPs = [
   {
     id: "310dc352-9030-4d72-a25a-2124aa391832",
     action: "ATLASSIAN:search_confluence_pages",
-    provider: "ATLASSIAN",
+    provider: "Atlassian",
     description: "Search Confluence pages by text, optionally within a space.",
     direction: "OUTGOING",
     icon: "mdi:atlassian",

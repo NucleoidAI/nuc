@@ -37,6 +37,10 @@ const Skills = ({
     redirectUri: string;
   };
 }) => {
+  const [actionVendor, ...actionRest] = action.split(":");
+  const vendor = title ? title : actionVendor;
+  const actionName = actionRest.join(":") || action;
+
   return (
     <Card
       sx={{
@@ -74,15 +78,10 @@ const Skills = ({
             boxShadow: `
             1px 1px 0 #161c24,
             2px 2px 0 #161c24,
-            3px 3px 0 #161c24,
-            4px 4px 0 #161c24,
-            5px 5px 0 #161c24,
-            6px 6px 0 #161c24,
-            7px 7px 0 #161c24,
             10px 10px 20px rgba(0, 0, 0, 0.4),
             20px 20px 40px rgba(0, 0, 0, 0.5)
           `,
-            transform: "perspective(300px) rotateX(12deg) rotateY(-12deg)",
+            transform: "perspective(300px) rotateX(0deg) rotateY(0deg)",
             transformStyle: "preserve-3d",
             transition: "transform 0.3s",
             "& svg": {
@@ -90,16 +89,11 @@ const Skills = ({
               transform: "none",
             },
             "&:hover": {
-              transform: "perspective(300px) rotateX(0deg) rotateY(0deg)",
+              transform: "perspective(300px) rotateX(12deg) rotateY(-12deg)",
               boxShadow: `
             1px 1px 0 #161c24,
             2px 2px 0 #161c24,
-            3px 3px 0 #161c24,
-            4px 4px 0 #161c24,
-            5px 5px 0 #161c24,
-            6px 6px 0 #161c24,
-            7px 7px 0 #161c24,
-            10px 10px 20px rgba(0, 0, 0, 0.4),
+            5px 5px 5px rgba(0, 0, 0, 0.4),
             20px 20px 40px rgba(0, 0, 0, 0.5)
           `,
             },
@@ -107,6 +101,21 @@ const Skills = ({
         >
           <Icon icon={icon} width="30" height="30" />
         </Box>
+        <Typography
+          variant="h6"
+          title={vendor}
+          sx={{
+            ml: 1,
+            minWidth: 0,
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+            wordBreak: "break-word",
+          }}
+        >
+          {vendor}
+        </Typography>
       </Box>
       <CardContent
         sx={{
@@ -118,7 +127,7 @@ const Skills = ({
       >
         <Typography
           variant="subtitle1"
-          title={action}
+          title={actionName}
           sx={{
             mb: 1,
             display: "-webkit-box",
@@ -128,7 +137,7 @@ const Skills = ({
             wordBreak: "break-word",
           }}
         >
-          {action}
+          {actionName}
         </Typography>
         <Typography
           variant="body2"

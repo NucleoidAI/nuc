@@ -1,5 +1,4 @@
 import { Icon } from "@iconify/react";
-import IncomingDrawer from "../../components/IncomingDrawer/IncomingDrawer";
 import MCPSkeleton from "../../components/Skeletons/MCPSkeleton";
 import MCPs from "../../components/MCPs/MCPs";
 import React from "react";
@@ -28,9 +27,6 @@ const AgentMCP = ({ agent }: { agent?: { id: string; name: string } }) => {
 
   const { mcps, loading } = getMCPs();
 
-  // Both hooks are called unconditionally to satisfy the rules of hooks; the
-  // relevant result is selected based on whether the widget runs in agent
-  // mode (agent prop present) or team mode (MCPs page, no agent).
   const { acquiredMCPs: agentAcquiredMCPs } = getAgentAcquiredMCPs(
     agent?.id ?? ""
   );
@@ -42,19 +38,6 @@ const AgentMCP = ({ agent }: { agent?: { id: string; name: string } }) => {
   const { team } = getTeamById(teamId);
 
   const isLoading = useLoading(loading);
-
-  const instructions = [
-    { id: "1", instruction: "Clone the repository from GitHub." },
-    {
-      id: "2",
-      instruction: "Install the necessary dependencies using `npm install`.",
-    },
-    { id: "3", instruction: "Run the project using `npm start`." },
-    {
-      id: "4",
-      instruction: "Follow the documentation for further MCP steps.",
-    },
-  ];
 
   const [search, setSearch] = React.useState("");
   const [selectedProvider, setSelectedProvider] = React.useState<string | null>(
@@ -95,13 +78,28 @@ const AgentMCP = ({ agent }: { agent?: { id: string; name: string } }) => {
     );
   }, [mcps, search]);
 
+  const isSearching = search.trim().length > 0;
+
   const activeGroup =
     groupedMCPs.find((group) => group.provider === selectedProvider) ??
-    groupedMCPs[0];
-  const activeProvider = activeGroup?.provider;
+    (isSearching ? groupedMCPs[0] : undefined);
+  const activeProvider = activeGroup?.provider ?? null;
+
+  const visibleSkills = React.useMemo(
+    () =>
+      activeGroup
+        ? activeGroup.skills
+        : groupedMCPs.flatMap((group) => group.skills),
+    [activeGroup, groupedMCPs]
+  );
 
   const { getAgents } = useAgent();
   const { agents } = getAgents();
+
+  const dialogAgents = React.useMemo(
+    () => (agent ? agents?.filter((a) => a.id === agent.id) : agents),
+    [agent, agents]
+  );
 
   const [skillDialogOpen, setSkillDialogOpen] = React.useState(false);
   const [selectedSkill, setSelectedSkill] = React.useState<{
@@ -119,25 +117,13 @@ const AgentMCP = ({ agent }: { agent?: { id: string; name: string } }) => {
     };
   } | null>(null);
 
-  const [drawerOpen, setDrawerOpen] = React.useState(false);
-
   const handleSkillClick = (skill) => {
     setSelectedSkill(skill);
-
-    if (agent) {
-      setDrawerOpen(true);
-    } else {
-      setSkillDialogOpen(true);
-    }
+    setSkillDialogOpen(true);
   };
 
   const handleSkillDialogClose = () => {
     setSkillDialogOpen(false);
-    setSelectedSkill(null);
-  };
-
-  const handleDrawerClose = () => {
-    setDrawerOpen(false);
     setSelectedSkill(null);
   };
 
@@ -188,13 +174,53 @@ const AgentMCP = ({ agent }: { agent?: { id: string; name: string } }) => {
                 "&::-webkit-scrollbar": { display: "none" },
               }}
             >
+              {!isSearching && (
+                <ButtonBase
+                  onClick={() => setSelectedProvider(null)}
+                  sx={{
+                    flexShrink: 0,
+                    gap: 1,
+                    px: 1.5,
+                    py: 1,
+                    borderRadius: 1,
+                    border: 1,
+                    borderColor: activeProvider
+                      ? "divider"
+                      : "background.paper",
+                    bgcolor: activeProvider ? "transparent" : "action.selected",
+                    "&:hover": { bgcolor: "action.hover" },
+                  }}
+                >
+                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                    All
+                  </Typography>
+                  <Chip
+                    label={groupedMCPs.reduce(
+                      (total, group) => total + group.skills.length,
+                      0
+                    )}
+                    size="small"
+                    sx={{
+                      bgcolor: "#1f232b",
+                      color: "#fff",
+                      fontWeight: 600,
+                      "&:hover": { bgcolor: "#1f232b" },
+                    }}
+                  />
+                </ButtonBase>
+              )}
+
               {groupedMCPs.map((group) => {
                 const isActive = group.provider === activeProvider;
 
                 return (
                   <ButtonBase
                     key={group.provider}
-                    onClick={() => setSelectedProvider(group.provider)}
+                    onClick={() =>
+                      setSelectedProvider(
+                        isActive && !isSearching ? null : group.provider
+                      )
+                    }
                     sx={{
                       flexShrink: 0,
                       gap: 1,
@@ -229,7 +255,7 @@ const AgentMCP = ({ agent }: { agent?: { id: string; name: string } }) => {
             </Box>
 
             <Grid container spacing={2} sx={{ mb: 1 }}>
-              {activeGroup?.skills.map((skill) => (
+              {visibleSkills.map((skill) => (
                 <MCPs
                   key={skill.id}
                   title={skill.provider}
@@ -255,20 +281,10 @@ const AgentMCP = ({ agent }: { agent?: { id: string; name: string } }) => {
           handleClose={handleSkillDialogClose}
           skill={selectedSkill}
           team={agent ? undefined : team}
-          agents={agent ? agents : undefined}
+          agents={agent ? dialogAgents : undefined}
           acquiredMCPs={acquiredMCPs}
           getTokens={getTokens}
         />
-
-        {agent && (
-          <IncomingDrawer
-            selectedSkill={selectedSkill}
-            instructions={instructions}
-            drawerOpen={drawerOpen}
-            handleDrawerClose={handleDrawerClose}
-            agent={agent}
-          />
-        )}
       </Box>
     </Box>
   );

@@ -4,7 +4,6 @@ import AuthHandler from "../LoginHandler/AuthHandler";
 import ClosableDialogTitle from "./ClosableDialogTitle";
 import { Icon } from "@iconify/react";
 import { Iconify } from "@canmingir/link/platform/components";
-import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
 
 import {
   Avatar,
@@ -47,6 +46,7 @@ const SkillDialog = ({
     name: string;
     icon: string;
     title: string;
+    action: string;
     description: string;
     oauth: {
       scope: string;
@@ -141,6 +141,9 @@ const SkillDialog = ({
           <Typography variant="h4" sx={{ mt: 1 }}>
             {skill.title}
           </Typography>
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            {skill.action}
+          </Typography>
         </Box>
         <Box sx={{ mt: 3 }}>{skill.description}</Box>
         <Divider sx={{ mt: 3 }} />
@@ -197,11 +200,7 @@ const SkillDialog = ({
                   agents.map((agent) => (
                     <MenuItem key={agent.id} value={agent.name}>
                       <Box sx={{ display: "flex", alignItems: "center" }}>
-                        <SourcedAvatar
-                          source={"MINIMAL"}
-                          iconUrl={agent.icon}
-                          name={agent.name}
-                        />
+                        <Iconify icon={agent.icon} width={32} height={32} />
                         <Box sx={{ ml: 1 }}>{agent.name}</Box>
                       </Box>
                     </MenuItem>

@@ -20,6 +20,7 @@ const Skills = ({
     title: string;
     description: string;
     icon: string;
+    action: string;
     id: string;
     oauth?: {
       tokenUrl: string;
@@ -46,7 +47,9 @@ const Skills = ({
         transition: "transform 0.3s",
         "&:hover": { transform: "scale(1.05)", cursor: "pointer" },
       }}
-      onClick={() => onSkillClick({ title, description, icon, id, oauth })}
+      onClick={() =>
+        onSkillClick({ title, description, icon, id, oauth, action })
+      }
     >
       <Box
         sx={{
@@ -68,43 +71,42 @@ const Skills = ({
             height: 56,
             borderRadius: 2,
             background: "linear-gradient(145deg, #3a3f4b, #1f232b)",
-            boxShadow:
-              "6px 6px 12px rgba(0, 0, 0, 0.55), -4px -4px 10px rgba(255, 255, 255, 0.06)",
+            boxShadow: `
+            1px 1px 0 #161c24,
+            2px 2px 0 #161c24,
+            3px 3px 0 #161c24,
+            4px 4px 0 #161c24,
+            5px 5px 0 #161c24,
+            6px 6px 0 #161c24,
+            7px 7px 0 #161c24,
+            10px 10px 20px rgba(0, 0, 0, 0.4),
+            20px 20px 40px rgba(0, 0, 0, 0.5)
+          `,
             transform: "perspective(300px) rotateX(12deg) rotateY(-12deg)",
             transformStyle: "preserve-3d",
             transition: "transform 0.3s",
             "& svg": {
               filter: "drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.35))",
-              transform: "translateZ(12px)",
+              transform: "none",
             },
             "&:hover": {
               transform: "perspective(300px) rotateX(0deg) rotateY(0deg)",
+              boxShadow: `
+            1px 1px 0 #161c24,
+            2px 2px 0 #161c24,
+            3px 3px 0 #161c24,
+            4px 4px 0 #161c24,
+            5px 5px 0 #161c24,
+            6px 6px 0 #161c24,
+            7px 7px 0 #161c24,
+            10px 10px 20px rgba(0, 0, 0, 0.4),
+            20px 20px 40px rgba(0, 0, 0, 0.5)
+          `,
             },
           }}
         >
           <Icon icon={icon} width="30" height="30" />
         </Box>
-        <Typography
-          variant="h6"
-          title={title}
-          sx={{
-            ml: 1,
-            minWidth: 0,
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-            wordBreak: "break-word",
-          }}
-        >
-          {title
-            ?.split(" ")
-            .map(
-              (word) =>
-                word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-            )
-            .join(" ")}
-        </Typography>
       </Box>
       <CardContent
         sx={{

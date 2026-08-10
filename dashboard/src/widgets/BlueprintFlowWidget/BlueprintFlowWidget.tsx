@@ -346,31 +346,35 @@ function BlueprintFlowWidget({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [graphData]);
 
-  useEffect(() => {
-    if (aiResponse?.flow) {
-      const cleanData = buildDefinitionGraph(aiResponse.flow);
-      setGraphData(cleanData);
-      setHasLocalChanges(true);
+  useEffect(
+    () => {
+      if (aiResponse?.flow) {
+        const cleanData = buildDefinitionGraph(aiResponse.flow);
+        setGraphData(cleanData);
+        setHasLocalChanges(true);
 
-      if (!baselineNodes && blueprint?.id) {
+        if (!baselineNodes && blueprint?.id) {
+          setBaselineNodes({
+            blueprintId: blueprint.id,
+            nodes: blueprintNodes?.nodes || [],
+          });
+        }
+
+        if (blueprintNodes?.nodes && blueprintNodes.nodes.length > 0) {
+          setShowDiffPanel(true);
+        }
+      } else if (blueprintNodes && !hasLocalChangesRef.current) {
+        const initialData = buildDefinitionGraph(blueprintNodes);
+        setGraphData(initialData);
         setBaselineNodes({
-          blueprintId: blueprint.id,
-          nodes: blueprintNodes?.nodes || [],
+          blueprintId: blueprintNodes.id,
+          nodes: blueprintNodes.nodes || [],
         });
       }
-
-      if (blueprintNodes?.nodes && blueprintNodes.nodes.length > 0) {
-        setShowDiffPanel(true);
-      }
-    } else if (blueprintNodes && !hasLocalChangesRef.current) {
-      const initialData = buildDefinitionGraph(blueprintNodes);
-      setGraphData(initialData);
-      setBaselineNodes({
-        blueprintId: blueprintNodes.id,
-        nodes: blueprintNodes.nodes || [],
-      });
-    }
-  }, [blueprintNodes, aiResponse, blueprint?.id]);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [blueprintNodes, aiResponse, blueprint?.id]
+  );
 
   useEffect(
     () => {

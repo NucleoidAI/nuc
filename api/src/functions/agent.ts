@@ -1,16 +1,16 @@
+import type { LLMMeta } from "../lib/llmLog";
 import MCPs from "../mcps/mcps";
 import actions from "../actions";
 import agentData from "./agentData";
 import blueprintFn from "./blueprint";
 import dataset from "../dataset";
 import { generate } from "../lib/llm";
-import type { LLMMeta } from "../lib/llmLog";
 import knowledgeFn from "./knowledge";
 import mcpFn from "./mcp";
 import message from "./message";
 import messagesFunc from "./message";
-import { resolveParameterRefs } from "../lib/parameterRefs";
 import platform from "@canmingir/link-express";
+import { resolveParameterRefs } from "../lib/parameterRefs";
 import session from "./session";
 import stepScoreFn from "./stepScore";
 import supervising from "./supervising";
@@ -339,7 +339,13 @@ async function task({ taskId }: { taskId: string }) {
     next_step: { action, parameters: llmParameters, comment },
     result_score,
   } = isForceNode
-    ? await forceNodeStep({ currentNode, currentTask, context, isBlocking, meta })
+    ? await forceNodeStep({
+        currentNode,
+        currentTask,
+        context,
+        isBlocking,
+        meta,
+      })
     : await generate({
         dataset: isBlocking
           ? dataset.train.taskDiamondBlocking

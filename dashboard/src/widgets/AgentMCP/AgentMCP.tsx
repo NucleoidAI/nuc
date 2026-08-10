@@ -85,13 +85,28 @@ const AgentMCP = ({ agent }: { agent?: { id: string; name: string } }) => {
     (isSearching ? groupedMCPs[0] : undefined);
   const activeProvider = activeGroup?.provider ?? null;
 
-  const visibleSkills = React.useMemo(
-    () =>
-      activeGroup
-        ? activeGroup.skills
-        : groupedMCPs.flatMap((group) => group.skills),
-    [activeGroup, groupedMCPs]
-  );
+  const visibleSkills = React.useMemo(() => {
+    if (activeGroup) {
+      return activeGroup.skills;
+    }
+
+    const maxLength = Math.max(
+      0,
+      ...groupedMCPs.map((group) => group.skills.length)
+    );
+
+    const shuffled = [];
+
+    for (let i = 0; i < maxLength; i++) {
+      groupedMCPs.forEach((group) => {
+        if (group.skills[i]) {
+          shuffled.push(group.skills[i]);
+        }
+      });
+    }
+
+    return shuffled;
+  }, [activeGroup, groupedMCPs]);
 
   const { getAgents } = useAgent();
   const { agents } = getAgents();

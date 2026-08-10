@@ -140,11 +140,6 @@ function childIdsOf(node: DefinitionGraphNode): string[] {
   return ids;
 }
 
-/**
- * Returns every node that can reach `nodeId` by following next/true/false
- * pointers — i.e. every earlier step whose output could plausibly be bound
- * as this node's input via the parameter connector.
- */
 export function getAncestorNodes(
   graph: DefinitionGraph,
   nodeId: string
@@ -183,10 +178,6 @@ export function isRefValue(value: unknown): value is { $ref: string } {
   );
 }
 
-/**
- * Parses a `{ $ref: "byNode.<nodeId>.result" }` / `{ $ref: "byNode.<nodeId>.result.<field>" }`
- * parameter binding produced by the canvas parameter connector.
- */
 export function parseByNodeRef(
   value: unknown
 ): { sourceNodeId: string; sourceField: string } | null {

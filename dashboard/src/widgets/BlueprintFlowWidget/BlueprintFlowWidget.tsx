@@ -9,6 +9,7 @@ import useBlueprint from "../../hooks/useBlueprint";
 import useMCPs from "../../hooks/useMCPs";
 import { v4 as uuid } from "uuid";
 import { validateFlow } from "../../components/BlueprintFlow/Validation/validation";
+
 import {
   DefinitionGraph,
   FlowDefinition,
@@ -16,7 +17,6 @@ import {
   buildDefinitionGraph,
   getAncestorNodes,
 } from "../../components/BlueprintFlow/helper";
-
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   calculateDiffStats,
@@ -1248,8 +1248,6 @@ function BlueprintFlowWidget({
       const targetNode = prev.nodes[targetNodeId];
       if (!targetNode) return prev;
 
-      // Only force nodes have a guaranteed action, so only their inputs
-      // are meaningful to bind — other nodes' input handles are read-only.
       if (!targetNode.raw?.properties?.force) return prev;
 
       const ancestors = getAncestorNodes(prev, targetNodeId);

@@ -1,16 +1,16 @@
+import type { LLMMeta } from "../lib/llmLog";
 import MCPs from "../mcps/mcps";
 import actions from "../actions";
 import agentData from "./agentData";
 import blueprintFn from "./blueprint";
 import dataset from "../dataset";
 import { generate } from "../lib/llm";
-import type { LLMMeta } from "../lib/llmLog";
 import knowledgeFn from "./knowledge";
 import mcpFn from "./mcp";
 import message from "./message";
 import messagesFunc from "./message";
-import { resolveParameterRefs } from "../lib/parameterRefs";
 import platform from "@canmingir/link-express";
+import { resolveParameterRefs } from "../lib/parameterRefs";
 import session from "./session";
 import stepScoreFn from "./stepScore";
 import supervising from "./supervising";
@@ -192,12 +192,6 @@ async function teamChat({
   });
 }
 
-/**
- * Walks the blueprint graph in lockstep with the task's completed steps to
- * find the node the task is currently positioned at. Steps recorded after
- * this feature shipped carry a `nodeId`, which is matched directly; older
- * steps fall back to matching on the node's bound action string.
- */
 function resolveCurrentNode(
   nodes: any[],
   completedSteps: { action: string; result?: string; nodeId?: string | null }[],
@@ -242,11 +236,6 @@ function resolveCurrentNode(
   return currentNode;
 }
 
-/**
- * Runs the LLM for a node flagged `properties.force === true`, guaranteeing
- * the node's bound action is used instead of whatever the LLM would have
- * picked on its own.
- */
 async function forceNodeStep({
   currentNode,
   currentTask,
@@ -350,7 +339,13 @@ async function task({ taskId }: { taskId: string }) {
     next_step: { action, parameters: llmParameters, comment },
     result_score,
   } = isForceNode
-    ? await forceNodeStep({ currentNode, currentTask, context, isBlocking, meta })
+    ? await forceNodeStep({
+        currentNode,
+        currentTask,
+        context,
+        isBlocking,
+        meta,
+      })
     : await generate({
         dataset: isBlocking
           ? dataset.train.taskDiamondBlocking
@@ -367,8 +362,6 @@ async function task({ taskId }: { taskId: string }) {
 
   const nodeId = currentNode?.id ?? null;
 
-  // Bound/literal parameters from the canvas connector always apply once a
-  // node is reached, independent of whether that node is force-executed.
   const boundParameters = currentNode?.properties?.parameters;
   const rawParameters =
     boundParameters && Object.keys(boundParameters).length

@@ -21,11 +21,6 @@ export type Integration = {
   outputSchema?: IntegrationSchema;
 };
 
-/**
- * Builds the same PLATFORM-action + MCP-integration list used by the node
- * editor drawer, for callers that only need to look up an action's
- * input/output schema (e.g. the force-mode canvas connector).
- */
 function useAllIntegrations(): Integration[] {
   const { getMCPs, getActions } = useMCPs();
   const { mcps } = getMCPs();

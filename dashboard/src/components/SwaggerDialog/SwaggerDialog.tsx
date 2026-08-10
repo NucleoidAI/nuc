@@ -1,5 +1,6 @@
 import { Iconify } from "@canmingir/link/platform/components";
 import { KeyboardArrowDown } from "@mui/icons-material";
+import { SWAGGER_URL } from "../../utils/hosts";
 import { publish } from "@nucleoidai/react-event";
 
 import { AppBar, Box, Dialog, IconButton, Toolbar } from "@mui/material";
@@ -40,7 +41,7 @@ const SwaggerDialog = ({
               onClick={() => {
                 publish("SWAGGER_DIALOG_OPEN", { open: false });
                 setSwaggerOpen(false);
-                fetch("http://localhost:3004/swagger/reset", {
+                fetch(`${SWAGGER_URL}/swagger/reset`, {
                   method: "POST",
                 });
                 setIframeKey((prev) => prev + 1);
@@ -60,7 +61,7 @@ const SwaggerDialog = ({
         <iframe
           key={iframeKey}
           title="Swagger"
-          src="http://localhost:3004/swagger"
+          src={`${SWAGGER_URL}/swagger`}
           style={{ width: "100%", height: "100%", border: 0 }}
           sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
         />

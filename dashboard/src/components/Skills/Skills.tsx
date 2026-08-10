@@ -48,8 +48,34 @@ const Skills = ({
         width: "100%",
         display: "flex",
         flexDirection: "column",
-        transition: "transform 0.3s",
-        "&:hover": { transform: "scale(1.05)", cursor: "pointer" },
+        transformStyle: "preserve-3d",
+        transform:
+          "perspective(1500px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)",
+        boxShadow: `
+            1px 1px 0 #161c24,
+            2px 2px 0 #161c24,
+            3px 3px 0 #161c24,
+            4px 4px 0 #161c24,
+            5px 5px 0 #161c24,
+            6px 6px 0 #161c24,
+            7px 7px 0 #161c24,
+            10px 10px 20px rgba(0, 0, 0, 0.4),
+            20px 20px 40px rgba(0, 0, 0, 0.5)
+          `,
+        transition:
+          "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, filter 0.25s ease",
+        "&:hover": {
+          cursor: "pointer",
+          "& .skill-icon": {
+            transform: "perspective(350px) rotateX(15deg) rotateY(-15deg)",
+            boxShadow: `
+            1px 1px 0 #161c24,
+            2px 2px 0 #161c24,
+            5px 5px 5px rgba(0, 0, 0, 0.4),
+            20px 20px 40px rgba(0, 0, 0, 0.5)
+          `,
+          },
+        },
       }}
       onClick={() =>
         onSkillClick({ title, description, icon, id, oauth, action })
@@ -66,6 +92,7 @@ const Skills = ({
         }}
       >
         <Box
+          className="skill-icon"
           sx={{
             display: "flex",
             justifyContent: "center",
@@ -87,15 +114,6 @@ const Skills = ({
             "& svg": {
               filter: "drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.35))",
               transform: "none",
-            },
-            "&:hover": {
-              transform: "perspective(300px) rotateX(12deg) rotateY(-12deg)",
-              boxShadow: `
-            1px 1px 0 #161c24,
-            2px 2px 0 #161c24,
-            5px 5px 5px rgba(0, 0, 0, 0.4),
-            20px 20px 40px rgba(0, 0, 0, 0.5)
-          `,
             },
           }}
         >

@@ -25,7 +25,7 @@ window.SERVICES = [
     icon: "greycollar.ai",
   },
 
-  { name: "Centaur", url: "https://centaur.nuc.land", category: "Centaur" },
+  { name: "Centaur AI", url: "https://centaur.nuc.land", category: "Centaur" },
 
   // Monitoring
   {

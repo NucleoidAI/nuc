@@ -7,6 +7,7 @@ import {
   BardIcon,
   ClaudeIcon,
   DeepMindIcon,
+  GreyCollarIcon,
   IbmIcon,
   MetaIcon,
   OpenAIIcon,
@@ -18,6 +19,7 @@ function AIMarketplaceItem({
   engine,
   isWizardEngine,
   handleEngineSelect,
+  isSelected,
 }: {
   engine: {
     id: string;
@@ -29,6 +31,7 @@ function AIMarketplaceItem({
   };
   isWizardEngine?: boolean;
   handleEngineSelect?: (engine) => void;
+  isSelected?: boolean;
 }) {
   const theme = useTheme();
 
@@ -39,6 +42,7 @@ function AIMarketplaceItem({
     Meta: <MetaIcon width={20} height={20} />,
     DeepMind: <DeepMindIcon width={20} height={20} />,
     "IBM Watson": <IbmIcon width={20} height={20} />,
+    GreyCollar: <GreyCollarIcon width={20} height={20} />,
   };
 
   const icon = vendorIconMap[engine?.vendor] || (
@@ -70,6 +74,11 @@ function AIMarketplaceItem({
           minHeight: { sm: 180 },
           width: "100%",
           overflow: "hidden",
+          ...(isWizardEngine && {
+            border: "solid",
+            borderWidth: isSelected ? 2 : 1,
+            borderColor: isSelected ? "primary.main" : "divider",
+          }),
           "&:hover": {
             boxShadow: isWizardEngine ? 6 : 4,
           },

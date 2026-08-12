@@ -6,6 +6,7 @@ export default function AIEngineChart({
   data,
   isWizardEngine,
   handleEngineSelect,
+  selectedEngineId,
 }: {
   sx?: object;
   data: {
@@ -18,6 +19,7 @@ export default function AIEngineChart({
   }[];
   isWizardEngine: boolean;
   handleEngineSelect: (engine: { id: string }) => void;
+  selectedEngineId?: string;
 }) {
   return (
     <>
@@ -35,6 +37,7 @@ export default function AIEngineChart({
           <AIMarketplaceItem
             handleEngineSelect={handleEngineSelect}
             isWizardEngine={isWizardEngine}
+            isSelected={engine?.id === selectedEngineId}
             key={engine?.id}
             engine={engine}
           />

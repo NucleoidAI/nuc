@@ -2,39 +2,24 @@ import AIEngineChart from "./Content";
 import React from "react";
 import useAIEngines from "../../hooks/useAIEngines";
 
-import {
-  Box,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  TextField,
-} from "@mui/material";
+import { Box, Dialog, DialogContent } from "@mui/material";
 
 function AIMarketplaceCard({
   open,
   setOpen,
   isWizardEngine,
   handleEngineSelect,
+  selectedEngineId,
 }) {
   const { engines } = useAIEngines();
 
   const Content = () => {
     return (
-      <DialogContent sx={{ marginY: 2 }}>
-        <DialogTitle textAlign={"center"} variant="h4">
-          AI Marketplace
-        </DialogTitle>
-
-        <TextField
-          sx={{ mb: 3 }}
-          fullWidth
-          variant="outlined"
-          placeholder="Search..."
-        />
-
+      <DialogContent sx={{ marginY: 1 }}>
         <AIEngineChart
           handleEngineSelect={handleEngineSelect}
           isWizardEngine={isWizardEngine}
+          selectedEngineId={selectedEngineId}
           data={engines}
         />
       </DialogContent>

@@ -17,6 +17,7 @@ export default function StepComponent({
   handleSave,
   children,
   isSubmitting,
+  nextDisabled = false,
 }) {
   return (
     <>
@@ -92,6 +93,7 @@ export default function StepComponent({
             <Button
               variant="outlined"
               data-cy="agent-next-button"
+              disabled={nextDisabled}
               onClick={handleNext}
             >
               Next

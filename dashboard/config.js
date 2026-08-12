@@ -1,13 +1,11 @@
-const isBrowser = typeof window !== "undefined";
-
 const config = {
   appId: "10b7bc8c-a49c-4002-b0ec-63599e4b5210",
   name: "GreyCollar",
   base: "/dashboard",
   beta: true,
-  api: isBrowser ? `${window.location.origin}/api` : "http://localhost:4000",
+  api: "http://localhost:4000",
   socket: {
-    host: isBrowser ? window.location.origin : "http://localhost:3003",
+    host: "http://localhost:3003",
     path: "/socket.io",
   },
   credentials: {

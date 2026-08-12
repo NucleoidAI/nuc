@@ -3,157 +3,160 @@ import Grid from "@mui/material/Grid";
 import { Iconify } from "@canmingir/link/platform/components";
 import { cleanIconName } from "../../utils/cleanIconName";
 
-import { Box, Card, CardContent, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Card,
+  CardContent,
+  Chip,
+  Stack,
+  Typography,
+} from "@mui/material";
+
+function HeroCard({ icon, name, children, nameDataCy }) {
+  return (
+    <Card
+      sx={{
+        borderRadius: 2,
+        bgcolor: "background.paper",
+        boxShadow: (theme) => theme.customShadows?.card,
+      }}
+    >
+      <CardContent>
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={2.5}
+          alignItems="center"
+          textAlign={{ xs: "center", sm: "left" }}
+        >
+          <Avatar
+            sx={{
+              width: 72,
+              height: 72,
+              flexShrink: 0,
+              color: "inherit",
+              bgcolor: "background.neutral",
+            }}
+          >
+            <Iconify
+              icon={cleanIconName(icon)}
+              width={40}
+              height={40}
+              style={{ objectFit: "contain" }}
+            />
+          </Avatar>
+
+          <Box sx={{ minWidth: 0 }}>
+            <Typography
+              variant="h5"
+              sx={{ wordBreak: "break-word" }}
+              data-cy={nameDataCy}
+            >
+              {name}
+            </Typography>
+            {children}
+          </Box>
+        </Stack>
+      </CardContent>
+    </Card>
+  );
+}
+
+function SectionCard({ icon, label, children }) {
+  return (
+    <Card
+      sx={{
+        height: "100%",
+        borderRadius: 2,
+        bgcolor: "background.paper",
+        boxShadow: (theme) => theme.customShadows?.card,
+      }}
+    >
+      <CardContent>
+        <Stack direction="row" spacing={1} alignItems="center" mb={1}>
+          <Iconify icon={icon} width={18} style={{ flexShrink: 0 }} />
+          <Typography
+            variant="overline"
+            color="text.secondary"
+            sx={{ lineHeight: 1 }}
+          >
+            {label}
+          </Typography>
+        </Stack>
+        {children}
+      </CardContent>
+    </Card>
+  );
+}
 
 function Summary({ organization, team, agent }) {
   return (
     <>
-      {organization && (
-        <>
-          <DialogContentText sx={{ textAlign: "center", mb: 2 }}>
-            Organization
-          </DialogContentText>
-          <Card
-            sx={{
-              bgcolor: (theme) => theme.palette.background.paper,
-              boxShadow: (theme) => theme.customShadows.card,
-              mb: 3,
-            }}
-          >
-            <CardContent>
+      <DialogContentText sx={{ textAlign: "center", mb: 2 }}>
+        Team Summary
+      </DialogContentText>
+
+      <Grid container spacing={2} alignItems="stretch">
+        {organization && (
+          <Grid size={12}>
+            <SectionCard
+              icon="mdi:office-building-outline"
+              label="Organization"
+            >
               <Typography
-                variant="h6"
-                textAlign="center"
+                variant="h5"
+                color="text.primary"
+                sx={{ wordBreak: "break-word" }}
                 data-cy="org-summary-name-area"
               >
                 {organization.name}
               </Typography>
-            </CardContent>
-          </Card>
-        </>
-      )}
-      <DialogContentText sx={{ textAlign: "center", mb: 2 }}>
-        Team
-      </DialogContentText>
-      <Grid container spacing={2}>
-        <Grid
-          sx={{
-            justifyContent: "center",
-            alignContent: "center",
-            display: "flex",
-          }}
-          size={12}
-        >
-          <Card
-            sx={{
-              bgcolor: (theme) => theme.palette.background.paper,
-              boxShadow: (theme) => theme.customShadows.card,
-              width: "100%",
-            }}
-          >
-            <CardContent>
-              <Grid container alignItems="center" spacing={2}>
-                <Grid size={4}>
-                  <Box
-                    sx={{
-                      mx: "auto",
-                      width: { xs: 32, md: 64 },
-                      height: { xs: 32, md: 64 },
-                      borderRadius: "50%",
-
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <Iconify
-                      icon={cleanIconName(team.icon)}
-                      width="70%"
-                      height="70%"
-                      style={{ objectFit: "contain" }}
-                    />
-                  </Box>
-                </Grid>
-                <Grid size={8}>
-                  <Typography variant="h6" data-cy="team-summary-name-area">
-                    {team.name}
-                  </Typography>
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-      {agent && (
-        <>
-          <DialogContentText sx={{ textAlign: "center", mb: 2, mt: 3 }}>
-            Agent
-          </DialogContentText>
-          <Grid container spacing={2}>
-            <Grid
-              sx={{
-                justifyContent: "center",
-                alignContent: "center",
-                display: "flex",
-              }}
-              size={12}
-            >
-              <Card
-                sx={{
-                  bgcolor: (theme) => theme.palette.background.paper,
-                  boxShadow: (theme) => theme.customShadows.card,
-                  width: "100%",
-                }}
-              >
-                <CardContent>
-                  <Grid container alignItems="center" spacing={2}>
-                    <Grid size={4}>
-                      <Box
-                        sx={{
-                          mx: "auto",
-                          width: { xs: 32, md: 64 },
-                          height: { xs: 32, md: 64 },
-                          borderRadius: "50%",
-
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          overflow: "hidden",
-                        }}
-                      >
-                        <Iconify
-                          icon={cleanIconName(agent.icon)}
-                          width="70%"
-                          height="70%"
-                          style={{ objectFit: "contain" }}
-                        />
-                      </Box>
-                    </Grid>
-                    <Grid size={8}>
-                      <Typography
-                        variant="h6"
-                        data-cy="agent-summary-name-area"
-                      >
-                        {agent.name}
-                      </Typography>
-                      <>
-                        <Typography variant="body2" color="text.secondary">
-                          Description: {agent.description}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          Engine: {agent.engineName}
-                        </Typography>
-                      </>
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
-            </Grid>
+            </SectionCard>
           </Grid>
-        </>
-      )}
+        )}
+
+        <Grid size={12}>
+          <HeroCard
+            icon={team.icon}
+            name={team.name}
+            nameDataCy="team-summary-name-area"
+          >
+            <Chip
+              size="small"
+              variant="outlined"
+              color="default"
+              icon={<Iconify icon="mdi:account-group-outline" width={16} />}
+              label="Team"
+              sx={{ mt: 1 }}
+            />
+          </HeroCard>
+        </Grid>
+
+        {agent && (
+          <>
+            <Grid size={12}>
+              <HeroCard
+                icon={agent.icon}
+                name={agent.name}
+                nameDataCy="agent-summary-name-area"
+              >
+                {agent.engineName && (
+                  <Chip
+                    size="small"
+                    variant="outlined"
+                    color="default"
+                    icon={<Iconify icon="mdi:chip" width={16} />}
+                    label={agent.engineName}
+                    sx={{ mt: 1 }}
+                  />
+                )}
+              </HeroCard>
+            </Grid>
+          </>
+        )}
+      </Grid>
     </>
   );
 }
+
 export { Summary };

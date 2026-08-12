@@ -520,11 +520,40 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
                   key={organization.id}
                   onClick={() => handleOrganizationSelect(organization)}
                   sx={{
+                    mb: 2,
                     cursor: "pointer",
-                    transition: "all 0.2s ease",
+                    borderRadius: 2,
+                    transformStyle: "preserve-3d",
+                    transform:
+                      "perspective(1500px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)",
+                    boxShadow: `
+            1px 1px 0 #161c24,
+            2px 2px 0 #161c24,
+            3px 3px 0 #161c24,
+            4px 4px 0 #161c24,
+            5px 5px 0 #161c24,
+            6px 6px 0 #161c24,
+            7px 7px 0 #161c24,
+            10px 10px 20px rgba(0, 0, 0, 0.4),
+            20px 20px 40px rgba(0, 0, 0, 0.5)
+          `,
+                    transition:
+                      "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, filter 0.25s ease",
                     "&:hover": {
-                      transform: "translateY(-2px)",
-                      boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                      transform:
+                        "perspective(1500px) rotateX(0deg) rotateY(-10deg) rotateZ(0deg)",
+                      filter: "brightness(1.070)",
+                      boxShadow: `
+            1px 1px 0 #161c24,
+            2px 2px 0 #161c24,
+            3px 3px 0 #161c24,
+            4px 4px 0 #161c24,
+            5px 5px 0 #161c24,
+            6px 6px 0 #161c24,
+            7px 7px 0 #161c24,
+            10px 10px 20px rgba(0, 0, 0, 0.4),
+            20px 20px 40px rgba(0, 0, 0, 0.5)
+          `,
                     },
                   }}
                 >
@@ -624,11 +653,40 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
                 key={index}
                 onClick={() => handleTemplateSelect(agent)}
                 sx={{
+                  mb: 2,
                   cursor: "pointer",
-                  transition: "all 0.2s ease",
+                  borderRadius: 2,
+                  transformStyle: "preserve-3d",
+                  transform:
+                    "perspective(1500px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)",
+                  boxShadow: `
+            1px 1px 0 #161c24,
+            2px 2px 0 #161c24,
+            3px 3px 0 #161c24,
+            4px 4px 0 #161c24,
+            5px 5px 0 #161c24,
+            6px 6px 0 #161c24,
+            7px 7px 0 #161c24,
+            10px 10px 20px rgba(0, 0, 0, 0.4),
+            20px 20px 40px rgba(0, 0, 0, 0.5)
+          `,
+                  transition:
+                    "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, filter 0.25s ease",
                   "&:hover": {
-                    transform: "translateY(-2px)",
-                    boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                    transform:
+                      "perspective(1500px) rotateX(0deg) rotateY(-10deg) rotateZ(0deg)",
+                    filter: "brightness(1.070)",
+                    boxShadow: `
+            1px 1px 0 #161c24,
+            2px 2px 0 #161c24,
+            3px 3px 0 #161c24,
+            4px 4px 0 #161c24,
+            5px 5px 0 #161c24,
+            6px 6px 0 #161c24,
+            7px 7px 0 #161c24,
+            10px 10px 20px rgba(0, 0, 0, 0.4),
+            20px 20px 40px rgba(0, 0, 0, 0.5)
+          `,
                   },
                 }}
               >
@@ -743,6 +801,16 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
     <Dialog
       maxWidth={`xl`}
+      fullWidth
+      slotProps={{
+        paper: {
+          sx: {
+            height: "85vh",
+            display: "flex",
+            flexDirection: "column",
+          },
+        },
+      }}
       open={open}
       onClose={() => {
         if (organizations.length !== 0 && projectId) {
@@ -752,34 +820,46 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
         }
       }}
     >
-      <>
-        <DialogTitle
+      <DialogTitle
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          py: 2,
+          backgroundColor: (theme) => theme.palette.background.default,
+        }}
+      >
+        <Stack spacing={0} alignItems="center" textAlign="center">
+          <Typography variant="h6" component="div" lineHeight={1.2}>
+            {"Create Team"}
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            Set up your team and AI agent to streamline your workflow and
+            enhance productivity.
+          </Typography>
+        </Stack>
+      </DialogTitle>
+      <StepComponent
+        activeStep={activeStep}
+        steps={steps}
+        stepExp={stepExp}
+        handleNext={handleNext}
+        handleBack={handleBack}
+        handleSave={handleSave}
+        isSubmitting={isSubmitting}
+      >
+        <DialogContent
           sx={{
+            width: "100%",
+            px: 0,
+            py: 1,
+            overflow: "visible",
             backgroundColor: (theme) => theme.palette.background.default,
           }}
-        ></DialogTitle>
-        <StepComponent
-          activeStep={activeStep}
-          steps={steps}
-          stepExp={stepExp}
-          handleNext={handleNext}
-          handleBack={handleBack}
-          handleSave={handleSave}
-          isSubmitting={isSubmitting}
         >
-          <DialogContent
-            sx={{
-              width: "100%",
-              height: "100%",
-              alignContent: "center",
-              justifyContent: "center",
-              backgroundColor: (theme) => theme.palette.background.default,
-            }}
-          >
-            {StepPages()}
-          </DialogContent>
-        </StepComponent>
-      </>
+          {StepPages()}
+        </DialogContent>
+      </StepComponent>
     </Dialog>
   );
 }

@@ -7,7 +7,7 @@ import useBlueprint from "../../hooks/useBlueprint";
 import { useEvent } from "@nucleoidai/react-event";
 import useLoading from "../../hooks/useLoading";
 
-import { Box, Fab, Stack } from "@mui/material";
+import { Box, Fab, Stack, Typography } from "@mui/material";
 import React, { useState } from "react";
 
 function BlueprintsWidget({
@@ -82,8 +82,8 @@ function BlueprintsWidget({
                 <BlueprintSkeleton key={i} />
               ))}
             </>
-          ) : (
-            Blueprint?.map((item) => (
+          ) : Blueprint?.length > 0 ? (
+            Blueprint.map((item) => (
               <BlueprintCard
                 key={item.id}
                 item={item}
@@ -93,6 +93,10 @@ function BlueprintsWidget({
                 agentId={item.agentId}
               />
             ))
+          ) : (
+            <Stack sx={{ textAlign: "center", my: 4, color: "text.secondary" }}>
+              <Typography variant="body2">No blueprints available</Typography>
+            </Stack>
           )}
         </Box>
       </Box>

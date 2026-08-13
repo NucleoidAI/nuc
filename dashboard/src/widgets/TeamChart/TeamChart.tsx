@@ -170,10 +170,9 @@ function TeamChart() {
         <AgentWizard
           open={dialogOpen}
           onClose={handleCloseDialog}
-          itemProperties={["name", "description"]}
           onSubmit={(newAgent) => {
             if (!selectedTeamId) return;
-            createAgent(newAgent, selectedTeamId);
+            return createAgent(newAgent, selectedTeamId);
           }}
           itemToEdit={null}
         />

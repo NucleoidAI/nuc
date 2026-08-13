@@ -5,8 +5,13 @@
   "author": "NucTeam",
   "scripts": {
     "prepare": "exit 0",
+    "dataset:fetch": "node scripts/dataset-fetch.js",
+    "dataset:push": "node scripts/dataset-push.js",
+    "predev": "bun run dataset:fetch",
     "dev": "bun --watch server.ts",
+    "prebuild": "bun run dataset:fetch",
     "build": "node build.prod.js",
+    "pretest": "bun run dataset:fetch",
     "lint": "eslint . --ext .ts",
     "test": "bun test.ts"
   },

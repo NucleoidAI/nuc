@@ -15,3 +15,9 @@ metadata.json
 asr_output.json
 greycollar_server_setup_v8
 .tunnel-backup
+
+# Dataset JSON lives on Hugging Face, one repo per file; pulled in by api's
+# predev/prebuild hook. The .md notes alongside them stay in git.
+api/src/dataset/policy.json
+api/src/dataset/train/*.json
+api/src/dataset/.hf-manifest.json

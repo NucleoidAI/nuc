@@ -58,7 +58,7 @@ const AgentMCP = ({ agent }: { agent?: { id: string; name: string } }) => {
       if (query) {
         const providerMatches = provider.toLowerCase().includes(query);
         const skillMatches =
-          skill.label?.toLowerCase().includes(query) ||
+          skill.label.toLowerCase().includes(query) ||
           skill.action?.toLowerCase().includes(query) ||
           skill.description?.toLowerCase().includes(query);
 
@@ -70,7 +70,7 @@ const AgentMCP = ({ agent }: { agent?: { id: string; name: string } }) => {
       if (!groups.has(provider)) {
         groups.set(provider, {
           provider,
-          label: skill.label ?? provider,
+          label: skill.label,
           icon: skill.icon,
           skills: [],
         });

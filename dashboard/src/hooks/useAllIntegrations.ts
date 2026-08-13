@@ -13,7 +13,7 @@ export type Integration = {
   id: string;
   action: string;
   provider: string;
-  label?: string;
+  label: string;
   description: string;
   icon: string;
   direction: string;

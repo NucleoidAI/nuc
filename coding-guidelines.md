@@ -169,8 +169,8 @@ for (let i = stack.length - 1; i >= 0; i--) {
 
 **Severity: `error`**
 
-Compare with `===` and `!==`. The single exception is `== null` / `!= null` as a
-deliberate "null or undefined" test, and even that is unavailable in `dashboard/`.
+Compare with `===` and `!==`, the single exception being `== null` as a
+deliberate "null or undefined" test outside `dashboard/`.
 
 `eqeqeq` is set to `["error", "always"]` in `dashboard/.eslintrc.json` and is
 unset everywhere else. Ten loose comparisons exist today and every one of them is
@@ -469,8 +469,8 @@ const { isJson, parsedResult } = parseJsonResult(step.result);
 
 **Severity: `warn`**
 
-Spell names out. Established domain acronyms — `LLM`, `MCP`, `API`, `AI`, `VM`,
-`ASR`, `QA` — are names in their own right and stay; invented shortenings do not.
+Spell names out, keeping only the established domain acronyms — `LLM`, `MCP`,
+`API`, `AI`, `VM`, `ASR`, `QA` — and never inventing new shortenings.
 
 An abbreviation saves the writer a few characters once and costs every later
 reader a lookup. The acronyms above appear in the product vocabulary, the
@@ -831,8 +831,8 @@ function AgentsWidget({ agents, loading, error }) {
 
 **Severity: `warn`**
 
-A function does one thing at one level of abstraction. When it grows past roughly
-a screen, or its name needs an "and", split it.
+Split a function once it does more than one thing, outgrows roughly a screen, or
+needs an "and" in its name.
 
 Length is a symptom rather than the defect, but it tracks the defect closely
 here. The five largest source files in the project are
@@ -940,8 +940,8 @@ the caller readable without opening any of them.
 
 **Severity: `error`**
 
-`any` does not appear in code you write. Reach for the real type, a narrow
-interface, or `unknown` with a check.
+Never write `any` — use the real type, a narrow interface, or `unknown` with a
+check.
 
 `any` disables checking for every expression it touches and spreads through
 assignments silently. There are 115 `any` annotations across the project today,
@@ -1164,7 +1164,7 @@ Correct:
 
 **Severity: `error`**
 
-`@ts-ignore` and `@ts-nocheck` do not appear. Fix the type, narrow the value, or
+Never write `@ts-ignore` or `@ts-nocheck` — fix the type, narrow the value, or
 declare the shape the compiler is missing.
 
 A suppression silences every error on the line, including ones introduced later,
@@ -1220,7 +1220,7 @@ Correct:
 
 **Severity: `warn`**
 
-Do not assert a value away with `!`. Check it, or type it as optional and use
+Never assert a value away with `!` — check it, or type it optional and use
 optional chaining.
 
 `agent!.teamId` tells the compiler to stop asking and does nothing at run time, so
@@ -1284,8 +1284,8 @@ return knowledge.toJSON();
 
 **Severity: `warn`**
 
-One ternary per expression. A second condition becomes an `if`, an early return,
-or a lookup.
+Allow one ternary per expression, turning any second condition into an `if`, an
+early return, or a lookup.
 
 Nested ternaries have no visual structure — the reader has to count `?` and `:`
 to find which branch belongs to which test — and they resist adding a fourth case
@@ -1459,8 +1459,8 @@ returning `undefined` at run time.
 
 **Severity: `warn`**
 
-Transform collections with `map`, `filter`, `find`, `some` and `reduce`. Keep
-`for` loops for genuine iteration with early exit or index arithmetic.
+Transform collections with `map`, `filter`, `find`, `some` and `reduce`, keeping
+`for` loops for iteration that exits early or walks indices.
 
 The method name states the intent — `filter` returns a subset, `map` returns the
 same length, `some` returns a boolean — where a `for` loop with a manual
@@ -1532,9 +1532,8 @@ A character walk with mutable state and early `continue` — a real loop.
 
 **Severity: `warn`**
 
-Sequence asynchronous work with `async`/`await`. `.then` is for the narrow cases
-where a promise is deliberately not awaited or is being adapted to a callback
-API.
+Sequence asynchronous work with `async`/`await`, reserving `.then` for promises
+deliberately not awaited or adapted to a callback API.
 
 Mixing the two styles in one function makes the order of operations hard to read
 and makes errors land in two different places — a `try/catch` does not catch a
@@ -1603,7 +1602,7 @@ LLMLog.create(row).catch((err) =>
 
 **Severity: `error`**
 
-Every promise is awaited, returned, or given its own `.catch`. None is left
+Every promise is awaited, returned, or given its own `.catch`, and none is left
 dangling.
 
 An unawaited promise means the caller continues before the work finishes and its
@@ -1669,8 +1668,8 @@ function logLLM(params): void {
 
 **Severity: `warn`**
 
-Awaits that do not depend on each other run together through `Promise.all`. Await
-in sequence only where a later call needs an earlier result.
+Run independent awaits together through `Promise.all`, sequencing them only
+where a later call needs an earlier result.
 
 Sequential awaits over independent calls cost the sum of their latencies instead
 of the maximum, and this code is latency-bound — every action step is a network
@@ -1730,8 +1729,8 @@ Sequential because the second lookup needs the first result.
 
 **Severity: `error`**
 
-A `catch` block does something — handles, logs, converts, or returns a documented
-fallback. It is never empty.
+A `catch` block is never empty — it handles, logs, converts, or returns a
+documented fallback.
 
 An empty `catch` deletes the only evidence that something failed. There is one in
 the project, at `mcp/servers/grey/tools/knowledge_lookup.ts:38`, where a failed
@@ -2109,9 +2108,9 @@ usable as a type.
 
 **Severity: `warn`**
 
-Code carries the *what*. A comment exists only where the *why* cannot be read
-from the code — a workaround, a non-obvious constraint, a decision that looks
-wrong until explained.
+Let the code carry the *what*, and comment only where the *why* cannot be read
+from it — a workaround, a non-obvious constraint, a decision that looks wrong
+until explained.
 
 A comment restating the line above it is a second thing to keep in sync, and it
 goes stale the first time the code changes without it. The model to copy is the
@@ -2190,7 +2189,8 @@ explains itself.
 
 **Severity: `error`**
 
-Dead code is deleted, not commented out. Git has the history.
+Delete dead code rather than commenting it out, because git already has the
+history.
 
 Commented-out code cannot be linted, type-checked, tested or refactored, and it
 gives no indication of whether it is a work in progress, a rollback, or something
@@ -2253,8 +2253,8 @@ async function chat({ agentId, sessionId, content }) {
 
 **Severity: `error`**
 
-Prettier decides line breaks, quotes, semicolons and indentation. Do not hand-format
-around it, and do not add per-file style overrides.
+Let Prettier decide line breaks, quotes, semicolons and indentation, without
+hand-formatting around it or adding per-file style overrides.
 
 `api/.eslintrc.json` and `dashboard/.eslintrc.json` both extend
 `plugin:prettier/recommended`, which reports formatting as an ESLint error, so
@@ -2477,8 +2477,8 @@ failures are the existing debt, not a reason to leave the gate off.
 
 **Severity: `error`**
 
-A function does not mutate the objects or arrays it was given. Build and return a
-new value instead.
+Never mutate the objects or arrays a function was given — build and return a new
+value instead.
 
 The caller has no way to know its argument was changed, so the effect surfaces
 somewhere unrelated — a list that reorders itself when a helper is called for its
@@ -2560,8 +2560,8 @@ Mutating a value the function created itself is fine — the local `stack` and
 
 **Severity: `warn`**
 
-`sort` and `reverse` mutate. Spread the array first whenever the input is not
-yours.
+Spread an array before `sort` or `reverse` whenever the input is not yours,
+because both mutate in place.
 
 `Array.prototype.sort` returning the array reads like `map` and behaves like
 `push`, which is why the mistake is easy to make and hard to spot in review. Both
@@ -2796,8 +2796,8 @@ Measuring from a timestamp you captured yourself removes the question entirely.
 
 **Severity: `warn`**
 
-Convert to a number explicitly, and check the result before using it. `parseInt`
-always carries a radix.
+Convert to a number explicitly, always with a radix on `parseInt`, and check the
+result before using it.
 
 `Number("")` is `0`, `Number(null)` is `0`, `parseFloat("abc")` is `NaN`, and
 `+value` hides which of those you meant. A `NaN` score stored on a `StepScore`
@@ -2953,8 +2953,8 @@ name — `key.split("_")` in `utils/formatters.ts` is clearer as it stands.
 
 **Severity: `error`**
 
-`process.env` is read in `config.ts` and in the small number of modules that own
-a specific integration. Feature code reads the resulting config object.
+Read `process.env` only in `config.ts` and the few modules owning a specific
+integration, so feature code reads the resulting config object instead.
 
 `process.env.*` is referenced at 113 sites across 41 files today, covering
 `AWS_*`, `GDRIVE_*`, `ATLASSIAN_*`, `GOOGLE_*`, `ASR_*` and more. Nothing
@@ -3045,9 +3045,9 @@ and it validates the value against the known provider set on the spot.
 
 **Severity: `error`**
 
-Importing a module defines things. It does not read files, open connections, call
-`dotenv.config()`, create directories or start servers — those happen in an
-exported `init` or in the entry point.
+Importing a module only defines things — reading files, opening connections,
+calling `dotenv.config()`, creating directories and starting servers belong in
+an exported `init` or the entry point.
 
 A side effect at import time runs on every path that transitively imports the
 module, including a test that only wanted a type, and it runs in an order set by
@@ -3213,8 +3213,8 @@ reads as a sentence.
 
 **Severity: `error`**
 
-A test contains no `if`, no loop and no computed expectation. Assert against
-literal values.
+A test contains no `if`, no loop and no computed expectation, asserting against
+literal values instead.
 
 A conditional in a test means one of its branches is not running, and nothing
 reports which. A computed expectation reimplements the code under test, so both
@@ -3284,8 +3284,8 @@ One case per input, each with a literal expectation.
 
 **Severity: `warn`**
 
-Each `it` exercises one behaviour. Related assertions about that one behaviour
-belong together; unrelated ones get their own case.
+Each `it` exercises one behaviour, keeping that behaviour's assertions together
+and giving unrelated ones their own case.
 
 A case asserting four behaviours reports the first failure and hides the other
 three, so a single regression looks like a single failure and the rest are found
@@ -3371,8 +3371,8 @@ survives.
 
 **Severity: `error`**
 
-A value computable from props or existing state is computed during render. It
-does not get its own `useState` kept in sync by a `useEffect`.
+Compute a value derivable from props or existing state during render, never in a
+`useState` kept in sync by a `useEffect`.
 
 Mirroring a prop into state creates a second copy that is right only after an
 extra render, so the first paint shows the initial value and the screen flickers.
@@ -3477,7 +3477,7 @@ them.
 
 **Severity: `warn`**
 
-One fact is held in one place. Do not keep a value, a copy of it, and a flag
+Hold one fact in one place, never keeping a value, a copy of it, and a flag
 describing their relationship.
 
 Every additional `useState` is another thing to keep in sync on every path, and
@@ -3621,7 +3621,7 @@ the dependency array is complete.
 
 **Severity: `warn`**
 
-Choose the level by what a reader should do about the line. `error` needs
+Choose the level by what a reader should do about the line: `error` needs
 attention, `warn` is degraded but handled, `info` marks a lifecycle event, and
 `debug` does not ship.
 
@@ -3700,8 +3700,8 @@ reads.
 
 **Severity: `warn`**
 
-A log call passes an object of named fields with a constant `message`. Values are
-fields, not fragments of a sentence.
+A log call passes an object of named fields under a constant `message`, so
+values are fields rather than fragments of a sentence.
 
 A log line is a record, and a record is only queryable if its parts are named.
 `Agent 72ef5b08 created in team cb16e069` cannot be filtered by team, counted by
@@ -3775,7 +3775,7 @@ fields — see
 
 **Severity: `error`**
 
-Two modules do not import each other, directly or through a chain. Break the
+Two modules never import each other, directly or through a chain — break the
 cycle with a third module, an interface, or a registration step.
 
 A cycle resolves to a partially initialised module at run time, so one of the two
@@ -3850,8 +3850,8 @@ The dependency runs one way — `agent.ts` calls into `stepScore.ts`, and
 
 **Severity: `warn`**
 
-Relative imports stay shallow. Past two levels up, import through the folder's
-barrel rather than reaching further into the tree.
+Keep relative imports shallow, reaching through a folder's barrel rather than
+climbing more than two levels up the tree.
 
 `../../../` appears 36 times in the dashboard and is the point at which a path
 stops telling you where the target is — you have to count directories to find

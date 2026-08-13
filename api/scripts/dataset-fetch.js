@@ -33,8 +33,15 @@ function bail(message) {
 
 async function fetchOne(entry, manifest) {
   const cached = manifest.entries[entry.name];
-  const haveLocal = fs.existsSync(entry.absPath);
-  const skip = (detail) => ({ entry, status: "skipped", haveLocal, detail });
+  const haveLocal = fs.existsSync(entry.absPath) && !(cached && cached.placeholder);
+
+  const skip = (detail) => {
+    if (haveLocal || STRICT) {
+      return { entry, status: "skipped", haveLocal, detail };
+    }
+    writeJson(entry.absPath, []);
+    return { entry, status: "placeholder", haveLocal: false, detail };
+  };
 
   let info;
   try {
@@ -90,7 +97,16 @@ async function main() {
   const results = await mapLimit(list, CONCURRENCY, (e) => fetchOne(e, manifest));
 
   for (const r of results) {
-    if (r.status === "skipped" || r.status === "cached") continue;
+    if (r.status === "cached") continue;
+    if (r.status === "placeholder") {
+      manifest.entries[r.entry.name] = {
+        repo: r.entry.repo,
+        placeholder: true,
+        writtenAt: new Date().toISOString(),
+      };
+      continue;
+    }
+    if (r.status === "skipped") continue;
     manifest.entries[r.entry.name] = {
       repo: r.entry.repo,
       file: r.file,
@@ -107,37 +123,52 @@ async function main() {
   writeManifest(manifest);
 
   const count = (status) => results.filter((r) => r.status === status).length;
-  const skipped = results.filter((r) => r.status === "skipped");
+  const unresolved = results.filter(
+    (r) => r.status === "skipped" || r.status === "placeholder"
+  );
   console.log(
     `[dataset] ${list.length} datasets, ` +
       `${count("merged") + count("created")} updated, ` +
       `${count("cached")} up to date` +
-      (skipped.length ? `, ${skipped.length} skipped` : "")
+      (unresolved.length ? `, ${unresolved.length} skipped` : "")
   );
 
-  if (skipped.length) {
-    const hint =
-      !token() && skipped.length === list.length
-        ? " (HF_TOKEN is not set, so private repos are unreachable)"
-        : "";
+  if (!unresolved.length) return;
+
+  const hint =
+    !token() && unresolved.length === list.length
+      ? " (HF_TOKEN is not set, so private repos are unreachable)"
+      : "";
+  const log = STRICT ? console.error : console.log;
+  log(`[dataset] skipped: ${unresolved[0].entry.name}: ${unresolved[0].detail}${hint}`);
+
+  const placeholders = results.filter((r) => r.status === "placeholder");
+  if (placeholders.length) {
     console.log(
-      `[dataset] skipped: ${skipped[0].entry.name}: ${skipped[0].detail}${hint}`
-    );
-    const missing = skipped.filter((r) => !r.haveLocal).map((r) => r.entry.name);
-    if (missing.length) {
-      const log = STRICT ? console.error : console.log;
-      log(
-        `[dataset] no local copy for ${missing.length} dataset(s): ${missing
+      `[dataset] wrote ${placeholders.length} empty placeholder(s) so the imports resolve: ` +
+        placeholders
           .slice(0, 5)
-          .join(", ")}${missing.length > 5 ? ", …" : ""}`
-      );
-      if (STRICT) {
-        console.error(
-          "[dataset] --strict: refusing to continue, the build would produce a broken artifact"
-        );
-        process.exit(1);
-      }
-    }
+          .map((r) => r.entry.name)
+          .join(", ") +
+        (placeholders.length > 5 ? ", …" : "")
+    );
+    console.log(
+      "[dataset] the agent will run WITHOUT few-shot examples until these are fetched for real"
+    );
+  }
+
+  const missing = unresolved.filter((r) => !r.haveLocal);
+  if (STRICT && missing.length) {
+    console.error(
+      `[dataset] no usable copy for ${missing.length} dataset(s): ${missing
+        .slice(0, 5)
+        .map((r) => r.entry.name)
+        .join(", ")}${missing.length > 5 ? ", …" : ""}`
+    );
+    console.error(
+      "[dataset] --strict: refusing to continue, the build would produce a broken artifact"
+    );
+    process.exit(1);
   }
 }
 

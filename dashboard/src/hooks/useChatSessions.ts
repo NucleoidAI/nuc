@@ -2,7 +2,7 @@ import http from "@canmingir/link/platform/http";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-const SESSIONS_STORAGE_KEY = "sidebar-chat-sessions";
+const SESSIONS_STORAGE_KEY = "greycollar.sidebar-chat-sessions";
 const MAX_SESSIONS = 5;
 
 export type StoredSession = {

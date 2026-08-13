@@ -83,10 +83,10 @@ const ChatInputCommandEditor = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentInput]);
 
-  const selectedAgent = location.state?.name || sessionStorage.getItem("name");
+  const selectedAgent = location.state?.name || sessionStorage.getItem("greycollar.name");
 
   useEffect(() => {
-    sessionStorage.removeItem("name");
+    sessionStorage.removeItem("greycollar.name");
   }, [selectedAgent]);
 
   const insertCommand = (selectedCommand) => {

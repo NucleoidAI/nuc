@@ -30,8 +30,8 @@ function StandardNode({ node, sx }) {
   const handleDialogClose = (confirmed) => {
     setOpen(false);
     if (confirmed) {
-      sessionStorage.setItem("fromLink", `true`);
-      sessionStorage.setItem("name", node.name);
+      sessionStorage.setItem("greycollar.fromlink", `true`);
+      sessionStorage.setItem("greycollar.name", node.name);
     }
   };
 
@@ -40,8 +40,8 @@ function StandardNode({ node, sx }) {
       event.preventDefault();
       handleDialogOpen();
     } else {
-      sessionStorage.setItem("fromLink", `true`);
-      sessionStorage.setItem("name", node.name);
+      sessionStorage.setItem("greycollar.fromlink", `true`);
+      sessionStorage.setItem("greycollar.name", node.name);
     }
   };
 

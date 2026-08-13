@@ -49,7 +49,7 @@ const AgentMCP = ({ agent }: { agent?: { id: string; name: string } }) => {
 
     const groups = new Map<
       string,
-      { provider: string; icon?: string; skills: typeof mcps }
+      { provider: string; label: string; icon?: string; skills: typeof mcps }
     >();
 
     mcps?.forEach((skill) => {
@@ -58,6 +58,7 @@ const AgentMCP = ({ agent }: { agent?: { id: string; name: string } }) => {
       if (query) {
         const providerMatches = provider.toLowerCase().includes(query);
         const skillMatches =
+          skill.label?.toLowerCase().includes(query) ||
           skill.action?.toLowerCase().includes(query) ||
           skill.description?.toLowerCase().includes(query);
 
@@ -67,7 +68,12 @@ const AgentMCP = ({ agent }: { agent?: { id: string; name: string } }) => {
       }
 
       if (!groups.has(provider)) {
-        groups.set(provider, { provider, icon: skill.icon, skills: [] });
+        groups.set(provider, {
+          provider,
+          label: skill.label ?? provider,
+          icon: skill.icon,
+          skills: [],
+        });
       }
 
       groups.get(provider).skills.push(skill);
@@ -252,7 +258,7 @@ const AgentMCP = ({ agent }: { agent?: { id: string; name: string } }) => {
                       <Icon icon={group.icon} width="24" height="24" />
                     )}
                     <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                      {group.provider}
+                      {group.label}
                     </Typography>
                     <Chip
                       label={group.skills.length}
@@ -273,7 +279,7 @@ const AgentMCP = ({ agent }: { agent?: { id: string; name: string } }) => {
               {visibleSkills.map((skill) => (
                 <MCPs
                   key={skill.id}
-                  title={skill.provider}
+                  title={skill.label ?? skill.provider}
                   description={skill.description}
                   icon={skill.icon}
                   onSkillClick={handleSkillClick}

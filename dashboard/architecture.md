@@ -10,7 +10,7 @@ Files under `src/components/` must not import from `src/hooks/`, must not import
 `@canmingir/link/platform/http`, and must not fetch — they receive data and
 callbacks through props.
 
-Rationale: components are the only reusable layer. A component that fetches its
+Components are the only reusable layer. A component that fetches its
 own data can be mounted exactly once per screen, cannot be driven from Storybook,
 and cannot be tested without a network stub.
 
@@ -144,7 +144,7 @@ reacting to a global UI signal rather than fetching.
 A layer may only import downward: `components/` must not import from `widgets/`,
 and nothing outside `pages/` may import from `pages/`.
 
-Rationale: an upward import makes the two layers one layer. `components/` stops
+An upward import makes the two layers one layer. `components/` stops
 being safe to reuse, and the dependency graph acquires cycles that break tree
 shaking and Storybook isolation.
 
@@ -244,7 +244,7 @@ Widgets are the only layer that combines data hooks, local state machines,
 dialogs and user intent, so a widget that only forwards props to one component
 without adding orchestration should be deleted and the component used directly.
 
-Rationale: this is the layer where a feature is assembled. Concentrating the
+This is the layer where a feature is assembled. Concentrating the
 assembly makes behaviour changes single-file changes.
 
 Incorrect:
@@ -382,7 +382,7 @@ function TasksWidget({ agentId }) {
 Layouts compose regions, tabs and slots, and must not call data hooks or
 mutations.
 
-Rationale: layouts are shared across routes. A mutation inside a layout fires on
+Layouts are shared across routes. A mutation inside a layout fires on
 every route that uses it.
 
 Incorrect:
@@ -506,7 +506,7 @@ structural and belong here. Fetching `agent` does not — the page passes it in.
 A page resolves route params and storage keys, renders `<Page name>`, picks a
 layout and mounts widgets, while feature UI belongs in widgets and components.
 
-Rationale: pages are the routing contract in `routes.tsx`. Keeping them thin
+Pages are the routing contract in `routes.tsx`. Keeping them thin
 means a route can be re-pointed without moving feature code.
 
 Incorrect:
@@ -637,7 +637,7 @@ own the feature's dialogs or lists.
 `@canmingir/link/platform/http` may only be imported from `src/hooks/**`, and
 every other layer reaches the network through a hook.
 
-Rationale: hooks are where cache invalidation lives. An `http` call outside a
+Hooks are where cache invalidation lives. An `http` call outside a
 hook never participates in the event-dependency refetch chain, so its data goes
 stale the moment anything else mutates the same resource.
 
@@ -760,7 +760,7 @@ function SupervisingWidget({ agentId }) {
 attaches the identity-provider interceptor; everything else uses `platform/http`
 inside a hook.
 
-Rationale: a second axios instance does not carry the `Authorization`
+A second axios instance does not carry the `Authorization`
 interceptor, so requests silently go out unauthenticated.
 
 Incorrect:
@@ -851,7 +851,7 @@ module that attaches the identity-provider interceptor in the first place.
 Reads go through `useApi().Api(apiCall, dependencies)` rather than a hand-rolled
 `useState` + `useEffect` + `try/catch` for a GET.
 
-Rationale: `Api` is the shared contract for `data`, `loading`, `error` and
+`Api` is the shared contract for `data`, `loading`, `error` and
 `fetch`, and it normalises the error to
 `err.response?.data?.message || err.message`. A hand-rolled fetch produces a
 different error shape and a different loading lifecycle.
@@ -970,7 +970,7 @@ and `useEffect`, so they are hooks and must be called unconditionally at the top
 level of a render — never inside a condition, a loop, a callback, or an event
 handler.
 
-Rationale: `useApi.Api` runs three `useState` calls and a `useEffect` on every
+`useApi.Api` runs three `useState` calls and a `useEffect` on every
 invocation. Calling `getTeamAgents()` behind an `if` changes the hook order
 between renders and React throws.
 
@@ -1084,7 +1084,7 @@ A read getter returns `{ <domainName>, loading, error, fetch }` with `data`
 renamed to the domain noun, while the hook file exports its domain types and
 default-exports an object of functions.
 
-Rationale: every widget destructures the same four keys. Renaming `data` at the
+Every widget destructures the same four keys. Renaming `data` at the
 hook boundary is what lets a widget call two getters and disambiguate them.
 
 Incorrect:
@@ -1200,7 +1200,7 @@ Mutations are `async`, wrap the request in `try/catch`, publish on success, and
 return `response?.data` or `null` on failure, so callers can branch on the
 return value.
 
-Rationale: this is the established contract in `useAgents`, `useTeams` and
+This is the established contract in `useAgents`, `useTeams` and
 `useOrganizations`. A mutation that throws instead crashes the widget that called
 it, because no widget wraps mutation calls in `try/catch`.
 
@@ -1313,7 +1313,7 @@ A widget that consumes a getter renders an explicit state for loading, for
 empty, and for `error` — which every getter returns and almost nothing renders
 today.
 
-Rationale: without an error branch a failed request renders as a permanently
+Without an error branch a failed request renders as a permanently
 empty list, which is indistinguishable from "no data" and produces no signal to
 the user or to a test.
 
@@ -1426,7 +1426,7 @@ render the message inline as above rather than dropping the branch.
 In a widget, pass `loading` through `useLoading(loading)` before rendering a
 skeleton, and use the raw `loading` only on a page's first paint.
 
-Rationale: getters refetch whenever a subscribed event fires. Rendering the raw
+Getters refetch whenever a subscribed event fires. Rendering the raw
 `loading` flag replaces already-visible content with a skeleton on every
 publish, so the screen flashes after every create, edit and delete.
 `useLoading` returns `true` only until the first successful load.
@@ -1527,7 +1527,7 @@ past-tense verb last — a plural noun + `_LOADED` such as `AGENTS_LOADED`
 announces a list, a singular noun + verb such as `AGENT_ADDED` announces a
 mutation.
 
-Rationale: Cypress specs wait on these names (`cy.waitEvent("AGENT_ADDED")`), so
+Cypress specs wait on these names (`cy.waitEvent("AGENT_ADDED")`), so
 a name is a public contract shared by the hook, the subscribers, and the test.
 
 Incorrect:
@@ -1586,7 +1586,7 @@ Payloads are objects keyed by the domain noun or its id — never a bare value.
 Every create, update and delete publishes its domain event, guarded on a truthy
 response, before returning.
 
-Rationale: this is the only refetch trigger. A mutation that does not publish
+This is the only refetch trigger. A mutation that does not publish
 leaves every list on screen showing stale data until a full reload.
 
 Incorrect:
@@ -1685,7 +1685,7 @@ A hook subscribes with `useEvent` at the top of the hook body, collects the
 subscriptions into a local `eventDependencies` array, and spreads that array into
 the `Api` dependency list ahead of `...fetchState`.
 
-Rationale: the dependency array is the wiring between publish and refetch. The
+The dependency array is the wiring between publish and refetch. The
 named `eventDependencies` local is what makes the invalidation set reviewable.
 
 Incorrect:
@@ -1817,7 +1817,7 @@ Events owned by the host platform rather than by this dashboard use the
 two-argument form — `publish("PLATFORM", "PROJECT_BAR_DIALOG", { open: false })`
 — while dashboard-local domain events use the one-argument form.
 
-Rationale: the namespace marks which side of the `@canmingir/link` boundary owns
+The namespace marks which side of the `@canmingir/link` boundary owns
 the name, so renaming a local event stays a local change.
 
 Incorrect:
@@ -1886,7 +1886,7 @@ Dashboard-local domain events use the one-argument form on both sides.
 Declare the component as a named `function` and export it as the default at the
 bottom of the file, never with `React.FC`.
 
-Rationale: the `function` form is the majority — 109 of the 206 `.tsx` files
+The `function` form is the majority — 109 of the 206 `.tsx` files
 declare their component that way against 85 using an arrow const, and 174 files
 close with a bare `export default X;`. The named declaration is what appears in
 React DevTools and in error boundaries. `React.FC` appears exactly once and
@@ -1961,7 +1961,7 @@ A component lives in a folder named after it, containing `ComponentName.tsx`, an
 optional `styles.ts`, and an `index.ts` barrel re-exporting the default, which
 importers reach through the folder path.
 
-Rationale: the barrel is what allows `styles.ts` and sub-components to be added
+The barrel is what allows `styles.ts` and sub-components to be added
 later without touching every import site.
 
 Incorrect:
@@ -2028,7 +2028,7 @@ Type props inline in the parameter position, without a separate `Props`
 interface for a single-use component and without `prop-types`
 (`react/prop-types` is disabled).
 
-Rationale: the props list and its types stay adjacent, which is the dominant
+The props list and its types stay adjacent, which is the dominant
 shape across `components/`, `layouts/` and `widgets/`.
 
 Incorrect:
@@ -2121,7 +2121,7 @@ used inline in the parameter position.
 Reusable `sx` objects go in a sibling `styles.ts` that default-exports a single
 plain object keyed by element role, while one-off layout `sx` stays inline.
 
-Rationale: the object form keeps variant lookups (`styles[type]`) possible and
+The object form keeps variant lookups (`styles[type]`) possible and
 keeps the component body readable.
 
 Incorrect:
@@ -2226,7 +2226,7 @@ Colours reference theme tokens — `background.paper`, `text.secondary`,
 `error.main`, `divider` — or come from `useTheme()` via
 `theme.palette.grey[500]` and `alpha(...)`, never from hardcoded hex values.
 
-Rationale: the theme is supplied by `<Platform>` from `@canmingir/link` in
+The theme is supplied by `<Platform>` from `@canmingir/link` in
 `src/index.tsx` and augmented in `src/types/theme.d.ts`, which adds
 `background.neutral`, `customShadows.card` and the `profile-card` Card/Paper
 variants. `config.template.js` shows the knobs a deployment can turn — `mode`,
@@ -2307,7 +2307,7 @@ Per the `memberSyntaxSortOrder` in `.eslintrc.json`, single-member imports come
 first in a case-sensitive alphabetical block, then multi-member imports — also
 sorted, with members inside the braces sorted too — separated by a blank line.
 
-Rationale: enforced by `npm run lint`, which runs with `--max-warnings 0`.
+Enforced by `npm run lint`, which runs with `--max-warnings 0`.
 
 Incorrect:
 
@@ -2432,7 +2432,7 @@ Hosts, socket paths, feature flags and identity-provider settings come from
 `config` (`import config from "../../config"`), never from an inlined URL or a
 `window.location` branch outside `config.js`.
 
-Rationale: `config.js`, `config.live.js` and `config.land.js` are per-deployment
+`config.js`, `config.live.js` and `config.land.js` are per-deployment
 variants of the same shape, and they disagree on exactly these values —
 `config.js` derives `api` and `socket.host` from `window.location.origin`,
 `config.live.js` sets `api: ""` and swaps the GitHub identity provider for
@@ -2513,7 +2513,7 @@ Read and write session-scoped values through `storage` from
 `@nucleoidjs/webstorage`, using the two-argument form
 (`storage.get("link", "accessToken")`) for values owned by the platform.
 
-Rationale: `storage` is the same accessor the platform writes through, and it
+`storage` is the same accessor the platform writes through, and it
 carries the namespace. Raw `localStorage.getItem("projectId")` reads a key the
 platform may namespace differently, and returns a raw string instead of the
 parsed value.
@@ -2584,7 +2584,7 @@ Every element a user clicks, types into, or asserts on carries a `data-cy`
 attribute, kebab-case and scoped by component: `agent-card`,
 `agent-card-menu-edit`, `agent-wizard-name-input`.
 
-Rationale: `cypress/support/commands.ts` selects exclusively through
+`cypress/support/commands.ts` selects exclusively through
 `cy.getBySel`. An interactive element without `data-cy` is untestable.
 
 Incorrect:
@@ -2656,7 +2656,7 @@ Correct:
 Specs select with `cy.getBySel("…")`, never by CSS class, MUI-generated class
 name, tag structure, or visible text.
 
-Rationale: class names and copy change without behaviour changing; `data-cy` is
+Class names and copy change without behaviour changing; `data-cy` is
 the only stable contract between the component and the spec.
 
 Incorrect:
@@ -2707,7 +2707,7 @@ cy.getBySel("agent-card-name").first().should("have.text", agent.name);
 Synchronise on the domain event with `cy.waitEvent("AGENT_ADDED")` rather than on
 a fixed `cy.wait(ms)`.
 
-Rationale: the publish is what triggers the refetch, so the event is the exact
+The publish is what triggers the refetch, so the event is the exact
 moment the UI becomes consistent. A timeout either flakes or wastes time.
 
 Incorrect:
@@ -2777,7 +2777,7 @@ with `FormProvider` and `RHFTextField` from
 `@canmingir/link/platform/components` and validated with `mode: "onChange"`,
 never with hand-rolled field state or validation.
 
-Rationale: `FormProvider`/`RHFTextField` read the form context to wire values,
+`FormProvider`/`RHFTextField` read the form context to wire values,
 errors and helper text. A raw MUI `TextField` inside a `FormProvider` renders but
 never registers, so it validates as empty and submits nothing.
 
@@ -2894,7 +2894,7 @@ The submit control is a `LinkLoadingButton` with `type="submit"`,
 `isValid` comes from `formState` and `isSubmitting` is local state set around the
 await.
 
-Rationale: `mode: "onChange"` keeps `isValid` live, so the button is the
+`mode: "onChange"` keeps `isValid` live, so the button is the
 validation feedback. Without the disable, a double click fires the mutation twice
 and publishes the domain event twice.
 
@@ -2973,7 +2973,7 @@ and the second half of `disabled` read.
 Call `reset()` in the `finally` of the submit handler, and again whenever the
 form's shape changes underneath it — a type switch, a step change.
 
-Rationale: dialogs are mounted once and reopened. Without `reset()` the second
+Dialogs are mounted once and reopened. Without `reset()` the second
 open shows the previous submission's values, and a type switch leaves the old
 field registered against the new schema, so `isValid` stays false with no visible
 error.
@@ -3055,7 +3055,7 @@ const handleStepChange = (step: number) => {
 A dialog receives `open` plus intent callbacks — `onClose`, `onConfirm`,
 `onSubmit` — and never the parent's `useState` setter.
 
-Rationale: a setter prop hands the child write access to the parent's state, so
+A setter prop hands the child write access to the parent's state, so
 the parent can no longer run anything on close. `AgentsWidget` needs to clear
 `updatedAgent` when its wizard closes; it can only do that because the wizard
 takes `onClose`. The setter-passing variants in the tree — `DeleteConfirmation`,
@@ -3162,7 +3162,7 @@ for new confirmations rather than adding a third variant.
 
 While a submit is in flight, backdrop and escape closes are ignored.
 
-Rationale: closing mid-submit unmounts the dialog while its `finally` still holds
+Closing mid-submit unmounts the dialog while its `finally` still holds
 a `setIsSubmitting` call, and the user gets no signal about whether the mutation
 landed.
 
@@ -3234,7 +3234,7 @@ A dialog opened from inside another dialog sets
 `zIndex: (theme) => theme.zIndex.modal + 3`, and a `Select` menu inside such a
 dialog sets `MenuProps.sx.zIndex` to `theme.zIndex.modal + 4`.
 
-Rationale: MUI gives every modal the same base `zIndex`, so a nested dialog ties
+MUI gives every modal the same base `zIndex`, so a nested dialog ties
 with its parent and renders behind it depending on mount order. The `+3` / `+4`
 offsets are the established ladder; a menu must clear the dialog that contains
 it or it opens underneath.
@@ -3316,7 +3316,7 @@ Every `setInterval` and `setTimeout` started in an effect is cleared in that
 effect's cleanup, while a timer started outside React clears itself on its own
 exit condition.
 
-Rationale: this codebase polls. `useChat` refreshes messages every 2s and
+This codebase polls. `useChat` refreshes messages every 2s and
 `TasksWidget` polls task steps every 2s. An uncleared interval keeps firing after
 unmount, calling `setState` on a dead component and holding the whole closure —
 including the fetched message list — alive.
@@ -3415,7 +3415,7 @@ An effect that opens a socket returns a cleanup calling `socket.off` for every
 `socket.on` it registered and then `socket.disconnect()`, and code replacing a
 live socket tears the old one down the same way first.
 
-Rationale: `io()` reuses connections. Registering `ai_message` twice appends
+`io()` reuses connections. Registering `ai_message` twice appends
 every AI reply to the conversation twice. Disconnecting without `off` leaves the
 handlers attached to a manager that may reconnect.
 
@@ -3515,7 +3515,7 @@ the dependency array is deliberately not the full closure — a mount-only socke
 or timer setup, or a list assembled from `eventDependencies` and `fetchState` —
 never for a whole file and never to silence a stale-closure bug.
 
-Rationale: `plugin:react-hooks/recommended` is on and `lint` runs with
+`plugin:react-hooks/recommended` is on and `lint` runs with
 `--max-warnings 0`, so the suppression is a deliberate, reviewable act. The
 legitimate cases are narrow and already established — `useApi`, `useSocket`,
 `useSession`, `AgentLayout`.
@@ -3610,7 +3610,7 @@ composes, so the rule cannot see it.
 Because `tsconfig.json` sets `strict: false` and `noImplicitAny: false`, props
 and exported domain shapes must be typed by hand.
 
-Rationale: with `noImplicitAny` off, an untyped prop is `any`, and `any` flows
+With `noImplicitAny` off, an untyped prop is `any`, and `any` flows
 through the whole render silently. The prop annotation is the only contract a
 reviewer or an editor has. `typecheck` runs in CI, so annotations that are
 present are checked — the risk is the ones that are missing.
@@ -3720,7 +3720,7 @@ resource — `Team`, `TeamInput` in `useTeams.ts`, `Knowledge`, `KnowledgeInput`
 
 Import with relative paths, not the `@/*` alias.
 
-Rationale: `tsconfig.json` declares `paths: { "@/*": ["src/*"] }`, but no file in
+`tsconfig.json` declares `paths: { "@/*": ["src/*"] }`, but no file in
 `src` uses it and the Vite config is produced by `@canmingir/link/vite`, which
 this repo extends only to add proxies — it never registers a matching
 `resolve.alias`. An `@/` import would satisfy `typecheck` and then fail to
@@ -3780,7 +3780,7 @@ Tables are built from the platform primitives — `useTable`, `TableHeadCustom`,
 `TableSelectedAction`, `Scrollbar`, `Label` — with the `table` object created in
 the widget and passed to the presentational table component.
 
-Rationale: `useTable` owns selection, ordering and pagination state. Creating it
+`useTable` owns selection, ordering and pagination state. Creating it
 in the widget keeps `layer/no-data-access-in-components` intact while the table
 component stays presentational, and the shared head/selection components keep
 sort and bulk-select behaviour identical across screens.
@@ -3924,7 +3924,7 @@ Format dates through `src/utils/formatTime.ts` and its `formatStr` presets,
 never by calling `toLocaleDateString`, `toLocaleString`, or `dayjs` directly in
 a component.
 
-Rationale: `formatTime` extends dayjs with the `duration` and `relativeTime`
+`formatTime` extends dayjs with the `duration` and `relativeTime`
 plugins once at module load and fixes the presets — `DD MMM YYYY h:mm a` and
 friends. `toLocaleDateString` renders per the visitor's locale, so the same list
 shows `17/04/2022` for one user and `4/17/2022` for another, and no Cypress
@@ -3996,7 +3996,7 @@ Icons render through `<Iconify icon="…" />`, and any icon name that came from
 the server or from user input passes through `cleanIconName` first rather than
 an inlined trimming regex.
 
-Rationale: stored icon names arrive wrapped in stray colons, and
+Stored icon names arrive wrapped in stray colons, and
 `cleanIconName` is the single place that strips them. An inline
 `replace(/^:|:$/g, "")` is a second copy that will not be updated when the
 stored format changes — and it differs from `cleanIconName`, which strips
@@ -4070,7 +4070,7 @@ screen or card they stand in for — `AgentSkeleton`, `KnowledgeBaseSkeleton`,
 `BlueprintFlowSkeleton` — so a new screen adds its own rather than reusing a
 mismatched one or dropping in a bare `<Skeleton />`.
 
-Rationale: the placeholder should occupy the same space as the content it
+The placeholder should occupy the same space as the content it
 replaces, otherwise the page reflows on load. Naming them per screen is what
 makes the mismatch visible in review.
 
@@ -4162,7 +4162,7 @@ A single inline skeleton is acceptable for one region inside a layout, as
 `src/utils/`, `src/lib/` and `src/constants/` contain pure functions and static
 data, and must not import React, call hooks, render JSX, or reach the network.
 
-Rationale: they are imported by every layer including `components/`. A hook call
+They are imported by every layer including `components/`. A hook call
 inside a util would silently impose the Rules of Hooks on every call site. The
 directory is currently clean of React — keep it that way.
 
@@ -4246,7 +4246,7 @@ Static data with no React, no hooks and no network.
 while `constants/` and single-object modules default-export the object and
 `lib/` exports named static data.
 
-Rationale: named exports in `utils/` are what let `import { cleanIconName }`
+Named exports in `utils/` are what let `import { cleanIconName }`
 sort into the single-member import block, and they keep the `sort-imports` order
 predictable. A default-exported grab-bag of utilities would import as one opaque
 name.
@@ -4346,7 +4346,7 @@ Conversion between the server's blueprint graph and the `@xyflow/react` node and
 edge shapes lives in `src/components/BlueprintFlow/flowAdapter.ts` with layout
 in `src/utils/flowLayout.ts`, and nodes and widgets consume the converted shape.
 
-Rationale: the server graph nests targets under `item.true` / `item.false` for
+The server graph nests targets under `item.true` / `item.false` for
 `CONDITION` nodes and carries display data under `item.properties`. That
 translation is fiddly and edge ids are generated by a counter — a second copy
 would produce colliding ids and diverge on the next schema change.
@@ -4476,7 +4476,7 @@ A blueprint is validated before it is persisted by
 carrying enough to point at the offending edge for the widget to render rather
 than blocking silently.
 
-Rationale: the error shape — `nodeId`, `nodeLabel`, `nextNodeId`,
+The error shape — `nodeId`, `nodeLabel`, `nextNodeId`,
 `nextNodeLabel`, `missingProperties`, `message` — is what lets
 `BlueprintFlowWidget` highlight both ends of a broken connection. Returning a
 bare boolean loses the ability to point at anything.
@@ -4577,7 +4577,7 @@ Text authored by a model or returned by the API renders through
 `components/MarkdownRenderer`, not through a raw `ReactMarkdown` with default
 element mapping and not as a plain string when it may contain markdown.
 
-Rationale: `MarkdownRenderer` maps every markdown element onto MUI —
+`MarkdownRenderer` maps every markdown element onto MUI —
 headings to `Typography` variants, lists to `Box component="ul"` with
 themed spacing, and it reads `useTheme()` for the rest. Default `ReactMarkdown`
 emits bare `<h1>`/`<p>`/`<ul>`, which inherit none of the theme and break the
@@ -4656,7 +4656,7 @@ than adding a second renderer.
 bundled `@iconify/json` icon sets, and must never receive API data, model
 output, or anything derived from user input.
 
-Rationale: icon bodies are static JSON compiled into the bundle at build time —
+Icon bodies are static JSON compiled into the bundle at build time —
 there is no injection path. Everything else in this app is attacker-influenced:
 agent descriptions, knowledge text and AI replies all round-trip through the API.
 
@@ -4736,7 +4736,7 @@ Style MUI components with `sx`, reserving the `style` prop for non-MUI elements
 that do not accept `sx` — raw `svg`, third-party canvas nodes — and for values
 that must bypass the emotion cache.
 
-Rationale: `sx` resolves theme tokens (`background.paper`, `error.main`),
+`sx` resolves theme tokens (`background.paper`, `error.main`),
 responsive breakpoint objects and `&:hover` selectors; `style` resolves none of
 them, so anything written there is hardcoded by construction. The codebase is
 already 1013 `sx` usages against 60 `style`.
@@ -4830,7 +4830,7 @@ A raw `svg` does not accept `sx`, which is the case `style` is reserved for.
 A colour, gradient or image chosen per entity is derived from that entity's id,
 not from `Math.random()` and not from array position.
 
-Rationale: the value has to survive a re-render, a refetch and a reload, and it
+The value has to survive a re-render, a refetch and a reload, and it
 has to agree between a card and the detail page for the same agent. Index-based
 selection reshuffles the moment the list is sorted or filtered.
 
@@ -4920,7 +4920,7 @@ Every package imported from `src` appears in this project's `package.json`,
 never relying on a transitive dependency of `@canmingir/link` resolving at the
 top of `node_modules`.
 
-Rationale: `react-apexcharts` is imported by four files and is declared nowhere
+`react-apexcharts` is imported by four files and is declared nowhere
 in `dashboard/package.json`. It resolves today only because the platform package
 happens to depend on it and the installer hoists it. A platform bump that drops
 or nests it breaks `bun run build` with a module-not-found in code nobody
@@ -4987,7 +4987,7 @@ Chart options are built with `useChart` from
 `@canmingir/link/platform/components`, passing only the chart-specific overrides
 rather than a full hand-assembled ApexCharts options object.
 
-Rationale: `useChart` supplies the house defaults — palette, fonts, grid,
+`useChart` supplies the house defaults — palette, fonts, grid,
 legend, tooltip theme — merged with the overrides. A hand-built options object
 renders with ApexCharts defaults and visibly disagrees with every other chart on
 the page.
@@ -5067,7 +5067,7 @@ array, matching `UsageChart`.
 `postMessage` names an explicit target origin — never `"*"` — and the listener
 checks `event.origin` before trusting the payload.
 
-Rationale: the OAuth popup carries an authorization `code`. Posting it with `"*"`
+The OAuth popup carries an authorization `code`. Posting it with `"*"`
 hands it to whatever document happens to own the opener, which is the whole
 attack against popup-based OAuth.
 
@@ -5153,7 +5153,7 @@ Tokens are read with the two-argument `storage` form under the `link` namespace
 — `storage.get("link", "accessToken")` — never from a bare key, and never held
 in component state or a query string.
 
-Rationale: the platform owns the `link` namespace and writes the tokens there
+The platform owns the `link` namespace and writes the tokens there
 after login. A bare `storage.get("accessToken")` reads a different slot and
 silently yields `undefined`, which surfaces as an unauthenticated socket rather
 than a visible error.
@@ -5217,7 +5217,7 @@ Slash commands for the chat input are declared as data in
 `action`, and a `next` chain describing the prompts — so adding a command means
 adding an entry rather than branching in the editor.
 
-Rationale: `CommandList`, `CommandComponent` and the Slate editor all walk the
+`CommandList`, `CommandComponent` and the Slate editor all walk the
 same declarative tree to render suggestions, collect inputs and dispatch. A
 command implemented imperatively in the editor gets no suggestion entry and no
 input collection.
@@ -5346,7 +5346,7 @@ today. New commands should delegate to a hook.
 When a domain noun is renamed, the fixture directories, the fixture paths in
 specs, and the `data-cy` names move in the same change.
 
-Rationale: the specs are not run by CI. `test.yml` runs lint and typecheck only,
+The specs are not run by CI. `test.yml` runs lint and typecheck only,
 and `npm test` reaches Cypress only through the `pre-push` hook — which
 `prepare.cjs` writes but no `prepare` script installs. A broken fixture path
 therefore fails nothing until someone runs the suite by hand.
@@ -5422,7 +5422,7 @@ A custom command is declared on `Cypress.Chainable` inside the
 `declare namespace Cypress` block at the top of `cypress/support/commands.ts`,
 with real parameter types, and then registered with `Cypress.Commands.add`.
 
-Rationale: `tsconfig.json` sets `types: ["cypress"]`, so the declaration is what
+`tsconfig.json` sets `types: ["cypress"]`, so the declaration is what
 gives specs autocomplete and argument checking under `typecheck` — the one gate
 that does run in CI for this directory.
 
@@ -5513,7 +5513,7 @@ Route stubs are grouped into named setup commands — `setAgentIntercept`,
 `chatPageIntercept`, `platformSetup` — called from `beforeEach` or the top of a
 test, not scattered through assertions.
 
-Rationale: a screen needs its whole dependency set stubbed before it mounts,
+A screen needs its whole dependency set stubbed before it mounts,
 because the widgets fetch on mount and refetch on every published event. Stubbing
 one route inline leaves the rest hitting a live API, and the failure surfaces as
 an unrelated empty list.
@@ -5607,7 +5607,7 @@ verb is the HTTP method the fixture answers (`.get.json`, `.post.json`,
 `.put.json`, `.patch.json`, `.delete.json`) and a fixture shared across
 scenarios sits at the feature root without a verb.
 
-Rationale: a single test walks several states of the same resource — the list
+A single test walks several states of the same resource — the list
 before the create, the POST response, the list after. Encoding scenario and verb
 in the path is what keeps them distinguishable.
 
@@ -5674,7 +5674,7 @@ A render throw must be contained — there is no error boundary anywhere in this
 app today, so any exception during render unmounts the entire tree and leaves a
 blank page with the error only in the console.
 
-Rationale: this is not hypothetical. `useApi` initialises `data` to `null`, and
+This is not hypothetical. `useApi` initialises `data` to `null`, and
 on a failed request it sets `error`, sets `loading` false, and leaves `data` at
 `null`. `useLoading` returns `true` only while `hasLoadedOnce` is still false
 *and* `loading` is true — so on the render immediately after a first fetch
@@ -5803,7 +5803,7 @@ Cross-component state is never held in a mutable module-scope object reached
 through an exported setter: signalling goes through `publish` / `useEvent`, and
 parent-to-child goes through props.
 
-Rationale: a module singleton is initialised once per module instance, not per
+A module singleton is initialised once per module instance, not per
 mount. Two `PopChat` instances overwrite each other's callback, the value
 survives navigation with no way to reset it, nothing re-renders when it changes,
 and it is invisible to the event bus that the rest of the app is tested through
@@ -5898,7 +5898,7 @@ Every routed page renders `<Page name="…">`, which sets the document title
 through `react-helmet-async` as `{config.name} - {name}` and renders breadcrumbs
 when `links` is supplied.
 
-Rationale: the title is the only per-route signal in the browser tab and in
+The title is the only per-route signal in the browser tab and in
 history. Skipping `<Page>` leaves the previous route's title in place, so back
 and forward navigation is unreadable.
 
@@ -5997,7 +5997,7 @@ View state that should survive a reload or be shareable by URL — the active ta
 a selected filter — lives in the query string, written with
 `navigate(..., { replace: true })`, while transient state stays in `useState`.
 
-Rationale: `replace: true` keeps tab switches out of the history stack, so the
+`replace: true` keeps tab switches out of the history stack, so the
 browser back button leaves the page rather than walking back through tabs. The
 component still needs local state, because the query string is the source of
 truth only on entry.
@@ -6085,7 +6085,7 @@ because it is user-supplied input.
 A package declared in `package.json` is imported by something, and entries that
 nothing uses are removed.
 
-Rationale: the companion to
+The companion to
 [`deps/declare-what-you-import`](#depsdeclare-what-you-import). Unused entries
 still install, still pull transitive trees, still appear in audit reports, and
 still get upgraded by dependency bots — for code that does not exist.
@@ -6156,7 +6156,7 @@ Tooling with no `src` import earns its place through a script that runs it.
 A configured tool is either wired up and working or removed, with no config
 files left behind for a runner that never executes.
 
-Rationale: dead config reads as coverage that does not exist. Three pieces of
+Dead config reads as coverage that does not exist. Three pieces of
 this repo currently claim more than they deliver:
 
 - `jest.config.ts` and `jest.setup.ts` configure a jsdom test runner, but no
@@ -6251,7 +6251,7 @@ with the unused `paths` entry removed.
 Import each module once per file, merging the members into a single declaration
 rather than splitting them across several.
 
-Rationale: `sort-imports` sorts declarations by their first member, so splitting
+`sort-imports` sorts declarations by their first member, so splitting
 one module across declarations scatters them through the import block and hides
 how much of a module a file depends on. A merged multi-member import sorts once
 and reads as one dependency. ESLint does not catch this — `no-duplicate-imports`
@@ -6334,7 +6334,7 @@ Demo, seed and placeholder data is a named module-scope constant declared above
 the component and named for what it is, never a fake record inlined among real
 fetched values inside a render.
 
-Rationale: placeholder data that sits in the render body is indistinguishable
+Placeholder data that sits in the render body is indistinguishable
 from state derived from the API, so it survives every review that is looking for
 the real fetch. Hoisting and naming it makes it greppable when the endpoint
 finally lands.
@@ -6445,7 +6445,7 @@ A control whose only content is an icon carries an `aria-label` describing the
 action, covering `IconButton`, `Fab`, and any clickable `Box` wrapping an
 `Iconify`.
 
-Rationale: `Iconify` renders an SVG with no text node, so an icon-only button has
+`Iconify` renders an SVG with no text node, so an icon-only button has
 no accessible name at all — a screen reader announces "button" and nothing else.
 Not one of the 51 `<IconButton>` instances in `src` has an `aria-label` today, so
 every menu, close, delete and expand control in this app is unlabelled.
@@ -6537,7 +6537,7 @@ target, not the glyph: "Delete agent", not "Trash icon".
 A `Dialog` sets `aria-labelledby` pointing at its `DialogTitle` id, and
 `aria-describedby` pointing at its `DialogContentText` id when it has body copy.
 
-Rationale: without them the dialog announces as an unnamed group, so a screen
+Without them the dialog announces as an unnamed group, so a screen
 reader user entering a confirmation prompt is not told what they are confirming.
 `ConfirmationDialog` is the only one of the dialogs in `src` that does this.
 
@@ -6628,7 +6628,7 @@ can stack needs an id derived from its subject.
 Never disable ESLint for a whole file with a bare `/* eslint-disable */` — scope
 every suppression to the specific rule, preferring the single-line form.
 
-Rationale: `lint` runs with `--max-warnings 0` and is one of only two checks CI
+`lint` runs with `--max-warnings 0` and is one of only two checks CI
 performs. A blanket disable removes the file from that gate entirely — not just
 the rule that was inconvenient, but `no-eval`, `eqeqeq`, `react-hooks/rules-of-hooks`
 and everything else. Two files do this today, and one of them,
@@ -6692,7 +6692,7 @@ For a single occurrence prefer the line form, as
 `.storybook/preview.ts` must wrap every story in the same theme provider the app
 mounts, so stories render against the real palette.
 
-Rationale: the app's theme arrives through `<Platform>` from `@canmingir/link`
+The app's theme arrives through `<Platform>` from `@canmingir/link`
 in `src/index.tsx`, and `src/types/theme.d.ts` augments it with
 `background.neutral`, `customShadows.card` and the `profile-card` variants.
 `preview.ts` currently declares only `actions` and `controls` matchers and
@@ -6806,7 +6806,7 @@ rule.
 Relative imports omit the file extension, so never write `./AgentCard.js` for a
 file that is `AgentCard.tsx`.
 
-Rationale: 26 import sites carry an extension, and every one of them names an
+26 import sites carry an extension, and every one of them names an
 extension the file does not have — `.js` and `.jsx` pointing at `.ts` and
 `.tsx`. They resolve only because `moduleResolution: "bundler"` and the Vite
 resolver rewrite them. The extension therefore conveys nothing true, breaks a
@@ -6878,7 +6878,7 @@ import FormItemTypes from "../../constants/FormItemTypes";
 The barrel file in a component folder is named `index.ts`, not after the
 component.
 
-Rationale: the barrel exists so importers can write the folder path. A barrel
+The barrel exists so importers can write the folder path. A barrel
 named `TitleBar.ts` sitting beside `TitleBar.tsx` gives the folder two files that
 differ only by extension, and `from "../TitleBar/TitleBar"` becomes genuinely
 ambiguous to a reader — it resolves to the barrel, not the component.
@@ -6950,7 +6950,7 @@ A component in `src/components/` that renders from props alone should have a
 `ComponentName.stories.ts` beside it, exporting a named case per meaningful
 state.
 
-Rationale: `.storybook/main.ts` globs `../src/**/*.stories.@(js|jsx|ts|tsx)` and
+`.storybook/main.ts` globs `../src/**/*.stories.@(js|jsx|ts|tsx)` and
 finds exactly two files — `Form.stories.ts` and `colors.stories.mdx` — against
 roughly ninety component folders. Stories are the only place the presentational
 layer is exercised in isolation, and they are the payoff for
@@ -7074,7 +7074,7 @@ real filename — see
 A list rendered from fetched data keys on the entity id, with `key={index}`
 permitted only for fixed-length placeholder arrays that hold no state.
 
-Rationale: React uses the key to decide which DOM node and which component state
+React uses the key to decide which DOM node and which component state
 belongs to which item. With an index key, deleting the second of five rows makes
 rows three through five inherit the state of the rows above them. This bites
 hardest exactly where the codebase uses it: `KnowledgeTable` renders paginated,
@@ -7158,7 +7158,7 @@ not. Check what the array holds before copying either.
 A file's default export has the same name as the file: a component in
 `AgentCard.tsx` is `AgentCard`, and a hook in `useAgents.ts` is `useAgents`.
 
-Rationale: the default export name is what every import site chooses, and the
+The default export name is what every import site chooses, and the
 filename is what search and the file tree show. When they disagree, neither
 leads to the other — `import useTeam from "../hooks/useTeams"` in `agents.tsx`
 is correct today and reads like a mistake, and grepping for `SettingsMenuWidget`
@@ -7252,7 +7252,7 @@ whichever name is right for the thing and move the other to match.
 Files exporting a React component are `PascalCase.tsx`, hooks are `useThing.ts`,
 and everything else — utils, config, adapters — is `camelCase.ts`.
 
-Rationale: the case is the fastest signal of what a file contains, and it is
+The case is the fastest signal of what a file contains, and it is
 consistent across all but three files in `src`.
 
 Incorrect:
@@ -7314,7 +7314,7 @@ src/components/ChatInput/chat.config.ts
 Directory, file, component and prop names spell the domain term correctly and use
 the same word the hook and the API use.
 
-Rationale: a misspelled name is unfindable. Someone looking for the statistics
+A misspelled name is unfindable. Someone looking for the statistics
 widget searches `Statistics` — which matches `useStatistics` and
 `GET /statistics` but not the `StaticsWidget` folder that renders it.
 
@@ -7389,7 +7389,7 @@ the wire and the UI noun in the interface, as that hook does.
 A hook module default-exports its hook, reserving named exports for the extra
 helpers the module also provides.
 
-Rationale: 26 of the 27 hooks default-export, so `import useThing from "../hooks/useThing"`
+26 of the 27 hooks default-export, so `import useThing from "../hooks/useThing"`
 is the shape every call site expects. `useSocket` is the lone named export and
 has to be imported differently for no reason.
 
@@ -7470,7 +7470,7 @@ The hook is the default; `readSessions` is a named export precisely because
 `@emotion/css` and its `css` template literal are confined to the Slate editor
 subtree under `src/components/ChatInput/`, and everywhere else styles with `sx`.
 
-Rationale: Slate's leaf and element renderers hand you a `className`, not an MUI
+Slate's leaf and element renderers hand you a `className`, not an MUI
 component, so `sx` has nothing to attach to and a real class name is required.
 That is a genuine constraint, not a preference — but it applies only there. Five
 files use it today and all five are in `ChatInput/`; a sixth anywhere else would
@@ -7582,7 +7582,7 @@ Every event name passed to `useEvent` is published by something — this app or
 `@canmingir/link` — and every name passed to `publish` has at least one
 subscriber or is deliberately documented as broadcast-only.
 
-Rationale: the event bus is untyped and silent. A subscription to a name nobody
+The event bus is untyped and silent. A subscription to a name nobody
 publishes compiles, lints, renders, and simply never fires — which, because
 subscriptions are refetch dependencies, means the screen quietly stops
 refreshing. There is no error to notice.
@@ -7686,7 +7686,7 @@ every `useEvent("NAME"` — and check anything unmatched against
 `useEffect` — never from the body of a hook or component that runs during
 render.
 
-Rationale: the `*_LOADED` broadcasts currently sit in the render path of their
+The `*_LOADED` broadcasts currently sit in the render path of their
 getters:
 
 ```ts
@@ -7805,7 +7805,7 @@ A getter that returns a collection defaults it to `[]`, while a getter that
 returns a single record may return `null` for consumers to reach with optional
 chaining.
 
-Rationale: `useApi` initialises `data` to `null` and leaves it `null` when a
+`useApi` initialises `data` to `null` and leaves it `null` when a
 request fails, so every consumer that calls `.map`, `.filter` or `.length`
 without a guard throws. This is the crash documented in
 [`app/error-boundary-at-route`](#apperror-boundary-at-route), and defaulting at
@@ -7901,7 +7901,7 @@ stay nullable, which is why pages write `team?.name`.
 Events owned by `@canmingir/link` are subscribed to rather than published,
 treated as input from the shell.
 
-Rationale: four names in use here originate in the platform package —
+Four names in use here originate in the platform package —
 `PROJECT_SELECTED` from `layouts/common/ProjectBar`, `ITEM_SELECTED` from
 `project/src/widgets/ProjectContainer`, `CONFIG_INITIALIZED` from `src/config/config.js`,
 and `LOADED` from `src/http/index.js`, which drives the global progress bar.
@@ -7990,7 +7990,7 @@ one-argument form.
 A new destination is registered in both `routes.tsx`, which decides what
 renders, and `config.menu.js`, which decides whether anyone can reach it.
 
-Rationale: they are separate files with no shared source, so a route without a
+They are separate files with no shared source, so a route without a
 menu entry is reachable only by typing the URL, and a menu entry without a route
 navigates to a blank page. Both failures are invisible in review of a single
 file.

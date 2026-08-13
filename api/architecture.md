@@ -10,7 +10,7 @@ A route handler validates input, authorizes against the session tenant, calls a
 function, and maps the result to a status code — persistence, derivation and
 domain rules belong in `functions/`.
 
-Rationale: logic in a route can only ever be reached over HTTP. It cannot be
+Logic in a route can only ever be reached over HTTP. It cannot be
 called from an event subscription, from another function, or from a test that
 does not spin up the app — and this API drives most of its work from event
 subscriptions in `app.ts`, not from requests.
@@ -163,7 +163,7 @@ A function in `functions/` takes a single destructured object of domain
 arguments, returns a domain value, throws on failure, and never receives `req`
 or `res` or references status codes.
 
-Rationale: the same functions serve HTTP routes, the internal `/internal/knowledge`
+The same functions serve HTTP routes, the internal `/internal/knowledge`
 endpoint in `server.ts`, and seven event subscriptions in `app.ts`. A function
 that writes to `res` works in exactly one of those three callers.
 
@@ -277,7 +277,7 @@ Sequelize instance keeps the model out of the caller's hands.
 `lib/` translates between this application and an external SDK, and must not
 contain tenant rules, plan checks, or any decision that depends on domain state.
 
-Rationale: `lib/` is selected at runtime by provider key. A policy placed in one
+`lib/` is selected at runtime by provider key. A policy placed in one
 adapter silently does not apply when a different provider is configured.
 
 Incorrect:
@@ -391,7 +391,7 @@ A field a route accepts is defined in `schemas/` and a field it persists is
 defined in `models/`, so code must not read or write attributes that appear in
 neither.
 
-Rationale: `schemas/` is what the client is promised, `models/` is what the
+`schemas/` is what the client is promised, `models/` is what the
 database holds, and drift between them surfaces as silently dropped fields
 rather than errors — Joi strips unknown keys and Sequelize ignores unmapped
 attributes.
@@ -493,7 +493,7 @@ Every branch that means "stop" must both send and return —
 `return res.status(404).end()` — because `res.status(n)` on its own only sets a
 number on the response object.
 
-Rationale: this is the single most damaging pattern in this codebase. A bare
+This is the single most damaging pattern in this codebase. A bare
 `res.status(401);` sets the code, execution continues into the code that was
 supposed to be forbidden, and a later `res.json(...)` or `res.status(204).end()`
 overwrites the status on the way out. The client sees success and the operation
@@ -618,7 +618,7 @@ which is not enough — `res.json` after it throws
 The tenant check runs, and returns, before any create, update or destroy — never
 authorize and mutate in sequence without a `return` between them.
 
-Rationale: this is [`http/terminate-every-response`](#httpterminate-every-response)
+This is [`http/terminate-every-response`](#httpterminate-every-response)
 at its most expensive, and it is worth stating separately because the failure is
 a cross-tenant authorization bypass rather than a wrong status code. Both
 mutating agent routes have it today.
@@ -752,7 +752,7 @@ Prefer scoping the lookup so the check cannot be skipped at all — see
 
 After a lookup that can miss, return on the miss before touching the result.
 
-Rationale: `if (!agent) { res.status(404); }` followed by `agent.teamId` throws
+`if (!agent) { res.status(404); }` followed by `agent.teamId` throws
 `TypeError` on null, so the client gets a 500 from the error handler instead of
 the 404 the code intended. The `agent && ...` spelling avoids the throw but then
 falls through to the same unguarded mutation.
@@ -869,7 +869,7 @@ res.json(steps);
 
 One method-and-path pair is registered once per router.
 
-Rationale: Express matches the first registration and never reaches the second,
+Express matches the first registration and never reaches the second,
 so the duplicate is dead code that reads as live. `routes/agents.ts` registers
 `GET /:agentId/blueprints` twice; the second version — the one that validates
 `agentId` as a GUID and returns bare status codes — never runs.
@@ -1004,7 +1004,7 @@ Reads and writes are scoped to `req.session.projectId` in the query itself
 wherever the model carries `teamId`, never fetched globally and compared
 afterwards.
 
-Rationale: `app.ts` declares `req.session` with `userId`, `appId`,
+`app.ts` declares `req.session` with `userId`, `appId`,
 `organizationId` and `projectId`, and every agent-owned table carries `teamId`.
 Scoping in the `where` clause makes a cross-tenant hit impossible; comparing
 after the fact makes it possible to forget, which is exactly what happened in
@@ -1111,7 +1111,6 @@ instead. Keep that shape; the dashboard reads `agent.AIEngine.vendor`.
 Every handler either scopes to `req.session.projectId` or is a deliberately
 global resource with a comment saying so — there is no third case.
 
-Rationale:
 [`http/scope-queries-to-session-tenant`](#httpscope-queries-to-session-tenant)
 says how to scope; this rule says every handler must be checked. Four route files
 never mention `req.session` at all, and only three of them have a defensible
@@ -1250,7 +1249,7 @@ reviewer will see it — in the route's own file — not in a reviewer's memory.
 A function that lists rows takes the scope as an argument and applies it in the
 query, because a bare `Model.findAll()` with no `where` is a cross-tenant read.
 
-Rationale: routes are thin by rule, so the tenant filter lives in the function.
+Routes are thin by rule, so the tenant filter lives in the function.
 `communication.list()` takes no arguments at all and returns every row in the
 table, which is what makes the unscoped route above a data exposure rather than
 just an oversight.
@@ -1354,7 +1353,7 @@ scope through the association chain as in the first `Correct` above.
 `200` via `res.json(...)` for reads and updates, `400` for validation, `401` for
 a tenant mismatch, `404` for a missing resource.
 
-Rationale: the dashboard branches on these, and the route specs assert them
+The dashboard branches on these, and the route specs assert them
 directly with `.expect(201)`.
 
 Incorrect:
@@ -1434,7 +1433,7 @@ if (agent.teamId !== teamId) {
 
 Request validation uses Joi, and no second validation library is introduced.
 
-Rationale: `schemas/` currently contains both — Joi in eleven files consumed as
+`schemas/` currently contains both — Joi in eleven files consumed as
 `Joi.attempt(body, schemas.Agent)`, and Zod in `Blueprint.ts` and `Node.ts`
 consumed as `Blueprint.create.parse(body)`. The two throw different error types,
 so `platform.error.handle` cannot map both consistently, and neither library is
@@ -1525,7 +1524,7 @@ settled, settle it — and add the winner to `dependencies`.
 Every route validates its params, query and body before use, with path ids
 validated as GUIDs.
 
-Rationale: an unvalidated id reaches Sequelize directly, and an unvalidated body
+An unvalidated id reaches Sequelize directly, and an unvalidated body
 reaches `Model.create`. Validation is also what strips unknown keys, which is
 what keeps the response shape stable.
 
@@ -1629,7 +1628,7 @@ Each resource has one schema module in `schemas/`, registered in
 `schemas/index.ts`, exporting either a single Joi object or a named map of
 operations.
 
-Rationale: `schemas/index.ts` is the single import surface routes use, so a
+`schemas/index.ts` is the single import surface routes use, so a
 schema that is not registered there gets imported by a deep path and drifts out
 of sight.
 
@@ -1732,7 +1731,7 @@ Functions signal failure by throwing — either a platform error class from
 `@canmingir/link-express/error`, or an `Error` whose message is an
 `UPPER_SNAKE_CASE` code — never by returning `null` or an HTTP shape.
 
-Rationale: the code is the contract. `platform.error.handle`, mounted last in
+The code is the contract. `platform.error.handle`, mounted last in
 `app.ts`, maps thrown errors to responses, and a code survives being logged,
 compared and tested in a way that prose does not.
 
@@ -1842,7 +1841,7 @@ platform handler already knows their status codes.
 
 Diagnostics go through `platform.logger`, and `console.log` must not ship.
 
-Rationale: `platform.logger` is structured and is what the OpenTelemetry
+`platform.logger` is structured and is what the OpenTelemetry
 instrumentation and the Prometheus pushgateway are wired to; `console.log` is
 unstructured, unleveled, and invisible to both. Twenty-four `console.log` calls
 are in `src` today, including two inside the `SUPERVISING_ANSWERED` subscription
@@ -1932,7 +1931,7 @@ interpolated string — that is what makes the record queryable.
 Routes let thrown errors reach `platform.error.handle` instead of wrapping every
 handler in `try/catch`.
 
-Rationale: `app.ts` mounts the handler after all routers, inside `setImmediate`,
+`app.ts` mounts the handler after all routers, inside `setImmediate`,
 together with the 404 fallback. Per-route `try/catch` duplicates that mapping and
 tends to flatten distinct failures into one generic 500.
 
@@ -2024,7 +2023,7 @@ Models are classes extending `Model<Attributes>` with the decorator set imported
 from `@canmingir/link-express/sequelize`, declaring
 `@Table({ tableName, timestamps, underscored })` and `declare`-ed columns.
 
-Rationale: the decorators come from the platform re-export, not from
+The decorators come from the platform re-export, not from
 `sequelize-typescript` directly, so the whole application shares one Sequelize
 instance and one registry. `declare` is required because the fields are defined
 by the decorator, not by the class body.
@@ -2138,7 +2137,7 @@ re-exports and `server.ts` initialises with `await models.init()`.
 Each model exports a named `XAttributes` interface and parameterises
 `Model<XAttributes>`.
 
-Rationale: it is the only place the row shape exists as a type. Functions that
+It is the only place the row shape exists as a type. Functions that
 return `.toJSON()` have nothing else to be typed against.
 
 Incorrect:
@@ -2230,7 +2229,7 @@ An `as:` alias names what you get when you traverse it — plural on `hasMany` a
 `belongsToMany`, singular on `belongsTo` and `hasOne` — and is never reused for
 both sides of a pair.
 
-Rationale: the alias becomes the property name and the `include` key. A plural
+The alias becomes the property name and the `include` key. A plural
 alias on a `belongsTo` makes `agent.agents` return a single Project, which reads
 as a bug at every call site and makes the `include: ["agents"]` in a query
 ambiguous about which side is meant.
@@ -2335,7 +2334,7 @@ Associations are declared in `init()` in `src/models/models.ts`, grouped by pair
 with the models obtained from `platform.getModules()`, never inside individual
 model files.
 
-Rationale: associations are inherently two-sided, and the platform owns the
+Associations are inherently two-sided, and the platform owns the
 Sequelize instance. Declaring them centrally after the platform has registered
 its models is what avoids circular imports between model files and guarantees
 both sides exist when the association is made. `server.ts` calls
@@ -2451,7 +2450,7 @@ what makes an asymmetric alias like the one above visible at a glance.
 A model sets `timestamps: true` if any consumer displays or sorts by
 `createdAt` / `updatedAt`.
 
-Rationale: `timestamps: false` means the columns do not exist, so `createdAt`
+`timestamps: false` means the columns do not exist, so `createdAt`
 comes back `undefined` rather than erroring — the consumer just renders blank.
 `models/Agent.ts` sets `timestamps: false`, while the dashboard's `AgentCard`
 renders `{agent.createdAt}` under the agent name.
@@ -2541,7 +2540,7 @@ Every provider module in `lib/` default-exports an object satisfying
 `LLMAdapter` from `lib/types.ts`, and callers use `generate` from `lib/llm.ts`
 rather than importing a provider module directly.
 
-Rationale: the provider is chosen at runtime from an environment variable. A
+The provider is chosen at runtime from an environment variable. A
 caller that imports `./openai` pins itself to one vendor and bypasses the
 logging and source inference in `lib/llm.ts`.
 
@@ -2624,7 +2623,7 @@ A new provider means a new module implementing that one method, plus a key in
 The active provider and model come from `PLATFORM_LLM`, in
 `"<provider>/<model>"` form, never from a hardcoded vendor or model id.
 
-Rationale: the six adapters exist so a deployment can switch vendors, and the
+The six adapters exist so a deployment can switch vendors, and the
 test suite can select `MOCK`, without a code change. A hardcoded model also goes
 stale silently.
 
@@ -2721,7 +2720,7 @@ copy that shape for other environment parsing.
 Providers are registered as dynamic-import thunks in a `Record<ProviderKey, ...>`
 and resolved once into a memoized promise.
 
-Rationale: static imports would load every vendor SDK — the Anthropic SDK, the
+Static imports would load every vendor SDK — the Anthropic SDK, the
 OpenAI SDK, and the AWS Bedrock client — into every process regardless of which
 one is configured. The map also makes the valid provider set enumerable, which is
 what the error message above uses.
@@ -2802,7 +2801,7 @@ async function generate(params: DomainGenerateParams) {
 Calls to `generate` pass `meta` so the generation is recorded through
 `lib/llmLog.ts`.
 
-Rationale: `LLMLog` and `ModelPricing` back the dashboard's cost screen. A
+`LLMLog` and `ModelPricing` back the dashboard's cost screen. A
 generation without `meta` still runs, still costs money, and never appears in
 `GET /llm-logs` — so the reported spend is quietly low.
 
@@ -2888,7 +2887,7 @@ calling module for the `source` field on its own; do not pass that by hand.
 The event client is `@canmingir/link-express/event/client`, and there is exactly
 one.
 
-Rationale: `server.ts` initialises the bus with `await event.init(config.event)`
+`server.ts` initialises the bus with `await event.init(config.event)`
 and disconnects it on `SIGINT`/`SIGTERM`. A second client imported from a
 different package is a separate, uninitialised connection — publishes go nowhere
 and are not covered by the shutdown hook. `routes/agents.ts` imports one from
@@ -2969,7 +2968,7 @@ async function answer({ supervisingId, answer }) {
 Subscriptions are registered in `createApp()` in `src/app.ts`, typed with the
 payload shape, and delegate immediately to a function.
 
-Rationale: keeping them in one place makes the full set of asynchronous entry
+Keeping them in one place makes the full set of asynchronous entry
 points readable at a glance — there are seven — and the type argument is the only
 contract the payload has, since the bus is otherwise untyped.
 
@@ -3057,7 +3056,7 @@ function createApp() {
 A subscription handler catches its own failures, logs them, and publishes a
 domain error event where a client is waiting on a result.
 
-Rationale: a rejection inside a subscriber has no request to fail — it surfaces
+A rejection inside a subscriber has no request to fail — it surfaces
 as the `unhandledRejection` handler in `server.ts` and the user waits forever.
 The `SESSION_USER_MESSAGED` handler is the model to copy.
 
@@ -3165,7 +3164,7 @@ The failure is logged for operators and published for the waiting client.
 `src/dataset/**` and `src/seeds/**` contain `.json` files whose root value is an
 object — no markdown, no prose, no non-object roots, no comments.
 
-Rationale: these files are imported as modules and fed to models as structured
+These files are imported as modules and fed to models as structured
 context. Prose in the directory is not machine-consumable, cannot be validated,
 and cannot be diffed meaningfully. This rule is already stated in
 `.github/copilot-api-reviewer-instructions.md`, which uses
@@ -3264,7 +3263,7 @@ consumes it, or in a README at the package root.
 A dataset file is imported and named in `src/dataset/index.ts`, which
 default-exports the assembled map that consumers read from.
 
-Rationale: `index.ts` is where a JSON file becomes a named, typed piece of
+`index.ts` is where a JSON file becomes a named, typed piece of
 context — including the `role: "system"` wrapper the model layer expects. A file
 in `train/` that nothing imports is invisible, and four of them are in exactly
 that state.
@@ -3346,7 +3345,7 @@ const response = await generate({
 
 A module is imported once per file, and a binding name is declared once.
 
-Rationale: two `import X from "..."` declarations for the same `X` is a lexical
+Two `import X from "..."` declarations for the same `X` is a lexical
 redeclaration — invalid ESM. Node refuses to load the module with
 `SyntaxError: Identifier 'X' has already been declared`. It survives here only
 because esbuild and Bun are lenient and because `@typescript-eslint` disables the
@@ -3421,7 +3420,7 @@ Enabling `no-duplicate-imports`, or the typescript-eslint `no-redeclare`, in
 Every package imported from `src` or `server.ts` appears in
 `api/package.json`.
 
-Rationale: `joi` is imported by 23 files and `zod` by 2, and neither is declared.
+`joi` is imported by 23 files and `zod` by 2, and neither is declared.
 They resolve today only because a transitive dependency hoists them. A dependency
 bump that nests or drops either takes the whole API down — including every route,
 since `joi` is the validation layer.
@@ -3494,7 +3493,7 @@ the API uses it everywhere and does not declare it.
 Packages whose purpose is testing or experimentation do not belong in
 `dependencies`, and must not be imported by `src`.
 
-Rationale: `node-event-test-package` is a production dependency and is imported
+`node-event-test-package` is a production dependency and is imported
 by `routes/agents.ts`. Whatever it is, it ships to production, and it exposes an
 `event` client that shadows the real one — see
 [`event/single-client`](#eventsingle-client).
@@ -3565,7 +3564,7 @@ behaviour without a test package.
 Every route that checks the session tenant has a spec asserting the rejection —
 not only the happy path.
 
-Rationale: the bypass documented in
+The bypass documented in
 [`http/authorize-before-mutating`](#httpauthorize-before-mutating) is invisible
 to a happy-path test, because the happy path returns the same status either way.
 A single "deletes another team's agent" case asserting `401` and then asserting
@@ -3676,7 +3675,7 @@ today while the row is gone.
 Every spec calls `test.reset()` in `beforeEach`, and sets its tenant explicitly
 with `test.project(id)` when the case depends on one.
 
-Rationale: `config.postgres.uri` is `sqlite::memory:` with `sync: true`, so the
+`config.postgres.uri` is `sqlite::memory:` with `sync: true`, so the
 whole suite shares one database for the process. Without a reset, a create in one
 case changes the row count another case asserts on, and the failure lands in an
 unrelated file.
@@ -3790,7 +3789,7 @@ Route behaviour is tested end-to-end through `supertest` against the real `app`,
 asserting status with `.expect(n)` and body with `deepEqual`, while pure helpers
 in `lib/` get unit specs beside them in `lib/test/`.
 
-Rationale: routes are thin by rule, so the interesting behaviour is the
+Routes are thin by rule, so the interesting behaviour is the
 composition — validation, authorization, status mapping — which only a request
 exercises. Pure logic is cheaper to test directly, which is why
 `jsonParse.spec.ts`, `llm.spec.ts` and `parameterRefs.spec.ts` sit apart.
@@ -3896,7 +3895,7 @@ Send only fields the schema defines — see
 A configured test runner is invoked by a script, because specs that nothing
 executes are not tests.
 
-Rationale: `jest.config.json` is correct — `ts-jest` preset, node environment,
+`jest.config.json` is correct — `ts-jest` preset, node environment,
 `testMatch: ["**/*.spec.ts"]` — and 13 spec files exist across
 `routes/test/` and `lib/test/`. No script runs jest. `npm test` runs `test.ts`,
 which is a scratch script:
@@ -3989,7 +3988,7 @@ on, and the failures are the backlog.
 Credentials never appear as literals in source, and cloud SDK clients take them
 from the environment or the provider's default credential chain.
 
-Rationale: `src/actions/create_vm.ts` and `src/actions/terminate_vm.ts` each
+`src/actions/create_vm.ts` and `src/actions/terminate_vm.ts` each
 construct an `EC2Client` with a literal `accessKeyId` and `secretAccessKey` — a
 long-lived IAM user key pair, committed in TypeScript. No `.gitignore` rule can
 ever catch a secret in a `.ts` file, it is in every clone and every build
@@ -4081,7 +4080,7 @@ this repository.
 `.env` files are never committed — only a `.env.example` with empty or
 placeholder values belongs in the repository.
 
-Rationale: `api/.env` is tracked and contains six non-empty assignments,
+`api/.env` is tracked and contains six non-empty assignments,
 including `OPENAI_API_KEY`, `OPENROUTER_API_KEY`, `JWT_SECRET` and
 `OAUTH_CLIENT_SECRET`. `.gitignore` lists `.env`, but ignore rules do not apply
 to files already tracked, so the entry has no effect and the file keeps
@@ -4166,7 +4165,7 @@ separate decision because it rewrites shared refs.
 Credentials, tokens and authorization codes never reach a log line, an error
 message, or a response body.
 
-Rationale: `platform.logger` output is shipped to the metrics and logging
+`platform.logger` output is shipped to the metrics and logging
 backends, and error messages travel to clients through `platform.error.handle`.
 A token in either is a token in a system that was never scoped to hold one. The
 MCP flow handles OAuth codes and refresh tokens, so this is live surface, and
@@ -4244,7 +4243,7 @@ established.
 `config.ts` holds non-secret shape — hostnames, feature toggles, provider
 endpoints, public client ids — while anything secret is read from `process.env`.
 
-Rationale: the `config.*.ts` variants are committed and swapped per deployment,
+The `config.*.ts` variants are committed and swapped per deployment,
 so they are readable by everyone with repository access. Public identifiers
 belong there; signing keys and API keys do not.
 
@@ -4352,7 +4351,7 @@ matching secret is not, and must not be.
 
 Lint, type check and tests run against `api/` on every pull request.
 
-Rationale: none of them do today. Root `lint` is `bun run lint:dashboard`, root
+None of them do today. Root `lint` is `bun run lint:dashboard`, root
 `typecheck` is `typecheck:dashboard`, and no `lint:api` or `typecheck:api`
 script exists — so the `Test` workflow, which runs those two root scripts, never
 touches this package. The only API step anywhere in CI is `build:api`, and that
@@ -4428,7 +4427,7 @@ are the existing debt, not a reason to leave the gate off.
 `tsc --noEmit` runs in CI, because a `strict` compiler setting that nothing
 executes is documentation, not enforcement.
 
-Rationale: `api/tsconfig.json` sets `strict: true` — stricter than the
+`api/tsconfig.json` sets `strict: true` — stricter than the
 dashboard, which sets `strict: false` — along with `noEmit: true`. There is no
 `typecheck` script and nothing invokes `tsc`. The production build goes through
 esbuild, which strips types without checking them. Every strictness guarantee in
@@ -4515,7 +4514,7 @@ checker actually runs.
 
 Logs, build output and runtime artifacts are ignored, not committed.
 
-Rationale: `api/logs/email-service.log` is tracked. Log files change on every
+`api/logs/email-service.log` is tracked. Log files change on every
 run, so they produce noise in every diff, they can capture request data or
 credentials as the application evolves, and they grow without bound in history.
 
@@ -4572,7 +4571,7 @@ followed by the ignore rule, so the file stops updating in every diff.
 
 Configuration files are referenced by something, or removed.
 
-Rationale: `api/tsconfig.build.json` extends the base config, sets
+`api/tsconfig.build.json` extends the base config, sets
 `outDir: "./dist"`, `noEmit: false` and `removeComments: true`, and is referenced
 by nothing — not `package.json`, not `build.prod.js`, not the `Dockerfile`, not
 any workflow. The real build is esbuild-based and reads its compiler options
@@ -4645,7 +4644,7 @@ JSON is imported with a single-line default import —
 `import name from "./path.json";` — and nothing else: no named imports from
 JSON, no multi-line import statements, no dynamic JSON requires.
 
-Rationale: `build.prod.js` inlines JSON at build time with a line-anchored
+`build.prod.js` inlines JSON at build time with a line-anchored
 regex, and separately **refuses to copy JSON files into `dist` unless they are
 under `seeds/`**:
 
@@ -4722,7 +4721,7 @@ copy JSON unconditionally and drop the plugin.
 
 Build logs name the directory the build actually writes.
 
-Rationale: `build.prod.js` sets `OUT = path.join(ROOT, "dist")` and the
+`build.prod.js` sets `OUT = path.join(ROOT, "dist")` and the
 `Dockerfile` copies `./api/dist/`, which agree. The console output does not — it
 announces `dist-obfuscated` three times and its step counter runs `[1/3]`,
 `[2/3]`, `[3/4]`, `[4/4]`. Anyone debugging a deploy follows the messages, not
@@ -4789,7 +4788,7 @@ Derive the message from the constant so the two cannot drift again.
 Know what the obfuscator takes away, and keep source maps or a symbol map for
 anything you intend to debug.
 
-Rationale: `build.prod.js` runs every emitted file through
+`build.prod.js` runs every emitted file through
 `javascript-obfuscator` with `controlFlowFlattening`, `deadCodeInjection` at
 0.4, hexadecimal identifiers and RC4 string arrays. That is a deliberate choice
 for shipped server code, and it directly degrades two things this codebase
@@ -4873,7 +4872,7 @@ An agent-invocable capability is two things that must stay in step: an entry in
 `src/actions/actions.json` and a module in `src/actions/` default-exporting
 `{ run }`, whose filename is the entry's `lib` field.
 
-Rationale: `actions/index.ts` resolves by looking the name up in the JSON, and
+`actions/index.ts` resolves by looking the name up in the JSON, and
 the model chooses actions from the same JSON. A module without an entry is
 unreachable; an entry without a module resolves to a name that fails at call
 time, after the model has already committed to the step.
@@ -4978,7 +4977,7 @@ is.
 An action returns an object with an `error` string for expected failures rather
 than throwing, and its `outputSchema` declares that `error` field.
 
-Rationale: actions run inside a model-driven step loop, not inside a request. A
+Actions run inside a model-driven step loop, not inside a request. A
 thrown error aborts the whole task; a returned `{ error }` becomes the step
 result, which the agent can read and act on. This is the opposite of the
 convention in `functions/`, and deliberately so — see
@@ -5079,7 +5078,7 @@ Every registry entry carries an `inputSchema` and an `outputSchema` in JSON
 Schema form, with a `description` on each property, and `required` listing the
 mandatory inputs.
 
-Rationale: these schemas are the only thing the model sees. A parameter without
+These schemas are the only thing the model sees. A parameter without
 a description is a parameter the model guesses at, and an `outputSchema` is what
 lets a later step bind to a specific field of an earlier result — which is what
 `lib/parameterRefs.ts` resolves.
@@ -5211,7 +5210,7 @@ An action that provisions or destroys billable infrastructure receives `meta`,
 tags the resource with the owning team, and is authorized against that team
 before it runs.
 
-Rationale: `create_vm.ts` takes `{ parameters }` and no `meta` at all, so a
+`create_vm.ts` takes `{ parameters }` and no `meta` at all, so a
 launched EC2 instance carries no link back to the team whose agent asked for it.
 Nothing can attribute the cost, nothing can clean up a team's instances when the
 team is deleted, and nothing prevents one tenant's agent from launching compute
@@ -5347,7 +5346,7 @@ larger blast radius.
 An action that opens a browser, a connection or a handle releases it in a
 `finally`, on every path including thrown errors.
 
-Rationale: actions run inside a long-lived server process, so a leak accumulates
+Actions run inside a long-lived server process, so a leak accumulates
 until the process dies. A Puppeteer browser is the expensive case — each one is
 a Chromium process with its own memory.
 
@@ -5464,7 +5463,7 @@ Account-specific resource identifiers — launch templates, subnets, security
 groups, AMIs, buckets — come from configuration or parameters, not from
 literals.
 
-Rationale: a hardcoded id ties the code to one AWS account and one region. It
+A hardcoded id ties the code to one AWS account and one region. It
 cannot be deployed to staging, and it fails opaquely when the resource is
 replaced.
 
@@ -5558,7 +5557,7 @@ thinking to the rest.
 A seed file is `{ "sequence": <number>, "seed": [ ... ] }`, named after the model
 it populates, with rows whose fields match that model exactly.
 
-Rationale: `sequence` orders loading so foreign keys resolve — an `Agent` row
+`sequence` orders loading so foreign keys resolve — an `Agent` row
 referencing a `teamId` must load after `Project`. All twenty seed files follow
 this shape today, which is why
 [`dataset/json-objects-only`](#datasetjson-objects-only) has no violations under
@@ -5664,7 +5663,7 @@ trailing commas.
 A step parameter that points at an earlier step's output is a `$ref` node
 resolved by `lib/parameterRefs.ts`, never reached into by hand.
 
-Rationale: `resolveParameterRefs` handles the cases that make this fiddly — dot
+`resolveParameterRefs` handles the cases that make this fiddly — dot
 and bracket path segments, and values that arrive as JSON strings rather than
 objects, which it parses opportunistically as it walks. It has a spec at
 `lib/test/parameterRefs.spec.ts`. Hand-written traversal misses the
@@ -5760,7 +5759,7 @@ code calls the domain-shaped `generate` exported from `lib/llm.ts`, while
 provider modules implement the message-shaped `LLMAdapter.generate` from
 `lib/types.ts`.
 
-Rationale: `lib/llm.ts` is the translation layer. It takes `policy`, `dataset`,
+`lib/llm.ts` is the translation layer. It takes `policy`, `dataset`,
 `context`, `content` and `json_format` — the vocabulary this application thinks
 in — and assembles the `messages` array and `responseFormat` that every provider
 expects. Confusing the two produces a call that type-checks against the wrong
@@ -5864,7 +5863,7 @@ convention so the assembled prompt stays consistent across call sites.
 Model output that is expected to be JSON goes through `lib/jsonParse.ts` rather
 than a direct `JSON.parse` on a completion.
 
-Rationale: models wrap JSON in markdown fences and, on some
+Models wrap JSON in markdown fences and, on some
 model-and-provider combinations, truncate trailing braces. `jsonParse.ts`
 handles both — it strips the fence, attempts a parse, and repairs unbalanced
 brackets tracked outside string literals before retrying. It has its own spec at
@@ -5964,7 +5963,7 @@ Every generation is recorded through `logLLM` with the full field set —
 provider, model, messages, response, token counts, cost, duration, error, and
 `meta` — never as a partial row.
 
-Rationale: `LLMLog` backs the dashboard's cost screen, and the columns are only
+`LLMLog` backs the dashboard's cost screen, and the columns are only
 useful if they are populated together. `totalTokens` is derived when absent, but
 `cost` and `durationMs` are not — a row missing them makes the spend total quietly
 low, and a row missing `meta.teamId` cannot be attributed to anyone at all. A
@@ -6099,7 +6098,7 @@ same set — see [`llm/adapter-interface`](#llmadapter-interface).
 A promise deliberately not awaited carries its own `.catch`, and no floating
 promise is left unhandled.
 
-Rationale: an unhandled rejection in this process reaches the
+An unhandled rejection in this process reaches the
 `unhandledRejection` handler in `server.ts`, which logs it with no context about
 what started it. Logging and metrics writes are the legitimate fire-and-forget
 cases — they must not block or fail a request — but that makes their own error
@@ -6193,7 +6192,7 @@ HTTP and runtime metrics come from `src/instrumentation.ts` and its
 `telemetryMiddleware`, not from hand-rolled counters or gateway pushes in a
 route or a function.
 
-Rationale: `instrumentation.ts` owns the `MeterProvider`, the
+`instrumentation.ts` owns the `MeterProvider`, the
 `PushgatewayExporter`, host metrics and the Node runtime instrumentation, and
 `app.ts` mounts the middleware before the auth layer so every request is
 counted. A metric emitted elsewhere misses the shared resource attributes and

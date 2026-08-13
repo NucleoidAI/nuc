@@ -15,9 +15,7 @@ called from an event subscription, from another function, or from a test that
 does not spin up the app — and this API drives most of its work from event
 subscriptions in `app.ts`, not from requests.
 
-Examples of **incorrect** code for this rule:
-
-`src/routes/agents.ts`
+Incorrect:
 
 ```ts
 router.get("/:agentId/sessions", async (req, res) => {
@@ -40,12 +38,56 @@ router.get("/:agentId/sessions", async (req, res) => {
 });
 ```
 
-The "five most recent sessions with conversations" rule is business logic living
-in a URL handler.
+Incorrect:
 
-Examples of **correct** code for this rule:
+```ts
+router.post("/:agentId/knowledge", async (req, res) => {
+  const { type, question, answer, url } = req.body;
 
-`src/routes/agents.ts`
+  if (type === "QA" && (!question || !answer)) {
+    return res.status(400).json({ error: "INVALID_QA_KNOWLEDGE" });
+  }
+
+  const knowledge = await Knowledge.create({
+    agentId: req.params.agentId,
+    type,
+    question,
+    answer,
+    url,
+    status: url ? "PENDING" : "COMPLETED",
+  });
+
+  if (url) {
+    await event.publish("KNOWLEDGE_URL_ADDED", { knowledgeId: knowledge.id });
+  }
+
+  res.status(201).json(knowledge);
+});
+```
+
+Incorrect:
+
+```ts
+router.patch("/:taskId/steps/:stepId", async (req, res) => {
+  const step = await Step.findByPk(req.params.stepId);
+
+  await step.update({ status: req.body.status });
+
+  const siblings = await Step.findAll({ where: { taskId: req.params.taskId } });
+  const remaining = siblings.filter((s) => s.status !== "COMPLETED");
+
+  if (remaining.length === 0) {
+    await Task.update(
+      { status: "COMPLETED" },
+      { where: { id: req.params.taskId } }
+    );
+  }
+
+  res.json(step);
+});
+```
+
+Correct:
 
 ```ts
 router.post("/blueprints", async (req, res) => {
@@ -63,8 +105,53 @@ router.post("/blueprints", async (req, res) => {
 });
 ```
 
-Validate, delegate, respond. The session tenant is passed down as `meta`, not
-re-read inside the function.
+Correct:
+
+```ts
+router.get("/:agentId/sessions", async (req, res) => {
+  const { projectId: teamId } = req.session;
+
+  const { agentId } = Joi.attempt(
+    req.params,
+    Joi.object({ agentId: Joi.string().guid().required() })
+  );
+
+  const agent = await Agent.findOne({ where: { id: agentId, teamId } });
+
+  if (!agent) {
+    return res.status(404).end();
+  }
+
+  const sessions = await sessionFn.listRecent({ agentId, limit: 5 });
+
+  res.json(sessions);
+});
+```
+
+Correct:
+
+```ts
+router.patch("/:taskId/steps/:stepId", async (req, res) => {
+  const { projectId: teamId } = req.session;
+
+  const { taskId, stepId } = Joi.attempt(
+    req.params,
+    Joi.object({
+      taskId: Joi.string().guid().required(),
+      stepId: Joi.string().guid().required(),
+    })
+  );
+
+  const { status } = Joi.attempt(req.body, schemas.Step.patch);
+
+  const step = await taskFn.updateStep({ teamId, taskId, stepId, status });
+
+  res.json(step);
+});
+```
+
+Validate, delegate, respond. The session tenant is passed down as `meta` or as a
+named argument, never re-read inside the function.
 
 ---
 
@@ -80,7 +167,7 @@ Rationale: the same functions serve HTTP routes, the internal `/internal/knowled
 endpoint in `server.ts`, and seven event subscriptions in `app.ts`. A function
 that writes to `res` works in exactly one of those three callers.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 async function create({ teamId, knowledge }, res) {
@@ -90,9 +177,32 @@ async function create({ teamId, knowledge }, res) {
 }
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/functions/knowledge.ts`
+```ts
+async function list(req) {
+  const { agentId } = req.query;
+  const { projectId: teamId } = req.session;
+
+  return Knowledge.findAll({ where: { agentId, teamId } });
+}
+```
+
+Incorrect:
+
+```ts
+async function get({ knowledgeId }) {
+  const knowledge = await Knowledge.findByPk(knowledgeId);
+
+  if (!knowledge) {
+    return { status: 404, body: { error: "NOT_FOUND" } };
+  }
+
+  return { status: 200, body: knowledge.toJSON() };
+}
+```
+
+Correct:
 
 ```ts
 async function create({
@@ -124,6 +234,36 @@ async function create({
 export default { create, list, get };
 ```
 
+Correct:
+
+```ts
+async function list({ agentId, teamId }: { agentId?: string; teamId?: string }) {
+  if (!agentId && !teamId) {
+    throw new Error("INVALID_TEAM_OR_AGENT");
+  }
+
+  const knowledges = await Knowledge.findAll({
+    where: agentId ? { agentId } : { teamId },
+  });
+
+  return knowledges.map((knowledge) => knowledge.toJSON());
+}
+```
+
+Correct:
+
+```ts
+async function get({ knowledgeId }: { knowledgeId: string }) {
+  const knowledge = await Knowledge.findByPk(knowledgeId);
+
+  if (!knowledge) {
+    throw new NotFoundError("KNOWLEDGE_NOT_FOUND");
+  }
+
+  return knowledge.toJSON();
+}
+```
+
 The module default-exports an object of named functions, which is why callers
 read `knowledgeFn.list({ agentId })`. Returning `.toJSON()` rather than the
 Sequelize instance keeps the model out of the caller's hands.
@@ -140,7 +280,7 @@ contain tenant rules, plan checks, or any decision that depends on domain state.
 Rationale: `lib/` is selected at runtime by provider key. A policy placed in one
 adapter silently does not apply when a different provider is configured.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 export default {
@@ -154,9 +294,40 @@ export default {
 };
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/lib/types.ts`
+```ts
+export default {
+  async generate(params: GenerateParams) {
+    const agent = await Agent.findByPk(params.meta?.agentId);
+
+    const messages = [
+      { role: "system" as const, content: agent.description },
+      ...params.messages,
+    ];
+
+    return client.chat.completions.create({ ...params, messages });
+  },
+};
+```
+
+Incorrect:
+
+```ts
+export default {
+  async generate(params: GenerateParams) {
+    const monthly = await LLMLog.count({ where: { teamId: params.meta?.teamId } });
+
+    if (monthly > 1000) {
+      return { error: "QUOTA_EXCEEDED" };
+    }
+
+    return client.messages.create(params);
+  },
+};
+```
+
+Correct:
 
 ```ts
 type GenerateParams = {
@@ -173,8 +344,39 @@ type LLMAdapter = {
 };
 ```
 
-Every adapter implements exactly that, and nothing more. Tier and policy checks
-belong in `functions/`, before `generate` is called.
+Correct:
+
+```ts
+export default {
+  async generate({ model, messages, responseFormat, max_tokens }: GenerateParams) {
+    const completion = await client.chat.completions.create({
+      model: model || DEFAULT_MODEL,
+      messages,
+      max_tokens,
+      response_format: responseFormat === "json" ? { type: "json_object" } : undefined,
+    });
+
+    return parseJsonContent(completion.choices[0].message.content, "OpenAI");
+  },
+};
+```
+
+Correct:
+
+```ts
+async function chat({ agentId, sessionId, content, meta }) {
+  const agent = await Agent.findByPk(agentId);
+
+  if (await isFreeTier(agent.teamId)) {
+    throw new Error("UPGRADE_REQUIRED");
+  }
+
+  return generate({ policy, content, meta });
+}
+```
+
+Every adapter implements exactly the `LLMAdapter` shape, and nothing more. Tier
+and policy checks belong in `functions/`, before `generate` is called.
 
 `jsonParse.ts` and `parameterRefs.ts` show the other legitimate `lib/` role:
 pure, provider-agnostic helpers with their own unit specs under `lib/test/`.
@@ -194,10 +396,7 @@ database holds, and drift between them surfaces as silently dropped fields
 rather than errors — Joi strips unknown keys and Sequelize ignores unmapped
 attributes.
 
-Examples of **incorrect** code for this rule:
-
-`src/routes/test/agents.spec.ts` posts and asserts on `avatar`, `character`,
-`title` and `role`:
+Incorrect:
 
 ```ts
 const { body } = await request(app)
@@ -212,11 +411,32 @@ const { body } = await request(app)
   .expect(201);
 ```
 
-None of those four exist in `schemas/Agent.ts` or `models/Agent.ts`.
+Incorrect:
 
-Examples of **correct** code for this rule:
+```ts
+const agent = await Agent.findByPk(agentId);
 
-`src/schemas/Agent.ts`
+res.json({
+  id: agent.id,
+  name: agent.name,
+  personality: agent.personality,
+});
+```
+
+Incorrect:
+
+```ts
+const Agent = Joi.object({
+  name: Joi.string().required(),
+  icon: Joi.string().required(),
+  teamId: Joi.string().guid().required(),
+  aiEngineId: Joi.string().guid().required(),
+  description: Joi.string().required(),
+  temperature: Joi.number().optional(),
+});
+```
+
+Correct:
 
 ```ts
 const Agent = Joi.object({
@@ -228,7 +448,7 @@ const Agent = Joi.object({
 });
 ```
 
-`src/models/Agent.ts`
+Correct:
 
 ```ts
 export interface AgentAttributes {
@@ -241,8 +461,25 @@ export interface AgentAttributes {
 }
 ```
 
-The two agree field for field. Change them together, and update the specs and
-`seeds/` in the same commit.
+Correct:
+
+```ts
+const { body } = await request(app)
+  .post("/agents")
+  .send({
+    name: "Test Agent",
+    icon: ":5:",
+    teamId: "cb16e069-6214-47f1-9922-1f7fe7629525",
+    aiEngineId: "289a3c9a-f23b-421a-ac6e-f14052a2d57c",
+    description: "Test description",
+  })
+  .expect(201);
+```
+
+`avatar`, `character`, `title`, `role`, `personality` and `temperature` exist in
+neither `schemas/Agent.ts` nor `models/Agent.ts`. The schema and the model agree
+field for field. Change them together, and update the specs and `seeds/` in the
+same commit.
 
 ---
 
@@ -266,9 +503,7 @@ Thirteen such branches exist today, in `routes/agents.ts` and
 `routes/supervisings.ts`. Every other route file uses `return res.status(...)`
 correctly.
 
-Examples of **incorrect** code for this rule:
-
-`src/routes/agents.ts`
+Incorrect:
 
 ```ts
 router.delete("/:id", async (req, res) => {
@@ -289,12 +524,35 @@ router.delete("/:id", async (req, res) => {
 });
 ```
 
-An agent belonging to another team is **deleted**, and the caller receives `204`.
-The `401` is discarded by the final `status(204)`.
+Incorrect:
 
-Examples of **correct** code for this rule:
+```ts
+router.get("/:id", async (req, res) => {
+  const agent = await Agent.findByPk(validatedId);
 
-`src/routes/agents.ts`
+  if (!agent) {
+    res.status(404).end();
+  }
+
+  res.json(agent);
+});
+```
+
+Incorrect:
+
+```ts
+router.post("/", async (req, res) => {
+  if (!req.body.name) {
+    res.status(400).json({ error: "NAME_REQUIRED" });
+  }
+
+  const agent = await Agent.create(req.body);
+
+  res.status(201).json(agent);
+});
+```
+
+Correct:
 
 ```ts
 router.get("/:agentId/sessions", async (req, res) => {
@@ -314,7 +572,42 @@ router.get("/:agentId/sessions", async (req, res) => {
 });
 ```
 
-The same file contains both shapes. The `return` is the whole difference.
+Correct:
+
+```ts
+router.delete("/:id", async (req, res) => {
+  const { projectId: teamId } = req.session;
+
+  const agent = await Agent.findOne({ where: { id: validatedId, teamId } });
+
+  if (!agent) {
+    return res.status(404).end();
+  }
+
+  await agentFn.remove({ agentId: agent.id });
+
+  res.status(204).end();
+});
+```
+
+Correct:
+
+```ts
+router.post("/", async (req, res) => {
+  const { projectId: teamId } = req.session;
+
+  const validatedBody = Joi.attempt(req.body, schemas.Agent);
+
+  const agent = await Agent.create({ ...validatedBody, teamId });
+
+  return res.status(201).json(agent);
+});
+```
+
+The first `Incorrect` and the first `Correct` come from the same file. The
+`return` is the whole difference. The second `Incorrect` still calls `.end()`,
+which is not enough — `res.json` after it throws
+`ERR_HTTP_HEADERS_SENT`.
 
 ---
 
@@ -330,9 +623,7 @@ at its most expensive, and it is worth stating separately because the failure is
 a cross-tenant authorization bypass rather than a wrong status code. Both
 mutating agent routes have it today.
 
-Examples of **incorrect** code for this rule:
-
-`src/routes/agents.ts`
+Incorrect:
 
 ```ts
 router.put("/:id", async (req, res) => {
@@ -352,10 +643,39 @@ router.put("/:id", async (req, res) => {
 });
 ```
 
-A caller from team B can update team A's agent. The response carries `401` and
-the write has already happened.
+Incorrect:
 
-Examples of **correct** code for this rule:
+```ts
+router.delete("/:id", async (req, res) => {
+  const agent = await Agent.findByPk(validatedId);
+
+  await agent?.destroy();
+
+  if (agent && agent.teamId !== teamId) {
+    return res.status(401).end();
+  }
+
+  res.status(204).end();
+});
+```
+
+Incorrect:
+
+```ts
+router.post("/:agentId/knowledge", async (req, res) => {
+  const knowledge = await knowledgeFn.create({ agentId, knowledge: validatedBody });
+
+  const agent = await Agent.findByPk(agentId);
+
+  if (agent.teamId !== teamId) {
+    return res.status(401).end();
+  }
+
+  res.status(201).json(knowledge);
+});
+```
+
+Correct:
 
 ```ts
 router.put("/:id", async (req, res) => {
@@ -380,6 +700,47 @@ router.put("/:id", async (req, res) => {
 });
 ```
 
+Correct:
+
+```ts
+router.delete("/:id", async (req, res) => {
+  const { projectId: teamId } = req.session;
+
+  const validatedId = Joi.attempt(id, Joi.string().guid().required());
+
+  const agent = await Agent.findOne({ where: { id: validatedId, teamId } });
+
+  if (!agent) {
+    return res.status(404).end();
+  }
+
+  await agentFn.remove({ agentId: agent.id });
+
+  res.status(204).end();
+});
+```
+
+Correct:
+
+```ts
+router.post("/:agentId/knowledge", async (req, res) => {
+  const { projectId: teamId } = req.session;
+
+  const agent = await Agent.findOne({ where: { id: agentId, teamId } });
+
+  if (!agent) {
+    return res.status(404).end();
+  }
+
+  const knowledge = await knowledgeFn.create({
+    agentId: agent.id,
+    knowledge: validatedBody,
+  });
+
+  res.status(201).json(knowledge);
+});
+```
+
 Prefer scoping the lookup so the check cannot be skipped at all — see
 [`http/scope-queries-to-session-tenant`](#httpscope-queries-to-session-tenant).
 
@@ -396,9 +757,7 @@ Rationale: `if (!agent) { res.status(404); }` followed by `agent.teamId` throws
 the 404 the code intended. The `agent && ...` spelling avoids the throw but then
 falls through to the same unguarded mutation.
 
-Examples of **incorrect** code for this rule:
-
-`src/routes/supervisings.ts`
+Incorrect:
 
 ```ts
 const agent = await Agent.findByPk(agentId);
@@ -422,9 +781,33 @@ const createdSupervising = await supervising.create({
 });
 ```
 
-Two dereferences of values just proven possibly-null.
+Incorrect:
 
-Examples of **correct** code for this rule:
+```ts
+const session = await Session.findByPk(sessionId);
+
+if (session && session.agentId !== agentId) {
+  res.status(401);
+}
+
+res.json(session.toJSON());
+```
+
+Incorrect:
+
+```ts
+const task = await Task.findByPk(taskId);
+
+const steps = await taskFn.listSteps({ taskId: task.id });
+
+if (!task) {
+  return res.status(404).end();
+}
+
+res.json(steps);
+```
+
+Correct:
 
 ```ts
 const agent = await Agent.findByPk(agentId);
@@ -448,6 +831,36 @@ const createdSupervising = await supervisingFn.create({
 });
 ```
 
+Correct:
+
+```ts
+const session = await Session.findByPk(sessionId);
+
+if (!session) {
+  return res.status(404).end();
+}
+
+if (session.agentId !== agentId) {
+  return res.status(401).end();
+}
+
+res.json(session.toJSON());
+```
+
+Correct:
+
+```ts
+const task = await Task.findByPk(taskId);
+
+if (!task) {
+  return res.status(404).end();
+}
+
+const steps = await taskFn.listSteps({ taskId: task.id });
+
+res.json(steps);
+```
+
 ---
 
 ### `http/no-duplicate-route-registration`
@@ -461,9 +874,7 @@ so the duplicate is dead code that reads as live. `routes/agents.ts` registers
 `GET /:agentId/blueprints` twice; the second version — the one that validates
 `agentId` as a GUID and returns bare status codes — never runs.
 
-Examples of **incorrect** code for this rule:
-
-`src/routes/agents.ts`
+Incorrect:
 
 ```ts
 router.get("/:agentId/blueprints", async (req, res) => {
@@ -490,7 +901,30 @@ router.get("/:agentId/blueprints", async (req, res) => {
 });
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
+
+```ts
+router.delete("/:id", async (req, res) => {
+  await agentFn.remove({ agentId: req.params.id });
+
+  res.status(204).end();
+});
+
+router.delete("/:agentId", async (req, res) => {
+  await agentFn.archive({ agentId: req.params.agentId });
+
+  res.status(204).end();
+});
+```
+
+Incorrect:
+
+```ts
+router.use("/agents", agents);
+router.use("/agents", agentsV2);
+```
+
+Correct:
 
 Keep one handler with the validation from the second and the error bodies from
 the first:
@@ -520,8 +954,45 @@ router.get("/:agentId/blueprints", async (req, res) => {
 });
 ```
 
+Correct:
+
+```ts
+router.post("/blueprints", async (req, res) => {
+  const response = await agentFn.Blueprint({ history, content, meta });
+
+  res.json(response);
+});
+
+router.post("/:agentId/blueprints", async (req, res) => {
+  const blueprint = await agentFn.upsertBlueprint({ agentId, nodes });
+
+  res.status(201).json(blueprint);
+});
+```
+
+Correct:
+
+```ts
+router.delete("/:id", async (req, res) => {
+  const { archive } = Joi.attempt(
+    req.query,
+    Joi.object({ archive: Joi.boolean().default(false) })
+  );
+
+  if (archive) {
+    await agentFn.archive({ agentId: validatedId });
+  } else {
+    await agentFn.remove({ agentId: validatedId });
+  }
+
+  res.status(204).end();
+});
+```
+
 Distinct paths that merely look similar are fine — `POST /blueprints` and
-`POST /:agentId/blueprints` are different routes.
+`POST /:agentId/blueprints` are different routes. Two registrations that differ
+only in the parameter's name — `/:id` and `/:agentId` — are the same route, and
+the second never runs.
 
 ---
 
@@ -539,7 +1010,7 @@ Scoping in the `where` clause makes a cross-tenant hit impossible; comparing
 after the fact makes it possible to forget, which is exactly what happened in
 the two routes above.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 const agent = await Agent.findByPk(validatedId);
@@ -549,11 +1020,37 @@ if (agent.teamId !== teamId) {
 }
 ```
 
-Correct, but one missing `return` away from a bypass.
+Incorrect:
 
-Examples of **correct** code for this rule:
+```ts
+router.get("/", async (req, res) => {
+  const agents = await Agent.findAll({
+    include: ["AIEngine"],
+  });
 
-`src/routes/agents.ts`
+  res.json(agents);
+});
+```
+
+Incorrect:
+
+```ts
+router.put("/:id", async (req, res) => {
+  const { projectId: teamId } = req.session;
+
+  const [count] = await Agent.update(validatedBody, {
+    where: { id: validatedId },
+  });
+
+  if (count === 0) {
+    return res.status(404).end();
+  }
+
+  res.json(await Agent.findByPk(validatedId));
+});
+```
+
+Correct:
 
 ```ts
 router.get("/", async (req, res) => {
@@ -569,7 +1066,7 @@ router.get("/", async (req, res) => {
 });
 ```
 
-Applied to a single record:
+Correct:
 
 ```ts
 const agent = await Agent.findOne({ where: { id: validatedId, teamId } });
@@ -579,8 +1076,27 @@ if (!agent) {
 }
 ```
 
+Correct:
+
+```ts
+router.put("/:id", async (req, res) => {
+  const { projectId: teamId } = req.session;
+
+  const [count] = await Agent.update(validatedBody, {
+    where: { id: validatedId, teamId },
+  });
+
+  if (count === 0) {
+    return res.status(404).end();
+  }
+
+  res.json(await Agent.findOne({ where: { id: validatedId, teamId } }));
+});
+```
+
 A foreign id and a missing id both become 404, which also avoids leaking whether
-another team's agent exists.
+another team's agent exists. The first `Incorrect` is correct as written and one
+missing `return` away from a bypass — which is why the scoped lookup is the rule.
 
 Note `attributes: { exclude: ["aiEngineId"] }` alongside `include: ["AIEngine"]`
 — the foreign key is dropped from the response and the association is returned
@@ -613,9 +1129,7 @@ Not legitimately global:
   `blueprintId` → `agentId` → `teamId`
 - `tasks.ts` — `PATCH /:taskId/steps/:stepId`
 
-Examples of **incorrect** code for this rule:
-
-`src/routes/communications.ts`
+Incorrect:
 
 ```ts
 router.get("/", async (req, res) => {
@@ -629,11 +1143,34 @@ router.delete("/:id", async (req, res) => {
 });
 ```
 
-`GET /communications` returns every tenant's communication channels. `DELETE
-/communications/:id` deletes any of them by id. There is no check to forget here
-— unlike the agents routes, nothing was ever written.
+Incorrect:
 
-Examples of **correct** code for this rule:
+```ts
+router.patch("/:taskId/steps/:stepId", async (req, res) => {
+  const step = await taskFn.updateStep({
+    taskId: req.params.taskId,
+    stepId: req.params.stepId,
+    status: req.body.status,
+  });
+
+  res.json(step);
+});
+```
+
+Incorrect:
+
+```ts
+router.get("/", async (_req, res) => {
+  const engines = await AIEngine.findAll();
+
+  res.json(engines);
+});
+```
+
+The engine catalogue is genuinely global, but nothing here says so, so a reviewer
+cannot tell it apart from the two above.
+
+Correct:
 
 ```ts
 router.get("/", async (req, res) => {
@@ -662,7 +1199,36 @@ router.delete("/:id", async (req, res) => {
 });
 ```
 
-For a genuinely global route, say so where a reviewer will see it:
+Correct:
+
+```ts
+router.patch("/:taskId/steps/:stepId", async (req, res) => {
+  const { projectId: teamId } = req.session;
+
+  const { taskId, stepId } = Joi.attempt(
+    req.params,
+    Joi.object({
+      taskId: Joi.string().guid().required(),
+      stepId: Joi.string().guid().required(),
+    })
+  );
+
+  const step = await taskFn.updateStep({
+    teamId,
+    taskId,
+    stepId,
+    status: Joi.attempt(req.body, schemas.Step.patch).status,
+  });
+
+  if (!step) {
+    return res.status(404).end();
+  }
+
+  res.json(step);
+});
+```
+
+Correct:
 
 ```ts
 router.get("/", async (_req, res) => {
@@ -672,8 +1238,8 @@ router.get("/", async (_req, res) => {
 });
 ```
 
-`engines` is a shared catalogue with no tenant column — that fact belongs in the
-route's own file, not in a reviewer's memory.
+`AIEngine` is a shared catalogue with no tenant column. Declare that where a
+reviewer will see it — in the route's own file — not in a reviewer's memory.
 
 ---
 
@@ -689,9 +1255,7 @@ Rationale: routes are thin by rule, so the tenant filter lives in the function.
 table, which is what makes the unscoped route above a data exposure rather than
 just an oversight.
 
-Examples of **incorrect** code for this rule:
-
-`src/functions/communication.ts`
+Incorrect:
 
 ```ts
 async function list() {
@@ -701,7 +1265,30 @@ async function list() {
 }
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
+
+```ts
+async function list({ teamId }: { teamId?: string }) {
+  const communications = await Communication.findAll();
+
+  return communications
+    .map((communication) => communication.toJSON())
+    .filter((communication) => communication.teamId === teamId);
+}
+```
+
+Filtering after the fact still reads every tenant's rows out of the database, and
+returns everything when `teamId` is `undefined`.
+
+Incorrect:
+
+```ts
+async function listSteps({ taskId }: { taskId?: string }) {
+  return Step.findAll({ where: taskId ? { taskId } : {} });
+}
+```
+
+Correct:
 
 ```ts
 async function list({ teamId }: { teamId: string }) {
@@ -728,13 +1315,34 @@ the association chain registered in `models/models.ts`. `required: true` makes
 each join an inner join, so a row whose chain does not reach the team is not
 returned at all.
 
-Where the model does carry the column, scope directly:
+Correct:
 
 ```ts
 async function list({ agentId }: { agentId: string }) {
+  if (!agentId) {
+    throw new Error("INVALID_AGENT");
+  }
+
   return Knowledge.findAll({ where: { agentId } });
 }
 ```
+
+Correct:
+
+```ts
+async function listSteps({ taskId }: { taskId: string }) {
+  if (!taskId) {
+    throw new Error("INVALID_TASK");
+  }
+
+  const steps = await Step.findAll({ where: { taskId } });
+
+  return steps.map((step) => step.toJSON());
+}
+```
+
+Where the model carries the tenant column, scope directly; where it does not,
+scope through the association chain as in the first `Correct` above.
 
 ---
 
@@ -749,16 +1357,35 @@ a tenant mismatch, `404` for a missing resource.
 Rationale: the dashboard branches on these, and the route specs assert them
 directly with `.expect(201)`.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 const agent = await Agent.create(validatedBody);
+
 res.json(agent);
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/routes/agents.ts`
+```ts
+await agentFn.remove({ agentId: agent.id });
+
+res.status(200).json({ deleted: true });
+```
+
+Incorrect:
+
+```ts
+if (agent.teamId !== teamId) {
+  return res.status(403).json({ error: "FORBIDDEN" });
+}
+
+if (!Joi.isSchema(schemas.Agent)) {
+  return res.status(500).end();
+}
+```
+
+Correct:
 
 ```ts
 router.post("/", async (req, res) => {
@@ -773,10 +1400,28 @@ router.post("/", async (req, res) => {
 });
 ```
 
+Correct:
+
 ```ts
 await agentFn.remove({ agentId: agent.id });
 
 res.status(204).end();
+```
+
+Correct:
+
+```ts
+const updated = await agentFn.update({ agentId: agent.id, ...validatedBody });
+
+res.json(updated);
+```
+
+Correct:
+
+```ts
+if (agent.teamId !== teamId) {
+  return res.status(401).end();
+}
 ```
 
 ---
@@ -796,9 +1441,7 @@ so `platform.error.handle` cannot map both consistently, and neither library is
 declared in `package.json` (see
 [`deps/declare-what-you-import`](#depsdeclare-what-you-import)).
 
-Examples of **incorrect** code for this rule:
-
-`src/routes/agents.ts` — both styles in one file:
+Incorrect:
 
 ```ts
 const validatedBody = Joi.attempt(body, schemas.Agent);
@@ -806,9 +1449,33 @@ const validatedBody = Joi.attempt(body, schemas.Agent);
 const { history, content } = Blueprint.create.parse(body);
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/schemas/Agent.ts`
+```ts
+import { z } from "zod";
+
+const Node = z.object({
+  id: z.string().uuid(),
+  type: z.enum(["ACTION", "CONDITION"]),
+});
+
+export default { create: Node };
+```
+
+Incorrect:
+
+```ts
+import Ajv from "ajv";
+
+const ajv = new Ajv();
+const validate = ajv.compile(agentJsonSchema);
+
+if (!validate(req.body)) {
+  return res.status(400).json({ errors: validate.errors });
+}
+```
+
+Correct:
 
 ```ts
 import Joi from "joi";
@@ -822,6 +1489,27 @@ const Agent = Joi.object({
 });
 
 export default Agent;
+```
+
+Correct:
+
+```ts
+import Joi from "joi";
+
+const Node = Joi.object({
+  id: Joi.string().guid().required(),
+  type: Joi.string().valid("ACTION", "CONDITION").required(),
+});
+
+export default { create: Node };
+```
+
+Correct:
+
+```ts
+const validatedBody = Joi.attempt(body, schemas.Agent);
+
+const { history, content } = Joi.attempt(body, schemas.Blueprint.create);
 ```
 
 Joi is the majority by a wide margin and is what `schemas/index.ts` aggregates,
@@ -841,9 +1529,7 @@ Rationale: an unvalidated id reaches Sequelize directly, and an unvalidated body
 reaches `Model.create`. Validation is also what strips unknown keys, which is
 what keeps the response shape stable.
 
-Examples of **incorrect** code for this rule:
-
-`src/routes/agents.ts`
+Incorrect:
 
 ```ts
 router.post("/:agentId/blueprints", async (req, res) => {
@@ -856,12 +1542,29 @@ router.post("/:agentId/blueprints", async (req, res) => {
 });
 ```
 
-`agentId` is neither validated nor checked against the session tenant before it
-is handed to a function.
+Incorrect:
 
-Examples of **correct** code for this rule:
+```ts
+router.get("/", async (req, res) => {
+  const { status } = req.query;
 
-`src/routes/agents.ts`
+  const supervisings = await Supervising.findAll({ where: { status } });
+
+  res.json(supervisings);
+});
+```
+
+Incorrect:
+
+```ts
+const id = Joi.attempt(req.params.id, Joi.string().guid().required());
+const limit = Joi.attempt(req.query.limit, Joi.number().optional());
+```
+
+Validating fields one at a time lets unexpected keys through — `req.query.order`
+here is never rejected and never seen.
+
+Correct:
 
 ```ts
 const { agentId } = Joi.attempt(
@@ -870,6 +1573,8 @@ const { agentId } = Joi.attempt(
 );
 ```
 
+Correct:
+
 ```ts
 const { status } = Joi.attempt(
   req.query,
@@ -877,6 +1582,38 @@ const { status } = Joi.attempt(
     status: Joi.string().valid("ANSWERED", "IN_PROGRESS").optional(),
   })
 );
+```
+
+Correct:
+
+```ts
+router.post("/:agentId/blueprints", async (req, res) => {
+  const { projectId: teamId } = req.session;
+
+  const { agentId } = Joi.attempt(
+    req.params,
+    Joi.object({ agentId: Joi.string().guid().required() })
+  );
+
+  const { history, content } = Joi.attempt(
+    req.body,
+    schemas.Blueprint.createBlueprintName
+  );
+
+  const agent = await Agent.findOne({ where: { id: agentId, teamId } });
+
+  if (!agent) {
+    return res.status(404).end();
+  }
+
+  const response = await agentFn.blueprintName({
+    history,
+    content,
+    agentId: agent.id,
+  });
+
+  res.json(response);
+});
 ```
 
 Validating the whole `req.params` or `req.query` object at once is preferable to
@@ -896,7 +1633,7 @@ Rationale: `schemas/index.ts` is the single import surface routes use, so a
 schema that is not registered there gets imported by a deep path and drifts out
 of sight.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 router.post("/", async (req, res) => {
@@ -910,9 +1647,30 @@ router.post("/", async (req, res) => {
 });
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/schemas/index.ts`
+```ts
+import Step from "../schemas/Step";
+
+const validatedBody = Joi.attempt(req.body, Step.patch);
+```
+
+Reaching a schema by deep path works, but it is not registered in
+`schemas/index.ts`, so nothing lists it and nothing notices when it drifts.
+
+Incorrect:
+
+```ts
+const AgentCreate = Joi.object({ name: Joi.string().required() });
+const AgentUpdate = Joi.object({ name: Joi.string().optional() });
+
+export { AgentCreate, AgentUpdate };
+```
+
+Two exported schemas for one resource, and no default export for
+`schemas/index.ts` to aggregate.
+
+Correct:
 
 ```ts
 import Agent from "./Agent";
@@ -935,6 +1693,30 @@ export default {
 };
 ```
 
+Correct:
+
+```ts
+import Joi from "joi";
+
+const Supervising = {
+  create: Joi.object({
+    agentId: Joi.string().guid().required(),
+    conversationId: Joi.string().guid().required(),
+  }),
+  answer: Joi.object({
+    answer: Joi.string().required(),
+  }),
+};
+
+export default Supervising;
+```
+
+Correct:
+
+```ts
+const validatedBody = Joi.attempt(req.body, schemas.Supervising.answer);
+```
+
 Multi-operation resources use a named map, as `Supervising.create` and
 `Blueprint.upsert` do, so the operation is visible at the call site.
 
@@ -954,7 +1736,7 @@ Rationale: the code is the contract. `platform.error.handle`, mounted last in
 `app.ts`, maps thrown errors to responses, and a code survives being logged,
 compared and tested in a way that prose does not.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 async function create({ teamId, agentId, knowledge }) {
@@ -968,9 +1750,40 @@ async function create({ teamId, agentId, knowledge }) {
 }
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/functions/knowledge.ts`
+```ts
+async function get({ knowledgeId }) {
+  const knowledge = await Knowledge.findByPk(knowledgeId);
+
+  if (!knowledge) {
+    return { status: 404, message: "Knowledge not found" };
+  }
+
+  return knowledge.toJSON();
+}
+```
+
+Incorrect:
+
+```ts
+async function remove({ agentId }) {
+  const agent = await Agent.findByPk(agentId);
+
+  if (!agent) {
+    return false;
+  }
+
+  await agent.destroy();
+
+  return true;
+}
+```
+
+A boolean return forces every caller to invent its own status mapping, and the
+two failure modes — missing agent, failed delete — collapse into one value.
+
+Correct:
 
 ```ts
 import { NotFoundError } from "@canmingir/link-express/error";
@@ -985,6 +1798,36 @@ if (knowledge.type === "QA" && (!knowledge.question || !knowledge.answer)) {
 
 if (knowledge.type === "URL" && !knowledge.url && knowledge.content) {
   throw new Error("INVALID_URL_KNOWLEDGE");
+}
+```
+
+Correct:
+
+```ts
+import { NotFoundError } from "@canmingir/link-express/error";
+
+async function get({ knowledgeId }: { knowledgeId: string }) {
+  const knowledge = await Knowledge.findByPk(knowledgeId);
+
+  if (!knowledge) {
+    throw new NotFoundError("KNOWLEDGE_NOT_FOUND");
+  }
+
+  return knowledge.toJSON();
+}
+```
+
+Correct:
+
+```ts
+async function remove({ agentId }: { agentId: string }) {
+  const agent = await Agent.findByPk(agentId);
+
+  if (!agent) {
+    throw new NotFoundError("AGENT_NOT_FOUND");
+  }
+
+  await agent.destroy();
 }
 ```
 
@@ -1005,9 +1848,7 @@ unstructured, unleveled, and invisible to both. Twenty-four `console.log` calls
 are in `src` today, including two inside the `SUPERVISING_ANSWERED` subscription
 in `app.ts` that print on every supervision answer in production.
 
-Examples of **incorrect** code for this rule:
-
-`src/app.ts`
+Incorrect:
 
 ```ts
 const steps = await taskFn.listSteps({ taskId });
@@ -1021,9 +1862,26 @@ const supervisedIndex = sortedSteps.findIndex(
 console.log("supervisedIndex", supervisedIndex);
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`server.ts`
+```ts
+try {
+  await agentFn.chat({ agentId, sessionId, content });
+} catch (error) {
+  console.error("chat failed", error);
+}
+```
+
+Incorrect:
+
+```ts
+platform.logger.info("agent " + agent.id + " created in team " + teamId);
+```
+
+A single interpolated string is structured logging in name only — nothing can
+filter on `agentId` because there is no `agentId` field.
+
+Correct:
 
 ```ts
 platform.logger.error({
@@ -1033,14 +1891,37 @@ platform.logger.error({
 });
 ```
 
+Correct:
+
 ```ts
 const logger = platform.logger;
 
 logger.info("Platform Logger Initialized");
 ```
 
-Log an object with named fields rather than positional arguments — that is what
-makes the record queryable.
+Correct:
+
+```ts
+try {
+  await agentFn.chat({ agentId, sessionId, content });
+} catch (error) {
+  platform.logger.error({
+    message: "Agent chat failed",
+    agentId,
+    sessionId,
+    error_message: error instanceof Error ? error.message : String(error),
+  });
+}
+```
+
+Correct:
+
+```ts
+platform.logger.info({ message: "Agent created", agentId: agent.id, teamId });
+```
+
+Log an object with named fields rather than positional arguments or an
+interpolated string — that is what makes the record queryable.
 
 ---
 
@@ -1055,7 +1936,7 @@ Rationale: `app.ts` mounts the handler after all routers, inside `setImmediate`,
 together with the 404 fallback. Per-route `try/catch` duplicates that mapping and
 tends to flatten distinct failures into one generic 500.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 router.post("/", async (req, res) => {
@@ -1068,9 +1949,24 @@ router.post("/", async (req, res) => {
 });
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/app.ts`
+```ts
+router.get("/:id", async (req, res) => {
+  try {
+    const agent = await agentFn.get({ agentId: validatedId });
+    res.json(agent);
+  } catch (err) {
+    platform.logger.error(err);
+    throw err;
+  }
+});
+```
+
+Catching only to log and rethrow adds a frame and no behaviour — the platform
+handler already logs.
+
+Correct:
 
 ```ts
 setImmediate(() => {
@@ -1079,7 +1975,7 @@ setImmediate(() => {
 });
 ```
 
-and routes that simply do not catch:
+Correct:
 
 ```ts
 router.post("/", async (req, res) => {
@@ -1089,6 +1985,26 @@ router.post("/", async (req, res) => {
   const agent = await Agent.create(validatedBody);
 
   res.status(201).json(agent);
+});
+```
+
+Correct:
+
+```ts
+server.on("request", async (req, res) => {
+  if (req.url !== "/internal/knowledge") {
+    return;
+  }
+
+  try {
+    const knowledge = await knowledgeFn.create(JSON.parse(body));
+
+    res.writeHead(201, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(knowledge));
+  } catch (error) {
+    res.writeHead(400, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ error: (error as Error).message }));
+  }
 });
 ```
 
@@ -1113,7 +2029,7 @@ Rationale: the decorators come from the platform re-export, not from
 instance and one registry. `declare` is required because the fields are defined
 by the decorator, not by the class body.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 import { DataTypes } from "sequelize";
@@ -1124,9 +2040,35 @@ const Agent = sequelize.define("Agent", {
 });
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/models/Agent.ts`
+```ts
+import { Column, DataType, Model, Table } from "sequelize-typescript";
+
+@Table({ tableName: "Agent" })
+class Agent extends Model<AgentAttributes> {
+  @Column(DataType.STRING)
+  declare name: string;
+}
+```
+
+Importing the decorators from `sequelize-typescript` directly gives this model a
+different registry from the one the platform initialised.
+
+Incorrect:
+
+```ts
+@Table({ tableName: "Agent", timestamps: false, underscored: true })
+class Agent extends Model<AgentAttributes> {
+  @Column(DataType.STRING)
+  name: string;
+}
+```
+
+Without `declare`, the class body emits a real field that shadows the decorator's
+accessor, so reads return `undefined`.
+
+Correct:
 
 ```ts
 @Table({
@@ -1152,6 +2094,38 @@ class Agent extends Model<AgentAttributes> {
 export default Agent;
 ```
 
+Correct:
+
+```ts
+import {
+  AllowNull,
+  Column,
+  DataType,
+  Default,
+  Model,
+  PrimaryKey,
+  Table,
+} from "@canmingir/link-express/sequelize";
+
+@Table({
+  tableName: "Knowledge",
+  timestamps: true,
+  underscored: true,
+})
+class Knowledge extends Model<KnowledgeAttributes> {
+  @PrimaryKey
+  @Default(DataType.UUIDV4)
+  @Column(DataType.UUID)
+  declare id: string;
+
+  @AllowNull(false)
+  @Column(DataType.ENUM("QA", "URL", "TEXT", "TASK", "DATA"))
+  declare type: string;
+}
+
+export default Knowledge;
+```
+
 New models are registered through `models/models.ts`, which `models/index.ts`
 re-exports and `server.ts` initialises with `await models.init()`.
 
@@ -1167,7 +2141,7 @@ Each model exports a named `XAttributes` interface and parameterises
 Rationale: it is the only place the row shape exists as a type. Functions that
 return `.toJSON()` have nothing else to be typed against.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 class Agent extends Model {
@@ -1178,9 +2152,31 @@ class Agent extends Model {
 
 `Model` without a type argument makes every attribute `any`.
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/models/Agent.ts`
+```ts
+interface AgentAttributes {
+  id: string;
+  name: string;
+}
+
+class Agent extends Model<AgentAttributes> {}
+
+export default Agent;
+```
+
+The interface is not exported, so nothing outside the file can type a
+`.toJSON()` result against it.
+
+Incorrect:
+
+```ts
+class Agent extends Model<any> {
+  declare id: string;
+}
+```
+
+Correct:
 
 ```ts
 export interface AgentAttributes {
@@ -1193,6 +2189,35 @@ export interface AgentAttributes {
 }
 
 class Agent extends Model<AgentAttributes> {}
+```
+
+Correct:
+
+```ts
+export interface KnowledgeAttributes {
+  id: string;
+  type: "QA" | "URL" | "TEXT" | "TASK" | "DATA";
+  url?: string;
+  text?: string;
+  question?: string;
+  answer?: string;
+  agentId?: string;
+  teamId?: string;
+}
+
+class Knowledge extends Model<KnowledgeAttributes> {}
+```
+
+Correct:
+
+```ts
+import Knowledge, { KnowledgeAttributes } from "../models/Knowledge";
+
+async function get({ knowledgeId }): Promise<KnowledgeAttributes> {
+  const knowledge = await Knowledge.findByPk(knowledgeId);
+
+  return knowledge.toJSON();
+}
 ```
 
 ---
@@ -1213,9 +2238,7 @@ ambiguous about which side is meant.
 `models/models.ts` uses `as:` on only four associations, and one of them is
 wrong.
 
-Examples of **incorrect** code for this rule:
-
-`src/models/models.ts`
+Incorrect:
 
 ```ts
 models.Project.hasMany(models.Agent, {
@@ -1230,7 +2253,31 @@ models.Agent.belongsTo(models.Project, {
 
 The second line means "an Agent has one parent, reachable as `.agents`".
 
-Examples of **correct** code for this rule:
+Incorrect:
+
+```ts
+models.Session.hasMany(models.Conversation, {
+  foreignKey: "sessionId",
+  as: "conversation",
+});
+```
+
+A singular alias on `hasMany` makes `session.conversation` an array.
+
+Incorrect:
+
+```ts
+models.Blueprint.hasMany(models.BlueprintMessage, {
+  foreignKey: "blueprintId",
+  as: "messages",
+});
+models.BlueprintMessage.belongsTo(models.Blueprint, {
+  foreignKey: "blueprintId",
+  as: "messages",
+});
+```
+
+Correct:
 
 ```ts
 models.Project.hasMany(models.Agent, {
@@ -1240,6 +2287,30 @@ models.Project.hasMany(models.Agent, {
 models.Agent.belongsTo(models.Project, {
   foreignKey: "teamId",
   as: "team",
+});
+```
+
+Correct:
+
+```ts
+models.Session.hasMany(models.Conversation, {
+  foreignKey: "sessionId",
+  as: "conversations",
+});
+models.Conversation.belongsTo(models.Session, {
+  foreignKey: "sessionId",
+});
+```
+
+Correct:
+
+```ts
+models.Blueprint.hasMany(models.BlueprintMessage, {
+  foreignKey: "blueprintId",
+  as: "messages",
+});
+models.BlueprintMessage.belongsTo(models.Blueprint, {
+  foreignKey: "blueprintId",
 });
 ```
 
@@ -1270,7 +2341,7 @@ its models is what avoids circular imports between model files and guarantees
 both sides exist when the association is made. `server.ts` calls
 `await models.init()` once, after `platform.init(config)`.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 import Project from "./Project";
@@ -1282,9 +2353,38 @@ class Agent extends Model<AgentAttributes> {
 }
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/models/models.ts`
+```ts
+import Agent from "./Agent";
+import Project from "./Project";
+
+Project.hasMany(Agent, { foreignKey: "teamId", as: "agents" });
+```
+
+Declared at module scope, this runs at import time — before
+`platform.init(config)` has registered either model — and imports the two model
+files into a cycle.
+
+Incorrect:
+
+```ts
+async function init() {
+  const {
+    Postgres: { sequelize },
+  } = await platform.getModules();
+
+  sequelize.models.Blueprint.hasMany(sequelize.models.BlueprintMessage, {
+    foreignKey: "blueprintId",
+    as: "messages",
+  });
+}
+
+await init();
+await init();
+```
+
+Correct:
 
 ```ts
 import platform from "@canmingir/link-express";
@@ -1306,10 +2406,37 @@ async function init() {
 }
 ```
 
-`server.ts`
+Correct:
 
 ```ts
+await platform.init(config);
 await models.init();
+```
+
+Correct:
+
+```ts
+async function init() {
+  const {
+    Postgres: { sequelize },
+  } = await platform.getModules();
+
+  const models = sequelize.models;
+
+  models.Session.hasMany(models.Conversation, {
+    foreignKey: "sessionId",
+    as: "conversations",
+  });
+  models.Conversation.belongsTo(models.Session, { foreignKey: "sessionId" });
+
+  models.Session.hasMany(models.Supervising, {
+    foreignKey: "sessionId",
+    as: "supervisings",
+  });
+  models.Supervising.belongsTo(models.Session, { foreignKey: "sessionId" });
+}
+
+export default { init };
 ```
 
 The file groups each pair together with a short label. Keep that grouping — it is
@@ -1329,9 +2456,7 @@ comes back `undefined` rather than erroring — the consumer just renders blank.
 `models/Agent.ts` sets `timestamps: false`, while the dashboard's `AgentCard`
 renders `{agent.createdAt}` under the agent name.
 
-Examples of **incorrect** code for this rule:
-
-`src/models/Agent.ts`
+Incorrect:
 
 ```ts
 @Table({
@@ -1341,7 +2466,7 @@ Examples of **incorrect** code for this rule:
 })
 ```
 
-against `dashboard/src/components/AgentCard/AgentCard.tsx`:
+against a consumer that renders the column:
 
 ```tsx
 <Typography variant="caption" color="text.secondary">
@@ -1349,7 +2474,24 @@ against `dashboard/src/components/AgentCard/AgentCard.tsx`:
 </Typography>
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
+
+```ts
+@Table({ tableName: "Session", timestamps: false })
+```
+
+against a sort that reads it:
+
+```ts
+sessions.sort(
+  (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+);
+```
+
+`new Date(undefined).getTime()` is `NaN`, so the comparator returns `NaN` and the
+order is left untouched — silently, with no error.
+
+Correct:
 
 ```ts
 @Table({
@@ -1358,6 +2500,30 @@ Examples of **correct** code for this rule:
   underscored: true,
 })
 ```
+
+Correct:
+
+```ts
+@Table({ tableName: "Session", timestamps: true, underscored: true })
+```
+
+with the sort now reading a real column:
+
+```ts
+const sessions = await Session.findAll({
+  where: { agentId },
+  order: [["createdAt", "DESC"]],
+});
+```
+
+Correct:
+
+```ts
+@Table({ tableName: "ModelPricing", timestamps: false, underscored: true })
+```
+
+`timestamps: false` is right here — `ModelPricing` is a static catalogue and no
+consumer displays or sorts by a timestamp.
 
 Either enable the timestamps or remove the consumer. Sorting code that already
 depends on them — `new Date(a.createdAt).getTime()` in the sessions route and in
@@ -1379,7 +2545,7 @@ Rationale: the provider is chosen at runtime from an environment variable. A
 caller that imports `./openai` pins itself to one vendor and bypasses the
 logging and source inference in `lib/llm.ts`.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 import openai from "../lib/openai";
@@ -1387,20 +2553,63 @@ import openai from "../lib/openai";
 const result = await openai.generate({ messages });
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/functions/agent.ts`
+```ts
+import OpenAI from "openai";
+
+const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+const result = await client.chat.completions.create({ model, messages });
+```
+
+Incorrect:
+
+```ts
+export default {
+  generate: (params: GenerateParams) => client.messages.create(params),
+  embed: (text: string) => client.embeddings.create({ input: text }),
+  countTokens: (text: string) => encoder.encode(text).length,
+};
+```
+
+An adapter with methods beyond `generate` is an adapter only some providers
+implement, so any caller reaching for `embed` breaks on the next vendor switch.
+
+Correct:
 
 ```ts
 import { generate } from "../lib/llm";
 ```
 
-`src/lib/types.ts`
+Correct:
 
 ```ts
 type LLMAdapter = {
   generate(params: GenerateParams): Promise<Record<string, unknown>>;
 };
+```
+
+Correct:
+
+```ts
+import type { GenerateParams, LLMAdapter } from "./types";
+
+const adapter: LLMAdapter = {
+  async generate({ model, messages, max_tokens, meta }) {
+    const response = await client.messages.create({
+      model: model || DEFAULT_MODEL,
+      messages,
+      max_tokens: max_tokens ?? 4096,
+    });
+
+    logLLM({ provider: "ANTHROPIC", model, messages, response, meta });
+
+    return response;
+  },
+};
+
+export default adapter;
 ```
 
 A new provider means a new module implementing that one method, plus a key in
@@ -1419,7 +2628,7 @@ Rationale: the six adapters exist so a deployment can switch vendors, and the
 test suite can select `MOCK`, without a code change. A hardcoded model also goes
 stale silently.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 const result = await generate({
@@ -1428,9 +2637,25 @@ const result = await generate({
 });
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/lib/llm.ts`
+```ts
+const provider = process.env.NODE_ENV === "test" ? "MOCK" : "OPENAI";
+```
+
+Incorrect:
+
+```ts
+const raw = process.env.PLATFORM_LLM || "local";
+const provider = raw.split("/")[0].toUpperCase() as ProviderKey;
+
+const adapter = await PROVIDER_LOADERS[provider]();
+```
+
+An unknown provider makes `PROVIDER_LOADERS[provider]` `undefined`, and the
+failure is `is not a function` at the first generation rather than at startup.
+
+Correct:
 
 ```ts
 type ProviderKey =
@@ -1463,6 +2688,27 @@ const { provider, model: configuredModel } = parseProviderModel(
 );
 ```
 
+Correct:
+
+```ts
+const result = await generate({
+  policy,
+  content,
+  json_format,
+  meta,
+});
+```
+
+No `model` at all — `lib/llm.ts` supplies `configuredModel` from `PLATFORM_LLM`.
+
+Correct:
+
+```
+PLATFORM_LLM=anthropic/claude-sonnet-5
+PLATFORM_LLM=openai/gpt-4o-mini
+PLATFORM_LLM=mock
+```
+
 The error message names the variable, the received value and the valid set —
 copy that shape for other environment parsing.
 
@@ -1480,7 +2726,7 @@ OpenAI SDK, and the AWS Bedrock client — into every process regardless of whic
 one is configured. The map also makes the valid provider set enumerable, which is
 what the error message above uses.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 import anthropic from "./anthropic";
@@ -1490,9 +2736,32 @@ import openai from "./openai";
 const adapters = { OPENAI: openai, ANTHROPIC: anthropic, BEDROCK: bedrock };
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/lib/llm.ts`
+```ts
+async function getLLM(): Promise<LLMAdapter> {
+  const mod = await PROVIDER_LOADERS[provider]();
+
+  return mod.default;
+}
+```
+
+Correct in shape but unmemoized — every generation re-resolves the module, and
+the SDK's initialisation cost is paid on every call.
+
+Incorrect:
+
+```ts
+const PROVIDER_LOADERS = {
+  OPENAI: () => import("./openai"),
+  ANTHROPIC: () => import("./anthropic"),
+};
+```
+
+An untyped map loses the `ProviderKey` exhaustiveness check, so a new key in
+`ProviderKey` compiles with no loader behind it.
+
+Correct:
 
 ```ts
 const PROVIDER_LOADERS: Record<ProviderKey, () => Promise<{ default: LLMAdapter }>> = {
@@ -1514,6 +2783,16 @@ function getLLM(): Promise<LLMAdapter> {
 }
 ```
 
+Correct:
+
+```ts
+async function generate(params: DomainGenerateParams) {
+  const llm = await getLLM();
+
+  return llm.generate({ model: configuredModel, messages, meta: params.meta });
+}
+```
+
 ---
 
 ### `llm/log-every-generation`
@@ -1527,15 +2806,37 @@ Rationale: `LLMLog` and `ModelPricing` back the dashboard's cost screen. A
 generation without `meta` still runs, still costs money, and never appears in
 `GET /llm-logs` — so the reported spend is quietly low.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 const response = await generate({ messages, responseFormat: "json" });
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/routes/agents.ts`
+```ts
+async function chat({ agentId, sessionId, content }) {
+  return generate({ policy, content });
+}
+```
+
+The function has `agentId` and `sessionId` in hand and drops both, so the log row
+cannot be attributed to an agent, a session or a team.
+
+Incorrect:
+
+```ts
+const response = await generate({
+  policy,
+  content,
+  meta: { teamId, source: "agents.ts:412" },
+});
+```
+
+`source` is inferred by `lib/llm.ts` from the call site; passing it by hand
+overwrites the inference with a value that goes stale on the next edit.
+
+Correct:
 
 ```ts
 const response = await agentFn.Blueprint({
@@ -1545,9 +2846,36 @@ const response = await agentFn.Blueprint({
 });
 ```
 
-`meta` is typed as `LLMMeta` in `lib/llmLog.ts` and threaded down from the
-route, so the log row carries the tenant. `lib/llm.ts` infers the calling module
-for the `source` field on its own; do not pass that by hand.
+Correct:
+
+```ts
+async function chat({ agentId, sessionId, content, meta }) {
+  const agent = await Agent.findByPk(agentId);
+
+  return generate({
+    policy,
+    content,
+    meta: { ...meta, agentId, sessionId, teamId: agent.teamId },
+  });
+}
+```
+
+Correct:
+
+```ts
+await event.subscribe<{ taskId: string }>("TASK_CREATED", async ({ taskId }) => {
+  const task = await Task.findByPk(taskId);
+
+  await agentFn.task({
+    taskId,
+    meta: { taskId, agentId: task.agentId, teamId: task.teamId },
+  });
+});
+```
+
+`meta` is typed as `LLMMeta` in `lib/llmLog.ts` and threaded down from the route
+or the subscription, so the log row carries the tenant. `lib/llm.ts` infers the
+calling module for the `source` field on its own; do not pass that by hand.
 
 ---
 
@@ -1567,23 +2895,44 @@ and are not covered by the shutdown hook. `routes/agents.ts` imports one from
 `node-event-test-package/client` today; it is unused, which is the only reason
 nothing has broken.
 
-Examples of **incorrect** code for this rule:
-
-`src/routes/agents.ts`
+Incorrect:
 
 ```ts
 import { event } from "node-event-test-package/client";
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/app.ts`
+```ts
+import { EventEmitter } from "events";
+
+const bus = new EventEmitter();
+
+bus.emit("SUPERVISING_ANSWERED", { supervisingId });
+```
+
+A process-local emitter reaches no other replica, and nothing in `app.ts`
+subscribes to it.
+
+Incorrect:
+
+```ts
+import { event } from "@canmingir/link-express/event/client";
+
+await event.init(config.event);
+await event.publish("TASK_CREATED", { taskId });
+```
+
+A second `init` from a route re-connects a bus that `server.ts` already
+initialised and that the shutdown hook already owns.
+
+Correct:
 
 ```ts
 import { event } from "@canmingir/link-express/event/client";
 ```
 
-`server.ts`
+Correct:
 
 ```ts
 await event.init(config.event);
@@ -1595,6 +2944,20 @@ const shutdown = async () => {
 
 process.on("SIGINT", shutdown);
 process.on("SIGTERM", shutdown);
+```
+
+Correct:
+
+```ts
+import { event } from "@canmingir/link-express/event/client";
+
+async function answer({ supervisingId, answer }) {
+  const supervising = await Supervising.findByPk(supervisingId);
+
+  await supervising.update({ answer, status: "ANSWERED" });
+
+  await event.publish("SUPERVISING_ANSWERED", { supervisingId });
+}
 ```
 
 ---
@@ -1610,7 +2973,7 @@ Rationale: keeping them in one place makes the full set of asynchronous entry
 points readable at a glance — there are seven — and the type argument is the only
 contract the payload has, since the bus is otherwise untyped.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 event.subscribe("TASK_CREATED", async (payload: any) => {
@@ -1619,9 +2982,38 @@ event.subscribe("TASK_CREATED", async (payload: any) => {
 });
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/app.ts`
+```ts
+router.post("/", async (req, res) => {
+  await event.subscribe("AGENT_CREATED", ({ agentId }) =>
+    agentFn.warmUp({ agentId })
+  );
+
+  res.status(201).json(agent);
+});
+```
+
+A subscription registered inside a handler is registered again on every request.
+
+Incorrect:
+
+```ts
+await event.subscribe<{ stepId: string }>("STEP_ADDED", async ({ stepId }) => {
+  const step = await Step.findByPk(stepId);
+  const task = await Task.findByPk(step.taskId);
+
+  const parameters = resolveParameterRefs(step.parameters, task.steps);
+  const result = await actions.run(step.action, parameters);
+
+  await step.update({ result, status: "COMPLETED" });
+});
+```
+
+The handler is the implementation. It belongs in `functions/agent.ts`, where the
+same logic can be reached from a route or a test.
+
+Correct:
 
 ```ts
 await event.subscribe<{ taskId: string }>("TASK_CREATED", ({ taskId }) =>
@@ -1639,6 +3031,23 @@ await event.subscribe<{
 );
 ```
 
+Correct:
+
+```ts
+function createApp() {
+  const { express: app } = platform;
+
+  app.use("/agents", agents);
+
+  await event.subscribe<{ supervisingId: string }>(
+    "SUPERVISING_ANSWERED",
+    ({ supervisingId }) => supervisingFn.resume({ supervisingId }),
+  );
+
+  return app;
+}
+```
+
 ---
 
 ### `event/handlers-guard-and-report`
@@ -1652,7 +3061,7 @@ Rationale: a rejection inside a subscriber has no request to fail — it surface
 as the `unhandledRejection` handler in `server.ts` and the user waits forever.
 The `SESSION_USER_MESSAGED` handler is the model to copy.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 await event.subscribe<{ sessionId: string; content: string }>(
@@ -1663,9 +3072,40 @@ await event.subscribe<{ sessionId: string; content: string }>(
 );
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/app.ts`
+```ts
+await event.subscribe<{ taskId: string }>("TASK_CREATED", async ({ taskId }) => {
+  try {
+    await agentFn.task({ taskId });
+  } catch (error) {
+    platform.logger.error(error);
+  }
+});
+```
+
+Logged but not reported — the dashboard is polling this task's steps and will
+poll forever.
+
+Incorrect:
+
+```ts
+await event.subscribe<{ sessionId: string }>(
+  "SESSION_USER_MESSAGED",
+  async ({ agentId, sessionId, content }) => {
+    try {
+      await agentFn.chat({ agentId, sessionId, content });
+    } catch {
+      await event.publish("ERROR_OCCURRED", { sessionId, message: "error" });
+    }
+  },
+);
+```
+
+Swallowing the error with a bare `catch` discards the domain code that
+`functions/` threw, so the operator log has nothing and the user sees "error".
+
+Correct:
 
 ```ts
 await event.subscribe<{
@@ -1691,6 +3131,27 @@ await event.subscribe<{
 });
 ```
 
+Correct:
+
+```ts
+await event.subscribe<{ taskId: string }>("TASK_CREATED", async ({ taskId }) => {
+  try {
+    await agentFn.task({ taskId });
+  } catch (error) {
+    platform.logger.error({
+      message: "Task planning failed",
+      taskId,
+      error_message: error instanceof Error ? error.message : String(error),
+    });
+
+    await event.publish("TASK_FAILED", {
+      taskId,
+      message: error instanceof Error ? error.message : "TASK_FAILED",
+    });
+  }
+});
+```
+
 The failure is logged for operators and published for the waiting client.
 
 ---
@@ -1711,18 +3172,50 @@ and cannot be diffed meaningfully. This rule is already stated in
 `api/src/dataset/prompts.md` as its worked example of a violation — and that file
 is still there.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
-`src/dataset/prompts.md`, `src/dataset/train/blueprint.md`,
-`src/dataset/train/chat.md`, `src/dataset/train/task-diamond.md`.
+```
+src/dataset/prompts.md
+src/dataset/train/blueprint.md
+src/dataset/train/chat.md
+src/dataset/train/task-diamond.md
+```
 
-A non-object root is equally wrong:
+Incorrect:
 
 ```json
 [{ "instruction": "do X" }]
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
+
+```json
+"You are a planning assistant."
+```
+
+A string root is valid JSON and still wrong — nothing can add a field to it
+without breaking every consumer.
+
+Incorrect:
+
+```json
+{
+  "items": []
+}
+```
+
+with a trailing comment:
+
+```json
+{
+  "items": []
+}
+```
+
+Comments are not JSON. `build.prod.js` inlines these files verbatim, so a `//`
+line fails at parse time in the production container only.
+
+Correct:
 
 ```json
 {
@@ -1731,6 +3224,29 @@ Examples of **correct** code for this rule:
       "id": "task-diamond",
       "input": { "type": "task" },
       "expected": { "priority": "high" }
+    }
+  ]
+}
+```
+
+Correct:
+
+```json
+{
+  "role": "system",
+  "content": "You are a planning assistant that decomposes a goal into steps."
+}
+```
+
+Correct:
+
+```json
+{
+  "sequence": 2,
+  "seed": [
+    {
+      "id": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "name": "subscription_agent"
     }
   ]
 }
@@ -1753,17 +3269,38 @@ context — including the `role: "system"` wrapper the model layer expects. A fi
 in `train/` that nothing imports is invisible, and four of them are in exactly
 that state.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 import blueprintChat from "../dataset/train/blueprint-chat.json";
 ```
 
-reaching past the barrel from a function.
+Reaching past the barrel from a function.
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/dataset/index.ts`
+```
+src/dataset/train/blueprint.json
+src/dataset/train/chat.json
+src/dataset/train/task-diamond.json
+```
+
+present on disk, imported by nothing, and absent from `dataset/index.ts`.
+
+Incorrect:
+
+```ts
+import blueprintChat from "./train/blueprint-chat.json";
+
+export default {
+  policy: { role: "system" as const, content: policy.content },
+};
+```
+
+Imported at the top of the barrel and then never placed in the exported map — the
+build inlines it and nothing reads it.
+
+Correct:
 
 ```ts
 import blueprintChat from "./train/blueprint-chat.json";
@@ -1773,14 +3310,30 @@ import policy from "./policy.json";
 export default {
   policy: {
     role: "system" as const,
+    content: policy.content,
+  },
+  blueprintChat: {
+    role: "system" as const,
+    content: JSON.stringify(blueprintChat),
+  },
+  knowledgeScore: {
+    role: "system" as const,
+    content: JSON.stringify(knowledgeScore),
   },
 };
 ```
 
-`src/functions/agent.ts`
+Correct:
 
 ```ts
 import dataset from "../dataset";
+
+const response = await generate({
+  policy: dataset.policy,
+  dataset: dataset.blueprintChat,
+  content,
+  meta,
+});
 ```
 
 ---
@@ -1800,9 +3353,7 @@ because esbuild and Bun are lenient and because `@typescript-eslint` disables th
 base `no-redeclare` without replacing it, so `npm run lint` reports nothing.
 `routes/agents.ts` has this today.
 
-Examples of **incorrect** code for this rule:
-
-`src/routes/agents.ts`
+Incorrect:
 
 ```ts
 import Blueprint from "../schemas/Blueprint";
@@ -1812,13 +3363,50 @@ import BlueprintModel from "../models/Blueprint";
 import Joi from "joi";
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
+
+```ts
+import { NotFoundError } from "@canmingir/link-express/error";
+import { UnauthorizedError } from "@canmingir/link-express/error";
+```
+
+Two declarations, one module — legal ESM, but `sort-imports` scatters them and
+the file's real dependency on the error module is no longer visible at a glance.
+
+Incorrect:
+
+```ts
+import Agent from "../models/Agent";
+
+const Agent = Joi.object({ name: Joi.string().required() });
+```
+
+A binding redeclared by a `const` is the same `SyntaxError` as a duplicated
+import.
+
+Correct:
 
 ```ts
 import Agent from "../models/Agent";
 import Blueprint from "../schemas/Blueprint";
 import BlueprintModel from "../models/Blueprint";
 import Joi from "joi";
+```
+
+Correct:
+
+```ts
+import {
+  NotFoundError,
+  UnauthorizedError,
+} from "@canmingir/link-express/error";
+```
+
+Correct:
+
+```ts
+import Agent from "../models/Agent";
+import AgentSchema from "../schemas/Agent";
 ```
 
 Enabling `no-duplicate-imports`, or the typescript-eslint `no-redeclare`, in
@@ -1838,9 +3426,7 @@ They resolve today only because a transitive dependency hoists them. A dependenc
 bump that nests or drops either takes the whole API down — including every route,
 since `joi` is the validation layer.
 
-Examples of **incorrect** code for this rule:
-
-`src/schemas/Agent.ts`
+Incorrect:
 
 ```ts
 import Joi from "joi";
@@ -1848,7 +3434,27 @@ import Joi from "joi";
 
 with no `joi` entry in `package.json`.
 
-Examples of **correct** code for this rule:
+Incorrect:
+
+```ts
+import { z } from "zod";
+```
+
+with no `zod` entry either — `schemas/Blueprint.ts` and `schemas/Node.ts` both
+depend on a package nothing declares.
+
+Incorrect:
+
+```json
+"devDependencies": {
+  "joi": "^17.13.3"
+}
+```
+
+`joi` is imported by 23 files under `src` and by `server.ts`. A runtime import
+declared as a dev dependency is missing from the production install.
+
+Correct:
 
 ```json
 "dependencies": {
@@ -1858,6 +3464,23 @@ Examples of **correct** code for this rule:
   "uuid": "^11.1.0"
 }
 ```
+
+Correct:
+
+```json
+"dependencies": {
+  "@aws-sdk/client-ec2": "^3.658.1",
+  "puppeteer": "^23.5.0"
+},
+"devDependencies": {
+  "@types/supertest": "^6.0.2",
+  "jest": "^29.7.0",
+  "supertest": "^6.2.3",
+  "ts-jest": "^29.2.5"
+}
+```
+
+Runtime imports in `dependencies`, spec-only imports in `devDependencies`.
 
 The dashboard declares `joi` explicitly and does not even use it for validation;
 the API uses it everywhere and does not declare it.
@@ -1876,7 +3499,7 @@ by `routes/agents.ts`. Whatever it is, it ships to production, and it exposes an
 `event` client that shadows the real one — see
 [`event/single-client`](#eventsingle-client).
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```json
 "dependencies": {
@@ -1884,13 +3507,25 @@ Examples of **incorrect** code for this rule:
 }
 ```
 
+Incorrect:
+
 ```ts
 import { event } from "node-event-test-package/client";
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-Test-only tooling sits in `devDependencies` and is imported only from spec files:
+```json
+"dependencies": {
+  "supertest": "^6.2.3",
+  "jest": "^29.7.0"
+}
+```
+
+The test runner and its HTTP client ship in the production image for no reason,
+and nothing stops `src` from importing them.
+
+Correct:
 
 ```json
 "devDependencies": {
@@ -1901,10 +3536,23 @@ Test-only tooling sits in `devDependencies` and is imported only from spec files
 }
 ```
 
+Correct:
+
 ```ts
 import request from "supertest";
 import test from "@canmingir/link-express/test";
 ```
+
+imported only from `src/routes/test/*.spec.ts` and `src/lib/test/*.spec.ts`.
+
+Correct:
+
+```ts
+import { generate } from "../lib/llm";
+```
+
+with `PLATFORM_LLM=mock` selecting the in-repo `lib/mock.ts` adapter — test
+behaviour without a test package.
 
 ---
 
@@ -1924,12 +3572,39 @@ A single "deletes another team's agent" case asserting `401` and then asserting
 the agent still exists would have caught it. Ten spec files exist and none of
 them exercises a cross-tenant path.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
-`src/routes/test/agents.spec.ts` — creates, lists, and asserts bodies, with no
-negative authorization case.
+```ts
+describe("Agent service", () => {
+  beforeEach(async () => test.reset());
 
-Examples of **correct** code for this rule:
+  it("deletes an agent", async () => {
+    test.project("e6d4744d-a11b-4c75-acad-e24a02903729");
+
+    await request(app)
+      .delete("/agents/72ef5b08-b4a9-42b7-bb0a-22d40e56798b")
+      .expect(204);
+  });
+});
+```
+
+Only the happy path. The bypass in `routes/agents.ts` passes this spec.
+
+Incorrect:
+
+```ts
+it("refuses to delete an agent from another team", async () => {
+  test.project("cb16e069-6214-47f1-9922-1f7fe7629525");
+
+  await request(app)
+    .delete("/agents/72ef5b08-b4a9-42b7-bb0a-22d40e56798b")
+    .expect(401);
+});
+```
+
+Asserting the status alone passes today while the row is already gone.
+
+Correct:
 
 ```ts
 it("refuses to delete an agent from another team", async () => {
@@ -1950,6 +3625,45 @@ it("refuses to delete an agent from another team", async () => {
 });
 ```
 
+Correct:
+
+```ts
+it("refuses to update an agent from another team", async () => {
+  test.project("cb16e069-6214-47f1-9922-1f7fe7629525");
+
+  await request(app)
+    .put("/agents/72ef5b08-b4a9-42b7-bb0a-22d40e56798b")
+    .send({
+      name: "Hijacked",
+      icon: ":5:",
+      teamId: "cb16e069-6214-47f1-9922-1f7fe7629525",
+      aiEngineId: "289a3c9a-f23b-421a-ac6e-f14052a2d57c",
+      description: "Test description",
+    })
+    .expect(401);
+
+  test.project("e6d4744d-a11b-4c75-acad-e24a02903729");
+
+  const { body } = await request(app)
+    .get("/agents/72ef5b08-b4a9-42b7-bb0a-22d40e56798b")
+    .expect(200);
+
+  deepEqual(body.name, "subscription_agent");
+});
+```
+
+Correct:
+
+```ts
+it("does not list another team's communications", async () => {
+  test.project("cb16e069-6214-47f1-9922-1f7fe7629525");
+
+  const { body } = await request(app).get("/communications").expect(200);
+
+  deepEqual(body.length, 0);
+});
+```
+
 Assert both the status and that the resource survived. The status alone passes
 today while the row is gone.
 
@@ -1967,7 +3681,7 @@ whole suite shares one database for the process. Without a reset, a create in on
 case changes the row count another case asserts on, and the failure lands in an
 unrelated file.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 describe("Agent service", () => {
@@ -1982,9 +3696,44 @@ describe("Agent service", () => {
 });
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/routes/test/agents.spec.ts`
+```ts
+describe("Agent service", () => {
+  before(async () => test.reset());
+
+  it("creates an agent", async () => {
+    await request(app).post("/agents").send(agent).expect(201);
+  });
+
+  it("lists agents", async () => {
+    const { body } = await request(app).get("/agents").expect(200);
+    deepEqual(body.length, 2);
+  });
+});
+```
+
+`before` runs once for the whole describe, so the create in the first case is
+still in the database when the second asserts a count.
+
+Incorrect:
+
+```ts
+describe("Agent service", () => {
+  beforeEach(async () => test.reset());
+
+  it("lists agents", async () => {
+    const { body } = await request(app).get("/agents").expect(200);
+
+    deepEqual(body.length, 2);
+  });
+});
+```
+
+No `test.project(...)`, so the case asserts a count against whichever tenant the
+previous file happened to leave selected.
+
+Correct:
 
 ```ts
 describe("Agent service", () => {
@@ -1994,10 +3743,40 @@ describe("Agent service", () => {
     test.project("e6d4744d-a11b-4c75-acad-e24a02903729");
 
     const { body } = await request(app).get("/agents").expect(200);
+
+    deepEqual(body.length, 2);
   });
 });
 ```
 
+Correct:
+
+```ts
+describe("Knowledge service", () => {
+  beforeEach(async () => test.reset());
+
+  it("creates QA knowledge", async () => {
+    test.project("cb16e069-6214-47f1-9922-1f7fe7629525");
+
+    const { body } = await request(app)
+      .post("/knowledge")
+      .send({ type: "QA", question: "Q", answer: "A", agentId })
+      .expect(201);
+
+    deepEqual(body.type, "QA");
+  });
+
+  it("lists knowledge", async () => {
+    test.project("cb16e069-6214-47f1-9922-1f7fe7629525");
+
+    const { body } = await request(app).get("/knowledge").expect(200);
+
+    deepEqual(body.length, 1);
+  });
+});
+```
+
+The second case sees only the seeded row, because `test.reset()` undid the first.
 `test.project(...)` sets `req.session.projectId` for the request, which is how a
 spec chooses a tenant.
 
@@ -2016,20 +3795,51 @@ composition — validation, authorization, status mapping — which only a reque
 exercises. Pure logic is cheaper to test directly, which is why
 `jsonParse.spec.ts`, `llm.spec.ts` and `parameterRefs.spec.ts` sit apart.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 it("creates an agent", async () => {
   const agent = await Agent.create({ name: "Test Agent" });
+
   deepEqual(agent.name, "Test Agent");
 });
 ```
 
 This tests Sequelize, not the route.
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/routes/test/agents.spec.ts`
+```ts
+it("rejects an agent without a name", async () => {
+  const result = agentsRouter.stack[0].handle(
+    { body: {}, session: { projectId: teamId } },
+    fakeRes
+  );
+
+  deepEqual(fakeRes.statusCode, 400);
+});
+```
+
+Calling the handler with a hand-built `req`/`res` skips the validation, auth and
+error middleware that make the route's behaviour what it is.
+
+Incorrect:
+
+```ts
+it("strips markdown fences", async () => {
+  const { body } = await request(app)
+    .post("/agents/blueprints")
+    .send({ content: "```json\n{}\n```" })
+    .expect(200);
+
+  deepEqual(body.flow, {});
+});
+```
+
+`jsonParse` is a pure helper. Testing it through an HTTP request makes the case
+slow and makes a failure ambiguous between the parser and the route.
+
+Correct:
 
 ```ts
 import app from "../../app";
@@ -2057,6 +3867,23 @@ describe("Agent service", () => {
 });
 ```
 
+Correct:
+
+```ts
+import { deepEqual } from "assert";
+import { parseJsonContent } from "../jsonParse";
+
+describe("jsonParse", () => {
+  it("strips a markdown fence before parsing", () => {
+    deepEqual(parseJsonContent('```json\n{"a":1}\n```', "OpenAI"), { a: 1 });
+  });
+
+  it("repairs an unbalanced closing brace", () => {
+    deepEqual(parseJsonContent('{"a":{"b":1}', "OpenAI"), { a: { b: 1 } });
+  });
+});
+```
+
 Send only fields the schema defines — see
 [`layer/schemas-and-models-are-the-contract`](#layerschemas-and-models-are-the-contract).
 
@@ -2074,9 +3901,7 @@ Rationale: `jest.config.json` is correct — `ts-jest` preset, node environment,
 `routes/test/` and `lib/test/`. No script runs jest. `npm test` runs `test.ts`,
 which is a scratch script:
 
-Examples of **incorrect** code for this rule:
-
-`package.json`
+Incorrect:
 
 ```json
 "scripts": {
@@ -2084,7 +3909,7 @@ Examples of **incorrect** code for this rule:
 }
 ```
 
-`test.ts`
+Incorrect:
 
 ```ts
 import mcp from "./src/lib/mcp";
@@ -2094,12 +3919,27 @@ mcp.connect().then((mcp) => {
 });
 ```
 
-Ten route specs and three lib specs have never been executed by any automated
-run. This is why the authorization bypass in `routes/agents.ts` is undetected, and why
-`routes/test/agents.spec.ts` still posts fields — `avatar`, `character`,
-`title`, `role` — that the schema stopped accepting.
+A scratch script standing in for the suite. Ten route specs and three lib specs
+have never been executed by any automated run.
 
-Examples of **correct** code for this rule:
+Incorrect:
+
+```json
+"scripts": {
+  "test": "jest"
+}
+```
+
+with `.github/workflows/test.yml` running only:
+
+```yaml
+- name: Check lint
+  run: bun run lint
+```
+
+A script nothing invokes in CI is the same as no script.
+
+Correct:
 
 ```json
 "scripts": {
@@ -2109,9 +3949,31 @@ Examples of **correct** code for this rule:
 }
 ```
 
-with the scratch script deleted or moved to `scripts/` and out of the way of
-`npm test`. Add the command to the `Test` workflow so it runs on every PR, as
-the dashboard's lint and typecheck already do.
+Correct:
+
+```yaml
+- name: Check lint
+  run: bun run lint
+
+- name: Typecheck
+  run: bun run typecheck
+
+- name: Test
+  run: bun run test
+```
+
+Correct:
+
+```json
+"scripts": {
+  "test": "jest",
+  "mcp:probe": "bun scripts/mcp-probe.ts"
+}
+```
+
+The scratch script keeps its use, under a name of its own, out of the way of
+`npm test`. Add the command to the `Test` workflow so it runs on every PR, as the
+dashboard's lint and typecheck already do.
 
 Expect existing specs to fail once they run. That is the point of turning them
 on, and the failures are the backlog.
@@ -2135,9 +3997,7 @@ artifact, and the obfuscated production bundle contains it too. The key grants
 `RunInstances` and `TerminateInstances`, so an attacker gets both direct spend
 and compute.
 
-Examples of **incorrect** code for this rule:
-
-`src/actions/create_vm.ts`
+Incorrect:
 
 ```ts
 function getClient(region?: string) {
@@ -2151,7 +4011,26 @@ function getClient(region?: string) {
 }
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
+
+```ts
+const config = {
+  jwt: {
+    secret: "s3cr3t-signing-key",
+  },
+};
+```
+
+Incorrect:
+
+```ts
+const apiKey = process.env.OPENAI_API_KEY || "sk-proj-...";
+```
+
+A literal used as a fallback is still a committed credential, and it is the one
+that runs whenever the variable is unset.
+
+Correct:
 
 ```ts
 function getClient(region?: string) {
@@ -2163,8 +4042,9 @@ function getClient(region?: string) {
 
 Omitting `credentials` lets the AWS SDK use its default provider chain —
 environment variables in development, and the task or instance role in
-production, which is credential-free and rotates on its own. If explicit
-variables are needed, read them and fail loudly when absent:
+production, which is credential-free and rotates on its own.
+
+Correct:
 
 ```ts
 const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
@@ -2173,6 +4053,18 @@ const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 if (!accessKeyId || !secretAccessKey) {
   throw new Error("AWS_CREDENTIALS_MISSING");
 }
+```
+
+Correct:
+
+```ts
+const apiKey = process.env.OPENAI_API_KEY;
+
+if (!apiKey) {
+  throw new Error("OPENAI_API_KEY_MISSING");
+}
+
+const client = new OpenAI({ apiKey });
 ```
 
 Remediation is the same order as the `.env` case and more urgent: **deactivate
@@ -2199,14 +4091,14 @@ updating. `api/.env.test` is tracked too and is not matched by any ignore rule �
 Anyone with repository access, and anyone who ever cloned it, has these values.
 Deleting the file does not help on its own: the values remain in history.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```
 api/.env          tracked, 6 non-empty assignments
 api/.env.test     tracked
 ```
 
-with `.gitignore` implying otherwise:
+Incorrect:
 
 ```
 .env
@@ -2214,9 +4106,20 @@ with `.gitignore` implying otherwise:
 .env.test.local
 ```
 
-Examples of **correct** code for this rule:
+An ignore list that misses `.env.test`, and that has no effect on `.env` because
+that file is already tracked.
 
-`api/.env.example`, committed:
+Incorrect:
+
+```
+OPENAI_API_KEY=sk-proj-live-value
+JWT_SECRET=s3cr3t-signing-key
+```
+
+committed as `api/.env.example`. An example file with real values is a secret
+file with a misleading name.
+
+Correct:
 
 ```
 ASR_ENDPOINT_URL=
@@ -2227,13 +4130,23 @@ OAUTH_CLIENT_SECRET=
 OPENAI_API_KEY=
 ```
 
-`.gitignore`:
+committed as `api/.env.example` — every key present, every value empty.
+
+Correct:
 
 ```
 .env
 .env.*
 !.env.example
 ```
+
+Correct:
+
+```
+git rm --cached api/.env api/.env.test
+```
+
+run after the credentials have been rotated, not before.
 
 Remediation order matters: **rotate every credential first**, because they are
 already exposed; then `git rm --cached api/.env api/.env.test`; then fix the
@@ -2259,7 +4172,7 @@ A token in either is a token in a system that was never scoped to hold one. The
 MCP flow handles OAuth codes and refresh tokens, so this is live surface, and
 `models/MCP.ts` stores a `refreshToken` column.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 platform.logger.info({ message: "MCP authorized", payload });
@@ -2269,6 +4182,8 @@ throw new Error(`Token exchange failed for ${JSON.stringify(payload)}`);
 
 where `payload` carries `authorizationCode`.
 
+Incorrect:
+
 ```ts
 const mcp = await MCP.findByPk(id);
 
@@ -2277,7 +4192,18 @@ res.json(mcp);
 
 returning the row including `refreshToken`.
 
-Examples of **correct** code for this rule:
+Incorrect:
+
+```ts
+platform.logger.error({
+  message: "MCP request failed",
+  headers: req.headers,
+});
+```
+
+`req.headers` carries the bearer token on every authenticated request.
+
+Correct:
 
 ```ts
 platform.logger.info({ message: "MCP authorized", mcpId: mcp.id, agentId });
@@ -2285,12 +4211,24 @@ platform.logger.info({ message: "MCP authorized", mcpId: mcp.id, agentId });
 throw new Error("MCP_TOKEN_EXCHANGE_FAILED");
 ```
 
+Correct:
+
 ```ts
 const mcp = await MCP.findByPk(id, {
   attributes: { exclude: ["refreshToken"] },
 });
 
 res.json(mcp);
+```
+
+Correct:
+
+```ts
+platform.logger.error({
+  message: "MCP request failed",
+  mcpId: mcp.id,
+  status: response.status,
+});
 ```
 
 `routes/agents.ts` already demonstrates the exclusion idiom for a different
@@ -2310,7 +4248,7 @@ Rationale: the `config.*.ts` variants are committed and swapped per deployment,
 so they are readable by everyone with repository access. Public identifiers
 belong there; signing keys and API keys do not.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 const config = {
@@ -2327,9 +4265,32 @@ const config = {
 };
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`config.ts`
+```ts
+const config = {
+  postgres: {
+    uri: "postgres://api:hunter2@db.internal:5432/greycollar",
+  },
+};
+```
+
+Incorrect:
+
+```ts
+const config = {
+  metrics: {
+    url: process.env.METRICS_URL,
+    enabled: process.env.METRICS_ENABLED === "true",
+  },
+};
+```
+
+Non-secret shape read from the environment is the mirror mistake — the file that
+should document the deployment's shape now documents nothing, and a missing
+variable disables metrics silently.
+
+Correct:
 
 ```ts
 const config = {
@@ -2353,12 +4314,29 @@ const config = {
 };
 ```
 
-`src/lib/llm.ts`
+Correct:
 
 ```ts
 const { provider, model: configuredModel } = parseProviderModel(
   process.env.PLATFORM_LLM || "local",
 );
+```
+
+Correct:
+
+```ts
+const config = {
+  metrics: {
+    url: "http://pushgateway.internal:9091",
+    enabled: true,
+  },
+};
+
+const clientSecret = process.env.OAUTH_CLIENT_SECRET;
+
+if (!clientSecret) {
+  throw new Error("OAUTH_CLIENT_SECRET_MISSING");
+}
 ```
 
 An OAuth `clientId` is public by design and is correctly in `config.ts`. The
@@ -2384,9 +4362,7 @@ The absence is not abstract. It is why every known violation survived: an
 invalid duplicate import, an authorization bypass, specs asserting fields the
 schema dropped, and two sets of committed credentials.
 
-Examples of **incorrect** code for this rule:
-
-Root `package.json`
+Incorrect:
 
 ```json
 "lint:dashboard": "cd ./dashboard && bun run lint",
@@ -2395,7 +4371,26 @@ Root `package.json`
 "typecheck": "bun run typecheck:dashboard"
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
+
+```yaml
+- name: Build API
+  run: bun run build:api
+```
+
+The only API step in CI. esbuild strips types without checking them, so this
+passes on code `tsc` would reject.
+
+Incorrect:
+
+```json
+"lint": "bun run lint:dashboard || bun run lint:api"
+```
+
+`||` runs the API lint only when the dashboard's fails, and reports success when
+either passes.
+
+Correct:
 
 ```json
 "lint:api": "cd ./api && bun run lint",
@@ -2403,10 +4398,12 @@ Examples of **correct** code for this rule:
 "lint": "bun run lint:api && bun run lint:dashboard",
 "typecheck:api": "cd ./api && bun run typecheck",
 "typecheck:dashboard": "cd ./dashboard && bun run typecheck",
-"typecheck": "bun run typecheck:api && bun run typecheck:dashboard"
+"typecheck": "bun run typecheck:api && bun run typecheck:dashboard",
+"test:api": "cd ./api && bun run test",
+"test": "bun run test:api"
 ```
 
-with `.github/workflows/test.yml` also running the suites:
+Correct:
 
 ```yaml
 - name: Check lint
@@ -2437,9 +4434,7 @@ dashboard, which sets `strict: false` — along with `noEmit: true`. There is no
 esbuild, which strips types without checking them. Every strictness guarantee in
 that config is currently unenforced.
 
-Examples of **incorrect** code for this rule:
-
-`api/package.json`
+Incorrect:
 
 ```json
 "scripts": {
@@ -2458,7 +4453,28 @@ with `tsconfig.json` claiming:
 }
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
+
+```json
+"scripts": {
+  "typecheck": "tsc --noEmit --skipLibCheck --noImplicitAny false"
+}
+```
+
+A script that turns off the settings the config declares is enforcement in name
+only.
+
+Incorrect:
+
+```json
+"scripts": {
+  "build": "node build.prod.js"
+}
+```
+
+as the only pre-deploy gate. esbuild transpiles; it does not type check.
+
+Correct:
 
 ```json
 "scripts": {
@@ -2467,6 +4483,23 @@ Examples of **correct** code for this rule:
   "test": "jest"
 }
 ```
+
+Correct:
+
+```json
+{
+  "compilerOptions": {
+    "strict": true,
+    "noEmit": true,
+    "noImplicitAny": false,
+    "strictPropertyInitialization": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  }
+}
+```
+
+with `bun run typecheck` in the `Test` workflow.
 
 Note the two escape hatches already set — `noImplicitAny: false` and
 `strictPropertyInitialization: false`. The second is legitimate: Sequelize
@@ -2486,15 +4519,31 @@ Rationale: `api/logs/email-service.log` is tracked. Log files change on every
 run, so they produce noise in every diff, they can capture request data or
 credentials as the application evolves, and they grow without bound in history.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```
 api/logs/email-service.log     tracked
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`api/.gitignore`
+```
+/node_modules
+/coverage
+/build
+```
+
+`build.prod.js` writes to `dist`, which nothing ignores, so a local production
+build leaves the whole output staged.
+
+Incorrect:
+
+```
+api/dist/server.js             tracked
+api/coverage/lcov.info         tracked
+```
+
+Correct:
 
 ```
 /node_modules
@@ -2507,8 +4556,13 @@ Examples of **correct** code for this rule:
 !.env.example
 ```
 
-`.gitignore` here already covers `/build` but not `/dist`, which is what
-`build.prod.js` actually writes — add it while fixing this.
+Correct:
+
+```
+git rm -r --cached api/logs
+```
+
+followed by the ignore rule, so the file stops updating in every diff.
 
 ---
 
@@ -2525,10 +4579,7 @@ any workflow. The real build is esbuild-based and reads its compiler options
 inline. Anyone editing `tsconfig.build.json` to change build behaviour would
 change nothing.
 
-Examples of **incorrect** code for this rule:
-
-`tsconfig.build.json`, unreferenced, while the actual build declares its own
-options:
+Incorrect:
 
 ```js
 await esbuild.build({
@@ -2541,18 +4592,46 @@ await esbuild.build({
 });
 ```
 
-Examples of **correct** code for this rule:
+with `tsconfig.build.json` sitting beside it, referenced by nothing.
 
-Either delete `tsconfig.build.json`, or point the build at it:
+Incorrect:
+
+```ts
+import config from "./config";
+```
+
+with `config.kafka.ts` and `config.txq.ts` reachable only through commented-out
+import lines.
+
+Correct:
 
 ```js
 await esbuild.build({
+  entryPoints: tsFiles,
   tsconfig: path.join(ROOT, "tsconfig.build.json"),
+  outdir: OUT,
 });
 ```
 
-The same test applies to `config.kafka.ts` and `config.txq.ts`, which
-`server.ts` imports only in commented-out lines.
+Correct:
+
+```
+git rm api/tsconfig.build.json
+```
+
+when the esbuild inline options are the real contract and the file adds nothing.
+
+Correct:
+
+```ts
+const config =
+  process.env.PLATFORM_EVENT === "kafka"
+    ? await import("./config.kafka")
+    : await import("./config");
+```
+
+A variant config that a real branch selects is live, not dead. The same test
+applies to `config.kafka.ts` and `config.txq.ts`.
 
 ---
 
@@ -2580,7 +4659,7 @@ So an import the regex does not match survives as a real import against a file
 that was never copied. It works in development under Bun and fails only in the
 production container, at require time.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 import {
@@ -2588,19 +4667,28 @@ import {
 } from "./train/blueprint.json";
 ```
 
+Incorrect:
+
 ```ts
 import { actions } from "./actions.json";
 ```
+
+Incorrect:
 
 ```ts
 const dataset = require(`./train/${name}.json`);
 ```
 
-None of these match the plugin's pattern, and none of the files reach `dist`.
+Incorrect:
 
-Examples of **correct** code for this rule:
+```ts
+import policy from "./policy.json" with { type: "json" };
+```
 
-`src/dataset/index.ts`
+None of these match the plugin's line-anchored pattern, and none of the files
+reach `dist`.
+
+Correct:
 
 ```ts
 import Blueprint from "./train/blueprint.json";
@@ -2608,14 +4696,23 @@ import blueprintChat from "./train/blueprint-chat.json";
 import policy from "./policy.json";
 ```
 
-`src/actions/index.ts`
+Correct:
 
 ```ts
 import actions from "./actions.json";
 ```
 
-All 21 dataset imports and the actions import are in this form today. Keep them
-that way, or make the build copy JSON unconditionally and drop the plugin.
+Correct:
+
+```ts
+import blueprint from "./train/blueprint.json";
+
+const items = blueprint.items;
+```
+
+Destructure after the import rather than inside it. All 21 dataset imports and
+the actions import are in this form today. Keep them that way, or make the build
+copy JSON unconditionally and drop the plugin.
 
 ---
 
@@ -2631,7 +4728,7 @@ announces `dist-obfuscated` three times and its step counter runs `[1/3]`,
 `[2/3]`, `[3/4]`, `[4/4]`. Anyone debugging a deploy follows the messages, not
 the source.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```js
 const OUT = path.join(ROOT, "dist");
@@ -2642,14 +4739,43 @@ console.log("\nBuild complete! Output in ./dist-obfuscated/");
 console.log("Docker will copy dist-obfuscated/ → /app/api/");
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
+
+```js
+console.log("\n[1/3] Cleaning...");
+console.log("\n[2/3] Compiling...");
+console.log("\n[3/4] Copying non-TS assets...");
+console.log("\n[4/4] Obfuscating...");
+```
+
+A step counter that changes its own denominator mid-run.
+
+Incorrect:
+
+```js
+const OUT = process.env.BUILD_OUT || path.join(ROOT, "dist");
+
+console.log("Build complete! Output in ./dist/");
+```
+
+Correct:
 
 ```js
 const OUT = path.join(ROOT, "dist");
 
 console.log(`\n[1/4] Cleaning ${path.relative(ROOT, OUT)}...`);
+console.log("\n[2/4] Compiling TypeScript...");
 console.log("\n[3/4] Copying non-TS assets...");
+console.log("\n[4/4] Obfuscating...");
 console.log(`\nBuild complete! Output in ./${path.relative(ROOT, OUT)}/`);
+```
+
+Correct:
+
+```js
+const OUT = process.env.BUILD_OUT || path.join(ROOT, "dist");
+
+console.log(`Build complete! Output in ./${path.relative(ROOT, OUT)}/`);
 ```
 
 Derive the message from the constant so the two cannot drift again.
@@ -2671,7 +4797,7 @@ relies on: the `error_stack` field that `server.ts` logs on every uncaught
 exception, and the `inferSource()` helper in `lib/llm.ts`, which walks
 `Error.captureStackTrace` to label LLM log rows with their calling module.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```js
 const OBFUSCATOR_OPTIONS = {
@@ -2681,12 +4807,23 @@ const OBFUSCATOR_OPTIONS = {
 };
 ```
 
-with `server.ts` still logging `err.stack` as if it were readable, and
-`lib/llm.ts` still deriving `source` from `basename` of a call site.
+with `server.ts` still logging `err.stack` as if it were readable.
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-Emit and retain a source map, keeping it out of the image:
+```ts
+function inferSource(): string {
+  const stack = {} as { stack?: string };
+  Error.captureStackTrace(stack, inferSource);
+
+  return path.basename(stack.stack.split("\n")[2]);
+}
+```
+
+After hexadecimal renaming and control-flow flattening this returns an obfuscated
+filename, so every `LLMLog.source` value is noise.
+
+Correct:
 
 ```js
 await esbuild.build({
@@ -2696,7 +4833,9 @@ await esbuild.build({
 });
 ```
 
-or pass an explicit source label instead of inferring it:
+with the `.map` files retained by the build job and excluded from the image.
+
+Correct:
 
 ```ts
 const response = await generate({
@@ -2704,6 +4843,19 @@ const response = await generate({
   json_format,
   meta: { teamId, source: "functions/agent.blueprint" },
 });
+```
+
+An explicit source label instead of an inferred one.
+
+Correct:
+
+```js
+const OBFUSCATOR_OPTIONS = {
+  controlFlowFlattening: false,
+  deadCodeInjection: false,
+  identifierNamesGenerator: "mangled",
+  stringArray: true,
+};
 ```
 
 Whichever way, decide it deliberately — the current setup pays for stack traces
@@ -2726,14 +4878,41 @@ the model chooses actions from the same JSON. A module without an entry is
 unreachable; an entry without a module resolves to a name that fails at call
 time, after the model has already committed to the step.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
-Adding `src/actions/summarize_thread.ts` and nothing else. `actions.find(...)`
-returns `undefined` and the action never appears in the model's option list.
+```
+src/actions/summarize_thread.ts     module, no registry entry
+```
 
-Examples of **correct** code for this rule:
+`actions.find(...)` returns `undefined` and the action never appears in the
+model's option list.
 
-`src/actions/actions.json`
+Incorrect:
+
+```json
+{
+  "action": "PLATFORM:summarize_thread",
+  "lib": "summarize_thread",
+  "description": "Summarize a conversation thread."
+}
+```
+
+with no `src/actions/summarize_thread.ts`. The name resolves, the model commits
+the step, and the import fails at call time.
+
+Incorrect:
+
+```json
+{
+  "action": "PLATFORM:translate",
+  "lib": "translator",
+  "description": "Translate text."
+}
+```
+
+with the module at `src/actions/translate.ts`. `lib` must be the filename.
+
+Correct:
 
 ```json
 {
@@ -2751,7 +4930,7 @@ Examples of **correct** code for this rule:
 }
 ```
 
-`src/actions/translate.ts`
+Correct:
 
 ```ts
 async function run({
@@ -2767,7 +4946,7 @@ async function run({
 export default { run };
 ```
 
-`src/actions/index.ts`
+Correct:
 
 ```ts
 function find(action: string) {
@@ -2775,9 +4954,20 @@ function find(action: string) {
 }
 ```
 
-Names are namespaced `PLATFORM:<lib>`. An action that must never be offered for
-a non-blocking step is excluded in `listNonBlockings`, as
-`PLATFORM:ask_supervisor` is.
+Correct:
+
+```json
+{
+  "action": "PLATFORM:ask_supervisor",
+  "lib": "ask_supervisor",
+  "description": "Escalate a question to a human supervisor and wait for the answer.",
+  "blocking": true
+}
+```
+
+Names are namespaced `PLATFORM:<lib>`. An action that must never be offered for a
+non-blocking step is excluded in `listNonBlockings`, as `PLATFORM:ask_supervisor`
+is.
 
 ---
 
@@ -2794,7 +4984,7 @@ result, which the agent can read and act on. This is the opposite of the
 convention in `functions/`, and deliberately so — see
 [`error/throw-domain-codes`](#errorthrow-domain-codes).
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 async function run({ parameters: { text } }) {
@@ -2804,9 +4994,35 @@ async function run({ parameters: { text } }) {
 }
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/actions/translate.ts`
+```ts
+async function run({ parameters: { instanceId } }) {
+  const instance = await describeInstance(instanceId);
+
+  if (!instance) {
+    throw new NotFoundError("INSTANCE_NOT_FOUND");
+  }
+}
+```
+
+`NotFoundError` is the right convention in `functions/` and the wrong one here —
+it aborts the task instead of becoming a step result the agent can react to.
+
+Incorrect:
+
+```ts
+async function run({ parameters: { text } }) {
+  if (!text) {
+    return null;
+  }
+}
+```
+
+`null` gives the agent nothing to read and nothing an `outputSchema` can
+describe.
+
+Correct:
 
 ```ts
 async function run({ parameters: { text }, meta }) {
@@ -2820,7 +5036,7 @@ async function run({ parameters: { text }, meta }) {
 }
 ```
 
-with the field declared in the registry:
+Correct:
 
 ```json
 "outputSchema": {
@@ -2829,6 +5045,24 @@ with the field declared in the registry:
     "tr": { "type": "string", "description": "Turkish translation." },
     "error": { "type": "string" }
   }
+}
+```
+
+Correct:
+
+```ts
+async function run({ parameters: { instanceId }, meta }) {
+  if (!meta?.teamId) {
+    return { error: "teamId is required to terminate infrastructure" };
+  }
+
+  const instance = await describeInstance(instanceId);
+
+  if (!instance) {
+    return { error: `no instance found with id ${instanceId}` };
+  }
+
+  return { instanceId, state: "shutting-down" };
 }
 ```
 
@@ -2850,7 +5084,7 @@ a description is a parameter the model guesses at, and an `outputSchema` is what
 lets a later step bind to a specific field of an earlier result — which is what
 `lib/parameterRefs.ts` resolves.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```json
 {
@@ -2862,9 +5096,42 @@ Examples of **incorrect** code for this rule:
 
 No schemas, so nothing downstream can reference a field of the result.
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/actions/actions.json`
+```json
+{
+  "action": "PLATFORM:create_vm",
+  "lib": "create_vm",
+  "description": "Creates a VM",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "name": { "type": "string" },
+      "instanceType": { "type": "string" },
+      "region": { "type": "string" }
+    }
+  }
+}
+```
+
+No property descriptions and no `required`, so the model guesses what
+`instanceType` accepts and whether `name` may be omitted.
+
+Incorrect:
+
+```json
+{
+  "action": "PLATFORM:scrapper",
+  "lib": "scrapper",
+  "inputSchema": { "type": "object" },
+  "outputSchema": { "type": "string" }
+}
+```
+
+A non-object `outputSchema` has no fields, so no later step can bind to part of
+the result.
+
+Correct:
 
 ```json
 {
@@ -2885,6 +5152,45 @@ Examples of **correct** code for this rule:
       "tr": { "type": "string", "description": "Turkish translation." },
       "en": { "type": "string", "description": "English translation." },
       "es": { "type": "string", "description": "Spanish translation." },
+      "error": { "type": "string" }
+    }
+  }
+}
+```
+
+Correct:
+
+```json
+{
+  "action": "PLATFORM:create_vm",
+  "lib": "create_vm",
+  "description": "Launch an EC2 instance tagged to the calling team, returning its id and public address so a later step can connect to it.",
+  "icon": "mdi:server-plus",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "Name tag applied to the instance."
+      },
+      "instanceType": {
+        "type": "string",
+        "description": "EC2 instance type, such as t3.micro. Defaults to t3.micro."
+      }
+    },
+    "required": ["name"]
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "instanceId": {
+        "type": "string",
+        "description": "Id of the launched instance."
+      },
+      "publicDnsName": {
+        "type": "string",
+        "description": "Public DNS name, empty until the instance is running."
+      },
       "error": { "type": "string" }
     }
   }
@@ -2912,9 +5218,7 @@ team is deleted, and nothing prevents one tenant's agent from launching compute
 charged to everyone. Compare the LLM path, where `meta` carries `teamId` into
 every log row precisely so spend is attributable.
 
-Examples of **incorrect** code for this rule:
-
-`src/actions/create_vm.ts`
+Incorrect:
 
 ```ts
 async function run({
@@ -2930,7 +5234,44 @@ async function run({
 }
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
+
+```ts
+async function run({ parameters: { instanceId }, meta }) {
+  const client = getClient();
+
+  await client.send(new TerminateInstancesCommand({ InstanceIds: [instanceId] }));
+
+  return { instanceId, state: "shutting-down" };
+}
+```
+
+`meta` is accepted and never checked, so an instance id from one tenant's agent
+destroys another tenant's machine.
+
+Incorrect:
+
+```ts
+async function run({ parameters: { name }, meta }) {
+  const { Instances } = await client.send(
+    new RunInstancesCommand({
+      MinCount: 1,
+      MaxCount: 1,
+      TagSpecifications: [
+        {
+          ResourceType: "instance",
+          Tags: [{ Key: "Name", Value: name }],
+        },
+      ],
+    }),
+  );
+}
+```
+
+Tagged, but not with the owner — nothing can attribute the cost or reap the
+instance when the team is deleted.
+
+Correct:
 
 ```ts
 async function run({
@@ -2963,6 +5304,33 @@ async function run({
 }
 ```
 
+Correct:
+
+```ts
+async function run({ parameters: { instanceId }, meta }) {
+  if (!meta?.teamId) {
+    return { error: "teamId is required to terminate infrastructure" };
+  }
+
+  const { Reservations } = await client.send(
+    new DescribeInstancesCommand({
+      InstanceIds: [instanceId],
+      Filters: [
+        { Name: "tag:greycollar:teamId", Values: [meta.teamId] },
+      ],
+    }),
+  );
+
+  if (!Reservations?.length) {
+    return { error: `no instance found with id ${instanceId}` };
+  }
+
+  await client.send(new TerminateInstancesCommand({ InstanceIds: [instanceId] }));
+
+  return { instanceId, state: "shutting-down" };
+}
+```
+
 `terminate_vm.ts` needs the mirror check — refuse to terminate an instance whose
 `greycollar:teamId` tag does not match the caller's team. Without it, an
 instance id is enough to destroy another tenant's machine, which is the same
@@ -2983,7 +5351,7 @@ Rationale: actions run inside a long-lived server process, so a leak accumulates
 until the process dies. A Puppeteer browser is the expensive case — each one is
 a Chromium process with its own memory.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 const browser = await puppeteer.launch();
@@ -2998,9 +5366,39 @@ return { content };
 
 Any throw between `launch` and `close` leaks a Chromium process.
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/actions/scrapper.ts`
+```ts
+const browser = await puppeteer.launch();
+
+try {
+  for (const url of urls) {
+    const page = await browser.newPage();
+
+    await page.goto(url);
+    results.push(await page.evaluate(() => document.body.innerText));
+  }
+} finally {
+  await browser.close();
+}
+```
+
+The browser is released; the pages are not. One tab per URL stays open for the
+whole loop.
+
+Incorrect:
+
+```ts
+const client = await mcp.connect(server);
+
+const tools = await client.listTools();
+
+await client.close();
+
+return { tools };
+```
+
+Correct:
 
 ```ts
 const browser = await puppeteer.launch({ headless: true });
@@ -3014,8 +5412,43 @@ try {
 }
 ```
 
-`scrapper.ts` already does exactly this, closing individual pages inside the
-loop and the browser in the outer `finally`. It is the pattern to copy.
+Correct:
+
+```ts
+const browser = await puppeteer.launch({ headless: true });
+
+try {
+  for (const url of urls) {
+    const page = await browser.newPage();
+
+    try {
+      await page.goto(url);
+      results.push(await page.evaluate(() => document.body.innerText));
+    } finally {
+      await page.close();
+    }
+  }
+
+  return { results };
+} finally {
+  await browser.close();
+}
+```
+
+Correct:
+
+```ts
+const client = await mcp.connect(server);
+
+try {
+  return { tools: await client.listTools() };
+} finally {
+  await client.close();
+}
+```
+
+`scrapper.ts` already does exactly this, closing individual pages inside the loop
+and the browser in the outer `finally`. It is the pattern to copy.
 
 Provisioned infrastructure is the other half of this rule and cannot be handled
 with `finally` — a VM outlives the request. Pair every `create_vm` with a
@@ -3035,9 +5468,7 @@ Rationale: a hardcoded id ties the code to one AWS account and one region. It
 cannot be deployed to staging, and it fails opaquely when the resource is
 replaced.
 
-Examples of **incorrect** code for this rule:
-
-`src/actions/create_vm.ts`
+Incorrect:
 
 ```ts
 new RunInstancesCommand({
@@ -3049,7 +5480,26 @@ new RunInstancesCommand({
 });
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
+
+```ts
+new RunInstancesCommand({
+  SubnetId: "subnet-0f3a1c9d2e7b4a610",
+  SecurityGroupIds: ["sg-04c8e1b2f9a37d5e2"],
+});
+```
+
+Incorrect:
+
+```ts
+const client = new S3Client({ region: "us-east-1" });
+
+await client.send(
+  new PutObjectCommand({ Bucket: "greycollar-prod-artifacts", Key: key })
+);
+```
+
+Correct:
 
 ```ts
 const launchTemplateId = process.env.AWS_LAUNCH_TEMPLATE_ID;
@@ -3064,9 +5514,40 @@ new RunInstancesCommand({
 });
 ```
 
-The AMI in the same file is already handled correctly — `resolveLatestAmazonLinuxAmi`
-queries for the newest matching image rather than pinning an id, and the caller
-may override it through a parameter. Apply that thinking to the rest.
+Correct:
+
+```ts
+async function resolveLatestAmazonLinuxAmi(client: EC2Client) {
+  const { Images } = await client.send(
+    new DescribeImagesCommand({
+      Owners: ["amazon"],
+      Filters: [{ Name: "name", Values: ["al2023-ami-*-x86_64"] }],
+    }),
+  );
+
+  return Images.sort((a, b) => b.CreationDate.localeCompare(a.CreationDate))[0]
+    .ImageId;
+}
+```
+
+Correct:
+
+```ts
+async function run({ parameters: { bucket }, meta }) {
+  const target = bucket || process.env.AWS_ARTIFACT_BUCKET;
+
+  if (!target) {
+    return { error: "AWS_ARTIFACT_BUCKET is not configured" };
+  }
+
+  await client.send(new PutObjectCommand({ Bucket: target, Key: key }));
+}
+```
+
+The AMI in `create_vm.ts` is already handled this way —
+`resolveLatestAmazonLinuxAmi` queries for the newest matching image rather than
+pinning an id, and the caller may override it through a parameter. Apply that
+thinking to the rest.
 
 ---
 
@@ -3083,7 +5564,7 @@ this shape today, which is why
 [`dataset/json-objects-only`](#datasetjson-objects-only) has no violations under
 `seeds/`.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```json
 [
@@ -3093,9 +5574,44 @@ Examples of **incorrect** code for this rule:
 
 An array root, no sequence, and no way to order it against other seeds.
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/seeds/Agent.json`
+```json
+{
+  "sequence": 1,
+  "seed": [
+    {
+      "id": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "name": "subscription_agent",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f"
+    }
+  ]
+}
+```
+
+`Agent` at sequence 1 loads before `Project`, so the `teamId` foreign key has
+nothing to point at.
+
+Incorrect:
+
+```json
+{
+  "sequence": 2,
+  "seed": [
+    {
+      "id": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+      "name": "subscription_agent",
+      "role": "support",
+      "avatar": ":5:"
+    }
+  ]
+}
+```
+
+`role` and `avatar` are in neither `models/Agent.ts` nor `schemas/Agent.ts`;
+Sequelize drops them without comment.
+
+Correct:
 
 ```json
 {
@@ -3112,6 +5628,24 @@ Examples of **correct** code for this rule:
   ]
 }
 ```
+
+Correct:
+
+```json
+{
+  "sequence": 1,
+  "seed": [
+    {
+      "id": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "name": "Core Systems",
+      "icon": "solar:widget-bold"
+    }
+  ]
+}
+```
+
+`Project.json` at sequence 1, `Agent.json` at sequence 2 — the foreign key
+resolves because the order says it must.
 
 Ids are fixed UUIDs, not generated, because the route specs assert on them —
 `agents.spec.ts` looks up `72ef5b08-b4a9-42b7-bb0a-22d40e56798b` directly.
@@ -3136,22 +5670,45 @@ objects, which it parses opportunistically as it walks. It has a spec at
 `lib/test/parameterRefs.spec.ts`. Hand-written traversal misses the
 string-encoded case, which is common because model output often arrives as text.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 const previous = steps.find((s) => s.id === step.dependsOn);
 const value = previous.result.translations[0].tr;
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/functions/agent.ts`
+```ts
+const previous = steps.find((s) => s.id === step.dependsOn);
+const result =
+  typeof previous.result === "string"
+    ? JSON.parse(previous.result)
+    : previous.result;
+
+const value = result.tr;
+```
+
+The string case is handled once, at the top level. `resolveParameterRefs` parses
+opportunistically at every segment, which is what a nested `$ref` needs.
+
+Incorrect:
+
+```ts
+const parameters = {
+  text: steps["translate"].result["tr"],
+};
+```
+
+Correct:
 
 ```ts
 import { resolveParameterRefs } from "../lib/parameterRefs";
+
+const parameters = resolveParameterRefs(step.parameters, { steps });
 ```
 
-with the reference expressed as data in the step's parameters:
+Correct:
 
 ```json
 {
@@ -3159,7 +5716,15 @@ with the reference expressed as data in the step's parameters:
 }
 ```
 
-`src/lib/parameterRefs.ts`
+Correct:
+
+```json
+{
+  "url": { "$ref": "steps.search.result.items[0].link" }
+}
+```
+
+Correct:
 
 ```ts
 function getByPath(source: unknown, path: string): unknown {
@@ -3201,7 +5766,7 @@ in — and assembles the `messages` array and `responseFormat` that every provid
 expects. Confusing the two produces a call that type-checks against the wrong
 contract and silently drops the policy or the dataset.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 import { generate } from "../lib/llm";
@@ -3215,11 +5780,35 @@ const result = await generate({
 });
 ```
 
-That is the adapter's shape handed to the application's function.
+That is the adapter's shape handed to the application's function — `policy`,
+`dataset` and `json_format` are all silently absent.
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/actions/translate.ts`
+```ts
+import openai from "../lib/openai";
+
+const result = await openai.generate({
+  policy: { role: "system", content: "You are a translator." },
+  content: text,
+  json_format: '{ tr: "<Turkish>" }',
+});
+```
+
+The application's shape handed to an adapter, which reads `messages` and finds
+nothing.
+
+Incorrect:
+
+```ts
+const result = await generate({
+  policy: { role: "system", content: "You are a translator." },
+  content: text,
+  messages: [{ role: "user", content: text }],
+});
+```
+
+Correct:
 
 ```ts
 const result = await generate({
@@ -3235,8 +5824,7 @@ const result = await generate({
 });
 ```
 
-`src/lib/types.ts` — what providers implement, and what nothing outside `lib/`
-should construct:
+Correct:
 
 ```ts
 type GenerateParams = {
@@ -3247,6 +5835,21 @@ type GenerateParams = {
   max_tokens?: number;
   meta?: LLMMeta;
 };
+```
+
+What providers implement, and what nothing outside `lib/` should construct.
+
+Correct:
+
+```ts
+const response = await generate({
+  policy: dataset.policy,
+  dataset: dataset.blueprintChat,
+  context: history,
+  content,
+  json_format: '{ response: "<reply>", flow: [<nodes>] }',
+  meta: { teamId, agentId },
+});
 ```
 
 `json_format` carries a shape sketch rather than a JSON Schema; keep to that
@@ -3268,7 +5871,7 @@ brackets tracked outside string literals before retrying. It has its own spec at
 `lib/test/jsonParse.spec.ts`. A bare `JSON.parse` turns a recoverable response
 into a failed task.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 const completion = await generate({ content, json_format });
@@ -3276,9 +5879,33 @@ const completion = await generate({ content, json_format });
 const parsed = JSON.parse(completion as string);
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/lib/jsonParse.ts`
+```ts
+const cleaned = completion.replace(/```json/g, "").replace(/```/g, "");
+
+const parsed = JSON.parse(cleaned);
+```
+
+A second, weaker copy of the fence stripper — it removes fences from inside
+string literals too, and repairs nothing when the model truncates.
+
+Incorrect:
+
+```ts
+let parsed;
+
+try {
+  parsed = JSON.parse(completion);
+} catch {
+  parsed = {};
+}
+```
+
+Swallowing the parse failure turns a recoverable response into an empty result
+with no signal that anything went wrong.
+
+Correct:
 
 ```ts
 function stripMarkdownFence(content: string): string {
@@ -3305,6 +5932,24 @@ function parseJsonContent(content: string, providerLabel: string): unknown {
 }
 ```
 
+Correct:
+
+```ts
+import { parseJsonContent } from "./jsonParse";
+
+const completion = await client.chat.completions.create(payload);
+
+return parseJsonContent(completion.choices[0].message.content, "OpenAI");
+```
+
+Correct:
+
+```ts
+const completion = await client.messages.create(payload);
+
+return parseJsonContent(completion.content[0].text, "Anthropic");
+```
+
 The `providerLabel` argument is what makes a parse failure attributable to a
 vendor. Pass it. Note also that this is the one place a raw response body
 legitimately appears in an error message — it is model output, not credentials.
@@ -3326,7 +5971,7 @@ low, and a row missing `meta.teamId` cannot be attributed to anyone at all. A
 failed call must be logged too, with `error` set, otherwise failures are free in
 the reporting.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 const response = await client.chat.completions.create(payload);
@@ -3336,9 +5981,41 @@ logLLM({ provider: "OPENAI", messages, response });
 
 No tokens, no cost, no duration, no meta — and nothing logged if the call throws.
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/lib/llmLog.ts`
+```ts
+try {
+  const response = await client.chat.completions.create(payload);
+
+  logLLM({ provider, model, messages, response, cost, durationMs, meta });
+
+  return response;
+} catch (error) {
+  throw error;
+}
+```
+
+A failed call is free in the reporting — the row that would carry `error` is
+never written.
+
+Incorrect:
+
+```ts
+LLMLog.create({
+  provider,
+  model,
+  messages,
+  response,
+  cost,
+  durationMs,
+});
+```
+
+Omitting the optional columns rather than setting them to `null` leaves the
+column absent instead of explicitly empty, so `meta.teamId` cannot be
+distinguished from "not applicable".
+
+Correct:
 
 ```ts
 interface LLMMeta {
@@ -3372,6 +6049,43 @@ LLMLog.create({
 });
 ```
 
+Correct:
+
+```ts
+const startedAt = Date.now();
+
+try {
+  const response = await client.chat.completions.create(payload);
+
+  logLLM({
+    provider,
+    model,
+    messages,
+    response,
+    inputTokens: response.usage?.prompt_tokens,
+    outputTokens: response.usage?.completion_tokens,
+    cost: priceOf(model, response.usage),
+    durationMs: Date.now() - startedAt,
+    error: null,
+    meta,
+  });
+
+  return response;
+} catch (error) {
+  logLLM({
+    provider,
+    model,
+    messages,
+    response: null,
+    durationMs: Date.now() - startedAt,
+    error: error instanceof Error ? error.message : String(error),
+    meta,
+  });
+
+  throw error;
+}
+```
+
 Every optional field defaults to `null` rather than being omitted, so the column
 is explicitly empty rather than absent. A new provider adapter must populate the
 same set — see [`llm/adapter-interface`](#llmadapter-interface).
@@ -3391,7 +6105,7 @@ what started it. Logging and metrics writes are the legitimate fire-and-forget
 cases — they must not block or fail a request — but that makes their own error
 handling mandatory rather than optional.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 function logLLM(params): void {
@@ -3399,9 +6113,27 @@ function logLLM(params): void {
 }
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/lib/llmLog.ts`
+```ts
+event.publish("SUPERVISING_ANSWERED", { supervisingId });
+
+res.status(204).end();
+```
+
+The publish is floating. If the bus rejects, the rejection surfaces in
+`unhandledRejection` with no indication of which route started it.
+
+Incorrect:
+
+```ts
+void metricsExporter.push(payload);
+```
+
+`void` marks the promise as deliberately unawaited and still leaves the rejection
+unhandled.
+
+Correct:
 
 ```ts
 function logLLM(params): void {
@@ -3411,10 +6143,38 @@ function logLLM(params): void {
     error,
     teamId: meta.teamId ?? null,
   }).catch((err) => {
-    console.error("Failed to write LLMLog:", err);
+    platform.logger.error({
+      message: "Failed to write LLMLog",
+      error_message: err.message,
+    });
   });
 }
 ```
+
+Correct:
+
+```ts
+event
+  .publish("SUPERVISING_ANSWERED", { supervisingId })
+  .catch((err) =>
+    platform.logger.error({
+      message: "Failed to publish SUPERVISING_ANSWERED",
+      supervisingId,
+      error_message: err.message,
+    }),
+  );
+```
+
+Correct:
+
+```ts
+await event.publish("SUPERVISING_ANSWERED", { supervisingId });
+
+res.status(204).end();
+```
+
+Awaiting is the other valid answer — the rejection then reaches
+`platform.error.handle` with the request still attached.
 
 `logLLM` returns `void` by design — a generation must not fail because its audit
 row could not be written. The `.catch` is what makes that safe.
@@ -3439,7 +6199,7 @@ Rationale: `instrumentation.ts` owns the `MeterProvider`, the
 counted. A metric emitted elsewhere misses the shared resource attributes and
 the configured export interval.
 
-Examples of **incorrect** code for this rule:
+Incorrect:
 
 ```ts
 router.post("/", async (req, res) => {
@@ -3449,9 +6209,34 @@ router.post("/", async (req, res) => {
 });
 ```
 
-Examples of **correct** code for this rule:
+Incorrect:
 
-`src/app.ts`
+```ts
+import { metrics } from "@opentelemetry/api";
+
+const meter = metrics.getMeter("agents");
+const counter = meter.createCounter("agents_created_total");
+
+router.post("/", async (req, res) => {
+  counter.add(1);
+});
+```
+
+A meter created outside `instrumentation.ts` misses the shared resource
+attributes and is not covered by the `config.metrics.enabled` gate.
+
+Incorrect:
+
+```ts
+let requestCount = 0;
+
+app.use((_req, _res, next) => {
+  requestCount += 1;
+  next();
+});
+```
+
+Correct:
 
 ```ts
 function createApp() {
@@ -3464,7 +6249,7 @@ function createApp() {
 }
 ```
 
-`src/instrumentation.ts`
+Correct:
 
 ```ts
 interface HttpMetrics {
@@ -3472,6 +6257,14 @@ interface HttpMetrics {
   requestDurationHistogram: Histogram;
   errorsCounter: Counter;
   activeRequestsGauge: UpDownCounter;
+}
+```
+
+Correct:
+
+```ts
+if (config.metrics.enabled) {
+  startPushgateway(config.metrics);
 }
 ```
 

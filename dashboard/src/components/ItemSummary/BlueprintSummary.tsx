@@ -11,7 +11,7 @@ const BlueprintSummary = ({ newItem, detailListSx }) => {
         sx={detailListSx}
         data-cy="item-summary-blueprint-area"
       >
-        {newItem.blueprints.map((blueprint) => (
+        {newItem.blueprints?.map((blueprint) => (
           <Box
             key={blueprint.id}
             sx={{

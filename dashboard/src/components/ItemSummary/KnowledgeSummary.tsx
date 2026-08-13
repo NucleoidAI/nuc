@@ -9,7 +9,10 @@ const KnowledgeSummary = ({ newItem }) => {
 
   return (
     <SummaryCard icon="mdi:book-open-outline" label="Knowledge" size={6}>
-      <Box data-cy="item-summary-knowledge-area">
+      <Box
+        data-cy="item-summary-knowledge-area"
+        sx={{ maxHeight: 300, overflowY: "auto" }}
+      >
         <KnowledgeTable
           table={table}
           selectedType="ALL"

@@ -1,91 +1,168 @@
-import BlueprintSelect from "../../components/WizardSelect/BlueprintSelect";
+import AgentStep from "../../components/AgentStep/AgentStep";
+import BlueprintsWidget from "../BlueprintsWidget/BlueprintsWidget";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import EnginesChart from "../AIMarketplace/AIMarketplaceCard";
-import { Iconify } from "@canmingir/link/platform/components";
 import ItemSummary from "../../components/ItemSummary/ItemSummary";
-import KnowledgeSelect from "../../components/WizardSelect/KnowledgeSelect";
+import Knowledge from "../Knowledge/Knowledge";
 import React from "react";
-import SelectAvatar from "../../components/AvatarSelector/AvatarSelector";
-import SparkleInput from "../../components/SparkleInput/SparkleInput";
+import type { Resolver } from "react-hook-form";
+import type { SampleAgent } from "../../components/AgentStep/AgentStep";
 import StepComponent from "../../components/StepComponent/StepComponent";
-import { cleanIconName } from "../../utils/cleanIconName";
+import useBlueprint from "../../hooks/useBlueprint";
+import { useEvent } from "@nucleoidai/react-event";
+import { useForm } from "react-hook-form";
+import useKnowledge from "../../hooks/useKnowledge";
+import { yupResolver } from "@hookform/resolvers/yup";
 
-import {
-  Avatar,
-  Box,
-  Card,
-  CardActionArea,
-  CardContent,
-  Divider,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Alert, Box, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
-function AgentWizard({ itemProperties, onSubmit, open, onClose, itemToEdit }) {
-  const sampleAgents = [
-    {
-      name: "system_agent",
-      icon: "mingcute:bank-card-line",
-      aiEngineId: "289a3c9a-f23b-421a-ac6e-f14052a2d57c",
-      engineName: "OpenAI",
-      description:
-        "A system-focused agent designed to support technical workflows, optimize architecture decisions, and improve reliability across operations.",
-    },
-    {
-      name: "insight_agent",
-      icon: "ph:coffee-bean-duotone",
-      aiEngineId: "d9c93323-3baf-4623-a96c-b85db99b4441",
-      engineName: "Claude",
-      description:
-        "An insight-driven agent that analyzes information, identifies patterns, and provides clear, data-backed guidance for decision-making.",
-    },
-    {
-      name: "order_agent",
-      icon: "ph:fire-simple-duotone",
-      aiEngineId: "123a3c9a-b23b-421a-ac6e-f14052a2d57c",
-      engineName: "DeepMind",
-      description:
-        "An order agent built to streamline communication, align processes, and manage multi-step workflows across teams and systems.",
-    },
-  ];
+import * as Yup from "yup";
 
+const names = [
+  "core_agent",
+  "logic_agent",
+  "ops_agent",
+  "task_agent",
+  "flow_agent",
+  "insight_agent",
+  "system_agent",
+  "service_agent",
+  "assist_agent",
+  "analysis_agent",
+];
+
+const descriptions = [
+  "A core automation agent designed for general workflow execution.",
+  "A logic-driven agent that assists with decision steps and rule-based operations.",
+  "An operations-focused agent optimized for task handling and process stability.",
+  "An analysis agent that interprets data, identifies patterns, and provides insights.",
+  "A service-oriented agent built to support requests, coordination, and communication.",
+];
+
+const AGENT_STEP = 0;
+const KNOWLEDGE_STEP = 1;
+const BLUEPRINT_STEP = 2;
+const SUMMARY_STEP = 3;
+
+type AgentFormValues = {
+  name: string;
+  description: string;
+  icon?: string;
+  src?: string;
+  aiEngineId: string;
+  engineName?: string;
+  teamId?: string;
+};
+
+const AgentWizardSchema = Yup.object().shape({
+  name: Yup.string().required("Agent name is required"),
+  description: Yup.string().required("Agent description is required"),
+  icon: Yup.string().required("Agent icon is required"),
+  src: Yup.string().optional(),
+  aiEngineId: Yup.string().required("AI Engine is required"),
+  engineName: Yup.string().optional(),
+  teamId: Yup.string().optional(),
+});
+
+const defaultValues: AgentFormValues = {
+  name: "",
+  description: "",
+  icon: "",
+  src: "",
+  aiEngineId: "",
+  engineName: "",
+  teamId: "",
+};
+
+function AgentWizard({ onSubmit, open, onClose, itemToEdit }) {
   const steps = ["Agent", "Knowledge", "Blueprint", "Summary"];
-
-  const stepExp = [
-    "Give agent a name, description and select an avatar that reflects your agent and select an engine for your agent.",
-    "Select the knowledge your agent should have access to.",
-    "Select the blueprints your agent should follow.",
-    "Review and confirm the details of your new agent.",
-  ];
-
-  const names = [
-    "core_agent",
-    "logic_agent",
-    "ops_agent",
-    "task_agent",
-    "flow_agent",
-    "insight_agent",
-    "system_agent",
-    "service_agent",
-    "assist_agent",
-    "analysis_agent",
-  ];
-
-  const descriptions = [
-    "A core automation agent designed for general workflow execution.",
-    "A logic-driven agent that assists with decision steps and rule-based operations.",
-    "An operations-focused agent optimized for task handling and process stability.",
-    "An analysis agent that interprets data, identifies patterns, and provides insights.",
-    "A service-oriented agent built to support requests, coordination, and communication.",
-  ];
 
   const [activeStep, setActiveStep] = React.useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [createdAgent, setCreatedAgent] = useState(null);
+  const [createError, setCreateError] = useState("");
+  const { getAgentKnowledges } = useKnowledge();
+  const { getBlueprintsByAgent } = useBlueprint();
 
-  const handleNext = () => {
+  const resolver: Resolver<AgentFormValues> = yupResolver(
+    AgentWizardSchema
+  ) as Resolver<AgentFormValues>;
+
+  const methods = useForm<AgentFormValues>({
+    resolver,
+    defaultValues,
+  });
+
+  const {
+    setValue,
+    getValues,
+    watch,
+    reset,
+    formState: { errors },
+  } = methods;
+
+  const agentValues = watch();
+
+  const [blueprintUpsertedEvent] = useEvent("BLUEPRINT_UPSERTED", {
+    Blueprint: null,
+  });
+  const [blueprintRemovedEvent] = useEvent("BLUEPRINT_REMOVED", {
+    Blueprint: null,
+  });
+  const [blueprintPatchedEvent] = useEvent("BLUEPRINT_PATCHED", {
+    Blueprint: null,
+  });
+
+  const agentId = createdAgent?.id ?? itemToEdit?.id;
+
+  const { knowledges: agentKnowledges } = getAgentKnowledges(agentId);
+  const { Blueprint: agentBlueprints } = getBlueprintsByAgent(
+    [
+      blueprintUpsertedEvent.Blueprint,
+      blueprintRemovedEvent.Blueprint,
+      blueprintPatchedEvent.Blueprint,
+    ],
+    agentId
+  );
+
+  const createAgentFromForm = async (agent: AgentFormValues) => {
+    setIsSubmitting(true);
+    setCreateError("");
+
+    const savedAgent = await onSubmit(agent);
+
+    setIsSubmitting(false);
+
+    if (!savedAgent?.id) {
+      setCreateError("Could not create the agent. Please try again.");
+      return null;
+    }
+
+    setCreatedAgent(savedAgent);
+    reset({ ...getValues(), ...savedAgent }, { keepDefaultValues: true });
+
+    return savedAgent;
+  };
+
+  const handleNext = async () => {
+    if (activeStep === AGENT_STEP) {
+      const isValid = await methods.trigger();
+
+      if (!isValid) {
+        return;
+      }
+
+      if (!agentId) {
+        const savedAgent = await createAgentFromForm(getValues());
+
+        if (!savedAgent) {
+          return;
+        }
+      }
+    }
+
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
@@ -93,278 +170,156 @@ function AgentWizard({ itemProperties, onSubmit, open, onClose, itemToEdit }) {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const emptyItem = () => ({
-    ...itemProperties.reduce(
-      (obj, property) => ({ ...obj, [property]: "" }),
-      {}
-    ),
-    knowledges: [],
-    blueprints: [],
-  });
+  const handleTemplateSelect = async (agentTpl: SampleAgent) => {
+    setValue("name", agentTpl.name, { shouldValidate: true });
+    setValue("icon", agentTpl.icon, { shouldValidate: true });
+    setValue("description", agentTpl.description, { shouldValidate: true });
+    setValue("aiEngineId", agentTpl.aiEngineId, { shouldValidate: true });
+    setValue("engineName", agentTpl.engineName, { shouldValidate: true });
 
-  const [newItem, setNewItem] = useState(emptyItem);
+    if (agentId) {
+      setActiveStep(KNOWLEDGE_STEP);
+      return;
+    }
 
-  const handleTemplateSelect = (agent) => {
-    setNewItem((prevItem) => ({
-      ...agent,
-      knowledges: prevItem.knowledges ?? [],
-      blueprints: prevItem.blueprints ?? [],
-    }));
-    setActiveStep(steps.length - 1);
+    const savedAgent = await createAgentFromForm(getValues());
+
+    if (!savedAgent) {
+      return;
+    }
+
+    setActiveStep(KNOWLEDGE_STEP);
   };
 
   useEffect(() => {
     if (itemToEdit) {
-      setNewItem({
-        knowledges: [],
-        blueprints: [],
-        ...itemToEdit,
-      });
+      reset({ ...defaultValues, ...itemToEdit });
     } else if (!open) {
-      setNewItem(emptyItem());
+      reset(defaultValues);
+      setCreatedAgent(null);
+      setCreateError("");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, itemProperties, itemToEdit]);
-
-  const toggleSelection = (property) => (item) => {
-    setNewItem((prevItem) => {
-      const current = prevItem[property] ?? [];
-      const isSelected = current.some((selected) => selected.id === item.id);
-
-      return {
-        ...prevItem,
-        [property]: isSelected
-          ? current.filter((selected) => selected.id !== item.id)
-          : [...current, item],
-      };
-    });
-  };
+  }, [open, itemToEdit]);
 
   const handleSave = async () => {
     setIsSubmitting(true);
-    await onSubmit(newItem);
+
+    if (itemToEdit) {
+      await onSubmit(getValues());
+    }
+
     setIsSubmitting(false);
-    onClose();
-    setActiveStep(0);
+    handleClose();
   };
 
-  const handleEmojiSelect = (emoji) => {
-    setNewItem((prevItem) => {
-      return {
-        ...prevItem,
-        icon: `:${emoji.id}:`,
-        src: `${emoji.src}`,
-      };
+  const handleClose = () => {
+    onClose();
+    setActiveStep(0);
+    setCreatedAgent(null);
+    setCreateError("");
+  };
+
+  const handleEmojiSelect = (emoji: { id: string; src?: string }) => {
+    setValue("icon", `:${emoji.id}:`, { shouldValidate: true });
+    setValue("src", `${emoji.src}`, { shouldValidate: true });
+  };
+
+  const handleInputChange = (
+    property: "name" | "description",
+    value: string
+  ) => {
+    setValue(property, value, { shouldValidate: true });
+  };
+
+  const handleRandomValue = (property: "name" | "description") => {
+    const randomValue =
+      property === "name"
+        ? names[Math.floor(Math.random() * names.length)]
+        : descriptions[Math.floor(Math.random() * descriptions.length)];
+
+    setValue(property, randomValue, { shouldValidate: true });
+  };
+
+  const handleEngineSelect = (engine: { id: string; vendor: string }) => {
+    const isSelected = getValues("aiEngineId") === engine.id;
+
+    setValue("aiEngineId", isSelected ? "" : engine.id, {
+      shouldValidate: true,
+    });
+    setValue("engineName", isSelected ? "" : engine.vendor, {
+      shouldValidate: true,
     });
   };
 
-  const handleInputChange = (property) => (event) => {
-    setNewItem({ ...newItem, [property]: event.target.value });
-  };
-
-  const handleRandomValue = (property) => {
-    let randomValue;
-    switch (property) {
-      case "name":
-        randomValue = names[Math.floor(Math.random() * names.length)];
-        break;
-      case "description":
-        randomValue =
-          descriptions[Math.floor(Math.random() * descriptions.length)];
-        break;
-      default:
-        randomValue = "";
-    }
-    setNewItem((prev) => ({ ...prev, [property]: randomValue }));
-  };
-
   const isAgentStepComplete = Boolean(
-    newItem["name"]?.trim() &&
-      newItem["description"]?.trim() &&
-      newItem["icon"] &&
-      newItem["aiEngineId"]
+    agentValues?.name?.trim() &&
+      agentValues?.description?.trim() &&
+      agentValues?.icon &&
+      agentValues?.aiEngineId
   );
-
-  const AgentStep = () => {
-    return (
-      <Stack spacing={3} sx={{ p: 2 }}>
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
-            gap: 3,
-            alignItems: "start",
-            p: 2,
-          }}
-        >
-          <Stack spacing={2}>
-            <SparkleInput
-              data-cy="agent-wizard-name-input"
-              prop="name"
-              value={newItem["name"]}
-              onChange={handleInputChange("name")}
-              onRandomValue={() => handleRandomValue("name")}
-              multiline={""}
-            />
-            <SparkleInput
-              data-cy="agent-wizard-description-input"
-              prop="description"
-              onChange={handleInputChange("description")}
-              onRandomValue={() => handleRandomValue("description")}
-              value={newItem["description"]}
-              multiline
-              rows={5}
-            />
-            <SelectAvatar
-              handleEmojiSelect={handleEmojiSelect}
-              newItem={newItem}
-            />
-          </Stack>
-
-          <Stack spacing={2}>
-            <EnginesChart
-              handleEngineSelect={handleEngineSelect}
-              selectedEngineId={newItem["aiEngineId"]}
-              isWizardEngine={true}
-              open={""}
-              setOpen={""}
-            />
-          </Stack>
-        </Box>
-
-        <Divider>
-          <Typography variant="body2" color="text.secondary">
-            Or choose one of the samples
-          </Typography>
-        </Divider>
-
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-            gap: 2,
-          }}
-        >
-          {sampleAgents.map((agent, index) => (
-            <Card
-              data-cy="sample-agent"
-              key={index}
-              onClick={() => handleTemplateSelect(agent)}
-              variant="outlined"
-              sx={{
-                mb: 2,
-                cursor: "pointer",
-                borderRadius: 2,
-                transformStyle: "preserve-3d",
-                transform:
-                  "perspective(1500px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)",
-                boxShadow: `
-            1px 1px 0 #161c24,
-            2px 2px 0 #161c24,
-            3px 3px 0 #161c24,
-            4px 4px 0 #161c24,
-            5px 5px 0 #161c24,
-            6px 6px 0 #161c24,
-            7px 7px 0 #161c24,
-            10px 10px 20px rgba(0, 0, 0, 0.4),
-            20px 20px 40px rgba(0, 0, 0, 0.5)
-          `,
-                transition:
-                  "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, filter 0.25s ease",
-                "&:hover": {
-                  transform:
-                    "perspective(1500px) rotateX(0deg) rotateY(-10deg) rotateZ(0deg)",
-                  filter: "brightness(1.070)",
-                  boxShadow: `
-            1px 1px 0 #161c24,
-            2px 2px 0 #161c24,
-            3px 3px 0 #161c24,
-            4px 4px 0 #161c24,
-            5px 5px 0 #161c24,
-            6px 6px 0 #161c24,
-            7px 7px 0 #161c24,
-            10px 10px 20px rgba(0, 0, 0, 0.4),
-            20px 20px 40px rgba(0, 0, 0, 0.5)
-          `,
-                },
-              }}
-            >
-              <CardActionArea sx={{ height: "100%" }}>
-                <CardContent>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1.5,
-                      mb: 1,
-                    }}
-                  >
-                    <Avatar
-                      sx={{
-                        width: 40,
-                        height: 40,
-                        color: "inherit",
-                        bgcolor: "background.neutral",
-                      }}
-                    >
-                      <Iconify icon={cleanIconName(agent.icon)} width={22} />
-                    </Avatar>
-                    <Typography variant="subtitle1" component="div" noWrap>
-                      {agent.name}
-                    </Typography>
-                  </Box>
-                  <Typography variant="body2" color="text.secondary">
-                    {agent.description}
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          ))}
-        </Box>
-      </Stack>
-    );
-  };
-
-  const handleEngineSelect = (engine) => {
-    setNewItem((prevItem) => ({
-      ...prevItem,
-      aiEngineId: prevItem.aiEngineId === engine.id ? "" : engine.id,
-      engineName: prevItem.aiEngineId === engine.id ? "" : engine.vendor,
-    }));
-  };
 
   const StepPages = () => {
     switch (activeStep) {
-      case 0:
-        return AgentStep();
-      case 1:
+      case AGENT_STEP:
         return (
-          <KnowledgeSelect
-            selected={newItem.knowledges ?? []}
-            onToggle={toggleSelection("knowledges")}
+          <>
+            {createError && (
+              <Alert severity="error" sx={{ mx: 4, mt: 2 }}>
+                {createError}
+              </Alert>
+            )}
+            <AgentStep
+              agent={agentValues}
+              onFieldChange={handleInputChange}
+              onRandomValue={handleRandomValue}
+              onEmojiSelect={handleEmojiSelect}
+              onEngineSelect={handleEngineSelect}
+              onTemplateSelect={handleTemplateSelect}
+              errors={{
+                name: errors.name?.message,
+                description: errors.description?.message,
+              }}
+            />
+          </>
+        );
+      case KNOWLEDGE_STEP:
+        return (
+          <Box
+            data-cy="agent-wizard-knowledge-step"
+            sx={{ position: "relative", height: "100%", minHeight: 400 }}
+          >
+            <Knowledge agentId={agentId} teamId={agentValues?.teamId} />
+          </Box>
+        );
+      case BLUEPRINT_STEP:
+        return (
+          <Box
+            data-cy="agent-wizard-blueprint-step"
+            sx={{ position: "relative", height: "100%", minHeight: 400 }}
+          >
+            <BlueprintsWidget agentId={agentId} teamId={agentValues?.teamId} />
+          </Box>
+        );
+      case SUMMARY_STEP:
+        return (
+          <ItemSummary
+            newItem={{
+              ...agentValues,
+              knowledges: agentKnowledges ?? [],
+              blueprints: agentBlueprints ?? [],
+            }}
           />
         );
-      case 2:
-        return (
-          <BlueprintSelect
-            selected={newItem.blueprints ?? []}
-            onToggle={toggleSelection("blueprints")}
-          />
-        );
-      case 3:
-        return <ItemSummary newItem={newItem} />;
+      default:
+        return null;
     }
   };
+
   return (
     <Dialog
       data-cy="agent-dialog"
       maxWidth={false}
-      sx={{
-        "& .MuiDialog-paper": {
-          position: "relative",
-          overflow: "visible",
-        },
-      }}
       slotProps={{
         paper: {
           sx: {
@@ -377,10 +332,7 @@ function AgentWizard({ itemProperties, onSubmit, open, onClose, itemToEdit }) {
         },
       }}
       open={open}
-      onClose={() => {
-        onClose();
-        setActiveStep(0);
-      }}
+      onClose={handleClose}
     >
       <DialogTitle
         sx={{
@@ -403,12 +355,11 @@ function AgentWizard({ itemProperties, onSubmit, open, onClose, itemToEdit }) {
       <StepComponent
         activeStep={activeStep}
         steps={steps}
-        stepExp={stepExp}
         handleNext={handleNext}
         handleBack={handleBack}
         handleSave={handleSave}
         isSubmitting={isSubmitting}
-        nextDisabled={activeStep === 0 && !isAgentStepComplete}
+        nextDisabled={activeStep === AGENT_STEP && !isAgentStepComplete}
       >
         <DialogContent
           sx={{

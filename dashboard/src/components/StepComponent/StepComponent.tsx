@@ -1,17 +1,15 @@
 import DialogActions from "@mui/material/DialogActions";
-import DialogContentText from "@mui/material/DialogContentText";
 import LinkLoadingButton from "../LinkLoadingButton";
 import React from "react";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Stepper from "@mui/material/Stepper";
 
-import { Box, Button, Stack } from "@mui/material";
+import { Box, Button } from "@mui/material";
 
 export default function StepComponent({
   activeStep,
   steps,
-  stepExp,
   handleNext,
   handleBack,
   handleSave,
@@ -49,21 +47,6 @@ export default function StepComponent({
         })}
       </Stepper>
 
-      <Stack
-        sx={{ backgroundColor: (theme) => theme.palette.background.default }}
-      >
-        <DialogContentText
-          sx={{
-            textAlign: "center",
-            my: 2,
-            mx: 5,
-            backgroundColor: (theme) => theme.palette.background.default,
-            cursor: "default",
-          }}
-        >
-          {stepExp[activeStep]}
-        </DialogContentText>
-      </Stack>
       {children}
       <DialogActions
         sx={{ backgroundColor: (theme) => theme.palette.background.default }}
@@ -93,7 +76,7 @@ export default function StepComponent({
             <Button
               variant="outlined"
               data-cy="agent-next-button"
-              disabled={nextDisabled}
+              disabled={nextDisabled || isSubmitting}
               onClick={handleNext}
             >
               Next

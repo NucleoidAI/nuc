@@ -1,11 +1,11 @@
 import {
-  Table,
+  AllowNull,
   Column,
-  Model,
   DataType,
   Default,
+  Model,
   PrimaryKey,
-  AllowNull,
+  Table,
 } from "@canmingir/link-express/sequelize";
 
 @Table({
@@ -29,7 +29,7 @@ class AIEngine extends Model {
 
   @AllowNull(false)
   @Column(DataType.TEXT)
-  declare description: string;
+  declare type: string;
 
   @AllowNull(false)
   @Column(DataType.FLOAT)

@@ -6,8 +6,24 @@
       "avatar": "https://cdn.nucleoid.com/greycollar/media/icon.png",
       "vendor": "GreyCollar",
       "model": "GreyAgent",
-      "description": "GreyCollar LLM is specialized for internal business workflows and agentic decision-making, delivering near-deterministic results.",
+      "type": "Private Cloud",
       "price": 0.0
+    },
+    {
+      "id": "ab4afc13-2c78-4fde-82d2-a7d343de9fac",
+      "avatar": "https://cdn.nucleoid.com/greycollar/media/icon.png",
+      "vendor": "OpenAI",
+      "model": "GPT-4",
+      "type": "Cloud",
+      "price": 1.2
+    },
+    {
+      "id": "b224f8bb-ec00-4c6c-aea6-761c310c00f5",
+      "avatar": "https://cdn.nucleoid.com/greycollar/media/icon.png",
+      "vendor": "Claude",
+      "model": "Opus",
+      "type": "Cloud",
+      "price": 0.6
     }
   ]
 }

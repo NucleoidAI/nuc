@@ -7,7 +7,7 @@
 **Severity: `error`**
 
 Files under `src/components/` must not import from `src/hooks/`, must not import
-`@canmingir/link/platform/http`, and must not fetch. They receive data and
+`@canmingir/link/platform/http`, and must not fetch — they receive data and
 callbacks through props.
 
 Rationale: components are the only reusable layer. A component that fetches its
@@ -69,8 +69,8 @@ reacting to a global UI signal rather than fetching.
 
 **Severity: `error`**
 
-A layer may only import downward. Specifically: `components/` must not import
-from `widgets/`, and nothing outside `pages/` may import from `pages/`.
+A layer may only import downward: `components/` must not import from `widgets/`,
+and nothing outside `pages/` may import from `pages/`.
 
 Rationale: an upward import makes the two layers one layer. `components/` stops
 being safe to reuse, and the dependency graph acquires cycles that break tree
@@ -120,7 +120,7 @@ widget, or a page — not inside a component.
 **Severity: `error`**
 
 Widgets are the only layer that combines data hooks, local state machines,
-dialogs and user intent. A widget that only forwards props to one component
+dialogs and user intent, so a widget that only forwards props to one component
 without adding orchestration should be deleted and the component used directly.
 
 Rationale: this is the layer where a feature is assembled. Concentrating the
@@ -173,7 +173,7 @@ function AgentsWidget({ teamId }) {
 
 **Severity: `error`**
 
-Layouts compose regions, tabs and slots. They must not call data hooks or
+Layouts compose regions, tabs and slots, and must not call data hooks or
 mutations.
 
 Rationale: layouts are shared across routes. A mutation inside a layout fires on
@@ -228,7 +228,7 @@ belong here. Fetching `agent` does not — the page passes it in.
 **Severity: `error`**
 
 A page resolves route params and storage keys, renders `<Page name>`, picks a
-layout and mounts widgets. Feature UI belongs in widgets and components.
+layout and mounts widgets, while feature UI belongs in widgets and components.
 
 Rationale: pages are the routing contract in `routes.tsx`. Keeping them thin
 means a route can be re-pointed without moving feature code.
@@ -295,8 +295,8 @@ own the feature's dialogs or lists.
 
 **Severity: `error`**
 
-`@canmingir/link/platform/http` may only be imported from `src/hooks/**`. Every
-other layer reaches the network through a hook.
+`@canmingir/link/platform/http` may only be imported from `src/hooks/**`, and
+every other layer reaches the network through a hook.
 
 Rationale: hooks are where cache invalidation lives. An `http` call outside a
 hook never participates in the event-dependency refetch chain, so its data goes
@@ -354,9 +354,9 @@ function useKnowledge() {
 
 **Severity: `error`**
 
-`src/http/user.ts` is the only module allowed to `import axios`. It exists to
-attach the identity-provider interceptor. Everything else uses
-`platform/http` inside a hook.
+`src/http/user.ts` is the only module allowed to `import axios`, because it
+attaches the identity-provider interceptor; everything else uses `platform/http`
+inside a hook.
 
 Rationale: a second axios instance does not carry the `Authorization`
 interceptor, so requests silently go out unauthenticated.
@@ -413,7 +413,7 @@ function useStatistics() {
 
 **Severity: `error`**
 
-Reads go through `useApi().Api(apiCall, dependencies)`. Do not hand-roll
+Reads go through `useApi().Api(apiCall, dependencies)` rather than a hand-rolled
 `useState` + `useEffect` + `try/catch` for a GET.
 
 Rationale: `Api` is the shared contract for `data`, `loading`, `error` and
@@ -472,8 +472,9 @@ Guard a missing id inside the `apiCall`, by returning `null` or a resolved
 **Severity: `error`**
 
 The `getX` functions returned by a data hook call `Api`, which calls `useState`
-and `useEffect`. They are hooks. Call them unconditionally at the top level of a
-render — never inside a condition, a loop, a callback, or an event handler.
+and `useEffect`, so they are hooks and must be called unconditionally at the top
+level of a render — never inside a condition, a loop, a callback, or an event
+handler.
 
 Rationale: `useApi.Api` runs three `useState` calls and a `useEffect` on every
 invocation. Calling `getTeamAgents()` behind an `if` changes the hook order
@@ -529,9 +530,9 @@ on demand use the returned `fetch`, not a second `getX()` call.
 
 **Severity: `error`**
 
-A read getter returns `{ <domainName>, loading, error, fetch }`, renaming `data`
-to the domain noun. A hook file exports its domain types. The hook itself
-returns an object of functions and is default-exported.
+A read getter returns `{ <domainName>, loading, error, fetch }` with `data`
+renamed to the domain noun, while the hook file exports its domain types and
+default-exports an object of functions.
 
 Rationale: every widget destructures the same four keys. Renaming `data` at the
 hook boundary is what lets a widget call two getters and disambiguate them.
@@ -587,7 +588,8 @@ export default useTeam;
 **Severity: `warn`**
 
 Mutations are `async`, wrap the request in `try/catch`, publish on success, and
-return `response?.data` or `null` on failure. Callers branch on the return value.
+return `response?.data` or `null` on failure, so callers can branch on the
+return value.
 
 Rationale: this is the established contract in `useAgents`, `useTeams` and
 `useOrganizations`. A mutation that throws instead crashes the widget that called
@@ -628,9 +630,9 @@ const deleteAgent = async (agentId) => {
 
 **Severity: `warn`**
 
-A widget that consumes a getter renders an explicit state for loading, for empty,
-and for `error`. `error` is returned by every getter and is currently unrendered
-almost everywhere — new code must not extend that gap.
+A widget that consumes a getter renders an explicit state for loading, for
+empty, and for `error` — which every getter returns and almost nothing renders
+today.
 
 Rationale: without an error branch a failed request renders as a permanently
 empty list, which is indistinguishable from "no data" and produces no signal to
@@ -682,7 +684,7 @@ render the message inline as above rather than dropping the branch.
 **Severity: `warn`**
 
 In a widget, pass `loading` through `useLoading(loading)` before rendering a
-skeleton. Use the raw `loading` only on a page's first paint.
+skeleton, and use the raw `loading` only on a page's first paint.
 
 Rationale: getters refetch whenever a subscribed event fires. Rendering the raw
 `loading` flag replaces already-visible content with a skeleton on every
@@ -732,9 +734,9 @@ is no other cache layer.
 
 **Severity: `error`**
 
-Event names are `SCREAMING_SNAKE_CASE`, domain noun first, past-tense verb last:
-`AGENT_ADDED`, `KNOWLEDGE_STATUS_CHANGED`, `TEAM_DELETED`, `AGENTS_LOADED`.
-Plural noun + `_LOADED` announces a list; singular noun + verb announces a
+Event names are `SCREAMING_SNAKE_CASE` with the domain noun first and a
+past-tense verb last — a plural noun + `_LOADED` such as `AGENTS_LOADED`
+announces a list, a singular noun + verb such as `AGENT_ADDED` announces a
 mutation.
 
 Rationale: Cypress specs wait on these names (`cy.waitEvent("AGENT_ADDED")`), so
@@ -885,10 +887,9 @@ Every `useEvent` call needs a default value — `null`, or a shaped object such 
 
 **Severity: `warn`**
 
-Events owned by the host platform rather than by this dashboard use the two-
-argument form: `publish("PLATFORM", "PROJECT_BAR_DIALOG", { open: false })`,
-`useEvent("BLUEPRINT", "GENERATING", …)`. Dashboard-local domain events use the
-one-argument form.
+Events owned by the host platform rather than by this dashboard use the
+two-argument form — `publish("PLATFORM", "PROJECT_BAR_DIALOG", { open: false })`
+— while dashboard-local domain events use the one-argument form.
 
 Rationale: the namespace marks which side of the `@canmingir/link` boundary owns
 the name, so renaming a local event stays a local change.
@@ -932,8 +933,8 @@ function Container() {
 
 **Severity: `warn`**
 
-Declare the component as a named `function`, export it as the default at the
-bottom of the file. Do not use `React.FC`.
+Declare the component as a named `function` and export it as the default at the
+bottom of the file, never with `React.FC`.
 
 Rationale: the `function` form is the majority — 109 of the 206 `.tsx` files
 declare their component that way against 85 using an arrow const, and 174 files
@@ -977,9 +978,9 @@ acceptable; `React.FC` is not.
 
 **Severity: `warn`**
 
-A component lives in a folder named after it, containing
-`ComponentName.tsx`, an optional `styles.ts`, and an `index.ts` barrel that
-re-exports the default. Importers use the folder path.
+A component lives in a folder named after it, containing `ComponentName.tsx`, an
+optional `styles.ts`, and an `index.ts` barrel re-exporting the default, which
+importers reach through the folder path.
 
 Rationale: the barrel is what allows `styles.ts` and sub-components to be added
 later without touching every import site.
@@ -1017,8 +1018,8 @@ and do not get their own barrel.
 
 **Severity: `warn`**
 
-Type props inline in the parameter position. Do not declare a separate `Props`
-interface for a single-use component, and do not rely on `prop-types`
+Type props inline in the parameter position, without a separate `Props`
+interface for a single-use component and without `prop-types`
 (`react/prop-types` is disabled).
 
 Rationale: the props list and its types stay adjacent, which is the dominant
@@ -1067,7 +1068,7 @@ Domain shapes that cross module boundaries — `Team`, `Knowledge`,
 **Severity: `warn`**
 
 Reusable `sx` objects go in a sibling `styles.ts` that default-exports a single
-plain object keyed by element role. Keep one-off layout `sx` inline.
+plain object keyed by element role, while one-off layout `sx` stays inline.
 
 Rationale: the object form keeps variant lookups (`styles[type]`) possible and
 keeps the component body readable.
@@ -1115,8 +1116,7 @@ export default styles;
 
 Colours reference theme tokens — `background.paper`, `text.secondary`,
 `error.main`, `divider` — or come from `useTheme()` via
-`theme.palette.grey[500]` and `alpha(...)`. Do not hardcode hex values for
-palette colours.
+`theme.palette.grey[500]` and `alpha(...)`, never from hardcoded hex values.
 
 Rationale: the theme is supplied by `<Platform>` from `@canmingir/link` in
 `src/index.tsx` and augmented in `src/types/theme.d.ts`, which adds
@@ -1160,11 +1160,9 @@ Gradients for agent and team avatars come from `src/utils/gradient.ts`
 
 **Severity: `warn` — automated (`sort-imports`)**
 
-`.eslintrc.json` sets
-`memberSyntaxSortOrder: ["none", "single", "multiple", "all"]`. Single-member
-imports come first in a case-sensitive alphabetical block, then multi-member
-imports, also sorted, with members inside the braces sorted too. The codebase
-separates the two blocks with a blank line.
+Per the `memberSyntaxSortOrder` in `.eslintrc.json`, single-member imports come
+first in a case-sensitive alphabetical block, then multi-member imports — also
+sorted, with members inside the braces sorted too — separated by a blank line.
 
 Rationale: enforced by `npm run lint`, which runs with `--max-warnings 0`.
 
@@ -1205,8 +1203,8 @@ from the package root (`{ Box, Grid, Typography }`) in the multi-member block.
 
 **Severity: `warn` — automated (`no-restricted-imports`)**
 
-`@mui/lab/LoadingButton` is banned. Use `LinkLoadingButton`. The ban is lifted
-only inside `**/LinkLoadingButton/**` and `LinkLoadingButton.tsx`.
+`@mui/lab/LoadingButton` is banned in favour of `LinkLoadingButton`, except
+inside `**/LinkLoadingButton/**` and `LinkLoadingButton.tsx`.
 
 Examples of **incorrect** code for this rule:
 
@@ -1231,8 +1229,8 @@ import LinkLoadingButton from "../../components/LinkLoadingButton";
 **Severity: `error`**
 
 Hosts, socket paths, feature flags and identity-provider settings come from
-`config` (`import config from "../../config"`). Never inline a URL, and never
-branch on `window.location` outside `config.js`.
+`config` (`import config from "../../config"`), never from an inlined URL or a
+`window.location` branch outside `config.js`.
 
 Rationale: `config.js`, `config.live.js` and `config.land.js` are per-deployment
 variants of the same shape, and they disagree on exactly these values —
@@ -1279,7 +1277,7 @@ const visibleTabs = useMemo(
 **Severity: `warn`**
 
 Read and write session-scoped values through `storage` from
-`@nucleoidjs/webstorage`. Use the two-argument form
+`@nucleoidjs/webstorage`, using the two-argument form
 (`storage.get("link", "accessToken")`) for values owned by the platform.
 
 Rationale: `storage` is the same accessor the platform writes through, and it
@@ -1325,9 +1323,8 @@ platform never sees, such as the connection-overlay toggle in
 **Severity: `error`**
 
 Every element a user clicks, types into, or asserts on carries a `data-cy`
-attribute. Names are kebab-case and scoped by component:
-`agent-card`, `agent-card-menu-edit`, `agent-wizard-name-input`,
-`add-new-button`.
+attribute, kebab-case and scoped by component: `agent-card`,
+`agent-card-menu-edit`, `agent-wizard-name-input`.
 
 Rationale: `cypress/support/commands.ts` selects exclusively through
 `cy.getBySel`. An interactive element without `data-cy` is untestable.
@@ -1362,8 +1359,8 @@ Examples of **correct** code for this rule:
 
 **Severity: `error`**
 
-Specs select with `cy.getBySel("…")`. Never select by CSS class, MUI-generated
-class name, tag structure, or visible text.
+Specs select with `cy.getBySel("…")`, never by CSS class, MUI-generated class
+name, tag structure, or visible text.
 
 Rationale: class names and copy change without behaviour changing; `data-cy` is
 the only stable contract between the component and the spec.
@@ -1432,8 +1429,8 @@ event breaks specs that never import it.
 
 Forms use `react-hook-form` with a Yup schema through `yupResolver`, rendered
 with `FormProvider` and `RHFTextField` from
-`@canmingir/link/platform/components`, and validated with `mode: "onChange"`.
-Do not hand-roll field state or validation.
+`@canmingir/link/platform/components` and validated with `mode: "onChange"`,
+never with hand-rolled field state or validation.
 
 Rationale: `FormProvider`/`RHFTextField` read the form context to wire values,
 errors and helper text. A raw MUI `TextField` inside a `FormProvider` renders but
@@ -1598,7 +1595,7 @@ const handleChangeType = (event) => {
 **Severity: `error`**
 
 A dialog receives `open` plus intent callbacks — `onClose`, `onConfirm`,
-`onSubmit`. It must not receive the parent's `useState` setter.
+`onSubmit` — and never the parent's `useState` setter.
 
 Rationale: a setter prop hands the child write access to the parent's state, so
 the parent can no longer run anything on close. `AgentsWidget` needs to clear
@@ -1705,8 +1702,8 @@ Examples of **correct** code for this rule:
 **Severity: `warn`**
 
 A dialog opened from inside another dialog sets
-`zIndex: (theme) => theme.zIndex.modal + 3`. A `Select` menu inside such a dialog
-sets `MenuProps.sx.zIndex` to `theme.zIndex.modal + 4`.
+`zIndex: (theme) => theme.zIndex.modal + 3`, and a `Select` menu inside such a
+dialog sets `MenuProps.sx.zIndex` to `theme.zIndex.modal + 4`.
 
 Rationale: MUI gives every modal the same base `zIndex`, so a nested dialog ties
 with its parent and renders behind it depending on mount order. The `+3` / `+4`
@@ -1755,8 +1752,8 @@ Examples of **correct** code for this rule:
 **Severity: `error`**
 
 Every `setInterval` and `setTimeout` started in an effect is cleared in that
-effect's cleanup. A timer started outside React clears itself on its own exit
-condition.
+effect's cleanup, while a timer started outside React clears itself on its own
+exit condition.
 
 Rationale: this codebase polls. `useChat` refreshes messages every 2s and
 `TasksWidget` polls task steps every 2s. An uncleared interval keeps firing after
@@ -1817,9 +1814,9 @@ const intervalId = setInterval(async () => {
 
 **Severity: `error`**
 
-An effect that opens a socket returns a cleanup that calls `socket.off` for every
-`socket.on` it registered, then `socket.disconnect()`. Code that replaces a live
-socket tears the old one down the same way before creating the new one.
+An effect that opens a socket returns a cleanup calling `socket.off` for every
+`socket.on` it registered and then `socket.disconnect()`, and code replacing a
+live socket tears the old one down the same way first.
 
 Rationale: `io()` reuses connections. Registering `ai_message` twice appends
 every AI reply to the conversation twice. Disconnecting without `off` leaves the
@@ -1877,10 +1874,10 @@ props.
 
 **Severity: `warn`**
 
-`react-hooks/exhaustive-deps` may be suppressed only where the dependency array
-is deliberately not the full closure: a mount-only socket or timer setup, or a
-dependency list assembled from `eventDependencies` and `fetchState`. Suppress on
-the single line, never for a file, and never to silence a stale-closure bug.
+`react-hooks/exhaustive-deps` may be suppressed only on the single line where
+the dependency array is deliberately not the full closure — a mount-only socket
+or timer setup, or a list assembled from `eventDependencies` and `fetchState` —
+never for a whole file and never to silence a stale-closure bug.
 
 Rationale: `plugin:react-hooks/recommended` is on and `lint` runs with
 `--max-warnings 0`, so the suppression is a deliberate, reviewable act. The
@@ -1937,9 +1934,8 @@ composes, so the rule cannot see it.
 
 **Severity: `error`**
 
-`tsconfig.json` sets `strict: false` and `noImplicitAny: false`. Because the
-compiler will not infer or complain, props and exported domain shapes must be
-typed by hand.
+Because `tsconfig.json` sets `strict: false` and `noImplicitAny: false`, props
+and exported domain shapes must be typed by hand.
 
 Rationale: with `noImplicitAny` off, an untyped prop is `any`, and `any` flows
 through the whole render silently. The prop annotation is the only contract a
@@ -1992,7 +1988,7 @@ resource — `Team`, `TeamInput` in `useTeams.ts`, `Knowledge`, `KnowledgeInput`
 
 **Severity: `warn`**
 
-Import with relative paths. Do not use the `@/*` alias.
+Import with relative paths, not the `@/*` alias.
 
 Rationale: `tsconfig.json` declares `paths: { "@/*": ["src/*"] }`, but no file in
 `src` uses it and the Vite config is produced by `@canmingir/link/vite`, which
@@ -2122,9 +2118,9 @@ component. A trailing `{ id: "", label: "" }` reserves the actions column.
 
 **Severity: `warn`**
 
-Format dates through `src/utils/formatTime.ts` and its `formatStr` presets. Do
-not call `toLocaleDateString`, `toLocaleString`, or `dayjs` directly in a
-component.
+Format dates through `src/utils/formatTime.ts` and its `formatStr` presets,
+never by calling `toLocaleDateString`, `toLocaleString`, or `dayjs` directly in
+a component.
 
 Rationale: `formatTime` extends dayjs with the `duration` and `relativeTime`
 plugins once at module load and fixes the presets — `DD MMM YYYY h:mm a` and
@@ -2166,9 +2162,9 @@ Sorting still uses raw timestamps — `new Date(a.createdAt).getTime()` in
 
 **Severity: `warn`**
 
-Icons render through `<Iconify icon="…" />`. Any icon name that came from the
-server or from user input passes through `cleanIconName` first. Do not inline the
-trimming regex.
+Icons render through `<Iconify icon="…" />`, and any icon name that came from
+the server or from user input passes through `cleanIconName` first rather than
+an inlined trimming regex.
 
 Rationale: stored icon names arrive wrapped in stray colons, and
 `cleanIconName` is the single place that strips them. An inline
@@ -2210,10 +2206,9 @@ call. The avatar and team icon sets live in `src/lib/AgentAndTeamAvatars.ts`.
 **Severity: `warn`**
 
 Loading placeholders live in `src/components/Skeletons/` and are named after the
-screen or card they stand in for: `AgentSkeleton`, `AgentsSkeleton`,
-`KnowledgeBaseSkeleton`, `SupervisingSkeleton`, `BlueprintFlowSkeleton`. A new
-screen adds its own rather than reusing a mismatched one or dropping in a bare
-`<Skeleton />`.
+screen or card they stand in for — `AgentSkeleton`, `KnowledgeBaseSkeleton`,
+`BlueprintFlowSkeleton` — so a new screen adds its own rather than reusing a
+mismatched one or dropping in a bare `<Skeleton />`.
 
 Rationale: the placeholder should occupy the same space as the content it
 replaces, otherwise the page reflows on load. Naming them per screen is what
@@ -2264,7 +2259,7 @@ for one region inside a layout, as `AgentLayout` does for the profile card.
 **Severity: `error`**
 
 `src/utils/`, `src/lib/` and `src/constants/` contain pure functions and static
-data. They must not import React, call hooks, render JSX, or reach the network.
+data, and must not import React, call hooks, render JSX, or reach the network.
 
 Rationale: they are imported by every layer including `components/`. A hook call
 inside a util would silently impose the Rules of Hooks on every call site. The
@@ -2301,8 +2296,8 @@ in `src/utils/gradient.ts` — and the caller supplies it from `useTheme()`.
 
 **Severity: `warn`**
 
-`utils/` uses named exports, one concern per file, file named after the export.
-`constants/` and single-object modules default-export the object.
+`utils/` uses named exports with one concern per file named after the export,
+while `constants/` and single-object modules default-export the object and
 `lib/` exports named static data.
 
 Rationale: named exports in `utils/` are what let `import { cleanIconName }`
@@ -2369,8 +2364,8 @@ throwing, because their callers render the fallback inline.
 **Severity: `warn`**
 
 Conversion between the server's blueprint graph and the `@xyflow/react` node and
-edge shapes lives in `src/components/BlueprintFlow/flowAdapter.ts`. Layout goes
-through `src/utils/flowLayout.ts`. Nodes and widgets consume the converted shape.
+edge shapes lives in `src/components/BlueprintFlow/flowAdapter.ts` with layout
+in `src/utils/flowLayout.ts`, and nodes and widgets consume the converted shape.
 
 Rationale: the server graph nests targets under `item.true` / `item.false` for
 `CONDITION` nodes and carries display data under `item.properties`. That
@@ -2445,10 +2440,10 @@ tab.
 
 **Severity: `warn`**
 
-A blueprint is validated before it is persisted. Validation lives in
-`BlueprintFlow/Validation/validation.ts`, returns
-`{ isValid, errors }` with `errors` carrying enough to point at the offending
-edge, and the widget renders those errors rather than blocking silently.
+A blueprint is validated before it is persisted by
+`BlueprintFlow/Validation/validation.ts`, which returns `{ isValid, errors }`
+carrying enough to point at the offending edge for the widget to render rather
+than blocking silently.
 
 Rationale: the error shape — `nodeId`, `nodeLabel`, `nextNodeId`,
 `nextNodeLabel`, `missingProperties`, `message` — is what lets
@@ -2511,9 +2506,8 @@ const nodeErrors = validationErrors.filter(
 **Severity: `error`**
 
 Text authored by a model or returned by the API renders through
-`components/MarkdownRenderer`. Do not drop a raw `ReactMarkdown` into a feature
-with default element mapping, and do not render model output as a plain string
-when it may contain markdown.
+`components/MarkdownRenderer`, not through a raw `ReactMarkdown` with default
+element mapping and not as a plain string when it may contain markdown.
 
 Rationale: `MarkdownRenderer` maps every markdown element onto MUI —
 headings to `Typography` variants, lists to `Box component="ul"` with
@@ -2556,8 +2550,8 @@ than adding a second renderer.
 **Severity: `error`**
 
 `dangerouslySetInnerHTML` is permitted only for SVG bodies read out of the
-bundled `@iconify/json` icon sets. It must never receive API data, model output,
-or anything derived from user input.
+bundled `@iconify/json` icon sets, and must never receive API data, model
+output, or anything derived from user input.
 
 Rationale: icon bodies are static JSON compiled into the bundle at build time —
 there is no injection path. Everything else in this app is attacker-influenced:
@@ -2605,7 +2599,7 @@ resolves through the icon runtime instead of injecting markup.
 
 **Severity: `warn`**
 
-Style MUI components with `sx`. Reserve the `style` prop for non-MUI elements
+Style MUI components with `sx`, reserving the `style` prop for non-MUI elements
 that do not accept `sx` — raw `svg`, third-party canvas nodes — and for values
 that must bypass the emotion cache.
 
@@ -2719,8 +2713,8 @@ supervision reply at random because varying the wording is the point.
 
 **Severity: `error`**
 
-Every package imported from `src` appears in this project's `package.json`.
-Do not rely on a transitive dependency of `@canmingir/link` resolving at the
+Every package imported from `src` appears in this project's `package.json`,
+never relying on a transitive dependency of `@canmingir/link` resolving at the
 top of `node_modules`.
 
 Rationale: `react-apexcharts` is imported by four files and is declared nowhere
@@ -2766,8 +2760,8 @@ imported by nothing in `src`. Charts here are ApexCharts.
 **Severity: `warn`**
 
 Chart options are built with `useChart` from
-`@canmingir/link/platform/components`, passing only the chart-specific overrides.
-Do not assemble a full ApexCharts options object by hand.
+`@canmingir/link/platform/components`, passing only the chart-specific overrides
+rather than a full hand-assembled ApexCharts options object.
 
 Rationale: `useChart` supplies the house defaults — palette, fonts, grid,
 legend, tooltip theme — merged with the overrides. A hand-built options object
@@ -2813,8 +2807,8 @@ array, matching `UsageChart`.
 
 **Severity: `error`**
 
-`postMessage` names an explicit target origin. Never `"*"`. The listener checks
-`event.origin` before trusting the payload.
+`postMessage` names an explicit target origin — never `"*"` — and the listener
+checks `event.origin` before trusting the payload.
 
 Rationale: the OAuth popup carries an authorization `code`. Posting it with `"*"`
 hands it to whatever document happens to own the opener, which is the whole
@@ -2857,11 +2851,9 @@ The callback page is the one legitimate page with no layout, no `<Page>` and a
 
 **Severity: `warn`**
 
-Tokens are read with the two-argument `storage` form under the `link`
-namespace — `storage.get("link", "accessToken")`,
-`storage.get("link", "refreshToken")`, `storage.get("link", "identityProvider")`.
-Never read a token from a bare key, and never put one in component state or a
-query string.
+Tokens are read with the two-argument `storage` form under the `link` namespace
+— `storage.get("link", "accessToken")` — never from a bare key, and never held
+in component state or a query string.
 
 Rationale: the platform owns the `link` namespace and writes the tokens there
 after login. A bare `storage.get("accessToken")` reads a different slot and
@@ -2900,9 +2892,9 @@ parameterised.
 **Severity: `warn`**
 
 Slash commands for the chat input are declared as data in
-`src/components/ChatInput/chat.config.ts`: a `name`, `description`, `icon`, an
-`action`, and a `next` chain describing the prompts. Adding a command means
-adding an entry, not branching in the editor.
+`src/components/ChatInput/chat.config.ts` — a `name`, `description`, `icon`, an
+`action`, and a `next` chain describing the prompts — so adding a command means
+adding an entry rather than branching in the editor.
 
 Rationale: `CommandList`, `CommandComponent` and the Slate editor all walk the
 same declarative tree to render suggestions, collect inputs and dispatch. A
@@ -3080,8 +3072,8 @@ Cypress.Commands.add("verifyAgentCard", (agent, index) => {
 **Severity: `warn`**
 
 Route stubs are grouped into named setup commands — `setAgentIntercept`,
-`chatPageIntercept`, `platformSetup` — and called from `beforeEach` or at the
-top of a test. Do not scatter `cy.intercept` through assertions.
+`chatPageIntercept`, `platformSetup` — called from `beforeEach` or the top of a
+test, not scattered through assertions.
 
 Rationale: a screen needs its whole dependency set stubbed before it mounts,
 because the widgets fetch on mount and refetch on every published event. Stubbing
@@ -3131,9 +3123,10 @@ routes so the app boots with a selected team. Call it before `cy.visit`.
 
 **Severity: `warn`**
 
-Fixtures live at `cypress/fixtures/<feature>-page/<scenario>/<resource>.<verb>.json`.
-The verb is the HTTP method the fixture answers: `.get.json`, `.post.json`,
-`.put.json`, `.patch.json`, `.delete.json`. A fixture that is shared across
+Fixtures live at
+`cypress/fixtures/<feature>-page/<scenario>/<resource>.<verb>.json`, where the
+verb is the HTTP method the fixture answers (`.get.json`, `.post.json`,
+`.put.json`, `.patch.json`, `.delete.json`) and a fixture shared across
 scenarios sits at the feature root without a verb.
 
 Rationale: a single test walks several states of the same resource — the list
@@ -3167,9 +3160,9 @@ cypress/fixtures/chat-page/messages/messages.reply.post.json
 
 **Severity: `error`**
 
-A render throw must be contained. There is no error boundary anywhere in this
-app today, so any exception thrown during render unmounts the entire tree and
-leaves a blank page with the error only in the console.
+A render throw must be contained — there is no error boundary anywhere in this
+app today, so any exception during render unmounts the entire tree and leaves a
+blank page with the error only in the console.
 
 Rationale: this is not hypothetical. `useApi` initialises `data` to `null`, and
 on a failed request it sets `error`, sets `loading` false, and leaves `data` at
@@ -3250,9 +3243,9 @@ widget.
 
 **Severity: `error`**
 
-Do not hold cross-component state in a mutable module-scope object and reach it
-through an exported setter. Cross-component signalling goes through
-`publish` / `useEvent`; parent-to-child goes through props.
+Cross-component state is never held in a mutable module-scope object reached
+through an exported setter: signalling goes through `publish` / `useEvent`, and
+parent-to-child goes through props.
 
 Rationale: a module singleton is initialised once per module instance, not per
 mount. Two `PopChat` instances overwrite each other's callback, the value
@@ -3371,7 +3364,7 @@ the document title. They are different concerns and both are needed.
 
 View state that should survive a reload or be shareable by URL — the active tab,
 a selected filter — lives in the query string, written with
-`navigate(..., { replace: true })`. Transient state stays in `useState`.
+`navigate(..., { replace: true })`, while transient state stays in `useState`.
 
 Rationale: `replace: true` keeps tab switches out of the history stack, so the
 browser back button leaves the page rather than walking back through tabs. The
@@ -3429,8 +3422,8 @@ because it is user-supplied input.
 
 **Severity: `warn`**
 
-A package declared in `package.json` is imported by something. Remove entries
-that nothing uses.
+A package declared in `package.json` is imported by something, and entries that
+nothing uses are removed.
 
 Rationale: the companion to
 [`deps/declare-what-you-import`](#depsdeclare-what-you-import). Unused entries
@@ -3473,8 +3466,8 @@ absent is the problem, not rare.
 
 **Severity: `warn`**
 
-A configured tool is either wired up and working or removed. Do not leave config
-files for a runner that never executes.
+A configured tool is either wired up and working or removed, with no config
+files left behind for a runner that never executes.
 
 Rationale: dead config reads as coverage that does not exist. Three pieces of
 this repo currently claim more than they deliver:
@@ -3526,7 +3519,7 @@ story. Either is defensible; the current middle is not.
 
 **Severity: `warn`**
 
-Import each module once per file. Merge the members into a single declaration
+Import each module once per file, merging the members into a single declaration
 rather than splitting them across several.
 
 Rationale: `sort-imports` sorts declarations by their first member, so splitting
@@ -3580,8 +3573,8 @@ five declarations, and `TeamChart.tsx`, `KnowledgeTable.tsx` and
 
 **Severity: `warn`**
 
-Demo, seed and placeholder data is a named module-scope constant, declared above
-the component and named for what it is. Never inline a fake record among real
+Demo, seed and placeholder data is a named module-scope constant declared above
+the component and named for what it is, never a fake record inlined among real
 fetched values inside a render.
 
 Rationale: placeholder data that sits in the render body is indistinguishable
@@ -3645,7 +3638,7 @@ there is more than one constant.
 **Severity: `error`**
 
 A control whose only content is an icon carries an `aria-label` describing the
-action. This covers `IconButton`, `Fab`, and any clickable `Box` wrapping an
+action, covering `IconButton`, `Fab`, and any clickable `Box` wrapping an
 `Iconify`.
 
 Rationale: `Iconify` renders an SVG with no text node, so an icon-only button has
@@ -3746,8 +3739,8 @@ that can stack needs an id derived from its subject.
 
 **Severity: `error`**
 
-Never disable ESLint for a whole file with a bare `/* eslint-disable */`. Scope
-every suppression to the specific rule, and prefer the single-line form.
+Never disable ESLint for a whole file with a bare `/* eslint-disable */` — scope
+every suppression to the specific rule, preferring the single-line form.
 
 Rationale: `lint` runs with `--max-warnings 0` and is one of only two checks CI
 performs. A blanket disable removes the file from that gate entirely — not just
@@ -3858,7 +3851,7 @@ rule.
 
 **Severity: `warn`**
 
-Relative imports omit the file extension. Do not write `./AgentCard.js` for a
+Relative imports omit the file extension, so never write `./AgentCard.js` for a
 file that is `AgentCard.tsx`.
 
 Rationale: 26 import sites carry an extension, and every one of them names an
@@ -3909,8 +3902,8 @@ import {
 
 **Severity: `warn`**
 
-The barrel file in a component folder is named `index.ts`. Do not name it after
-the component.
+The barrel file in a component folder is named `index.ts`, not after the
+component.
 
 Rationale: the barrel exists so importers can write the folder path. A barrel
 named `TitleBar.ts` sitting beside `TitleBar.tsx` gives the folder two files that
@@ -4017,7 +4010,7 @@ real filename — see
 
 **Severity: `error`**
 
-A list rendered from fetched data keys on the entity id. `key={index}` is
+A list rendered from fetched data keys on the entity id, with `key={index}`
 permitted only for fixed-length placeholder arrays that hold no state.
 
 Rationale: React uses the key to decide which DOM node and which component state
@@ -4081,8 +4074,8 @@ not. Check what the array holds before copying either.
 
 **Severity: `error`**
 
-A file's default export has the same name as the file. A component in
-`AgentCard.tsx` is `AgentCard`; a hook in `useAgents.ts` is `useAgents`.
+A file's default export has the same name as the file: a component in
+`AgentCard.tsx` is `AgentCard`, and a hook in `useAgents.ts` is `useAgents`.
 
 Rationale: the default export name is what every import site chooses, and the
 filename is what search and the file tree show. When they disagree, neither
@@ -4134,8 +4127,8 @@ whichever name is right for the thing and move the other to match.
 
 **Severity: `warn`**
 
-Files exporting a React component are `PascalCase.tsx`. Hooks are
-`useThing.ts`. Everything else — utils, config, adapters — is `camelCase.ts`.
+Files exporting a React component are `PascalCase.tsx`, hooks are `useThing.ts`,
+and everything else — utils, config, adapters — is `camelCase.ts`.
 
 Rationale: the case is the fastest signal of what a file contains, and it is
 consistent across all but three files in `src`.
@@ -4205,7 +4198,7 @@ the wire and the UI noun in the interface, as that hook does.
 
 **Severity: `warn`**
 
-A hook module default-exports its hook. Named exports are for the extra
+A hook module default-exports its hook, reserving named exports for the extra
 helpers the module also provides.
 
 Rationale: 26 of the 27 hooks default-export, so `import useThing from "../hooks/useThing"`
@@ -4253,7 +4246,7 @@ The hook is the default; `readSessions` is a named export precisely because
 **Severity: `warn`**
 
 `@emotion/css` and its `css` template literal are confined to the Slate editor
-subtree under `src/components/ChatInput/`. Everywhere else styles with `sx`.
+subtree under `src/components/ChatInput/`, and everywhere else styles with `sx`.
 
 Rationale: Slate's leaf and element renderers hand you a `className`, not an MUI
 component, so `sx` has nothing to attach to and a real class name is required.
@@ -4314,8 +4307,8 @@ also a `naming/file-matches-default-export` case, since the file is
 **Severity: `error`**
 
 Every event name passed to `useEvent` is published by something — this app or
-`@canmingir/link`. Every name passed to `publish` has at least one subscriber, or
-is deliberately documented as broadcast-only.
+`@canmingir/link` — and every name passed to `publish` has at least one
+subscriber or is deliberately documented as broadcast-only.
 
 Rationale: the event bus is untyped and silent. A subscription to a name nobody
 publishes compiles, lints, renders, and simply never fires — which, because
@@ -4385,7 +4378,7 @@ every `useEvent("NAME"` — and check anything unmatched against
 
 **Severity: `error`**
 
-`publish` is a side effect. Call it from an event handler, a mutation, or a
+`publish` is a side effect, called from an event handler, a mutation, or a
 `useEffect` — never from the body of a hook or component that runs during
 render.
 
@@ -4466,8 +4459,9 @@ any of those names without moving the publish into an effect will loop.
 
 **Severity: `error`**
 
-A getter that returns a collection defaults it to `[]`. A getter that returns a
-single record may return `null`, and its consumers use optional chaining.
+A getter that returns a collection defaults it to `[]`, while a getter that
+returns a single record may return `null` for consumers to reach with optional
+chaining.
 
 Rationale: `useApi` initialises `data` to `null` and leaves it `null` when a
 request fails, so every consumer that calls `.map`, `.filter` or `.length`
@@ -4528,8 +4522,8 @@ nullable, which is why pages write `team?.name`.
 
 **Severity: `warn`**
 
-Events owned by `@canmingir/link` are subscribed to, not published. Treat them
-as input from the shell.
+Events owned by `@canmingir/link` are subscribed to rather than published,
+treated as input from the shell.
 
 Rationale: four names in use here originate in the platform package —
 `PROJECT_SELECTED` from `layouts/common/ProjectBar`, `ITEM_SELECTED` from
@@ -4581,8 +4575,8 @@ To ask the shell to change team, drive its UI — publish
 
 **Severity: `warn`**
 
-A new destination is registered in both `routes.tsx` and `config.menu.js`. The
-route decides what renders; the menu decides whether anyone can reach it.
+A new destination is registered in both `routes.tsx`, which decides what
+renders, and `config.menu.js`, which decides whether anyone can reach it.
 
 Rationale: they are separate files with no shared source, so a route without a
 menu entry is reachable only by typing the URL, and a menu entry without a route

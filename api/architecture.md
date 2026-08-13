@@ -7,7 +7,7 @@
 **Severity: `error`**
 
 A route handler validates input, authorizes against the session tenant, calls a
-function, and maps the result to a status code. Persistence, derivation and
+function, and maps the result to a status code — persistence, derivation and
 domain rules belong in `functions/`.
 
 Rationale: logic in a route can only ever be reached over HTTP. It cannot be
@@ -73,8 +73,8 @@ re-read inside the function.
 **Severity: `error`**
 
 A function in `functions/` takes a single destructured object of domain
-arguments, returns a domain value, and throws on failure. It never receives
-`req` or `res`, and never references status codes.
+arguments, returns a domain value, throws on failure, and never receives `req`
+or `res` or references status codes.
 
 Rationale: the same functions serve HTTP routes, the internal `/internal/knowledge`
 endpoint in `server.ts`, and seven event subscriptions in `app.ts`. A function
@@ -134,7 +134,7 @@ Sequelize instance keeps the model out of the caller's hands.
 
 **Severity: `error`**
 
-`lib/` translates between this application and an external SDK. It must not
+`lib/` translates between this application and an external SDK, and must not
 contain tenant rules, plan checks, or any decision that depends on domain state.
 
 Rationale: `lib/` is selected at runtime by provider key. A policy placed in one
@@ -185,8 +185,9 @@ pure, provider-agnostic helpers with their own unit specs under `lib/test/`.
 
 **Severity: `error`**
 
-A field a route accepts is defined in `schemas/`; a field it persists is defined
-in `models/`. Code must not read or write attributes that appear in neither.
+A field a route accepts is defined in `schemas/` and a field it persists is
+defined in `models/`, so code must not read or write attributes that appear in
+neither.
 
 Rationale: `schemas/` is what the client is promised, `models/` is what the
 database holds, and drift between them surfaces as silently dropped fields
@@ -251,9 +252,9 @@ The two agree field for field. Change them together, and update the specs and
 
 **Severity: `error`**
 
-`res.status(n)` only sets a number on the response object. Every branch that
-means "stop" must both send and return: `return res.status(404).end()` or
-`return res.status(401).json({ message })`.
+Every branch that means "stop" must both send and return —
+`return res.status(404).end()` — because `res.status(n)` on its own only sets a
+number on the response object.
 
 Rationale: this is the single most damaging pattern in this codebase. A bare
 `res.status(401);` sets the code, execution continues into the code that was
@@ -321,7 +322,7 @@ The same file contains both shapes. The `return` is the whole difference.
 
 **Severity: `error`**
 
-The tenant check runs, and returns, before any create, update or destroy. Never
+The tenant check runs, and returns, before any create, update or destroy — never
 authorize and mutate in sequence without a `return` between them.
 
 Rationale: this is [`http/terminate-every-response`](#httpterminate-every-response)
@@ -529,7 +530,7 @@ Distinct paths that merely look similar are fine — `POST /blueprints` and
 **Severity: `error`**
 
 Reads and writes are scoped to `req.session.projectId` in the query itself
-wherever the model carries `teamId`. Do not fetch globally and compare
+wherever the model carries `teamId`, never fetched globally and compared
 afterwards.
 
 Rationale: `app.ts` declares `req.session` with `userId`, `appId`,
@@ -591,8 +592,8 @@ instead. Keep that shape; the dashboard reads `agent.AIEngine.vendor`.
 
 **Severity: `error`**
 
-Every handler either scopes to `req.session.projectId`, or is a deliberately
-global resource with a comment saying so. There is no third case.
+Every handler either scopes to `req.session.projectId` or is a deliberately
+global resource with a comment saying so — there is no third case.
 
 Rationale:
 [`http/scope-queries-to-session-tenant`](#httpscope-queries-to-session-tenant)
@@ -681,7 +682,7 @@ route's own file, not in a reviewer's memory.
 **Severity: `error`**
 
 A function that lists rows takes the scope as an argument and applies it in the
-query. A bare `Model.findAll()` with no `where` is a cross-tenant read.
+query, because a bare `Model.findAll()` with no `where` is a cross-tenant read.
 
 Rationale: routes are thin by rule, so the tenant filter lives in the function.
 `communication.list()` takes no arguments at all and returns every row in the
@@ -786,7 +787,7 @@ res.status(204).end();
 
 **Severity: `error`**
 
-Request validation uses Joi. Do not introduce a second validation library.
+Request validation uses Joi, and no second validation library is introduced.
 
 Rationale: `schemas/` currently contains both — Joi in eleven files consumed as
 `Joi.attempt(body, schemas.Agent)`, and Zod in `Blueprint.ts` and `Node.ts`
@@ -833,7 +834,7 @@ settled, settle it — and add the winner to `dependencies`.
 
 **Severity: `error`**
 
-Every route validates its params, query and body before use. Path ids are
+Every route validates its params, query and body before use, with path ids
 validated as GUIDs.
 
 Rationale: an unvalidated id reaches Sequelize directly, and an unvalidated body
@@ -947,8 +948,7 @@ Multi-operation resources use a named map, as `Supervising.create` and
 
 Functions signal failure by throwing — either a platform error class from
 `@canmingir/link-express/error`, or an `Error` whose message is an
-`UPPER_SNAKE_CASE` code. Never return `null` to mean failure, and never return an
-HTTP shape.
+`UPPER_SNAKE_CASE` code — never by returning `null` or an HTTP shape.
 
 Rationale: the code is the contract. `platform.error.handle`, mounted last in
 `app.ts`, maps thrown errors to responses, and a code survives being logged,
@@ -997,7 +997,7 @@ platform handler already knows their status codes.
 
 **Severity: `error`**
 
-Diagnostics go through `platform.logger`. `console.log` must not ship.
+Diagnostics go through `platform.logger`, and `console.log` must not ship.
 
 Rationale: `platform.logger` is structured and is what the OpenTelemetry
 instrumentation and the Prometheus pushgateway are wired to; `console.log` is
@@ -1201,8 +1201,8 @@ class Agent extends Model<AgentAttributes> {}
 
 **Severity: `error`**
 
-An `as:` alias names what you get when you traverse it. Plural on `hasMany` and
-`belongsToMany`; singular on `belongsTo` and `hasOne`. Do not reuse one alias for
+An `as:` alias names what you get when you traverse it — plural on `hasMany` and
+`belongsToMany`, singular on `belongsTo` and `hasOne` — and is never reused for
 both sides of a pair.
 
 Rationale: the alias becomes the property name and the `include` key. A plural
@@ -1261,8 +1261,8 @@ because Sequelize fails at query time, not at startup.
 **Severity: `warn`**
 
 Associations are declared in `init()` in `src/models/models.ts`, grouped by pair
-with the models obtained from `platform.getModules()`. Do not declare them inside
-individual model files.
+with the models obtained from `platform.getModules()`, never inside individual
+model files.
 
 Rationale: associations are inherently two-sided, and the platform owns the
 Sequelize instance. Declaring them centrally after the platform has registered
@@ -1372,8 +1372,8 @@ the `SUPERVISING_ANSWERED` handler — is a stronger reason than display.
 **Severity: `error`**
 
 Every provider module in `lib/` default-exports an object satisfying
-`LLMAdapter` from `lib/types.ts`. Callers use `generate` from `lib/llm.ts` and
-never import a provider module directly.
+`LLMAdapter` from `lib/types.ts`, and callers use `generate` from `lib/llm.ts`
+rather than importing a provider module directly.
 
 Rationale: the provider is chosen at runtime from an environment variable. A
 caller that imports `./openai` pins itself to one vendor and bypasses the
@@ -1413,7 +1413,7 @@ A new provider means a new module implementing that one method, plus a key in
 **Severity: `error`**
 
 The active provider and model come from `PLATFORM_LLM`, in
-`"<provider>/<model>"` form. Do not hardcode a vendor or a model id.
+`"<provider>/<model>"` form, never from a hardcoded vendor or model id.
 
 Rationale: the six adapters exist so a deployment can switch vendors, and the
 test suite can select `MOCK`, without a code change. A hardcoded model also goes
@@ -1557,7 +1557,8 @@ for the `source` field on its own; do not pass that by hand.
 
 **Severity: `error`**
 
-The event client is `@canmingir/link-express/event/client`. There is exactly one.
+The event client is `@canmingir/link-express/event/client`, and there is exactly
+one.
 
 Rationale: `server.ts` initialises the bus with `await event.init(config.event)`
 and disconnects it on `SIGINT`/`SIGTERM`. A second client imported from a
@@ -1701,7 +1702,7 @@ The failure is logged for operators and published for the waiting client.
 **Severity: `error`**
 
 `src/dataset/**` and `src/seeds/**` contain `.json` files whose root value is an
-object. No markdown, no prose, no non-object roots, no comments.
+object — no markdown, no prose, no non-object roots, no comments.
 
 Rationale: these files are imported as modules and fed to models as structured
 context. Prose in the directory is not machine-consumable, cannot be validated,
@@ -1745,7 +1746,7 @@ consumes it, or in a README at the package root.
 **Severity: `warn`**
 
 A dataset file is imported and named in `src/dataset/index.ts`, which
-default-exports the assembled map. Consumers read from that map.
+default-exports the assembled map that consumers read from.
 
 Rationale: `index.ts` is where a JSON file becomes a named, typed piece of
 context — including the `role: "system"` wrapper the model layer expects. A file
@@ -2007,8 +2008,8 @@ spec chooses a tenant.
 **Severity: `warn`**
 
 Route behaviour is tested end-to-end through `supertest` against the real `app`,
-asserting status with `.expect(n)` and body with `deepEqual`. Pure helpers in
-`lib/` get unit specs beside them in `lib/test/`.
+asserting status with `.expect(n)` and body with `deepEqual`, while pure helpers
+in `lib/` get unit specs beside them in `lib/test/`.
 
 Rationale: routes are thin by rule, so the interesting behaviour is the
 composition — validation, authorization, status mapping — which only a request
@@ -2065,8 +2066,8 @@ Send only fields the schema defines — see
 
 **Severity: `error`**
 
-A configured test runner is invoked by a script. Specs that nothing executes are
-not tests.
+A configured test runner is invoked by a script, because specs that nothing
+executes are not tests.
 
 Rationale: `jest.config.json` is correct — `ts-jest` preset, node environment,
 `testMatch: ["**/*.spec.ts"]` — and 13 spec files exist across
@@ -2123,8 +2124,8 @@ on, and the failures are the backlog.
 
 **Severity: `error`**
 
-Credentials never appear as literals in source. Cloud SDK clients take their
-credentials from the environment or the provider's default credential chain.
+Credentials never appear as literals in source, and cloud SDK clients take them
+from the environment or the provider's default credential chain.
 
 Rationale: `src/actions/create_vm.ts` and `src/actions/terminate_vm.ts` each
 construct an `EC2Client` with a literal `accessKeyId` and `secretAccessKey` — a
@@ -2185,7 +2186,7 @@ this repository.
 
 **Severity: `error`**
 
-`.env` files are never committed. Only a `.env.example` with empty or
+`.env` files are never committed — only a `.env.example` with empty or
 placeholder values belongs in the repository.
 
 Rationale: `api/.env` is tracked and contains six non-empty assignments,
@@ -2303,7 +2304,7 @@ established.
 **Severity: `warn`**
 
 `config.ts` holds non-secret shape — hostnames, feature toggles, provider
-endpoints, public client ids. Anything secret is read from `process.env`.
+endpoints, public client ids — while anything secret is read from `process.env`.
 
 Rationale: the `config.*.ts` variants are committed and swapped per deployment,
 so they are readable by everyone with repository access. Public identifiers
@@ -2427,8 +2428,8 @@ are the existing debt, not a reason to leave the gate off.
 
 **Severity: `error`**
 
-`tsc --noEmit` runs in CI. A `strict` compiler setting that nothing executes is
-documentation, not enforcement.
+`tsc --noEmit` runs in CI, because a `strict` compiler setting that nothing
+executes is documentation, not enforcement.
 
 Rationale: `api/tsconfig.json` sets `strict: true` — stricter than the
 dashboard, which sets `strict: false` — along with `noEmit: true`. There is no
@@ -2562,7 +2563,7 @@ The same test applies to `config.kafka.ts` and `config.txq.ts`, which
 **Severity: `error`**
 
 JSON is imported with a single-line default import —
-`import name from "./path.json";` — and nothing else. No named imports from
+`import name from "./path.json";` — and nothing else: no named imports from
 JSON, no multi-line import statements, no dynamic JSON requires.
 
 Rationale: `build.prod.js` inlines JSON at build time with a line-anchored
@@ -2718,7 +2719,7 @@ that the build then makes unreadable.
 
 An agent-invocable capability is two things that must stay in step: an entry in
 `src/actions/actions.json` and a module in `src/actions/` default-exporting
-`{ run }`. The entry's `lib` field is the module's filename.
+`{ run }`, whose filename is the entry's `lib` field.
 
 Rationale: `actions/index.ts` resolves by looking the name up in the JSON, and
 the model chooses actions from the same JSON. A module without an entry is
@@ -2785,7 +2786,7 @@ a non-blocking step is excluded in `listNonBlockings`, as
 **Severity: `warn`**
 
 An action returns an object with an `error` string for expected failures rather
-than throwing. Its `outputSchema` declares that `error` field.
+than throwing, and its `outputSchema` declares that `error` field.
 
 Rationale: actions run inside a model-driven step loop, not inside a request. A
 thrown error aborts the whole task; a returned `{ error }` becomes the step
@@ -3127,7 +3128,7 @@ trailing commas.
 **Severity: `warn`**
 
 A step parameter that points at an earlier step's output is a `$ref` node
-resolved by `lib/parameterRefs.ts`. Do not reach into prior results by hand.
+resolved by `lib/parameterRefs.ts`, never reached into by hand.
 
 Rationale: `resolveParameterRefs` handles the cases that make this fiddly — dot
 and bracket path segments, and values that arrive as JSON strings rather than
@@ -3189,9 +3190,10 @@ an `outputSchema` — a `$ref` can only target a field the schema declares.
 
 **Severity: `warn`**
 
-There are two `generate` shapes and they are not interchangeable. Application
-code calls the domain-shaped `generate` exported from `lib/llm.ts`; provider
-modules implement the message-shaped `LLMAdapter.generate` from `lib/types.ts`.
+There are two `generate` shapes and they are not interchangeable: application
+code calls the domain-shaped `generate` exported from `lib/llm.ts`, while
+provider modules implement the message-shaped `LLMAdapter.generate` from
+`lib/types.ts`.
 
 Rationale: `lib/llm.ts` is the translation layer. It takes `policy`, `dataset`,
 `context`, `content` and `json_format` — the vocabulary this application thinks
@@ -3256,8 +3258,8 @@ convention so the assembled prompt stays consistent across call sites.
 
 **Severity: `warn`**
 
-Model output that is expected to be JSON goes through `lib/jsonParse.ts`. Do not
-call `JSON.parse` on a completion directly.
+Model output that is expected to be JSON goes through `lib/jsonParse.ts` rather
+than a direct `JSON.parse` on a completion.
 
 Rationale: models wrap JSON in markdown fences and, on some
 model-and-provider combinations, truncate trailing braces. `jsonParse.ts`
@@ -3313,9 +3315,9 @@ legitimately appears in an error message — it is model output, not credentials
 
 **Severity: `warn`**
 
-Every generation is recorded through `logLLM` with the full field set: provider,
-model, messages, response, token counts, cost, duration, error, and `meta`.
-Do not write partial rows.
+Every generation is recorded through `logLLM` with the full field set —
+provider, model, messages, response, token counts, cost, duration, error, and
+`meta` — never as a partial row.
 
 Rationale: `LLMLog` backs the dashboard's cost screen, and the columns are only
 useful if they are populated together. `totalTokens` is derived when absent, but
@@ -3380,8 +3382,8 @@ same set — see [`llm/adapter-interface`](#llmadapter-interface).
 
 **Severity: `warn`**
 
-A promise deliberately not awaited carries its own `.catch`. Never leave a
-floating promise unhandled.
+A promise deliberately not awaited carries its own `.catch`, and no floating
+promise is left unhandled.
 
 Rationale: an unhandled rejection in this process reaches the
 `unhandledRejection` handler in `server.ts`, which logs it with no context about
@@ -3428,7 +3430,7 @@ structure is right; the sink is not.
 **Severity: `warn`**
 
 HTTP and runtime metrics come from `src/instrumentation.ts` and its
-`telemetryMiddleware`. Do not hand-roll counters or push to the gateway from a
+`telemetryMiddleware`, not from hand-rolled counters or gateway pushes in a
 route or a function.
 
 Rationale: `instrumentation.ts` owns the `MeterProvider`, the

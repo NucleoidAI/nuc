@@ -757,10 +757,6 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
           <Typography variant="h6" component="div" lineHeight={1.2}>
             {"Create Team"}
           </Typography>
-          <Typography variant="caption" color="text.secondary">
-            Set up your team and AI agent to streamline your workflow and
-            enhance productivity.
-          </Typography>
         </Stack>
       </DialogTitle>
       <StepComponent

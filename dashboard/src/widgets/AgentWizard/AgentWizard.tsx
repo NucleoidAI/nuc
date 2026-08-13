@@ -347,9 +347,6 @@ function AgentWizard({ onSubmit, open, onClose, itemToEdit }) {
           <Typography variant="h6" component="div" lineHeight={1.2}>
             {itemToEdit ? "Edit Agent" : "Create Agent"}
           </Typography>
-          <Typography variant="caption" color="text.secondary">
-            Set up your AI agent in a few steps
-          </Typography>
         </Stack>
       </DialogTitle>
       <StepComponent

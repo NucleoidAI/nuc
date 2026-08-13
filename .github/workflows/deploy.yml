@@ -65,10 +65,17 @@ on:
         type: string
         description: "Image tag"
         default: latest
+      hf_dataset_namespace:
+        required: false
+        type: string
+        default: ""
+        description: "Hugging Face user/org owning the dataset repos; set to enable the dataset prefetch"
     secrets:
       DOCKER_ACCESS_TOKEN:
         required: false
       DOCKER_USERNAME:
+        required: false
+      HF_TOKEN:
         required: false
 
 jobs:
@@ -142,8 +149,23 @@ jobs:
         if: ${{ inputs.run_lint }}
         run: bun run lint
 
+      - name: Verify dataset credentials
+        if: ${{ inputs.run_build && inputs.hf_dataset_namespace != '' }}
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          if [ -z "$HF_TOKEN" ]; then
+            echo "::error::HF_TOKEN is empty but hf_dataset_namespace is set."
+            echo "The dataset prefetch would be skipped and the image would ship without api/src/dataset/**.json."
+            exit 1
+          fi
+
       - name: Build
         if: ${{ inputs.run_build }}
+        env:
+          HF_DATASET_NAMESPACE: ${{ inputs.hf_dataset_namespace }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_DATASET_STRICT: ${{ inputs.hf_dataset_namespace != '' && '1' || '0' }}
         run: ${{ inputs.build_command }}
 
       - name: Log in to Docker Hub

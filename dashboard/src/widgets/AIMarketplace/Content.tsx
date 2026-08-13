@@ -14,7 +14,7 @@ export default function AIEngineChart({
     vendor: string;
     model: string;
     price: number;
-    description: string;
+    type: string;
     avatar?: string;
   }[];
   isWizardEngine: boolean;
@@ -25,13 +25,18 @@ export default function AIEngineChart({
     <>
       <Box
         sx={sx}
-        gap={2}
+        gap={1}
         display="grid"
-        gridTemplateColumns={{
-          xs: "repeat(1, 1fr)",
-          sm: "repeat(2, 1fr)",
-          md: "repeat(3, 1fr)",
-        }}
+        alignItems="stretch"
+        gridTemplateColumns={
+          isWizardEngine
+            ? "repeat(auto-fill, minmax(200px, 1fr))"
+            : {
+                xs: "repeat(1, 1fr)",
+                sm: "repeat(2, 1fr)",
+                md: "repeat(3, 1fr)",
+              }
+        }
       >
         {data?.map((engine) => (
           <AIMarketplaceItem

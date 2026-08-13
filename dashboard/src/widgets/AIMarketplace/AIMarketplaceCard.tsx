@@ -17,22 +17,22 @@ function AIMarketplaceCard({
   handleEngineSelect,
   selectedEngineId = "",
 }) {
-  const { engines } = useAIEngines();
+  const { engines: fetchedEngines } = useAIEngines();
   const [search, setSearch] = React.useState("");
 
   const filteredEngines = React.useMemo(() => {
     const query = search.trim().toLowerCase();
 
     if (!query) {
-      return engines;
+      return fetchedEngines;
     }
 
-    return engines?.filter((engine) =>
+    return fetchedEngines?.filter((engine) =>
       [engine?.vendor, engine?.model, engine?.description]
         .filter(Boolean)
         .some((field) => field.toLowerCase().includes(query))
     );
-  }, [engines, search]);
+  }, [fetchedEngines, search]);
 
   const Content = () => {
     return (
@@ -46,7 +46,15 @@ function AIMarketplaceCard({
           value={search}
           onChange={(event) => setSearch(event.target.value)}
         />
-        <Box sx={{ minHeight: 240 }}>
+        <Box
+          sx={{
+            ...(isWizardEngine && {
+              maxHeight: 240,
+              overflowY: "auto",
+              pr: 0.5,
+            }),
+          }}
+        >
           {filteredEngines?.length ? (
             <AIEngineChart
               handleEngineSelect={handleEngineSelect}

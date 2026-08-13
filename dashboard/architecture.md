@@ -1,269 +1,6 @@
 # Dashboard Architecture — Rule Catalog
 
-Architecture rules for `dashboard/src`, written in the style of the ESLint rule
-reference: every rule has an id, a severity, a rationale, and paired
-**incorrect** / **correct** examples.
-
-All examples are drawn from code that exists in this repository. Paths above each
-snippet point at the file the pattern was taken from.
-
-## How to read this document
-
-| Severity | Meaning |
-| --- | --- |
-| `error` | Blocks review. The change is in the wrong layer or breaks a contract other code depends on. |
-| `warn` | Fix unless there is a stated reason. Consistency and maintainability. |
-
-Rules marked **(automated)** are already enforced by `.eslintrc.json`. `lint`
-runs with `--max-warnings 0`, so a `warn` fails just as hard as an `error` — in
-the `Test` workflow, which runs `bun run lint` and `bun run typecheck` on every
-PR to `main`, and in the `pre-push` hook, when it is installed.
-
-Two gaps are worth knowing before trusting the automation:
-
-- **Cypress never runs automatically.** `test.yml` runs lint and typecheck only.
-  The specs run through `npm test`, which is invoked by the `pre-push` hook —
-  and `prepare.cjs`, which writes that hook, is not wired to a `prepare` script
-  in `package.json`, so the hook exists only for developers who ran it by hand.
-  Appendix B records what has already drifted as a result.
-- **TypeScript is not strict.** See [`ts/explicit-types-under-non-strict`](#tsexplicit-types-under-non-strict).
-
-The rest are review rules — no linter catches them today. They are enforced by
-`.github/copilot-reviewer-instructions.md` and by humans, and the pairs below are
-what a reviewer should point at.
-
----
-
-## 1. The module graph
-
-Imports flow in one direction only. A module may import from any layer below it,
-never from a layer above or beside it at the same level.
-
-```
-routes.tsx
-   └── src/pages/            route params, layout choice, widget mounting
-          └── src/layouts/   region composition, tab shells
-                 └── src/widgets/     hooks + local state + orchestration
-                        └── src/components/   presentational only
-                               └── src/utils, src/lib, src/constants, src/styles
-
-src/hooks/     the only layer allowed to touch the network (platform http)
-src/http/      the only place allowed to construct an axios instance
-config.js      the only source of hosts, feature flags and provider settings
-```
-
-Cross-cutting, importable from anywhere:
-
-- `@nucleoidai/react-event` — the `publish` / `useEvent` bus
-- `@nucleoidjs/webstorage` — the `storage` accessor
-- `@canmingir/link/platform/components` — `Iconify`, `CustomPopover`, `usePopover`, `useTable`
-- `config` — application configuration
-
-### Responsibilities per layer
-
-| Layer | Owns | Must not contain |
-| --- | --- | --- |
-| `pages/` | route params, storage lookups, layout choice, `<Page name>` | feature UI trees, orchestration already in a widget |
-| `layouts/` | regions, tab state, slot composition | data hooks, mutations, domain rules |
-| `widgets/` | hook calls, dialogs, local state machines, loading/empty/error | raw `http` calls, presentational primitives |
-| `components/` | markup, MUI styling, callbacks from props | data hooks, `http`, widget imports |
-| `hooks/` | `http` calls via `useApi`, event wiring, domain types | JSX |
-| `utils/`, `lib/`, `constants/` | pure functions and static data | React, network |
-
----
-
-## 2. Rule index
-
-### Layer boundaries
-
-| Rule | Severity |
-| --- | --- |
-| [`layer/no-data-access-in-components`](#layerno-data-access-in-components) | `error` |
-| [`layer/no-upward-imports`](#layerno-upward-imports) | `error` |
-| [`layer/widgets-own-orchestration`](#layerwidgets-own-orchestration) | `error` |
-| [`layer/layouts-stay-structural`](#layerlayouts-stay-structural) | `error` |
-| [`layer/pages-are-containers`](#layerpages-are-containers) | `error` |
-
-### Data access
-
-| Rule | Severity |
-| --- | --- |
-| [`data/http-only-in-hooks`](#datahttp-only-in-hooks) | `error` |
-| [`data/no-direct-axios`](#datano-direct-axios) | `error` |
-| [`data/use-api-for-reads`](#datause-api-for-reads) | `error` |
-| [`data/getters-are-hooks`](#datagetters-are-hooks) | `error` |
-| [`data/hook-return-shape`](#datahook-return-shape) | `error` |
-| [`data/mutations-swallow-and-return-null`](#datamutations-swallow-and-return-null) | `warn` |
-| [`data/handle-async-states`](#datahandle-async-states) | `warn` |
-| [`data/use-loading-for-refetch`](#datause-loading-for-refetch) | `warn` |
-
-### Events
-
-| Rule | Severity |
-| --- | --- |
-| [`event/naming`](#eventnaming) | `error` |
-| [`event/publish-after-mutation`](#eventpublish-after-mutation) | `error` |
-| [`event/subscribe-as-fetch-dependency`](#eventsubscribe-as-fetch-dependency) | `error` |
-| [`event/namespace-cross-app`](#eventnamespace-cross-app) | `warn` |
-
-### Component authoring
-
-| Rule | Severity |
-| --- | --- |
-| [`component/named-function-default-export`](#componentnamed-function-default-export) | `warn` |
-| [`component/folder-and-barrel`](#componentfolder-and-barrel) | `warn` |
-| [`component/inline-prop-types`](#componentinline-prop-types) | `warn` |
-| [`component/styles-module`](#componentstyles-module) | `warn` |
-| [`component/theme-tokens`](#componenttheme-tokens) | `warn` |
-
-### Imports and configuration
-
-| Rule | Severity |
-| --- | --- |
-| [`import/sort-order`](#importsort-order) **(automated)** | `warn` |
-| [`import/no-mui-loading-button`](#importno-mui-loading-button) **(automated)** | `warn` |
-| [`import/config-for-hosts`](#importconfig-for-hosts) | `error` |
-| [`import/storage-over-local-storage`](#importstorage-over-local-storage) | `warn` |
-
-### Testing
-
-| Rule | Severity |
-| --- | --- |
-| [`test/data-cy-on-interactive`](#testdata-cy-on-interactive) | `error` |
-| [`test/select-by-data-cy`](#testselect-by-data-cy) | `error` |
-| [`test/await-domain-events`](#testawait-domain-events) | `warn` |
-
-### Forms and dialogs
-
-| Rule | Severity |
-| --- | --- |
-| [`form/rhf-with-yup-resolver`](#formrhf-with-yup-resolver) | `error` |
-| [`form/submit-button-state`](#formsubmit-button-state) | `warn` |
-| [`form/reset-after-submit`](#formreset-after-submit) | `warn` |
-| [`dialog/callback-props-not-setters`](#dialogcallback-props-not-setters) | `error` |
-| [`dialog/guard-close-while-submitting`](#dialogguard-close-while-submitting) | `warn` |
-| [`dialog/stacked-z-index`](#dialogstacked-z-index) | `warn` |
-
-### Effects and lifecycle
-
-| Rule | Severity |
-| --- | --- |
-| [`effect/clear-timers`](#effectclear-timers) | `error` |
-| [`effect/unregister-socket-handlers`](#effectunregister-socket-handlers) | `error` |
-| [`effect/scoped-deps-disable`](#effectscoped-deps-disable) | `warn` |
-
-### TypeScript
-
-| Rule | Severity |
-| --- | --- |
-| [`ts/explicit-types-under-non-strict`](#tsexplicit-types-under-non-strict) | `error` |
-| [`ts/relative-imports`](#tsrelative-imports) | `warn` |
-
-### Presentation primitives
-
-| Rule | Severity |
-| --- | --- |
-| [`ui/platform-table-primitives`](#uiplatform-table-primitives) | `warn` |
-| [`ui/format-dates-with-helpers`](#uiformat-dates-with-helpers) | `warn` |
-| [`ui/iconify-and-clean-names`](#uiiconify-and-clean-names) | `warn` |
-| [`ui/skeleton-per-screen`](#uiskeleton-per-screen) | `warn` |
-
-### Pure modules and the flow subsystem
-
-| Rule | Severity |
-| --- | --- |
-| [`pure/react-free-modules`](#purereact-free-modules) | `error` |
-| [`pure/export-style`](#pureexport-style) | `warn` |
-| [`flow/adapter-owns-translation`](#flowadapter-owns-translation) | `warn` |
-| [`flow/validate-before-save`](#flowvalidate-before-save) | `warn` |
-
-### Content rendering
-
-| Rule | Severity |
-| --- | --- |
-| [`content/markdown-through-renderer`](#contentmarkdown-through-renderer) | `error` |
-| [`content/restrict-dangerous-html`](#contentrestrict-dangerous-html) | `error` |
-| [`ui/sx-over-inline-style`](#uisx-over-inline-style) | `warn` |
-| [`ui/deterministic-per-entity-visuals`](#uideterministic-per-entity-visuals) | `warn` |
-
-### Dependencies, charts and external windows
-
-| Rule | Severity |
-| --- | --- |
-| [`deps/declare-what-you-import`](#depsdeclare-what-you-import) | `error` |
-| [`chart/options-through-use-chart`](#chartoptions-through-use-chart) | `warn` |
-| [`auth/postmessage-explicit-origin`](#authpostmessage-explicit-origin) | `error` |
-| [`auth/read-tokens-from-link-namespace`](#authread-tokens-from-link-namespace) | `warn` |
-| [`chat/commands-are-data`](#chatcommands-are-data) | `warn` |
-
-### Cypress infrastructure
-
-| Rule | Severity |
-| --- | --- |
-| [`test/fixtures-track-renames`](#testfixtures-track-renames) | `error` |
-| [`test/typed-custom-commands`](#testtyped-custom-commands) | `warn` |
-| [`test/intercepts-in-named-commands`](#testintercepts-in-named-commands) | `warn` |
-| [`test/fixture-layout`](#testfixture-layout) | `warn` |
-
-### App robustness and shared state
-
-| Rule | Severity |
-| --- | --- |
-| [`app/error-boundary-at-route`](#apperror-boundary-at-route) | `error` |
-| [`state/no-module-level-mutable-singletons`](#stateno-module-level-mutable-singletons) | `error` |
-| [`app/page-sets-document-title`](#apppage-sets-document-title) | `warn` |
-| [`state/query-string-for-shareable-view-state`](#statequery-string-for-shareable-view-state) | `warn` |
-
-### Tooling hygiene
-
-| Rule | Severity |
-| --- | --- |
-| [`deps/no-unused-declared`](#depsno-unused-declared) | `warn` |
-| [`deps/no-dead-tooling`](#depsno-dead-tooling) | `warn` |
-| [`import/one-declaration-per-module`](#importone-declaration-per-module) | `warn` |
-| [`data/sample-data-at-module-scope`](#datasample-data-at-module-scope) | `warn` |
-
-### Accessibility
-
-| Rule | Severity |
-| --- | --- |
-| [`a11y/icon-button-needs-label`](#a11yicon-button-needs-label) | `error` |
-| [`a11y/dialog-labelled-by`](#a11ydialog-labelled-by) | `warn` |
-
-### Storybook, resolution and lint scope
-
-| Rule | Severity |
-| --- | --- |
-| [`lint/no-blanket-disable`](#lintno-blanket-disable) | `error` |
-| [`story/theme-decorator-in-preview`](#storytheme-decorator-in-preview) | `error` |
-| [`import/no-file-extensions`](#importno-file-extensions) | `warn` |
-| [`component/barrel-is-index`](#componentbarrel-is-index) | `warn` |
-| [`story/cover-presentational-components`](#storycover-presentational-components) | `warn` |
-
-### Naming and React correctness
-
-| Rule | Severity |
-| --- | --- |
-| [`react/no-index-keys-for-data`](#reactno-index-keys-for-data) | `error` |
-| [`naming/file-matches-default-export`](#namingfile-matches-default-export) | `error` |
-| [`naming/pascal-case-component-files`](#namingpascal-case-component-files) | `warn` |
-| [`naming/domain-spelling`](#namingdomain-spelling) | `warn` |
-| [`hooks/default-export`](#hooksdefault-export) | `warn` |
-| [`ui/emotion-css-scoped-to-slate`](#uiemotion-css-scoped-to-slate) | `warn` |
-
-### Event integrity and registration
-
-| Rule | Severity |
-| --- | --- |
-| [`event/publish-subscribe-pairing`](#eventpublish-subscribe-pairing) | `error` |
-| [`event/no-publish-during-render`](#eventno-publish-during-render) | `error` |
-| [`data/default-empty-collections`](#datadefault-empty-collections) | `error` |
-| [`event/platform-events-are-inbound`](#eventplatform-events-are-inbound) | `warn` |
-| [`route/register-in-routes-and-menu`](#routeregister-in-routes-and-menu) | `warn` |
-
----
-
-## 3. Layer boundaries
+## 1. Layer boundaries
 
 ### `layer/no-data-access-in-components`
 
@@ -552,7 +289,7 @@ own the feature's dialogs or lists.
 
 ---
 
-## 4. Data access
+## 2. Data access
 
 ### `data/http-only-in-hooks`
 
@@ -985,7 +722,7 @@ function AgentsWidget({ teamId }) {
 
 ---
 
-## 5. Events
+## 3. Events
 
 `@nucleoidai/react-event` is the cache-invalidation mechanism. A mutation
 publishes; the getters that list the same resource subscribe and refetch. There
@@ -1189,7 +926,7 @@ function Container() {
 
 ---
 
-## 6. Component authoring
+## 4. Component authoring
 
 ### `component/named-function-default-export`
 
@@ -1417,7 +1154,7 @@ Gradients for agent and team avatars come from `src/utils/gradient.ts`
 
 ---
 
-## 7. Imports and configuration
+## 5. Imports and configuration
 
 ### `import/sort-order`
 
@@ -1581,7 +1318,7 @@ platform never sees, such as the connection-overlay toggle in
 
 ---
 
-## 8. Testing
+## 6. Testing
 
 ### `test/data-cy-on-interactive`
 
@@ -1687,7 +1424,7 @@ event breaks specs that never import it.
 
 ---
 
-## 9. Forms and dialogs
+## 7. Forms and dialogs
 
 ### `form/rhf-with-yup-resolver`
 
@@ -2011,7 +1748,7 @@ Examples of **correct** code for this rule:
 
 ---
 
-## 10. Effects and lifecycle
+## 8. Effects and lifecycle
 
 ### `effect/clear-timers`
 
@@ -2194,7 +1931,7 @@ composes, so the rule cannot see it.
 
 ---
 
-## 11. TypeScript
+## 9. TypeScript
 
 ### `ts/explicit-types-under-non-strict`
 
@@ -2283,7 +2020,7 @@ import useAgents from "../../hooks/useAgents";
 
 ---
 
-## 12. Presentation primitives
+## 10. Presentation primitives
 
 ### `ui/platform-table-primitives`
 
@@ -2520,7 +2257,7 @@ for one region inside a layout, as `AgentLayout` does for the profile card.
 
 ---
 
-## 13. Pure modules and the flow subsystem
+## 11. Pure modules and the flow subsystem
 
 ### `pure/react-free-modules`
 
@@ -2767,7 +2504,7 @@ const nodeErrors = validationErrors.filter(
 
 ---
 
-## 14. Content rendering
+## 12. Content rendering
 
 ### `content/markdown-through-renderer`
 
@@ -2976,7 +2713,7 @@ supervision reply at random because varying the wording is the point.
 
 ---
 
-## 15. Dependencies, charts and external windows
+## 13. Dependencies, charts and external windows
 
 ### `deps/declare-what-you-import`
 
@@ -3235,7 +2972,7 @@ today. New commands should delegate to a hook.
 
 ---
 
-## 16. Cypress infrastructure
+## 14. Cypress infrastructure
 
 ### `test/fixtures-track-renames`
 
@@ -3424,7 +3161,7 @@ cypress/fixtures/chat-page/messages/messages.reply.post.json
 
 ---
 
-## 17. App robustness and shared state
+## 15. App robustness and shared state
 
 ### `app/error-boundary-at-route`
 
@@ -3686,7 +3423,7 @@ because it is user-supplied input.
 
 ---
 
-## 18. Tooling hygiene
+## 16. Tooling hygiene
 
 ### `deps/no-unused-declared`
 
@@ -3901,7 +3638,7 @@ there is more than one constant.
 
 ---
 
-## 19. Accessibility
+## 17. Accessibility
 
 ### `a11y/icon-button-needs-label`
 
@@ -4003,7 +3740,7 @@ that can stack needs an id derived from its subject.
 
 ---
 
-## 20. Storybook, resolution and lint scope
+## 18. Storybook, resolution and lint scope
 
 ### `lint/no-blanket-disable`
 
@@ -4274,7 +4011,7 @@ real filename — see
 
 ---
 
-## 21. Naming and React correctness
+## 19. Naming and React correctness
 
 ### `react/no-index-keys-for-data`
 
@@ -4387,8 +4124,8 @@ function useAgents() {
 export default useAgents;
 ```
 
-Thirteen files disagree today — ten components and three hooks. They are listed
-in Appendix B. Renaming the export is usually the smaller change, but pick
+Thirteen files disagree today — ten components and three hooks. Renaming the
+export is usually the smaller change, but pick
 whichever name is right for the thing and move the other to match.
 
 ---
@@ -4570,7 +4307,7 @@ also a `naming/file-matches-default-export` case, since the file is
 
 ---
 
-## 22. Event integrity and registration
+## 20. Event integrity and registration
 
 ### `event/publish-subscribe-pairing`
 
@@ -4640,8 +4377,7 @@ const [teamSelected] = useEvent("PROJECT_SELECTED", { projectId: null });
 
 To audit the whole bus, diff the two name sets — every `publish("NAME"` against
 every `useEvent("NAME"` — and check anything unmatched against
-`@canmingir/link` before treating it as dead. Appendix B lists what is dead
-today.
+`@canmingir/link` before treating it as dead.
 
 ---
 
@@ -4893,99 +4629,3 @@ straight into the shell chrome through `actionButtons`, which is how
 `./src/widgets/TeamChartButton/index.ts`, extension and all, and should not be
 copied; see
 [`import/no-file-extensions`](#importno-file-extensions).
-
----
-
-## Appendix A — Adding a feature
-
-The order the layers get written in, using "agent skills" as the example.
-
-1. **Hook** — `src/hooks/useSkills.ts`. Export the domain types. Subscribe to the
-   events the getters depend on. Write `getAgentSkills(agentId, fetchState)`
-   returning `{ skills, loading, error, fetch }`. Write `createSkill` /
-   `deleteSkill` publishing `SKILL_CREATED` / `SKILL_DELETED`.
-2. **Components** — `src/components/SkillCard/{SkillCard.tsx,index.ts,styles.ts}`,
-   plus `src/components/Skeletons/SkillsSkeleton.tsx`. Props in, callbacks out,
-   `data-cy` on every interactive element.
-3. **Widget** — `src/widgets/SkillsWidget/SkillsWidget.tsx`. Call the getter at
-   the top level, wrap `loading` in `useLoading`, render loading / error / empty,
-   own the dialogs.
-4. **Layout or page** — add a tab entry to `TABS` in `AgentLayout.tsx`, or add
-   `src/pages/skills.tsx` rendering `<Page name>` + a layout + the widget.
-5. **Route** — register the page in `routes.tsx` under the right layout. A
-   top-level destination also needs a `sideMenu` entry in `config.menu.js`;
-   without one the route resolves but is unreachable from the UI.
-6. **Spec** — `cypress/e2e/skills.cy.ts` with fixtures under
-   `cypress/fixtures/skills-page/`, selecting via `getBySel` and waiting on
-   `SKILL_CREATED`.
-
-`prepare.cjs` installs a git `pre-push` hook that runs `npm run lint` and
-`npm test`, so the automated rules gate the push, not just CI.
-
-## Appendix B — Known violations
-
-Recorded so they are not mistaken for precedent. New code must not follow them.
-
-| Rule | Files |
-| --- | --- |
-| `layer/no-data-access-in-components` | `components/BlueprintCard/BlueprintFlowMiniPreview.tsx`, `components/BlueprintDrawer/BlueprintDrawer.tsx`, `components/BlueprintFlow/BlueprintFlow.tsx`, `components/BlueprintMessageBox/BlueprintMessageBox.tsx`, `components/ChatInput/ChatInputCommandEditor.tsx`, `components/SupervisingCard/SupervisingCard.tsx`, `components/SupervisingChat/SupervisingChat.tsx`, `components/SupervisingTask/SupervisingTask.tsx` |
-| `layer/no-upward-imports` | `components/BlueprintDrawer/BlueprintDrawer.tsx`, `components/BlueprintFlow/BlueprintFlowDialog.tsx`, `components/BlueprintKnowledge/BlueprintKnowledge.tsx`, `components/BlueprintSkill/BlueprintSkill.tsx`, `components/NucleoidLoginForm/NucleoidLoginForm.tsx`, `components/SocialLoginButtons/SocialLoginButtons.tsx`, `components/SupervisingChat/SupervisingChat.tsx`, `components/SupervisingTypeDialog/SupervisingTypeDialog.tsx` |
-| `data/http-only-in-hooks` | `components/SupervisingCard/SupervisingCard.tsx`, `components/ChatInput/chat.config.ts` |
-| `data/handle-async-states` | No widget currently renders the `error` returned by a getter. |
-| `import/storage-over-local-storage` | `widgets/OrganizationChart/common/standard-node.tsx` |
-| `test/data-cy-on-interactive` | `components/AgentCard/AgentCard.tsx` — the overflow `IconButton` has no `data-cy`, while `agents.cy.ts` selects `agent-card-more-vert`. |
-| `dialog/callback-props-not-setters` | `components/DeleteConfirmation/DeleteConfirmation.tsx`, `components/AddItemDialog/AddItemDialog.tsx`, `components/FlowDialog/FlowDialog.tsx`, `components/IncomingDrawer/IncomingDrawer.tsx`, `components/ProfileCard/ProfileCard.tsx`, `components/BlueprintDrawer/BlueprintDrawer.tsx` (six setter props), `components/BlueprintFlow/BlueprintFlowDialog.tsx` |
-| `ui/format-dates-with-helpers` | `components/KnowledgeTable/KnowledgeTable.tsx` (five call sites), `components/EditDialog/EditDialog.tsx` (two), `components/TaskDetails/TaskDetails.tsx` |
-| `ui/iconify-and-clean-names` | `components/AddItemDialog/AddItemDialog.tsx` — inline `replace(/^:\|:$/g, "")` instead of `cleanIconName` |
-| `component/named-function-default-export` | `components/ConfirmationDialog/ConfirmationDialog.tsx` and 84 other arrow-const components |
-| `test/fixtures-track-renames` | All 11 `agents-page/*` fixtures referenced by `cypress/e2e/agents.cy.ts` and `agent.cy.ts` are missing; the files remain under `colleagues-page/` and `colleague/`. Those two specs cannot pass. |
-| `deps/declare-what-you-import` | `react-apexcharts` is imported by `widgets/DepartmantCharts/{UsageChart,PerformanceChart,TotalIncomes}.tsx` and `widgets/WidgetSummary/WidgetSummary.tsx` but declared in no `package.json` here. Conversely `@mui/x-charts` is a declared devDependency imported by nothing. |
-| `ui/sx-over-inline-style` | 60 `style={{` call sites against 1013 `sx={{`; `components/CodeBlock/CodeBlock.tsx` is the clearest case, hardcoding `#2e2e2e` and `#f8f8f2`. |
-| `import/config-for-hosts` | `utils/hosts.ts` hardcodes `http://localhost:3004` and re-derives the origin instead of reading `config`. |
-| `data/hook-return-shape` | `hooks/useMCPs.ts` getters omit `fetch` from their return and are each wrapped in `useCallback`, which disguises the fact that they are hooks — see `data/getters-are-hooks`. |
-| `app/error-boundary-at-route` | No error boundary exists anywhere in `src`. `widgets/AgentsWidget/AgentsWidget.tsx:84` throws on a failed first fetch, which blanks the app — see the rule for the full path. |
-| `state/no-module-level-mutable-singletons` | `components/PopChat/PopChat.tsx` — the module-scope `sub` object and the exported `handleAddResponseMessage` setter. |
-| `deps/no-unused-declared` | `axios-retry` (dependency) and `@mui/x-charts` (devDependency) are imported by nothing in `src`. |
-| `deps/no-dead-tooling` | `jest.config.ts` + `jest.setup.ts` with zero tests, an undeclared `@testing-library/jest-dom` import, and `npm test` pointing at Cypress; `prepare.cjs` with no `prepare` script; the unused `@/*` alias in `tsconfig.json`. |
-| `import/one-declaration-per-module` | `components/PopChat/PopChat.tsx` (five declarations of one module), `widgets/TeamChart/TeamChart.tsx`, `components/KnowledgeTable/KnowledgeTable.tsx`, `components/AddItemDialog/AddItemDialog.tsx` (two each). |
-| `data/sample-data-at-module-scope` | `widgets/OrganizationChart/Content.tsx` — the inline `manager` placeholder record. |
-| `a11y/icon-button-needs-label` | All 51 `<IconButton>` instances in `src`. None has an `aria-label`. |
-| `a11y/dialog-labelled-by` | Every dialog except `components/ConfirmationDialog/ConfirmationDialog.tsx`. |
-| `lint/no-blanket-disable` | `components/SupervisingChat/SupervisingChat.tsx:1` and `widgets/ChatInput/ChatInput.tsx:4` — bare `/* eslint-disable */`, removing both files from the only gate CI runs. |
-| `story/theme-decorator-in-preview` | `.storybook/preview.ts` provides no theme, so every story renders against MUI defaults rather than the app palette. |
-| `story/cover-presentational-components` | Two story files (`Form.stories.ts`, `colors.stories.mdx`) against roughly ninety component folders. |
-| `import/no-file-extensions` | 26 sites, every one naming a `.js`/`.jsx` extension for a `.ts`/`.tsx` file. `widgets/ChatInput/ChatInput.tsx` does it three times for one module. |
-| `component/barrel-is-index` | `components/TextFieldWithTitle/TextFieldWithTitle.ts`, `components/TitleBar/TitleBar.ts`. |
-| `deps/no-unused-declared` | Also `vite-plugin-svgr` and `vite-plugin-checker` — neither is referenced by `vite.config.ts` or anything in `src`, and `vite-plugin-checker` sits in `dependencies` rather than `devDependencies`. |
-| `ui/iconify-and-clean-names` | Also `components/SourcedAvatar/SourcedAvatar.tsx` — inline `iconUrl?.replace(/:/g, "")`, a third variant of the colon-stripping logic that strips every colon rather than only the outer ones. |
-| `react/no-index-keys-for-data` | `components/KnowledgeTable/KnowledgeTable.tsx:128` — `key={index}` over a paginated, filtered `slice` of real rows. Of 32 index-key sites, the skeleton placeholders are fine; the data lists are not. |
-| `naming/file-matches-default-export` | Components: `ChatInput/InlineChromiumBugFix.tsx` → `InlineChromiumBugfix`, `ChatInput/MentiontText.tsx` → `MentionText`, `MoreButton/MoreButton.tsx` → `MoreVertButton`, `Tabs/Tabs.tsx` → `TabBar`, `AddItemForm/AddItemForm.tsx` → `NewItemForm`, `OrganizationChart/Content.tsx` → `OrganizationalChart`, `OrganizationChart/common/standard-node.tsx` → `StandardNode`, `SettingsMenuWidget/SettingsMenuWidget.tsx` → `SettingsMenuWigdet`, `TeamChartButton/TeamChartButton.tsx` → `OrganizationButton`, `WidgetSummary/WidgetSummary.tsx` → `WidgetSummaryWidget`. Hooks: `useTeams.ts` → `useTeam`, `useSupervise.ts` → `useSupervising`, plus `useSocket.ts` under `hooks/default-export`. |
-| `naming/pascal-case-component-files` | `widgets/OrganizationChart/common/{standard,simple,group}-node.tsx`. |
-| `naming/domain-spelling` | `widgets/DepartmantCharts/`, `widgets/StaticsWidget/` (against `useStatistics` and `GET /statistics`), `components/ChatInput/MentiontText.tsx`, and the `SettingsMenuWigdet` export. |
-| `hooks/default-export` | `hooks/useSocket.ts` — the only named-export hook of 27. |
-| `deps/no-unused-declared` | Also `@monaco-editor/react`, a `dependencies` entry imported nowhere in `src`. |
-| `event/publish-subscribe-pairing` | **Dead subscriptions** (no publisher in `src` or in `@canmingir/link`): `MCP_UPDATED` in `hooks/useAcquiredMCPs.ts:31` — the module publishes `AUTHORIZED` instead, so acquired MCPs never refetch after authorization; `KNOWLEDGE_UPDATED` in `hooks/useKnowledge.ts:37`, used as a dependency by three getters; `TEAM_SELECTED` in `hooks/useOrganization.ts:11`; and `API_TYPE_ADD`, `API_TYPE_DELETE`, `API_TYPE_RENAME`, `API_RESOURCE_DELETE` in `widgets/APITab/`, which is beta-gated off. **Broadcast with no consumer anywhere**: all 28 published names, including every `*_LOADED` and `AUTHORIZED`. |
-| `event/no-publish-during-render` | Ten getters publish `*_LOADED` from the render path — `useAgents`, `useKnowledge`, `useTeams`, `useMCPs`, `useAcquiredMCPs`, `useOrganizations`, `useOrganization`, `useCommunications`, `useBlueprint`, `useTask`. Harmless only because nothing subscribes. |
-| `data/default-empty-collections` | Every collection getter except `useModelPricings.getPricings`, which is the correct precedent. |
-
-### Divergences that are not yet rules
-
-Two competing conventions exist where the catalog picks one. Recorded so the
-choice is visible rather than silently re-litigated per PR.
-
-- **Mutation return shape.** `data/mutations-swallow-and-return-null` follows
-  `useAgents` / `useTeams`, which return `response?.data` or `null`.
-  `useBlueprint` instead returns a wrapper on every mutation —
-  `{ Blueprint: response?.data }` from `createBlueprint`, `upsertBlueprint`,
-  `patchBlueprint` and `removeBlueprint`, and `{ description, skill }` from
-  `generate`. Both work; the unwrapped form is the majority and is what new hooks
-  should use.
-- **Confirmation dialogs.** `ConfirmationDialog` (callback props) and
-  `DeleteConfirmation` (setter props) do the same job with incompatible APIs.
-  `dialog/callback-props-not-setters` selects the former.
-
-## Related documents
-
-- `.github/copilot-instructions.md` — the layer boundaries as review instructions
-- `.github/copilot-reviewer-instructions.md` — PR checklist and severity guide
-- `.eslintrc.json` — the automated subset

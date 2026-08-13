@@ -1,238 +1,6 @@
 # API Architecture — Rule Catalog
 
-Architecture rules for `api/src`, written in the style of the ESLint rule
-reference: every rule has an id, a severity, a rationale, and paired
-**incorrect** / **correct** examples.
-
-All examples are drawn from code that exists in this repository. Paths above each
-snippet point at the file the pattern was taken from.
-
-## How to read this document
-
-| Severity | Meaning |
-| --- | --- |
-| `error` | Blocks review. Security, contract, correctness, or a layer violation that changes behaviour. |
-| `warn` | Fix unless there is a stated reason. Consistency and maintainability. |
-
-**Nothing in this catalog is machine-checked, because nothing verifies the API.**
-The scripts exist; no pipeline calls them. At the repository root,
-`lint` is `bun run lint:dashboard` and `typecheck` is `typecheck:dashboard` —
-there is no `lint:api` or `typecheck:api`. The `Test` workflow runs those two
-root scripts on every PR, so it covers the dashboard only. The single API step
-in CI is `build:api`, which is esbuild with no type checking.
-
-So on the API side: no lint in CI, no type check anywhere, no tests executed.
-That absence is the common cause behind most of Appendix B, and
-[`ci/verify-the-api`](#civerify-the-api) is the rule that closes it.
-
-`api/.eslintrc.json` itself is reasonable — `eslint:recommended`,
-`@typescript-eslint/recommended`, `plugin:prettier/recommended` — but it has no
-custom rules, no `--max-warnings 0`, and no import or security plugins.
-
-Further gaps worth knowing:
-
-- **The lint config does not catch redeclaration.** `@typescript-eslint`
-  disables the base `no-redeclare`, and nothing replaces it. A file that imports
-  the same binding twice — invalid ESM that Node refuses to load — lints clean.
-  See [`module/no-duplicate-imports`](#moduleno-duplicate-imports).
-- **`tsc` is not part of `lint` or `test`.** The build runs through
-  `build.prod.js` (esbuild), which is far more permissive than the type checker.
-- **Nothing runs the tests.** `"prepare": "exit 0"`, so there is no pre-push
-  hook. `jest.config.json` is configured correctly and 13 `.spec.ts` files exist,
-  but no script invokes jest — `"test": "bun test.ts"` runs a three-line scratch
-  script that connects to MCP and logs the result. See
-  [`test/wire-the-runner`](#testwire-the-runner).
-
-**Two findings in this catalog are not architecture matters and should be acted
-on before anything else here.** Live credentials are committed to the
-repository, in two separate places: `api/.env` (see
-[`secrets/no-env-files-in-git`](#secretsno-env-files-in-git)) and an AWS access
-key pair hardcoded in two action modules (see
-[`secrets/no-hardcoded-credentials`](#secretsno-hardcoded-credentials)).
-
----
-
-## 1. The module graph
-
-Requests flow down; nothing flows back up.
-
-```
-server.ts            process wiring, uncaught handlers, HTTP server, shutdown
-   └── src/app.ts    router mounting, auth middleware, event subscriptions
-          └── src/routes/      HTTP only: validate, authorize, map status
-                 └── src/functions/    business logic, transport-agnostic
-                        ├── src/models/     Sequelize models, persistence
-                        ├── src/lib/        provider SDK wrappers
-                        ├── src/actions/    agent-invocable tools
-                        └── src/dataset/    prompt and training JSON
-
-src/schemas/    request contracts, consumed by routes
-src/mcps/       MCP registry
-config.ts       per-deployment configuration
-```
-
-### Responsibilities per layer
-
-| Layer | Owns | Must not contain |
-| --- | --- | --- |
-| `routes/` | validation, tenant authorization, status codes, calling a function | persistence, domain rules, sorting/derivation |
-| `functions/` | business logic, orchestration, domain errors | `req`, `res`, status codes |
-| `lib/` | provider SDK calls, adapters, parsing | domain policy, tenant rules |
-| `models/` | table definition, associations | business logic |
-| `schemas/` | request shape and validation | persistence concerns |
-| `actions/` | one agent-invocable capability per file | HTTP, routing |
-| `dataset/`, `seeds/` | machine-readable JSON | prose, markdown, comments |
-
----
-
-## 2. Rule index
-
-### Layer boundaries
-
-| Rule | Severity |
-| --- | --- |
-| [`layer/routes-are-http-only`](#layerroutes-are-http-only) | `error` |
-| [`layer/functions-are-transport-agnostic`](#layerfunctions-are-transport-agnostic) | `error` |
-| [`layer/lib-wraps-providers-only`](#layerlib-wraps-providers-only) | `error` |
-| [`layer/schemas-and-models-are-the-contract`](#layerschemas-and-models-are-the-contract) | `error` |
-
-### HTTP correctness and authorization
-
-| Rule | Severity |
-| --- | --- |
-| [`http/terminate-every-response`](#httpterminate-every-response) | `error` |
-| [`http/authorize-before-mutating`](#httpauthorize-before-mutating) | `error` |
-| [`http/guard-before-dereference`](#httpguard-before-dereference) | `error` |
-| [`http/no-duplicate-route-registration`](#httpno-duplicate-route-registration) | `error` |
-| [`http/scope-queries-to-session-tenant`](#httpscope-queries-to-session-tenant) | `error` |
-| [`http/every-handler-scopes-or-declares-global`](#httpevery-handler-scopes-or-declares-global) | `error` |
-| [`function/list-takes-a-scope`](#functionlist-takes-a-scope) | `error` |
-| [`http/status-codes`](#httpstatus-codes) | `warn` |
-
-### Validation
-
-| Rule | Severity |
-| --- | --- |
-| [`validation/one-library`](#validationone-library) | `error` |
-| [`validation/validate-at-the-boundary`](#validationvalidate-at-the-boundary) | `error` |
-| [`validation/schema-per-resource`](#validationschema-per-resource) | `warn` |
-
-### Errors and observability
-
-| Rule | Severity |
-| --- | --- |
-| [`error/throw-domain-codes`](#errorthrow-domain-codes) | `error` |
-| [`obs/platform-logger-not-console`](#obsplatform-logger-not-console) | `error` |
-| [`error/let-platform-map-to-http`](#errorlet-platform-map-to-http) | `warn` |
-
-### Persistence
-
-| Rule | Severity |
-| --- | --- |
-| [`model/decorator-table-definition`](#modeldecorator-table-definition) | `warn` |
-| [`model/export-attributes-interface`](#modelexport-attributes-interface) | `warn` |
-| [`model/association-alias-matches-cardinality`](#modelassociation-alias-matches-cardinality) | `error` |
-| [`model/associations-in-init`](#modelassociations-in-init) | `warn` |
-| [`model/timestamps-match-consumers`](#modeltimestamps-match-consumers) | `warn` |
-
-### LLM provider layer
-
-| Rule | Severity |
-| --- | --- |
-| [`llm/adapter-interface`](#llmadapter-interface) | `error` |
-| [`llm/provider-from-env`](#llmprovider-from-env) | `error` |
-| [`llm/lazy-provider-loaders`](#llmlazy-provider-loaders) | `warn` |
-| [`llm/log-every-generation`](#llmlog-every-generation) | `warn` |
-
-### Events
-
-| Rule | Severity |
-| --- | --- |
-| [`event/single-client`](#eventsingle-client) | `error` |
-| [`event/subscriptions-in-app`](#eventsubscriptions-in-app) | `warn` |
-| [`event/handlers-guard-and-report`](#eventhandlers-guard-and-report) | `warn` |
-
-### Dataset and seeds
-
-| Rule | Severity |
-| --- | --- |
-| [`dataset/json-objects-only`](#datasetjson-objects-only) | `error` |
-| [`dataset/register-in-index`](#datasetregister-in-index) | `warn` |
-
-### Dependencies and modules
-
-| Rule | Severity |
-| --- | --- |
-| [`module/no-duplicate-imports`](#moduleno-duplicate-imports) | `error` |
-| [`deps/declare-what-you-import`](#depsdeclare-what-you-import) | `error` |
-| [`deps/no-test-packages-in-production`](#depsno-test-packages-in-production) | `error` |
-
-### Testing
-
-| Rule | Severity |
-| --- | --- |
-| [`test/cover-authorization-paths`](#testcover-authorization-paths) | `error` |
-| [`test/reset-between-cases`](#testreset-between-cases) | `error` |
-| [`test/route-specs-with-supertest`](#testroute-specs-with-supertest) | `warn` |
-| [`test/wire-the-runner`](#testwire-the-runner) | `error` |
-
-### Secrets and configuration
-
-| Rule | Severity |
-| --- | --- |
-| [`secrets/no-hardcoded-credentials`](#secretsno-hardcoded-credentials) | `error` |
-| [`secrets/no-env-files-in-git`](#secretsno-env-files-in-git) | `error` |
-| [`secrets/never-log-or-return-credentials`](#secretsnever-log-or-return-credentials) | `error` |
-| [`config/env-for-secrets-config-for-shape`](#configenv-for-secrets-config-for-shape) | `warn` |
-
-### Verification and repository hygiene
-
-| Rule | Severity |
-| --- | --- |
-| [`ci/verify-the-api`](#civerify-the-api) | `error` |
-| [`ts/run-the-type-checker`](#tsrun-the-type-checker) | `error` |
-| [`repo/no-generated-artifacts-in-git`](#repono-generated-artifacts-in-git) | `warn` |
-| [`build/no-dead-tsconfig`](#buildno-dead-tsconfig) | `warn` |
-
-### Cloud actions, seeds and parameter references
-
-| Rule | Severity |
-| --- | --- |
-| [`action/scope-cloud-actions-to-tenant`](#actionscope-cloud-actions-to-tenant) | `error` |
-| [`action/release-external-resources`](#actionrelease-external-resources) | `error` |
-| [`action/no-hardcoded-infrastructure-ids`](#actionno-hardcoded-infrastructure-ids) | `warn` |
-| [`seed/sequence-and-seed-shape`](#seedsequence-and-seed-shape) | `warn` |
-| [`param/resolve-refs-through-helper`](#paramresolve-refs-through-helper) | `warn` |
-
-### Build and release
-
-| Rule | Severity |
-| --- | --- |
-| [`build/json-imports-must-be-inlinable`](#buildjson-imports-must-be-inlinable) | `error` |
-| [`build/accurate-build-output`](#buildaccurate-build-output) | `warn` |
-| [`build/obfuscation-costs-diagnostics`](#buildobfuscation-costs-diagnostics) | `warn` |
-
-### Actions subsystem
-
-| Rule | Severity |
-| --- | --- |
-| [`action/registry-entry-per-action`](#actionregistry-entry-per-action) | `error` |
-| [`action/return-errors-do-not-throw`](#actionreturn-errors-do-not-throw) | `warn` |
-| [`action/schemas-describe-io`](#actionschemas-describe-io) | `warn` |
-
-### LLM call shape and instrumentation
-
-| Rule | Severity |
-| --- | --- |
-| [`llm/two-level-generate`](#llmtwo-level-generate) | `warn` |
-| [`llm/repair-and-parse-model-json`](#llmrepair-and-parse-model-json) | `warn` |
-| [`llm/log-shape`](#llmlog-shape) | `warn` |
-| [`obs/fire-and-forget-needs-catch`](#obsfire-and-forget-needs-catch) | `warn` |
-| [`obs/metrics-through-instrumentation`](#obsmetrics-through-instrumentation) | `warn` |
-
----
-
-## 3. Layer boundaries
+## 1. Layer boundaries
 
 ### `layer/routes-are-http-only`
 
@@ -477,7 +245,7 @@ The two agree field for field. Change them together, and update the specs and
 
 ---
 
-## 4. HTTP correctness and authorization
+## 2. HTTP correctness and authorization
 
 ### `http/terminate-every-response`
 
@@ -1012,7 +780,7 @@ res.status(204).end();
 
 ---
 
-## 5. Validation
+## 3. Validation
 
 ### `validation/one-library`
 
@@ -1171,7 +939,7 @@ Multi-operation resources use a named map, as `Supervising.create` and
 
 ---
 
-## 6. Errors and observability
+## 4. Errors and observability
 
 ### `error/throw-domain-codes`
 
@@ -1330,7 +1098,7 @@ maps its own errors.
 
 ---
 
-## 7. Persistence
+## 5. Persistence
 
 ### `model/decorator-table-definition`
 
@@ -1597,7 +1365,7 @@ the `SUPERVISING_ANSWERED` handler — is a stronger reason than display.
 
 ---
 
-## 8. LLM provider layer
+## 6. LLM provider layer
 
 ### `llm/adapter-interface`
 
@@ -1783,7 +1551,7 @@ for the `source` field on its own; do not pass that by hand.
 
 ---
 
-## 9. Events
+## 7. Events
 
 ### `event/single-client`
 
@@ -1926,7 +1694,7 @@ The failure is logged for operators and published for the waiting client.
 
 ---
 
-## 10. Dataset and seeds
+## 8. Dataset and seeds
 
 ### `dataset/json-objects-only`
 
@@ -2016,7 +1784,7 @@ import dataset from "../dataset";
 
 ---
 
-## 11. Dependencies and modules
+## 9. Dependencies and modules
 
 ### `module/no-duplicate-imports`
 
@@ -2139,7 +1907,7 @@ import test from "@canmingir/link-express/test";
 
 ---
 
-## 12. Testing
+## 10. Testing
 
 ### `test/cover-authorization-paths`
 
@@ -2326,7 +2094,7 @@ mcp.connect().then((mcp) => {
 ```
 
 Ten route specs and three lib specs have never been executed by any automated
-run. This is why the authorization bypass in Appendix B is undetected, and why
+run. This is why the authorization bypass in `routes/agents.ts` is undetected, and why
 `routes/test/agents.spec.ts` still posts fields — `avatar`, `character`,
 `title`, `role` — that the schema stopped accepting.
 
@@ -2349,7 +2117,7 @@ on, and the failures are the backlog.
 
 ---
 
-## 13. Secrets and configuration
+## 11. Secrets and configuration
 
 ### `secrets/no-hardcoded-credentials`
 
@@ -2597,7 +2365,7 @@ matching secret is not, and must not be.
 
 ---
 
-## 14. Verification and repository hygiene
+## 12. Verification and repository hygiene
 
 ### `ci/verify-the-api`
 
@@ -2611,7 +2379,7 @@ script exists — so the `Test` workflow, which runs those two root scripts, nev
 touches this package. The only API step anywhere in CI is `build:api`, and that
 is esbuild, which does not type check.
 
-The absence is not abstract. It is why every item in Appendix B survived: an
+The absence is not abstract. It is why every known violation survived: an
 invalid duplicate import, an authorization bypass, specs asserting fields the
 schema dropped, and two sets of committed credentials.
 
@@ -2787,7 +2555,7 @@ The same test applies to `config.kafka.ts` and `config.txq.ts`, which
 
 ---
 
-## 15. Build and release
+## 13. Build and release
 
 ### `build/json-imports-must-be-inlinable`
 
@@ -2942,7 +2710,7 @@ that the build then makes unreadable.
 
 ---
 
-## 15. Actions subsystem
+## 14. Actions subsystem
 
 ### `action/registry-entry-per-action`
 
@@ -3415,7 +3183,7 @@ an `outputSchema` — a `$ref` can only target a field the schema declares.
 
 ---
 
-## 16. LLM call shape and instrumentation
+## 15. LLM call shape and instrumentation
 
 ### `llm/two-level-generate`
 
@@ -3708,76 +3476,3 @@ interface HttpMetrics {
 Export is gated on `config.metrics.enabled`, checked in `server.ts` before the
 pushgateway is started — new metrics must respect the same flag rather than
 pushing unconditionally.
-
----
-
-## Appendix A — Adding an endpoint
-
-The order the layers get written in, using "agent skills" as the example.
-
-1. **Schema** — `src/schemas/Skill.ts`, a Joi object or a named map of
-   operations, registered in `src/schemas/index.ts`.
-2. **Model** — `src/models/Skill.ts` with a `SkillAttributes` interface, the
-   decorator table definition, and a `teamId` or `agentId` column for tenant
-   scoping. Register it in `src/models/models.ts`.
-3. **Seed** — `src/seeds/Skill.json`, JSON object root, so the specs have rows.
-4. **Function** — `src/functions/skill.ts` exporting `{ create, list, get }`,
-   throwing `UPPER_SNAKE_CASE` codes, returning `.toJSON()`.
-5. **Route** — `src/routes/skills.ts`: validate with `Joi.attempt`, scope the
-   query to `req.session.projectId`, `return res.status(...)` on every rejection,
-   delegate to the function, map the status.
-6. **Mount** — `app.use("/skills", skills)` in `src/app.ts`, above the
-   `setImmediate` block that installs the 404 and error handlers.
-7. **Events** — if the flow is asynchronous, subscribe in `createApp()` with a
-   typed payload and a `try/catch` that logs and publishes `ERROR_OCCURRED`.
-8. **Spec** — `src/routes/test/skills.spec.ts` with `test.reset()` in
-   `beforeEach`, a happy path, and a cross-tenant rejection asserting both the
-   status and that the row survived.
-
-## Appendix B — Known violations
-
-Recorded so they are not mistaken for precedent. New code must not follow them.
-
-| Rule | Files |
-| --- | --- |
-| `http/authorize-before-mutating` | **`routes/agents.ts` `PUT /:id` and `DELETE /:id`** — the tenant check sets `401` without returning, then `agent.update(...)` / `agent?.destroy()` runs and the final `res.json(agent)` / `res.status(204).end()` overwrites the status. A caller from another team can update and delete agents they do not own and receives a success code. |
-| `http/terminate-every-response` | 13 unterminated `res.status(n);` branches across `routes/agents.ts` and `routes/supervisings.ts`. Every other route file returns correctly. |
-| `http/guard-before-dereference` | `routes/agents.ts` `PUT /:id` (`agent.teamId` after the null check), `routes/supervisings.ts` (`agent.teamId`, `conversation.content`, `supervising.Agent.teamId`). Each yields a 500 where a 404 was intended. |
-| `module/no-duplicate-imports` | `routes/agents.ts:2` and `:4` both declare `BlueprintModel`. Invalid ESM; Node refuses to load it. `npm run lint` reports only the unrelated unused `event` import. |
-| `http/no-duplicate-route-registration` | `routes/agents.ts` registers `GET /:agentId/blueprints` twice (lines 200 and 229). The second, which validates the GUID, is unreachable. |
-| `deps/declare-what-you-import` | `joi` (23 files) and `zod` (2 files) are imported and declared nowhere in `api/package.json`. |
-| `deps/no-test-packages-in-production` | `node-event-test-package` is a production dependency, imported by `routes/agents.ts`. |
-| `event/single-client` | `routes/agents.ts` imports `event` from `node-event-test-package/client` while the rest of the app uses `@canmingir/link-express/event/client`. Unused, so currently inert. |
-| `validation/one-library` | Joi in 11 schema modules, Zod in `schemas/Blueprint.ts` and `schemas/Node.ts`. `routes/agents.ts` uses both in one file. |
-| `dataset/json-objects-only` | `dataset/prompts.md`, `dataset/train/blueprint.md`, `dataset/train/chat.md`, `dataset/train/task-diamond.md` — the exact violation the project's own reviewer instructions cite as their example. |
-| `obs/platform-logger-not-console` | 24 `console.log` calls in `src`, including two in the `SUPERVISING_ANSWERED` subscription in `app.ts` that fire on every supervision answer. |
-| `layer/routes-are-http-only` | Direct model access in nearly every route file; the recent-sessions sort and `slice(0, 5)` in `routes/agents.ts` is the clearest case of domain logic in the HTTP layer. |
-| `layer/schemas-and-models-are-the-contract` | `routes/test/agents.spec.ts` posts and asserts `avatar`, `character`, `title` and `role`, none of which exist in `schemas/Agent.ts` or `models/Agent.ts`. |
-| `model/timestamps-match-consumers` | `models/Agent.ts` sets `timestamps: false`; the dashboard's `AgentCard` renders `agent.createdAt`. |
-| `secrets/no-env-files-in-git` | **`api/.env` is tracked**, with six non-empty assignments including `OPENAI_API_KEY`, `OPENROUTER_API_KEY`, `JWT_SECRET` and `OAUTH_CLIENT_SECRET`. `.gitignore` lists `.env` but ignore rules do not apply to already-tracked files. `api/.env.test` is tracked and matched by no ignore rule at all. Rotate before removing — the values are in history. |
-| `test/wire-the-runner` | `jest.config.json` is configured and 13 spec files exist; no script invokes jest. `"test": "bun test.ts"` runs a scratch script that connects to MCP and logs it. |
-| `test/cover-authorization-paths` | None of the ten spec files exercises a cross-tenant rejection — and none of them runs at all, per the row above. |
-| `build/accurate-build-output` | `build.prod.js` writes to `dist` (which the `Dockerfile` correctly copies) but announces `dist-obfuscated` three times, and its step counter runs `[1/3]`, `[2/3]`, `[3/4]`, `[4/4]`. |
-| `secrets/no-hardcoded-credentials` | **`src/actions/create_vm.ts:12` and `src/actions/terminate_vm.ts:7`** — a literal AWS `accessKeyId` and `secretAccessKey` in TypeScript source, granting `RunInstances` and `TerminateInstances`. Present in every clone and in the built image. Deactivate the key pair in IAM before anything else. |
-| `ci/verify-the-api` | Root `lint` and `typecheck` cover the dashboard only; there is no `lint:api` or `typecheck:api`. The sole API step in CI is `build:api` (esbuild, no type checking). |
-| `ts/run-the-type-checker` | `tsconfig.json` sets `strict: true` and nothing ever runs `tsc`. |
-| `action/scope-cloud-actions-to-tenant` | `src/actions/create_vm.ts` takes no `meta`, so launched instances carry no owning team; `terminate_vm.ts` has no ownership check before destroying an instance by id. |
-| `action/no-hardcoded-infrastructure-ids` | `src/actions/create_vm.ts` — `LaunchTemplateId: "lt-0bb60b7532394e758"`. |
-| `repo/no-generated-artifacts-in-git` | `api/logs/email-service.log` is tracked. `.gitignore` covers `/build` but not `/dist`, which is what the build writes. |
-| `build/no-dead-tsconfig` | `api/tsconfig.build.json` is referenced by nothing. `config.kafka.ts` and `config.txq.ts` are imported only in commented-out lines in `server.ts`. |
-| `http/every-handler-scopes-or-declares-global` | **`routes/communications.ts` — all four handlers have no tenant scoping.** `GET /communications` returns every tenant's channels; `GET`, `DELETE` and `POST /:id` accept any id without an ownership check. Also `routes/tasks.ts` `PATCH /:taskId/steps/:stepId`. `engines.ts`, `modelPricings.ts` and `metrics.ts` are unscoped but legitimately global. |
-| `function/list-takes-a-scope` | `functions/communication.ts` `list()` takes no arguments and calls `Communication.findAll()` with no `where`. |
-| `model/association-alias-matches-cardinality` | `models/models.ts:31` — `Agent.belongsTo(Project, { as: "agents" })` puts a plural alias on a `belongsTo`, so `agent.agents` returns a single Project. The file's other three aliases are correct. |
-
-### Dead branch worth deleting
-
-`src/app.ts`, in the `SUPERVISING_ANSWERED` subscription, branches on
-`type === "KNOWLEDGE"` and calls `taskFn.updateStep` with identical arguments in
-both the `if` and the `else`. Either the branch means something and the bodies
-should differ, or it should be removed.
-
-## Related documents
-
-- `.github/copilot-api-reviewer-instructions.md` — the same boundaries as review instructions
-- `.github/copilot-instructions.md` — repo-wide layer summary
-- `dashboard/architecture.md` — the UI rule catalog; several contracts here have a counterpart there

@@ -2,26 +2,67 @@ import AIEngineChart from "./Content";
 import React from "react";
 import useAIEngines from "../../hooks/useAIEngines";
 
-import { Box, Dialog, DialogContent } from "@mui/material";
+import {
+  Box,
+  Dialog,
+  DialogContent,
+  TextField,
+  Typography,
+} from "@mui/material";
 
 function AIMarketplaceCard({
   open,
   setOpen,
   isWizardEngine,
   handleEngineSelect,
-  selectedEngineId,
+  selectedEngineId = "",
 }) {
   const { engines } = useAIEngines();
+  const [search, setSearch] = React.useState("");
+
+  const filteredEngines = React.useMemo(() => {
+    const query = search.trim().toLowerCase();
+
+    if (!query) {
+      return engines;
+    }
+
+    return engines?.filter((engine) =>
+      [engine?.vendor, engine?.model, engine?.description]
+        .filter(Boolean)
+        .some((field) => field.toLowerCase().includes(query))
+    );
+  }, [engines, search]);
 
   const Content = () => {
     return (
-      <DialogContent sx={{ marginY: 1 }}>
-        <AIEngineChart
-          handleEngineSelect={handleEngineSelect}
-          isWizardEngine={isWizardEngine}
-          selectedEngineId={selectedEngineId}
-          data={engines}
+      <DialogContent
+        sx={{ marginY: 1, gap: 2, display: "flex", flexDirection: "column" }}
+      >
+        <TextField
+          sx={{ marginTop: 1 }}
+          label="Search Engines"
+          fullWidth
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
         />
+        <Box sx={{ minHeight: 240 }}>
+          {filteredEngines?.length ? (
+            <AIEngineChart
+              handleEngineSelect={handleEngineSelect}
+              isWizardEngine={isWizardEngine}
+              selectedEngineId={selectedEngineId}
+              data={filteredEngines}
+            />
+          ) : (
+            <Typography
+              sx={{ paddingY: 4, textAlign: "center" }}
+              color="text.secondary"
+            >
+              No engines match your search.
+            </Typography>
+          )}
+        </Box>
       </DialogContent>
     );
   };
@@ -33,8 +74,8 @@ function AIMarketplaceCard({
           sx={{
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
+            alignItems: "stretch",
+            justifyContent: "flex-start",
           }}
         >
           {Content()}

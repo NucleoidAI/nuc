@@ -1,17 +1,8 @@
+import AIEngineIcon from "./AIEngineIcon";
 import { Image } from "@canmingir/link/platform/components";
 import { ReactNode } from "react";
 import { getBackgroundUrl } from "../../utils/background";
 
-import {
-  AiIcon,
-  BardIcon,
-  ClaudeIcon,
-  DeepMindIcon,
-  GreyCollarIcon,
-  IbmIcon,
-  MetaIcon,
-  OpenAIIcon,
-} from "./AIEngineIcons";
 import { Avatar, Box, Card, Stack, Typography } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
 
@@ -35,19 +26,7 @@ function AIMarketplaceItem({
 }) {
   const theme = useTheme();
 
-  const vendorIconMap: Record<string, ReactNode> = {
-    OpenAI: <OpenAIIcon width={20} height={20} />,
-    "Google Bard": <BardIcon width={20} height={20} />,
-    Claude: <ClaudeIcon width={20} height={20} />,
-    Meta: <MetaIcon width={20} height={20} />,
-    DeepMind: <DeepMindIcon width={20} height={20} />,
-    "IBM Watson": <IbmIcon width={20} height={20} />,
-    GreyCollar: <GreyCollarIcon width={20} height={20} />,
-  };
-
-  const icon = vendorIconMap[engine?.vendor] || (
-    <AiIcon width={20} height={20} />
-  );
+  const icon = <AIEngineIcon vendor={engine?.vendor} />;
 
   return (
     <Box

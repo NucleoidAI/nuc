@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import React from "react";
 import SourcedAvatar from "../../../components/SourcedAvatar/SourcedAvatar";
 import Typography from "@mui/material/Typography";
+import { storage } from "@nucleoidjs/webstorage";
 
 import {
   Button,
@@ -20,7 +21,7 @@ import {
 function StandardNode({ node, sx }) {
   const [open, setOpen] = React.useState(false);
 
-  const projectId = localStorage.getItem("projectId");
+  const projectId = storage.get("link", "projectid");
 
   const handleDialogOpen = () => {
     setOpen(true);

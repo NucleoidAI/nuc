@@ -32,7 +32,7 @@ function TeamChart() {
   const location = useLocation();
   const showNavButton = !lgUp && location.pathname.includes("/team");
 
-  const projectId = storage.get("projectId");
+  const projectId = storage.get("link", "projectid");
   const { getTeamById } = useTeam();
   const { team } = getTeamById(projectId);
   const organizationId = team?.organizationId;

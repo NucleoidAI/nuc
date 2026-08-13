@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { useEvent } from "@nucleoidai/react-event";
 import useTeam from "../hooks/useTeams";
 function Agents() {
-  const teamId = storage.get("itemId");
+  const teamId = storage.get("link", "projectid");
 
   const { getTeamById } = useTeam();
 

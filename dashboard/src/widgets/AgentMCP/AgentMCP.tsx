@@ -23,7 +23,7 @@ const AgentMCP = ({ agent }: { agent?: { id: string; name: string } }) => {
   const { getMCPs, getAgentAcquiredMCPs, getAcquiredMCPs, getTokens } =
     useAcquiredMCPs();
 
-  const teamId = storage.get("projectId");
+  const teamId = storage.get("link", "projectid");
 
   const { mcps, loading } = getMCPs();
 

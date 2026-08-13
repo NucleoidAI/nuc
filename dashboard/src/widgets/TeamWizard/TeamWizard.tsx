@@ -135,7 +135,7 @@ type PropertyOptionType =
   | "organizationName";
 
 function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const projectId = storage.get("projectId");
+  const projectId = storage.get("link", "projectid");
   const [teamSelected] = useEvent("PROJECT_SELECTED", { projectId: null });
   const { organizations, loading } = useOrganizations().getOrganizations([]);
   const [activeStep, setActiveStep] = React.useState(0);
@@ -284,7 +284,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
   );
 
   useEffect(() => {
-    const projectId = storage.get("projectId");
+    const projectId = storage.get("link", "projectid");
     if (teamSelected.projectId === projectId && getValues("agent.name")) {
       const agent = getValues("agent");
       agent.teamId = teamSelected.projectId;

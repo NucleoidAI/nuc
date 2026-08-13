@@ -17,7 +17,7 @@ function OrganizationalChart({ variant = "simple", sx }) {
     avatar: ":5:",
   };
 
-  const projectId = storage.get("projectId");
+  const projectId = storage.get("link", "projectid");
 
   const { getTeamById } = useTeam();
 

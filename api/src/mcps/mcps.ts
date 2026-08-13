@@ -3,7 +3,7 @@ const MCPs = [
     id: "8f828016-dd2e-4f76-bad5-2a0ca9b71d6f",
     action: "GDRIVE:search",
     label: "Google Drive",
-    provider: "GOOGLE DRIVE",
+    provider: "GDRIVE",
     description: "Search for files in Google Drive",
     icon: "mdi:google-drive",
     oauth: {
@@ -32,7 +32,7 @@ const MCPs = [
     id: "019f6a14-0000-4000-8000-000000000002",
     action: "SERVICENOW:approve_employee_request",
     provider: "SERVICENOW",
-    label: "Service Now",
+    label: "ServiceNow",
     description:
       "Approve an employee onboarding request in ServiceNow by its request number. Returns the updated request details.",
     direction: "OUTGOING",
@@ -130,7 +130,7 @@ const MCPs = [
   {
     id: "fa1eec4e-35c0-4e0c-8b1b-36c0a4ea95ee",
     action: "GITHUB:search",
-    label: "Github",
+    label: "GitHub",
     provider: "GITHUB",
     description: "Search for repositories on GitHub",
     icon: "mdi:github",
@@ -739,7 +739,7 @@ const MCPs = [
   {
     id: "019f7a30-0000-4000-8000-000000000001",
     action: "SERVICENOW:create_incident",
-    label: "Servicenow",
+    label: "ServiceNow",
     provider: "SERVICENOW",
     description:
       "Create an incident in ServiceNow. Requires a short description and the caller's name. Returns the created incident details including its incident number.",
@@ -800,7 +800,7 @@ const MCPs = [
   {
     id: "019f8b01-0000-4000-8000-000000000001",
     action: "SAP:search",
-    label: "Sap",
+    label: "SAP",
     provider: "SAP",
     description:
       "Search for business objects (orders, invoices, materials) in SAP",
@@ -829,7 +829,7 @@ const MCPs = [
   {
     id: "019f8b01-0000-4000-8000-000000000002",
     action: "SALESFORCE:search",
-    label: "Salesforce",
+    label: "SalesForce",
     provider: "SALESFORCE",
     description:
       "Search for records (accounts, contacts, opportunities) in Salesforce",
@@ -858,7 +858,7 @@ const MCPs = [
   {
     id: "019f8b01-0000-4000-8000-000000000003",
     action: "SERVICENOW:search",
-    label: "Servicenow",
+    label: "ServiceNow",
     provider: "SERVICENOW",
     description:
       "Search for records (incidents, requests, tasks) in ServiceNow",
@@ -917,7 +917,7 @@ const MCPs = [
   {
     id: "019f8b01-0000-4000-8000-000000000005",
     action: "HUBSPOT:search",
-    label: "Hubspot",
+    label: "HubSpot",
     provider: "HUBSPOT",
     description: "Search for records (contacts, companies, deals) in HubSpot",
     icon: "mdi:hubspot",
@@ -4569,7 +4569,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000001",
     action: "SAP:create_purchase_requisition",
-    label: "Sap",
+    label: "SAP",
     provider: "SAP",
     description:
       "Create a purchase requisition in SAP Ariba for a supplier item. Returns the created requisition details.",
@@ -4626,7 +4626,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000002",
     action: "SAP:approve_requisition",
-    label: "Sap",
+    label: "SAP",
     provider: "SAP",
     description: "Approve a pending purchase requisition by its ID.",
     direction: "OUTGOING",
@@ -4651,7 +4651,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000003",
     action: "SAP:get_supplier_info",
-    label: "Sap",
+    label: "SAP",
     provider: "SAP",
     description:
       "Get supplier profile information, including qualification and risk status, by supplier ID.",
@@ -4694,7 +4694,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000004",
     action: "SAP:create_purchase_order",
-    label: "Sap",
+    label: "SAP",
     provider: "SAP",
     description:
       "Create a purchase order in Ariba from an approved requisition.",
@@ -4729,7 +4729,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000005",
     action: "SAP:get_purchase_order_status",
-    label: "Sap",
+    label: "SAP",
     provider: "SAP",
     description: "Get the fulfillment status of a purchase order.",
     direction: "OUTGOING",
@@ -4763,7 +4763,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000006",
     action: "SAP:onboard_supplier",
-    label: "Sap",
+    label: "SAP",
     provider: "SAP",
     description: "Start the onboarding workflow for a new supplier.",
     direction: "OUTGOING",
@@ -4801,7 +4801,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000007",
     action: "SAP:get_supplier_risk_score",
-    label: "Sap",
+    label: "SAP",
     provider: "SAP",
     description: "Get the current risk score and flags for a supplier.",
     direction: "OUTGOING",
@@ -4835,7 +4835,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000008",
     action: "SAP:create_rfq",
-    label: "Sap",
+    label: "SAP",
     provider: "SAP",
     description:
       "Create a Request for Quotation (RFQ) and invite suppliers to bid.",
@@ -4877,7 +4877,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000009",
     action: "SAP:get_rfq_responses",
-    label: "Sap",
+    label: "SAP",
     provider: "SAP",
     description: "Get all supplier bid responses submitted for an RFQ.",
     direction: "OUTGOING",
@@ -4909,7 +4909,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000010",
     action: "SAP:award_rfq",
-    label: "Sap",
+    label: "SAP",
     provider: "SAP",
     description: "Award an RFQ to the winning supplier bid.",
     direction: "OUTGOING",
@@ -4933,7 +4933,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000011",
     action: "SAP:create_contract",
-    label: "Sap",
+    label: "SAP",
     provider: "SAP",
     description: "Create a supplier contract in Ariba Contract Management.",
     direction: "OUTGOING",
@@ -4971,7 +4971,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000012",
     action: "SAP:get_contract_status",
-    label: "Sap",
+    label: "SAP",
     provider: "SAP",
     description:
       "Get the current status and expiration details of a supplier contract.",
@@ -5010,7 +5010,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000013",
     action: "SAP:submit_invoice",
-    label: "Sap",
+    label: "SAP",
     provider: "SAP",
     description:
       "Submit a supplier invoice against a purchase order for reconciliation.",
@@ -5045,7 +5045,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000014",
     action: "SAP:get_invoice_reconciliation_status",
-    label: "Sap",
+    label: "SAP",
     provider: "SAP",
     description:
       "Get the three-way match (PO, receipt, invoice) reconciliation status of an invoice.",
@@ -5080,7 +5080,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000015",
     action: "SAP:reject_requisition",
-    label: "Sap",
+    label: "SAP",
     provider: "SAP",
     description: "Reject a pending purchase requisition with a reason.",
     direction: "OUTGOING",
@@ -6781,7 +6781,7 @@ const MCPs = [
   {
     id: "aaafe618-55dc-4119-b888-3afb84c0f3e5",
     action: "HUBSPOT:create_contact",
-    label: "Hubspot",
+    label: "HubSpot",
     provider: "HUBSPOT",
     description: "Create a new contact record in HubSpot.",
     direction: "OUTGOING",
@@ -6821,7 +6821,7 @@ const MCPs = [
   {
     id: "6b105cf2-54e6-43d5-bd89-099536bf59d2",
     action: "HUBSPOT:update_contact",
-    label: "Hubspot",
+    label: "HubSpot",
     provider: "HUBSPOT",
     description: "Update properties on an existing contact record.",
     direction: "OUTGOING",
@@ -6845,7 +6845,7 @@ const MCPs = [
   {
     id: "834e92a9-179f-4bee-965e-5eb4afa1b278",
     action: "HUBSPOT:get_contact_details",
-    label: "Hubspot",
+    label: "HubSpot",
     provider: "HUBSPOT",
     description: "Get full property details for a contact by ID.",
     direction: "OUTGOING",
@@ -6883,7 +6883,7 @@ const MCPs = [
   {
     id: "a531aadc-f989-463e-886f-7276f3f0ba1f",
     action: "HUBSPOT:create_company",
-    label: "Hubspot",
+    label: "HubSpot",
     provider: "HUBSPOT",
     description: "Create a new company record in HubSpot.",
     direction: "OUTGOING",
@@ -6918,7 +6918,7 @@ const MCPs = [
   {
     id: "0f4f560b-24b1-4719-8cd2-62ef806347ff",
     action: "HUBSPOT:create_deal",
-    label: "Hubspot",
+    label: "HubSpot",
     provider: "HUBSPOT",
     description: "Create a new deal in a sales pipeline.",
     direction: "OUTGOING",
@@ -6958,7 +6958,7 @@ const MCPs = [
   {
     id: "bbd4cdfe-1f71-49b1-8e5a-89336c25dbc5",
     action: "HUBSPOT:update_deal_stage",
-    label: "Hubspot",
+    label: "HubSpot",
     provider: "HUBSPOT",
     description: "Move a deal to a new pipeline stage.",
     direction: "OUTGOING",
@@ -6982,7 +6982,7 @@ const MCPs = [
   {
     id: "3e341d27-620c-48a7-9695-67911f83c006",
     action: "HUBSPOT:get_deal_details",
-    label: "Hubspot",
+    label: "HubSpot",
     provider: "HUBSPOT",
     description: "Get details of a deal including amount and stage.",
     direction: "OUTGOING",
@@ -7020,7 +7020,7 @@ const MCPs = [
   {
     id: "22d1c794-4a7d-44d0-a02e-f18ff5c9293e",
     action: "HUBSPOT:create_task",
-    label: "Hubspot",
+    label: "HubSpot",
     provider: "HUBSPOT",
     description: "Create a follow-up task associated with a contact or deal.",
     direction: "OUTGOING",
@@ -7060,7 +7060,7 @@ const MCPs = [
   {
     id: "2cbd6486-f7e5-4127-b821-ce91c3123271",
     action: "HUBSPOT:log_email_activity",
-    label: "Hubspot",
+    label: "HubSpot",
     provider: "HUBSPOT",
     description:
       "Log a sent or received email activity on a contact's timeline.",
@@ -7091,7 +7091,7 @@ const MCPs = [
   {
     id: "6d9abdf2-c11e-4b97-b1df-4d1b012bb587",
     action: "HUBSPOT:create_marketing_email",
-    label: "Hubspot",
+    label: "HubSpot",
     provider: "HUBSPOT",
     description: "Create a new marketing email in HubSpot's email tool.",
     direction: "OUTGOING",
@@ -7125,7 +7125,7 @@ const MCPs = [
   {
     id: "c39e60e0-fc8c-4f1e-afdc-570349048be9",
     action: "HUBSPOT:get_email_campaign_stats",
-    label: "Hubspot",
+    label: "HubSpot",
     provider: "HUBSPOT",
     description:
       "Get open, click, and bounce statistics for a marketing email campaign.",
@@ -7164,7 +7164,7 @@ const MCPs = [
   {
     id: "24a27fa8-7b5b-4926-b862-6db086974caa",
     action: "HUBSPOT:create_form",
-    label: "Hubspot",
+    label: "HubSpot",
     provider: "HUBSPOT",
     description: "Create a new lead capture form.",
     direction: "OUTGOING",
@@ -7194,7 +7194,7 @@ const MCPs = [
   {
     id: "57b6d9f5-c326-4282-af4e-d26274e49962",
     action: "HUBSPOT:get_form_submissions",
-    label: "Hubspot",
+    label: "HubSpot",
     provider: "HUBSPOT",
     description: "Get recent submissions for a given form.",
     direction: "OUTGOING",
@@ -7226,7 +7226,7 @@ const MCPs = [
   {
     id: "0b9f8e8d-7227-44a5-b42d-253a1511b365",
     action: "HUBSPOT:enroll_contact_in_workflow",
-    label: "Hubspot",
+    label: "HubSpot",
     provider: "HUBSPOT",
     description:
       "Enroll a contact in an automated marketing or sales workflow.",
@@ -7251,7 +7251,7 @@ const MCPs = [
   {
     id: "5238aafb-9a81-404d-bdf6-90054cb110b9",
     action: "HUBSPOT:create_ticket",
-    label: "Hubspot",
+    label: "HubSpot",
     provider: "HUBSPOT",
     description: "Create a support ticket in HubSpot's Service Hub.",
     direction: "OUTGOING",
@@ -7286,7 +7286,7 @@ const MCPs = [
   {
     id: "949b12af-965d-4fd7-a18f-ca1528d8fa80",
     action: "HUBSPOT:get_pipeline_summary",
-    label: "Hubspot",
+    label: "HubSpot",
     provider: "HUBSPOT",
     description: "Get a summary of open deal value grouped by pipeline stage.",
     direction: "OUTGOING",
@@ -7319,7 +7319,7 @@ const MCPs = [
   {
     id: "58ba208b-2438-48e8-99b8-8a7655116d87",
     action: "SALESFORCE:create_lead",
-    label: "Salesforce",
+    label: "SalesForce",
     provider: "SALESFORCE",
     description: "Create a new lead record in Salesforce.",
     direction: "OUTGOING",
@@ -7358,7 +7358,7 @@ const MCPs = [
   {
     id: "f8bb9460-65da-4637-8e92-efd8a9aabc1f",
     action: "SALESFORCE:convert_lead",
-    label: "Salesforce",
+    label: "SalesForce",
     provider: "SALESFORCE",
     description:
       "Convert a qualified lead into an account, contact, and opportunity.",
@@ -7397,7 +7397,7 @@ const MCPs = [
   {
     id: "67160372-c720-46c4-a0b3-775064d5d83d",
     action: "SALESFORCE:create_account",
-    label: "Salesforce",
+    label: "SalesForce",
     provider: "SALESFORCE",
     description: "Create a new account (company) record.",
     direction: "OUTGOING",
@@ -7427,7 +7427,7 @@ const MCPs = [
   {
     id: "af692126-a39c-4f84-b3db-d0d9d1e4ac57",
     action: "SALESFORCE:create_contact",
-    label: "Salesforce",
+    label: "SalesForce",
     provider: "SALESFORCE",
     description: "Create a new contact record associated with an account.",
     direction: "OUTGOING",
@@ -7467,7 +7467,7 @@ const MCPs = [
   {
     id: "8ba807ba-f711-4da8-b9fd-d7e2179183ee",
     action: "SALESFORCE:create_case",
-    label: "Salesforce",
+    label: "SalesForce",
     provider: "SALESFORCE",
     description: "Create a new support case for a customer.",
     direction: "OUTGOING",
@@ -7502,7 +7502,7 @@ const MCPs = [
   {
     id: "68ac14f5-de20-4f32-b032-3fdff9322717",
     action: "SALESFORCE:update_case_status",
-    label: "Salesforce",
+    label: "SalesForce",
     provider: "SALESFORCE",
     description: "Update the status of an existing support case.",
     direction: "OUTGOING",
@@ -7526,7 +7526,7 @@ const MCPs = [
   {
     id: "555ce9a4-b1e2-438b-92a6-69cae8b4298e",
     action: "SALESFORCE:get_case_details",
-    label: "Salesforce",
+    label: "SalesForce",
     provider: "SALESFORCE",
     description: "Get full details of a support case.",
     direction: "OUTGOING",
@@ -7564,7 +7564,7 @@ const MCPs = [
   {
     id: "ac62e546-7274-440b-b105-aed19fbfefd5",
     action: "SALESFORCE:create_campaign",
-    label: "Salesforce",
+    label: "SalesForce",
     provider: "SALESFORCE",
     description: "Create a new marketing campaign record.",
     direction: "OUTGOING",
@@ -7594,7 +7594,7 @@ const MCPs = [
   {
     id: "11894e59-3966-450d-ac2d-3e65ee574a82",
     action: "SALESFORCE:add_lead_to_campaign",
-    label: "Salesforce",
+    label: "SalesForce",
     provider: "SALESFORCE",
     description: "Add a lead as a member of a campaign.",
     direction: "OUTGOING",
@@ -7618,7 +7618,7 @@ const MCPs = [
   {
     id: "21f46206-dc5d-443c-9c96-e2620bcf9e84",
     action: "SALESFORCE:create_task",
-    label: "Salesforce",
+    label: "SalesForce",
     provider: "SALESFORCE",
     description: "Create a follow-up task associated with a record.",
     direction: "OUTGOING",
@@ -7658,7 +7658,7 @@ const MCPs = [
   {
     id: "da2e4509-3cf7-425e-af80-f663adf245a2",
     action: "SALESFORCE:log_activity",
-    label: "Salesforce",
+    label: "SalesForce",
     provider: "SALESFORCE",
     description: "Log a call or meeting activity on a record's timeline.",
     direction: "OUTGOING",
@@ -7688,7 +7688,7 @@ const MCPs = [
   {
     id: "2a85d2cb-bf70-43fe-9297-be64971bd4c3",
     action: "SALESFORCE:run_report",
-    label: "Salesforce",
+    label: "SalesForce",
     provider: "SALESFORCE",
     description: "Run a saved Salesforce report and return summary results.",
     direction: "OUTGOING",
@@ -7722,7 +7722,7 @@ const MCPs = [
   {
     id: "fdf01a03-6a2b-4f87-8857-67fd24d6f51d",
     action: "SALESFORCE:get_forecast_summary",
-    label: "Salesforce",
+    label: "SalesForce",
     provider: "SALESFORCE",
     description: "Get the current sales forecast summary for a period.",
     direction: "OUTGOING",
@@ -7752,7 +7752,7 @@ const MCPs = [
   {
     id: "4cae696d-0228-4c08-bd19-7643fbf340a8",
     action: "SALESFORCE:create_quote",
-    label: "Salesforce",
+    label: "SalesForce",
     provider: "SALESFORCE",
     description: "Create a price quote associated with an opportunity.",
     direction: "OUTGOING",
@@ -7787,7 +7787,7 @@ const MCPs = [
   {
     id: "4dd4ac37-87b6-479f-b765-8b7107bc1597",
     action: "SERVICENOW:update_incident_status",
-    label: "Servicenow",
+    label: "ServiceNow",
     provider: "SERVICENOW",
     description: "Update the state of an existing incident.",
     direction: "OUTGOING",
@@ -7812,7 +7812,7 @@ const MCPs = [
   {
     id: "9f720004-01b1-49c4-9973-c6ea17ce9a5d",
     action: "SERVICENOW:get_incident_details",
-    label: "Servicenow",
+    label: "ServiceNow",
     provider: "SERVICENOW",
     description: "Get full details of an incident by its incident number.",
     direction: "OUTGOING",
@@ -7850,7 +7850,7 @@ const MCPs = [
   {
     id: "1ffc814f-67f4-4eeb-a9ed-04716b3c73b2",
     action: "SERVICENOW:create_change_request",
-    label: "Servicenow",
+    label: "ServiceNow",
     provider: "SERVICENOW",
     description:
       "Create a change request for a planned infrastructure or application change.",
@@ -7885,7 +7885,7 @@ const MCPs = [
   {
     id: "9bfa0246-f417-462c-8fe1-66f50528ec17",
     action: "SERVICENOW:approve_change_request",
-    label: "Servicenow",
+    label: "ServiceNow",
     provider: "SERVICENOW",
     description: "Approve a pending change request by its change number.",
     direction: "OUTGOING",
@@ -7905,7 +7905,7 @@ const MCPs = [
   {
     id: "ff0cad2d-90d7-4032-8955-7159eb270f9c",
     action: "SERVICENOW:create_problem_record",
-    label: "Servicenow",
+    label: "ServiceNow",
     provider: "SERVICENOW",
     description: "Create a problem record for root-cause investigation.",
     direction: "OUTGOING",
@@ -7935,7 +7935,7 @@ const MCPs = [
   {
     id: "dc31af0c-87d4-49b4-a9ba-415da718ab70",
     action: "SERVICENOW:link_problem_to_incident",
-    label: "Servicenow",
+    label: "ServiceNow",
     provider: "SERVICENOW",
     description: "Link an existing problem record to a related incident.",
     direction: "OUTGOING",
@@ -7959,7 +7959,7 @@ const MCPs = [
   {
     id: "c286c661-be8d-4b8d-afa2-1e56a7f31f09",
     action: "SERVICENOW:create_catalog_request",
-    label: "Servicenow",
+    label: "ServiceNow",
     provider: "SERVICENOW",
     description:
       "Submit a request from the service catalog (e.g. new laptop, software access).",
@@ -7994,7 +7994,7 @@ const MCPs = [
   {
     id: "8abfa539-094c-4f29-9778-885b769ab8b5",
     action: "SERVICENOW:get_catalog_request_status",
-    label: "Servicenow",
+    label: "ServiceNow",
     provider: "SERVICENOW",
     description: "Get the fulfillment status of a service catalog request.",
     direction: "OUTGOING",
@@ -8028,7 +8028,7 @@ const MCPs = [
   {
     id: "8c970c64-47fd-49f1-8e97-2097d1547195",
     action: "SERVICENOW:create_knowledge_article",
-    label: "Servicenow",
+    label: "ServiceNow",
     provider: "SERVICENOW",
     description: "Create a new knowledge base article.",
     direction: "OUTGOING",
@@ -8062,7 +8062,7 @@ const MCPs = [
   {
     id: "dc3c023e-c98d-4e10-950b-0fbfabb18d7b",
     action: "SERVICENOW:search_cmdb_ci",
-    label: "Servicenow",
+    label: "ServiceNow",
     provider: "SERVICENOW",
     description:
       "Search the Configuration Management Database (CMDB) for configuration items.",
@@ -8095,7 +8095,7 @@ const MCPs = [
   {
     id: "2cb46043-4bd1-43e9-af86-a5a727349e76",
     action: "SERVICENOW:update_cmdb_ci",
-    label: "Servicenow",
+    label: "ServiceNow",
     provider: "SERVICENOW",
     description: "Update attributes on a configuration item in the CMDB.",
     direction: "OUTGOING",
@@ -8119,7 +8119,7 @@ const MCPs = [
   {
     id: "539d3524-f650-408b-8b63-f0839f6a3422",
     action: "SERVICENOW:create_service_request",
-    label: "Servicenow",
+    label: "ServiceNow",
     provider: "SERVICENOW",
     description: "Create a general IT service request not tied to the catalog.",
     direction: "OUTGOING",
@@ -8153,7 +8153,7 @@ const MCPs = [
   {
     id: "52d20d03-5dc4-4c3d-a659-493e41053185",
     action: "SERVICENOW:get_sla_breach_report",
-    label: "Servicenow",
+    label: "ServiceNow",
     provider: "SERVICENOW",
     description:
       "Get a report of tickets that have breached or are approaching SLA deadlines.",
@@ -8187,7 +8187,7 @@ const MCPs = [
   {
     id: "785f3c37-9825-4bd3-a06e-d64c1648eb98",
     action: "SERVICENOW:assign_incident",
-    label: "Servicenow",
+    label: "ServiceNow",
     provider: "SERVICENOW",
     description: "Assign an incident to a specific agent or assignment group.",
     direction: "OUTGOING",

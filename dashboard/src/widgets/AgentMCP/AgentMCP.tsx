@@ -279,7 +279,7 @@ const AgentMCP = ({ agent }: { agent?: { id: string; name: string } }) => {
               {visibleSkills.map((skill) => (
                 <MCPs
                   key={skill.id}
-                  title={skill.label ?? skill.provider}
+                  title={skill.label}
                   description={skill.description}
                   icon={skill.icon}
                   onSkillClick={handleSkillClick}

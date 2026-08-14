@@ -361,7 +361,9 @@ function AgentWizard({ onSubmit, open, onClose, itemToEdit }) {
         <DialogContent
           sx={{
             p: 0,
-            overflow: "visible",
+            flex: 1,
+            minHeight: 0,
+            overflowY: "auto",
             backgroundColor: (theme) => theme.palette.background.default,
           }}
         >

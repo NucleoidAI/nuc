@@ -37,7 +37,7 @@ function AIMarketplaceCard({
   const Content = () => {
     return (
       <DialogContent
-        sx={{ marginY: 1, gap: 2, display: "flex", flexDirection: "column" }}
+        sx={{ marginY: 1, gap: 1, display: "flex", flexDirection: "column" }}
       >
         <TextField
           sx={{ marginTop: 1 }}
@@ -49,7 +49,7 @@ function AIMarketplaceCard({
         <Box
           sx={{
             ...(isWizardEngine && {
-              maxHeight: 240,
+              height: 200,
               overflowY: "auto",
               pr: 0.5,
             }),

@@ -21,7 +21,10 @@ export default function StepComponent({
     <>
       <Stepper
         activeStep={activeStep}
-        sx={{ backgroundColor: (theme) => theme.palette.background.default }}
+        sx={{
+          flexShrink: 0,
+          backgroundColor: (theme) => theme.palette.background.default,
+        }}
       >
         {steps.map((label) => {
           const stepProps = {};
@@ -49,7 +52,10 @@ export default function StepComponent({
 
       {children}
       <DialogActions
-        sx={{ backgroundColor: (theme) => theme.palette.background.default }}
+        sx={{
+          flexShrink: 0,
+          backgroundColor: (theme) => theme.palette.background.default,
+        }}
       >
         <Button
           data-cy="agent-back-button"

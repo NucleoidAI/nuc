@@ -5,7 +5,11 @@ import { Box, Chip, Stack, Typography } from "@mui/material";
 
 const BlueprintSummary = ({ newItem, detailListSx }) => {
   return (
-    <SummaryCard icon="mdi:sitemap-outline" label="Blueprints" size={6}>
+    <SummaryCard
+      icon="mdi:sitemap-outline"
+      label="Blueprints"
+      size={{ xs: 12, md: 6 }}
+    >
       <Stack
         spacing={1.5}
         sx={detailListSx}

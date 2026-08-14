@@ -234,12 +234,12 @@ function AgentStep({
         sx={{
           display: "grid",
           gridTemplateColumns: { xs: "1fr", md: "1fr 0.01fr 1fr" },
-          gap: 3,
+          gap: 1,
           alignItems: "start",
-          px: 2,
+          px: 1,
         }}
       >
-        <Stack spacing={2}>
+        <Stack spacing={1}>
           <Typography variant="subtitle2" fontWeight={600} textAlign="center">
             Agent Details
           </Typography>
@@ -284,7 +284,7 @@ function AgentStep({
           sx={{ display: { xs: "none", md: "block" } }}
         />
 
-        <Stack spacing={1}>
+        <Stack>
           <Typography variant="subtitle2" fontWeight={600} textAlign="center">
             Select AI Engine
           </Typography>
@@ -304,7 +304,7 @@ function AgentStep({
         </Typography>
       </Divider>
 
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
         <TextField
           label="Search Agents"
           size="small"
@@ -325,9 +325,8 @@ function AgentStep({
               onClick={() => setActiveGroup(group)}
               sx={{
                 flexShrink: 0,
-                gap: 1,
-                px: 1.5,
-                py: 1,
+                gap: 0.5,
+                p: 1,
                 borderRadius: 1,
                 border: 1,
                 borderColor:
@@ -357,10 +356,9 @@ function AgentStep({
           sx={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-            gap: 1.5,
-            maxHeight: 260,
+            gap: 1,
+            height: 200,
             overflowY: "auto",
-            pr: 0.5,
           }}
         >
           {visibleAgents.map((sample, index) => (
@@ -372,7 +370,7 @@ function AgentStep({
               sx={cardSx}
             >
               <CardActionArea sx={{ height: "100%" }}>
-                <CardContent sx={{ p: 1.5, "&:last-child": { pb: 1.5 } }}>
+                <CardContent sx={{ p: 1, "&:last-child": { pb: 1.5 } }}>
                   <Box
                     sx={{
                       display: "flex",

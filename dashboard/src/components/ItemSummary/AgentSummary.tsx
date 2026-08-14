@@ -10,7 +10,7 @@ const AgentSummary = ({ newItem, team }) => {
     <SummaryCard icon="mdi:text-box-outline" label="Name">
       <Stack
         direction={{ xs: "column", sm: "row" }}
-        spacing={2.5}
+        spacing={2}
         alignItems="center"
         textAlign={{ xs: "center", sm: "left" }}
       >

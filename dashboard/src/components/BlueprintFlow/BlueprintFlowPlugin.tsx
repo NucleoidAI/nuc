@@ -713,6 +713,7 @@ type FlowGraphNode = import("./helper").DefinitionGraphNode & {
 export type NodeFields = { inputs: string[]; outputs: string[] };
 
 const FIELDS_PANEL_ROW_HEIGHT = 2;
+const FIELDS_PANEL_ROW_GAP = 2;
 
 function fieldsPanelHeight(nodeFields?: Record<string, NodeFields>) {
   const rows = Math.max(
@@ -722,7 +723,9 @@ function fieldsPanelHeight(nodeFields?: Record<string, NodeFields>) {
     )
   );
 
-  return rows * FIELDS_PANEL_ROW_HEIGHT;
+  if (rows === 0) return 0;
+
+  return rows * FIELDS_PANEL_ROW_HEIGHT + (rows - 1) * FIELDS_PANEL_ROW_GAP;
 }
 
 const FieldsPanel = styled("div")(({ theme }) => ({

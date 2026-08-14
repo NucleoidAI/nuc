@@ -162,8 +162,16 @@ function TeamChart() {
         </IconButton>
       )}
 
-      <Box>
-        <Flow data={data} style={style} plugin={teamChartPlugin} />
+      <Box sx={{ width: "100%", height: "100vh", overflow: "hidden" }}>
+        <Flow
+          data={data}
+          style={style}
+          plugin={teamChartPlugin}
+          height="100%"
+          fitViewOnMount
+          fitViewOnNodesChange
+          fitViewOnResize
+        />
       </Box>
 
       {dialogOpen && (

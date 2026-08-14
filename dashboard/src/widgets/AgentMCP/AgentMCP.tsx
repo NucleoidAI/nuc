@@ -159,7 +159,6 @@ const AgentMCP = ({ agent }: { agent: { id: string; name: string } }) => {
           instructions={instructions}
           drawerOpen={drawerOpen}
           handleDrawerClose={handleDrawerClose}
-          agent={agent}
         />
       </Box>
     </Box>

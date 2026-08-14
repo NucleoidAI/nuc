@@ -1,13 +1,6 @@
 import { Icon } from "@iconify/react";
 
-import {
-  Box,
-  Card,
-  Container,
-  Stack,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Box, Card, Container, Typography, useTheme } from "@mui/material";
 import React, { useMemo } from "react";
 
 const DEFAULT_BLUEPRINT_ICON =
@@ -65,6 +58,7 @@ function CommunicationDiagram(props) {
     ]
   );
 
+  const isEmpty = !connections || connections.length === 0;
   const maxCount = Math.max(positionsLeft.length, rightNodes.length);
   const containerHeight = initialTop + maxCount * (nodeHeight + verticalGap);
 
@@ -116,17 +110,17 @@ function CommunicationDiagram(props) {
     <Container maxWidth="md" sx={{ mt: 4, mb: 4 }} {...containerProps}>
       <Box
         position="relative"
-        width={leftX + horizontalGap + nodeWidth}
-        height={containerHeight}
+        width={isEmpty ? "100%" : leftX + horizontalGap + nodeWidth}
+        height={isEmpty ? "60vh" : containerHeight}
         mx="auto"
         display="flex"
         alignItems="center"
         justifyContent="center"
       >
-        {!connections || connections.length === 0 ? (
-          <Stack sx={{ textAlign: "center", my: 4, color: "text.secondary" }}>
-            No communication connections available.
-          </Stack>
+        {isEmpty ? (
+          <Typography variant="h6" color="textSecondary" textAlign="center">
+            No communication connections available
+          </Typography>
         ) : (
           <>
             {positionsLeft

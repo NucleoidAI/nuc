@@ -82,14 +82,6 @@
 Declare bindings with `const`, reaching for `let` only where the binding is
 genuinely reassigned.
 
-`prefer-const` and `no-var` are enabled in `dashboard/.eslintrc.json` and nowhere
-else, and the three packages that extend only `eslint:recommended` and
-`plugin:@typescript-eslint/recommended` have no rule holding them to it. There
-are zero `var` declarations across all 538 TypeScript files, so the convention
-holds — but a mutated object bound with `let`, as in
-`communication/api/createKnowledge.ts`, already slips past unnoticed in a package
-nothing lints.
-
 Incorrect:
 
 ```ts
@@ -160,13 +152,6 @@ for (let i = stack.length - 1; i >= 0; i--) {
 Compare with `===` and `!==`, the one exception being `== null` as a deliberate
 "null or undefined" test outside `dashboard/`.
 
-`eqeqeq` is set to `["error", "always"]` in `dashboard/.eslintrc.json` and is
-unset in every other package. The ten loose comparisons in the repository are all
-intentional `== null` tests in `api/` — `lib/parameterRefs.ts`, `lib/llmLog.ts`,
-`functions/llmLog.ts`, `actions/evaluate_metrics.ts` — which is a legitimate
-idiom there and would be rejected by the dashboard's setting, so dashboard code
-writes the check out.
-
 Incorrect:
 
 ```ts
@@ -224,11 +209,6 @@ The same test spelled out, for `dashboard/` where `eqeqeq: always` applies.
 Use `??` to supply a default for a missing value and keep `||` for genuinely
 boolean logic.
 
-`||` treats `0`, `""` and `false` as absent, which is wrong for almost every
-numeric and string field in this domain — a `resultScore` of `0`, a blank
-`description`, a `durationMs` of `0` are all real values it silently replaces.
-`api/src/lib/llmLog.ts` already uses `??` for exactly this reason.
-
 Incorrect:
 
 ```ts
@@ -280,11 +260,6 @@ for an environment variable.
 
 Build strings with template literals rather than `+` concatenation.
 
-Concatenation hides the interpolation points and forces explicit `String(...)`
-calls around non-strings. The one place the repository still concatenates is the
-error assembly in `api/src/lib/jsonParse.ts`, which is also the hardest line in
-that file to read.
-
 Incorrect:
 
 ```ts
@@ -329,12 +304,6 @@ const { data } = await http.get(`/agents/${agentId}/knowledge`);
 Case carries meaning: `PascalCase` for classes, React components and types,
 `camelCase` for functions, variables and properties, and `UPPER_SNAKE_CASE` for
 module constants and for event and domain-code strings.
-
-The case is the fastest signal of what an identifier is, and the repository
-already holds to it — `PROVIDER_LOADERS`, `SESSIONS_STORAGE_KEY`, `DB_PATH` and
-`API_BASE_URL` against `PascalCase` models and components and `camelCase`
-functions. Domain error codes and event names are `UPPER_SNAKE_CASE` for the same
-reason: they are constants that happen to travel as strings.
 
 Incorrect:
 
@@ -393,11 +362,6 @@ const DB_PATH = path.join(__dirname, "database.json");
 Name a boolean as a predicate — `is`, `has`, `should`, `can`, `needs` — so a flag
 is distinguishable from a value at the call site.
 
-`if (loading)` and `if (agent)` read the same and mean different things, and the
-prefix is what makes a condition legible without looking up the declaration. The
-repository already does this where it matters: `isLoading`, `isValid`,
-`isSubmitting`, `isJson`, `hasLoadedOnce`, `isError`.
-
 Incorrect:
 
 ```ts
@@ -444,10 +408,6 @@ const { isJson, parsedResult } = parseJsonResult(step.result);
 
 Spell names out, keeping only the established domain acronyms — `LLM`, `MCP`,
 `API`, `AI`, `VM`, `ASR`, `QA` — and never inventing new shortenings.
-
-An abbreviation saves the writer a few characters once and costs every later
-reader a lookup. The acronyms above are in the product vocabulary, the directory
-names and the API surface, so expanding those would be the confusing change.
 
 Incorrect:
 
@@ -501,13 +461,6 @@ const asrEndpoint = process.env.ASR_ENDPOINT_URL;
 
 Declare a module's exported functions with the `function` keyword, keeping arrow
 functions for callbacks and short expressions.
-
-A named declaration is hoisted, shows its name in stack traces and profiler
-output, and reads as a definition rather than an assignment. The repository is
-split — 386 `function` declarations against 491 arrow consts — and the
-declaration form is what `api/src/functions/`, `api/src/lib/` and
-`api/src/actions/` already use, while `communication/api/` uses the arrow form
-throughout.
 
 Incorrect:
 
@@ -572,15 +525,6 @@ Arrows are the right form for callbacks.
 
 A function taking more than two arguments takes a single destructured object with
 an inline type, so every value is named at the call site.
-
-Positional arguments are unreadable at three and dangerous at four. Ten functions
-in the repository take three or more, and the worst are in `communication/`:
-`createSession(accessToken?, agentId?, blueprintId?, variables?)` takes five,
-four of them optional and three of them strings, so `createSession(token,
-agentId, variables)` type-checks and silently passes `variables` as
-`blueprintId`. `createKnowledge(session, learnType, agentId, learningInfo)` and
-`pollForNewSupervising(client, channelId, user, message)` are the same shape with
-no types at all.
 
 Incorrect:
 
@@ -659,10 +603,6 @@ One or two arguments stay positional.
 
 Handle failing and empty cases first with an early return, keeping the function's
 real work at one level of indentation.
-
-Nesting the happy path inside `if` blocks pushes the important code to the right
-and separates each condition from the work it guards. `api/src/functions/knowledge.ts`
-and every route that checks a tenant already read this way.
 
 Incorrect:
 
@@ -761,15 +701,6 @@ function AgentsWidget({ agents, loading, error }) {
 Split a function once it does more than one thing, outgrows roughly a screen, or
 needs an "and" in its name.
 
-Length is a symptom rather than the defect, but it tracks the defect closely
-here. The largest files are `api/src/mcps/mcps.ts` at 8397 lines,
-`dashboard/src/widgets/BlueprintFlowWidget/BlueprintFlowWidget.tsx` at 1541,
-`api/src/functions/agent.ts` at 1260 and
-`dashboard/src/components/SupervisingChat/SupervisingChat.tsx` at 1065 — and
-`SupervisingChat.tsx` is one of only two files in the repository carrying a
-blanket `eslint-disable`, because a file that large accumulates violations faster
-than anyone fixes them.
-
 Incorrect:
 
 ```ts
@@ -867,15 +798,6 @@ the caller readable without opening any of them.
 Never write `any` — use the real type, a narrow interface, or `unknown` with a
 check.
 
-`any` disables checking for every expression it touches and spreads through
-assignments silently. There are 120 `any` annotations in the repository,
-distributed very unevenly: 65 in `mcp/`, 40 in `api/`, 10 in `communication/`, 5
-in `dashboard/` and none in `server-dashboard/` — which is the one package with
-`strict`, `noUnusedLocals` and `noUnusedParameters` all on. The cost is highest
-where the compiler is already weakest: `api/tsconfig.json` sets `strict: true`
-but `noImplicitAny: false`, and `dashboard/tsconfig.json` sets `strict: false`,
-so an untyped parameter is `any` without anyone writing it.
-
 Incorrect:
 
 ```ts
@@ -953,15 +875,6 @@ function getByPath(source: unknown, path: string): unknown {
 
 A type parameter must be carried through the body; a generic whose implementation
 casts to `any` promises safety it does not deliver.
-
-This is worse than plain `any`, because the signature reads as checked. Every
-helper in `mcp/servers/order/db/index.ts` does it: `findOne<T extends keyof
-Database>(table: T, key: string, value: any)` declares a return type of
-`Database[T][number] | null`, then immediately writes `db[table] as any[]` and
-looks up `item[key]`, so `key` is unchecked against the record, `value` is
-unchecked against the field, and the promised return type is a cast rather than a
-deduction. A caller gets red squiggles for the wrong things and none for the
-right ones.
 
 Incorrect:
 
@@ -1045,22 +958,6 @@ A function with nothing to parameterise takes no type parameter.
 A value with a fixed set of members is declared once as an exported union type
 and imported wherever it is used.
 
-The status vocabulary is written out by hand in ten places across six different
-member sets, and the duplication crosses the package boundary: `"COMPLETED" |
-"FAILED" | "SUPERVISED"` appears four times — in `api/src/functions/stepScore.ts`,
-`api/src/models/StepScore.ts`, `dashboard/src/hooks/useTaskScores.ts` and
-`dashboard/src/components/TaskScores/ScoreCard.tsx` — while `functions/task.ts`
-alone carries both `"COMPLETED" | "FAILED"` and `"IN_PROGRESS" | "COMPLETED" |
-"FAILED"`. Around them the same strings appear as bare literals in TypeScript 60
-times for `"COMPLETED"`, 49 for `"IN_PROGRESS"`, 24 for `"FAILED"`, 23 for
-`"ANSWERED"` and 6 for `"SUPERVISED_NEEDED"`, so adding a member means finding
-every one of those sites by hand.
-
-The repository uses union types rather than `enum` — there is not a single `enum`
-in 538 TypeScript files — and that is the convention to keep, because a union
-erases at compile time and compares as a plain string across the event bus and
-the wire.
-
 Incorrect:
 
 ```ts
@@ -1129,12 +1026,6 @@ in each.
 
 A caught error is `unknown` and is narrowed before its properties are read.
 
-TypeScript types a caught value as `unknown`, and annotating it `any` throws that
-away — `error.message` on a thrown string is `undefined`, and on a thrown object
-is whatever happened to be there. Six `catch (err: any)` clauses exist today. The
-narrowing idiom is already established in `api/server.ts`, `api/src/app.ts` and
-every `mcp/` tool handler.
-
 Incorrect:
 
 ```ts
@@ -1200,14 +1091,6 @@ The shape every `mcp/` tool handler already uses.
 Never write `@ts-ignore` or `@ts-nocheck` — fix the type, narrow the value, or
 declare the shape the compiler is missing.
 
-A suppression silences every error on the line, including ones introduced later,
-and it is invisible to `tsc --noEmit` by design. There is one in the repository,
-at `api/src/functions/agent.ts:552`, sitting in the largest function of the
-largest file in that package — which is the usual pairing. Where a suppression is
-genuinely unavoidable, `@ts-expect-error` with a reason is the form to use,
-because it fails the build once the underlying error is fixed and so cannot
-outlive its cause.
-
 Incorrect:
 
 ```ts
@@ -1255,11 +1138,6 @@ Correct:
 Never assert a value away with `!` — check it, or type it optional and use
 optional chaining.
 
-`agent!.teamId` tells the compiler to stop asking and does nothing at run time, so
-the `TypeError` still happens; it just happens without a warning first. Five
-non-null assertions exist today, and optional chaining with a guard covers every
-case they do while producing a real branch.
-
 Incorrect:
 
 ```ts
@@ -1306,11 +1184,6 @@ Correct:
 
 Allow one ternary per expression, turning any second condition into an `if`, an
 early return, or a lookup.
-
-Nested ternaries have no visual structure — the reader counts `?` and `:` to find
-which branch belongs to which test — and they resist adding a fourth case without
-a rewrite. A single ternary choosing between two values is fine and is used
-throughout.
 
 Incorrect:
 
@@ -1366,12 +1239,6 @@ const source = agentId ? knowledges : teamKnowledges;
 A ternary produces a value; when both branches are called only for their effects,
 write `if`/`else`.
 
-A ternary in statement position discards its result, so the reader has to notice
-that the interesting part is the side effect rather than the value — and any
-linter rule about unused expressions cannot tell the two apart.
-`server-dashboard/src/App.tsx:36` is the live case, and it sits in the one
-package with no ESLint configuration at all.
-
 Incorrect:
 
 ```tsx
@@ -1413,14 +1280,6 @@ keeps the effect visible.
 
 A `switch` over a union handles every member, and its `default` branch either
 returns a real fallback or fails loudly.
-
-`noFallthroughCasesInSwitch` is on in `dashboard/tsconfig.json` and
-`server-dashboard/tsconfig.json` and absent from `api/`, `communication/` and
-`mcp/`, so most of the repository does not catch even a missing `break` — and no
-package catches a missing *case*. A `switch` on a union with no `default` returns `undefined` for a member
-added later. `communication/api/createKnowledge.ts` shows the cost: its `switch`
-on `learnType` handles `URL`, `QA` and `TEXT`, and any other type posts a body
-with no content field at all.
 
 Incorrect:
 
@@ -1504,11 +1363,6 @@ A `default` returning a real fallback is the other valid ending.
 Transform collections with `map`, `filter`, `find`, `some` and `reduce`, keeping
 `for` loops for iteration that exits early or walks indices.
 
-The method name states the intent — `filter` returns a subset, `map` returns the
-same length, `some` returns a boolean — where a `for` loop with a manual
-accumulator makes the reader reconstruct it. `for` remains right where the loop
-breaks early or walks characters, as it does in `api/src/lib/jsonParse.ts`.
-
 Incorrect:
 
 ```ts
@@ -1576,12 +1430,6 @@ A character walk with mutable state and early `continue` — a real loop.
 Sequence asynchronous work with `async`/`await`, reserving `.then` for promises
 deliberately not awaited or adapted to a callback API.
 
-Mixing the two styles in one function makes the order of operations hard to read
-and puts errors in two places, since a `try/catch` does not catch a rejection
-inside a `.then` callback that follows it. There are 19 `.then` chains in the
-repository, and the legitimate ones are the fire-and-forget writes and the
-memoized provider load in `api/src/lib/llm.ts`.
-
 Incorrect:
 
 ```ts
@@ -1634,11 +1482,6 @@ function getLLM(): Promise<LLMAdapter> {
 
 Every promise is awaited, returned, or given its own `.catch`, and none is left
 dangling.
-
-An unawaited promise means the caller continues before the work finishes, and its
-rejection reaches the `unhandledRejection` handler in `api/server.ts` with no
-indication of what started it. Logging and metrics writes are the legitimate
-fire-and-forget cases, which is exactly why they must carry their own handler.
 
 Incorrect:
 
@@ -1698,16 +1541,6 @@ function logLLM(params): void {
 
 Every `setInterval` and `setTimeout` keeps its handle and clears it — on unmount
 in React, and on its own terminal condition anywhere else.
-
-In the browser an uncleared interval outlives the component; in a long-lived Node
-process it outlives everything, because there is no unmount to save you.
-`communication/actions/setupSupervisingInfo.ts` is the one uncleared timer in the
-repository, and it is the worst possible place for one: `pollForNewSupervising`
-calls `setInterval` without storing the handle, so every invocation of the action
-adds another permanent poller to the process, each holding its own closure over
-`previousSupervisings` and each posting to Slack forever. The dashboard side of
-this is [`effect/clear-timers`](dashboard/architecture.md); this rule is the
-server side.
 
 Incorrect:
 
@@ -1790,11 +1623,6 @@ A poll outside React clears itself when its terminal status arrives.
 Run independent awaits together through `Promise.all`, sequencing them only where
 a later call needs an earlier result.
 
-Sequential awaits over independent calls cost the sum of their latencies instead
-of the maximum, and this code is latency-bound — every action step is a network
-call and several are LLM completions. `Promise.all` appears in 10 places already,
-so the pattern is established rather than novel.
-
 Incorrect:
 
 ```ts
@@ -1848,15 +1676,6 @@ Sequential because the second lookup needs the first result.
 
 Every call to a service you do not control carries a timeout, checks the response
 status, and bounds any retry.
-
-There are 18 `await fetch` calls across `api/`, `communication/` and `mcp/` and
-not one `AbortController`, `signal` or `timeout` option anywhere in the
-repository. `fetch` has no default timeout, so a provider that accepts the
-connection and never answers holds the request and its whole closure open
-indefinitely — and these calls reach LLM providers, an ASR endpoint, AWS,
-Puppeteer targets and arbitrary MCP servers. Status checking is in better shape:
-14 of the 18 already test `response.ok`, which matters because `fetch` does not
-reject on a 4xx or 5xx and will happily hand an error page to `JSON.parse`.
 
 Incorrect:
 
@@ -1945,14 +1764,6 @@ const { data } = await axios.post(
 A `catch` block is never empty — it handles, logs, converts, or returns a
 documented fallback.
 
-An empty `catch` deletes the only evidence that something failed. There is one in
-the repository, at `mcp/servers/grey/tools/knowledge_lookup.ts:38`, where a
-failed `JSON.parse` of an error body leaves the caller with a generic message and
-no record of why. The deliberate `return null` in the dashboard's mutation hooks
-is not an empty catch — it is a documented contract that callers branch on,
-covered by
-[`data/mutations-swallow-and-return-null`](dashboard/architecture.md).
-
 Incorrect:
 
 ```ts
@@ -2011,12 +1822,6 @@ A fallback that is the function's documented return shape, as
 
 When you catch an error and throw a different one, attach the original as
 `cause`.
-
-Replacing an error with a domain code is right — `platform.error.handle` maps
-codes to responses, and a code is what tests and logs compare on — but discarding
-the original is what makes the resulting log line useless:
-`MCP_TOKEN_EXCHANGE_FAILED` with no indication of whether the provider returned
-401, timed out, or sent malformed JSON.
 
 Incorrect:
 
@@ -2079,12 +1884,6 @@ reachable.
 
 Required configuration is validated where it is read, and a missing value fails
 with a message naming the variable.
-
-Configuration that is absent produces `undefined` in a request path, a URL
-containing the string `undefined`, or a client constructed with no credentials —
-all of which fail later, somewhere unrelated, with a message that does not name
-the cause. `api/src/lib/llm.ts` sets the shape to copy: its `parseProviderModel`
-names the variable, the received value and the valid set.
 
 Incorrect:
 
@@ -2164,12 +1963,6 @@ Inside an action an anticipated failure is returned rather than thrown — see
 A function does not mutate the objects or arrays it was given; it builds and
 returns a new value.
 
-The caller has no way to know its argument changed, so the effect surfaces
-somewhere unrelated. It is worse in the dashboard, where React compares by
-reference: mutating an array in place leaves the reference identical, so the
-component holding it does not re-render and the screen shows stale data the state
-believes is fresh.
-
 Incorrect:
 
 ```ts
@@ -2244,13 +2037,6 @@ them.
 
 Spread an array before `sort` or `reverse`, because both mutate in place.
 
-`Array.prototype.sort` returning the array reads like `map` and behaves like
-`push`, which is why the mistake is easy to make and hard to see in review. Both
-places the repository sorts by timestamp — the sessions route and the
-`SUPERVISING_ANSWERED` handler in `api/src/app.ts` — sort results they have just
-fetched, which is the safe case; this rule keeps it safe when one of them is
-later handed a list from a caller.
-
 Incorrect:
 
 ```ts
@@ -2302,17 +2088,6 @@ Better still, sort in the query and never hold an unordered copy.
 
 `JSON.parse` is wrapped, and its failure produces a named error or a documented
 fallback.
-
-There are 29 `JSON.parse` calls in the repository — 18 in `api/`, 6 in
-`dashboard/`, 4 in `mcp/` and 1 in `server-dashboard/` — and the input is never
-trusted: it is a model completion, a stored step result, an OAuth error body, a
-file on disk, or a value out of `localStorage`. `mcp/servers/order/db/index.ts`
-is the sharpest case, because `loadDatabase()` parses the whole database file
-with no guard and is called by every `findOne`, `findAll`, `insert` and `update`,
-so a single malformed write takes down every tool on that server. Model output
-specifically goes through `api/src/lib/jsonParse.ts`, which strips markdown fences
-and repairs truncated braces first — see
-[`llm/repair-and-parse-model-json`](api/architecture.md).
 
 Incorrect:
 
@@ -2398,17 +2173,6 @@ Check that a timestamp exists before constructing a `Date` from it, because
 `new Date(undefined).getTime()` is `NaN` and `NaN` fails every comparison
 silently.
 
-There are 58 `new Date(...)` sites in the repository and the failure mode carries
-no error: a comparator returning `NaN` leaves the array in its original order, a
-duration renders as `NaN`, and nothing logs. This is live surface —
-`api/src/models/Agent.ts:25` sets `timestamps: false`, so `agent.createdAt` is
-`undefined`, while `AgentCard` renders it and the sessions route sorts by it; and
-`communication/actions/setupSupervisingInfo.ts` compares
-`new Date(newSupervising.createdAt) > new Date(setupTimestamp)` where
-`setupTimestamp` comes from storage and may be absent. Fixing the model is
-[`model/timestamps-match-consumers`](api/architecture.md); guarding the
-arithmetic is this rule, and both are needed.
-
 Incorrect:
 
 ```ts
@@ -2475,13 +2239,6 @@ Measuring from a timestamp you captured yourself removes the question entirely.
 
 Convert to a number explicitly, always with a radix on `parseInt`, and check the
 result before using it.
-
-`Number("")` is `0`, `Number(null)` is `0`, `parseFloat("abc")` is `NaN`, and
-`+value` hides which of those you meant. A `NaN` score written to a `StepScore`
-row propagates into every average computed from it and raises nothing. The
-repository has no `parseInt` without a radix and two `parseFloat` calls — both in
-`api/src/functions/agent.ts`, at lines 120 and 394 — which already do the
-explicit-conversion half and skip the check.
 
 Incorrect:
 
@@ -2553,14 +2310,6 @@ if (!Number.isInteger(limit) || limit < 1) {
 
 Read `process.env` in `config.ts` and in the few modules that own a specific
 integration, so feature code reads the resulting config object instead.
-
-`process.env.*` is referenced at 113 sites across 41 files, covering `AWS_*`,
-`GDRIVE_*`, `ATLASSIAN_*`, `GOOGLE_*` and `ASR_*`. Nothing enumerates what the
-application needs in order to boot, so a missing variable is found by whichever
-request touches it first, and `.env.example` cannot be kept accurate by reading
-the code. Concentrating the reads gives one place to validate, one place to
-document, and one place a reviewer checks against
-[`config/env-for-secrets-config-for-shape`](api/architecture.md).
 
 Incorrect:
 
@@ -2650,18 +2399,6 @@ Importing a module only defines things — reading files, opening connections,
 calling `dotenv.config()`, creating directories and starting servers belong in an
 exported `init` or the entry point.
 
-A side effect at import time runs on every path that transitively imports the
-module, including a test that only wanted a type, and it runs in an order set by
-the import graph rather than by anything you chose. There are six
-`dotenv.config()` calls in the repository and `communication/` holds five of
-them, at module scope in `account.ts`, `chatApp.ts`, `http.ts`, `server.ts` and
-`test_chat/session.ts`, so load order decides which one wins.
-`mcp/servers/activedirectory/index.ts` calls `fs.mkdirSync` while being imported,
-and `communication/server.ts` ends with `startServer().catch(console.error)`. The
-pattern to copy is `api/`: `models/models.ts` exports `init()`, and `server.ts`
-calls `await platform.init(config)` then `await models.init()` in a sequence it
-controls.
-
 Incorrect:
 
 ```ts
@@ -2750,17 +2487,6 @@ function getLogDirectory() {
 Compute a value derivable from props or existing state during render, never in a
 `useState` kept in sync by a `useEffect`.
 
-Mirroring a prop into state creates a second copy that is right only after an
-extra render, so the first paint shows the initial value and the screen flickers.
-Worse, the effect must list the prop as a dependency to stay correct, and the
-usual response to the lint warning is to empty the array and suppress the rule —
-at which point the value never updates at all.
-`dashboard/src/components/AddNewButton/AddNewButton.tsx` is exactly that: a
-`useState` holding a style object, a `useEffect` with a `switch` on the `type`
-prop, an empty dependency array and an
-`eslint-disable-next-line react-hooks/exhaustive-deps` holding it in place, so the
-component renders once with empty strings and never responds to a changed `type`.
-
 Incorrect:
 
 ```tsx
@@ -2836,14 +2562,6 @@ when the underlying record changes.
 A `setState` updater computes the next state and nothing else — no writes to
 storage, no network calls, no `publish`.
 
-React treats updaters as pure functions and may call them more than once for a
-single update; StrictMode does so deliberately in development. An updater with a
-side effect therefore fires that effect an unpredictable number of times, and the
-bug does not reproduce in production builds, which is the worst possible failure
-signature. `server-dashboard/src/App.tsx:37` writes to `localStorage` inside a
-`setFavorites(prev => ...)` updater — in the one package with no ESLint
-configuration, so `react-hooks/rules-of-hooks` is not watching either.
-
 Incorrect:
 
 ```tsx
@@ -2918,15 +2636,6 @@ that owns the event.
 Hold one fact in one place, never keeping a value, a copy of it, and a flag
 describing their relationship.
 
-Every additional `useState` is another thing to keep in sync on every path, and
-the paths multiply: `dashboard/src/components/AgentAbout/AgentAbout.tsx` holds
-seven `useState` values for two editable fields — `description`,
-`tempDescription`, `isDescUpdated` and the same three for `name` — reconciled by
-an effect that resets four of them. The dashboard has 226 `useState` calls
-against 95 `useEffect`s, and the effects are largely there to reconcile the
-states. Deriving the flag from the two values removes a class of "the button is
-enabled but the field is unchanged" bug outright.
-
 Incorrect:
 
 ```tsx
@@ -2985,16 +2694,6 @@ derivative do not.
 Choose the level by what a reader should do about the line: `error` needs
 attention, `warn` is degraded but handled, `info` marks a lifecycle event, and
 `debug` does not ship.
-
-The repository logs 120 times and effectively uses two levels — 74 `console.log`,
-36 `console.error`, 6 `console.debug`, 3 `console.info` and a single
-`console.warn`. With everything at `log`, no alert can be built and no filter is
-useful: a routine step transition and a failed token exchange are the same line
-to anything downstream. The volume sits mostly outside the packages that route
-through `platform.logger` — `communication/` has 51, `api/` 37, `mcp/` 25 and
-`dashboard/` 7 — and which sink to use is
-[`obs/platform-logger-not-console`](api/architecture.md); this rule is about
-which level to pick once you are there.
 
 Incorrect:
 
@@ -3060,13 +2759,6 @@ reads.
 
 A log call passes an object of named fields under a constant `message`, so values
 are fields rather than fragments of a sentence.
-
-A log line is a record, and a record is queryable only if its parts are named.
-`Agent 72ef5b08 created in team cb16e069` cannot be filtered by team, counted by
-agent, or joined to anything; the same information as fields can. The constant
-`message` is what makes a group of occurrences one event, and `api/server.ts`
-already writes this shape for uncaught exceptions — `message`, `error_message`,
-`error_stack`.
 
 Incorrect:
 
@@ -3136,16 +2828,6 @@ fields — see
 A sibling package or server does not import another's internals; shared code
 moves to a shared location.
 
-Reaching sideways couples two units that are meant to ship and fail
-independently, and it usually starts as "the type is already defined over
-there". `mcp/servers/` shows both halves of the problem at once: the `Tool<T>`
-interface is defined five separate times — in `activedirectory`, `gdrive`,
-`order`, `servicenow` and `telco` — and the sixth server, `grey`, has no
-`types.ts` of its own and instead imports `../../gdrive/tools/types` from 12 of
-its tool files. So the same contract is duplicated five ways *and* one server now
-cannot be extracted without taking Google Drive with it. The fix is one shared
-module, not a sixth copy.
-
 Incorrect:
 
 ```ts
@@ -3213,15 +2895,6 @@ import { runCli } from "../../lib/cli";
 Two modules do not import each other, directly or through a chain — break the
 cycle with a third module, an interface, or a registration step.
 
-A cycle resolves to a partially initialised module at run time, so one side sees
-`undefined` where it expected a class or a function, and which side depends on
-which was imported first — which is why the failure moves when an unrelated
-import is added. It also defeats tree shaking and makes both modules impossible
-to test in isolation. The live risk is the model layer: `api/src/models/Agent.ts`
-imports `./AIEngine` for its `@ForeignKey`, and a `@BelongsTo` on the other side
-would close the loop. That is precisely why associations are declared centrally —
-see [`model/associations-in-init`](api/architecture.md).
-
 Incorrect:
 
 ```ts
@@ -3287,16 +2960,6 @@ The dependency runs one way — `agent.ts` calls into `stepScore.ts`, and
 Keep relative imports shallow, reaching through a folder's barrel rather than
 climbing more than two levels up the tree.
 
-`../../../` appears 36 times and is the point at which a path stops saying where
-the target is — you count directories to find out, and any file move rewrites
-every one of them. There are 43 `index.ts` barrels already, which is the
-mechanism: `components/AgentCard` resolves through its barrel from any depth, so
-the import says what it wants instead of how to walk there. Nothing in the
-repository reaches four levels up today, and that ceiling is worth keeping. The
-`@/*` alias in `dashboard/tsconfig.json` is not the answer, because nothing wires
-it into Vite and [`ts/relative-imports`](dashboard/architecture.md) forbids using
-it.
-
 Incorrect:
 
 ```tsx
@@ -3343,12 +3006,6 @@ leaves the folder.
 Let the code carry the *what*, and comment only where the *why* cannot be read
 from it — a workaround, a non-obvious constraint, a decision that looks wrong
 until explained.
-
-A comment restating the line above it is a second thing to keep in sync, and it
-goes stale the first time the code changes without it. The model to copy is the
-comment above `repairUnbalancedJSON` in `api/src/lib/jsonParse.ts`: it records
-that some models on Bedrock truncate trailing braces, which is a fact about the
-outside world that no amount of reading the function would reveal.
 
 Incorrect:
 
@@ -3404,13 +3061,6 @@ explains itself.
 Delete dead code rather than commenting it out, because git already has the
 history.
 
-Commented-out code cannot be linted, type-checked, tested or refactored, and it
-gives no indication of whether it is a work in progress, a rollback, or something
-forgotten. `api/server.ts` reaches `config.kafka.ts` and `config.txq.ts` only
-through commented-out import lines, which is why
-[`build/no-dead-tsconfig`](api/architecture.md) flags those two files as
-unreferenced.
-
 Incorrect:
 
 ```ts
@@ -3458,14 +3108,6 @@ const config =
 
 Let Prettier decide line breaks, quotes, semicolons and indentation, without
 hand-formatting around it or adding per-file style overrides.
-
-`api/`, `dashboard/`, `communication/` and `mcp/` all extend
-`plugin:prettier/recommended`, which reports formatting as an ESLint error — so
-hand-formatted code fails `bun run lint` rather than merely looking different.
-The drift is visible exactly where that enforcement is missing: `server-dashboard/`
-has no ESLint configuration at all and writes 4 of its imports with single
-quotes, and `communication/` has a lint config but no script to run it and writes
-2 the same way. Everywhere lint actually runs, the count is zero.
 
 Incorrect:
 
@@ -3532,15 +3174,6 @@ A shared, committed override with a reason — long attribute lists in
 A lint suppression names the rule it disables and covers the smallest possible
 span, never a whole file.
 
-A bare `/* eslint-disable */` removes the file from every rule, not the
-inconvenient one: `no-eval`, `eqeqeq`, `react-hooks/rules-of-hooks` and the rest
-go with it. `dashboard/` runs lint with `--max-warnings 0` and lint is one of only
-two checks CI performs there, so a blanket disable is a hole in the gate. Two
-files in the repository do this, and `SupervisingChat.tsx` — over a thousand
-lines, with data hooks and dialogs in it — is one of them.
-[`lint/no-blanket-disable`](dashboard/architecture.md) states the dashboard case;
-this rule extends it to every package.
-
 Incorrect:
 
 ```ts
@@ -3596,21 +3229,6 @@ useEffect(() => {
 
 Every package with source code has a `lint` script and a `typecheck` script, and
 the root scripts run all of them.
-
-Most of the repository is checked by nothing. Root `lint` is
-`bun run lint:dashboard` and root `typecheck` is `typecheck:dashboard`, so the
-`Test` workflow never touches the other four packages. `api/` has a `lint` script
-that nothing at the root calls, no `typecheck` script at all despite
-`api/tsconfig.json` setting `strict: true`, and a build that goes through esbuild
-and never type-checks. `communication/` and `mcp/` each carry a `.eslintrc.json`
-with no script to run it. `server-dashboard/` has no ESLint configuration at all,
-and is the only package whose `tsconfig.json` sets `strict`, `noUnusedLocals` and
-`noUnusedParameters` together — the strictest settings in the repository, checked
-only as a side effect of `tsc && vite build`.
-
-The gap is not abstract. It is why the `any` count is 65 in `mcp/` and 5 in
-`dashboard/`, and why every finding in this catalog concentrated in the packages
-nothing runs.
 
 Incorrect:
 
@@ -3691,13 +3309,6 @@ failures are the existing debt, not a reason to leave the gate off.
 A test name states the behaviour and the condition, so a failure report is
 readable without opening the file.
 
-The name is the only part of a test that appears in CI output, and a sentence
-naming the input and the expected outcome turns a red build into a bug report.
-`api/src/lib/test/jsonParse.spec.ts` is the model — "strips a markdown fence",
-"appends missing closing braces", "does not count braces inside string literals"
-— and there are 12 spec and Cypress files in the repository to keep consistent
-with it.
-
 Incorrect:
 
 ```ts
@@ -3760,12 +3371,6 @@ reads as a sentence.
 
 A test contains no `if`, no loop and no computed expectation, asserting against
 literal values instead.
-
-A conditional in a test means one of its branches is not running and nothing
-reports which; a computed expectation reimplements the code under test, so both
-can be wrong the same way and the test still passes. There is no conditional
-logic in any of the 12 spec and Cypress files today, and this rule keeps it that
-way.
 
 Incorrect:
 
@@ -3832,13 +3437,6 @@ One case per input, each with a literal expectation.
 
 Each `it` exercises one behaviour, keeping that behaviour's assertions together
 and giving unrelated ones their own case.
-
-A case asserting four behaviours reports the first failure and hides the other
-three, so a single regression looks like a single failure and the rest are found
-one build at a time. The counterpart matters as much: a cross-tenant rejection is
-one behaviour with two assertions — the status, and that the record survived —
-and splitting those weakens the test, because the status alone passes while the
-row is already gone.
 
 Incorrect:
 

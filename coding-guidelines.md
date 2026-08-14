@@ -1,26 +1,5 @@
 # Coding Guidelines — Rule Catalog
 
-These rules cover how code is written, and they apply to every package in the
-repository. Structural rules — layer boundaries, data access, events,
-persistence, build and release — live in `api/architecture.md` and
-`dashboard/architecture.md`, and this catalog does not repeat them.
-
-Several rules turn on what each package actually enforces today, which is
-uneven:
-
-| Package | ESLint config | `lint` script | `tsc` runs | `typecheck` script |
-| --- | --- | --- | --- | --- |
-| `api/` | yes | yes, no `--max-warnings` | no — esbuild only | no |
-| `dashboard/` | yes | yes, `--max-warnings 0` | yes, via `build` | yes |
-| `communication/` | yes | no | no — esbuild only | no |
-| `mcp/` | yes | no | no | no |
-| `server-dashboard/` | **no** | no | yes, via `build` | no |
-
-Root `lint` and `typecheck` both run the dashboard alone, so most of the
-repository is checked by nothing. Counts quoted below were measured across the
-538 TypeScript files in `api/src`, `dashboard/src`, `communication/`, `mcp/` and
-`server-dashboard/src`.
-
 ## Contents
 
 - [1. Language baseline](#1-language-baseline)
@@ -106,9 +85,10 @@ genuinely reassigned.
 `prefer-const` and `no-var` are enabled in `dashboard/.eslintrc.json` and nowhere
 else, and the three packages that extend only `eslint:recommended` and
 `plugin:@typescript-eslint/recommended` have no rule holding them to it. There
-are zero `var` declarations across all 538 files, so the convention holds — but a
-mutated object bound with `let`, as in `communication/api/createKnowledge.ts`,
-already slips past unnoticed in a package nothing lints.
+are zero `var` declarations across all 538 TypeScript files, so the convention
+holds — but a mutated object bound with `let`, as in
+`communication/api/createKnowledge.ts`, already slips past unnoticed in a package
+nothing lints.
 
 Incorrect:
 
@@ -1077,8 +1057,9 @@ times for `"COMPLETED"`, 49 for `"IN_PROGRESS"`, 24 for `"FAILED"`, 23 for
 every one of those sites by hand.
 
 The repository uses union types rather than `enum` — there is not a single `enum`
-in 538 files — and that is the convention to keep, because a union erases at
-compile time and compares as a plain string across the event bus and the wire.
+in 538 TypeScript files — and that is the convention to keep, because a union
+erases at compile time and compares as a plain string across the event bus and
+the wire.
 
 Incorrect:
 

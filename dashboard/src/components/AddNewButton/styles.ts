@@ -9,11 +9,9 @@ const styles = {
     maxHeight: "",
   },
   wideButton: {
-    height: "100%",
-    minHeight: "20rem",
+    height: "22rem",
     width: "255px",
     borderRadius: "",
-    maxHeight: "100%",
     marginLeft: "",
   },
   default: {

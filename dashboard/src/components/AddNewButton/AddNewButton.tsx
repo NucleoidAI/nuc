@@ -16,11 +16,11 @@ function AddNewButton({ type, addNew, onClickFunction }) {
   useEffect(() => {
     switch (type) {
       case "largeButton":
-        setSize(styles.largeButton);
+        setSize({ ...size, ...styles.largeButton });
 
         break;
       case "wideButton":
-        setSize(styles.wideButton);
+        setSize({ ...size, ...styles.wideButton });
         break;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -33,8 +33,8 @@ function AddNewButton({ type, addNew, onClickFunction }) {
         onClick={onClickFunction}
         sx={{
           ...styles.default,
-          width: { xs: "255px", sm: size.width },
-          height: { xs: "250px", sm: size.height },
+          width: size.width,
+          height: size.height,
           borderRadius: size.borderRadius,
           maxHeight: size.maxHeight,
           transformStyle: "preserve-3d",

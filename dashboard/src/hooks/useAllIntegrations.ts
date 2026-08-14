@@ -13,6 +13,7 @@ export type Integration = {
   id: string;
   action: string;
   provider: string;
+  label: string;
   description: string;
   icon: string;
   direction: string;
@@ -35,6 +36,7 @@ function useAllIntegrations(): Integration[] {
           id: action.action,
           action: action.action,
           provider: "PLATFORM",
+          label: action.label,
           description:
             action.description || action.action.replace("PLATFORM:", ""),
           icon: action.icon || "",

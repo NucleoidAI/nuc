@@ -3,6 +3,7 @@ import Dialog from "./components/Dialog";
 import FlowArea from "./components/FlowArea";
 import LeftSideApiTree from "./components/LeftSideApiTree";
 import NodeEditorWidget from "../NodeEditorWidget/NodeEditorWidget";
+import { SWAGGER_URL } from "../../utils/hosts";
 import { storage } from "@nucleoidjs/webstorage";
 import { v4 as uuidv4 } from "uuid";
 
@@ -197,7 +198,7 @@ function APITab({ agentId }: { agentId: string }) {
     : "Add Resource";
 
   useEffect(() => {
-    fetch(`http://localhost:3004/swagger/drafts/${agentId}`)
+    fetch(`${SWAGGER_URL}/swagger/drafts/${agentId}`)
       .then((res) => res.json())
       .then((data) => {
         const draft = data?.draft;
@@ -216,7 +217,7 @@ function APITab({ agentId }: { agentId: string }) {
 
   useEffect(() => {
     if (!hydratedRef.current) return;
-    fetch(`http://localhost:3004/swagger/drafts/${agentId}`, {
+    fetch(`${SWAGGER_URL}/swagger/drafts/${agentId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -381,7 +382,7 @@ function APITab({ agentId }: { agentId: string }) {
 
   useEffect(() => {
     if (api.length === 0) return;
-    fetch(`http://localhost:3004/swagger/update-paths`, {
+    fetch(`${SWAGGER_URL}/swagger/update-paths`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

@@ -12,6 +12,7 @@
     "dev:api": "cd ./api && bun run dev",
     "dev:dashboard": "cd ./dashboard && bun run dev",
     "dev:main": "link-server",
+    "dev:tunnel": "bash scripts/tunnel.sh",
     "dev": "dotenv -e .env.local -- concurrently -n \"events,api,dashboard,communication\" \"bun run dev:events\" \"bun run dev:api\" \"bun run dev:dashboard\" \"bun run dev:communication\"",
     "install:dashboard": "cd ./dashboard && bun install",
     "install:communication": "cd ./communication && bun install",

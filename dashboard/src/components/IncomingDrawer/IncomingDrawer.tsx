@@ -58,6 +58,21 @@ const IncomingDrawer = ({
             .join(" ")}
         </Typography>
 
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{
+            textAlign: "center",
+            mb: 1,
+            maxWidth: 600,
+            mx: "auto",
+            px: 2,
+            wordBreak: "break-word",
+          }}
+        >
+          {selectedSkill?.description}
+        </Typography>
+
         <Box
           sx={{
             display: "flex",

@@ -12,6 +12,7 @@ export type MCP = {
 export type MCPSkill = {
   id: string;
   provider: string;
+  label: string;
   title?: string;
   description?: string;
   action?: string;

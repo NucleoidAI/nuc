@@ -298,9 +298,8 @@ const NodeEditorDrawer = ({
             Force node
           </Typography>
           <Typography variant="caption" color="text.secondary">
-            {newNodeForce
-              ? "The platform guarantees this node's action, regardless of the agent."
-              : "Swipe to use force node"}
+            The platform guarantees this node&apos;s action, regardless of the
+            agent.
           </Typography>
         </Box>
         <Box sx={{ flexShrink: 0 }}>

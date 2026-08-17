@@ -1,5 +1,3 @@
-import AddIcon from "@mui/icons-material/Add";
-import AddTaskDialog from "../AddTaskDialog/AddTaskDialog";
 import CloseIcon from "@mui/icons-material/Close";
 import { Iconify } from "@canmingir/link/platform/components";
 import React from "react";
@@ -21,10 +19,7 @@ const IncomingDrawer = ({
   handleDrawerClose,
   selectedSkill,
   instructions,
-  agent,
 }) => {
-  const [open, setOpen] = React.useState(false);
-
   return (
     <Drawer
       anchor="right"
@@ -119,26 +114,6 @@ const IncomingDrawer = ({
               </CardActions>
             </Card>
           ))}
-        </Box>
-
-        <Box>
-          <Stack sx={{ display: "flex", alignItems: "flex-end" }}>
-            <Fab
-              sx={{ m: 2 }}
-              onClick={() => {
-                setOpen(true);
-              }}
-            >
-              <AddIcon />
-            </Fab>
-          </Stack>
-
-          <AddTaskDialog
-            open={open}
-            setOpen={setOpen}
-            agentId={agent.id}
-            createTask={() => {}}
-          />
         </Box>
       </Box>
     </Drawer>

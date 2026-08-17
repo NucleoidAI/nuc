@@ -1,5 +1,3 @@
-import AddIcon from "@mui/icons-material/Add";
-import AddTaskDialog from "../../components/AddTaskDialog/AddTaskDialog";
 import { Iconify } from "@canmingir/link/platform/components";
 import StatusToolbar from "../../components/StatusToolbar/StatusToolbar";
 import TaskDetails from "../../components/TaskDetails/TaskDetails";
@@ -14,12 +12,10 @@ import {
   Card,
   Dialog,
   DialogContent,
-  Fab,
   IconButton,
   Skeleton,
   Stack,
   TextField,
-  Tooltip,
   useMediaQuery,
 } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
@@ -35,16 +31,13 @@ function TasksWidget({
 }) {
   const [aiResponded] = useEvent("AI_RESPONDED", null);
 
-  const { tasks, steps, getSteps, createTask, loading } = useTasks(agentId, [
-    aiResponded,
-  ]);
+  const { tasks, steps, getSteps, loading } = useTasks(agentId, [aiResponded]);
 
   const isLoading = useLoading(loading);
 
   const [selectedStatus, setSelectedStatus] = useState<
     "All" | "COMPLETED" | "IN_PROGRESS"
   >("All");
-  const [openCreate, setOpenCreate] = useState<boolean>(false);
   const [query, setQuery] = useState<string>("");
   const [selectedTask, setSelectedTask] = useState<{
     id: string;
@@ -275,32 +268,6 @@ function TasksWidget({
             )}
           </>
         </Box>
-
-        {!supervisionRaised && (
-          <Tooltip title="Add New Task" placement="left">
-            <Fab
-              color="default"
-              data-cy="add-task-button"
-              onClick={() => setOpenCreate(true)}
-              sx={{
-                position: "absolute",
-                right: 16,
-                bottom: 16,
-                zIndex: 1000,
-                boxShadow: 6,
-              }}
-            >
-              <AddIcon />
-            </Fab>
-          </Tooltip>
-        )}
-
-        <AddTaskDialog
-          open={openCreate}
-          setOpen={setOpenCreate}
-          createTask={createTask}
-          agentId={agentId}
-        />
       </Stack>
     </Box>
   );

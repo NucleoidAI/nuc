@@ -9,6 +9,7 @@ import React from "react";
 import type { Resolver } from "react-hook-form";
 import type { SampleAgent } from "../../components/AgentStep/AgentStep";
 import StepComponent from "../../components/StepComponent/StepComponent";
+import useAIEngines from "../../hooks/useAIEngines";
 import useBlueprint from "../../hooks/useBlueprint";
 import { useEvent } from "@nucleoidai/react-event";
 import { useForm } from "react-hook-form";
@@ -85,6 +86,7 @@ function AgentWizard({ onSubmit, open, onClose, itemToEdit }) {
   const [createError, setCreateError] = useState("");
   const { getAgentKnowledges } = useKnowledge();
   const { getBlueprintsByAgent } = useBlueprint();
+  const { engines } = useAIEngines();
 
   const resolver: Resolver<AgentFormValues> = yupResolver(
     AgentWizardSchema
@@ -306,6 +308,9 @@ function AgentWizard({ onSubmit, open, onClose, itemToEdit }) {
           <ItemSummary
             newItem={{
               ...agentValues,
+              engine: engines?.find(
+                (engine) => engine.id === agentValues?.aiEngineId
+              ),
               knowledges: agentKnowledges ?? [],
               blueprints: agentBlueprints ?? [],
             }}

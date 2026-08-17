@@ -10,6 +10,7 @@ import SparkleInput from "../../components/SparkleInput/SparkleInput";
 import StepComponent from "../../components/StepComponent/StepComponent";
 import { storage } from "@nucleoidjs/webstorage";
 import useAgents from "../../hooks/useAgents";
+import useAIEngines from "../../hooks/useAIEngines";
 import useBlueprint from "../../hooks/useBlueprint";
 import { useEvent } from "@nucleoidai/react-event";
 import useKnowledge from "../../hooks/useKnowledge";
@@ -163,6 +164,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { createOrganization } = useOrganizations();
   const { getAgentKnowledges } = useKnowledge();
   const { getBlueprintsByAgent } = useBlueprint();
+  const { engines } = useAIEngines();
   const { createAgent } = useAgents();
   const { createTeam } = useTeams();
 
@@ -704,6 +706,9 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
           <ItemSummary
             newItem={{
               ...getValues("agent"),
+              engine: engines?.find(
+                (engine) => engine.id === getValues("agent.aiEngineId")
+              ),
               team: getValues("team"),
               knowledges: knowledges ?? [],
               blueprints: blueprints ?? [],

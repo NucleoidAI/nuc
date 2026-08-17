@@ -50,17 +50,21 @@ const ForceStepSwipe = ({
     setProgress(next);
   };
 
-  const settle = () => {
+  const settle = (endX?: number, allowClickToggle = false) => {
     if (!dragState.current) return;
+    const { startX } = dragState.current;
+    const moved = endX != null && Math.abs(endX - startX) > 3;
+
     dragState.current = null;
     setDragging(false);
-    const completed = progress >= 0.7;
+
+    const completed = !moved && allowClickToggle ? !checked : progress >= 0.7;
     setProgress(completed ? 1 : 0);
     if (completed !== checked) onChange(completed);
   };
 
-  const handlePointerUp = () => settle();
-  const handlePointerCancel = () => settle();
+  const handlePointerUp = (e: React.PointerEvent) => settle(e.clientX, true);
+  const handlePointerCancel = () => settle(undefined, false);
 
   const handleKeyToggle = () => {
     const next = !checked;

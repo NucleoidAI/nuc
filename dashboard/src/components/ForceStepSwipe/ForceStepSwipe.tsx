@@ -72,12 +72,28 @@ const ForceStepSwipe = ({
     theme.palette.background.paper,
     0.15 + progress * 0.25
   );
-  const trackBackground = checked
-    ? `linear-gradient(135deg, ${alpha(
-        theme.palette.secondary.light,
-        0.5
-      )}, ${alpha(theme.palette.primary.main, 0.3)})`
-    : trackColor;
+  const band =
+    progress <= 0
+      ? 0
+      : progress <= 0.25
+      ? 1
+      : progress <= 0.5
+      ? 2
+      : progress <= 0.75
+      ? 3
+      : 4;
+  const bandOpacity = [0, 0.3, 0.5, 0.65, 0.7][band];
+  const bandMix = [0.5, 0.5, 0.6, 0.7, 0.9][band];
+  const trackBackground =
+    band > 0
+      ? `linear-gradient(135deg, ${alpha(
+          theme.palette.secondary.light,
+          bandMix * bandOpacity
+        )}, ${alpha(
+          theme.palette.primary.main,
+          (1 - bandMix + 0.3) * bandOpacity
+        )})`
+      : trackColor;
   const settleTransition = "transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1)";
 
   return (

@@ -53,7 +53,7 @@ const ForceStepSwipe = ({
   const settle = (endX?: number, allowClickToggle = false) => {
     if (!dragState.current) return;
     const { startX } = dragState.current;
-    const moved = endX != null && Math.abs(endX - startX) > 3;
+    const moved = endX !== null && Math.abs(endX - startX) > 3;
 
     dragState.current = null;
     setDragging(false);

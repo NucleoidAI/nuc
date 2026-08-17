@@ -42,7 +42,7 @@ function AIMarketplaceCard({
           gap: 1,
           display: "flex",
           flexDirection: "column",
-          ...(isWizardEngine && { p: 0, height: 200 }),
+          ...(isWizardEngine && { p: 0, height: 200, overflowY: "auto" }),
         }}
       >
         <TextField
@@ -57,8 +57,6 @@ function AIMarketplaceCard({
             ...(isWizardEngine && {
               height: { xs: 200, md: "auto" },
               flex: { md: 1 },
-              overflowY: "auto",
-              pr: 0.5,
             }),
           }}
         >

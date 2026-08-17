@@ -337,6 +337,7 @@ function AgentStep({
           gap: 1,
           flex: { md: 1 },
           minHeight: 0,
+          overflowY: "auto",
         }}
       >
         <TextField
@@ -396,7 +397,6 @@ function AgentStep({
             height: { xs: 200, md: 0 },
             flex: { md: 1 },
             minHeight: { xs: 200, md: 60 },
-            overflowY: "auto",
           }}
         >
           {visibleAgents.map((sample, index) => (

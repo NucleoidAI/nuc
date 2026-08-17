@@ -4,7 +4,7 @@ import { Box } from "@mui/material";
 import EngineSummary from "./EngineSummary";
 import Grid from "@mui/material/Grid";
 import KnowledgeSummary from "./KnowledgeSummary";
-const DETAIL_LIST_HEIGHT = "calc(100vh - 550px)";
+const DETAIL_LIST_HEIGHT = "calc(100vh - 600px)";
 
 const detailListSx = {
   height: DETAIL_LIST_HEIGHT,

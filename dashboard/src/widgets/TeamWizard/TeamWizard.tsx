@@ -673,7 +673,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
               onEmojiSelect={handleAvatarSelect}
               onEngineSelect={handleEngineSelect}
               onTemplateSelect={handleTemplateSelect}
-              descriptionRows={5}
+              descriptionRows={3}
               errors={{
                 name: errors.agent?.name?.message,
                 description: errors.agent?.description?.message,

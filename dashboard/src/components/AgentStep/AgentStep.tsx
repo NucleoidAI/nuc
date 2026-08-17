@@ -196,7 +196,7 @@ function AgentStep({
   onEngineSelect,
   onTemplateSelect,
   errors,
-  descriptionRows = 3,
+  descriptionRows = 2,
   sampleAgents = SAMPLE_AGENTS,
 }: {
   agent: AgentValues;
@@ -230,9 +230,9 @@ function AgentStep({
 
   return (
     <Stack
-      spacing={2}
+      spacing={1}
       sx={{
-        p: 2,
+        p: 1,
         height: { md: "100%" },
         minHeight: 0,
         display: "flex",

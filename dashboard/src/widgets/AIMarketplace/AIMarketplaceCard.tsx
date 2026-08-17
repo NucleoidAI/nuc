@@ -37,10 +37,16 @@ function AIMarketplaceCard({
   const Content = () => {
     return (
       <DialogContent
-        sx={{ marginY: 1, gap: 1, display: "flex", flexDirection: "column" }}
+        sx={{
+          marginY: 1,
+          gap: 1,
+          display: "flex",
+          flexDirection: "column",
+          ...(isWizardEngine && { p: 0, height: "100%", minHeight: 0 }),
+        }}
       >
         <TextField
-          sx={{ marginTop: 1 }}
+          sx={{ marginTop: 1, ...(isWizardEngine && { flexShrink: 0 }) }}
           label="Search Engines"
           fullWidth
           value={search}
@@ -49,7 +55,8 @@ function AIMarketplaceCard({
         <Box
           sx={{
             ...(isWizardEngine && {
-              height: 200,
+              height: { xs: 200, md: "auto" },
+              flex: { md: 1 },
               overflowY: "auto",
               pr: 0.5,
             }),

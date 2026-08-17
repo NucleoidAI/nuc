@@ -10,14 +10,14 @@ const AgentSummary = ({ newItem, team }) => {
     <SummaryCard icon="mdi:text-box-outline" label="Name">
       <Stack
         direction={{ xs: "column", sm: "row" }}
-        spacing={2}
+        spacing={1}
         alignItems="center"
         textAlign={{ xs: "center", sm: "left" }}
       >
         <Avatar
           sx={{
-            width: 72,
-            height: 72,
+            width: 48,
+            height: 48,
             flexShrink: 0,
             color: "inherit",
             bgcolor: "background.neutral",
@@ -25,13 +25,13 @@ const AgentSummary = ({ newItem, team }) => {
         >
           <Iconify
             icon={cleanIconName(newItem.icon)}
-            width={40}
-            height={40}
+            width={32}
+            height={32}
             style={{ objectFit: "contain" }}
           />
         </Avatar>
 
-        <Box sx={{ minWidth: 0 }}>
+        <Box>
           <Typography
             variant="h5"
             sx={{ wordBreak: "break-word" }}
@@ -51,7 +51,7 @@ const AgentSummary = ({ newItem, team }) => {
           )}
         </Box>
       </Stack>
-      <Divider sx={{ my: 2 }} />
+      <Divider sx={{ my: 1 }} />
       <Stack direction="row" spacing={1} alignItems="center" mt={1}>
         <Iconify
           icon="mdi:text-box-outline"
@@ -70,7 +70,7 @@ const AgentSummary = ({ newItem, team }) => {
       <Typography
         variant="body2"
         color="text.secondary"
-        sx={{ whiteSpace: "pre-line", wordBreak: "break-word", mt: 1 }}
+        sx={{ whiteSpace: "pre-line", wordBreak: "break-word", mt: 0.5 }}
         data-cy="item-summary-description-area"
       >
         {newItem.description}

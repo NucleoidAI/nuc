@@ -14,14 +14,14 @@ const EngineSummary = ({ newItem }) => {
         ) : (
           <Stack
             direction={{ xs: "column", sm: "row" }}
-            spacing={2.5}
+            spacing={1}
             alignItems="center"
             textAlign={{ xs: "center", sm: "left" }}
           >
             <Avatar
               sx={{
-                width: 72,
-                height: 72,
+                width: 48,
+                height: 48,
                 flexShrink: 0,
                 color: "inherit",
                 bgcolor: "background.neutral",
@@ -29,12 +29,12 @@ const EngineSummary = ({ newItem }) => {
             >
               <AIEngineIcon
                 vendor={newItem.engineName}
-                width={40}
-                height={40}
+                width={32}
+                height={32}
               />
             </Avatar>
 
-            <Box sx={{ minWidth: 0 }}>
+            <Box>
               <Typography variant="h5" sx={{ wordBreak: "break-word" }}>
                 {newItem.engineName}
               </Typography>

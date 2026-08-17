@@ -15,7 +15,7 @@ const KnowledgeSummary = ({ newItem }) => {
     >
       <Stack
         data-cy="item-summary-knowledge-area"
-        sx={{ height: 300, overflowY: "auto" }}
+        sx={{ height: 200, overflowY: "auto" }}
       >
         <KnowledgeTable
           table={table}

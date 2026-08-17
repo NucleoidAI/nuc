@@ -719,12 +719,6 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
     <Dialog
       data-cy="team-dialog"
       maxWidth={false}
-      // sx={{
-      //   "& .MuiDialog-paper": {
-      //     position: "relative",
-      //     overflow: "visible",
-      //   },
-      // }}
       slotProps={{
         paper: {
           sx: {
@@ -749,7 +743,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          py: 2,
+          py: 1,
           backgroundColor: (theme) => theme.palette.background.default,
         }}
       >
@@ -770,10 +764,10 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
       >
         <DialogContent
           sx={{
-            width: "100%",
-            px: 0,
-            py: 1,
-            overflow: "visible",
+            p: 0,
+            flex: 1,
+            minHeight: 0,
+            overflowY: "auto",
             backgroundColor: (theme) => theme.palette.background.default,
           }}
         >

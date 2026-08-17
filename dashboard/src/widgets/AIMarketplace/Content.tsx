@@ -30,7 +30,10 @@ export default function AIEngineChart({
         alignItems="stretch"
         gridTemplateColumns={
           isWizardEngine
-            ? "repeat(auto-fill, minmax(200px, 1fr))"
+            ? {
+                xs: "repeat(auto-fill, minmax(200px, 1fr))",
+                xl: "repeat(auto-fill, minmax(250px, 1fr))",
+              }
             : {
                 xs: "repeat(1, 1fr)",
                 sm: "repeat(2, 1fr)",

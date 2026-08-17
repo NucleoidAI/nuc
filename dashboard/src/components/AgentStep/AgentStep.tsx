@@ -229,14 +229,25 @@ function AgentStep({
       : searchedAgents.filter((sample) => sample.group === activeGroup);
 
   return (
-    <Stack spacing={2} sx={{ p: 2 }}>
+    <Stack
+      spacing={2}
+      sx={{
+        p: 2,
+        height: { md: "100%" },
+        minHeight: 0,
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <Box
         sx={{
           display: "grid",
           gridTemplateColumns: { xs: "1fr", md: "1fr 0.01fr 1fr" },
           gap: 1,
-          alignItems: "start",
+          alignItems: { xs: "start", md: "stretch" },
           px: 1,
+          minHeight: 0,
+          flexShrink: 0,
         }}
       >
         <Stack spacing={1}>
@@ -284,17 +295,32 @@ function AgentStep({
           sx={{ display: { xs: "none", md: "block" } }}
         />
 
-        <Stack>
+        <Stack
+          sx={{
+            minHeight: 0,
+            height: { md: "100%" },
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <Typography variant="subtitle2" fontWeight={600} textAlign="center">
             Select AI Engine
           </Typography>
-          <EnginesChart
-            handleEngineSelect={onEngineSelect}
-            selectedEngineId={agent?.aiEngineId}
-            isWizardEngine={true}
-            open={""}
-            setOpen={""}
-          />
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              flex: { md: 1 },
+            }}
+          >
+            <EnginesChart
+              handleEngineSelect={onEngineSelect}
+              selectedEngineId={agent?.aiEngineId}
+              isWizardEngine={true}
+              open={""}
+              setOpen={""}
+            />
+          </Box>
         </Stack>
       </Box>
 
@@ -304,7 +330,15 @@ function AgentStep({
         </Typography>
       </Divider>
 
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 1,
+          flex: { md: 1 },
+          minHeight: 0,
+        }}
+      >
         <TextField
           label="Search Agents"
           size="small"
@@ -356,8 +390,12 @@ function AgentStep({
           sx={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+            gridAutoRows: "min-content",
             gap: 1,
-            height: 200,
+            alignContent: "start",
+            height: { xs: 200, md: 0 },
+            flex: { md: 1 },
+            minHeight: { xs: 200, md: 60 },
             overflowY: "auto",
           }}
         >

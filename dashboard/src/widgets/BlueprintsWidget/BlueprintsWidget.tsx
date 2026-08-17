@@ -94,7 +94,16 @@ function BlueprintsWidget({
               />
             ))
           ) : (
-            <Stack sx={{ textAlign: "center", my: 4, color: "text.secondary" }}>
+            <Stack
+              sx={{
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                height: "calc(100dvh - 280px)",
+                color: "text.secondary",
+                overflow: "hidden",
+              }}
+            >
               <Typography variant="body2">No blueprints available</Typography>
             </Stack>
           )}

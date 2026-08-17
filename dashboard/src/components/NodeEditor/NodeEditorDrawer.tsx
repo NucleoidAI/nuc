@@ -1,6 +1,8 @@
 import { DrawerLayout } from "@canmingir/link/layouts";
+import ForceStepSwipe from "../ForceStepSwipe/ForceStepSwipe";
 import { Iconify } from "@canmingir/link/platform/components";
 import SearchIcon from "@mui/icons-material/Search";
+import { useState } from "react";
 
 import {
   Box,
@@ -14,14 +16,12 @@ import {
   Pagination,
   Select,
   Stack,
-  Switch,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
   useTheme,
 } from "@mui/material";
-import React, { useState } from "react";
 
 const NodeEditorDrawer = ({
   drawerOpen,
@@ -250,17 +250,6 @@ const NodeEditorDrawer = ({
 
   const formFields = (
     <Stack spacing={2}>
-      {selectedParentNode && (
-        <Box>
-          <Typography variant="caption" color="text.secondary">
-            Parent Node:
-          </Typography>
-          <Typography variant="body2" fontWeight="bold">
-            {selectedParentNode?.label || selectedParentNode?.id || "Unknown"}
-          </Typography>
-        </Box>
-      )}
-
       <TextField
         label="Label"
         variant="outlined"
@@ -273,6 +262,7 @@ const NodeEditorDrawer = ({
           autoCorrect: "off",
           spellCheck: false,
         }}
+        sx={{ mt: 1 }}
       />
 
       <TextField
@@ -296,13 +286,14 @@ const NodeEditorDrawer = ({
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
+          gap: 1.5,
           p: 1.5,
           border: "1px solid",
           borderColor: "divider",
           borderRadius: 1,
         }}
       >
-        <Box>
+        <Box sx={{ textAlign: "left", flex: 1, minWidth: 0 }}>
           <Typography variant="body2" fontWeight="bold">
             Force node
           </Typography>
@@ -311,10 +302,13 @@ const NodeEditorDrawer = ({
             agent.
           </Typography>
         </Box>
-        <Switch
-          checked={!!newNodeForce}
-          onChange={(e) => setNewNodeForce?.(e.target.checked)}
-        />
+        <Box sx={{ flexShrink: 0 }}>
+          <ForceStepSwipe
+            checked={!!newNodeForce}
+            onChange={(value) => setNewNodeForce?.(value)}
+            theme={theme}
+          />
+        </Box>
       </Box>
 
       <Box

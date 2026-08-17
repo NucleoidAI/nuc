@@ -4,7 +4,7 @@ import { Stack } from "@mui/material";
 import SummaryCard from "./SummaryCard";
 import { useTable } from "@canmingir/link/platform/components";
 
-const KnowledgeSummary = ({ newItem }) => {
+const KnowledgeSummary = ({ newItem, detailListSx }) => {
   const table = useTable();
 
   return (
@@ -15,7 +15,8 @@ const KnowledgeSummary = ({ newItem }) => {
     >
       <Stack
         data-cy="item-summary-knowledge-area"
-        sx={{ height: 200, overflowY: "auto" }}
+        spacing={1}
+        sx={detailListSx}
       >
         <KnowledgeTable
           table={table}

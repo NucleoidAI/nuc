@@ -4,7 +4,7 @@ import { Box } from "@mui/material";
 import EngineSummary from "./EngineSummary";
 import Grid from "@mui/material/Grid";
 import KnowledgeSummary from "./KnowledgeSummary";
-const DETAIL_LIST_HEIGHT = 200;
+const DETAIL_LIST_HEIGHT = "calc(100vh - 550px)";
 
 const detailListSx = {
   height: DETAIL_LIST_HEIGHT,
@@ -13,8 +13,6 @@ const detailListSx = {
 };
 
 export default function ItemSummary({ newItem }) {
-  const hasKnowledges = newItem.knowledges?.length > 0;
-  const hasBlueprints = newItem.blueprints?.length > 0;
   const team = newItem.team;
 
   return (
@@ -24,11 +22,9 @@ export default function ItemSummary({ newItem }) {
 
         <EngineSummary newItem={newItem} />
 
-        {hasKnowledges && <KnowledgeSummary newItem={newItem} />}
+        <KnowledgeSummary newItem={newItem} detailListSx={detailListSx} />
 
-        {hasBlueprints && (
-          <BlueprintSummary newItem={newItem} detailListSx={detailListSx} />
-        )}
+        <BlueprintSummary newItem={newItem} detailListSx={detailListSx} />
       </Grid>
     </Box>
   );

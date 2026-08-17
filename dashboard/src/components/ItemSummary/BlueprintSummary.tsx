@@ -11,7 +11,7 @@ const BlueprintSummary = ({ newItem, detailListSx }) => {
       size={{ xs: 12, md: 6 }}
     >
       <Stack
-        spacing={1.5}
+        spacing={1}
         sx={detailListSx}
         data-cy="item-summary-blueprint-area"
       >

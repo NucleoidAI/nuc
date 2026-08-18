@@ -18,11 +18,26 @@ import {
   Typography,
 } from "@mui/material";
 
-function TaskScoresWidget() {
+type Task = {
+  id: string;
+  description: string;
+  status: string;
+  createdAt: string;
+};
+
+function TaskScoresWidget({
+  agentId,
+  height,
+}: {
+  agentId?: string;
+  height?: number | string;
+} = {}) {
+  const isFixedAgent = Boolean(agentId);
+
   const { getTeamAgents } = useAgents();
   const { agents, loading } = getTeamAgents();
 
-  const [selectedAgentId, setSelectedAgentId] = useState<string>("");
+  const [selectedAgentId, setSelectedAgentId] = useState<string>(agentId ?? "");
 
   const {
     tasks,
@@ -34,82 +49,82 @@ function TaskScoresWidget() {
   const isTasksLoading = useLoading(tasksLoading);
   const isLoading = useLoading(loading);
 
-  const [selectedTask, setSelectedTask] = useState<{
-    id: string;
-    description: string;
-    status: string;
-    createdAt: string;
-  } | null>(null);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
-  const handleTaskSelect = (task: {
-    id: string;
-    description: string;
-    status: string;
-    createdAt: string;
-  }) => {
+  const handleTaskSelect = (task: Task) => {
     setSelectedTask(task);
     getSteps(task.id);
   };
 
   return (
     <>
-      <Stack
-        direction={{ xs: "column", sm: "row" }}
-        alignItems={{ xs: "flex-start", sm: "center" }}
-        spacing={2}
-        sx={{ mb: 1 }}
-      >
-        <Box sx={{ minWidth: 240 }}>
-          {isLoading ? (
-            <Skeleton variant="rounded" height={40} sx={{ borderRadius: 1 }} />
-          ) : (
-            <FormControl fullWidth>
-              <InputLabel>Agents</InputLabel>
-              <Select
-                label="Agents"
-                value={selectedAgentId}
-                onChange={(e) => setSelectedAgentId(e.target.value)}
-                renderValue={(val) => {
-                  if (!val) return "Select an agent";
-                  const agent = agents?.find(
-                    (a: { id: string; name: string; icon?: string }) =>
-                      a.id === val
-                  );
-                  return (
-                    <Stack direction="row" alignItems="center" spacing={1}>
-                      {agent?.icon && (
-                        <Iconify icon={agent.icon} width={20} height={20} />
-                      )}
-                      <span>{agent?.name ?? val}</span>
-                    </Stack>
-                  );
-                }}
-              >
-                <MenuItem value="" disabled>
-                  Select an agent
-                </MenuItem>
-                {(agents ?? []).map((agent) => (
-                  <MenuItem key={agent.id} value={agent.id}>
-                    <Stack direction="row" alignItems="center" spacing={1}>
-                      {agent.icon && (
-                        <Iconify icon={agent.icon} width={20} height={20} />
-                      )}
-                      <span>{agent.name}</span>
-                    </Stack>
+      {!isFixedAgent && (
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          alignItems={{ xs: "flex-start", sm: "center" }}
+          spacing={2}
+          sx={{ mb: 1 }}
+        >
+          <Box sx={{ minWidth: 240 }}>
+            {isLoading ? (
+              <Skeleton
+                variant="rounded"
+                height={40}
+                sx={{ borderRadius: 1 }}
+              />
+            ) : (
+              <FormControl fullWidth>
+                <InputLabel>Agents</InputLabel>
+                <Select
+                  label="Agents"
+                  value={selectedAgentId}
+                  onChange={(e) => setSelectedAgentId(e.target.value)}
+                  renderValue={(val) => {
+                    if (!val) return "Select an agent";
+                    const agent = agents?.find(
+                      (a: { id: string; name: string; icon?: string }) =>
+                        a.id === val
+                    );
+                    return (
+                      <Stack direction="row" alignItems="center" spacing={1}>
+                        {agent?.icon && (
+                          <Iconify icon={agent.icon} width={20} height={20} />
+                        )}
+                        <span>{agent?.name ?? val}</span>
+                      </Stack>
+                    );
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Select an agent
                   </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          )}
-        </Box>
-      </Stack>
+                  {(agents ?? []).map((agent) => (
+                    <MenuItem key={agent.id} value={agent.id}>
+                      <Stack direction="row" alignItems="center" spacing={1}>
+                        {agent.icon && (
+                          <Iconify icon={agent.icon} width={20} height={20} />
+                        )}
+                        <span>{agent.name}</span>
+                      </Stack>
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+          </Box>
+        </Stack>
+      )}
+      {/* task list */}
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: { xs: "1fr", md: "400px 1fr" },
+          gridTemplateColumns: {
+            xs: "1fr",
+            md: isFixedAgent ? "0.5fr 1fr" : "400px 1fr",
+          },
           gap: 1,
-          alignItems: "start",
-          height: "80vh",
+          height: height ?? (isFixedAgent ? "45vh" : "70vh"),
+          minHeight: 0,
         }}
       >
         <Card
@@ -118,6 +133,9 @@ function TaskScoresWidget() {
             border: "1px solid",
             borderColor: "divider",
             height: "100%",
+            minHeight: 0,
+            display: "flex",
+            flexDirection: "column",
           }}
         >
           <Box
@@ -126,6 +144,7 @@ function TaskScoresWidget() {
               bgcolor: "background.default",
               borderBottom: "1px solid",
               borderColor: "divider",
+              flexShrink: 0,
             }}
           >
             <Typography variant="subtitle2" sx={{ fontWeight: 900 }}>
@@ -144,11 +163,13 @@ function TaskScoresWidget() {
               ))}
             </Stack>
           ) : (
-            <TaskList
-              tasks={tasks ?? []}
-              selectedTask={selectedTask}
-              onTaskSelect={handleTaskSelect}
-            />
+            <Box sx={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
+              <TaskList
+                tasks={tasks ?? []}
+                selectedTask={selectedTask}
+                onTaskSelect={handleTaskSelect}
+              />
+            </Box>
           )}
         </Card>
 
@@ -157,8 +178,10 @@ function TaskScoresWidget() {
             borderRadius: 1,
             border: "1px solid",
             borderColor: "divider",
-            overflow: "hidden",
             height: "100%",
+            minHeight: 0,
+            display: "flex",
+            flexDirection: "column",
           }}
         >
           <Box
@@ -167,6 +190,7 @@ function TaskScoresWidget() {
               bgcolor: "background.default",
               borderBottom: "1px solid",
               borderColor: "divider",
+              flexShrink: 0,
             }}
           >
             <Stack direction="row" alignItems="center" spacing={1}>
@@ -199,9 +223,13 @@ function TaskScoresWidget() {
               </Typography>
             </Box>
           ) : (
-            <Box sx={{ overflow: "auto", height: "calc(100% - 41px)" }}>
+            <Box sx={{ flex: 1, minHeight: 0, overflow: "auto" }}>
               {(steps ?? []).map((step) => (
-                <StepScoresAccordion key={step.id} step={step} />
+                <StepScoresAccordion
+                  key={step.id}
+                  step={step}
+                  readOnly={isFixedAgent}
+                />
               ))}
             </Box>
           )}

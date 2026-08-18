@@ -43,6 +43,8 @@ async function generate({
   const jsonFormat = responseFormat ?? null;
   const isQwen = model.startsWith("qwen.");
 
+  const omitTemperature = /(^|\.)(anthropic|openai)\./.test(model);
+
   const useToolConfig = jsonFormat && !isQwen;
 
   if (isQwen && jsonFormat) {
@@ -56,7 +58,7 @@ async function generate({
     system: systemPrompts,
     messages: conversationMessages,
     inferenceConfig: {
-      temperature: 0,
+      ...(omitTemperature ? {} : { temperature: 0 }),
       maxTokens: 8192,
     },
     ...(useToolConfig && {

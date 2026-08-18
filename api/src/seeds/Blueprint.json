@@ -332,12 +332,12 @@
     {
       "id": "019f414b-0000-4000-8000-000000000001",
       "title": "Meeting Recording Transcription & Summary",
-      "description": "Converts per-participant PCM recordings to WAV, transcribes each one, produces a structured meeting summary attributed by speaker ID (key topics, decisions, action items), resolves participant IDs to real names in that summary, and emails it to all participants and the manager (halilcengel@greycollar.ai) with the per-speaker transcripts, the full transcript and the meeting audio files attached.",
-      "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath)\nsummary = SummarizeMeetingBySpeaker(transcripts.full_meeting_transcript, transcripts.speaker_transcripts)\nresolved = ResolveParticipants(summary, participants)\nattachments = PrepareMeetingAttachments(directoryPath, transcripts)\nEmail.Send(to: participants.emails + [\"halilcengel@greycollar.ai\"], subject, body: resolved, attachments: attachments)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "description": "Converts per-participant PCM recordings to WAV, transcribes each one, produces a structured meeting summary attributed by speaker ID (key topics, decisions, action items), resolves participant IDs to real names in that summary, emails it to all participants with the per-speaker transcripts, the full transcript and the meeting audio files attached, then looks up the manager's email address from the agent's knowledge and sends the same summary to the manager as a separate step.",
+      "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath)\nsummary = SummarizeMeetingBySpeaker(transcripts.full_meeting_transcript, transcripts.speaker_transcripts)\nresolved = ResolveParticipants(summary, participants)\nattachments = PrepareMeetingAttachments(directoryPath, transcripts)\nEmail.Send(to: participants.emails, template: \"meeting_summary\", data: resolved, attachments: attachments)\nmanagerEmail = KnowledgeLookup(agentId)\nEmail.Send(to: managerEmail, template: \"meeting_summary\", data: resolved, attachments: attachments)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "019f4a02-1111-4222-8333-444455556666",
       "blocking": false,
       "force": true,
-      "skill": "**Meeting Recording — Transcribe & Summarize**\n\nUse this Blueprint when per-participant meeting recordings need to be transcribed and turned into a speaker-attributed summary distributed to all participants and the manager.\n\nFlow: Convert PCM to WAV → Transcribe meeting → Summarize meeting by speaker → Resolve participant IDs to names → Prepare transcript and audio attachments → Send email to all participants and the manager (halilcengel@greycollar.ai) → Complete.\n\nExits after emailing the resolved summary, with the transcripts and audio files attached, to every meeting participant and the manager.",
+      "skill": "**Meeting Recording — Transcribe & Summarize**\n\nUse this Blueprint when per-participant meeting recordings need to be transcribed and turned into a speaker-attributed summary distributed to all participants and, as a separate step, to the manager.\n\nFlow: Convert PCM to WAV → Transcribe meeting → Summarize meeting by speaker → Resolve participant IDs to names → Prepare transcript and audio attachments → Send email to all participants → Get manager email from knowledge → Send email to the manager → Complete.\n\nExits after emailing the resolved summary, with the transcripts and audio files attached, to every meeting participant and separately to the manager whose address comes from the agent's knowledge base.",
       "nodes": [
         {
           "id": "019f414b-0001-4000-8000-000000000001",
@@ -414,11 +414,39 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:send_email",
-            "description": "Email the resolved meeting summary to all meeting participants and to the manager (halilcengel@greycollar.ai) using the 'meeting_summary' template, attaching the transcripts and audio files",
-            "prompt": "Send one email to all meeting participants and the manager (join every participant's email from meeting metadata plus the manager address halilcengel@greycollar.ai into a comma-separated 'to' field; do not duplicate the manager address if it is already a participant). Do NOT compose subject/text/html manually - instead pass template: 'meeting_summary' and data: { meetingName, meetingDate, summary, key_topics, decisions, action_items: [{owner, task}], speaker_highlights: [{id, summary}] } built from the resolved summary and meeting metadata. Also pass the 'attachments' array from the Prepare Attachments step through unchanged, so the per-speaker transcripts, the full transcript and the zipped meeting audio are attached.",
-            "label": "Send Email",
+            "description": "Email the resolved meeting summary to all meeting participants using the 'meeting_summary' template, attaching the transcripts and audio files",
+            "prompt": "Send one email to all meeting participants (join every participant's email from meeting metadata into a comma-separated 'to' field). Do NOT compose subject/text/html manually - instead pass template: 'meeting_summary' and data: { meetingName, meetingDate, summary, key_topics, decisions, action_items: [{owner, task}], speaker_highlights: [{id, summary}] } built from the resolved summary and meeting metadata. Also pass the 'attachments' array from the Prepare Attachments step through unchanged, so the per-speaker transcripts, the full transcript and the zipped meeting audio are attached.",
+            "label": "Email Participants",
             "icon": "mdi:email-send",
-            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(to: participants.emails + [\"halilcengel@greycollar.ai\"], template: \"meeting_summary\", data: resolved, attachments: attachments)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(to: participants.emails, template: \"meeting_summary\", data: resolved, attachments: attachments)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f414b-0008-4000-8000-000000000008"],
+          "createdAt": "2026-07-08T10:00:00Z"
+        },
+        {
+          "id": "019f414b-0008-4000-8000-000000000008",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:knowledge_lookup",
+            "description": "Look up the agent's knowledge base to find the manager's email address for meeting summary notifications",
+            "prompt": "Look up the manager's email address from agent knowledge",
+            "label": "Get Manager Email",
+            "icon": "mdi:book-search",
+            "pseudocode": "BEGIN_CONTEXT\nmanagerEmail = KnowledgeLookup(agentId)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019f414b-0009-4000-8000-000000000009"],
+          "createdAt": "2026-07-08T10:00:00Z"
+        },
+        {
+          "id": "019f414b-0009-4000-8000-000000000009",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:send_email",
+            "description": "Email the resolved meeting summary to the manager's email address found in the knowledge base, using the 'meeting_summary' template and attaching the transcripts and audio files",
+            "prompt": "Send a separate email to the manager's email address from the knowledge lookup step ('to' is only the manager address). Do NOT compose subject/text/html manually - instead pass template: 'meeting_summary' and data: { meetingName, meetingDate, summary, key_topics, decisions, action_items: [{owner, task}], speaker_highlights: [{id, summary}] } built from the resolved summary and meeting metadata. Also pass the 'attachments' array from the Prepare Attachments step through unchanged, so the per-speaker transcripts, the full transcript and the zipped meeting audio are attached.",
+            "label": "Email Manager",
+            "icon": "mdi:email-send",
+            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(to: managerEmail, template: \"meeting_summary\", data: resolved, attachments: attachments)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": ["019f414b-0006-4000-8000-000000000006"],
           "createdAt": "2026-07-08T10:00:00Z"

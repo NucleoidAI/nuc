@@ -307,8 +307,7 @@ const NodeEditorDrawer = ({
             Force node
           </Typography>
           <Typography variant="caption" color="text.secondary">
-            The platform guarantees this node&apos;s action, regardless of the
-            agent.
+            The platform guarantees this node&apos;s action.
           </Typography>
         </Box>
         <Switch
@@ -838,7 +837,7 @@ const NodeEditorDrawer = ({
             !selectedIntegration?.id)
         }
       >
-        {editMode ? "Edit Node" : "Add Node"}
+        {editMode ? "Save Node" : "Add Node"}
       </Button>
     </Stack>
   );
@@ -857,7 +856,7 @@ const NodeEditorDrawer = ({
           sx={{ pr: 6 }}
         >
           <Typography variant="h6">
-            {editMode ? "Edit Node" : "Add New Node"}
+            {editMode ? "Save Node" : "Add New Node"}
           </Typography>
         </Box>
       }

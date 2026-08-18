@@ -1,6 +1,48 @@
 import { Tool } from "../../gdrive/tools/types";
+import fs from "fs";
 import logger from "../../../logger/logger.js";
 import nodemailer from "nodemailer";
+
+type EmailAttachment = {
+  filename: string;
+  path?: string;
+  content?: string;
+  contentType?: string;
+};
+
+function buildAttachments(input: unknown): {
+  attachments: EmailAttachment[];
+  missing: string[];
+} {
+  if (!Array.isArray(input)) return { attachments: [], missing: [] };
+
+  const attachments: EmailAttachment[] = [];
+  const missing: string[] = [];
+
+  for (const item of input as EmailAttachment[]) {
+    if (!item?.filename) continue;
+
+    if (item.path) {
+      if (!fs.existsSync(item.path)) {
+        missing.push(item.path);
+        continue;
+      }
+      attachments.push({
+        filename: item.filename,
+        path: item.path,
+        contentType: item.contentType,
+      });
+    } else if (item.content !== undefined) {
+      attachments.push({
+        filename: item.filename,
+        content: item.content,
+        contentType: item.contentType,
+      });
+    }
+  }
+
+  return { attachments, missing };
+}
 
 type MeetingSummaryData = {
   meetingName?: string;
@@ -269,6 +311,21 @@ export const sendEmailTool: Tool<any> = {
         type: "object",
         description: "Structured data to render into the template named by 'template'.",
       },
+      attachments: {
+        type: "array",
+        description:
+          "Files to attach. Each item is { filename, path } for a file on disk, or { filename, content } for inline content. Pass the 'attachments' array returned by PLATFORM:prepare_meeting_attachments through unchanged.",
+        items: {
+          type: "object",
+          properties: {
+            filename: { type: "string", description: "Name shown on the attachment" },
+            path: { type: "string", description: "Absolute path of the file to attach" },
+            content: { type: "string", description: "Inline attachment content (used when 'path' is not given)" },
+            contentType: { type: "string", description: "Optional MIME type" },
+          },
+          required: ["filename"],
+        },
+      },
     },
     required: ["to"],
   },
@@ -281,6 +338,14 @@ export const sendEmailTool: Tool<any> = {
     let subject = args.subject;
     let text = args.text;
     let html = args.html;
+
+    const { attachments, missing } = buildAttachments(args.attachments);
+    if (missing.length) {
+      logger.warn(
+        { tool: "GREY:send_email", missing },
+        "Skipping attachments whose files do not exist",
+      );
+    }
 
     if (args.template) {
       const render = TEMPLATES[args.template];
@@ -345,10 +410,18 @@ export const sendEmailTool: Tool<any> = {
         subject,
         text,
         html,
+        attachments: attachments.length ? attachments : undefined,
       });
 
       logger.info(
-        { tool: "GREY:send_email", action: "send", to: args.to, subject, messageId: info.messageId },
+        {
+          tool: "GREY:send_email",
+          action: "send",
+          to: args.to,
+          subject,
+          messageId: info.messageId,
+          attachments: attachments.map((a) => a.filename),
+        },
         "Email sent successfully",
       );
 
@@ -361,6 +434,8 @@ export const sendEmailTool: Tool<any> = {
               messageId: info.messageId,
               to: args.to,
               subject,
+              attachments: attachments.map((a) => a.filename),
+              missingAttachments: missing.length ? missing : undefined,
             }),
           },
         ],

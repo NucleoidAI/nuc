@@ -1,12 +1,21 @@
+function replaceInText(text: string, replacements: [string, string][]): string {
+  return replacements.reduce((acc, [id, name]) => acc.split(id).join(name), text);
+}
+
 function deepResolve(
   value: unknown,
   replacements: [string, string][]
 ): unknown {
   if (typeof value === "string") {
-    return replacements.reduce(
-      (text, [id, name]) => text.split(id).join(name),
-      value
-    );
+    return replaceInText(value, replacements);
+  }
+
+  // Numeric participant IDs frequently come back from the LLM unquoted, so a
+  // number here is still an ID that needs resolving - keep it a number only if
+  // nothing matched.
+  if (typeof value === "number" && Number.isFinite(value)) {
+    const resolved = replaceInText(String(value), replacements);
+    return resolved === String(value) ? value : resolved;
   }
 
   if (Array.isArray(value)) {
@@ -41,9 +50,11 @@ async function run({
     return { error: "participants array is required" };
   }
 
-  const replacements = participants.map(
-    ({ id, name }) => [id, name] as [string, string]
-  );
+  // Longest IDs first, so an ID that is a prefix of another one never wins.
+  const replacements = participants
+    .filter(({ id, name }) => id != null && name != null)
+    .map(({ id, name }) => [String(id), String(name)] as [string, string])
+    .sort(([a], [b]) => b.length - a.length);
 
   return { content: deepResolve(content, replacements) };
 }

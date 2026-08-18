@@ -50,12 +50,18 @@ type MeetingSummaryData = {
   summary?: string;
   key_topics?: string[];
   decisions?: string[];
-  action_items?: { owner_id?: string; owner?: string; task: string }[];
-  speaker_highlights?: { id: string; summary: string }[];
+  action_items?: {
+    owner_id?: string | number;
+    owner?: string | number;
+    task: string;
+  }[];
+  speaker_highlights?: { id: string | number; summary: string }[];
 };
 
-function escapeHtml(value: string): string {
-  return value
+// Template data comes from an LLM-built payload, so values are not guaranteed
+// to be strings (numeric speaker IDs arrive unquoted). Normalise before escaping.
+function escapeHtml(value: unknown): string {
+  return String(value ?? "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
@@ -64,14 +70,15 @@ function escapeHtml(value: string): string {
 
 const AVATAR_COLORS = ["#6366f1", "#0ea5e9", "#f59e0b", "#10b981", "#ec4899", "#8b5cf6"];
 
-function avatarColor(seed: string): string {
+function avatarColor(seed: unknown): string {
+  const text = String(seed ?? "");
   let hash = 0;
-  for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
+  for (let i = 0; i < text.length; i++) hash = (hash * 31 + text.charCodeAt(i)) >>> 0;
   return AVATAR_COLORS[hash % AVATAR_COLORS.length];
 }
 
-function initial(name: string): string {
-  return escapeHtml(name.trim().charAt(0).toUpperCase() || "?");
+function initial(name: unknown): string {
+  return escapeHtml(String(name ?? "").trim().charAt(0).toUpperCase() || "?");
 }
 
 function sectionHeader(title: string): string {
@@ -116,7 +123,7 @@ function renderTopicsSection(items: string[]): string {
 }
 
 function renderActionItemsSection(
-  items: { owner: string; task: string }[],
+  items: { owner: string | number; task: string }[],
 ): string {
   if (!items.length) return "";
   const rows = items
@@ -149,7 +156,7 @@ function renderActionItemsSection(
 }
 
 function renderSpeakerHighlightsSection(
-  items: { id: string; summary: string }[],
+  items: { id: string | number; summary: string }[],
 ): string {
   if (!items.length) return "";
   const rows = items

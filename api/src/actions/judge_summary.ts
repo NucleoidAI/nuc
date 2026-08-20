@@ -11,7 +11,8 @@ function languageName(code: string): string {
   return LANGUAGE_NAMES[code.toLowerCase()] ?? code;
 }
 
-const JUDGE_MODEL = process.env.JUDGE_LLM_MODEL || "anthropic/claude-sonnet-5";
+const JUDGE_MODEL =
+  process.env.JUDGE_LLM_MODEL || "qwen/qwen3-next-80b-a3b-instruct";
 
 function stringifySummary(summary: unknown): string {
   if (typeof summary === "string") return summary;

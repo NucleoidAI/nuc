@@ -13,7 +13,7 @@ import { unwrapResult } from "../lib/llmResult";
  * model rather than the summarizer.
  */
 const SUMMARY_MODEL =
-  process.env.SUMMARY_LLM_MODEL || "anthropic/claude-sonnet-5";
+  process.env.SUMMARY_LLM_MODEL || "qwen/qwen3-next-80b-a3b-instruct";
 
 const PROMPT = `Sen, toplantı transkriptlerini analiz edip profesyonel toplantı notları çıkaran bir asistansın.
 

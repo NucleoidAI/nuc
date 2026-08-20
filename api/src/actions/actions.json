@@ -300,21 +300,43 @@
     }
   },
   {
-    "action": "PLATFORM:merge_transcripts",
+    "action": "PLATFORM:transcribe_meeting_cloud",
     "label": "Platform",
-    "lib": "merge_transcripts",
-    "description": "Label the main meeting transcript with speaker attribution by cross-referencing each participant's individual transcript (who said what), processed in chunks to stay within LLM output token limits",
-    "icon": "mdi:text-account",
+    "lib": "transcribe_meeting_cloud",
+    "description": "Transcribe all WAV audio files in a directory with a cloud ASR model (whisper-large-v3 via OpenRouter), write each transcript as a .txt file next to the audio, and return the individual and combined transcripts. Existing .txt files in the directory are reused, so re-running on the same meeting does not transcribe a second time.",
+    "icon": "mdi:cloud-check",
     "inputSchema": {
+      "type": "object",
+      "properties": {
+        "directoryPath": {
+          "type": "string",
+          "description": "Absolute path to the directory containing .wav files. The .txt transcripts are written into this same directory."
+        },
+        "model": {
+          "type": "string",
+          "description": "Transcription model to use. Defaults to 'openai/whisper-large-v3'."
+        },
+        "language": {
+          "type": "string",
+          "description": "ISO-639-1 language code of the spoken audio. Defaults to 'tr'."
+        },
+        "force": {
+          "type": "boolean",
+          "description": "Re-transcribe even when a .txt transcript already exists, overwriting it. Defaults to false."
+        }
+      },
+      "required": ["directoryPath"]
+    },
+    "outputSchema": {
       "type": "object",
       "properties": {
         "full_meeting_transcript": {
           "type": "string",
-          "description": "Combined transcript from transcribe_meeting, to be labeled with speakers."
+          "description": "Combined transcript of all audio files in order."
         },
         "speaker_transcripts": {
           "type": "array",
-          "description": "Each participant's individual transcript, from transcribe_meeting's output. Pass this array through unchanged.",
+          "description": "Each participant's individual transcript.",
           "items": {
             "type": "object",
             "properties": {
@@ -323,16 +345,6 @@
             },
             "required": ["id", "transcript"]
           }
-        }
-      },
-      "required": ["full_meeting_transcript", "speaker_transcripts"]
-    },
-    "outputSchema": {
-      "type": "object",
-      "properties": {
-        "final_transcript": {
-          "type": "string",
-          "description": "Unified chronological transcript with speaker labels."
         },
         "error": { "type": "string" }
       }
@@ -342,18 +354,18 @@
     "action": "PLATFORM:summarize_meeting_by_speaker",
     "label": "Platform",
     "lib": "summarize_meeting_by_speaker",
-    "description": "Produce a structured meeting summary (key topics, decisions, action items) attributed by speaker ID. First summarizes each participant's individual transcript separately (small, word-capped output), then combines those short summaries plus the full transcript as background reference - keeps every LLM call's output well within token limits regardless of meeting length",
+    "description": "Summarize a meeting into a structured Turkish summary: an overall summary paragraph, bullet points of what was discussed, the highlights, and the next steps. Receives both the combined transcript and each participant's own recording, so statements and next step owners are attributed to the right speaker",
     "icon": "mdi:text-box-check",
     "inputSchema": {
       "type": "object",
       "properties": {
         "full_meeting_transcript": {
           "type": "string",
-          "description": "Combined transcript from transcribe_meeting, used as background reference when combining per-speaker summaries."
+          "description": "Combined transcript from transcribe_meeting, giving the chronological flow of the meeting."
         },
         "speaker_transcripts": {
           "type": "array",
-          "description": "Each participant's individual transcript, from transcribe_meeting's output. Pass this array through unchanged.",
+          "description": "Each participant's individual transcript, from transcribe_meeting's output. Pass this array through unchanged - it is what makes speaker attribution possible.",
           "items": {
             "type": "object",
             "properties": {
@@ -362,10 +374,6 @@
             },
             "required": ["id", "transcript"]
           }
-        },
-        "language": {
-          "type": "string",
-          "description": "Language for the summary output (e.g. 'tr', 'en'). Defaults to 'tr'."
         }
       },
       "required": ["full_meeting_transcript", "speaker_transcripts"]
@@ -373,28 +381,24 @@
     "outputSchema": {
       "type": "object",
       "properties": {
-        "summary": { "type": "string" },
-        "key_topics": { "type": "array", "items": { "type": "string" } },
-        "decisions": { "type": "array", "items": { "type": "string" } },
-        "action_items": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "owner_id": { "type": "string" },
-              "task": { "type": "string" }
-            }
-          }
+        "summary": {
+          "type": "string",
+          "description": "A 3-5 sentence paragraph covering the purpose of the meeting, the main topics and how it ended."
         },
-        "speaker_highlights": {
+        "bullet_points": {
           "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": { "type": "string" },
-              "summary": { "type": "string" }
-            }
-          }
+          "items": { "type": "string" },
+          "description": "What was discussed, one self-contained sentence per item, in the order it came up."
+        },
+        "highlights": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "The points that matter most - decisions, key requests, risks and critical figures."
+        },
+        "next_steps": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Concrete action items, each as '<owner>, <what they will do>' with the deadline appended when the transcript states one."
         },
         "error": { "type": "string" }
       }
@@ -404,7 +408,7 @@
     "action": "PLATFORM:prepare_meeting_attachments",
     "label": "Platform",
     "lib": "prepare_meeting_attachments",
-    "description": "Write the full meeting transcript and each speaker's transcript to .txt files on disk, bundle the meeting's .wav audio files into a single meeting-audio.zip, and return all of them as a list of email attachment descriptors ({ filename, path }) that can be passed straight to GREY:send_email",
+    "description": "Write the full meeting transcript, each speaker's transcript and the LLM judge's evaluation to .txt files on disk, and return them as a list of email attachment descriptors ({ filename, path }) that can be passed straight to GREY:send_email. Meeting audio is NOT attached unless includeAudio is explicitly turned on",
     "icon": "mdi:paperclip",
     "inputSchema": {
       "type": "object",
@@ -441,9 +445,21 @@
             "required": ["id"]
           }
         },
+        "judgement": {
+          "type": "object",
+          "description": "The LLM judge's result from PLATFORM:judge_summary. Pass it through unchanged and it is written to a .txt file and attached alongside the transcripts.",
+          "properties": {
+            "variant": { "type": "string" },
+            "faithfulness": { "type": "number" },
+            "coverage": { "type": "number" },
+            "clarity": { "type": "number" },
+            "overall": { "type": "number" },
+            "reasoning": { "type": "string" }
+          }
+        },
         "includeAudio": {
           "type": "boolean",
-          "description": "Whether to bundle the .wav audio files into meeting-audio.zip and attach it. Defaults to true."
+          "description": "Whether to bundle the .wav audio files into meeting-audio.zip and attach it. Defaults to false - meeting audio is not emailed."
         },
         "maxTotalBytes": {
           "type": "number",
@@ -468,7 +484,7 @@
         },
         "audioArchive": {
           "type": "object",
-          "description": "Details of the generated audio zip, when audio was bundled.",
+          "description": "Details of the generated audio zip, only present when includeAudio was turned on.",
           "properties": {
             "filename": { "type": "string" },
             "entries": { "type": "array", "items": { "type": "string" } },
@@ -533,18 +549,14 @@
     "action": "PLATFORM:summarize_meeting",
     "label": "Platform",
     "lib": "summarize_meeting",
-    "description": "Summarize a meeting transcript into key topics, decisions, and action items",
+    "description": "Summarize a full meeting transcript into a structured Turkish summary: an overall summary paragraph, bullet points of what was discussed, and the highlights. Works from the combined transcript alone, with no per-speaker recording, and deliberately produces no next steps",
     "icon": "mdi:text-box-check",
     "inputSchema": {
       "type": "object",
       "properties": {
         "transcript": {
           "type": "string",
-          "description": "The full meeting transcript to summarize."
-        },
-        "language": {
-          "type": "string",
-          "description": "Language for the summary output (e.g. 'tr', 'en'). Defaults to 'tr'."
+          "description": "The full meeting transcript to turn into meeting notes."
         }
       },
       "required": ["transcript"]
@@ -552,18 +564,86 @@
     "outputSchema": {
       "type": "object",
       "properties": {
-        "summary": { "type": "string" },
-        "key_topics": { "type": "array", "items": { "type": "string" } },
-        "decisions": { "type": "array", "items": { "type": "string" } },
-        "action_items": {
+        "summary": {
+          "type": "string",
+          "description": "A 3-5 sentence paragraph covering the purpose of the meeting, the main topics and how it ended."
+        },
+        "bullet_points": {
           "type": "array",
+          "items": { "type": "string" },
+          "description": "What was discussed, one self-contained sentence per item, in the order it came up."
+        },
+        "highlights": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "The points that matter most - decisions, key requests, risks and critical figures."
+        },
+        "error": { "type": "string" }
+      }
+    }
+  },
+  {
+    "action": "PLATFORM:judge_summary",
+    "label": "Platform",
+    "lib": "judge_summary",
+    "description": "Score a generated meeting summary against the meeting transcript with an LLM judge, optionally also against each speaker's own recording so that speaker attributions can be verified. Returns faithfulness, coverage, clarity and overall scores on a 0-100 scale plus a short written justification, so different summarization variants can be compared on the same meeting",
+    "icon": "mdi:gavel",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "transcript": {
+          "type": "string",
+          "description": "The meeting transcript the notes are judged against. Pass full_meeting_transcript from transcribe_meeting through unchanged."
+        },
+        "summary": {
+          "description": "The generated summary to score - pass the whole object returned by the summarization step."
+        },
+        "speaker_transcripts": {
+          "type": "array",
+          "description": "Optional. Each participant's individual transcript from transcribe_meeting. Pass it whenever the summary attributes statements or next steps to specific speakers, so the judge can verify those attributions instead of marking them unsupported - the combined transcript alone carries no speaker labels.",
           "items": {
             "type": "object",
             "properties": {
-              "owner": { "type": "string" },
-              "task": { "type": "string" }
-            }
+              "id": { "type": "string" },
+              "transcript": { "type": "string" }
+            },
+            "required": ["id", "transcript"]
           }
+        },
+        "variant": {
+          "type": "string",
+          "description": "Label of the summarization variant being judged (e.g. 'A', 'B'), echoed back in the output."
+        },
+        "language": {
+          "type": "string",
+          "description": "Language for the justification text (e.g. 'tr', 'en'). Defaults to 'tr'."
+        }
+      },
+      "required": ["transcript", "summary"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "variant": { "type": "string" },
+        "faithfulness": {
+          "type": "number",
+          "description": "0-100: how well every claim in the notes is supported by the transcript."
+        },
+        "coverage": {
+          "type": "number",
+          "description": "0-100: how completely the meeting's important content is represented."
+        },
+        "clarity": {
+          "type": "number",
+          "description": "0-100: how clear and readable the notes are on their own."
+        },
+        "overall": {
+          "type": "number",
+          "description": "0-100: holistic score, never higher than faithfulness."
+        },
+        "reasoning": {
+          "type": "string",
+          "description": "Short written justification naming the concrete weaknesses found."
         },
         "error": { "type": "string" }
       }

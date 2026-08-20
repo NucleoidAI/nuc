@@ -6,8 +6,17 @@ const DEFAULT_MAX_TOTAL_BYTES = 20 * 1024 * 1024;
 const ATTACHMENTS_DIR = "attachments";
 const AUDIO_ARCHIVE_NAME = "meeting-audio.zip";
 const MIX_FILE_STEM = "meeting-audio";
+const JUDGEMENT_FILE_NAME = "llm-degerlendirmesi.txt";
 
 type SpeakerTranscript = { id: string; transcript: string };
+type Judgement = {
+  variant?: string | null;
+  faithfulness?: number;
+  coverage?: number;
+  clarity?: number;
+  overall?: number;
+  reasoning?: string;
+};
 type Participant = { id: string; name?: string };
 type Attachment = { filename: string; path: string; bytes: number };
 
@@ -28,13 +37,34 @@ function displayName(
   return match?.name ? `${match.name}-${id}` : id;
 }
 
+function formatJudgement(judgement: Judgement): string {
+  const score = (label: string, value?: number) =>
+    typeof value === "number" && !Number.isNaN(value)
+      ? `${label}: ${Math.round(value)}/100`
+      : null;
+
+  return [
+    "LLM DEĞERLENDİRMESİ",
+    judgement.variant ? `Varyant: ${judgement.variant}` : null,
+    "",
+    score("Genel", judgement.overall),
+    score("Sadakat", judgement.faithfulness),
+    score("Kapsam", judgement.coverage),
+    score("Anlaşılırlık", judgement.clarity),
+    judgement.reasoning ? `\nGerekçe:\n${judgement.reasoning}` : null,
+  ]
+    .filter((line) => line !== null)
+    .join("\n");
+}
+
 async function run({
   parameters: {
     directoryPath,
     full_meeting_transcript,
     speaker_transcripts,
     participants,
-    includeAudio = true,
+    judgement,
+    includeAudio = false,
     maxTotalBytes = DEFAULT_MAX_TOTAL_BYTES,
   },
 }: {
@@ -43,6 +73,7 @@ async function run({
     full_meeting_transcript?: string;
     speaker_transcripts?: SpeakerTranscript[];
     participants?: Participant[];
+    judgement?: Judgement;
     includeAudio?: boolean;
     maxTotalBytes?: number;
   };
@@ -84,10 +115,19 @@ async function run({
 
   for (const { id, transcript } of speaker_transcripts ?? []) {
     if (!transcript) continue;
-    const filename = `${safeName(displayName(id, participants))}-transcript.txt`;
+    const filename = `${safeName(
+      displayName(id, participants),
+    )}-transcript.txt`;
     const filePath = path.join(outputDir, filename);
     await fs.promises.writeFile(filePath, transcript, "utf8");
     add(filename, filePath, Buffer.byteLength(transcript, "utf8"));
+  }
+
+  if (judgement && Object.keys(judgement).length > 0) {
+    const content = formatJudgement(judgement);
+    const filePath = path.join(outputDir, JUDGEMENT_FILE_NAME);
+    await fs.promises.writeFile(filePath, content, "utf8");
+    add(JUDGEMENT_FILE_NAME, filePath, Buffer.byteLength(content, "utf8"));
   }
 
   let audioArchive:

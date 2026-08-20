@@ -248,7 +248,7 @@ async function transcribeWav(
       if (text) parts.push(text);
     }
 
-    return parts.join("\n");
+    return parts.join(" ");
   } finally {
     await fs.promises.rm(tmpDir, { recursive: true, force: true });
   }
@@ -332,7 +332,7 @@ async function run({
   }
 
   return {
-    full_meeting_transcript: mixTranscript ?? fullParts.join("\n\n"),
+    full_meeting_transcript: mixTranscript ?? fullParts.join(" "),
     speaker_transcripts: speakerTranscripts,
   };
 }

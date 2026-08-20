@@ -121,11 +121,14 @@ if (transcripts.length === 0) {
 }
 
 const versionDir = path.join(VERSIONS_DIR, `v${version}`);
-if (fs.existsSync(versionDir)) {
+const zipPath = `${versionDir}.zip`;
+
+for (const target of [versionDir, zipPath]) {
+  if (!fs.existsSync(target)) continue;
   if (!force) {
-    fail(`${path.relative(ROOT, versionDir)} already exists - pass -force to overwrite`);
+    fail(`${path.relative(ROOT, target)} already exists - pass -force to overwrite`);
   }
-  fs.rmSync(versionDir, { recursive: true, force: true });
+  fs.rmSync(target, { recursive: true, force: true });
 }
 fs.mkdirSync(versionDir, { recursive: true });
 
@@ -154,7 +157,35 @@ const notes = [
 
 fs.writeFileSync(path.join(versionDir, "notes.txt"), notes, "utf8");
 
+/**
+ * Zipped from the parent directory so the archive unpacks as v<N>/ rather than
+ * scattering loose .txt files into whatever directory it is opened in.
+ */
+const zip = Bun.spawnSync(
+  [
+    "zip",
+    "-rqX", // -X drops the __MACOSX/._* AppleDouble entries macOS zip adds
+    path.basename(zipPath),
+    `v${version}`,
+    "-x",
+    "*.DS_Store",
+  ],
+  { cwd: VERSIONS_DIR },
+);
+
+if (!zip.success) {
+  const stderr = zip.stderr.toString().trim();
+  fail(
+    `zip failed (${stderr || `exit ${zip.exitCode}`}) - the folder ` +
+      `${path.relative(ROOT, versionDir)} was still written`,
+  );
+}
+
 console.log(
   `✔ v${version} → ${path.relative(ROOT, versionDir)} ` +
     `(${transcripts.length} transcripts, ${Math.round(totalBytes / 1024)}KB, model: ${model})`,
+);
+console.log(
+  `✔ v${version} → ${path.relative(ROOT, zipPath)} ` +
+    `(${Math.round(fs.statSync(zipPath).size / 1024)}KB)`,
 );

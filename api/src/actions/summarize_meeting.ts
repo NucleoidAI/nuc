@@ -55,18 +55,16 @@ async function run({
     policy: { role: "system", content: PROMPT },
     content: `###TRANSKRIPT###\n${transcript}\n###TRANSKRIPT###`,
     json_format:
-      '{ "summary": "<3-5 cümlelik paragraf>", "bullet_points": ["<tek cümlelik madde>"], "highlights": ["<öne çıkan nokta>"] }',
+      '{ "summary": "<3-5 cümlelik paragraf>", "highlights": ["<öne çıkan nokta>"] }',
     max_tokens: 4096,
     meta,
   });
 
-  const { summary, bullet_points, highlights } = unwrapResult(result, [
+  const { summary, highlights } = unwrapResult(result, [
     "summary",
-    "bullet_points",
     "highlights",
   ]) as {
     summary?: string;
-    bullet_points?: string[];
     highlights?: string[];
   };
 
@@ -76,7 +74,6 @@ async function run({
 
   return {
     summary,
-    bullet_points: bullet_points ?? [],
     highlights: highlights ?? [],
   };
 }

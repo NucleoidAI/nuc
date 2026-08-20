@@ -332,12 +332,12 @@
     {
       "id": "019fa100-0000-4000-8000-000000000001",
       "title": "Meeting Summary A - Full Transcript Only",
-      "description": "Variant A of the meeting summarizer A/B test. Converts per-participant PCM recordings to WAV, transcribes them into a single combined transcript, and summarizes that transcript alone into an overall summary, bullet points of what was discussed and the meeting's highlights. It deliberately produces no next steps and uses no per-speaker recording, so nothing is attributed to individual speakers. An LLM judge then scores the summary against the transcript (faithfulness, coverage, clarity, overall on a 0-100 scale). The summary is emailed to the meeting participants, with the transcripts and the judge's evaluation attached as files. Meeting audio is not sent.",
+      "description": "Variant A of the meeting summarizer A/B test. Converts per-participant PCM recordings to WAV, transcribes them into a single combined transcript, and summarizes that transcript alone into an overall summary and the meeting's highlights. It deliberately produces no next steps and uses no per-speaker recording, so nothing is attributed to individual speakers. An LLM judge then scores the summary against the transcript (faithfulness, coverage, clarity, overall on a 0-100 scale). The summary is emailed to the meeting participants, with the transcripts and the judge's evaluation attached as files. Meeting audio is not sent.",
       "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath)\nsummary = SummarizeMeeting(transcripts.full_meeting_transcript)\njudgement = JudgeSummary(transcripts.full_meeting_transcript, summary, \"A\")\nattachments = PrepareMeetingAttachments(directoryPath, transcripts, judgement, includeAudio: false)\nEmail.Send(to: participants.emails, template: \"meeting_summary_a\", data: summary, attachments: attachments)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "019f4a02-1111-4222-8333-444455556666",
       "blocking": false,
       "force": true,
-      "skill": "**Meeting Recording - Summary Variant A (transcript only)**\n\nUse this Blueprint for the lightweight arm of the summarizer A/B test: the summary is written from the combined transcript as a whole, without each participant's own recording.\n\nFlow: Convert PCM to WAV -> Transcribe meeting -> Summarize the full transcript (summary + bullet points + highlights) -> Judge the summary against the transcript -> Prepare transcript and judgement attachments -> Send email to all participants -> Complete.\n\nProduces a summary, bullet points and highlights only - no next steps, no speaker attribution and no separate manager email. The transcripts and the LLM evaluation go out as attachments; the meeting audio does not. Exits after emailing the participants.",
+      "skill": "**Meeting Recording - Summary Variant A (transcript only)**\n\nUse this Blueprint for the lightweight arm of the summarizer A/B test: the summary is written from the combined transcript as a whole, without each participant's own recording.\n\nFlow: Convert PCM to WAV -> Transcribe meeting -> Summarize the full transcript (summary + highlights) -> Judge the summary against the transcript -> Prepare transcript and judgement attachments -> Send email to all participants -> Complete.\n\nProduces a summary and highlights only - no next steps, no speaker attribution and no separate manager email. The transcripts and the LLM evaluation go out as attachments; the meeting audio does not. Exits after emailing the participants.",
       "nodes": [
         {
           "id": "019fa100-0001-4000-8000-000000000001",
@@ -372,8 +372,8 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:summarize_meeting",
-            "description": "Summarize the combined meeting transcript into an overall summary, bullet points of what was discussed and the meeting's highlights",
-            "prompt": "Pass full_meeting_transcript from the transcription step through unchanged as 'transcript'. Returns { summary, bullet_points, highlights }.",
+            "description": "Summarize the combined meeting transcript into an overall summary and the meeting's highlights",
+            "prompt": "Pass full_meeting_transcript from the transcription step through unchanged as 'transcript'. Returns { summary, highlights }.",
             "label": "Summarize Meeting",
             "icon": "mdi:text-box-check",
             "pseudocode": "BEGIN_CONTEXT\nsummary = SummarizeMeeting(transcripts.full_meeting_transcript)\nEND_CONTEXT\n\nEND_MESSAGE"
@@ -387,7 +387,7 @@
           "properties": {
             "action": "PLATFORM:judge_summary",
             "description": "Score the generated summary against the meeting transcript with an LLM judge (faithfulness, coverage, clarity, overall on a 0-100 scale plus a written justification)",
-            "prompt": "Pass full_meeting_transcript from the transcription step as 'transcript', the { summary, bullet_points, highlights } object from the summarization step as 'summary', and variant: 'A'.",
+            "prompt": "Pass full_meeting_transcript from the transcription step as 'transcript', the { summary, highlights } object from the summarization step as 'summary', and variant: 'A'.",
             "label": "Judge Summary",
             "icon": "mdi:gavel",
             "pseudocode": "BEGIN_CONTEXT\njudgement = JudgeSummary(transcripts.full_meeting_transcript, notes, \"A\")\nEND_CONTEXT\n\nEND_MESSAGE"
@@ -415,7 +415,7 @@
           "properties": {
             "action": "GREY:send_email",
             "description": "Email the summary to all meeting participants using the 'meeting_summary_a' template, attaching the transcripts and the LLM evaluation",
-            "prompt": "Send one email to all meeting participants (join every participant's email from meeting metadata into a comma-separated 'to' field). Do NOT compose subject/text/html manually - instead pass template: 'meeting_summary_a' and data: { meetingName, meetingDate, summary, bullet_points, highlights } built from the summarization step and meeting metadata. Do not pass next_steps - variant A has none. Also pass the 'attachments' array from the Prepare Attachments step through unchanged, so the transcripts and the LLM evaluation are attached.",
+            "prompt": "Send one email to all meeting participants (join every participant's email from meeting metadata into a comma-separated 'to' field). Do NOT compose subject/text/html manually - instead pass template: 'meeting_summary_a' and data: { meetingName, meetingDate, summary, highlights } built from the summarization step and meeting metadata. Do not pass next_steps - variant A has none. Also pass the 'attachments' array from the Prepare Attachments step through unchanged, so the transcripts and the LLM evaluation are attached.",
             "label": "Email Participants",
             "icon": "mdi:email-send",
             "pseudocode": "BEGIN_CONTEXT\nEmail.Send(to: participants.emails, template: \"meeting_summary_a\", data: summary, attachments: attachments)\nEND_CONTEXT\n\nEND_MESSAGE"
@@ -442,12 +442,12 @@
     {
       "id": "019fa200-0000-4000-8000-000000000001",
       "title": "Meeting Summary B - Speaker Attributed",
-      "description": "Variant B of the meeting summarizer A/B test. Converts per-participant PCM recordings to WAV, transcribes both each participant individually and the meeting as a whole, then summarizes both together into an overall summary, bullet points of what was discussed, the meeting's highlights and the next steps. Because every participant's own recording is passed in, statements and next step owners are attributed to the right speaker. Participant IDs are resolved to real names, an LLM judge scores the summary against the transcript and the per-speaker recordings (faithfulness, coverage, clarity, overall on a 0-100 scale), and the result is emailed to all participants and, as a separate step, to the manager whose address comes from the agent's knowledge base - with the transcripts and the judge's evaluation attached as files. Meeting audio is not sent.",
+      "description": "Variant B of the meeting summarizer A/B test. Converts per-participant PCM recordings to WAV, transcribes both each participant individually and the meeting as a whole, then summarizes both together into an overall summary, the meeting's highlights and the next steps. Because every participant's own recording is passed in, statements and next step owners are attributed to the right speaker. Participant IDs are resolved to real names, an LLM judge scores the summary against the transcript and the per-speaker recordings (faithfulness, coverage, clarity, overall on a 0-100 scale), and the result is emailed to all participants and, as a separate step, to the manager whose address comes from the agent's knowledge base - with the transcripts and the judge's evaluation attached as files. Meeting audio is not sent.",
       "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath)\nsummary = SummarizeMeetingBySpeaker(transcripts.full_meeting_transcript, transcripts.speaker_transcripts)\nresolved = ResolveParticipants(summary, participants)\njudgement = JudgeSummary(transcripts.full_meeting_transcript, transcripts.speaker_transcripts, resolved, \"B\")\nattachments = PrepareMeetingAttachments(directoryPath, transcripts, judgement, includeAudio: false)\nEmail.Send(to: participants.emails, template: \"meeting_summary_b\", data: resolved, attachments: attachments)\nmanagerEmail = KnowledgeLookup(agentId)\nEmail.Send(to: managerEmail, template: \"meeting_summary_b\", data: resolved, attachments: attachments)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "019f4a02-1111-4222-8333-444455556666",
       "blocking": false,
       "force": true,
-      "skill": "**Meeting Recording - Summary Variant B (speaker attributed)**\n\nUse this Blueprint for the detailed arm of the summarizer A/B test: every participant is transcribed separately as well as the meeting as a whole, and both are given to the model so the summary can say who said what and who owns each next step.\n\nFlow: Convert PCM to WAV -> Transcribe meeting -> Summarize by speaker (summary + bullet points + highlights + next steps) -> Resolve participant IDs to names -> Judge the summary against the transcript and the per-speaker recordings -> Prepare transcript and judgement attachments -> Send email to all participants -> Get manager email from knowledge -> Send email to the manager -> Complete.\n\nThe transcripts and the LLM evaluation go out as attachments; the meeting audio does not. Exits after emailing the resolved summary to every meeting participant and separately to the manager.",
+      "skill": "**Meeting Recording - Summary Variant B (speaker attributed)**\n\nUse this Blueprint for the detailed arm of the summarizer A/B test: every participant is transcribed separately as well as the meeting as a whole, and both are given to the model so the summary can say who said what and who owns each next step.\n\nFlow: Convert PCM to WAV -> Transcribe meeting -> Summarize by speaker (summary + highlights + next steps) -> Resolve participant IDs to names -> Judge the summary against the transcript and the per-speaker recordings -> Prepare transcript and judgement attachments -> Send email to all participants -> Get manager email from knowledge -> Send email to the manager -> Complete.\n\nThe transcripts and the LLM evaluation go out as attachments; the meeting audio does not. Exits after emailing the resolved summary to every meeting participant and separately to the manager.",
       "nodes": [
         {
           "id": "019fa200-0001-4000-8000-000000000001",
@@ -482,8 +482,8 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:summarize_meeting_by_speaker",
-            "description": "Summarize the combined transcript plus each participant's own recording into an overall summary, bullet points of what was discussed, the meeting's highlights and the next steps, attributed to the right speaker",
-            "prompt": "Pass full_meeting_transcript and speaker_transcripts from the previous step through unchanged. Returns { summary, bullet_points, highlights, next_steps }.",
+            "description": "Summarize the combined transcript plus each participant's own recording into an overall summary, the meeting's highlights and the next steps, attributed to the right speaker",
+            "prompt": "Pass full_meeting_transcript and speaker_transcripts from the previous step through unchanged. Returns { summary, highlights, next_steps }.",
             "label": "Summarize Meeting By Speaker",
             "icon": "mdi:text-box-check",
             "pseudocode": "BEGIN_CONTEXT\nsummary = SummarizeMeetingBySpeaker(transcripts.full_meeting_transcript, transcripts.speaker_transcripts)\nEND_CONTEXT\n\nEND_MESSAGE"
@@ -497,7 +497,7 @@
           "properties": {
             "action": "PLATFORM:resolve_participants",
             "description": "Replace speaker IDs with real participant names, anywhere they appear in the summary",
-            "prompt": "Pass the whole { summary, bullet_points, highlights, next_steps } object from the summarization step as 'content' and the participants list from meeting metadata as 'participants'. Returns the same object with IDs replaced by real names.",
+            "prompt": "Pass the whole { summary, highlights, next_steps } object from the summarization step as 'content' and the participants list from meeting metadata as 'participants'. Returns the same object with IDs replaced by real names.",
             "label": "Resolve Participants",
             "icon": "mdi:account-convert",
             "pseudocode": "BEGIN_CONTEXT\nresolved = ResolveParticipants(summary, participants)\nEND_CONTEXT\n\nEND_MESSAGE"
@@ -539,7 +539,7 @@
           "properties": {
             "action": "GREY:send_email",
             "description": "Email the resolved speaker-attributed summary to all meeting participants using the 'meeting_summary_b' template, attaching the transcripts and the LLM evaluation",
-            "prompt": "Send one email to all meeting participants (join every participant's email from meeting metadata into a comma-separated 'to' field). Do NOT compose subject/text/html manually - instead pass template: 'meeting_summary_b' and data: { meetingName, meetingDate, summary, bullet_points, highlights, next_steps } built from the resolved summary and meeting metadata. Also pass the 'attachments' array from the Prepare Attachments step through unchanged, so the transcripts and the LLM evaluation are attached.",
+            "prompt": "Send one email to all meeting participants (join every participant's email from meeting metadata into a comma-separated 'to' field). Do NOT compose subject/text/html manually - instead pass template: 'meeting_summary_b' and data: { meetingName, meetingDate, summary, highlights, next_steps } built from the resolved summary and meeting metadata. Also pass the 'attachments' array from the Prepare Attachments step through unchanged, so the transcripts and the LLM evaluation are attached.",
             "label": "Email Participants",
             "icon": "mdi:email-send",
             "pseudocode": "BEGIN_CONTEXT\nEmail.Send(to: participants.emails, template: \"meeting_summary_b\", data: resolved, attachments: attachments)\nEND_CONTEXT\n\nEND_MESSAGE"
@@ -567,7 +567,7 @@
           "properties": {
             "action": "GREY:send_email",
             "description": "Email the resolved summary to the manager's email address found in the knowledge base, using the 'meeting_summary_b' template and attaching the transcripts and the LLM evaluation",
-            "prompt": "Send a separate email to the manager's email address from the knowledge lookup step ('to' is only the manager address). Do NOT compose subject/text/html manually - instead pass template: 'meeting_summary_b' and data: { meetingName, meetingDate, summary, bullet_points, highlights, next_steps } built from the resolved summary and meeting metadata. Also pass the 'attachments' array from the Prepare Attachments step through unchanged.",
+            "prompt": "Send a separate email to the manager's email address from the knowledge lookup step ('to' is only the manager address). Do NOT compose subject/text/html manually - instead pass template: 'meeting_summary_b' and data: { meetingName, meetingDate, summary, highlights, next_steps } built from the resolved summary and meeting metadata. Also pass the 'attachments' array from the Prepare Attachments step through unchanged.",
             "label": "Email Manager",
             "icon": "mdi:email-send",
             "pseudocode": "BEGIN_CONTEXT\nEmail.Send(to: managerEmail, template: \"meeting_summary_b\", data: resolved, attachments: attachments)\nEND_CONTEXT\n\nEND_MESSAGE"

@@ -83,17 +83,17 @@ async function run({
       speaker_transcripts
     )}`,
     json_format:
-      '{ "summary": "<3-5 cümlelik paragraf>", "bullet_points": ["<tek cümlelik madde>"], "highlights": ["<öne çıkan nokta>"], "next_steps": ["<sorumlu kişi>, <yapılacak iş>"] }',
+      '{ "summary": "<3-5 cümlelik paragraf>", "highlights": ["<öne çıkan nokta>"], "next_steps": ["<sorumlu kişi>, <yapılacak iş>"] }',
     max_tokens: 4096,
     meta,
   });
 
-  const { summary, bullet_points, highlights, next_steps } = unwrapResult(
-    result,
-    ["summary", "bullet_points", "highlights", "next_steps"]
-  ) as {
+  const { summary, highlights, next_steps } = unwrapResult(result, [
+    "summary",
+    "highlights",
+    "next_steps",
+  ]) as {
     summary?: string;
-    bullet_points?: string[];
     highlights?: string[];
     next_steps?: string[];
   };
@@ -104,7 +104,6 @@ async function run({
 
   return {
     summary,
-    bullet_points: bullet_points ?? [],
     highlights: highlights ?? [],
     next_steps: next_steps ?? [],
   };

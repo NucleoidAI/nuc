@@ -354,7 +354,7 @@
     "action": "PLATFORM:summarize_meeting_by_speaker",
     "label": "Platform",
     "lib": "summarize_meeting_by_speaker",
-    "description": "Summarize a meeting into a structured Turkish summary: an overall summary paragraph, bullet points of what was discussed, the highlights, and the next steps. Receives both the combined transcript and each participant's own recording, so statements and next step owners are attributed to the right speaker",
+    "description": "Summarize a meeting into a structured Turkish summary: an overall summary paragraph, the highlights, and the next steps. Receives both the combined transcript and each participant's own recording, so statements and next step owners are attributed to the right speaker",
     "icon": "mdi:text-box-check",
     "inputSchema": {
       "type": "object",
@@ -384,11 +384,6 @@
         "summary": {
           "type": "string",
           "description": "A 3-5 sentence paragraph covering the purpose of the meeting, the main topics and how it ended."
-        },
-        "bullet_points": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "What was discussed, one self-contained sentence per item, in the order it came up."
         },
         "highlights": {
           "type": "array",
@@ -549,7 +544,7 @@
     "action": "PLATFORM:summarize_meeting",
     "label": "Platform",
     "lib": "summarize_meeting",
-    "description": "Summarize a full meeting transcript into a structured Turkish summary: an overall summary paragraph, bullet points of what was discussed, and the highlights. Works from the combined transcript alone, with no per-speaker recording, and deliberately produces no next steps",
+    "description": "Summarize a full meeting transcript into a structured Turkish summary: an overall summary paragraph and the highlights. Works from the combined transcript alone, with no per-speaker recording, and deliberately produces no next steps",
     "icon": "mdi:text-box-check",
     "inputSchema": {
       "type": "object",
@@ -567,11 +562,6 @@
         "summary": {
           "type": "string",
           "description": "A 3-5 sentence paragraph covering the purpose of the meeting, the main topics and how it ended."
-        },
-        "bullet_points": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "What was discussed, one self-contained sentence per item, in the order it came up."
         },
         "highlights": {
           "type": "array",

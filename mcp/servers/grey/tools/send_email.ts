@@ -48,7 +48,6 @@ type MeetingSummaryData = {
   meetingName?: string;
   meetingDate?: string;
   summary?: string;
-  bullet_points?: string[];
   highlights?: string[];
   /** Variant B only - variant A has no next steps. */
   next_steps?: string[];
@@ -78,26 +77,6 @@ function renderSummarySection(summary?: string): string {
       </td>
     </tr>
     <tr><td style="height:26px;"></td></tr>`;
-}
-
-function renderBulletSection(title: string, items?: string[]): string {
-  if (!items?.length) return "";
-  const rows = items
-    .map(
-      (item) => `
-        <tr>
-          <td width="20" valign="top" style="padding:0 8px 10px 0;color:#475569;font-size:14px;font-weight:700;">&#8226;</td>
-          <td valign="top" style="padding:0 0 10px;color:#334155;font-size:14px;line-height:1.5;">${escapeHtml(item)}</td>
-        </tr>`,
-    )
-    .join("");
-  return `
-    <tr>
-      <td style="padding:0 32px 26px;">
-        ${sectionHeader(title)}
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table>
-      </td>
-    </tr>`;
 }
 
 /** Highlights get the accent treatment - they are what the reader should not miss. */
@@ -206,8 +185,8 @@ function meetingTitle(data: MeetingSummaryData): {
 }
 
 /**
- * Variant A: summary, bullet points and highlights, written from the full
- * transcript alone. No next steps - that section belongs to variant B.
+ * Variant A: summary and highlights, written from the full transcript alone.
+ * No next steps - that section belongs to variant B.
  */
 export function renderMeetingSummaryA(data: MeetingSummaryData): {
   subject: string;
@@ -221,7 +200,6 @@ export function renderMeetingSummaryA(data: MeetingSummaryData): {
     subject,
     "",
     data.summary ?? "",
-    textBlock("Konuşulanlar", data.bullet_points),
     textBlock("Öne Çıkanlar", data.highlights),
   ]
     .filter(Boolean)
@@ -234,7 +212,6 @@ export function renderMeetingSummaryA(data: MeetingSummaryData): {
     accent,
     sections: `
           ${renderSummarySection(data.summary)}
-          ${renderBulletSection("Konuşulanlar", data.bullet_points)}
           ${renderHighlightsSection(data.highlights, accent)}`,
   });
 
@@ -257,7 +234,6 @@ export function renderMeetingSummaryB(data: MeetingSummaryData): {
     subject,
     "",
     data.summary ?? "",
-    textBlock("Konuşulanlar", data.bullet_points),
     textBlock("Öne Çıkanlar", data.highlights),
     textBlock("Sonraki Adımlar", data.next_steps),
   ]
@@ -271,7 +247,6 @@ export function renderMeetingSummaryB(data: MeetingSummaryData): {
     accent,
     sections: `
           ${renderSummarySection(data.summary)}
-          ${renderBulletSection("Konuşulanlar", data.bullet_points)}
           ${renderHighlightsSection(data.highlights, accent)}
           ${renderNextStepsSection(data.next_steps)}`,
   });

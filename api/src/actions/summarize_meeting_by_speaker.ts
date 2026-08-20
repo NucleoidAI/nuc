@@ -17,29 +17,31 @@ const SUMMARY_MODEL =
 
 const PROMPT = `Sen, toplantı transkriptlerini analiz edip profesyonel toplantı notları çıkaran bir asistansın.
 
-Sana iki kaynak verilecek:
-- ###TRANSKRIPT### etiketleri arasında toplantının tam konuşma metni, kronolojik sırayla.
-- ###KONUSMACI_KAYITLARI### etiketleri arasında her katılımcının yalnızca kendi mikrofonundan alınan konuşma metni, kimliğiyle birlikte.
+Aşağıda ###TRANSKRIPT### etiketleri arasında bir toplantının tam konuşma metni yer alıyor.
+Bu metni analiz et ve çıktıyı TAMAMEN TÜRKÇE olarak, tam olarak aşağıdaki yapıda üret:
 
-Kimin ne söylediğini konuşmacı kayıtlarından belirle, olayların sırasını tam transkriptten takip et.
+# [Toplantıyı özetleyen 2-4 kelimelik kısa bir başlık]
 
-Metinleri analiz et ve çıktıyı TAMAMEN TÜRKÇE olarak dört bölüm halinde üret:
+## Toplantı Özeti
+[Toplantının amacını, konuşulan ana konuları ve nasıl sonuçlandığını anlatan 3-5 cümlelik akıcı bir paragraf.]
 
-summary: Toplantının amacını, konuşulan ana konuları ve nasıl sonuçlandığını anlatan 3-5 cümlelik akıcı bir paragraf. Bir görüşü veya öneriyi aktarırken sahibini belirt.
+## Sonraki Adımlar
+[Toplantıda kararlaştırılan somut aksiyon maddelerini listele. Her madde
+"- [Sorumlu kişi], [yapılacak iş]" formatında olsun; metinde son tarih geçiyorsa cümleye ekle
+(örn. "... ve Cuma gününe kadar dönüş yapacak"). Sorumlusu söylenmemişse buraya yazma. Metinden net bir anlam cikmiyorsa buraya yazma]
 
-bullet_points: Toplantıda ele alınan konuların madde madde dökümü. Her madde tek cümlelik, kendi başına anlaşılır bir bilgi olsun; konuşma sırasını takip et ve konuşanı belirt. En az 3, en fazla 10 madde.
-
-highlights: Toplantının öne çıkan noktaları - alınan kararlar, önemli talepler, riskler ve kritik rakamlar. bullet_points'in kısaltılmış hali değil, içlerinden en çok önem taşıyanların vurgusu olsun. En fazla 5 madde.
-
-next_steps: Toplantıda kararlaştırılan somut aksiyon maddeleri. Her madde "[Sorumlu kişi], [yapılacak iş]" formatında olsun; metinde son tarih geçiyorsa cümleye ekle (örn. "... ve Cuma gününe kadar dönüş yapacak"). Sorumlusu söylenmemişse "Ekip" yaz.
+## Konular ve Öne Çıkanlar
+[Toplantıda ele alınan ana konuları numaralandırarak listele (1., 2., 3. ...).
+Sadece önemli ve Üzerine uzun konuşulmuş ve de detaylı tartışılmış konunun altına o konudaki önemli noktaları, talepleri, önerileri ve alınan kararları
+1-3 madde halinde yaz.]
 
 KURALLAR:
 1. Yalnızca transkriptte geçen bilgileri kullan; isim, tarih, sayı, fiyat veya karar ASLA uydurma.
 2. Transkript hangi dilde olursa olsun çıktıyı Türkçe yaz; ürün, şirket ve kişi adlarını olduğu gibi bırak.
 3. Tarafsız ve profesyonel bir dil kullan; kendi yorumunu veya değerlendirmeni ekleme.
-4. Selamlaşma, hal hatır sorma gibi işle ilgisi olmayan kısımları dahil etme.
+4. Selamlaşma, hal hatır sorma gibi işle ilgisi olmayan kısımları özete dahil etme.
 5. Emin olmadığın bir bilgiyi kesinmiş gibi yazma; belirsiz kalan maddeleri atla.
-6. Konuşmacı kimliklerini kayıtlarda geçtiği gibi kullan; bir kimliği tahminle başka bir isme eşleme.`;
+6. Çıktıya yukarıdaki yapı dışında hiçbir giriş, açıklama veya kapanış cümlesi ekleme.`;
 
 function speakerBlock(
   speakerTranscripts: { id: string; transcript: string }[]

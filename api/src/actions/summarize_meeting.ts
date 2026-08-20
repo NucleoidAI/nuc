@@ -16,24 +16,26 @@ const SUMMARY_MODEL =
 
 const PROMPT = `Sen, toplantı transkriptlerini analiz edip profesyonel toplantı notları çıkaran bir asistansın.
 
-Sana ###TRANSKRIPT### etiketleri arasında bir toplantının tam konuşma metni verilecek. Bu metinde konuşmalar konuşmacılara ayrılmamıştır; kim ne demiş bilgisi yalnızca metnin kendisinde açıkça geçiyorsa vardır.
+Aşağıda ###TRANSKRIPT### etiketleri arasında bir toplantının tam konuşma metni yer alıyor.
+Bu metni analiz et ve çıktıyı TAMAMEN TÜRKÇE olarak, tam olarak aşağıdaki yapıda üret:
 
-Metni analiz et ve çıktıyı TAMAMEN TÜRKÇE olarak üç bölüm halinde üret:
+# [Toplantıyı özetleyen 2-4 kelimelik kısa bir başlık]
 
-summary: Toplantının amacını, konuşulan ana konuları ve nasıl sonuçlandığını anlatan 3-5 cümlelik akıcı bir paragraf.
+## Toplantı Özeti
+[Toplantının amacını, konuşulan ana konuları ve nasıl sonuçlandığını anlatan 3-5 cümlelik akıcı bir paragraf.]
 
-bullet_points: Toplantıda ele alınan konuların madde madde dökümü. Her madde tek cümlelik, kendi başına anlaşılır bir bilgi olsun; konuşma sırasını takip et. En az 3, en fazla 10 madde.
-
-highlights: Toplantının öne çıkan noktaları - alınan kararlar, önemli talepler, riskler ve kritik rakamlar. bullet_points'in kısaltılmış hali değil, içlerinden en çok önem taşıyanların vurgusu olsun. En fazla 5 madde.
+## Konular ve Öne Çıkanlar
+[Toplantıda ele alınan ana konuları numaralandırarak listele (1., 2., 3. ...).
+Sadece önemli ve Üzerine uzun konuşulmuş ve de detaylı tartışılmış konunun altına o konudaki önemli noktaları, talepleri, önerileri ve alınan kararları
+1-3 madde halinde yaz.]
 
 KURALLAR:
 1. Yalnızca transkriptte geçen bilgileri kullan; isim, tarih, sayı, fiyat veya karar ASLA uydurma.
 2. Transkript hangi dilde olursa olsun çıktıyı Türkçe yaz; ürün, şirket ve kişi adlarını olduğu gibi bırak.
 3. Tarafsız ve profesyonel bir dil kullan; kendi yorumunu veya değerlendirmeni ekleme.
-4. Selamlaşma, hal hatır sorma gibi işle ilgisi olmayan kısımları dahil etme.
+4. Selamlaşma, hal hatır sorma gibi işle ilgisi olmayan kısımları özete dahil etme.
 5. Emin olmadığın bir bilgiyi kesinmiş gibi yazma; belirsiz kalan maddeleri atla.
-6. Bir işi kimin üstlendiği transkriptte açıkça geçmiyorsa o kişiyi tahmin etme.
-7. Aksiyon maddesi veya sonraki adım listesi üretme; bu varyantta yalnızca yukarıdaki üç bölüm vardır.`;
+6. Çıktıya yukarıdaki yapı dışında hiçbir giriş, açıklama veya kapanış cümlesi ekleme.`;
 
 async function run({
   parameters: { transcript },

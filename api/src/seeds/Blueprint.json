@@ -332,8 +332,8 @@
     {
       "id": "019fa100-0000-4000-8000-000000000001",
       "title": "Meeting Summary A - Full Transcript Only",
-      "description": "Variant A of the meeting summarizer A/B test. Converts per-participant PCM recordings to WAV, transcribes them into a single combined transcript, and summarizes that transcript alone into an overall summary and the meeting's highlights. It deliberately produces no next steps and uses no per-speaker recording, so nothing is attributed to individual speakers. An LLM judge then scores the summary against the transcript (faithfulness, coverage, clarity, overall on a 0-100 scale). The summary is emailed to the meeting participants, with the transcripts and the judge's evaluation attached as files. Meeting audio is not sent.",
-      "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath)\nsummary = SummarizeMeeting(transcripts.full_meeting_transcript)\njudgement = JudgeSummary(transcripts.full_meeting_transcript, summary, \"A\")\nattachments = PrepareMeetingAttachments(directoryPath, transcripts, judgement, includeAudio: false)\nEmail.Send(to: participants.emails, template: \"meeting_summary_a\", data: summary, attachments: attachments)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "description": "Variant A of the meeting summarizer A/B test. Converts per-participant PCM recordings to WAV, transcribes them into a single combined transcript, and summarizes that transcript alone into an overall summary and the meeting's highlights. It deliberately produces no next steps and uses no per-speaker recording, so nothing is attributed to individual speakers. A Turkish LLM judge scores meeting summary, topics, highlights, overall quality and accuracy on a 0-100 scale; next steps are explicitly not evaluated. The summary is emailed to the meeting participants, with the transcripts and the judge's evaluation attached as files. Meeting audio is not sent.",
+      "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath)\nsummary = SummarizeMeeting(transcripts.full_meeting_transcript)\njudgement = JudgeSummary(transcript: transcripts.full_meeting_transcript, summary: summary.summary, highlights: summary.highlights, variant: \"A\")\nattachments = PrepareMeetingAttachments(directoryPath, transcripts, judgement, includeAudio: false)\nEmail.Send(to: participants.emails, template: \"meeting_summary_a\", data: summary, attachments: attachments)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "019f4a02-1111-4222-8333-444455556666",
       "blocking": false,
       "force": true,
@@ -386,11 +386,11 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:judge_summary",
-            "description": "Score the generated summary against the meeting transcript with an LLM judge (faithfulness, coverage, clarity, overall on a 0-100 scale plus a written justification)",
-            "prompt": "Pass full_meeting_transcript from the transcription step as 'transcript', the { summary, highlights: [{ topic, highlights: [string] }] } object from the summarization step as 'summary', and variant: 'A'.",
+            "description": "Use a Turkish LLM judge to score the meeting summary, topics, highlights, overall quality and accuracy from 0 to 100; do not evaluate next steps because variant A does not generate them",
+            "prompt": "Pass full_meeting_transcript from the transcription step through unchanged as 'transcript', summary.summary as 'summary', summary.highlights as 'highlights', and variant: 'A'. Do not pass next_steps because variant A does not generate or evaluate them.",
             "label": "Judge Summary",
             "icon": "mdi:gavel",
-            "pseudocode": "BEGIN_CONTEXT\njudgement = JudgeSummary(transcripts.full_meeting_transcript, notes, \"A\")\nEND_CONTEXT\n\nEND_MESSAGE"
+            "pseudocode": "BEGIN_CONTEXT\njudgement = JudgeSummary(transcript: transcripts.full_meeting_transcript, summary: summary.summary, highlights: summary.highlights, variant: \"A\")\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": ["019fa100-0005-4000-8000-000000000001"],
           "createdAt": "2026-08-20T10:00:00Z"
@@ -442,8 +442,8 @@
     {
       "id": "019fa200-0000-4000-8000-000000000001",
       "title": "Meeting Summary B - Speaker Attributed",
-      "description": "Variant B of the meeting summarizer A/B test. Converts per-participant PCM recordings to WAV, transcribes both each participant individually and the meeting as a whole, then summarizes both together into an overall summary, the meeting's highlights and the next steps. Because every participant's own recording is passed in, statements and next step owners are attributed to the right speaker. Participant IDs are resolved to real names, an LLM judge scores the summary against the transcript and the per-speaker recordings (faithfulness, coverage, clarity, overall on a 0-100 scale), and the result is emailed to all participants and, as a separate step, to the manager whose address comes from the agent's knowledge base - with the transcripts and the judge's evaluation attached as files. Meeting audio is not sent.",
-      "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath)\nsummary = SummarizeMeetingBySpeaker(transcripts.full_meeting_transcript, transcripts.speaker_transcripts)\nresolved = ResolveParticipants(summary, participants)\njudgement = JudgeSummary(transcripts.full_meeting_transcript, transcripts.speaker_transcripts, resolved, \"B\")\nattachments = PrepareMeetingAttachments(directoryPath, transcripts, judgement, includeAudio: false)\nEmail.Send(to: participants.emails, template: \"meeting_summary_b\", data: resolved, attachments: attachments)\nmanagerEmail = KnowledgeLookup(agentId)\nEmail.Send(to: managerEmail, template: \"meeting_summary_b\", data: resolved, attachments: attachments)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "description": "Variant B of the meeting summarizer A/B test. Converts per-participant PCM recordings to WAV, transcribes both each participant individually and the meeting as a whole, then summarizes both together into an overall summary, the meeting's highlights and the next steps. Because every participant's own recording is passed in, statements and next step owners are attributed to the right speaker. Participant IDs are resolved to real names, and a Turkish LLM judge scores meeting summary, next steps, topics, highlights, overall quality and accuracy on a 0-100 scale. The result is emailed to all participants and, as a separate step, to the manager whose address comes from the agent's knowledge base - with the transcripts and the judge's evaluation attached as files. Meeting audio is not sent.",
+      "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath)\nsummary = SummarizeMeetingBySpeaker(transcripts.full_meeting_transcript, transcripts.speaker_transcripts)\nresolved = ResolveParticipants(summary, participants)\njudgement = JudgeSummary(transcript: transcripts.full_meeting_transcript, speaker_transcripts: transcripts.speaker_transcripts, summary: resolved.summary, highlights: resolved.highlights, next_steps: resolved.next_steps, variant: \"B\")\nattachments = PrepareMeetingAttachments(directoryPath, transcripts, judgement, includeAudio: false)\nEmail.Send(to: participants.emails, template: \"meeting_summary_b\", data: resolved, attachments: attachments)\nmanagerEmail = KnowledgeLookup(agentId)\nEmail.Send(to: managerEmail, template: \"meeting_summary_b\", data: resolved, attachments: attachments)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "019f4a02-1111-4222-8333-444455556666",
       "blocking": false,
       "force": true,
@@ -510,11 +510,11 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:judge_summary",
-            "description": "Score the generated summary against the meeting transcript with an LLM judge, giving it the per-speaker recordings too so the speaker attributions can be verified rather than marked unsupported (faithfulness, coverage, clarity, overall on a 0-100 scale plus a written justification)",
-            "prompt": "Pass full_meeting_transcript from the transcription step as 'transcript', speaker_transcripts from the transcription step through unchanged, the resolved summary object from the Resolve Participants step as 'summary', and variant: 'B'.",
+            "description": "Use a Turkish LLM judge to score the meeting summary, next steps, topics, highlights, overall quality and accuracy from 0 to 100; verify speaker attributions against the individual recordings",
+            "prompt": "Pass full_meeting_transcript from the transcription step as 'transcript', speaker_transcripts through unchanged as 'speaker_transcripts', resolved.summary as 'summary', resolved.highlights as 'highlights', resolved.next_steps as 'next_steps', and variant: 'B'.",
             "label": "Judge Summary",
             "icon": "mdi:gavel",
-            "pseudocode": "BEGIN_CONTEXT\njudgement = JudgeSummary(transcripts.full_meeting_transcript, transcripts.speaker_transcripts, resolved, \"B\")\nEND_CONTEXT\n\nEND_MESSAGE"
+            "pseudocode": "BEGIN_CONTEXT\njudgement = JudgeSummary(transcript: transcripts.full_meeting_transcript, speaker_transcripts: transcripts.speaker_transcripts, summary: resolved.summary, highlights: resolved.highlights, next_steps: resolved.next_steps, variant: \"B\")\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": ["019fa200-0006-4000-8000-000000000001"],
           "createdAt": "2026-08-20T10:00:00Z"

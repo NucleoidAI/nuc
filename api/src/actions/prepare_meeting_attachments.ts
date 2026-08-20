@@ -11,10 +11,12 @@ const JUDGEMENT_FILE_NAME = "llm-degerlendirmesi.txt";
 type SpeakerTranscript = { id: string; transcript: string };
 type Judgement = {
   variant?: string | null;
-  faithfulness?: number;
-  coverage?: number;
-  clarity?: number;
+  meeting_summary?: number;
+  next_steps?: number | null;
+  topics?: number;
+  highlights?: number;
   overall?: number;
+  accuracy?: number;
   reasoning?: string;
 };
 type Participant = { id: string; name?: string };
@@ -31,27 +33,35 @@ function safeName(value: string): string {
 
 function displayName(
   id: string,
-  participants: Participant[] | undefined,
+  participants: Participant[] | undefined
 ): string {
   const match = participants?.find((p) => p.id === id);
   return match?.name ? `${match.name}-${id}` : id;
 }
 
 function formatJudgement(judgement: Judgement): string {
-  const score = (label: string, value?: number) =>
+  const score = (label: string, value?: number | null) =>
     typeof value === "number" && !Number.isNaN(value)
-      ? `${label}: ${Math.round(value)}/100`
-      : null;
+      ? `| ${label.padEnd(21)} | ${`${Math.round(value)}/100`.padStart(18)} |`
+      : `| ${label.padEnd(21)} | ${"Değerlendirilmedi".padStart(18)} |`;
 
   return [
-    "LLM DEĞERLENDİRMESİ",
-    judgement.variant ? `Varyant: ${judgement.variant}` : null,
+    "╔══════════════════════════════════════════╗",
+    "║          LLM DEĞERLENDİRMESİ             ║",
+    "╚══════════════════════════════════════════╝",
+    judgement.variant ? `Varyant: ${judgement.variant}` : "",
     "",
-    score("Genel", judgement.overall),
-    score("Sadakat", judgement.faithfulness),
-    score("Kapsam", judgement.coverage),
-    score("Anlaşılırlık", judgement.clarity),
-    judgement.reasoning ? `\nGerekçe:\n${judgement.reasoning}` : null,
+    "| Değerlendirme Ölçütü  |               Puan |",
+    "|-----------------------|--------------------|",
+    score("Toplantı Özeti", judgement.meeting_summary),
+    score("Sonraki Adımlar", judgement.next_steps),
+    score("Konular", judgement.topics),
+    score("Öne Çıkanlar", judgement.highlights),
+    score("Genel Değerlendirme", judgement.overall),
+    score("Doğruluk", judgement.accuracy),
+    judgement.reasoning
+      ? `\nDEĞERLENDİRME NOTU\n-------------------\n${judgement.reasoning}`
+      : null,
   ]
     .filter((line) => line !== null)
     .join("\n");
@@ -116,7 +126,7 @@ async function run({
   for (const { id, transcript } of speaker_transcripts ?? []) {
     if (!transcript) continue;
     const filename = `${safeName(
-      displayName(id, participants),
+      displayName(id, participants)
     )}-transcript.txt`;
     const filePath = path.join(outputDir, filename);
     await fs.promises.writeFile(filePath, transcript, "utf8");
@@ -154,7 +164,7 @@ async function run({
           name: file,
           path: path.join(directoryPath, file),
         })),
-        archivePath,
+        archivePath
       );
 
       audioArchive = {

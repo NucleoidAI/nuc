@@ -459,10 +459,12 @@
           "description": "The LLM judge's result from PLATFORM:judge_summary. Pass it through unchanged and it is written to a .txt file and attached alongside the transcripts.",
           "properties": {
             "variant": { "type": "string" },
-            "faithfulness": { "type": "number" },
-            "coverage": { "type": "number" },
-            "clarity": { "type": "number" },
+            "meeting_summary": { "type": "number" },
+            "next_steps": { "type": ["number", "null"] },
+            "topics": { "type": "number" },
+            "highlights": { "type": "number" },
             "overall": { "type": "number" },
+            "accuracy": { "type": "number" },
             "reasoning": { "type": "string" }
           }
         },
@@ -604,7 +606,7 @@
     "action": "PLATFORM:judge_summary",
     "label": "Platform",
     "lib": "judge_summary",
-    "description": "Score a generated meeting summary against the meeting transcript with an LLM judge, optionally also against each speaker's own recording so that speaker attributions can be verified. Returns faithfulness, coverage, clarity and overall scores on a 0-100 scale plus a short written justification, so different summarization variants can be compared on the same meeting",
+    "description": "Evaluate meeting notes with a Turkish LLM judge prompt. Returns 0-100 scores for the meeting summary, next steps, topics, highlights, overall quality and accuracy, plus a short Turkish justification. Next steps are not evaluated for variant A because that variant does not generate them.",
     "icon": "mdi:gavel",
     "inputSchema": {
       "type": "object",
@@ -614,7 +616,27 @@
           "description": "The meeting transcript the notes are judged against. Pass full_meeting_transcript from transcribe_meeting through unchanged."
         },
         "summary": {
-          "description": "The generated summary to score - pass the whole object returned by the summarization step."
+          "description": "The generated meeting summary text. For backward compatibility, the whole summarization result object is also accepted."
+        },
+        "highlights": {
+          "type": "array",
+          "description": "The highlights array from the summarization step. Pass it through unchanged so topics and highlights can be evaluated.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "topic": { "type": "string" },
+              "highlights": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            },
+            "required": ["topic", "highlights"]
+          }
+        },
+        "next_steps": {
+          "type": "array",
+          "description": "The next_steps array from the summarization step. Required at runtime for variants that generate next steps; omit it for variant A.",
+          "items": { "type": "string" }
         },
         "speaker_transcripts": {
           "type": "array",
@@ -631,37 +653,41 @@
         "variant": {
           "type": "string",
           "description": "Label of the summarization variant being judged (e.g. 'A', 'B'), echoed back in the output."
-        },
-        "language": {
-          "type": "string",
-          "description": "Language for the justification text (e.g. 'tr', 'en'). Defaults to 'tr'."
         }
       },
-      "required": ["transcript", "summary"]
+      "required": ["transcript", "summary", "highlights"]
     },
     "outputSchema": {
       "type": "object",
       "properties": {
         "variant": { "type": "string" },
-        "faithfulness": {
+        "meeting_summary": {
           "type": "number",
-          "description": "0-100: how well every claim in the notes is supported by the transcript."
+          "description": "0-100: how well the meeting summary reflects the purpose, developments, decisions and outcomes."
         },
-        "coverage": {
-          "type": "number",
-          "description": "0-100: how completely the meeting's important content is represented."
+        "next_steps": {
+          "type": ["number", "null"],
+          "description": "0-100: completeness and accuracy of the next steps. Null for variant A because next steps are not evaluated."
         },
-        "clarity": {
+        "topics": {
           "type": "number",
-          "description": "0-100: how clear and readable the notes are on their own."
+          "description": "0-100: completeness and correct organization of the main topics."
+        },
+        "highlights": {
+          "type": "number",
+          "description": "0-100: whether critical decisions and important points were selected correctly."
         },
         "overall": {
           "type": "number",
-          "description": "0-100: holistic score, never higher than faithfulness."
+          "description": "0-100: holistic usability score; it cannot exceed the accuracy score."
+        },
+        "accuracy": {
+          "type": "number",
+          "description": "0-100: how well the claims in the notes are supported by the transcript and available speaker recordings."
         },
         "reasoning": {
           "type": "string",
-          "description": "Short written justification naming the concrete weaknesses found."
+          "description": "A Turkish evaluation of at most 150 words identifying concrete strengths and weaknesses."
         },
         "error": { "type": "string" }
       }

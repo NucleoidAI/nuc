@@ -13,6 +13,13 @@ type OpenAICompatibleOptions = {
   extractCost?: boolean;
 };
 
+type OpenAIErrorResponse = {
+  error?: {
+    message?: string;
+    code?: string | number;
+  };
+};
+
 function isResponseFormatError(err: unknown): boolean {
   const message = err instanceof Error ? err.message : String(err);
   return (
@@ -40,7 +47,7 @@ function createOpenAICompatibleAdapter(
       messages = [],
       responseFormat,
       temperature = 0,
-      max_tokens,
+      max_tokens = 4096,
       meta,
     }: GenerateParams) {
       const chatMessages = [
@@ -94,7 +101,15 @@ function createOpenAICompatibleAdapter(
 
       console.debug(`[${providerLabel}] response:`, JSON.stringify(response));
 
-      const content = response.choices[0].message.content;
+      const firstChoice = response.choices?.[0];
+      if (!firstChoice) {
+        const { error } = response as unknown as OpenAIErrorResponse;
+        const details = error?.message || "response contains no choices";
+        const code = error?.code ? ` (${error.code})` : "";
+        throw new Error(`${providerLabel} request failed${code}: ${details}`);
+      }
+
+      const content = firstChoice.message.content;
       const usage = response.usage as
         | (OpenAI.CompletionUsage & { cost?: number })
         | undefined;

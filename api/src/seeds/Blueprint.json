@@ -373,7 +373,7 @@
           "properties": {
             "action": "PLATFORM:summarize_meeting",
             "description": "Summarize the combined meeting transcript into an overall summary and the meeting's highlights",
-            "prompt": "Pass full_meeting_transcript from the transcription step through unchanged as 'transcript'. Returns { summary, highlights }.",
+            "prompt": "Pass full_meeting_transcript from the transcription step through unchanged as 'transcript'. Returns { summary, highlights: [{ topic, highlights: [string] }] }.",
             "label": "Summarize Meeting",
             "icon": "mdi:text-box-check",
             "pseudocode": "BEGIN_CONTEXT\nsummary = SummarizeMeeting(transcripts.full_meeting_transcript)\nEND_CONTEXT\n\nEND_MESSAGE"
@@ -387,7 +387,7 @@
           "properties": {
             "action": "PLATFORM:judge_summary",
             "description": "Score the generated summary against the meeting transcript with an LLM judge (faithfulness, coverage, clarity, overall on a 0-100 scale plus a written justification)",
-            "prompt": "Pass full_meeting_transcript from the transcription step as 'transcript', the { summary, highlights } object from the summarization step as 'summary', and variant: 'A'.",
+            "prompt": "Pass full_meeting_transcript from the transcription step as 'transcript', the { summary, highlights: [{ topic, highlights: [string] }] } object from the summarization step as 'summary', and variant: 'A'.",
             "label": "Judge Summary",
             "icon": "mdi:gavel",
             "pseudocode": "BEGIN_CONTEXT\njudgement = JudgeSummary(transcripts.full_meeting_transcript, notes, \"A\")\nEND_CONTEXT\n\nEND_MESSAGE"
@@ -415,7 +415,7 @@
           "properties": {
             "action": "GREY:send_email",
             "description": "Email the summary to all meeting participants using the 'meeting_summary_a' template, attaching the transcripts and the LLM evaluation",
-            "prompt": "Send one email to all meeting participants (join every participant's email from meeting metadata into a comma-separated 'to' field). Do NOT compose subject/text/html manually - instead pass template: 'meeting_summary_a' and data: { meetingName, meetingDate, summary, highlights } built from the summarization step and meeting metadata. Do not pass next_steps - variant A has none. Also pass the 'attachments' array from the Prepare Attachments step through unchanged, so the transcripts and the LLM evaluation are attached.",
+            "prompt": "Send one email to all meeting participants (join every participant's email from meeting metadata into a comma-separated 'to' field). Do NOT compose subject/text/html manually - instead pass template: 'meeting_summary_a' and data: { meetingName, meetingDate, summary, highlights: [{ topic, highlights: [string] }] } built from the summarization step and meeting metadata. Do not pass next_steps - variant A has none. Also pass the 'attachments' array from the Prepare Attachments step through unchanged, so the transcripts and the LLM evaluation are attached.",
             "label": "Email Participants",
             "icon": "mdi:email-send",
             "pseudocode": "BEGIN_CONTEXT\nEmail.Send(to: participants.emails, template: \"meeting_summary_a\", data: summary, attachments: attachments)\nEND_CONTEXT\n\nEND_MESSAGE"
@@ -483,7 +483,7 @@
           "properties": {
             "action": "PLATFORM:summarize_meeting_by_speaker",
             "description": "Summarize the combined transcript plus each participant's own recording into an overall summary, the meeting's highlights and the next steps, attributed to the right speaker",
-            "prompt": "Pass full_meeting_transcript and speaker_transcripts from the previous step through unchanged. Returns { summary, highlights, next_steps }.",
+            "prompt": "Pass full_meeting_transcript and speaker_transcripts from the previous step through unchanged. Returns { summary, highlights: [{ topic, highlights: [string] }], next_steps }.",
             "label": "Summarize Meeting By Speaker",
             "icon": "mdi:text-box-check",
             "pseudocode": "BEGIN_CONTEXT\nsummary = SummarizeMeetingBySpeaker(transcripts.full_meeting_transcript, transcripts.speaker_transcripts)\nEND_CONTEXT\n\nEND_MESSAGE"
@@ -497,7 +497,7 @@
           "properties": {
             "action": "PLATFORM:resolve_participants",
             "description": "Replace speaker IDs with real participant names, anywhere they appear in the summary",
-            "prompt": "Pass the whole { summary, highlights, next_steps } object from the summarization step as 'content' and the participants list from meeting metadata as 'participants'. Returns the same object with IDs replaced by real names.",
+            "prompt": "Pass the whole { summary, highlights: [{ topic, highlights: [string] }], next_steps } object from the summarization step as 'content' and the participants list from meeting metadata as 'participants'. Returns the same object with IDs replaced by real names.",
             "label": "Resolve Participants",
             "icon": "mdi:account-convert",
             "pseudocode": "BEGIN_CONTEXT\nresolved = ResolveParticipants(summary, participants)\nEND_CONTEXT\n\nEND_MESSAGE"
@@ -539,7 +539,7 @@
           "properties": {
             "action": "GREY:send_email",
             "description": "Email the resolved speaker-attributed summary to all meeting participants using the 'meeting_summary_b' template, attaching the transcripts and the LLM evaluation",
-            "prompt": "Send one email to all meeting participants (join every participant's email from meeting metadata into a comma-separated 'to' field). Do NOT compose subject/text/html manually - instead pass template: 'meeting_summary_b' and data: { meetingName, meetingDate, summary, highlights, next_steps } built from the resolved summary and meeting metadata. Also pass the 'attachments' array from the Prepare Attachments step through unchanged, so the transcripts and the LLM evaluation are attached.",
+            "prompt": "Send one email to all meeting participants (join every participant's email from meeting metadata into a comma-separated 'to' field). Do NOT compose subject/text/html manually - instead pass template: 'meeting_summary_b' and data: { meetingName, meetingDate, summary, highlights: [{ topic, highlights: [string] }], next_steps } built from the resolved summary and meeting metadata. Also pass the 'attachments' array from the Prepare Attachments step through unchanged, so the transcripts and the LLM evaluation are attached.",
             "label": "Email Participants",
             "icon": "mdi:email-send",
             "pseudocode": "BEGIN_CONTEXT\nEmail.Send(to: participants.emails, template: \"meeting_summary_b\", data: resolved, attachments: attachments)\nEND_CONTEXT\n\nEND_MESSAGE"
@@ -567,7 +567,7 @@
           "properties": {
             "action": "GREY:send_email",
             "description": "Email the resolved summary to the manager's email address found in the knowledge base, using the 'meeting_summary_b' template and attaching the transcripts and the LLM evaluation",
-            "prompt": "Send a separate email to the manager's email address from the knowledge lookup step ('to' is only the manager address). Do NOT compose subject/text/html manually - instead pass template: 'meeting_summary_b' and data: { meetingName, meetingDate, summary, highlights, next_steps } built from the resolved summary and meeting metadata. Also pass the 'attachments' array from the Prepare Attachments step through unchanged.",
+            "prompt": "Send a separate email to the manager's email address from the knowledge lookup step ('to' is only the manager address). Do NOT compose subject/text/html manually - instead pass template: 'meeting_summary_b' and data: { meetingName, meetingDate, summary, highlights: [{ topic, highlights: [string] }], next_steps } built from the resolved summary and meeting metadata. Also pass the 'attachments' array from the Prepare Attachments step through unchanged.",
             "label": "Email Manager",
             "icon": "mdi:email-send",
             "pseudocode": "BEGIN_CONTEXT\nEmail.Send(to: managerEmail, template: \"meeting_summary_b\", data: resolved, attachments: attachments)\nEND_CONTEXT\n\nEND_MESSAGE"

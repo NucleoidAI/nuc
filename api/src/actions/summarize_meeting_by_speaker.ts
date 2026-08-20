@@ -31,9 +31,9 @@ Bu metni analiz et ve çıktıyı TAMAMEN TÜRKÇE olarak, tam olarak aşağıda
 (örn. "... ve Cuma gününe kadar dönüş yapacak"). Sorumlusu söylenmemişse buraya yazma. Metinden net bir anlam cikmiyorsa buraya yazma]
 
 ## Konular ve Öne Çıkanlar
-[Toplantıda ele alınan ana konuları numaralandırarak listele (1., 2., 3. ...).
-Sadece önemli ve Üzerine uzun konuşulmuş ve de detaylı tartışılmış konunun altına o konudaki önemli noktaları, talepleri, önerileri ve alınan kararları
-1-3 madde halinde yaz.]
+[Toplantıda ele alınan önemli ana konuları ayrı konu başlıkları olarak listele.
+Her konu başlığının altında yalnızca o konuyla ilgili önemli noktaları, talepleri,
+önerileri ve alınan kararları 1-3 maddelik bir liste halinde yaz.]
 
 KURALLAR:
 1. Yalnızca transkriptte geçen bilgileri kullan; isim, tarih, sayı, fiyat veya karar ASLA uydurma.
@@ -83,7 +83,7 @@ async function run({
       speaker_transcripts
     )}`,
     json_format:
-      '{ "summary": "<3-5 cümlelik paragraf>", "highlights": ["<öne çıkan nokta>"], "next_steps": ["<sorumlu kişi>, <yapılacak iş>"] }',
+      '{ "summary": "<3-5 cümlelik paragraf>", "highlights": [{ "topic": "<konu başlığı>", "highlights": ["<bu konuyla ilgili öne çıkan nokta>"] }], "next_steps": ["<sorumlu kişi>, <yapılacak iş>"] }',
     max_tokens: 4096,
     meta,
   });
@@ -94,7 +94,7 @@ async function run({
     "next_steps",
   ]) as {
     summary?: string;
-    highlights?: string[];
+    highlights?: { topic: string; highlights: string[] }[];
     next_steps?: string[];
   };
 

@@ -264,7 +264,7 @@ const MCPs = [
         data: {
           type: "object",
           description:
-            "Structured data to render into the template named by 'template'. For 'meeting_summary_a': { meetingName, meetingDate, summary, highlights: [string] }. For 'meeting_summary_b': the same fields plus next_steps: [string]. The LLM judge's evaluation is not rendered into the body - it is sent as an attachment.",
+            "Structured data to render into the template named by 'template'. For 'meeting_summary_a': { meetingName, meetingDate, summary, highlights: [{ topic: string, highlights: [string] }] }. For 'meeting_summary_b': the same fields plus next_steps: [string]. The LLM judge's evaluation is not rendered into the body - it is sent as an attachment.",
           nullable: true,
         },
       },

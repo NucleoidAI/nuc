@@ -387,8 +387,22 @@
         },
         "highlights": {
           "type": "array",
-          "items": { "type": "string" },
-          "description": "The points that matter most - decisions, key requests, risks and critical figures."
+          "items": {
+            "type": "object",
+            "properties": {
+              "topic": {
+                "type": "string",
+                "description": "The meeting topic heading."
+              },
+              "highlights": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "The key points, requests, proposals and decisions for this topic."
+              }
+            },
+            "required": ["topic", "highlights"]
+          },
+          "description": "Important meeting topics, each with its own list of highlights."
         },
         "next_steps": {
           "type": "array",
@@ -565,8 +579,22 @@
         },
         "highlights": {
           "type": "array",
-          "items": { "type": "string" },
-          "description": "The points that matter most - decisions, key requests, risks and critical figures."
+          "items": {
+            "type": "object",
+            "properties": {
+              "topic": {
+                "type": "string",
+                "description": "The meeting topic heading."
+              },
+              "highlights": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "The key points, requests, proposals and decisions for this topic."
+              }
+            },
+            "required": ["topic", "highlights"]
+          },
+          "description": "Important meeting topics, each with its own list of highlights."
         },
         "error": { "type": "string" }
       }

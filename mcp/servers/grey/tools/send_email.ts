@@ -10,6 +10,11 @@ type EmailAttachment = {
   contentType?: string;
 };
 
+type MeetingHighlight = {
+  topic: string;
+  highlights: string[];
+};
+
 function buildAttachments(input: unknown): {
   attachments: EmailAttachment[];
   missing: string[];
@@ -48,7 +53,7 @@ type MeetingSummaryData = {
   meetingName?: string;
   meetingDate?: string;
   summary?: string;
-  highlights?: string[];
+  highlights?: MeetingHighlight[];
   /** Variant B only - variant A has no next steps. */
   next_steps?: string[];
 };
@@ -79,15 +84,31 @@ function renderSummarySection(summary?: string): string {
     <tr><td style="height:26px;"></td></tr>`;
 }
 
-/** Highlights get the accent treatment - they are what the reader should not miss. */
-function renderHighlightsSection(items?: string[], accent = "#334155"): string {
+/** Highlights are grouped under their meeting topic. */
+function renderHighlightsSection(
+  items?: MeetingHighlight[],
+  accent = "#334155",
+): string {
   if (!items?.length) return "";
-  const rows = items
+  const topics = items
     .map(
-      (item) => `
+      ({ topic, highlights }) => `
         <tr>
-          <td style="padding:0 0 10px;">
-            <div style="background:#f8fafc;border-left:3px solid ${accent};border-radius:0 6px 6px 0;padding:10px 14px;color:#334155;font-size:14px;line-height:1.5;">${escapeHtml(item)}</div>
+          <td style="padding:0 0 18px;">
+            <div style="background:#f8fafc;border-left:3px solid ${accent};border-radius:0 6px 6px 0;padding:14px 16px;">
+              <h3 style="margin:0 0 10px;color:#1e293b;font-size:15px;line-height:1.4;">${escapeHtml(topic)}</h3>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                ${highlights
+                  .map(
+                    (highlight) => `
+                    <tr>
+                      <td width="18" valign="top" style="padding:0 6px 7px 0;color:${accent};font-size:14px;font-weight:700;">&#8226;</td>
+                      <td valign="top" style="padding:0 0 7px;color:#334155;font-size:14px;line-height:1.5;">${escapeHtml(highlight)}</td>
+                    </tr>`,
+                  )
+                  .join("")}
+              </table>
+            </div>
           </td>
         </tr>`,
     )
@@ -95,8 +116,8 @@ function renderHighlightsSection(items?: string[], accent = "#334155"): string {
   return `
     <tr>
       <td style="padding:0 32px 26px;">
-        ${sectionHeader("Öne Çıkanlar")}
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table>
+        ${sectionHeader("Konular ve Öne Çıkanlar")}
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${topics}</table>
       </td>
     </tr>`;
 }
@@ -126,6 +147,19 @@ function renderNextStepsSection(items?: string[]): string {
 function textBlock(title: string, items?: string[]): string {
   if (!items?.length) return "";
   return `\n${title}:\n- ${items.join("\n- ")}`;
+}
+
+function textHighlightsBlock(items?: MeetingHighlight[]): string {
+  if (!items?.length) return "";
+  const topics = items
+    .map(
+      ({ topic, highlights }, index) =>
+        `${index + 1}. ${topic}\n${highlights
+          .map((highlight) => `   - ${highlight}`)
+          .join("\n")}`,
+    )
+    .join("\n");
+  return `\nKonular ve Öne Çıkanlar:\n${topics}`;
 }
 
 function renderShell({
@@ -200,7 +234,7 @@ export function renderMeetingSummaryA(data: MeetingSummaryData): {
     subject,
     "",
     data.summary ?? "",
-    textBlock("Öne Çıkanlar", data.highlights),
+    textHighlightsBlock(data.highlights),
   ]
     .filter(Boolean)
     .join("\n");
@@ -234,7 +268,7 @@ export function renderMeetingSummaryB(data: MeetingSummaryData): {
     subject,
     "",
     data.summary ?? "",
-    textBlock("Öne Çıkanlar", data.highlights),
+    textHighlightsBlock(data.highlights),
     textBlock("Sonraki Adımlar", data.next_steps),
   ]
     .filter(Boolean)

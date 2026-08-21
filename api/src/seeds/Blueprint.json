@@ -332,12 +332,12 @@
     {
       "id": "019fa100-0000-4000-8000-000000000001",
       "title": "Meeting Summary A - Full Transcript Only",
-      "description": "Variant A of the meeting summarizer A/B test. Converts per-participant PCM recordings to WAV, transcribes them into a single combined transcript, and summarizes that transcript alone into an overall summary and the meeting's highlights. It deliberately produces no next steps and uses no per-speaker recording, so nothing is attributed to individual speakers. A Turkish LLM judge scores meeting summary, topics, highlights, overall quality and accuracy on a 0-100 scale; next steps are explicitly not evaluated. The summary is emailed to the meeting participants, with the transcripts and the judge's evaluation attached as files. Meeting audio is not sent.",
-      "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath)\nsummary = SummarizeMeeting(transcripts.full_meeting_transcript)\njudgement = JudgeSummary(transcript: transcripts.full_meeting_transcript, summary: summary.summary, highlights: summary.highlights, variant: \"A\")\nattachments = PrepareMeetingAttachments(directoryPath, transcripts, judgement, includeAudio: false)\nEmail.Send(to: participants.emails, template: \"meeting_summary_a\", data: summary, attachments: attachments)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "description": "Variant A of the meeting summarizer A/B test. Converts PCM recordings to WAV, transcribes only the mixed meeting-audio recording, and summarizes that full transcript into an overall summary and the meeting's highlights. It deliberately skips per-speaker transcription, produces no next steps and attributes nothing to individual speakers. A Turkish LLM judge scores meeting summary, topics, highlights, overall quality and accuracy on a 0-100 scale; next steps are explicitly not evaluated. The summary is emailed to the meeting participants, with the full transcript and the judge's evaluation attached as files. Meeting audio is not sent.",
+      "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeetingCloud(directoryPath, includeSpeakerTranscripts: false)\nsummary = SummarizeMeeting(transcripts.full_meeting_transcript)\njudgement = JudgeSummary(transcript: transcripts.full_meeting_transcript, summary: summary.summary, highlights: summary.highlights, variant: \"A\")\nattachments = PrepareMeetingAttachments(directoryPath, transcripts, judgement, includeAudio: false)\nEmail.Send(to: participants.emails, template: \"meeting_summary_a\", data: summary, attachments: attachments)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "019f4a02-1111-4222-8333-444455556666",
       "blocking": false,
       "force": true,
-      "skill": "**Meeting Recording - Summary Variant A (transcript only)**\n\nUse this Blueprint for the lightweight arm of the summarizer A/B test: the summary is written from the combined transcript as a whole, without each participant's own recording.\n\nFlow: Convert PCM to WAV -> Transcribe meeting -> Summarize the full transcript (summary + highlights) -> Judge the summary against the transcript -> Prepare transcript and judgement attachments -> Send email to all participants -> Complete.\n\nProduces a summary and highlights only - no next steps, no speaker attribution and no separate manager email. The transcripts and the LLM evaluation go out as attachments; the meeting audio does not. Exits after emailing the participants.",
+      "skill": "**Meeting Recording - Summary Variant A (transcript only)**\n\nUse this Blueprint for the lightweight arm of the summarizer A/B test: only the mixed meeting recording is transcribed, and the summary is written from that full transcript without transcribing each participant's own recording.\n\nFlow: Convert PCM to WAV -> Transcribe only meeting-audio.wav -> Summarize the full transcript (summary + highlights) -> Judge the summary against the transcript -> Prepare transcript and judgement attachments -> Send email to all participants -> Complete.\n\nProduces a summary and highlights only - no next steps, no speaker transcription, no speaker attribution and no separate manager email. The full transcript and the LLM evaluation go out as attachments; the meeting audio does not. Exits after emailing the participants.",
       "nodes": [
         {
           "id": "019fa100-0001-4000-8000-000000000001",
@@ -358,11 +358,11 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:transcribe_meeting_cloud",
-            "description": "Transcribe each WAV file individually with the cloud ASR model and collect the full meeting transcript together with the per-speaker transcripts. Transcripts are cached as .txt files next to the audio, so re-running the meeting does not transcribe again",
-            "prompt": "Transcribe all WAV files in the meeting directory",
+            "description": "Transcribe only meeting-audio.wav with the cloud ASR model. Skip participant recordings because Variant A does not use speaker transcripts. The transcript is cached as a .txt file next to the audio",
+            "prompt": "Transcribe only meeting-audio.wav by setting includeSpeakerTranscripts to false",
             "label": "Transcribe Meeting",
             "icon": "mdi:cloud-check",
-            "pseudocode": "BEGIN_CONTEXT\ntranscripts = TranscribeMeetingCloud(directoryPath)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "pseudocode": "BEGIN_CONTEXT\ntranscripts = TranscribeMeetingCloud(directoryPath, includeSpeakerTranscripts: false)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": ["019fa100-0003-4000-8000-000000000001"],
           "createdAt": "2026-08-20T10:00:00Z"
@@ -400,8 +400,8 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:prepare_meeting_attachments",
-            "description": "Write the full meeting transcript, each speaker's transcript and the LLM judge's evaluation to files and collect them as email attachments. The meeting audio is not attached",
-            "prompt": "Pass directoryPath, and full_meeting_transcript plus speaker_transcripts from the transcription step through unchanged, along with the participants list from meeting metadata and the whole judgement object from the Judge Summary step. Set includeAudio: false - the meeting audio must not be emailed. Returns an 'attachments' array to be handed to the email step.",
+            "description": "Write the full meeting transcript and the LLM judge's evaluation to files and collect them as email attachments. The meeting audio is not attached",
+            "prompt": "Pass directoryPath and full_meeting_transcript from the transcription step, along with the whole judgement object from the Judge Summary step. Set includeAudio: false. Variant A has no speaker transcripts. Returns an 'attachments' array to be handed to the email step.",
             "label": "Prepare Attachments",
             "icon": "mdi:paperclip",
             "pseudocode": "BEGIN_CONTEXT\nattachments = PrepareMeetingAttachments(directoryPath, transcripts, judgement, includeAudio: false)\nEND_CONTEXT\n\nEND_MESSAGE"

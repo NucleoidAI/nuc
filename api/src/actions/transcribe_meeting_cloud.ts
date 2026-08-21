@@ -255,13 +255,20 @@ async function transcribeWav(
 }
 
 async function run({
-  parameters: { directoryPath, model, language, force },
+  parameters: {
+    directoryPath,
+    model,
+    language,
+    force,
+    includeSpeakerTranscripts = true,
+  },
 }: {
   parameters: {
     directoryPath: string;
     model?: string;
     language?: string;
     force?: boolean;
+    includeSpeakerTranscripts?: boolean;
   };
 }) {
   if (!path.isAbsolute(directoryPath)) {
@@ -277,13 +284,26 @@ async function run({
     return { error: "ASR_API_KEY environment variable is not set" };
   }
 
-  const wavFiles = fs
+  const allWavFiles = fs
     .readdirSync(directoryPath)
     .filter((f) => f.toLowerCase().endsWith(".wav"))
     .sort();
 
-  if (wavFiles.length === 0) {
+  if (allWavFiles.length === 0) {
     return { error: "No .wav files found in directory" };
+  }
+
+  const wavFiles = includeSpeakerTranscripts
+    ? allWavFiles
+    : allWavFiles.filter(
+        (file) => path.basename(file, ".wav").toLowerCase() === MIX_FILE_STEM
+      );
+
+  if (wavFiles.length === 0) {
+    return {
+      error:
+        "meeting-audio.wav is required when includeSpeakerTranscripts is false",
+    };
   }
 
   const client = new OpenAI({

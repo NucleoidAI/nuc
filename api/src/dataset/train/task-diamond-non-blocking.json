@@ -1014,7 +1014,9 @@
           "action": "ORDER:find_product",
           "status": "COMPLETED",
           "parameters": {
-            "name": { "$ref": "steps[0].result" }
+            "name": {
+              "$ref": "steps[0].result"
+            }
           },
           "result": "{\"id\": \"prd-2\", \"name\": \"product-2\"}",
           "comment": "Reusing the product name the user already gave (steps[0].result) via $ref instead of retyping it"
@@ -1024,7 +1026,9 @@
           "action": "GREY:knowledge_lookup",
           "status": "COMPLETED",
           "parameters": {
-            "product_id": { "$ref": "steps[1].result.id" }
+            "product_id": {
+              "$ref": "steps[1].result.id"
+            }
           },
           "result": "{\"product_id\": \"prd-2\", \"certificate\": \"CE\", \"has_certificate\": true}",
           "comment": "Reusing the product id find_product already resolved (steps[1].result.id) via $ref instead of retyping it"
@@ -1042,8 +1046,12 @@
                 "action": "ORDER:assign_certificate",
                 "status": "COMPLETED",
                 "parameters": {
-                  "product_id": { "$ref": "steps[1].result.id" },
-                  "certificate": { "$ref": "steps[2].result.certificate" }
+                  "product_id": {
+                    "$ref": "steps[1].result.id"
+                  },
+                  "certificate": {
+                    "$ref": "steps[2].result.certificate"
+                  }
                 },
                 "result": "{\"product_id\": \"prd-2\", \"certificate\": \"CE\", \"assigned\": true}",
                 "comment": "Reusing product_id (steps[1].result.id) and certificate (steps[2].result.certificate) via $ref instead of retyping them"
@@ -1053,7 +1061,9 @@
                 "action": "ORDER:create_po",
                 "status": "COMPLETED",
                 "parameters": {
-                  "product_id": { "$ref": "steps[1].result.id" },
+                  "product_id": {
+                    "$ref": "steps[1].result.id"
+                  },
                   "city": "Chicago",
                   "quantity": 3
                 },
@@ -1287,7 +1297,9 @@
           "action": "ORDER:find_product",
           "status": "COMPLETED",
           "parameters": {
-            "name": { "$ref": "steps[0].result" }
+            "name": {
+              "$ref": "steps[0].result"
+            }
           },
           "result": "{\"id\": \"prd-4\", \"name\": \"product-4\"}",
           "comment": "Reusing the product name the user already gave (steps[0].result) via $ref instead of retyping it"
@@ -1297,7 +1309,9 @@
           "action": "GREY:knowledge_lookup",
           "status": "COMPLETED",
           "parameters": {
-            "product_id": { "$ref": "steps[1].result.id" }
+            "product_id": {
+              "$ref": "steps[1].result.id"
+            }
           },
           "result": "{\"product_id\": \"prd-4\", \"certificate\": null, \"has_certificate\": false}",
           "comment": "Reusing the product id find_product already resolved (steps[1].result.id) via $ref instead of retyping it"
@@ -1475,8 +1489,12 @@
           "action": "PLATFORM:summarize_meeting_by_speaker",
           "status": "COMPLETED",
           "parameters": {
-            "full_meeting_transcript": { "$ref": "steps[1].result.full_meeting_transcript" },
-            "speaker_transcripts": { "$ref": "steps[1].result.speaker_transcripts" },
+            "full_meeting_transcript": {
+              "$ref": "steps[1].result.full_meeting_transcript"
+            },
+            "speaker_transcripts": {
+              "$ref": "steps[1].result.speaker_transcripts"
+            },
             "language": "tr"
           },
           "result": "{\"summary\":\"Ekip son review toplantılarındaki düşük katılımı ve Smart TV entegrasyon çalışmalarını değerlendirdi.\",\"key_topics\":[\"Düşük toplantı katılımı\",\"Smart TV entegrasyonu\"],\"decisions\":[\"16782336: Gelecek ay için hatırlatma maili gönderilecek\"],\"action_items\":[{\"owner_id\":\"16782336\",\"task\":\"Hatırlatma maili gönder\"}],\"speaker_highlights\":[{\"id\":\"16780288\",\"summary\":\"Katılım azlığından endişe duydu.\"}]}",
@@ -1487,7 +1505,9 @@
           "action": "PLATFORM:resolve_participants",
           "status": "COMPLETED",
           "parameters": {
-            "content": { "$ref": "steps[2].result" },
+            "content": {
+              "$ref": "steps[2].result"
+            },
             "participants": [
               {
                 "id": "16780288",
@@ -1757,6 +1777,183 @@
           "comments": "Auto-approved after account creation"
         },
         "comment": "create_employee's result (steps[1]) already includes the ServiceNow request_number - reuse it via $ref instead of retyping it",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "019fa100-7001-4000-8000-000000000001",
+      "description": "Summarize a meeting from the combined transcript only (variant A), have an LLM judge score the notes, and email them to the participants.",
+      "knowledge": [
+        {
+          "type": "TEXT",
+          "text": "Meeting name: Yonetim Sync. Meeting date: 2026-08-14."
+        }
+      ],
+      "tools": [
+        "PLATFORM:pcm_to_wav",
+        "PLATFORM:transcribe_meeting_cloud",
+        "PLATFORM:summarize_meeting",
+        "PLATFORM:judge_summary",
+        "PLATFORM:prepare_meeting_attachments",
+        "GREY:send_email",
+        "PLATFORM:complete"
+      ],
+      "steps": [
+        {
+          "action": "PLATFORM:pcm_to_wav",
+          "status": "COMPLETED",
+          "parameters": {
+            "directoryPath": "/recordings/2026-08-14-management-sync"
+          },
+          "result": "{\"success\":true,\"converted\":[\"/recordings/2026-08-14-management-sync/meeting-audio.wav\"],\"totalFound\":1,\"totalConverted\":1}",
+          "comment": "Converting the meeting recording to WAV before transcription"
+        },
+        {
+          "action": "PLATFORM:transcribe_meeting_cloud",
+          "status": "COMPLETED",
+          "parameters": {
+            "directoryPath": "/recordings/2026-08-14-management-sync",
+            "includeSpeakerTranscripts": false
+          },
+          "result": "{\"full_meeting_transcript\":\"[several thousand words of Turkish dialogue - present in full in the real step result]\",\"speaker_transcripts\":[]}",
+          "comment": "Variant A only needs the mixed meeting audio, so speaker transcripts are skipped"
+        }
+      ],
+      "next_step": {
+        "action": "PLATFORM:summarize_meeting",
+        "parameters": {
+          "transcript": {
+            "$ref": "steps[1].result.full_meeting_transcript"
+          }
+        },
+        "comment": "steps[1] (transcribe_meeting_cloud) already holds the full transcript - reference it with $ref instead of retyping thousands of words, which would truncate the response.",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "019fa100-7003-4000-8000-000000000001",
+      "description": "Summarize a meeting from the combined transcript only (variant A), have an LLM judge score the notes, and email them to the participants.",
+      "knowledge": [
+        {
+          "type": "TEXT",
+          "text": "Meeting name: Yonetim Sync. Meeting date: 2026-08-14."
+        }
+      ],
+      "tools": [
+        "PLATFORM:pcm_to_wav",
+        "PLATFORM:transcribe_meeting_cloud",
+        "PLATFORM:summarize_meeting",
+        "PLATFORM:judge_summary",
+        "PLATFORM:prepare_meeting_attachments",
+        "GREY:send_email",
+        "PLATFORM:complete"
+      ],
+      "steps": [
+        {
+          "action": "PLATFORM:pcm_to_wav",
+          "status": "COMPLETED",
+          "parameters": {
+            "directoryPath": "/recordings/2026-08-14-management-sync"
+          },
+          "result": "{\"success\":true,\"converted\":[\"/recordings/2026-08-14-management-sync/meeting-audio.wav\"],\"totalFound\":1,\"totalConverted\":1}",
+          "comment": "Converting the meeting recording to WAV before transcription"
+        },
+        {
+          "action": "PLATFORM:transcribe_meeting_cloud",
+          "status": "COMPLETED",
+          "parameters": {
+            "directoryPath": "/recordings/2026-08-14-management-sync",
+            "includeSpeakerTranscripts": false
+          },
+          "result": "{\"full_meeting_transcript\":\"[several thousand words of Turkish dialogue - present in full in the real step result]\",\"speaker_transcripts\":[]}",
+          "comment": "Variant A only needs the mixed meeting audio, so speaker transcripts are skipped"
+        },
+        {
+          "action": "PLATFORM:summarize_meeting",
+          "status": "FAILED",
+          "parameters": {
+            "transcript": "Bizi bakmistik gelmeyelim. Geldi arkadasim. Tabii. Konusabiliyor muyuz karsilikli? [transcript continues for thousands more words, typed out in full by mistake]"
+          },
+          "result": "LLM response was truncated. The response exceeded the maximum token limit.",
+          "comment": "The transcript was typed out by hand instead of using $ref, so the response ran out of tokens before finishing"
+        }
+      ],
+      "next_step": {
+        "action": "PLATFORM:summarize_meeting",
+        "parameters": {
+          "transcript": {
+            "$ref": "steps[1].result.full_meeting_transcript"
+          }
+        },
+        "comment": "Retrying with $ref instead of retyping the transcript, since steps[1].result already has it",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "019fa100-7002-4000-8000-000000000001",
+      "description": "Summarize a meeting from the combined transcript only (variant A), have an LLM judge score the notes, and email them to the participants.",
+      "knowledge": [
+        {
+          "type": "TEXT",
+          "text": "Meeting name: Yonetim Sync. Meeting date: 2026-08-14."
+        }
+      ],
+      "tools": [
+        "PLATFORM:pcm_to_wav",
+        "PLATFORM:transcribe_meeting_cloud",
+        "PLATFORM:summarize_meeting",
+        "PLATFORM:judge_summary",
+        "PLATFORM:prepare_meeting_attachments",
+        "GREY:send_email",
+        "PLATFORM:complete"
+      ],
+      "steps": [
+        {
+          "action": "PLATFORM:pcm_to_wav",
+          "status": "COMPLETED",
+          "parameters": {
+            "directoryPath": "/recordings/2026-08-14-management-sync"
+          },
+          "result": "{\"success\":true,\"converted\":[\"/recordings/2026-08-14-management-sync/meeting-audio.wav\"],\"totalFound\":1,\"totalConverted\":1}",
+          "comment": "Converting the meeting recording to WAV before transcription"
+        },
+        {
+          "action": "PLATFORM:transcribe_meeting_cloud",
+          "status": "COMPLETED",
+          "parameters": {
+            "directoryPath": "/recordings/2026-08-14-management-sync",
+            "includeSpeakerTranscripts": false
+          },
+          "result": "{\"full_meeting_transcript\":\"[several thousand words of Turkish dialogue - present in full in the real step result]\",\"speaker_transcripts\":[]}",
+          "comment": "Variant A only needs the mixed meeting audio, so speaker transcripts are skipped"
+        },
+        {
+          "action": "PLATFORM:summarize_meeting",
+          "status": "COMPLETED",
+          "parameters": {
+            "transcript": {
+              "$ref": "steps[1].result.full_meeting_transcript"
+            }
+          },
+          "result": "{\"summary\":\"Ekip haftalik toplanti saatini 10.30'a cekmeyi, IVR gelistirmesinin kapsamini ve bolge bayi ziyaretlerinin takvimini gorustu.\",\"highlights\":[{\"topic\":\"Toplanti saati\",\"highlights\":[\"Toplanti 10.30'a alindi ve suresinin 45-60 dakikaya indirilmesi hedeflendi.\"]},{\"topic\":\"Bayi ziyaretleri\",\"highlights\":[\"Istanbul bolgesi Eylul basinda, Trabzon Eylul sonu veya Ekim basinda ziyaret edilecek.\"]}]}",
+          "comment": "Summarizing the meeting from the combined transcript alone"
+        }
+      ],
+      "next_step": {
+        "action": "PLATFORM:judge_summary",
+        "parameters": {
+          "transcript": {
+            "$ref": "steps[1].result.full_meeting_transcript"
+          },
+          "summary": {
+            "$ref": "steps[2].result.summary"
+          },
+          "highlights": {
+            "$ref": "steps[2].result.highlights"
+          },
+          "variant": "A"
+        },
+        "comment": "Both the transcript and the generated notes already exist in earlier steps - every one of them is passed by $ref. next_steps is omitted because variant A does not produce them.",
         "result_score": 0.95
       }
     }

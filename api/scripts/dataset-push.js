@@ -29,6 +29,13 @@ if (unknown.length) {
 
 const CREATE = argv.includes("--create");
 const msgIdx = argv.findIndex((a) => a === "-m" || a === "--message");
+if (
+  msgIdx !== -1 &&
+  (!argv[msgIdx + 1] || argv[msgIdx + 1].startsWith("-"))
+) {
+  console.error("[dataset] -m/--message requires a value");
+  process.exit(1);
+}
 const SUMMARY = msgIdx !== -1 ? argv[msgIdx + 1] : "Update dataset";
 const only = argv.filter(
   (a, i) => !a.startsWith("-") && !(msgIdx !== -1 && i === msgIdx + 1)

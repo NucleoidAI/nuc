@@ -28,7 +28,7 @@ function AIMarketplaceCard({
     }
 
     return fetchedEngines?.filter((engine) =>
-      [engine?.vendor, engine?.model, engine?.description]
+      [engine?.vendor, engine?.model, engine?.type]
         .filter(Boolean)
         .some((field) => field.toLowerCase().includes(query))
     );

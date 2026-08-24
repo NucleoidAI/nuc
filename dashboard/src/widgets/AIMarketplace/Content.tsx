@@ -18,7 +18,14 @@ export default function AIEngineChart({
     avatar?: string;
   }[];
   isWizardEngine: boolean;
-  handleEngineSelect: (engine: { id: string }) => void;
+  handleEngineSelect: (engine: {
+    id: string;
+    vendor: string;
+    model: string;
+    price: number;
+    type: string;
+    avatar?: string;
+  }) => void;
   selectedEngineId?: string;
 }) {
   return (

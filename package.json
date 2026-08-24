@@ -24,6 +24,7 @@
     "test:api": "cd ./api && bun run test",
     "test:dashboard": "cd ./dashboard && bun run test",
     "test": "bun run test:api && bun run test:dashboard",
+    "test:e2e": "bun run build:communication && cd ./api && bun run test:e2e",
     "build": "bun run build:dashboard && bun run build:api && bun run build:communication && bun run build:server-dashboard",
     "dev:communication": "cd ./communication && bun run dev",
     "docker:local:build": "bun run build && bun run build:prod && docker compose -f local/docker-compose.local.yml build",

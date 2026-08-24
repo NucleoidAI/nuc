@@ -8,7 +8,8 @@
     "dev": "bun --watch server.ts",
     "build": "node build.prod.js",
     "lint": "eslint . --ext .ts",
-    "test": "bun test.ts"
+    "test": "bun test.ts",
+    "test:e2e": "bun run build && bun test ./test/e2e/orderCompliance.e2e.ts --timeout 900000"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.35.0",

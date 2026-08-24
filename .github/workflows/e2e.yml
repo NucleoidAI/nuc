@@ -1,0 +1,57 @@
+name: E2E
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  order-compliance:
+    name: Order & Compliance blueprint → task
+    runs-on: ubuntu-latest
+    # The suite talks to a real LLM, so it needs the provider key. Forks do not
+    # get repository secrets; skip there instead of failing.
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+    timeout-minutes: 45
+    env:
+      PLATFORM_LLM: ${{ vars.E2E_PLATFORM_LLM || 'openrouter/qwen3-next-80b-a3b-instruct' }}
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      # The communication service boots only with real Slack credentials; the
+      # suite skips it, loudly, when they are absent.
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      SLACK_SIGNING_SECRET: ${{ secrets.SLACK_SIGNING_SECRET }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: |
+          bun install
+          bun run install:api
+          bun run install:communication
+          bun run install:mcp
+
+      - name: Check LLM credentials
+        run: |
+          if [ -z "$OPENROUTER_API_KEY" ] && [ -z "$OPENAI_API_KEY" ]; then
+            echo "::error::No LLM API key available. Set the OPENROUTER_API_KEY (or OPENAI_API_KEY) repository secret; the e2e scenarios run against a real LLM."
+            exit 1
+          fi
+
+      # `test:e2e` builds the API and the communication service, boots both
+      # through their shipped entrypoints, and runs the scenarios against the
+      # compiled artifacts that ship in the Docker images.
+      - name: Run Order & Compliance e2e scenarios
+        run: bun run test:e2e
+
+      - name: Upload service logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-service-logs
+          path: .e2e/*.log
+          if-no-files-found: ignore

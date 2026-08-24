@@ -26,6 +26,7 @@ const STEP_STATUS_COLOR: Record<string, string> = {
 
 function StepScoresAccordion({
   step,
+  readOnly = false,
 }: {
   step: {
     id: string;
@@ -34,6 +35,7 @@ function StepScoresAccordion({
     status: string;
     createdAt: string;
   };
+  readOnly?: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
   const { getScoresByStep, updateSuperviseScore, deleteSuperviseScore } =
@@ -58,42 +60,48 @@ function StepScoresAccordion({
         expandIcon={<Iconify icon="eva:chevron-down-fill" width={18} />}
         sx={{
           px: 1,
+          py: { xs: 0.75, sm: 0 },
           minHeight: 48,
           "&.Mui-expanded": { minHeight: 48 },
           "& .MuiAccordionSummary-content": { my: 0.75 },
         }}
       >
         <Stack
-          direction="row"
-          spacing={1.5}
-          alignItems="center"
+          direction={{ xs: "column", sm: "row" }}
+          spacing={{ xs: 0.5, sm: 1.5 }}
+          alignItems={{ xs: "flex-start", sm: "center" }}
           sx={{ flex: 1, minWidth: 0, mr: 1 }}
         >
-          <Box
-            sx={{
-              width: 8,
-              height: 8,
-              borderRadius: "50%",
-              bgcolor: STEP_STATUS_COLOR[step.status] ?? "text.disabled",
-              flexShrink: 0,
-            }}
-          />
-          <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Typography
-              variant="body2"
+          <Stack
+            direction="row"
+            spacing={1.5}
+            alignItems="center"
+            sx={{ flex: 1, minWidth: 0, width: "100%" }}
+          >
+            <Box
               sx={{
-                fontWeight: 700,
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                bgcolor: STEP_STATUS_COLOR[step.status] ?? "text.disabled",
+                flexShrink: 0,
               }}
-            >
-              {step.comment || step.action}
-            </Typography>
-            <Typography variant="caption" color="text.disabled">
-              {new Date(step.createdAt).toLocaleString()}
-            </Typography>
-          </Box>
+            />
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  fontWeight: 600,
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {step.comment || step.action}
+              </Typography>
+              <Typography variant="caption" color="text.disabled">
+                {new Date(step.createdAt).toLocaleString()}
+              </Typography>
+            </Box>
+          </Stack>
           <Chip
             size="small"
             label={step.status.replace(/_/g, " ")}
@@ -104,6 +112,7 @@ function StepScoresAccordion({
               color: "common.white",
               "& .MuiChip-label": { px: 0.75 },
               flexShrink: 0,
+              ml: { xs: "24px !important", sm: 0 },
             }}
           />
         </Stack>
@@ -140,6 +149,7 @@ function StepScoresAccordion({
                 score={score}
                 onScoreChange={updateSuperviseScore}
                 onScoreDelete={deleteSuperviseScore}
+                readOnly={readOnly}
               />
             ))}
           </Stack>

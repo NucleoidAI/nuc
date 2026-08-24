@@ -90,20 +90,28 @@ function SummaryCard({
     <Card
       sx={{
         p: 2,
-        flex: 1,
-        minWidth: 160,
+        minWidth: 0,
         borderRadius: 1,
         border: "1px solid",
         borderColor: "divider",
       }}
     >
-      <Stack direction="row" alignItems="center" spacing={1}>
-        <Iconify icon={icon} width={20} sx={{ color: "text.secondary" }} />
-        <Typography variant="body2" color="text.secondary">
+      <Stack
+        direction="row"
+        alignItems="center"
+        spacing={1}
+        sx={{ minWidth: 0 }}
+      >
+        <Iconify
+          icon={icon}
+          width={20}
+          sx={{ color: "text.secondary", flexShrink: 0 }}
+        />
+        <Typography variant="body2" color="text.secondary" noWrap>
           {label}
         </Typography>
       </Stack>
-      <Typography variant="h5" sx={{ mt: 0.5, fontWeight: 700 }}>
+      <Typography variant="h5" noWrap sx={{ mt: 0.5, fontWeight: 700 }}>
         {value}
       </Typography>
     </Card>
@@ -126,16 +134,16 @@ function TaskUsageAccordion({ usage }: { usage: TaskUsage }) {
     >
       <AccordionSummary
         expandIcon={<Iconify icon="eva:chevron-down-fill" width={18} />}
-        sx={{ px: 1.5 }}
+        sx={{ px: 1 }}
       >
         <Stack
           direction="row"
           alignItems="center"
-          spacing={2}
+          spacing={1}
           sx={{ width: "100%", pr: 1 }}
         >
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Typography variant="body2" noWrap sx={{ fontWeight: 600 }}>
+            <Typography variant="body2" sx={{ fontWeight: 600 }}>
               {task.description}
             </Typography>
             <Typography variant="caption" color="text.secondary">
@@ -148,7 +156,7 @@ function TaskUsageAccordion({ usage }: { usage: TaskUsage }) {
             color={TASK_STATUS_COLOR[task.status] ?? "default"}
             variant="outlined"
           />
-          <Stack alignItems="flex-end" sx={{ minWidth: 110 }}>
+          <Stack alignItems="flex-end">
             <Typography variant="body2" sx={{ fontWeight: 700 }}>
               {formatTokens(totals.totalTokens)} tokens
             </Typography>
@@ -159,7 +167,7 @@ function TaskUsageAccordion({ usage }: { usage: TaskUsage }) {
           </Stack>
         </Stack>
       </AccordionSummary>
-      <AccordionDetails sx={{ p: 0 }}>
+      <AccordionDetails>
         {logs.length === 0 ? (
           <Typography
             variant="body2"
@@ -222,11 +230,19 @@ function TaskUsageAccordion({ usage }: { usage: TaskUsage }) {
   );
 }
 
-function CostWidget() {
+function CostWidget({
+  agentId,
+  height,
+}: {
+  agentId?: string;
+  height?: number | string;
+} = {}) {
+  const isFixedAgent = Boolean(agentId);
+
   const { getTeamAgents } = useAgents();
   const { agents, loading } = getTeamAgents();
 
-  const [selectedAgentId, setSelectedAgentId] = useState<string>("");
+  const [selectedAgentId, setSelectedAgentId] = useState<string>(agentId ?? "");
 
   const { getUsageByAgent } = useLLMLogs();
   const { usage: rawUsage, loading: usageLoading } =
@@ -275,64 +291,72 @@ function CostWidget() {
 
   return (
     <>
-      <Stack
-        direction={{ xs: "column", sm: "row" }}
-        alignItems={{ xs: "flex-start", sm: "center" }}
-        justifyContent="space-between"
-        spacing={2}
-        sx={{ mb: 2 }}
-      >
-        <Box sx={{ minWidth: 240 }}>
-          {isLoading ? (
-            <Skeleton variant="rounded" height={40} sx={{ borderRadius: 1 }} />
-          ) : (
-            <FormControl fullWidth>
-              <InputLabel>Agents</InputLabel>
-              <Select
-                label="Agents"
-                value={selectedAgentId}
-                onChange={(e) => setSelectedAgentId(e.target.value)}
-                renderValue={(val) => {
-                  if (!val) return "Select an agent";
-                  const agent = agents?.find(
-                    (a: { id: string; name: string; icon?: string }) =>
-                      a.id === val
-                  );
-                  return (
-                    <Stack direction="row" alignItems="center" spacing={1}>
-                      {agent?.icon && (
-                        <Iconify icon={agent.icon} width={20} height={20} />
-                      )}
-                      <span>{agent?.name ?? val}</span>
-                    </Stack>
-                  );
-                }}
-              >
-                <MenuItem value="" disabled>
-                  Select an agent
-                </MenuItem>
-                {(agents ?? []).map((agent) => (
-                  <MenuItem key={agent.id} value={agent.id}>
-                    <Stack direction="row" alignItems="center" spacing={1}>
-                      {agent.icon && (
-                        <Iconify icon={agent.icon} width={20} height={20} />
-                      )}
-                      <span>{agent.name}</span>
-                    </Stack>
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          )}
-        </Box>
-        <Button
-          variant="outlined"
-          startIcon={<Iconify icon="solar:tag-price-line-duotone" width={18} />}
-          onClick={() => setPricingOpen(true)}
+      {!isFixedAgent && (
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          alignItems={{ xs: "flex-start", sm: "center" }}
+          justifyContent="space-between"
+          spacing={2}
+          sx={{ mb: 2 }}
         >
-          Pricing
-        </Button>
-      </Stack>
+          <Box sx={{ minWidth: 240 }}>
+            {isLoading ? (
+              <Skeleton
+                variant="rounded"
+                height={40}
+                sx={{ borderRadius: 1 }}
+              />
+            ) : (
+              <FormControl fullWidth>
+                <InputLabel>Agents</InputLabel>
+                <Select
+                  label="Agents"
+                  value={selectedAgentId}
+                  onChange={(e) => setSelectedAgentId(e.target.value)}
+                  renderValue={(val) => {
+                    if (!val) return "Select an agent";
+                    const agent = agents?.find(
+                      (a: { id: string; name: string; icon?: string }) =>
+                        a.id === val
+                    );
+                    return (
+                      <Stack direction="row" alignItems="center" spacing={1}>
+                        {agent?.icon && (
+                          <Iconify icon={agent.icon} width={20} height={20} />
+                        )}
+                        <span>{agent?.name ?? val}</span>
+                      </Stack>
+                    );
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Select an agent
+                  </MenuItem>
+                  {(agents ?? []).map((agent) => (
+                    <MenuItem key={agent.id} value={agent.id}>
+                      <Stack direction="row" alignItems="center" spacing={1}>
+                        {agent.icon && (
+                          <Iconify icon={agent.icon} width={20} height={20} />
+                        )}
+                        <span>{agent.name}</span>
+                      </Stack>
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+          </Box>
+          <Button
+            variant="outlined"
+            startIcon={
+              <Iconify icon="solar:tag-price-line-duotone" width={18} />
+            }
+            onClick={() => setPricingOpen(true)}
+          >
+            Pricing
+          </Button>
+        </Stack>
+      )}
 
       {!selectedAgentId ? (
         <Box sx={{ p: 6, textAlign: "center" }}>
@@ -367,11 +391,23 @@ function CostWidget() {
           ))}
         </Stack>
       ) : (
-        <>
-          <Stack
-            direction={{ xs: "column", sm: "row" }}
-            spacing={1.5}
-            sx={{ mb: 2 }}
+        <Stack
+          sx={{
+            height: height ?? "auto",
+            minHeight: 0,
+          }}
+        >
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "repeat(2, 1fr)",
+                sm: "repeat(auto-fit, minmax(160px, 1fr))",
+              },
+              gap: 1,
+              mb: 1,
+              flexShrink: 0,
+            }}
           >
             <SummaryCard
               icon="solar:document-text-line-duotone"
@@ -395,13 +431,17 @@ function CostWidget() {
                 grandTotals.cost ? formatCost(grandTotals.cost) : "No cost data"
               }
             />
-          </Stack>
+          </Box>
 
           <Card
             sx={{
               borderRadius: 1,
               border: "1px solid",
               borderColor: "divider",
+              height: height ? undefined : "40vh",
+              flex: height ? 1 : undefined,
+              minHeight: 0,
+              overflowY: "auto",
             }}
           >
             <Box
@@ -428,7 +468,7 @@ function CostWidget() {
               ))
             )}
           </Card>
-        </>
+        </Stack>
       )}
 
       <ModelPricingDialog

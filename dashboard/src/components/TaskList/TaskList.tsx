@@ -54,7 +54,7 @@ const TaskList = ({
     <List
       disablePadding
       sx={{
-        maxHeight: "calc(100vh - 150px)",
+        height: "100%",
         overflow: "auto",
       }}
     >
@@ -76,7 +76,7 @@ const TaskList = ({
               selected={isSelected}
               onClick={() => onTaskSelect(task)}
               sx={{
-                p: 2,
+                p: 1,
                 position: "relative",
                 "&:hover": {
                   bgcolor: isSelected
@@ -93,7 +93,7 @@ const TaskList = ({
             >
               <Stack
                 direction="row"
-                spacing={1.5}
+                spacing={1}
                 sx={{ width: "100%", alignItems: "center" }}
               >
                 <Box
@@ -140,7 +140,7 @@ const TaskList = ({
                       size="small"
                       label={isInProgress ? "In Progress" : "Completed"}
                       sx={{
-                        mt: 1,
+                        mt: 0.5,
                         height: 20,
                         fontSize: 11,
                         fontWeight: 800,

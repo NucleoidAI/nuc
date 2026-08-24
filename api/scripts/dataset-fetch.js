@@ -87,7 +87,8 @@ async function fetchOne(entry, manifest) {
 async function main() {
   const credentials = await checkCredentials();
   if (!credentials.ok) {
-    return bail(credentials.reason);
+    console.error(`[dataset] ${credentials.reason}`);
+    process.exit(1);
   }
 
   const list = entries(only);

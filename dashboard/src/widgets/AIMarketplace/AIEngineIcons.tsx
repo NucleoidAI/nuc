@@ -118,6 +118,24 @@ export function BardIcon({ width, height }: { width: number; height: number }) {
   );
 }
 
+export function GreyCollarIcon({
+  width,
+  height,
+}: {
+  width: number;
+  height: number;
+}) {
+  return (
+    <img
+      src="https://cdn.nucleoid.com/greycollar/media/icon.png"
+      alt="GreyCollar"
+      width={width}
+      height={height}
+      style={{ objectFit: "contain" }}
+    />
+  );
+}
+
 export function AiIcon({ width, height }: { width: number; height: number }) {
   return (
     <svg

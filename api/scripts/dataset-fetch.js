@@ -68,7 +68,9 @@ async function fetchOne(entry, manifest) {
     if (!res.ok) {
       return skip(`download failed ${res.status} ${res.statusText}`);
     }
-    const { value, added } = merge(readJson(entry.absPath), await res.json());
+    const remote = await res.json();
+    const local = cached && cached.placeholder ? undefined : readJson(entry.absPath);
+    const { value, added } = merge(local, remote);
     writeJson(entry.absPath, value);
     return {
       entry,

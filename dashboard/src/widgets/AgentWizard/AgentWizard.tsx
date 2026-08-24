@@ -82,7 +82,7 @@ function AgentWizard({ onSubmit, open, onClose, itemToEdit }) {
 
   const [activeStep, setActiveStep] = React.useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [createdAgent, setCreatedAgent] = useState(null);
+  const [createdAgent, setCreatedAgent] = useState<{ id: string } | null>(null);
   const [createError, setCreateError] = useState("");
   const { getAgentKnowledges } = useKnowledge();
   const { getBlueprintsByAgent } = useBlueprint();

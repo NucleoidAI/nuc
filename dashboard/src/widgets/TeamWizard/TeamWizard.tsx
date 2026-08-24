@@ -158,8 +158,12 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [activeStep, setActiveStep] = React.useState(0);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [createError, setCreateError] = React.useState("");
-  const [createdAgent, setCreatedAgent] = React.useState(null);
-  const [createdTeam, setCreatedTeam] = React.useState(null);
+  const [createdAgent, setCreatedAgent] = React.useState<{ id: string } | null>(
+    null
+  );
+  const [createdTeam, setCreatedTeam] = React.useState<{ id: string } | null>(
+    null
+  );
 
   const { createOrganization } = useOrganizations();
   const { getAgentKnowledges } = useKnowledge();

@@ -25,9 +25,9 @@ Bu metni analiz et ve çıktıyı TAMAMEN TÜRKÇE olarak, tam olarak aşağıda
 [Toplantının amacını, konuşulan ana konuları ve nasıl sonuçlandığını anlatan 3-5 cümlelik akıcı bir paragraf.]
 
 ## Konular ve Öne Çıkanlar
-[Toplantıda ele alınan ana konuları numaralandırarak listele (1., 2., 3. ...).
-Her konunun altına o konudaki önemli noktaları, talepleri, önerileri ve alınan kararları
-1-3 madde halinde yaz.]
+[Toplantıda ele alınan önemli ana konuları ayrı konu başlıkları olarak listele.
+Her konu başlığının altında yalnızca o konuyla ilgili önemli noktaları, talepleri,
+önerileri ve alınan kararları 1-3 maddelik bir liste halinde yaz.]
 
 KURALLAR:
 1. Yalnızca transkriptte geçen bilgileri kullan; isim, tarih, sayı, fiyat veya karar ASLA uydurma.

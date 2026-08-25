@@ -1,10 +1,9 @@
-import { Iconify } from "@canmingir/link/platform/components";
-import PopChat from "../../components/PopChat";
 import useBlueprint from "../../hooks/useBlueprint";
 import { useEvent } from "@nucleoidai/react-event";
 import useSession from "../../hooks/useSession";
 
 import { Badge, Fab } from "@mui/material";
+import { Iconify, SidebarChat } from "@canmingir/link/platform/components";
 import React, { useCallback, useEffect, useState } from "react";
 
 const PopupChatWidget = ({
@@ -88,21 +87,20 @@ const PopupChatWidget = ({
 
   return (
     <>
-      <PopChat
+      <SidebarChat
         clearError={clearError}
         error={error}
         title={`Test Chat Session`}
         open={openPopChat || open}
-        handleClose={handleClose}
+        handleToggle={handleClose}
         history={messages}
-        closeButton={true}
         handleNewUserMessage={handleNewUserMessage}
         readOnly={readOnly}
         selectedConversationId={conversationId || null}
         sound={sound}
-        Blueprints={Array.isArray(Blueprint) ? Blueprint : [Blueprint]}
-        selectedBlueprint={selectedBlueprint}
-        onBlueprintChange={handleBlueprintChange}
+        Presets={Array.isArray(Blueprint) ? Blueprint : [Blueprint]}
+        selectedPreset={selectedBlueprint}
+        onPresetChange={handleBlueprintChange}
         sx={{}}
       />
       {!open && !readOnly && (

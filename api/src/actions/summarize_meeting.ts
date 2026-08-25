@@ -56,7 +56,7 @@ async function run({
     content: `###TRANSKRIPT###\n${transcript}\n###TRANSKRIPT###`,
     json_format:
       '{ "summary": "<3-5 cümlelik paragraf>", "highlights": [{ "topic": "<konu başlığı>", "highlights": ["<bu konuyla ilgili öne çıkan nokta>"] }] }',
-    max_tokens: 4096,
+    max_tokens: 16384,
     meta,
   });
 

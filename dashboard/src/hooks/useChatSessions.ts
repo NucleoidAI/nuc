@@ -1,8 +1,9 @@
 import http from "@canmingir/link/platform/http";
+import { storage } from "@nucleoidjs/webstorage";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-const SESSIONS_STORAGE_KEY = "greycollar.sidebar-chat-sessions";
+const SESSIONS_STORAGE_KEY = "greycollar.sidebarchatsessions";
 const MAX_SESSIONS = 5;
 
 export type StoredSession = {
@@ -27,15 +28,13 @@ type BackendSession = {
   conversations: BackendConversation[];
 };
 
-// Only used to remember which session a reconnecting socket should resume;
-// the visible session list itself is fetched from the backend below.
 export const readSessions = (): StoredSession[] => {
-  const raw = localStorage.getItem(SESSIONS_STORAGE_KEY);
+  const raw = storage.get(SESSIONS_STORAGE_KEY);
   return raw ? JSON.parse(raw) : [];
 };
 
 const writeSessions = (sessions: StoredSession[]) => {
-  localStorage.setItem(SESSIONS_STORAGE_KEY, JSON.stringify(sessions));
+  storage.set(SESSIONS_STORAGE_KEY, JSON.stringify(sessions));
 };
 
 const upsertSession = (

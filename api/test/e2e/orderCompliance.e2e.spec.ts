@@ -281,7 +281,6 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
           0,
         );
 
-        // No certificate was invented for an uncertified product.
         expect(certificateOf("prd-3")).toBeUndefined();
       } finally {
         await updateBlueprintNodes({

@@ -10,20 +10,13 @@ interface Subscribe {
   <T extends EventPayload = EventPayload>(type: string): Promise<T>;
   <T extends EventPayload = EventPayload>(
     type: string,
-    callback: Callback<T>
+    callback: Callback<T>,
   ): Promise<Unsubscribe>;
 }
 
-/**
- * Resolves with the first event of `type` the `match` predicate accepts, and
- * unsubscribes as soon as it has one. The predicate is evaluated when the
- * event arrives rather than when the wait is set up, so a scenario can wait
- * for something it cannot name yet — a task whose id only the handoff will
- * reveal — by closing over a variable it fills in later.
- */
 function waitFor<T extends EventPayload = EventPayload>(
   type: string,
-  match: (payload: T) => boolean = () => true
+  match: (payload: T) => boolean = () => true,
 ): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     let unsubscribe: Unsubscribe | undefined;
@@ -56,15 +49,9 @@ function waitFor<T extends EventPayload = EventPayload>(
   });
 }
 
-/**
- * The link-express client requires a callback and resolves `subscribe` with an
- * unsubscribe function. E2E scenarios also need a one-shot form that resolves
- * with the first event, so they can await milestones without hand-writing a
- * Promise and cleanup for each one.
- */
 const subscribe: Subscribe = <T extends EventPayload = EventPayload>(
   type: string,
-  callback?: Callback<T>
+  callback?: Callback<T>,
 ): Promise<T> | Promise<Unsubscribe> => {
   if (callback) return eventClient.subscribe(type, callback);
 

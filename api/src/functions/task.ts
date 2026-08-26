@@ -214,6 +214,14 @@ async function updateStep({
       parameters,
       result,
     });
+  } else if (status === "SUPERVISED_NEEDED") {
+    await event.publish("STEP_SUPERVISED_NEEDED", {
+      taskId,
+      stepId,
+      action,
+      parameters,
+      result,
+    });
   }
 
   return step;

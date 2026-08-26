@@ -9,7 +9,7 @@
     "build": "node build.prod.js",
     "lint": "eslint . --ext .ts",
     "test": "bun test.ts",
-    "test:e2e": "bun run build && bun test ./test/e2e/orderCompliance.e2e.ts --timeout 900000"
+    "test:e2e": "jest --config jest.e2e.config.js --runInBand"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.35.0",

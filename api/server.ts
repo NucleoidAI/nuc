@@ -35,7 +35,8 @@ platform.init(config).then(async () => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const app = require("./src/app").default;
 
-  const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY || "greycollar-internal";
+  const INTERNAL_API_KEY =
+    process.env.INTERNAL_API_KEY || "greycollar-internal";
 
   const server = http.createServer(async (req, res) => {
     const url = new URL(req.url || "", `http://localhost`);
@@ -57,7 +58,9 @@ platform.init(config).then(async () => {
         return res.end(JSON.stringify(knowledgeList));
       } catch (err: any) {
         res.writeHead(500, { "Content-Type": "application/json" });
-        return res.end(JSON.stringify({ error: err?.message || "INTERNAL_ERROR" }));
+        return res.end(
+          JSON.stringify({ error: err?.message || "INTERNAL_ERROR" }),
+        );
       }
     }
 

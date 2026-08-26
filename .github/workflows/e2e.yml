@@ -17,10 +17,7 @@ jobs:
       PLATFORM_LLM: ${{ vars.E2E_PLATFORM_LLM || 'openrouter/qwen3-next-80b-a3b-instruct' }}
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      # The communication service boots only with real Slack credentials; the
-      # suite skips it, loudly, when they are absent.
-      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-      SLACK_SIGNING_SECRET: ${{ secrets.SLACK_SIGNING_SECRET }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

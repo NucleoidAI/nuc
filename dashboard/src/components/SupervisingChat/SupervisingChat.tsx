@@ -6,11 +6,7 @@ import PopupChatWidget from "../../widgets/PopupChatWidget/PopupChatWidget";
 import useBlueprint from "../../hooks/useBlueprint";
 import useKnowledge from "../../hooks/useKnowledge";
 import useSupervisings from "../../hooks/useSupervisings";
-import { RawNode, layoutFlow } from "../BlueprintCard/BlueprintFlowMiniPreview";
-import {
-  calculateDiffStats,
-  calculateNodeChanges,
-} from "../BlueprintFlow/DiffPanel/diffHelper";
+import { v4 as uuid } from "uuid";
 
 import {
   Backdrop,
@@ -27,8 +23,12 @@ import {
   alpha,
   useTheme,
 } from "@mui/material";
+import { RawNode, layoutFlow } from "../BlueprintCard/BlueprintFlowMiniPreview";
 import React, { memo, useCallback, useMemo, useRef } from "react";
-import { v4 as uuid } from "uuid";
+import {
+  calculateDiffStats,
+  calculateNodeChanges,
+} from "../BlueprintFlow/DiffPanel/diffHelper";
 
 /* ------------------------------------------------------------------ */
 /* Mini diff SVG renderer                                               */

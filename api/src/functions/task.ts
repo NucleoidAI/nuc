@@ -206,6 +206,14 @@ async function updateStep({
       parameters,
       result,
     });
+  } else if (status === "WAITING_FOR_USER") {
+    await event.publish("STEP_WAITING_FOR_USER", {
+      taskId,
+      stepId,
+      action,
+      parameters,
+      result,
+    });
   }
 
   return step;

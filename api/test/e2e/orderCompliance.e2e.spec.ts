@@ -10,15 +10,15 @@ import {
   purchaseOrdersFor,
   resetOrderDb,
 } from "./harness/orderDb";
-import {
+import type {
+  StepAdded,
+  StepSettled,
   StepSupervisedNeeded,
-  type StepAdded,
-  type StepSettled,
-  type SupervisingAnswered,
-  type SupervisingRaised,
-  type TaskCompleted,
-  type TaskCreated,
-} from "./harness/drive";
+  SupervisingAnswered,
+  SupervisingRaised,
+  TaskCompleted,
+  TaskCreated,
+} from "./harness/eventTypes";
 import { event } from "./harness/event";
 import {
   blueprintNodes,

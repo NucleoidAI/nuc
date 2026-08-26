@@ -44,7 +44,7 @@ function supervisedHandoffNodes() {
         prompt:
           "Look up compliance certificate for the product from agent knowledge",
         icon: "mdi:book-search",
-        action: "GREY:knowledge_lookup",
+        action: "PLATFORM:knowledge_lookup",
         description:
           "Look up the agent's knowledge base to find the product's compliance certificate.",
       },

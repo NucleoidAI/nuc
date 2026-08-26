@@ -606,12 +606,10 @@ async function step({
         `[agent.step] actionFn.run returned for action=${action} stepId=${stepId}`,
       );
     } else if (actionType === "MCP") {
-      let mcpParameters = runParameters as Record<string, unknown>;
-      if (action === "GREY:knowledge_lookup" && !mcpParameters.agentId) {
-        const task = await taskFn.get({ taskId });
-        mcpParameters = { ...mcpParameters, agentId: task.agentId };
-      }
-      result = await mcpClient.callTool(action, mcpParameters);
+      result = await mcpClient.callTool(
+        action,
+        runParameters as Record<string, unknown>,
+      );
     }
 
     let resultString;

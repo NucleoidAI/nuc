@@ -1775,7 +1775,7 @@
           "id": "c2b1a0d9-e8f7-4c2b-9100-300000000002",
           "type": "NORMAL",
           "properties": {
-            "action": "GREY:knowledge_lookup",
+            "action": "PLATFORM:knowledge_lookup",
             "description": "Look up compliance certificate for the product from agent knowledge",
             "icon": "mdi:book-search",
             "prompt": "Knowledge Lookup"
@@ -1839,7 +1839,7 @@
           "id": "c2b1a0d9-e8f7-4c2b-9100-300000000002",
           "type": "NORMAL",
           "properties": {
-            "action": "GREY:knowledge_lookup",
+            "action": "PLATFORM:knowledge_lookup",
             "description": "Look up compliance certificate for the product from agent knowledge",
             "icon": "mdi:book-search",
             "prompt": "Knowledge Lookup"
@@ -1903,7 +1903,7 @@
           "id": "c2b1a0d9-e8f7-4c2b-9100-300000000002",
           "type": "NORMAL",
           "properties": {
-            "action": "GREY:knowledge_lookup",
+            "action": "PLATFORM:knowledge_lookup",
             "description": "Look up compliance certificate for the product from agent knowledge",
             "icon": "mdi:book-search",
             "prompt": "Knowledge Lookup"

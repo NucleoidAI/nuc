@@ -6,7 +6,6 @@ import { event } from "@canmingir/link-express/event/client";
 import http from "http";
 import models from "./src/models";
 import platform from "@canmingir/link-express";
-import knowledgeFn from "./src/functions/knowledge";
 
 //import kafkaConfig from "./config.kafka";
 //import txqConfig from "./config.txq";
@@ -35,37 +34,7 @@ platform.init(config).then(async () => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const app = require("./src/app").default;
 
-  const INTERNAL_API_KEY =
-    process.env.INTERNAL_API_KEY || "greycollar-internal";
-
-  const server = http.createServer(async (req, res) => {
-    const url = new URL(req.url || "", `http://localhost`);
-
-    if (req.method === "GET" && url.pathname === "/internal/knowledge") {
-      const apiKey = req.headers["x-internal-key"];
-      if (apiKey !== INTERNAL_API_KEY) {
-        res.writeHead(401, { "Content-Type": "application/json" });
-        return res.end(JSON.stringify({ error: "UNAUTHORIZED" }));
-      }
-      const agentId = url.searchParams.get("agentId");
-      if (!agentId) {
-        res.writeHead(400, { "Content-Type": "application/json" });
-        return res.end(JSON.stringify({ error: "MISSING_AGENT_ID" }));
-      }
-      try {
-        const knowledgeList = await knowledgeFn.list({ agentId });
-        res.writeHead(200, { "Content-Type": "application/json" });
-        return res.end(JSON.stringify(knowledgeList));
-      } catch (err: any) {
-        res.writeHead(500, { "Content-Type": "application/json" });
-        return res.end(
-          JSON.stringify({ error: err?.message || "INTERNAL_ERROR" }),
-        );
-      }
-    }
-
-    app(req, res);
-  });
+  const server = http.createServer(app);
 
   await event.init(config.event);
 

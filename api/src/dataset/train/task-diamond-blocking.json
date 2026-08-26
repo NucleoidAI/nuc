@@ -823,7 +823,7 @@
             "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
             "type": "NORMAL",
             "properties": {
-              "action": "GREY:knowledge_lookup",
+              "action": "PLATFORM:knowledge_lookup",
               "prompt": "Look up compliance certificate for the product from agent knowledge",
               "label": "Knowledge Lookup",
               "icon": "mdi:book-search"
@@ -943,7 +943,7 @@
         "TELCO:port_allocation",
         "TELCO:port_connection",
         "ORDER:find_product",
-        "GREY:knowledge_lookup",
+        "PLATFORM:knowledge_lookup",
         "ORDER:assign_certificate",
         "ORDER:create_po"
       ],
@@ -970,7 +970,7 @@
         },
         {
           "taskId": "task-oc-001",
-          "action": "GREY:knowledge_lookup",
+          "action": "PLATFORM:knowledge_lookup",
           "status": "COMPLETED",
           "parameters": {
             "product_id": { "$ref": "steps[1].result.id" }
@@ -1083,7 +1083,7 @@
             "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
             "type": "NORMAL",
             "properties": {
-              "action": "GREY:knowledge_lookup",
+              "action": "PLATFORM:knowledge_lookup",
               "prompt": "Look up compliance certificate for the product from agent knowledge",
               "label": "Knowledge Lookup",
               "icon": "mdi:book-search"
@@ -1203,7 +1203,7 @@
         "TELCO:port_allocation",
         "TELCO:port_connection",
         "ORDER:find_product",
-        "GREY:knowledge_lookup",
+        "PLATFORM:knowledge_lookup",
         "ORDER:assign_certificate",
         "ORDER:create_po"
       ],
@@ -1230,7 +1230,7 @@
         },
         {
           "taskId": "task-oc-002",
-          "action": "GREY:knowledge_lookup",
+          "action": "PLATFORM:knowledge_lookup",
           "status": "COMPLETED",
           "parameters": {
             "product_id": "prd-3"
@@ -1320,7 +1320,7 @@
             "id": "n2-a1b2-2222",
             "type": "NORMAL",
             "properties": {
-              "action": "GREY:knowledge_lookup",
+              "action": "PLATFORM:knowledge_lookup",
               "prompt": "Look up compliance certificate for the product from agent knowledge",
               "label": "Knowledge Lookup",
               "icon": "mdi:book-search"
@@ -1418,7 +1418,7 @@
       "tools": [
         "GREY:send_email",
         "ORDER:find_product",
-        "GREY:knowledge_lookup",
+        "PLATFORM:knowledge_lookup",
         "ORDER:assign_certificate",
         "ORDER:create_po"
       ],
@@ -1445,7 +1445,7 @@
         },
         {
           "taskId": "task-oc-003",
-          "action": "GREY:knowledge_lookup",
+          "action": "PLATFORM:knowledge_lookup",
           "status": "COMPLETED",
           "parameters": {
             "product_id": "prd-3"
@@ -1466,7 +1466,7 @@
         },
         {
           "taskId": "task-oc-003",
-          "action": "GREY:knowledge_lookup",
+          "action": "PLATFORM:knowledge_lookup",
           "status": "COMPLETED",
           "parameters": {
             "product_id": "prd-3"
@@ -1602,7 +1602,7 @@
       ],
       "tools": [
         "ORDER:find_product",
-        "GREY:knowledge_lookup",
+        "PLATFORM:knowledge_lookup",
         "ORDER:get_product_vendor",
         "ORDER:create_po",
         "GREY:send_email"
@@ -1625,7 +1625,7 @@
           "comment": "Found prd-3"
         },
         {
-          "action": "GREY:knowledge_lookup",
+          "action": "PLATFORM:knowledge_lookup",
           "status": "COMPLETED",
           "parameters": { "product_id": "prd-3" },
           "result": "{\"product_id\": \"prd-3\", \"certificate\": null, \"has_certificate\": false}",
@@ -1732,7 +1732,7 @@
             "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
             "type": "NORMAL",
             "properties": {
-              "action": "GREY:knowledge_lookup",
+              "action": "PLATFORM:knowledge_lookup",
               "prompt": "Look up compliance certificate for the product from agent knowledge",
               "label": "Knowledge Lookup",
               "icon": "mdi:book-search"
@@ -1835,7 +1835,7 @@
       ],
       "tools": [
         "ORDER:find_product",
-        "GREY:knowledge_lookup",
+        "PLATFORM:knowledge_lookup",
         "ORDER:assign_certificate",
         "ORDER:create_po",
         "GREY:send_email"
@@ -1863,7 +1863,7 @@
         },
         {
           "taskId": "task-oc-004",
-          "action": "GREY:knowledge_lookup",
+          "action": "PLATFORM:knowledge_lookup",
           "status": "COMPLETED",
           "parameters": {
             "product_id": "prd-4"

@@ -209,7 +209,7 @@
           "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
           "type": "NORMAL",
           "properties": {
-            "action": "GREY:knowledge_lookup",
+            "action": "PLATFORM:knowledge_lookup",
             "description": "Look up the agent's knowledge base to find the product's compliance certificate. This reflects live knowledge updates from the supervisor.",
             "prompt": "Look up compliance certificate for the product from agent knowledge",
             "label": "Check Certificate",
@@ -551,7 +551,7 @@
           "id": "019fa200-0008-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
-            "action": "GREY:knowledge_lookup",
+            "action": "PLATFORM:knowledge_lookup",
             "description": "Look up the agent's knowledge base to find the manager's email address for meeting summary notifications",
             "prompt": "Look up the manager's email address from agent knowledge",
             "label": "Get Manager Email",
@@ -788,7 +788,7 @@
           "id": "019f7a20-0001-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
-            "action": "GREY:knowledge_lookup",
+            "action": "PLATFORM:knowledge_lookup",
             "description": "Look up the metric reference ranges (reference_ranges) from the agent's knowledge base",
             "prompt": "Look up the metric reference ranges (reference_ranges) from agent knowledge",
             "label": "Get Reference Ranges",
@@ -911,7 +911,7 @@
           "id": "019f6a10-0005-4000-8000-000000000005",
           "type": "NORMAL",
           "properties": {
-            "action": "GREY:knowledge_lookup",
+            "action": "PLATFORM:knowledge_lookup",
             "description": "Look up the agent's knowledge base to find the manager's email address for onboarding notifications",
             "prompt": "Look up the manager's email address from agent knowledge",
             "label": "Get Manager Email",

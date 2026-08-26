@@ -206,7 +206,7 @@ router.patch("/:supervisingId/demo", async (req, res) => {
             prompt:
               "Look up compliance certificate for the product from agent knowledge",
             icon: "mdi:book-search",
-            action: "GREY:knowledge_lookup",
+            action: "PLATFORM:knowledge_lookup",
             description:
               "Look up compliance certificate for the product from agent knowledge",
             pseudocode:
@@ -330,7 +330,7 @@ router.patch("/:supervisingId/demo", async (req, res) => {
             prompt:
               "Look up compliance certificate for the product from agent knowledge",
             icon: "mdi:book-search",
-            action: "GREY:knowledge_lookup",
+            action: "PLATFORM:knowledge_lookup",
             description:
               "Look up compliance certificate for the product from agent knowledge",
             pseudocode:

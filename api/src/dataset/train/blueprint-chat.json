@@ -516,7 +516,7 @@
                 "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
                 "type": "NORMAL",
                 "properties": {
-                  "action": "GREY:knowledge_lookup",
+                  "action": "PLATFORM:knowledge_lookup",
                   "label": "Check Certificate",
                   "icon": "mdi:book-search",
                   "prompt": "Look up compliance certificate for the product from agent knowledge"
@@ -597,7 +597,7 @@
         "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
         "type": "NORMAL",
         "properties": {
-          "action": "GREY:knowledge_lookup",
+          "action": "PLATFORM:knowledge_lookup",
           "label": "Check Certificate",
           "icon": "mdi:book-search",
           "prompt": "Look up compliance certificate for the product from agent knowledge"

@@ -864,7 +864,7 @@
             "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
             "type": "NORMAL",
             "properties": {
-              "action": "GREY:knowledge_lookup",
+              "action": "PLATFORM:knowledge_lookup",
               "prompt": "Look up compliance certificate for the product from agent knowledge",
               "label": "Knowledge Lookup",
               "icon": "mdi:book-search"
@@ -994,7 +994,7 @@
         "TELCO:port_allocation",
         "TELCO:port_connection",
         "ORDER:find_product",
-        "GREY:knowledge_lookup",
+        "PLATFORM:knowledge_lookup",
         "ORDER:assign_certificate",
         "ORDER:create_po"
       ],
@@ -1021,7 +1021,7 @@
         },
         {
           "taskId": "task-nb-001",
-          "action": "GREY:knowledge_lookup",
+          "action": "PLATFORM:knowledge_lookup",
           "status": "COMPLETED",
           "parameters": {
             "product_id": { "$ref": "steps[1].result.id" }
@@ -1137,7 +1137,7 @@
             "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
             "type": "NORMAL",
             "properties": {
-              "action": "GREY:knowledge_lookup",
+              "action": "PLATFORM:knowledge_lookup",
               "prompt": "Look up compliance certificate for the product from agent knowledge",
               "label": "Knowledge Lookup",
               "icon": "mdi:book-search"
@@ -1267,7 +1267,7 @@
         "TELCO:port_allocation",
         "TELCO:port_connection",
         "ORDER:find_product",
-        "GREY:knowledge_lookup",
+        "PLATFORM:knowledge_lookup",
         "ORDER:assign_certificate",
         "ORDER:create_po"
       ],
@@ -1294,7 +1294,7 @@
         },
         {
           "taskId": "task-nb-002",
-          "action": "GREY:knowledge_lookup",
+          "action": "PLATFORM:knowledge_lookup",
           "status": "COMPLETED",
           "parameters": {
             "product_id": { "$ref": "steps[1].result.id" }

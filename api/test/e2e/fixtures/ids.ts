@@ -1,4 +1,3 @@
-/** Seeded "Order & Compliance Team" identifiers (see api/src/seeds). */
 const TEAM_ID = "a829d2d6-8e52-41cd-ac10-0c92b21debcf";
 
 const ORDER_AGENT_ID = "9f156dc6-bf9b-4541-8d0c-6764cb0d6487";
@@ -6,6 +5,12 @@ const COMPLIANCE_AGENT_ID = "0780b66b-9e22-4e52-9ade-858fc81a5361";
 
 const ORDER_BLUEPRINT_ID = "f4e3d2c1-b0a0-4000-8000-100000000001";
 const COMPLIANCE_BLUEPRINT_ID = "c2b1a0d9-e8f7-4c2b-9100-300000000001";
+
+const SESSION = {
+  happyPath: "e2e00001-0000-4000-8000-000000000001",
+  supervisedKnowledge: "e2e00002-0000-4000-8000-000000000002",
+  supervisedBlueprint: "e2e00003-0000-4000-8000-000000000003",
+};
 
 const NODE = {
   selectProduct: "f0e0d0c0-a0b0-4000-8000-000000000000",
@@ -24,5 +29,6 @@ export {
   COMPLIANCE_AGENT_ID,
   ORDER_BLUEPRINT_ID,
   COMPLIANCE_BLUEPRINT_ID,
+  SESSION,
   NODE,
 };

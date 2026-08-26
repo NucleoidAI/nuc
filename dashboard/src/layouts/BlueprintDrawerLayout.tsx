@@ -94,9 +94,6 @@ const BlueprintDrawerLayout = ({
     !!supervise
   );
   const [editBlueprintOpen, setEditBlueprintOpen] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-
   useEffect(() => {
     storage.set(SHOW_CONNECTIONS_STORAGE_KEY, String(showConnections));
   }, [showConnections]);
@@ -181,12 +178,7 @@ const BlueprintDrawerLayout = ({
           maxHeight: "calc(100% - 32px)",
         }}
       >
-        <BlueprintChatTitle
-          title={title}
-          setTitle={setTitle}
-          isEditing={isEditing}
-          setIsEditing={setIsEditing}
-        />
+        <BlueprintChatTitle title={title} setTitle={setTitle} />
 
         <BlueprintSkill
           skill={skill}
@@ -194,8 +186,6 @@ const BlueprintDrawerLayout = ({
           showKnowledge={showKnowledge}
           blueprintId={selectedItem?.id}
           nodes={liveNodes}
-          expanded={expanded}
-          setExpanded={setExpanded}
         />
 
         {showKnowledge && (

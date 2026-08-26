@@ -10,12 +10,12 @@ import SettingsDialog from "../components/SettingsDialog/SettingsDialog";
 import SettingsIcon from "@mui/icons-material/Settings";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import SupervisingChat from "../components/SupervisingChat";
-import { storage } from "@nucleoidjs/webstorage";
 import useBlueprint from "../hooks/useBlueprint";
 import useSupervisings from "../hooks/useSupervisings";
 
 import { Box, Fab, Grid, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { storage, useStorage } from "@nucleoidjs/webstorage";
 
 const SHOW_CONNECTIONS_STORAGE_KEY =
   "greycollar.blueprintdrawerlayout.showconnections";
@@ -87,16 +87,15 @@ const BlueprintDrawerLayout = ({
   const [showSettings, setShowSettings] = useState(false);
   const [settingsTab, setSettingsTab] = useState(0);
   const [blocking, setBlocking] = useState<boolean>(true);
-  const [showConnections, setShowConnections] = useState<boolean>(
-    () => storage.get(SHOW_CONNECTIONS_STORAGE_KEY) === "true"
-  );
+  const [showConnections] = useStorage(SHOW_CONNECTIONS_STORAGE_KEY, false);
   const [superviseChatOpen, setSuperviseChatOpen] = useState<boolean>(
     !!supervise
   );
   const [editBlueprintOpen, setEditBlueprintOpen] = useState(false);
-  useEffect(() => {
-    storage.set(SHOW_CONNECTIONS_STORAGE_KEY, String(showConnections));
-  }, [showConnections]);
+
+  const setShowConnections = (value: boolean) => {
+    storage.set(SHOW_CONNECTIONS_STORAGE_KEY, value);
+  };
 
   const { patchBlueprint } = useBlueprint();
   const { approveBlueprintChat } = useSupervisings();
@@ -244,7 +243,7 @@ const BlueprintDrawerLayout = ({
       >
         <Fab
           color="primary"
-          onClick={() => setShowConnections((prev) => !prev)}
+          onClick={() => setShowConnections(!showConnections)}
           sx={{
             position: "absolute",
             bottom: 24,

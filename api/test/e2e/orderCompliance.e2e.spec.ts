@@ -187,7 +187,7 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
     SCENARIO_TIMEOUT_MS,
   );
 
-  it.only(
+  it(
     "supervised via blueprint: the supervisor adds a handoff and the compliance manager takes over",
     async () => {
       const orderNodesBefore = await blueprintNodes(ORDER_BLUEPRINT_ID);

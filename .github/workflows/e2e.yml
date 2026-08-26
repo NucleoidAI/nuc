@@ -9,8 +9,7 @@ jobs:
   order-compliance:
     name: Order & Compliance blueprint → task
     runs-on: ubuntu-latest
-    # The suite talks to a real LLM, so it needs the provider key. Forks do not
-    # get repository secrets; skip there instead of failing.
+
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
     timeout-minutes: 45
     env:
@@ -39,9 +38,6 @@ jobs:
             exit 1
           fi
 
-      # `test:e2e` builds the API and the communication service, boots both
-      # through their shipped entrypoints, and runs the scenarios against the
-      # compiled artifacts that ship in the Docker images.
       - name: Run Order & Compliance e2e scenarios
         run: bun run test:e2e
 

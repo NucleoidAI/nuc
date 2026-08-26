@@ -190,32 +190,8 @@ async function updateStep({
     { where: { id: stepId } },
   );
 
-  if (status === "COMPLETED") {
-    await event.publish("STEP_COMPLETED", {
-      taskId,
-      stepId,
-      action,
-      parameters,
-      result,
-    });
-  } else if (status === "FAILED") {
-    await event.publish("STEP_FAILED", {
-      taskId,
-      stepId,
-      action,
-      parameters,
-      result,
-    });
-  } else if (status === "WAITING_FOR_USER") {
-    await event.publish("STEP_WAITING_FOR_USER", {
-      taskId,
-      stepId,
-      action,
-      parameters,
-      result,
-    });
-  } else if (status === "SUPERVISED_NEEDED") {
-    await event.publish("STEP_SUPERVISED_NEEDED", {
+  if (status !== "IN_PROGRESS") {
+    await event.publish(`STEP_${status}`, {
       taskId,
       stepId,
       action,

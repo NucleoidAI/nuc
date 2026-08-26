@@ -1,25 +1,26 @@
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
-import BlueprintChatTitle from "../BlueprintChat/BlueprintChatTitle";
-import BlueprintFlowWidget from "../../widgets/BlueprintFlowWidget/BlueprintFlowWidget";
-import BlueprintKnowledge from "../BlueprintKnowledge/BlueprintKnowledge";
-import BlueprintSkill from "../BlueprintSkill/BlueprintSkill";
+import BlueprintChatTitle from "../components/BlueprintChat/BlueprintChatTitle";
+import BlueprintFlowWidget from "../widgets/BlueprintFlowWidget/BlueprintFlowWidget";
+import BlueprintKnowledge from "../components/BlueprintKnowledge/BlueprintKnowledge";
+import BlueprintSkill from "../components/BlueprintSkill/BlueprintSkill";
 import { DrawerLayout } from "@canmingir/link/layouts";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import { FlowDefinition } from "../BlueprintFlow/helper";
-import SettingsDialog from "../SettingsDialog/SettingsDialog";
+import { FlowDefinition } from "../components/BlueprintFlow/helper";
+import SettingsDialog from "../components/SettingsDialog/SettingsDialog";
 import SettingsIcon from "@mui/icons-material/Settings";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
-import SupervisingChat from "../SupervisingChat";
-import useBlueprint from "../../hooks/useBlueprint";
-import useSupervisings from "../../hooks/useSupervisings";
+import SupervisingChat from "../components/SupervisingChat";
+import { storage } from "@nucleoidjs/webstorage";
+import useBlueprint from "../hooks/useBlueprint";
+import useSupervisings from "../hooks/useSupervisings";
 
 import { Box, Fab, Grid, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
 const SHOW_CONNECTIONS_STORAGE_KEY =
-  "greycollar.blueprintdrawer.showconnections";
+  "greycollar.blueprintdrawerlayout.showconnections";
 
-const BlueprintDrawer = ({
+const BlueprintDrawerLayout = ({
   drawerOpen,
   handleDrawerClose,
   selectedItem,
@@ -87,15 +88,17 @@ const BlueprintDrawer = ({
   const [settingsTab, setSettingsTab] = useState(0);
   const [blocking, setBlocking] = useState<boolean>(true);
   const [showConnections, setShowConnections] = useState<boolean>(
-    () => localStorage.getItem(SHOW_CONNECTIONS_STORAGE_KEY) === "true"
+    () => storage.get(SHOW_CONNECTIONS_STORAGE_KEY) === "true"
   );
   const [superviseChatOpen, setSuperviseChatOpen] = useState<boolean>(
     !!supervise
   );
   const [editBlueprintOpen, setEditBlueprintOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem(SHOW_CONNECTIONS_STORAGE_KEY, String(showConnections));
+    storage.set(SHOW_CONNECTIONS_STORAGE_KEY, String(showConnections));
   }, [showConnections]);
 
   const { patchBlueprint } = useBlueprint();
@@ -178,7 +181,12 @@ const BlueprintDrawer = ({
           maxHeight: "calc(100% - 32px)",
         }}
       >
-        <BlueprintChatTitle title={title} setTitle={setTitle} />
+        <BlueprintChatTitle
+          title={title}
+          setTitle={setTitle}
+          isEditing={isEditing}
+          setIsEditing={setIsEditing}
+        />
 
         <BlueprintSkill
           skill={skill}
@@ -186,6 +194,8 @@ const BlueprintDrawer = ({
           showKnowledge={showKnowledge}
           blueprintId={selectedItem?.id}
           nodes={liveNodes}
+          expanded={expanded}
+          setExpanded={setExpanded}
         />
 
         {showKnowledge && (
@@ -346,4 +356,4 @@ const BlueprintDrawer = ({
   );
 };
 
-export default BlueprintDrawer;
+export default BlueprintDrawerLayout;

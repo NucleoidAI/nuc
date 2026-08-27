@@ -2,6 +2,10 @@ module.exports = {
   testEnvironment: "node",
   rootDir: __dirname,
   testMatch: ["<rootDir>/test/e2e/**/*.e2e.spec.ts"],
+  moduleNameMapper: {
+    "^@canmingir/link-express/event/client$":
+      "<rootDir>/test/e2e/harness/eventClientMock.ts",
+  },
   transform: {
     "^.+\\.ts$": [
       "ts-jest",

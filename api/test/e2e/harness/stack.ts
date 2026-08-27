@@ -4,7 +4,6 @@ import path from "node:path";
 import { randomUUID } from "node:crypto";
 
 import SmtpSink from "./smtpSink";
-import { startEventServer } from "./eventServer";
 
 const API_DIR = process.cwd();
 const REPO_ROOT = path.dirname(API_DIR);
@@ -83,7 +82,6 @@ async function startStack() {
 
   const smtp = new SmtpSink();
   const smtpPort = await smtp.listen();
-  const eventServer = await startEventServer();
 
   const jwtSecret = randomUUID();
 
@@ -107,10 +105,8 @@ async function startStack() {
   const { event } = require("@canmingir/link-express/event/client");
   /* eslint-enable @typescript-eslint/no-var-requires */
 
-  config.event.host = "127.0.0.1";
-  config.event.port = eventServer.port;
-
   await platform.init(config);
+
   await event.init(config.event);
 
   const {
@@ -135,7 +131,6 @@ async function startStack() {
     await event.disconnect();
     await new Promise<void>((resolve) => server.close(() => resolve()));
     await smtp.close();
-    await eventServer.stop();
   };
 
   return { smtp, stop };

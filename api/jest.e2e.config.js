@@ -5,6 +5,7 @@ module.exports = {
   moduleNameMapper: {
     "^@canmingir/link-express/event/client$":
       "<rootDir>/test/e2e/harness/eventClientMock.ts",
+    "^\\.\\./lib/mcp$": "<rootDir>/test/e2e/harness/mcp/index.ts",
   },
   transform: {
     "^.+\\.ts$": [

@@ -5,11 +5,13 @@ import {
   ORDER_BLUEPRINT_ID,
   SESSION,
 } from "./fixtures/ids";
+import { certificateOf, purchaseOrdersFor } from "./harness/mcp/servers/order";
 import {
-  certificateOf,
-  purchaseOrdersFor,
-  resetOrderDb,
-} from "./harness/orderDb";
+  emailsMatching,
+  resetEmails,
+  sentEmails,
+} from "./harness/mcp/servers/grey";
+import { resetMcpMocks } from "./harness/mcp/registry";
 import type {
   StepAdded,
   StepSettled,
@@ -52,17 +54,17 @@ let scenarioEvents: {
 
 describe("Order & Compliance Team — blueprint to task, end to end", () => {
   beforeAll(async () => {
-    resetOrderDb();
+    resetMcpMocks();
     stack = await startStack();
   }, 180_000);
 
   afterAll(async () => {
     await stack?.stop();
-    resetOrderDb();
+    resetMcpMocks();
   });
 
   beforeEach(() => {
-    stack.smtp.reset();
+    resetEmails();
 
     scenarioEvents = {
       aiAssistantMessaged: event.subscribe<AiAssistantMessaged>(
@@ -117,7 +119,7 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
 
       expect(certificateOf("prd-1")).toBe("FFC");
       expect(purchaseOrdersFor("prd-1")).toHaveLength(purchaseOrdersBefore + 1);
-      expect(stack.smtp.emails.length).toBeGreaterThan(0);
+      expect(sentEmails.length).toBeGreaterThan(0);
     },
     SCENARIO_TIMEOUT_MS,
   );
@@ -277,9 +279,7 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
         expect((await vendorEmail).taskId).toBe(handedOff.taskId);
         expect((await handoffCompleted).taskId).toBe(handedOff.taskId);
 
-        expect(stack.smtp.matching("gamma@vendor.com").length).toBeGreaterThan(
-          0,
-        );
+        expect(emailsMatching("gamma@vendor.com").length).toBeGreaterThan(0);
 
         expect(certificateOf("prd-3")).toBeUndefined();
       } finally {

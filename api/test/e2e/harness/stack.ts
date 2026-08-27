@@ -3,8 +3,6 @@ import http from "node:http";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 
-import SmtpSink from "./smtpSink";
-
 const API_DIR = process.cwd();
 const REPO_ROOT = path.dirname(API_DIR);
 
@@ -80,22 +78,12 @@ async function startStack() {
 
   console.log(`[e2e] running the API in-process against PLATFORM_LLM=${llm}`);
 
-  const smtp = new SmtpSink();
-  const smtpPort = await smtp.listen();
-
   const jwtSecret = randomUUID();
 
   Object.assign(process.env, {
     PORT: String(API_PORT),
     JWT_SECRET: jwtSecret,
-    SMTP_HOST: "127.0.0.1",
-    SMTP_PORT: String(smtpPort),
-    SMTP_SECURE: "false",
-    SMTP_IGNORE_TLS: "true",
-    SMTP_REQUIRE_TLS: "false",
     SMTP_FROM: "e2e@greycollar.test",
-    SMTP_USER: "",
-    SMTP_PASS: "",
   });
 
   /* eslint-disable @typescript-eslint/no-var-requires */
@@ -130,10 +118,9 @@ async function startStack() {
   const stop = async () => {
     await event.disconnect();
     await new Promise<void>((resolve) => server.close(() => resolve()));
-    await smtp.close();
   };
 
-  return { smtp, stop };
+  return { stop };
 }
 
 type Stack = Awaited<ReturnType<typeof startStack>>;

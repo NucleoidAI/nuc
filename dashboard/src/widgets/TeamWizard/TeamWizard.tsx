@@ -154,7 +154,6 @@ type PropertyOptionType =
 
 function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
   const projectId = storage.get("link", "projectid");
-  const [teamSelected] = useEvent("PROJECT_SELECTED", { projectId: null });
   const { organizations, loading } = useOrganizations().getOrganizations([]);
   const [activeStep, setActiveStep] = React.useState(0);
   const [isSubmitting, setIsSubmitting] = React.useState(false);

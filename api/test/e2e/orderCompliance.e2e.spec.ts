@@ -12,45 +12,15 @@ import {
   sentEmails,
 } from "./harness/mcp/servers/grey";
 import { resetMcpMocks } from "./harness/mcp/registry";
-import type {
-  StepAdded,
-  StepSettled,
-  StepSupervisedNeeded,
-  SupervisingAnswered,
-  SupervisingRaised,
-  TaskCompleted,
-  TaskCreated,
-} from "./harness/eventTypes";
-import { event } from "./harness/event";
-import {
-  blueprintNodes,
-  insertKnowledge,
-  knowledgeFor,
-  updateBlueprintNodes,
-} from "./harness/db";
+import events, { type Watched } from "./harness/events";
+import api from "./harness/api";
 import { startStack, type Stack } from "./harness/stack";
 import { supervisedHandoffNodes } from "./fixtures/supervisedBlueprint";
 
 const SCENARIO_TIMEOUT_MS = 600_000;
 
-type AiAssistantMessaged = {
-  sessionId: string;
-  content: string;
-  blueprintId?: string;
-};
-
 let stack: Stack;
-let scenarioEvents: {
-  aiAssistantMessaged: Promise<AiAssistantMessaged>;
-  stepAdded: Promise<StepAdded>;
-  stepWaitingForUser: Promise<StepSettled>;
-  stepCompleted: Promise<StepSettled>;
-  supervisingRaised: Promise<SupervisingRaised>;
-  taskCreated: Promise<TaskCreated>;
-  taskCompleted: Promise<TaskCompleted>;
-  stepSupervisedNeeded: Promise<StepSupervisedNeeded>;
-  supervisingAnswered: Promise<SupervisingAnswered>;
-};
+let scenario: Watched;
 
 describe("Order & Compliance Team — blueprint to task, end to end", () => {
   beforeAll(async () => {
@@ -63,27 +33,14 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
     resetMcpMocks();
   });
 
+  afterEach(async () => {
+    await events.release();
+  });
+
   beforeEach(() => {
     resetEmails();
 
-    scenarioEvents = {
-      aiAssistantMessaged: event.subscribe<AiAssistantMessaged>(
-        "AI_ASSISTANT_MESSAGED",
-      ),
-      stepAdded: event.subscribe<StepAdded>("STEP_ADDED"),
-      stepWaitingForUser: event.subscribe<StepSettled>("STEP_WAITING_FOR_USER"),
-      stepCompleted: event.subscribe<StepSettled>("STEP_COMPLETED"),
-      supervisingRaised:
-        event.subscribe<SupervisingRaised>("SUPERVISING_RAISED"),
-      stepSupervisedNeeded: event.subscribe<StepSupervisedNeeded>(
-        "STEP_SUPERVISED_NEEDED",
-      ),
-      taskCreated: event.subscribe<TaskCreated>("TASK_CREATED"),
-      taskCompleted: event.subscribe<TaskCompleted>("TASK_COMPLETED"),
-      supervisingAnswered: event.subscribe<SupervisingAnswered>(
-        "SUPERVISING_ANSWERED",
-      ),
-    };
+    scenario = events.watch();
   });
 
   it(
@@ -91,29 +48,29 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
     async () => {
       const purchaseOrdersBefore = purchaseOrdersFor("prd-1").length;
 
-      await event.publish("SESSION_USER_MESSAGED", {
+      await events.userMessaged({
         agentId: ORDER_AGENT_ID,
         sessionId: SESSION.happyPath,
-        content: JSON.stringify({ intent: "create_order" }),
+        content: { intent: "create_order" },
       });
 
-      const taskCreated = await scenarioEvents.taskCreated;
-      const stepAdded = await scenarioEvents.stepAdded;
+      const taskCreated = await scenario.taskCreated;
+      const stepAdded = await scenario.stepAdded;
 
       expect(taskCreated.blueprintId).toBe(ORDER_BLUEPRINT_ID);
       expect(stepAdded.action).toBe("PLATFORM:user_interaction");
 
-      const waiting = await scenarioEvents.stepWaitingForUser;
+      const waiting = await scenario.stepWaitingForUser;
 
       expect(waiting.stepId).toBe(stepAdded.stepId);
 
-      await event.publish("SESSION_USER_MESSAGED", {
+      await events.userMessaged({
         agentId: ORDER_AGENT_ID,
         sessionId: SESSION.happyPath,
-        content: JSON.stringify({ product: "product-1" }),
+        content: { product: "product-1" },
       });
 
-      const taskCompleted = await scenarioEvents.taskCompleted;
+      const taskCompleted = await scenario.taskCompleted;
 
       expect(taskCompleted.taskId).toBe(taskCreated.taskId);
 
@@ -121,7 +78,7 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
       expect(purchaseOrdersFor("prd-1")).toHaveLength(purchaseOrdersBefore + 1);
       expect(sentEmails.length).toBeGreaterThan(0);
     },
-    SCENARIO_TIMEOUT_MS,
+    SCENARIO_TIMEOUT_MS
   );
 
   it(
@@ -131,37 +88,37 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
 
       expect(certificateOf("prd-4")).toBeUndefined();
 
-      await event.publish("SESSION_USER_MESSAGED", {
+      await events.userMessaged({
         agentId: ORDER_AGENT_ID,
         sessionId: SESSION.supervisedKnowledge,
-        content: JSON.stringify({ intent: "create_order" }),
+        content: { intent: "create_order" },
       });
 
-      const taskCreated = await scenarioEvents.taskCreated;
-      const stepAdded = await scenarioEvents.stepAdded;
+      const taskCreated = await scenario.taskCreated;
+      const stepAdded = await scenario.stepAdded;
 
       expect(taskCreated.blueprintId).toBe(ORDER_BLUEPRINT_ID);
       expect(stepAdded.action).toBe("PLATFORM:user_interaction");
 
-      const waiting = await scenarioEvents.stepWaitingForUser;
+      const waiting = await scenario.stepWaitingForUser;
 
       expect(waiting.stepId).toBe(stepAdded.stepId);
 
-      await event.publish("SESSION_USER_MESSAGED", {
+      await events.userMessaged({
         agentId: ORDER_AGENT_ID,
         sessionId: SESSION.supervisedKnowledge,
-        content: JSON.stringify({ product: "product-4" }),
+        content: { product: "product-4" },
       });
 
-      const raised = await scenarioEvents.stepSupervisedNeeded;
+      const raised = await scenario.stepSupervisedNeeded;
 
-      await insertKnowledge({
+      await api.knowledge.create({
         type: "DATA",
         agentId: ORDER_AGENT_ID,
         text: '{"product_id": "prd-4", "product_name": "product-4", "certificate": "CE"}',
       });
 
-      await event.publish("SUPERVISING_ANSWERED", {
+      await events.supervisorAnswered({
         sessionId: SESSION.supervisedKnowledge,
         agentId: ORDER_AGENT_ID,
         taskId: taskCreated.taskId,
@@ -171,40 +128,36 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
           '{"product_id": "prd-4", "product_name": "product-4", "certificate": "CE"}',
       });
 
-      await scenarioEvents.supervisingAnswered;
+      await scenario.supervisingAnswered;
 
-      const knowledge = await knowledgeFor(ORDER_AGENT_ID);
+      expect(await api.knowledge.textFor(ORDER_AGENT_ID)).toContain("prd-4");
 
-      expect(
-        knowledge.map((entry) => String(entry.text ?? "")).join("\n"),
-      ).toContain("prd-4");
-
-      const taskCompleted = await scenarioEvents.taskCompleted;
+      const taskCompleted = await scenario.taskCompleted;
 
       expect(taskCompleted.taskId).toBe(taskCreated.taskId);
 
       expect(certificateOf("prd-4")).toBe("CE");
       expect(purchaseOrdersFor("prd-4")).toHaveLength(purchaseOrdersBefore + 1);
     },
-    SCENARIO_TIMEOUT_MS,
+    SCENARIO_TIMEOUT_MS
   );
 
   it(
     "supervised via blueprint: the supervisor adds a handoff and the compliance manager takes over",
     async () => {
-      const orderNodesBefore = await blueprintNodes(ORDER_BLUEPRINT_ID);
+      const orderNodesBefore = await api.blueprints.nodes(ORDER_BLUEPRINT_ID);
 
       expect(certificateOf("prd-3")).toBeUndefined();
 
       try {
-        await event.publish("SESSION_USER_MESSAGED", {
+        await events.userMessaged({
           agentId: ORDER_AGENT_ID,
           sessionId: SESSION.supervisedBlueprint,
-          content: JSON.stringify({ intent: "create_order" }),
+          content: { intent: "create_order" },
         });
 
-        const taskCreated = await scenarioEvents.taskCreated;
-        const stepAdded = await scenarioEvents.stepAdded;
+        const taskCreated = await scenario.taskCreated;
+        const stepAdded = await scenario.stepAdded;
 
         expect(taskCreated.blueprintId).toBe(ORDER_BLUEPRINT_ID);
         expect(stepAdded.action).toBe("PLATFORM:user_interaction");
@@ -212,48 +165,47 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
         const elsewhere = (payload: { taskId?: string }) =>
           payload.taskId !== taskCreated.taskId;
 
-        const handoffTaskCreated = event.waitFor<TaskCreated>(
+        const handoffTaskCreated = events.waitFor(
           "TASK_CREATED",
           (payload) =>
             payload.agentId === COMPLIANCE_AGENT_ID &&
-            payload.sessionId === SESSION.supervisedBlueprint,
+            payload.sessionId === SESSION.supervisedBlueprint
         );
-        const vendorLookup = event.waitFor<StepAdded>(
+        const vendorLookup = events.waitFor(
           "STEP_ADDED",
           (payload) =>
-            elsewhere(payload) && payload.action === "ORDER:get_product_vendor",
+            elsewhere(payload) && payload.action === "ORDER:get_product_vendor"
         );
-        const vendorEmail = event.waitFor<StepAdded>(
+        const vendorEmail = events.waitFor(
           "STEP_ADDED",
           (payload) =>
-            elsewhere(payload) && payload.action === "GREY:send_email",
+            elsewhere(payload) && payload.action === "GREY:send_email"
         );
-        const handoffCompleted = event.waitFor<TaskCompleted>(
-          "TASK_COMPLETED",
-          elsewhere,
-        );
+        const handoffCompleted = events.waitFor("TASK_COMPLETED", elsewhere);
 
-        const waiting = await scenarioEvents.stepWaitingForUser;
+        const waiting = await scenario.stepWaitingForUser;
 
         expect(waiting.stepId).toBe(stepAdded.stepId);
 
-        await event.publish("SESSION_USER_MESSAGED", {
+        await events.userMessaged({
           agentId: ORDER_AGENT_ID,
           sessionId: SESSION.supervisedBlueprint,
-          content: JSON.stringify({ product: "product-3" }),
+          content: { product: "product-3" },
         });
 
-        const raised = await scenarioEvents.stepSupervisedNeeded;
+        const raised = await scenario.stepSupervisedNeeded;
 
-        await updateBlueprintNodes({
-          blueprintId: ORDER_BLUEPRINT_ID,
-          title: "Order and Compliance",
-          description:
-            "Find product, check its compliance certificate, and either create the purchase order or hand the product over to the compliance manager.",
-          nodes: supervisedHandoffNodes(),
-        });
+        await api.blueprints.setNodes(
+          ORDER_BLUEPRINT_ID,
+          supervisedHandoffNodes(),
+          {
+            title: "Order and Compliance",
+            description:
+              "Find product, check its compliance certificate, and either create the purchase order or hand the product over to the compliance manager.",
+          }
+        );
 
-        await event.publish("SUPERVISING_ANSWERED", {
+        await events.supervisorAnswered({
           sessionId: SESSION.supervisedBlueprint,
           agentId: ORDER_AGENT_ID,
           taskId: taskCreated.taskId,
@@ -263,14 +215,14 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
             "I added a handoff to the compliance manager. When a product has no certificate on file, hand the task over to the compliant_manager agent so it can request the certificate from the vendor.",
         });
 
-        await scenarioEvents.supervisingAnswered;
+        await scenario.supervisingAnswered;
 
         const handedOff = await handoffTaskCreated;
 
         expect(handedOff.blueprintId).toBe(COMPLIANCE_BLUEPRINT_ID);
         expect(handedOff.taskId).not.toBe(taskCreated.taskId);
 
-        const taskCompleted = await scenarioEvents.taskCompleted;
+        const taskCompleted = await scenario.taskCompleted;
 
         expect(taskCompleted.taskId).toBe(taskCreated.taskId);
         expect(String(taskCompleted.result)).toContain(COMPLIANCE_AGENT_ID);
@@ -283,12 +235,9 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
 
         expect(certificateOf("prd-3")).toBeUndefined();
       } finally {
-        await updateBlueprintNodes({
-          blueprintId: ORDER_BLUEPRINT_ID,
-          nodes: orderNodesBefore,
-        });
+        await api.blueprints.setNodes(ORDER_BLUEPRINT_ID, orderNodesBefore);
       }
     },
-    SCENARIO_TIMEOUT_MS,
+    SCENARIO_TIMEOUT_MS
   );
 });

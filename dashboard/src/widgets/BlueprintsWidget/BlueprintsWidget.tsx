@@ -1,6 +1,6 @@
 import AddIcon from "@mui/icons-material/Add";
 import BlueprintCard from "../../components/BlueprintCard/BlueprintCard";
-import BlueprintDrawer from "../../components/BlueprintDrawer/BlueprintDrawer";
+import BlueprintDrawerLayout from "../../layouts/BlueprintDrawerLayout";
 import BlueprintFlowDialog from "../../components/BlueprintFlow/BlueprintFlowDialog";
 import BlueprintSkeleton from "../../components/Skeletons/BlueprintSkeleton";
 import useBlueprint from "../../hooks/useBlueprint";
@@ -110,7 +110,7 @@ function BlueprintsWidget({
         </Box>
       </Box>
       {drawerOpen && (
-        <BlueprintDrawer
+        <BlueprintDrawerLayout
           drawerOpen={drawerOpen}
           handleDrawerClose={handleDrawerClose}
           selectedItem={selectedItem}

@@ -1,7 +1,8 @@
-import BlueprintDrawer from "../BlueprintDrawer/BlueprintDrawer";
+import BlueprintDrawerLayout from "../../layouts/BlueprintDrawerLayout";
 import { Iconify } from "@canmingir/link/platform/components";
 import http from "@canmingir/link/platform/http";
 import useBlueprint from "../../hooks/useBlueprint";
+
 import {
   Box,
   Card,
@@ -212,7 +213,7 @@ const SupervisingCard = ({
       </Card>
 
       {drawerOpen && (
-        <BlueprintDrawer
+        <BlueprintDrawerLayout
           drawerOpen={drawerOpen}
           handleDrawerClose={() => setDrawerOpen(false)}
           selectedItem={blueprint}

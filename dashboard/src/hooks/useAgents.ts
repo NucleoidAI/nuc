@@ -41,7 +41,7 @@ function useAgents() {
 
   const createAgent = async (agent, teamId) => {
     try {
-      agent.teamId = teamId || storage.get("projectId");
+      agent.teamId = teamId || storage.get("link", "projectid");
 
       const response = await http.post(`/agents`, {
         name: agent.name,

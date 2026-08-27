@@ -4,7 +4,7 @@ import React from "react";
 import { storage } from "@nucleoidjs/webstorage";
 
 function KnowledgeBase() {
-  const teamId = storage.get("projectId");
+  const teamId = storage.get("link", "projectid");
 
   return (
     <>

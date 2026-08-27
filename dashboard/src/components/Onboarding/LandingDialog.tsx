@@ -25,7 +25,7 @@ const LandingDialog = () => {
   const CodeImage = "/media/image.png";
 
   const handleClose = () => {
-    storage.set("landingLevel", 1);
+    storage.set("greycollar", "landinglevel", 1);
     setOpen(false);
   };
 

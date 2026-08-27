@@ -1,19 +1,16 @@
 import LandingDialog from "./LandingDialog";
-import { storage } from "@nucleoidjs/webstorage";
+import { useEffect } from "react";
 import { useEvent } from "@nucleoidai/react-event";
 
-import { useEffect, useState } from "react";
+import { storage, useStorage } from "@nucleoidjs/webstorage";
 
 const Onboarding = () => {
-  const landingLevel = storage.get("landingLevel");
+  const [landing] = useStorage("greycollar", "landinglevel", null);
   const [teamSelected] = useEvent("PROJECT_SELECTED", { projectId: null });
 
-  const [landing, setLanding] = useState(landingLevel);
-
   useEffect(() => {
-    if (landingLevel === null && teamSelected.projectId !== null) {
-      storage.set("landingLevel", 0);
-      setLanding(0);
+    if (landing === null && teamSelected.projectId !== null) {
+      storage.set("greycollar", "landinglevel", 0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [teamSelected]);

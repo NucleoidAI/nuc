@@ -100,7 +100,7 @@ Cypress.Commands.add("createAgentViaDialog", (agent, newAgentsFixture) => {
 
   cy.intercept("POST", `/api/agents`, agent);
 
-  cy.storageGet("itemId").then(() => {
+  cy.storageGet("link.projectid").then(() => {
     cy.intercept("GET", "/api/agents", newAgentsFixture);
   });
 
@@ -146,7 +146,7 @@ Cypress.Commands.add("editAgentViaDialog", (agent, newAgents) => {
 
   cy.intercept("PUT", `/api/agents/${id}`, agent);
 
-  cy.storageGet("itemId").then(() => {
+  cy.storageGet("link.projectid").then(() => {
     cy.intercept("GET", "/api/agents", newAgents);
   });
 
@@ -156,7 +156,7 @@ Cypress.Commands.add("editAgentViaDialog", (agent, newAgents) => {
 });
 
 Cypress.Commands.add("setAgentIntercept", () => {
-  cy.storageGet("itemId").then(() => {
+  cy.storageGet("link.projectid").then(() => {
     cy.intercept("GET", `/api/projects`, {
       fixture: `agents-page/team.json`,
     });

@@ -7,7 +7,7 @@ import config from "../../config";
 import { storage } from "@nucleoidjs/webstorage";
 
 function Chat() {
-  const projectId = storage.get("projectId");
+  const projectId = storage.get("link", "projectid");
   return (
     <>
       <Helmet>

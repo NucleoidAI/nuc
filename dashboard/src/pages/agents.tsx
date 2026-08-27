@@ -11,7 +11,7 @@ function Agents() {
 
   const { getTeamById } = useTeam();
 
-  const { team, loading } = getTeamById(teamId);
+  const { loading } = getTeamById(teamId);
 
   const [teamSelected] = useEvent("ITEM_SELECTED", { itemId: teamId });
 
@@ -25,7 +25,7 @@ function Agents() {
   return (
     <>
       <Page name={"Agent"} />
-      <SingleScrollableLayout title={team?.name}>
+      <SingleScrollableLayout>
         <AgentsWidget teamId={teamId} />
       </SingleScrollableLayout>
     </>

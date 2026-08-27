@@ -7,8 +7,8 @@ import {
   APIDialogAction,
   APIParams,
   APIPath,
+  APITreeDialog,
   APITypes,
-  NucDialog,
 } from "@canmingir/link/platform/components";
 import { Box, Divider } from "@mui/material";
 
@@ -68,7 +68,7 @@ const Dialog = ({
   addParams,
 }: DialogProps) => {
   return (
-    <NucDialog
+    <APITreeDialog
       title={dialogTitle}
       open={dialog.open}
       handleClose={() => publish("API_DIALOG_OPEN", { open: false })}
@@ -133,7 +133,7 @@ const Dialog = ({
           <APITypes tstypes={[]} nuctypes={types} typesRef={typesRef} />
         )}
       </Box>
-    </NucDialog>
+    </APITreeDialog>
   );
 };
 

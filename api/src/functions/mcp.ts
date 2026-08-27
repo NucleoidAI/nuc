@@ -104,6 +104,7 @@ function list() {
   const mcps = MCPs.map((provider) => ({
     id: provider.id,
     provider: provider.provider,
+    label: provider.label,
     description: provider.description,
     action: provider.action,
     icon: provider.icon,

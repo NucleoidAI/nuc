@@ -130,6 +130,9 @@ export default function BlueprintFlow({
         plugin={blueprintFlowPlugin}
         editable={!readOnly}
         height={"100%"}
+        fitViewOnMount
+        fitViewOnNodesChange
+        fitViewOnResize
         onChange={readOnly ? undefined : onFlowChange}
         variant="horizontal"
         style={() => ({

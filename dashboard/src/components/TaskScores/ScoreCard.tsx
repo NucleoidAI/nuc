@@ -24,6 +24,7 @@ function ScoreCard({
   score,
   onScoreChange,
   onScoreDelete,
+  readOnly = false,
 }: {
   score: {
     id: string;
@@ -38,6 +39,7 @@ function ScoreCard({
   };
   onScoreChange: (scoreId: string, score: number) => void;
   onScoreDelete: (scoreId: string) => void;
+  readOnly?: boolean;
 }) {
   const [hasScore, setHasScore] = useState(score.superviseScore !== null);
   const [localScore, setLocalScore] = useState<number>(
@@ -191,6 +193,7 @@ function ScoreCard({
               max={1}
               step={0.01}
               value={localScore}
+              disabled={readOnly}
               onChange={(_e, val) => {
                 const next = Array.isArray(val) ? val[0] : val;
                 if (!hasScore) setHasScore(true);
@@ -230,30 +233,34 @@ function ScoreCard({
               {hasScore ? localScore.toFixed(2) : "—"}
             </Typography>
             <Stack direction="row" spacing={0} sx={{ flexShrink: 0 }}>
-              <Tooltip title="Confirm">
-                <span>
-                  <IconButton
-                    size="small"
-                    disabled={!dirty}
-                    onClick={handleConfirm}
-                    sx={{ color: dirty ? "success.main" : undefined }}
-                  >
-                    <Iconify icon="eva:checkmark-fill" width={14} />
-                  </IconButton>
-                </span>
-              </Tooltip>
-              <Tooltip title="Delete score">
-                <span>
-                  <IconButton
-                    size="small"
-                    disabled={!hasScore}
-                    onClick={handleDelete}
-                    sx={{ color: hasScore ? "error.main" : undefined }}
-                  >
-                    <Iconify icon="solar:trash-bin-trash-bold" width={14} />
-                  </IconButton>
-                </span>
-              </Tooltip>
+              {!readOnly && (
+                <>
+                  <Tooltip title="Confirm">
+                    <span>
+                      <IconButton
+                        size="small"
+                        disabled={!dirty}
+                        onClick={handleConfirm}
+                        sx={{ color: dirty ? "success.main" : undefined }}
+                      >
+                        <Iconify icon="eva:checkmark-fill" width={14} />
+                      </IconButton>
+                    </span>
+                  </Tooltip>
+                  <Tooltip title="Delete score">
+                    <span>
+                      <IconButton
+                        size="small"
+                        disabled={!hasScore}
+                        onClick={handleDelete}
+                        sx={{ color: hasScore ? "error.main" : undefined }}
+                      >
+                        <Iconify icon="solar:trash-bin-trash-bold" width={14} />
+                      </IconButton>
+                    </span>
+                  </Tooltip>
+                </>
+              )}
             </Stack>
           </Stack>
         </Stack>

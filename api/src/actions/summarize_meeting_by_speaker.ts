@@ -10,19 +10,17 @@ function languageName(code: string): string {
   return LANGUAGE_NAMES[code.toLowerCase()] ?? code;
 }
 
-// A single LLM call given the whole meeting is unreliable: models tend to
-// ignore vague "be concise" instructions on large prompts and echo the
-// transcript back, blowing past output token limits. Instead we summarize
-// each speaker's transcript on its own (small input, hard word cap), then
-// combine those short summaries into the final structured output - both
-// stages stay small regardless of how long the meeting is.
+const SUMMARY_MODEL =
+  process.env.SUMMARY_LLM_MODEL || "us.anthropic.claude-opus-5";
+
 async function summarizeSpeaker(
   id: string,
   transcript: string,
   lang: string,
-  meta?: LLMMeta
+  meta?: LLMMeta,
 ): Promise<{ id: string; summary: string }> {
   const result = await generate({
+    model: SUMMARY_MODEL,
     policy: {
       role: "system",
       content: `You summarize one meeting participant's contribution. Respond entirely in ${lang} - every word of your output must be in ${lang}, regardless of what language the transcript is in. Write at most 120 words. Do not quote the transcript verbatim (no quoted excerpt longer than 5 words) - paraphrase only.`,
@@ -69,19 +67,16 @@ async function run({
 
   const speakerSummaries = await Promise.all(
     speaker_transcripts.map(({ id, transcript }) =>
-      summarizeSpeaker(id, transcript, lang, meta)
-    )
+      summarizeSpeaker(id, transcript, lang, meta),
+    ),
   );
 
   const speakerSummaryBlock = speakerSummaries
     .map(({ id, summary }) => `=== Speaker ${id} ===\n${summary}`)
     .join("\n\n");
 
-  // full_meeting_transcript is passed only as background reference (e.g. to
-  // catch cross-speaker context the per-speaker summaries missed) - the
-  // model is told not to quote it, since the per-speaker summaries above are
-  // what keep this call's output small and bounded.
   const result = await generate({
+    model: SUMMARY_MODEL,
     policy: {
       role: "system",
       content: `You are a meeting summarizer. You receive a short summary of what each participant said, labeled by speaker ID, plus the full meeting transcript as background reference only. Combine them into a structured meeting summary. Respond entirely in ${lang} - every word of every output field must be in ${lang}, regardless of what language the transcript is in. Attribute decisions and action items to the responsible speaker ID. Use the full transcript only to catch context the per-speaker summaries missed - never quote or reproduce it, and keep every output field short.`,

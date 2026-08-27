@@ -373,12 +373,14 @@ async function task({ taskId }: { taskId: string }) {
   );
 
   let parameters: Record<string, unknown>;
+  let resolvedParameters: Record<string, unknown>;
   try {
-    parameters = resolveParameterRefs(rawParameters, {
+    resolvedParameters = resolveParameterRefs(rawParameters, {
       steps: currentTask.steps,
       inherited_steps: inherited ?? [],
       byNode,
     });
+    parameters = rawParameters;
   } catch (err) {
     return await taskFn.update({
       taskId,
@@ -425,7 +427,7 @@ async function task({ taskId }: { taskId: string }) {
       status: "COMPLETED",
     });
   } else if (action === "PLATFORM:handoff") {
-    const handoffParams = parameters as {
+    const handoffParams = resolvedParameters as {
       targetAgentId: string;
       targetBlueprintId?: string;
       context: string;
@@ -546,6 +548,21 @@ async function step({
     // TODO: hallucinationScore will be calculated separately in the future
     const stepHallucinationScore = stepKnowledgeScore;
 
+    const priorSteps = (await taskFn.listSteps({ taskId })).filter(
+      (s) => s.id !== stepId,
+    );
+    const { inheritedSteps } = await taskFn.get({ taskId });
+    const runParameters = resolveParameterRefs(
+      parameters as Record<string, unknown>,
+      {
+        steps: priorSteps,
+        inherited_steps: inheritedSteps ?? [],
+        byNode: Object.fromEntries(
+          priorSteps.filter((s) => s.nodeId).map((s) => [s.nodeId, s]),
+        ),
+      },
+    );
+
     if (actionType === "SUPERVISED") {
       actionFn = require("../actions/ask_supervisor").default;
     } else if (actionType === "ACTION") {
@@ -581,7 +598,7 @@ async function step({
             ({ comment, result }) => `Comment: ${comment}\nResult: ${result}`,
           )
           .join("\n"),
-        parameters,
+        parameters: runParameters,
         meta: { taskId },
       });
 
@@ -589,7 +606,7 @@ async function step({
         `[agent.step] actionFn.run returned for action=${action} stepId=${stepId}`,
       );
     } else if (actionType === "MCP") {
-      let mcpParameters = parameters as Record<string, unknown>;
+      let mcpParameters = runParameters as Record<string, unknown>;
       if (action === "GREY:knowledge_lookup" && !mcpParameters.agentId) {
         const task = await taskFn.get({ taskId });
         mcpParameters = { ...mcpParameters, agentId: task.agentId };

@@ -1,6 +1,7 @@
 [
   {
     "action": "PLATFORM:translate",
+    "label": "Platform",
     "lib": "translate",
     "description": "Translate text into Turkish, English, and Spanish, returned as separate fields so each language can be individually bound to downstream steps.",
     "icon": "mdi:translate",
@@ -26,6 +27,7 @@
   },
   {
     "action": "PLATFORM:llm",
+    "label": "Platform",
     "lib": "llm",
     "description": "Send a message to the Language Model for AI processing",
     "icon": "mdi:brain",
@@ -42,6 +44,7 @@
   },
   {
     "action": "PLATFORM:scrape_website",
+    "label": "Platform",
     "lib": "scrapper",
     "description": "Extract data from a website URL",
     "icon": "mdi:web",
@@ -58,6 +61,7 @@
   },
   {
     "action": "PLATFORM:decision",
+    "label": "Platform",
     "lib": "decision",
     "description": "A decision node that branches the flow based on conditions",
     "icon": "mdi:source-branch",
@@ -82,6 +86,7 @@
   },
   {
     "action": "PLATFORM:user_interaction",
+    "label": "Platform",
     "lib": "interaction",
     "description": "Interact with the user and get their response",
     "icon": "mdi:account-question",
@@ -107,11 +112,13 @@
   },
   {
     "action": "PLATFORM:complete",
+    "label": "Platform",
     "description": "Mark the workflow as complete",
     "icon": "mdi:check"
   },
   {
     "action": "PLATFORM:handoff",
+    "label": "Platform",
     "description": "Transfer this task to another agent's blueprint and continue in the same session",
     "icon": "mdi:account-arrow-right",
     "inputSchema": {
@@ -135,6 +142,7 @@
   },
   {
     "action": "PLATFORM:ask_supervisor",
+    "label": "Platform",
     "lib": "ask_supervisor",
     "description": "Ask a supervisor for guidance or approval",
     "icon": "mdi:account-supervisor",
@@ -159,6 +167,7 @@
   },
   {
     "action": "PLATFORM:asr",
+    "label": "Platform",
     "lib": "asr",
     "description": "Transcribe an audio file using ASR. Returns the transcription in VTT format directly.",
     "icon": "mdi:microphone-message",
@@ -186,6 +195,7 @@
   },
   {
     "action": "PLATFORM:file_inspector",
+    "label": "Platform",
     "lib": "file_inspector",
     "description": "Inspect files or directories using an absolute path. Supports checking existence, reading content, getting metadata, or listing directory entries.",
     "icon": "mdi:file-search",
@@ -221,6 +231,7 @@
   },
   {
     "action": "PLATFORM:pcm_to_wav",
+    "label": "Platform",
     "lib": "pcm_to_wav",
     "description": "Convert all PCM audio files (.pcm) in a directory to WAV format",
     "icon": "mdi:waveform",
@@ -251,6 +262,7 @@
   },
   {
     "action": "PLATFORM:transcribe_meeting",
+    "label": "Platform",
     "lib": "transcribe_meeting",
     "description": "Transcribe all WAV audio files in a directory one by one and return individual and combined transcripts",
     "icon": "mdi:microphone-multiple",
@@ -289,6 +301,7 @@
   },
   {
     "action": "PLATFORM:merge_transcripts",
+    "label": "Platform",
     "lib": "merge_transcripts",
     "description": "Label the main meeting transcript with speaker attribution by cross-referencing each participant's individual transcript (who said what), processed in chunks to stay within LLM output token limits",
     "icon": "mdi:text-account",
@@ -327,6 +340,7 @@
   },
   {
     "action": "PLATFORM:summarize_meeting_by_speaker",
+    "label": "Platform",
     "lib": "summarize_meeting_by_speaker",
     "description": "Produce a structured meeting summary (key topics, decisions, action items) attributed by speaker ID. First summarizes each participant's individual transcript separately (small, word-capped output), then combines those short summaries plus the full transcript as background reference - keeps every LLM call's output well within token limits regardless of meeting length",
     "icon": "mdi:text-box-check",
@@ -387,7 +401,100 @@
     }
   },
   {
+    "action": "PLATFORM:prepare_meeting_attachments",
+    "label": "Platform",
+    "lib": "prepare_meeting_attachments",
+    "description": "Write the full meeting transcript and each speaker's transcript to .txt files on disk, bundle the meeting's .wav audio files into a single meeting-audio.zip, and return all of them as a list of email attachment descriptors ({ filename, path }) that can be passed straight to GREY:send_email",
+    "icon": "mdi:paperclip",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "directoryPath": {
+          "type": "string",
+          "description": "Absolute path to the meeting directory containing the .wav files. Transcript .txt files and the audio zip are written into its 'attachments' subdirectory."
+        },
+        "full_meeting_transcript": {
+          "type": "string",
+          "description": "Combined transcript from transcribe_meeting. Pass through unchanged."
+        },
+        "speaker_transcripts": {
+          "type": "array",
+          "description": "Each participant's individual transcript from transcribe_meeting. Pass this array through unchanged.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "transcript": { "type": "string" }
+            },
+            "required": ["id", "transcript"]
+          }
+        },
+        "participants": {
+          "type": "array",
+          "description": "Optional participants list from meeting metadata, used to put real names in the transcript file names.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" }
+            },
+            "required": ["id"]
+          }
+        },
+        "includeAudio": {
+          "type": "boolean",
+          "description": "Whether to bundle the .wav audio files into meeting-audio.zip and attach it. Defaults to true."
+        },
+        "maxTotalBytes": {
+          "type": "number",
+          "description": "Total attachment size budget in bytes. Attachments that would exceed it are reported in 'skipped' instead of attached. Defaults to 20971520 (20MB)."
+        }
+      },
+      "required": ["directoryPath"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "attachments": {
+          "type": "array",
+          "description": "Attachment descriptors to pass unchanged to GREY:send_email's 'attachments' parameter.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "filename": { "type": "string" },
+              "path": { "type": "string" }
+            }
+          }
+        },
+        "audioArchive": {
+          "type": "object",
+          "description": "Details of the generated audio zip, when audio was bundled.",
+          "properties": {
+            "filename": { "type": "string" },
+            "entries": { "type": "array", "items": { "type": "string" } },
+            "bytes": { "type": "number" }
+          }
+        },
+        "skipped": {
+          "type": "array",
+          "description": "Attachments left out because of the size budget.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "filename": { "type": "string" },
+              "reason": { "type": "string" }
+            }
+          }
+        },
+        "totalBytes": { "type": "number" },
+        "attachmentsDirectory": { "type": "string" },
+        "error": { "type": "string" }
+      }
+    }
+  },
+  {
     "action": "PLATFORM:resolve_participants",
+    "label": "Platform",
     "lib": "resolve_participants",
     "description": "Replace participant IDs with their real names, anywhere they appear (recursively) inside a text transcript or a structured summary object, using a participants list from metadata",
     "icon": "mdi:account-convert",
@@ -424,6 +531,7 @@
   },
   {
     "action": "PLATFORM:summarize_meeting",
+    "label": "Platform",
     "lib": "summarize_meeting",
     "description": "Summarize a meeting transcript into key topics, decisions, and action items",
     "icon": "mdi:text-box-check",
@@ -463,6 +571,7 @@
   },
   {
     "action": "PLATFORM:create_vm",
+    "label": "Platform",
     "lib": "create_vm",
     "description": "Create a virtual machine (EC2 instance) on AWS. If no AMI is given, the latest Amazon Linux 2023 image is used.",
     "icon": "mdi:server-plus",
@@ -521,6 +630,7 @@
   },
   {
     "action": "PLATFORM:terminate_vm",
+    "label": "Platform",
     "lib": "terminate_vm",
     "description": "Terminate a virtual machine (EC2 instance) on AWS by instance ID. Termination is permanent and cannot be undone.",
     "icon": "mdi:server-remove",
@@ -557,6 +667,7 @@
   },
   {
     "action": "PLATFORM:evaluate_metrics",
+    "label": "Platform",
     "lib": "evaluate_metrics",
     "description": "Deterministically evaluate an OTLP resourceMetrics payload against metric reference ranges. Pass the incoming OTLP payload as 'metrics' and the reference ranges (e.g. from agent knowledge) as 'reference_ranges'. Each data point is matched to its reference by metric name and attributes, then checked against min/max bounds or an expected value. Returns the out-of-range metrics as violations.",
     "icon": "mdi:chart-bell-curve",
@@ -612,6 +723,7 @@
   },
   {
     "action": "PLATFORM:message_user",
+    "label": "Platform",
     "lib": "message_user",
     "description": "Send a message to the user",
     "icon": "mdi:message-text",

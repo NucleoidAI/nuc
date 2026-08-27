@@ -1,8 +1,4 @@
-/* eslint-disable */
-import BlueprintChatContent from "../BlueprintChat/BlueprintChatContent";
-import { Iconify } from "@canmingir/link/platform/components";
-import InlineChatInput from "../../widgets/ChatInput/InlineChatInput";
-import PopupChatWidget from "../../widgets/PopupChatWidget/PopupChatWidget";
+import { publish } from "@nucleoidai/react-event";
 import useBlueprint from "../../hooks/useBlueprint";
 import useKnowledge from "../../hooks/useKnowledge";
 import useSupervisings from "../../hooks/useSupervisings";
@@ -13,26 +9,19 @@ import {
   Box,
   Button,
   Card,
-  CardContent,
   Chip,
-  Fab,
-  IconButton,
-  Slide,
-  Tooltip,
   Typography,
   alpha,
   useTheme,
 } from "@mui/material";
+/* eslint-disable */
+import { Iconify, SidebarChat } from "@canmingir/link/platform/components";
 import { RawNode, layoutFlow } from "../BlueprintCard/BlueprintFlowMiniPreview";
 import React, { memo, useCallback, useMemo, useRef } from "react";
 import {
   calculateDiffStats,
   calculateNodeChanges,
 } from "../BlueprintFlow/DiffPanel/diffHelper";
-
-/* ------------------------------------------------------------------ */
-/* Mini diff SVG renderer                                               */
-/* ------------------------------------------------------------------ */
 
 const NODE_W = 110;
 const NODE_H = 66;
@@ -307,10 +296,6 @@ function DiffFlowSvg({
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* Types                                                                */
-/* ------------------------------------------------------------------ */
-
 type ResolveResponse =
   | {
       kind: "knowledge";
@@ -324,16 +309,10 @@ type ResolveResponse =
       response: string;
     };
 
-/* ------------------------------------------------------------------ */
-/* SupervisingChat                                                      */
-/* ------------------------------------------------------------------ */
-
 const SupervisingChat = ({
   open = false,
   handleClose,
   readOnly = false,
-  closeButton = true,
-  loading = false,
   supervise,
   agentId,
   title,
@@ -342,8 +321,6 @@ const SupervisingChat = ({
   open: boolean;
   handleClose: () => void;
   readOnly?: boolean;
-  closeButton?: boolean;
-  loading?: boolean;
   agentId?: string;
   title?: string;
   blueprintId?: string;
@@ -369,23 +346,19 @@ const SupervisingChat = ({
 
   const theme = useTheme();
 
-  const [popChatOpen, setPopChatOpen] = React.useState(false);
   const [messages, setMessages] = React.useState([
     { role: "ASSISTANT", content: WELCOME },
   ]);
-  const [isEvaluating, setIsEvaluating] = React.useState(false);
   const [resolveResponse, setResolveResponse] =
     React.useState<ResolveResponse | null>(null);
   const [isSaving, setIsSaving] = React.useState(false);
-
-  /* ---- message handler ------------------------------------------- */
 
   const handleMessageSend = useCallback(
     async (message: string) => {
       if (!message) return;
 
       setMessages((prev) => [...prev, { role: "USER", content: message }]);
-      setIsEvaluating(true);
+      publish("CONVERSATION_SENT", { createdAt: Date.now() });
 
       try {
         const result = await blueprintChat({
@@ -445,13 +418,11 @@ const SupervisingChat = ({
           },
         ]);
       } finally {
-        setIsEvaluating(false);
+        publish("AI_RESPONDED", { createdAt: Date.now() });
       }
     },
     [supervise?.id, supervise?.blueprintId, agentId, blueprintChat]
   );
-
-  /* ---- knowledge handlers ---------------------------------------- */
 
   const handleSaveKnowledge = async () => {
     if (resolveResponse?.kind !== "knowledge") return;
@@ -492,8 +463,6 @@ const SupervisingChat = ({
     ]);
   };
 
-  /* ---- blueprint handlers ---------------------------------------- */
-
   const handleApproveBlueprint = async () => {
     if (resolveResponse?.kind !== "blueprint") return;
     const targetBlueprintId = blueprintId || supervise?.blueprintId;
@@ -523,8 +492,6 @@ const SupervisingChat = ({
       setIsSaving(false);
     }
   };
-
-  /* ---- diff computations ----------------------------------------- */
 
   const { oldNodes, newNodes, oldChangeMap, newChangeMap, diffStats } =
     useMemo(() => {
@@ -563,7 +530,7 @@ const SupervisingChat = ({
       };
     }, [resolveResponse, currentBlueprint]);
 
-  /* ----------------------------------------------------------------- */
+  if (!open) return null;
 
   return (
     <>
@@ -578,486 +545,413 @@ const SupervisingChat = ({
           backgroundColor: alpha(theme.palette.common.black, 0.2),
         }}
       />
-      <Slide direction="left" in={open} mountOnEnter unmountOnExit>
-        <Card
-          elevation={24}
-          sx={{
-            position: "fixed",
-            top: 0,
-            right: 0,
-            height: "100vh",
-            width: "50vw",
-            minWidth: "400px",
-            maxWidth: "600px",
-            background: `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.background.default}80 100%)`,
-            backdropFilter: "blur(10px)",
-            border: `1px solid ${theme.palette.divider}`,
-            borderRadius: "16px 0 0 16px",
-            borderRight: "none",
-            overflow: "hidden",
-            display: "flex",
-            flexDirection: "column",
-            zIndex: 9999,
-            boxShadow: theme.shadows[24],
-          }}
-        >
-          {/* Header */}
+
+      <Card
+        sx={{
+          position: "fixed",
+          top: 0,
+          right: 0,
+          height: "100vh",
+          width: 400,
+          overflow: "hidden",
+          borderRadius: 0,
+          display: "flex",
+          flexDirection: "column",
+          zIndex: 9999,
+        }}
+      >
+        {supervise?.question && (
           <Box
             sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
               p: 2,
-              borderBottom: `1px solid ${theme.palette.divider}`,
-              backgroundColor: alpha(theme.palette.primary.main, 0.05),
+              borderBottom: `1px solid ${theme.palette.divider}20`,
+              backgroundColor: alpha(theme.palette.secondary.main, 0.03),
             }}
           >
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>
-              {title ?? "Resolve Supervise"}
+            <Typography
+              variant="body2"
+              sx={{
+                color: theme.palette.text.secondary,
+                fontSize: "0.75rem",
+                textTransform: "uppercase",
+                letterSpacing: "0.5px",
+                mb: 1,
+                fontWeight: 600,
+              }}
+            >
+              Question
             </Typography>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <Tooltip title="See Full Conversation">
-                <Fab
-                  color="inherit"
-                  onClick={() => setPopChatOpen(!popChatOpen)}
-                >
-                  <Iconify
-                    icon={
-                      popChatOpen
-                        ? "solar:chat-round-line-linear"
-                        : "solar:chat-round-line-bold"
-                    }
-                    sx={{ width: 26, height: 26 }}
-                  />
-                </Fab>
-              </Tooltip>
-              {closeButton && (
-                <IconButton
-                  onClick={handleClose}
-                  sx={{
-                    color: theme.palette.text.secondary,
-                    "&:hover": {
-                      backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                    },
-                  }}
-                >
-                  <Iconify icon="material-symbols:close" />
-                </IconButton>
-              )}
-            </Box>
+            <Typography
+              variant="body1"
+              sx={{
+                color: theme.palette.text.primary,
+                lineHeight: 1.5,
+                fontStyle: "italic",
+                userSelect: "text",
+                background: `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.background.default}80 100%)`,
+                border: `1px solid ${theme.palette.divider}30`,
+                borderRadius: 1.5,
+                p: 1.5,
+              }}
+            >
+              {supervise?.question}
+            </Typography>
           </Box>
+        )}
 
-          {/* Question */}
-          {supervise?.question && (
-            <Box
-              sx={{
-                p: 2,
-                borderBottom: `1px solid ${theme.palette.divider}20`,
-                backgroundColor: alpha(theme.palette.secondary.main, 0.03),
-              }}
-            >
-              <Typography
-                variant="body2"
-                sx={{
-                  color: theme.palette.text.secondary,
-                  fontSize: "0.75rem",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.5px",
-                  mb: 1,
-                  fontWeight: 600,
-                }}
-              >
-                Question
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{
-                  color: theme.palette.text.primary,
-                  lineHeight: 1.5,
-                  fontStyle: "italic",
-                  userSelect: "text",
-                  background: `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.background.default}80 100%)`,
-                  border: `1px solid ${theme.palette.divider}30`,
-                  borderRadius: 1.5,
-                  p: 1.5,
-                }}
-              >
-                {supervise?.question}
-              </Typography>
-            </Box>
-          )}
-
-          {/* Body */}
-          <CardContent
-            sx={{
-              p: 0,
-              "&:last-child": { pb: 0 },
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              overflow: "hidden",
-            }}
-          >
-            <Box
-              sx={{
-                flex: 1,
-                paddingTop: { xs: "8px", sm: "10px" },
-                display: "flex",
-                flexDirection: "column",
-                minHeight: 0,
-                overflow: "hidden",
-              }}
-            >
-              <BlueprintChatContent
-                loading={loading || isEvaluating}
-                messages={messages}
-              />
-            </Box>
-
-            {/* ---- Knowledge response panel ---- */}
-            {resolveResponse?.kind === "knowledge" && (
-              <Box
-                sx={{
-                  mx: 2,
-                  mb: 1,
-                  p: 2,
-                  borderRadius: 2,
-                  border: `1px solid ${alpha(theme.palette.info.main, 0.3)}`,
-                  backgroundColor: alpha(theme.palette.info.main, 0.04),
-                }}
-              >
-                <Box
-                  sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
-                >
-                  <Iconify
-                    icon="solar:document-bold"
-                    sx={{ width: 18, height: 18, color: "info.main" }}
-                  />
-                  <Typography
-                    variant="subtitle2"
-                    sx={{ fontWeight: 600, color: "info.main" }}
-                  >
-                    Knowledge Data
-                  </Typography>
-                  <Chip
-                    label="KNOWLEDGE"
-                    size="small"
-                    color="info"
-                    variant="outlined"
-                  />
-                </Box>
+        <SidebarChat
+          embedded
+          title={title ?? "Resolve Supervise"}
+          open={open}
+          handleToggle={handleClose}
+          history={messages}
+          handleNewUserMessage={handleMessageSend}
+          readOnly={readOnly}
+          footer={
+            <>
+              {resolveResponse?.kind === "knowledge" && (
                 <Box
                   sx={{
-                    p: 1.5,
-                    bgcolor: "background.default",
-                    borderRadius: 1,
-                    fontFamily: "monospace",
-                    fontSize: "0.75rem",
-                    wordBreak: "break-all",
-                    mb: 1.5,
-                    maxHeight: 100,
-                    overflow: "auto",
-                    userSelect: "text",
-                    border: `1px solid ${theme.palette.divider}`,
-                  }}
-                >
-                  {resolveResponse.knowledge}
-                </Box>
-                <Box sx={{ display: "flex", gap: 1 }}>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    onClick={handleSaveKnowledge}
-                    disabled={isSaving}
-                    startIcon={
-                      <Iconify
-                        icon="solar:diskette-bold"
-                        sx={{ width: 16, height: 16 }}
-                      />
-                    }
-                  >
-                    Save to Knowledge Base
-                  </Button>
-                  <Button
-                    size="small"
-                    onClick={handleDismiss}
-                    disabled={isSaving}
-                  >
-                    Dismiss
-                  </Button>
-                </Box>
-              </Box>
-            )}
-
-            {/* ---- Blueprint diff panel ---- */}
-            {resolveResponse?.kind === "blueprint" && diffStats && (
-              <Box
-                sx={{
-                  mx: 2,
-                  mb: 1,
-                  p: 1.5,
-                  borderRadius: 2,
-                  border: `1px solid ${alpha(theme.palette.warning.main, 0.3)}`,
-                  backgroundColor: alpha(theme.palette.warning.main, 0.03),
-                }}
-              >
-                {/* Title + stats */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
-                    mb: 1.5,
-                  }}
-                >
-                  <Iconify
-                    icon="healthicons:crisis-response-center-person-outline"
-                    sx={{ width: 18, height: 18, color: "warning.dark" }}
-                  />
-                  <Typography
-                    variant="subtitle2"
-                    sx={{ fontWeight: 600, color: "warning.dark", flex: 1 }}
-                  >
-                    {resolveResponse.response}
-                  </Typography>
-                  {diffStats.added > 0 && (
-                    <Chip
-                      label={`+${diffStats.added}`}
-                      size="small"
-                      sx={{
-                        bgcolor: alpha("#2ea44f", 0.15),
-                        color: "#2ea44f",
-                        fontWeight: 700,
-                        border: `1px solid ${alpha("#2ea44f", 0.3)}`,
-                      }}
-                    />
-                  )}
-                  {diffStats.modified > 0 && (
-                    <Chip
-                      label={`~${diffStats.modified}`}
-                      size="small"
-                      sx={{
-                        bgcolor: alpha("#f0883e", 0.15),
-                        color: "#f0883e",
-                        fontWeight: 700,
-                        border: `1px solid ${alpha("#f0883e", 0.3)}`,
-                      }}
-                    />
-                  )}
-                  {diffStats.removed > 0 && (
-                    <Chip
-                      label={`-${diffStats.removed}`}
-                      size="small"
-                      sx={{
-                        bgcolor: alpha("#f85149", 0.15),
-                        color: "#f85149",
-                        fontWeight: 700,
-                        border: `1px solid ${alpha("#f85149", 0.3)}`,
-                      }}
-                    />
-                  )}
-                </Box>
-
-                {/* Stacked flow previews */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 1,
-                    mb: 1.5,
+                    mx: 2,
+                    mb: 1,
+                    p: 2,
+                    borderRadius: 2,
+                    border: `1px solid ${alpha(theme.palette.info.main, 0.3)}`,
+                    backgroundColor: alpha(theme.palette.info.main, 0.04),
                   }}
                 >
                   <Box
-                    sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      mb: 1,
+                    }}
                   >
+                    <Iconify
+                      icon="solar:document-bold"
+                      sx={{ width: 18, height: 18, color: "info.main" }}
+                    />
                     <Typography
-                      variant="caption"
+                      variant="subtitle2"
+                      sx={{ fontWeight: 600, color: "info.main" }}
+                    >
+                      Knowledge Data
+                    </Typography>
+                    <Chip
+                      label="KNOWLEDGE"
+                      size="small"
+                      color="info"
+                      variant="outlined"
+                    />
+                  </Box>
+                  <Box
+                    sx={{
+                      p: 1.5,
+                      bgcolor: "background.default",
+                      borderRadius: 1,
+                      fontFamily: "monospace",
+                      fontSize: "0.75rem",
+                      wordBreak: "break-all",
+                      mb: 1.5,
+                      maxHeight: 100,
+                      overflow: "auto",
+                      userSelect: "text",
+                      border: `1px solid ${theme.palette.divider}`,
+                    }}
+                  >
+                    {resolveResponse.knowledge}
+                  </Box>
+                  <Box sx={{ display: "flex", gap: 1 }}>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      onClick={handleSaveKnowledge}
+                      disabled={isSaving}
+                      startIcon={
+                        <Iconify
+                          icon="solar:diskette-bold"
+                          sx={{ width: 16, height: 16 }}
+                        />
+                      }
+                    >
+                      Save to Knowledge Base
+                    </Button>
+                    <Button
+                      size="small"
+                      onClick={handleDismiss}
+                      disabled={isSaving}
+                    >
+                      Dismiss
+                    </Button>
+                  </Box>
+                </Box>
+              )}
+
+              {resolveResponse?.kind === "blueprint" && diffStats && (
+                <Box
+                  sx={{
+                    mx: 2,
+                    mb: 1,
+                    p: 1.5,
+                    borderRadius: 2,
+                    border: `1px solid ${alpha(
+                      theme.palette.warning.main,
+                      0.3
+                    )}`,
+                    backgroundColor: alpha(theme.palette.warning.main, 0.03),
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      mb: 1.5,
+                    }}
+                  >
+                    <Iconify
+                      icon="healthicons:crisis-response-center-person-outline"
+                      sx={{ width: 18, height: 18, color: "warning.dark" }}
+                    />
+                    <Typography
+                      variant="subtitle2"
+                      sx={{ fontWeight: 600, color: "warning.dark", flex: 1 }}
+                    >
+                      {resolveResponse.response}
+                    </Typography>
+                    {diffStats.added > 0 && (
+                      <Chip
+                        label={`+${diffStats.added}`}
+                        size="small"
+                        sx={{
+                          bgcolor: alpha("#2ea44f", 0.15),
+                          color: "#2ea44f",
+                          fontWeight: 700,
+                          border: `1px solid ${alpha("#2ea44f", 0.3)}`,
+                        }}
+                      />
+                    )}
+                    {diffStats.modified > 0 && (
+                      <Chip
+                        label={`~${diffStats.modified}`}
+                        size="small"
+                        sx={{
+                          bgcolor: alpha("#f0883e", 0.15),
+                          color: "#f0883e",
+                          fontWeight: 700,
+                          border: `1px solid ${alpha("#f0883e", 0.3)}`,
+                        }}
+                      />
+                    )}
+                    {diffStats.removed > 0 && (
+                      <Chip
+                        label={`-${diffStats.removed}`}
+                        size="small"
+                        sx={{
+                          bgcolor: alpha("#f85149", 0.15),
+                          color: "#f85149",
+                          fontWeight: 700,
+                          border: `1px solid ${alpha("#f85149", 0.3)}`,
+                        }}
+                      />
+                    )}
+                  </Box>
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 1,
+                      mb: 1.5,
+                    }}
+                  >
+                    <Box
                       sx={{
-                        fontWeight: 600,
-                        color: "text.secondary",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.5px",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 0.5,
                       }}
                     >
-                      Current
-                    </Typography>
-                    <Box sx={{ height: 160 }}>
-                      {oldNodes.length > 0 ? (
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          fontWeight: 600,
+                          color: "text.secondary",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.5px",
+                        }}
+                      >
+                        Current
+                      </Typography>
+                      <Box sx={{ height: 160 }}>
+                        {oldNodes.length > 0 ? (
+                          <DiffFlowSvg
+                            nodes={oldNodes}
+                            changeMap={oldChangeMap}
+                            uid={`old-${supervise?.id}`}
+                          />
+                        ) : (
+                          <Box
+                            sx={{
+                              height: "100%",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              borderRadius: 1.5,
+                              border: `1px solid ${theme.palette.divider}`,
+                              color: "text.disabled",
+                            }}
+                          >
+                            <Typography variant="caption">
+                              No blueprint
+                            </Typography>
+                          </Box>
+                        )}
+                      </Box>
+                    </Box>
+
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "text.disabled",
+                      }}
+                    >
+                      <Iconify
+                        icon="solar:arrow-down-bold"
+                        sx={{ width: 18, height: 18 }}
+                      />
+                    </Box>
+
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 0.5,
+                      }}
+                    >
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          fontWeight: 600,
+                          color: "success.main",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.5px",
+                        }}
+                      >
+                        Suggested
+                      </Typography>
+                      <Box sx={{ height: 160 }}>
                         <DiffFlowSvg
-                          nodes={oldNodes}
-                          changeMap={oldChangeMap}
-                          uid={`old-${supervise?.id}`}
+                          nodes={newNodes}
+                          changeMap={newChangeMap}
+                          uid={`new-${supervise?.id}`}
                         />
-                      ) : (
-                        <Box
-                          sx={{
-                            height: "100%",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            borderRadius: 1.5,
-                            border: `1px solid ${theme.palette.divider}`,
-                            color: "text.disabled",
-                          }}
-                        >
-                          <Typography variant="caption">
-                            No blueprint
-                          </Typography>
-                        </Box>
-                      )}
+                      </Box>
                     </Box>
                   </Box>
 
                   <Box
                     sx={{
                       display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: "text.disabled",
+                      gap: 1.5,
+                      mb: 1.5,
+                      flexWrap: "wrap",
                     }}
                   >
-                    <Iconify
-                      icon="solar:arrow-down-bold"
-                      sx={{ width: 18, height: 18 }}
-                    />
+                    {diffStats.added > 0 && (
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+                      >
+                        <Box
+                          sx={{
+                            width: 10,
+                            height: 10,
+                            borderRadius: 0.5,
+                            bgcolor: "#2ea44f",
+                          }}
+                        />
+                        <Typography variant="caption" color="text.secondary">
+                          Added
+                        </Typography>
+                      </Box>
+                    )}
+                    {diffStats.modified > 0 && (
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+                      >
+                        <Box
+                          sx={{
+                            width: 10,
+                            height: 10,
+                            borderRadius: 0.5,
+                            bgcolor: "#f0883e",
+                          }}
+                        />
+                        <Typography variant="caption" color="text.secondary">
+                          Modified
+                        </Typography>
+                      </Box>
+                    )}
+                    {diffStats.removed > 0 && (
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+                      >
+                        <Box
+                          sx={{
+                            width: 10,
+                            height: 10,
+                            borderRadius: 0.5,
+                            bgcolor: "#f85149",
+                          }}
+                        />
+                        <Typography variant="caption" color="text.secondary">
+                          Removed
+                        </Typography>
+                      </Box>
+                    )}
                   </Box>
 
-                  <Box
-                    sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}
-                  >
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        fontWeight: 600,
-                        color: "success.main",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.5px",
-                      }}
+                  <Box sx={{ display: "flex", gap: 1 }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                      onClick={handleApproveBlueprint}
+                      disabled={isSaving}
+                      startIcon={
+                        <Iconify
+                          icon="solar:check-circle-bold"
+                          sx={{ width: 16, height: 16 }}
+                        />
+                      }
                     >
-                      Suggested
-                    </Typography>
-                    <Box sx={{ height: 160 }}>
-                      <DiffFlowSvg
-                        nodes={newNodes}
-                        changeMap={newChangeMap}
-                        uid={`new-${supervise?.id}`}
-                      />
-                    </Box>
+                      Approve
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      size="small"
+                      onClick={handleDismiss}
+                      disabled={isSaving}
+                      startIcon={
+                        <Iconify
+                          icon="solar:close-circle-bold"
+                          sx={{ width: 16, height: 16 }}
+                        />
+                      }
+                    >
+                      Reject
+                    </Button>
                   </Box>
                 </Box>
-
-                {/* Legend */}
-                <Box
-                  sx={{ display: "flex", gap: 1.5, mb: 1.5, flexWrap: "wrap" }}
-                >
-                  {diffStats.added > 0 && (
-                    <Box
-                      sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
-                    >
-                      <Box
-                        sx={{
-                          width: 10,
-                          height: 10,
-                          borderRadius: 0.5,
-                          bgcolor: "#2ea44f",
-                        }}
-                      />
-                      <Typography variant="caption" color="text.secondary">
-                        Added
-                      </Typography>
-                    </Box>
-                  )}
-                  {diffStats.modified > 0 && (
-                    <Box
-                      sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
-                    >
-                      <Box
-                        sx={{
-                          width: 10,
-                          height: 10,
-                          borderRadius: 0.5,
-                          bgcolor: "#f0883e",
-                        }}
-                      />
-                      <Typography variant="caption" color="text.secondary">
-                        Modified
-                      </Typography>
-                    </Box>
-                  )}
-                  {diffStats.removed > 0 && (
-                    <Box
-                      sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
-                    >
-                      <Box
-                        sx={{
-                          width: 10,
-                          height: 10,
-                          borderRadius: 0.5,
-                          bgcolor: "#f85149",
-                        }}
-                      />
-                      <Typography variant="caption" color="text.secondary">
-                        Removed
-                      </Typography>
-                    </Box>
-                  )}
-                </Box>
-
-                {/* Actions */}
-                <Box sx={{ display: "flex", gap: 1 }}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    onClick={handleApproveBlueprint}
-                    disabled={isSaving}
-                    startIcon={
-                      <Iconify
-                        icon="solar:check-circle-bold"
-                        sx={{ width: 16, height: 16 }}
-                      />
-                    }
-                  >
-                    Approve
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    size="small"
-                    onClick={handleDismiss}
-                    disabled={isSaving}
-                    startIcon={
-                      <Iconify
-                        icon="solar:close-circle-bold"
-                        sx={{ width: 16, height: 16 }}
-                      />
-                    }
-                  >
-                    Reject
-                  </Button>
-                </Box>
-              </Box>
-            )}
-
-            {/* Chat input */}
-            <Box
-              sx={{ borderTop: `1px solid ${theme.palette.divider}20`, mt: 1 }}
-            >
-              <InlineChatInput
-                onSend={readOnly ? undefined : handleMessageSend}
-              />
-            </Box>
-          </CardContent>
-        </Card>
-      </Slide>
-
-      <PopupChatWidget
-        readOnly={true}
-        openPopChat={popChatOpen}
-        setOpenPopChat={setPopChatOpen}
-        conversationId={supervise?.conversationId}
-        sessionId={supervise?.sessionId}
-      />
+              )}
+            </>
+          }
+        />
+      </Card>
     </>
   );
 };

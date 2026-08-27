@@ -6,8 +6,8 @@ import {
   Box,
   Dialog,
   DialogContent,
-  DialogTitle,
   TextField,
+  Typography,
 } from "@mui/material";
 
 function AIMarketplaceCard({
@@ -15,28 +15,67 @@ function AIMarketplaceCard({
   setOpen,
   isWizardEngine,
   handleEngineSelect,
+  selectedEngineId = "",
 }) {
-  const { engines } = useAIEngines();
+  const { engines: fetchedEngines } = useAIEngines();
+  const [search, setSearch] = React.useState("");
+
+  const filteredEngines = React.useMemo(() => {
+    const query = search.trim().toLowerCase();
+
+    if (!query) {
+      return fetchedEngines;
+    }
+
+    return fetchedEngines?.filter((engine) =>
+      [engine?.vendor, engine?.model, engine?.type]
+        .filter(Boolean)
+        .some((field) => field.toLowerCase().includes(query))
+    );
+  }, [fetchedEngines, search]);
 
   const Content = () => {
     return (
-      <DialogContent sx={{ marginY: 2 }}>
-        <DialogTitle textAlign={"center"} variant="h4">
-          AI Marketplace
-        </DialogTitle>
-
+      <DialogContent
+        sx={{
+          marginY: 1,
+          gap: 1,
+          display: "flex",
+          flexDirection: "column",
+          ...(isWizardEngine && { p: 0, height: 200, overflowY: "auto" }),
+        }}
+      >
         <TextField
-          sx={{ mb: 3 }}
+          sx={{ marginTop: 1, ...(isWizardEngine && { flexShrink: 0 }) }}
+          label="Search Engines"
           fullWidth
-          variant="outlined"
-          placeholder="Search..."
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
         />
-
-        <AIEngineChart
-          handleEngineSelect={handleEngineSelect}
-          isWizardEngine={isWizardEngine}
-          data={engines}
-        />
+        <Box
+          sx={{
+            ...(isWizardEngine && {
+              height: { xs: 200, md: "auto" },
+              flex: { md: 1 },
+            }),
+          }}
+        >
+          {filteredEngines?.length ? (
+            <AIEngineChart
+              handleEngineSelect={handleEngineSelect}
+              isWizardEngine={isWizardEngine}
+              selectedEngineId={selectedEngineId}
+              data={filteredEngines}
+            />
+          ) : (
+            <Typography
+              sx={{ paddingY: 4, textAlign: "center" }}
+              color="text.secondary"
+            >
+              No engines match your search.
+            </Typography>
+          )}
+        </Box>
       </DialogContent>
     );
   };
@@ -48,8 +87,8 @@ function AIMarketplaceCard({
           sx={{
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
+            alignItems: "stretch",
+            justifyContent: "flex-start",
           }}
         >
           {Content()}

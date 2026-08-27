@@ -6,6 +6,7 @@ export default function AIEngineChart({
   data,
   isWizardEngine,
   handleEngineSelect,
+  selectedEngineId,
 }: {
   sx?: object;
   data: {
@@ -13,28 +14,45 @@ export default function AIEngineChart({
     vendor: string;
     model: string;
     price: number;
-    description: string;
+    type: string;
     avatar?: string;
   }[];
   isWizardEngine: boolean;
-  handleEngineSelect: (engine: { id: string }) => void;
+  handleEngineSelect: (engine: {
+    id: string;
+    vendor: string;
+    model: string;
+    price: number;
+    type: string;
+    avatar?: string;
+  }) => void;
+  selectedEngineId?: string;
 }) {
   return (
     <>
       <Box
         sx={sx}
-        gap={2}
+        gap={1}
         display="grid"
-        gridTemplateColumns={{
-          xs: "repeat(1, 1fr)",
-          sm: "repeat(2, 1fr)",
-          md: "repeat(3, 1fr)",
-        }}
+        alignItems="stretch"
+        gridTemplateColumns={
+          isWizardEngine
+            ? {
+                xs: "repeat(auto-fill, minmax(200px, 1fr))",
+                xl: "repeat(auto-fill, minmax(250px, 1fr))",
+              }
+            : {
+                xs: "repeat(1, 1fr)",
+                sm: "repeat(2, 1fr)",
+                md: "repeat(3, 1fr)",
+              }
+        }
       >
         {data?.map((engine) => (
           <AIMarketplaceItem
             handleEngineSelect={handleEngineSelect}
             isWizardEngine={isWizardEngine}
+            isSelected={engine?.id === selectedEngineId}
             key={engine?.id}
             engine={engine}
           />

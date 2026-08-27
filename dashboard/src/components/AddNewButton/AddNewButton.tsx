@@ -10,17 +10,16 @@ function AddNewButton({ type, addNew, onClickFunction }) {
     width: "",
     height: "",
     borderRadius: "",
-    maxHeight: "",
   });
 
   useEffect(() => {
     switch (type) {
       case "largeButton":
-        setSize(styles.largeButton);
+        setSize({ ...styles.largeButton });
 
         break;
       case "wideButton":
-        setSize(styles.wideButton);
+        setSize({ ...styles.wideButton });
         break;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -33,10 +32,9 @@ function AddNewButton({ type, addNew, onClickFunction }) {
         onClick={onClickFunction}
         sx={{
           ...styles.default,
-          width: { xs: "255px", sm: size.width },
-          height: { xs: "250px", sm: size.height },
+          width: size.width,
+          height: size.height,
           borderRadius: size.borderRadius,
-          maxHeight: size.maxHeight,
           transformStyle: "preserve-3d",
           transform:
             "perspective(1500px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)",

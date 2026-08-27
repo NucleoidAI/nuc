@@ -48,7 +48,10 @@ const AgentDrawer = ({ open, onClose, agent, initialTab, allAgentIds }) => {
             height: 40,
             borderRadius: "50%",
             bgcolor: "background.paper",
-            boxShadow: 3,
+            boxShadow: 1,
+            "&:hover": {
+              bgcolor: "background.paper",
+            },
           }}
         >
           <Iconify icon="material-symbols:close" width={20} />

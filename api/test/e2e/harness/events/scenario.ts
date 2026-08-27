@@ -1,4 +1,4 @@
-import { waitFor } from "./bus";
+import { releaseAll, waitFor } from "./bus";
 import type { EventName, Payload } from "./types";
 
 const WATCHED = {
@@ -26,5 +26,31 @@ function watch(): Watched {
   return Object.fromEntries(armed) as Watched;
 }
 
-export { watch, WATCHED };
+function init(): Watched {
+  let current: Watched | undefined;
+
+  beforeEach(() => {
+    current = watch();
+  });
+
+  afterEach(async () => {
+    await releaseAll();
+    current = undefined;
+  });
+
+  return new Proxy({} as Watched, {
+    get(_, key) {
+      if (!current) {
+        throw new Error(
+          "[e2e] the scenario is only armed inside a test — events.init() " +
+            "watches the bus from beforeEach until afterEach."
+        );
+      }
+
+      return current[key as keyof Watched];
+    },
+  });
+}
+
+export { init, watch, WATCHED };
 export type { Watched };

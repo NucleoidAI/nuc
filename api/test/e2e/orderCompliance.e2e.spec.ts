@@ -5,52 +5,187 @@ import {
   ORDER_BLUEPRINT_ID,
   SESSION,
 } from "./fixtures/ids";
-import { certificateOf, purchaseOrdersFor } from "./harness/mcp/servers/order";
-import {
-  emailsMatching,
-  resetEmails,
-  sentEmails,
-} from "./harness/mcp/servers/grey";
-import { resetMcpMocks } from "./harness/mcp/registry";
-import events, { type Watched } from "./harness/events";
+import events from "./harness/events";
+import { mcp } from "./harness/mcp";
 import api from "./harness/api";
-import { startStack, type Stack } from "./harness/stack";
+import stack from "./harness/stack";
 import { supervisedHandoffNodes } from "./fixtures/supervisedBlueprint";
 
-const SCENARIO_TIMEOUT_MS = 600_000;
+mcp.init();
+stack.init();
 
-let stack: Stack;
-let scenario: Watched;
+const scenario = events.init();
 
 describe("Order & Compliance Team — blueprint to task, end to end", () => {
-  beforeAll(async () => {
-    resetMcpMocks();
-    stack = await startStack();
-  }, 180_000);
+  it("happy path: an order for a certified product runs the blueprint to completion", async () => {
+    mcp.tool("ORDER:find_product").returns({
+      product: { id: "prd-1", name: "product-1", vendor_id: "vnd-1" },
+    });
 
-  afterAll(async () => {
-    await stack?.stop();
-    resetMcpMocks();
-  });
+    mcp
+      .tool("ORDER:assign_certificate")
+      .expects({ product_id: "prd-1", certificate: "FFC" })
+      .returns({ product_id: "prd-1", certificate: "FFC", assigned: true });
 
-  afterEach(async () => {
-    await events.release();
-  });
+    mcp
+      .tool("ORDER:create_po")
+      .expects({ product_id: "prd-1" })
+      .returns({
+        purchase_order: {
+          order_id: "po-2001",
+          product_id: "prd-1",
+          city: "Atlanta",
+          quantity: 5,
+        },
+      });
 
-  beforeEach(() => {
-    resetEmails();
+    mcp
+      .tool("GREY:send_email")
+      .expects({})
+      .returns({ success: true, messageId: "<e2e-1@greycollar.test>" });
 
-    scenario = events.watch();
-  });
+    await events.session.userMessaged({
+      agentId: ORDER_AGENT_ID,
+      sessionId: SESSION.happyPath,
+      content: { intent: "create_order" },
+    });
 
-  it(
-    "happy path: an order for a certified product runs the blueprint to completion",
-    async () => {
-      const purchaseOrdersBefore = purchaseOrdersFor("prd-1").length;
+    const taskCreated = await scenario.taskCreated;
+    const stepAdded = await scenario.stepAdded;
 
+    expect(taskCreated.blueprintId).toBe(ORDER_BLUEPRINT_ID);
+    expect(stepAdded.action).toBe("PLATFORM:user_interaction");
+
+    const waiting = await scenario.stepWaitingForUser;
+
+    expect(waiting.stepId).toBe(stepAdded.stepId);
+
+    await events.session.userMessaged({
+      agentId: ORDER_AGENT_ID,
+      sessionId: SESSION.happyPath,
+      content: { product: "product-1" },
+    });
+
+    const taskCompleted = await scenario.taskCompleted;
+
+    expect(taskCompleted.taskId).toBe(taskCreated.taskId);
+
+    expect(mcp.tool("ORDER:create_po").lastCall).toMatchObject({
+      product_id: "prd-1",
+    });
+  }, 600_000);
+
+  it("supervised via knowledge: the supervisor teaches the certificate and the order goes through", async () => {
+    mcp.tool("ORDER:find_product").returns({
+      product: { id: "prd-4", name: "product-4", vendor_id: "vnd-1" },
+    });
+
+    mcp
+      .tool("ORDER:assign_certificate")
+      .expects({ product_id: "prd-4", certificate: "CE" })
+      .returns({ product_id: "prd-4", certificate: "CE", assigned: true });
+
+    mcp
+      .tool("ORDER:create_po")
+      .expects({ product_id: "prd-4" })
+      .returns({
+        purchase_order: {
+          order_id: "po-2002",
+          product_id: "prd-4",
+          city: "Atlanta",
+          quantity: 5,
+        },
+      });
+
+    mcp
+      .tool("GREY:send_email")
+      .returns({ success: true, messageId: "<e2e-2@greycollar.test>" });
+
+    expect(mcp.tool("ORDER:assign_certificate").calls).toHaveLength(0);
+
+    await events.session.userMessaged({
+      agentId: ORDER_AGENT_ID,
+      sessionId: SESSION.supervisedKnowledge,
+      content: { intent: "create_order" },
+    });
+
+    const taskCreated = await scenario.taskCreated;
+    const stepAdded = await scenario.stepAdded;
+
+    expect(taskCreated.blueprintId).toBe(ORDER_BLUEPRINT_ID);
+    expect(stepAdded.action).toBe("PLATFORM:user_interaction");
+
+    const waiting = await scenario.stepWaitingForUser;
+
+    expect(waiting.stepId).toBe(stepAdded.stepId);
+
+    await events.session.userMessaged({
+      agentId: ORDER_AGENT_ID,
+      sessionId: SESSION.supervisedKnowledge,
+      content: { product: "product-4" },
+    });
+
+    const raised = await scenario.stepSupervisedNeeded;
+
+    await api.knowledge.create({
+      type: "DATA",
+      agentId: ORDER_AGENT_ID,
+      text: '{"product_id": "prd-4", "product_name": "product-4", "certificate": "CE"}',
+    });
+
+    await events.supervising.answered({
+      sessionId: SESSION.supervisedKnowledge,
+      agentId: ORDER_AGENT_ID,
+      taskId: taskCreated.taskId,
+      question: raised.question,
+      type: "KNOWLEDGE",
+      answer:
+        '{"product_id": "prd-4", "product_name": "product-4", "certificate": "CE"}',
+    });
+
+    await scenario.supervisingAnswered;
+
+    expect(await api.knowledge.textFor(ORDER_AGENT_ID)).toContain("prd-4");
+
+    const taskCompleted = await scenario.taskCompleted;
+
+    expect(taskCompleted.taskId).toBe(taskCreated.taskId);
+
+    expect(mcp.tool("ORDER:assign_certificate").lastCall).toMatchObject({
+      product_id: "prd-4",
+      certificate: "CE",
+    });
+  }, 600_000);
+
+  it("supervised via blueprint: the supervisor adds a handoff and the compliance manager takes over", async () => {
+    mcp.tool("ORDER:find_product").returns({
+      product: { id: "prd-3", name: "product-3", vendor_id: "vnd-3" },
+    });
+
+    mcp
+      .tool("ORDER:get_product_vendor")
+      .expects({ product_id: "prd-3" })
+      .returns({
+        vendor: {
+          id: "vnd-3",
+          name: "Vendor Gamma",
+          email: "gamma@vendor.com",
+        },
+      });
+
+    mcp
+      .tool("GREY:send_email")
+      .expects({ to: expect.stringContaining("gamma@vendor.com") })
+      .returns({ success: true, messageId: "<e2e-3@greycollar.test>" });
+
+    mcp.tool("ORDER:assign_certificate").expectsNoCalls();
+
+    const orderNodesBefore = await api.blueprints.nodes(ORDER_BLUEPRINT_ID);
+
+    try {
       await events.session.userMessaged({
         agentId: ORDER_AGENT_ID,
-        sessionId: SESSION.happyPath,
+        sessionId: SESSION.supervisedBlueprint,
         content: { intent: "create_order" },
       });
 
@@ -60,45 +195,28 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
       expect(taskCreated.blueprintId).toBe(ORDER_BLUEPRINT_ID);
       expect(stepAdded.action).toBe("PLATFORM:user_interaction");
 
-      const waiting = await scenario.stepWaitingForUser;
+      const elsewhere = (payload: { taskId?: string }) =>
+        payload.taskId !== taskCreated.taskId;
 
-      expect(waiting.stepId).toBe(stepAdded.stepId);
+      const handoffTaskCreated = events.waitFor(
+        "TASK_CREATED",
 
-      await events.session.userMessaged({
-        agentId: ORDER_AGENT_ID,
-        sessionId: SESSION.happyPath,
-        content: { product: "product-1" },
-      });
+        (payload) =>
+          payload.agentId === COMPLIANCE_AGENT_ID &&
+          payload.sessionId === SESSION.supervisedBlueprint,
+      );
+      const vendorLookup = events.waitFor(
+        "STEP_ADDED",
 
-      const taskCompleted = await scenario.taskCompleted;
+        (payload) =>
+          elsewhere(payload) && payload.action === "ORDER:get_product_vendor",
+      );
+      const vendorEmail = events.waitFor(
+        "STEP_ADDED",
 
-      expect(taskCompleted.taskId).toBe(taskCreated.taskId);
-
-      expect(certificateOf("prd-1")).toBe("FFC");
-      expect(purchaseOrdersFor("prd-1")).toHaveLength(purchaseOrdersBefore + 1);
-      expect(sentEmails.length).toBeGreaterThan(0);
-    },
-    SCENARIO_TIMEOUT_MS
-  );
-
-  it(
-    "supervised via knowledge: the supervisor teaches the certificate and the order goes through",
-    async () => {
-      const purchaseOrdersBefore = purchaseOrdersFor("prd-4").length;
-
-      expect(certificateOf("prd-4")).toBeUndefined();
-
-      await events.session.userMessaged({
-        agentId: ORDER_AGENT_ID,
-        sessionId: SESSION.supervisedKnowledge,
-        content: { intent: "create_order" },
-      });
-
-      const taskCreated = await scenario.taskCreated;
-      const stepAdded = await scenario.stepAdded;
-
-      expect(taskCreated.blueprintId).toBe(ORDER_BLUEPRINT_ID);
-      expect(stepAdded.action).toBe("PLATFORM:user_interaction");
+        (payload) => elsewhere(payload) && payload.action === "GREY:send_email",
+      );
+      const handoffCompleted = events.waitFor("TASK_COMPLETED", elsewhere);
 
       const waiting = await scenario.stepWaitingForUser;
 
@@ -106,141 +224,53 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
 
       await events.session.userMessaged({
         agentId: ORDER_AGENT_ID,
-        sessionId: SESSION.supervisedKnowledge,
-        content: { product: "product-4" },
+        sessionId: SESSION.supervisedBlueprint,
+        content: { product: "product-3" },
       });
 
       const raised = await scenario.stepSupervisedNeeded;
 
-      await api.knowledge.create({
-        type: "DATA",
-        agentId: ORDER_AGENT_ID,
-        text: '{"product_id": "prd-4", "product_name": "product-4", "certificate": "CE"}',
-      });
+      await api.blueprints.setNodes(
+        ORDER_BLUEPRINT_ID,
+        supervisedHandoffNodes(),
+        {
+          title: "Order and Compliance",
+          description:
+            "Find product, check its compliance certificate, and either create the purchase order or hand the product over to the compliance manager.",
+        },
+      );
 
       await events.supervising.answered({
-        sessionId: SESSION.supervisedKnowledge,
+        sessionId: SESSION.supervisedBlueprint,
         agentId: ORDER_AGENT_ID,
         taskId: taskCreated.taskId,
         question: raised.question,
-        type: "KNOWLEDGE",
+        type: "BLUEPRINT",
         answer:
-          '{"product_id": "prd-4", "product_name": "product-4", "certificate": "CE"}',
+          "I added a handoff to the compliance manager. When a product has no certificate on file, hand the task over to the compliant_manager agent so it can request the certificate from the vendor.",
       });
 
       await scenario.supervisingAnswered;
 
-      expect(await api.knowledge.textFor(ORDER_AGENT_ID)).toContain("prd-4");
+      const handedOff = await handoffTaskCreated;
+
+      expect(handedOff.blueprintId).toBe(COMPLIANCE_BLUEPRINT_ID);
+      expect(handedOff.taskId).not.toBe(taskCreated.taskId);
 
       const taskCompleted = await scenario.taskCompleted;
 
       expect(taskCompleted.taskId).toBe(taskCreated.taskId);
+      expect(String(taskCompleted.result)).toContain(COMPLIANCE_AGENT_ID);
 
-      expect(certificateOf("prd-4")).toBe("CE");
-      expect(purchaseOrdersFor("prd-4")).toHaveLength(purchaseOrdersBefore + 1);
-    },
-    SCENARIO_TIMEOUT_MS
-  );
+      expect((await vendorLookup).taskId).toBe(handedOff.taskId);
+      expect((await vendorEmail).taskId).toBe(handedOff.taskId);
+      expect((await handoffCompleted).taskId).toBe(handedOff.taskId);
 
-  it(
-    "supervised via blueprint: the supervisor adds a handoff and the compliance manager takes over",
-    async () => {
-      const orderNodesBefore = await api.blueprints.nodes(ORDER_BLUEPRINT_ID);
-
-      expect(certificateOf("prd-3")).toBeUndefined();
-
-      try {
-        await events.session.userMessaged({
-          agentId: ORDER_AGENT_ID,
-          sessionId: SESSION.supervisedBlueprint,
-          content: { intent: "create_order" },
-        });
-
-        const taskCreated = await scenario.taskCreated;
-        const stepAdded = await scenario.stepAdded;
-
-        expect(taskCreated.blueprintId).toBe(ORDER_BLUEPRINT_ID);
-        expect(stepAdded.action).toBe("PLATFORM:user_interaction");
-
-        const elsewhere = (payload: { taskId?: string }) =>
-          payload.taskId !== taskCreated.taskId;
-
-        const handoffTaskCreated = events.waitFor(
-          "TASK_CREATED",
-
-          (payload) =>
-            payload.agentId === COMPLIANCE_AGENT_ID &&
-            payload.sessionId === SESSION.supervisedBlueprint
-        );
-        const vendorLookup = events.waitFor(
-          "STEP_ADDED",
-
-          (payload) =>
-            elsewhere(payload) && payload.action === "ORDER:get_product_vendor"
-        );
-        const vendorEmail = events.waitFor(
-          "STEP_ADDED",
-
-          (payload) =>
-            elsewhere(payload) && payload.action === "GREY:send_email"
-        );
-        const handoffCompleted = events.waitFor("TASK_COMPLETED", elsewhere);
-
-        const waiting = await scenario.stepWaitingForUser;
-
-        expect(waiting.stepId).toBe(stepAdded.stepId);
-
-        await events.session.userMessaged({
-          agentId: ORDER_AGENT_ID,
-          sessionId: SESSION.supervisedBlueprint,
-          content: { product: "product-3" },
-        });
-
-        const raised = await scenario.stepSupervisedNeeded;
-
-        await api.blueprints.setNodes(
-          ORDER_BLUEPRINT_ID,
-          supervisedHandoffNodes(),
-          {
-            title: "Order and Compliance",
-            description:
-              "Find product, check its compliance certificate, and either create the purchase order or hand the product over to the compliance manager.",
-          }
-        );
-
-        await events.supervising.answered({
-          sessionId: SESSION.supervisedBlueprint,
-          agentId: ORDER_AGENT_ID,
-          taskId: taskCreated.taskId,
-          question: raised.question,
-          type: "BLUEPRINT",
-          answer:
-            "I added a handoff to the compliance manager. When a product has no certificate on file, hand the task over to the compliant_manager agent so it can request the certificate from the vendor.",
-        });
-
-        await scenario.supervisingAnswered;
-
-        const handedOff = await handoffTaskCreated;
-
-        expect(handedOff.blueprintId).toBe(COMPLIANCE_BLUEPRINT_ID);
-        expect(handedOff.taskId).not.toBe(taskCreated.taskId);
-
-        const taskCompleted = await scenario.taskCompleted;
-
-        expect(taskCompleted.taskId).toBe(taskCreated.taskId);
-        expect(String(taskCompleted.result)).toContain(COMPLIANCE_AGENT_ID);
-
-        expect((await vendorLookup).taskId).toBe(handedOff.taskId);
-        expect((await vendorEmail).taskId).toBe(handedOff.taskId);
-        expect((await handoffCompleted).taskId).toBe(handedOff.taskId);
-
-        expect(emailsMatching("gamma@vendor.com").length).toBeGreaterThan(0);
-
-        expect(certificateOf("prd-3")).toBeUndefined();
-      } finally {
-        await api.blueprints.setNodes(ORDER_BLUEPRINT_ID, orderNodesBefore);
-      }
-    },
-    SCENARIO_TIMEOUT_MS
-  );
+      expect(mcp.tool("GREY:send_email").lastCall).toMatchObject({
+        to: expect.stringContaining("gamma@vendor.com"),
+      });
+    } finally {
+      await api.blueprints.setNodes(ORDER_BLUEPRINT_ID, orderNodesBefore);
+    }
+  }, 600_000);
 });

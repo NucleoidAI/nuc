@@ -1,9 +1,10 @@
 import { on, publish, releaseAll, waitFor } from "./bus";
-import { watch } from "./scenario";
+import { init, watch } from "./scenario";
 import session from "./session";
 import supervising from "./supervising";
 
 const events = {
+  init,
   on,
   publish,
   waitFor,

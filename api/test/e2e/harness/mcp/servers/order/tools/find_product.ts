@@ -7,8 +7,6 @@ const findProduct: McpTool = {
   handler: ({ product_id, name }) => {
     if (!product_id && !name) return respond({ products: db.products });
 
-    console.log("FROM MOCK");
-
     const product = product_id
       ? productBy("id", product_id as string)
       : productBy("name", name as string);

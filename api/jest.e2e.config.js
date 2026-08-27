@@ -4,7 +4,7 @@ module.exports = {
   testMatch: ["<rootDir>/test/e2e/**/*.e2e.spec.ts"],
   moduleNameMapper: {
     "^@canmingir/link-express/event/client$":
-      "<rootDir>/test/e2e/harness/eventClientMock.ts",
+      "<rootDir>/test/e2e/harness/events/client.ts",
     "^\\.\\./lib/mcp$": "<rootDir>/test/e2e/harness/mcp/index.ts",
   },
   transform: {

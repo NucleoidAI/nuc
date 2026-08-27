@@ -10,7 +10,11 @@ type Unsubscribe = () => Promise<void>;
 
 const subscribers = new Map<string, Set<Callback<never>>>();
 
+const logging = process.env.E2E_EVENT_LOG !== "off";
+
 function log(action: string, topic: string, payload?: EventPayload) {
+  if (!logging) return;
+
   console.log(`[Event] ${action}:`, topic, payload || "");
 }
 

@@ -48,7 +48,7 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
     async () => {
       const purchaseOrdersBefore = purchaseOrdersFor("prd-1").length;
 
-      await events.userMessaged({
+      await events.session.userMessaged({
         agentId: ORDER_AGENT_ID,
         sessionId: SESSION.happyPath,
         content: { intent: "create_order" },
@@ -64,7 +64,7 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
 
       expect(waiting.stepId).toBe(stepAdded.stepId);
 
-      await events.userMessaged({
+      await events.session.userMessaged({
         agentId: ORDER_AGENT_ID,
         sessionId: SESSION.happyPath,
         content: { product: "product-1" },
@@ -88,7 +88,7 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
 
       expect(certificateOf("prd-4")).toBeUndefined();
 
-      await events.userMessaged({
+      await events.session.userMessaged({
         agentId: ORDER_AGENT_ID,
         sessionId: SESSION.supervisedKnowledge,
         content: { intent: "create_order" },
@@ -104,7 +104,7 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
 
       expect(waiting.stepId).toBe(stepAdded.stepId);
 
-      await events.userMessaged({
+      await events.session.userMessaged({
         agentId: ORDER_AGENT_ID,
         sessionId: SESSION.supervisedKnowledge,
         content: { product: "product-4" },
@@ -118,7 +118,7 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
         text: '{"product_id": "prd-4", "product_name": "product-4", "certificate": "CE"}',
       });
 
-      await events.supervisorAnswered({
+      await events.supervising.answered({
         sessionId: SESSION.supervisedKnowledge,
         agentId: ORDER_AGENT_ID,
         taskId: taskCreated.taskId,
@@ -150,7 +150,7 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
       expect(certificateOf("prd-3")).toBeUndefined();
 
       try {
-        await events.userMessaged({
+        await events.session.userMessaged({
           agentId: ORDER_AGENT_ID,
           sessionId: SESSION.supervisedBlueprint,
           content: { intent: "create_order" },
@@ -167,17 +167,20 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
 
         const handoffTaskCreated = events.waitFor(
           "TASK_CREATED",
+
           (payload) =>
             payload.agentId === COMPLIANCE_AGENT_ID &&
             payload.sessionId === SESSION.supervisedBlueprint
         );
         const vendorLookup = events.waitFor(
           "STEP_ADDED",
+
           (payload) =>
             elsewhere(payload) && payload.action === "ORDER:get_product_vendor"
         );
         const vendorEmail = events.waitFor(
           "STEP_ADDED",
+
           (payload) =>
             elsewhere(payload) && payload.action === "GREY:send_email"
         );
@@ -187,7 +190,7 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
 
         expect(waiting.stepId).toBe(stepAdded.stepId);
 
-        await events.userMessaged({
+        await events.session.userMessaged({
           agentId: ORDER_AGENT_ID,
           sessionId: SESSION.supervisedBlueprint,
           content: { product: "product-3" },
@@ -205,7 +208,7 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
           }
         );
 
-        await events.supervisorAnswered({
+        await events.supervising.answered({
           sessionId: SESSION.supervisedBlueprint,
           agentId: ORDER_AGENT_ID,
           taskId: taskCreated.taskId,

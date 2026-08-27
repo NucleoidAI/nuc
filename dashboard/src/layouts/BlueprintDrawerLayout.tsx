@@ -17,9 +17,6 @@ import { Box, Fab, Grid, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { storage, useStorage } from "@nucleoidjs/webstorage";
 
-const SHOW_CONNECTIONS_STORAGE_KEY =
-  "greycollar.blueprintdrawerlayout.showconnections";
-
 const BlueprintDrawerLayout = ({
   drawerOpen,
   handleDrawerClose,
@@ -87,14 +84,24 @@ const BlueprintDrawerLayout = ({
   const [showSettings, setShowSettings] = useState(false);
   const [settingsTab, setSettingsTab] = useState(0);
   const [blocking, setBlocking] = useState<boolean>(true);
-  const [showConnections] = useStorage(SHOW_CONNECTIONS_STORAGE_KEY, false);
+  const [showConnections] = useStorage(
+    "greycollar",
+    "blueprintdrawerlayout",
+    "showconnections",
+    false
+  );
   const [superviseChatOpen, setSuperviseChatOpen] = useState<boolean>(
     !!supervise
   );
   const [editBlueprintOpen, setEditBlueprintOpen] = useState(false);
 
   const setShowConnections = (value: boolean) => {
-    storage.set(SHOW_CONNECTIONS_STORAGE_KEY, value);
+    storage.set(
+      "greycollar",
+      "blueprintdrawerlayout",
+      "showconnections",
+      value
+    );
   };
 
   const { patchBlueprint } = useBlueprint();

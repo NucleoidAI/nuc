@@ -1,33 +1,6 @@
-type ToolArgs = Record<string, unknown>;
+import { mcpModule, reset, stubFor, stubs } from "./mcp";
 
-type Reply = (args: ToolArgs) => unknown;
-
-type Expectation = {
-  args?: ToolArgs;
-  reply?: Reply;
-  error: boolean;
-};
-
-type ToolStub = {
-  script: Expectation[];
-  reply?: Reply;
-  error: boolean;
-  forbidden: boolean;
-  calls: ToolArgs[];
-};
-
-const stubs = new Map<string, ToolStub>();
-
-function stubFor(action: string) {
-  let stub = stubs.get(action);
-
-  if (!stub) {
-    stub = { script: [], error: false, forbidden: false, calls: [] };
-    stubs.set(action, stub);
-  }
-
-  return stub;
-}
+import type { Expectation, Reply, ToolArgs } from "./types";
 
 function asReply(value: unknown): Reply {
   return typeof value === "function" ? (value as Reply) : () => value;
@@ -115,55 +88,11 @@ function verify() {
   }
 }
 
-function reset() {
-  stubs.clear();
-}
-
-async function callTool(action: string, args: ToolArgs) {
-  const stub = stubFor(action);
-
-  const step = stub.script[stub.calls.length];
-
-  stub.calls.push(args);
-
-  const reply = step?.reply ?? stub.reply;
-  const error = step?.reply ? step.error : stub.error;
-
-  const payload = reply
-    ? await reply(args)
-    : {
-        error:
-          `[e2e] no stub for "${action}" call #${stub.calls.length} ` +
-          `(called with ${JSON.stringify(args)}). Declare one with ` +
-          `mcp.tool("${action}").returns(...).`,
-      };
-
-  return {
-    _meta: {},
-    content: [{ type: "text", text: JSON.stringify(payload) }],
-    isError: reply ? error : true,
-  };
-}
-
-const mcpModule = {
-  __esModule: true,
-  default: {
-    connect: async () => ({
-      callTool: (action: string, args?: ToolArgs) =>
-        callTool(action, args ?? {}),
-      close: async () => {},
-    }),
-  },
-};
-
 function init() {
-  jest.mock(require.resolve("../../../src/lib/mcp"), () => mcpModule);
+  jest.mock(require.resolve("../../../../src/lib/mcp"), () => mcpModule);
 
   beforeEach(reset);
   afterEach(verify);
 }
 
-const mcp = { init, tool, verify, reset };
-
-export { mcp, mcpModule };
-export type { Reply, ToolArgs };
+export { init, tool, verify };

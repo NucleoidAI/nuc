@@ -26,7 +26,7 @@ const authorization = () =>
       aid: "10b7bc8c-a49c-4002-b0ec-63599e4b5210",
       oid: "dfb990bb-81dd-4584-82ce-050eb8f6a12f",
     },
-    process.env.JWT_SECRET as string
+    process.env.JWT_SECRET as string,
   )}`;
 
 describe("Order & Compliance Team — blueprint to task, end to end", () => {
@@ -170,7 +170,7 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
     expect(
       knowledge.body
         .map((entry: { text: string | null }) => entry.text)
-        .join("\n")
+        .join("\n"),
     ).toContain("prd-4");
 
     const completedTask = await event.waitFor("TASK_COMPLETED");
@@ -205,12 +205,10 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
 
     mcp.tool("ORDER:assign_certificate").expectsNoCalls();
 
-    const orderBlueprint = (
-      await supertest(stack.app())
-        .get(`/blueprints/${ORDER_BLUEPRINT_ID}`)
-        .set("authorization", authorization())
-        .expect(200)
-    ).body;
+    const { body: orderBlueprint } = await supertest(stack.app())
+      .get(`/blueprints/${ORDER_BLUEPRINT_ID}`)
+      .set("authorization", authorization())
+      .expect(200);
 
     try {
       await event.publish("SESSION_USER_MESSAGED", {
@@ -267,7 +265,7 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
         "TASK_CREATED",
         (payload) =>
           payload.agentId === COMPLIANCE_AGENT_ID &&
-          payload.sessionId === SESSION.supervisedBlueprint
+          payload.sessionId === SESSION.supervisedBlueprint,
       );
 
       expect(handedOff.blueprintId).toBe(COMPLIANCE_BLUEPRINT_ID);
@@ -280,18 +278,18 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
       const vendorLookup = await event.waitFor(
         "STEP_ADDED",
         (payload) =>
-          elsewhere(payload) && payload.action === "ORDER:get_product_vendor"
+          elsewhere(payload) && payload.action === "ORDER:get_product_vendor",
       );
       const vendorEmail = await event.waitFor(
         "STEP_ADDED",
-        (payload) => elsewhere(payload) && payload.action === "GREY:send_email"
+        (payload) => elsewhere(payload) && payload.action === "GREY:send_email",
       );
 
       expect(vendorLookup.taskId).toBe(handedOff.taskId);
       expect(vendorEmail.taskId).toBe(handedOff.taskId);
       const completedHandoffTask = await event.waitFor(
         "TASK_COMPLETED",
-        elsewhere
+        elsewhere,
       );
       expect(completedHandoffTask.taskId).toBe(handedOff.taskId);
 

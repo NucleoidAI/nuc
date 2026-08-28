@@ -5,12 +5,25 @@ import type {
   EventPayload,
   InitOptions,
 } from "@canmingir/link-express/event/client";
+import type { EventName, Payload } from "./types";
 
 type Unsubscribe = () => Promise<void>;
 
 const subscribers = new Map<string, Set<Callback<never>>>();
 
+const history: { type: string; payload: EventPayload }[] = [];
+
+const resetHooks = new Set<() => void>();
+
 const logging = process.env.E2E_EVENT_LOG !== "off";
+
+function onReset(hook: () => void) {
+  resetHooks.add(hook);
+}
+
+function forget() {
+  history.length = 0;
+}
 
 function log(action: string, topic: string, payload?: EventPayload) {
   if (!logging) return;
@@ -38,17 +51,23 @@ function deliver(type: string, payload: EventPayload) {
   }
 }
 
+async function publish<N extends EventName>(
+  type: N,
+  payload: Payload<N>
+): Promise<void>;
 async function publish<T extends EventPayload = EventPayload>(
   ...args: [...string[], T]
-): Promise<void> {
+): Promise<void>;
+async function publish(...args: unknown[]): Promise<void> {
   if (args.length < 2) {
     throw new Error("publish requires at least one event type and a payload");
   }
 
-  const payload = args[args.length - 1] as T;
+  const payload = args[args.length - 1] as EventPayload;
   const type = (args.slice(0, -1) as string[]).join("_");
 
   log("publish", type, payload);
+  history.push({ type, payload });
   deliver(type, payload);
 }
 
@@ -74,6 +93,13 @@ async function subscribe<T extends EventPayload = EventPayload>(
   };
 }
 
+function reset() {
+  subscribers.clear();
+  forget();
+
+  for (const hook of resetHooks) hook();
+}
+
 const event = {
   init: async (options?: InitOptions) => {
     if (options && options.type !== "inMemory") {
@@ -82,12 +108,12 @@ const event = {
       );
     }
 
-    subscribers.clear();
+    reset();
   },
   publish,
   subscribe,
   disconnect: async () => {
-    subscribers.clear();
+    reset();
   },
   checkBacklog: async () => {},
   startPushgateway: () => {},
@@ -96,5 +122,6 @@ const event = {
   getPushgatewayConfig: () => undefined,
 };
 
-export { client, event };
-export type { Callback, EventPayload, InitOptions };
+export default event;
+export { client, event, forget, history, onReset, publish, subscribe };
+export type { Callback, EventPayload, InitOptions, Unsubscribe };

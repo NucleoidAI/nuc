@@ -1,29 +1,19 @@
-import {
-  event as eventClient,
-  type Callback,
-  type EventPayload,
-} from "@canmingir/link-express/event/client";
+import { forget, history, onReset, subscribe } from "./event";
 
+import type { Callback, EventPayload, Unsubscribe } from "./event";
 import type { EventName, Payload } from "./types";
-
-type Unsubscribe = () => void | Promise<void>;
 
 type Match<N extends EventName> = (payload: Payload<N>) => boolean;
 
 const listening = new Set<Unsubscribe>();
 
-function publish<N extends EventName>(type: N, payload: Payload<N>) {
-  return eventClient.publish(type, payload as EventPayload);
-}
+onReset(() => listening.clear());
 
 async function on<N extends EventName>(
   type: N,
   callback: (payload: Payload<N>) => unknown
 ): Promise<Unsubscribe> {
-  const stop = await eventClient.subscribe(
-    type,
-    callback as Callback<EventPayload>
-  );
+  const stop = await subscribe(type, callback as Callback<EventPayload>);
 
   const release = async () => {
     listening.delete(release);
@@ -39,6 +29,12 @@ function waitFor<N extends EventName>(
   type: N,
   match: Match<N> = () => true
 ): Promise<Payload<N>> {
+  const seen = history.find(
+    (entry) => entry.type === type && match(entry.payload as Payload<N>)
+  );
+
+  if (seen) return Promise.resolve(seen.payload as Payload<N>);
+
   return new Promise<Payload<N>>((resolve, reject) => {
     let release: Unsubscribe | undefined;
     let received: Payload<N> | undefined;
@@ -72,7 +68,8 @@ function waitFor<N extends EventName>(
 async function releaseAll() {
   await Promise.all([...listening].map((release) => release()));
   listening.clear();
+  forget();
 }
 
-export { on, publish, releaseAll, waitFor };
-export type { Match, Unsubscribe };
+export { on, releaseAll, waitFor };
+export type { Match };

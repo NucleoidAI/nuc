@@ -6,7 +6,8 @@ import {
   SESSION,
   TEAM_ID,
 } from "./fixtures/ids";
-import events from "./harness/events";
+import event from "./harness/events";
+
 import jwt from "jsonwebtoken";
 import { mcp } from "./harness/mcp";
 import stack from "./harness/stack";
@@ -28,9 +29,9 @@ const authorization = () =>
     process.env.JWT_SECRET as string
   )}`;
 
-const scenario = events.init();
-
 describe("Order & Compliance Team — blueprint to task, end to end", () => {
+  afterEach(event.releaseAll);
+
   it("happy path: an order for a certified product runs the blueprint to completion", async () => {
     mcp.tool("ORDER:find_product").returns({
       product: { id: "prd-1", name: "product-1", vendor_id: "vnd-1" },
@@ -58,31 +59,29 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
       .expects({})
       .returns({ success: true, messageId: "<e2e-1@greycollar.test>" });
 
-    await events.session.userMessaged({
+    await event.publish("SESSION_USER_MESSAGED", {
       agentId: ORDER_AGENT_ID,
       sessionId: SESSION.happyPath,
-      content: { intent: "create_order" },
+      content: JSON.stringify({ intent: "create_order" }),
     });
 
-    const taskCreated = await scenario.taskCreated;
-    const stepAdded = await scenario.stepAdded;
+    const created = await event.waitFor("TASK_CREATED");
+    const added = await event.waitFor("STEP_ADDED");
 
-    expect(taskCreated.blueprintId).toBe(ORDER_BLUEPRINT_ID);
-    expect(stepAdded.action).toBe("PLATFORM:user_interaction");
+    expect(created.blueprintId).toBe(ORDER_BLUEPRINT_ID);
+    expect(added.action).toBe("PLATFORM:user_interaction");
 
-    const waiting = await scenario.stepWaitingForUser;
+    const waitingStep = await event.waitFor("STEP_WAITING_FOR_USER");
+    expect(waitingStep.stepId).toBe(added.stepId);
 
-    expect(waiting.stepId).toBe(stepAdded.stepId);
-
-    await events.session.userMessaged({
+    await event.publish("SESSION_USER_MESSAGED", {
       agentId: ORDER_AGENT_ID,
       sessionId: SESSION.happyPath,
-      content: { product: "product-1" },
+      content: JSON.stringify({ product: "product-1" }),
     });
 
-    const taskCompleted = await scenario.taskCompleted;
-
-    expect(taskCompleted.taskId).toBe(taskCreated.taskId);
+    const completedTask = await event.waitFor("TASK_COMPLETED");
+    expect(completedTask.taskId).toBe(created.taskId);
 
     expect(mcp.tool("ORDER:create_po").lastCall).toMatchObject({
       product_id: "prd-1",
@@ -117,29 +116,28 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
 
     expect(mcp.tool("ORDER:assign_certificate").calls).toHaveLength(0);
 
-    await events.session.userMessaged({
+    await event.publish("SESSION_USER_MESSAGED", {
       agentId: ORDER_AGENT_ID,
       sessionId: SESSION.supervisedKnowledge,
-      content: { intent: "create_order" },
+      content: JSON.stringify({ intent: "create_order" }),
     });
 
-    const taskCreated = await scenario.taskCreated;
-    const stepAdded = await scenario.stepAdded;
+    const created = await event.waitFor("TASK_CREATED");
+    const added = await event.waitFor("STEP_ADDED");
 
-    expect(taskCreated.blueprintId).toBe(ORDER_BLUEPRINT_ID);
-    expect(stepAdded.action).toBe("PLATFORM:user_interaction");
+    expect(created.blueprintId).toBe(ORDER_BLUEPRINT_ID);
+    expect(added.action).toBe("PLATFORM:user_interaction");
 
-    const waiting = await scenario.stepWaitingForUser;
+    const waitingStep = await event.waitFor("STEP_WAITING_FOR_USER");
+    expect(waitingStep.stepId).toBe(added.stepId);
 
-    expect(waiting.stepId).toBe(stepAdded.stepId);
-
-    await events.session.userMessaged({
+    await event.publish("SESSION_USER_MESSAGED", {
       agentId: ORDER_AGENT_ID,
       sessionId: SESSION.supervisedKnowledge,
-      content: { product: "product-4" },
+      content: JSON.stringify({ product: "product-4" }),
     });
 
-    const raised = await scenario.stepSupervisedNeeded;
+    const raised = await event.waitFor("STEP_SUPERVISED_NEEDED");
 
     await supertest(stack.app())
       .post("/knowledge")
@@ -151,17 +149,17 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
       })
       .expect(201);
 
-    await events.supervising.answered({
+    await event.publish("SUPERVISING_ANSWERED", {
       sessionId: SESSION.supervisedKnowledge,
       agentId: ORDER_AGENT_ID,
-      taskId: taskCreated.taskId,
+      taskId: created.taskId,
       question: raised.question,
       type: "KNOWLEDGE",
       answer:
         '{"product_id": "prd-4", "product_name": "product-4", "certificate": "CE"}',
     });
 
-    await scenario.supervisingAnswered;
+    await event.waitFor("SUPERVISING_ANSWERED");
 
     const knowledge = await supertest(stack.app())
       .get("/knowledge")
@@ -175,9 +173,8 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
         .join("\n")
     ).toContain("prd-4");
 
-    const taskCompleted = await scenario.taskCompleted;
-
-    expect(taskCompleted.taskId).toBe(taskCreated.taskId);
+    const completedTask = await event.waitFor("TASK_COMPLETED");
+    expect(completedTask.taskId).toBe(created.taskId);
 
     expect(mcp.tool("ORDER:assign_certificate").lastCall).toMatchObject({
       product_id: "prd-4",
@@ -216,52 +213,31 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
     ).body;
 
     try {
-      await events.session.userMessaged({
+      await event.publish("SESSION_USER_MESSAGED", {
         agentId: ORDER_AGENT_ID,
         sessionId: SESSION.supervisedBlueprint,
-        content: { intent: "create_order" },
+        content: JSON.stringify({ intent: "create_order" }),
       });
 
-      const taskCreated = await scenario.taskCreated;
-      const stepAdded = await scenario.stepAdded;
+      const created = await event.waitFor("TASK_CREATED");
+      const added = await event.waitFor("STEP_ADDED");
 
-      expect(taskCreated.blueprintId).toBe(ORDER_BLUEPRINT_ID);
-      expect(stepAdded.action).toBe("PLATFORM:user_interaction");
+      expect(created.blueprintId).toBe(ORDER_BLUEPRINT_ID);
+      expect(added.action).toBe("PLATFORM:user_interaction");
 
       const elsewhere = (payload: { taskId?: string }) =>
-        payload.taskId !== taskCreated.taskId;
+        payload.taskId !== created.taskId;
 
-      const handoffTaskCreated = events.waitFor(
-        "TASK_CREATED",
+      const waitingStep = await event.waitFor("STEP_WAITING_FOR_USER");
+      expect(waitingStep.stepId).toBe(added.stepId);
 
-        (payload) =>
-          payload.agentId === COMPLIANCE_AGENT_ID &&
-          payload.sessionId === SESSION.supervisedBlueprint
-      );
-      const vendorLookup = events.waitFor(
-        "STEP_ADDED",
-
-        (payload) =>
-          elsewhere(payload) && payload.action === "ORDER:get_product_vendor"
-      );
-      const vendorEmail = events.waitFor(
-        "STEP_ADDED",
-
-        (payload) => elsewhere(payload) && payload.action === "GREY:send_email"
-      );
-      const handoffCompleted = events.waitFor("TASK_COMPLETED", elsewhere);
-
-      const waiting = await scenario.stepWaitingForUser;
-
-      expect(waiting.stepId).toBe(stepAdded.stepId);
-
-      await events.session.userMessaged({
+      await event.publish("SESSION_USER_MESSAGED", {
         agentId: ORDER_AGENT_ID,
         sessionId: SESSION.supervisedBlueprint,
-        content: { product: "product-3" },
+        content: JSON.stringify({ product: "product-3" }),
       });
 
-      const raised = await scenario.stepSupervisedNeeded;
+      const raised = await event.waitFor("STEP_SUPERVISED_NEEDED");
 
       await supertest(stack.app())
         .put(`/blueprints/${ORDER_BLUEPRINT_ID}`)
@@ -275,31 +251,49 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
         })
         .expect(200);
 
-      await events.supervising.answered({
+      await event.publish("SUPERVISING_ANSWERED", {
         sessionId: SESSION.supervisedBlueprint,
         agentId: ORDER_AGENT_ID,
-        taskId: taskCreated.taskId,
+        taskId: created.taskId,
         question: raised.question,
         type: "BLUEPRINT",
         answer:
           "I added a handoff to the compliance manager. When a product has no certificate on file, hand the task over to the compliant_manager agent so it can request the certificate from the vendor.",
       });
 
-      await scenario.supervisingAnswered;
+      await event.waitFor("SUPERVISING_ANSWERED");
 
-      const handedOff = await handoffTaskCreated;
+      const handedOff = await event.waitFor(
+        "TASK_CREATED",
+        (payload) =>
+          payload.agentId === COMPLIANCE_AGENT_ID &&
+          payload.sessionId === SESSION.supervisedBlueprint
+      );
 
       expect(handedOff.blueprintId).toBe(COMPLIANCE_BLUEPRINT_ID);
-      expect(handedOff.taskId).not.toBe(taskCreated.taskId);
+      expect(handedOff.taskId).not.toBe(created.taskId);
 
-      const taskCompleted = await scenario.taskCompleted;
+      const completedTask = await event.waitFor("TASK_COMPLETED");
+      expect(completedTask.taskId).toBe(created.taskId);
+      expect(String(completedTask.result)).toContain(COMPLIANCE_AGENT_ID);
 
-      expect(taskCompleted.taskId).toBe(taskCreated.taskId);
-      expect(String(taskCompleted.result)).toContain(COMPLIANCE_AGENT_ID);
+      const vendorLookup = await event.waitFor(
+        "STEP_ADDED",
+        (payload) =>
+          elsewhere(payload) && payload.action === "ORDER:get_product_vendor"
+      );
+      const vendorEmail = await event.waitFor(
+        "STEP_ADDED",
+        (payload) => elsewhere(payload) && payload.action === "GREY:send_email"
+      );
 
-      expect((await vendorLookup).taskId).toBe(handedOff.taskId);
-      expect((await vendorEmail).taskId).toBe(handedOff.taskId);
-      expect((await handoffCompleted).taskId).toBe(handedOff.taskId);
+      expect(vendorLookup.taskId).toBe(handedOff.taskId);
+      expect(vendorEmail.taskId).toBe(handedOff.taskId);
+      const completedHandoffTask = await event.waitFor(
+        "TASK_COMPLETED",
+        elsewhere
+      );
+      expect(completedHandoffTask.taskId).toBe(handedOff.taskId);
 
       expect(mcp.tool("GREY:send_email").lastCall).toMatchObject({
         to: expect.stringContaining("gamma@vendor.com"),

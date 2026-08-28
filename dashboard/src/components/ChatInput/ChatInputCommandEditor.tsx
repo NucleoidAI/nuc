@@ -6,6 +6,7 @@ import { Iconify } from "@canmingir/link/platform/components";
 import MentionList from "./MentionList";
 import MentionText from "./MentiontText";
 import { isKeyHotkey } from "is-hotkey";
+import { storage } from "@nucleoidjs/webstorage";
 import useAgents from "../../hooks/useAgents";
 import { useEvent } from "@nucleoidai/react-event";
 import { useLocation } from "react-router-dom";
@@ -83,10 +84,10 @@ const ChatInputCommandEditor = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentInput]);
 
-  const selectedAgent = location.state?.name || sessionStorage.getItem("name");
+  const selectedAgent = location.state?.name || storage.get("greycollar.name");
 
   useEffect(() => {
-    sessionStorage.removeItem("name");
+    storage.remove("greycollar.name");
   }, [selectedAgent]);
 
   const insertCommand = (selectedCommand) => {

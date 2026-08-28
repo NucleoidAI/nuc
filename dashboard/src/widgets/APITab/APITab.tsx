@@ -387,7 +387,7 @@ function APITab({ agentId }: { agentId: string }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         paths: toOpenAPIPaths(api),
-        token: storage.get("link", "accessToken"),
+        token: storage.get("link", "accesstoken"),
         agentId,
         blueprint: flowGraphs,
       }),

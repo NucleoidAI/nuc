@@ -1,13 +1,10 @@
 import React from "react";
 
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 
-function SingleScrollableLayout({ title, children }) {
+function SingleScrollableLayout({ children }) {
   return (
     <>
-      <Typography sx={{ textAlign: "center", fontSize: "3rem", marginTop: 4 }}>
-        {title}
-      </Typography>
       <Box sx={{ paddingX: 5 }}>
         <Grid container spacing={4}>
           {children}

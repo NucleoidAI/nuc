@@ -6,10 +6,9 @@ import { useEffect, useRef } from "react";
 
 export const useSocket = () => {
   const socketRef = useRef<Socket | null>(null);
-  const { name } = config;
 
   useEffect(() => {
-    const token = storage.get(name, "accessToken");
+    const token = storage.get("link", "accesstoken");
 
     socketRef.current = io(config.api, {
       auth: {

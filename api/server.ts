@@ -7,9 +7,6 @@ import http from "http";
 import models from "./src/models";
 import platform from "@canmingir/link-express";
 
-//import kafkaConfig from "./config.kafka";
-//import txqConfig from "./config.txq";
-
 dotenv.config();
 
 process.on("uncaughtException", (err) => {

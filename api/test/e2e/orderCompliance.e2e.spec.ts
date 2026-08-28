@@ -4,15 +4,29 @@ import {
   ORDER_AGENT_ID,
   ORDER_BLUEPRINT_ID,
   SESSION,
+  TEAM_ID,
 } from "./fixtures/ids";
 import events from "./harness/events";
+import jwt from "jsonwebtoken";
 import { mcp } from "./harness/mcp";
-import api from "./harness/api";
 import stack from "./harness/stack";
+import supertest from "supertest";
 import { supervisedHandoffNodes } from "./fixtures/supervisedBlueprint";
 
 mcp.init();
 stack.init();
+
+const authorization = () =>
+  `Bearer ${jwt.sign(
+    {
+      sub: "1001",
+      aud: TEAM_ID,
+      rls: ["ADMIN"],
+      aid: "10b7bc8c-a49c-4002-b0ec-63599e4b5210",
+      oid: "dfb990bb-81dd-4584-82ce-050eb8f6a12f",
+    },
+    process.env.JWT_SECRET as string
+  )}`;
 
 const scenario = events.init();
 
@@ -127,11 +141,15 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
 
     const raised = await scenario.stepSupervisedNeeded;
 
-    await api.knowledge.create({
-      type: "DATA",
-      agentId: ORDER_AGENT_ID,
-      text: '{"product_id": "prd-4", "product_name": "product-4", "certificate": "CE"}',
-    });
+    await supertest(stack.app())
+      .post("/knowledge")
+      .set("authorization", authorization())
+      .send({
+        type: "DATA",
+        agentId: ORDER_AGENT_ID,
+        text: '{"product_id": "prd-4", "product_name": "product-4", "certificate": "CE"}',
+      })
+      .expect(201);
 
     await events.supervising.answered({
       sessionId: SESSION.supervisedKnowledge,
@@ -145,7 +163,17 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
 
     await scenario.supervisingAnswered;
 
-    expect(await api.knowledge.textFor(ORDER_AGENT_ID)).toContain("prd-4");
+    const knowledge = await supertest(stack.app())
+      .get("/knowledge")
+      .query({ agentId: ORDER_AGENT_ID })
+      .set("authorization", authorization())
+      .expect(200);
+
+    expect(
+      knowledge.body
+        .map((entry: { text: string | null }) => entry.text)
+        .join("\n")
+    ).toContain("prd-4");
 
     const taskCompleted = await scenario.taskCompleted;
 
@@ -180,7 +208,12 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
 
     mcp.tool("ORDER:assign_certificate").expectsNoCalls();
 
-    const orderNodesBefore = await api.blueprints.nodes(ORDER_BLUEPRINT_ID);
+    const orderBlueprint = (
+      await supertest(stack.app())
+        .get(`/blueprints/${ORDER_BLUEPRINT_ID}`)
+        .set("authorization", authorization())
+        .expect(200)
+    ).body;
 
     try {
       await events.session.userMessaged({
@@ -203,18 +236,18 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
 
         (payload) =>
           payload.agentId === COMPLIANCE_AGENT_ID &&
-          payload.sessionId === SESSION.supervisedBlueprint,
+          payload.sessionId === SESSION.supervisedBlueprint
       );
       const vendorLookup = events.waitFor(
         "STEP_ADDED",
 
         (payload) =>
-          elsewhere(payload) && payload.action === "ORDER:get_product_vendor",
+          elsewhere(payload) && payload.action === "ORDER:get_product_vendor"
       );
       const vendorEmail = events.waitFor(
         "STEP_ADDED",
 
-        (payload) => elsewhere(payload) && payload.action === "GREY:send_email",
+        (payload) => elsewhere(payload) && payload.action === "GREY:send_email"
       );
       const handoffCompleted = events.waitFor("TASK_COMPLETED", elsewhere);
 
@@ -230,15 +263,17 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
 
       const raised = await scenario.stepSupervisedNeeded;
 
-      await api.blueprints.setNodes(
-        ORDER_BLUEPRINT_ID,
-        supervisedHandoffNodes(),
-        {
+      await supertest(stack.app())
+        .put(`/blueprints/${ORDER_BLUEPRINT_ID}`)
+        .set("authorization", authorization())
+        .send({
           title: "Order and Compliance",
           description:
             "Find product, check its compliance certificate, and either create the purchase order or hand the product over to the compliance manager.",
-        },
-      );
+          agentId: orderBlueprint.agentId,
+          nodes: supervisedHandoffNodes(),
+        })
+        .expect(200);
 
       await events.supervising.answered({
         sessionId: SESSION.supervisedBlueprint,
@@ -270,7 +305,16 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
         to: expect.stringContaining("gamma@vendor.com"),
       });
     } finally {
-      await api.blueprints.setNodes(ORDER_BLUEPRINT_ID, orderNodesBefore);
+      await supertest(stack.app())
+        .put(`/blueprints/${ORDER_BLUEPRINT_ID}`)
+        .set("authorization", authorization())
+        .send({
+          title: orderBlueprint.title,
+          description: orderBlueprint.description,
+          agentId: orderBlueprint.agentId,
+          nodes: orderBlueprint.nodes ?? [],
+        })
+        .expect(200);
     }
   }, 600_000);
 });

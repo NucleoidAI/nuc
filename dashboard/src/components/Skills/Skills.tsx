@@ -52,25 +52,20 @@ const Skills = ({
         transform:
           "perspective(1500px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)",
         boxShadow: `
-            1px 1px 0 #161c24,
+           1px 1px 0 #161c24,
             2px 2px 0 #161c24,
             3px 3px 0 #161c24,
-            6px 6px 12px rgba(0, 0, 0, 0.25),
-            12px 12px 24px rgba(0, 0, 0, 0.3)
+            4px 4px 0 #161c24,
+            5px 5px 0 #161c24,
+            6px 6px 0 #161c24,
+            7px 7px 0 #161c24,
+            10px 10px 20px rgba(0, 0, 0, 0.4),
+            20px 20px 40px rgba(0, 0, 0, 0.5)
           `,
         transition:
           "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, filter 0.25s ease",
         "&:hover": {
           cursor: "pointer",
-          "& .skill-icon": {
-            transform: "perspective(350px) rotateX(15deg) rotateY(-15deg)",
-            boxShadow: `
-            1px 1px 0 #161c24,
-            2px 2px 0 #161c24,
-            4px 4px 6px rgba(0, 0, 0, 0.25),
-            10px 10px 20px rgba(0, 0, 0, 0.3)
-          `,
-          },
         },
       }}
       onClick={() =>
@@ -96,14 +91,9 @@ const Skills = ({
             flexShrink: 0,
             width: 56,
             height: 56,
-            borderRadius: 2,
+            borderRadius: 1,
             background: "linear-gradient(145deg, #3a3f4b, #1f232b)",
-            boxShadow: `
-            1px 1px 0 #161c24,
-            2px 2px 0 #161c24,
-            5px 5px 10px rgba(0, 0, 0, 0.25),
-            10px 10px 20px rgba(0, 0, 0, 0.3)
-          `,
+            boxShadow: "4px 4px 0 #1f232b",
             transform: "perspective(300px) rotateX(0deg) rotateY(0deg)",
             transformStyle: "preserve-3d",
             transition: "transform 0.3s",

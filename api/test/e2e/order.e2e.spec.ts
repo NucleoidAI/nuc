@@ -13,8 +13,6 @@ import { mcp } from "./harness/mcp";
 import supertest from "supertest";
 import { supervisedHandoffNodes } from "./fixtures/supervisedBlueprint";
 
-mcp.init();
-
 const authorization = () =>
   `Bearer ${jwt.sign(
     {

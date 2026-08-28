@@ -1,8 +1,11 @@
 import dotenv from "dotenv";
+import { mcp } from "./harness/mcp";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 
 const REPO_ROOT = path.dirname(process.cwd());
+
+mcp.init();
 
 beforeAll(async () => {
   dotenv.config({

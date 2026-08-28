@@ -10,12 +10,10 @@ import event from "./harness/events";
 
 import jwt from "jsonwebtoken";
 import { mcp } from "./harness/mcp";
-import stack from "./harness/stack";
 import supertest from "supertest";
 import { supervisedHandoffNodes } from "./fixtures/supervisedBlueprint";
 
 mcp.init();
-stack.init();
 
 const authorization = () =>
   `Bearer ${jwt.sign(
@@ -139,7 +137,7 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
 
     const raised = await event.waitFor("STEP_SUPERVISED_NEEDED");
 
-    await supertest(stack.app())
+    await supertest(app)
       .post("/knowledge")
       .set("authorization", authorization())
       .send({
@@ -161,7 +159,7 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
 
     await event.waitFor("SUPERVISING_ANSWERED");
 
-    const knowledge = await supertest(stack.app())
+    const knowledge = await supertest(app)
       .get("/knowledge")
       .query({ agentId: ORDER_AGENT_ID })
       .set("authorization", authorization())
@@ -205,7 +203,7 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
 
     mcp.tool("ORDER:assign_certificate").expectsNoCalls();
 
-    const { body: orderBlueprint } = await supertest(stack.app())
+    const { body: orderBlueprint } = await supertest(app)
       .get(`/blueprints/${ORDER_BLUEPRINT_ID}`)
       .set("authorization", authorization())
       .expect(200);
@@ -237,7 +235,7 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
 
       const raised = await event.waitFor("STEP_SUPERVISED_NEEDED");
 
-      await supertest(stack.app())
+      await supertest(app)
         .put(`/blueprints/${ORDER_BLUEPRINT_ID}`)
         .set("authorization", authorization())
         .send({
@@ -297,7 +295,7 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
         to: expect.stringContaining("gamma@vendor.com"),
       });
     } finally {
-      await supertest(stack.app())
+      await supertest(app)
         .put(`/blueprints/${ORDER_BLUEPRINT_ID}`)
         .set("authorization", authorization())
         .send({

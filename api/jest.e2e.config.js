@@ -1,6 +1,7 @@
 module.exports = {
   testEnvironment: "node",
   rootDir: __dirname,
+  setupFilesAfterEnv: ["<rootDir>/test/e2e/setup.ts"],
   testMatch: ["<rootDir>/test/e2e/**/*.e2e.spec.ts"],
   moduleNameMapper: {
     "^@canmingir/link-express/event/client$":

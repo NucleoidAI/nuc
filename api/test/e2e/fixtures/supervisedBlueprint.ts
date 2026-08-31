@@ -16,7 +16,6 @@ function supervisedHandoffNodes() {
       type: "NORMAL",
       properties: {
         label: "Select a Product",
-        prompt: "Ask user which product they want to order",
         icon: "mdi:account-question",
         action: "PLATFORM:user_interaction",
         description: "Ask user to select a product",
@@ -29,7 +28,6 @@ function supervisedHandoffNodes() {
       type: "NORMAL",
       properties: {
         label: "Find Product",
-        prompt: "Find the product by identifier",
         icon: "mdi:magnify",
         action: "ORDER:find_product",
         description: "Search and retrieve the product details",
@@ -41,8 +39,6 @@ function supervisedHandoffNodes() {
       type: "NORMAL",
       properties: {
         label: "Check Certificate",
-        prompt:
-          "Look up compliance certificate for the product from agent knowledge",
         icon: "mdi:book-search",
         action: "PLATFORM:knowledge_lookup",
         description:
@@ -55,7 +51,6 @@ function supervisedHandoffNodes() {
       type: "CONDITION",
       properties: {
         label: "If certificate exists",
-        prompt: "If product has certificate",
         icon: "mdi:source-branch",
         action: "PLATFORM:decision",
         description:
@@ -75,8 +70,6 @@ function supervisedHandoffNodes() {
       type: "HANDOFF",
       properties: {
         label: "Handoff to compliant_manager",
-        prompt:
-          "Hand the uncertified product over to the compliance manager so the vendor can be asked for the certificate",
         icon: "mdi:account-arrow-right",
         action: "PLATFORM:handoff",
         description: "Transfer this task to another agent's blueprint.",
@@ -93,7 +86,6 @@ function supervisedHandoffNodes() {
       type: "NORMAL",
       properties: {
         label: "Assign Certificate",
-        prompt: "Assign a compliance certificate to the product",
         icon: "mdi:certificate-outline",
         action: "ORDER:assign_certificate",
         description: "Assign a compliance certificate to the product",
@@ -105,7 +97,6 @@ function supervisedHandoffNodes() {
       type: "NORMAL",
       properties: {
         label: "Create Purchase Order",
-        prompt: "Create a purchase order for the product",
         icon: "mdi:file-document-plus",
         action: "ORDER:create_po",
         description: "Create a Purchase Order for the certified product",
@@ -117,7 +108,6 @@ function supervisedHandoffNodes() {
       type: "NORMAL",
       properties: {
         label: "Send Email",
-        prompt: "Send email to notify about the purchase order",
         icon: "mdi:email",
         action: "GREY:send_email",
         description:

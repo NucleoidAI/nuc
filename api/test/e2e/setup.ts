@@ -18,6 +18,8 @@ beforeAll(async () => {
     PROFILE: "TEST",
     PROJECT_ID: TEAM_ID,
     SMTP_FROM: "e2e@greycollar.test",
+    ASR_LOCAL_ENDPOINT_URL:
+      process.env.ASR_LOCAL_ENDPOINT_URL || "http://asr.e2e.invalid",
   });
 
   /* eslint-disable @typescript-eslint/no-var-requires */

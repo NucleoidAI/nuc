@@ -15,6 +15,7 @@ metadata.json
 asr_output.json
 greycollar_server_setup_v8
 .tunnel-backup
+api/messages/*
 asr-versions/*
 
 # e2e: staged copy of the built api

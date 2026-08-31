@@ -67,6 +67,7 @@ type EventMap = {
   TASK_COMPLETED: TaskCompleted;
   STEP_ADDED: StepAdded;
   STEP_COMPLETED: StepSettled;
+  STEP_FAILED: StepSettled;
   STEP_WAITING_FOR_USER: StepSettled;
   STEP_SUPERVISED_NEEDED: StepSupervisedNeeded;
   SUPERVISING_RAISED: SupervisingRaised;

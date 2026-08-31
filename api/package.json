@@ -9,7 +9,7 @@
     "build": "node build.prod.js",
     "lint": "eslint . --ext .ts",
     "test": "bun test.ts",
-    "test:e2e": "jest --config jest.e2e.config.js --runInBand"
+    "test:e2e": "node test/e2e/run.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.35.0",

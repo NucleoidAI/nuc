@@ -1,7 +1,7 @@
+import { TEAM_ID } from "./fixtures/ids";
 import dotenv from "dotenv";
 import { mcp } from "./harness/mcp";
 import path from "node:path";
-import { randomUUID } from "node:crypto";
 
 const REPO_ROOT = path.dirname(process.cwd());
 
@@ -15,7 +15,8 @@ beforeAll(async () => {
   });
 
   Object.assign(process.env, {
-    JWT_SECRET: randomUUID(),
+    PROFILE: "TEST",
+    PROJECT_ID: TEAM_ID,
     SMTP_FROM: "e2e@greycollar.test",
   });
 

@@ -330,17 +330,17 @@
       ]
     },
     {
-      "id": "019f414b-0000-4000-8000-000000000001",
-      "title": "Meeting Recording Transcription & Summary",
-      "description": "Converts per-participant PCM recordings to WAV, transcribes each one, produces a structured meeting summary attributed by speaker ID (key topics, decisions, action items), resolves participant IDs to real names in that summary, emails it to all participants with the per-speaker transcripts, the full transcript and the meeting audio files attached, then looks up the manager's email address from the agent's knowledge and sends the same summary to the manager as a separate step.",
-      "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath)\nsummary = SummarizeMeetingBySpeaker(transcripts.full_meeting_transcript, transcripts.speaker_transcripts)\nresolved = ResolveParticipants(summary, participants)\nattachments = PrepareMeetingAttachments(directoryPath, transcripts)\nEmail.Send(to: participants.emails, template: \"meeting_summary\", data: resolved, attachments: attachments)\nmanagerEmail = KnowledgeLookup(agentId)\nEmail.Send(to: managerEmail, template: \"meeting_summary\", data: resolved, attachments: attachments)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "id": "019fa100-0000-4000-8000-000000000001",
+      "title": "Meeting Summary A - Full Transcript Only",
+      "description": "Variant A of the meeting summarizer A/B test. Converts PCM recordings to WAV, transcribes only the mixed meeting-audio recording, and summarizes that full transcript into an overall summary and the meeting's highlights. It deliberately skips per-speaker transcription, produces no next steps and attributes nothing to individual speakers. A Turkish LLM judge scores meeting summary, topics, highlights, overall quality and accuracy on a 0-100 scale; next steps are explicitly not evaluated. The summary is emailed to the meeting participants, with the full transcript and the judge's evaluation attached as files. Meeting audio is not sent.",
+      "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath, includeSpeakerTranscripts: false)\nsummary = SummarizeMeeting(transcripts.full_meeting_transcript)\njudgement = JudgeSummary(transcript: transcripts.full_meeting_transcript, summary: summary.summary, highlights: summary.highlights, variant: \"A\")\nattachments = PrepareMeetingAttachments(directoryPath, transcripts, judgement, includeAudio: false)\nEmail.Send(to: participants.emails, template: \"meeting_summary_a\", data: summary, attachments: attachments)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "019f4a02-1111-4222-8333-444455556666",
       "blocking": false,
       "force": true,
-      "skill": "**Meeting Recording — Transcribe & Summarize**\n\nUse this Blueprint when per-participant meeting recordings need to be transcribed and turned into a speaker-attributed summary distributed to all participants and, as a separate step, to the manager.\n\nFlow: Convert PCM to WAV → Transcribe meeting → Summarize meeting by speaker → Resolve participant IDs to names → Prepare transcript and audio attachments → Send email to all participants → Get manager email from knowledge → Send email to the manager → Complete.\n\nExits after emailing the resolved summary, with the transcripts and audio files attached, to every meeting participant and separately to the manager whose address comes from the agent's knowledge base.",
+      "skill": "**Meeting Recording - Summary Variant A (transcript only)**\n\nUse this Blueprint for the lightweight arm of the summarizer A/B test: only the mixed meeting recording is transcribed, and the summary is written from that full transcript without transcribing each participant's own recording.\n\nFlow: Convert PCM to WAV -> Transcribe only meeting-audio.wav -> Summarize the full transcript (summary + highlights) -> Judge the summary against the transcript -> Prepare transcript and judgement attachments -> Send email to all participants -> Complete.\n\nProduces a summary and highlights only - no next steps, no speaker transcription, no speaker attribution and no separate manager email. The full transcript and the LLM evaluation go out as attachments; the meeting audio does not. Exits after emailing the participants.",
       "nodes": [
         {
-          "id": "019f414b-0001-4000-8000-000000000001",
+          "id": "019fa100-0001-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:pcm_to_wav",
@@ -350,81 +350,205 @@
             "icon": "mdi:waveform",
             "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
-          "next": ["019f414b-0002-4000-8000-000000000002"],
-          "createdAt": "2026-07-08T10:00:00Z"
+          "next": ["019fa100-0002-4000-8000-000000000001"],
+          "createdAt": "2026-08-20T10:00:00Z"
         },
         {
-          "id": "019f414b-0002-4000-8000-000000000002",
+          "id": "019fa100-0002-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:transcribe_meeting",
-            "description": "Transcribe each WAV file individually and collect per-speaker transcripts",
+            "description": "Transcribe only meeting-audio.wav with the self-hosted ASR service. Skip participant recordings because Variant A does not use speaker transcripts. The transcript is cached as a .txt file next to the audio",
+            "prompt": "Transcribe only meeting-audio.wav by setting includeSpeakerTranscripts to false",
+            "label": "Transcribe Meeting",
+            "icon": "mdi:microphone-multiple",
+            "pseudocode": "BEGIN_CONTEXT\ntranscripts = TranscribeMeeting(directoryPath, includeSpeakerTranscripts: false)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019fa100-0003-4000-8000-000000000001"],
+          "createdAt": "2026-08-20T10:00:00Z"
+        },
+        {
+          "id": "019fa100-0003-4000-8000-000000000001",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:summarize_meeting",
+            "description": "Summarize the combined meeting transcript into an overall summary and the meeting's highlights",
+            "prompt": "Pass full_meeting_transcript from the transcription step through unchanged as 'transcript'. Returns { summary, highlights: [{ topic, highlights: [string] }] }.",
+            "label": "Summarize Meeting",
+            "icon": "mdi:text-box-check",
+            "pseudocode": "BEGIN_CONTEXT\nsummary = SummarizeMeeting(transcripts.full_meeting_transcript)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019fa100-0004-4000-8000-000000000001"],
+          "createdAt": "2026-08-20T10:00:00Z"
+        },
+        {
+          "id": "019fa100-0004-4000-8000-000000000001",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:judge_summary",
+            "description": "Use a Turkish LLM judge to score the meeting summary, topics, highlights, overall quality and accuracy from 0 to 100; do not evaluate next steps because variant A does not generate them",
+            "prompt": "Pass full_meeting_transcript from the transcription step through unchanged as 'transcript', summary.summary as 'summary', summary.highlights as 'highlights', and variant: 'A'. Do not pass next_steps because variant A does not generate or evaluate them.",
+            "label": "Judge Summary",
+            "icon": "mdi:gavel",
+            "pseudocode": "BEGIN_CONTEXT\njudgement = JudgeSummary(transcript: transcripts.full_meeting_transcript, summary: summary.summary, highlights: summary.highlights, variant: \"A\")\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019fa100-0005-4000-8000-000000000001"],
+          "createdAt": "2026-08-20T10:00:00Z"
+        },
+        {
+          "id": "019fa100-0005-4000-8000-000000000001",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:prepare_meeting_attachments",
+            "description": "Write the full meeting transcript and the LLM judge's evaluation to files and collect them as email attachments. The meeting audio is not attached",
+            "prompt": "Pass directoryPath and full_meeting_transcript from the transcription step, along with the whole judgement object from the Judge Summary step. Set includeAudio: false. Variant A has no speaker transcripts. Returns an 'attachments' array to be handed to the email step.",
+            "label": "Prepare Attachments",
+            "icon": "mdi:paperclip",
+            "pseudocode": "BEGIN_CONTEXT\nattachments = PrepareMeetingAttachments(directoryPath, transcripts, judgement, includeAudio: false)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019fa100-0006-4000-8000-000000000001"],
+          "createdAt": "2026-08-20T10:00:00Z"
+        },
+        {
+          "id": "019fa100-0006-4000-8000-000000000001",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:send_email",
+            "description": "Email the summary to all meeting participants using the 'meeting_summary_a' template, attaching the transcripts and the LLM evaluation",
+            "prompt": "Send one email to all meeting participants (join every participant's email from meeting metadata into a comma-separated 'to' field). Do NOT compose subject/text/html manually - instead pass template: 'meeting_summary_a' and data: { meetingName, meetingDate, summary, highlights: [{ topic, highlights: [string] }] } built from the summarization step and meeting metadata. Do not pass next_steps - variant A has none. Also pass the 'attachments' array from the Prepare Attachments step through unchanged, so the transcripts and the LLM evaluation are attached.",
+            "label": "Email Participants",
+            "icon": "mdi:email-send",
+            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(to: participants.emails, template: \"meeting_summary_a\", data: summary, attachments: attachments)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019fa100-0007-4000-8000-000000000001"],
+          "createdAt": "2026-08-20T10:00:00Z"
+        },
+        {
+          "id": "019fa100-0007-4000-8000-000000000001",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "Mark the variant A meeting summary workflow as complete",
+            "prompt": "Complete meeting summary flow",
+            "label": "Complete",
+            "icon": "mdi:check",
+            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": null,
+          "createdAt": "2026-08-20T10:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "019fa200-0000-4000-8000-000000000001",
+      "title": "Meeting Summary B - Speaker Attributed",
+      "description": "Variant B of the meeting summarizer A/B test. Converts per-participant PCM recordings to WAV, transcribes both each participant individually and the meeting as a whole, then summarizes both together into an overall summary, the meeting's highlights and the next steps. Because every participant's own recording is passed in, statements and next step owners are attributed to the right speaker. Participant IDs are resolved to real names, and a Turkish LLM judge scores meeting summary, next steps, topics, highlights, overall quality and accuracy on a 0-100 scale. The result is emailed to all participants and, as a separate step, to the manager whose address comes from the agent's knowledge base - with the transcripts and the judge's evaluation attached as files. Meeting audio is not sent.",
+      "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath)\nsummary = SummarizeMeetingBySpeaker(transcripts.full_meeting_transcript, transcripts.speaker_transcripts)\nresolved = ResolveParticipants(summary, participants)\njudgement = JudgeSummary(transcript: transcripts.full_meeting_transcript, speaker_transcripts: transcripts.speaker_transcripts, summary: resolved.summary, highlights: resolved.highlights, next_steps: resolved.next_steps, variant: \"B\")\nattachments = PrepareMeetingAttachments(directoryPath, transcripts, judgement, includeAudio: false)\nEmail.Send(to: participants.emails, template: \"meeting_summary_b\", data: resolved, attachments: attachments)\nmanagerEmail = KnowledgeLookup(agentId)\nEmail.Send(to: managerEmail, template: \"meeting_summary_b\", data: resolved, attachments: attachments)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "agentId": "019f4a02-1111-4222-8333-444455556666",
+      "blocking": false,
+      "force": true,
+      "skill": "**Meeting Recording - Summary Variant B (speaker attributed)**\n\nUse this Blueprint for the detailed arm of the summarizer A/B test: every participant is transcribed separately as well as the meeting as a whole, and both are given to the model so the summary can say who said what and who owns each next step.\n\nFlow: Convert PCM to WAV -> Transcribe meeting -> Summarize by speaker (summary + highlights + next steps) -> Resolve participant IDs to names -> Judge the summary against the transcript and the per-speaker recordings -> Prepare transcript and judgement attachments -> Send email to all participants -> Get manager email from knowledge -> Send email to the manager -> Complete.\n\nThe transcripts and the LLM evaluation go out as attachments; the meeting audio does not. Exits after emailing the resolved summary to every meeting participant and separately to the manager.",
+      "nodes": [
+        {
+          "id": "019fa200-0001-4000-8000-000000000001",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:pcm_to_wav",
+            "description": "Convert all PCM audio files in the meeting directory to WAV format",
+            "prompt": "Convert PCM files to WAV",
+            "label": "Convert PCM to WAV",
+            "icon": "mdi:waveform",
+            "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019fa200-0002-4000-8000-000000000001"],
+          "createdAt": "2026-08-20T10:00:00Z"
+        },
+        {
+          "id": "019fa200-0002-4000-8000-000000000001",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:transcribe_meeting",
+            "description": "Transcribe each WAV file individually with the self-hosted ASR service and collect the full meeting transcript together with the per-speaker transcripts. Transcripts are cached as .txt files next to the audio, so re-running the meeting does not transcribe again",
             "prompt": "Transcribe all WAV files in the meeting directory",
             "label": "Transcribe Meeting",
             "icon": "mdi:microphone-multiple",
             "pseudocode": "BEGIN_CONTEXT\ntranscripts = TranscribeMeeting(directoryPath)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
-          "next": ["019f414b-0003-4000-8000-000000000003"],
-          "createdAt": "2026-07-08T10:00:00Z"
+          "next": ["019fa200-0003-4000-8000-000000000001"],
+          "createdAt": "2026-08-20T10:00:00Z"
         },
         {
-          "id": "019f414b-0003-4000-8000-000000000003",
+          "id": "019fa200-0003-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:summarize_meeting_by_speaker",
-            "description": "Produce a structured meeting summary (key topics, decisions, action items) attributed by speaker ID, using each participant's individual transcript plus the full meeting transcript as background reference",
-            "prompt": "Pass full_meeting_transcript and speaker_transcripts from the previous step through unchanged to produce a speaker-attributed meeting summary",
+            "description": "Summarize the combined transcript plus each participant's own recording into an overall summary, the meeting's highlights and the next steps, attributed to the right speaker",
+            "prompt": "Pass full_meeting_transcript and speaker_transcripts from the previous step through unchanged. Returns { summary, highlights: [{ topic, highlights: [string] }], next_steps }.",
             "label": "Summarize Meeting By Speaker",
             "icon": "mdi:text-box-check",
             "pseudocode": "BEGIN_CONTEXT\nsummary = SummarizeMeetingBySpeaker(transcripts.full_meeting_transcript, transcripts.speaker_transcripts)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
-          "next": ["019f414b-0004-4000-8000-000000000004"],
-          "createdAt": "2026-07-08T10:00:00Z"
+          "next": ["019fa200-0004-4000-8000-000000000001"],
+          "createdAt": "2026-08-20T10:00:00Z"
         },
         {
-          "id": "019f414b-0004-4000-8000-000000000004",
+          "id": "019fa200-0004-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:resolve_participants",
-            "description": "Replace numeric participant IDs with real participant names, anywhere they appear in the meeting summary",
-            "prompt": "Resolve participant IDs to real names in the meeting summary using meeting metadata",
+            "description": "Replace speaker IDs with real participant names, anywhere they appear in the summary",
+            "prompt": "Pass the whole { summary, highlights: [{ topic, highlights: [string] }], next_steps } object from the summarization step as 'content' and the participants list from meeting metadata as 'participants'. Returns the same object with IDs replaced by real names.",
             "label": "Resolve Participants",
             "icon": "mdi:account-convert",
             "pseudocode": "BEGIN_CONTEXT\nresolved = ResolveParticipants(summary, participants)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
-          "next": ["019f414b-0007-4000-8000-000000000007"],
-          "createdAt": "2026-07-08T10:00:00Z"
+          "next": ["019fa200-0005-4000-8000-000000000001"],
+          "createdAt": "2026-08-20T10:00:00Z"
         },
         {
-          "id": "019f414b-0007-4000-8000-000000000007",
+          "id": "019fa200-0005-4000-8000-000000000001",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:judge_summary",
+            "description": "Use a Turkish LLM judge to score the meeting summary, next steps, topics, highlights, overall quality and accuracy from 0 to 100; verify speaker attributions against the individual recordings",
+            "prompt": "Pass full_meeting_transcript from the transcription step as 'transcript', speaker_transcripts through unchanged as 'speaker_transcripts', resolved.summary as 'summary', resolved.highlights as 'highlights', resolved.next_steps as 'next_steps', and variant: 'B'.",
+            "label": "Judge Summary",
+            "icon": "mdi:gavel",
+            "pseudocode": "BEGIN_CONTEXT\njudgement = JudgeSummary(transcript: transcripts.full_meeting_transcript, speaker_transcripts: transcripts.speaker_transcripts, summary: resolved.summary, highlights: resolved.highlights, next_steps: resolved.next_steps, variant: \"B\")\nEND_CONTEXT\n\nEND_MESSAGE"
+          },
+          "next": ["019fa200-0006-4000-8000-000000000001"],
+          "createdAt": "2026-08-20T10:00:00Z"
+        },
+        {
+          "id": "019fa200-0006-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:prepare_meeting_attachments",
-            "description": "Write the full meeting transcript and each speaker's transcript to files and collect them, together with the meeting audio files bundled into a single zip, as email attachments",
-            "prompt": "Pass directoryPath, and full_meeting_transcript plus speaker_transcripts from the transcription step through unchanged, along with the participants list from meeting metadata. Returns an 'attachments' array to be handed to the email step.",
+            "description": "Write the full meeting transcript, each speaker's transcript and the LLM judge's evaluation to files and collect them as email attachments. The meeting audio is not attached",
+            "prompt": "Pass directoryPath, and full_meeting_transcript plus speaker_transcripts from the transcription step through unchanged, along with the participants list from meeting metadata and the whole judgement object from the Judge Summary step. Set includeAudio: false - the meeting audio must not be emailed. Returns an 'attachments' array to be handed to the email steps.",
             "label": "Prepare Attachments",
             "icon": "mdi:paperclip",
-            "pseudocode": "BEGIN_CONTEXT\nattachments = PrepareMeetingAttachments(directoryPath, transcripts)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "pseudocode": "BEGIN_CONTEXT\nattachments = PrepareMeetingAttachments(directoryPath, transcripts, judgement, includeAudio: false)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
-          "next": ["019f414b-0005-4000-8000-000000000005"],
-          "createdAt": "2026-07-08T10:00:00Z"
+          "next": ["019fa200-0007-4000-8000-000000000001"],
+          "createdAt": "2026-08-20T10:00:00Z"
         },
         {
-          "id": "019f414b-0005-4000-8000-000000000005",
+          "id": "019fa200-0007-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
             "action": "GREY:send_email",
-            "description": "Email the resolved meeting summary to all meeting participants using the 'meeting_summary' template, attaching the transcripts and audio files",
-            "prompt": "Send one email to all meeting participants (join every participant's email from meeting metadata into a comma-separated 'to' field). Do NOT compose subject/text/html manually - instead pass template: 'meeting_summary' and data: { meetingName, meetingDate, summary, key_topics, decisions, action_items: [{owner, task}], speaker_highlights: [{id, summary}] } built from the resolved summary and meeting metadata. Also pass the 'attachments' array from the Prepare Attachments step through unchanged, so the per-speaker transcripts, the full transcript and the zipped meeting audio are attached.",
+            "description": "Email the resolved speaker-attributed summary to all meeting participants using the 'meeting_summary_b' template, attaching the transcripts and the LLM evaluation",
+            "prompt": "Send one email to all meeting participants (join every participant's email from meeting metadata into a comma-separated 'to' field). Do NOT compose subject/text/html manually - instead pass template: 'meeting_summary_b' and data: { meetingName, meetingDate, summary, highlights: [{ topic, highlights: [string] }], next_steps } built from the resolved summary and meeting metadata. Also pass the 'attachments' array from the Prepare Attachments step through unchanged, so the transcripts and the LLM evaluation are attached.",
             "label": "Email Participants",
             "icon": "mdi:email-send",
-            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(to: participants.emails, template: \"meeting_summary\", data: resolved, attachments: attachments)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(to: participants.emails, template: \"meeting_summary_b\", data: resolved, attachments: attachments)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
-          "next": ["019f414b-0008-4000-8000-000000000008"],
-          "createdAt": "2026-07-08T10:00:00Z"
+          "next": ["019fa200-0008-4000-8000-000000000001"],
+          "createdAt": "2026-08-20T10:00:00Z"
         },
         {
-          "id": "019f414b-0008-4000-8000-000000000008",
+          "id": "019fa200-0008-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
             "action": "GREY:knowledge_lookup",
@@ -434,36 +558,36 @@
             "icon": "mdi:book-search",
             "pseudocode": "BEGIN_CONTEXT\nmanagerEmail = KnowledgeLookup(agentId)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
-          "next": ["019f414b-0009-4000-8000-000000000009"],
-          "createdAt": "2026-07-08T10:00:00Z"
+          "next": ["019fa200-0009-4000-8000-000000000001"],
+          "createdAt": "2026-08-20T10:00:00Z"
         },
         {
-          "id": "019f414b-0009-4000-8000-000000000009",
+          "id": "019fa200-0009-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
             "action": "GREY:send_email",
-            "description": "Email the resolved meeting summary to the manager's email address found in the knowledge base, using the 'meeting_summary' template and attaching the transcripts and audio files",
-            "prompt": "Send a separate email to the manager's email address from the knowledge lookup step ('to' is only the manager address). Do NOT compose subject/text/html manually - instead pass template: 'meeting_summary' and data: { meetingName, meetingDate, summary, key_topics, decisions, action_items: [{owner, task}], speaker_highlights: [{id, summary}] } built from the resolved summary and meeting metadata. Also pass the 'attachments' array from the Prepare Attachments step through unchanged, so the per-speaker transcripts, the full transcript and the zipped meeting audio are attached.",
+            "description": "Email the resolved summary to the manager's email address found in the knowledge base, using the 'meeting_summary_b' template and attaching the transcripts and the LLM evaluation",
+            "prompt": "Send a separate email to the manager's email address from the knowledge lookup step ('to' is only the manager address). Do NOT compose subject/text/html manually - instead pass template: 'meeting_summary_b' and data: { meetingName, meetingDate, summary, highlights: [{ topic, highlights: [string] }], next_steps } built from the resolved summary and meeting metadata. Also pass the 'attachments' array from the Prepare Attachments step through unchanged.",
             "label": "Email Manager",
             "icon": "mdi:email-send",
-            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(to: managerEmail, template: \"meeting_summary\", data: resolved, attachments: attachments)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(to: managerEmail, template: \"meeting_summary_b\", data: resolved, attachments: attachments)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
-          "next": ["019f414b-0006-4000-8000-000000000006"],
-          "createdAt": "2026-07-08T10:00:00Z"
+          "next": ["019fa200-0010-4000-8000-000000000001"],
+          "createdAt": "2026-08-20T10:00:00Z"
         },
         {
-          "id": "019f414b-0006-4000-8000-000000000006",
+          "id": "019fa200-0010-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the meeting transcription and summary workflow as complete",
+            "description": "Mark the variant B meeting summary workflow as complete",
             "prompt": "Complete meeting summary flow",
             "label": "Complete",
             "icon": "mdi:check",
             "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": null,
-          "createdAt": "2026-07-08T10:00:00Z"
+          "createdAt": "2026-08-20T10:00:00Z"
         }
       ]
     },

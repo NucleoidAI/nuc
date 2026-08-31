@@ -258,13 +258,13 @@ const MCPs = [
         template: {
           type: "string",
           description:
-            "Name of a predefined email template to render instead of manually composing text/html. Available: 'meeting_summary'.",
+            "Name of a predefined email template to render instead of manually composing text/html. Available: 'meeting_summary_a' (summary and highlights from the full transcript only), 'meeting_summary_b' (the same plus next steps, speaker attributed).",
           nullable: true,
         },
         data: {
           type: "object",
           description:
-            "Structured data to render into the template named by 'template'. For 'meeting_summary': { meetingName, meetingDate, summary, key_topics, decisions, action_items: [{owner, task}], speaker_highlights: [{id, summary}] }.",
+            "Structured data to render into the template named by 'template'. For 'meeting_summary_a': { meetingName, meetingDate, summary, highlights: [{ topic: string, highlights: [string] }] }. For 'meeting_summary_b': the same fields plus next_steps: [string]. The LLM judge's evaluation is not rendered into the body - it is sent as an attachment.",
           nullable: true,
         },
       },

@@ -5,7 +5,7 @@ module.exports = {
   testMatch: ["<rootDir>/test/e2e/**/*.e2e.spec.ts"],
   moduleNameMapper: {
     "^@canmingir/link-express/event/client$":
-      "<rootDir>/test/e2e/mock/events/index.ts",
+      "<rootDir>/test/e2e/mocks/events/index.ts",
   },
   transform: {
     "^.+\\.ts$": [

@@ -5,9 +5,9 @@ import {
   ORDER_BLUEPRINT_ID,
   SESSION,
 } from "./fixtures/ids";
-import event from "./harness/events";
+import event from "./mock/events";
 
-import { mcp } from "./harness/mcp";
+import { mcp } from "./mock/mcp";
 import supertest from "supertest";
 import { supervisedHandoffNodes } from "./fixtures/supervisedBlueprint";
 

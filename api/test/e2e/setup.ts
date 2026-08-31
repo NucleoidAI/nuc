@@ -1,6 +1,6 @@
 import { TEAM_ID } from "./fixtures/ids";
 import dotenv from "dotenv";
-import { mcp } from "./harness/mcp";
+import { mcp } from "./mock/mcp";
 import path from "node:path";
 
 const REPO_ROOT = path.dirname(process.cwd());

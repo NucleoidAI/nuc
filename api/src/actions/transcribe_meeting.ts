@@ -76,9 +76,13 @@ async function transcribeFile(
 }
 
 async function run({
-  parameters: { directoryPath },
+  parameters: { directoryPath, force, includeSpeakerTranscripts = true },
 }: {
-  parameters: { directoryPath: string };
+  parameters: {
+    directoryPath: string;
+    force?: boolean;
+    includeSpeakerTranscripts?: boolean;
+  };
 }) {
   console.log("transcribe_meeting", directoryPath);
   console.log("MOCK", MOCK);
@@ -111,22 +115,36 @@ async function run({
     return { error: `Directory does not exist: ${directoryPath}` };
   }
 
-  const baseUrl = process.env.ASR_ENDPOINT_URL;
+  const baseUrl = process.env.ASR_LOCAL_ENDPOINT_URL;
+
   console.log("baseUrl", baseUrl);
   if (!baseUrl) {
-    return { error: "ASR_ENDPOINT_URL environment variable is not set" };
+    return { error: "ASR_LOCAL_ENDPOINT_URL environment variable is not set" };
   }
 
-  const wavFiles = fs
+  const allWavFiles = fs
     .readdirSync(directoryPath)
     .filter((f) => f.toLowerCase().endsWith(".wav"))
     .sort();
 
-  console.log("wavFiles", wavFiles);
-
-  if (wavFiles.length === 0) {
+  if (allWavFiles.length === 0) {
     return { error: "No .wav files found in directory" };
   }
+
+  const wavFiles = includeSpeakerTranscripts
+    ? allWavFiles
+    : allWavFiles.filter(
+        (file) => path.basename(file, ".wav").toLowerCase() === MIX_FILE_STEM,
+      );
+
+  if (wavFiles.length === 0) {
+    return {
+      error:
+        "meeting-audio.wav is required when includeSpeakerTranscripts is false",
+    };
+  }
+
+  console.log("wavFiles", wavFiles);
 
   const speakerTranscripts: { id: string; transcript: string }[] = [];
   const fullParts: string[] = [];
@@ -135,20 +153,32 @@ async function run({
   for (const file of wavFiles) {
     const stem = path.basename(file, ".wav");
     const filePath = path.join(directoryPath, file);
+    const transcriptPath = path.join(directoryPath, `${stem}.txt`);
     console.log("filePath", filePath);
-    try {
-      const transcription = await transcribeFile(filePath, baseUrl);
-      console.log("transcription", transcription);
-      if (stem.toLowerCase() === MIX_FILE_STEM) {
-        mixTranscript = transcription;
-      } else {
-        speakerTranscripts.push({ id: stem, transcript: transcription });
+
+    let transcription: string;
+
+    if (!force && fs.existsSync(transcriptPath)) {
+      console.log("reusing transcript", transcriptPath);
+      transcription = await fs.promises.readFile(transcriptPath, "utf8");
+    } else {
+      try {
+        transcription = await transcribeFile(filePath, baseUrl);
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        return { error: `Failed on file ${file}: ${message}` };
       }
-      fullParts.push(transcription);
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : String(err);
-      return { error: `Failed on file ${file}: ${message}` };
+      await fs.promises.writeFile(transcriptPath, transcription, "utf8");
     }
+
+    console.log("transcription", transcription);
+
+    if (stem.toLowerCase() === MIX_FILE_STEM) {
+      mixTranscript = transcription;
+    } else {
+      speakerTranscripts.push({ id: stem, transcript: transcription });
+    }
+    fullParts.push(transcription);
   }
 
   return {

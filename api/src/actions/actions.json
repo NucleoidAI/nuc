@@ -264,14 +264,22 @@
     "action": "PLATFORM:transcribe_meeting",
     "label": "Platform",
     "lib": "transcribe_meeting",
-    "description": "Transcribe all WAV audio files in a directory one by one and return individual and combined transcripts",
+    "description": "Transcribe WAV audio files in a directory with the self-hosted ASR service, write each transcript as a .txt file next to the audio, and return the individual and combined transcripts. Speaker recordings can be skipped when only the mixed meeting transcript is needed. Existing .txt files in the directory are reused, so re-running on the same meeting does not transcribe a second time.",
     "icon": "mdi:microphone-multiple",
     "inputSchema": {
       "type": "object",
       "properties": {
         "directoryPath": {
           "type": "string",
-          "description": "Absolute path to the directory containing .wav files."
+          "description": "Absolute path to the directory containing .wav files. The .txt transcripts are written into this same directory."
+        },
+        "force": {
+          "type": "boolean",
+          "description": "Re-transcribe even when a .txt transcript already exists, overwriting it. Defaults to false."
+        },
+        "includeSpeakerTranscripts": {
+          "type": "boolean",
+          "description": "Whether to transcribe participant WAV files in addition to meeting-audio.wav. Defaults to true. Set to false when only the mixed full-meeting transcript is needed."
         }
       },
       "required": ["directoryPath"]
@@ -303,7 +311,7 @@
     "action": "PLATFORM:transcribe_meeting_cloud",
     "label": "Platform",
     "lib": "transcribe_meeting_cloud",
-    "description": "Transcribe all WAV audio files in a directory with a cloud ASR model (whisper-large-v3 via OpenRouter), write each transcript as a .txt file next to the audio, and return the individual and combined transcripts. Existing .txt files in the directory are reused, so re-running on the same meeting does not transcribe a second time.",
+    "description": "Transcribe WAV audio files in a directory with a cloud ASR model (whisper-large-v3 via OpenRouter), write each transcript as a .txt file next to the audio, and return the individual and combined transcripts. Speaker recordings can be skipped when only the mixed meeting transcript is needed. Existing .txt files in the directory are reused, so re-running on the same meeting does not transcribe a second time.",
     "icon": "mdi:cloud-check",
     "inputSchema": {
       "type": "object",
@@ -323,6 +331,10 @@
         "force": {
           "type": "boolean",
           "description": "Re-transcribe even when a .txt transcript already exists, overwriting it. Defaults to false."
+        },
+        "includeSpeakerTranscripts": {
+          "type": "boolean",
+          "description": "Whether to transcribe participant WAV files in addition to meeting-audio.wav. Defaults to true. Set to false when only the mixed full-meeting transcript is needed."
         }
       },
       "required": ["directoryPath"]

@@ -123,7 +123,10 @@ Uzunluğu ödüllendirme; kısa ve doğru notlar, uzun ve spekülatif notlardan 
     json_format: evaluatesNextSteps
       ? '{ meeting_summary: <0-100>, next_steps: <0-100>, topics: <0-100>, highlights: <0-100>, overall: <0-100>, accuracy: <0-100>, reasoning: "<Türkçe, en fazla 150 kelime>" }'
       : '{ meeting_summary: <0-100>, topics: <0-100>, highlights: <0-100>, overall: <0-100>, accuracy: <0-100>, reasoning: "<Türkçe, en fazla 150 kelime>" }',
-    max_tokens: 1024,
+    // Reasoning models bill their thinking against max_tokens, so a budget
+    // sized for the ~300-token verdict alone gets consumed entirely by the
+    // thinking block and returns empty content.
+    max_tokens: 8192,
     meta,
   });
 

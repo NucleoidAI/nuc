@@ -133,6 +133,15 @@ function createOpenAICompatibleAdapter(
       });
 
       if (!content) {
+        if (firstChoice.finish_reason === "length") {
+          throw new Error(
+            `${providerLabel} truncated the response for model ${model} before any content was produced ` +
+              `(max_tokens=${max_tokens}, reasoning_tokens=${
+                (usage as { completion_tokens_details?: { reasoning_tokens?: number } })
+                  ?.completion_tokens_details?.reasoning_tokens ?? 0
+              }). Raise max_tokens or disable reasoning for this model.`,
+          );
+        }
         throw new Error(`${providerLabel} is not responding`);
       }
 

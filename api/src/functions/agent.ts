@@ -305,7 +305,6 @@ async function task({ taskId }: { taskId: string }) {
         info({ agentId }),
         knowledge({ agentId, taskId }),
         Blueprints({ agentId }),
-        steps({ taskId }),
         sessionId ? conversations({ sessionId }) : Promise.resolve([]),
       ])
     ).flat(),

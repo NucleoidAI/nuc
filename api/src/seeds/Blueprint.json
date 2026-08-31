@@ -333,7 +333,7 @@
       "id": "019fa100-0000-4000-8000-000000000001",
       "title": "Meeting Summary A - Full Transcript Only",
       "description": "Variant A of the meeting summarizer A/B test. Converts PCM recordings to WAV, transcribes only the mixed meeting-audio recording, and summarizes that full transcript into an overall summary and the meeting's highlights. It deliberately skips per-speaker transcription, produces no next steps and attributes nothing to individual speakers. A Turkish LLM judge scores meeting summary, topics, highlights, overall quality and accuracy on a 0-100 scale; next steps are explicitly not evaluated. The summary is emailed to the meeting participants, with the full transcript and the judge's evaluation attached as files. Meeting audio is not sent.",
-      "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeetingCloud(directoryPath, includeSpeakerTranscripts: false)\nsummary = SummarizeMeeting(transcripts.full_meeting_transcript)\njudgement = JudgeSummary(transcript: transcripts.full_meeting_transcript, summary: summary.summary, highlights: summary.highlights, variant: \"A\")\nattachments = PrepareMeetingAttachments(directoryPath, transcripts, judgement, includeAudio: false)\nEmail.Send(to: participants.emails, template: \"meeting_summary_a\", data: summary, attachments: attachments)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
+      "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath, includeSpeakerTranscripts: false)\nsummary = SummarizeMeeting(transcripts.full_meeting_transcript)\njudgement = JudgeSummary(transcript: transcripts.full_meeting_transcript, summary: summary.summary, highlights: summary.highlights, variant: \"A\")\nattachments = PrepareMeetingAttachments(directoryPath, transcripts, judgement, includeAudio: false)\nEmail.Send(to: participants.emails, template: \"meeting_summary_a\", data: summary, attachments: attachments)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "019f4a02-1111-4222-8333-444455556666",
       "blocking": false,
       "force": true,
@@ -357,12 +357,12 @@
           "id": "019fa100-0002-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
-            "action": "PLATFORM:transcribe_meeting_cloud",
-            "description": "Transcribe only meeting-audio.wav with the cloud ASR model. Skip participant recordings because Variant A does not use speaker transcripts. The transcript is cached as a .txt file next to the audio",
+            "action": "PLATFORM:transcribe_meeting",
+            "description": "Transcribe only meeting-audio.wav with the self-hosted ASR service. Skip participant recordings because Variant A does not use speaker transcripts. The transcript is cached as a .txt file next to the audio",
             "prompt": "Transcribe only meeting-audio.wav by setting includeSpeakerTranscripts to false",
             "label": "Transcribe Meeting",
-            "icon": "mdi:cloud-check",
-            "pseudocode": "BEGIN_CONTEXT\ntranscripts = TranscribeMeetingCloud(directoryPath, includeSpeakerTranscripts: false)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:microphone-multiple",
+            "pseudocode": "BEGIN_CONTEXT\ntranscripts = TranscribeMeeting(directoryPath, includeSpeakerTranscripts: false)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": ["019fa100-0003-4000-8000-000000000001"],
           "createdAt": "2026-08-20T10:00:00Z"
@@ -467,12 +467,12 @@
           "id": "019fa200-0002-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
-            "action": "PLATFORM:transcribe_meeting_cloud",
-            "description": "Transcribe each WAV file individually with the cloud ASR model and collect the full meeting transcript together with the per-speaker transcripts. Transcripts are cached as .txt files next to the audio, so re-running the meeting does not transcribe again",
+            "action": "PLATFORM:transcribe_meeting",
+            "description": "Transcribe each WAV file individually with the self-hosted ASR service and collect the full meeting transcript together with the per-speaker transcripts. Transcripts are cached as .txt files next to the audio, so re-running the meeting does not transcribe again",
             "prompt": "Transcribe all WAV files in the meeting directory",
             "label": "Transcribe Meeting",
-            "icon": "mdi:cloud-check",
-            "pseudocode": "BEGIN_CONTEXT\ntranscripts = TranscribeMeetingCloud(directoryPath)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:microphone-multiple",
+            "pseudocode": "BEGIN_CONTEXT\ntranscripts = TranscribeMeeting(directoryPath)\nEND_CONTEXT\n\nEND_MESSAGE"
           },
           "next": ["019fa200-0003-4000-8000-000000000001"],
           "createdAt": "2026-08-20T10:00:00Z"

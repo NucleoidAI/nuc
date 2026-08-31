@@ -1791,7 +1791,7 @@
       ],
       "tools": [
         "PLATFORM:pcm_to_wav",
-        "PLATFORM:transcribe_meeting_cloud",
+        "PLATFORM:transcribe_meeting",
         "PLATFORM:summarize_meeting",
         "PLATFORM:judge_summary",
         "PLATFORM:prepare_meeting_attachments",
@@ -1809,7 +1809,7 @@
           "comment": "Converting the meeting recording to WAV before transcription"
         },
         {
-          "action": "PLATFORM:transcribe_meeting_cloud",
+          "action": "PLATFORM:transcribe_meeting",
           "status": "COMPLETED",
           "parameters": {
             "directoryPath": "/recordings/2026-08-14-management-sync",
@@ -1826,7 +1826,7 @@
             "$ref": "steps[1].result.full_meeting_transcript"
           }
         },
-        "comment": "steps[1] (transcribe_meeting_cloud) already holds the full transcript - reference it with $ref instead of retyping thousands of words, which would truncate the response.",
+        "comment": "steps[1] (transcribe_meeting) already holds the full transcript - reference it with $ref instead of retyping thousands of words, which would truncate the response.",
         "result_score": 0.95
       }
     },
@@ -1841,7 +1841,7 @@
       ],
       "tools": [
         "PLATFORM:pcm_to_wav",
-        "PLATFORM:transcribe_meeting_cloud",
+        "PLATFORM:transcribe_meeting",
         "PLATFORM:summarize_meeting",
         "PLATFORM:judge_summary",
         "PLATFORM:prepare_meeting_attachments",
@@ -1859,7 +1859,7 @@
           "comment": "Converting the meeting recording to WAV before transcription"
         },
         {
-          "action": "PLATFORM:transcribe_meeting_cloud",
+          "action": "PLATFORM:transcribe_meeting",
           "status": "COMPLETED",
           "parameters": {
             "directoryPath": "/recordings/2026-08-14-management-sync",
@@ -1900,7 +1900,7 @@
       ],
       "tools": [
         "PLATFORM:pcm_to_wav",
-        "PLATFORM:transcribe_meeting_cloud",
+        "PLATFORM:transcribe_meeting",
         "PLATFORM:summarize_meeting",
         "PLATFORM:judge_summary",
         "PLATFORM:prepare_meeting_attachments",
@@ -1918,7 +1918,7 @@
           "comment": "Converting the meeting recording to WAV before transcription"
         },
         {
-          "action": "PLATFORM:transcribe_meeting_cloud",
+          "action": "PLATFORM:transcribe_meeting",
           "status": "COMPLETED",
           "parameters": {
             "directoryPath": "/recordings/2026-08-14-management-sync",

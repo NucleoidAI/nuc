@@ -70,7 +70,7 @@ describe("Order Agent", () => {
     });
   }, 600_000);
 
-  it("completes an order after the supervisor teaches the missing certificate", async () => {
+  it("completes an order after the supervisor provides the missing certificate knowledge", async () => {
     mcp.tool("ORDER:find_product").returns({
       product: { id: "prd-4", name: "product-4", vendor_id: "vnd-1" },
     });
@@ -162,7 +162,7 @@ describe("Order Agent", () => {
     });
   }, 600_000);
 
-  it("hands the order over to the compliance manager when the supervisor adds a handoff", async () => {
+  it("hands the order over to the compliance manager agent when the supervisor adds a handoff", async () => {
     mcp.tool("ORDER:find_product").returns({
       product: { id: "prd-3", name: "product-3", vendor_id: "vnd-3" },
     });

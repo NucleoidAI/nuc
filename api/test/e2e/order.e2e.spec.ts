@@ -11,10 +11,10 @@ import { mcp } from "./mocks/mcp";
 import supertest from "supertest";
 import { supervisedHandoffNodes } from "./fixtures/supervisedBlueprint";
 
-describe("Order & Compliance Team — blueprint to task, end to end", () => {
+describe("Order Agent", () => {
   afterEach(event.releaseAll);
 
-  it("happy path: an order for a certified product runs the blueprint to completion", async () => {
+  it("completes an order when the product is certified", async () => {
     mcp.tool("ORDER:find_product").returns({
       product: { id: "prd-1", name: "product-1", vendor_id: "vnd-1" },
     });
@@ -70,7 +70,7 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
     });
   }, 600_000);
 
-  it("supervised via knowledge: the supervisor teaches the certificate and the order goes through", async () => {
+  it("completes an order after the supervisor teaches the missing certificate", async () => {
     mcp.tool("ORDER:find_product").returns({
       product: { id: "prd-4", name: "product-4", vendor_id: "vnd-1" },
     });
@@ -162,7 +162,7 @@ describe("Order & Compliance Team — blueprint to task, end to end", () => {
     });
   }, 600_000);
 
-  it("supervised via blueprint: the supervisor adds a handoff and the compliance manager takes over", async () => {
+  it("hands the order over to the compliance manager when the supervisor adds a handoff", async () => {
     mcp.tool("ORDER:find_product").returns({
       product: { id: "prd-3", name: "product-3", vendor_id: "vnd-3" },
     });

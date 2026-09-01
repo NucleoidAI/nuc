@@ -9,6 +9,9 @@ type NodeType = {
     label: string;
     icon: string;
     description?: string;
+    instructions?: string;
+    pseudocode?: string;
+    pseudocodeEnabled?: boolean;
     targetAgentId?: string;
     targetBlueprintId?: string;
     force?: boolean;
@@ -19,19 +22,26 @@ type NodeType = {
   false?: string[] | null;
 };
 
-const COSMETIC_PROPERTIES = ["label"];
+const COSMETIC_PROPERTIES = ["label", "description", "pseudocodeEnabled"];
 
 function withoutCosmetics<T extends { properties?: object }>(nodes: T[]): T[] {
-  return nodes.map((node) => ({
-    ...node,
-    properties: node?.properties
-      ? Object.fromEntries(
-          Object.entries(node.properties).filter(
-            ([key]) => !COSMETIC_PROPERTIES.includes(key)
-          )
-        )
-      : node?.properties,
-  }));
+  return nodes.map((node) => {
+    if (!node?.properties) {
+      return node;
+    }
+
+    const properties = node.properties as Record<string, unknown>;
+    const redundant = properties.pseudocode ? "instructions" : "pseudocode";
+
+    return {
+      ...node,
+      properties: Object.fromEntries(
+        Object.entries(properties).filter(
+          ([key]) => key !== redundant && !COSMETIC_PROPERTIES.includes(key),
+        ),
+      ),
+    };
+  });
 }
 
 function stripCosmetics<T extends { nodes?: unknown }>(blueprint: T): T {
@@ -40,6 +50,57 @@ function stripCosmetics<T extends { nodes?: unknown }>(blueprint: T): T {
   }
 
   return { ...blueprint, nodes: withoutCosmetics(blueprint.nodes) };
+}
+
+function sanitizePseudocode(nodes?: NodeType[]) {
+  if (!nodes?.length) {
+    return nodes;
+  }
+
+  return nodes.map((node) => {
+    const properties = node.properties;
+
+    if (!properties) {
+      return node;
+    }
+
+    const enabled =
+      properties.pseudocodeEnabled === true &&
+      Boolean(properties.instructions?.trim());
+
+    const dropped = enabled
+      ? properties.pseudocode?.trim()
+        ? null
+        : ["pseudocode"]
+      : ["pseudocode", "pseudocodeEnabled"];
+
+    if (!dropped) {
+      return node;
+    }
+
+    return {
+      ...node,
+      properties: Object.fromEntries(
+        Object.entries(properties).filter(([key]) => !dropped.includes(key)),
+      ),
+    } as NodeType;
+  });
+}
+
+async function generatePseudocode({
+  instructions,
+  agentId,
+}: {
+  instructions: string;
+  agentId: string;
+}) {
+  const content = instructions?.trim();
+
+  if (!content) {
+    return "";
+  }
+
+  return agentFn.toPseudo({ content, meta: { agentId } });
 }
 
 async function getWithNodes(id: string) {
@@ -78,6 +139,8 @@ async function upsert(
 ) {
   let Blueprint;
 
+  const sanitizedNodes = sanitizePseudocode(nodes);
+
   const existingBlueprint = await BluePrint.findByPk(id);
 
   if (existingBlueprint) {
@@ -85,7 +148,7 @@ async function upsert(
       title,
       description,
       agentId,
-      nodes: nodes || null,
+      nodes: sanitizedNodes || null,
       ...(blocking !== undefined && { blocking }),
       ...(skill !== undefined && { skill }),
     });
@@ -97,7 +160,7 @@ async function upsert(
       title,
       description,
       agentId,
-      nodes: nodes || null,
+      nodes: sanitizedNodes || null,
       ...(blocking !== undefined && { blocking }),
       ...(skill !== undefined && { skill }),
     });
@@ -240,4 +303,5 @@ export default {
   patch,
   generateDescription,
   generateSkill,
+  generatePseudocode,
 };

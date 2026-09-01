@@ -1202,6 +1202,24 @@ async function chat({
   }
 }
 
+async function toPseudo({
+  content,
+  meta,
+}: {
+  content: string;
+  meta?: LLMMeta;
+}) {
+  const response = await generate({
+    dataset: dataset.train.pseudocode,
+    context: [],
+    content,
+    json_format: "{ pseudocode: <PSEUDO> }",
+    meta,
+  });
+
+  return response.pseudocode as string;
+}
+
 async function blueprintDescription({
   nodes,
   meta,
@@ -1257,6 +1275,7 @@ export default {
   blueprintChatSufficiency,
   blueprintChatKnowledge,
   evaluateSupervisionAnswer,
+  toPseudo,
   blueprintDescription,
   blueprintSkill,
 };

@@ -16,6 +16,8 @@ const NodeEditorWidget = ({
   setNewNodeLabel,
   newNodeInstructions,
   setNewNodeInstructions,
+  newNodeDescription,
+  setNewNodeDescription,
   newNodePseudocodeEnabled,
   setNewNodePseudocodeEnabled,
   pseudocodeLoading,
@@ -54,6 +56,8 @@ const NodeEditorWidget = ({
   setNewNodeLabel: (label: string) => void;
   newNodeInstructions: string;
   setNewNodeInstructions: (instructions: string) => void;
+  newNodeDescription?: string;
+  setNewNodeDescription?: (description: string) => void;
   newNodePseudocodeEnabled?: boolean;
   setNewNodePseudocodeEnabled?: (enabled: boolean) => void;
   pseudocodeLoading?: boolean;
@@ -247,6 +251,8 @@ const NodeEditorWidget = ({
       setNewNodeLabel={setNewNodeLabel}
       newNodeInstructions={newNodeInstructions}
       setNewNodeInstructions={setNewNodeInstructions}
+      newNodeDescription={newNodeDescription}
+      setNewNodeDescription={setNewNodeDescription}
       newNodePseudocodeEnabled={newNodePseudocodeEnabled}
       setNewNodePseudocodeEnabled={setNewNodePseudocodeEnabled}
       pseudocodeLoading={pseudocodeLoading}

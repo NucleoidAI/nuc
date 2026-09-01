@@ -292,6 +292,7 @@ function BlueprintFlowWidget({
   const [editingNodeId, setEditingNodeId] = useState<string | null>(null);
   const [newNodeLabel, setNewNodeLabel] = useState("");
   const [newNodeInstructions, setNewNodeInstructions] = useState("");
+  const [newNodeDescription, setNewNodeDescription] = useState("");
   const [newNodePseudocodeEnabled, setNewNodePseudocodeEnabled] =
     useState(false);
   const [pseudocodeLoading, setPseudocodeLoading] = useState(false);
@@ -441,10 +442,21 @@ function BlueprintFlowWidget({
     }
   };
 
+  const handleIntegrationChange = (integration) => {
+    setNewNodeDescription((current) =>
+      !current.trim() ||
+      current.trim() === (selectedIntegration?.description || "").trim()
+        ? integration?.description || ""
+        : current
+    );
+    setSelectedIntegration(integration);
+  };
+
   const handleAddNodeClick = (node) => {
     setSelectedParentNode(node);
     setNewNodeLabel("");
     setNewNodeInstructions("");
+    setNewNodeDescription("");
     setNewNodeForce(false);
     setNodePseudocode("");
     setNewNodePseudocodeEnabled(false);
@@ -463,6 +475,12 @@ function BlueprintFlowWidget({
     const nodeType = node.nodeType || "NORMAL";
     setNewNodeLabel(nodeLabel);
     setNewNodeInstructions(nodeInstructions);
+    setNewNodeDescription(
+      node?.description ||
+        node?.properties?.description ||
+        node?.raw?.properties?.description ||
+        ""
+    );
     setNewNodeForce(Boolean(node?.raw?.properties?.force));
     setNewNodeType(nodeType);
     setNodePseudocode(node?.raw?.properties?.pseudocode || "");
@@ -523,11 +541,12 @@ function BlueprintFlowWidget({
         ? "PLATFORM:handoff"
         : selectedIntegration?.action;
     const descriptionText =
-      newNodeType === "CONDITION"
+      newNodeDescription.trim() ||
+      (newNodeType === "CONDITION"
         ? "A decision node that branches the flow based on conditions."
         : newNodeType === "HANDOFF"
         ? "Transfer this task to another agent's blueprint."
-        : selectedIntegration?.description || "";
+        : selectedIntegration?.description || "");
     setGraphData((prevData) => {
       if (!prevData) return prevData;
 
@@ -695,6 +714,7 @@ function BlueprintFlowWidget({
     setSelectedParentNode(null);
     setNewNodeLabel("");
     setNewNodeInstructions("");
+    setNewNodeDescription("");
     setNewNodeForce(false);
     setNodePseudocode("");
     setNewNodePseudocodeEnabled(false);
@@ -742,11 +762,12 @@ function BlueprintFlowWidget({
         : selectedIntegration?.action;
 
     const descriptionText =
-      newNodeType === "CONDITION"
+      newNodeDescription.trim() ||
+      (newNodeType === "CONDITION"
         ? "A decision node that branches the flow based on conditions."
         : newNodeType === "HANDOFF"
         ? "Transfer this task to another agent's blueprint."
-        : selectedIntegration?.description || "";
+        : selectedIntegration?.description || "");
     if (selectedParentNode.id === "starter") {
       const firstNode =
         newNodeType === "CONDITION"
@@ -1564,6 +1585,8 @@ function BlueprintFlowWidget({
         setNewNodeLabel={setNewNodeLabel}
         newNodeInstructions={newNodeInstructions}
         setNewNodeInstructions={setNewNodeInstructions}
+        newNodeDescription={newNodeDescription}
+        setNewNodeDescription={setNewNodeDescription}
         newNodePseudocodeEnabled={newNodePseudocodeEnabled}
         setNewNodePseudocodeEnabled={handlePseudocodeEnabledChange}
         pseudocodeLoading={pseudocodeLoading}
@@ -1577,7 +1600,7 @@ function BlueprintFlowWidget({
         setInheritedNextBranch={setInheritedNextBranch}
         handleSubmit={editMode ? handleEditNode : handleAddNode}
         selectedIntegration={selectedIntegration}
-        setSelectedIntegration={setSelectedIntegration}
+        setSelectedIntegration={handleIntegrationChange}
         editMode={editMode}
         editingNode={
           editingNodeId && graphData?.nodes?.[editingNodeId]

@@ -1,6 +1,5 @@
-import { Iconify } from "@canmingir/link/platform/components";
-import { Box, IconButton, Tooltip, Typography } from "@mui/material";
-import { Fragment, useEffect, useState } from "react";
+import { Box } from "@mui/material";
+import { Fragment } from "react";
 
 type TokenKind =
   | "string"
@@ -85,26 +84,8 @@ const tokenize = (line: string): Array<{ kind: TokenKind; value: string }> => {
 };
 
 const PseudocodeViewer = ({ code }: { code: string }) => {
-  const [copied, setCopied] = useState(false);
   const lines = code.replace(/\s+$/, "").split("\n");
   const gutterWidth = `${String(lines.length).length + 1}ch`;
-
-  useEffect(() => {
-    if (!copied) return;
-
-    const timer = setTimeout(() => setCopied(false), 1500);
-
-    return () => clearTimeout(timer);
-  }, [copied]);
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard?.writeText(code);
-      setCopied(true);
-    } catch {
-      setCopied(false);
-    }
-  };
 
   return (
     <Box
@@ -116,41 +97,6 @@ const PseudocodeViewer = ({ code }: { code: string }) => {
         overflow: "hidden",
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 1,
-          pl: 1.5,
-          pr: 0.5,
-          py: 0.5,
-          borderBottom: "1px solid",
-          borderColor: "divider",
-        }}
-      >
-        <Typography
-          variant="caption"
-          color="text.secondary"
-          sx={{ letterSpacing: "0.08em" }}
-        >
-          SENT TO THE AGENT
-        </Typography>
-        <Tooltip title={copied ? "Copied" : "Copy"} placement="left">
-          <IconButton
-            size="small"
-            onClick={handleCopy}
-            aria-label="Copy pseudocode"
-          >
-            <Iconify
-              icon={copied ? "mdi:check" : "mdi:content-copy"}
-              width={15}
-              height={15}
-            />
-          </IconButton>
-        </Tooltip>
-      </Box>
-
       <Box
         sx={{
           overflowX: "auto",

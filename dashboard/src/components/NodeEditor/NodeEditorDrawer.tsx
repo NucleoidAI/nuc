@@ -1,6 +1,7 @@
 import { DrawerLayout } from "@canmingir/link/layouts";
 import ForceStepSwipe from "../ForceStepSwipe/ForceStepSwipe";
 import { Iconify } from "@canmingir/link/platform/components";
+import PseudocodeViewer from "./PseudocodeViewer";
 import SearchIcon from "@mui/icons-material/Search";
 import { useState } from "react";
 
@@ -31,6 +32,8 @@ const NodeEditorDrawer = ({
   setNewNodeLabel,
   newNodeInstructions,
   setNewNodeInstructions,
+  newNodeDescription = "",
+  setNewNodeDescription,
   newNodePseudocodeEnabled = false,
   setNewNodePseudocodeEnabled,
   pseudocodeLoading = false,
@@ -75,6 +78,8 @@ const NodeEditorDrawer = ({
   setNewNodeLabel: (label: string) => void;
   newNodeInstructions: string;
   setNewNodeInstructions: (instructions: string) => void;
+  newNodeDescription?: string;
+  setNewNodeDescription?: (description: string) => void;
   newNodePseudocodeEnabled?: boolean;
   setNewNodePseudocodeEnabled?: (enabled: boolean) => void;
   pseudocodeLoading?: boolean;
@@ -254,6 +259,13 @@ const NodeEditorDrawer = ({
   const [integrationPage, setIntegrationPage] = useState(1);
   const ITEMS_PER_PAGE = 3;
 
+  const descriptionPlaceholder =
+    newNodeType === "CONDITION"
+      ? "A decision node that branches the flow based on conditions."
+      : newNodeType === "HANDOFF"
+      ? "Transfer this task to another agent's blueprint."
+      : selectedIntegration?.description || "";
+
   const formFields = (
     <Stack spacing={2}>
       <TextField
@@ -272,19 +284,15 @@ const NodeEditorDrawer = ({
       />
 
       <TextField
-        label="Instructions"
+        label="Description"
         variant="outlined"
         fullWidth
         multiline
-        minRows={3}
-        value={newNodeInstructions}
-        onChange={(e) => {
-          setNewNodeInstructions(e.target.value);
-
-          if (!e.target.value.trim() && newNodePseudocodeEnabled) {
-            setNewNodePseudocodeEnabled?.(false);
-          }
-        }}
+        minRows={2}
+        value={newNodeDescription}
+        onChange={(e) => setNewNodeDescription?.(e.target.value)}
+        placeholder={descriptionPlaceholder}
+        helperText="Shown on the node card. Leave empty to use the default."
         autoComplete="off"
         inputProps={{
           autoComplete: "off",
@@ -292,6 +300,75 @@ const NodeEditorDrawer = ({
           spellCheck: false,
         }}
       />
+
+      <Box>
+        <TextField
+          label="Instructions"
+          variant="outlined"
+          fullWidth
+          multiline
+          minRows={3}
+          value={newNodeInstructions}
+          onChange={(e) => {
+            setNewNodeInstructions(e.target.value);
+
+            if (!e.target.value.trim() && newNodePseudocodeEnabled) {
+              setNewNodePseudocodeEnabled?.(false);
+            }
+          }}
+          autoComplete="off"
+          inputProps={{
+            autoComplete: "off",
+            autoCorrect: "off",
+            spellCheck: false,
+          }}
+        />
+
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1.5,
+            mt: 1.5,
+          }}
+        >
+          <Box sx={{ textAlign: "left", flex: 1, minWidth: 0 }}>
+            <Typography variant="subtitle2" fontWeight="bold">
+              Pseudocode
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              {!newNodeInstructions.trim()
+                ? "Write the instructions first to generate pseudocode from them."
+                : pseudocodeLoading
+                ? "Generating..."
+                : newNodePseudocodeEnabled
+                ? "The agent receives this instead of the instructions."
+                : "Send generated pseudocode instead of the instructions."}
+            </Typography>
+          </Box>
+          <Box sx={{ flexShrink: 0 }}>
+            <ForceStepSwipe
+              checked={newNodePseudocodeEnabled}
+              onChange={(value) => setNewNodePseudocodeEnabled?.(value)}
+              theme={theme}
+              disabled={!newNodeInstructions.trim() || pseudocodeLoading}
+              ariaLabel="Generate pseudocode"
+            />
+          </Box>
+        </Box>
+
+        {newNodePseudocodeEnabled && !pseudocodeLoading && (
+          <Box sx={{ mt: 1.5 }}>
+            {pseudocode && pseudocode.trim() ? (
+              <PseudocodeViewer code={pseudocode} />
+            ) : (
+              <Typography variant="caption" color="text.secondary">
+                Not available
+              </Typography>
+            )}
+          </Box>
+        )}
+      </Box>
 
       <Box
         sx={{
@@ -321,62 +398,6 @@ const NodeEditorDrawer = ({
             theme={theme}
           />
         </Box>
-      </Box>
-
-      <Box
-        sx={{
-          p: 2,
-          border: "1px solid",
-          borderColor: "divider",
-          borderRadius: 1,
-          bgcolor: "background.default",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 1.5,
-          }}
-        >
-          <Box sx={{ textAlign: "left", flex: 1, minWidth: 0 }}>
-            <Typography variant="subtitle2" fontWeight="bold">
-              Pseudocode
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              {newNodeInstructions.trim()
-                ? "Generated from the instructions and sent to the agent in their place. Turn off to send the instructions as written."
-                : "Write the instructions first to generate pseudocode from them."}
-            </Typography>
-          </Box>
-          <Box sx={{ flexShrink: 0 }}>
-            <ForceStepSwipe
-              checked={newNodePseudocodeEnabled}
-              onChange={(value) => setNewNodePseudocodeEnabled?.(value)}
-              theme={theme}
-              disabled={!newNodeInstructions.trim() || pseudocodeLoading}
-              ariaLabel="Generate pseudocode"
-            />
-          </Box>
-        </Box>
-
-        {newNodePseudocodeEnabled && (
-          <Typography
-            variant="subtitle2"
-            fontWeight="bold"
-            color="text.secondary"
-            gutterBottom
-            component="pre"
-            sx={{ whiteSpace: "pre-wrap", fontFamily: "monospace", mt: 1.5 }}
-          >
-            {pseudocodeLoading
-              ? "Generating..."
-              : pseudocode && pseudocode.trim()
-              ? pseudocode
-              : "Not available"}
-          </Typography>
-        )}
       </Box>
 
       <FormControl fullWidth>

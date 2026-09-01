@@ -32,6 +32,10 @@ export type NodeEditorState = {
   } | null;
   editingNodeId: string | null;
   label: string;
+  instructions: string;
+  pseudocodeEnabled: boolean;
+  pseudocode: string;
+  pseudocodeLoading: boolean;
   nodeType: string;
   branch: "true" | "false";
   integration: typeof DEFAULT_INTEGRATION;

@@ -29,6 +29,11 @@ const NodeEditorDrawer = ({
   selectedParentNode,
   newNodeLabel,
   setNewNodeLabel,
+  newNodeInstructions,
+  setNewNodeInstructions,
+  newNodePseudocodeEnabled = false,
+  setNewNodePseudocodeEnabled,
+  pseudocodeLoading = false,
   newNodeForce = false,
   setNewNodeForce,
   newNodeType,
@@ -47,6 +52,7 @@ const NodeEditorDrawer = ({
   nextIntegration,
   handleSubmit,
   editMode,
+  pseudocode,
   availableAgents = [],
   handoffTargetAgentId = "",
   setHandoffTargetAgentId,
@@ -67,6 +73,11 @@ const NodeEditorDrawer = ({
   };
   newNodeLabel: string;
   setNewNodeLabel: (label: string) => void;
+  newNodeInstructions: string;
+  setNewNodeInstructions: (instructions: string) => void;
+  newNodePseudocodeEnabled?: boolean;
+  setNewNodePseudocodeEnabled?: (enabled: boolean) => void;
+  pseudocodeLoading?: boolean;
   newNodeForce?: boolean;
   setNewNodeForce?: (force: boolean) => void;
   newNodeType: string;
@@ -231,6 +242,7 @@ const NodeEditorDrawer = ({
   };
   handleSubmit: () => void;
   editMode?: boolean;
+  pseudocode?: string;
   availableAgents?: Array<{ id: string; name: string; icon?: string }>;
   handoffTargetAgentId?: string;
   setHandoffTargetAgentId?: (id: string) => void;
@@ -257,6 +269,28 @@ const NodeEditorDrawer = ({
           spellCheck: false,
         }}
         sx={{ mt: 1 }}
+      />
+
+      <TextField
+        label="Instructions"
+        variant="outlined"
+        fullWidth
+        multiline
+        minRows={3}
+        value={newNodeInstructions}
+        onChange={(e) => {
+          setNewNodeInstructions(e.target.value);
+
+          if (!e.target.value.trim() && newNodePseudocodeEnabled) {
+            setNewNodePseudocodeEnabled?.(false);
+          }
+        }}
+        autoComplete="off"
+        inputProps={{
+          autoComplete: "off",
+          autoCorrect: "off",
+          spellCheck: false,
+        }}
       />
 
       <Box
@@ -287,6 +321,62 @@ const NodeEditorDrawer = ({
             theme={theme}
           />
         </Box>
+      </Box>
+
+      <Box
+        sx={{
+          p: 2,
+          border: "1px solid",
+          borderColor: "divider",
+          borderRadius: 1,
+          bgcolor: "background.default",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 1.5,
+          }}
+        >
+          <Box sx={{ textAlign: "left", flex: 1, minWidth: 0 }}>
+            <Typography variant="subtitle2" fontWeight="bold">
+              Pseudocode
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              {newNodeInstructions.trim()
+                ? "Generated from the instructions and sent to the agent in their place. Turn off to send the instructions as written."
+                : "Write the instructions first to generate pseudocode from them."}
+            </Typography>
+          </Box>
+          <Box sx={{ flexShrink: 0 }}>
+            <ForceStepSwipe
+              checked={newNodePseudocodeEnabled}
+              onChange={(value) => setNewNodePseudocodeEnabled?.(value)}
+              theme={theme}
+              disabled={!newNodeInstructions.trim() || pseudocodeLoading}
+              ariaLabel="Generate pseudocode"
+            />
+          </Box>
+        </Box>
+
+        {newNodePseudocodeEnabled && (
+          <Typography
+            variant="subtitle2"
+            fontWeight="bold"
+            color="text.secondary"
+            gutterBottom
+            component="pre"
+            sx={{ whiteSpace: "pre-wrap", fontFamily: "monospace", mt: 1.5 }}
+          >
+            {pseudocodeLoading
+              ? "Generating..."
+              : pseudocode && pseudocode.trim()
+              ? pseudocode
+              : "Not available"}
+          </Typography>
+        )}
       </Box>
 
       <FormControl fullWidth>

@@ -21,7 +21,7 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use(async (request) => {
-  const refreshToken = await storage.get("link", "refreshToken");
+  const refreshToken = await storage.get("link", "refreshtoken");
   if (refreshToken) {
     request.headers["Authorization"] = `Bearer ${refreshToken}`;
   }
@@ -29,9 +29,9 @@ instance.interceptors.request.use(async (request) => {
 });
 
 instance.getUserDetails = async () => {
-  const refreshToken = await storage.get("link", "refreshToken");
+  const refreshToken = await storage.get("link", "refreshtoken");
 
-  const identityProvider = await storage.get("link", "identityProvider");
+  const identityProvider = await storage.get("link", "identityprovider");
   if (identityProvider?.toUpperCase() === "DEMO") {
     const userId = "1001";
     const avatarUrl = `https://api.dicebear.com/7.x/bottts/svg?seed=${userId}`;

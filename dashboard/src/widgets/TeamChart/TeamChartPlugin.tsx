@@ -189,11 +189,11 @@ export const teamChartPlugin = {
                   color="inherit"
                   onClick={(e) => {
                     e.stopPropagation();
-                    onAgentOpen(node, "blueprints");
+                    onAgentOpen(node, "knowledge-base");
                   }}
                   sx={{ minWidth: 30, width: 30, height: 30, p: 0 }}
                 >
-                  <Iconify icon="healthicons:crisis-response-center-person-outline" />
+                  <Iconify icon="carbon:ibm-watson-knowledge-studio" />
                 </Button>
                 <Button
                   size="small"
@@ -201,11 +201,11 @@ export const teamChartPlugin = {
                   color="inherit"
                   onClick={(e) => {
                     e.stopPropagation();
-                    onAgentOpen(node, "knowledge-base");
+                    onAgentOpen(node, "blueprints");
                   }}
                   sx={{ minWidth: 30, width: 30, height: 30, p: 0 }}
                 >
-                  <Iconify icon="carbon:ibm-watson-knowledge-studio" />
+                  <Iconify icon="healthicons:crisis-response-center-person-outline" />
                 </Button>
                 <Button
                   size="small"

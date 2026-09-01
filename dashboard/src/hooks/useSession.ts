@@ -24,7 +24,7 @@ function useSession(agentId) {
 
   const { host, path } = config.socket;
 
-  const token = storage.get("link", "accessToken");
+  const token = storage.get("link", "accesstoken");
 
   useEffect(
     () => {

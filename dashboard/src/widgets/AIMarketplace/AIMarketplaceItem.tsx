@@ -1,16 +1,8 @@
+import AIEngineIcon from "./AIEngineIcon";
 import { Image } from "@canmingir/link/platform/components";
 import { ReactNode } from "react";
 import { getBackgroundUrl } from "../../utils/background";
 
-import {
-  AiIcon,
-  BardIcon,
-  ClaudeIcon,
-  DeepMindIcon,
-  IbmIcon,
-  MetaIcon,
-  OpenAIIcon,
-} from "./AIEngineIcons";
 import { Avatar, Box, Card, Stack, Typography } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
 
@@ -18,32 +10,23 @@ function AIMarketplaceItem({
   engine,
   isWizardEngine,
   handleEngineSelect,
+  isSelected,
 }: {
   engine: {
     id: string;
     vendor: string;
     model: string;
     price: number;
-    description: string;
+    type: string;
     avatar?: string;
   };
   isWizardEngine?: boolean;
   handleEngineSelect?: (engine) => void;
+  isSelected?: boolean;
 }) {
   const theme = useTheme();
 
-  const vendorIconMap: Record<string, ReactNode> = {
-    OpenAI: <OpenAIIcon width={20} height={20} />,
-    "Google Bard": <BardIcon width={20} height={20} />,
-    Claude: <ClaudeIcon width={20} height={20} />,
-    Meta: <MetaIcon width={20} height={20} />,
-    DeepMind: <DeepMindIcon width={20} height={20} />,
-    "IBM Watson": <IbmIcon width={20} height={20} />,
-  };
-
-  const icon = vendorIconMap[engine?.vendor] || (
-    <AiIcon width={20} height={20} />
-  );
+  const icon = <AIEngineIcon vendor={engine?.vendor} />;
 
   return (
     <Box
@@ -65,11 +48,17 @@ function AIMarketplaceItem({
         sx={{
           textAlign: "center",
           display: "flex",
-          flexDirection: { xs: "column", sm: "row" },
-          height: "100%",
-          minHeight: { sm: 180 },
+          flexDirection: isWizardEngine ? "row" : { xs: "column", sm: "row" },
           width: "100%",
           overflow: "hidden",
+          ...(isWizardEngine
+            ? { height: 120 }
+            : { height: "100%", minHeight: { sm: 180 } }),
+          ...(isWizardEngine && {
+            border: "solid",
+            borderWidth: isSelected ? 2 : 1,
+            borderColor: isSelected ? "primary.main" : "divider",
+          }),
           "&:hover": {
             boxShadow: isWizardEngine ? 6 : 4,
           },
@@ -78,11 +67,15 @@ function AIMarketplaceItem({
         <Box
           sx={{
             position: "relative",
-            width: { xs: "100%", sm: 120 },
-            height: "auto",
-            minHeight: { xs: 140, sm: "100%" },
             flexShrink: 0,
             display: "flex",
+            ...(isWizardEngine
+              ? { width: 68, height: "100%" }
+              : {
+                  width: { xs: "100%", sm: 120 },
+                  height: "auto",
+                  minHeight: { xs: 140, sm: "100%" },
+                }),
           }}
         >
           <Image
@@ -106,8 +99,8 @@ function AIMarketplaceItem({
                 top: "50%",
                 left: "50%",
                 transform: "translate(-50%, -50%)",
-                width: 48,
-                height: 48,
+                width: isWizardEngine ? 36 : 48,
+                height: isWizardEngine ? 36 : 48,
                 borderRadius: "50%",
                 border: `2px solid ${theme.palette.common.white}`,
                 display: "flex",
@@ -135,40 +128,46 @@ function AIMarketplaceItem({
         <Stack
           direction={"column"}
           sx={{
-            p: 2,
+            p: isWizardEngine ? 1.25 : 2,
             width: "100%",
             textAlign: "left",
-            justifyContent: "space-between",
+            justifyContent: "center",
+            ...(isWizardEngine && {
+              flex: 1,
+              minWidth: 0,
+              minHeight: 0,
+              overflow: "hidden",
+            }),
           }}
-          spacing={2}
+          spacing={isWizardEngine ? 1 : 2}
         >
-          <Box>
-            <Typography
-              variant="body2"
-              sx={{
-                display: "-webkit-box",
-                overflow: "hidden",
-                WebkitBoxOrient: "vertical",
-                WebkitLineClamp: 3,
-              }}
-            >
-              {engine?.description || "No description available."}
-            </Typography>
-          </Box>
-
-          <Stack
-            direction="row"
-            spacing={1}
+          <Box
             sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+              gap: 1,
               width: "100%",
-              alignItems: "center",
-              mt: "auto",
+              alignItems: "stretch",
             }}
           >
-            <InfoBox label="Vendor" icon={icon} value={engine?.vendor} />
-            <InfoBox label="Model" value={engine?.model} />
-            <InfoBox label="Price" value={`$ ${engine?.price}`} />
-          </Stack>
+            <InfoBox
+              label="Vendor"
+              icon={icon}
+              value={engine?.vendor}
+              dense={isWizardEngine}
+            />
+            <InfoBox
+              label="Model"
+              value={engine?.model}
+              dense={isWizardEngine}
+            />
+            <InfoBox label="Type" value={engine?.type} dense={isWizardEngine} />
+            <InfoBox
+              label="Price"
+              value={engine?.price}
+              dense={isWizardEngine}
+            />
+          </Box>
         </Stack>
       </Card>
     </Box>
@@ -179,10 +178,12 @@ function InfoBox({
   label,
   icon,
   value,
+  dense = false,
 }: {
   label: string;
   icon?: ReactNode;
   value: string | number;
+  dense?: boolean;
 }) {
   return (
     <Stack
@@ -196,7 +197,6 @@ function InfoBox({
         border: "1px dashed",
         borderColor: "text.disabled",
         width: "100%",
-        flex: 1,
         minWidth: 0,
       }}
     >
@@ -205,7 +205,7 @@ function InfoBox({
         alignItems="center"
         justifyContent="center"
         spacing={0.5}
-        sx={{ mb: 0.5, height: 20 }}
+        sx={{ mb: dense ? 0.25 : 0.5, height: dense ? 16 : 20 }}
       >
         {icon ? (
           icon
@@ -213,7 +213,7 @@ function InfoBox({
           <Typography
             variant="caption"
             color="text.secondary"
-            sx={{ fontWeight: "bold", fontSize: "0.7rem" }}
+            sx={{ fontWeight: "bold", fontSize: dense ? "0.6rem" : "0.7rem" }}
           >
             {label.toUpperCase()}
           </Typography>
@@ -224,6 +224,7 @@ function InfoBox({
         variant="caption"
         sx={{
           fontWeight: "bold",
+          ...(dense && { fontSize: "0.65rem" }),
           width: "100%",
           textAlign: "center",
           overflow: "hidden",

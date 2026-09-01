@@ -2,7 +2,6 @@ import BlueprintFlow from "../../components/BlueprintFlow/BlueprintFlow";
 import BlueprintFlowSkeleton from "../../components/Skeletons/BlueprintFlowSkeleton";
 import NodeEditorWidget from "../NodeEditorWidget/NodeEditorWidget";
 import type { ParameterBinding } from "../../components/BlueprintFlow/NodeConnectionOverlay";
-import SampleFlow from "../../components/BlueprintFlow/Samples/SampleFlow";
 import SampleNode from "../../components/BlueprintFlow/Samples/SampleNode";
 import { publish } from "@nucleoidai/react-event";
 import useBlueprint from "../../hooks/useBlueprint";
@@ -324,7 +323,7 @@ function BlueprintFlowWidget({
     },
   });
 
-  const [showSampleFlow, setShowSampleFlow] = useState(false);
+  const [showSampleFlow] = useState(false);
   const [nodePseudocode, setNodePseudocode] = useState("");
 
   useEffect(
@@ -1497,10 +1496,6 @@ function BlueprintFlowWidget({
     setHasLocalChanges(true);
   };
 
-  const loadSampleFlow = () => {
-    setShowSampleFlow(!showSampleFlow);
-  };
-
   const handleStarterNodeClick = () => {
     const starterParent = {
       id: "starter",
@@ -1535,12 +1530,8 @@ function BlueprintFlowWidget({
         <BlueprintFlowSkeleton />
       ) : isEmptyState ? (
         <>
-          {showSampleFlow && <SampleFlow />}
           {!showSampleFlow && (
-            <SampleNode
-              loadSampleFlow={loadSampleFlow}
-              handleStarterNodeClick={handleStarterNodeClick}
-            />
+            <SampleNode handleStarterNodeClick={handleStarterNodeClick} />
           )}
         </>
       ) : !graphData && hasRealFlowData ? null : (

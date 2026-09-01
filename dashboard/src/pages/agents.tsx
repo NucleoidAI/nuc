@@ -7,11 +7,11 @@ import { useEffect } from "react";
 import { useEvent } from "@nucleoidai/react-event";
 import useTeam from "../hooks/useTeams";
 function Agents() {
-  const teamId = storage.get("itemId");
+  const teamId = storage.get("link", "projectid");
 
   const { getTeamById } = useTeam();
 
-  const { team, loading } = getTeamById(teamId);
+  const { loading } = getTeamById(teamId);
 
   const [teamSelected] = useEvent("ITEM_SELECTED", { itemId: teamId });
 
@@ -25,7 +25,7 @@ function Agents() {
   return (
     <>
       <Page name={"Agent"} />
-      <SingleScrollableLayout title={team?.name}>
+      <SingleScrollableLayout>
         <AgentsWidget teamId={teamId} />
       </SingleScrollableLayout>
     </>

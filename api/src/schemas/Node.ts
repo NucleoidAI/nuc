@@ -8,6 +8,9 @@ const ConditionNode = z.object({
   properties: z.object({
     label: z.string(),
     icon: z.string(),
+    instructions: z.string().optional(),
+    pseudocode: z.string().optional(),
+    pseudocodeEnabled: z.boolean().optional(),
     force: z.boolean().optional(),
   }),
 });
@@ -19,6 +22,9 @@ const NormalNode = z.object({
   properties: z.object({
     label: z.string(),
     icon: z.string(),
+    instructions: z.string().optional(),
+    pseudocode: z.string().optional(),
+    pseudocodeEnabled: z.boolean().optional(),
     force: z.boolean().optional(),
     parameters: z.record(z.string(), z.unknown()).optional(),
   }),
@@ -32,6 +38,9 @@ const HandoffNode = z.object({
     icon: z.string(),
     targetAgentId: z.string().optional(),
     targetBlueprintId: z.string().optional(),
+    instructions: z.string().optional(),
+    pseudocode: z.string().optional(),
+    pseudocodeEnabled: z.boolean().optional(),
     force: z.boolean().optional(),
   }),
 });

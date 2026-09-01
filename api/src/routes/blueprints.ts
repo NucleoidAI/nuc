@@ -49,6 +49,29 @@ router.post("/generate", async (req, res) => {
   res.status(200).json({ description, skill });
 });
 
+router.post("/pseudocode", async (req, res) => {
+  const { projectId: teamId } = req.session;
+
+  if (!teamId) {
+    return res.status(400);
+  }
+
+  const { instructions, agentId } = BlueprintSchema.pseudocode.parse(req.body);
+
+  const { teamId: agentTeamId } = await agentData.get({ agentId });
+
+  if (teamId !== agentTeamId) {
+    throw new AuthenticationError();
+  }
+
+  const pseudocode = await bluePrint.generatePseudocode({
+    instructions,
+    agentId,
+  });
+
+  res.status(200).json({ pseudocode });
+});
+
 router.put("/:blueprintId", async (req, res) => {
   const { projectId: teamId } = req.session;
   const { blueprintId } = req.params;

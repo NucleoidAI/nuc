@@ -173,12 +173,9 @@ router.patch("/:supervisingId/demo", async (req, res) => {
           id: "f0e0d0c0-a0b0-4000-8000-000000000000",
           properties: {
             label: "Select a Product",
-            prompt: "Ask user which product they want to order",
             icon: "mdi:account-question",
             action: "PLATFORM:user_interaction",
             description: "Ask user to select a product",
-            pseudocode:
-              "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nEND_CONTEXT\n\nEND_MESSAGE",
           },
           type: "NORMAL",
           next: ["f1e1d1c1-a1b1-4111-8111-111111111111"],
@@ -188,12 +185,9 @@ router.patch("/:supervisingId/demo", async (req, res) => {
           id: "f1e1d1c1-a1b1-4111-8111-111111111111",
           properties: {
             label: "Find Product",
-            prompt: "Find the product by identifier",
             icon: "mdi:magnify",
             action: "ORDER:find_product",
             description: "Search and retrieve the product details",
-            pseudocode:
-              "BEGIN_CONTEXT\nproduct = FindProduct()\nEND_CONTEXT\n\nEND_MESSAGE",
           },
           type: "NORMAL",
           next: ["f3e3d3c3-a3b3-4333-8333-333333333333"],
@@ -203,14 +197,10 @@ router.patch("/:supervisingId/demo", async (req, res) => {
           id: "f3e3d3c3-a3b3-4333-8333-333333333333",
           properties: {
             label: "Knowledge Lookup",
-            prompt:
-              "Look up compliance certificate for the product from agent knowledge",
             icon: "mdi:book-search",
             action: "PLATFORM:knowledge_lookup",
             description:
               "Look up compliance certificate for the product from agent knowledge",
-            pseudocode:
-              "BEGIN_CONTEXT\ncertificate = KnowledgeLookup(product.id)\nEND_CONTEXT\n\nEND_MESSAGE",
           },
           type: "NORMAL",
           next: ["83a2a833-57bc-41b0-8871-be0dd2866ac7"],
@@ -220,12 +210,9 @@ router.patch("/:supervisingId/demo", async (req, res) => {
           id: "f2e2d2c2-a2b2-4222-8222-222222222222",
           properties: {
             label: "Assign Certificate",
-            prompt: "Assign a compliance certificate to the product",
             icon: "mdi:certificate-outline",
             action: "ORDER:assign_certificate",
             description: "Assign a compliance certificate to the product",
-            pseudocode:
-              "BEGIN_CONTEXT\ncertificate = AssignCertificate(product.id)\nEND_CONTEXT\n\nEND_MESSAGE",
           },
           type: "NORMAL",
           next: ["f4e4d4c4-a4b4-4444-8444-444444444444"],
@@ -235,12 +222,9 @@ router.patch("/:supervisingId/demo", async (req, res) => {
           id: "f4e4d4c4-a4b4-4444-8444-444444444444",
           properties: {
             label: "Create Purchase Order",
-            prompt: "Create a purchase order for the product",
             icon: "mdi:file-document-plus",
             action: "ORDER:create_po",
             description: "Create a Purchase Order for the certified product",
-            pseudocode:
-              "BEGIN_CONTEXT\nPO.Create(product.id)\nEND_CONTEXT\n\nEND_MESSAGE",
           },
           type: "NORMAL",
           next: ["f6e6d6c6-a6b6-4666-8666-666666666666"],
@@ -250,13 +234,10 @@ router.patch("/:supervisingId/demo", async (req, res) => {
           id: "f6e6d6c6-a6b6-4666-8666-666666666666",
           properties: {
             label: "Send Email",
-            prompt: "Send email to notify about the purchase order",
             icon: "mdi:email",
             action: "GREY:send_email",
             description:
               "Send email notification about the completed purchase order",
-            pseudocode:
-              "BEGIN_CONTEXT\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE",
           },
           type: "NORMAL",
           next: null,
@@ -266,13 +247,10 @@ router.patch("/:supervisingId/demo", async (req, res) => {
           id: "83a2a833-57bc-41b0-8871-be0dd2866ac7",
           properties: {
             label: "If certificate exists",
-            prompt: "If product has certificate",
             icon: "mdi:source-branch",
             action: "PLATFORM:decision",
             description:
               "A decision node that branches the flow based on conditions.",
-            pseudocode:
-              "BEGIN_CONTEXT\nIF Product.CertificateExists == TRUE THEN\n    // Proceed with certificate-related logic\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
           },
           type: "CONDITION",
           true: ["f2e2d2c2-a2b2-4222-8222-222222222222"],
@@ -283,7 +261,6 @@ router.patch("/:supervisingId/demo", async (req, res) => {
           id: "26ca02ed-92d9-49ce-b152-ca8536e92202",
           properties: {
             label: "Handoff to compliant_manager_agent",
-            prompt: "",
             icon: "mdi:account-arrow-right",
             action: "PLATFORM:handoff",
             description: "Transfer this task to another agent's blueprint.",
@@ -297,12 +274,9 @@ router.patch("/:supervisingId/demo", async (req, res) => {
           id: "f0e0d0c0-a0b0-4000-8000-000000000000",
           properties: {
             label: "Select a Product",
-            prompt: "Ask user which product they want to order",
             icon: "mdi:account-question",
             action: "PLATFORM:user_interaction",
             description: "Ask user to select a product",
-            pseudocode:
-              "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nEND_CONTEXT\n\nEND_MESSAGE",
           },
           type: "NORMAL",
           next: ["f1e1d1c1-a1b1-4111-8111-111111111111"],
@@ -312,12 +286,9 @@ router.patch("/:supervisingId/demo", async (req, res) => {
           id: "f1e1d1c1-a1b1-4111-8111-111111111111",
           properties: {
             label: "Find Product",
-            prompt: "Find the product by identifier",
             icon: "mdi:magnify",
             action: "ORDER:find_product",
             description: "Search and retrieve the product details",
-            pseudocode:
-              "BEGIN_CONTEXT\nproduct = FindProduct()\nEND_CONTEXT\n\nEND_MESSAGE",
           },
           type: "NORMAL",
           next: ["f3e3d3c3-a3b3-4333-8333-333333333333"],
@@ -327,14 +298,10 @@ router.patch("/:supervisingId/demo", async (req, res) => {
           id: "f3e3d3c3-a3b3-4333-8333-333333333333",
           properties: {
             label: "Knowledge Lookup",
-            prompt:
-              "Look up compliance certificate for the product from agent knowledge",
             icon: "mdi:book-search",
             action: "PLATFORM:knowledge_lookup",
             description:
               "Look up compliance certificate for the product from agent knowledge",
-            pseudocode:
-              "BEGIN_CONTEXT\ncertificate = KnowledgeLookup(product.id)\nEND_CONTEXT\n\nEND_MESSAGE",
           },
           type: "NORMAL",
           next: ["83a2a833-57bc-41b0-8871-be0dd2866ac7"],
@@ -344,12 +311,9 @@ router.patch("/:supervisingId/demo", async (req, res) => {
           id: "f2e2d2c2-a2b2-4222-8222-222222222222",
           properties: {
             label: "Assign Certificate",
-            prompt: "Assign a compliance certificate to the product",
             icon: "mdi:certificate-outline",
             action: "ORDER:assign_certificate",
             description: "Assign a compliance certificate to the product",
-            pseudocode:
-              "BEGIN_CONTEXT\ncertificate = AssignCertificate(product.id)\nEND_CONTEXT\n\nEND_MESSAGE",
           },
           type: "NORMAL",
           next: ["f4e4d4c4-a4b4-4444-8444-444444444444"],
@@ -359,12 +323,9 @@ router.patch("/:supervisingId/demo", async (req, res) => {
           id: "f4e4d4c4-a4b4-4444-8444-444444444444",
           properties: {
             label: "Create Purchase Order",
-            prompt: "Create a purchase order for the product",
             icon: "mdi:file-document-plus",
             action: "ORDER:create_po",
             description: "Create a Purchase Order for the certified product",
-            pseudocode:
-              "BEGIN_CONTEXT\nPO.Create(product.id)\nEND_CONTEXT\n\nEND_MESSAGE",
           },
           type: "NORMAL",
           next: ["f6e6d6c6-a6b6-4666-8666-666666666666"],
@@ -374,13 +335,10 @@ router.patch("/:supervisingId/demo", async (req, res) => {
           id: "f6e6d6c6-a6b6-4666-8666-666666666666",
           properties: {
             label: "Send Email",
-            prompt: "Send email to notify about the purchase order",
             icon: "mdi:email",
             action: "GREY:send_email",
             description:
               "Send email notification about the completed purchase order",
-            pseudocode:
-              "BEGIN_CONTEXT\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE",
           },
           type: "NORMAL",
           next: null,
@@ -390,13 +348,10 @@ router.patch("/:supervisingId/demo", async (req, res) => {
           id: "83a2a833-57bc-41b0-8871-be0dd2866ac7",
           properties: {
             label: "If certificate exists",
-            prompt: "If product has certificate",
             icon: "mdi:source-branch",
             action: "PLATFORM:decision",
             description:
               "A decision node that branches the flow based on conditions.",
-            pseudocode:
-              "BEGIN_CONTEXT\nIF Product.CertificateExists == TRUE THEN\n    // Proceed with certificate-related logic\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
           },
           type: "CONDITION",
           true: ["f2e2d2c2-a2b2-4222-8222-222222222222"],
@@ -407,7 +362,6 @@ router.patch("/:supervisingId/demo", async (req, res) => {
           id: "26ca02ed-92d9-49ce-b152-ca8536e92202",
           properties: {
             label: "Handoff to compliant_manager_agent",
-            prompt: "",
             icon: "mdi:account-arrow-right",
             action: "PLATFORM:handoff",
             description: "Transfer this task to another agent's blueprint.",
@@ -416,8 +370,6 @@ router.patch("/:supervisingId/demo", async (req, res) => {
           createdAt: "2026-06-29T16:47:50.254Z",
         },
       ],
-      pseudocode:
-        "BEGIN_CONTEXT\nIF Product.Exists == TRUE THEN\n    Certificate.Assign(Product)\n    PurchaseOrder.Create(Product)\n    Process.WriteToLLM()\n    Email.Send()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     };
   } else {
     response = {

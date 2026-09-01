@@ -11,7 +11,6 @@ type NodeType = {
   id: string;
   properties?: {
     label?: string;
-    prompt?: string;
     icon?: string;
     action?: string;
     description?: string;

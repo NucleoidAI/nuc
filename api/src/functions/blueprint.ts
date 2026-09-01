@@ -8,9 +8,7 @@ type NodeType = {
   properties?: {
     label: string;
     icon: string;
-    prompt?: string;
     description?: string;
-    pseudocode?: string;
     targetAgentId?: string;
     targetBlueprintId?: string;
     force?: boolean;
@@ -20,6 +18,29 @@ type NodeType = {
   true?: string[] | null;
   false?: string[] | null;
 };
+
+const COSMETIC_PROPERTIES = ["label"];
+
+function withoutCosmetics<T extends { properties?: object }>(nodes: T[]): T[] {
+  return nodes.map((node) => ({
+    ...node,
+    properties: node?.properties
+      ? Object.fromEntries(
+          Object.entries(node.properties).filter(
+            ([key]) => !COSMETIC_PROPERTIES.includes(key)
+          )
+        )
+      : node?.properties,
+  }));
+}
+
+function stripCosmetics<T extends { nodes?: unknown }>(blueprint: T): T {
+  if (!Array.isArray(blueprint?.nodes)) {
+    return blueprint;
+  }
+
+  return { ...blueprint, nodes: withoutCosmetics(blueprint.nodes) };
+}
 
 async function getWithNodes(id: string) {
   if (!id) {
@@ -111,10 +132,10 @@ async function remove({ blueprintId }: { blueprintId: string }) {
 
 async function list({
   agentId,
-  includeLabels = true,
+  includeCosmetics = true,
 }: {
   agentId: string;
-  includeLabels?: boolean;
+  includeCosmetics?: boolean;
 }) {
   const Blueprints = await BluePrint.findAll({
     where: { agentId },
@@ -128,22 +149,8 @@ async function list({
 
   const blueprints = Blueprints.map((Blueprint) => Blueprint.toJSON());
 
-  if (!includeLabels) {
-    return blueprints.map((Blueprint) => ({
-      ...Blueprint,
-      nodes: Array.isArray(Blueprint.nodes)
-        ? Blueprint.nodes.map((node) => ({
-            ...node,
-            properties: node?.properties
-              ? Object.fromEntries(
-                  Object.entries(node.properties).filter(
-                    ([key]) => key !== "label",
-                  ),
-                )
-              : node?.properties,
-          }))
-        : Blueprint.nodes,
-    }));
+  if (!includeCosmetics) {
+    return blueprints.map(stripCosmetics);
   }
 
   return blueprints;
@@ -151,10 +158,10 @@ async function list({
 
 async function get({
   blueprintId,
-  includeLabels = true,
+  includeCosmetics = true,
 }: {
   blueprintId: string;
-  includeLabels?: boolean;
+  includeCosmetics?: boolean;
 }) {
   const Blueprint = await BluePrint.findByPk(blueprintId, {
     include: [
@@ -171,19 +178,8 @@ async function get({
 
   const blueprint = Blueprint.toJSON();
 
-  if (!includeLabels) {
-    blueprint.nodes = Array.isArray(blueprint.nodes)
-      ? blueprint.nodes.map((node) => ({
-          ...node,
-          properties: node?.properties
-            ? Object.fromEntries(
-                Object.entries(node.properties).filter(
-                  ([key]) => key !== "label",
-                ),
-              )
-            : node?.properties,
-        }))
-      : blueprint.nodes;
+  if (!includeCosmetics) {
+    return stripCosmetics(blueprint);
   }
 
   return blueprint;
@@ -191,14 +187,12 @@ async function get({
 
 async function patch({
   blueprintId,
-  pseudocode,
   title,
   description,
   blocking,
   skill,
 }: {
   blueprintId: string;
-  pseudocode?: string;
   title?: string;
   description?: string;
   blocking?: boolean;
@@ -211,7 +205,6 @@ async function patch({
   }
 
   await Blueprint.update({
-    ...(pseudocode && { pseudocode }),
     ...(title && { title }),
     ...(description && { description }),
     ...(blocking !== undefined && { blocking }),
@@ -221,84 +214,12 @@ async function patch({
   return Blueprint.toJSON();
 }
 
-async function upsertPseudocode({
-  id,
-  title,
-  description,
-  agentId,
-  nodes,
-  messages,
-  blocking,
-  skill,
-}: {
-  id: string;
-  title: string;
-  description: string;
-  agentId: string;
-  nodes?: NodeType[];
-  messages?: Array<{ role: string; content: string; createdAt: Date }>;
-  blocking?: boolean;
-  skill?: string;
-}) {
-  const existingNodes = new Map(
-    (await BluePrint.findByPk(id))?.nodes?.map((n) => [n.id, n]) || [],
-  );
-
-  const [pseudocode, nodesWithPseudocode] = await Promise.all([
-    agentFn.toPseudo({ content: description, meta: { agentId } }),
-    nodes
-      ? Promise.all(
-          nodes.map((node) => {
-            const content = node.properties?.prompt;
-            if (!content) return node;
-            const prev = existingNodes.get(node.id);
-            const prevContent = prev?.properties?.prompt;
-            if (prev?.properties?.pseudocode && prevContent === content) {
-              return {
-                ...node,
-                properties: {
-                  ...node.properties,
-                  pseudocode: prev.properties.pseudocode,
-                },
-              } as typeof node;
-            }
-            return agentFn.toPseudo({ content, meta: { agentId } }).then(
-              (nodePseudocode) =>
-                ({
-                  ...node,
-                  properties: {
-                    ...node.properties,
-                    pseudocode: nodePseudocode,
-                  },
-                } as typeof node),
-            );
-          }),
-        )
-      : undefined,
-  ]);
-
-  const result = await upsert(
-    title,
-    description,
-    agentId,
-    id,
-    nodesWithPseudocode,
-    messages,
-    blocking,
-    skill,
-  );
-
-  await patch({ blueprintId: id, pseudocode });
-
-  return { ...result, pseudocode };
-}
-
 async function generateDescription({ nodes }: { nodes: NodeType[] }) {
   if (!nodes?.length) {
     return "";
   }
 
-  return agentFn.blueprintDescription({ nodes });
+  return agentFn.blueprintDescription({ nodes: withoutCosmetics(nodes) });
 }
 
 async function generateSkill({ nodes }: { nodes: NodeType[] }) {
@@ -306,13 +227,13 @@ async function generateSkill({ nodes }: { nodes: NodeType[] }) {
     return "";
   }
 
-  return agentFn.blueprintSkill({ nodes });
+  return agentFn.blueprintSkill({ nodes: withoutCosmetics(nodes) });
 }
 
 export default {
   getWithNodes,
+  stripCosmetics,
   upsert,
-  upsertPseudocode,
   remove,
   list,
   get,

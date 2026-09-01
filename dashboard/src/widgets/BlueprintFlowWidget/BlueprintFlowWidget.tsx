@@ -32,7 +32,6 @@ interface Blueprint {
   title: string;
   description: string;
   agentId: string;
-  pseudocode?: string;
   blocking?: boolean;
   skill?: string;
 }
@@ -44,8 +43,6 @@ function graphToNodes(graphData: DefinitionGraph) {
       type: node.nodeType,
       properties: {
         label: node.label || node.raw?.properties?.label,
-        prompt: node.raw?.properties?.prompt,
-        pseudocode: node.raw?.properties?.pseudocode,
         icon: node.icon || node.raw?.properties?.icon,
         action: node.action || node.raw?.properties?.action,
         description: node.description || node.raw?.properties?.description,
@@ -286,7 +283,6 @@ function BlueprintFlowWidget({
   const [selectedParentNode, setSelectedParentNode] = useState(null);
   const [editingNodeId, setEditingNodeId] = useState<string | null>(null);
   const [newNodeLabel, setNewNodeLabel] = useState("");
-  const [newNodePrompt, setNewNodePrompt] = useState("");
   const [newNodeForce, setNewNodeForce] = useState(false);
   const [newNodeType, setNewNodeType] = useState("NORMAL");
   const [handoffTargetAgentId, setHandoffTargetAgentId] = useState("");
@@ -316,7 +312,6 @@ function BlueprintFlowWidget({
   });
 
   const [showSampleFlow, setShowSampleFlow] = useState(false);
-  const [nodePseudocode, setNodePseudocode] = useState("");
 
   useEffect(
     () => {
@@ -416,9 +411,7 @@ function BlueprintFlowWidget({
   const handleAddNodeClick = (node) => {
     setSelectedParentNode(node);
     setNewNodeLabel("");
-    setNewNodePrompt("");
     setNewNodeForce(false);
-    setNodePseudocode("");
     setNewNodeType("NORMAL");
     setSelectedBranch("true");
     setInheritedNextBranch("none");
@@ -430,13 +423,10 @@ function BlueprintFlowWidget({
     setEditMode(true);
     setEditingNodeId(node.id);
     const nodeLabel = node?.label || node?.properties?.label || "";
-    const nodePrompt = node?.raw?.properties?.prompt || "";
     const nodeType = node.nodeType || "NORMAL";
     setNewNodeLabel(nodeLabel);
-    setNewNodePrompt(nodePrompt);
     setNewNodeForce(Boolean(node?.raw?.properties?.force));
     setNewNodeType(nodeType);
-    setNodePseudocode(node?.raw?.properties?.pseudocode || "");
 
     if (nodeType === "HANDOFF") {
       setHandoffTargetAgentId(node?.raw?.properties?.targetAgentId || "");
@@ -534,7 +524,6 @@ function BlueprintFlowWidget({
             properties: {
               ...nodeToUpdate.raw?.properties,
               label: newNodeLabel,
-              prompt: newNodePrompt,
               force: newNodeForce,
               description: descriptionText,
               action: actionType,
@@ -568,7 +557,6 @@ function BlueprintFlowWidget({
             properties: {
               ...nodeToUpdate.raw?.properties,
               label: newNodeLabel,
-              prompt: newNodePrompt,
               force: newNodeForce,
               description: descriptionText,
               action: actionType,
@@ -597,7 +585,6 @@ function BlueprintFlowWidget({
             properties: {
               ...nodeToUpdate.raw?.properties,
               label: newNodeLabel,
-              prompt: newNodePrompt,
               force: newNodeForce,
               description: descriptionText,
               action: actionType,
@@ -624,7 +611,6 @@ function BlueprintFlowWidget({
             properties: {
               ...nodeToUpdate.raw?.properties,
               label: newNodeLabel,
-              prompt: newNodePrompt,
               force: newNodeForce,
               description: descriptionText,
               action: actionType,
@@ -654,9 +640,7 @@ function BlueprintFlowWidget({
     setEditingNodeId(null);
     setSelectedParentNode(null);
     setNewNodeLabel("");
-    setNewNodePrompt("");
     setNewNodeForce(false);
-    setNodePseudocode("");
     setNewNodeType("NORMAL");
     setSelectedBranch("true");
     setInheritedNextBranch("none");
@@ -727,7 +711,6 @@ function BlueprintFlowWidget({
                 properties: {
                   action: actionType,
                   label: newNodeLabel,
-                  prompt: newNodePrompt,
                   force: newNodeForce,
                   description: descriptionText,
                   icon: nodeIcon,
@@ -754,7 +737,6 @@ function BlueprintFlowWidget({
                 properties: {
                   action: actionType,
                   label: newNodeLabel,
-                  prompt: newNodePrompt,
                   force: newNodeForce,
                   description: descriptionText,
                   icon: nodeIcon,
@@ -781,7 +763,6 @@ function BlueprintFlowWidget({
                 properties: {
                   action: actionType,
                   label: newNodeLabel,
-                  prompt: newNodePrompt,
                   force: newNodeForce,
                   description: descriptionText,
                   icon: nodeIcon,
@@ -857,7 +838,6 @@ function BlueprintFlowWidget({
                 properties: {
                   action: actionType,
                   label: newNodeLabel,
-                  prompt: newNodePrompt,
                   force: newNodeForce,
                   description: descriptionText,
                   icon: nodeIcon,
@@ -898,7 +878,6 @@ function BlueprintFlowWidget({
                 properties: {
                   action: actionType,
                   label: newNodeLabel,
-                  prompt: newNodePrompt,
                   force: newNodeForce,
                   description: descriptionText,
                   icon: nodeIcon,
@@ -925,7 +904,6 @@ function BlueprintFlowWidget({
                 properties: {
                   action: actionType,
                   label: newNodeLabel,
-                  prompt: newNodePrompt,
                   force: newNodeForce,
                   description: descriptionText,
                   icon: nodeIcon,
@@ -1436,8 +1414,6 @@ function BlueprintFlowWidget({
     };
     setSelectedParentNode(starterParent);
     setNewNodeLabel("");
-    setNewNodePrompt("");
-    setNodePseudocode("");
     setNewNodeType("NORMAL");
     setSelectedBranch("true");
     setShowValidationErrors(false);
@@ -1501,15 +1477,12 @@ function BlueprintFlowWidget({
       )}
 
       <NodeEditorWidget
-        pseudocode={nodePseudocode}
         drawerOpen={drawerOpen}
         handleDrawerClose={handleDrawerClose}
         selectedParentNode={selectedParentNode}
         graphData={graphData}
         newNodeLabel={newNodeLabel}
         setNewNodeLabel={setNewNodeLabel}
-        newNodePrompt={newNodePrompt}
-        setNewNodePrompt={setNewNodePrompt}
         newNodeForce={newNodeForce}
         setNewNodeForce={setNewNodeForce}
         newNodeType={newNodeType}

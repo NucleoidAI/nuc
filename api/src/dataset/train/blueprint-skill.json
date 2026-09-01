@@ -5,7 +5,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Get BBK by address",
             "action": "TELCO:get_bbk_by_address"
           },
           "next": ["node-2"]
@@ -13,7 +12,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Check inventory availability",
             "action": "TELCO:get_inventory"
           },
           "next": ["node-3"]
@@ -21,7 +19,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Get products by speed",
             "action": "TELCO:get_product_by_speed"
           },
           "next": ["node-4"]
@@ -29,7 +26,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Provide available options and waiting for user to select a product",
             "action": "PLATFORM:user_interaction"
           },
           "next": ["node-5"]
@@ -37,7 +33,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Allocate port and create order",
             "action": "TELCO:port_allocation"
           },
           "next": ["node-6"]
@@ -45,7 +40,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Notify user about port allocation",
             "action": "PLATFORM:message_user"
           },
           "next": ["node-7"]
@@ -53,7 +47,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Configure allocated port",
             "action": "TELCO:configuration"
           },
           "next": ["node-8"]
@@ -61,7 +54,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Connect port to residence",
             "action": "TELCO:port_connection"
           },
           "next": ["node-9"]
@@ -69,7 +61,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Complete setup flow",
             "action": "PLATFORM:complete"
           },
           "next": null
@@ -84,7 +75,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Get BBK by address",
             "action": "TELCO:get_bbk_by_address"
           },
           "next": ["node-2"]
@@ -92,7 +82,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Check inventory availability",
             "action": "TELCO:get_inventory"
           },
           "next": ["node-3"]
@@ -100,7 +89,6 @@
         {
           "type": "CONDITION",
           "properties": {
-            "prompt": "Is inventory available?",
             "action": "PLATFORM:decision"
           },
           "true": ["node-4"],
@@ -109,7 +97,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Get products by speed",
             "action": "TELCO:get_product_by_speed"
           },
           "next": ["node-5"]
@@ -117,7 +104,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Provide available options and waiting for user to select a product",
             "action": "PLATFORM:user_interaction"
           },
           "next": ["node-6"]
@@ -125,7 +111,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Allocate port and create order",
             "action": "TELCO:port_allocation"
           },
           "next": ["node-7"]
@@ -133,7 +118,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Configure allocated port",
             "action": "TELCO:configuration"
           },
           "next": ["node-8"]
@@ -141,7 +125,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Connect port to residence",
             "action": "TELCO:port_connection"
           },
           "next": ["node-10"]
@@ -149,7 +132,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "No product available, complete",
             "action": "PLATFORM:complete"
           },
           "next": null
@@ -157,7 +139,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Complete setup flow",
             "action": "PLATFORM:complete"
           },
           "next": null
@@ -172,7 +153,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Get BBK by address",
             "action": "TELCO:get_bbk_by_address"
           },
           "next": ["node-2"]
@@ -180,7 +160,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Check inventory availability",
             "action": "TELCO:get_inventory"
           },
           "next": ["node-3"]
@@ -188,7 +167,6 @@
         {
           "type": "CONDITION",
           "properties": {
-            "prompt": "Is inventory available?",
             "action": "PLATFORM:decision"
           },
           "true": ["node-4"],
@@ -197,7 +175,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Get products by speed",
             "action": "TELCO:get_product_by_speed"
           },
           "next": ["node-5"]
@@ -205,7 +182,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Provide available options and wait for user to select a product",
             "action": "PLATFORM:user_interaction"
           },
           "next": ["node-6"]
@@ -213,7 +189,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Allocate port and create order",
             "action": "TELCO:port_allocation"
           },
           "next": ["node-7"]
@@ -221,7 +196,6 @@
         {
           "type": "CONDITION",
           "properties": {
-            "prompt": "Is port available?",
             "action": "PLATFORM:decision"
           },
           "true": ["node-8"],
@@ -230,7 +204,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Configure allocated port",
             "action": "TELCO:configuration"
           },
           "next": ["node-11"]
@@ -238,7 +211,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "No inventory available, complete",
             "action": "PLATFORM:complete"
           },
           "next": null
@@ -246,7 +218,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Notify user about port unavailability",
             "action": "PLATFORM:message_user"
           },
           "next": ["node-12"]
@@ -254,7 +225,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Connect port to residence",
             "action": "TELCO:port_connection"
           },
           "next": ["node-13"]
@@ -262,7 +232,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Complete — port unavailable",
             "action": "PLATFORM:complete"
           },
           "next": null
@@ -270,7 +239,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Complete setup flow",
             "action": "PLATFORM:complete"
           },
           "next": null
@@ -285,7 +253,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Get user address",
             "action": "PLATFORM:user_interaction"
           },
           "next": ["node-2"]
@@ -293,7 +260,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Get BBK by address",
             "action": "TELCO:get_bbk_by_address"
           },
           "next": ["node-3"]
@@ -301,7 +267,6 @@
         {
           "type": "CONDITION",
           "properties": {
-            "prompt": "Is address valid?",
             "action": "PLATFORM:decision"
           },
           "true": ["node-4"],
@@ -310,7 +275,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Check inventory availability",
             "action": "TELCO:get_inventory"
           },
           "next": ["node-5"]
@@ -318,7 +282,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Get products by speed",
             "action": "TELCO:get_product_by_speed"
           },
           "next": ["node-6"]
@@ -326,7 +289,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Provide available options and wait for user to select a product",
             "action": "PLATFORM:user_interaction"
           },
           "next": ["node-7"]
@@ -334,7 +296,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Complete setup flow",
             "action": "PLATFORM:complete"
           },
           "next": null
@@ -342,7 +303,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Notify user that address was not found",
             "action": "PLATFORM:message_user"
           },
           "next": ["node-9"]
@@ -350,7 +310,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Complete — address not found",
             "action": "PLATFORM:complete"
           },
           "next": null
@@ -365,7 +324,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Get BBK by address",
             "action": "TELCO:get_bbk_by_address"
           },
           "next": ["node-2"]
@@ -373,7 +331,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Check inventory availability",
             "action": "TELCO:get_inventory"
           },
           "next": ["node-3"]
@@ -381,7 +338,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Get products by speed",
             "action": "TELCO:get_product_by_speed"
           },
           "next": ["node-4"]
@@ -389,7 +345,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Provide available options and wait for user to select a product",
             "action": "PLATFORM:user_interaction"
           },
           "next": ["node-5"]
@@ -397,7 +352,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Allocate port and create order",
             "action": "TELCO:port_allocation"
           },
           "next": ["node-6"]
@@ -405,7 +359,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Notify user about port unavailability and end process",
             "action": "PLATFORM:message_user"
           },
           "next": ["node-7"]
@@ -413,7 +366,6 @@
         {
           "type": "NORMAL",
           "properties": {
-            "prompt": "Complete — port not available",
             "action": "PLATFORM:complete"
           },
           "next": null

@@ -73,20 +73,20 @@ router.put("/:blueprintId", async (req, res) => {
     }
   }
 
-  const result = await bluePrint.upsertPseudocode({
-    id: blueprintId,
+  const result = await bluePrint.upsert(
     title,
     description,
     agentId,
+    blueprintId,
     nodes,
-    messages: messages?.map((msg) => ({
+    messages?.map((msg) => ({
       content: msg.content,
       role: msg.role,
       createdAt: new Date(msg.createdAt),
     })),
     blocking,
-    skill,
-  });
+    skill
+  );
 
   await event.publish("BLUEPRINT_CREATED", {
     Blueprint: result,

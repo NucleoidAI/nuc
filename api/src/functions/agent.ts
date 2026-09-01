@@ -122,7 +122,10 @@ async function scoring({
 }
 
 async function Blueprints({ agentId }) {
-  const Blueprints = await blueprintFn.list({ agentId, includeLabels: false });
+  const Blueprints = await blueprintFn.list({
+    agentId,
+    includeCosmetics: false,
+  });
 
   return {
     role: "system",
@@ -720,14 +723,18 @@ async function blueprintChatContext({
     blueprintId ? blueprintFn.getWithNodes(blueprintId) : Promise.resolve(null),
   ]);
 
+  const blueprintForLLM = referenceBlueprint
+    ? blueprintFn.stripCosmetics(referenceBlueprint)
+    : null;
+
   return [
     { role: "system", content: JSON.stringify(agentInfo.content) },
     { role: "system", content: JSON.stringify(agentKnowledge.content) },
-    ...(referenceBlueprint
+    ...(blueprintForLLM
       ? [
           {
             role: "system" as const,
-            content: JSON.stringify({ referenceBlueprint }),
+            content: JSON.stringify({ referenceBlueprint: blueprintForLLM }),
           },
         ]
       : []),
@@ -1101,7 +1108,7 @@ async function chat({
   if (selectedBlueprintId && task.length === 0) {
     const blueprintData = await blueprintFn.get({
       blueprintId: selectedBlueprintId,
-      includeLabels: false,
+      includeCosmetics: false,
     });
 
     const blueprintToTaskResponse = await blueprintToTask({
@@ -1195,24 +1202,6 @@ async function chat({
   }
 }
 
-async function toPseudo({
-  content,
-  meta,
-}: {
-  content: string;
-  meta?: LLMMeta;
-}) {
-  const response = await generate({
-    dataset: dataset.train.pseudocode,
-    context: [],
-    content,
-    json_format: "{ pseudocode: <PSEUDO> }",
-    meta,
-  });
-
-  return response.pseudocode;
-}
-
 async function blueprintDescription({
   nodes,
   meta,
@@ -1268,7 +1257,6 @@ export default {
   blueprintChatSufficiency,
   blueprintChatKnowledge,
   evaluateSupervisionAnswer,
-  toPseudo,
   blueprintDescription,
   blueprintSkill,
 };

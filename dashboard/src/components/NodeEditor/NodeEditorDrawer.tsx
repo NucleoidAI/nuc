@@ -29,8 +29,6 @@ const NodeEditorDrawer = ({
   selectedParentNode,
   newNodeLabel,
   setNewNodeLabel,
-  newNodePrompt,
-  setNewNodePrompt,
   newNodeForce = false,
   setNewNodeForce,
   newNodeType,
@@ -49,7 +47,6 @@ const NodeEditorDrawer = ({
   nextIntegration,
   handleSubmit,
   editMode,
-  pseudocode,
   availableAgents = [],
   handoffTargetAgentId = "",
   setHandoffTargetAgentId,
@@ -70,8 +67,6 @@ const NodeEditorDrawer = ({
   };
   newNodeLabel: string;
   setNewNodeLabel: (label: string) => void;
-  newNodePrompt: string;
-  setNewNodePrompt: (prompt: string) => void;
   newNodeForce?: boolean;
   setNewNodeForce?: (force: boolean) => void;
   newNodeType: string;
@@ -236,7 +231,6 @@ const NodeEditorDrawer = ({
   };
   handleSubmit: () => void;
   editMode?: boolean;
-  pseudocode?: string;
   availableAgents?: Array<{ id: string; name: string; icon?: string }>;
   handoffTargetAgentId?: string;
   setHandoffTargetAgentId?: (id: string) => void;
@@ -263,22 +257,6 @@ const NodeEditorDrawer = ({
           spellCheck: false,
         }}
         sx={{ mt: 1 }}
-      />
-
-      <TextField
-        label="Prompt"
-        variant="outlined"
-        fullWidth
-        multiline
-        minRows={3}
-        value={newNodePrompt}
-        onChange={(e) => setNewNodePrompt(e.target.value)}
-        autoComplete="off"
-        inputProps={{
-          autoComplete: "off",
-          autoCorrect: "off",
-          spellCheck: false,
-        }}
       />
 
       <Box
@@ -309,31 +287,6 @@ const NodeEditorDrawer = ({
             theme={theme}
           />
         </Box>
-      </Box>
-
-      <Box
-        sx={{
-          p: 2,
-          border: "1px solid",
-          borderColor: "divider",
-          borderRadius: 1,
-          bgcolor: "background.default",
-        }}
-      >
-        <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
-          Pseudocode
-        </Typography>
-
-        <Typography
-          variant="subtitle2"
-          fontWeight="bold"
-          color="text.secondary"
-          gutterBottom
-          component="pre"
-          sx={{ whiteSpace: "pre-wrap", fontFamily: "monospace" }}
-        >
-          {pseudocode && pseudocode.trim() ? pseudocode : "Not available"}
-        </Typography>
       </Box>
 
       <FormControl fullWidth>

@@ -14,8 +14,6 @@ const NodeEditorWidget = ({
   graphData,
   newNodeLabel,
   setNewNodeLabel,
-  newNodePrompt,
-  setNewNodePrompt,
   newNodeForce,
   setNewNodeForce,
   newNodeType,
@@ -29,7 +27,6 @@ const NodeEditorWidget = ({
   setSelectedIntegration,
   editMode,
   editingNode,
-  pseudocode,
   handoffTargetAgentId = "",
   setHandoffTargetAgentId,
   handoffTargetBlueprintId = "",
@@ -49,8 +46,6 @@ const NodeEditorWidget = ({
   graphData: DefinitionGraph;
   newNodeLabel: string;
   setNewNodeLabel: (label: string) => void;
-  newNodePrompt: string;
-  setNewNodePrompt: (prompt: string) => void;
   newNodeForce?: boolean;
   setNewNodeForce?: (force: boolean) => void;
   newNodeType: string;
@@ -127,7 +122,6 @@ const NodeEditorWidget = ({
       createdAt?: string;
     };
   };
-  pseudocode?: string;
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -233,14 +227,11 @@ const NodeEditorWidget = ({
 
   return (
     <NodeEditorDrawer
-      pseudocode={pseudocode}
       drawerOpen={drawerOpen}
       handleDrawerClose={handleDrawerClose}
       selectedParentNode={selectedParentNode}
       newNodeLabel={newNodeLabel}
       setNewNodeLabel={setNewNodeLabel}
-      newNodePrompt={newNodePrompt}
-      setNewNodePrompt={setNewNodePrompt}
       newNodeForce={newNodeForce}
       setNewNodeForce={setNewNodeForce}
       newNodeType={newNodeType}

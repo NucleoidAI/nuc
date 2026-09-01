@@ -12,12 +12,9 @@
         "properties": {
           "action": "GREY:check_product_count",
           "label": "Check Product Availability",
-          "icon": "mdi:check",
-          "prompt": "Check Product Availability"
+          "icon": "mdi:check"
         },
-        "next": [
-          "51dca395-1d90-4a28-9bbc-233de9c1a207"
-        ],
+        "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -26,15 +23,10 @@
         "properties": {
           "action": "PLATFORM:decision",
           "label": "Product Available?",
-          "icon": "mdi:source-branch",
-          "prompt": "Make Decision"
+          "icon": "mdi:source-branch"
         },
-        "true": [
-          "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-        ],
-        "false": [
-          "5be22de7-9673-448d-a1b5-dc23a8789b5c"
-        ],
+        "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+        "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -43,12 +35,9 @@
         "properties": {
           "action": "GREY:create_order",
           "label": "Create Order",
-          "icon": "mdi:cart-plus",
-          "prompt": "Create Order"
+          "icon": "mdi:cart-plus"
         },
-        "next": [
-          "2a69ce9c-32e9-49c9-ad7c-b631d890359b"
-        ],
+        "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -57,8 +46,7 @@
         "properties": {
           "action": "GREY:send_email",
           "label": "Send Email",
-          "icon": "mdi:email",
-          "prompt": "Send Email"
+          "icon": "mdi:email"
         },
         "next": null,
         "createdAt": "2025-06-19T06:03:00Z"
@@ -69,14 +57,12 @@
         "properties": {
           "action": "GREY:reduce_product_count",
           "label": "Reduce Product Quantity",
-          "icon": "mdi:minus",
-          "prompt": "Reduce Product Quantity"
+          "icon": "mdi:minus"
         },
         "next": null,
         "createdAt": "2025-06-19T06:02:00Z"
       }
-    ],
-    "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n  Order.Create()\nELSE\n  Product.Count = Product.Count - 1\n  Email.Send()\nEND_IF\nEND_CONTEXT"
+    ]
   },
   {
     "history": [],
@@ -91,12 +77,9 @@
         "properties": {
           "action": "GREY:check_product_availability",
           "label": "Check Product Availability",
-          "icon": "mdi:check",
-          "prompt": "Check Product Availability"
+          "icon": "mdi:check"
         },
-        "next": [
-          "b2c3d4e5-f6g7-4h8i-9j0k-l1m2n3o4p5q6"
-        ],
+        "next": ["b2c3d4e5-f6g7-4h8i-9j0k-l1m2n3o4p5q6"],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -105,13 +88,10 @@
         "properties": {
           "action": "PLATFORM:decision",
           "label": "Product Available?",
-          "icon": "mdi:source-branch",
-          "prompt": "Product Available?"
+          "icon": "mdi:source-branch"
         },
         "true": null,
-        "false": [
-          "c3d4e5f6-g7h8-4i9j-0k1l-m2n3o4p5q6r7"
-        ],
+        "false": ["c3d4e5f6-g7h8-4i9j-0k1l-m2n3o4p5q6r7"],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -120,14 +100,12 @@
         "properties": {
           "action": "GREY:call_user",
           "label": "Call User",
-          "icon": "mdi:phone",
-          "prompt": "Call User"
+          "icon": "mdi:phone"
         },
         "next": null,
         "createdAt": "2025-06-19T06:02:00Z"
       }
-    ],
-    "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n  User.Call()\nEND_IF\nEND_CONTEXT"
+    ]
   },
   {
     "history": [
@@ -155,12 +133,9 @@
         "properties": {
           "action": "GREY:check_product_availability",
           "label": "Check Product Availability",
-          "icon": "mdi:check",
-          "prompt": "Check Product Availability"
+          "icon": "mdi:check"
         },
-        "next": [
-          "b2c3d4e5-f6g7-4h8i-9j0k-l1m2n3o4p5q6"
-        ],
+        "next": ["b2c3d4e5-f6g7-4h8i-9j0k-l1m2n3o4p5q6"],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -169,15 +144,10 @@
         "properties": {
           "action": "PLATFORM:decision",
           "label": "Product Available?",
-          "icon": "mdi:source-branch",
-          "prompt": "Product Available?"
+          "icon": "mdi:source-branch"
         },
-        "true": [
-          "d4e5f6g7-h8i9-4j0k-1l2m-n3o4p5q6r7s8"
-        ],
-        "false": [
-          "c3d4e5f6-g7h8-4i9j-0k1l-m2n3o4p5q6r7"
-        ],
+        "true": ["d4e5f6g7-h8i9-4j0k-1l2m-n3o4p5q6r7s8"],
+        "false": ["c3d4e5f6-g7h8-4i9j-0k1l-m2n3o4p5q6r7"],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -186,8 +156,7 @@
         "properties": {
           "action": "GREY:call_user",
           "label": "Call User",
-          "icon": "mdi:phone",
-          "prompt": "Call User"
+          "icon": "mdi:phone"
         },
         "next": null,
         "createdAt": "2025-06-19T06:02:00Z"
@@ -198,14 +167,12 @@
         "properties": {
           "action": "GREY:send_email",
           "label": "Send Email",
-          "icon": "mdi:email",
-          "prompt": "Send Email"
+          "icon": "mdi:email"
         },
         "next": null,
         "createdAt": "2025-06-19T06:02:00Z"
       }
-    ],
-    "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == TRUE THEN\n  Email.Send()\nELSE\n  User.Call()\nEND_IF\nEND_CONTEXT"
+    ]
   },
   {
     "history": [],
@@ -220,12 +187,9 @@
         "properties": {
           "action": "GREY:get_user_address",
           "label": "Get User Address",
-          "icon": "mdi:home",
-          "prompt": "Get User Address"
+          "icon": "mdi:home"
         },
-        "next": [
-          "int-002"
-        ],
+        "next": ["int-002"],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -234,12 +198,9 @@
         "properties": {
           "action": "GREY:check_coverage",
           "label": "Check Coverage Area",
-          "icon": "mdi:map-marker-check",
-          "prompt": "Check Coverage Area"
+          "icon": "mdi:map-marker-check"
         },
-        "next": [
-          "int-003"
-        ],
+        "next": ["int-003"],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -248,12 +209,9 @@
         "properties": {
           "action": "GREY:get_available_packages",
           "label": "Get Available Packages",
-          "icon": "mdi:package-variant",
-          "prompt": "Get Available Packages"
+          "icon": "mdi:package-variant"
         },
-        "next": [
-          "int-004"
-        ],
+        "next": ["int-004"],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -262,12 +220,9 @@
         "properties": {
           "action": "GREY:present_offers",
           "label": "Present Offers to User",
-          "icon": "mdi:offer",
-          "prompt": "Present Offers to User"
+          "icon": "mdi:offer"
         },
-        "next": [
-          "int-005"
-        ],
+        "next": ["int-005"],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -276,12 +231,9 @@
         "properties": {
           "action": "GREY:get_user_selection",
           "label": "Get User Selection",
-          "icon": "mdi:cursor-pointer",
-          "prompt": "Get User Selection"
+          "icon": "mdi:cursor-pointer"
         },
-        "next": [
-          "int-006"
-        ],
+        "next": ["int-006"],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -290,12 +242,9 @@
         "properties": {
           "action": "GREY:setup_subscription",
           "label": "Setup Subscription",
-          "icon": "mdi:wifi-check",
-          "prompt": "Setup Subscription"
+          "icon": "mdi:wifi-check"
         },
-        "next": [
-          "int-007"
-        ],
+        "next": ["int-007"],
         "createdAt": "2025-06-19T06:02:00Z"
       },
       {
@@ -304,14 +253,12 @@
         "properties": {
           "action": "GREY:send_confirmation",
           "label": "Send Confirmation",
-          "icon": "mdi:email-check",
-          "prompt": "Send Confirmation"
+          "icon": "mdi:email-check"
         },
         "next": null,
         "createdAt": "2025-06-19T06:02:00Z"
       }
-    ],
-    "pseudocode": "BEGIN_CONTEXT\nAddress = User.GetAddress()\nCoverage = Coverage.Check(Address)\nPackages = Packages.GetAvailable(Coverage)\nOffers.Present(Packages)\nSelection = User.GetSelection()\nSubscription.Setup(Selection)\nConfirmation.Send()\nEND_CONTEXT"
+    ]
   },
   {
     "history": [
@@ -328,8 +275,7 @@
                 "properties": {
                   "action": "ORDER:find_product",
                   "label": "Find Product",
-                  "icon": "mdi:magnify",
-                  "prompt": "Find the product"
+                  "icon": "mdi:magnify"
                 },
                 "next": ["node-002"],
                 "createdAt": "2025-06-26T06:00:00Z"
@@ -340,8 +286,7 @@
                 "properties": {
                   "action": "GREY:check_certificate",
                   "label": "Check Certificate",
-                  "icon": "mdi:book-search",
-                  "prompt": "Check certificate for the product"
+                  "icon": "mdi:book-search"
                 },
                 "next": ["node-003"],
                 "createdAt": "2025-06-26T06:00:00Z"
@@ -352,8 +297,7 @@
                 "properties": {
                   "action": "ORDER:assign_certificate",
                   "label": "Assign Certificate",
-                  "icon": "mdi:certificate-outline",
-                  "prompt": "Assign certificate to the product"
+                  "icon": "mdi:certificate-outline"
                 },
                 "next": ["node-004"],
                 "createdAt": "2025-06-26T06:00:00Z"
@@ -364,8 +308,7 @@
                 "properties": {
                   "action": "ORDER:create_po",
                   "label": "Create Purchase Order",
-                  "icon": "mdi:file-document-plus",
-                  "prompt": "Create purchase order"
+                  "icon": "mdi:file-document-plus"
                 },
                 "next": ["node-005"],
                 "createdAt": "2025-06-26T06:00:00Z"
@@ -376,8 +319,7 @@
                 "properties": {
                   "action": "GREY:send_email",
                   "label": "Send Email",
-                  "icon": "mdi:email",
-                  "prompt": "Send email notification"
+                  "icon": "mdi:email"
                 },
                 "next": null,
                 "createdAt": "2025-06-26T06:00:00Z"
@@ -396,8 +338,7 @@
         "properties": {
           "action": "ORDER:find_product",
           "label": "Find Product",
-          "icon": "mdi:magnify",
-          "prompt": "Find the product"
+          "icon": "mdi:magnify"
         },
         "next": ["node-002"],
         "createdAt": "2025-06-26T06:00:00Z"
@@ -408,8 +349,7 @@
         "properties": {
           "action": "GREY:check_certificate",
           "label": "Check Certificate",
-          "icon": "mdi:book-search",
-          "prompt": "Check certificate for the product"
+          "icon": "mdi:book-search"
         },
         "next": ["node-cond-001"],
         "createdAt": "2025-06-26T06:00:00Z"
@@ -420,8 +360,7 @@
         "properties": {
           "action": "PLATFORM:decision",
           "label": "Certificate Found?",
-          "icon": "mdi:source-branch",
-          "prompt": "Is the certificate found?"
+          "icon": "mdi:source-branch"
         },
         "true": ["node-003"],
         "false": ["node-end-001"],
@@ -433,8 +372,7 @@
         "properties": {
           "action": "GREY:complete_flow",
           "label": "Complete Flow",
-          "icon": "mdi:check-circle",
-          "prompt": "Complete the flow"
+          "icon": "mdi:check-circle"
         },
         "next": null,
         "createdAt": "2025-07-06T06:00:00Z"
@@ -445,8 +383,7 @@
         "properties": {
           "action": "ORDER:assign_certificate",
           "label": "Assign Certificate",
-          "icon": "mdi:certificate-outline",
-          "prompt": "Assign certificate to the product"
+          "icon": "mdi:certificate-outline"
         },
         "next": ["node-004"],
         "createdAt": "2025-06-26T06:00:00Z"
@@ -457,8 +394,7 @@
         "properties": {
           "action": "ORDER:create_po",
           "label": "Create Purchase Order",
-          "icon": "mdi:file-document-plus",
-          "prompt": "Create purchase order"
+          "icon": "mdi:file-document-plus"
         },
         "next": ["node-005"],
         "createdAt": "2025-06-26T06:00:00Z"
@@ -469,8 +405,7 @@
         "properties": {
           "action": "GREY:send_email",
           "label": "Send Email",
-          "icon": "mdi:email",
-          "prompt": "Send email notification"
+          "icon": "mdi:email"
         },
         "next": null,
         "createdAt": "2025-06-26T06:00:00Z"
@@ -492,10 +427,11 @@
                 "type": "NORMAL",
                 "properties": {
                   "action": "PLATFORM:user_interaction",
-                  "parameters": { "question": "Which product would you like to order?" },
+                  "parameters": {
+                    "question": "Which product would you like to order?"
+                  },
                   "label": "Select a Product",
-                  "icon": "mdi:account-question",
-                  "prompt": "Ask user which product they want to order"
+                  "icon": "mdi:account-question"
                 },
                 "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
                 "createdAt": "2025-06-26T06:00:00Z"
@@ -506,8 +442,7 @@
                 "properties": {
                   "action": "ORDER:find_product",
                   "label": "Find Product",
-                  "icon": "mdi:magnify",
-                  "prompt": "Find the product by identifier"
+                  "icon": "mdi:magnify"
                 },
                 "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
                 "createdAt": "2025-06-26T06:00:00Z"
@@ -518,8 +453,7 @@
                 "properties": {
                   "action": "PLATFORM:knowledge_lookup",
                   "label": "Check Certificate",
-                  "icon": "mdi:book-search",
-                  "prompt": "Look up compliance certificate for the product from agent knowledge"
+                  "icon": "mdi:book-search"
                 },
                 "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
                 "createdAt": "2025-06-26T06:00:00Z"
@@ -530,8 +464,7 @@
                 "properties": {
                   "action": "ORDER:assign_certificate",
                   "label": "Assign Certificate",
-                  "icon": "mdi:certificate-outline",
-                  "prompt": "Assign a compliance certificate to the product"
+                  "icon": "mdi:certificate-outline"
                 },
                 "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
                 "createdAt": "2025-06-26T06:00:00Z"
@@ -542,8 +475,7 @@
                 "properties": {
                   "action": "ORDER:create_po",
                   "label": "Create Purchase Order",
-                  "icon": "mdi:file-document-plus",
-                  "prompt": "Create a purchase order for the product"
+                  "icon": "mdi:file-document-plus"
                 },
                 "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
                 "createdAt": "2025-06-26T06:00:00Z"
@@ -554,8 +486,7 @@
                 "properties": {
                   "action": "GREY:send_email",
                   "label": "Send Email",
-                  "icon": "mdi:email",
-                  "prompt": "Send email notification about the purchase order"
+                  "icon": "mdi:email"
                 },
                 "next": null,
                 "createdAt": "2025-06-26T06:00:00Z"
@@ -573,10 +504,11 @@
         "type": "NORMAL",
         "properties": {
           "action": "PLATFORM:user_interaction",
-          "parameters": { "question": "Which product would you like to order?" },
+          "parameters": {
+            "question": "Which product would you like to order?"
+          },
           "label": "Select a Product",
-          "icon": "mdi:account-question",
-          "prompt": "Ask user which product they want to order"
+          "icon": "mdi:account-question"
         },
         "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
         "createdAt": "2025-06-26T06:00:00Z"
@@ -587,8 +519,7 @@
         "properties": {
           "action": "ORDER:find_product",
           "label": "Find Product",
-          "icon": "mdi:magnify",
-          "prompt": "Find the product by identifier"
+          "icon": "mdi:magnify"
         },
         "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
         "createdAt": "2025-06-26T06:00:00Z"
@@ -599,8 +530,7 @@
         "properties": {
           "action": "PLATFORM:knowledge_lookup",
           "label": "Check Certificate",
-          "icon": "mdi:book-search",
-          "prompt": "Look up compliance certificate for the product from agent knowledge"
+          "icon": "mdi:book-search"
         },
         "next": ["fcond001-c0nd-4000-8000-c0ndition0001"],
         "createdAt": "2025-06-26T06:00:00Z"
@@ -611,8 +541,7 @@
         "properties": {
           "action": "PLATFORM:decision",
           "label": "Certificate Found?",
-          "icon": "mdi:source-branch",
-          "prompt": "Is a valid compliance certificate available in the knowledge base?"
+          "icon": "mdi:source-branch"
         },
         "true": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
         "false": ["fhand001-h4nd-4000-8000-h4nd0ff00001"],
@@ -628,8 +557,7 @@
             "reason": "No valid certificate found in knowledge base for product"
           },
           "label": "Hand Off to Compliance Agent",
-          "icon": "mdi:transfer",
-          "prompt": "Hand off to compliance agent because no certificate was found"
+          "icon": "mdi:transfer"
         },
         "next": null,
         "createdAt": "2025-07-06T06:00:00Z"
@@ -640,8 +568,7 @@
         "properties": {
           "action": "ORDER:assign_certificate",
           "label": "Assign Certificate",
-          "icon": "mdi:certificate-outline",
-          "prompt": "Assign a compliance certificate to the product"
+          "icon": "mdi:certificate-outline"
         },
         "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
         "createdAt": "2025-06-26T06:00:00Z"
@@ -652,8 +579,7 @@
         "properties": {
           "action": "ORDER:create_po",
           "label": "Create Purchase Order",
-          "icon": "mdi:file-document-plus",
-          "prompt": "Create a purchase order for the product"
+          "icon": "mdi:file-document-plus"
         },
         "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
         "createdAt": "2025-06-26T06:00:00Z"
@@ -664,8 +590,7 @@
         "properties": {
           "action": "GREY:send_email",
           "label": "Send Email",
-          "icon": "mdi:email",
-          "prompt": "Send email notification about the purchase order"
+          "icon": "mdi:email"
         },
         "next": null,
         "createdAt": "2025-06-26T06:00:00Z"

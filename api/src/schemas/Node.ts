@@ -7,9 +7,7 @@ const ConditionNode = z.object({
   false: z.array(z.string().nullable()).nullable(),
   properties: z.object({
     label: z.string(),
-    prompt: z.string().optional(),
     icon: z.string(),
-    pseudocode: z.string().optional(),
     force: z.boolean().optional(),
   }),
 });
@@ -20,9 +18,7 @@ const NormalNode = z.object({
   next: z.array(z.string().nullable()).nullable().nullable(),
   properties: z.object({
     label: z.string(),
-    prompt: z.string().optional(),
     icon: z.string(),
-    pseudocode: z.string().optional(),
     force: z.boolean().optional(),
     parameters: z.record(z.string(), z.unknown()).optional(),
   }),
@@ -36,8 +32,6 @@ const HandoffNode = z.object({
     icon: z.string(),
     targetAgentId: z.string().optional(),
     targetBlueprintId: z.string().optional(),
-    prompt: z.string().optional(),
-    pseudocode: z.string().optional(),
     force: z.boolean().optional(),
   }),
 });

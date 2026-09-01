@@ -41,7 +41,6 @@ const BlueprintDrawer = ({
     title: string;
     description: string;
     agentId: string;
-    pseudocode?: string;
     skill?: string;
   };
   handleAiResponse?: (response: {
@@ -58,7 +57,6 @@ const BlueprintDrawer = ({
     title: string;
     description: string;
     agentId: string;
-    pseudocode?: string;
   }) => void;
   taskId?: string;
   agentId?: string;

@@ -40,7 +40,6 @@ const INITIAL_NODE_EDITOR: NodeEditorState = {
   parentNode: null,
   editingNodeId: null,
   label: "",
-  prompt: "",
   nodeType: "NORMAL",
   branch: "true",
   integration: DEFAULT_INTEGRATION,
@@ -504,7 +503,6 @@ function APITab({ agentId }: { agentId: string }) {
         editMode: true,
         editingNodeId: graphNode.id,
         label: graphNode.label || "",
-        prompt: (graphNode.raw?.properties?.prompt as string) || "",
         nodeType: graphNode.nodeType || "NORMAL",
         parentNode: parent ?? null,
       });
@@ -526,8 +524,7 @@ function APITab({ agentId }: { agentId: string }) {
   const handleNodeSubmit = () => {
     if (!activeResourcePath || !flowGraphData) return;
 
-    const { editMode, editingNodeId, label, prompt, nodeType, parentNode } =
-      nodeEditor;
+    const { editMode, editingNodeId, label, nodeType, parentNode } = nodeEditor;
     const icon =
       nodeType === "CONDITION"
         ? "mdi:source-branch"
@@ -559,7 +556,6 @@ function APITab({ agentId }: { agentId: string }) {
           properties: {
             ...node.raw?.properties,
             label,
-            prompt,
             description,
             action,
             icon,
@@ -591,7 +587,7 @@ function APITab({ agentId }: { agentId: string }) {
         raw: {
           id: newId,
           type: nodeType,
-          properties: { action, label, prompt, description, icon },
+          properties: { action, label, description, icon },
           next: inheritedNext ? [inheritedNext] : [],
           createdAt: new Date().toISOString(),
         },
@@ -673,7 +669,6 @@ function APITab({ agentId }: { agentId: string }) {
       />
 
       <NodeEditorWidget
-        pseudocode=""
         drawerOpen={nodeEditor.open}
         handleDrawerClose={() => setNodeEditor(INITIAL_NODE_EDITOR)}
         selectedParentNode={nodeEditor.parentNode}
@@ -681,10 +676,6 @@ function APITab({ agentId }: { agentId: string }) {
         newNodeLabel={nodeEditor.label}
         setNewNodeLabel={(v: string) =>
           setNodeEditor((p) => ({ ...p, label: v }))
-        }
-        newNodePrompt={nodeEditor.prompt}
-        setNewNodePrompt={(v: string) =>
-          setNodeEditor((p) => ({ ...p, prompt: v }))
         }
         newNodeType={nodeEditor.nodeType}
         setNewNodeType={(v: string) =>

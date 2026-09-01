@@ -1,4 +1,5 @@
 const TEAM_ID = "a829d2d6-8e52-41cd-ac10-0c92b21debcf";
+const MEETING_TEAM_ID = "add6dfa4-45ba-4da2-bc5c-5a529610b52f";
 
 const ORDER_AGENT_ID = "9f156dc6-bf9b-4541-8d0c-6764cb0d6487";
 const COMPLIANCE_AGENT_ID = "0780b66b-9e22-4e52-9ade-858fc81a5361";
@@ -35,6 +36,7 @@ const NODE = {
 
 export {
   TEAM_ID,
+  MEETING_TEAM_ID,
   ORDER_AGENT_ID,
   COMPLIANCE_AGENT_ID,
   MEETING_AGENT_ID,

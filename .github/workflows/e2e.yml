@@ -43,13 +43,5 @@ jobs:
             exit 1
           fi
 
-      - name: Run Order & Compliance e2e scenarios
+      - name: Run e2e scenarios
         run: bun run test:e2e
-
-      - name: Upload service logs
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: e2e-service-logs
-          path: .e2e/*.log
-          if-no-files-found: ignore

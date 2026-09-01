@@ -1,8 +1,8 @@
 name: E2E
 
 on:
-  pull_request:
-    branches: [main]
+  push:
+    tags: ["*"]
   workflow_dispatch:
     inputs:
       platform_llm:
@@ -15,7 +15,6 @@ jobs:
     name: Run E2E scenarios
     runs-on: ubuntu-latest
 
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
     timeout-minutes: 45
     env:
       PLATFORM_LLM: ${{ inputs.platform_llm || vars.E2E_PLATFORM_LLM || 'openrouter/qwen3-next-80b-a3b-instruct' }}

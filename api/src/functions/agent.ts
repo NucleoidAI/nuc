@@ -124,7 +124,7 @@ async function scoring({
 async function Blueprints({ agentId }) {
   const Blueprints = await blueprintFn.list({
     agentId,
-    includeCosmetics: false,
+    includeDetails: false,
   });
 
   return {
@@ -1108,7 +1108,7 @@ async function chat({
   if (selectedBlueprintId && task.length === 0) {
     const blueprintData = await blueprintFn.get({
       blueprintId: selectedBlueprintId,
-      includeCosmetics: false,
+      includeDetails: false,
     });
 
     const blueprintToTaskResponse = await blueprintToTask({

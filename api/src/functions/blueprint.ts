@@ -195,10 +195,10 @@ async function remove({ blueprintId }: { blueprintId: string }) {
 
 async function list({
   agentId,
-  includeCosmetics = true,
+  includeDetails = true,
 }: {
   agentId: string;
-  includeCosmetics?: boolean;
+  includeDetails?: boolean;
 }) {
   const Blueprints = await BluePrint.findAll({
     where: { agentId },
@@ -212,7 +212,7 @@ async function list({
 
   const blueprints = Blueprints.map((Blueprint) => Blueprint.toJSON());
 
-  if (!includeCosmetics) {
+  if (!includeDetails) {
     return blueprints.map(stripCosmetics);
   }
 
@@ -221,10 +221,10 @@ async function list({
 
 async function get({
   blueprintId,
-  includeCosmetics = true,
+  includeDetails = true,
 }: {
   blueprintId: string;
-  includeCosmetics?: boolean;
+  includeDetails?: boolean;
 }) {
   const Blueprint = await BluePrint.findByPk(blueprintId, {
     include: [
@@ -241,7 +241,7 @@ async function get({
 
   const blueprint = Blueprint.toJSON();
 
-  if (!includeCosmetics) {
+  if (!includeDetails) {
     return stripCosmetics(blueprint);
   }
 

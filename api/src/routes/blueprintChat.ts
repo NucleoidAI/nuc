@@ -126,7 +126,7 @@ router.post("/", async (req, res) => {
       history: fullHistory,
       content,
       existingBlueprint: referenceBlueprint
-        ? blueprintFn.stripCosmetics(referenceBlueprint)
+        ? blueprintFn.stripDetails(referenceBlueprint)
         : null,
       meta: llmMeta,
     });

@@ -724,7 +724,7 @@ async function blueprintChatContext({
   ]);
 
   const blueprintForLLM = referenceBlueprint
-    ? blueprintFn.stripCosmetics(referenceBlueprint)
+    ? blueprintFn.stripDetails(referenceBlueprint)
     : null;
 
   return [

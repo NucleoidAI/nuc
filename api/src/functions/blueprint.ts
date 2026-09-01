@@ -44,7 +44,7 @@ function withoutCosmetics<T extends { properties?: object }>(nodes: T[]): T[] {
   });
 }
 
-function stripCosmetics<T extends { nodes?: unknown }>(blueprint: T): T {
+function stripDetails<T extends { nodes?: unknown }>(blueprint: T): T {
   if (!Array.isArray(blueprint?.nodes)) {
     return blueprint;
   }
@@ -213,7 +213,7 @@ async function list({
   const blueprints = Blueprints.map((Blueprint) => Blueprint.toJSON());
 
   if (!includeDetails) {
-    return blueprints.map(stripCosmetics);
+    return blueprints.map(stripDetails);
   }
 
   return blueprints;
@@ -242,7 +242,7 @@ async function get({
   const blueprint = Blueprint.toJSON();
 
   if (!includeDetails) {
-    return stripCosmetics(blueprint);
+    return stripDetails(blueprint);
   }
 
   return blueprint;
@@ -295,7 +295,7 @@ async function generateSkill({ nodes }: { nodes: NodeType[] }) {
 
 export default {
   getWithNodes,
-  stripCosmetics,
+  stripDetails,
   upsert,
   remove,
   list,

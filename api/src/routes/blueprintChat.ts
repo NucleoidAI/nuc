@@ -44,7 +44,7 @@ router.post("/", async (req, res) => {
   const blueprintId =
     bodyBlueprintId ?? supervisingInstance?.blueprintId ?? null;
 
-  const [existingSession, systemContext] = await Promise.all([
+  const [existingSession, blueprintContext] = await Promise.all([
     sessionFn.get({ sessionId }),
     agentFn.blueprintChatContext({
       agentId,
@@ -85,7 +85,7 @@ router.post("/", async (req, res) => {
     });
   }
 
-  const fullHistory = [...systemContext, ...history];
+  const fullHistory = [...blueprintContext.messages, ...history];
 
   const llmMeta = { agentId, sessionId, teamId };
 
@@ -151,6 +151,11 @@ router.post("/", async (req, res) => {
       ...blueprint,
       flow: normalizedFlow,
       referenceBlueprint,
+      context: {
+        ...blueprintContext.summary,
+        userRequest: content,
+        capturedAt: new Date().toISOString(),
+      },
     });
   }
 });

@@ -1,4 +1,4 @@
-import BluePrint from "../models/Blueprint";
+import BluePrint, { BlueprintContext } from "../models/Blueprint";
 import BlueprintMessage from "../models/BlueprintMessage";
 import { NotFoundError } from "@canmingir/link-express/error";
 import agentFn from "./agent";
@@ -54,6 +54,7 @@ async function upsert(
   messages?: Array<{ role: string; content: string; createdAt: Date }>,
   blocking?: boolean,
   skill?: string,
+  context?: BlueprintContext,
 ) {
   let Blueprint;
 
@@ -67,6 +68,7 @@ async function upsert(
       nodes: nodes || null,
       ...(blocking !== undefined && { blocking }),
       ...(skill !== undefined && { skill }),
+      ...(context !== undefined && { context }),
     });
 
     Blueprint = existingBlueprint;
@@ -79,6 +81,7 @@ async function upsert(
       nodes: nodes || null,
       ...(blocking !== undefined && { blocking }),
       ...(skill !== undefined && { skill }),
+      ...(context !== undefined && { context }),
     });
   }
 
@@ -230,6 +233,7 @@ async function upsertPseudocode({
   messages,
   blocking,
   skill,
+  context,
 }: {
   id: string;
   title: string;
@@ -239,6 +243,7 @@ async function upsertPseudocode({
   messages?: Array<{ role: string; content: string; createdAt: Date }>;
   blocking?: boolean;
   skill?: string;
+  context?: BlueprintContext;
 }) {
   const existingNodes = new Map(
     (await BluePrint.findByPk(id))?.nodes?.map((n) => [n.id, n]) || [],
@@ -286,6 +291,7 @@ async function upsertPseudocode({
     messages,
     blocking,
     skill,
+    context,
   );
 
   await patch({ blueprintId: id, pseudocode });

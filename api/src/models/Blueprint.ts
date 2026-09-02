@@ -10,6 +10,15 @@ import {
 
 import Node from "../schemas/Node";
 
+export type BlueprintContext = {
+  agent: { name?: string; description?: string };
+  knowledge: { type?: string; question?: string; text?: string }[];
+  referenceBlueprint: { id?: string; title?: string; nodeCount: number } | null;
+  supervising: { question?: string; status?: string } | null;
+  userRequest: string;
+  capturedAt: string;
+};
+
 @Table({
   tableName: "Blueprint",
   timestamps: false,
@@ -32,6 +41,10 @@ class Blueprint extends Model {
   @AllowNull(true)
   @Column(DataType.TEXT)
   declare skill: string | null;
+
+  @AllowNull(true)
+  @Column(DataType.JSONB)
+  declare context: BlueprintContext | null;
 
   @AllowNull(false)
   @Column(DataType.UUID)

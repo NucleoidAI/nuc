@@ -1,4 +1,5 @@
 import APITab from "../widgets/APITab/APITab";
+import AgentDevToolWidget from "../widgets/AgentDevToolWidget";
 import AgentMCP from "../widgets/AgentMCP/AgentMCP";
 import BlueprintsWidget from "../widgets/BlueprintsWidget/BlueprintsWidget";
 import Communication from "../widgets/Communication/Communication";
@@ -6,7 +7,6 @@ import { Iconify } from "@canmingir/link/platform/components";
 import Knowledge from "../widgets/Knowledge/Knowledge";
 import Profile from "../widgets/Profile/Profile";
 import ProfileCard from "../components/ProfileCard/ProfileCard";
-import SidebarChatWidget from "../widgets/SidebarChatWidget";
 import Stack from "@mui/material/Stack";
 import Supervising from "../widgets/Supervising/Supervising";
 import SwaggerDialog from "../components/SwaggerDialog/SwaggerDialog";
@@ -118,8 +118,8 @@ function AgentLayout({
     if (swaggerEvent?.open) setSwaggerOpen(true);
   }, [swaggerEvent]);
 
-  const handleChatToggle = () => {
-    setChatOpen((prev) => !prev);
+  const handleDevToolOpenChange = (open: boolean) => {
+    setChatOpen(open);
   };
 
   const handleTabChange = (newTab: string) => {
@@ -194,10 +194,9 @@ function AgentLayout({
         {currentTab === "api" && !beta && <APITab agentId={agent.id} />}
       </Box>
 
-      <SidebarChatWidget
+      <AgentDevToolWidget
         agentId={agent.id}
-        open={chatOpen}
-        onToggle={handleChatToggle}
+        onOpenChange={handleDevToolOpenChange}
         beta={beta}
       />
 

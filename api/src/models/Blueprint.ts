@@ -11,12 +11,13 @@ import {
 import Node from "../schemas/Node";
 
 export type BlueprintContext = {
-  agent: { name?: string; description?: string };
-  knowledge: { type?: string; question?: string; text?: string }[];
-  referenceBlueprint: { id?: string; title?: string; nodeCount: number } | null;
-  supervising: { question?: string; status?: string } | null;
-  userRequest: string;
-  capturedAt: string;
+  agent?: { name?: string | null; description?: string | null };
+  knowledge?: { type?: string | null; question?: string | null; text?: string | null }[];
+  referenceBlueprint?: { id?: string | null; title?: string | null; nodeCount: number } | null;
+  supervising?: { question?: string | null; status?: string | null } | null;
+  userRequest?: string | null;
+  capturedAt?: string | null;
+  [key: string]: unknown;
 };
 
 @Table({

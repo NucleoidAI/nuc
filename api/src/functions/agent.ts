@@ -702,6 +702,13 @@ async function step({
   }
 }
 
+type BlueprintChatContextSummary = {
+  agent: { name?: string; description?: string };
+  knowledge: { type?: string; question?: string; text?: string }[];
+  referenceBlueprint: { id?: string; title?: string; nodeCount: number } | null;
+  supervising: { question?: string; status?: string } | null;
+};
+
 async function blueprintChatContext({
   agentId,
   blueprintId,
@@ -716,7 +723,10 @@ async function blueprintChatContext({
     taskId?: string | null;
     blueprintId?: string | null;
   } | null;
-}): Promise<{ role: "system"; content: string }[]> {
+}): Promise<{
+  messages: { role: "system"; content: string }[];
+  summary: BlueprintChatContextSummary;
+}> {
   const [agentInfo, agentKnowledge, referenceBlueprint] = await Promise.all([
     info({ agentId }),
     knowledge({ agentId }),
@@ -727,7 +737,7 @@ async function blueprintChatContext({
     ? blueprintFn.stripDetails(referenceBlueprint)
     : null;
 
-  return [
+  const messages: { role: "system"; content: string }[] = [
     { role: "system", content: JSON.stringify(agentInfo.content) },
     { role: "system", content: JSON.stringify(agentKnowledge.content) },
     ...(blueprintForLLM
@@ -742,6 +752,52 @@ async function blueprintChatContext({
       ? [{ role: "system" as const, content: JSON.stringify({ supervising }) }]
       : []),
   ];
+
+  const agentContent = agentInfo.content as {
+    ai_assistant_info?: { name?: string; description?: string };
+  };
+  const knowledgeContent = agentKnowledge.content as {
+    knowledge_base?: {
+      type?: string | null;
+      question?: string | null;
+      text?: string | null;
+    }[];
+  };
+  const reference = referenceBlueprint as {
+    id?: string;
+    title?: string;
+    nodes?: unknown[];
+  } | null;
+
+  const clean = (value?: string | null) => value ?? undefined;
+
+  const summary: BlueprintChatContextSummary = {
+    agent: {
+      name: clean(agentContent.ai_assistant_info?.name),
+      description: clean(agentContent.ai_assistant_info?.description),
+    },
+    knowledge: (knowledgeContent.knowledge_base ?? []).map(
+      ({ type, question, text }) => ({
+        type: clean(type),
+        question: clean(question),
+        text: clean(text),
+      }),
+    ),
+    referenceBlueprint: reference
+      ? {
+          id: reference.id,
+          title: reference.title,
+          nodeCount: Array.isArray(reference.nodes)
+            ? reference.nodes.length
+            : 0,
+        }
+      : null,
+    supervising: supervising
+      ? { question: supervising.question, status: supervising.status }
+      : null,
+  };
+
+  return { messages, summary };
 }
 
 async function blueprintChatDecision({

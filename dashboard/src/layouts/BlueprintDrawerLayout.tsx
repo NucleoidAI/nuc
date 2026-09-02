@@ -1,5 +1,6 @@
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import BlueprintChatTitle from "../components/BlueprintChat/BlueprintChatTitle";
+import type { BlueprintContext as BlueprintContextData } from "../hooks/useBlueprint";
 import BlueprintFlowWidget from "../widgets/BlueprintFlowWidget/BlueprintFlowWidget";
 import BlueprintKnowledge from "../components/BlueprintKnowledge/BlueprintKnowledge";
 import BlueprintSkill from "../components/BlueprintSkill/BlueprintSkill";
@@ -10,6 +11,7 @@ import SettingsDialog from "../components/SettingsDialog/SettingsDialog";
 import SettingsIcon from "@mui/icons-material/Settings";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import SupervisingChat from "../components/SupervisingChat";
+import { publish } from "@nucleoidai/react-event";
 import useBlueprint from "../hooks/useBlueprint";
 import useSupervisings from "../hooks/useSupervisings";
 
@@ -40,6 +42,7 @@ const BlueprintDrawerLayout = ({
     description: string;
     agentId: string;
     skill?: string;
+    context?: BlueprintContextData | null;
   };
   handleAiResponse?: (response: {
     flow: FlowDefinition;
@@ -77,6 +80,9 @@ const BlueprintDrawerLayout = ({
   const [description, setDescription] = useState(selectedItem?.description);
   const [skill, setSkill] = useState(selectedItem?.skill);
   const [skillLoading, setSkillLoading] = useState(false);
+  const [context, setContext] = useState<BlueprintContextData | null>(
+    selectedItem?.context ?? null
+  );
   const [liveNodes, setLiveNodes] = useState([]);
   const [showKnowledge, setShowKnowledge] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -101,6 +107,16 @@ const BlueprintDrawerLayout = ({
       value
     );
   };
+
+  useEffect(() => {
+    publish("BLUEPRINT_CONTEXT", { context: drawerOpen ? context : null });
+  }, [drawerOpen, context]);
+
+  useEffect(() => {
+    return () => {
+      publish("BLUEPRINT_CONTEXT", { context: null });
+    };
+  }, []);
 
   const { patchBlueprint } = useBlueprint();
   const { approveBlueprintChat } = useSupervisings();
@@ -128,6 +144,7 @@ const BlueprintDrawerLayout = ({
     setTitle(selectedItem?.title);
     setDescription(selectedItem?.description);
     setSkill(selectedItem?.skill);
+    setContext(selectedItem?.context ?? null);
   }, [selectedItem]);
 
   useEffect(() => {
@@ -166,6 +183,7 @@ const BlueprintDrawerLayout = ({
         onSkillChange={setSkill}
         onSkillLoadingChange={setSkillLoading}
         onNodesChange={setLiveNodes}
+        onContextChange={setContext}
         onSave={supervise ? () => handleManualResolve("BLUEPRINT") : undefined}
       />
 

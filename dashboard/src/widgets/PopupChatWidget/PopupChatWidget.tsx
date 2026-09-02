@@ -27,14 +27,8 @@ const PopupChatWidget = ({
   const [unreadMessages, setUnreadMessages] = useState(false);
   const [selectedBlueprint, setSelectedBlueprint] = useState("");
 
-  const {
-    conversations,
-    sendMessage,
-    getSession,
-    createSession,
-    error,
-    clearError,
-  } = useSession(agentId);
+  const { conversations, sendMessage, getSession, createSession } =
+    useSession(agentId);
 
   const handleBlueprintChange = useCallback(
     (blueprintId: string) => {
@@ -88,20 +82,17 @@ const PopupChatWidget = ({
   return (
     <>
       <SidebarChat
-        clearError={clearError}
-        error={error}
         title={`Test Chat Session`}
         open={openPopChat || open}
         handleToggle={handleClose}
         history={messages}
         handleNewUserMessage={handleNewUserMessage}
         readOnly={readOnly}
-        selectedConversationId={conversationId || null}
+        selectedConversationId={conversationId || undefined}
         sound={sound}
         Presets={Array.isArray(Blueprint) ? Blueprint : [Blueprint]}
         selectedPreset={selectedBlueprint}
         onPresetChange={handleBlueprintChange}
-        sx={{}}
       />
       {!open && !readOnly && (
         <Fab onClick={() => setOpen(!open)}>

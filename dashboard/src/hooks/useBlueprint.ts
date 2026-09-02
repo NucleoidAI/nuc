@@ -24,6 +24,26 @@ type NodeType = {
   dependencyId?: string | null;
 };
 
+export type BlueprintContext = {
+  agent?: { name?: string | null; description?: string | null };
+  knowledge?: {
+    type?: string | null;
+    question?: string | null;
+    text?: string | null;
+  }[];
+  referenceBlueprint?: {
+    id?: string | null;
+    title?: string | null;
+    nodeCount: number;
+  } | null;
+  supervising?: {
+    question?: string | null;
+    status?: string | null;
+  } | null;
+  userRequest?: string | null;
+  capturedAt?: string | null;
+};
+
 function useBlueprint() {
   const { Api } = useApi();
 
@@ -142,7 +162,8 @@ function useBlueprint() {
       createdAt: string | Date;
     }>,
     blocking?: boolean,
-    skill?: string
+    skill?: string,
+    context?: BlueprintContext
   ) => {
     if (!blueprintId) {
       blueprintId = uuidv4();
@@ -157,6 +178,7 @@ function useBlueprint() {
       messages,
       ...(blocking !== undefined && { blocking }),
       ...(skill !== undefined && { skill }),
+      ...(context !== undefined && { context }),
     });
     if (response?.data) {
       publish("BLUEPRINT_UPSERTED", { Blueprint: response.data });

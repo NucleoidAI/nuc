@@ -50,11 +50,12 @@ const Blueprint = {
           properties: z
             .object({
               label: z.string(),
-              prompt: z.string().optional(),
               icon: z.string(),
               action: z.string().optional(),
               description: z.string().optional(),
+              instructions: z.string().optional(),
               pseudocode: z.string().optional(),
+              pseudocodeEnabled: z.boolean().optional(),
               parameters: z.record(z.string(), z.unknown()).optional(),
               targetAgentId: z.string().optional(),
               targetBlueprintId: z.string().optional(),
@@ -99,6 +100,10 @@ const Blueprint = {
     ),
     content: z.string(),
   }),
+  pseudocode: z.object({
+    instructions: z.string(),
+    agentId: z.string().uuid(),
+  }),
   delete: z.object({
     agentId: z.string().uuid(),
   }),
@@ -109,11 +114,12 @@ const Blueprint = {
         properties: z
           .object({
             label: z.string(),
-            prompt: z.string().optional(),
             icon: z.string(),
             action: z.string().optional(),
             description: z.string().optional(),
+            instructions: z.string().optional(),
             pseudocode: z.string().optional(),
+            pseudocodeEnabled: z.boolean().optional(),
           })
           .optional(),
         type: z.string(),

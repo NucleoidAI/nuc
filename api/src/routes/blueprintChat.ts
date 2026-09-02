@@ -125,31 +125,16 @@ router.post("/", async (req, res) => {
     const blueprint = await agentFn.Blueprint({
       history: fullHistory,
       content,
-      existingBlueprint: referenceBlueprint,
+      existingBlueprint: referenceBlueprint
+        ? blueprintFn.stripDetails(referenceBlueprint)
+        : null,
       meta: llmMeta,
     });
-
-    type FlowNode = {
-      properties?: { label?: string; prompt?: string; [key: string]: unknown };
-      [key: string]: unknown;
-    };
-    const normalizedFlow = Array.isArray(blueprint.flow)
-      ? blueprint.flow.map((node: FlowNode) => ({
-          ...node,
-          properties: node.properties
-            ? {
-                ...node.properties,
-                label: node.properties.label ?? node.properties.prompt,
-              }
-            : node.properties,
-        }))
-      : blueprint.flow;
 
     return res.status(200).json({
       decision,
       answer,
       ...blueprint,
-      flow: normalizedFlow,
       referenceBlueprint,
       context: {
         ...blueprintContext.summary,

@@ -41,7 +41,6 @@ const BlueprintDrawerLayout = ({
     title: string;
     description: string;
     agentId: string;
-    pseudocode?: string;
     skill?: string;
     context?: BlueprintContextData | null;
   };
@@ -59,7 +58,6 @@ const BlueprintDrawerLayout = ({
     title: string;
     description: string;
     agentId: string;
-    pseudocode?: string;
   }) => void;
   taskId?: string;
   agentId?: string;

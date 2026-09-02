@@ -5,7 +5,6 @@
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
       "description": "Checks port availability at the user's residential address. Presents compatible internet speed packages for user selection. Allocates a port and creates the subscription order. Notifies the user and completes port configuration and physical connection",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    CreateOrder(selectedProduct, User.Address)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "skill": "**Internet Subscription — Availability-Gated, Silent Setup**\n\nUse this Blueprint when a new subscription requires inventory validation before proceeding and no user notification is needed after port allocation.\n\nFlow: Retrieve BBK → Check inventory → [No inventory: end] → List speed products → User selects package → Allocate port → Configure port → Connect port to residence.\n\nExits silently after port connection. Exits early if inventory is unavailable.",
       "nodes": [
@@ -15,10 +14,8 @@
           "properties": {
             "action": "TELCO:get_bbk_by_address",
             "description": "Resolves the BBK number for a given residential address. Identifies the corresponding network access point",
-            "prompt": "Get BBK by address",
             "label": "Get BBK No by Address",
-            "icon": "mdi:map-marker",
-            "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:map-marker"
           },
           "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -29,10 +26,8 @@
           "properties": {
             "action": "TELCO:get_inventory",
             "description": "Queries available port inventory at the resolved BBK location. Returns availability status to gate the next workflow step",
-            "prompt": "Check inventory availability",
             "label": "Get Inventory",
-            "icon": "mdi:server",
-            "pseudocode": "BEGIN_CONTEXT\ninventory = GetInventory(bbk)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:server"
           },
           "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -43,10 +38,8 @@
           "properties": {
             "action": "PLATFORM:decision",
             "description": "Evaluates inventory availability status. Routes to product selection if available, terminates early if not",
-            "prompt": "Is inventory available?",
             "label": "Check if product is available",
-            "icon": "mdi:source-branch",
-            "pseudocode": "BEGIN_CONTEXT\nIF inventory.Available == TRUE THEN\n    // handle true path\nELSE\n    // handle false path\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:source-branch"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
@@ -58,10 +51,8 @@
           "properties": {
             "action": "PLATFORM:complete",
             "description": "Ends the workflow when no port inventory is available at the user's address",
-            "prompt": "No product available, complete",
             "label": "Complete",
-            "icon": "mdi:check",
-            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -72,10 +63,8 @@
           "properties": {
             "action": "TELCO:get_product_by_speed",
             "description": "Fetches the internet product catalog filtered by compatible speed tiers. Prepares available options to present to the user",
-            "prompt": "Get products by speed",
             "label": "Get Product by Speed",
-            "icon": "mdi:speedometer",
-            "pseudocode": "BEGIN_CONTEXT\nproducts = GetProductBySpeed()\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:speedometer"
           },
           "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -86,10 +75,8 @@
           "properties": {
             "action": "PLATFORM:user_interaction",
             "description": "Presents available product options to the user. Pauses the workflow until the user makes a selection",
-            "prompt": "Provide available options and waiting for user to select a product",
             "label": "User selected product",
-            "icon": "mdi:user",
-            "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection(products)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:user"
           },
           "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -100,10 +87,8 @@
           "properties": {
             "action": "TELCO:port_allocation",
             "description": "Reserves a network port for the user's selected product. Ties the port reservation to the user's address",
-            "prompt": "Allocate port and create order",
             "label": "Assign Port",
-            "icon": "mdi:link",
-            "pseudocode": "BEGIN_CONTEXT\nport = PortAllocation(selectedProduct, User.Address)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:link"
           },
           "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -114,10 +99,8 @@
           "properties": {
             "action": "PLATFORM:message_user",
             "description": "Sends a confirmation notification to the user. Confirms that port allocation has been completed successfully",
-            "prompt": "Notify user about port allocation",
             "label": "Notify Port Allocation",
-            "icon": "mdi:bell",
-            "pseudocode": "BEGIN_CONTEXT\nMessageUser(\"Notify user about port allocation\")\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:bell"
           },
           "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -128,10 +111,8 @@
           "properties": {
             "action": "TELCO:configuration",
             "description": "Applies network configuration parameters to the allocated port. Makes the port service-ready for physical connection",
-            "prompt": "Configure allocated port",
             "label": "Configure Port",
-            "icon": "mdi:settings",
-            "pseudocode": "BEGIN_CONTEXT\nconfiguration = Configuration(port)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:settings"
           },
           "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -142,10 +123,8 @@
           "properties": {
             "action": "TELCO:port_connection",
             "description": "Establishes the physical network connection to the user's premises. Activates the service at the residential address",
-            "prompt": "Connect port to residence",
             "label": "Connect Port",
-            "icon": "mdi:ethernet",
-            "pseudocode": "BEGIN_CONTEXT\nPortConnection(port)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:ethernet"
           },
           "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -156,10 +135,8 @@
           "properties": {
             "action": "PLATFORM:complete",
             "description": "Marks the entire subscription setup workflow as successfully completed",
-            "prompt": "Complete setup flow",
             "label": "Complete",
-            "icon": "mdi:check",
-            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -201,7 +178,6 @@
       "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
       "title": "Order and Compliance",
       "description": "Find product, assign compliance certificate, create purchase order, write process to LLM, and send email.",
-      "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\nAssignCertificate(product.id)\nPO.Create(product.id)\nLLM.WriteProcess()\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
       "skill": "**Product Order — Certificate-Backed Purchase**\n\nUse this Blueprint when a product order must have a compliance certificate assigned before a purchase order can be created.\n\nFlow: Ask user to select a product → Find product → Check certificate via knowledge lookup → Assign certificate → Create purchase order → Send email.\n\nExits after emailing confirmation of the completed purchase order.",
       "nodes": [
@@ -214,10 +190,8 @@
               "question": "Which product would you like to order?"
             },
             "description": "Ask user to select a product",
-            "prompt": "Ask user which product they want to order",
             "label": "Select a Product",
-            "icon": "mdi:account-question",
-            "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:account-question"
           },
           "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
           "createdAt": "2025-06-26T06:00:00Z"
@@ -228,10 +202,8 @@
           "properties": {
             "action": "ORDER:find_product",
             "description": "Search and retrieve the product details",
-            "prompt": "Find the product by identifier",
             "label": "Find Product",
-            "icon": "mdi:magnify",
-            "pseudocode": "BEGIN_CONTEXT\nproduct = FindProduct()\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:magnify"
           },
           "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
           "createdAt": "2025-06-26T06:00:00Z"
@@ -240,12 +212,10 @@
           "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
           "type": "NORMAL",
           "properties": {
-            "action": "GREY:knowledge_lookup",
+            "action": "PLATFORM:knowledge_lookup",
             "description": "Look up the agent's knowledge base to find the product's compliance certificate. This reflects live knowledge updates from the supervisor.",
-            "prompt": "Look up compliance certificate for the product from agent knowledge",
             "label": "Check Certificate",
-            "icon": "mdi:book-search",
-            "pseudocode": "BEGIN_CONTEXT\ncertificate = KnowledgeLookup(agentId, product.id)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:book-search"
           },
           "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
           "createdAt": "2025-06-26T06:00:00Z"
@@ -256,10 +226,8 @@
           "properties": {
             "action": "ORDER:assign_certificate",
             "description": "Assign a compliance certificate to the product",
-            "prompt": "Assign a compliance certificate to the product",
             "label": "Assign Certificate",
-            "icon": "mdi:certificate-outline",
-            "pseudocode": "BEGIN_CONTEXT\ncertificate = AssignCertificate(product.id)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:certificate-outline"
           },
           "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
           "createdAt": "2025-06-26T06:00:00Z"
@@ -270,10 +238,8 @@
           "properties": {
             "action": "ORDER:create_po",
             "description": "Create a Purchase Order for the certified product",
-            "prompt": "Create a purchase order for the product",
             "label": "Create Purchase Order",
-            "icon": "mdi:file-document-plus",
-            "pseudocode": "BEGIN_CONTEXT\nPO.Create(product.id)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:file-document-plus"
           },
           "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
           "createdAt": "2025-06-26T06:00:00Z"
@@ -284,10 +250,8 @@
           "properties": {
             "action": "GREY:send_email",
             "description": "Send email notification about the completed purchase order",
-            "prompt": "Send email to notify about the purchase order",
             "label": "Send Email",
-            "icon": "mdi:email",
-            "pseudocode": "BEGIN_CONTEXT\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:email"
           },
           "next": null,
           "createdAt": "2025-06-26T06:00:00Z"
@@ -318,7 +282,6 @@
       "id": "c2b1a0d9-e8f7-4c2b-9100-300000000001",
       "title": "Compliance Certificate Request",
       "description": "Find the vendor of a product that is missing a compliance certificate and send them an email requesting the certificate, then notify the user.",
-      "pseudocode": "BEGIN_CONTEXT\nvendor = GetProductVendor(product.id)\nEmail.Send(vendor.email)\nMessageUser()\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
       "skill": "**Compliance Certificate Request — Vendor Follow-up**\n\nUse this Blueprint when a product is missing its compliance certificate and the vendor must be contacted directly to obtain it.\n\nFlow: Get product vendor → Email vendor requesting certificate → Notify user that the vendor was contacted → Complete.\n\nExits after notifying the user; the certificate itself arrives out of band once the vendor responds.",
       "nodes": [
@@ -328,10 +291,8 @@
           "properties": {
             "action": "ORDER:get_product_vendor",
             "description": "Find the vendor of the product that is missing a compliance certificate",
-            "prompt": "Get the vendor information for the product",
             "label": "Get Product Vendor",
-            "icon": "mdi:domain",
-            "pseudocode": "BEGIN_CONTEXT\nvendor = GetProductVendor(product.id)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:domain"
           },
           "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000003"],
           "createdAt": "2025-06-29T08:00:00Z"
@@ -342,10 +303,8 @@
           "properties": {
             "action": "GREY:send_email",
             "description": "Send an email to the vendor requesting the compliance certificate for the product",
-            "prompt": "Send certificate request email to vendor",
             "label": "Email Vendor",
-            "icon": "mdi:email",
-            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(vendor.email)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:email"
           },
           "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000004"],
           "createdAt": "2025-06-29T08:00:00Z"
@@ -356,10 +315,8 @@
           "properties": {
             "action": "PLATFORM:message_user",
             "description": "Notify the user that the vendor has been contacted for the compliance certificate",
-            "prompt": "Notify user that vendor was contacted",
             "label": "Notify User",
-            "icon": "mdi:bell",
-            "pseudocode": "BEGIN_CONTEXT\nMessageUser()\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:bell"
           },
           "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000005"],
           "createdAt": "2025-06-29T08:00:00Z"
@@ -370,10 +327,8 @@
           "properties": {
             "action": "PLATFORM:complete",
             "description": "Mark the compliance certificate request as complete",
-            "prompt": "Complete compliance certificate request",
             "label": "Complete",
-            "icon": "mdi:check",
-            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2025-06-29T08:00:00Z"
@@ -395,7 +350,6 @@
       "id": "019fa100-0000-4000-8000-000000000001",
       "title": "Meeting Summary A - Full Transcript Only",
       "description": "Variant A of the meeting summarizer A/B test. Converts PCM recordings to WAV, transcribes only the mixed meeting-audio recording, and summarizes that full transcript into an overall summary and the meeting's highlights. It deliberately skips per-speaker transcription, produces no next steps and attributes nothing to individual speakers. A Turkish LLM judge scores meeting summary, topics, highlights, overall quality and accuracy on a 0-100 scale; next steps are explicitly not evaluated. The summary is emailed to the meeting participants, with the full transcript and the judge's evaluation attached as files. Meeting audio is not sent.",
-      "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath, includeSpeakerTranscripts: false)\nsummary = SummarizeMeeting(transcripts.full_meeting_transcript)\njudgement = JudgeSummary(transcript: transcripts.full_meeting_transcript, summary: summary.summary, highlights: summary.highlights, variant: \"A\")\nattachments = PrepareMeetingAttachments(directoryPath, transcripts, judgement, includeAudio: false)\nEmail.Send(to: participants.emails, template: \"meeting_summary_a\", data: summary, attachments: attachments)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "019f4a02-1111-4222-8333-444455556666",
       "blocking": false,
       "force": true,
@@ -407,10 +361,8 @@
           "properties": {
             "action": "PLATFORM:pcm_to_wav",
             "description": "Convert all PCM audio files in the meeting directory to WAV format",
-            "prompt": "Convert PCM files to WAV",
             "label": "Convert PCM to WAV",
-            "icon": "mdi:waveform",
-            "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:waveform"
           },
           "next": ["019f414b-0002-4000-8000-000000000002"],
           "createdAt": "2026-07-08T10:00:00Z"
@@ -421,10 +373,8 @@
           "properties": {
             "action": "PLATFORM:transcribe_meeting",
             "description": "Transcribe only meeting-audio.wav with the self-hosted ASR service. Skip participant recordings because Variant A does not use speaker transcripts. The transcript is cached as a .txt file next to the audio",
-            "prompt": "Transcribe only meeting-audio.wav by setting includeSpeakerTranscripts to false",
             "label": "Transcribe Meeting",
-            "icon": "mdi:microphone-multiple",
-            "pseudocode": "BEGIN_CONTEXT\ntranscripts = TranscribeMeeting(directoryPath, includeSpeakerTranscripts: false)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:microphone-multiple"
           },
           "next": ["019fa100-0003-4000-8000-000000000001"],
           "createdAt": "2026-08-20T10:00:00Z"
@@ -435,10 +385,8 @@
           "properties": {
             "action": "PLATFORM:summarize_meeting",
             "description": "Summarize the combined meeting transcript into an overall summary and the meeting's highlights",
-            "prompt": "Pass full_meeting_transcript from the transcription step through unchanged as 'transcript'. Returns { summary, highlights: [{ topic, highlights: [string] }] }.",
             "label": "Summarize Meeting",
-            "icon": "mdi:text-box-check",
-            "pseudocode": "BEGIN_CONTEXT\nsummary = SummarizeMeeting(transcripts.full_meeting_transcript)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:text-box-check"
           },
           "next": ["019fa100-0004-4000-8000-000000000001"],
           "createdAt": "2026-08-20T10:00:00Z"
@@ -449,10 +397,8 @@
           "properties": {
             "action": "PLATFORM:judge_summary",
             "description": "Use a Turkish LLM judge to score the meeting summary, topics, highlights, overall quality and accuracy from 0 to 100; do not evaluate next steps because variant A does not generate them",
-            "prompt": "Pass full_meeting_transcript from the transcription step through unchanged as 'transcript', summary.summary as 'summary', summary.highlights as 'highlights', and variant: 'A'. Do not pass next_steps because variant A does not generate or evaluate them.",
             "label": "Judge Summary",
-            "icon": "mdi:gavel",
-            "pseudocode": "BEGIN_CONTEXT\njudgement = JudgeSummary(transcript: transcripts.full_meeting_transcript, summary: summary.summary, highlights: summary.highlights, variant: \"A\")\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:gavel"
           },
           "next": ["019fa100-0005-4000-8000-000000000001"],
           "createdAt": "2026-08-20T10:00:00Z"
@@ -463,10 +409,8 @@
           "properties": {
             "action": "PLATFORM:prepare_meeting_attachments",
             "description": "Write the full meeting transcript and the LLM judge's evaluation to files and collect them as email attachments. The meeting audio is not attached",
-            "prompt": "Pass directoryPath and full_meeting_transcript from the transcription step, along with the whole judgement object from the Judge Summary step. Set includeAudio: false. Variant A has no speaker transcripts. Returns an 'attachments' array to be handed to the email step.",
             "label": "Prepare Attachments",
-            "icon": "mdi:paperclip",
-            "pseudocode": "BEGIN_CONTEXT\nattachments = PrepareMeetingAttachments(directoryPath, transcripts, judgement, includeAudio: false)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:paperclip"
           },
           "next": ["019fa100-0006-4000-8000-000000000001"],
           "createdAt": "2026-08-20T10:00:00Z"
@@ -477,10 +421,8 @@
           "properties": {
             "action": "GREY:send_email",
             "description": "Email the summary to all meeting participants using the 'meeting_summary_a' template, attaching the transcripts and the LLM evaluation",
-            "prompt": "Send one email to all meeting participants (join every participant's email from meeting metadata into a comma-separated 'to' field). Do NOT compose subject/text/html manually - instead pass template: 'meeting_summary_a' and data: { meetingName, meetingDate, summary, highlights: [{ topic, highlights: [string] }] } built from the summarization step and meeting metadata. Do not pass next_steps - variant A has none. Also pass the 'attachments' array from the Prepare Attachments step through unchanged, so the transcripts and the LLM evaluation are attached.",
             "label": "Email Participants",
-            "icon": "mdi:email-send",
-            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(to: participants.emails, template: \"meeting_summary_a\", data: summary, attachments: attachments)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:email-send"
           },
           "next": ["019fa100-0007-4000-8000-000000000001"],
           "createdAt": "2026-08-20T10:00:00Z"
@@ -491,10 +433,8 @@
           "properties": {
             "action": "PLATFORM:complete",
             "description": "Mark the variant A meeting summary workflow as complete",
-            "prompt": "Complete meeting summary flow",
             "label": "Complete",
-            "icon": "mdi:check",
-            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2026-08-20T10:00:00Z"
@@ -505,7 +445,6 @@
       "id": "019fa200-0000-4000-8000-000000000001",
       "title": "Meeting Summary B - Speaker Attributed",
       "description": "Variant B of the meeting summarizer A/B test. Converts per-participant PCM recordings to WAV, transcribes both each participant individually and the meeting as a whole, then summarizes both together into an overall summary, the meeting's highlights and the next steps. Because every participant's own recording is passed in, statements and next step owners are attributed to the right speaker. Participant IDs are resolved to real names, and a Turkish LLM judge scores meeting summary, next steps, topics, highlights, overall quality and accuracy on a 0-100 scale. The result is emailed to all participants and, as a separate step, to the manager whose address comes from the agent's knowledge base - with the transcripts and the judge's evaluation attached as files. Meeting audio is not sent.",
-      "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath)\nsummary = SummarizeMeetingBySpeaker(transcripts.full_meeting_transcript, transcripts.speaker_transcripts)\nresolved = ResolveParticipants(summary, participants)\njudgement = JudgeSummary(transcript: transcripts.full_meeting_transcript, speaker_transcripts: transcripts.speaker_transcripts, summary: resolved.summary, highlights: resolved.highlights, next_steps: resolved.next_steps, variant: \"B\")\nattachments = PrepareMeetingAttachments(directoryPath, transcripts, judgement, includeAudio: false)\nEmail.Send(to: participants.emails, template: \"meeting_summary_b\", data: resolved, attachments: attachments)\nmanagerEmail = KnowledgeLookup(agentId)\nEmail.Send(to: managerEmail, template: \"meeting_summary_b\", data: resolved, attachments: attachments)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "019f4a02-1111-4222-8333-444455556666",
       "blocking": false,
       "force": true,
@@ -517,10 +456,8 @@
           "properties": {
             "action": "PLATFORM:pcm_to_wav",
             "description": "Convert all PCM audio files in the meeting directory to WAV format",
-            "prompt": "Convert PCM files to WAV",
             "label": "Convert PCM to WAV",
-            "icon": "mdi:waveform",
-            "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:waveform"
           },
           "next": ["019fa200-0002-4000-8000-000000000001"],
           "createdAt": "2026-08-20T10:00:00Z"
@@ -531,10 +468,8 @@
           "properties": {
             "action": "PLATFORM:transcribe_meeting",
             "description": "Transcribe each WAV file individually with the self-hosted ASR service and collect the full meeting transcript together with the per-speaker transcripts. Transcripts are cached as .txt files next to the audio, so re-running the meeting does not transcribe again",
-            "prompt": "Transcribe all WAV files in the meeting directory",
             "label": "Transcribe Meeting",
-            "icon": "mdi:microphone-multiple",
-            "pseudocode": "BEGIN_CONTEXT\ntranscripts = TranscribeMeeting(directoryPath)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:microphone-multiple"
           },
           "next": ["019f414b-0003-4000-8000-000000000003"],
           "createdAt": "2026-07-08T10:00:00Z"
@@ -545,10 +480,8 @@
           "properties": {
             "action": "PLATFORM:summarize_meeting_by_speaker",
             "description": "Summarize the combined transcript plus each participant's own recording into an overall summary, the meeting's highlights and the next steps, attributed to the right speaker",
-            "prompt": "Pass full_meeting_transcript and speaker_transcripts from the previous step through unchanged. Returns { summary, highlights: [{ topic, highlights: [string] }], next_steps }.",
             "label": "Summarize Meeting By Speaker",
-            "icon": "mdi:text-box-check",
-            "pseudocode": "BEGIN_CONTEXT\nsummary = SummarizeMeetingBySpeaker(transcripts.full_meeting_transcript, transcripts.speaker_transcripts)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:text-box-check"
           },
           "next": ["019f414b-0004-4000-8000-000000000004"],
           "createdAt": "2026-07-08T10:00:00Z"
@@ -559,13 +492,23 @@
           "properties": {
             "action": "PLATFORM:resolve_participants",
             "description": "Replace speaker IDs with real participant names, anywhere they appear in the summary",
-            "prompt": "Pass the whole { summary, highlights: [{ topic, highlights: [string] }], next_steps } object from the summarization step as 'content' and the participants list from meeting metadata as 'participants'. Returns the same object with IDs replaced by real names.",
             "label": "Resolve Participants",
-            "icon": "mdi:account-convert",
-            "pseudocode": "BEGIN_CONTEXT\nresolved = ResolveParticipants(summary, participants)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:account-convert"
           },
-          "next": ["019f414b-0007-4000-8000-000000000007"],
-          "createdAt": "2026-07-08T10:00:00Z"
+          "next": ["019fa200-0005-4000-8000-000000000001"],
+          "createdAt": "2026-08-20T10:00:00Z"
+        },
+        {
+          "id": "019fa200-0005-4000-8000-000000000001",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:judge_summary",
+            "description": "Use a Turkish LLM judge to score the meeting summary, next steps, topics, highlights, overall quality and accuracy from 0 to 100; verify speaker attributions against the individual recordings",
+            "label": "Judge Summary",
+            "icon": "mdi:gavel"
+          },
+          "next": ["019fa200-0006-4000-8000-000000000001"],
+          "createdAt": "2026-08-20T10:00:00Z"
         },
         {
           "id": "019fa200-0006-4000-8000-000000000001",
@@ -573,10 +516,8 @@
           "properties": {
             "action": "PLATFORM:prepare_meeting_attachments",
             "description": "Write the full meeting transcript, each speaker's transcript and the LLM judge's evaluation to files and collect them as email attachments. The meeting audio is not attached",
-            "prompt": "Pass directoryPath, and full_meeting_transcript plus speaker_transcripts from the transcription step through unchanged, along with the participants list from meeting metadata and the whole judgement object from the Judge Summary step. Set includeAudio: false - the meeting audio must not be emailed. Returns an 'attachments' array to be handed to the email steps.",
             "label": "Prepare Attachments",
-            "icon": "mdi:paperclip",
-            "pseudocode": "BEGIN_CONTEXT\nattachments = PrepareMeetingAttachments(directoryPath, transcripts, judgement, includeAudio: false)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:paperclip"
           },
           "next": ["019f414b-0005-4000-8000-000000000005"],
           "createdAt": "2026-07-08T10:00:00Z"
@@ -587,10 +528,8 @@
           "properties": {
             "action": "GREY:send_email",
             "description": "Email the resolved speaker-attributed summary to all meeting participants using the 'meeting_summary_b' template, attaching the transcripts and the LLM evaluation",
-            "prompt": "Send one email to all meeting participants (join every participant's email from meeting metadata into a comma-separated 'to' field). Do NOT compose subject/text/html manually - instead pass template: 'meeting_summary_b' and data: { meetingName, meetingDate, summary, highlights: [{ topic, highlights: [string] }], next_steps } built from the resolved summary and meeting metadata. Also pass the 'attachments' array from the Prepare Attachments step through unchanged, so the transcripts and the LLM evaluation are attached.",
             "label": "Email Participants",
-            "icon": "mdi:email-send",
-            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(to: participants.emails, template: \"meeting_summary_b\", data: resolved, attachments: attachments)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:email-send"
           },
           "next": ["019f414b-0008-4000-8000-000000000008"],
           "createdAt": "2026-07-08T10:00:00Z"
@@ -599,12 +538,10 @@
           "id": "019fa200-0008-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
-            "action": "GREY:knowledge_lookup",
+            "action": "PLATFORM:knowledge_lookup",
             "description": "Look up the agent's knowledge base to find the manager's email address for meeting summary notifications",
-            "prompt": "Look up the manager's email address from agent knowledge",
             "label": "Get Manager Email",
-            "icon": "mdi:book-search",
-            "pseudocode": "BEGIN_CONTEXT\nmanagerEmail = KnowledgeLookup(agentId)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:book-search"
           },
           "next": ["019f414b-0009-4000-8000-000000000009"],
           "createdAt": "2026-07-08T10:00:00Z"
@@ -615,10 +552,8 @@
           "properties": {
             "action": "GREY:send_email",
             "description": "Email the resolved summary to the manager's email address found in the knowledge base, using the 'meeting_summary_b' template and attaching the transcripts and the LLM evaluation",
-            "prompt": "Send a separate email to the manager's email address from the knowledge lookup step ('to' is only the manager address). Do NOT compose subject/text/html manually - instead pass template: 'meeting_summary_b' and data: { meetingName, meetingDate, summary, highlights: [{ topic, highlights: [string] }], next_steps } built from the resolved summary and meeting metadata. Also pass the 'attachments' array from the Prepare Attachments step through unchanged.",
             "label": "Email Manager",
-            "icon": "mdi:email-send",
-            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(to: managerEmail, template: \"meeting_summary_b\", data: resolved, attachments: attachments)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:email-send"
           },
           "next": ["019f414b-0006-4000-8000-000000000006"],
           "createdAt": "2026-07-08T10:00:00Z"
@@ -629,10 +564,8 @@
           "properties": {
             "action": "PLATFORM:complete",
             "description": "Mark the variant B meeting summary workflow as complete",
-            "prompt": "Complete meeting summary flow",
             "label": "Complete",
-            "icon": "mdi:check",
-            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2026-08-20T10:00:00Z"
@@ -659,7 +592,6 @@
       "id": "019f5c00-0000-4000-8000-000000000001",
       "title": "VM Provisioning Request",
       "description": "Handles a virtual machine provisioning request. The agent collects VM requirements from the user, creates the VM on AWS, and shares the instance details with the user.",
-      "pseudocode": "BEGIN_CONTEXT\nrequirements = WaitForUserInput()\nvm = CreateVM(requirements)\nMessageUser(vm)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "3c8f1d5e-7b2a-4e91-a6d4-58c0f9b3e712",
       "skill": "**VM Provisioning — Collect & Create**\n\nUse this Blueprint when a user requests a new virtual machine and its requirements need to be gathered before provisioning.\n\nFlow: Collect VM requirements from user → Create VM on AWS → Share VM details with user → Complete.\n\nExits after sharing the created VM's instance details with the user.",
       "nodes": [
@@ -672,10 +604,8 @@
               "question": "What are the requirements for the VM? Please provide a name and optionally the instance type (e.g. t3.micro) and region."
             },
             "description": "Ask the user for the VM requirements (name, instance type, region)",
-            "prompt": "Ask user for VM requirements",
             "label": "Collect VM Requirements",
-            "icon": "mdi:account-question",
-            "pseudocode": "BEGIN_CONTEXT\nrequirements = WaitForUserInput()\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:account-question"
           },
           "next": ["019f5c00-0004-4000-8000-000000000004"],
           "createdAt": "2026-07-13T10:00:00Z"
@@ -686,10 +616,8 @@
           "properties": {
             "action": "PLATFORM:create_vm",
             "description": "Create the EC2 instance on AWS with the requirements collected from the user",
-            "prompt": "Create the VM on AWS using the collected requirements (name is required; instanceType and region are optional)",
             "label": "Create VM",
-            "icon": "mdi:server-plus",
-            "pseudocode": "BEGIN_CONTEXT\nvm = CreateVM(requirements)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:server-plus"
           },
           "next": ["019f5c00-0005-4000-8000-000000000005"],
           "createdAt": "2026-07-13T10:00:00Z"
@@ -700,10 +628,8 @@
           "properties": {
             "action": "PLATFORM:message_user",
             "description": "Share the created VM details (instance ID, type, state, IPs) with the user",
-            "prompt": "Notify the user with the created VM details from the previous step",
             "label": "Share VM Details",
-            "icon": "mdi:bell",
-            "pseudocode": "BEGIN_CONTEXT\nMessageUser(vm)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:bell"
           },
           "next": ["019f5c00-0007-4000-8000-000000000007"],
           "createdAt": "2026-07-13T10:00:00Z"
@@ -714,10 +640,8 @@
           "properties": {
             "action": "PLATFORM:complete",
             "description": "Mark the VM provisioning workflow as complete",
-            "prompt": "Complete VM provisioning flow",
             "label": "Complete",
-            "icon": "mdi:check",
-            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2026-07-13T10:00:00Z"
@@ -739,7 +663,6 @@
       "id": "019f5c01-0000-4000-8000-000000000001",
       "title": "VM Termination Request",
       "description": "Handles a virtual machine termination request. The agent collects the instance ID from the user, confirms the termination since it is permanent, terminates the VM on AWS, and shares the result with the user.",
-      "pseudocode": "BEGIN_CONTEXT\ninstanceId = WaitForUserInput()\nconfirmation = WaitForUserConfirmation(instanceId)\nIF confirmation.Confirmed == TRUE THEN\n    result = TerminateVM(instanceId)\n    MessageUser(result)\nELSE\n    MessageUser(\"Termination cancelled\")\nEND_IF\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "3c8f1d5e-7b2a-4e91-a6d4-58c0f9b3e712",
       "skill": "**VM Termination — Confirmation-Gated**\n\nUse this Blueprint when a user requests VM termination and explicit confirmation is required before this irreversible action proceeds.\n\nFlow: Collect instance ID → Confirm termination → [Not confirmed: notify cancellation, end] → Terminate VM → Share termination result.\n\nExits after sharing the termination result, or exits early with a cancellation notice if the user declines to confirm.",
       "nodes": [
@@ -752,10 +675,8 @@
               "question": "Which VM would you like to terminate? Please provide the instance ID (e.g. i-0abc123...) and optionally the region."
             },
             "description": "Ask the user for the instance ID of the VM to terminate",
-            "prompt": "Ask user for the instance ID to terminate",
             "label": "Collect Instance ID",
-            "icon": "mdi:account-question",
-            "pseudocode": "BEGIN_CONTEXT\ninstanceId = WaitForUserInput()\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:account-question"
           },
           "next": ["019f5c01-0002-4000-8000-000000000002"],
           "createdAt": "2026-07-13T10:00:00Z"
@@ -769,10 +690,8 @@
               "question": "Termination is permanent and cannot be undone. Are you sure you want to terminate this instance? (yes/no)"
             },
             "description": "Ask the user to confirm the termination since it is permanent and cannot be undone",
-            "prompt": "Ask user to confirm terminating the instance",
             "label": "Confirm Termination",
-            "icon": "mdi:alert-circle-check",
-            "pseudocode": "BEGIN_CONTEXT\nconfirmation = WaitForUserConfirmation(instanceId)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:alert-circle-check"
           },
           "next": ["019f5c01-0003-4000-8000-000000000003"],
           "createdAt": "2026-07-13T10:00:00Z"
@@ -783,10 +702,8 @@
           "properties": {
             "action": "PLATFORM:decision",
             "description": "Decide based on the user's confirmation whether to proceed with the termination",
-            "prompt": "Did the user confirm the termination?",
             "label": "Check Confirmation",
-            "icon": "mdi:source-branch",
-            "pseudocode": "BEGIN_CONTEXT\nIF confirmation.Confirmed == TRUE THEN\n    // handle true path\nELSE\n    // handle false path\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:source-branch"
           },
           "true": ["019f5c01-0004-4000-8000-000000000004"],
           "false": ["019f5c01-0006-4000-8000-000000000006"],
@@ -798,10 +715,8 @@
           "properties": {
             "action": "PLATFORM:terminate_vm",
             "description": "Terminate the EC2 instance on AWS with the instance ID collected from the user",
-            "prompt": "Terminate the VM on AWS using the collected instance ID (region is optional)",
             "label": "Terminate VM",
-            "icon": "mdi:server-remove",
-            "pseudocode": "BEGIN_CONTEXT\nresult = TerminateVM(instanceId)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:server-remove"
           },
           "next": ["019f5c01-0005-4000-8000-000000000005"],
           "createdAt": "2026-07-13T10:00:00Z"
@@ -812,10 +727,8 @@
           "properties": {
             "action": "PLATFORM:message_user",
             "description": "Share the termination result (instance ID, previous and current state) with the user",
-            "prompt": "Notify the user with the termination result from the previous step",
             "label": "Share Termination Result",
-            "icon": "mdi:bell",
-            "pseudocode": "BEGIN_CONTEXT\nMessageUser(result)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:bell"
           },
           "next": ["019f5c01-0007-4000-8000-000000000007"],
           "createdAt": "2026-07-13T10:00:00Z"
@@ -826,10 +739,8 @@
           "properties": {
             "action": "PLATFORM:message_user",
             "description": "Inform the user that the termination was cancelled",
-            "prompt": "Notify the user that the termination was cancelled and no instance was terminated",
             "label": "Notify Cancellation",
-            "icon": "mdi:bell-off",
-            "pseudocode": "BEGIN_CONTEXT\nMessageUser(\"Termination cancelled\")\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:bell-off"
           },
           "next": ["019f5c01-0007-4000-8000-000000000007"],
           "createdAt": "2026-07-13T10:00:00Z"
@@ -840,10 +751,8 @@
           "properties": {
             "action": "PLATFORM:complete",
             "description": "Mark the VM termination workflow as complete",
-            "prompt": "Complete VM termination flow",
             "label": "Complete",
-            "icon": "mdi:check",
-            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2026-07-13T10:00:00Z"
@@ -865,7 +774,6 @@
       "id": "019f7a20-0000-4000-8000-000000000001",
       "title": "VM Metrics Health Check",
       "description": "Evaluates OTLP metrics (resourceMetrics payload) that arrive from a virtual machine at regular intervals. The agent looks up the metric reference ranges from its knowledge base, deterministically evaluates every incoming metric data point against those ranges with the evaluate_metrics tool, and if any metric is outside its reference range it creates a ServiceNow incident listing the violations; if all metrics are within range the run completes silently.",
-      "pseudocode": "BEGIN_CONTEXT\nreferences = KnowledgeLookup(agentId)\nevaluation = EvaluateMetrics(metrics, references)\nIF evaluation.hasViolations == TRUE THEN\n    ServiceNow.CreateIncident(evaluation.violations)\nEND_IF\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
       "blocking": false,
       "skill": "**VM Metrics Health Check — Threshold-Gated Alerting**\n\nUse this Blueprint when incoming OTLP metrics from a VM need to be evaluated against reference ranges and should only raise an alert on a violation.\n\nFlow: Get reference ranges from knowledge → Evaluate metrics against ranges → [No violations: complete silently] → Create ServiceNow incident for violations → Complete.\n\nExits silently when all metrics are within range. Exits after creating an incident when any metric falls outside its reference range.",
@@ -874,12 +782,10 @@
           "id": "019f7a20-0001-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
-            "action": "GREY:knowledge_lookup",
+            "action": "PLATFORM:knowledge_lookup",
             "description": "Look up the metric reference ranges (reference_ranges) from the agent's knowledge base",
-            "prompt": "Look up the metric reference ranges (reference_ranges) from agent knowledge",
             "label": "Get Reference Ranges",
-            "icon": "mdi:book-search",
-            "pseudocode": "BEGIN_CONTEXT\nreferences = KnowledgeLookup(agentId)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:book-search"
           },
           "next": ["019f7a20-0002-4000-8000-000000000002"],
           "createdAt": "2026-07-16T10:00:00Z"
@@ -890,10 +796,8 @@
           "properties": {
             "action": "PLATFORM:evaluate_metrics",
             "description": "Deterministically evaluate every metric data point in the incoming OTLP resourceMetrics payload against the reference ranges from the knowledge lookup",
-            "prompt": "Call evaluate_metrics with two parameters: 'metrics' = the OTLP resourceMetrics payload from the incoming message, and 'reference_ranges' = the reference ranges returned by the knowledge lookup step. It returns host, checked, hasViolations and the violations list.",
             "label": "Evaluate Metrics",
-            "icon": "mdi:chart-bell-curve",
-            "pseudocode": "BEGIN_CONTEXT\nevaluation = EvaluateMetrics(metrics, references)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:chart-bell-curve"
           },
           "next": ["019f7a20-0003-4000-8000-000000000003"],
           "createdAt": "2026-07-16T10:00:00Z"
@@ -904,10 +808,8 @@
           "properties": {
             "action": "PLATFORM:decision",
             "description": "Decide based on the evaluate_metrics result whether any metric is outside its reference range",
-            "prompt": "Is hasViolations true in the evaluate_metrics result (is the violations list non-empty)?",
             "label": "Check for Violations",
-            "icon": "mdi:source-branch",
-            "pseudocode": "BEGIN_CONTEXT\nIF evaluation.hasViolations == TRUE THEN\n    // handle true path\nELSE\n    // handle false path\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:source-branch"
           },
           "true": ["019f7a20-0004-4000-8000-000000000004"],
           "false": ["019f7a20-0006-4000-8000-000000000006"],
@@ -919,10 +821,8 @@
           "properties": {
             "action": "PLATFORM:complete",
             "description": "End the task when every metric is within its reference range and no alert is needed",
-            "prompt": "All metrics are within their reference ranges, no alert needed, complete the task",
             "label": "Complete (Metrics OK)",
-            "icon": "mdi:check-circle",
-            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:check-circle"
           },
           "next": null,
           "createdAt": "2026-07-16T10:00:00Z"
@@ -933,10 +833,8 @@
           "properties": {
             "action": "SERVICENOW:create_incident",
             "description": "Create a ServiceNow incident listing every metric that is outside its reference range",
-            "prompt": "Create a ServiceNow incident for the metric violations: shortDescription = 'VM Metric Alert: <host>' (host from the evaluation step), caller = 'VM Monitoring Agent', priority = 2, and description listing, for each violation from the evaluation step: the metric name, its attributes, the observed value, the allowed reference range (min/max or expected value), the unit, and the measurement timestamp",
             "label": "Create Incident",
-            "icon": "mdi:alert-circle-outline",
-            "pseudocode": "BEGIN_CONTEXT\nServiceNow.CreateIncident(evaluation.violations)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:alert-circle-outline"
           },
           "next": ["019f7a20-0005-4000-8000-000000000005"],
           "createdAt": "2026-07-16T10:00:00Z"
@@ -947,10 +845,8 @@
           "properties": {
             "action": "PLATFORM:complete",
             "description": "Mark the VM metrics health check as complete",
-            "prompt": "Complete VM metrics health check flow",
             "label": "Complete",
-            "icon": "mdi:check",
-            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2026-07-16T10:00:00Z"
@@ -1005,7 +901,6 @@
       "id": "019f6a10-0000-4000-8000-000000000001",
       "title": "Employee Onboarding",
       "description": "Handles new employee onboarding. The agent takes the incoming employee's information (first name, last name, employee ID, department, job role, manager, location, ServiceNow request number), creates the employee's user account in Active Directory via the Active Directory MCP, approves the corresponding employee request in ServiceNow via the ServiceNow MCP, looks up the manager's email address from the agent's knowledge, emails the created account details to the manager, and sends a welcome email to the new employee's address.",
-      "pseudocode": "BEGIN_CONTEXT\naccount = CreateEmployee(employee)\nServiceNow.ApproveRequest(employee.requestNumber)\nmanagerEmail = KnowledgeLookup(agentId)\nEmail.Send(managerEmail, account)\nEmail.Send(account.mail, welcome)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "019f6a11-0000-4000-8000-000000000001",
       "skill": "**Employee Onboarding — AD Provisioning & Notifications**\n\nUse this Blueprint when a new employee request needs an Active Directory account created, its ServiceNow request approved, and the manager and employee notified.\n\nFlow: Create employee in Active Directory → Approve request in ServiceNow → Get manager email from knowledge → Email manager with account details → Email new employee a welcome message → Complete.\n\nExits after sending the welcome email to the new employee.",
       "nodes": [
@@ -1015,10 +910,8 @@
           "properties": {
             "action": "ACTIVEDIRECTORY:create_employee",
             "description": "Create the employee's user account in Active Directory with the collected information",
-            "prompt": "Create the employee in Active Directory using the employee information provided in the incoming message (first_name, last_name and employee_id are required; department, job_role, manager and location are optional)",
             "label": "Create Employee in Active Directory",
-            "icon": "mdi:microsoft-windows",
-            "pseudocode": "BEGIN_CONTEXT\naccount = CreateEmployee(employee)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:microsoft-windows"
           },
           "next": ["019f6a10-0003-4000-8000-000000000003"],
           "createdAt": "2026-07-14T10:00:00Z"
@@ -1029,10 +922,8 @@
           "properties": {
             "action": "SERVICENOW:approve_employee_request",
             "description": "Approve the employee onboarding request in ServiceNow now that the Active Directory account has been created",
-            "prompt": "Approve the employee's onboarding request in ServiceNow using the request_number provided in the incoming message",
             "label": "Approve Request in ServiceNow",
-            "icon": "mdi:cloud-check-outline",
-            "pseudocode": "BEGIN_CONTEXT\nServiceNow.ApproveRequest(employee.requestNumber)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:cloud-check-outline"
           },
           "next": ["019f6a10-0005-4000-8000-000000000005"],
           "createdAt": "2026-07-14T10:00:00Z"
@@ -1041,12 +932,10 @@
           "id": "019f6a10-0005-4000-8000-000000000005",
           "type": "NORMAL",
           "properties": {
-            "action": "GREY:knowledge_lookup",
+            "action": "PLATFORM:knowledge_lookup",
             "description": "Look up the agent's knowledge base to find the manager's email address for onboarding notifications",
-            "prompt": "Look up the manager's email address from agent knowledge",
             "label": "Get Manager Email",
-            "icon": "mdi:book-search",
-            "pseudocode": "BEGIN_CONTEXT\nmanagerEmail = KnowledgeLookup(agentId)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:book-search"
           },
           "next": ["019f6a10-0006-4000-8000-000000000006"],
           "createdAt": "2026-07-14T10:00:00Z"
@@ -1057,10 +946,8 @@
           "properties": {
             "action": "GREY:send_email",
             "description": "Email the created Active Directory account details to the manager's email address found in the knowledge base",
-            "prompt": "Send an email to the manager's email address from the knowledge lookup, with a subject like 'New Employee Onboarded' and a body containing the created employee account details (name, sAM account name, email, employee ID, department, title, office, groups) from the Active Directory creation step",
             "label": "Email Manager",
-            "icon": "mdi:email-send",
-            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(managerEmail, account)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:email-send"
           },
           "next": ["019f6a10-0007-4000-8000-000000000007"],
           "createdAt": "2026-07-14T10:00:00Z"
@@ -1071,10 +958,8 @@
           "properties": {
             "action": "GREY:send_email",
             "description": "Send a welcome email to the new employee's email address letting them know they have been onboarded",
-            "prompt": "Send a welcome email to the new employee's email address ('mail' field from the Active Directory creation step), with a subject like 'Welcome to the company' and a friendly body confirming they have been onboarded, including their account details (sAM account name, email, department, title, office)",
             "label": "Email New Employee",
-            "icon": "mdi:email-heart-outline",
-            "pseudocode": "BEGIN_CONTEXT\nEmail.Send(account.mail, welcome)\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:email-heart-outline"
           },
           "next": ["019f6a10-0004-4000-8000-000000000004"],
           "createdAt": "2026-07-14T10:00:00Z"
@@ -1085,10 +970,8 @@
           "properties": {
             "action": "PLATFORM:complete",
             "description": "Mark the employee onboarding workflow as complete",
-            "prompt": "Complete employee onboarding flow",
             "label": "Complete",
-            "icon": "mdi:check",
-            "pseudocode": "BEGIN_CONTEXT\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE"
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2026-07-14T10:00:00Z"

@@ -20,12 +20,12 @@
     "result": false
   },
   {
-    "context": "{\"steps\":[{\"action\":\"GREY:knowledge_lookup\",\"status\":\"COMPLETED\",\"parameters\":{\"product_id\":\"prd-1\"},\"result\":\"{\\\"product_id\\\":\\\"prd-1\\\",\\\"certificate\\\":\\\"FFC\\\",\\\"has_certificate\\\":true}\"}]}",
+    "context": "{\"steps\":[{\"action\":\"PLATFORM:knowledge_lookup\",\"status\":\"COMPLETED\",\"parameters\":{\"product_id\":\"prd-1\"},\"result\":\"{\\\"product_id\\\":\\\"prd-1\\\",\\\"certificate\\\":\\\"FFC\\\",\\\"has_certificate\\\":true}\"}]}",
     "condition": "certificate.has_certificate == TRUE",
     "result": true
   },
   {
-    "context": "{\"steps\":[{\"action\":\"GREY:knowledge_lookup\",\"status\":\"COMPLETED\",\"parameters\":{\"product_id\":\"prd-3\"},\"result\":\"{\\\"product_id\\\":\\\"prd-3\\\",\\\"certificate\\\":null,\\\"has_certificate\\\":false}\"}]}",
+    "context": "{\"steps\":[{\"action\":\"PLATFORM:knowledge_lookup\",\"status\":\"COMPLETED\",\"parameters\":{\"product_id\":\"prd-3\"},\"result\":\"{\\\"product_id\\\":\\\"prd-3\\\",\\\"certificate\\\":null,\\\"has_certificate\\\":false}\"}]}",
     "condition": "certificate.has_certificate == TRUE",
     "result": false
   },

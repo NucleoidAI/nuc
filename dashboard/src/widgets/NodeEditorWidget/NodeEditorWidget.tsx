@@ -14,8 +14,13 @@ const NodeEditorWidget = ({
   graphData,
   newNodeLabel,
   setNewNodeLabel,
-  newNodePrompt,
-  setNewNodePrompt,
+  newNodeInstructions,
+  setNewNodeInstructions,
+  newNodeDescription,
+  setNewNodeDescription,
+  newNodePseudocodeEnabled,
+  setNewNodePseudocodeEnabled,
+  pseudocodeLoading,
   newNodeForce,
   setNewNodeForce,
   newNodeType,
@@ -49,8 +54,13 @@ const NodeEditorWidget = ({
   graphData: DefinitionGraph;
   newNodeLabel: string;
   setNewNodeLabel: (label: string) => void;
-  newNodePrompt: string;
-  setNewNodePrompt: (prompt: string) => void;
+  newNodeInstructions: string;
+  setNewNodeInstructions: (instructions: string) => void;
+  newNodeDescription?: string;
+  setNewNodeDescription?: (description: string) => void;
+  newNodePseudocodeEnabled?: boolean;
+  setNewNodePseudocodeEnabled?: (enabled: boolean) => void;
+  pseudocodeLoading?: boolean;
   newNodeForce?: boolean;
   setNewNodeForce?: (force: boolean) => void;
   newNodeType: string;
@@ -239,8 +249,13 @@ const NodeEditorWidget = ({
       selectedParentNode={selectedParentNode}
       newNodeLabel={newNodeLabel}
       setNewNodeLabel={setNewNodeLabel}
-      newNodePrompt={newNodePrompt}
-      setNewNodePrompt={setNewNodePrompt}
+      newNodeInstructions={newNodeInstructions}
+      setNewNodeInstructions={setNewNodeInstructions}
+      newNodeDescription={newNodeDescription}
+      setNewNodeDescription={setNewNodeDescription}
+      newNodePseudocodeEnabled={newNodePseudocodeEnabled}
+      setNewNodePseudocodeEnabled={setNewNodePseudocodeEnabled}
+      pseudocodeLoading={pseudocodeLoading}
       newNodeForce={newNodeForce}
       setNewNodeForce={setNewNodeForce}
       newNodeType={newNodeType}

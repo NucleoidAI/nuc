@@ -11,8 +11,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:check_product_count",
-            "icon": "mdi:check",
-            "prompt": "Check Product Availability"
+            "icon": "mdi:check"
           },
           "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -22,8 +21,7 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
-            "icon": "mdi:source-branch",
-            "prompt": "Make Decision"
+            "icon": "mdi:source-branch"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
@@ -34,8 +32,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:create_order",
-            "icon": "mdi:cart-plus",
-            "prompt": "Create Order"
+            "icon": "mdi:cart-plus"
           },
           "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -45,8 +42,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:send_email",
-            "icon": "mdi:email",
-            "prompt": "Send Email"
+            "icon": "mdi:email"
           },
           "next": null,
           "createdAt": "2025-06-19T06:03:00Z"
@@ -56,8 +52,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:reduce_product_count",
-            "icon": "mdi:minus",
-            "prompt": "Reduce Product Quantity"
+            "icon": "mdi:minus"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -65,7 +60,6 @@
       ]
     },
     "content": "Check battery availability, if not exist, create order.",
-    "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n    Order.Create()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "knowledge": [
       {
         "id": "66f2e2e0-dd81-4a1c-9474-089558b43084",
@@ -109,8 +103,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:check_product_count",
-            "icon": "mdi:check",
-            "prompt": "Check Product Availability"
+            "icon": "mdi:check"
           },
           "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -120,8 +113,7 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
-            "icon": "mdi:source-branch",
-            "prompt": "Make Decision"
+            "icon": "mdi:source-branch"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
@@ -132,8 +124,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:create_order",
-            "icon": "mdi:cart-plus",
-            "prompt": "Create Order"
+            "icon": "mdi:cart-plus"
           },
           "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -143,8 +134,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:send_email",
-            "icon": "mdi:email",
-            "prompt": "Send Email"
+            "icon": "mdi:email"
           },
           "next": null,
           "createdAt": "2025-06-19T06:03:00Z"
@@ -154,8 +144,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:reduce_product_count",
-            "icon": "mdi:minus",
-            "prompt": "Reduce Product Quantity"
+            "icon": "mdi:minus"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -163,7 +152,6 @@
       ]
     },
     "content": "Do we have enough batteries in stock?",
-    "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n    Order.Create()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "knowledge": [
       {
         "id": "66f2e2e0-dd81-4a1c-9474-089558b43084",
@@ -207,8 +195,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:check_product_count",
-            "icon": "mdi:check",
-            "prompt": "Check Product Availability"
+            "icon": "mdi:check"
           },
           "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -218,8 +205,7 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
-            "icon": "mdi:source-branch",
-            "prompt": "Make Decision"
+            "icon": "mdi:source-branch"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
@@ -230,8 +216,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:create_order",
-            "icon": "mdi:cart-plus",
-            "prompt": "Create Order"
+            "icon": "mdi:cart-plus"
           },
           "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -241,8 +226,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:send_email",
-            "icon": "mdi:email",
-            "prompt": "Send Email"
+            "icon": "mdi:email"
           },
           "next": null,
           "createdAt": "2025-06-19T06:03:00Z"
@@ -252,8 +236,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:reduce_product_count",
-            "icon": "mdi:minus",
-            "prompt": "Reduce Product Quantity"
+            "icon": "mdi:minus"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -261,7 +244,6 @@
       ]
     },
     "content": "I need to restock batteries",
-    "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n    Order.Create()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "knowledge": [
       {
         "id": "66f2e2e0-dd81-4a1c-9474-089558b43084",
@@ -305,8 +287,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:check_product_count",
-            "icon": "mdi:check",
-            "prompt": "Check Product Availability"
+            "icon": "mdi:check"
           },
           "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -316,8 +297,7 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
-            "icon": "mdi:source-branch",
-            "prompt": "Make Decision"
+            "icon": "mdi:source-branch"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
@@ -328,8 +308,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:create_order",
-            "icon": "mdi:cart-plus",
-            "prompt": "Create Order"
+            "icon": "mdi:cart-plus"
           },
           "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -339,8 +318,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:send_email",
-            "icon": "mdi:email",
-            "prompt": "Send Email"
+            "icon": "mdi:email"
           },
           "next": null,
           "createdAt": "2025-06-19T06:03:00Z"
@@ -350,8 +328,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:reduce_product_count",
-            "icon": "mdi:minus",
-            "prompt": "Reduce Product Quantity"
+            "icon": "mdi:minus"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -359,7 +336,6 @@
       ]
     },
     "content": "Order batteries please",
-    "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n    Order.Create()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "knowledge": [
       {
         "id": "66f2e2e0-dd81-4a1c-9474-089558b43084",
@@ -396,7 +372,6 @@
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -404,9 +379,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_bbk_by_address",
-            "description": "Retrieve BBK number based on the user's residential address information",
-            "icon": "mdi:map-marker",
-            "prompt": "Get BBK No by Address"
+            "icon": "mdi:map-marker"
           },
           "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -416,9 +389,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_inventory",
-            "description": "Check inventory availability for the given BBK number and address",
-            "icon": "mdi:server",
-            "prompt": "Get Inventory"
+            "icon": "mdi:server"
           },
           "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -428,9 +399,7 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
-            "description": "Decide based on inventory availability whether to proceed with product selection",
-            "icon": "mdi:source-branch",
-            "prompt": "Check if product is available"
+            "icon": "mdi:source-branch"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
@@ -441,9 +410,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the process as complete when no products are available",
-            "icon": "mdi:check",
-            "prompt": "Complete"
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -453,9 +420,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_product_by_speed",
-            "description": "Retrieve available internet products based on speed requirements",
-            "icon": "mdi:speedometer",
-            "prompt": "Get Product by Speed"
+            "icon": "mdi:speedometer"
           },
           "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -468,9 +433,7 @@
             "parameters": {
               "question": "What is your address?"
             },
-            "description": "Wait for user to select a product from the available options",
-            "icon": "mdi:user",
-            "prompt": "Provide available options and waiting for user to select a product"
+            "icon": "mdi:user"
           },
           "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -480,9 +443,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_allocation",
-            "description": "Assign a port for the selected internet product and create an order",
-            "icon": "mdi:link",
-            "prompt": "Assign Port"
+            "icon": "mdi:link"
           },
           "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -492,9 +453,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Notify user about port allocation completion",
-            "icon": "mdi:bell",
-            "prompt": "Notify user about port allocation"
+            "icon": "mdi:bell"
           },
           "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -504,9 +463,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:configuration",
-            "description": "Configure the assigned port with necessary settings",
-            "icon": "mdi:settings",
-            "prompt": "Configure Port"
+            "icon": "mdi:settings"
           },
           "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -516,9 +473,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_connection",
-            "description": "Connect the assigned port to the user's residence",
-            "icon": "mdi:ethernet",
-            "prompt": "Connect Port"
+            "icon": "mdi:ethernet"
           },
           "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -528,9 +483,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the internet subscription setup process as complete",
-            "icon": "mdi:check",
-            "prompt": "Complete"
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -538,7 +491,6 @@
       ]
     },
     "content": "I want to setup internet subscription at my address.",
-    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "task": {
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
       "status": "COMPLETED",
@@ -552,7 +504,6 @@
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -560,9 +511,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_bbk_by_address",
-            "description": "Retrieve BBK number based on the user's residential address information",
-            "icon": "mdi:map-marker",
-            "prompt": "Get BBK No by Address"
+            "icon": "mdi:map-marker"
           },
           "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -572,9 +521,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_inventory",
-            "description": "Check inventory availability for the given BBK number and address",
-            "icon": "mdi:server",
-            "prompt": "Get Inventory"
+            "icon": "mdi:server"
           },
           "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -584,9 +531,7 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
-            "description": "Decide based on inventory availability whether to proceed with product selection",
-            "icon": "mdi:source-branch",
-            "prompt": "Check if product is available"
+            "icon": "mdi:source-branch"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
@@ -597,9 +542,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the process as complete when no products are available",
-            "icon": "mdi:check",
-            "prompt": "Complete"
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -609,9 +552,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_product_by_speed",
-            "description": "Retrieve available internet products based on speed requirements",
-            "icon": "mdi:speedometer",
-            "prompt": "Get Product by Speed"
+            "icon": "mdi:speedometer"
           },
           "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -621,9 +562,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Notify user about available products",
-            "icon": "mdi:bell",
-            "prompt": "Notify user about available products"
+            "icon": "mdi:bell"
           },
           "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -633,9 +572,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
-            "description": "Wait for user to select a product from the available options",
-            "icon": "mdi:user",
-            "prompt": "Waiting for user to select a product"
+            "icon": "mdi:user"
           },
           "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -645,9 +582,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_allocation",
-            "description": "Assign a port for the selected internet product and create an order",
-            "icon": "mdi:link",
-            "prompt": "Assign Port"
+            "icon": "mdi:link"
           },
           "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -657,9 +592,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Notify user about port allocation completion",
-            "icon": "mdi:bell",
-            "prompt": "Notify user about port allocation"
+            "icon": "mdi:bell"
           },
           "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -669,9 +602,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:configuration",
-            "description": "Configure the assigned port with necessary settings",
-            "icon": "mdi:settings",
-            "prompt": "Configure Port"
+            "icon": "mdi:settings"
           },
           "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -681,9 +612,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_connection",
-            "description": "Connect the assigned port to the user's residence",
-            "icon": "mdi:ethernet",
-            "prompt": "Connect the assigned port to the user's residence"
+            "icon": "mdi:ethernet"
           },
           "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -693,9 +622,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the internet subscription setup process as complete",
-            "icon": "mdi:check",
-            "prompt": "Complete"
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -703,7 +630,6 @@
       ]
     },
     "content": "I need internet at home",
-    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "task": {
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793558",
       "status": "COMPLETED",
@@ -717,7 +643,6 @@
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -725,9 +650,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_bbk_by_address",
-            "description": "Retrieve BBK number based on the user's residential address information",
-            "icon": "mdi:map-marker",
-            "prompt": "Get BBK No by Address"
+            "icon": "mdi:map-marker"
           },
           "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -737,9 +660,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_inventory",
-            "description": "Check inventory availability for the given BBK number and address",
-            "icon": "mdi:server",
-            "prompt": "Get Inventory"
+            "icon": "mdi:server"
           },
           "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -749,9 +670,7 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
-            "description": "Decide based on inventory availability whether to proceed with product selection",
-            "icon": "mdi:source-branch",
-            "prompt": "Check if product is available"
+            "icon": "mdi:source-branch"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
@@ -762,9 +681,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the process as complete when no products are available",
-            "icon": "mdi:check",
-            "prompt": "Complete"
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -774,9 +691,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_product_by_speed",
-            "description": "Retrieve available internet products based on speed requirements",
-            "icon": "mdi:speedometer",
-            "prompt": "Get Product by Speed"
+            "icon": "mdi:speedometer"
           },
           "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -786,9 +701,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Notify user about available products",
-            "icon": "mdi:bell",
-            "prompt": "Notify user about available products"
+            "icon": "mdi:bell"
           },
           "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -798,9 +711,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
-            "description": "Wait for user to select a product from the available options",
-            "icon": "mdi:user",
-            "prompt": "Please select a product."
+            "icon": "mdi:user"
           },
           "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -810,9 +721,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_allocation",
-            "description": "Assign a port for the selected internet product and create an order",
-            "icon": "mdi:link",
-            "prompt": "Assign Port"
+            "icon": "mdi:link"
           },
           "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -822,9 +731,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Notify user about port allocation completion",
-            "icon": "mdi:bell",
-            "prompt": "Notify user about port allocation"
+            "icon": "mdi:bell"
           },
           "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -834,9 +741,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:configuration",
-            "description": "Configure the assigned port with necessary settings",
-            "icon": "mdi:settings",
-            "prompt": "Configure Port"
+            "icon": "mdi:settings"
           },
           "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -846,9 +751,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_connection",
-            "description": "Connect the assigned port to the user's residence",
-            "icon": "mdi:ethernet",
-            "prompt": "Connect Port"
+            "icon": "mdi:ethernet"
           },
           "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -858,9 +761,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the internet subscription setup process as complete",
-            "icon": "mdi:check",
-            "prompt": "Complete"
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -868,7 +769,6 @@
       ]
     },
     "content": "Can you get me internet service?",
-    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "task": {
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793559",
       "status": "COMPLETED",
@@ -882,7 +782,6 @@
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -890,9 +789,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_bbk_by_address",
-            "description": "Retrieve BBK number based on the user's residential address information",
-            "icon": "mdi:map-marker",
-            "prompt": "Get BBK No by Address"
+            "icon": "mdi:map-marker"
           },
           "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -902,9 +799,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_inventory",
-            "description": "Check inventory availability for the given BBK number and address",
-            "icon": "mdi:server",
-            "prompt": "Get Inventory"
+            "icon": "mdi:server"
           },
           "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -914,9 +809,7 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
-            "description": "Decide based on inventory availability whether to proceed with product selection",
-            "icon": "mdi:source-branch",
-            "prompt": "Check if product is available"
+            "icon": "mdi:source-branch"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
@@ -927,9 +820,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the process as complete when no products are available",
-            "icon": "mdi:check",
-            "prompt": "Complete"
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -939,9 +830,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_product_by_speed",
-            "description": "Retrieve available internet products based on speed requirements",
-            "icon": "mdi:speedometer",
-            "prompt": "Get Product by Speed"
+            "icon": "mdi:speedometer"
           },
           "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -951,9 +840,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Notify user about available products",
-            "icon": "mdi:bell",
-            "prompt": "Notify user about available products"
+            "icon": "mdi:bell"
           },
           "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -963,9 +850,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
-            "description": "Wait for user to select a product from the available options",
-            "icon": "mdi:user",
-            "prompt": "Waiting for user to select a product"
+            "icon": "mdi:user"
           },
           "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -975,9 +860,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_allocation",
-            "description": "Assign a port for the selected internet product and create an order",
-            "icon": "mdi:link",
-            "prompt": "Assign Port"
+            "icon": "mdi:link"
           },
           "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -987,9 +870,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Notify user about port allocation completion",
-            "icon": "mdi:bell",
-            "prompt": "Notify user about port allocation"
+            "icon": "mdi:bell"
           },
           "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -999,9 +880,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:configuration",
-            "description": "Configure the assigned port with necessary settings",
-            "icon": "mdi:settings",
-            "prompt": "Configure Port"
+            "icon": "mdi:settings"
           },
           "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1011,9 +890,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_connection",
-            "description": "Connect the assigned port to the user's residence",
-            "icon": "mdi:ethernet",
-            "prompt": "Connect Port"
+            "icon": "mdi:ethernet"
           },
           "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1023,9 +900,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the internet subscription setup process as complete",
-            "icon": "mdi:check",
-            "prompt": "Complete"
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1033,7 +908,6 @@
       ]
     },
     "content": "Setup new internet connection",
-    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "task": {
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793560",
       "status": "COMPLETED",
@@ -1047,7 +921,6 @@
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -1055,9 +928,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_bbk_by_address",
-            "description": "Retrieve BBK number based on the user's residential address information",
-            "icon": "mdi:map-marker",
-            "prompt": "Get BBK No by Address"
+            "icon": "mdi:map-marker"
           },
           "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1067,9 +938,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_inventory",
-            "description": "Check inventory availability for the given BBK number and address",
-            "icon": "mdi:server",
-            "prompt": "Get Inventory"
+            "icon": "mdi:server"
           },
           "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1079,9 +948,7 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
-            "description": "Decide based on inventory availability whether to proceed with product selection",
-            "icon": "mdi:source-branch",
-            "prompt": "Check if product is available"
+            "icon": "mdi:source-branch"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
@@ -1092,9 +959,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the process as complete when no products are available",
-            "icon": "mdi:check",
-            "prompt": "Complete"
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1104,9 +969,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_product_by_speed",
-            "description": "Retrieve available internet products based on speed requirements",
-            "icon": "mdi:speedometer",
-            "prompt": "Get Product by Speed"
+            "icon": "mdi:speedometer"
           },
           "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1116,9 +979,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Notify user about available products",
-            "icon": "mdi:bell",
-            "prompt": "Notify user about available products"
+            "icon": "mdi:bell"
           },
           "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1128,9 +989,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
-            "description": "Wait for user to select a product from the available options",
-            "icon": "mdi:user",
-            "prompt": "Waiting for user to select a product"
+            "icon": "mdi:user"
           },
           "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1140,9 +999,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_allocation",
-            "description": "Assign a port for the selected internet product and create an order",
-            "icon": "mdi:link",
-            "prompt": "Assign Port"
+            "icon": "mdi:link"
           },
           "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1152,9 +1009,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Notify user about port allocation completion",
-            "icon": "mdi:bell",
-            "prompt": "Notify user about port allocation"
+            "icon": "mdi:bell"
           },
           "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1164,9 +1019,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:configuration",
-            "description": "Configure the assigned port with necessary settings",
-            "icon": "mdi:settings",
-            "prompt": "Configure Port"
+            "icon": "mdi:settings"
           },
           "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1176,9 +1029,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_connection",
-            "description": "Connect the assigned port to the user's residence",
-            "icon": "mdi:ethernet",
-            "prompt": "Connect Port"
+            "icon": "mdi:ethernet"
           },
           "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1188,9 +1039,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the internet subscription setup process as complete",
-            "icon": "mdi:check",
-            "prompt": "Complete"
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1198,7 +1047,6 @@
       ]
     },
     "content": "I want to subscribe to internet",
-    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "task": {
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793561",
       "status": "COMPLETED",
@@ -1212,7 +1060,6 @@
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
       "title": "Basic Internet Subscription Setup",
       "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "nodes": [
         {
@@ -1220,9 +1067,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_bbk_by_address",
-            "description": "Retrieve BBK number based on the user's residential address information",
-            "icon": "mdi:map-marker",
-            "prompt": "Get BBK No by Address"
+            "icon": "mdi:map-marker"
           },
           "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1232,9 +1077,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_inventory",
-            "description": "Check inventory availability for the given BBK number and address",
-            "icon": "mdi:server",
-            "prompt": "Get Inventory"
+            "icon": "mdi:server"
           },
           "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1244,9 +1087,7 @@
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
-            "description": "Decide based on inventory availability whether to proceed with product selection",
-            "icon": "mdi:source-branch",
-            "prompt": "Check if product is available"
+            "icon": "mdi:source-branch"
           },
           "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
           "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
@@ -1257,9 +1098,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the process as complete when no products are available",
-            "icon": "mdi:check",
-            "prompt": "Complete"
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1269,9 +1108,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:get_product_by_speed",
-            "description": "Retrieve available internet products based on speed requirements",
-            "icon": "mdi:speedometer",
-            "prompt": "Get Product by Speed"
+            "icon": "mdi:speedometer"
           },
           "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1281,9 +1118,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Notify user about available products",
-            "icon": "mdi:bell",
-            "prompt": "Notify user about available products"
+            "icon": "mdi:bell"
           },
           "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1293,9 +1128,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
-            "description": "Wait for user to select a product from the available options",
-            "icon": "mdi:user",
-            "prompt": "Waiting for user to select a product"
+            "icon": "mdi:user"
           },
           "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1305,9 +1138,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_allocation",
-            "description": "Assign a port for the selected internet product and create an order",
-            "icon": "mdi:link",
-            "prompt": "Assign Port"
+            "icon": "mdi:link"
           },
           "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1317,9 +1148,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Notify user about port allocation completion",
-            "icon": "mdi:bell",
-            "prompt": "Notify user about port allocation"
+            "icon": "mdi:bell"
           },
           "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1329,9 +1158,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:configuration",
-            "description": "Configure the assigned port with necessary settings",
-            "icon": "mdi:settings",
-            "prompt": "Configure Port"
+            "icon": "mdi:settings"
           },
           "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1341,9 +1168,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:port_connection",
-            "description": "Connect the assigned port to the user's residence",
-            "icon": "mdi:ethernet",
-            "prompt": "Connect Port"
+            "icon": "mdi:ethernet"
           },
           "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1353,9 +1178,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the internet subscription setup process as complete",
-            "icon": "mdi:check",
-            "prompt": "Complete"
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
@@ -1363,7 +1186,6 @@
       ]
     },
     "content": "Help me get broadband internet",
-    "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
     "task": {
       "id": "b88gg278-d5g3-55ed-a0g9-f0f756793562",
       "status": "COMPLETED",
@@ -1387,9 +1209,7 @@
             "parameters": {
               "question": "Which product would you like to order?"
             },
-            "description": "Ask user to select a product",
-            "icon": "mdi:account-question",
-            "prompt": "Select a Product"
+            "icon": "mdi:account-question"
           },
           "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
           "createdAt": "2025-06-26T06:00:00Z"
@@ -1399,9 +1219,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:find_product",
-            "description": "Search and retrieve the product details",
-            "icon": "mdi:magnify",
-            "prompt": "Find Product"
+            "icon": "mdi:magnify"
           },
           "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
           "createdAt": "2025-06-26T06:00:00Z"
@@ -1411,9 +1229,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:assign_certificate",
-            "description": "Assign a compliance certificate to the product",
-            "icon": "mdi:certificate-outline",
-            "prompt": "Assign Certificate"
+            "icon": "mdi:certificate-outline"
           },
           "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
           "createdAt": "2025-06-26T06:00:00Z"
@@ -1423,9 +1239,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:create_po",
-            "description": "Create a Purchase Order for the certified product",
-            "icon": "mdi:file-document-plus",
-            "prompt": "Create Purchase Order"
+            "icon": "mdi:file-document-plus"
           },
           "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
           "createdAt": "2025-06-26T06:00:00Z"
@@ -1435,9 +1249,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:send_email",
-            "description": "Send email notification about the completed purchase order",
-            "icon": "mdi:email",
-            "prompt": "Send Email"
+            "icon": "mdi:email"
           },
           "next": null,
           "createdAt": "2025-06-26T06:00:00Z"
@@ -1445,7 +1257,6 @@
       ]
     },
     "content": "Process an order with compliance certificate check.",
-    "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\nAssignCertificate(product.id)\nPO.Create(product.id)\nLLM.WriteProcess()\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE",
     "knowledge": [
       {
         "id": "c1d2e3f4-0001-4001-8001-aaaaaaaaaaaa",
@@ -1485,9 +1296,7 @@
             "parameters": {
               "question": "Which product would you like to order?"
             },
-            "description": "Ask user to select a product",
-            "icon": "mdi:account-question",
-            "prompt": "Select a Product"
+            "icon": "mdi:account-question"
           },
           "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
           "createdAt": "2025-06-26T06:00:00Z"
@@ -1497,9 +1306,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:find_product",
-            "description": "Search and retrieve the product details",
-            "icon": "mdi:magnify",
-            "prompt": "Find Product"
+            "icon": "mdi:magnify"
           },
           "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
           "createdAt": "2025-06-26T06:00:00Z"
@@ -1509,9 +1316,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:assign_certificate",
-            "description": "Assign a compliance certificate to the product",
-            "icon": "mdi:certificate-outline",
-            "prompt": "Assign Certificate"
+            "icon": "mdi:certificate-outline"
           },
           "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
           "createdAt": "2025-06-26T06:00:00Z"
@@ -1521,9 +1326,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:create_po",
-            "description": "Create a Purchase Order for the certified product",
-            "icon": "mdi:file-document-plus",
-            "prompt": "Create Purchase Order"
+            "icon": "mdi:file-document-plus"
           },
           "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
           "createdAt": "2025-06-26T06:00:00Z"
@@ -1533,9 +1336,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:send_email",
-            "description": "Send email notification about the completed purchase order",
-            "icon": "mdi:email",
-            "prompt": "Send Email"
+            "icon": "mdi:email"
           },
           "next": null,
           "createdAt": "2025-06-26T06:00:00Z"
@@ -1543,7 +1344,6 @@
       ]
     },
     "content": "I need to create a purchase order but first verify the product certificate.",
-    "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\nAssignCertificate(product.id)\nPO.Create(product.id)\nLLM.WriteProcess()\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE",
     "knowledge": [
       {
         "id": "c1d2e3f4-0001-4001-8001-aaaaaaaaaaaa",
@@ -1583,9 +1383,7 @@
             "parameters": {
               "question": "Which product would you like to order?"
             },
-            "description": "Ask user to select a product",
-            "icon": "mdi:account-question",
-            "prompt": "Select a Product"
+            "icon": "mdi:account-question"
           },
           "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
           "createdAt": "2025-06-26T06:00:00Z"
@@ -1595,9 +1393,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:find_product",
-            "description": "Search and retrieve the product details",
-            "icon": "mdi:magnify",
-            "prompt": "Find Product"
+            "icon": "mdi:magnify"
           },
           "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
           "createdAt": "2025-06-26T06:00:00Z"
@@ -1607,9 +1403,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:assign_certificate",
-            "description": "Assign a compliance certificate to the product",
-            "icon": "mdi:certificate-outline",
-            "prompt": "Assign Certificate"
+            "icon": "mdi:certificate-outline"
           },
           "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
           "createdAt": "2025-06-26T06:00:00Z"
@@ -1619,9 +1413,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:create_po",
-            "description": "Create a Purchase Order for the certified product",
-            "icon": "mdi:file-document-plus",
-            "prompt": "Create Purchase Order"
+            "icon": "mdi:file-document-plus"
           },
           "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
           "createdAt": "2025-06-26T06:00:00Z"
@@ -1631,9 +1423,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:send_email",
-            "description": "Send email notification about the completed purchase order",
-            "icon": "mdi:email",
-            "prompt": "Send Email"
+            "icon": "mdi:email"
           },
           "next": null,
           "createdAt": "2025-06-26T06:00:00Z"
@@ -1641,7 +1431,6 @@
       ]
     },
     "content": "Check if product is compliant and open a PO.",
-    "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\nAssignCertificate(product.id)\nPO.Create(product.id)\nLLM.WriteProcess()\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE",
     "knowledge": [
       {
         "id": "c1d2e3f4-0001-4001-8001-aaaaaaaaaaaa",
@@ -1681,9 +1470,7 @@
             "parameters": {
               "question": "Which product would you like to order?"
             },
-            "description": "Ask user to select a product",
-            "icon": "mdi:account-question",
-            "prompt": "Select a Product"
+            "icon": "mdi:account-question"
           },
           "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
           "createdAt": "2025-06-26T06:00:00Z"
@@ -1693,9 +1480,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:find_product",
-            "description": "Search and retrieve the product details",
-            "icon": "mdi:magnify",
-            "prompt": "Find Product"
+            "icon": "mdi:magnify"
           },
           "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
           "createdAt": "2025-06-26T06:00:00Z"
@@ -1705,9 +1490,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:assign_certificate",
-            "description": "Assign a compliance certificate to the product",
-            "icon": "mdi:certificate-outline",
-            "prompt": "Assign Certificate"
+            "icon": "mdi:certificate-outline"
           },
           "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
           "createdAt": "2025-06-26T06:00:00Z"
@@ -1717,9 +1500,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:create_po",
-            "description": "Create a Purchase Order for the certified product",
-            "icon": "mdi:file-document-plus",
-            "prompt": "Create Purchase Order"
+            "icon": "mdi:file-document-plus"
           },
           "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
           "createdAt": "2025-06-26T06:00:00Z"
@@ -1729,9 +1510,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:send_email",
-            "description": "Send email notification about the completed purchase order",
-            "icon": "mdi:email",
-            "prompt": "Send Email"
+            "icon": "mdi:email"
           },
           "next": null,
           "createdAt": "2025-06-26T06:00:00Z"
@@ -1739,7 +1518,6 @@
       ]
     },
     "content": "Order a product after verifying its compliance certificate and notify the manager.",
-    "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\nAssignCertificate(product.id)\nPO.Create(product.id)\nLLM.WriteProcess()\nEmail.Send()\nEND_CONTEXT\n\nEND_MESSAGE",
     "knowledge": [
       {
         "id": "c1d2e3f4-0001-4001-8001-aaaaaaaaaaaa",
@@ -1775,10 +1553,8 @@
           "id": "c2b1a0d9-e8f7-4c2b-9100-300000000002",
           "type": "NORMAL",
           "properties": {
-            "action": "GREY:knowledge_lookup",
-            "description": "Look up compliance certificate for the product from agent knowledge",
-            "icon": "mdi:book-search",
-            "prompt": "Knowledge Lookup"
+            "action": "PLATFORM:knowledge_lookup",
+            "icon": "mdi:book-search"
           },
           "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000003"],
           "createdAt": "2025-06-29T08:00:00Z"
@@ -1788,9 +1564,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Inform the user about the compliance certificate status of the product",
-            "icon": "mdi:bell",
-            "prompt": "Notify User"
+            "icon": "mdi:bell"
           },
           "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000004"],
           "createdAt": "2025-06-29T08:00:00Z"
@@ -1800,9 +1574,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the compliance check workflow as complete",
-            "icon": "mdi:check",
-            "prompt": "Complete"
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2025-06-29T08:00:00Z"
@@ -1810,7 +1582,6 @@
       ]
     },
     "content": "Check product compliance certificate and inform the user about the result.",
-    "pseudocode": "BEGIN_CONTEXT\ncertificate = KnowledgeLookup(product.id)\nMessageUser(certificate)\nEND_CONTEXT\n\nEND_MESSAGE",
     "knowledge": [
       {
         "id": "d2e3f4a5-0001-4001-8001-cccccccccccc",
@@ -1839,10 +1610,8 @@
           "id": "c2b1a0d9-e8f7-4c2b-9100-300000000002",
           "type": "NORMAL",
           "properties": {
-            "action": "GREY:knowledge_lookup",
-            "description": "Look up compliance certificate for the product from agent knowledge",
-            "icon": "mdi:book-search",
-            "prompt": "Knowledge Lookup"
+            "action": "PLATFORM:knowledge_lookup",
+            "icon": "mdi:book-search"
           },
           "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000003"],
           "createdAt": "2025-06-29T08:00:00Z"
@@ -1852,9 +1621,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Inform the user about the compliance certificate status of the product",
-            "icon": "mdi:bell",
-            "prompt": "Notify User"
+            "icon": "mdi:bell"
           },
           "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000004"],
           "createdAt": "2025-06-29T08:00:00Z"
@@ -1864,9 +1631,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the compliance check workflow as complete",
-            "icon": "mdi:check",
-            "prompt": "Complete"
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2025-06-29T08:00:00Z"
@@ -1874,7 +1639,6 @@
       ]
     },
     "content": "I need to verify whether the product has a compliance certificate.",
-    "pseudocode": "BEGIN_CONTEXT\ncertificate = KnowledgeLookup(product.id)\nMessageUser(certificate)\nEND_CONTEXT\n\nEND_MESSAGE",
     "knowledge": [
       {
         "id": "d2e3f4a5-0001-4001-8001-cccccccccccc",
@@ -1903,10 +1667,8 @@
           "id": "c2b1a0d9-e8f7-4c2b-9100-300000000002",
           "type": "NORMAL",
           "properties": {
-            "action": "GREY:knowledge_lookup",
-            "description": "Look up compliance certificate for the product from agent knowledge",
-            "icon": "mdi:book-search",
-            "prompt": "Knowledge Lookup"
+            "action": "PLATFORM:knowledge_lookup",
+            "icon": "mdi:book-search"
           },
           "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000003"],
           "createdAt": "2025-06-29T08:00:00Z"
@@ -1916,9 +1678,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
-            "description": "Inform the user about the compliance certificate status of the product",
-            "icon": "mdi:bell",
-            "prompt": "Notify User"
+            "icon": "mdi:bell"
           },
           "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000004"],
           "createdAt": "2025-06-29T08:00:00Z"
@@ -1928,9 +1688,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
-            "description": "Mark the compliance check workflow as complete",
-            "icon": "mdi:check",
-            "prompt": "Complete"
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2025-06-29T08:00:00Z"
@@ -1938,7 +1696,6 @@
       ]
     },
     "content": "Run a compliance check on the product and send the result to the user.",
-    "pseudocode": "BEGIN_CONTEXT\ncertificate = KnowledgeLookup(product.id)\nMessageUser(certificate)\nEND_CONTEXT\n\nEND_MESSAGE",
     "knowledge": [
       {
         "id": "d2e3f4a5-0001-4001-8001-cccccccccccc",

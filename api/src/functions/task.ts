@@ -190,16 +190,8 @@ async function updateStep({
     { where: { id: stepId } },
   );
 
-  if (status === "COMPLETED") {
-    await event.publish("STEP_COMPLETED", {
-      taskId,
-      stepId,
-      action,
-      parameters,
-      result,
-    });
-  } else if (status === "FAILED") {
-    await event.publish("STEP_FAILED", {
+  if (status !== "IN_PROGRESS") {
+    await event.publish(`STEP_${status}`, {
       taskId,
       stepId,
       action,

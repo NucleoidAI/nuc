@@ -672,22 +672,6 @@ const MCPs = [
     },
   },
   {
-    id: "b8f1a2c3-d4e5-4f6a-9b0c-1d2e3f4a5b6c",
-    action: "GREY:knowledge_lookup",
-    label: "Grey",
-    provider: "GREY",
-    description:
-      "Look up all knowledge entries for this agent. Returns every knowledge item including TEXT, QA, and DATA types. Always use this before making decisions that depend on facts that may have been updated by a supervisor, such as product certificates or policies.",
-    direction: "OUTGOING",
-    icon: "mdi:book-search",
-    lib: "mcp",
-    inputSchema: {
-      type: "object",
-      properties: {},
-      required: [],
-    },
-  },
-  {
     id: "019f6a14-0000-4000-8000-000000000001",
     action: "ACTIVEDIRECTORY:create_employee",
     label: "Active Directory",

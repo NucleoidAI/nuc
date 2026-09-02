@@ -6,10 +6,14 @@ const ForceStepSwipe = ({
   checked,
   onChange,
   theme,
+  disabled = false,
+  ariaLabel = "Force node",
 }: {
   checked: boolean;
   onChange: (value: boolean) => void;
   theme: Theme;
+  disabled?: boolean;
+  ariaLabel?: string;
 }) => {
   const trackRef = useRef<HTMLDivElement | null>(null);
   const thumbSize = 40;
@@ -33,6 +37,7 @@ const ForceStepSwipe = ({
   }, []);
 
   const handlePointerDown = (e: React.PointerEvent) => {
+    if (disabled) return;
     e.currentTarget.setPointerCapture(e.pointerId);
     dragState.current = {
       startX: e.clientX,
@@ -67,6 +72,7 @@ const ForceStepSwipe = ({
   const handlePointerCancel = () => settle(undefined, false);
 
   const handleKeyToggle = () => {
+    if (disabled) return;
     const next = !checked;
     setProgress(next ? 1 : 0);
     onChange(next);
@@ -105,8 +111,9 @@ const ForceStepSwipe = ({
       ref={trackRef}
       role="switch"
       aria-checked={checked}
-      aria-label="Force node"
-      tabIndex={0}
+      aria-disabled={disabled}
+      aria-label={ariaLabel}
+      tabIndex={disabled ? -1 : 0}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
@@ -123,7 +130,8 @@ const ForceStepSwipe = ({
         height: thumbSize + trackPadding * 2,
         borderRadius: 999,
         p: `${trackPadding}px`,
-        cursor: "pointer",
+        cursor: disabled ? "not-allowed" : "pointer",
+        opacity: disabled ? 0.5 : 1,
         userSelect: "none",
         touchAction: "none",
         background: trackBackground,

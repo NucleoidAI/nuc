@@ -27,14 +27,8 @@ const PopupChatWidget = ({
   const [unreadMessages, setUnreadMessages] = useState(false);
   const [selectedBlueprint, setSelectedBlueprint] = useState("");
 
-  const {
-    conversations,
-    sendMessage,
-    getSession,
-    createSession,
-    error,
-    clearError,
-  } = useSession(agentId);
+  const { conversations, sendMessage, getSession, createSession } =
+    useSession(agentId);
 
   const handleBlueprintChange = useCallback(
     (blueprintId: string) => {

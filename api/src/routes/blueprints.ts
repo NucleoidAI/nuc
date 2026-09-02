@@ -111,7 +111,7 @@ router.put("/:blueprintId", async (req, res) => {
     blocking,
     skill,
     context,
-  });
+  );
 
   await event.publish("BLUEPRINT_CREATED", {
     Blueprint: result,

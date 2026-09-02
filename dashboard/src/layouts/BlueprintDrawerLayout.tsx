@@ -110,12 +110,15 @@ const BlueprintDrawerLayout = ({
     );
   };
 
-  useEffect(() => {
-    publish("BLUEPRINT_CONTEXT", { context: drawerOpen ? context : null });
-    return () => {
-      publish("BLUEPRINT_CONTEXT", { context: null });
-    };
-  }, [drawerOpen, context]);
+useEffect(() => {
+  publish("BLUEPRINT_CONTEXT", { context: drawerOpen ? context : null });
+}, [drawerOpen, context]);
+
+useEffect(() => {
+  return () => {
+    publish("BLUEPRINT_CONTEXT", { context: null });
+  };
+}, []);
 
   const { patchBlueprint } = useBlueprint();
   const { approveBlueprintChat } = useSupervisings();

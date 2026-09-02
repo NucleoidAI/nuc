@@ -122,7 +122,10 @@ async function scoring({
 }
 
 async function Blueprints({ agentId }) {
-  const Blueprints = await blueprintFn.list({ agentId, includeLabels: false });
+  const Blueprints = await blueprintFn.list({
+    agentId,
+    includeDetails: false,
+  });
 
   return {
     role: "system",
@@ -605,12 +608,10 @@ async function step({
         `[agent.step] actionFn.run returned for action=${action} stepId=${stepId}`,
       );
     } else if (actionType === "MCP") {
-      let mcpParameters = runParameters as Record<string, unknown>;
-      if (action === "GREY:knowledge_lookup" && !mcpParameters.agentId) {
-        const task = await taskFn.get({ taskId });
-        mcpParameters = { ...mcpParameters, agentId: task.agentId };
-      }
-      result = await mcpClient.callTool(action, mcpParameters);
+      result = await mcpClient.callTool(
+        action,
+        runParameters as Record<string, unknown>,
+      );
     }
 
     let resultString;
@@ -722,14 +723,18 @@ async function blueprintChatContext({
     blueprintId ? blueprintFn.getWithNodes(blueprintId) : Promise.resolve(null),
   ]);
 
+  const blueprintForLLM = referenceBlueprint
+    ? blueprintFn.stripDetails(referenceBlueprint)
+    : null;
+
   return [
     { role: "system", content: JSON.stringify(agentInfo.content) },
     { role: "system", content: JSON.stringify(agentKnowledge.content) },
-    ...(referenceBlueprint
+    ...(blueprintForLLM
       ? [
           {
             role: "system" as const,
-            content: JSON.stringify({ referenceBlueprint }),
+            content: JSON.stringify({ referenceBlueprint: blueprintForLLM }),
           },
         ]
       : []),
@@ -1103,7 +1108,7 @@ async function chat({
   if (selectedBlueprintId && task.length === 0) {
     const blueprintData = await blueprintFn.get({
       blueprintId: selectedBlueprintId,
-      includeLabels: false,
+      includeDetails: false,
     });
 
     const blueprintToTaskResponse = await blueprintToTask({
@@ -1212,7 +1217,7 @@ async function toPseudo({
     meta,
   });
 
-  return response.pseudocode;
+  return response.pseudocode as string;
 }
 
 async function blueprintDescription({

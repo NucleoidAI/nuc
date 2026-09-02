@@ -11,7 +11,9 @@ type NodeType = {
   id: string;
   properties?: {
     label?: string;
-    prompt?: string;
+    instructions?: string;
+    pseudocode?: string;
+    pseudocodeEnabled?: boolean;
     icon?: string;
     action?: string;
     description?: string;
@@ -190,6 +192,22 @@ function useBlueprint() {
     };
   };
 
+  const generatePseudocode = async (
+    instructions: string,
+    agentId: string
+  ): Promise<string> => {
+    if (!instructions?.trim() || !agentId) {
+      return "";
+    }
+
+    const response = await http.post("/blueprints/pseudocode", {
+      instructions,
+      agentId,
+    });
+
+    return response?.data?.pseudocode ?? "";
+  };
+
   const removeBlueprint = async (blueprintId: string, agentId: string) => {
     const response = await http.delete(`/blueprints/${blueprintId}`, {
       data: {
@@ -212,6 +230,7 @@ function useBlueprint() {
     removeBlueprint,
     getBlueprintWithId,
     generate,
+    generatePseudocode,
   };
 }
 

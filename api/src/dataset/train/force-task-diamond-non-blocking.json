@@ -40,8 +40,12 @@
       "forced_action": "PLATFORM:summarize_meeting_by_speaker",
       "next_step": {
         "parameters": {
-          "full_meeting_transcript": { "$ref": "steps[1].result.full_meeting_transcript" },
-          "speaker_transcripts": { "$ref": "steps[1].result.speaker_transcripts" },
+          "full_meeting_transcript": {
+            "$ref": "steps[1].result.full_meeting_transcript"
+          },
+          "speaker_transcripts": {
+            "$ref": "steps[1].result.speaker_transcripts"
+          },
           "language": "tr"
         },
         "comment": "steps[1] (transcribe_meeting) already produced full_meeting_transcript and speaker_transcripts - reuse them via $ref instead of retyping the transcript.",
@@ -90,7 +94,10 @@
           "parameters": {
             "full_meeting_transcript": "Ali: Bu sprintte neler yapacağız konuşalım. Zeynep: Öncelikle backlog'u gözden geçirelim. [transcript continues for thousands more words, typed out in full by mistake]",
             "speaker_transcripts": [
-              { "id": "9001", "transcript": "Bu sprintte neler yapacağız konuşalım. [continues for hundreds more words]" }
+              {
+                "id": "9001",
+                "transcript": "Bu sprintte neler yapacağız konuşalım. [continues for hundreds more words]"
+              }
             ],
             "language": "tr"
           },
@@ -101,8 +108,12 @@
       "forced_action": "PLATFORM:summarize_meeting_by_speaker",
       "next_step": {
         "parameters": {
-          "full_meeting_transcript": { "$ref": "steps[1].result.full_meeting_transcript" },
-          "speaker_transcripts": { "$ref": "steps[1].result.speaker_transcripts" },
+          "full_meeting_transcript": {
+            "$ref": "steps[1].result.full_meeting_transcript"
+          },
+          "speaker_transcripts": {
+            "$ref": "steps[1].result.speaker_transcripts"
+          },
           "language": "tr"
         },
         "comment": "Retrying with $ref instead of retyping the transcript, since steps[1].result already has it",
@@ -118,7 +129,11 @@
           "text": "Battery product id is btr-123."
         }
       ],
-      "tools": ["GREY:check_product_count", "GREY:create_order", "PLATFORM:complete"],
+      "tools": [
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "PLATFORM:complete"
+      ],
       "steps": [
         {
           "action": "GREY:check_product_count",

@@ -4,7 +4,9 @@ type DefinitionNode = {
   properties?: {
     action?: string;
     label?: string;
-    prompt?: string;
+    instructions?: string;
+    pseudocode?: string;
+    pseudocodeEnabled?: boolean;
     icon?: string;
     description?: string;
     parameters?: Record<string, unknown>;

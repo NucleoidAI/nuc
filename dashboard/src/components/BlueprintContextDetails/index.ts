@@ -1,1 +1,1 @@
-export { default, BlueprintContextDetails } from "./BlueprintContextDetails";
+export { default } from "./BlueprintContextDetails";

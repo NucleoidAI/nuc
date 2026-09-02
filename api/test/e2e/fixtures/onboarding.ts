@@ -1,4 +1,4 @@
-const MANAGER_EMAIL = "halilcengel@greycollar.ai";
+const MANAGER_EMAIL = "manager@onboarding.invalid";
 
 const REQUEST_NUMBER = "REQ0010042";
 

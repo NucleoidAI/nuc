@@ -62,26 +62,6 @@ async function init() {
     foreignKey: "agentId",
   });
 
-  // MCP <-> Project (many-to-many)
-  models.MCP.belongsToMany(models.Project, {
-    through: "MCP",
-    foreignKey: "id",
-  });
-  models.Project.belongsToMany(models.MCP, {
-    through: "MCP",
-    foreignKey: "teamId",
-  });
-
-  // MCP <-> Agent
-  models.MCP.belongsTo(models.Agent, {
-    foreignKey: "agentId",
-  });
-
-  // MCP <-> Project (belongsTo)
-  models.MCP.belongsTo(models.Project, {
-    foreignKey: "teamId",
-  });
-
   // MCPProvider <-> MCPServer
   models.MCPProvider.hasMany(models.MCPServer, {
     foreignKey: "mcpProviderId",

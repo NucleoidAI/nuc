@@ -9,6 +9,8 @@ import engines from "./routes/engines";
 import { event } from "@canmingir/link-express/event/client";
 import knowledge from "./routes/knowledge";
 import llmLogs from "./routes/llmLogs";
+import mcpProviders from "./routes/mcpProviders";
+import mcpServers from "./routes/mcpServers";
 import mcps from "./routes/mcps";
 import messages from "./routes/messages";
 import modelPricings from "./routes/modelPricings";
@@ -60,6 +62,8 @@ function createApp() {
   app.use("/blueprints", blueprints);
   app.use("/blueprint-chat", blueprintChat);
   app.use("/mcps", mcps);
+  app.use("/mcp-providers", mcpProviders);
+  app.use("/mcp-servers", mcpServers);
   app.use("/communications", communications);
 
   setImmediate(() => {

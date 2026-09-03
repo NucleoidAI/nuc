@@ -4,18 +4,15 @@ import platform from "@canmingir/link-express";
 
 async function connect({
   name,
-  tool,
   teamId,
   agentId,
 }: {
   name: string;
-  tool: string;
   teamId?: string | null;
   agentId?: string | null;
 }) {
   const mcpClient = new McpClient({
     name,
-    tool,
     version: "1.0.0",
   });
 

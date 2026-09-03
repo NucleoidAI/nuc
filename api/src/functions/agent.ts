@@ -578,7 +578,6 @@ async function step({
       const mcp = require("../lib/mcp").default;
 
       const provider = action.split(":")[0].toLowerCase();
-      const tool = action.split(":")[1];
 
       const agentInstance = taskAgentId
         ? await Agent.findByPk(taskAgentId)
@@ -586,7 +585,6 @@ async function step({
 
       mcpClient = await mcp.connect({
         name: provider,
-        tool,
         teamId: agentInstance?.teamId ?? null,
         agentId: taskAgentId ?? null,
       });

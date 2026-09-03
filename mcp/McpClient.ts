@@ -5,23 +5,13 @@ import path from "path";
 
 class McpClient {
   private name: string;
-  private tool: string;
   private version: string;
   private mcp!: Client;
   private transport!: StdioClientTransport;
   private isConnected = false;
 
-  constructor({
-    name,
-    version,
-    tool,
-  }: {
-    name: string;
-    version: string;
-    tool: string;
-  }) {
+  constructor({ name, version }: { name: string; version: string }) {
     this.name = name;
-    this.tool = tool;
     this.version = version;
   }
 

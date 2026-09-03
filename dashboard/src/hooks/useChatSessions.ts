@@ -30,11 +30,11 @@ type BackendSession = {
 
 export const readSessions = (): StoredSession[] => {
   const raw = storage.get(SESSIONS_STORAGE_KEY);
-  return raw ? JSON.parse(raw) : [];
+  return Array.isArray(raw) ? raw : [];
 };
 
 const writeSessions = (sessions: StoredSession[]) => {
-  storage.set(SESSIONS_STORAGE_KEY, JSON.stringify(sessions));
+  storage.set(SESSIONS_STORAGE_KEY, sessions);
 };
 
 const upsertSession = (

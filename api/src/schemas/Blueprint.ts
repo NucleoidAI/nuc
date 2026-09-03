@@ -7,6 +7,41 @@ const Blueprint = {
     agentId: z.string().uuid(),
     blocking: z.boolean().optional(),
     skill: z.string().optional(),
+    context: z
+      .object({
+        agent: z
+          .object({
+            name: z.string().nullish(),
+            description: z.string().nullish(),
+          })
+          .optional(),
+        knowledge: z
+          .array(
+            z.object({
+              type: z.string().nullish(),
+              question: z.string().nullish(),
+              text: z.string().nullish(),
+            })
+          )
+          .optional(),
+        referenceBlueprint: z
+          .object({
+            id: z.string().nullish(),
+            title: z.string().nullish(),
+            nodeCount: z.number(),
+          })
+          .nullish(),
+        supervising: z
+          .object({
+            question: z.string().nullish(),
+            status: z.string().nullish(),
+          })
+          .nullish(),
+        userRequest: z.string().nullish(),
+        capturedAt: z.string().nullish(),
+      })
+      .passthrough()
+      .optional(),
     taskId: z.string().uuid().optional(),
     nodes: z
       .array(
@@ -15,11 +50,12 @@ const Blueprint = {
           properties: z
             .object({
               label: z.string(),
-              prompt: z.string().optional(),
               icon: z.string(),
               action: z.string().optional(),
               description: z.string().optional(),
+              instructions: z.string().optional(),
               pseudocode: z.string().optional(),
+              pseudocodeEnabled: z.boolean().optional(),
               parameters: z.record(z.string(), z.unknown()).optional(),
               targetAgentId: z.string().optional(),
               targetBlueprintId: z.string().optional(),
@@ -64,6 +100,10 @@ const Blueprint = {
     ),
     content: z.string(),
   }),
+  pseudocode: z.object({
+    instructions: z.string(),
+    agentId: z.string().uuid(),
+  }),
   delete: z.object({
     agentId: z.string().uuid(),
   }),
@@ -74,11 +114,12 @@ const Blueprint = {
         properties: z
           .object({
             label: z.string(),
-            prompt: z.string().optional(),
             icon: z.string(),
             action: z.string().optional(),
             description: z.string().optional(),
+            instructions: z.string().optional(),
             pseudocode: z.string().optional(),
+            pseudocodeEnabled: z.boolean().optional(),
           })
           .optional(),
         type: z.string(),

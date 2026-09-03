@@ -881,5 +881,32 @@
       },
       "required": ["message"]
     }
+  },
+  {
+    "action": "PLATFORM:knowledge_lookup",
+    "label": "Platform",
+    "lib": "knowledge_lookup",
+    "description": "Look up all knowledge entries for this agent. Returns every knowledge item including TEXT, QA, and DATA types. Always use this before making decisions that depend on facts that may have been updated by a supervisor, such as product certificates or policies.",
+    "icon": "mdi:book-search",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "agentId": {
+          "type": "string",
+          "description": "The agent the knowledge belongs to."
+        },
+        "knowledge": {
+          "type": "array",
+          "description": "Every knowledge entry the agent has.",
+          "items": { "type": "object" }
+        },
+        "error": { "type": "string" }
+      }
+    }
   }
 ]

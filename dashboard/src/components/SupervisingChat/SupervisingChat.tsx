@@ -10,6 +10,7 @@ import {
   Button,
   Card,
   Chip,
+  Portal,
   Typography,
   alpha,
   useTheme,
@@ -537,7 +538,7 @@ const SupervisingChat = ({
   if (!open) return null;
 
   return (
-    <>
+    <Portal>
       <Backdrop
         open={open}
         onClick={(e) => {
@@ -956,7 +957,7 @@ const SupervisingChat = ({
           }
         />
       </Card>
-    </>
+    </Portal>
   );
 };
 

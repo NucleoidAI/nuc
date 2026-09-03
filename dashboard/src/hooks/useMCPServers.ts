@@ -40,6 +40,15 @@ export type MCPToolArg = MCPServerEnv & {
   tool: string;
 };
 
+export type MCPTool = {
+  id: string;
+  action: string;
+  label: string;
+  description?: string;
+  icon?: string;
+  direction: "INCOMING" | "OUTGOING";
+};
+
 function scopeQuery({ teamId, agentId }: MCPScope): string {
   return agentId ? `agentId=${agentId}` : `teamId=${teamId}`;
 }
@@ -103,6 +112,12 @@ function useMCPServers() {
     assignmentId: string;
   }) => {
     await http.delete(`/mcp-servers/${serverId}/assignments/${assignmentId}`);
+  };
+
+  const listTools = async (serverId: string) => {
+    const response = await http.get(`/mcp-servers/${serverId}/tools`);
+
+    return response.data as MCPTool[];
   };
 
   const listEnvs = async (serverId: string) => {
@@ -190,6 +205,7 @@ function useMCPServers() {
     listAssignments,
     listEnvs,
     listToolArgs,
+    listTools,
     unassign,
   };
 }

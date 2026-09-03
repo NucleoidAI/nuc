@@ -8,6 +8,10 @@ import {
   Divider,
   Drawer,
   IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
   Stack,
   Tab,
   Table,
@@ -23,7 +27,7 @@ import {
 import type {
   MCPScope,
   MCPServerEnv,
-  MCPToolArg,
+  MCPTool,
 } from "../../hooks/useMCPServers";
 
 const FALLBACK_ICON = "mdi:server-network";
@@ -40,6 +44,12 @@ function scopeLabel(entry: { teamId: string | null; agentId: string | null }) {
   return "Server";
 }
 
+function toolName(action: string) {
+  const [, ...rest] = action.split(":");
+
+  return rest.join(":") || action;
+}
+
 const MCPServerDrawer = ({
   open,
   onClose,
@@ -47,12 +57,10 @@ const MCPServerDrawer = ({
   providerName,
   icon,
   scope,
+  tools,
   envs,
-  toolArgs,
   onCreateEnv,
   onDeleteEnv,
-  onCreateToolArg,
-  onDeleteToolArg,
 }: {
   open: boolean;
   onClose: () => void;
@@ -60,23 +68,14 @@ const MCPServerDrawer = ({
   providerName?: string;
   icon?: string | null;
   scope: MCPScope;
+  tools: MCPTool[];
   envs: MCPServerEnv[];
-  toolArgs: MCPToolArg[];
   onCreateEnv: (entry: { key: string; value: string }) => Promise<void>;
   onDeleteEnv: (envId: string) => Promise<void>;
-  onCreateToolArg: (entry: {
-    tool: string;
-    key: string;
-    value: string;
-  }) => Promise<void>;
-  onDeleteToolArg: (toolArgId: string) => Promise<void>;
 }) => {
   const [tab, setTab] = React.useState(0);
   const [envKey, setEnvKey] = React.useState("");
   const [envValue, setEnvValue] = React.useState("");
-  const [argTool, setArgTool] = React.useState("");
-  const [argKey, setArgKey] = React.useState("");
-  const [argValue, setArgValue] = React.useState("");
 
   const scopeName = scope.agentId ? "agent" : "team";
 
@@ -84,17 +83,6 @@ const MCPServerDrawer = ({
     await onCreateEnv({ key: envKey.trim(), value: envValue });
     setEnvKey("");
     setEnvValue("");
-  };
-
-  const handleAddToolArg = async () => {
-    await onCreateToolArg({
-      tool: argTool.trim(),
-      key: argKey.trim(),
-      value: argValue,
-    });
-    setArgTool("");
-    setArgKey("");
-    setArgValue("");
   };
 
   return (
@@ -119,18 +107,48 @@ const MCPServerDrawer = ({
         </IconButton>
       </Box>
 
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        New entries are saved at <strong>{scopeName}</strong> scope and override
-        the server-wide defaults.
-      </Typography>
-
       <Tabs value={tab} onChange={(_, value) => setTab(value)} sx={{ mb: 2 }}>
+        <Tab label={`Tools (${tools.length})`} />
         <Tab label={`Env (${envs.length})`} />
-        <Tab label={`Tool args (${toolArgs.length})`} />
       </Tabs>
 
-      {tab === 0 && (
+      {tab === 0 &&
+        (tools.length === 0 ? (
+          <Box sx={{ py: 6, textAlign: "center" }}>
+            <Typography variant="body2" color="text.secondary">
+              This server exposes no tools.
+            </Typography>
+          </Box>
+        ) : (
+          <List dense disablePadding>
+            {tools.map((tool) => (
+              <ListItem key={tool.id} alignItems="flex-start" disableGutters>
+                <ListItemIcon sx={{ minWidth: 40, mt: 0.5 }}>
+                  <Icon
+                    icon={tool.icon ?? icon ?? FALLBACK_ICON}
+                    width="22"
+                    height="22"
+                  />
+                </ListItemIcon>
+                <ListItemText
+                  primary={toolName(tool.action)}
+                  secondary={tool.description}
+                  slotProps={{
+                    primary: { variant: "subtitle2" },
+                    secondary: { variant: "body2" },
+                  }}
+                />
+              </ListItem>
+            ))}
+          </List>
+        ))}
+
+      {tab === 1 && (
         <Stack spacing={2}>
+          <Typography variant="body2" color="text.secondary">
+            New variables are saved at <strong>{scopeName}</strong> scope and
+            override the server-wide defaults.
+          </Typography>
           <Stack direction="row" spacing={1}>
             <TextField
               size="small"
@@ -183,79 +201,6 @@ const MCPServerDrawer = ({
                     <IconButton
                       size="small"
                       onClick={() => onDeleteEnv(env.id)}
-                    >
-                      <Icon icon="mdi:delete-outline" width="18" height="18" />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Stack>
-      )}
-
-      {tab === 1 && (
-        <Stack spacing={2}>
-          <Stack direction="row" spacing={1}>
-            <TextField
-              size="small"
-              label="Tool"
-              value={argTool}
-              onChange={(event) => setArgTool(event.target.value)}
-            />
-            <TextField
-              size="small"
-              label="Key"
-              value={argKey}
-              onChange={(event) => setArgKey(event.target.value)}
-            />
-            <TextField
-              size="small"
-              label="Value"
-              fullWidth
-              value={argValue}
-              onChange={(event) => setArgValue(event.target.value)}
-            />
-            <Button
-              variant="contained"
-              disabled={!argTool.trim() || !argKey.trim()}
-              onClick={handleAddToolArg}
-            >
-              Add
-            </Button>
-          </Stack>
-          <Divider />
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>Tool</TableCell>
-                <TableCell>Key</TableCell>
-                <TableCell>Value</TableCell>
-                <TableCell>Scope</TableCell>
-                <TableCell align="right" />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {toolArgs.map((toolArg) => (
-                <TableRow key={toolArg.id}>
-                  <TableCell>{toolArg.tool}</TableCell>
-                  <TableCell>{toolArg.key}</TableCell>
-                  <TableCell
-                    sx={{
-                      maxWidth: 140,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                  >
-                    {toolArg.value}
-                  </TableCell>
-                  <TableCell>
-                    <Chip size="small" label={scopeLabel(toolArg)} />
-                  </TableCell>
-                  <TableCell align="right">
-                    <IconButton
-                      size="small"
-                      onClick={() => onDeleteToolArg(toolArg.id)}
                     >
                       <Icon icon="mdi:delete-outline" width="18" height="18" />
                     </IconButton>

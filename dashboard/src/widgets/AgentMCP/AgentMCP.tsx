@@ -22,7 +22,7 @@ import {
 import type {
   MCPServer,
   MCPServerEnv,
-  MCPToolArg,
+  MCPTool,
 } from "../../hooks/useMCPServers";
 
 const FALLBACK_ICON = "mdi:server-network";
@@ -38,14 +38,12 @@ const AgentMCP = ({ agent }: { agent?: { id: string; name: string } }) => {
   const {
     assign,
     createEnv,
-    createToolArg,
     deleteEnv,
-    deleteToolArg,
     getAllServers,
     getAssignedServers,
     getProviders,
     listEnvs,
-    listToolArgs,
+    listTools,
   } = useMCPServers();
 
   const { providers } = getProviders();
@@ -67,7 +65,7 @@ const AgentMCP = ({ agent }: { agent?: { id: string; name: string } }) => {
     null
   );
   const [envs, setEnvs] = React.useState<MCPServerEnv[]>([]);
-  const [toolArgs, setToolArgs] = React.useState<MCPToolArg[]>([]);
+  const [tools, setTools] = React.useState<MCPTool[]>([]);
 
   const providersById = React.useMemo(
     () => new Map(providers.map((provider) => [provider.id, provider])),
@@ -132,13 +130,13 @@ const AgentMCP = ({ agent }: { agent?: { id: string; name: string } }) => {
   }, [allServers, assignedServers]);
 
   const loadServerConfig = async (serverId: string) => {
-    const [serverEnvs, serverToolArgs] = await Promise.all([
+    const [serverTools, serverEnvs] = await Promise.all([
+      listTools(serverId),
       listEnvs(serverId),
-      listToolArgs(serverId),
     ]);
 
+    setTools(serverTools);
     setEnvs(serverEnvs);
-    setToolArgs(serverToolArgs);
   };
 
   const handleOpenServer = async (server: MCPServer) => {
@@ -149,7 +147,7 @@ const AgentMCP = ({ agent }: { agent?: { id: string; name: string } }) => {
   const handleCloseDrawer = () => {
     setActiveServer(null);
     setEnvs([]);
-    setToolArgs([]);
+    setTools([]);
   };
 
   const handleAssign = async (serverId: string) => {
@@ -324,26 +322,14 @@ const AgentMCP = ({ agent }: { agent?: { id: string; name: string } }) => {
           providerName={activeServer ? providerNameOf(activeServer) : undefined}
           icon={activeServer?.icon}
           scope={scope}
+          tools={tools}
           envs={envs}
-          toolArgs={toolArgs}
           onCreateEnv={async (entry) => {
             await createEnv({ serverId: activeServer.id, ...entry, ...scope });
             await loadServerConfig(activeServer.id);
           }}
           onDeleteEnv={async (envId) => {
             await deleteEnv({ serverId: activeServer.id, envId });
-            await loadServerConfig(activeServer.id);
-          }}
-          onCreateToolArg={async (entry) => {
-            await createToolArg({
-              serverId: activeServer.id,
-              ...entry,
-              ...scope,
-            });
-            await loadServerConfig(activeServer.id);
-          }}
-          onDeleteToolArg={async (toolArgId) => {
-            await deleteToolArg({ serverId: activeServer.id, toolArgId });
             await loadServerConfig(activeServer.id);
           }}
         />

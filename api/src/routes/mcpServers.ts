@@ -63,6 +63,14 @@ router.delete("/:serverId", async (req, res) => {
   res.status(204).end();
 });
 
+router.get("/:serverId/tools", async (req, res) => {
+  const { serverId } = req.params;
+
+  const tools = await mcpServer.listTools({ serverId });
+
+  res.json(tools);
+});
+
 router.get("/:serverId/assignments", async (req, res) => {
   const { serverId } = req.params;
 

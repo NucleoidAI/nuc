@@ -11,6 +11,15 @@ const {
 } = require("ews-javascript-api");
 const { XhrApi } = require("@ewsjs/xhr");
 
+function xmlEscape(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
 function describe(error) {
   if (!error) return "Unknown error";
   if (typeof error === "string") return error;
@@ -43,16 +52,16 @@ async function main() {
   service.Url = new Uri(payload.serviceUrl);
 
   const message = new EmailMessage(service);
-  if (payload.from) message.From = new EmailAddress(payload.from);
-  message.ToRecipients.AddRange(payload.recipients);
-  message.Subject = payload.subject;
+  if (payload.from) message.From = new EmailAddress(xmlEscape(payload.from));
+  message.ToRecipients.AddRange(payload.recipients.map(xmlEscape));
+  message.Subject = xmlEscape(payload.subject);
   message.Body = payload.html
-    ? new MessageBody(BodyType.HTML, payload.html)
-    : new MessageBody(BodyType.Text, payload.text);
+    ? new MessageBody(BodyType.HTML, xmlEscape(payload.html))
+    : new MessageBody(BodyType.Text, xmlEscape(payload.text));
 
   for (const attachment of payload.attachments || []) {
     const added = message.Attachments.AddFileAttachment(
-      attachment.filename,
+      xmlEscape(attachment.filename),
       attachment.base64
     );
     if (attachment.contentType) added.ContentType = attachment.contentType;

@@ -15,8 +15,12 @@ import {
   useTheme,
 } from "@mui/material";
 /* eslint-disable */
-import { Iconify, SidebarChat } from "@canmingir/link/platform/components";
-import { RawNode, layoutFlow } from "../BlueprintCard/BlueprintFlowMiniPreview";
+import {
+  Iconify,
+  SidebarChat,
+  layoutFlow,
+} from "@canmingir/link/platform/components";
+import type { RawNode } from "../BlueprintFlow/miniTypes";
 import React, { memo, useCallback, useMemo, useRef } from "react";
 import {
   calculateDiffStats,

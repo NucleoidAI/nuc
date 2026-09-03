@@ -1,0 +1,101 @@
+{
+  "sequence": 22,
+  "seed": [
+    {
+      "id": "gdrive",
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000001"
+    },
+    {
+      "id": "servicenow",
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000002"
+    },
+    {
+      "id": "slack",
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000003"
+    },
+    {
+      "id": "discord",
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000004"
+    },
+    {
+      "id": "jira",
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000005"
+    },
+    {
+      "id": "github",
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000006"
+    },
+    {
+      "id": "grey",
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000007"
+    },
+    {
+      "id": "telco",
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000008"
+    },
+    {
+      "id": "order",
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000009"
+    },
+    {
+      "id": "active-directory",
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000010"
+    },
+    {
+      "id": "sap",
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000011"
+    },
+    {
+      "id": "salesforce",
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000012"
+    },
+    {
+      "id": "aws",
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000013"
+    },
+    {
+      "id": "hubspot",
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000014"
+    },
+    {
+      "id": "oracle",
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000015"
+    },
+    {
+      "id": "microsoft",
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000016"
+    },
+    {
+      "id": "atlassian",
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000017"
+    },
+    {
+      "id": "project-notifier",
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000018"
+    },
+    {
+      "id": "zendesk",
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000019"
+    },
+    {
+      "id": "docusign",
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000020"
+    },
+    {
+      "id": "netsuite",
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000021"
+    },
+    {
+      "id": "stripe",
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000022"
+    },
+    {
+      "id": "snowflake",
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000023"
+    },
+    {
+      "id": "twilio",
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000024"
+    }
+  ]
+}

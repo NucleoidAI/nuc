@@ -1,4 +1,5 @@
 import type { LLMMeta } from "../lib/llmLog";
+import Agent from "../models/Agent";
 import MCPs from "../mcps/mcps";
 import actions from "../actions";
 import agentData from "./agentData";
@@ -553,7 +554,9 @@ async function step({
     const priorSteps = (await taskFn.listSteps({ taskId })).filter(
       (s) => s.id !== stepId,
     );
-    const { inheritedSteps } = await taskFn.get({ taskId });
+    const { inheritedSteps, agentId: taskAgentId } = await taskFn.get({
+      taskId,
+    });
     const runParameters = resolveParameterRefs(
       parameters as Record<string, unknown>,
       {
@@ -577,7 +580,16 @@ async function step({
       const provider = action.split(":")[0].toLowerCase();
       const tool = action.split(":")[1];
 
-      mcpClient = await mcp.connect({ name: provider, tool });
+      const agentInstance = taskAgentId
+        ? await Agent.findByPk(taskAgentId)
+        : null;
+
+      mcpClient = await mcp.connect({
+        name: provider,
+        tool,
+        teamId: agentInstance?.teamId ?? null,
+        agentId: taskAgentId ?? null,
+      });
     } else if (actionType === "INTERACTION") {
       actionFn = require("../actions/interaction").default;
     }

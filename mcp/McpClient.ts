@@ -25,22 +25,13 @@ class McpClient {
     this.version = version;
   }
 
-  async connectToServer({
-    credentials,
-  }: {
-    credentials: {
-      clientId: string;
-      clientSecret: string;
-      redirectUris: string[];
-      refreshToken: string;
-    };
-  }) {
+  async connectToServer({ env = {} }: { env?: Record<string, string> } = {}) {
     try {
       const serverPath = path.join(path.dirname(process.cwd()), 'mcp', 'servers', this.name, 'index.ts');
       this.transport = new StdioClientTransport({
         command: "bun",
-        args: [serverPath, `'${JSON.stringify({ credentials })}'`],
-        env: { ...process.env },
+        args: [serverPath],
+        env: { ...(process.env as Record<string, string>), ...env },
       });
 
       this.mcp = new Client({ name: this.name, version: this.version });

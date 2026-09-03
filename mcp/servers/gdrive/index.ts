@@ -10,23 +10,20 @@ import {
 import { InternalToolResponse } from "./tools/types.js";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import cli from "../../lib/cli";
 import fs from "fs";
 import { google } from "googleapis";
 import os from "os";
 import path from "path";
 import { tools } from "./tools";
 
-const { credentials } = cli.args();
-
 const oauth2Client = new google.auth.OAuth2(
-  credentials.clientId,
-  credentials.clientSecret,
-  credentials.redirectUris[0]
+  process.env.GDRIVE_CLIENT_ID,
+  process.env.GDRIVE_CLIENT_SECRET,
+  process.env.GDRIVE_REDIRECT_URI
 );
 
 oauth2Client.setCredentials({
-  refresh_token: credentials.refreshToken,
+  refresh_token: process.env.GDRIVE_REFRESH_TOKEN,
 });
 
 // Export a getter for the shared OAuth2 client
@@ -77,8 +74,6 @@ console.log = (...args: any[]) => {
 };
 originalConsoleLog("[MCP] Logging to:", logFile);
 console.log("MCP log test: This should appear in the log file.");
-
-console.log("credentials", credentials);
 
 //refreshAccessToken();
 

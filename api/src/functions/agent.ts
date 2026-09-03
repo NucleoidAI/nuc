@@ -298,6 +298,8 @@ async function task({ taskId }: { taskId: string }) {
     });
   }
 
+  const agentInstance = agentId ? await Agent.findByPk(agentId) : null;
+
   const blueprint = blueprintId ? await blueprintFn.get({ blueprintId }) : null;
   const isBlocking = blueprint?.blocking !== false;
 

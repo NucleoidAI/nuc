@@ -36,10 +36,6 @@ export type MCPServerEnv = {
   agentId: string | null;
 };
 
-export type MCPToolArg = MCPServerEnv & {
-  tool: string;
-};
-
 export type MCPTool = {
   id: string;
   action: string;
@@ -153,58 +149,15 @@ function useMCPServers() {
     await http.delete(`/mcp-servers/${serverId}/envs/${envId}`);
   };
 
-  const listToolArgs = async (serverId: string) => {
-    const response = await http.get(`/mcp-servers/${serverId}/tool-args`);
-
-    return response.data as MCPToolArg[];
-  };
-
-  const createToolArg = async ({
-    serverId,
-    tool,
-    key,
-    value,
-    teamId,
-    agentId,
-  }: {
-    serverId: string;
-    tool: string;
-    key: string;
-    value: string;
-  } & MCPScope) => {
-    const response = await http.post(`/mcp-servers/${serverId}/tool-args`, {
-      tool,
-      key,
-      value,
-      teamId: agentId ? undefined : teamId,
-      agentId,
-    });
-
-    return response.data as MCPToolArg;
-  };
-
-  const deleteToolArg = async ({
-    serverId,
-    toolArgId,
-  }: {
-    serverId: string;
-    toolArgId: string;
-  }) => {
-    await http.delete(`/mcp-servers/${serverId}/tool-args/${toolArgId}`);
-  };
-
   return {
     assign,
     createEnv,
-    createToolArg,
     deleteEnv,
-    deleteToolArg,
     getAllServers,
     getAssignedServers,
     getProviders,
     listAssignments,
     listEnvs,
-    listToolArgs,
     listTools,
     unassign,
   };

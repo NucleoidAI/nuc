@@ -9,7 +9,6 @@ import MCPProvider from "../models/MCPProvider";
 import MCPServer from "../models/MCPServer";
 import MCPServerAssignment from "../models/MCPServerAssignment";
 import MCPServerEnv from "../models/MCPServerEnv";
-import MCPToolArg from "../models/MCPToolArg";
 
 type Scope = {
   teamId?: string | null;
@@ -239,44 +238,6 @@ async function resolveEnv({
   return mergeByScope({ entries, teamId, agentId });
 }
 
-async function setToolArg({
-  serverId,
-  tool,
-  key,
-  value,
-  teamId,
-  agentId,
-}: { serverId: string; tool: string; key: string; value: string } & Scope) {
-  const existing = await MCPToolArg.findOne({
-    where: {
-      serverId,
-      tool,
-      key,
-      teamId: teamId ?? null,
-      agentId: agentId ?? null,
-    },
-  });
-
-  if (existing) {
-    return existing.update({ value });
-  }
-
-  return MCPToolArg.create({ serverId, tool, key, value, teamId, agentId });
-}
-
-async function resolveToolArgs({
-  serverId,
-  tool,
-  teamId,
-  agentId,
-}: { serverId: string; tool: string } & Scope): Promise<
-  Record<string, string>
-> {
-  const entries = await MCPToolArg.findAll({ where: { serverId, tool } });
-
-  return mergeByScope({ entries, teamId, agentId });
-}
-
 export default {
   assertScopeBelongsToTeam,
   assign,
@@ -287,7 +248,5 @@ export default {
   listServers,
   listTools,
   resolveEnv,
-  resolveToolArgs,
   setEnv,
-  setToolArg,
 };

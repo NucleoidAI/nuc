@@ -1,6 +1,5 @@
 import Joi from "joi";
 import MCPServerEnv from "../models/MCPServerEnv";
-import MCPToolArg from "../models/MCPToolArg";
 import { NotFoundError } from "@canmingir/link-express/error";
 import express from "express";
 import mcpServer from "../functions/mcpServer";
@@ -164,75 +163,6 @@ router.delete("/:serverId/envs/:envId", async (req, res) => {
   }
 
   await env.destroy();
-
-  res.status(204).end();
-});
-
-router.get("/:serverId/tool-args", async (req, res) => {
-  const { serverId } = req.params;
-  const { tool } = req.query as { tool?: string };
-
-  await mcpServer.getServer({ serverId });
-
-  const where = tool ? { serverId, tool } : { serverId };
-
-  const toolArgs = await MCPToolArg.findAll({ where });
-
-  res.json(toolArgs);
-});
-
-router.post("/:serverId/tool-args", async (req, res) => {
-  const { projectId: sessionTeamId } = req.session;
-  const { serverId } = req.params;
-  const { tool, key, value, teamId, agentId } = Joi.attempt(
-    req.body,
-    schemas.MCPServer.toolArg.create
-  );
-
-  await mcpServer.getServer({ serverId });
-  await mcpServer.assertScopeBelongsToTeam({ teamId, agentId, sessionTeamId });
-
-  const toolArg = await mcpServer.setToolArg({
-    serverId,
-    tool,
-    key,
-    value,
-    teamId,
-    agentId,
-  });
-
-  res.status(201).json(toolArg);
-});
-
-router.patch("/:serverId/tool-args/:toolArgId", async (req, res) => {
-  const { serverId, toolArgId } = req.params;
-  const { value } = Joi.attempt(req.body, schemas.MCPServer.toolArg.update);
-
-  const toolArg = await MCPToolArg.findOne({
-    where: { id: toolArgId, serverId },
-  });
-
-  if (!toolArg) {
-    throw new NotFoundError();
-  }
-
-  await toolArg.update({ value });
-
-  res.json(toolArg);
-});
-
-router.delete("/:serverId/tool-args/:toolArgId", async (req, res) => {
-  const { serverId, toolArgId } = req.params;
-
-  const toolArg = await MCPToolArg.findOne({
-    where: { id: toolArgId, serverId },
-  });
-
-  if (!toolArg) {
-    throw new NotFoundError();
-  }
-
-  await toolArg.destroy();
 
   res.status(204).end();
 });

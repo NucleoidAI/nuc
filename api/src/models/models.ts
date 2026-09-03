@@ -102,17 +102,6 @@ async function init() {
     as: "server",
   });
 
-  // MCPServer <-> MCPToolArg
-  models.MCPServer.hasMany(models.MCPToolArg, {
-    foreignKey: "serverId",
-    as: "toolArgs",
-    onDelete: "CASCADE",
-  });
-  models.MCPToolArg.belongsTo(models.MCPServer, {
-    foreignKey: "serverId",
-    as: "server",
-  });
-
   // AgentKnowledge associations
   models.AgentKnowledge.belongsTo(models.Project, {
     foreignKey: "teamId",
@@ -270,14 +259,12 @@ async function init() {
     });
     await models.MCPServerAssignment.destroy({ where: { agentId: agent.id } });
     await models.MCPServerEnv.destroy({ where: { agentId: agent.id } });
-    await models.MCPToolArg.destroy({ where: { agentId: agent.id } });
   });
 
   models.MCPServer.addHook("beforeDestroy", async (server) => {
     const serverId = server.getDataValue("id");
 
     await models.MCPServerEnv.destroy({ where: { serverId } });
-    await models.MCPToolArg.destroy({ where: { serverId } });
     await models.MCPServerAssignment.destroy({ where: { serverId } });
   });
 

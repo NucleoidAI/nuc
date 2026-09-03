@@ -37,19 +37,6 @@ const MCPServer = {
       value: Joi.string().allow("").required(),
     }),
   },
-
-  toolArg: {
-    create: Joi.object({
-      tool: Joi.string().min(1).max(255).required(),
-      key: Joi.string().min(1).max(255).required(),
-      value: Joi.string().allow("").required(),
-      ...scope,
-    }).oxor("teamId", "agentId"),
-
-    update: Joi.object({
-      value: Joi.string().allow("").required(),
-    }),
-  },
 };
 
 export default MCPServer;

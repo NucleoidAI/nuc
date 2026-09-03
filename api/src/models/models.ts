@@ -82,6 +82,57 @@ async function init() {
     foreignKey: "teamId",
   });
 
+  // MCPProvider <-> MCPServer
+  models.MCPProvider.hasMany(models.MCPServer, {
+    foreignKey: "mcpProviderId",
+    as: "servers",
+  });
+  models.MCPServer.belongsTo(models.MCPProvider, {
+    foreignKey: "mcpProviderId",
+    as: "provider",
+  });
+
+  // MCPServer <-> MCPServerAssignment
+  models.MCPServer.hasMany(models.MCPServerAssignment, {
+    foreignKey: "serverId",
+    as: "assignments",
+    onDelete: "CASCADE",
+  });
+  models.MCPServerAssignment.belongsTo(models.MCPServer, {
+    foreignKey: "serverId",
+    as: "server",
+  });
+
+  // MCPServerAssignment <-> Project / Agent
+  models.MCPServerAssignment.belongsTo(models.Project, {
+    foreignKey: "teamId",
+  });
+  models.MCPServerAssignment.belongsTo(models.Agent, {
+    foreignKey: "agentId",
+  });
+
+  // MCPServer <-> MCPServerEnv
+  models.MCPServer.hasMany(models.MCPServerEnv, {
+    foreignKey: "serverId",
+    as: "envs",
+    onDelete: "CASCADE",
+  });
+  models.MCPServerEnv.belongsTo(models.MCPServer, {
+    foreignKey: "serverId",
+    as: "server",
+  });
+
+  // MCPServer <-> MCPToolArg
+  models.MCPServer.hasMany(models.MCPToolArg, {
+    foreignKey: "serverId",
+    as: "toolArgs",
+    onDelete: "CASCADE",
+  });
+  models.MCPToolArg.belongsTo(models.MCPServer, {
+    foreignKey: "serverId",
+    as: "server",
+  });
+
   // AgentKnowledge associations
   models.AgentKnowledge.belongsTo(models.Project, {
     foreignKey: "teamId",
@@ -237,6 +288,17 @@ async function init() {
     await models.AgentKnowledge.destroy({
       where: { agentId: agent.id },
     });
+    await models.MCPServerAssignment.destroy({ where: { agentId: agent.id } });
+    await models.MCPServerEnv.destroy({ where: { agentId: agent.id } });
+    await models.MCPToolArg.destroy({ where: { agentId: agent.id } });
+  });
+
+  models.MCPServer.addHook("beforeDestroy", async (server) => {
+    const serverId = server.getDataValue("id");
+
+    await models.MCPServerEnv.destroy({ where: { serverId } });
+    await models.MCPToolArg.destroy({ where: { serverId } });
+    await models.MCPServerAssignment.destroy({ where: { serverId } });
   });
 
   models.TeamMessage.addHook("beforeCreate", async (message: any) => {

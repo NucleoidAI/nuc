@@ -13,18 +13,13 @@ a:hover {
 }
 
 * {
-  scrollbar-width: thin;
+  scrollbar-width: auto;
+  scrollbar-color: auto;
 }
 
 *::-webkit-scrollbar {
   width: 10px;
   height: 10px;
-}
-
-*::-webkit-scrollbar-button {
-  display: none;
-  width: 0;
-  height: 0;
 }
 
 *::-webkit-scrollbar-track {

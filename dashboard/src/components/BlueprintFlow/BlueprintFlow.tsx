@@ -1,16 +1,16 @@
 import { BlueprintFlowProps } from "./BlueprintFlow.types";
 import { Box } from "@mui/material";
 import DiffButton from "./DiffPanel/DiffButton";
-import { Flow } from "@canmingir/link/platform/components";
-import { FlowMiniMap } from "./FlowMiniMap";
 import JSONDiffPanel from "./DiffPanel/JSONDiffPanel";
 import type { NodeFields } from "./BlueprintFlowPlugin";
 import SuccessSnackbar from "./Validation/SuccessSnackbar";
 import ValidationButtons from "./Validation/ValidationButtons";
 import ValidationErrorView from "./Validation/ValidationErrorView";
 import { blueprintFlowPlugin } from "./BlueprintFlowPlugin";
+import { definitionGraphToRawNodes } from "./miniTypes";
 import { isRefValue } from "./helper";
 import useAllIntegrations from "../../hooks/useAllIntegrations";
+import { Flow, FlowMiniMap } from "@canmingir/link/platform/components";
 
 import NodeConnectionOverlay, { type DragState } from "./NodeConnectionOverlay";
 import React, { useMemo, useRef, useState } from "react";
@@ -106,6 +106,11 @@ export default function BlueprintFlow({
     [graphData]
   );
 
+  const miniMapNodes = useMemo(
+    () => (graphData ? definitionGraphToRawNodes(graphData) : []),
+    [graphData]
+  );
+
   return (
     <Box
       ref={flowContainerRef}
@@ -133,6 +138,8 @@ export default function BlueprintFlow({
         fitViewOnMount
         fitViewOnNodesChange
         fitViewOnResize
+        fitViewMinZoom={0.8}
+        fitViewAlign="start"
         onChange={readOnly ? undefined : onFlowChange}
         variant="horizontal"
         style={() => ({
@@ -166,10 +173,7 @@ export default function BlueprintFlow({
       )}
 
       {!isSuperviseFlow && (
-        <FlowMiniMap
-          graphData={graphData}
-          flowContainerRef={flowContainerRef}
-        />
+        <FlowMiniMap nodes={miniMapNodes} flowContainerRef={flowContainerRef} />
       )}
 
       {!readOnly && hasDifferences && !drawerOpen && (

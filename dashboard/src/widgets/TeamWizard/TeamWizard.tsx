@@ -1,21 +1,25 @@
+import AgentStep from "../../components/AgentStep/AgentStep";
+import BlueprintsWidget from "../BlueprintsWidget/BlueprintsWidget";
 import DialogTitle from "@mui/material/DialogTitle";
-import EnginesChart from "../AIMarketplace/AIMarketplaceCard";
 import IconSelector from "../../components/IconSelector/IconSelector";
-import { Iconify } from "@canmingir/link/platform/components";
+import ItemSummary from "../../components/ItemSummary/ItemSummary";
+import Knowledge from "../Knowledge/Knowledge";
 import type { Resolver } from "react-hook-form";
-import SelectAvatar from "../../components/AvatarSelector/AvatarSelector";
+import type { SampleAgent } from "../../components/AgentStep/AgentStep";
 import SparkleInput from "../../components/SparkleInput/SparkleInput";
-import { Stack } from "@mui/material";
 import StepComponent from "../../components/StepComponent/StepComponent";
-import { Summary } from "../../components/ItemSummary/TeamSummary";
-import { cleanIconName } from "../../utils/cleanIconName";
 import { storage } from "@nucleoidjs/webstorage";
+import useAIEngines from "../../hooks/useAIEngines";
 import useAgents from "../../hooks/useAgents";
+import useBlueprint from "../../hooks/useBlueprint";
+import { useEvent } from "@nucleoidai/react-event";
+import useKnowledge from "../../hooks/useKnowledge";
 import useOrganizations from "../../hooks/useOrganizations";
 import useTeams from "../../hooks/useTeams";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import {
+  Alert,
   Box,
   Card,
   CardActionArea,
@@ -23,43 +27,14 @@ import {
   CircularProgress,
   Dialog,
   DialogContent,
+  Divider,
+  Stack,
   Typography,
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import React, { useEffect } from "react";
-import { publish, useEvent } from "@nucleoidai/react-event";
 
 import * as Yup from "yup";
-
-const sampleAgents = [
-  {
-    name: "system_agent",
-    icon: "mingcute:bank-card-line",
-    src: `https://cdn.nucleoid.com/greycollar/avatars/2.jpg`,
-    aiEngineId: "289a3c9a-f23b-421a-ac6e-f14052a2d57c",
-    engineName: "OpenAI",
-    description:
-      "A system-focused agent designed to support technical workflows, optimize architecture decisions, and improve reliability across operations.",
-  },
-  {
-    name: "insight_agent",
-    icon: "ph:coffee-bean-duotone",
-    src: `https://cdn.nucleoid.com/greycollar/avatars/5.jpg`,
-    aiEngineId: "d9c93323-3baf-4623-a96c-b85db99b4441",
-    engineName: "Claude",
-    description:
-      "An insight-driven agent that analyzes information, identifies patterns, and provides clear, data-backed guidance for decision-making and problem-solving.",
-  },
-  {
-    name: "order_agent",
-    icon: "ph:atom-duotone",
-    src: `https://cdn.nucleoid.com/greycollar/avatars/8.jpg`,
-    aiEngineId: "123a3c9a-b23b-421a-ac6e-f14052a2d57c",
-    engineName: "DeepMind",
-    description:
-      "An order agent built to streamline communication, align processes, and manage multi-step workflows across teams, systems, and projects for optimal efficiency.",
-  },
-];
 
 const names = [
   "core_agent",
@@ -128,6 +103,49 @@ const organizationNames = [
   "Circuit Collective",
 ];
 
+const ORGANIZATION_STEP = 0;
+const AGENT_STEP = 1;
+const KNOWLEDGE_STEP = 2;
+const BLUEPRINT_STEP = 3;
+const SUMMARY_STEP = 4;
+
+const cardSx = {
+  mb: 2,
+  cursor: "pointer",
+  borderRadius: 2,
+  transformStyle: "preserve-3d",
+  transform: "perspective(1500px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)",
+  boxShadow: `
+    1px 1px 0 #161c24,
+    2px 2px 0 #161c24,
+    3px 3px 0 #161c24,
+    4px 4px 0 #161c24,
+    5px 5px 0 #161c24,
+    6px 6px 0 #161c24,
+    7px 7px 0 #161c24,
+    10px 10px 20px rgba(0, 0, 0, 0.4),
+    20px 20px 40px rgba(0, 0, 0, 0.5)
+  `,
+  transition:
+    "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, filter 0.25s ease",
+  "&:hover": {
+    transform:
+      "perspective(1500px) rotateX(0deg) rotateY(-10deg) rotateZ(0deg)",
+    filter: "brightness(1.070)",
+    boxShadow: `
+    1px 1px 0 #161c24,
+    2px 2px 0 #161c24,
+    3px 3px 0 #161c24,
+    4px 4px 0 #161c24,
+    5px 5px 0 #161c24,
+    6px 6px 0 #161c24,
+    7px 7px 0 #161c24,
+    10px 10px 20px rgba(0, 0, 0, 0.4),
+    20px 20px 40px rgba(0, 0, 0, 0.5)
+  `,
+  },
+};
+
 type PropertyOptionType =
   | "name"
   | "description"
@@ -135,14 +153,47 @@ type PropertyOptionType =
   | "organizationName";
 
 function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const projectId = storage.get("projectId");
-  const [teamSelected] = useEvent("PROJECT_SELECTED", { projectId: null });
+  const projectId = storage.get("link", "projectid");
   const { organizations, loading } = useOrganizations().getOrganizations([]);
   const [activeStep, setActiveStep] = React.useState(0);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [createError, setCreateError] = React.useState("");
+  const [createdAgent, setCreatedAgent] = React.useState<{ id: string } | null>(
+    null
+  );
+  const [createdTeam, setCreatedTeam] = React.useState<{ id: string } | null>(
+    null
+  );
+
   const { createOrganization } = useOrganizations();
+  const { getAgentKnowledges } = useKnowledge();
+  const { getBlueprintsByAgent } = useBlueprint();
+  const { engines } = useAIEngines();
   const { createAgent } = useAgents();
   const { createTeam } = useTeams();
+
+  const [blueprintUpsertedEvent] = useEvent("BLUEPRINT_UPSERTED", {
+    Blueprint: null,
+  });
+  const [blueprintRemovedEvent] = useEvent("BLUEPRINT_REMOVED", {
+    Blueprint: null,
+  });
+  const [blueprintPatchedEvent] = useEvent("BLUEPRINT_PATCHED", {
+    Blueprint: null,
+  });
+
+  const agentId = createdAgent?.id;
+  const teamId = createdTeam?.id;
+
+  const { knowledges } = getAgentKnowledges(agentId);
+  const { Blueprint: blueprints } = getBlueprintsByAgent(
+    [
+      blueprintUpsertedEvent.Blueprint,
+      blueprintRemovedEvent.Blueprint,
+      blueprintPatchedEvent.Blueprint,
+    ],
+    agentId
+  );
 
   type FormValues = {
     organization: {
@@ -217,129 +268,149 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
   });
 
   const {
-    handleSubmit,
     setValue,
     getValues,
+    watch,
     reset,
     control,
     formState: { errors },
   } = methods;
 
+  const agentValues = watch("agent");
+
   const steps = [
-    "Organization",
-    "Team",
+    "Organization & Team",
     "AI Agent",
-    "Avatar",
-    "Description",
-    "Engine",
+    "Knowledge",
+    "Blueprint",
     "Summary",
   ];
 
-  const stepExp = [
-    "Create Organization",
-    "Create Team",
-    "Give agent a name.",
-    "Select an avatar that reflects your agent.",
-    "Write down your agent's description. this will determine your agent's behavior.",
-    "Select your agent's engine. this will determine your agent's engine.",
-  ];
-
-  const onSubmit = handleSubmit(
-    async (data) => {
-      if (data.organization.id) {
-        await createTeam(data.team, data.organization.id);
-        publish("PLATFORM", "PROJECT_BAR_DIALOG", { open: false });
-      } else {
-        const result = await createOrganization(data.organization);
-        await createTeam(data.team, result.id);
-        publish("PLATFORM", "PROJECT_BAR_DIALOG", { open: false });
-      }
-
-      setActiveStep(0);
-      onClose();
-    },
-    (errors) => {
-      if (errors.organization) {
-        setActiveStep(0);
-        return;
-      }
-
-      if (errors.team) {
-        setActiveStep(1);
-        return;
-      }
-
-      if (errors.agent) {
-        if (errors.agent.name) {
-          setActiveStep(2);
-        } else if (errors.agent.icon) {
-          setActiveStep(3);
-        } else if (errors.agent.description) {
-          setActiveStep(4);
-        } else if (errors.agent.aiEngineId) {
-          setActiveStep(5);
-        }
-      }
-    }
-  );
+  const resetWizard = () => {
+    reset(defaultValues);
+    setActiveStep(0);
+    setCreatedAgent(null);
+    setCreatedTeam(null);
+    setCreateError("");
+  };
 
   useEffect(() => {
-    const projectId = storage.get("projectId");
-    if (teamSelected.projectId === projectId && getValues("agent.name")) {
-      const agent = getValues("agent");
-      agent.teamId = teamSelected.projectId;
-      createAgent(agent, projectId);
-      reset(defaultValues);
+    if (!open) {
+      resetWizard();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [teamSelected]);
+  }, [open]);
 
-  const handleNext = () => {
-    const currentStep = activeStep;
+  const isAgentStepComplete = Boolean(
+    agentValues?.name?.trim() &&
+      agentValues?.description?.trim() &&
+      agentValues?.icon &&
+      agentValues?.aiEngineId
+  );
 
-    switch (currentStep) {
-      case 0:
-        methods.trigger("organization.name").then((isValid) => {
-          if (isValid) {
-            setActiveStep((prevStep) => prevStep + 1);
+  const createOrganizationAndTeam = async () => {
+    if (createdTeam?.id) {
+      return createdTeam;
+    }
+
+    setIsSubmitting(true);
+    setCreateError("");
+
+    const organization = getValues("organization");
+    let organizationId = organization.id;
+
+    if (!organizationId) {
+      const savedOrganization = await createOrganization(organization);
+
+      if (!savedOrganization?.id) {
+        setIsSubmitting(false);
+        setCreateError("Could not create the organization. Please try again.");
+        return null;
+      }
+
+      organizationId = savedOrganization.id;
+      setValue("organization.id", organizationId);
+    }
+
+    const savedTeam = await createTeam(getValues("team"), organizationId);
+
+    setIsSubmitting(false);
+
+    if (!savedTeam?.id) {
+      setCreateError("Could not create the team. Please try again.");
+      return null;
+    }
+
+    setCreatedTeam(savedTeam);
+    setValue("agent.teamId", savedTeam.id);
+
+    return savedTeam;
+  };
+
+  const createEverything = async (agent: FormValues["agent"]) => {
+    if (agentId) {
+      return true;
+    }
+
+    const savedTeam = await createOrganizationAndTeam();
+
+    if (!savedTeam?.id) {
+      return false;
+    }
+
+    setIsSubmitting(true);
+    setCreateError("");
+
+    const savedAgent = await createAgent({ ...agent }, savedTeam.id);
+
+    setIsSubmitting(false);
+
+    if (!savedAgent?.id) {
+      setCreateError("Could not create the agent. Please try again.");
+      return false;
+    }
+
+    setCreatedAgent(savedAgent);
+
+    return true;
+  };
+
+  const handleNext = async () => {
+    switch (activeStep) {
+      case ORGANIZATION_STEP: {
+        const isValid = await methods.trigger("organization.name");
+        const isTeamValid = await methods.trigger("team.name");
+
+        if (!isValid || !isTeamValid) {
+          return;
+        }
+
+        if (!agentId) {
+          const savedTeam = await createOrganizationAndTeam();
+
+          if (!savedTeam?.id) {
+            return;
           }
-        });
-        return;
+        }
 
-      case 1:
-        methods.trigger("team.name").then((isValid) => {
-          if (isValid) {
-            setActiveStep((prevStep) => prevStep + 1);
-          }
-        });
-        return;
-
-      case 2:
-        methods.trigger("agent.name").then((isValid) => {
-          if (isValid) {
-            setActiveStep((prevStep) => prevStep + 1);
-          }
-        });
-        return;
-
-      case 3:
         break;
+      }
 
-      case 4:
-        methods.trigger("agent.description").then((isValid) => {
-          if (isValid) {
-            setActiveStep((prevStep) => prevStep + 1);
-          }
-        });
-        return;
+      case AGENT_STEP: {
+        const isValid = await methods.trigger("agent");
 
-      case 5:
-        methods.trigger("agent.aiEngineId").then((isValid) => {
-          if (isValid) {
-            setActiveStep((prevStep) => prevStep + 1);
-          }
-        });
-        return;
+        if (!isValid) {
+          return;
+        }
+
+        const created = await createEverything(getValues("agent"));
+
+        if (!created) {
+          return;
+        }
+
+        break;
+      }
 
       default:
         break;
@@ -353,42 +424,8 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
   };
 
   const handleSave = async () => {
-    const errors = methods.formState.errors;
-
-    if (errors.organization?.name) {
-      setActiveStep(0);
-      return;
-    }
-
-    if (errors.team?.name) {
-      setActiveStep(1);
-      return;
-    }
-
-    if (errors.agent?.name) {
-      setActiveStep(2);
-      return;
-    }
-
-    if (errors.agent?.icon) {
-      setActiveStep(3);
-      return;
-    }
-
-    if (errors.agent?.description) {
-      setActiveStep(4);
-      return;
-    }
-
-    if (errors.agent?.aiEngineId) {
-      setActiveStep(5);
-      return;
-    }
-
-    setIsSubmitting(true);
-    await onSubmit();
-    setIsSubmitting(false);
-    setActiveStep(0);
+    onClose();
+    resetWizard();
   };
 
   const handleEmojiSelect = (emoji: { id: string; src: string }) => {
@@ -396,15 +433,20 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
     setValue("team.src", `${emoji.src}`, { shouldValidate: true });
   };
 
-  const handleAvatarSelect = (emoji: { id: string; src: string }) => {
+  const handleAvatarSelect = (emoji: { id: string; src?: string }) => {
     setValue("agent.icon", `:${emoji.id}:`, { shouldValidate: true });
     setValue("agent.src", `${emoji.src}`, { shouldValidate: true });
   };
 
   const handleEngineSelect = (engine: { id: string; vendor: string }) => {
-    setValue("agent.aiEngineId", engine.id, { shouldValidate: true });
-    setValue("agent.engineName", engine.vendor, { shouldValidate: true });
-    handleNext();
+    const isSelected = getValues("agent.aiEngineId") === engine.id;
+
+    setValue("agent.aiEngineId", isSelected ? "" : engine.id, {
+      shouldValidate: true,
+    });
+    setValue("agent.engineName", isSelected ? "" : engine.vendor, {
+      shouldValidate: true,
+    });
   };
 
   const handleRandomValue = (property: PropertyOptionType) => {
@@ -439,7 +481,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
     }
   };
 
-  const handleTemplateSelect = (agentTpl: (typeof sampleAgents)[0]) => {
+  const handleTemplateSelect = async (agentTpl: SampleAgent) => {
     setValue("agent.name", agentTpl.name, { shouldValidate: true });
     setValue("agent.icon", agentTpl.icon, { shouldValidate: true });
     setValue("agent.description", agentTpl.description, {
@@ -451,7 +493,14 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
     setValue("agent.engineName", agentTpl.engineName, {
       shouldValidate: true,
     });
-    setActiveStep(6);
+
+    const created = await createEverything(getValues("agent"));
+
+    if (!created) {
+      return;
+    }
+
+    setActiveStep(KNOWLEDGE_STEP);
   };
 
   const handleOrganizationSelect = (organization: {
@@ -466,7 +515,6 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
       },
       { shouldValidate: true }
     );
-    setActiveStep(activeStep + 1);
   };
 
   const Organization = () => {
@@ -479,66 +527,114 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
     }
 
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-        <div>
-          <Controller
-            name="organization.name"
-            control={control}
-            render={({ field }) => (
-              <SparkleInput
-                data-cy="team-wizard-org-name-input"
-                prop="Organization Name"
-                value={field.value}
-                onChange={(e) => field.onChange(e.target.value)}
-                onRandomValue={() => handleRandomValue("organizationName")}
-                multiline={""}
+      <Stack spacing={3} sx={{ p: 2 }}>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", md: "1fr 0.01fr 1fr" },
+            gap: 3,
+            alignItems: "start",
+          }}
+        >
+          <Stack spacing={2}>
+            <Typography variant="subtitle2" fontWeight={600} textAlign="center">
+              Organization
+            </Typography>
+            <div>
+              <Controller
+                name="organization.name"
+                control={control}
+                render={({ field }) => (
+                  <SparkleInput
+                    data-cy="team-wizard-org-name-input"
+                    prop="Organization Name"
+                    value={field.value}
+                    onChange={(e) => field.onChange(e.target.value)}
+                    onRandomValue={() => handleRandomValue("organizationName")}
+                    multiline={""}
+                  />
+                )}
               />
-            )}
+              {errors.organization?.name && (
+                <Typography color="error" variant="caption">
+                  {errors.organization.name.message}
+                </Typography>
+              )}
+            </div>
+          </Stack>
+
+          <Divider
+            orientation="vertical"
+            flexItem
+            sx={{ display: { xs: "none", md: "block" } }}
           />
-          {errors.organization?.name && (
-            <Typography color="error" variant="caption">
-              {errors.organization.name.message}
+
+          <Stack spacing={2}>
+            <Typography variant="subtitle2" fontWeight={600} textAlign="center">
+              Team
             </Typography>
-          )}
-        </div>
+            <div>
+              <Controller
+                name="team.name"
+                control={control}
+                render={({ field }) => (
+                  <SparkleInput
+                    data-cy="team-wizard-name-input"
+                    prop="Team Name"
+                    value={field.value}
+                    onChange={(e) => field.onChange(e.target.value)}
+                    onRandomValue={() => handleRandomValue("teamName")}
+                    multiline={""}
+                  />
+                )}
+              />
+              {errors.team?.name && (
+                <Typography color="error" variant="caption">
+                  {errors.team.name.message}
+                </Typography>
+              )}
+            </div>
+            <IconSelector
+              handleEmojiSelect={handleEmojiSelect}
+              iconSrc={getValues("team.src")}
+              icon={getValues("team.icon")?.replace(/:/g, "")}
+            />
+          </Stack>
+        </Box>
+
         {organizations.length > 0 && (
-          <div>
-            <Typography variant="body2" gutterBottom textAlign={"center"}>
-              or Choose Existing Organization
-            </Typography>
+          <>
+            <Divider sx={{ my: 2 }}>
+              <Typography variant="body2" color="text.secondary">
+                Or choose an existing organization
+              </Typography>
+            </Divider>
 
             <Box
               sx={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-                gap: "16px",
-                marginTop: "16px",
+                gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+                gap: 2,
               }}
             >
               {organizations.map((organization) => (
                 <Card
+                  data-cy="existing-organization"
                   key={organization.id}
                   onClick={() => handleOrganizationSelect(organization)}
-                  sx={{
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                    "&:hover": {
-                      transform: "translateY(-2px)",
-                      boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-                    },
-                  }}
+                  variant="outlined"
+                  sx={cardSx}
                 >
-                  <CardActionArea>
+                  <CardActionArea sx={{ height: "100%" }}>
                     <CardContent>
                       <Box
                         sx={{
                           display: "flex",
                           alignItems: "center",
-                          gap: "12px",
-                          marginBottom: "8px",
+                          gap: 1.5,
                         }}
                       >
-                        <Typography variant="h6" component="div">
+                        <Typography variant="subtitle1" component="div" noWrap>
                           {organization.name}
                         </Typography>
                       </Box>
@@ -547,192 +643,80 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
                 </Card>
               ))}
             </Box>
-          </div>
+          </>
         )}
-      </div>
-    );
-  };
-
-  const Name = () => {
-    return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-        <div>
-          <Controller
-            name="team.name"
-            control={control}
-            render={({ field }) => (
-              <SparkleInput
-                data-cy="agent-wizard-name-input"
-                prop="Team Name"
-                value={field.value}
-                onChange={(e) => field.onChange(e.target.value)}
-                onRandomValue={() => handleRandomValue("teamName")}
-                multiline={""}
-              />
-            )}
-          />
-          {errors.team?.name && (
-            <Typography color="error" variant="caption">
-              {errors.team.name.message}
-            </Typography>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  const AgentName = () => {
-    return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-        <div>
-          <Controller
-            name="agent.name"
-            control={control}
-            render={({ field }) => (
-              <SparkleInput
-                data-cy="agent-wizard-name-input"
-                prop="name"
-                value={field.value}
-                onChange={(e) => field.onChange(e.target.value)}
-                onRandomValue={() => handleRandomValue("name")}
-                multiline={""}
-              />
-            )}
-          />
-          {errors.agent?.name && (
-            <Typography color="error" variant="caption">
-              {errors.agent.name.message}
-            </Typography>
-          )}
-        </div>
-
-        <div>
-          <Typography variant="body2" gutterBottom textAlign={"center"}>
-            Or choose one of the samples
-          </Typography>
-
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-              gap: "16px",
-              marginTop: "16px",
-            }}
-          >
-            {sampleAgents.map((agent, index) => (
-              <Card
-                key={index}
-                onClick={() => handleTemplateSelect(agent)}
-                sx={{
-                  cursor: "pointer",
-                  transition: "all 0.2s ease",
-                  "&:hover": {
-                    transform: "translateY(-2px)",
-                    boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-                  },
-                }}
-              >
-                <CardActionArea>
-                  <CardContent>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "12px",
-                        marginBottom: "8px",
-                      }}
-                    >
-                      <Iconify
-                        icon={cleanIconName(agent.icon)}
-                        width="20%"
-                        height="20%"
-                        style={{ objectFit: "contain" }}
-                      />
-                      <Typography variant="h6" component="div">
-                        {agent.name}
-                      </Typography>
-                    </Box>
-                    <Typography variant="body2" color="textSecondary">
-                      {agent.description}
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            ))}
-          </Box>
-        </div>
-      </div>
-    );
-  };
-
-  const Personality = () => {
-    return (
-      <>
-        <Controller
-          name="agent.description"
-          control={control}
-          render={({ field }) => (
-            <SparkleInput
-              data-cy="agent-wizard-description-input"
-              prop="description"
-              onChange={(e) => field.onChange(e.target.value)}
-              onRandomValue={() => handleRandomValue("description")}
-              value={field.value}
-              multiline
-              rows={11}
-            />
-          )}
-        />
-        {errors.agent?.description && (
-          <Typography color="error" variant="caption">
-            {errors.agent.description.message}
-          </Typography>
-        )}
-      </>
+      </Stack>
     );
   };
 
   const StepPages = () => {
     switch (activeStep) {
-      case 0:
-        return <Organization />;
-      case 1:
+      case ORGANIZATION_STEP:
         return (
-          <Stack spacing={2}>
-            <Name />
-            <IconSelector
-              handleEmojiSelect={handleEmojiSelect}
-              iconSrc={getValues("team.src")}
-              icon={getValues("team.icon")?.replace(/:/g, "")}
+          <>
+            {createError && (
+              <Alert severity="error" sx={{ mx: 4, mt: 2 }}>
+                {createError}
+              </Alert>
+            )}
+            <Organization />
+          </>
+        );
+      case AGENT_STEP:
+        return (
+          <>
+            {createError && (
+              <Alert severity="error" sx={{ mx: 4, mt: 2 }}>
+                {createError}
+              </Alert>
+            )}
+            <AgentStep
+              agent={agentValues}
+              onFieldChange={(property, value) =>
+                setValue(`agent.${property}`, value, { shouldValidate: true })
+              }
+              onRandomValue={handleRandomValue}
+              onEmojiSelect={handleAvatarSelect}
+              onEngineSelect={handleEngineSelect}
+              onTemplateSelect={handleTemplateSelect}
+              descriptionRows={3}
+              errors={{
+                name: errors.agent?.name?.message,
+                description: errors.agent?.description?.message,
+              }}
             />
-          </Stack>
+          </>
         );
-      case 2:
-        return <AgentName />;
-      case 3:
+      case KNOWLEDGE_STEP:
         return (
-          <SelectAvatar
-            handleEmojiSelect={handleAvatarSelect}
-            newItem={getValues("agent")}
-          />
+          <Box
+            data-cy="agent-wizard-knowledge-step"
+            sx={{ position: "relative", height: "100%", minHeight: 400 }}
+          >
+            <Knowledge agentId={agentId} teamId={teamId} />
+          </Box>
         );
-      case 4:
-        return <Personality />;
-      case 5:
+      case BLUEPRINT_STEP:
         return (
-          <EnginesChart
-            handleEngineSelect={handleEngineSelect}
-            isWizardEngine={true}
-            open={""}
-            setOpen={""}
-          />
+          <Box
+            data-cy="agent-wizard-blueprint-step"
+            sx={{ position: "relative", height: "100%", minHeight: 400 }}
+          >
+            <BlueprintsWidget agentId={agentId} teamId={teamId} />
+          </Box>
         );
-      case 6:
+      case SUMMARY_STEP:
         return (
-          <Summary
-            team={getValues("team")}
-            organization={getValues("organization")}
-            agent={getValues("agent")}
+          <ItemSummary
+            newItem={{
+              ...getValues("agent"),
+              engine: engines?.find(
+                (engine) => engine.id === getValues("agent.aiEngineId")
+              ),
+              team: getValues("team"),
+              knowledges: knowledges ?? [],
+              blueprints: blueprints ?? [],
+            }}
           />
         );
       default:
@@ -742,44 +726,63 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
 
   return (
     <Dialog
-      maxWidth={`xl`}
+      data-cy="team-dialog"
+      maxWidth={false}
+      slotProps={{
+        paper: {
+          sx: {
+            width: "100%",
+            height: "100%",
+            outline: "none",
+            display: "flex",
+            flexDirection: "column",
+          },
+        },
+      }}
       open={open}
       onClose={() => {
         if (organizations.length !== 0 && projectId) {
           onClose();
-          reset(defaultValues);
-          setActiveStep(0);
+          resetWizard();
         }
       }}
     >
-      <>
-        <DialogTitle
+      <DialogTitle
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          py: 1,
+          backgroundColor: (theme) => theme.palette.background.default,
+        }}
+      >
+        <Stack spacing={0} alignItems="center" textAlign="center">
+          <Typography variant="h6" component="div" lineHeight={1.2}>
+            {"Create Team"}
+          </Typography>
+        </Stack>
+      </DialogTitle>
+      <StepComponent
+        activeStep={activeStep}
+        steps={steps}
+        handleNext={handleNext}
+        handleBack={handleBack}
+        handleSave={handleSave}
+        isSubmitting={isSubmitting}
+        nextDisabled={activeStep === AGENT_STEP && !isAgentStepComplete}
+      >
+        <DialogContent
           sx={{
+            p: 0,
+            flex: 1,
+            minHeight: 0,
+            overflowY: "auto",
             backgroundColor: (theme) => theme.palette.background.default,
           }}
-        ></DialogTitle>
-        <StepComponent
-          activeStep={activeStep}
-          steps={steps}
-          stepExp={stepExp}
-          handleNext={handleNext}
-          handleBack={handleBack}
-          handleSave={handleSave}
-          isSubmitting={isSubmitting}
         >
-          <DialogContent
-            sx={{
-              width: "100%",
-              height: "100%",
-              alignContent: "center",
-              justifyContent: "center",
-              backgroundColor: (theme) => theme.palette.background.default,
-            }}
-          >
-            {StepPages()}
-          </DialogContent>
-        </StepComponent>
-      </>
+          {StepPages()}
+        </DialogContent>
+      </StepComponent>
     </Dialog>
   );
 }

@@ -147,7 +147,7 @@
     },
     {
       "id": "c2c3d4e5-0003-4000-8000-000000000003",
-      "action": "GREY:knowledge_lookup",
+      "action": "PLATFORM:knowledge_lookup",
       "parameters": {
         "query": "compliance certificate prd-4 Widget Pro X1",
         "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"

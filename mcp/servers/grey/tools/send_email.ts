@@ -1,15 +1,61 @@
 import { Tool } from "../../gdrive/tools/types";
+import fs from "fs";
 import logger from "../../../logger/logger.js";
 import nodemailer from "nodemailer";
+
+type EmailAttachment = {
+  filename: string;
+  path?: string;
+  content?: string;
+  contentType?: string;
+};
+
+type MeetingHighlight = {
+  topic: string;
+  highlights: string[];
+};
+
+function buildAttachments(input: unknown): {
+  attachments: EmailAttachment[];
+  missing: string[];
+} {
+  if (!Array.isArray(input)) return { attachments: [], missing: [] };
+
+  const attachments: EmailAttachment[] = [];
+  const missing: string[] = [];
+
+  for (const item of input as EmailAttachment[]) {
+    if (!item?.filename) continue;
+
+    if (item.path) {
+      if (!fs.existsSync(item.path)) {
+        missing.push(item.path);
+        continue;
+      }
+      attachments.push({
+        filename: item.filename,
+        path: item.path,
+        contentType: item.contentType,
+      });
+    } else if (item.content !== undefined) {
+      attachments.push({
+        filename: item.filename,
+        content: item.content,
+        contentType: item.contentType,
+      });
+    }
+  }
+
+  return { attachments, missing };
+}
 
 type MeetingSummaryData = {
   meetingName?: string;
   meetingDate?: string;
   summary?: string;
-  key_topics?: string[];
-  decisions?: string[];
-  action_items?: { owner_id?: string; owner?: string; task: string }[];
-  speaker_highlights?: { id: string; summary: string }[];
+  highlights?: MeetingHighlight[];
+  /** Variant B only - variant A has no next steps. */
+  next_steps?: string[];
 };
 
 function escapeHtml(value: string): string {
@@ -20,204 +66,136 @@ function escapeHtml(value: string): string {
     .replace(/"/g, "&quot;");
 }
 
-const AVATAR_COLORS = ["#6366f1", "#0ea5e9", "#f59e0b", "#10b981", "#ec4899", "#8b5cf6"];
-
-function avatarColor(seed: string): string {
-  let hash = 0;
-  for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
-  return AVATAR_COLORS[hash % AVATAR_COLORS.length];
+function sectionHeader(title: string): string {
+  return `<h2 style="margin:0 0 14px;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#1e293b;padding-left:10px;border-left:3px solid #1e293b;">${title}</h2>`;
 }
 
-function initial(name: string): string {
-  return escapeHtml(name.trim().charAt(0).toUpperCase() || "?");
+function renderSummarySection(summary?: string): string {
+  if (!summary?.trim()) return "";
+  return `
+    <tr>
+      <td style="padding:24px 32px 0;">
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px 18px;">
+          ${sectionHeader("Özet")}
+          <p style="margin:0;color:#334155;line-height:1.6;font-size:14px;">${escapeHtml(summary.trim())}</p>
+        </div>
+      </td>
+    </tr>
+    <tr><td style="height:26px;"></td></tr>`;
 }
 
-function sectionHeader(emoji: string, title: string): string {
-  return `<h2 style="margin:0 0 14px;font-size:13px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:#0f172a;"><span style="margin-right:8px;">${emoji}</span>${title}</h2>`;
-}
-
-function renderChecklistSection(emoji: string, title: string, items: string[]): string {
-  if (!items.length) return "";
-  const rows = items
+/** Highlights are grouped under their meeting topic. */
+function renderHighlightsSection(
+  items?: MeetingHighlight[],
+  accent = "#334155",
+): string {
+  if (!items?.length) return "";
+  const topics = items
     .map(
-      (item) => `
+      ({ topic, highlights }) => `
         <tr>
-          <td width="22" valign="top" style="padding:0 8px 10px 0;color:#10b981;font-size:14px;">✔️</td>
-          <td valign="top" style="padding:0 0 10px;color:#334155;font-size:14px;line-height:1.5;">${escapeHtml(item)}</td>
+          <td style="padding:0 0 18px;">
+            <div style="background:#f8fafc;border-left:3px solid ${accent};border-radius:0 6px 6px 0;padding:14px 16px;">
+              <h3 style="margin:0 0 10px;color:#1e293b;font-size:15px;line-height:1.4;">${escapeHtml(topic)}</h3>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                ${highlights
+                  .map(
+                    (highlight) => `
+                    <tr>
+                      <td width="18" valign="top" style="padding:0 6px 7px 0;color:${accent};font-size:14px;font-weight:700;">&#8226;</td>
+                      <td valign="top" style="padding:0 0 7px;color:#334155;font-size:14px;line-height:1.5;">${escapeHtml(highlight)}</td>
+                    </tr>`,
+                  )
+                  .join("")}
+              </table>
+            </div>
+          </td>
         </tr>`,
     )
     .join("");
   return `
     <tr>
       <td style="padding:0 32px 26px;">
-        ${sectionHeader(emoji, title)}
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table>
+        ${sectionHeader("Konular ve Öne Çıkanlar")}
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${topics}</table>
       </td>
     </tr>`;
 }
 
-function renderTopicsSection(items: string[]): string {
-  if (!items.length) return "";
-  const pills = items
+function renderNextStepsSection(items?: string[]): string {
+  if (!items?.length) return "";
+  const rows = items
     .map(
-      (item) =>
-        `<span style="display:inline-block;background:#eef2ff;color:#4338ca;padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;margin:0 8px 8px 0;">${escapeHtml(item)}</span>`,
+      (item, index) => `
+        <tr>
+          <td width="28" valign="top" style="padding:0 10px 12px 0;">
+            <div style="width:22px;height:22px;line-height:22px;border-radius:50%;background:#0f172a;color:#ffffff;font-size:11px;font-weight:700;text-align:center;">${index + 1}</div>
+          </td>
+          <td valign="top" style="padding:0 0 12px;color:#334155;font-size:14px;line-height:1.5;">${escapeHtml(item)}</td>
+        </tr>`,
     )
     .join("");
   return `
     <tr>
       <td style="padding:0 32px 26px;">
-        ${sectionHeader("🏷️", "Konular")}
-        <div>${pills}</div>
-      </td>
-    </tr>`;
-}
-
-function renderActionItemsSection(
-  items: { owner: string; task: string }[],
-): string {
-  if (!items.length) return "";
-  const rows = items
-    .map(({ owner, task }) => {
-      const color = avatarColor(owner);
-      return `
-        <tr>
-          <td style="padding:0 0 12px;">
-            <table role="presentation" cellpadding="0" cellspacing="0">
-              <tr>
-                <td width="30" valign="top" style="padding-right:10px;">
-                  <div style="width:26px;height:26px;line-height:26px;border-radius:50%;background:${color};color:#ffffff;font-size:12px;font-weight:700;text-align:center;">${initial(owner)}</div>
-                </td>
-                <td valign="top" style="color:#334155;font-size:14px;line-height:1.5;">
-                  <span style="font-weight:700;color:#0f172a;">${escapeHtml(owner)}</span> — ${escapeHtml(task)}
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>`;
-    })
-    .join("");
-  return `
-    <tr>
-      <td style="padding:0 32px 26px;">
-        ${sectionHeader("📌", "Aksiyon Maddeleri")}
+        ${sectionHeader("Sonraki Adımlar")}
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table>
       </td>
     </tr>`;
 }
 
-function renderSpeakerHighlightsSection(
-  items: { id: string; summary: string }[],
-): string {
-  if (!items.length) return "";
-  const rows = items
-    .map(({ id, summary }) => {
-      const color = avatarColor(id);
-      return `
-        <tr>
-          <td style="padding:0 0 14px;">
-            <table role="presentation" cellpadding="0" cellspacing="0">
-              <tr>
-                <td width="34" valign="top" style="padding-right:10px;">
-                  <div style="width:30px;height:30px;line-height:30px;border-radius:50%;background:${color};color:#ffffff;font-size:13px;font-weight:700;text-align:center;">${initial(id)}</div>
-                </td>
-                <td valign="top">
-                  <div style="font-weight:700;color:#0f172a;font-size:13px;margin-bottom:2px;">${escapeHtml(id)}</div>
-                  <div style="color:#64748b;font-size:13px;line-height:1.5;">${escapeHtml(summary)}</div>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>`;
-    })
-    .join("");
-  return `
-    <tr>
-      <td style="padding:0 32px 8px;">
-        ${sectionHeader("🗣️", "Konuşmacı Özetleri")}
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table>
-      </td>
-    </tr>`;
+function textBlock(title: string, items?: string[]): string {
+  if (!items?.length) return "";
+  return `\n${title}:\n- ${items.join("\n- ")}`;
 }
 
-export function renderMeetingSummary(data: MeetingSummaryData): {
-  subject: string;
-  text: string;
-  html: string;
-} {
-  const title = data.meetingName
-    ? `${data.meetingName} - Toplantı Özeti`
-    : "Toplantı Özeti";
-  const subject = data.meetingDate ? `${title} (${data.meetingDate})` : title;
-
-  const keyTopics = data.key_topics ?? [];
-  const decisions = data.decisions ?? [];
-  const actionItems = (data.action_items ?? []).map((item) => ({
-    owner: item.owner ?? item.owner_id ?? "-",
-    task: item.task,
-  }));
-  const speakerHighlights = data.speaker_highlights ?? [];
-
-  const actionItemLines = actionItems.map(
-    (item) => `${item.owner}: ${item.task}`,
-  );
-  const speakerHighlightLines = speakerHighlights.map(
-    (item) => `${item.id}: ${item.summary}`,
-  );
-
-  const text = [
-    subject,
-    "",
-    data.summary ?? "",
-    keyTopics.length ? "\nKonular:\n- " + keyTopics.join("\n- ") : "",
-    decisions.length ? "\nKararlar:\n- " + decisions.join("\n- ") : "",
-    actionItemLines.length
-      ? "\nAksiyon Maddeleri:\n- " + actionItemLines.join("\n- ")
-      : "",
-    speakerHighlightLines.length
-      ? "\nKonuşmacı Özetleri:\n- " + speakerHighlightLines.join("\n- ")
-      : "",
-  ]
-    .filter(Boolean)
+function textHighlightsBlock(items?: MeetingHighlight[]): string {
+  if (!items?.length) return "";
+  const topics = items
+    .map(
+      ({ topic, highlights }, index) =>
+        `${index + 1}. ${topic}\n${highlights
+          .map((highlight) => `   - ${highlight}`)
+          .join("\n")}`,
+    )
     .join("\n");
+  return `\nKonular ve Öne Çıkanlar:\n${topics}`;
+}
 
-  const html = `
+function renderShell({
+  data,
+  title,
+  eyebrow,
+  accent,
+  sections,
+}: {
+  data: MeetingSummaryData;
+  title: string;
+  eyebrow: string;
+  accent: string;
+  sections: string;
+}): string {
+  return `
 <div style="background:#eef1f6;padding:40px 16px;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
     <tr>
       <td align="center">
         <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(15,23,42,0.08);">
           <tr>
-            <td style="background:linear-gradient(135deg,#4f46e5,#0ea5e9);padding:28px 32px;">
-              <div style="font-size:26px;line-height:1;margin-bottom:10px;">🗓️</div>
-              <h1 style="margin:0;font-size:21px;color:#ffffff;">${escapeHtml(title)}</h1>
+            <td style="background:#0f172a;padding:32px;border-bottom:3px solid ${accent};">
+              <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#94a3b8;">${escapeHtml(eyebrow)}</p>
+              <h1 style="margin:0;font-size:22px;font-weight:700;color:#f8fafc;">${escapeHtml(title)}</h1>
               ${
                 data.meetingDate
-                  ? `<p style="margin:6px 0 0;color:#e0e7ff;font-size:13px;">${escapeHtml(data.meetingDate)}</p>`
+                  ? `<p style="margin:8px 0 0;color:#cbd5e1;font-size:13px;">${escapeHtml(data.meetingDate)}</p>`
                   : ""
               }
             </td>
           </tr>
-          ${
-            data.summary
-              ? `<tr>
-            <td style="padding:24px 32px 0;">
-              <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px 18px;">
-                ${sectionHeader("📝", "Özet")}
-                <p style="margin:0;color:#334155;line-height:1.6;font-size:14px;">${escapeHtml(data.summary)}</p>
-              </div>
-            </td>
-          </tr>
-          <tr><td style="height:26px;"></td></tr>`
-              : ""
-          }
-          ${renderTopicsSection(keyTopics)}
-          ${renderChecklistSection("✅", "Kararlar", decisions)}
-          ${renderActionItemsSection(actionItems)}
-          ${renderSpeakerHighlightsSection(speakerHighlights)}
+          ${sections}
           <tr>
             <td style="padding:18px 32px 24px;border-top:1px solid #e2e8f0;">
-              <p style="margin:0;color:#94a3b8;font-size:12px;">🤖 Bu özet otomatik olarak oluşturulmuştur.</p>
+              <p style="margin:0;color:#94a3b8;font-size:12px;">Bu özet otomatik olarak oluşturulmuştur. Toplantı transkriptleri ve LLM değerlendirmesi ektedir.</p>
             </td>
           </tr>
         </table>
@@ -225,6 +203,87 @@ export function renderMeetingSummary(data: MeetingSummaryData): {
     </tr>
   </table>
 </div>`;
+}
+
+function meetingTitle(data: MeetingSummaryData): {
+  title: string;
+  subject: string;
+} {
+  const title = data.meetingName
+    ? `${data.meetingName} - Toplantı Özeti`
+    : "Toplantı Özeti";
+  return {
+    title,
+    subject: data.meetingDate ? `${title} (${data.meetingDate})` : title,
+  };
+}
+
+/**
+ * Variant A: summary and highlights, written from the full transcript alone.
+ * No next steps - that section belongs to variant B.
+ */
+export function renderMeetingSummaryA(data: MeetingSummaryData): {
+  subject: string;
+  text: string;
+  html: string;
+} {
+  const { title, subject } = meetingTitle(data);
+  const accent = "#334155";
+
+  const text = [
+    subject,
+    "",
+    data.summary ?? "",
+    textHighlightsBlock(data.highlights),
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  const html = renderShell({
+    data,
+    title,
+    eyebrow: "Toplantı Özeti",
+    accent,
+    sections: `
+          ${renderSummarySection(data.summary)}
+          ${renderHighlightsSection(data.highlights, accent)}`,
+  });
+
+  return { subject, text, html };
+}
+
+/**
+ * Variant B: everything variant A has, plus the next steps the meeting left
+ * behind, attributed from each speaker's own recording.
+ */
+export function renderMeetingSummaryB(data: MeetingSummaryData): {
+  subject: string;
+  text: string;
+  html: string;
+} {
+  const { title, subject } = meetingTitle(data);
+  const accent = "#6366f1";
+
+  const text = [
+    subject,
+    "",
+    data.summary ?? "",
+    textHighlightsBlock(data.highlights),
+    textBlock("Sonraki Adımlar", data.next_steps),
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  const html = renderShell({
+    data,
+    title,
+    eyebrow: "Toplantı Özeti - Konuşmacı Bazlı",
+    accent,
+    sections: `
+          ${renderSummarySection(data.summary)}
+          ${renderHighlightsSection(data.highlights, accent)}
+          ${renderNextStepsSection(data.next_steps)}`,
+  });
 
   return { subject, text, html };
 }
@@ -233,7 +292,8 @@ const TEMPLATES: Record<
   string,
   (data: MeetingSummaryData) => { subject: string; text: string; html: string }
 > = {
-  meeting_summary: renderMeetingSummary,
+  meeting_summary_a: renderMeetingSummaryA,
+  meeting_summary_b: renderMeetingSummaryB,
 };
 
 export const sendEmailTool: Tool<any> = {
@@ -249,15 +309,18 @@ export const sendEmailTool: Tool<any> = {
       },
       subject: {
         type: "string",
-        description: "Email subject. Required unless 'template' is set (the template supplies its own subject).",
+        description:
+          "Email subject. Required unless 'template' is set (the template supplies its own subject).",
       },
       text: {
         type: "string",
-        description: "Plain text email body. Required unless 'template' is set (the template supplies its own text body).",
+        description:
+          "Plain text email body. Required unless 'template' is set (the template supplies its own text body).",
       },
       html: {
         type: "string",
-        description: "HTML email body (optional, overridden when 'template' is set)",
+        description:
+          "HTML email body (optional, overridden when 'template' is set)",
       },
       template: {
         type: "string",
@@ -267,14 +330,45 @@ export const sendEmailTool: Tool<any> = {
       },
       data: {
         type: "object",
-        description: "Structured data to render into the template named by 'template'.",
+        description:
+          "Structured data to render into the template named by 'template'.",
+      },
+      attachments: {
+        type: "array",
+        description:
+          "Files to attach. Each item is { filename, path } for a file on disk, or { filename, content } for inline content. Pass the 'attachments' array returned by PLATFORM:prepare_meeting_attachments through unchanged.",
+        items: {
+          type: "object",
+          properties: {
+            filename: {
+              type: "string",
+              description: "Name shown on the attachment",
+            },
+            path: {
+              type: "string",
+              description: "Absolute path of the file to attach",
+            },
+            content: {
+              type: "string",
+              description:
+                "Inline attachment content (used when 'path' is not given)",
+            },
+            contentType: { type: "string", description: "Optional MIME type" },
+          },
+          required: ["filename"],
+        },
       },
     },
     required: ["to"],
   },
   handler: async (args: any) => {
     logger.info(
-      { tool: "GREY:send_email", to: args.to, subject: args.subject, template: args.template },
+      {
+        tool: "GREY:send_email",
+        to: args.to,
+        subject: args.subject,
+        template: args.template,
+      },
       "Email send attempt initiated",
     );
 
@@ -282,15 +376,28 @@ export const sendEmailTool: Tool<any> = {
     let text = args.text;
     let html = args.html;
 
+    const { attachments, missing } = buildAttachments(args.attachments);
+    if (missing.length) {
+      logger.warn(
+        { tool: "GREY:send_email", missing },
+        "Skipping attachments whose files do not exist",
+      );
+    }
+
     if (args.template) {
       const render = TEMPLATES[args.template];
       if (!render) {
         const errorMessage = `Unknown template "${args.template}". Available templates: ${Object.keys(
           TEMPLATES,
         ).join(", ")}`;
-        logger.error({ tool: "GREY:send_email", template: args.template }, errorMessage);
+        logger.error(
+          { tool: "GREY:send_email", template: args.template },
+          errorMessage,
+        );
         return {
-          content: [{ type: "text", text: JSON.stringify({ error: errorMessage }) }],
+          content: [
+            { type: "text", text: JSON.stringify({ error: errorMessage }) },
+          ],
           isError: true,
         };
       }
@@ -304,28 +411,59 @@ export const sendEmailTool: Tool<any> = {
     try {
       logger.debug("Creating nodemailer transporter");
 
+      const host = process.env.SMTP_HOST;
+      const port = Number(process.env.SMTP_PORT ?? 587);
+      const user = process.env.SMTP_USER;
+      const pass = process.env.SMTP_PASS;
+      const from = process.env.SMTP_FROM ?? user;
+
+      if (!host) throw new Error("SMTP_HOST is not set");
+      if (!from) throw new Error("SMTP_FROM (or SMTP_USER) is not set");
+
+      const secure = process.env.SMTP_SECURE
+        ? process.env.SMTP_SECURE === "true"
+        : port === 465;
+      const ignoreTLS = process.env.SMTP_IGNORE_TLS === "true";
+      const requireTLS =
+        !secure && !ignoreTLS && process.env.SMTP_REQUIRE_TLS !== "false";
+
       const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: "halilibrahimcengel7@gmail.com",
-          pass: "xncn gssx cjas mnxy",
-          //user: process.env.GMAIL_USER,
-          //pass: process.env.GMAIL_APP_PASSWORD,
+        host,
+        port,
+        secure,
+        requireTLS,
+        ignoreTLS,
+        auth: user && pass ? { user, pass } : undefined,
+        connectionTimeout: 10_000,
+        greetingTimeout: 10_000,
+        socketTimeout: 20_000,
+        tls: {
+          servername: process.env.SMTP_TLS_SERVERNAME || undefined,
+          rejectUnauthorized:
+            process.env.SMTP_TLS_REJECT_UNAUTHORIZED !== "false",
         },
       });
 
       logger.debug("Sending email via SMTP");
 
       const info = await transporter.sendMail({
-        from: "halilibrahimcengel7@gmail.com",
+        from,
         to: args.to,
         subject,
         text,
         html,
+        attachments: attachments.length ? attachments : undefined,
       });
 
       logger.info(
-        { tool: "GREY:send_email", action: "send", to: args.to, subject, messageId: info.messageId },
+        {
+          tool: "GREY:send_email",
+          action: "send",
+          to: args.to,
+          subject,
+          messageId: info.messageId,
+          attachments: attachments.map((a) => a.filename),
+        },
         "Email sent successfully",
       );
 
@@ -338,6 +476,8 @@ export const sendEmailTool: Tool<any> = {
               messageId: info.messageId,
               to: args.to,
               subject,
+              attachments: attachments.map((a) => a.filename),
+              missingAttachments: missing.length ? missing : undefined,
             }),
           },
         ],

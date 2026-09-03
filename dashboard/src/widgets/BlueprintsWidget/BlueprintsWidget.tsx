@@ -1,13 +1,13 @@
 import AddIcon from "@mui/icons-material/Add";
 import BlueprintCard from "../../components/BlueprintCard/BlueprintCard";
-import BlueprintDrawer from "../../components/BlueprintDrawer/BlueprintDrawer";
+import BlueprintDrawerLayout from "../../layouts/BlueprintDrawerLayout";
 import BlueprintFlowDialog from "../../components/BlueprintFlow/BlueprintFlowDialog";
 import BlueprintSkeleton from "../../components/Skeletons/BlueprintSkeleton";
 import useBlueprint from "../../hooks/useBlueprint";
 import { useEvent } from "@nucleoidai/react-event";
 import useLoading from "../../hooks/useLoading";
 
-import { Box, Fab, Stack } from "@mui/material";
+import { Box, Fab, Stack, Typography } from "@mui/material";
 import React, { useState } from "react";
 
 function BlueprintsWidget({
@@ -82,8 +82,8 @@ function BlueprintsWidget({
                 <BlueprintSkeleton key={i} />
               ))}
             </>
-          ) : (
-            Blueprint?.map((item) => (
+          ) : Blueprint?.length > 0 ? (
+            Blueprint.map((item) => (
               <BlueprintCard
                 key={item.id}
                 item={item}
@@ -93,11 +93,24 @@ function BlueprintsWidget({
                 agentId={item.agentId}
               />
             ))
+          ) : (
+            <Stack
+              sx={{
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                height: "calc(100dvh - 280px)",
+                color: "text.secondary",
+                overflow: "hidden",
+              }}
+            >
+              <Typography variant="body2">No blueprints available</Typography>
+            </Stack>
           )}
         </Box>
       </Box>
       {drawerOpen && (
-        <BlueprintDrawer
+        <BlueprintDrawerLayout
           drawerOpen={drawerOpen}
           handleDrawerClose={handleDrawerClose}
           selectedItem={selectedItem}

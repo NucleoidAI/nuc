@@ -20,7 +20,7 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "types": ["cypress"]
+    "types": ["cypress", "vite/client"]
   },
   "include": ["src"],
   "exclude": ["node_modules", "build", "dist", "**/*.spec.ts", "**/*.test.ts"],

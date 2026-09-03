@@ -1,5 +1,3 @@
-import AddIcon from "@mui/icons-material/Add";
-import AddTaskDialog from "../AddTaskDialog/AddTaskDialog";
 import CloseIcon from "@mui/icons-material/Close";
 import { Iconify } from "@canmingir/link/platform/components";
 import React from "react";
@@ -21,10 +19,7 @@ const IncomingDrawer = ({
   handleDrawerClose,
   selectedSkill,
   instructions,
-  agent,
 }) => {
-  const [open, setOpen] = React.useState(false);
-
   return (
     <Drawer
       anchor="right"
@@ -61,6 +56,21 @@ const IncomingDrawer = ({
                 word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
             )
             .join(" ")}
+        </Typography>
+
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{
+            textAlign: "center",
+            mb: 1,
+            maxWidth: 600,
+            mx: "auto",
+            px: 2,
+            wordBreak: "break-word",
+          }}
+        >
+          {selectedSkill?.description}
         </Typography>
 
         <Box
@@ -104,26 +114,6 @@ const IncomingDrawer = ({
               </CardActions>
             </Card>
           ))}
-        </Box>
-
-        <Box>
-          <Stack sx={{ display: "flex", alignItems: "flex-end" }}>
-            <Fab
-              sx={{ m: 2 }}
-              onClick={() => {
-                setOpen(true);
-              }}
-            >
-              <AddIcon />
-            </Fab>
-          </Stack>
-
-          <AddTaskDialog
-            open={open}
-            setOpen={setOpen}
-            agentId={agent.id}
-            createTask={() => {}}
-          />
         </Box>
       </Box>
     </Drawer>

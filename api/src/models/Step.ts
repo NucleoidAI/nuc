@@ -65,6 +65,10 @@ class Step extends Model {
   @Column(DataType.FLOAT)
   declare knowledgeScore: number | null;
 
+  @AllowNull(true)
+  @Column(DataType.STRING)
+  declare nodeId: string | null;
+
   @AllowNull(false)
   @Default(DataType.NOW)
   @Column(DataType.DATE)

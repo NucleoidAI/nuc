@@ -1,4 +1,5 @@
-import BluePrint from "../models/Blueprint";
+import BluePrint, { BlueprintContext } from "../models/Blueprint";
+
 import BlueprintMessage from "../models/BlueprintMessage";
 import { NotFoundError } from "@canmingir/link-express/error";
 import agentFn from "./agent";
@@ -8,17 +9,100 @@ type NodeType = {
   properties?: {
     label: string;
     icon: string;
-    prompt?: string;
     description?: string;
+    instructions?: string;
     pseudocode?: string;
+    pseudocodeEnabled?: boolean;
     targetAgentId?: string;
     targetBlueprintId?: string;
+    force?: boolean;
   };
   type: string;
   next?: string[] | null;
   true?: string[] | null;
   false?: string[] | null;
 };
+
+const COSMETIC_PROPERTIES = ["label", "description", "pseudocodeEnabled"];
+
+function withoutCosmetics<T extends { properties?: object }>(nodes: T[]): T[] {
+  return nodes.map((node) => {
+    if (!node?.properties) {
+      return node;
+    }
+
+    const properties = node.properties as Record<string, unknown>;
+    const redundant = properties.pseudocode ? "instructions" : "pseudocode";
+
+    return {
+      ...node,
+      properties: Object.fromEntries(
+        Object.entries(properties).filter(
+          ([key]) => key !== redundant && !COSMETIC_PROPERTIES.includes(key),
+        ),
+      ),
+    };
+  });
+}
+
+function stripDetails<T extends { nodes?: unknown }>(blueprint: T): T {
+  if (!Array.isArray(blueprint?.nodes)) {
+    return blueprint;
+  }
+
+  return { ...blueprint, nodes: withoutCosmetics(blueprint.nodes) };
+}
+
+function sanitizePseudocode(nodes?: NodeType[]) {
+  if (!nodes?.length) {
+    return nodes;
+  }
+
+  return nodes.map((node) => {
+    const properties = node.properties;
+
+    if (!properties) {
+      return node;
+    }
+
+    const enabled =
+      properties.pseudocodeEnabled === true &&
+      Boolean(properties.instructions?.trim());
+
+    const dropped = enabled
+      ? properties.pseudocode?.trim()
+        ? null
+        : ["pseudocode"]
+      : ["pseudocode", "pseudocodeEnabled"];
+
+    if (!dropped) {
+      return node;
+    }
+
+    return {
+      ...node,
+      properties: Object.fromEntries(
+        Object.entries(properties).filter(([key]) => !dropped.includes(key)),
+      ),
+    } as NodeType;
+  });
+}
+
+async function generatePseudocode({
+  instructions,
+  agentId,
+}: {
+  instructions: string;
+  agentId: string;
+}) {
+  const content = instructions?.trim();
+
+  if (!content) {
+    return "";
+  }
+
+  return agentFn.toPseudo({ content, meta: { agentId } });
+}
 
 async function getWithNodes(id: string) {
   if (!id) {
@@ -52,9 +136,12 @@ async function upsert(
   nodes?: NodeType[],
   messages?: Array<{ role: string; content: string; createdAt: Date }>,
   blocking?: boolean,
-  force?: boolean,
+  skill?: string,
+  context?: BlueprintContext,
 ) {
   let Blueprint;
+
+  const sanitizedNodes = sanitizePseudocode(nodes);
 
   const existingBlueprint = await BluePrint.findByPk(id);
 
@@ -63,9 +150,10 @@ async function upsert(
       title,
       description,
       agentId,
-      nodes: nodes || null,
+      nodes: sanitizedNodes || null,
       ...(blocking !== undefined && { blocking }),
-      ...(force !== undefined && { force }),
+      ...(skill !== undefined && { skill }),
+      ...(context !== undefined && { context }),
     });
 
     Blueprint = existingBlueprint;
@@ -75,9 +163,10 @@ async function upsert(
       title,
       description,
       agentId,
-      nodes: nodes || null,
+      nodes: sanitizedNodes || null,
       ...(blocking !== undefined && { blocking }),
-      ...(force !== undefined && { force }),
+      ...(skill !== undefined && { skill }),
+      ...(context !== undefined && { context }),
     });
   }
 
@@ -110,10 +199,10 @@ async function remove({ blueprintId }: { blueprintId: string }) {
 
 async function list({
   agentId,
-  includeLabels = true,
+  includeDetails = true,
 }: {
   agentId: string;
-  includeLabels?: boolean;
+  includeDetails?: boolean;
 }) {
   const Blueprints = await BluePrint.findAll({
     where: { agentId },
@@ -127,22 +216,8 @@ async function list({
 
   const blueprints = Blueprints.map((Blueprint) => Blueprint.toJSON());
 
-  if (!includeLabels) {
-    return blueprints.map((Blueprint) => ({
-      ...Blueprint,
-      nodes: Array.isArray(Blueprint.nodes)
-        ? Blueprint.nodes.map((node) => ({
-            ...node,
-            properties: node?.properties
-              ? Object.fromEntries(
-                  Object.entries(node.properties).filter(
-                    ([key]) => key !== "label",
-                  ),
-                )
-              : node?.properties,
-          }))
-        : Blueprint.nodes,
-    }));
+  if (!includeDetails) {
+    return blueprints.map(stripDetails);
   }
 
   return blueprints;
@@ -150,10 +225,10 @@ async function list({
 
 async function get({
   blueprintId,
-  includeLabels = true,
+  includeDetails = true,
 }: {
   blueprintId: string;
-  includeLabels?: boolean;
+  includeDetails?: boolean;
 }) {
   const Blueprint = await BluePrint.findByPk(blueprintId, {
     include: [
@@ -170,19 +245,8 @@ async function get({
 
   const blueprint = Blueprint.toJSON();
 
-  if (!includeLabels) {
-    blueprint.nodes = Array.isArray(blueprint.nodes)
-      ? blueprint.nodes.map((node) => ({
-          ...node,
-          properties: node?.properties
-            ? Object.fromEntries(
-                Object.entries(node.properties).filter(
-                  ([key]) => key !== "label",
-                ),
-              )
-            : node?.properties,
-        }))
-      : blueprint.nodes;
+  if (!includeDetails) {
+    return stripDetails(blueprint);
   }
 
   return blueprint;
@@ -190,18 +254,16 @@ async function get({
 
 async function patch({
   blueprintId,
-  pseudocode,
   title,
   description,
   blocking,
-  force,
+  skill,
 }: {
   blueprintId: string;
-  pseudocode?: string;
   title?: string;
   description?: string;
   blocking?: boolean;
-  force?: boolean;
+  skill?: string;
 }) {
   const Blueprint = await BluePrint.findByPk(blueprintId);
 
@@ -210,99 +272,40 @@ async function patch({
   }
 
   await Blueprint.update({
-    ...(pseudocode && { pseudocode }),
     ...(title && { title }),
     ...(description && { description }),
     ...(blocking !== undefined && { blocking }),
-    ...(force !== undefined && { force }),
+    ...(skill !== undefined && { skill }),
   });
 
   return Blueprint.toJSON();
 }
 
-async function upsertPseudocode({
-  id,
-  title,
-  description,
-  agentId,
-  nodes,
-  messages,
-  blocking,
-  force,
-}: {
-  id: string;
-  title: string;
-  description: string;
-  agentId: string;
-  nodes?: NodeType[];
-  messages?: Array<{ role: string; content: string; createdAt: Date }>;
-  blocking?: boolean;
-  force?: boolean;
-}) {
-  const existingNodes = new Map(
-    (await BluePrint.findByPk(id))?.nodes?.map((n) => [n.id, n]) || [],
-  );
+async function generateDescription({ nodes }: { nodes: NodeType[] }) {
+  if (!nodes?.length) {
+    return "";
+  }
 
-  const [pseudocode, nodesWithPseudocode, generatedDescription] =
-    await Promise.all([
-      agentFn.toPseudo({ content: description, meta: { agentId } }),
-      nodes
-        ? Promise.all(
-            nodes.map((node) => {
-              const content = node.properties?.prompt;
-              if (!content) return node;
-              const prev = existingNodes.get(node.id);
-              const prevContent = prev?.properties?.prompt;
-              if (prev?.properties?.pseudocode && prevContent === content) {
-                return {
-                  ...node,
-                  properties: {
-                    ...node.properties,
-                    pseudocode: prev.properties.pseudocode,
-                  },
-                } as typeof node;
-              }
-              return agentFn.toPseudo({ content, meta: { agentId } }).then(
-                (nodePseudocode) =>
-                  ({
-                    ...node,
-                    properties: {
-                      ...node.properties,
-                      pseudocode: nodePseudocode,
-                    },
-                  } as typeof node),
-              );
-            }),
-          )
-        : undefined,
-      nodes?.length
-        ? agentFn.blueprintDescription({ nodes, meta: { agentId } })
-        : Promise.resolve(undefined),
-    ]);
-
-  const finalDescription = generatedDescription ?? description;
-
-  const result = await upsert(
-    title,
-    finalDescription,
-    agentId,
-    id,
-    nodesWithPseudocode,
-    messages,
-    blocking,
-    force,
-  );
-
-  await patch({ blueprintId: id, pseudocode });
-
-  return { ...result, pseudocode };
+  return agentFn.blueprintDescription({ nodes: withoutCosmetics(nodes) });
 }
+
+async function generateSkill({ nodes }: { nodes: NodeType[] }) {
+  if (!nodes?.length) {
+    return "";
+  }
+
+  return agentFn.blueprintSkill({ nodes: withoutCosmetics(nodes) });
+}
+
 export default {
   getWithNodes,
+  stripDetails,
   upsert,
-  upsertPseudocode,
   remove,
   list,
   get,
   patch,
+  generateDescription,
+  generateSkill,
+  generatePseudocode,
 };

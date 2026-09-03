@@ -23,7 +23,8 @@ function KnowledgeTable({
   table,
   selectedType,
   knowledges,
-  handleDeleteClick,
+  handleDeleteClick = undefined,
+  readOnly = false,
 }) {
   const getTableHead = (selectedType) => {
     switch (selectedType) {
@@ -119,7 +120,9 @@ function KnowledgeTable({
             <TableHeadCustom
               order={table.order}
               orderBy={table.orderBy}
-              headLabel={getTableHead(selectedType)}
+              headLabel={getTableHead(selectedType).filter(
+                (head) => !readOnly || head.id !== ""
+              )}
             />
             <TableBody>
               {knowledges
@@ -208,21 +211,23 @@ function KnowledgeTable({
                         </TableCell>
                       </>
                     )}
-                    <TableCell align="right" sx={{ width: "5%" }}>
-                      <IconButton
-                        data-cy="delete-knowledge-button"
-                        onClick={() => handleDeleteClick(row)}
-                        sx={{
-                          "&:hover": {
-                            "& svg": {
-                              color: "error.main",
+                    {!readOnly && (
+                      <TableCell align="right" sx={{ width: "5%" }}>
+                        <IconButton
+                          data-cy="delete-knowledge-button"
+                          onClick={() => handleDeleteClick(row)}
+                          sx={{
+                            "&:hover": {
+                              "& svg": {
+                                color: "error.main",
+                              },
                             },
-                          },
-                        }}
-                      >
-                        <Iconify icon="mdi:trash" />
-                      </IconButton>
-                    </TableCell>
+                          }}
+                        >
+                          <Iconify icon="mdi:trash" />
+                        </IconButton>
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))}
             </TableBody>

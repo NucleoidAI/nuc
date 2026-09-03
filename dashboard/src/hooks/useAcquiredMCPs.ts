@@ -12,8 +12,10 @@ export type MCP = {
 export type MCPSkill = {
   id: string;
   provider: string;
+  label: string;
   title?: string;
   description?: string;
+  action?: string;
   direction: "INCOMING" | "OUTGOING";
   icon?: string;
   oauth?: {

@@ -1,15 +1,16 @@
+import type { LLMMeta } from "../lib/llmLog";
 import MCPs from "../mcps/mcps";
 import actions from "../actions";
 import agentData from "./agentData";
 import blueprintFn from "./blueprint";
 import dataset from "../dataset";
 import { generate } from "../lib/llm";
-import type { LLMMeta } from "../lib/llmLog";
 import knowledgeFn from "./knowledge";
 import mcpFn from "./mcp";
 import message from "./message";
 import messagesFunc from "./message";
 import platform from "@canmingir/link-express";
+import { resolveParameterRefs } from "../lib/parameterRefs";
 import session from "./session";
 import stepScoreFn from "./stepScore";
 import supervising from "./supervising";
@@ -121,7 +122,10 @@ async function scoring({
 }
 
 async function Blueprints({ agentId }) {
-  const Blueprints = await blueprintFn.list({ agentId, includeLabels: false });
+  const Blueprints = await blueprintFn.list({
+    agentId,
+    includeDetails: false,
+  });
 
   return {
     role: "system",
@@ -191,24 +195,10 @@ async function teamChat({
   });
 }
 
-async function forceTask({
-  blueprint,
-  currentTask,
-  context,
-  isBlocking,
-  meta,
-}: {
-  blueprint: { nodes: any[] };
-  currentTask: { description: string; blueprintId: string; steps: any[] };
-  context: {
-    role: "user" | "system" | "assistant";
-    content: object | string;
-  }[];
-  isBlocking: boolean;
-  meta?: LLMMeta;
-}) {
-  const nodes = blueprint.nodes;
-
+function resolveCurrentNode(
+  nodes: any[],
+  completedSteps: { action: string; result?: string; nodeId?: string | null }[],
+) {
   const allNextIds = new Set(
     nodes.flatMap((n) => [
       ...(Array.isArray(n.next) ? n.next : n.next ? [n.next] : []),
@@ -216,15 +206,16 @@ async function forceTask({
       ...(n.false || []),
     ]),
   );
-  const rootNode = nodes.find((n) => !allNextIds.has(n.id));
+  let currentNode = nodes.find((n) => !allNextIds.has(n.id));
 
-  const completedSteps = currentTask.steps.filter((s) =>
-    ["COMPLETED", "WAITING_FOR_USER"].includes(s.status),
-  );
-
-  let currentNode = rootNode;
   for (const step of completedSteps) {
-    if (!currentNode || currentNode.properties?.action !== step.action) break;
+    if (!currentNode) break;
+
+    const stepMatchesNode = step.nodeId
+      ? step.nodeId === currentNode.id
+      : currentNode.properties?.action === step.action;
+    if (!stepMatchesNode) break;
+
     if (currentNode.type === "CONDITION") {
       const tookTrue = step.result === "true";
       const nextIds = tookTrue
@@ -245,6 +236,25 @@ async function forceTask({
     }
   }
 
+  return currentNode;
+}
+
+async function forceNodeStep({
+  currentNode,
+  currentTask,
+  context,
+  isBlocking,
+  meta,
+}: {
+  currentNode: any;
+  currentTask: { description: string; blueprintId: string; steps: any[] };
+  context: {
+    role: "user" | "system" | "assistant";
+    content: object | string;
+  }[];
+  isBlocking: boolean;
+  meta?: LLMMeta;
+}) {
   const forcedAction = currentNode?.properties?.action;
 
   const result = await generate({
@@ -289,7 +299,6 @@ async function task({ taskId }: { taskId: string }) {
 
   const blueprint = blueprintId ? await blueprintFn.get({ blueprintId }) : null;
   const isBlocking = blueprint?.blocking !== false;
-  const isForce = blueprint?.force === true;
 
   const { inheritedSteps: inherited } = await taskFn.get({ taskId });
 
@@ -299,7 +308,6 @@ async function task({ taskId }: { taskId: string }) {
         info({ agentId }),
         knowledge({ agentId, taskId }),
         Blueprints({ agentId }),
-        steps({ taskId }),
         sessionId ? conversations({ sessionId }) : Promise.resolve([]),
       ])
     ).flat(),
@@ -321,25 +329,70 @@ async function task({ taskId }: { taskId: string }) {
 
   const knowledgeScore = await scoring({ context, meta });
 
+  const completedSteps = currentTask.steps.filter((s) =>
+    ["COMPLETED", "WAITING_FOR_USER"].includes(s.status),
+  );
+  const currentNode = blueprint?.nodes?.length
+    ? resolveCurrentNode(blueprint.nodes, completedSteps)
+    : undefined;
+  const isForceNode = currentNode?.properties?.force === true;
+
   const {
-    next_step: { action, parameters, comment },
+    next_step: { action, parameters: llmParameters, comment },
     result_score,
-  } =
-    isForce && blueprint?.nodes?.length
-      ? await forceTask({ blueprint, currentTask, context, isBlocking, meta })
-      : await generate({
-          dataset: isBlocking
-            ? dataset.train.taskDiamondBlocking
-            : dataset.train.taskDiamondNonBlocking,
-          context,
-          content: currentTask,
-          json_format:
-            "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
-          meta,
-        });
+  } = isForceNode
+    ? await forceNodeStep({
+        currentNode,
+        currentTask,
+        context,
+        isBlocking,
+        meta,
+      })
+    : await generate({
+        dataset: isBlocking
+          ? dataset.train.taskDiamondBlocking
+          : dataset.train.taskDiamondNonBlocking,
+        context,
+        content: currentTask,
+        json_format:
+          "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
+        meta,
+      });
 
   console.log("next action", action);
   console.log("comment", comment);
+
+  const nodeId = currentNode?.id ?? null;
+
+  const boundParameters = currentNode?.properties?.parameters;
+  const rawParameters =
+    boundParameters && Object.keys(boundParameters).length
+      ? { ...llmParameters, ...boundParameters }
+      : llmParameters;
+
+  const byNode = Object.fromEntries(
+    currentTask.steps.filter((s) => s.nodeId).map((s) => [s.nodeId, s]),
+  );
+
+  let parameters: Record<string, unknown>;
+  let resolvedParameters: Record<string, unknown>;
+  try {
+    resolvedParameters = resolveParameterRefs(rawParameters, {
+      steps: currentTask.steps,
+      inherited_steps: inherited ?? [],
+      byNode,
+    });
+    parameters = rawParameters;
+  } catch (err) {
+    return await taskFn.update({
+      taskId,
+      status: "FAILED",
+      comment:
+        err instanceof Error
+          ? err.message
+          : "Failed to resolve parameter references",
+    });
+  }
 
   const resultScore =
     result_score != null ? parseFloat(String(result_score)) : undefined;
@@ -376,7 +429,7 @@ async function task({ taskId }: { taskId: string }) {
       status: "COMPLETED",
     });
   } else if (action === "PLATFORM:handoff") {
-    const handoffParams = parameters as {
+    const handoffParams = resolvedParameters as {
       targetAgentId: string;
       targetBlueprintId?: string;
       context: string;
@@ -435,6 +488,7 @@ async function task({ taskId }: { taskId: string }) {
       comment,
       knowledgeScore,
       resultScore,
+      nodeId,
     });
   } else if (action === "PLATFORM:message_user") {
     parameters.sessionId = sessionId;
@@ -448,6 +502,7 @@ async function task({ taskId }: { taskId: string }) {
     comment,
     knowledgeScore,
     resultScore,
+    nodeId,
   });
 }
 
@@ -495,6 +550,21 @@ async function step({
     // TODO: hallucinationScore will be calculated separately in the future
     const stepHallucinationScore = stepKnowledgeScore;
 
+    const priorSteps = (await taskFn.listSteps({ taskId })).filter(
+      (s) => s.id !== stepId,
+    );
+    const { inheritedSteps } = await taskFn.get({ taskId });
+    const runParameters = resolveParameterRefs(
+      parameters as Record<string, unknown>,
+      {
+        steps: priorSteps,
+        inherited_steps: inheritedSteps ?? [],
+        byNode: Object.fromEntries(
+          priorSteps.filter((s) => s.nodeId).map((s) => [s.nodeId, s]),
+        ),
+      },
+    );
+
     if (actionType === "SUPERVISED") {
       actionFn = require("../actions/ask_supervisor").default;
     } else if (actionType === "ACTION") {
@@ -530,7 +600,7 @@ async function step({
             ({ comment, result }) => `Comment: ${comment}\nResult: ${result}`,
           )
           .join("\n"),
-        parameters,
+        parameters: runParameters,
         meta: { taskId },
       });
 
@@ -538,12 +608,10 @@ async function step({
         `[agent.step] actionFn.run returned for action=${action} stepId=${stepId}`,
       );
     } else if (actionType === "MCP") {
-      let mcpParameters = parameters as Record<string, unknown>;
-      if (action === "GREY:knowledge_lookup" && !mcpParameters.agentId) {
-        const task = await taskFn.get({ taskId });
-        mcpParameters = { ...mcpParameters, agentId: task.agentId };
-      }
-      result = await mcpClient.callTool(action, mcpParameters);
+      result = await mcpClient.callTool(
+        action,
+        runParameters as Record<string, unknown>,
+      );
     }
 
     let resultString;
@@ -634,6 +702,13 @@ async function step({
   }
 }
 
+type BlueprintChatContextSummary = {
+  agent: { name?: string; description?: string };
+  knowledge: { type?: string; question?: string; text?: string }[];
+  referenceBlueprint: { id?: string; title?: string; nodeCount: number } | null;
+  supervising: { question?: string; status?: string } | null;
+};
+
 async function blueprintChatContext({
   agentId,
   blueprintId,
@@ -648,21 +723,28 @@ async function blueprintChatContext({
     taskId?: string | null;
     blueprintId?: string | null;
   } | null;
-}): Promise<{ role: "system"; content: string }[]> {
+}): Promise<{
+  messages: { role: "system"; content: string }[];
+  summary: BlueprintChatContextSummary;
+}> {
   const [agentInfo, agentKnowledge, referenceBlueprint] = await Promise.all([
     info({ agentId }),
     knowledge({ agentId }),
     blueprintId ? blueprintFn.getWithNodes(blueprintId) : Promise.resolve(null),
   ]);
 
-  return [
+  const blueprintForLLM = referenceBlueprint
+    ? blueprintFn.stripDetails(referenceBlueprint)
+    : null;
+
+  const messages: { role: "system"; content: string }[] = [
     { role: "system", content: JSON.stringify(agentInfo.content) },
     { role: "system", content: JSON.stringify(agentKnowledge.content) },
-    ...(referenceBlueprint
+    ...(blueprintForLLM
       ? [
           {
             role: "system" as const,
-            content: JSON.stringify({ referenceBlueprint }),
+            content: JSON.stringify({ referenceBlueprint: blueprintForLLM }),
           },
         ]
       : []),
@@ -670,6 +752,52 @@ async function blueprintChatContext({
       ? [{ role: "system" as const, content: JSON.stringify({ supervising }) }]
       : []),
   ];
+
+  const agentContent = agentInfo.content as {
+    ai_assistant_info?: { name?: string; description?: string };
+  };
+  const knowledgeContent = agentKnowledge.content as {
+    knowledge_base?: {
+      type?: string | null;
+      question?: string | null;
+      text?: string | null;
+    }[];
+  };
+  const reference = referenceBlueprint as {
+    id?: string;
+    title?: string;
+    nodes?: unknown[];
+  } | null;
+
+  const clean = (value?: string | null) => value ?? undefined;
+
+  const summary: BlueprintChatContextSummary = {
+    agent: {
+      name: clean(agentContent.ai_assistant_info?.name),
+      description: clean(agentContent.ai_assistant_info?.description),
+    },
+    knowledge: (knowledgeContent.knowledge_base ?? []).map(
+      ({ type, question, text }) => ({
+        type: clean(type),
+        question: clean(question),
+        text: clean(text),
+      }),
+    ),
+    referenceBlueprint: reference
+      ? {
+          id: reference.id,
+          title: reference.title,
+          nodeCount: Array.isArray(reference.nodes)
+            ? reference.nodes.length
+            : 0,
+        }
+      : null,
+    supervising: supervising
+      ? { question: supervising.question, status: supervising.status }
+      : null,
+  };
+
+  return { messages, summary };
 }
 
 async function blueprintChatDecision({
@@ -1036,7 +1164,7 @@ async function chat({
   if (selectedBlueprintId && task.length === 0) {
     const blueprintData = await blueprintFn.get({
       blueprintId: selectedBlueprintId,
-      includeLabels: false,
+      includeDetails: false,
     });
 
     const blueprintToTaskResponse = await blueprintToTask({
@@ -1145,7 +1273,7 @@ async function toPseudo({
     meta,
   });
 
-  return response.pseudocode;
+  return response.pseudocode as string;
 }
 
 async function blueprintDescription({
@@ -1170,9 +1298,25 @@ async function blueprintDescription({
     meta,
   });
 
-  console.log("[agent] blueprintDescription:", response);
-
   return response.description as string;
+}
+
+async function blueprintSkill({ nodes }: { nodes: object[] }) {
+  const context = [
+    {
+      role: "system" as const,
+      content: { nodes },
+    },
+  ];
+
+  const response = await generate({
+    dataset: dataset.train.blueprintSkill,
+    context,
+    content: nodes,
+    json_format: "{ skill: <SKILL> }",
+  });
+
+  return response.skill as string;
 }
 
 export default {
@@ -1189,4 +1333,5 @@ export default {
   evaluateSupervisionAnswer,
   toPseudo,
   blueprintDescription,
+  blueprintSkill,
 };

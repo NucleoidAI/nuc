@@ -1,78 +1,31 @@
-import DialogContentText from "@mui/material/DialogContentText";
+import AgentSummary from "./AgentSummary";
+import BlueprintSummary from "./BlueprintSummary";
+import { Box } from "@mui/material";
+import EngineSummary from "./EngineSummary";
 import Grid from "@mui/material/Grid";
-import { Iconify } from "@canmingir/link/platform/components";
-import { cleanIconName } from "../../utils/cleanIconName";
+import KnowledgeSummary from "./KnowledgeSummary";
+const DETAIL_LIST_HEIGHT = "calc(100vh - 600px)";
 
-import { Box, Card, CardContent, CardHeader, Typography } from "@mui/material";
+const detailListSx = {
+  height: DETAIL_LIST_HEIGHT,
+  overflowY: "auto",
+  pr: 0.5,
+};
 
 export default function ItemSummary({ newItem }) {
+  const team = newItem.team;
+
   return (
-    <>
-      <DialogContentText sx={{ textAlign: "center", mb: 2 }}>
-        Agent Summary
-      </DialogContentText>
-      <Grid container spacing={2} alignItems="stretch">
-        <Grid size={6}>
-          <Card
-            sx={{
-              bgcolor: (theme) => theme.palette.background.paper,
-              boxShadow: (theme) => theme.customShadows.card,
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "100%",
-            }}
-          >
-            <CardContent>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  mb: 1,
-                }}
-              >
-                <Iconify
-                  icon={cleanIconName(newItem.icon)}
-                  width={48}
-                  height={48}
-                  style={{ objectFit: "contain" }}
-                />
-              </Box>
-              <Typography
-                variant="h6"
-                textAlign={"center"}
-                mb={2}
-                data-cy="item-summary-name-area"
-              >
-                {newItem.name}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid size={6}>
-          <Card sx={{ height: "100%" }}>
-            <CardHeader title="Engine" />
-            <CardContent>
-              <Typography data-cy="item-summary-role-area">
-                {newItem.engineName}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid size={12}>
-          <Card>
-            <CardHeader title="Description" />
-            <CardContent>
-              <Typography data-cy="item-summary-description-area">
-                {newItem.description}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
+    <Box>
+      <Grid container spacing={2} alignItems="stretch" sx={{ p: 1 }}>
+        <AgentSummary newItem={newItem} team={team} />
+
+        <EngineSummary newItem={newItem} />
+
+        <KnowledgeSummary newItem={newItem} detailListSx={detailListSx} />
+
+        <BlueprintSummary newItem={newItem} detailListSx={detailListSx} />
       </Grid>
-    </>
+    </Box>
   );
 }

@@ -3,12 +3,10 @@
     {
       "id": "0cbfbecd-5e0d-4924-b5fd-6de262285936",
       "description": "Check product availability, if not exist, create order.",
-      "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n    Order.Create()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "Blueprint": {
         "id": "ba6f7911-e232-469d-9060-2881852f6e59",
         "title": "Product Order",
         "description": "Check product availability, if not exist, create order.",
-        "pseudocode": "BEGIN_CONTEXT\nIF Product.Available == FALSE THEN\n    Order.Create()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
         "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
         "nodes": [
           {
@@ -16,12 +14,9 @@
             "type": "NORMAL",
             "properties": {
               "action": "GREY:check_product_count",
-              "icon": "mdi:check",
-              "prompt": "Check Product Availability"
+              "icon": "mdi:check"
             },
-            "next": [
-              "51dca395-1d90-4a28-9bbc-233de9c1a207"
-            ],
+            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -29,15 +24,10 @@
             "type": "CONDITION",
             "properties": {
               "action": "PLATFORM:decision",
-              "icon": "mdi:source-branch",
-              "prompt": "Make Decision"
+              "icon": "mdi:source-branch"
             },
-            "true": [
-              "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-            ],
-            "false": [
-              "5be22de7-9673-448d-a1b5-dc23a8789b5c"
-            ],
+            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+            "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -45,8 +35,7 @@
             "type": "NORMAL",
             "properties": {
               "action": "GREY:create_order",
-              "icon": "mdi:cart-plus",
-              "prompt": "Create Order"
+              "icon": "mdi:cart-plus"
             },
             "next": "5be22de7-9673-448d-a1b5-dc23a8789b5c",
             "createdAt": "2025-06-19T06:02:00Z"
@@ -56,8 +45,7 @@
             "type": "NORMAL",
             "properties": {
               "action": "PLATFORM:complete",
-              "icon": "mdi:check",
-              "prompt": "Complete Task"
+              "icon": "mdi:check"
             },
             "next": null,
             "createdAt": "2025-06-19T06:02:00Z"
@@ -67,8 +55,7 @@
             "type": "NORMAL",
             "properties": {
               "action": "GREY:reduce_product_count",
-              "icon": "mdi:minus",
-              "prompt": "Reduce Product Quantity"
+              "icon": "mdi:minus"
             },
             "next": "f5987e15-d014-4e45-bc3b-7b1f53c4472b",
             "createdAt": "2025-06-19T06:02:00Z"
@@ -78,8 +65,7 @@
             "type": "NORMAL",
             "properties": {
               "action": "GREY:send_email",
-              "icon": "mdi:email",
-              "prompt": "Send Email"
+              "icon": "mdi:email"
             },
             "next": "2a69ce9c-32e9-49c9-ad7c-b631d890359b",
             "createdAt": "2025-06-19T06:03:00Z"
@@ -89,8 +75,7 @@
             "type": "NORMAL",
             "properties": {
               "action": "PLATFORM:complete",
-              "icon": "mdi:check",
-              "prompt": "Complete Task"
+              "icon": "mdi:check"
             },
             "next": null,
             "createdAt": "2025-06-19T06:02:00Z"
@@ -224,12 +209,10 @@
       "id": "2efhdhff-7g2f-6b46-d7hf-8fg484407b58",
       "description": "Setup internet subscription at user's address.",
       "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
-      "pseudocode": "BEGIN_CONTEXT \nUser.Address = GetUserAddress()\nbbk = GetBBKByAddress(User.Address)\nIF bbk == NULL THEN\n    NotifyUser(\"Address not found. Please call support center.\")\n    Complete()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "blueprint": {
         "id": "ca7g8022-f343-570e-a171-3992963g7f70",
         "title": "Basic Internet Subscription Setup",
         "description": "Offer internet packages based on the user's residential address and provide available internet packages for the selected address.",
-        "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n ShowProducts(products)\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
         "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
         "nodes": [
           {
@@ -237,12 +220,9 @@
             "type": "NORMAL",
             "properties": {
               "action": "PLATFORM:user_interaction",
-              "icon": "mdi:map-marker",
-              "prompt": "Get User Address"
+              "icon": "mdi:map-marker"
             },
-            "next": [
-              "76ccda2d-f11f-408c-8087-66c377600d0b"
-            ],
+            "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -250,12 +230,9 @@
             "type": "NORMAL",
             "properties": {
               "action": "TELCO:get_bbk_by_address",
-              "icon": "mdi:map-marker",
-              "prompt": "Get BBK No by Address"
+              "icon": "mdi:map-marker"
             },
-            "next": [
-              "51dca395-1d90-4a28-9bbc-233de9c1a207"
-            ],
+            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -263,12 +240,9 @@
             "type": "NORMAL",
             "properties": {
               "action": "TELCO:get_inventory",
-              "icon": "mdi:server",
-              "prompt": "Get Inventory"
+              "icon": "mdi:server"
             },
-            "next": [
-              "019b209c-2e5a-777f-a04a-11960363fb25"
-            ],
+            "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -276,15 +250,10 @@
             "type": "CONDITION",
             "properties": {
               "action": "PLATFORM:decision",
-              "icon": "mdi:source-branch",
-              "prompt": "Is inventory available?"
+              "icon": "mdi:source-branch"
             },
-            "true": [
-              "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-            ],
-            "false": [
-              "019b20a6-1aa6-7510-b222-66535e50dfb3"
-            ],
+            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+            "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -292,8 +261,7 @@
             "type": "NORMAL",
             "properties": {
               "action": "PLATFORM:complete",
-              "icon": "mdi:check",
-              "prompt": "No product available, complete"
+              "icon": "mdi:check"
             },
             "next": null,
             "createdAt": "2025-06-19T06:02:00Z"
@@ -303,12 +271,9 @@
             "type": "NORMAL",
             "properties": {
               "action": "TELCO:get_product_by_speed",
-              "icon": "mdi:speedometer",
-              "prompt": "Get products by speed"
+              "icon": "mdi:speedometer"
             },
-            "next": [
-              "019c8a58-10e3-713f-9484-78d04923040f"
-            ],
+            "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -316,12 +281,9 @@
             "type": "NORMAL",
             "properties": {
               "action": "PLATFORM:user_interaction",
-              "icon": "mdi:cursor-pointer",
-              "prompt": "Provide available products and wait for user to select a product"
+              "icon": "mdi:cursor-pointer"
             },
-            "next": [
-              "019b3302-7846-75c2-9ab7-897c18b8ccee"
-            ],
+            "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -329,12 +291,9 @@
             "type": "NORMAL",
             "properties": {
               "action": "TELCO:port_allocation",
-              "icon": "mdi:link",
-              "prompt": "Allocate port and create order"
+              "icon": "mdi:link"
             },
-            "next": [
-              "019b3305-7846-75c2-9ab7-897c18b8cce1"
-            ],
+            "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -342,12 +301,9 @@
             "type": "NORMAL",
             "properties": {
               "action": "PLATFORM:message_user",
-              "icon": "mdi:bell",
-              "prompt": "Notify user about port allocation"
+              "icon": "mdi:bell"
             },
-            "next": [
-              "019b209e-3122-75ce-9ba6-674b6184f68d"
-            ],
+            "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -355,12 +311,9 @@
             "type": "NORMAL",
             "properties": {
               "action": "TELCO:configuration",
-              "icon": "mdi:settings",
-              "prompt": "Configure allocated port"
+              "icon": "mdi:settings"
             },
-            "next": [
-              "019b32f6-5878-73fb-8411-55916778d9a4"
-            ],
+            "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -368,12 +321,9 @@
             "type": "NORMAL",
             "properties": {
               "action": "TELCO:port_connection",
-              "icon": "mdi:ethernet",
-              "prompt": "Connect port to residence"
+              "icon": "mdi:ethernet"
             },
-            "next": [
-              "019b32f6-bd02-734e-bd3a-aec89d79609c"
-            ],
+            "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -381,8 +331,7 @@
             "type": "NORMAL",
             "properties": {
               "action": "PLATFORM:complete",
-              "icon": "mdi:check",
-              "prompt": "Complete setup flow"
+              "icon": "mdi:check"
             },
             "next": null,
             "createdAt": "2025-06-19T06:02:00Z"
@@ -451,12 +400,10 @@
       "id": "5hkjgmih-8h4g-7d57-e9jh-0igf495519d60",
       "description": "Setup internet subscription for a US residential address with full notification flow.",
       "sessionId": "029c8g97-0c29-94h4-0cfg-04ef00h8d9ee",
-      "pseudocode": "BEGIN_CONTEXT \nUser.Address = GetUserAddress()\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\n    Complete()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "blueprint": {
         "id": "ca7g8022-f343-570e-a171-3992963g7f70",
         "title": "Basic Internet Subscription Setup",
         "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-        "pseudocode": "BEGIN_CONTEXT\nbbk = GetBBKByAddress(User.Address)\ninventory = GetInventory(bbk)\nIF inventory.Available == TRUE THEN\n    products = GetProductBySpeed()\n    ShowProducts(products)\n    selectedProduct = WaitForUserSelection(products)\n    PortAllocation(selectedProduct.serial_number)\n    MessageUser()\n    Configuration(selectedProduct.serial_number)\n    PortConnection(selectedProduct.assignment_id)\n    Complete()\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
         "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
         "nodes": [
           {
@@ -464,12 +411,9 @@
             "type": "NORMAL",
             "properties": {
               "action": "PLATFORM:user_interaction",
-              "icon": "mdi:map-marker",
-              "prompt": "Get User Address"
+              "icon": "mdi:map-marker"
             },
-            "next": [
-              "76ccda2d-f11f-408c-8087-66c377600d0b"
-            ],
+            "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -477,12 +421,9 @@
             "type": "NORMAL",
             "properties": {
               "action": "TELCO:get_bbk_by_address",
-              "icon": "mdi:map-marker",
-              "prompt": "Get BBK No by Address"
+              "icon": "mdi:map-marker"
             },
-            "next": [
-              "51dca395-1d90-4a28-9bbc-233de9c1a207"
-            ],
+            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -490,12 +431,9 @@
             "type": "NORMAL",
             "properties": {
               "action": "TELCO:get_inventory",
-              "icon": "mdi:server",
-              "prompt": "Get Inventory"
+              "icon": "mdi:server"
             },
-            "next": [
-              "019b209c-2e5a-777f-a04a-11960363fb25"
-            ],
+            "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -503,15 +441,10 @@
             "type": "CONDITION",
             "properties": {
               "action": "PLATFORM:decision",
-              "icon": "mdi:source-branch",
-              "prompt": "Is inventory available?"
+              "icon": "mdi:source-branch"
             },
-            "true": [
-              "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
-            ],
-            "false": [
-              "019b20a6-1aa6-7510-b222-66535e50dfb3"
-            ],
+            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+            "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -519,8 +452,7 @@
             "type": "NORMAL",
             "properties": {
               "action": "PLATFORM:complete",
-              "icon": "mdi:check",
-              "prompt": "No product available, complete"
+              "icon": "mdi:check"
             },
             "next": null,
             "createdAt": "2025-06-19T06:02:00Z"
@@ -530,12 +462,9 @@
             "type": "NORMAL",
             "properties": {
               "action": "TELCO:get_product_by_speed",
-              "icon": "mdi:speedometer",
-              "prompt": "Get products by speed"
+              "icon": "mdi:speedometer"
             },
-            "next": [
-              "019c8a58-10e3-713f-9484-78d04923040f"
-            ],
+            "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -543,12 +472,9 @@
             "type": "NORMAL",
             "properties": {
               "action": "PLATFORM:user_interaction",
-              "icon": "mdi:cursor-pointer",
-              "prompt": "Provide available products and wait for user to select a product"
+              "icon": "mdi:cursor-pointer"
             },
-            "next": [
-              "019b3302-7846-75c2-9ab7-897c18b8ccee"
-            ],
+            "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -556,12 +482,9 @@
             "type": "NORMAL",
             "properties": {
               "action": "TELCO:port_allocation",
-              "icon": "mdi:link",
-              "prompt": "Allocate port and create order"
+              "icon": "mdi:link"
             },
-            "next": [
-              "019b3305-7846-75c2-9ab7-897c18b8cce1"
-            ],
+            "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -569,12 +492,9 @@
             "type": "NORMAL",
             "properties": {
               "action": "PLATFORM:message_user",
-              "icon": "mdi:bell",
-              "prompt": "Notify user about port allocation"
+              "icon": "mdi:bell"
             },
-            "next": [
-              "019b209e-3122-75ce-9ba6-674b6184f68d"
-            ],
+            "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -582,12 +502,9 @@
             "type": "NORMAL",
             "properties": {
               "action": "TELCO:configuration",
-              "icon": "mdi:settings",
-              "prompt": "Configure allocated port"
+              "icon": "mdi:settings"
             },
-            "next": [
-              "019b32f6-5878-73fb-8411-55916778d9a4"
-            ],
+            "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -595,12 +512,9 @@
             "type": "NORMAL",
             "properties": {
               "action": "TELCO:port_connection",
-              "icon": "mdi:ethernet",
-              "prompt": "Connect port to residence"
+              "icon": "mdi:ethernet"
             },
-            "next": [
-              "019b32f6-bd02-734e-bd3a-aec89d79609c"
-            ],
+            "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -608,8 +522,7 @@
             "type": "NORMAL",
             "properties": {
               "action": "PLATFORM:complete",
-              "icon": "mdi:check",
-              "prompt": "Complete setup flow"
+              "icon": "mdi:check"
             },
             "next": null,
             "createdAt": "2025-06-19T06:02:00Z"
@@ -761,7 +674,6 @@
       "id": "hnd-nb-0001-0001-0001-0001-000000000001",
       "description": "Customer completed onboarding, hand off to support agent for follow-up.",
       "sessionId": "session-hnd-nb-0001",
-      "pseudocode": "BEGIN_CONTEXT\nOnboarding.Complete()\nHandoff(SupportAgent, context)\nEND_CONTEXT\n\nEND_MESSAGE",
       "Blueprint": {
         "id": "bp-hnd-nb-0001-0001-0001-0001-000000000001",
         "title": "Onboarding to Support Handoff",
@@ -773,12 +685,9 @@
             "type": "NORMAL",
             "properties": {
               "action": "PLATFORM:message_user",
-              "icon": "mdi:bell",
-              "prompt": "Notify user that onboarding is complete"
+              "icon": "mdi:bell"
             },
-            "next": [
-              "node-hnd-nb-002"
-            ],
+            "next": ["node-hnd-nb-002"],
             "createdAt": "2025-06-19T06:02:00Z"
           },
           {
@@ -787,17 +696,13 @@
             "properties": {
               "label": "Hand off to Support Agent",
               "icon": "mdi:account-arrow-right",
-              "targetAgentId": "agent-support-001",
-              "prompt": "Transfer to support agent for follow-up"
+              "targetAgentId": "agent-support-001"
             }
           }
         ]
       },
       "knowledge": [],
-      "tools": [
-        "GREY:send_email",
-        "PLATFORM:message_user"
-      ],
+      "tools": ["GREY:send_email", "PLATFORM:message_user"],
       "steps": [
         {
           "taskId": "task-hnd-nb-001",
@@ -825,7 +730,6 @@
       "id": "order-cert-nonblock-001",
       "description": "Create a purchase order for product-2 (prd-2).",
       "sessionId": "019b6e75-nb01-nb01-nb01-nb0100000001",
-      "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\ncertificate = CheckCertificate(product.id)\nIF certificate.has_certificate == TRUE THEN\n    AssignCertificate(product.id, certificate.certificate)\n    PO.Create(product.id)\n    Email.Send()\nELSE\n    Handoff(complianceAgent)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "Blueprint": {
         "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
         "title": "Order and Compliance",
@@ -837,13 +741,10 @@
             "type": "NORMAL",
             "properties": {
               "action": "PLATFORM:user_interaction",
-              "prompt": "Ask user which product they want to order",
               "label": "Select a Product",
               "icon": "mdi:account-question"
             },
-            "next": [
-              "f1e1d1c1-a1b1-4111-8111-111111111111"
-            ],
+            "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
@@ -851,27 +752,21 @@
             "type": "NORMAL",
             "properties": {
               "action": "ORDER:find_product",
-              "prompt": "Find the product by identifier",
               "label": "Find Product",
               "icon": "mdi:magnify"
             },
-            "next": [
-              "f3e3d3c3-a3b3-4333-8333-333333333333"
-            ],
+            "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
             "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
             "type": "NORMAL",
             "properties": {
-              "action": "GREY:knowledge_lookup",
-              "prompt": "Look up compliance certificate for the product from agent knowledge",
+              "action": "PLATFORM:knowledge_lookup",
               "label": "Knowledge Lookup",
               "icon": "mdi:book-search"
             },
-            "next": [
-              "f3e3d3c4-a3b3-4333-8333-444444444444"
-            ],
+            "next": ["f3e3d3c4-a3b3-4333-8333-444444444444"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
@@ -879,16 +774,11 @@
             "type": "CONDITION",
             "properties": {
               "action": "PLATFORM:decision",
-              "prompt": "Is certificate found?",
               "label": "Is Certificate Found?",
               "icon": "mdi:source-branch"
             },
-            "true": [
-              "f2e2d2c2-a2b2-4222-8222-222222222222"
-            ],
-            "false": [
-              "f3e3d3c5-a3b3-4333-8333-555555555555"
-            ],
+            "true": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+            "false": ["f3e3d3c5-a3b3-4333-8333-555555555555"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
@@ -896,13 +786,10 @@
             "type": "NORMAL",
             "properties": {
               "action": "ORDER:assign_certificate",
-              "prompt": "Assign a compliance certificate to the product",
               "label": "Assign Certificate",
               "icon": "mdi:certificate-outline"
             },
-            "next": [
-              "f4e4d4c4-a4b4-4444-8444-444444444444"
-            ],
+            "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
@@ -910,7 +797,6 @@
             "type": "HANDOFF",
             "properties": {
               "action": "PLATFORM:handoff",
-              "prompt": "Handoff to compliance agent",
               "label": "Handoff - No Certificate",
               "icon": "mdi:account-arrow-right"
             },
@@ -922,13 +808,10 @@
             "type": "NORMAL",
             "properties": {
               "action": "ORDER:create_po",
-              "prompt": "Create a purchase order for the product",
               "label": "Create Purchase Order",
               "icon": "mdi:file-document-plus"
             },
-            "next": [
-              "f6e6d6c6-a6b6-4666-8666-666666666666"
-            ],
+            "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
@@ -936,7 +819,6 @@
             "type": "NORMAL",
             "properties": {
               "action": "GREY:send_email",
-              "prompt": "Send email to notify about the purchase order",
               "label": "Send Email",
               "icon": "mdi:email"
             },
@@ -994,7 +876,7 @@
         "TELCO:port_allocation",
         "TELCO:port_connection",
         "ORDER:find_product",
-        "GREY:knowledge_lookup",
+        "PLATFORM:knowledge_lookup",
         "ORDER:assign_certificate",
         "ORDER:create_po"
       ],
@@ -1014,20 +896,24 @@
           "action": "ORDER:find_product",
           "status": "COMPLETED",
           "parameters": {
-            "name": "product-2"
+            "name": {
+              "$ref": "steps[0].result"
+            }
           },
           "result": "{\"id\": \"prd-2\", \"name\": \"product-2\"}",
-          "comment": "Found product-2 with ID prd-2"
+          "comment": "Reusing the product name the user already gave (steps[0].result) via $ref instead of retyping it"
         },
         {
           "taskId": "task-nb-001",
-          "action": "GREY:knowledge_lookup",
+          "action": "PLATFORM:knowledge_lookup",
           "status": "COMPLETED",
           "parameters": {
-            "product_id": "prd-2"
+            "product_id": {
+              "$ref": "steps[1].result.id"
+            }
           },
           "result": "{\"product_id\": \"prd-2\", \"certificate\": \"CE\", \"has_certificate\": true}",
-          "comment": "Product prd-2 has CE compliance certificate (from knowledge)"
+          "comment": "Reusing the product id find_product already resolved (steps[1].result.id) via $ref instead of retyping it"
         },
         {
           "taskId": "task-nb-001",
@@ -1042,23 +928,29 @@
                 "action": "ORDER:assign_certificate",
                 "status": "COMPLETED",
                 "parameters": {
-                  "product_id": "prd-2",
-                  "certificate": "CE"
+                  "product_id": {
+                    "$ref": "steps[1].result.id"
+                  },
+                  "certificate": {
+                    "$ref": "steps[2].result.certificate"
+                  }
                 },
                 "result": "{\"product_id\": \"prd-2\", \"certificate\": \"CE\", \"assigned\": true}",
-                "comment": "Confirmed CE certificate for prd-2"
+                "comment": "Reusing product_id (steps[1].result.id) and certificate (steps[2].result.certificate) via $ref instead of retyping them"
               },
               {
                 "taskId": "task-nb-001",
                 "action": "ORDER:create_po",
                 "status": "COMPLETED",
                 "parameters": {
-                  "product_id": "prd-2",
+                  "product_id": {
+                    "$ref": "steps[1].result.id"
+                  },
                   "city": "Chicago",
                   "quantity": 3
                 },
                 "result": "{\"order_id\": \"po-2003\", \"product_id\": \"prd-2\", \"city\": \"Chicago\", \"quantity\": 3}",
-                "comment": "Purchase order po-2003 created for prd-2"
+                "comment": "Reusing product_id (steps[1].result.id) via $ref instead of retyping it"
               },
               {
                 "taskId": "task-nb-001",
@@ -1098,7 +990,6 @@
       "id": "order-cert-nonblock-002",
       "description": "Create a purchase order for product-4 (prd-4) which has no compliance certificate.",
       "sessionId": "019b6e75-nb02-nb02-nb02-nb0200000002",
-      "pseudocode": "BEGIN_CONTEXT\nselectedProduct = WaitForUserSelection()\nproduct = FindProduct(selectedProduct)\ncertificate = CheckCertificate(product.id)\nIF certificate.has_certificate == TRUE THEN\n    AssignCertificate(product.id, certificate.certificate)\n    PO.Create(product.id)\n    Email.Send()\nELSE\n    MessageUser(\"No certificate found, handing off to compliance\")\n    Handoff(complianceAgent)\nEND_IF\nEND_CONTEXT\n\nEND_MESSAGE",
       "Blueprint": {
         "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
         "title": "Order and Compliance",
@@ -1110,13 +1001,10 @@
             "type": "NORMAL",
             "properties": {
               "action": "PLATFORM:user_interaction",
-              "prompt": "Ask user which product they want to order",
               "label": "Select a Product",
               "icon": "mdi:account-question"
             },
-            "next": [
-              "f1e1d1c1-a1b1-4111-8111-111111111111"
-            ],
+            "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
@@ -1124,27 +1012,21 @@
             "type": "NORMAL",
             "properties": {
               "action": "ORDER:find_product",
-              "prompt": "Find the product by identifier",
               "label": "Find Product",
               "icon": "mdi:magnify"
             },
-            "next": [
-              "f3e3d3c3-a3b3-4333-8333-333333333333"
-            ],
+            "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
             "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
             "type": "NORMAL",
             "properties": {
-              "action": "GREY:knowledge_lookup",
-              "prompt": "Look up compliance certificate for the product from agent knowledge",
+              "action": "PLATFORM:knowledge_lookup",
               "label": "Knowledge Lookup",
               "icon": "mdi:book-search"
             },
-            "next": [
-              "f3e3d3c4-a3b3-4333-8333-444444444444"
-            ],
+            "next": ["f3e3d3c4-a3b3-4333-8333-444444444444"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
@@ -1152,16 +1034,11 @@
             "type": "CONDITION",
             "properties": {
               "action": "PLATFORM:decision",
-              "prompt": "Is certificate found?",
               "label": "Is Certificate Found?",
               "icon": "mdi:source-branch"
             },
-            "true": [
-              "f2e2d2c2-a2b2-4222-8222-222222222222"
-            ],
-            "false": [
-              "f3e3d3c5-a3b3-4333-8333-555555555555"
-            ],
+            "true": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+            "false": ["f3e3d3c5-a3b3-4333-8333-555555555555"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
@@ -1169,13 +1046,10 @@
             "type": "NORMAL",
             "properties": {
               "action": "ORDER:assign_certificate",
-              "prompt": "Assign a compliance certificate to the product",
               "label": "Assign Certificate",
               "icon": "mdi:certificate-outline"
             },
-            "next": [
-              "f4e4d4c4-a4b4-4444-8444-444444444444"
-            ],
+            "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
@@ -1183,7 +1057,6 @@
             "type": "HANDOFF",
             "properties": {
               "action": "PLATFORM:handoff",
-              "prompt": "Handoff to compliance agent",
               "label": "Handoff - No Certificate",
               "icon": "mdi:account-arrow-right"
             },
@@ -1195,13 +1068,10 @@
             "type": "NORMAL",
             "properties": {
               "action": "ORDER:create_po",
-              "prompt": "Create a purchase order for the product",
               "label": "Create Purchase Order",
               "icon": "mdi:file-document-plus"
             },
-            "next": [
-              "f6e6d6c6-a6b6-4666-8666-666666666666"
-            ],
+            "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
@@ -1209,7 +1079,6 @@
             "type": "NORMAL",
             "properties": {
               "action": "GREY:send_email",
-              "prompt": "Send email to notify about the purchase order",
               "label": "Send Email",
               "icon": "mdi:email"
             },
@@ -1267,7 +1136,7 @@
         "TELCO:port_allocation",
         "TELCO:port_connection",
         "ORDER:find_product",
-        "GREY:knowledge_lookup",
+        "PLATFORM:knowledge_lookup",
         "ORDER:assign_certificate",
         "ORDER:create_po"
       ],
@@ -1287,20 +1156,24 @@
           "action": "ORDER:find_product",
           "status": "COMPLETED",
           "parameters": {
-            "name": "product-4"
+            "name": {
+              "$ref": "steps[0].result"
+            }
           },
           "result": "{\"id\": \"prd-4\", \"name\": \"product-4\"}",
-          "comment": "Found product-4 with ID prd-4"
+          "comment": "Reusing the product name the user already gave (steps[0].result) via $ref instead of retyping it"
         },
         {
           "taskId": "task-nb-002",
-          "action": "GREY:knowledge_lookup",
+          "action": "PLATFORM:knowledge_lookup",
           "status": "COMPLETED",
           "parameters": {
-            "product_id": "prd-4"
+            "product_id": {
+              "$ref": "steps[1].result.id"
+            }
           },
           "result": "{\"product_id\": \"prd-4\", \"certificate\": null, \"has_certificate\": false}",
-          "comment": "Product prd-4 has no compliance certificate (from knowledge)"
+          "comment": "Reusing the product id find_product already resolved (steps[1].result.id) via $ref instead of retyping it"
         },
         {
           "taskId": "task-nb-002",
@@ -1351,75 +1224,57 @@
       "id": "4a1c9e2b-7d3f-4b8a-9e6c-2f5a8d1b3c7e",
       "description": "Transcribe a meeting recording, produce a speaker-attributed summary, resolve participant names, and email the summary to all participants.",
       "sessionId": "019f414b-8a07-72f2-8adf-82cd88f6b7cc",
-      "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath)\nsummary = SummarizeMeetingBySpeaker(transcripts.full_meeting_transcript, transcripts.speaker_transcripts)\nresolved = ResolveParticipants(summary, participants)\nEmail.Send(to: participants.emails, template: \"meeting_summary\", data: resolved)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
       "blueprint": {
         "id": "019f414b-0000-4000-8000-000000000001",
         "title": "Meeting Recording Transcription & Summary",
         "description": "Converts per-participant PCM recordings to WAV, transcribes each one, produces a structured meeting summary attributed by speaker ID, resolves participant IDs to real names in that summary, and emails it to all participants.",
-        "pseudocode": "BEGIN_CONTEXT\nConvertPCMToWAV(directoryPath)\ntranscripts = TranscribeMeeting(directoryPath)\nsummary = SummarizeMeetingBySpeaker(transcripts.full_meeting_transcript, transcripts.speaker_transcripts)\nresolved = ResolveParticipants(summary, participants)\nEmail.Send(to: participants.emails, template: \"meeting_summary\", data: resolved)\nComplete()\nEND_CONTEXT\n\nEND_MESSAGE",
         "agentId": "019f4a02-1111-4222-8333-444455556666",
         "nodes": [
           {
             "id": "019f414b-0001-4000-8000-000000000001",
             "type": "NORMAL",
             "properties": {
-              "action": "PLATFORM:pcm_to_wav",
-              "prompt": "Convert PCM files to WAV"
+              "action": "PLATFORM:pcm_to_wav"
             },
-            "next": [
-              "019f414b-0002-4000-8000-000000000002"
-            ]
+            "next": ["019f414b-0002-4000-8000-000000000002"]
           },
           {
             "id": "019f414b-0002-4000-8000-000000000002",
             "type": "NORMAL",
             "properties": {
-              "action": "PLATFORM:transcribe_meeting",
-              "prompt": "Transcribe all WAV files in the meeting directory"
+              "action": "PLATFORM:transcribe_meeting"
             },
-            "next": [
-              "019f414b-0003-4000-8000-000000000003"
-            ]
+            "next": ["019f414b-0003-4000-8000-000000000003"]
           },
           {
             "id": "019f414b-0003-4000-8000-000000000003",
             "type": "NORMAL",
             "properties": {
-              "action": "PLATFORM:summarize_meeting_by_speaker",
-              "prompt": "Produce a speaker-attributed meeting summary"
+              "action": "PLATFORM:summarize_meeting_by_speaker"
             },
-            "next": [
-              "019f414b-0004-4000-8000-000000000004"
-            ]
+            "next": ["019f414b-0004-4000-8000-000000000004"]
           },
           {
             "id": "019f414b-0004-4000-8000-000000000004",
             "type": "NORMAL",
             "properties": {
-              "action": "PLATFORM:resolve_participants",
-              "prompt": "Resolve participant IDs to real names in the summary"
+              "action": "PLATFORM:resolve_participants"
             },
-            "next": [
-              "019f414b-0005-4000-8000-000000000005"
-            ]
+            "next": ["019f414b-0005-4000-8000-000000000005"]
           },
           {
             "id": "019f414b-0005-4000-8000-000000000005",
             "type": "NORMAL",
             "properties": {
-              "action": "GREY:send_email",
-              "prompt": "Email the resolved meeting summary to all participants using the meeting_summary template"
+              "action": "GREY:send_email"
             },
-            "next": [
-              "019f414b-0006-4000-8000-000000000006"
-            ]
+            "next": ["019f414b-0006-4000-8000-000000000006"]
           },
           {
             "id": "019f414b-0006-4000-8000-000000000006",
             "type": "NORMAL",
             "properties": {
-              "action": "PLATFORM:complete",
-              "prompt": "Complete meeting summary flow"
+              "action": "PLATFORM:complete"
             },
             "next": null
           }
@@ -1452,9 +1307,48 @@
       "steps": [
         {
           "taskId": "4a1c9e2b-7d3f-4b8a-9e6c-2f5a8d1b3c7e",
+          "action": "PLATFORM:pcm_to_wav",
+          "status": "COMPLETED",
+          "parameters": {
+            "directoryPath": "/recordings/2026-07-08-retrospective"
+          },
+          "result": "{\"success\":true,\"converted\":[\"/recordings/2026-07-08-retrospective/16780288.wav\",\"/recordings/2026-07-08-retrospective/16782336.wav\",\"/recordings/2026-07-08-retrospective/16783360.wav\"],\"totalFound\":3,\"totalConverted\":3}",
+          "comment": "Converting per-participant PCM recordings to WAV before transcription"
+        },
+        {
+          "taskId": "4a1c9e2b-7d3f-4b8a-9e6c-2f5a8d1b3c7e",
+          "action": "PLATFORM:transcribe_meeting",
+          "status": "COMPLETED",
+          "parameters": {
+            "directoryPath": "/recordings/2026-07-08-retrospective"
+          },
+          "result": "{\"full_meeting_transcript\":\"Ayşe Kaya: Son iki toplantıya katılım düşüktü, bunun sebebini konuşalım. Mehmet Yılmaz: Herkese hatırlatma maili göndereyim. Halil Cengel: Ayrıca Smart TV entegrasyonu bu sprintte tamamlanmalı.\",\"speaker_transcripts\":[{\"id\":\"16780288\",\"transcript\":\"Son iki toplantıya katılım düşüktü, bunun sebebini konuşalım.\"},{\"id\":\"16782336\",\"transcript\":\"Herkese hatırlatma maili göndereyim.\"},{\"id\":\"16783360\",\"transcript\":\"Ayrıca Smart TV entegrasyonu bu sprintte tamamlanmalı.\"}]}",
+          "comment": "Transcribing all WAV files in the meeting directory"
+        },
+        {
+          "taskId": "4a1c9e2b-7d3f-4b8a-9e6c-2f5a8d1b3c7e",
+          "action": "PLATFORM:summarize_meeting_by_speaker",
+          "status": "COMPLETED",
+          "parameters": {
+            "full_meeting_transcript": {
+              "$ref": "steps[1].result.full_meeting_transcript"
+            },
+            "speaker_transcripts": {
+              "$ref": "steps[1].result.speaker_transcripts"
+            },
+            "language": "tr"
+          },
+          "result": "{\"summary\":\"Ekip son review toplantılarındaki düşük katılımı ve Smart TV entegrasyon çalışmalarını değerlendirdi.\",\"key_topics\":[\"Düşük toplantı katılımı\",\"Smart TV entegrasyonu\"],\"decisions\":[\"16782336: Gelecek ay için hatırlatma maili gönderilecek\"],\"action_items\":[{\"owner_id\":\"16782336\",\"task\":\"Hatırlatma maili gönder\"}],\"speaker_highlights\":[{\"id\":\"16780288\",\"summary\":\"Katılım azlığından endişe duydu.\"}]}",
+          "comment": "transcribe_meeting already produced full_meeting_transcript and speaker_transcripts in its result (steps[1]) - reusing them via $ref instead of retyping the entire transcript"
+        },
+        {
+          "taskId": "4a1c9e2b-7d3f-4b8a-9e6c-2f5a8d1b3c7e",
           "action": "PLATFORM:resolve_participants",
           "status": "COMPLETED",
           "parameters": {
+            "content": {
+              "$ref": "steps[2].result"
+            },
             "participants": [
               {
                 "id": "16780288",
@@ -1515,6 +1409,394 @@
           "comment": "Completing meeting summary flow"
         }
       ]
+    },
+    {
+      "id": "f80fb2a6-ddea-4b32-a70f-9c1253524cd8",
+      "description": "Transcribe a meeting recording, produce a speaker-attributed summary, resolve participant names, and email the summary to all participants.",
+      "knowledge": [
+        {
+          "type": "TEXT",
+          "text": "Meeting name: Weekly Sync. Meeting date: 2026-07-30."
+        }
+      ],
+      "tools": [
+        "PLATFORM:pcm_to_wav",
+        "PLATFORM:transcribe_meeting",
+        "PLATFORM:summarize_meeting_by_speaker",
+        "PLATFORM:resolve_participants",
+        "GREY:send_email",
+        "PLATFORM:complete"
+      ],
+      "steps": [
+        {
+          "action": "PLATFORM:pcm_to_wav",
+          "status": "COMPLETED",
+          "parameters": {
+            "directoryPath": "/recordings/2026-07-30-weekly-sync"
+          },
+          "result": "{\"success\":true,\"converted\":[\"/recordings/2026-07-30-weekly-sync/1.wav\",\"/recordings/2026-07-30-weekly-sync/2.wav\"],\"totalFound\":2,\"totalConverted\":2}",
+          "comment": "Converting per-participant PCM recordings to WAV before transcription"
+        },
+        {
+          "action": "PLATFORM:transcribe_meeting",
+          "status": "COMPLETED",
+          "parameters": {
+            "directoryPath": "/recordings/2026-07-30-weekly-sync"
+          },
+          "result": "{\"full_meeting_transcript\":\"Speaker 1: Let's review this week's progress. Speaker 2: The integration tests are passing now.\",\"speaker_transcripts\":[{\"id\":\"1\",\"transcript\":\"Let's review this week's progress.\"},{\"id\":\"2\",\"transcript\":\"The integration tests are passing now.\"}]}",
+          "comment": "Transcribing all WAV files in the meeting directory"
+        }
+      ],
+      "next_step": {
+        "action": "PLATFORM:summarize_meeting_by_speaker",
+        "parameters": {
+          "full_meeting_transcript": {
+            "$ref": "steps[1].result.full_meeting_transcript"
+          },
+          "speaker_transcripts": {
+            "$ref": "steps[1].result.speaker_transcripts"
+          },
+          "language": "tr"
+        },
+        "comment": "steps[1] (transcribe_meeting) already produced full_meeting_transcript and speaker_transcripts - reuse them via $ref instead of retyping the transcript.",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "3c9d7a1e-5b6f-4a2c-9d0e-8f1a2b3c4d5e",
+      "description": "Transcribe a meeting recording, produce a speaker-attributed summary, resolve participant names, and email the summary to all participants.",
+      "knowledge": [
+        {
+          "type": "TEXT",
+          "text": "Meeting name: Sprint Planning. Meeting date: 2026-08-03."
+        }
+      ],
+      "tools": [
+        "PLATFORM:pcm_to_wav",
+        "PLATFORM:transcribe_meeting",
+        "PLATFORM:summarize_meeting_by_speaker",
+        "PLATFORM:resolve_participants",
+        "GREY:send_email",
+        "PLATFORM:complete"
+      ],
+      "steps": [
+        {
+          "action": "PLATFORM:pcm_to_wav",
+          "status": "COMPLETED",
+          "parameters": {
+            "directoryPath": "/recordings/2026-08-03-sprint-planning"
+          },
+          "result": "{\"success\":true,\"converted\":[\"/recordings/2026-08-03-sprint-planning/9001.wav\",\"/recordings/2026-08-03-sprint-planning/9002.wav\",\"/recordings/2026-08-03-sprint-planning/9003.wav\"],\"totalFound\":3,\"totalConverted\":3}",
+          "comment": "Converting per-participant PCM recordings to WAV before transcription"
+        },
+        {
+          "action": "PLATFORM:transcribe_meeting",
+          "status": "COMPLETED",
+          "parameters": {
+            "directoryPath": "/recordings/2026-08-03-sprint-planning"
+          },
+          "result": "{\"full_meeting_transcript\":\"[several thousand words of dialogue - omitted here, but present in full in the real step result]\",\"speaker_transcripts\":[{\"id\":\"9001\",\"transcript\":\"[long individual transcript segment]\"},{\"id\":\"9002\",\"transcript\":\"[long individual transcript segment]\"},{\"id\":\"9003\",\"transcript\":\"[long individual transcript segment]\"}]}",
+          "comment": "Transcribing all WAV files in the meeting directory"
+        },
+        {
+          "action": "PLATFORM:summarize_meeting_by_speaker",
+          "status": "FAILED",
+          "parameters": {
+            "full_meeting_transcript": "Ali: Bu sprintte neler yapacağız konuşalım. Zeynep: Öncelikle backlog'u gözden geçirelim. [transcript continues for thousands more words, typed out in full by mistake]",
+            "speaker_transcripts": [
+              {
+                "id": "9001",
+                "transcript": "Bu sprintte neler yapacağız konuşalım. [continues for hundreds more words]"
+              }
+            ],
+            "language": "tr"
+          },
+          "result": "Response was truncated due to max_tokens limit",
+          "comment": "The transcript was typed out by hand instead of using $ref, so the response ran out of tokens before finishing"
+        }
+      ],
+      "next_step": {
+        "action": "PLATFORM:summarize_meeting_by_speaker",
+        "parameters": {
+          "full_meeting_transcript": {
+            "$ref": "steps[1].result.full_meeting_transcript"
+          },
+          "speaker_transcripts": {
+            "$ref": "steps[1].result.speaker_transcripts"
+          },
+          "language": "tr"
+        },
+        "comment": "Retrying with $ref instead of retyping the transcript, since steps[1].result already has it",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "7aefdd59-0e9c-44eb-b1b9-1a6892560628",
+      "description": "Check product availability and create an order for it if needed.",
+      "knowledge": [
+        {
+          "type": "TEXT",
+          "text": "Battery product id is btr-123."
+        }
+      ],
+      "tools": [
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "PLATFORM:complete"
+      ],
+      "steps": [
+        {
+          "action": "GREY:check_product_count",
+          "status": "COMPLETED",
+          "parameters": {
+            "productId": "btr-123"
+          },
+          "result": "0",
+          "comment": "Checking product count"
+        }
+      ],
+      "next_step": {
+        "action": "GREY:create_order",
+        "parameters": {
+          "productId": {
+            "$ref": "steps[0].parameters.productId"
+          },
+          "quantity": 10
+        },
+        "comment": "The productId was already given in steps[0].parameters when checking availability - reuse it via $ref instead of retyping it",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "6f7a8b9c-0d1e-4f2a-8b3c-4d5e6f7a8b9c",
+      "description": "Create a new employee account and approve their onboarding request.",
+      "knowledge": [
+        {
+          "type": "TEXT",
+          "text": "New hire: Elif Demir, employee id E10501, department Engineering, manager Ahmet Yılmaz, location Istanbul."
+        }
+      ],
+      "tools": [
+        "PLATFORM:user_interaction",
+        "ACTIVEDIRECTORY:create_employee",
+        "SERVICENOW:approve_employee_request",
+        "PLATFORM:complete"
+      ],
+      "steps": [
+        {
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "What is the new hire's employee id?"
+          },
+          "result": "E10501",
+          "comment": "User confirmed employee id"
+        },
+        {
+          "action": "ACTIVEDIRECTORY:create_employee",
+          "status": "COMPLETED",
+          "parameters": {
+            "first_name": "Elif",
+            "last_name": "Demir",
+            "employee_id": {
+              "$ref": "steps[0].result"
+            },
+            "department": "Engineering",
+            "manager": "Ahmet Yılmaz",
+            "location": "Istanbul"
+          },
+          "result": "{\"employee_id\":\"E10501\",\"email\":\"elif.demir@example.com\",\"request_number\":\"REQ0010042\",\"status\":\"CREATED\"}",
+          "comment": "Reusing the employee id already confirmed by the user (steps[0].result) via $ref instead of retyping it"
+        }
+      ],
+      "next_step": {
+        "action": "SERVICENOW:approve_employee_request",
+        "parameters": {
+          "request_number": {
+            "$ref": "steps[1].result.request_number"
+          },
+          "comments": "Auto-approved after account creation"
+        },
+        "comment": "create_employee's result (steps[1]) already includes the ServiceNow request_number - reuse it via $ref instead of retyping it",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "019fa100-7001-4000-8000-000000000001",
+      "description": "Summarize a meeting from the combined transcript only (variant A), have an LLM judge score the notes, and email them to the participants.",
+      "knowledge": [
+        {
+          "type": "TEXT",
+          "text": "Meeting name: Yonetim Sync. Meeting date: 2026-08-14."
+        }
+      ],
+      "tools": [
+        "PLATFORM:pcm_to_wav",
+        "PLATFORM:transcribe_meeting",
+        "PLATFORM:summarize_meeting",
+        "PLATFORM:judge_summary",
+        "PLATFORM:prepare_meeting_attachments",
+        "GREY:send_email",
+        "PLATFORM:complete"
+      ],
+      "steps": [
+        {
+          "action": "PLATFORM:pcm_to_wav",
+          "status": "COMPLETED",
+          "parameters": {
+            "directoryPath": "/recordings/2026-08-14-management-sync"
+          },
+          "result": "{\"success\":true,\"converted\":[\"/recordings/2026-08-14-management-sync/meeting-audio.wav\"],\"totalFound\":1,\"totalConverted\":1}",
+          "comment": "Converting the meeting recording to WAV before transcription"
+        },
+        {
+          "action": "PLATFORM:transcribe_meeting",
+          "status": "COMPLETED",
+          "parameters": {
+            "directoryPath": "/recordings/2026-08-14-management-sync",
+            "includeSpeakerTranscripts": false
+          },
+          "result": "{\"full_meeting_transcript\":\"[several thousand words of Turkish dialogue - present in full in the real step result]\",\"speaker_transcripts\":[]}",
+          "comment": "Variant A only needs the mixed meeting audio, so speaker transcripts are skipped"
+        }
+      ],
+      "next_step": {
+        "action": "PLATFORM:summarize_meeting",
+        "parameters": {
+          "transcript": {
+            "$ref": "steps[1].result.full_meeting_transcript"
+          }
+        },
+        "comment": "steps[1] (transcribe_meeting) already holds the full transcript - reference it with $ref instead of retyping thousands of words, which would truncate the response.",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "019fa100-7003-4000-8000-000000000001",
+      "description": "Summarize a meeting from the combined transcript only (variant A), have an LLM judge score the notes, and email them to the participants.",
+      "knowledge": [
+        {
+          "type": "TEXT",
+          "text": "Meeting name: Yonetim Sync. Meeting date: 2026-08-14."
+        }
+      ],
+      "tools": [
+        "PLATFORM:pcm_to_wav",
+        "PLATFORM:transcribe_meeting",
+        "PLATFORM:summarize_meeting",
+        "PLATFORM:judge_summary",
+        "PLATFORM:prepare_meeting_attachments",
+        "GREY:send_email",
+        "PLATFORM:complete"
+      ],
+      "steps": [
+        {
+          "action": "PLATFORM:pcm_to_wav",
+          "status": "COMPLETED",
+          "parameters": {
+            "directoryPath": "/recordings/2026-08-14-management-sync"
+          },
+          "result": "{\"success\":true,\"converted\":[\"/recordings/2026-08-14-management-sync/meeting-audio.wav\"],\"totalFound\":1,\"totalConverted\":1}",
+          "comment": "Converting the meeting recording to WAV before transcription"
+        },
+        {
+          "action": "PLATFORM:transcribe_meeting",
+          "status": "COMPLETED",
+          "parameters": {
+            "directoryPath": "/recordings/2026-08-14-management-sync",
+            "includeSpeakerTranscripts": false
+          },
+          "result": "{\"full_meeting_transcript\":\"[several thousand words of Turkish dialogue - present in full in the real step result]\",\"speaker_transcripts\":[]}",
+          "comment": "Variant A only needs the mixed meeting audio, so speaker transcripts are skipped"
+        },
+        {
+          "action": "PLATFORM:summarize_meeting",
+          "status": "FAILED",
+          "parameters": {
+            "transcript": "Bizi bakmistik gelmeyelim. Geldi arkadasim. Tabii. Konusabiliyor muyuz karsilikli? [transcript continues for thousands more words, typed out in full by mistake]"
+          },
+          "result": "LLM response was truncated. The response exceeded the maximum token limit.",
+          "comment": "The transcript was typed out by hand instead of using $ref, so the response ran out of tokens before finishing"
+        }
+      ],
+      "next_step": {
+        "action": "PLATFORM:summarize_meeting",
+        "parameters": {
+          "transcript": {
+            "$ref": "steps[1].result.full_meeting_transcript"
+          }
+        },
+        "comment": "Retrying with $ref instead of retyping the transcript, since steps[1].result already has it",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "019fa100-7002-4000-8000-000000000001",
+      "description": "Summarize a meeting from the combined transcript only (variant A), have an LLM judge score the notes, and email them to the participants.",
+      "knowledge": [
+        {
+          "type": "TEXT",
+          "text": "Meeting name: Yonetim Sync. Meeting date: 2026-08-14."
+        }
+      ],
+      "tools": [
+        "PLATFORM:pcm_to_wav",
+        "PLATFORM:transcribe_meeting",
+        "PLATFORM:summarize_meeting",
+        "PLATFORM:judge_summary",
+        "PLATFORM:prepare_meeting_attachments",
+        "GREY:send_email",
+        "PLATFORM:complete"
+      ],
+      "steps": [
+        {
+          "action": "PLATFORM:pcm_to_wav",
+          "status": "COMPLETED",
+          "parameters": {
+            "directoryPath": "/recordings/2026-08-14-management-sync"
+          },
+          "result": "{\"success\":true,\"converted\":[\"/recordings/2026-08-14-management-sync/meeting-audio.wav\"],\"totalFound\":1,\"totalConverted\":1}",
+          "comment": "Converting the meeting recording to WAV before transcription"
+        },
+        {
+          "action": "PLATFORM:transcribe_meeting",
+          "status": "COMPLETED",
+          "parameters": {
+            "directoryPath": "/recordings/2026-08-14-management-sync",
+            "includeSpeakerTranscripts": false
+          },
+          "result": "{\"full_meeting_transcript\":\"[several thousand words of Turkish dialogue - present in full in the real step result]\",\"speaker_transcripts\":[]}",
+          "comment": "Variant A only needs the mixed meeting audio, so speaker transcripts are skipped"
+        },
+        {
+          "action": "PLATFORM:summarize_meeting",
+          "status": "COMPLETED",
+          "parameters": {
+            "transcript": {
+              "$ref": "steps[1].result.full_meeting_transcript"
+            }
+          },
+          "result": "{\"summary\":\"Ekip haftalik toplanti saatini 10.30'a cekmeyi, IVR gelistirmesinin kapsamini ve bolge bayi ziyaretlerinin takvimini gorustu.\",\"highlights\":[{\"topic\":\"Toplanti saati\",\"highlights\":[\"Toplanti 10.30'a alindi ve suresinin 45-60 dakikaya indirilmesi hedeflendi.\"]},{\"topic\":\"Bayi ziyaretleri\",\"highlights\":[\"Istanbul bolgesi Eylul basinda, Trabzon Eylul sonu veya Ekim basinda ziyaret edilecek.\"]}]}",
+          "comment": "Summarizing the meeting from the combined transcript alone"
+        }
+      ],
+      "next_step": {
+        "action": "PLATFORM:judge_summary",
+        "parameters": {
+          "transcript": {
+            "$ref": "steps[1].result.full_meeting_transcript"
+          },
+          "summary": {
+            "$ref": "steps[2].result.summary"
+          },
+          "highlights": {
+            "$ref": "steps[2].result.highlights"
+          },
+          "variant": "A"
+        },
+        "comment": "Both the transcript and the generated notes already exist in earlier steps - every one of them is passed by $ref. next_steps is omitted because variant A does not produce them.",
+        "result_score": 0.95
+      }
     }
   ]
 }

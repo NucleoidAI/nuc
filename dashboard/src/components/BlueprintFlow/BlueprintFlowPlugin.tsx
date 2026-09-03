@@ -1,5 +1,3 @@
-import { styled } from "@mui/material/styles";
-
 import {
   Divider,
   ListItemIcon,
@@ -9,6 +7,7 @@ import {
 } from "@mui/material";
 import { Iconify, InfoNode } from "@canmingir/link/platform/components";
 import React, { useState } from "react";
+import { alpha, styled } from "@mui/material/styles";
 
 const AddButtonWrapper = styled("div")(({ theme }) => ({
   position: "absolute",
@@ -555,42 +554,65 @@ const SuperviseNeededBadge = styled("div")(({ theme }) => {
   };
 });
 
-const NodeWrapper = styled("div")({
-  position: "relative",
-  width: "100%",
-  height: "100%",
-  borderRadius: "16px",
-  transformStyle: "preserve-3d",
-  transform: "perspective(1500px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)",
-  boxShadow: `
-    1px 1px 0 #174f77,
-    2px 2px 0 #174f77,
-    3px 3px 0 #174f77,
-    4px 4px 0 #174f77,
-    5px 5px 0 #174f77,
-    6px 6px 0 #174f77,
-    7px 7px 0 #174f77,
+const FORCE_COLOR = "#b8860b";
+
+const ForceBadge = styled("div")(({ theme }) => ({
+  position: "absolute",
+  top: "-13px",
+  left: "50%",
+  transform: "translateX(-50%)",
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 3,
+  padding: "2px 8px 2px 6px",
+  borderRadius: 999,
+  fontSize: 10,
+  fontWeight: 700,
+  lineHeight: 1.6,
+  letterSpacing: "0.08em",
+  textTransform: "uppercase",
+  whiteSpace: "nowrap",
+  color: FORCE_COLOR,
+  background: theme.palette.background.paper,
+  border: `1px solid ${FORCE_COLOR}`,
+  boxShadow: "0 1px 4px rgba(0, 0, 0, 0.18)",
+  pointerEvents: "none",
+  zIndex: 6,
+}));
+
+const NodeWrapper = styled("div", {
+  shouldForwardProp: (prop) => prop !== "isforce",
+})<{ isforce?: boolean }>(({ isforce }) => {
+  const stepColor = isforce ? FORCE_COLOR : "#174f77";
+  const steppedShadow = `
+    1px 1px 0 ${stepColor},
+    2px 2px 0 ${stepColor},
+    3px 3px 0 ${stepColor},
+    4px 4px 0 ${stepColor},
+    5px 5px 0 ${stepColor},
+    6px 6px 0 ${stepColor},
+    7px 7px 0 ${stepColor},
     10px 10px 20px rgba(0, 0, 0, 0.4),
     20px 20px 40px rgba(0, 0, 0, 0.5)
-  `,
-  transition:
-    "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, filter 0.25s ease",
-  "&:hover": {
-    transform:
-      "perspective(1500px) rotateX(0deg) rotateY(-10deg) rotateZ(0deg)",
-    filter: "brightness(1.070)",
-    boxShadow: `
-    1px 1px 0 #174f77,
-    2px 2px 0 #174f77,
-    3px 3px 0 #174f77,
-    4px 4px 0 #174f77,
-    5px 5px 0 #174f77,
-    6px 6px 0 #174f77,
-    7px 7px 0 #174f77,
-    10px 10px 20px rgba(0, 0, 0, 0.4),
-    20px 20px 40px rgba(0, 0, 0, 0.5)
-  `,
-  },
+  `;
+
+  return {
+    position: "relative",
+    width: "100%",
+    height: "100%",
+    borderRadius: "16px",
+    transformStyle: "preserve-3d",
+    transform: "perspective(1500px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)",
+    boxShadow: steppedShadow,
+    transition:
+      "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, filter 0.25s ease",
+    "&:hover": {
+      transform:
+        "perspective(1500px) rotateX(0deg) rotateY(-10deg) rotateZ(0deg)",
+      filter: "brightness(1.070)",
+      boxShadow: steppedShadow,
+    },
+  };
 });
 
 export const blueprintFlowPlugin = {
@@ -599,16 +621,24 @@ export const blueprintFlowPlugin = {
   style: ({ style }) => {
     const styleTokens = style || {};
 
+    const connectionsGap = styleTokens.showConnections
+      ? fieldsPanelHeight(
+          styleTokens.nodeFields as Record<string, NodeFields> | undefined
+        )
+      : 0;
+
     const bgFrom = undefined;
     const bgTo = undefined;
     const borderColor = "linear-gradient(135deg, #c684ff33, #078dee4d)";
     const borderRadius = 16;
     const shadowLevel = 1;
-    const minWidth = 300;
-    const maxWidth = 300;
-    const minHeight = 180;
-    const maxHeight = 180;
+    const minWidth = 420;
+    const maxWidth = 420;
+    const minHeight = 210;
+    const maxHeight = 210;
     const shape = 16;
+    const endGap = -5;
+    const startGap = 3;
 
     return {
       ...styleTokens,
@@ -622,8 +652,10 @@ export const blueprintFlowPlugin = {
       maxHeight,
       shape,
       borderRadius,
-      gap: styleTokens.gap ?? 6,
+      gap: (styleTokens.gap ?? 6) + connectionsGap,
       levelGap: styleTokens.levelGap ?? 15,
+      startGap,
+      endGap,
     };
   },
 
@@ -678,6 +710,233 @@ type FlowGraphNode = import("./helper").DefinitionGraphNode & {
   [key: string]: unknown;
 };
 
+export type NodeFields = { inputs: string[]; outputs: string[] };
+
+const FIELDS_PANEL_ROW_HEIGHT = 2;
+const FIELDS_PANEL_ROW_GAP = 2;
+
+function fieldsPanelHeight(nodeFields?: Record<string, NodeFields>) {
+  const rows = Math.max(
+    0,
+    ...Object.values(nodeFields ?? {}).map((f) =>
+      Math.max(f.inputs.length, f.outputs.length)
+    )
+  );
+
+  if (rows === 0) return 0;
+
+  return rows * FIELDS_PANEL_ROW_HEIGHT + (rows - 1) * FIELDS_PANEL_ROW_GAP;
+}
+
+const FieldsPanel = styled("div")(({ theme }) => ({
+  position: "absolute",
+  top: "calc(100% + 10px)",
+  left: 0,
+  width: "100%",
+  minWidth: 260,
+  display: "flex",
+  gap: 10,
+  padding: 10,
+  borderRadius: 12,
+  background: theme.palette.background.paper,
+  border: `1px solid ${theme.palette.divider}`,
+  boxShadow:
+    theme.palette.mode === "dark"
+      ? "0 6px 18px rgba(0,0,0,0.5)"
+      : "0 6px 18px rgba(0,0,0,0.12)",
+  zIndex: 25,
+  cursor: "default",
+}));
+
+const FieldColumn = styled("div")<{ align: "left" | "right" }>(
+  ({ align, theme }) => ({
+    flex: 1,
+    minWidth: 0,
+    display: "flex",
+    flexDirection: "column",
+    gap: 2,
+    ...(align === "right" && {
+      paddingLeft: 10,
+      borderLeft: `1px solid ${theme.palette.divider}`,
+    }),
+  })
+);
+
+const ColumnLabel = styled("div")<{ align: "left" | "right" }>(
+  ({ align, theme }) => ({
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+    justifyContent: align === "right" ? "flex-end" : "flex-start",
+    marginBottom: 4,
+    fontSize: 9,
+    fontWeight: 800,
+    textTransform: "uppercase",
+    letterSpacing: "0.08em",
+    color: theme.palette.text.disabled,
+  })
+);
+
+const FieldRow = styled("div")<{ align: "left" | "right" }>(
+  ({ align, theme }) => ({
+    display: "flex",
+    alignItems: "center",
+    gap: 6,
+    padding: "3px 4px",
+    borderRadius: 6,
+    flexDirection: align === "right" ? "row-reverse" : "row",
+    transition: "background-color 0.15s ease",
+    "&:hover": {
+      backgroundColor: theme.palette.action.hover,
+    },
+  })
+);
+
+const Dot = styled("div")<{
+  variant: "in" | "out";
+  bound?: string;
+  interactive?: string;
+}>(({ variant, bound, interactive, theme }) => {
+  const isBound = bound === "true";
+  const disabled = interactive === "false";
+  const accent =
+    variant === "out"
+      ? theme.palette.secondary.main
+      : theme.palette.primary.main;
+
+  return {
+    position: "relative",
+    flexShrink: 0,
+    boxSizing: "content-box",
+    width: 9,
+    height: 9,
+    borderRadius: "50%",
+    background: isBound ? accent : theme.palette.background.paper,
+    border: `2px solid ${isBound ? accent : theme.palette.grey[400]}`,
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    cursor: disabled ? "default" : "crosshair",
+    opacity: disabled ? 0.35 : 1,
+    pointerEvents: "auto",
+    transition:
+      "transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease",
+    ...(!disabled && {
+      "&:hover": {
+        transform: "scale(1.35)",
+        borderColor: accent,
+        boxShadow: `0 0 0 2px ${
+          theme.palette.background.paper
+        }, 0 0 0 5px ${alpha(accent, 0.22)}`,
+      },
+    }),
+  };
+});
+
+const FieldLabel = styled("div")<{ align: "left" | "right"; bound?: string }>(
+  ({ align, bound, theme }) => ({
+    flex: 1,
+    minWidth: 0,
+    fontSize: 11,
+    fontWeight: bound === "true" ? 600 : 400,
+    color:
+      bound === "true"
+        ? theme.palette.text.primary
+        : theme.palette.text.secondary,
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    textAlign: align,
+  })
+);
+
+function NodeHandles({
+  node,
+  fields,
+  boundFields,
+  hasForceNode,
+  onHandleDragStart,
+}: {
+  node: FlowGraphNode;
+  fields: NodeFields;
+  boundFields?: Set<string>;
+  hasForceNode?: boolean;
+  onHandleDragStart?: (
+    nodeId: string,
+    field: string,
+    e: React.MouseEvent
+  ) => void;
+}) {
+  const isForceTarget = Boolean(
+    (node.raw?.properties as { force?: boolean } | undefined)?.force
+  );
+
+  return (
+    <FieldsPanel
+      sx={{ mt: -1, ml: 0.6 }}
+      onMouseDown={(e) => e.stopPropagation()}
+    >
+      <FieldColumn align="left">
+        <ColumnLabel align="left">
+          <Iconify icon="mdi:arrow-down-left" width={10} height={10} />
+          Inputs
+        </ColumnLabel>
+        {fields.inputs.map((field) => {
+          const bound = boundFields?.has(field) ? "true" : "false";
+          return (
+            <FieldRow key={`in-${field}`} align="left">
+              <Dot
+                variant="in"
+                bound={bound}
+                interactive={isForceTarget ? "true" : "false"}
+                {...(isForceTarget && { "data-handle-type": "in" })}
+                data-in-handle=""
+                data-node-id={node.id}
+                data-field={field}
+                {...(isForceTarget && { title: `Input: ${field}` })}
+              />
+              <FieldLabel align="left" bound={bound} title={field}>
+                {field}
+              </FieldLabel>
+            </FieldRow>
+          );
+        })}
+      </FieldColumn>
+
+      <FieldColumn align="right">
+        <ColumnLabel align="right">
+          Outputs
+          <Iconify icon="mdi:arrow-up-right" width={10} height={10} />
+        </ColumnLabel>
+        {fields.outputs.map((field) => (
+          <FieldRow key={`out-${field}`} align="right">
+            <Dot
+              variant="out"
+              interactive={hasForceNode ? "true" : "false"}
+              data-handle-type="out"
+              data-node-id={node.id}
+              data-field={field}
+              {...(hasForceNode && {
+                title: `Output: ${field === "result" ? "result (raw)" : field}`,
+              })}
+              onMouseDown={
+                hasForceNode
+                  ? (e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      onHandleDragStart?.(node.id, field, e);
+                    }
+                  : undefined
+              }
+            />
+            <FieldLabel align="right" title={field}>
+              {field === "result" ? "result" : field}
+            </FieldLabel>
+          </FieldRow>
+        ))}
+      </FieldColumn>
+    </FieldsPanel>
+  );
+}
+
 function FlowNodeRenderer({
   node,
   nodeStyle,
@@ -688,10 +947,35 @@ function FlowNodeRenderer({
     onEdit?: (node: FlowGraphNode) => void;
     onSwapBranch?: (node: FlowGraphNode) => void;
     onDelete?: (node: FlowGraphNode) => void;
+    showConnections?: boolean;
+    nodeFields?: Record<string, NodeFields>;
+    boundFieldsByNode?: Record<string, Set<string>>;
+    hasForceNode?: boolean;
+    onHandleDragStart?: (
+      nodeId: string,
+      field: string,
+      e: React.MouseEvent
+    ) => void;
+    onToggleForce?: (node: FlowGraphNode) => void;
     [key: string]: unknown;
   };
 }) {
-  const { onAdd, onEdit, onSwapBranch, onDelete } = nodeStyle || {};
+  const {
+    onAdd,
+    onEdit,
+    onSwapBranch,
+    onDelete,
+    showConnections,
+    nodeFields,
+    boundFieldsByNode,
+    hasForceNode,
+    onHandleDragStart,
+    onToggleForce,
+  } = nodeStyle || {};
+  const fields = node.nodeType === "NORMAL" ? nodeFields?.[node.id] : undefined;
+  const isForceNode = Boolean(
+    (node.raw?.properties as { force?: boolean } | undefined)?.force
+  );
   const isReadOnly = !onAdd && !onEdit && !onSwapBranch && !onDelete;
   const [contextMenu, setContextMenu] = useState<{
     mouseX: number;
@@ -711,6 +995,12 @@ function FlowNodeRenderer({
     setContextMenu({ mouseX: e.clientX, mouseY: e.clientY });
   };
 
+  const handleMouseDownCapture = (e: React.MouseEvent) => {
+    if (e.button === 2) {
+      e.stopPropagation();
+    }
+  };
+
   const handleClose = () => setContextMenu(null);
 
   const handleAddClick = (e: React.MouseEvent) => {
@@ -728,8 +1018,35 @@ function FlowNodeRenderer({
     onDelete?.(node);
   };
 
+  const handleToggleForceClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onToggleForce?.(node);
+  };
+
   return (
-    <NodeWrapper onContextMenu={handleContextMenu}>
+    <NodeWrapper
+      isforce={isForceNode}
+      title={isForceNode ? "Force node: action is guaranteed" : undefined}
+      onContextMenu={handleContextMenu}
+      onMouseDownCapture={handleMouseDownCapture}
+    >
+      {isForceNode && (
+        <ForceBadge>
+          <Iconify icon="mdi:lightning-bolt" width={11} height={11} />
+          force
+        </ForceBadge>
+      )}
+      {showConnections &&
+        fields &&
+        (fields.inputs.length > 0 || fields.outputs.length > 0) && (
+          <NodeHandles
+            node={node}
+            fields={fields}
+            boundFields={boundFieldsByNode?.[node.id]}
+            hasForceNode={hasForceNode}
+            onHandleDragStart={onHandleDragStart}
+          />
+        )}
       <HighlightOverlay
         changetype={changeType}
         haserror={hasError ? "true" : "false"}
@@ -795,6 +1112,7 @@ function FlowNodeRenderer({
               ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
               : undefined
           }
+          sx={{ zIndex: (theme) => theme.zIndex.modal + 3 }}
           slotProps={{ paper: { sx: { minWidth: 180 } } }}
         >
           <MenuItem
@@ -819,6 +1137,29 @@ function FlowNodeRenderer({
             </ListItemIcon>
             <ListItemText>Edit node</ListItemText>
           </MenuItem>
+          {onToggleForce && (
+            <MenuItem
+              onClick={(e) => {
+                handleToggleForceClick(e);
+                handleClose();
+              }}
+            >
+              <ListItemIcon>
+                <Iconify
+                  icon={
+                    isForceNode
+                      ? "mdi:lightning-bolt"
+                      : "mdi:lightning-bolt-outline"
+                  }
+                  width={18}
+                  height={18}
+                />
+              </ListItemIcon>
+              <ListItemText>
+                {isForceNode ? "Unmark force node" : "Mark as force node"}
+              </ListItemText>
+            </MenuItem>
+          )}
           <Divider />
           <MenuItem
             onClick={(e) => {

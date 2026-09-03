@@ -1,4 +1,5 @@
 import APITab from "../widgets/APITab/APITab";
+import AgentDevToolWidget from "../widgets/AgentDevToolWidget";
 import AgentMCP from "../widgets/AgentMCP/AgentMCP";
 import BlueprintsWidget from "../widgets/BlueprintsWidget/BlueprintsWidget";
 import Communication from "../widgets/Communication/Communication";
@@ -6,7 +7,6 @@ import { Iconify } from "@canmingir/link/platform/components";
 import Knowledge from "../widgets/Knowledge/Knowledge";
 import Profile from "../widgets/Profile/Profile";
 import ProfileCard from "../components/ProfileCard/ProfileCard";
-import SidebarChatWidget from "../widgets/SidebarChatWidget";
 import Stack from "@mui/material/Stack";
 import Supervising from "../widgets/Supervising/Supervising";
 import SwaggerDialog from "../components/SwaggerDialog/SwaggerDialog";
@@ -18,8 +18,6 @@ import { useEvent } from "@nucleoidai/react-event";
 import { Box, Skeleton, useTheme } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
-const DRAWER_WIDTH = 400;
 
 const TABS = [
   {
@@ -120,8 +118,8 @@ function AgentLayout({
     if (swaggerEvent?.open) setSwaggerOpen(true);
   }, [swaggerEvent]);
 
-  const handleChatToggle = () => {
-    setChatOpen((prev) => !prev);
+  const handleDevToolOpenChange = (open: boolean) => {
+    setChatOpen(open);
   };
 
   const handleTabChange = (newTab: string) => {
@@ -165,12 +163,7 @@ function AgentLayout({
 
   return (
     <>
-      <Box
-        sx={{
-          transition: "margin 0.3s ease-in-out",
-          marginRight: chatOpen ? `${DRAWER_WIDTH}px` : 0,
-        }}
-      >
+      <Box>
         <Stack margin={2} sx={{ position: "relative", marginTop: 0 }}>
           {loading ? (
             <Skeleton variant="rectangular" height={200} />
@@ -201,10 +194,9 @@ function AgentLayout({
         {currentTab === "api" && !beta && <APITab agentId={agent.id} />}
       </Box>
 
-      <SidebarChatWidget
+      <AgentDevToolWidget
         agentId={agent.id}
-        open={chatOpen}
-        onToggle={handleChatToggle}
+        onOpenChange={handleDevToolOpenChange}
         beta={beta}
       />
 

@@ -1,6 +1,6 @@
 import AgentDrawer from "../../components/AgentDrawer/AgentDrawer";
 import AgentWizard from "../AgentWizard/AgentWizard";
-import BlueprintDrawer from "../../components/BlueprintDrawer/BlueprintDrawer";
+import BlueprintDrawerLayout from "../../layouts/BlueprintDrawerLayout";
 import { Flow } from "@canmingir/link/platform/components";
 import { Iconify } from "@canmingir/link/platform/components";
 import { TeamChartRenderer } from "./TeamChartRenderer";
@@ -32,7 +32,7 @@ function TeamChart() {
   const location = useLocation();
   const showNavButton = !lgUp && location.pathname.includes("/team");
 
-  const projectId = storage.get("projectId");
+  const projectId = storage.get("link", "projectid");
   const { getTeamById } = useTeam();
   const { team } = getTeamById(projectId);
   const organizationId = team?.organizationId;
@@ -162,25 +162,34 @@ function TeamChart() {
         </IconButton>
       )}
 
-      <Box>
-        <Flow data={data} style={style} plugin={teamChartPlugin} />
+      <Box sx={{ width: "100%", height: "100vh", overflow: "hidden" }}>
+        <Flow
+          data={data}
+          style={style}
+          plugin={teamChartPlugin}
+          height="100%"
+          fitViewOnMount
+          fitViewOnNodesChange
+          fitViewOnResize
+          fitViewMinZoom={0.8}
+          fitViewAlign="center"
+        />
       </Box>
 
       {dialogOpen && (
         <AgentWizard
           open={dialogOpen}
           onClose={handleCloseDialog}
-          itemProperties={["name", "description"]}
           onSubmit={(newAgent) => {
             if (!selectedTeamId) return;
-            createAgent(newAgent, selectedTeamId);
+            return createAgent(newAgent, selectedTeamId);
           }}
           itemToEdit={null}
         />
       )}
 
       {drawerOpen && (
-        <BlueprintDrawer
+        <BlueprintDrawerLayout
           drawerOpen={drawerOpen}
           handleDrawerClose={handleDrawerClose}
           selectedItem={selectedItem}

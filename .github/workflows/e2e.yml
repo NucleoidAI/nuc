@@ -1,0 +1,46 @@
+name: E2E
+
+on:
+  push:
+    tags: ["*"]
+  workflow_dispatch:
+    inputs:
+      platform_llm:
+        description: "LLM to run the scenarios against (provider/model), e.g. openrouter/qwen3-next-80b-a3b-instruct"
+        required: false
+        type: string
+
+jobs:
+  order-compliance:
+    name: Run E2E scenarios
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 45
+    env:
+      PLATFORM_LLM: ${{ inputs.platform_llm || vars.E2E_PLATFORM_LLM || 'openrouter/qwen3-next-80b-a3b-instruct' }}
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: |
+          bun install
+          bun run install:api
+          bun run install:communication
+          bun run install:mcp
+
+      - name: Check LLM credentials
+        run: |
+          if [ -z "$OPENROUTER_API_KEY" ] && [ -z "$OPENAI_API_KEY" ]; then
+            echo "::error::No LLM API key available. Set the OPENROUTER_API_KEY (or OPENAI_API_KEY) repository secret; the e2e scenarios run against a real LLM."
+            exit 1
+          fi
+
+      - name: Run e2e scenarios
+        run: bun run test:e2e

@@ -4,9 +4,12 @@ type DefinitionNode = {
   properties?: {
     action?: string;
     label?: string;
-    prompt?: string;
+    instructions?: string;
+    pseudocode?: string;
+    pseudocodeEnabled?: boolean;
     icon?: string;
     description?: string;
+    parameters?: Record<string, unknown>;
     [key: string]: unknown;
   };
   next?: string[] | null;
@@ -122,4 +125,75 @@ export function buildDefinitionGraph(
   const roots = list.map((n) => n.id).filter((id) => !referenced.has(id));
 
   return { nodes, roots };
+}
+
+function childIdsOf(node: DefinitionGraphNode): string[] {
+  const ids: string[] = [];
+
+  if (Array.isArray(node.next)) {
+    ids.push(...node.next);
+  } else if (typeof node.next === "string") {
+    ids.push(node.next);
+  }
+
+  if (node.trueNext) ids.push(...node.trueNext);
+  if (node.falseNext) ids.push(...node.falseNext);
+
+  return ids;
+}
+
+export function getAncestorNodes(
+  graph: DefinitionGraph,
+  nodeId: string
+): DefinitionGraphNode[] {
+  const parentsById = new Map<string, Set<string>>();
+
+  for (const node of Object.values(graph.nodes)) {
+    for (const childId of childIdsOf(node)) {
+      if (!parentsById.has(childId)) parentsById.set(childId, new Set());
+      parentsById.get(childId)!.add(node.id);
+    }
+  }
+
+  const visited = new Set<string>();
+  const queue = [...(parentsById.get(nodeId) ?? [])];
+
+  while (queue.length) {
+    const id = queue.shift()!;
+    if (visited.has(id) || id === nodeId) continue;
+    visited.add(id);
+    queue.push(...(parentsById.get(id) ?? []));
+  }
+
+  return [...visited]
+    .map((id) => graph.nodes[id])
+    .filter((node): node is DefinitionGraphNode => Boolean(node));
+}
+
+const BY_NODE_REF_PATTERN = /^byNode\.([^.]+)\.result(?:\.(.+))?$/;
+
+export function isRefValue(value: unknown): value is { $ref: string } {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    typeof (value as { $ref?: unknown }).$ref === "string"
+  );
+}
+
+export function parseByNodeRef(
+  value: unknown
+): { sourceNodeId: string; sourceField: string } | null {
+  if (!isRefValue(value)) return null;
+  const match = value.$ref.match(BY_NODE_REF_PATTERN);
+  if (!match) return null;
+  return { sourceNodeId: match[1], sourceField: match[2] ?? "result" };
+}
+
+export function buildByNodeRef(sourceNodeId: string, sourceField: string) {
+  return {
+    $ref:
+      sourceField === "result"
+        ? `byNode.${sourceNodeId}.result`
+        : `byNode.${sourceNodeId}.result.${sourceField}`,
+  };
 }

@@ -57,7 +57,6 @@ export const teamChartPlugin = {
       ...nodeStyle,
       nodeWidth: 350,
       nodeHeight: 125,
-
       lineColor: nodeStyle.teamLineColor ?? nodeStyle.lineColor ?? "#D0D7E2",
       lineWidth: nodeStyle.teamLineWidth ?? nodeStyle.lineWidth ?? 1.5,
       lineStyle: nodeStyle.teamLineStyle ?? nodeStyle.lineStyle ?? "solid",
@@ -65,6 +64,8 @@ export const teamChartPlugin = {
         nodeStyle.teamConnectorType ?? nodeStyle.connectorType ?? "normal",
       gap: nodeStyle.teamGap ?? nodeStyle.gap ?? 6,
       levelGap: nodeStyle.teamLevelGap ?? nodeStyle.levelGap ?? 4,
+      endGap: -5,
+      startGap: 3,
     };
   },
 
@@ -188,11 +189,11 @@ export const teamChartPlugin = {
                   color="inherit"
                   onClick={(e) => {
                     e.stopPropagation();
-                    onAgentOpen(node, "blueprints");
+                    onAgentOpen(node, "knowledge-base");
                   }}
                   sx={{ minWidth: 30, width: 30, height: 30, p: 0 }}
                 >
-                  <Iconify icon="healthicons:crisis-response-center-person-outline" />
+                  <Iconify icon="carbon:ibm-watson-knowledge-studio" />
                 </Button>
                 <Button
                   size="small"
@@ -200,11 +201,11 @@ export const teamChartPlugin = {
                   color="inherit"
                   onClick={(e) => {
                     e.stopPropagation();
-                    onAgentOpen(node, "knowledge-base");
+                    onAgentOpen(node, "blueprints");
                   }}
                   sx={{ minWidth: 30, width: 30, height: 30, p: 0 }}
                 >
-                  <Iconify icon="carbon:ibm-watson-knowledge-studio" />
+                  <Iconify icon="healthicons:crisis-response-center-person-outline" />
                 </Button>
                 <Button
                   size="small"

@@ -9,7 +9,6 @@ import { createProductTool } from "./create_product";
 import { updateProductTool } from "./update_product";
 import { deleteProductTool } from "./delete_product";
 import { sendEmailTool } from "./send_email";
-import { knowledgeLookupTool } from "./knowledge_lookup";
 
 export const tools = [
   checkProductCountTool,
@@ -23,5 +22,4 @@ export const tools = [
   updateProductTool,
   deleteProductTool,
   sendEmailTool,
-  knowledgeLookupTool,
 ]; 

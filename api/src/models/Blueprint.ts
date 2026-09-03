@@ -10,6 +10,16 @@ import {
 
 import Node from "../schemas/Node";
 
+export type BlueprintContext = {
+  agent?: { name?: string | null; description?: string | null };
+  knowledge?: { type?: string | null; question?: string | null; text?: string | null }[];
+  referenceBlueprint?: { id?: string | null; title?: string | null; nodeCount: number } | null;
+  supervising?: { question?: string | null; status?: string | null } | null;
+  userRequest?: string | null;
+  capturedAt?: string | null;
+  [key: string]: unknown;
+};
+
 @Table({
   tableName: "Blueprint",
   timestamps: false,
@@ -29,6 +39,14 @@ class Blueprint extends Model {
   @Column(DataType.TEXT)
   declare description: string;
 
+  @AllowNull(true)
+  @Column(DataType.TEXT)
+  declare skill: string | null;
+
+  @AllowNull(true)
+  @Column(DataType.JSONB)
+  declare context: BlueprintContext | null;
+
   @AllowNull(false)
   @Column(DataType.UUID)
   declare agentId: string;
@@ -37,11 +55,6 @@ class Blueprint extends Model {
   @AllowNull(false)
   @Column(DataType.BOOLEAN)
   declare blocking: boolean;
-
-  @Default(false)
-  @AllowNull(false)
-  @Column(DataType.BOOLEAN)
-  declare force: boolean;
 
   @AllowNull(true)
   @Column({

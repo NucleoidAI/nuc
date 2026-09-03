@@ -32,11 +32,60 @@ router.get("/:id", async (req, res) => {
   res.status(200).json(blueprintWithNodes);
 });
 
+router.post("/generate", async (req, res) => {
+  const { projectId: teamId } = req.session;
+
+  if (!teamId) {
+    return res.status(400);
+  }
+
+  const { nodes } = BlueprintSchema.generate.parse(req.body);
+
+  const [description, skill] = await Promise.all([
+    bluePrint.generateDescription({ nodes }),
+    bluePrint.generateSkill({ nodes }),
+  ]);
+
+  res.status(200).json({ description, skill });
+});
+
+router.post("/pseudocode", async (req, res) => {
+  const { projectId: teamId } = req.session;
+
+  if (!teamId) {
+    return res.status(400);
+  }
+
+  const { instructions, agentId } = BlueprintSchema.pseudocode.parse(req.body);
+
+  const { teamId: agentTeamId } = await agentData.get({ agentId });
+
+  if (teamId !== agentTeamId) {
+    throw new AuthenticationError();
+  }
+
+  const pseudocode = await bluePrint.generatePseudocode({
+    instructions,
+    agentId,
+  });
+
+  res.status(200).json({ pseudocode });
+});
+
 router.put("/:blueprintId", async (req, res) => {
   const { projectId: teamId } = req.session;
   const { blueprintId } = req.params;
-  const { title, description, agentId, nodes, taskId, messages, blocking, force } =
-    BlueprintSchema.upsert.parse(req.body);
+  const {
+    title,
+    description,
+    agentId,
+    nodes,
+    taskId,
+    messages,
+    blocking,
+    skill,
+    context,
+  } = BlueprintSchema.upsert.parse(req.body);
 
   if (agentId) {
     const { teamId: agentTeamId } = await agentData.get({
@@ -48,20 +97,21 @@ router.put("/:blueprintId", async (req, res) => {
     }
   }
 
-  const result = await bluePrint.upsertPseudocode({
-    id: blueprintId,
+  const result = await bluePrint.upsert(
     title,
     description,
     agentId,
+    blueprintId,
     nodes,
-    messages: messages?.map((msg) => ({
+    messages?.map((msg) => ({
       content: msg.content,
       role: msg.role,
       createdAt: new Date(msg.createdAt),
     })),
     blocking,
-    force,
-  });
+    skill,
+    context,
+  );
 
   await event.publish("BLUEPRINT_CREATED", {
     Blueprint: result,
@@ -72,9 +122,9 @@ router.put("/:blueprintId", async (req, res) => {
 
 router.patch("/:blueprintId", async (req, res) => {
   const { blueprintId } = req.params;
-  const { blocking, force } = req.body;
+  const { blocking } = req.body;
 
-  const result = await bluePrint.patch({ blueprintId, blocking, force });
+  const result = await bluePrint.patch({ blueprintId, blocking });
 
   res.status(200).json(result);
 });

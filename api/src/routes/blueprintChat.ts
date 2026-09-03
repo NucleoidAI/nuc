@@ -44,7 +44,7 @@ router.post("/", async (req, res) => {
   const blueprintId =
     bodyBlueprintId ?? supervisingInstance?.blueprintId ?? null;
 
-  const [existingSession, systemContext] = await Promise.all([
+  const [existingSession, blueprintContext] = await Promise.all([
     sessionFn.get({ sessionId }),
     agentFn.blueprintChatContext({
       agentId,
@@ -85,7 +85,7 @@ router.post("/", async (req, res) => {
     });
   }
 
-  const fullHistory = [...systemContext, ...history];
+  const fullHistory = [...blueprintContext.messages, ...history];
 
   const llmMeta = { agentId, sessionId, teamId };
 
@@ -125,32 +125,22 @@ router.post("/", async (req, res) => {
     const blueprint = await agentFn.Blueprint({
       history: fullHistory,
       content,
-      existingBlueprint: referenceBlueprint,
+      existingBlueprint: referenceBlueprint
+        ? blueprintFn.stripDetails(referenceBlueprint)
+        : null,
       meta: llmMeta,
     });
-
-    type FlowNode = {
-      properties?: { label?: string; prompt?: string; [key: string]: unknown };
-      [key: string]: unknown;
-    };
-    const normalizedFlow = Array.isArray(blueprint.flow)
-      ? blueprint.flow.map((node: FlowNode) => ({
-          ...node,
-          properties: node.properties
-            ? {
-                ...node.properties,
-                label: node.properties.label ?? node.properties.prompt,
-              }
-            : node.properties,
-        }))
-      : blueprint.flow;
 
     return res.status(200).json({
       decision,
       answer,
       ...blueprint,
-      flow: normalizedFlow,
       referenceBlueprint,
+      context: {
+        ...blueprintContext.summary,
+        userRequest: content,
+        capturedAt: new Date().toISOString(),
+      },
     });
   }
 });

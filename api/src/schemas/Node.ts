@@ -2,43 +2,46 @@ import { z } from "zod";
 
 const ConditionNode = z.object({
   id: z.string(),
-  type: z.literal("CONDITION").describe("Condition node"),
-  true: z.array(z.string().nullable()).nullable().describe("True node id"),
-  false: z.array(z.string().nullable()).nullable().describe("False node id"),
+  type: z.literal("CONDITION"),
+  true: z.array(z.string().nullable()).nullable(),
+  false: z.array(z.string().nullable()).nullable(),
   properties: z.object({
     label: z.string(),
-    prompt: z.string().optional(),
     icon: z.string(),
+    instructions: z.string().optional(),
     pseudocode: z.string().optional(),
+    pseudocodeEnabled: z.boolean().optional(),
+    force: z.boolean().optional(),
   }),
 });
 
 const NormalNode = z.object({
   id: z.string(),
-  type: z.literal("NORMAL").describe("Normal node"),
-  next: z
-    .array(z.string().nullable())
-    .nullable()
-    .describe("Next node id")
-    .nullable(),
+  type: z.literal("NORMAL"),
+  next: z.array(z.string().nullable()).nullable().nullable(),
   properties: z.object({
     label: z.string(),
-    prompt: z.string().optional(),
     icon: z.string(),
+    instructions: z.string().optional(),
     pseudocode: z.string().optional(),
+    pseudocodeEnabled: z.boolean().optional(),
+    force: z.boolean().optional(),
+    parameters: z.record(z.string(), z.unknown()).optional(),
   }),
 });
 
 const HandoffNode = z.object({
   id: z.string(),
-  type: z.literal("HANDOFF").describe("Handoff node — transfers task to another agent"),
+  type: z.literal("HANDOFF"),
   properties: z.object({
     label: z.string(),
     icon: z.string(),
-    targetAgentId: z.string().optional().describe("Target agent ID to hand off to"),
-    targetBlueprintId: z.string().optional().describe("Target blueprint ID (optional)"),
-    prompt: z.string().optional(),
+    targetAgentId: z.string().optional(),
+    targetBlueprintId: z.string().optional(),
+    instructions: z.string().optional(),
     pseudocode: z.string().optional(),
+    pseudocodeEnabled: z.boolean().optional(),
+    force: z.boolean().optional(),
   }),
 });
 

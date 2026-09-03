@@ -1,10 +1,9 @@
-import { Iconify } from "@canmingir/link/platform/components";
-import PopChat from "../../components/PopChat";
 import useBlueprint from "../../hooks/useBlueprint";
 import { useEvent } from "@nucleoidai/react-event";
 import useSession from "../../hooks/useSession";
 
 import { Badge, Fab } from "@mui/material";
+import { Iconify, SidebarChat } from "@canmingir/link/platform/components";
 import React, { useCallback, useEffect, useState } from "react";
 
 const PopupChatWidget = ({
@@ -28,14 +27,8 @@ const PopupChatWidget = ({
   const [unreadMessages, setUnreadMessages] = useState(false);
   const [selectedBlueprint, setSelectedBlueprint] = useState("");
 
-  const {
-    conversations,
-    sendMessage,
-    getSession,
-    createSession,
-    error,
-    clearError,
-  } = useSession(agentId);
+  const { conversations, sendMessage, getSession, createSession } =
+    useSession(agentId);
 
   const handleBlueprintChange = useCallback(
     (blueprintId: string) => {
@@ -88,22 +81,18 @@ const PopupChatWidget = ({
 
   return (
     <>
-      <PopChat
-        clearError={clearError}
-        error={error}
+      <SidebarChat
         title={`Test Chat Session`}
         open={openPopChat || open}
-        handleClose={handleClose}
+        handleToggle={handleClose}
         history={messages}
-        closeButton={true}
         handleNewUserMessage={handleNewUserMessage}
         readOnly={readOnly}
-        selectedConversationId={conversationId || null}
+        selectedConversationId={conversationId || undefined}
         sound={sound}
-        Blueprints={Array.isArray(Blueprint) ? Blueprint : [Blueprint]}
-        selectedBlueprint={selectedBlueprint}
-        onBlueprintChange={handleBlueprintChange}
-        sx={{}}
+        Presets={Array.isArray(Blueprint) ? Blueprint : [Blueprint]}
+        selectedPreset={selectedBlueprint}
+        onPresetChange={handleBlueprintChange}
       />
       {!open && !readOnly && (
         <Fab onClick={() => setOpen(!open)}>

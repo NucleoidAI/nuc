@@ -3,7 +3,9 @@ import Dialog from "./components/Dialog";
 import FlowArea from "./components/FlowArea";
 import LeftSideApiTree from "./components/LeftSideApiTree";
 import NodeEditorWidget from "../NodeEditorWidget/NodeEditorWidget";
+import { SWAGGER_URL } from "../../utils/hosts";
 import { storage } from "@nucleoidjs/webstorage";
+import useBlueprint from "../../hooks/useBlueprint";
 import { v4 as uuidv4 } from "uuid";
 
 import {
@@ -39,7 +41,10 @@ const INITIAL_NODE_EDITOR: NodeEditorState = {
   parentNode: null,
   editingNodeId: null,
   label: "",
-  prompt: "",
+  instructions: "",
+  pseudocodeEnabled: false,
+  pseudocode: "",
+  pseudocodeLoading: false,
   nodeType: "NORMAL",
   branch: "true",
   integration: DEFAULT_INTEGRATION,
@@ -120,6 +125,7 @@ function toOpenAPIPaths(endpoints: Endpoint[]) {
 }
 
 function APITab({ agentId }: { agentId: string }) {
+  const { generatePseudocode } = useBlueprint();
   const [api, setApi] = useState<Endpoint[]>([]);
 
   const [types, setTypes] = useState<
@@ -197,7 +203,7 @@ function APITab({ agentId }: { agentId: string }) {
     : "Add Resource";
 
   useEffect(() => {
-    fetch(`http://localhost:3004/swagger/drafts/${agentId}`)
+    fetch(`${SWAGGER_URL}/swagger/drafts/${agentId}`)
       .then((res) => res.json())
       .then((data) => {
         const draft = data?.draft;
@@ -216,7 +222,7 @@ function APITab({ agentId }: { agentId: string }) {
 
   useEffect(() => {
     if (!hydratedRef.current) return;
-    fetch(`http://localhost:3004/swagger/drafts/${agentId}`, {
+    fetch(`${SWAGGER_URL}/swagger/drafts/${agentId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -381,12 +387,12 @@ function APITab({ agentId }: { agentId: string }) {
 
   useEffect(() => {
     if (api.length === 0) return;
-    fetch(`http://localhost:3004/swagger/update-paths`, {
+    fetch(`${SWAGGER_URL}/swagger/update-paths`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         paths: toOpenAPIPaths(api),
-        token: storage.get("link", "accessToken"),
+        token: storage.get("link", "accesstoken"),
         agentId,
         blueprint: flowGraphs,
       }),
@@ -503,7 +509,11 @@ function APITab({ agentId }: { agentId: string }) {
         editMode: true,
         editingNodeId: graphNode.id,
         label: graphNode.label || "",
-        prompt: (graphNode.raw?.properties?.prompt as string) || "",
+        instructions: (graphNode.raw?.properties?.instructions as string) || "",
+        pseudocodeEnabled:
+          graphNode.raw?.properties?.pseudocodeEnabled === true,
+        pseudocode: (graphNode.raw?.properties?.pseudocode as string) || "",
+        pseudocodeLoading: false,
         nodeType: graphNode.nodeType || "NORMAL",
         parentNode: parent ?? null,
       });
@@ -522,11 +532,45 @@ function APITab({ agentId }: { agentId: string }) {
     [activeResourcePath]
   );
 
+  const handlePseudocodeEnabledChange = async (enabled: boolean) => {
+    setNodeEditor((p) => ({ ...p, pseudocodeEnabled: enabled }));
+
+    if (!enabled) {
+      setNodeEditor((p) => ({ ...p, pseudocode: "" }));
+      return;
+    }
+
+    setNodeEditor((p) => ({ ...p, pseudocodeLoading: true }));
+
+    try {
+      const pseudocode = await generatePseudocode(
+        nodeEditor.instructions,
+        agentId
+      );
+      setNodeEditor((p) => ({ ...p, pseudocode, pseudocodeLoading: false }));
+    } catch {
+      setNodeEditor((p) => ({
+        ...p,
+        pseudocode: "",
+        pseudocodeEnabled: false,
+        pseudocodeLoading: false,
+      }));
+    }
+  };
+
   const handleNodeSubmit = () => {
     if (!activeResourcePath || !flowGraphData) return;
 
-    const { editMode, editingNodeId, label, prompt, nodeType, parentNode } =
-      nodeEditor;
+    const {
+      editMode,
+      editingNodeId,
+      label,
+      instructions,
+      pseudocodeEnabled,
+      pseudocode,
+      nodeType,
+      parentNode,
+    } = nodeEditor;
     const icon =
       nodeType === "CONDITION"
         ? "mdi:source-branch"
@@ -558,7 +602,9 @@ function APITab({ agentId }: { agentId: string }) {
           properties: {
             ...node.raw?.properties,
             label,
-            prompt,
+            instructions,
+            pseudocodeEnabled,
+            pseudocode,
             description,
             action,
             icon,
@@ -590,7 +636,15 @@ function APITab({ agentId }: { agentId: string }) {
         raw: {
           id: newId,
           type: nodeType,
-          properties: { action, label, prompt, description, icon },
+          properties: {
+            action,
+            label,
+            instructions,
+            pseudocodeEnabled,
+            pseudocode,
+            description,
+            icon,
+          },
           next: inheritedNext ? [inheritedNext] : [],
           createdAt: new Date().toISOString(),
         },
@@ -672,7 +726,8 @@ function APITab({ agentId }: { agentId: string }) {
       />
 
       <NodeEditorWidget
-        pseudocode=""
+        pseudocode={nodeEditor.pseudocode}
+        pseudocodeLoading={nodeEditor.pseudocodeLoading}
         drawerOpen={nodeEditor.open}
         handleDrawerClose={() => setNodeEditor(INITIAL_NODE_EDITOR)}
         selectedParentNode={nodeEditor.parentNode}
@@ -681,10 +736,12 @@ function APITab({ agentId }: { agentId: string }) {
         setNewNodeLabel={(v: string) =>
           setNodeEditor((p) => ({ ...p, label: v }))
         }
-        newNodePrompt={nodeEditor.prompt}
-        setNewNodePrompt={(v: string) =>
-          setNodeEditor((p) => ({ ...p, prompt: v }))
+        newNodeInstructions={nodeEditor.instructions}
+        setNewNodeInstructions={(v: string) =>
+          setNodeEditor((p) => ({ ...p, instructions: v }))
         }
+        newNodePseudocodeEnabled={nodeEditor.pseudocodeEnabled}
+        setNewNodePseudocodeEnabled={handlePseudocodeEnabledChange}
         newNodeType={nodeEditor.nodeType}
         setNewNodeType={(v: string) =>
           setNodeEditor((p) => ({ ...p, nodeType: v }))

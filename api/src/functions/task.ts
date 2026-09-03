@@ -128,6 +128,7 @@ async function addStep({
   comment,
   knowledgeScore,
   resultScore,
+  nodeId,
 }: {
   taskId: string;
   action: string;
@@ -135,6 +136,7 @@ async function addStep({
   comment: string;
   knowledgeScore?: number;
   resultScore?: number;
+  nodeId?: string | null;
 }) {
   const step = await Step.create({
     taskId,
@@ -142,6 +144,7 @@ async function addStep({
     parameters,
     comment,
     knowledgeScore: knowledgeScore ?? null,
+    nodeId: nodeId ?? null,
   });
 
   await event.publish("STEP_ADDED", {
@@ -187,16 +190,8 @@ async function updateStep({
     { where: { id: stepId } },
   );
 
-  if (status === "COMPLETED") {
-    await event.publish("STEP_COMPLETED", {
-      taskId,
-      stepId,
-      action,
-      parameters,
-      result,
-    });
-  } else if (status === "FAILED") {
-    await event.publish("STEP_FAILED", {
+  if (status !== "IN_PROGRESS") {
+    await event.publish(`STEP_${status}`, {
       taskId,
       stepId,
       action,

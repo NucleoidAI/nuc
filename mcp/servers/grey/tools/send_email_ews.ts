@@ -1,18 +1,66 @@
 import fs from "fs";
-import { XhrApi } from "@ewsjs/xhr";
-import {
-  BodyType,
-  ConfigurationApi,
-  EmailAddress,
-  EmailMessage,
-  ExchangeService,
-  ExchangeVersion,
-  MessageBody,
-  Uri,
-} from "ews-javascript-api";
+import path from "path";
+import { spawn } from "child_process";
 import logger from "../../../logger/logger.js";
 import { Tool } from "../../gdrive/tools/types";
 import { buildAttachments, TEMPLATES } from "./send_email.js";
+
+const WORKER_PATH = path.join(__dirname, "ews_send_worker.cjs");
+
+function describeEwsError(error: any): string {
+  if (!error) return "Unknown error";
+  if (typeof error === "string") return error;
+  const parts: string[] = [];
+  if (error.message) parts.push(String(error.message));
+  if (error.faultString && error.faultString !== error.message)
+    parts.push(String(error.faultString));
+  const details = error.errorDetails?.keysToObjs ?? error.errorDetails;
+  if (details && Object.keys(details).length) parts.push(JSON.stringify(details));
+  if (error.HttpStatusCode) parts.push(`HTTP ${error.HttpStatusCode}`);
+  if (error.InnerException?.message)
+    parts.push(`inner: ${error.InnerException.message}`);
+  if (parts.length) return parts.join(" | ");
+  try {
+    return JSON.stringify(error);
+  } catch {
+    return String(error);
+  }
+}
+
+function runEwsWorker(payload: Record<string, any>): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const child = spawn(process.env.EWS_NODE_BIN || "node", [WORKER_PATH], {
+      cwd: path.resolve(path.dirname(WORKER_PATH), "../../.."),
+      stdio: ["pipe", "pipe", "pipe"],
+    });
+
+    let stdout = "";
+    let stderr = "";
+    child.stdout.on("data", (chunk) => (stdout += chunk));
+    child.stderr.on("data", (chunk) => (stderr += chunk));
+    child.on("error", (error) =>
+      reject(new Error(`Cannot start EWS worker: ${error.message}`))
+    );
+    child.on("close", (code) => {
+      let result: any;
+      try {
+        result = JSON.parse(stdout.trim());
+      } catch {
+        return reject(
+          new Error(
+            `EWS worker exited with code ${code}: ${
+              stderr.trim() || stdout.trim() || "no output"
+            }`
+          )
+        );
+      }
+      if (result.ok) return resolve();
+      reject(new Error(result.error || "Unknown EWS error"));
+    });
+
+    child.stdin.end(JSON.stringify(payload));
+  });
+}
 
 export const sendEmailEwsTool: Tool<any> = {
   name: "GREY:send_email_ews",
@@ -144,44 +192,32 @@ export const sendEmailEwsTool: Tool<any> = {
         .filter(Boolean);
       if (!recipients.length) throw new Error("to must contain a recipient");
 
-      const rejectUnauthorized =
-        process.env.EWS_TLS_REJECT_UNAUTHORIZED !== "false";
-      const xhr = new XhrApi({ rejectUnauthorized }).useNtlmAuthentication(
+      const payload = {
+        serviceUrl,
         user,
-        pass
-      );
-      ConfigurationApi.ConfigureXHR(xhr);
-
-      const service = new ExchangeService(ExchangeVersion.Exchange2013);
-      service.Url = new Uri(serviceUrl);
-      service.HttpHeaders.Add("X-AnchorMailbox", mailbox);
-
-      const message = new EmailMessage(service);
-      message.From = new EmailAddress(mailbox);
-      message.ToRecipients.AddRange(recipients);
-      message.Subject = subject;
-      message.Body = html
-        ? new MessageBody(BodyType.HTML, html)
-        : new MessageBody(BodyType.Text, text);
-
-      for (const attachment of attachments) {
-        const content = attachment.path
-          ? fs.readFileSync(attachment.path).toString("base64")
-          : Buffer.from(attachment.content ?? "", "utf8").toString("base64");
-        const ewsAttachment = message.Attachments.AddFileAttachment(
-          attachment.filename,
-          content
-        );
-        if (attachment.contentType) {
-          ewsAttachment.ContentType = attachment.contentType;
-        }
-      }
+        pass,
+        from: process.env.EWS_FROM,
+        version: process.env.EWS_VERSION || "Exchange2013",
+        rejectUnauthorized:
+          process.env.EWS_TLS_REJECT_UNAUTHORIZED !== "false",
+        recipients,
+        subject,
+        text,
+        html,
+        attachments: attachments.map((attachment) => ({
+          filename: attachment.filename,
+          contentType: attachment.contentType,
+          base64: attachment.path
+            ? fs.readFileSync(attachment.path).toString("base64")
+            : Buffer.from(attachment.content ?? "", "utf8").toString("base64"),
+        })),
+      };
 
       logger.debug(
         { tool: "GREY:send_email_ews", to: args.to, mailbox },
         "Sending email via EWS"
       );
-      await message.SendAndSaveCopy();
+      await runEwsWorker(payload);
 
       logger.info(
         {
@@ -213,14 +249,14 @@ export const sendEmailEwsTool: Tool<any> = {
         isError: false,
       };
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Unknown error";
+      const errorMessage = describeEwsError(error);
 
       logger.error(
         {
           tool: "GREY:send_email_ews",
           action: "send",
           err: error instanceof Error ? error : new Error(errorMessage),
+          detail: errorMessage,
           to: args.to,
           subject,
         },

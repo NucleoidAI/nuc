@@ -3,44 +3,21 @@ import React from "react";
 
 import { Box, Card, CardContent, Typography } from "@mui/material";
 
-const Skills = ({
-  title,
+const FALLBACK_ICON = "mdi:server-network";
+
+const MCPServerCard = ({
+  serverId,
+  providerName,
   description,
   icon,
-  onSkillClick,
-  id,
-  oauth,
-  action,
+  onOpen,
 }: {
-  title: string;
-  description: string;
-  icon: string;
-  action: string;
-  onSkillClick: (skill: {
-    title: string;
-    description: string;
-    icon: string;
-    action: string;
-    id: string;
-    oauth?: {
-      tokenUrl: string;
-      clientId: string;
-      scope: string;
-      redirectUri: string;
-    };
-  }) => void;
-  id: string;
-  oauth?: {
-    tokenUrl: string;
-    clientId: string;
-    scope: string;
-    redirectUri: string;
-  };
+  serverId: string;
+  providerName?: string;
+  description?: string | null;
+  icon?: string | null;
+  onOpen: () => void;
 }) => {
-  const [actionVendor, ...actionRest] = action.split(":");
-  const vendor = title ? title : actionVendor;
-  const actionName = actionRest.join(":") || action;
-
   return (
     <Card
       sx={{
@@ -68,9 +45,7 @@ const Skills = ({
           cursor: "pointer",
         },
       }}
-      onClick={() =>
-        onSkillClick({ title, description, icon, id, oauth, action })
-      }
+      onClick={onOpen}
     >
       <Box
         sx={{
@@ -103,11 +78,11 @@ const Skills = ({
             },
           }}
         >
-          <Icon icon={icon} width="30" height="30" />
+          <Icon icon={icon ?? FALLBACK_ICON} width="30" height="30" />
         </Box>
         <Typography
           variant="h6"
-          title={vendor}
+          title={providerName}
           sx={{
             ml: 1,
             minWidth: 0,
@@ -118,7 +93,7 @@ const Skills = ({
             wordBreak: "break-word",
           }}
         >
-          {vendor}
+          {providerName}
         </Typography>
       </Box>
       <CardContent
@@ -131,7 +106,7 @@ const Skills = ({
       >
         <Typography
           variant="subtitle1"
-          title={actionName}
+          title={serverId}
           sx={{
             mb: 1,
             display: "-webkit-box",
@@ -141,11 +116,11 @@ const Skills = ({
             wordBreak: "break-word",
           }}
         >
-          {actionName}
+          {serverId}
         </Typography>
         <Typography
           variant="body2"
-          title={description}
+          title={description ?? undefined}
           sx={{
             display: "-webkit-box",
             WebkitLineClamp: 3,
@@ -162,4 +137,4 @@ const Skills = ({
   );
 };
 
-export default Skills;
+export default MCPServerCard;

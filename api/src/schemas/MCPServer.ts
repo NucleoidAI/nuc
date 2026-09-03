@@ -11,7 +11,14 @@ const MCPServer = {
   create: Joi.object({
     id: Joi.string().min(1).max(255).required(),
     mcpProviderId: uuid.required(),
+    description: Joi.string().allow("", null).optional(),
+    icon: Joi.string().allow("", null).optional(),
   }),
+
+  update: Joi.object({
+    description: Joi.string().allow("", null).optional(),
+    icon: Joi.string().allow("", null).optional(),
+  }).or("description", "icon"),
 
   list: Joi.object(scope).oxor("teamId", "agentId"),
 

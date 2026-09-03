@@ -82,9 +82,13 @@ async function listServers({ teamId, agentId }: Scope) {
 async function createServer({
   id,
   mcpProviderId,
+  description,
+  icon,
 }: {
   id: string;
   mcpProviderId: string;
+  description?: string;
+  icon?: string;
 }) {
   const providerInstance = await MCPProvider.findByPk(mcpProviderId);
 
@@ -98,7 +102,7 @@ async function createServer({
     throw new Error("MCP_SERVER_ID_ALREADY_EXISTS");
   }
 
-  return MCPServer.create({ id, mcpProviderId });
+  return MCPServer.create({ id, mcpProviderId, description, icon });
 }
 
 async function assign({

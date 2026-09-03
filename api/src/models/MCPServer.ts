@@ -20,6 +20,14 @@ class MCPServer extends Model {
   @AllowNull(false)
   @Column(DataType.UUID)
   declare mcpProviderId: string;
+
+  @AllowNull(true)
+  @Column(DataType.TEXT)
+  declare description: string | null;
+
+  @AllowNull(true)
+  @Column(DataType.STRING)
+  declare icon: string | null;
 }
 
 export default MCPServer;

@@ -20,9 +20,16 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { id, mcpProviderId } = Joi.attempt(req.body, schemas.MCPServer.create);
+  const { id, mcpProviderId, description } = Joi.attempt(
+    req.body,
+    schemas.MCPServer.create
+  );
 
-  const server = await mcpServer.createServer({ id, mcpProviderId });
+  const server = await mcpServer.createServer({
+    id,
+    mcpProviderId,
+    description,
+  });
 
   res.status(201).json(server);
 });
@@ -31,6 +38,17 @@ router.get("/:serverId", async (req, res) => {
   const { serverId } = req.params;
 
   const server = await mcpServer.getServer({ serverId });
+
+  res.json(server);
+});
+
+router.patch("/:serverId", async (req, res) => {
+  const { serverId } = req.params;
+  const changes = Joi.attempt(req.body, schemas.MCPServer.update);
+
+  const server = await mcpServer.getServer({ serverId });
+
+  await server.update(changes);
 
   res.json(server);
 });

@@ -3,99 +3,147 @@
   "seed": [
     {
       "id": "gdrive",
-      "mcpProviderId": "019f9c00-0000-4000-8000-000000000001"
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000001",
+      "description": "Google Drive MCP server exposing 1 tool.",
+      "icon": "mdi:google-drive"
     },
     {
       "id": "servicenow",
-      "mcpProviderId": "019f9c00-0000-4000-8000-000000000002"
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000002",
+      "description": "ServiceNow MCP server exposing 17 tools.",
+      "icon": "mdi:cloud-check-outline"
     },
     {
       "id": "slack",
-      "mcpProviderId": "019f9c00-0000-4000-8000-000000000003"
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000003",
+      "description": "Slack MCP server exposing 1 tool.",
+      "icon": "mdi:slack"
     },
     {
       "id": "discord",
-      "mcpProviderId": "019f9c00-0000-4000-8000-000000000004"
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000004",
+      "description": "Discord MCP server exposing 1 tool.",
+      "icon": "mdi:discord"
     },
     {
       "id": "jira",
-      "mcpProviderId": "019f9c00-0000-4000-8000-000000000005"
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000005",
+      "description": "Jira MCP server exposing 1 tool.",
+      "icon": "mdi:jira"
     },
     {
       "id": "github",
-      "mcpProviderId": "019f9c00-0000-4000-8000-000000000006"
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000006",
+      "description": "GitHub MCP server exposing 1 tool.",
+      "icon": "mdi:github"
     },
     {
       "id": "grey",
-      "mcpProviderId": "019f9c00-0000-4000-8000-000000000007"
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000007",
+      "description": "Grey MCP server exposing 4 tools.",
+      "icon": "mdi:counter"
     },
     {
       "id": "telco",
-      "mcpProviderId": "019f9c00-0000-4000-8000-000000000008"
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000008",
+      "description": "Telco MCP server exposing 7 tools.",
+      "icon": "mdi:map"
     },
     {
       "id": "order",
-      "mcpProviderId": "019f9c00-0000-4000-8000-000000000009"
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000009",
+      "description": "Order MCP server exposing 4 tools.",
+      "icon": "mdi:magnify"
     },
     {
       "id": "active-directory",
-      "mcpProviderId": "019f9c00-0000-4000-8000-000000000010"
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000010",
+      "description": "Active Directory MCP server exposing 1 tool.",
+      "icon": "mdi:microsoft-windows"
     },
     {
       "id": "sap",
-      "mcpProviderId": "019f9c00-0000-4000-8000-000000000011"
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000011",
+      "description": "SAP MCP server exposing 16 tools.",
+      "icon": "simple-icons:sap"
     },
     {
       "id": "salesforce",
-      "mcpProviderId": "019f9c00-0000-4000-8000-000000000012"
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000012",
+      "description": "SalesForce MCP server exposing 15 tools.",
+      "icon": "mdi:salesforce"
     },
     {
       "id": "aws",
-      "mcpProviderId": "019f9c00-0000-4000-8000-000000000013"
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000013",
+      "description": "AWS MCP server exposing 16 tools.",
+      "icon": "mdi:aws"
     },
     {
       "id": "hubspot",
-      "mcpProviderId": "019f9c00-0000-4000-8000-000000000014"
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000014",
+      "description": "HubSpot MCP server exposing 17 tools.",
+      "icon": "mdi:hubspot"
     },
     {
       "id": "oracle",
-      "mcpProviderId": "019f9c00-0000-4000-8000-000000000015"
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000015",
+      "description": "Oracle MCP server exposing 17 tools.",
+      "icon": "simple-icons:oracle"
     },
     {
       "id": "microsoft",
-      "mcpProviderId": "019f9c00-0000-4000-8000-000000000016"
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000016",
+      "description": "Microsoft MCP server exposing 23 tools.",
+      "icon": "mdi:microsoft"
     },
     {
       "id": "atlassian",
-      "mcpProviderId": "019f9c00-0000-4000-8000-000000000017"
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000017",
+      "description": "Atlassian MCP server exposing 13 tools.",
+      "icon": "mdi:atlassian"
     },
     {
       "id": "project-notifier",
-      "mcpProviderId": "019f9c00-0000-4000-8000-000000000018"
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000018",
+      "description": "Project Notifier MCP server exposing 1 tool.",
+      "icon": "mdi:projector-screen"
     },
     {
       "id": "zendesk",
-      "mcpProviderId": "019f9c00-0000-4000-8000-000000000019"
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000019",
+      "description": "Zendesk MCP server exposing 15 tools.",
+      "icon": "simple-icons:zendesk"
     },
     {
       "id": "docusign",
-      "mcpProviderId": "019f9c00-0000-4000-8000-000000000020"
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000020",
+      "description": "Docusign MCP server exposing 15 tools.",
+      "icon": "simple-icons:docusign"
     },
     {
       "id": "netsuite",
-      "mcpProviderId": "019f9c00-0000-4000-8000-000000000021"
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000021",
+      "description": "Netsuite MCP server exposing 15 tools.",
+      "icon": "simple-icons:oracle"
     },
     {
       "id": "stripe",
-      "mcpProviderId": "019f9c00-0000-4000-8000-000000000022"
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000022",
+      "description": "Stripe MCP server exposing 15 tools.",
+      "icon": "simple-icons:stripe"
     },
     {
       "id": "snowflake",
-      "mcpProviderId": "019f9c00-0000-4000-8000-000000000023"
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000023",
+      "description": "Snowflake MCP server exposing 15 tools.",
+      "icon": "simple-icons:snowflake"
     },
     {
       "id": "twilio",
-      "mcpProviderId": "019f9c00-0000-4000-8000-000000000024"
+      "mcpProviderId": "019f9c00-0000-4000-8000-000000000024",
+      "description": "Twilio MCP server exposing 15 tools.",
+      "icon": "simple-icons:twilio"
     }
   ]
 }

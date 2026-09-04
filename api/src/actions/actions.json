@@ -473,7 +473,6 @@
             "variant": { "type": "string" },
             "meeting_summary": { "type": "number" },
             "next_steps": { "type": ["number", "null"] },
-            "topics": { "type": "number" },
             "highlights": { "type": "number" },
             "overall": { "type": "number" },
             "accuracy": { "type": "number" },
@@ -618,7 +617,7 @@
     "action": "PLATFORM:judge_summary",
     "label": "Platform",
     "lib": "judge_summary",
-    "description": "Evaluate meeting notes with a Turkish LLM judge prompt. Returns 0-100 scores for the meeting summary, next steps, topics, highlights, overall quality and accuracy, plus a short Turkish justification. Next steps are not evaluated for variant A because that variant does not generate them.",
+    "description": "Evaluate meeting notes with a Turkish LLM judge prompt. Only the fields the summarizers actually produce are scored: it returns 0-100 scores for the meeting summary, next steps, the topic-grouped highlights, overall quality and accuracy, plus a short Turkish justification. Next steps are not evaluated for variant A because that variant does not generate them.",
     "icon": "mdi:gavel",
     "inputSchema": {
       "type": "object",
@@ -632,7 +631,7 @@
         },
         "highlights": {
           "type": "array",
-          "description": "The highlights array from the summarization step. Pass it through unchanged so topics and highlights can be evaluated.",
+          "description": "The highlights array from the summarization step. Pass it through unchanged so the topic headings and their points can be evaluated.",
           "items": {
             "type": "object",
             "properties": {
@@ -681,13 +680,9 @@
           "type": ["number", "null"],
           "description": "0-100: completeness and accuracy of the next steps. Null for variant A because next steps are not evaluated."
         },
-        "topics": {
-          "type": "number",
-          "description": "0-100: completeness and correct organization of the main topics."
-        },
         "highlights": {
           "type": "number",
-          "description": "0-100: whether critical decisions and important points were selected correctly."
+          "description": "0-100: whether the main topics were broken out correctly and the critical decisions and important points under each were selected correctly."
         },
         "overall": {
           "type": "number",

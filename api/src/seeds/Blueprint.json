@@ -349,7 +349,7 @@
     {
       "id": "019fa100-0000-4000-8000-000000000001",
       "title": "Meeting Summary A - Full Transcript Only",
-      "description": "Variant A of the meeting summarizer A/B test. Converts PCM recordings to WAV, transcribes only the mixed meeting-audio recording, and summarizes that full transcript into an overall summary and the meeting's highlights. It deliberately skips per-speaker transcription, produces no next steps and attributes nothing to individual speakers. A Turkish LLM judge scores meeting summary, topics, highlights, overall quality and accuracy on a 0-100 scale; next steps are explicitly not evaluated. The summary is emailed to the meeting participants, with the full transcript and the judge's evaluation attached as files. Meeting audio is not sent.",
+      "description": "Variant A of the meeting summarizer A/B test. Converts PCM recordings to WAV, transcribes only the mixed meeting-audio recording, and summarizes that full transcript into an overall summary and the meeting's highlights. It deliberately skips per-speaker transcription, produces no next steps and attributes nothing to individual speakers. A Turkish LLM judge scores the meeting summary, the topic-grouped highlights, overall quality and accuracy on a 0-100 scale; next steps are explicitly not evaluated. The summary is emailed to the meeting participants, with the full transcript and the judge's evaluation attached as files. Meeting audio is not sent.",
       "agentId": "019f4a02-1111-4222-8333-444455556666",
       "blocking": false,
       "force": true,
@@ -396,7 +396,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:judge_summary",
-            "description": "Use a Turkish LLM judge to score the meeting summary, topics, highlights, overall quality and accuracy from 0 to 100; do not evaluate next steps because variant A does not generate them",
+            "description": "Use a Turkish LLM judge to score the meeting summary, the topic-grouped highlights, overall quality and accuracy from 0 to 100; do not evaluate next steps because variant A does not generate them",
             "label": "Judge Summary",
             "icon": "mdi:gavel"
           },
@@ -444,7 +444,7 @@
     {
       "id": "019fa200-0000-4000-8000-000000000001",
       "title": "Meeting Summary B - Speaker Attributed",
-      "description": "Variant B of the meeting summarizer A/B test. Converts per-participant PCM recordings to WAV, transcribes both each participant individually and the meeting as a whole, then summarizes both together into an overall summary, the meeting's highlights and the next steps. Because every participant's own recording is passed in, statements and next step owners are attributed to the right speaker. Participant IDs are resolved to real names, and a Turkish LLM judge scores meeting summary, next steps, topics, highlights, overall quality and accuracy on a 0-100 scale. The result is emailed to all participants and, as a separate step, to the manager whose address comes from the agent's knowledge base - with the transcripts and the judge's evaluation attached as files. Meeting audio is not sent.",
+      "description": "Variant B of the meeting summarizer A/B test. Converts per-participant PCM recordings to WAV, transcribes both each participant individually and the meeting as a whole, then summarizes both together into an overall summary, the meeting's highlights and the next steps. Because every participant's own recording is passed in, statements and next step owners are attributed to the right speaker. Participant IDs are resolved to real names, and a Turkish LLM judge scores the meeting summary, next steps, the topic-grouped highlights, overall quality and accuracy on a 0-100 scale. The result is emailed to all participants and, as a separate step, to the manager whose address comes from the agent's knowledge base - with the transcripts and the judge's evaluation attached as files. Meeting audio is not sent.",
       "agentId": "019f4a02-1111-4222-8333-444455556666",
       "blocking": false,
       "force": true,
@@ -503,7 +503,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:judge_summary",
-            "description": "Use a Turkish LLM judge to score the meeting summary, next steps, topics, highlights, overall quality and accuracy from 0 to 100; verify speaker attributions against the individual recordings",
+            "description": "Use a Turkish LLM judge to score the meeting summary, next steps, the topic-grouped highlights, overall quality and accuracy from 0 to 100; verify speaker attributions against the individual recordings",
             "label": "Judge Summary",
             "icon": "mdi:gavel"
           },

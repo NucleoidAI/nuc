@@ -2,7 +2,8 @@ import { generate } from "../lib/llm";
 import type { LLMMeta } from "../lib/llmLog";
 import { unwrapResult } from "../lib/llmResult";
 
-const JUDGE_MODEL = process.env.JUDGE_LLM_MODEL || "qwen/qwen3.8-27b";
+const JUDGE_MODEL =
+  process.env.JUDGE_LLM_MODEL || "qwen/qwen3-next-80b-a3b-instruct";
 
 function stringifySummary(summary: unknown): string {
   if (typeof summary === "string") return summary;
@@ -19,7 +20,7 @@ function valueFromSummary(summary: unknown, key: string): unknown {
 }
 
 function speakerBlock(
-  speakerTranscripts: { id: string; transcript: string }[],
+  speakerTranscripts: { id: string; transcript: string }[]
 ): string {
   const speakers = speakerTranscripts
     .filter(({ transcript }) => transcript)
@@ -64,7 +65,6 @@ async function run({
   }
 
   const normalizedVariant = variant?.trim().toUpperCase();
-  const evaluatesNextSteps = normalizedVariant !== "A";
   const suppliedHighlights =
     highlights ?? (valueFromSummary(summary, "highlights") as Highlight[]);
   const suppliedNextSteps =
@@ -77,11 +77,8 @@ async function run({
     };
   }
 
-  if (evaluatesNextSteps && suppliedNextSteps === undefined) {
-    return {
-      error: "next_steps is required for variants that generate next steps",
-    };
-  }
+  const evaluatesNextSteps =
+    normalizedVariant !== "A" && suppliedNextSteps !== undefined;
 
   // Variant B attributes statements using each participant's own recording. If
   // the judge only saw the unlabeled combined transcript it would mark every
@@ -94,18 +91,30 @@ async function run({
 
   const nextStepsRule = evaluatesNextSteps
     ? "- next_steps (Sonraki Adımlar): Aksiyonlar, sorumlular, teslim tarihleri ve taahhütler eksiksiz ve doğru mu? Toplantıda kararlaştırılan ancak notlarda yer almayan adımları puandan düş."
-    : "- A varyantı tasarım gereği sonraki adım üretmez. next_steps alanını değerlendirme ve bu eksikliği hiçbir puana olumsuz yansıtma.";
+    : "- Bu varyant tasarım gereği sonraki adım üretmez. Sonraki adımları değerlendirme ve bu eksikliği hiçbir puana olumsuz yansıtma.";
+
+  const schemaRule = `Notlar tam olarak şu alanlardan oluşur ve başka alan içermez:
+- summary: toplantıyı anlatan tek bir paragraf.
+- highlights: her biri { topic, highlights } biçiminde, konu başlığı ve o başlığa ait maddelerden oluşan dizi.${
+    evaluatesNextSteps
+      ? "\n- next_steps: sorumlu ve yapılacak işi içeren madde dizisi."
+      : ""
+  }
+Yalnızca bu alanları değerlendir. Notlarda bulunmayan bir alanı arama, eksik sayma veya bunun için puan kırma.`;
 
   const result = await generate({
     model: JUDGE_MODEL,
     policy: {
       role: "system",
-      content: `Sen, toplantı notlarını titizlikle değerlendiren bağımsız bir LLM hakemisin. Sana toplantı transkripti ile bu transkriptten üretilen notlar verilecek. Notları yalnızca verilen kanıtlara göre, aşağıdaki ölçütlerin her biri için 0-100 arasında puanla:
-- meeting_summary (Toplantı Özeti): Özet; toplantının amacı, önemli gelişmeleri, kararları ve sonuçları doğru, dengeli ve öz biçimde yansıtıyor mu?
+      content: `Sen, toplantı notlarını titizlikle değerlendiren bağımsız bir LLM hakemisin. Sana toplantı transkripti ile bu transkriptten üretilen notlar verilecek.
+
+${schemaRule}
+
+Notları yalnızca verilen kanıtlara göre, aşağıdaki ölçütlerin her biri için 0-100 arasında puanla:
+- meeting_summary (Toplantı Özeti): summary paragrafı; toplantının amacı, önemli gelişmeleri, kararları ve sonuçları doğru, dengeli ve öz biçimde yansıtıyor mu?
 ${nextStepsRule}
-- topics (Konular): Toplantıda ele alınan ana konular eksiksiz, doğru ayrıştırılmış ve uygun başlıklarla sunulmuş mu?
-- highlights (Öne Çıkanlar): Kritik kararlar, önemli bilgiler, riskler ve dikkat gerektiren noktalar doğru seçilmiş mi? Önemsiz ayrıntıları öne çıkarma, önemli eksikleri cezalandır.
-- overall (Genel Değerlendirme): Geçerli ölçütleri birlikte düşünerek notların bütünsel kullanılabilirliğini puanla. A varyantında Sonraki Adımlar bu hesaba katılmamalıdır.
+- highlights (Konular ve Öne Çıkanlar): highlights dizisini bir bütün olarak puanla. Toplantının ana konuları eksiksiz ve uygun başlıklarla ayrıştırılmış mı; her başlığın altındaki kritik kararlar, önemli bilgiler, riskler ve dikkat gerektiren noktalar doğru seçilmiş mi? Önemsiz ayrıntıları öne çıkarma, önemli eksikleri cezalandır.
+- overall (Genel Değerlendirme): Geçerli ölçütleri birlikte düşünerek notların bütünsel kullanılabilirliğini puanla. Sonraki adım üretmeyen varyantlarda bu ölçüt hesaba katılmamalıdır.
 - accuracy (Doğruluk): Notlardaki her iddia verilen kanıtlarla destekleniyor mu? Uydurulan olay, kişi, tarih, sayı ve kararları; ayrıca yanlış konuşmacı veya sorumlu atıflarını ağır biçimde cezalandır. ${attributionRule}
 
 Uzunluğu ödüllendirme; kısa ve doğru notlar, uzun ve spekülatif notlardan daha değerlidir. overall puanı accuracy puanını geçemez. reasoning alanını tamamen Türkçe, somut, yapıcı ve en fazla 150 kelime olarak yaz. Yalnızca istenen JSON nesnesini döndür.`,
@@ -120,8 +129,8 @@ Uzunluğu ödüllendirme; kısa ve doğru notlar, uzun ve spekülatif notlardan 
       ...(evaluatesNextSteps ? { next_steps: suppliedNextSteps } : {}),
     })}`,
     json_format: evaluatesNextSteps
-      ? '{ meeting_summary: <0-100>, next_steps: <0-100>, topics: <0-100>, highlights: <0-100>, overall: <0-100>, accuracy: <0-100>, reasoning: "<Türkçe, en fazla 150 kelime>" }'
-      : '{ meeting_summary: <0-100>, topics: <0-100>, highlights: <0-100>, overall: <0-100>, accuracy: <0-100>, reasoning: "<Türkçe, en fazla 150 kelime>" }',
+      ? '{ meeting_summary: <0-100>, next_steps: <0-100>, highlights: <0-100>, overall: <0-100>, accuracy: <0-100>, reasoning: "<Türkçe, en fazla 150 kelime>" }'
+      : '{ meeting_summary: <0-100>, highlights: <0-100>, overall: <0-100>, accuracy: <0-100>, reasoning: "<Türkçe, en fazla 150 kelime>" }',
     // Reasoning models bill their thinking against max_tokens, so a budget
     // sized for the ~300-token verdict alone gets consumed entirely by the
     // thinking block and returns empty content.
@@ -132,7 +141,6 @@ Uzunluğu ödüllendirme; kısa ve doğru notlar, uzun ve spekülatif notlardan 
   const requiredScores = [
     "meeting_summary",
     ...(evaluatesNextSteps ? ["next_steps"] : []),
-    "topics",
     "highlights",
     "overall",
     "accuracy",
@@ -140,7 +148,6 @@ Uzunluğu ödüllendirme; kısa ve doğru notlar, uzun ve spekülatif notlardan 
   const scored = unwrapResult(result, requiredScores) as {
     meeting_summary?: number;
     next_steps?: number;
-    topics?: number;
     highlights?: number;
     overall?: number;
     accuracy?: number;
@@ -152,7 +159,6 @@ Uzunluğu ödüllendirme; kısa ve doğru notlar, uzun ve spekülatif notlardan 
     variant: variant ?? null,
     meeting_summary: clampScore(scored.meeting_summary),
     next_steps: evaluatesNextSteps ? clampScore(scored.next_steps) : null,
-    topics: clampScore(scored.topics),
     highlights: clampScore(scored.highlights),
     overall: Math.min(clampScore(scored.overall), accuracy),
     accuracy,

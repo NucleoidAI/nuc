@@ -1,4 +1,4 @@
-const MANAGER_EMAIL = "manager@onboarding.invalid";
+const MANAGER_EMAIL = "halilcengel@greycollar.ai";
 
 const REQUEST_NUMBER = "REQ0010042";
 
@@ -35,9 +35,14 @@ const APPROVED_REQUEST = {
 
 function onboardingRequest(): string {
   return JSON.stringify({
-    intent: "onboard_employee",
-    request_number: REQUEST_NUMBER,
-    employee: NEW_EMPLOYEE,
+    requestNumber: REQUEST_NUMBER,
+    firstName: NEW_EMPLOYEE.first_name,
+    lastName: NEW_EMPLOYEE.last_name,
+    employeeId: NEW_EMPLOYEE.employee_id,
+    department: NEW_EMPLOYEE.department,
+    jobRole: NEW_EMPLOYEE.job_role,
+    manager: NEW_EMPLOYEE.manager,
+    location: NEW_EMPLOYEE.location,
   });
 }
 

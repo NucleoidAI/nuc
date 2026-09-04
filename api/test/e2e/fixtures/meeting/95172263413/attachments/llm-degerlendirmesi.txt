@@ -1,17 +1,17 @@
 ╔══════════════════════════════════════════╗
 ║          LLM DEĞERLENDİRMESİ             ║
 ╚══════════════════════════════════════════╝
-Varyant: A
+Varyant: B
 
 | Değerlendirme Ölçütü  |               Puan |
 |-----------------------|--------------------|
-| Toplantı Özeti        |             85/100 |
-| Sonraki Adımlar       |  Değerlendirilmedi |
-| Konular               |             86/100 |
-| Öne Çıkanlar          |             82/100 |
-| Genel Değerlendirme   |             78/100 |
-| Doğruluk              |             78/100 |
+| Toplantı Özeti        |             75/100 |
+| Sonraki Adımlar       |             60/100 |
+| Konular               |             80/100 |
+| Öne Çıkanlar          |             85/100 |
+| Genel Değerlendirme   |             75/100 |
+| Doğruluk              |             75/100 |
 
 DEĞERLENDİRME NOTU
 -------------------
-Notlar, çok dağınık ve konuşmacı etiketi olmayan uzun bir transkriptten büyük ölçüde tutarlı bir özet çıkarmış. Bütçe süreci, %4 kesinti, DMA 16 milyon, vendor değerlendirmeleri, Microsoft-Innova PF sorunu, Logitech/Ivanti, AI projeleri, Seyahat Portalı ve personel konuları genel olarak kaynaklarla örtüşüyor. Ancak bazı küçük hatalar var: 'Flowey (Kobe)' ifadesi transkriptte geçmiyor, muhtemelen 'Keçboğa' ile karıştırılmış; Microsoft-Innova 3 yıllık 48,5 milyon rakamı transkriptteki karışık ve net olmayan ifadelerden fazla kesinlikle sunulmuş. Highlights bölümü gereğinden uzun ve bazı ikincil teknik detaylar (RC4/MDM/Exchange, Zabbix) öne çıkanlar arasında ağırlık kazanmış, oysa bütçe/kesinti/PF krizi gibi daha kritik konular nispeten benzer ağırlıkta kalmış. Genel olarak kullanışlı ama küçük doğruluk sapmaları nedeniyle tam puan verilemez.
+Toplantı notları, bütçe, vendor, yapay zeka ve personel konularını kapsayan ana başlıkları doğru yansıtmıştır. Ancak bazı aksiyonlar yanlış atfedilmiştir: Örneğin, DMA 16 milyon TL talebi Akif Erdoğan'a ait, ancak notlarda 16782336 (İsmail) olarak verilmiştir. %4 kesinti konusu Alper Bey ve Akif ile ilgiliyken, notlarda genel bir 'asist ve MS ekipleri' ifadesiyle sadeleştirilmiştir. Ayrıca, Logitech dağıtım planı Alper Bey'e ait, ancak notlarda 16781312 (İsmail) olarak verilmiştir. Bu atıflar transkriptteki konuşmacı etiketleriyle çelişmektedir. Diğer unsurlar doğrudur, ancak doğruluk eksikliği genel kullanılabilirliği etkilemektedir.

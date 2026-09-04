@@ -7,13 +7,15 @@ import {
   onboardingRequest,
 } from "./fixtures/onboarding";
 import {
-  ONBOARDING_AGENT_ID,
   ONBOARDING_BLUEPRINT_ID,
+  ONBOARDING_TEAM_ID,
   SESSION,
+  TEAM_ID,
 } from "./fixtures/ids";
 
 import event from "./mocks/events";
 import { mcp } from "./mocks/mcp";
+import supertest from "supertest";
 
 const recipients = () =>
   mcp
@@ -22,6 +24,14 @@ const recipients = () =>
     .join(" ");
 
 describe("Onboarding Agent", () => {
+  beforeAll(() => {
+    process.env.PROJECT_ID = ONBOARDING_TEAM_ID;
+  });
+
+  afterAll(() => {
+    process.env.PROJECT_ID = TEAM_ID;
+  });
+
   afterEach(event.releaseAll);
 
   it("creates the account, approves the ServiceNow request and notifies the manager and the employee", async () => {
@@ -46,11 +56,10 @@ describe("Onboarding Agent", () => {
         messageId: "<e2e-onboarding@greycollar.test>",
       });
 
-    await event.publish("SESSION_USER_MESSAGED", {
-      agentId: ONBOARDING_AGENT_ID,
-      sessionId: SESSION.onboarding,
-      content: onboardingRequest(),
-    });
+    await supertest(app)
+      .post(`/sessions/${SESSION.onboarding}`)
+      .send({ content: onboardingRequest() })
+      .expect(200);
 
     const created = await event.waitFor(
       "TASK_CREATED",
@@ -111,11 +120,10 @@ describe("Onboarding Agent", () => {
         messageId: "<e2e-onboarding-2@greycollar.test>",
       });
 
-    await event.publish("SESSION_USER_MESSAGED", {
-      agentId: ONBOARDING_AGENT_ID,
-      sessionId: SESSION.onboardingFailure,
-      content: onboardingRequest(),
-    });
+    await supertest(app)
+      .post(`/sessions/${SESSION.onboardingFailure}`)
+      .send({ content: onboardingRequest() })
+      .expect(200);
 
     const created = await event.waitFor(
       "TASK_CREATED",

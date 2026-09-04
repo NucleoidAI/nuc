@@ -92,7 +92,7 @@ async function run({
     // their thinking against max_tokens, so a budget sized for the summary alone is
     // consumed entirely by the thinking block and returns empty content. Both A/B
     // arms must keep the same budget.
-    max_tokens: 16384,
+    max_tokens: 32768,
     meta,
   });
 

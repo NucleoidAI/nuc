@@ -364,7 +364,7 @@
             "label": "Convert PCM to WAV",
             "icon": "mdi:waveform"
           },
-          "next": ["019f414b-0002-4000-8000-000000000002"],
+          "next": ["019fa100-0002-4000-8000-000000000001"],
           "createdAt": "2026-07-08T10:00:00Z"
         },
         {
@@ -471,7 +471,7 @@
             "label": "Transcribe Meeting",
             "icon": "mdi:microphone-multiple"
           },
-          "next": ["019f414b-0003-4000-8000-000000000003"],
+          "next": ["019fa200-0003-4000-8000-000000000001"],
           "createdAt": "2026-07-08T10:00:00Z"
         },
         {
@@ -483,7 +483,7 @@
             "label": "Summarize Meeting By Speaker",
             "icon": "mdi:text-box-check"
           },
-          "next": ["019f414b-0004-4000-8000-000000000004"],
+          "next": ["019fa200-0004-4000-8000-000000000001"],
           "createdAt": "2026-07-08T10:00:00Z"
         },
         {
@@ -519,7 +519,7 @@
             "label": "Prepare Attachments",
             "icon": "mdi:paperclip"
           },
-          "next": ["019f414b-0005-4000-8000-000000000005"],
+          "next": ["019fa200-0007-4000-8000-000000000001"],
           "createdAt": "2026-07-08T10:00:00Z"
         },
         {
@@ -531,7 +531,7 @@
             "label": "Email Participants",
             "icon": "mdi:email-send"
           },
-          "next": ["019f414b-0008-4000-8000-000000000008"],
+          "next": ["019fa200-0008-4000-8000-000000000001"],
           "createdAt": "2026-07-08T10:00:00Z"
         },
         {
@@ -543,7 +543,7 @@
             "label": "Get Manager Email",
             "icon": "mdi:book-search"
           },
-          "next": ["019f414b-0009-4000-8000-000000000009"],
+          "next": ["019fa200-0009-4000-8000-000000000001"],
           "createdAt": "2026-07-08T10:00:00Z"
         },
         {
@@ -555,7 +555,7 @@
             "label": "Email Manager",
             "icon": "mdi:email-send"
           },
-          "next": ["019f414b-0006-4000-8000-000000000006"],
+          "next": ["019fa200-0010-4000-8000-000000000001"],
           "createdAt": "2026-07-08T10:00:00Z"
         },
         {

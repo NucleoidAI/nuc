@@ -272,6 +272,71 @@ const MCPs = [
     },
   },
   {
+    id: "86dcc1c2-f096-459c-9f80-b70214b56296",
+    action: "GREY:send_email_ews",
+    label: "Grey EWS",
+    provider: "GREY",
+    description:
+      "Send an email through Exchange Web Services using NTLM authentication. Supports plain text, HTML, predefined meeting templates, and attachments.",
+    direction: "OUTGOING",
+    icon: "mdi:microsoft-outlook",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        to: {
+          type: "string",
+          description: "The email address of the recipient.",
+        },
+        subject: {
+          type: "string",
+          description:
+            "The subject of the email. Not needed when 'template' is set.",
+          nullable: true,
+        },
+        text: {
+          type: "string",
+          description:
+            "The plain-text body. Not needed when 'template' or 'html' is set.",
+          nullable: true,
+        },
+        html: {
+          type: "string",
+          description: "The HTML body. Not needed when 'template' is set.",
+          nullable: true,
+        },
+        template: {
+          type: "string",
+          description:
+            "Predefined template name: 'meeting_summary_a' or 'meeting_summary_b'.",
+          nullable: true,
+        },
+        data: {
+          type: "object",
+          description: "Structured data used by the selected template.",
+          nullable: true,
+        },
+        attachments: {
+          type: "array",
+          description:
+            "Attachments as { filename, path } or { filename, content, contentType? }.",
+          items: {
+            type: "object",
+            properties: {
+              filename: { type: "string" },
+              path: { type: "string", nullable: true },
+              content: { type: "string", nullable: true },
+              contentType: { type: "string", nullable: true },
+            },
+            required: ["filename"],
+          },
+          nullable: true,
+        },
+      },
+      required: ["to"],
+    },
+  },
+  {
     id: "b7f3d8e9-4c5a-4b2d-9e8f-7a6b5c4d3e2f",
     action: "TELCO:get_address",
     label: "Telco",

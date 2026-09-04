@@ -3,7 +3,7 @@ import fs from "fs";
 import logger from "../../../logger/logger.js";
 import nodemailer from "nodemailer";
 
-type EmailAttachment = {
+export type EmailAttachment = {
   filename: string;
   path?: string;
   content?: string;
@@ -15,7 +15,7 @@ type MeetingHighlight = {
   highlights: string[];
 };
 
-function buildAttachments(input: unknown): {
+export function buildAttachments(input: unknown): {
   attachments: EmailAttachment[];
   missing: string[];
 } {
@@ -288,7 +288,7 @@ export function renderMeetingSummaryB(data: MeetingSummaryData): {
   return { subject, text, html };
 }
 
-const TEMPLATES: Record<
+export const TEMPLATES: Record<
   string,
   (data: MeetingSummaryData) => { subject: string; text: string; html: string }
 > = {

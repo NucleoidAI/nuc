@@ -12,8 +12,7 @@ import { unwrapResult } from "../lib/llmResult";
  * Both arms must run on the same model, otherwise the comparison measures the
  * model rather than the summarizer.
  */
-const SUMMARY_MODEL =
-  process.env.SUMMARY_LLM_MODEL || "qwen/qwen3-next-80b-a3b-instruct";
+const SUMMARY_MODEL = process.env.SUMMARY_LLM_MODEL || "qwen/qwen3.8-27b";
 
 const PROMPT = `Sen, toplantı transkriptlerini analiz edip profesyonel toplantı notları çıkaran bir asistansın.
 
@@ -49,7 +48,7 @@ KURALLAR:
 sonraki adımda gerçek isimlerle değiştirilecektir, bu yüzden ismi sen yazmaya çalışma.`;
 
 function speakerBlock(
-  speakerTranscripts: { id: string; transcript: string }[]
+  speakerTranscripts: { id: string; transcript: string }[],
 ): string {
   const speakers = speakerTranscripts
     .map(({ id, transcript }) => `[${id}]\n${transcript}`)
@@ -85,7 +84,7 @@ async function run({
     model: SUMMARY_MODEL,
     policy: { role: "system", content: PROMPT },
     content: `###TRANSKRIPT###\n${full_meeting_transcript}\n###TRANSKRIPT###\n\n${speakerBlock(
-      speaker_transcripts
+      speaker_transcripts,
     )}`,
     json_format:
       '{ "summary": "<3-5 cümlelik paragraf>", "highlights": [{ "topic": "<konu başlığı>", "highlights": ["<bu konuyla ilgili öne çıkan nokta>"] }], "next_steps": ["<sorumlu konuşmacı kimliği>, <yapılacak iş>"] }',

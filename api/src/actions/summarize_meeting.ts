@@ -11,7 +11,8 @@ import { unwrapResult } from "../lib/llmResult";
  * Both arms must run on the same model, otherwise the comparison measures the
  * model rather than the summarizer.
  */
-const SUMMARY_MODEL = process.env.SUMMARY_LLM_MODEL || "qwen/qwen3.8-27b";
+const SUMMARY_MODEL =
+  process.env.SUMMARY_LLM_MODEL || "qwen/qwen3-next-80b-a3b-instruct";
 
 const PROMPT = `Sen, toplantı transkriptlerini analiz edip profesyonel toplantı notları çıkaran bir asistansın.
 

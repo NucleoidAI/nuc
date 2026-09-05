@@ -13,7 +13,6 @@ type Judgement = {
   variant?: string | null;
   meeting_summary?: number;
   next_steps?: number | null;
-  topics?: number;
   highlights?: number;
   overall?: number;
   accuracy?: number;
@@ -39,32 +38,148 @@ function displayName(
   return match?.name ? `${match.name}-${id}` : id;
 }
 
+const REPORT_WIDTH = 72;
+const LABEL_WIDTH = 28;
+const BAR_WIDTH = 26;
+const SCORE_WIDTH = 8;
+
+function banner(title: string): string[] {
+  const inner = REPORT_WIDTH - 2;
+  const left = Math.floor((inner - title.length) / 2);
+  const right = inner - title.length - left;
+  return [
+    `╔${"═".repeat(inner)}╗`,
+    `║${" ".repeat(left)}${title}${" ".repeat(right)}║`,
+    `╚${"═".repeat(inner)}╝`,
+  ];
+}
+
+function wrapText(text: string, width: number): string[] {
+  return text.split(/\n+/).flatMap((paragraph) =>
+    paragraph
+      .split(/\s+/)
+      .filter(Boolean)
+      .reduce<string[]>((lines, word) => {
+        const last = lines[lines.length - 1];
+        if (last === undefined) return [word];
+        if (last.length + 1 + word.length <= width) {
+          lines[lines.length - 1] = `${last} ${word}`;
+          return lines;
+        }
+        lines.push(word);
+        return lines;
+      }, [])
+  );
+}
+
+function grade(value: number): string {
+  if (value >= 85) return "çok iyi";
+  if (value >= 70) return "iyi";
+  if (value >= 50) return "orta";
+  if (value >= 30) return "zayıf";
+  return "yetersiz";
+}
+
+function isScored(value?: number | null): value is number {
+  return typeof value === "number" && !Number.isNaN(value);
+}
+
+function tableRow(
+  left: string,
+  middle: string,
+  right: string,
+  edges = "││││"
+): string {
+  return `${edges[0]} ${left.padEnd(LABEL_WIDTH)} ${edges[1]} ${middle.padEnd(
+    BAR_WIDTH
+  )} ${edges[2]} ${right.padStart(SCORE_WIDTH)} ${edges[3]}`;
+}
+
+function tableRule(left: string, mid: string, right: string): string {
+  return (
+    left +
+    "─".repeat(LABEL_WIDTH + 2) +
+    mid +
+    "─".repeat(BAR_WIDTH + 2) +
+    mid +
+    "─".repeat(SCORE_WIDTH + 2) +
+    right
+  );
+}
+
+function scoreRow(label: string, value?: number | null): string {
+  if (!isScored(value)) {
+    return tableRow(label, "değerlendirilmedi", "—");
+  }
+  const rounded = Math.max(0, Math.min(100, Math.round(value)));
+  const filled = Math.round((rounded / 100) * BAR_WIDTH);
+  return tableRow(
+    label,
+    "█".repeat(filled) + "░".repeat(BAR_WIDTH - filled),
+    `${rounded}/100`
+  );
+}
+
+function formatTranscript(
+  title: string,
+  meta: string[],
+  transcript: string
+): string {
+  const words = transcript.split(/\s+/).filter(Boolean).length;
+  return [
+    ...banner(title),
+    "",
+    ...meta,
+    `Kelime    : ${words.toLocaleString("tr-TR")}`,
+    "",
+    "─".repeat(REPORT_WIDTH),
+    "",
+    ...wrapText(transcript.trim(), REPORT_WIDTH),
+    "",
+  ].join("\n");
+}
+
 function formatJudgement(judgement: Judgement): string {
-  const score = (label: string, value?: number | null) =>
-    typeof value === "number" && !Number.isNaN(value)
-      ? `| ${label.padEnd(21)} | ${`${Math.round(value)}/100`.padStart(18)} |`
-      : `| ${label.padEnd(21)} | ${"Değerlendirilmedi".padStart(18)} |`;
+  const meta = [
+    judgement.variant ? `Varyant   : ${judgement.variant}` : null,
+    `Tarih     : ${new Date().toLocaleString("tr-TR", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    })}`,
+    isScored(judgement.overall)
+      ? `Sonuç     : ${Math.round(judgement.overall)}/100 (${grade(
+          judgement.overall
+        )})`
+      : null,
+  ].filter((line): line is string => line !== null);
+
+  const reasoning = judgement.reasoning?.trim()
+    ? [
+        "",
+        "DEĞERLENDİRME NOTU",
+        "─".repeat(REPORT_WIDTH),
+        ...wrapText(judgement.reasoning.trim(), REPORT_WIDTH),
+      ]
+    : [];
 
   return [
-    "╔══════════════════════════════════════════╗",
-    "║          LLM DEĞERLENDİRMESİ             ║",
-    "╚══════════════════════════════════════════╝",
-    judgement.variant ? `Varyant: ${judgement.variant}` : "",
+    ...banner("LLM DEĞERLENDİRME RAPORU"),
     "",
-    "| Değerlendirme Ölçütü  |               Puan |",
-    "|-----------------------|--------------------|",
-    score("Toplantı Özeti", judgement.meeting_summary),
-    score("Sonraki Adımlar", judgement.next_steps),
-    score("Konular", judgement.topics),
-    score("Öne Çıkanlar", judgement.highlights),
-    score("Genel Değerlendirme", judgement.overall),
-    score("Doğruluk", judgement.accuracy),
-    judgement.reasoning
-      ? `\nDEĞERLENDİRME NOTU\n-------------------\n${judgement.reasoning}`
-      : null,
-  ]
-    .filter((line) => line !== null)
-    .join("\n");
+    ...meta,
+    "",
+    tableRule("┌", "┬", "┐"),
+    tableRow("ÖLÇÜT", "DEĞERLENDİRME", "PUAN"),
+    tableRule("├", "┼", "┤"),
+    scoreRow("Toplantı Özeti", judgement.meeting_summary),
+    scoreRow("Sonraki Adımlar", judgement.next_steps),
+    scoreRow("Konular / Öne Çıkanlar", judgement.highlights),
+    scoreRow("Doğruluk", judgement.accuracy),
+    tableRule("├", "┼", "┤"),
+    scoreRow("Genel Değerlendirme", judgement.overall),
+    tableRule("└", "┴", "┘"),
+    ...reasoning,
+    "",
+  ].join("\n");
 }
 
 async function run({
@@ -119,18 +234,39 @@ async function run({
   if (full_meeting_transcript) {
     const filename = "full-meeting-transcript.txt";
     const filePath = path.join(outputDir, filename);
-    await fs.promises.writeFile(filePath, full_meeting_transcript, "utf8");
-    add(filename, filePath, Buffer.byteLength(full_meeting_transcript, "utf8"));
+    const content = formatTranscript(
+      "TOPLANTI TRANSKRİPTİ",
+      [
+        `Kayıt     : Tüm toplantı`,
+        ...(participants?.length
+          ? [
+              `Katılımcı : ${participants
+                .map((p) => p.name || p.id)
+                .join(", ")}`,
+            ]
+          : []),
+      ],
+      full_meeting_transcript
+    );
+    await fs.promises.writeFile(filePath, content, "utf8");
+    add(filename, filePath, Buffer.byteLength(content, "utf8"));
   }
 
   for (const { id, transcript } of speaker_transcripts ?? []) {
     if (!transcript) continue;
-    const filename = `${safeName(
-      displayName(id, participants)
-    )}-transcript.txt`;
+    const label = displayName(id, participants);
+    const filename = `${safeName(label)}-transcript.txt`;
     const filePath = path.join(outputDir, filename);
-    await fs.promises.writeFile(filePath, transcript, "utf8");
-    add(filename, filePath, Buffer.byteLength(transcript, "utf8"));
+    const content = formatTranscript(
+      "KATILIMCI TRANSKRİPTİ",
+      [
+        `Katılımcı : ${participants?.find((p) => p.id === id)?.name || id}`,
+        `Kimlik    : ${id}`,
+      ],
+      transcript
+    );
+    await fs.promises.writeFile(filePath, content, "utf8");
+    add(filename, filePath, Buffer.byteLength(content, "utf8"));
   }
 
   if (judgement && Object.keys(judgement).length > 0) {

@@ -21,3 +21,6 @@ asr-versions/*
 # e2e: staged copy of the built api
 .e2e/
 asr-versions/*
+
+# e2e: saved run outputs (--save-result)
+api/test/e2e/results/

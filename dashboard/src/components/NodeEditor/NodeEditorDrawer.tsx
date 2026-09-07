@@ -353,6 +353,7 @@ const NodeEditorDrawer = ({
               theme={theme}
               disabled={!newNodeInstructions.trim() || pseudocodeLoading}
               ariaLabel="Generate pseudocode"
+              height={50}
             />
           </Box>
         </Box>
@@ -395,6 +396,8 @@ const NodeEditorDrawer = ({
             checked={!!newNodeForce}
             onChange={(value) => setNewNodeForce?.(value)}
             theme={theme}
+            ariaLabel="Force node"
+            height={50}
           />
         </Box>
       </Box>

@@ -7,6 +7,7 @@
       "description": "Checks port availability at the user's residential address. Presents compatible internet speed packages for user selection. Allocates a port and creates the subscription order. Notifies the user and completes port configuration and physical connection",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "skill": "**Internet Subscription — Availability-Gated, Silent Setup**\n\nUse this Blueprint when a new subscription requires inventory validation before proceeding and no user notification is needed after port allocation.\n\nFlow: Retrieve BBK → Check inventory → [No inventory: end] → List speed products → User selects package → Allocate port → Configure port → Connect port to residence.\n\nExits silently after port connection. Exits early if inventory is unavailable.",
+      "executionMode": "NORMAL",
       "nodes": [
         {
           "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
@@ -180,6 +181,7 @@
       "description": "Find product, assign compliance certificate, create purchase order, write process to LLM, and send email.",
       "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
       "skill": "**Product Order — Certificate-Backed Purchase**\n\nUse this Blueprint when a product order must have a compliance certificate assigned before a purchase order can be created.\n\nFlow: Ask user to select a product → Find product → Check certificate via knowledge lookup → Assign certificate → Create purchase order → Send email.\n\nExits after emailing confirmation of the completed purchase order.",
+      "executionMode": "NORMAL",
       "nodes": [
         {
           "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
@@ -355,6 +357,7 @@
       "blocking": false,
       "force": true,
       "skill": "**Meeting Recording - Summary Variant A (transcript only)**\n\nUse this Blueprint for the lightweight arm of the summarizer A/B test: only the mixed meeting recording is transcribed, and the summary is written from that full transcript without transcribing each participant's own recording.\n\nFlow: Convert PCM to WAV -> Transcribe only meeting-audio.wav -> Summarize the full transcript (summary + highlights) -> Judge the summary against the transcript -> Prepare transcript and judgement attachments -> Send email to all participants -> Complete.\n\nProduces a summary and highlights only - no next steps, no speaker transcription, no speaker attribution and no separate manager email. The full transcript and the LLM evaluation go out as attachments; the meeting audio does not. Exits after emailing the participants.",
+      "executionMode": "NORMAL",
       "nodes": [
         {
           "id": "019fa100-0001-4000-8000-000000000001",
@@ -450,6 +453,7 @@
       "blocking": false,
       "force": true,
       "skill": "**Meeting Recording - Summary Variant B (speaker attributed)**\n\nUse this Blueprint for the detailed arm of the summarizer A/B test: every participant is transcribed separately as well as the meeting as a whole, and both are given to the model so the summary can say who said what and who owns each next step.\n\nFlow: Convert PCM to WAV -> Transcribe meeting -> Summarize by speaker (summary + highlights + next steps) -> Resolve participant IDs to names -> Judge the summary against the transcript and the per-speaker recordings -> Prepare transcript and judgement attachments -> Send email to all participants -> Get manager email from knowledge -> Send email to the manager -> Complete.\n\nThe transcripts and the LLM evaluation go out as attachments; the meeting audio does not. Exits after emailing the resolved summary to every meeting participant and separately to the manager.",
+      "executionMode": "NORMAL",
       "nodes": [
         {
           "id": "019fa200-0001-4000-8000-000000000001",
@@ -595,6 +599,7 @@
       "description": "Handles a virtual machine provisioning request. The agent collects VM requirements from the user, creates the VM on AWS, and shares the instance details with the user.",
       "agentId": "3c8f1d5e-7b2a-4e91-a6d4-58c0f9b3e712",
       "skill": "**VM Provisioning — Collect & Create**\n\nUse this Blueprint when a user requests a new virtual machine and its requirements need to be gathered before provisioning.\n\nFlow: Collect VM requirements from user → Create VM on AWS → Share VM details with user → Complete.\n\nExits after sharing the created VM's instance details with the user.",
+      "executionMode": "NORMAL",
       "nodes": [
         {
           "id": "019f5c00-0001-4000-8000-000000000001",
@@ -666,6 +671,7 @@
       "description": "Handles a virtual machine termination request. The agent collects the instance ID from the user, confirms the termination since it is permanent, terminates the VM on AWS, and shares the result with the user.",
       "agentId": "3c8f1d5e-7b2a-4e91-a6d4-58c0f9b3e712",
       "skill": "**VM Termination — Confirmation-Gated**\n\nUse this Blueprint when a user requests VM termination and explicit confirmation is required before this irreversible action proceeds.\n\nFlow: Collect instance ID → Confirm termination → [Not confirmed: notify cancellation, end] → Terminate VM → Share termination result.\n\nExits after sharing the termination result, or exits early with a cancellation notice if the user declines to confirm.",
+      "executionMode": "NORMAL",
       "nodes": [
         {
           "id": "019f5c01-0001-4000-8000-000000000001",
@@ -778,6 +784,7 @@
       "agentId": "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
       "blocking": false,
       "skill": "**VM Metrics Health Check — Threshold-Gated Alerting**\n\nUse this Blueprint when incoming OTLP metrics from a VM need to be evaluated against reference ranges and should only raise an alert on a violation.\n\nFlow: Get reference ranges from knowledge → Evaluate metrics against ranges → [No violations: complete silently] → Create ServiceNow incident for violations → Complete.\n\nExits silently when all metrics are within range. Exits after creating an incident when any metric falls outside its reference range.",
+      "executionMode": "NORMAL",
       "nodes": [
         {
           "id": "019f7a20-0001-4000-8000-000000000001",
@@ -904,6 +911,7 @@
       "description": "Handles new employee onboarding. The agent takes the incoming employee's information (first name, last name, employee ID, department, job role, manager, location, ServiceNow request number), creates the employee's user account in Active Directory via the Active Directory MCP, approves the corresponding employee request in ServiceNow via the ServiceNow MCP, looks up the manager's email address from the agent's knowledge, emails the created account details to the manager, and sends a welcome email to the new employee's address.",
       "agentId": "019f6a11-0000-4000-8000-000000000001",
       "skill": "**Employee Onboarding — AD Provisioning & Notifications**\n\nUse this Blueprint when a new employee request needs an Active Directory account created, its ServiceNow request approved, and the manager and employee notified.\n\nFlow: Create employee in Active Directory → Approve request in ServiceNow → Get manager email from knowledge → Email manager with account details → Email new employee a welcome message → Complete.\n\nExits after sending the welcome email to the new employee.",
+      "executionMode": "NORMAL",
       "nodes": [
         {
           "id": "019f6a10-0002-4000-8000-000000000002",

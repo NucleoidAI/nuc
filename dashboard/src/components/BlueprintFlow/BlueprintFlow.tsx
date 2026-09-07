@@ -43,6 +43,7 @@ export default function BlueprintFlow({
   onConnectParameter,
   onDisconnectParameter,
   onToggleForceNode,
+  liteMode = false,
 }: BlueprintFlowProps) {
   const flowContainerRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState<DragState | null>(null);
@@ -155,6 +156,7 @@ export default function BlueprintFlow({
           onHandleDragStart: (nodeId: string, field: string) =>
             setDragging({ sourceNodeId: nodeId, sourceField: field }),
           onToggleForce: readOnly ? undefined : onToggleForceNode,
+          liteMode,
         })}
       />
 

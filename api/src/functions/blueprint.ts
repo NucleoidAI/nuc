@@ -138,6 +138,7 @@ async function upsert(
   blocking?: boolean,
   skill?: string,
   context?: BlueprintContext,
+  executionMode?: "NORMAL" | "LITE",
 ) {
   let Blueprint;
 
@@ -152,6 +153,7 @@ async function upsert(
       agentId,
       nodes: sanitizedNodes || null,
       ...(blocking !== undefined && { blocking }),
+      ...(executionMode !== undefined && { executionMode }),
       ...(skill !== undefined && { skill }),
       ...(context !== undefined && { context }),
     });
@@ -165,6 +167,7 @@ async function upsert(
       agentId,
       nodes: sanitizedNodes || null,
       ...(blocking !== undefined && { blocking }),
+      ...(executionMode !== undefined && { executionMode }),
       ...(skill !== undefined && { skill }),
       ...(context !== undefined && { context }),
     });
@@ -257,12 +260,14 @@ async function patch({
   title,
   description,
   blocking,
+  executionMode,
   skill,
 }: {
   blueprintId: string;
   title?: string;
   description?: string;
   blocking?: boolean;
+  executionMode?: "NORMAL" | "LITE";
   skill?: string;
 }) {
   const Blueprint = await BluePrint.findByPk(blueprintId);
@@ -275,6 +280,7 @@ async function patch({
     ...(title && { title }),
     ...(description && { description }),
     ...(blocking !== undefined && { blocking }),
+    ...(executionMode !== undefined && { executionMode }),
     ...(skill !== undefined && { skill }),
   });
 

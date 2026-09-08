@@ -56,7 +56,7 @@
       "icon": "mdi:magnify"
     },
     {
-      "id": "active-directory",
+      "id": "activedirectory",
       "mcpProviderId": "019f9c00-0000-4000-8000-000000000010",
       "description": "Active Directory MCP server exposing 1 tool.",
       "icon": "mdi:microsoft-windows"

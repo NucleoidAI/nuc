@@ -1,4 +1,69 @@
 {
   "sequence": 23,
-  "seed": []
+  "seed": [
+    {
+      "id": "019f9c01-0000-4000-8000-000000000001",
+      "serverId": "servicenow",
+      "key": "SERVICENOW_API_URL",
+      "value": "http://localhost:5199",
+      "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000002",
+      "serverId": "servicenow",
+      "key": "SERVICENOW_API_URL",
+      "value": "http://localhost:5199",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000003",
+      "serverId": "servicenow",
+      "key": "SERVICENOW_API_URL",
+      "value": "http://localhost:5199",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000004",
+      "serverId": "servicenow",
+      "key": "SERVICENOW_API_URL",
+      "value": "http://localhost:5199",
+      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000005",
+      "serverId": "activedirectory",
+      "key": "ACTIVE_DIRECTORY_API_URL",
+      "value": "http://localhost:5200",
+      "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000006",
+      "serverId": "activedirectory",
+      "key": "ACTIVE_DIRECTORY_API_URL",
+      "value": "http://localhost:5200",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000007",
+      "serverId": "activedirectory",
+      "key": "ACTIVE_DIRECTORY_API_URL",
+      "value": "http://localhost:5200",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000008",
+      "serverId": "activedirectory",
+      "key": "ACTIVE_DIRECTORY_API_URL",
+      "value": "http://localhost:5200",
+      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
+      "agentId": null
+    }
+  ]
 }

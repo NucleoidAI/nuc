@@ -300,6 +300,9 @@ function BlueprintFlowWidget({
     useState(false);
   const [pseudocodeLoading, setPseudocodeLoading] = useState(false);
   const [newNodeForce, setNewNodeForce] = useState(false);
+  const [newNodeParameters, setNewNodeParameters] = useState<
+    Record<string, unknown>
+  >({});
   const [newNodeType, setNewNodeType] = useState("NORMAL");
   const [handoffTargetAgentId, setHandoffTargetAgentId] = useState("");
   const [handoffTargetBlueprintId, setHandoffTargetBlueprintId] = useState("");
@@ -457,6 +460,11 @@ function BlueprintFlowWidget({
         ? integration?.description || ""
         : current
     );
+    const previousAction =
+      selectedIntegration?.action || graphData?.nodes?.[editingNodeId]?.action;
+    if (previousAction && previousAction !== integration?.action) {
+      setNewNodeParameters({});
+    }
     setSelectedIntegration(integration);
   };
 
@@ -466,6 +474,7 @@ function BlueprintFlowWidget({
     setNewNodeInstructions("");
     setNewNodeDescription("");
     setNewNodeForce(false);
+    setNewNodeParameters({});
     setNodePseudocode("");
     setNewNodePseudocodeEnabled(false);
     setNewNodeType("NORMAL");
@@ -490,6 +499,7 @@ function BlueprintFlowWidget({
         ""
     );
     setNewNodeForce(Boolean(node?.raw?.properties?.force));
+    setNewNodeParameters({ ...node?.raw?.properties?.parameters });
     setNewNodeType(nodeType);
     setNodePseudocode(node?.raw?.properties?.pseudocode || "");
     setNewNodePseudocodeEnabled(
@@ -532,6 +542,9 @@ function BlueprintFlowWidget({
 
     setDrawerOpen(true);
   };
+
+  const parametersToSave =
+    newNodeType === "NORMAL" ? newNodeParameters : undefined;
 
   const handleEditNode = () => {
     if (!editingNodeId) return;
@@ -597,6 +610,7 @@ function BlueprintFlowWidget({
               pseudocodeEnabled: newNodePseudocodeEnabled,
               pseudocode: nodePseudocode,
               force: newNodeForce,
+              parameters: parametersToSave,
               description: descriptionText,
               action: actionType,
               icon: nodeIcon,
@@ -633,6 +647,7 @@ function BlueprintFlowWidget({
               pseudocodeEnabled: newNodePseudocodeEnabled,
               pseudocode: nodePseudocode,
               force: newNodeForce,
+              parameters: parametersToSave,
               description: descriptionText,
               action: actionType,
               icon: nodeIcon,
@@ -664,6 +679,7 @@ function BlueprintFlowWidget({
               pseudocodeEnabled: newNodePseudocodeEnabled,
               pseudocode: nodePseudocode,
               force: newNodeForce,
+              parameters: parametersToSave,
               description: descriptionText,
               action: actionType,
               icon: nodeIcon,
@@ -693,6 +709,7 @@ function BlueprintFlowWidget({
               pseudocodeEnabled: newNodePseudocodeEnabled,
               pseudocode: nodePseudocode,
               force: newNodeForce,
+              parameters: parametersToSave,
               description: descriptionText,
               action: actionType,
               icon: nodeIcon,
@@ -724,6 +741,7 @@ function BlueprintFlowWidget({
     setNewNodeInstructions("");
     setNewNodeDescription("");
     setNewNodeForce(false);
+    setNewNodeParameters({});
     setNodePseudocode("");
     setNewNodePseudocodeEnabled(false);
     setNewNodeType("NORMAL");
@@ -801,6 +819,7 @@ function BlueprintFlowWidget({
                   pseudocodeEnabled: newNodePseudocodeEnabled,
                   pseudocode: nodePseudocode,
                   force: newNodeForce,
+                  parameters: parametersToSave,
                   description: descriptionText,
                   icon: nodeIcon,
                 },
@@ -830,6 +849,7 @@ function BlueprintFlowWidget({
                   pseudocodeEnabled: newNodePseudocodeEnabled,
                   pseudocode: nodePseudocode,
                   force: newNodeForce,
+                  parameters: parametersToSave,
                   description: descriptionText,
                   icon: nodeIcon,
                   targetAgentId: handoffTargetAgentId,
@@ -859,6 +879,7 @@ function BlueprintFlowWidget({
                   pseudocodeEnabled: newNodePseudocodeEnabled,
                   pseudocode: nodePseudocode,
                   force: newNodeForce,
+                  parameters: parametersToSave,
                   description: descriptionText,
                   icon: nodeIcon,
                 },
@@ -937,6 +958,7 @@ function BlueprintFlowWidget({
                   pseudocodeEnabled: newNodePseudocodeEnabled,
                   pseudocode: nodePseudocode,
                   force: newNodeForce,
+                  parameters: parametersToSave,
                   description: descriptionText,
                   icon: nodeIcon,
                 },
@@ -980,6 +1002,7 @@ function BlueprintFlowWidget({
                   pseudocodeEnabled: newNodePseudocodeEnabled,
                   pseudocode: nodePseudocode,
                   force: newNodeForce,
+                  parameters: parametersToSave,
                   description: descriptionText,
                   icon: nodeIcon,
                   targetAgentId: handoffTargetAgentId,
@@ -1009,6 +1032,7 @@ function BlueprintFlowWidget({
                   pseudocodeEnabled: newNodePseudocodeEnabled,
                   pseudocode: nodePseudocode,
                   force: newNodeForce,
+                  parameters: parametersToSave,
                   description: descriptionText,
                   icon: nodeIcon,
                 },
@@ -1590,6 +1614,8 @@ function BlueprintFlowWidget({
         newNodePseudocodeEnabled={newNodePseudocodeEnabled}
         setNewNodePseudocodeEnabled={handlePseudocodeEnabledChange}
         pseudocodeLoading={pseudocodeLoading}
+        parameters={newNodeParameters}
+        onParametersChange={setNewNodeParameters}
         newNodeForce={newNodeForce}
         setNewNodeForce={setNewNodeForce}
         newNodeType={newNodeType}

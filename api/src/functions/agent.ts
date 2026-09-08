@@ -1,3 +1,8 @@
+import {
+  getBoundNodeStep,
+  getParameterGenerationContext,
+  mergeNodeParameters,
+} from "../lib/nodeParameterBindings";
 import type { LLMMeta } from "../lib/llmLog";
 import Agent from "../models/Agent";
 import MCPs from "../mcps/mcps";
@@ -330,48 +335,65 @@ async function task({ taskId }: { taskId: string }) {
 
   const meta: LLMMeta = { agentId, sessionId, taskId };
 
-  const knowledgeScore = await scoring({ context, meta });
-
   const completedSteps = currentTask.steps.filter((s) =>
     ["COMPLETED", "WAITING_FOR_USER"].includes(s.status),
   );
+
   const currentNode = blueprint?.nodes?.length
     ? resolveCurrentNode(blueprint.nodes, completedSteps)
     : undefined;
+
   const isForceNode = currentNode?.properties?.force === true;
+
+  const nodeAction = currentNode?.properties?.action;
+
+  const definition = nodeAction
+    ? MCPs.find((mcp) => mcp.action === nodeAction) ?? actions.find(nodeAction)
+    : undefined;
+
+  const boundStep = getBoundNodeStep({
+    node: currentNode,
+    inputSchema: definition?.inputSchema,
+  });
+  const generationContext = getParameterGenerationContext({
+    context,
+    node: currentNode,
+  });
+  const knowledgeScore = boundStep
+    ? undefined
+    : await scoring({ context, meta });
 
   const {
     next_step: { action, parameters: llmParameters, comment },
     result_score,
-  } = isForceNode
-    ? await forceNodeStep({
-        currentNode,
-        currentTask,
-        context,
-        isBlocking,
-        meta,
-      })
-    : await generate({
-        dataset: isBlocking
-          ? dataset.train.taskDiamondBlocking
-          : dataset.train.taskDiamondNonBlocking,
-        context,
-        content: currentTask,
-        json_format:
-          "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
-        meta,
-      });
-
-  console.log("next action", action);
-  console.log("comment", comment);
+  } =
+    boundStep ??
+    (isForceNode
+      ? await forceNodeStep({
+          currentNode,
+          currentTask,
+          context: generationContext,
+          isBlocking,
+          meta,
+        })
+      : await generate({
+          dataset: isBlocking
+            ? dataset.train.taskDiamondBlocking
+            : dataset.train.taskDiamondNonBlocking,
+          context: generationContext,
+          content: currentTask,
+          json_format:
+            "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
+          meta,
+        }));
 
   const nodeId = currentNode?.id ?? null;
 
-  const boundParameters = currentNode?.properties?.parameters;
-  const rawParameters =
-    boundParameters && Object.keys(boundParameters).length
-      ? { ...llmParameters, ...boundParameters }
-      : llmParameters;
+  const rawParameters = mergeNodeParameters({
+    node: currentNode,
+    action,
+    generated: llmParameters,
+  });
 
   const byNode = Object.fromEntries(
     currentTask.steps.filter((s) => s.nodeId).map((s) => [s.nodeId, s]),

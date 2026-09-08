@@ -386,7 +386,10 @@
             "action": "TELCO:summarize_meeting",
             "description": "Summarize the combined meeting transcript into an overall summary and the meeting's highlights",
             "label": "Summarize Meeting",
-            "icon": "mdi:text-box-check"
+            "icon": "mdi:text-box-check",
+            "parameters": {
+              "summary_prompt": "Sen, toplantı transkriptlerini analiz edip profesyonel toplantı notları çıkaran bir asistansın.\n\nAşağıda ###TRANSKRIPT### etiketleri arasında bir toplantının tam konuşma metni yer alıyor.\nBu metni analiz et ve çıktıyı TAMAMEN TÜRKÇE olarak, tam olarak aşağıdaki yapıda üret:\n\n# [Toplantıyı özetleyen 2-4 kelimelik kısa bir başlık]\n\n## Toplantı Özeti\n[Toplantının amacını, konuşulan ana konuları ve nasıl sonuçlandığını anlatan 3-5 cümlelik akıcı bir paragraf.]\n\n## Konular ve Öne Çıkanlar\n[Toplantıda ele alınan önemli ana konuları ayrı konu başlıkları olarak listele.\nHer konu başlığının altında yalnızca o konuyla ilgili önemli noktaları, talepleri,\nönerileri ve alınan kararları 1-3 maddelik bir liste halinde yaz.]\n\nKURALLAR:\n1. Yalnızca transkriptte geçen bilgileri kullan; isim, tarih, sayı, fiyat veya karar ASLA uydurma.\n2. Transkript hangi dilde olursa olsun çıktıyı Türkçe yaz; ürün, şirket ve kişi adlarını olduğu gibi bırak.\n3. Tarafsız ve profesyonel bir dil kullan; kendi yorumunu veya değerlendirmeni ekleme.\n4. Selamlaşma, hal hatır sorma gibi işle ilgisi olmayan kısımları özete dahil etme.\n5. Emin olmadığın bir bilgiyi kesinmiş gibi yazma; belirsiz kalan maddeleri atla.\n6. Çıktıya yukarıdaki yapı dışında hiçbir giriş, açıklama veya kapanış cümlesi ekleme."
+            }
           },
           "next": ["019fa100-0004-4000-8000-000000000001"],
           "createdAt": "2026-08-20T10:00:00Z"

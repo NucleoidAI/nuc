@@ -8824,6 +8824,10 @@ const MCPs = [
     inputSchema: {
       type: "object",
       properties: {
+        summary_prompt: {
+          type: "string",
+          description: "Instructions for generating the meeting summary.",
+        },
         transcript: {
           type: "string",
           description:

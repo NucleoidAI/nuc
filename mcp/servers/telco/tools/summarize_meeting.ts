@@ -16,7 +16,7 @@ import { unwrapResult } from "../../../lib/llm/llmResult";
  */
 const SUMMARY_MODEL = process.env.SUMMARY_LLM_MODEL || "qwen/qwen3.8-27b";
 
-const PROMPT = `Sen, toplantı transkriptlerini analiz edip profesyonel toplantı notları çıkaran bir asistansın.
+const DEFAULT_SUMMARY_PROMPT = `Sen, toplantı transkriptlerini analiz edip profesyonel toplantı notları çıkaran bir asistansın.
 
 Aşağıda ###TRANSKRIPT### etiketleri arasında bir toplantının tam konuşma metni yer alıyor.
 Bu metni analiz et ve çıktıyı TAMAMEN TÜRKÇE olarak, tam olarak aşağıdaki yapıda üret:
@@ -46,6 +46,10 @@ export const summarizeMeetingTool: Tool<SummarizeMeetingInput> = {
   inputSchema: {
     type: "object",
     properties: {
+      summary_prompt: {
+        type: "string",
+        description: "Instructions for generating the meeting summary.",
+      },
       transcript: {
         type: "string",
         description: "The full meeting transcript to turn into meeting notes.",
@@ -53,7 +57,7 @@ export const summarizeMeetingTool: Tool<SummarizeMeetingInput> = {
     },
     required: ["transcript"],
   },
-  handler: async ({ transcript }: SummarizeMeetingInput) => {
+  handler: async ({ transcript, summary_prompt }: SummarizeMeetingInput) => {
     try {
       if (!transcript) {
         return toolResult({ error: "transcript is required" });
@@ -66,7 +70,7 @@ export const summarizeMeetingTool: Tool<SummarizeMeetingInput> = {
 
       const result = await generate({
         model: SUMMARY_MODEL,
-        policy: { role: "system", content: PROMPT },
+        policy: { role: "system", content: summary_prompt?.trim() || DEFAULT_SUMMARY_PROMPT },
         content: `###TRANSKRIPT###\n${transcript}\n###TRANSKRIPT###`,
         json_format:
           '{ "summary": "<3-5 cümlelik paragraf>", "highlights": [{ "topic": "<konu başlığı>", "highlights": ["<bu konuyla ilgili öne çıkan nokta>"] }] }',

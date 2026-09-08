@@ -98,6 +98,7 @@ export interface TranscribeMeetingInput {
 }
 
 export interface SummarizeMeetingInput {
+  summary_prompt?: string;
   transcript?: string;
 }
 

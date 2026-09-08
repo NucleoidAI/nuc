@@ -49,9 +49,14 @@ function useBlueprint() {
 
   const [blueprintUpserted] = useEvent("BLUEPRINT_UPSERTED", null);
   const [blueprintPatched] = useEvent("BLUEPRINT_PATCHED", null);
+  const [projectSelected] = useEvent("PROJECT_SELECTED", { projectId: null });
 
   const getBlueprint = (fetchState: DependencyArray = [], agentId?: string) => {
-    const eventDependencies = [blueprintUpserted, blueprintPatched];
+    const eventDependencies = [
+      blueprintUpserted,
+      blueprintPatched,
+      projectSelected,
+    ];
 
     const url = agentId ? `/agents/${agentId}/blueprints` : `/blueprints`;
 

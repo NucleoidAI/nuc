@@ -1,5 +1,5 @@
 {
-  "sequence": 11,
+  "sequence": 12,
   "seed": [
     {
       "id": "ba6f7911-e232-469d-9060-2881852f6e59",
@@ -141,7 +141,38 @@
           "next": null,
           "createdAt": "2025-06-19T06:02:00Z"
         }
-      ]
+      ],
+      "context": {
+        "agent": {
+          "name": "subscription_agent",
+          "description": "A agent optimized for subscription tasks, workflow assistance, and context-aware support within the system."
+        },
+        "knowledge": [
+          {
+            "type": "TEXT",
+            "text": "Our office is located at 225 Wood St, London"
+          },
+          {
+            "type": "URL"
+          },
+          {
+            "type": "TEXT",
+            "text": "BBK Number is 3 digits"
+          },
+          {
+            "type": "TEXT",
+            "text": "Our call center number is 444 1 444"
+          },
+          {
+            "type": "TEXT",
+            "text": "Business hours are 9am to 5pm, Monday to Friday."
+          }
+        ],
+        "referenceBlueprint": null,
+        "supervising": null,
+        "userRequest": "I want to buy new internet subscription",
+        "capturedAt": "2025-06-19T06:02:00Z"
+      }
     },
     {
       "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
@@ -225,7 +256,27 @@
           "next": null,
           "createdAt": "2025-06-26T06:00:00Z"
         }
-      ]
+      ],
+      "context": {
+        "agent": {
+          "name": "order_management",
+          "description": "An agent specialized in managing order lifecycles, tracking fulfillment status, and coordinating between customers and operations."
+        },
+        "knowledge": [
+          {
+            "type": "DATA",
+            "text": "{\"product_id\": \"prd-1\", \"product_name\": \"product-1\", \"certificate\": \"FFC\"}"
+          },
+          {
+            "type": "DATA",
+            "text": "{\"product_id\": \"prd-2\", \"product_name\": \"product-2\", \"certificate\": \"CE\"}"
+          }
+        ],
+        "referenceBlueprint": null,
+        "supervising": null,
+        "userRequest": "Find the product, assign its compliance certificate, create a purchase order and record the process.",
+        "capturedAt": "2025-06-26T06:00:00Z"
+      }
     },
     {
       "id": "c2b1a0d9-e8f7-4c2b-9100-300000000001",
@@ -282,7 +333,18 @@
           "next": null,
           "createdAt": "2025-06-29T08:00:00Z"
         }
-      ]
+      ],
+      "context": {
+        "agent": {
+          "name": "compliant_manager",
+          "description": "An agent focused on compliance monitoring, policy enforcement, and regulatory adherence across business processes."
+        },
+        "knowledge": [],
+        "referenceBlueprint": null,
+        "supervising": null,
+        "userRequest": "Find the vendor of a product missing a compliance certificate and email them to request one.",
+        "capturedAt": "2025-06-29T08:00:00Z"
+      }
     },
     {
       "id": "019fa100-0000-4000-8000-000000000001",
@@ -303,7 +365,7 @@
             "icon": "mdi:waveform"
           },
           "next": ["019fa100-0002-4000-8000-000000000001"],
-          "createdAt": "2026-08-20T10:00:00Z"
+          "createdAt": "2026-07-08T10:00:00Z"
         },
         {
           "id": "019fa100-0002-4000-8000-000000000001",
@@ -357,8 +419,8 @@
           "id": "019fa100-0006-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
-            "action": "GREY:send_email",
-            "description": "Email the summary to all meeting participants using the 'meeting_summary_a' template, attaching the transcripts and the LLM evaluation",
+            "action": "GREY:send_email_ews",
+            "description": "Email the summary through EWS to all meeting participants using the 'meeting_summary_a' template, attaching the transcripts and the LLM evaluation",
             "label": "Email Participants",
             "icon": "mdi:email-send"
           },
@@ -410,7 +472,7 @@
             "icon": "mdi:microphone-multiple"
           },
           "next": ["019fa200-0003-4000-8000-000000000001"],
-          "createdAt": "2026-08-20T10:00:00Z"
+          "createdAt": "2026-07-08T10:00:00Z"
         },
         {
           "id": "019fa200-0003-4000-8000-000000000001",
@@ -422,7 +484,7 @@
             "icon": "mdi:text-box-check"
           },
           "next": ["019fa200-0004-4000-8000-000000000001"],
-          "createdAt": "2026-08-20T10:00:00Z"
+          "createdAt": "2026-07-08T10:00:00Z"
         },
         {
           "id": "019fa200-0004-4000-8000-000000000001",
@@ -458,19 +520,19 @@
             "icon": "mdi:paperclip"
           },
           "next": ["019fa200-0007-4000-8000-000000000001"],
-          "createdAt": "2026-08-20T10:00:00Z"
+          "createdAt": "2026-07-08T10:00:00Z"
         },
         {
           "id": "019fa200-0007-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
-            "action": "GREY:send_email",
-            "description": "Email the resolved speaker-attributed summary to all meeting participants using the 'meeting_summary_b' template, attaching the transcripts and the LLM evaluation",
+            "action": "GREY:send_email_ews",
+            "description": "Email the resolved speaker-attributed summary through EWS to all meeting participants using the 'meeting_summary_b' template, attaching the transcripts and the LLM evaluation",
             "label": "Email Participants",
             "icon": "mdi:email-send"
           },
           "next": ["019fa200-0008-4000-8000-000000000001"],
-          "createdAt": "2026-08-20T10:00:00Z"
+          "createdAt": "2026-07-08T10:00:00Z"
         },
         {
           "id": "019fa200-0008-4000-8000-000000000001",
@@ -482,19 +544,19 @@
             "icon": "mdi:book-search"
           },
           "next": ["019fa200-0009-4000-8000-000000000001"],
-          "createdAt": "2026-08-20T10:00:00Z"
+          "createdAt": "2026-07-08T10:00:00Z"
         },
         {
           "id": "019fa200-0009-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
-            "action": "GREY:send_email",
-            "description": "Email the resolved summary to the manager's email address found in the knowledge base, using the 'meeting_summary_b' template and attaching the transcripts and the LLM evaluation",
+            "action": "GREY:send_email_ews",
+            "description": "Email the resolved summary through EWS to the manager's email address found in the knowledge base, using the 'meeting_summary_b' template and attaching the transcripts and the LLM evaluation",
             "label": "Email Manager",
             "icon": "mdi:email-send"
           },
           "next": ["019fa200-0010-4000-8000-000000000001"],
-          "createdAt": "2026-08-20T10:00:00Z"
+          "createdAt": "2026-07-08T10:00:00Z"
         },
         {
           "id": "019fa200-0010-4000-8000-000000000001",
@@ -508,7 +570,23 @@
           "next": null,
           "createdAt": "2026-08-20T10:00:00Z"
         }
-      ]
+      ],
+      "context": {
+        "agent": {
+          "name": "meeting_agent",
+          "description": "An agent that retrieves meeting transcripts, extracts personalized summaries and action items, and delivers them via email."
+        },
+        "knowledge": [
+          {
+            "type": "TEXT",
+            "text": "The manager's email address is halilcengel@greycollar.ai. Meeting summaries should also be sent to this address."
+          }
+        ],
+        "referenceBlueprint": null,
+        "supervising": null,
+        "userRequest": "Transcribe the meeting recording per participant, summarise it and email the summary and action items.",
+        "capturedAt": "2026-07-08T10:00:00Z"
+      }
     },
     {
       "id": "019f5c00-0000-4000-8000-000000000001",
@@ -568,7 +646,18 @@
           "next": null,
           "createdAt": "2026-07-13T10:00:00Z"
         }
-      ]
+      ],
+      "context": {
+        "agent": {
+          "name": "technical_support_agent",
+          "description": "A technical support agent specialized in troubleshooting issues, resolving infrastructure requests, and guiding users through technical solutions."
+        },
+        "knowledge": [],
+        "referenceBlueprint": null,
+        "supervising": null,
+        "userRequest": "Handle a VM provisioning request: collect the requirements, provision the machine and report back.",
+        "capturedAt": "2026-07-13T10:00:00Z"
+      }
     },
     {
       "id": "019f5c01-0000-4000-8000-000000000001",
@@ -668,7 +757,18 @@
           "next": null,
           "createdAt": "2026-07-13T10:00:00Z"
         }
-      ]
+      ],
+      "context": {
+        "agent": {
+          "name": "technical_support_agent",
+          "description": "A technical support agent specialized in troubleshooting issues, resolving infrastructure requests, and guiding users through technical solutions."
+        },
+        "knowledge": [],
+        "referenceBlueprint": null,
+        "supervising": null,
+        "userRequest": "Handle a VM termination request: take the instance ID, confirm and terminate the machine.",
+        "capturedAt": "2026-07-13T10:00:00Z"
+      }
     },
     {
       "id": "019f7a20-0000-4000-8000-000000000001",
@@ -751,7 +851,51 @@
           "next": null,
           "createdAt": "2026-07-16T10:00:00Z"
         }
-      ]
+      ],
+      "context": {
+        "agent": {
+          "name": "analysis_agent",
+          "description": "A reliable analysis agent focused on processing information, generating insights, and supporting structured decision-making."
+        },
+        "knowledge": [
+          {
+            "type": "TEXT",
+            "text": "Latest trends in financial management and strategy."
+          },
+          {
+            "type": "DATA",
+            "text": "{\"reference_range\":{\"metric\":\"system.cpu.utilization\",\"attributes\":{\"state\":\"used\"},\"min\":0.0,\"max\":0.85,\"unit\":\"1\"}}"
+          },
+          {
+            "type": "DATA",
+            "text": "{\"reference_range\":{\"metric\":\"system.memory.utilization\",\"min\":0.0,\"max\":0.90,\"unit\":\"1\"}}"
+          },
+          {
+            "type": "DATA",
+            "text": "{\"reference_range\":{\"metric\":\"system.filesystem.utilization\",\"attributes\":{\"mountpoint\":\"/\"},\"min\":0.0,\"max\":0.85,\"unit\":\"1\"}}"
+          },
+          {
+            "type": "DATA",
+            "text": "{\"reference_range\":{\"metric\":\"system.uptime\",\"min\":3600,\"max\":null,\"unit\":\"s\"}}"
+          },
+          {
+            "type": "DATA",
+            "text": "{\"reference_range\":{\"metric\":\"httpcheck.status\",\"expected\":1,\"unit\":\"1\"}}"
+          },
+          {
+            "type": "DATA",
+            "text": "{\"reference_range\":{\"metric\":\"httpcheck.duration\",\"min\":0,\"max\":500,\"unit\":\"ms\"}}"
+          },
+          {
+            "type": "TEXT",
+            "text": "VM metric alert emails should be sent to halilibrahimcengel7@gmail.com."
+          }
+        ],
+        "referenceBlueprint": null,
+        "supervising": null,
+        "userRequest": "Check incoming VM metrics against the healthy reference ranges and alert if anything is out of range.",
+        "capturedAt": "2026-07-16T10:00:00Z"
+      }
     },
     {
       "id": "019f6a10-0000-4000-8000-000000000001",
@@ -832,7 +976,23 @@
           "next": null,
           "createdAt": "2026-07-14T10:00:00Z"
         }
-      ]
+      ],
+      "context": {
+        "agent": {
+          "name": "onboarding_agent",
+          "description": "An onboarding agent that collects new employee information and creates their user account in Active Directory."
+        },
+        "knowledge": [
+          {
+            "type": "TEXT",
+            "text": "The manager's email address is halilcengel@greycollar.ai. Onboarding notifications should be sent to this address."
+          }
+        ],
+        "referenceBlueprint": null,
+        "supervising": null,
+        "userRequest": "Onboard a new employee: take their details, create their Active Directory account and notify the manager.",
+        "capturedAt": "2026-07-14T10:00:00Z"
+      }
     }
   ]
 }

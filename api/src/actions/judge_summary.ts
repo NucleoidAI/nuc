@@ -2,8 +2,7 @@ import { generate } from "../lib/llm";
 import type { LLMMeta } from "../lib/llmLog";
 import { unwrapResult } from "../lib/llmResult";
 
-const JUDGE_MODEL =
-  process.env.JUDGE_LLM_MODEL || "qwen/qwen3-next-80b-a3b-instruct";
+const JUDGE_MODEL = process.env.JUDGE_LLM_MODEL || "qwen/qwen3.8-27b";
 
 function stringifySummary(summary: unknown): string {
   if (typeof summary === "string") return summary;
@@ -20,7 +19,7 @@ function valueFromSummary(summary: unknown, key: string): unknown {
 }
 
 function speakerBlock(
-  speakerTranscripts: { id: string; transcript: string }[]
+  speakerTranscripts: { id: string; transcript: string }[],
 ): string {
   const speakers = speakerTranscripts
     .filter(({ transcript }) => transcript)

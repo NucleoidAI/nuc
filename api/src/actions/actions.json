@@ -429,7 +429,7 @@
     "action": "PLATFORM:prepare_meeting_attachments",
     "label": "Platform",
     "lib": "prepare_meeting_attachments",
-    "description": "Write the full meeting transcript, each speaker's transcript and the LLM judge's evaluation to .txt files on disk, and return them as a list of email attachment descriptors ({ filename, path }) that can be passed straight to GREY:send_email. Meeting audio is NOT attached unless includeAudio is explicitly turned on",
+    "description": "Write the full meeting transcript, each speaker's transcript and the LLM judge's evaluation to .txt files on disk, and return them as a list of email attachment descriptors ({ filename, path }) that can be passed straight to GREY:send_email or GREY:send_email_ews. Meeting audio is NOT attached unless includeAudio is explicitly turned on",
     "icon": "mdi:paperclip",
     "inputSchema": {
       "type": "object",
@@ -496,7 +496,7 @@
       "properties": {
         "attachments": {
           "type": "array",
-          "description": "Attachment descriptors to pass unchanged to GREY:send_email's 'attachments' parameter.",
+          "description": "Attachment descriptors to pass unchanged to GREY:send_email or GREY:send_email_ews through the 'attachments' parameter.",
           "items": {
             "type": "object",
             "properties": {

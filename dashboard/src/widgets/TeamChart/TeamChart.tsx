@@ -171,6 +171,8 @@ function TeamChart() {
           fitViewOnMount
           fitViewOnNodesChange
           fitViewOnResize
+          fitViewMinZoom={0.8}
+          fitViewAlign="center"
         />
       </Box>
 

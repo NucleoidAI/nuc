@@ -1,19 +1,20 @@
-import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import BlueprintChatTitle from "../components/BlueprintChat/BlueprintChatTitle";
+import type { BlueprintContext as BlueprintContextData } from "../hooks/useBlueprint";
 import BlueprintFlowWidget from "../widgets/BlueprintFlowWidget/BlueprintFlowWidget";
 import BlueprintKnowledge from "../components/BlueprintKnowledge/BlueprintKnowledge";
 import BlueprintSkill from "../components/BlueprintSkill/BlueprintSkill";
 import { DrawerLayout } from "@canmingir/link/layouts";
-import EditNoteIcon from "@mui/icons-material/EditNote";
 import { FlowDefinition } from "../components/BlueprintFlow/helper";
+import HorizontalSplitIcon from "@mui/icons-material/HorizontalSplit";
 import SettingsDialog from "../components/SettingsDialog/SettingsDialog";
 import SettingsIcon from "@mui/icons-material/Settings";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import SupervisingChat from "../components/SupervisingChat";
+import { publish } from "@nucleoidai/react-event";
 import useBlueprint from "../hooks/useBlueprint";
 import useSupervisings from "../hooks/useSupervisings";
 
-import { Box, Fab, Grid, Tooltip } from "@mui/material";
+import { Box, Fab, Grid, SvgIcon, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { storage, useStorage } from "@nucleoidjs/webstorage";
 
@@ -40,6 +41,7 @@ const BlueprintDrawerLayout = ({
     description: string;
     agentId: string;
     skill?: string;
+    context?: BlueprintContextData | null;
   };
   handleAiResponse?: (response: {
     flow: FlowDefinition;
@@ -77,6 +79,9 @@ const BlueprintDrawerLayout = ({
   const [description, setDescription] = useState(selectedItem?.description);
   const [skill, setSkill] = useState(selectedItem?.skill);
   const [skillLoading, setSkillLoading] = useState(false);
+  const [context, setContext] = useState<BlueprintContextData | null>(
+    selectedItem?.context ?? null
+  );
   const [liveNodes, setLiveNodes] = useState([]);
   const [showKnowledge, setShowKnowledge] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -101,6 +106,16 @@ const BlueprintDrawerLayout = ({
       value
     );
   };
+
+  useEffect(() => {
+    publish("BLUEPRINT_CONTEXT", { context: drawerOpen ? context : null });
+  }, [drawerOpen, context]);
+
+  useEffect(() => {
+    return () => {
+      publish("BLUEPRINT_CONTEXT", { context: null });
+    };
+  }, []);
 
   const { patchBlueprint } = useBlueprint();
   const { approveBlueprintChat } = useSupervisings();
@@ -128,6 +143,7 @@ const BlueprintDrawerLayout = ({
     setTitle(selectedItem?.title);
     setDescription(selectedItem?.description);
     setSkill(selectedItem?.skill);
+    setContext(selectedItem?.context ?? null);
   }, [selectedItem]);
 
   useEffect(() => {
@@ -166,6 +182,7 @@ const BlueprintDrawerLayout = ({
         onSkillChange={setSkill}
         onSkillLoadingChange={setSkillLoading}
         onNodesChange={setLiveNodes}
+        onContextChange={setContext}
         onSave={supervise ? () => handleManualResolve("BLUEPRINT") : undefined}
       />
 
@@ -215,7 +232,7 @@ const BlueprintDrawerLayout = ({
           sx={{
             position: "absolute",
             bottom: 24,
-            right: 24,
+            right: 72,
             zIndex: 10,
           }}
         >
@@ -230,11 +247,23 @@ const BlueprintDrawerLayout = ({
           sx={{
             position: "absolute",
             bottom: 24,
-            right: 120,
+            right: 168,
             zIndex: 10,
           }}
         >
-          <EditNoteIcon />
+          <SvgIcon>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fill="white"
+                d="M7.398 12.809a1.042 1.042 0 0 0 1.204-.003c.178-.13.313-.31.387-.518l.447-1.373a2.336 2.336 0 0 1 1.477-1.479l1.391-.45a1.045 1.045 0 0 0-.044-1.98l-1.375-.448a2.335 2.335 0 0 1-1.48-1.477l-.452-1.388a1.044 1.044 0 0 0-1.973.017l-.457 1.4a2.336 2.336 0 0 1-1.44 1.45l-1.39.447a1.045 1.045 0 0 0 .016 1.974l1.374.445a2.333 2.333 0 0 1 1.481 1.488l.452 1.391c.072.204.206.38.382.504m6.137 4.042a.806.806 0 0 0 1.226-.398l.248-.762a1.09 1.09 0 0 1 .26-.42c.118-.12.262-.208.42-.26l.772-.252a.8.8 0 0 0-.023-1.52l-.764-.25a1.075 1.075 0 0 1-.68-.678l-.252-.773a.8.8 0 0 0-1.518.01l-.247.762a1.068 1.068 0 0 1-.665.679l-.773.252a.8.8 0 0 0 .008 1.518l.763.247c.16.054.304.143.422.261c.119.119.207.263.258.422l.253.774a.8.8 0 0 0 .292.388"
+              />
+            </svg>
+          </SvgIcon>
         </Fab>
       </Tooltip>
 
@@ -252,11 +281,11 @@ const BlueprintDrawerLayout = ({
           sx={{
             position: "absolute",
             bottom: 24,
-            right: 168,
+            right: 120,
             zIndex: 10,
           }}
         >
-          <AccountTreeIcon />
+          <HorizontalSplitIcon />
         </Fab>
       </Tooltip>
 
@@ -267,7 +296,7 @@ const BlueprintDrawerLayout = ({
           sx={{
             position: "absolute",
             bottom: 24,
-            right: 72,
+            right: 24,
             zIndex: 10,
           }}
         >

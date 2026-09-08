@@ -84,6 +84,7 @@ router.put("/:blueprintId", async (req, res) => {
     messages,
     blocking,
     skill,
+    context,
   } = BlueprintSchema.upsert.parse(req.body);
 
   if (agentId) {
@@ -108,7 +109,8 @@ router.put("/:blueprintId", async (req, res) => {
       createdAt: new Date(msg.createdAt),
     })),
     blocking,
-    skill
+    skill,
+    context,
   );
 
   await event.publish("BLUEPRINT_CREATED", {

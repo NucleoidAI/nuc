@@ -105,6 +105,7 @@ function BlueprintFlowWidget({
   onSkillChange,
   onSkillLoadingChange,
   onNodesChange,
+  onContextChange,
   onSave,
 }: {
   aiResponse?: AIResponse;
@@ -117,6 +118,9 @@ function BlueprintFlowWidget({
   onSkillChange?: (skill: string) => void;
   onSkillLoadingChange?: (loading: boolean) => void;
   onNodesChange?: (nodes: ReturnType<typeof graphToNodes>) => void;
+  onContextChange?: (
+    context: import("../../hooks/useBlueprint").BlueprintContext | null
+  ) => void;
   usedNodeIds?: Set<string>;
   lastUsedNodeId?: string | null;
   failedNodeId?: string | null;
@@ -353,6 +357,11 @@ function BlueprintFlowWidget({
     onNodesChange?.(graphData ? graphToNodes(graphData) : []);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [graphData]);
+
+  useEffect(() => {
+    onContextChange?.(blueprintNodes?.context ?? null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [blueprintNodes?.context]);
 
   useEffect(
     () => {

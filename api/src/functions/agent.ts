@@ -603,14 +603,20 @@ async function step({
 
       const provider = action.split(":")[0].toLowerCase();
 
-      const agentInstance = taskAgentId
-        ? await Agent.findByPk(taskAgentId)
-        : null;
+      if (!taskAgentId) {
+        throw new Error("MCP_STEP_REQUIRES_AGENT");
+      }
+
+      const agentInstance = await Agent.findByPk(taskAgentId);
+
+      if (!agentInstance?.teamId) {
+        throw new Error("MCP_STEP_REQUIRES_AGENT");
+      }
 
       mcpClient = await mcp.connect({
         name: provider,
-        teamId: agentInstance?.teamId ?? null,
-        agentId: taskAgentId ?? null,
+        teamId: agentInstance.teamId,
+        agentId: taskAgentId,
       });
     } else if (actionType === "INTERACTION") {
       actionFn = require("../actions/interaction").default;

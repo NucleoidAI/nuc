@@ -21,9 +21,10 @@ async function connect({
   try {
     env = await mcpServer.resolveEnv({ serverId: name, teamId, agentId });
   } catch (error) {
-    platform.logger.warn(
+    platform.logger.error(
       `Failed to resolve env for MCP server "${name}": ${error}`
     );
+    throw error;
   }
 
   try {

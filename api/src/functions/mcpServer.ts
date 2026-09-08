@@ -192,9 +192,9 @@ function mergeByScope({
 }: { entries: ScopedEntry[] } & Scope): Record<string, string> {
   const applicable = entries.filter(
     (entry) =>
-      (!entry.teamId && !entry.agentId) ||
-      (entry.teamId && entry.teamId === teamId) ||
-      (entry.agentId && entry.agentId === agentId)
+      (entry.teamId || entry.agentId) &&
+      (!entry.teamId || entry.teamId === teamId) &&
+      (!entry.agentId || entry.agentId === agentId)
   );
 
   return [...applicable]
@@ -212,6 +212,10 @@ async function setEnv({
   teamId,
   agentId,
 }: { serverId: string; key: string; value: string } & Scope) {
+  if (!teamId && !agentId) {
+    throw new Error("MCP_SERVER_ENV_SCOPE_REQUIRED");
+  }
+
   const existing = await MCPServerEnv.findOne({
     where: {
       serverId,
@@ -233,6 +237,10 @@ async function resolveEnv({
   teamId,
   agentId,
 }: { serverId: string } & Scope): Promise<Record<string, string>> {
+  if (!teamId && !agentId) {
+    throw new Error("MCP_SERVER_ENV_SCOPE_REQUIRED");
+  }
+
   const entries = await MCPServerEnv.findAll({ where: { serverId } });
 
   return mergeByScope({ entries, teamId, agentId });

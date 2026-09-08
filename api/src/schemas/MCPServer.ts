@@ -31,7 +31,7 @@ const MCPServer = {
       key: Joi.string().min(1).max(255).required(),
       value: Joi.string().allow("").required(),
       ...scope,
-    }).oxor("teamId", "agentId"),
+    }).xor("teamId", "agentId"),
 
     update: Joi.object({
       value: Joi.string().allow("").required(),

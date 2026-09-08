@@ -6,15 +6,6 @@ const MCPs = [
     provider: "GDRIVE",
     description: "Search for files in Google Drive",
     icon: "mdi:google-drive",
-    oauth: {
-      scope: "https://www.googleapis.com/auth/drive.metadata.readonly",
-      tokenUrl: "https://oauth2.googleapis.com/token",
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      redirectUri: process.env.GOOGLE_REDIRECT_URI,
-      authUrl: "https://accounts.google.com/o/oauth2/v2/auth",
-      clientScript: "https://accounts.google.com/gsi/client",
-    },
     direction: "OUTGOING",
     lib: "mcp",
     inputSchema: {

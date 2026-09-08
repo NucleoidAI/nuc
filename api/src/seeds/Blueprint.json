@@ -419,7 +419,7 @@
           "id": "019fa100-0006-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
-            "action": "GREY:send_email_ews",
+            "action": "TELCO:send_email_ews",
             "description": "Email the summary through EWS to all meeting participants using the 'meeting_summary_a' template, attaching the transcripts and the LLM evaluation",
             "label": "Email Participants",
             "icon": "mdi:email-send"

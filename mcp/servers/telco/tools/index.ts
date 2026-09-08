@@ -9,6 +9,7 @@ import { portConnectionTool } from "./port_connection";
 import { prepareMeetingAttachmentsTool } from "./prepare_meeting_attachments";
 import { productManagementSystemTool } from "./product_management_system";
 import { resolveParticipantsTool } from "./resolve_participants";
+import { sendEmailEwsTool } from "./send_email_ews";
 import { summarizeMeetingBySpeakerTool } from "./summarize_meeting_by_speaker";
 import { summarizeMeetingTool } from "./summarize_meeting";
 import { transcribeMeetingTool } from "./transcribe_meeting";
@@ -28,4 +29,5 @@ export const tools = [
   judgeSummaryTool,
   prepareMeetingAttachmentsTool,
   resolveParticipantsTool,
+  sendEmailEwsTool,
 ];

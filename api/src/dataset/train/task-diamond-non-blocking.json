@@ -1266,7 +1266,7 @@
             "id": "019f414b-0005-4000-8000-000000000005",
             "type": "NORMAL",
             "properties": {
-              "action": "GREY:send_email_ews"
+              "action": "TELCO:send_email_ews"
             },
             "next": ["019f414b-0006-4000-8000-000000000006"]
           },
@@ -1301,7 +1301,7 @@
         "TELCO:transcribe_meeting",
         "TELCO:summarize_meeting_by_speaker",
         "TELCO:resolve_participants",
-        "GREY:send_email_ews",
+        "TELCO:send_email_ews",
         "PLATFORM:complete"
       ],
       "steps": [
@@ -1369,7 +1369,7 @@
         },
         {
           "taskId": "4a1c9e2b-7d3f-4b8a-9e6c-2f5a8d1b3c7e",
-          "action": "GREY:send_email_ews",
+          "action": "TELCO:send_email_ews",
           "status": "COMPLETED",
           "parameters": {
             "to": "ayse.kaya@example.com, mehmet.yilmaz@example.com, halil.cengel@example.com",
@@ -1424,7 +1424,7 @@
         "TELCO:transcribe_meeting",
         "TELCO:summarize_meeting_by_speaker",
         "TELCO:resolve_participants",
-        "GREY:send_email_ews",
+        "TELCO:send_email_ews",
         "PLATFORM:complete"
       ],
       "steps": [
@@ -1476,7 +1476,7 @@
         "TELCO:transcribe_meeting",
         "TELCO:summarize_meeting_by_speaker",
         "TELCO:resolve_participants",
-        "GREY:send_email_ews",
+        "TELCO:send_email_ews",
         "PLATFORM:complete"
       ],
       "steps": [
@@ -1636,7 +1636,7 @@
         "TELCO:summarize_meeting",
         "TELCO:judge_summary",
         "TELCO:prepare_meeting_attachments",
-        "GREY:send_email_ews",
+        "TELCO:send_email_ews",
         "PLATFORM:complete"
       ],
       "steps": [
@@ -1686,7 +1686,7 @@
         "TELCO:summarize_meeting",
         "TELCO:judge_summary",
         "TELCO:prepare_meeting_attachments",
-        "GREY:send_email_ews",
+        "TELCO:send_email_ews",
         "PLATFORM:complete"
       ],
       "steps": [
@@ -1745,7 +1745,7 @@
         "TELCO:summarize_meeting",
         "TELCO:judge_summary",
         "TELCO:prepare_meeting_attachments",
-        "GREY:send_email_ews",
+        "TELCO:send_email_ews",
         "PLATFORM:complete"
       ],
       "steps": [

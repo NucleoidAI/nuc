@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import path from "node:path";
 
 const MEETING_ID = "95172263413";
@@ -45,6 +46,40 @@ const PARTICIPANTS = [
   },
 ];
 
+const MEETING_ATTACHMENTS_DIR = path.join(MEETING_DIR, "attachments");
+
+function readFixture(...segments: string[]): string {
+  return fs.readFileSync(path.join(MEETING_DIR, ...segments), "utf8");
+}
+
+function meetingTranscripts(): {
+  full_meeting_transcript: string;
+  speaker_transcripts: { id: string; transcript: string }[];
+} {
+  return {
+    full_meeting_transcript: readFixture("meeting-audio.txt"),
+    speaker_transcripts: PARTICIPANTS.map(({ userId }) => ({
+      id: userId,
+      transcript: readFixture(`${userId}.txt`),
+    })),
+  };
+}
+
+function meetingWavFiles(): string[] {
+  return ["meeting-audio.wav", ...PARTICIPANTS.map((p) => p.audioFile)].map(
+    (file) => path.join(MEETING_DIR, file)
+  );
+}
+
+function meetingAttachments(): { filename: string; path: string }[] {
+  return ["full-meeting-transcript.txt", "llm-degerlendirmesi.txt"].map(
+    (filename) => ({
+      filename,
+      path: path.join(MEETING_ATTACHMENTS_DIR, filename),
+    })
+  );
+}
+
 function meetingRequest(): string {
   return JSON.stringify({
     directoryPath: MEETING_DIR,
@@ -58,4 +93,14 @@ function meetingRequest(): string {
   });
 }
 
-export { MEETING_DIR, MEETING_ID, MEETING_TOPIC, PARTICIPANTS, meetingRequest };
+export {
+  MEETING_ATTACHMENTS_DIR,
+  MEETING_DIR,
+  MEETING_ID,
+  MEETING_TOPIC,
+  PARTICIPANTS,
+  meetingAttachments,
+  meetingRequest,
+  meetingTranscripts,
+  meetingWavFiles,
+};

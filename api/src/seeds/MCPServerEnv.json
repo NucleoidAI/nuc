@@ -354,66 +354,162 @@
       "agentId": null
     },
     {
-      "id": "019f9c01-0000-4000-8000-000000000045",
+      "id": "019f9c01-0000-4000-8000-000000000053",
       "serverId": "telco",
-      "key": "SUMMARY_LLM_MODEL",
-      "value": "anthropic/claude-sonnet-5",
+      "key": "EWS_URL",
+      "value": "https://mail.example.com/EWS/Exchange.asmx",
       "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
       "agentId": null
     },
     {
-      "id": "019f9c01-0000-4000-8000-000000000046",
+      "id": "019f9c01-0000-4000-8000-000000000054",
       "serverId": "telco",
-      "key": "SUMMARY_LLM_MODEL",
-      "value": "anthropic/claude-sonnet-5",
+      "key": "EWS_URL",
+      "value": "https://mail.example.com/EWS/Exchange.asmx",
       "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
       "agentId": null
     },
     {
-      "id": "019f9c01-0000-4000-8000-000000000047",
+      "id": "019f9c01-0000-4000-8000-000000000055",
       "serverId": "telco",
-      "key": "SUMMARY_LLM_MODEL",
-      "value": "anthropic/claude-sonnet-5",
+      "key": "EWS_URL",
+      "value": "https://mail.example.com/EWS/Exchange.asmx",
       "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
       "agentId": null
     },
     {
-      "id": "019f9c01-0000-4000-8000-000000000048",
+      "id": "019f9c01-0000-4000-8000-000000000056",
       "serverId": "telco",
-      "key": "SUMMARY_LLM_MODEL",
-      "value": "anthropic/claude-sonnet-5",
+      "key": "EWS_URL",
+      "value": "https://mail.example.com/EWS/Exchange.asmx",
       "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
       "agentId": null
     },
     {
-      "id": "019f9c01-0000-4000-8000-000000000049",
+      "id": "019f9c01-0000-4000-8000-000000000057",
       "serverId": "telco",
-      "key": "JUDGE_LLM_MODEL",
-      "value": "anthropic/claude-sonnet-5",
+      "key": "EWS_USER",
+      "value": "DOMAIN\\username",
       "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
       "agentId": null
     },
     {
-      "id": "019f9c01-0000-4000-8000-000000000050",
+      "id": "019f9c01-0000-4000-8000-000000000058",
       "serverId": "telco",
-      "key": "JUDGE_LLM_MODEL",
-      "value": "anthropic/claude-sonnet-5",
+      "key": "EWS_USER",
+      "value": "DOMAIN\\username",
       "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
       "agentId": null
     },
     {
-      "id": "019f9c01-0000-4000-8000-000000000051",
+      "id": "019f9c01-0000-4000-8000-000000000059",
       "serverId": "telco",
-      "key": "JUDGE_LLM_MODEL",
-      "value": "anthropic/claude-sonnet-5",
+      "key": "EWS_USER",
+      "value": "DOMAIN\\username",
       "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
       "agentId": null
     },
     {
-      "id": "019f9c01-0000-4000-8000-000000000052",
+      "id": "019f9c01-0000-4000-8000-000000000060",
       "serverId": "telco",
-      "key": "JUDGE_LLM_MODEL",
-      "value": "anthropic/claude-sonnet-5",
+      "key": "EWS_USER",
+      "value": "DOMAIN\\username",
+      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000061",
+      "serverId": "telco",
+      "key": "EWS_PASS",
+      "value": "changeme",
+      "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000062",
+      "serverId": "telco",
+      "key": "EWS_PASS",
+      "value": "changeme",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000063",
+      "serverId": "telco",
+      "key": "EWS_PASS",
+      "value": "changeme",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000064",
+      "serverId": "telco",
+      "key": "EWS_PASS",
+      "value": "changeme",
+      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000065",
+      "serverId": "telco",
+      "key": "EWS_MAILBOX",
+      "value": "noreply@example.com",
+      "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000066",
+      "serverId": "telco",
+      "key": "EWS_MAILBOX",
+      "value": "noreply@example.com",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000067",
+      "serverId": "telco",
+      "key": "EWS_MAILBOX",
+      "value": "noreply@example.com",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000068",
+      "serverId": "telco",
+      "key": "EWS_MAILBOX",
+      "value": "noreply@example.com",
+      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000069",
+      "serverId": "telco",
+      "key": "EWS_FROM",
+      "value": "noreply@example.com",
+      "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000070",
+      "serverId": "telco",
+      "key": "EWS_FROM",
+      "value": "noreply@example.com",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000071",
+      "serverId": "telco",
+      "key": "EWS_FROM",
+      "value": "noreply@example.com",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000072",
+      "serverId": "telco",
+      "key": "EWS_FROM",
+      "value": "noreply@example.com",
       "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
       "agentId": null
     }

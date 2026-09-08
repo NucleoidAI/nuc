@@ -2,8 +2,11 @@ import fs from "fs";
 import path from "path";
 import { spawn } from "child_process";
 import logger from "../../../logger/logger.js";
-import { Tool } from "../../gdrive/tools/types";
-import { buildAttachments, TEMPLATES } from "./send_email.js";
+import { Tool } from "./types";
+import {
+  buildAttachments,
+  TEMPLATES,
+} from "../../grey/tools/send_email.js";
 
 const WORKER_PATH = path.join(__dirname, "ews_send_worker.cjs");
 
@@ -63,7 +66,7 @@ function runEwsWorker(payload: Record<string, any>): Promise<void> {
 }
 
 export const sendEmailEwsTool: Tool<any> = {
-  name: "GREY:send_email_ews",
+  name: "TELCO:send_email_ews",
   description:
     "Send an email through Exchange Web Services (EWS) using NTLM authentication. Requires EWS_URL, EWS_USER, EWS_PASS, and EWS_MAILBOX environment variables. Accepts the same content, template, and attachment inputs as GREY:send_email.",
   inputSchema: {
@@ -130,7 +133,7 @@ export const sendEmailEwsTool: Tool<any> = {
   handler: async (args: any) => {
     logger.info(
       {
-        tool: "GREY:send_email_ews",
+        tool: "TELCO:send_email_ews",
         to: args.to,
         subject: args.subject,
         template: args.template,
@@ -145,7 +148,7 @@ export const sendEmailEwsTool: Tool<any> = {
     const { attachments, missing } = buildAttachments(args.attachments);
     if (missing.length) {
       logger.warn(
-        { tool: "GREY:send_email_ews", missing },
+        { tool: "TELCO:send_email_ews", missing },
         "Skipping attachments whose files do not exist"
       );
     }
@@ -214,14 +217,14 @@ export const sendEmailEwsTool: Tool<any> = {
       };
 
       logger.debug(
-        { tool: "GREY:send_email_ews", to: args.to, mailbox },
+        { tool: "TELCO:send_email_ews", to: args.to, mailbox },
         "Sending email via EWS"
       );
       await runEwsWorker(payload);
 
       logger.info(
         {
-          tool: "GREY:send_email_ews",
+          tool: "TELCO:send_email_ews",
           action: "send",
           to: args.to,
           subject,
@@ -253,7 +256,7 @@ export const sendEmailEwsTool: Tool<any> = {
 
       logger.error(
         {
-          tool: "GREY:send_email_ews",
+          tool: "TELCO:send_email_ews",
           action: "send",
           err: error instanceof Error ? error : new Error(errorMessage),
           detail: errorMessage,

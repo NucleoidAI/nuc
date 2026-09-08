@@ -264,9 +264,9 @@ const MCPs = [
   },
   {
     id: "86dcc1c2-f096-459c-9f80-b70214b56296",
-    action: "GREY:send_email_ews",
-    label: "Grey EWS",
-    provider: "GREY",
+    action: "TELCO:send_email_ews",
+    label: "Telco EWS",
+    provider: "TELCO",
     description:
       "Send an email through Exchange Web Services using NTLM authentication. Supports plain text, HTML, predefined meeting templates, and attachments.",
     direction: "OUTGOING",
@@ -9080,7 +9080,7 @@ const MCPs = [
     label: "Telco",
     provider: "TELCO",
     description:
-      "Write the full meeting transcript, each speaker's transcript and the LLM judge's evaluation to .txt files on disk, and return them as a list of email attachment descriptors ({ filename, path }) that can be passed straight to GREY:send_email or GREY:send_email_ews. Meeting audio is NOT attached unless includeAudio is explicitly turned on",
+      "Write the full meeting transcript, each speaker's transcript and the LLM judge's evaluation to .txt files on disk, and return them as a list of email attachment descriptors ({ filename, path }) that can be passed straight to GREY:send_email or TELCO:send_email_ews. Meeting audio is NOT attached unless includeAudio is explicitly turned on",
     direction: "OUTGOING",
     lib: "mcp",
     icon: "mdi:paperclip",
@@ -9181,7 +9181,7 @@ const MCPs = [
         attachments: {
           type: "array",
           description:
-            "Attachment descriptors to pass unchanged to GREY:send_email or GREY:send_email_ews through the 'attachments' parameter.",
+            "Attachment descriptors to pass unchanged to GREY:send_email or TELCO:send_email_ews through the 'attachments' parameter.",
           items: {
             type: "object",
             properties: {

@@ -68,7 +68,7 @@ export const prepareMeetingAttachmentsTool: Tool<PrepareMeetingAttachmentsInput>
   {
     name: "TELCO:prepare_meeting_attachments",
     description:
-      "Write the full meeting transcript, each speaker's transcript and the LLM judge's evaluation to .txt files on disk, and return them as a list of email attachment descriptors ({ filename, path }) that can be passed straight to GREY:send_email or GREY:send_email_ews. Meeting audio is NOT attached unless includeAudio is explicitly turned on",
+      "Write the full meeting transcript, each speaker's transcript and the LLM judge's evaluation to .txt files on disk, and return them as a list of email attachment descriptors ({ filename, path }) that can be passed straight to GREY:send_email or TELCO:send_email_ews. Meeting audio is NOT attached unless includeAudio is explicitly turned on",
     inputSchema: {
       type: "object",
       properties: {

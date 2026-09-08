@@ -64,6 +64,198 @@
       "value": "http://localhost:5200",
       "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
       "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000009",
+      "serverId": "grey",
+      "key": "SMTP_HOST",
+      "value": "smtp.gmail.com",
+      "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000010",
+      "serverId": "grey",
+      "key": "SMTP_HOST",
+      "value": "smtp.gmail.com",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000011",
+      "serverId": "grey",
+      "key": "SMTP_HOST",
+      "value": "smtp.gmail.com",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000012",
+      "serverId": "grey",
+      "key": "SMTP_HOST",
+      "value": "smtp.gmail.com",
+      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000013",
+      "serverId": "grey",
+      "key": "SMTP_PORT",
+      "value": "465",
+      "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000014",
+      "serverId": "grey",
+      "key": "SMTP_PORT",
+      "value": "465",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000015",
+      "serverId": "grey",
+      "key": "SMTP_PORT",
+      "value": "465",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000016",
+      "serverId": "grey",
+      "key": "SMTP_PORT",
+      "value": "465",
+      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000017",
+      "serverId": "grey",
+      "key": "SMTP_SECURE",
+      "value": "true",
+      "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000018",
+      "serverId": "grey",
+      "key": "SMTP_SECURE",
+      "value": "true",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000019",
+      "serverId": "grey",
+      "key": "SMTP_SECURE",
+      "value": "true",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000020",
+      "serverId": "grey",
+      "key": "SMTP_SECURE",
+      "value": "true",
+      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000021",
+      "serverId": "grey",
+      "key": "SMTP_USER",
+      "value": "halilibrahimcengel7@gmail.com",
+      "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000022",
+      "serverId": "grey",
+      "key": "SMTP_USER",
+      "value": "halilibrahimcengel7@gmail.com",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000023",
+      "serverId": "grey",
+      "key": "SMTP_USER",
+      "value": "halilibrahimcengel7@gmail.com",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000024",
+      "serverId": "grey",
+      "key": "SMTP_USER",
+      "value": "halilibrahimcengel7@gmail.com",
+      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000025",
+      "serverId": "grey",
+      "key": "SMTP_PASS",
+      "value": "xncngssxcjasmnxy",
+      "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000026",
+      "serverId": "grey",
+      "key": "SMTP_PASS",
+      "value": "xncngssxcjasmnxy",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000027",
+      "serverId": "grey",
+      "key": "SMTP_PASS",
+      "value": "xncngssxcjasmnxy",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000028",
+      "serverId": "grey",
+      "key": "SMTP_PASS",
+      "value": "xncngssxcjasmnxy",
+      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000029",
+      "serverId": "grey",
+      "key": "SMTP_FROM",
+      "value": "halilibrahimcengel7@gmail.com",
+      "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000030",
+      "serverId": "grey",
+      "key": "SMTP_FROM",
+      "value": "halilibrahimcengel7@gmail.com",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000031",
+      "serverId": "grey",
+      "key": "SMTP_FROM",
+      "value": "halilibrahimcengel7@gmail.com",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000032",
+      "serverId": "grey",
+      "key": "SMTP_FROM",
+      "value": "halilibrahimcengel7@gmail.com",
+      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
+      "agentId": null
     }
   ]
 }

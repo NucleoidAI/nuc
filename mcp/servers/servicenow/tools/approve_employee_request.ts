@@ -2,8 +2,7 @@ import { ApproveEmployeeRequestInput, Tool } from "./types";
 
 import logger from "../../../logger/logger.js";
 
-const SERVICENOW_API_BASE_URL =
-  process.env.SERVICENOW_API_URL || "http://localhost:5199";
+const SERVICENOW_API_BASE_URL = process.env.SERVICENOW_API_URL;
 
 export const approveEmployeeRequestTool: Tool<ApproveEmployeeRequestInput> = {
   name: "SERVICENOW:approve_employee_request",

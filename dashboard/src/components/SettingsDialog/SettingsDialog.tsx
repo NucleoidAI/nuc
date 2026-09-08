@@ -1,3 +1,8 @@
+import CloseIcon from "@mui/icons-material/Close";
+import React from "react";
+import Swipe from "../Swipe/Swipe";
+import TuneIcon from "@mui/icons-material/Tune";
+
 import {
   Box,
   Dialog,
@@ -9,11 +14,6 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-
-import CloseIcon from "@mui/icons-material/Close";
-import React from "react";
-import Swipe from "../Swipe/Swipe";
-import TuneIcon from "@mui/icons-material/Tune";
 
 const SettingsDialog = ({
   showSettings,

@@ -288,6 +288,134 @@
       "value": "http://10.98.136.58:9012/keys-fttx-middleware-webservice/webservices/FttxMiddlewareWebService",
       "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
       "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000037",
+      "serverId": "telco",
+      "key": "ASR_LOCAL_ENDPOINT_URL",
+      "value": "test",
+      "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000038",
+      "serverId": "telco",
+      "key": "ASR_LOCAL_ENDPOINT_URL",
+      "value": "test",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000039",
+      "serverId": "telco",
+      "key": "ASR_LOCAL_ENDPOINT_URL",
+      "value": "test",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000040",
+      "serverId": "telco",
+      "key": "ASR_LOCAL_ENDPOINT_URL",
+      "value": "test",
+      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000041",
+      "serverId": "telco",
+      "key": "PLATFORM_LLM",
+      "value": "openrouter/qwen3-next-80b-a3b-instruct",
+      "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000042",
+      "serverId": "telco",
+      "key": "PLATFORM_LLM",
+      "value": "openrouter/qwen3-next-80b-a3b-instruct",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000043",
+      "serverId": "telco",
+      "key": "PLATFORM_LLM",
+      "value": "openrouter/qwen3-next-80b-a3b-instruct",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000044",
+      "serverId": "telco",
+      "key": "PLATFORM_LLM",
+      "value": "openrouter/qwen3-next-80b-a3b-instruct",
+      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000045",
+      "serverId": "telco",
+      "key": "SUMMARY_LLM_MODEL",
+      "value": "anthropic/claude-sonnet-5",
+      "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000046",
+      "serverId": "telco",
+      "key": "SUMMARY_LLM_MODEL",
+      "value": "anthropic/claude-sonnet-5",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000047",
+      "serverId": "telco",
+      "key": "SUMMARY_LLM_MODEL",
+      "value": "anthropic/claude-sonnet-5",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000048",
+      "serverId": "telco",
+      "key": "SUMMARY_LLM_MODEL",
+      "value": "anthropic/claude-sonnet-5",
+      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000049",
+      "serverId": "telco",
+      "key": "JUDGE_LLM_MODEL",
+      "value": "anthropic/claude-sonnet-5",
+      "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000050",
+      "serverId": "telco",
+      "key": "JUDGE_LLM_MODEL",
+      "value": "anthropic/claude-sonnet-5",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000051",
+      "serverId": "telco",
+      "key": "JUDGE_LLM_MODEL",
+      "value": "anthropic/claude-sonnet-5",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000052",
+      "serverId": "telco",
+      "key": "JUDGE_LLM_MODEL",
+      "value": "anthropic/claude-sonnet-5",
+      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
+      "agentId": null
     }
   ]
 }

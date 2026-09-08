@@ -359,7 +359,7 @@
           "id": "019fa100-0001-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
-            "action": "PLATFORM:pcm_to_wav",
+            "action": "TELCO:pcm_to_wav",
             "description": "Convert all PCM audio files in the meeting directory to WAV format",
             "label": "Convert PCM to WAV",
             "icon": "mdi:waveform"
@@ -371,7 +371,7 @@
           "id": "019fa100-0002-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
-            "action": "PLATFORM:transcribe_meeting",
+            "action": "TELCO:transcribe_meeting",
             "description": "Transcribe only meeting-audio.wav with the self-hosted ASR service. Skip participant recordings because Variant A does not use speaker transcripts. The transcript is cached as a .txt file next to the audio",
             "label": "Transcribe Meeting",
             "icon": "mdi:microphone-multiple"
@@ -383,7 +383,7 @@
           "id": "019fa100-0003-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
-            "action": "PLATFORM:summarize_meeting",
+            "action": "TELCO:summarize_meeting",
             "description": "Summarize the combined meeting transcript into an overall summary and the meeting's highlights",
             "label": "Summarize Meeting",
             "icon": "mdi:text-box-check"
@@ -395,7 +395,7 @@
           "id": "019fa100-0004-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
-            "action": "PLATFORM:judge_summary",
+            "action": "TELCO:judge_summary",
             "description": "Use a Turkish LLM judge to score the meeting summary, topics, highlights, overall quality and accuracy from 0 to 100; do not evaluate next steps because variant A does not generate them",
             "label": "Judge Summary",
             "icon": "mdi:gavel"
@@ -407,7 +407,7 @@
           "id": "019fa100-0005-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
-            "action": "PLATFORM:prepare_meeting_attachments",
+            "action": "TELCO:prepare_meeting_attachments",
             "description": "Write the full meeting transcript and the LLM judge's evaluation to files and collect them as email attachments. The meeting audio is not attached",
             "label": "Prepare Attachments",
             "icon": "mdi:paperclip"

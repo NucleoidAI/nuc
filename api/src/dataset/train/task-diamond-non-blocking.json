@@ -1234,7 +1234,7 @@
             "id": "019f414b-0001-4000-8000-000000000001",
             "type": "NORMAL",
             "properties": {
-              "action": "PLATFORM:pcm_to_wav"
+              "action": "TELCO:pcm_to_wav"
             },
             "next": ["019f414b-0002-4000-8000-000000000002"]
           },
@@ -1242,7 +1242,7 @@
             "id": "019f414b-0002-4000-8000-000000000002",
             "type": "NORMAL",
             "properties": {
-              "action": "PLATFORM:transcribe_meeting"
+              "action": "TELCO:transcribe_meeting"
             },
             "next": ["019f414b-0003-4000-8000-000000000003"]
           },
@@ -1250,7 +1250,7 @@
             "id": "019f414b-0003-4000-8000-000000000003",
             "type": "NORMAL",
             "properties": {
-              "action": "PLATFORM:summarize_meeting_by_speaker"
+              "action": "TELCO:summarize_meeting_by_speaker"
             },
             "next": ["019f414b-0004-4000-8000-000000000004"]
           },
@@ -1258,7 +1258,7 @@
             "id": "019f414b-0004-4000-8000-000000000004",
             "type": "NORMAL",
             "properties": {
-              "action": "PLATFORM:resolve_participants"
+              "action": "TELCO:resolve_participants"
             },
             "next": ["019f414b-0005-4000-8000-000000000005"]
           },
@@ -1297,17 +1297,17 @@
         }
       ],
       "tools": [
-        "PLATFORM:pcm_to_wav",
-        "PLATFORM:transcribe_meeting",
-        "PLATFORM:summarize_meeting_by_speaker",
-        "PLATFORM:resolve_participants",
+        "TELCO:pcm_to_wav",
+        "TELCO:transcribe_meeting",
+        "TELCO:summarize_meeting_by_speaker",
+        "TELCO:resolve_participants",
         "GREY:send_email_ews",
         "PLATFORM:complete"
       ],
       "steps": [
         {
           "taskId": "4a1c9e2b-7d3f-4b8a-9e6c-2f5a8d1b3c7e",
-          "action": "PLATFORM:pcm_to_wav",
+          "action": "TELCO:pcm_to_wav",
           "status": "COMPLETED",
           "parameters": {
             "directoryPath": "/recordings/2026-07-08-retrospective"
@@ -1317,7 +1317,7 @@
         },
         {
           "taskId": "4a1c9e2b-7d3f-4b8a-9e6c-2f5a8d1b3c7e",
-          "action": "PLATFORM:transcribe_meeting",
+          "action": "TELCO:transcribe_meeting",
           "status": "COMPLETED",
           "parameters": {
             "directoryPath": "/recordings/2026-07-08-retrospective"
@@ -1327,7 +1327,7 @@
         },
         {
           "taskId": "4a1c9e2b-7d3f-4b8a-9e6c-2f5a8d1b3c7e",
-          "action": "PLATFORM:summarize_meeting_by_speaker",
+          "action": "TELCO:summarize_meeting_by_speaker",
           "status": "COMPLETED",
           "parameters": {
             "full_meeting_transcript": {
@@ -1343,7 +1343,7 @@
         },
         {
           "taskId": "4a1c9e2b-7d3f-4b8a-9e6c-2f5a8d1b3c7e",
-          "action": "PLATFORM:resolve_participants",
+          "action": "TELCO:resolve_participants",
           "status": "COMPLETED",
           "parameters": {
             "content": {
@@ -1420,16 +1420,16 @@
         }
       ],
       "tools": [
-        "PLATFORM:pcm_to_wav",
-        "PLATFORM:transcribe_meeting",
-        "PLATFORM:summarize_meeting_by_speaker",
-        "PLATFORM:resolve_participants",
+        "TELCO:pcm_to_wav",
+        "TELCO:transcribe_meeting",
+        "TELCO:summarize_meeting_by_speaker",
+        "TELCO:resolve_participants",
         "GREY:send_email_ews",
         "PLATFORM:complete"
       ],
       "steps": [
         {
-          "action": "PLATFORM:pcm_to_wav",
+          "action": "TELCO:pcm_to_wav",
           "status": "COMPLETED",
           "parameters": {
             "directoryPath": "/recordings/2026-07-30-weekly-sync"
@@ -1438,7 +1438,7 @@
           "comment": "Converting per-participant PCM recordings to WAV before transcription"
         },
         {
-          "action": "PLATFORM:transcribe_meeting",
+          "action": "TELCO:transcribe_meeting",
           "status": "COMPLETED",
           "parameters": {
             "directoryPath": "/recordings/2026-07-30-weekly-sync"
@@ -1448,7 +1448,7 @@
         }
       ],
       "next_step": {
-        "action": "PLATFORM:summarize_meeting_by_speaker",
+        "action": "TELCO:summarize_meeting_by_speaker",
         "parameters": {
           "full_meeting_transcript": {
             "$ref": "steps[1].result.full_meeting_transcript"
@@ -1472,16 +1472,16 @@
         }
       ],
       "tools": [
-        "PLATFORM:pcm_to_wav",
-        "PLATFORM:transcribe_meeting",
-        "PLATFORM:summarize_meeting_by_speaker",
-        "PLATFORM:resolve_participants",
+        "TELCO:pcm_to_wav",
+        "TELCO:transcribe_meeting",
+        "TELCO:summarize_meeting_by_speaker",
+        "TELCO:resolve_participants",
         "GREY:send_email_ews",
         "PLATFORM:complete"
       ],
       "steps": [
         {
-          "action": "PLATFORM:pcm_to_wav",
+          "action": "TELCO:pcm_to_wav",
           "status": "COMPLETED",
           "parameters": {
             "directoryPath": "/recordings/2026-08-03-sprint-planning"
@@ -1490,7 +1490,7 @@
           "comment": "Converting per-participant PCM recordings to WAV before transcription"
         },
         {
-          "action": "PLATFORM:transcribe_meeting",
+          "action": "TELCO:transcribe_meeting",
           "status": "COMPLETED",
           "parameters": {
             "directoryPath": "/recordings/2026-08-03-sprint-planning"
@@ -1499,7 +1499,7 @@
           "comment": "Transcribing all WAV files in the meeting directory"
         },
         {
-          "action": "PLATFORM:summarize_meeting_by_speaker",
+          "action": "TELCO:summarize_meeting_by_speaker",
           "status": "FAILED",
           "parameters": {
             "full_meeting_transcript": "Ali: Bu sprintte neler yapacağız konuşalım. Zeynep: Öncelikle backlog'u gözden geçirelim. [transcript continues for thousands more words, typed out in full by mistake]",
@@ -1516,7 +1516,7 @@
         }
       ],
       "next_step": {
-        "action": "PLATFORM:summarize_meeting_by_speaker",
+        "action": "TELCO:summarize_meeting_by_speaker",
         "parameters": {
           "full_meeting_transcript": {
             "$ref": "steps[1].result.full_meeting_transcript"
@@ -1631,17 +1631,17 @@
         }
       ],
       "tools": [
-        "PLATFORM:pcm_to_wav",
-        "PLATFORM:transcribe_meeting",
-        "PLATFORM:summarize_meeting",
-        "PLATFORM:judge_summary",
-        "PLATFORM:prepare_meeting_attachments",
+        "TELCO:pcm_to_wav",
+        "TELCO:transcribe_meeting",
+        "TELCO:summarize_meeting",
+        "TELCO:judge_summary",
+        "TELCO:prepare_meeting_attachments",
         "GREY:send_email_ews",
         "PLATFORM:complete"
       ],
       "steps": [
         {
-          "action": "PLATFORM:pcm_to_wav",
+          "action": "TELCO:pcm_to_wav",
           "status": "COMPLETED",
           "parameters": {
             "directoryPath": "/recordings/2026-08-14-management-sync"
@@ -1650,7 +1650,7 @@
           "comment": "Converting the meeting recording to WAV before transcription"
         },
         {
-          "action": "PLATFORM:transcribe_meeting",
+          "action": "TELCO:transcribe_meeting",
           "status": "COMPLETED",
           "parameters": {
             "directoryPath": "/recordings/2026-08-14-management-sync",
@@ -1661,7 +1661,7 @@
         }
       ],
       "next_step": {
-        "action": "PLATFORM:summarize_meeting",
+        "action": "TELCO:summarize_meeting",
         "parameters": {
           "transcript": {
             "$ref": "steps[1].result.full_meeting_transcript"
@@ -1681,17 +1681,17 @@
         }
       ],
       "tools": [
-        "PLATFORM:pcm_to_wav",
-        "PLATFORM:transcribe_meeting",
-        "PLATFORM:summarize_meeting",
-        "PLATFORM:judge_summary",
-        "PLATFORM:prepare_meeting_attachments",
+        "TELCO:pcm_to_wav",
+        "TELCO:transcribe_meeting",
+        "TELCO:summarize_meeting",
+        "TELCO:judge_summary",
+        "TELCO:prepare_meeting_attachments",
         "GREY:send_email_ews",
         "PLATFORM:complete"
       ],
       "steps": [
         {
-          "action": "PLATFORM:pcm_to_wav",
+          "action": "TELCO:pcm_to_wav",
           "status": "COMPLETED",
           "parameters": {
             "directoryPath": "/recordings/2026-08-14-management-sync"
@@ -1700,7 +1700,7 @@
           "comment": "Converting the meeting recording to WAV before transcription"
         },
         {
-          "action": "PLATFORM:transcribe_meeting",
+          "action": "TELCO:transcribe_meeting",
           "status": "COMPLETED",
           "parameters": {
             "directoryPath": "/recordings/2026-08-14-management-sync",
@@ -1710,7 +1710,7 @@
           "comment": "Variant A only needs the mixed meeting audio, so speaker transcripts are skipped"
         },
         {
-          "action": "PLATFORM:summarize_meeting",
+          "action": "TELCO:summarize_meeting",
           "status": "FAILED",
           "parameters": {
             "transcript": "Bizi bakmistik gelmeyelim. Geldi arkadasim. Tabii. Konusabiliyor muyuz karsilikli? [transcript continues for thousands more words, typed out in full by mistake]"
@@ -1720,7 +1720,7 @@
         }
       ],
       "next_step": {
-        "action": "PLATFORM:summarize_meeting",
+        "action": "TELCO:summarize_meeting",
         "parameters": {
           "transcript": {
             "$ref": "steps[1].result.full_meeting_transcript"
@@ -1740,17 +1740,17 @@
         }
       ],
       "tools": [
-        "PLATFORM:pcm_to_wav",
-        "PLATFORM:transcribe_meeting",
-        "PLATFORM:summarize_meeting",
-        "PLATFORM:judge_summary",
-        "PLATFORM:prepare_meeting_attachments",
+        "TELCO:pcm_to_wav",
+        "TELCO:transcribe_meeting",
+        "TELCO:summarize_meeting",
+        "TELCO:judge_summary",
+        "TELCO:prepare_meeting_attachments",
         "GREY:send_email_ews",
         "PLATFORM:complete"
       ],
       "steps": [
         {
-          "action": "PLATFORM:pcm_to_wav",
+          "action": "TELCO:pcm_to_wav",
           "status": "COMPLETED",
           "parameters": {
             "directoryPath": "/recordings/2026-08-14-management-sync"
@@ -1759,7 +1759,7 @@
           "comment": "Converting the meeting recording to WAV before transcription"
         },
         {
-          "action": "PLATFORM:transcribe_meeting",
+          "action": "TELCO:transcribe_meeting",
           "status": "COMPLETED",
           "parameters": {
             "directoryPath": "/recordings/2026-08-14-management-sync",
@@ -1769,7 +1769,7 @@
           "comment": "Variant A only needs the mixed meeting audio, so speaker transcripts are skipped"
         },
         {
-          "action": "PLATFORM:summarize_meeting",
+          "action": "TELCO:summarize_meeting",
           "status": "COMPLETED",
           "parameters": {
             "transcript": {
@@ -1781,7 +1781,7 @@
         }
       ],
       "next_step": {
-        "action": "PLATFORM:judge_summary",
+        "action": "TELCO:judge_summary",
         "parameters": {
           "transcript": {
             "$ref": "steps[1].result.full_meeting_transcript"

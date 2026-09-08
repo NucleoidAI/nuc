@@ -10,16 +10,16 @@
         }
       ],
       "tools": [
-        "PLATFORM:pcm_to_wav",
-        "PLATFORM:transcribe_meeting",
-        "PLATFORM:summarize_meeting_by_speaker",
-        "PLATFORM:resolve_participants",
+        "TELCO:pcm_to_wav",
+        "TELCO:transcribe_meeting",
+        "TELCO:summarize_meeting_by_speaker",
+        "TELCO:resolve_participants",
         "GREY:send_email",
         "PLATFORM:complete"
       ],
       "steps": [
         {
-          "action": "PLATFORM:pcm_to_wav",
+          "action": "TELCO:pcm_to_wav",
           "status": "COMPLETED",
           "parameters": {
             "directoryPath": "/recordings/2026-07-30-weekly-sync"
@@ -28,7 +28,7 @@
           "comment": "Converting per-participant PCM recordings to WAV before transcription"
         },
         {
-          "action": "PLATFORM:transcribe_meeting",
+          "action": "TELCO:transcribe_meeting",
           "status": "COMPLETED",
           "parameters": {
             "directoryPath": "/recordings/2026-07-30-weekly-sync"
@@ -37,7 +37,7 @@
           "comment": "Transcribing all WAV files in the meeting directory"
         }
       ],
-      "forced_action": "PLATFORM:summarize_meeting_by_speaker",
+      "forced_action": "TELCO:summarize_meeting_by_speaker",
       "next_step": {
         "parameters": {
           "full_meeting_transcript": {
@@ -62,16 +62,16 @@
         }
       ],
       "tools": [
-        "PLATFORM:pcm_to_wav",
-        "PLATFORM:transcribe_meeting",
-        "PLATFORM:summarize_meeting_by_speaker",
-        "PLATFORM:resolve_participants",
+        "TELCO:pcm_to_wav",
+        "TELCO:transcribe_meeting",
+        "TELCO:summarize_meeting_by_speaker",
+        "TELCO:resolve_participants",
         "GREY:send_email",
         "PLATFORM:complete"
       ],
       "steps": [
         {
-          "action": "PLATFORM:pcm_to_wav",
+          "action": "TELCO:pcm_to_wav",
           "status": "COMPLETED",
           "parameters": {
             "directoryPath": "/recordings/2026-08-03-sprint-planning"
@@ -80,7 +80,7 @@
           "comment": "Converting per-participant PCM recordings to WAV before transcription"
         },
         {
-          "action": "PLATFORM:transcribe_meeting",
+          "action": "TELCO:transcribe_meeting",
           "status": "COMPLETED",
           "parameters": {
             "directoryPath": "/recordings/2026-08-03-sprint-planning"
@@ -89,7 +89,7 @@
           "comment": "Transcribing all WAV files in the meeting directory"
         },
         {
-          "action": "PLATFORM:summarize_meeting_by_speaker",
+          "action": "TELCO:summarize_meeting_by_speaker",
           "status": "FAILED",
           "parameters": {
             "full_meeting_transcript": "Ali: Bu sprintte neler yapacağız konuşalım. Zeynep: Öncelikle backlog'u gözden geçirelim. [transcript continues for thousands more words, typed out in full by mistake]",
@@ -105,7 +105,7 @@
           "comment": "The transcript was typed out by hand instead of using $ref, so the response ran out of tokens before finishing"
         }
       ],
-      "forced_action": "PLATFORM:summarize_meeting_by_speaker",
+      "forced_action": "TELCO:summarize_meeting_by_speaker",
       "next_step": {
         "parameters": {
           "full_meeting_transcript": {

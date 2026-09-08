@@ -656,7 +656,11 @@ async function step({
 
     let resultString;
 
-    if (result && typeof result === "object") {
+    if (actionType === "MCP") {
+      resultString =
+        require("../lib/mcp").unwrapToolResult(result) ??
+        JSON.stringify(result);
+    } else if (result && typeof result === "object") {
       resultString = JSON.stringify(result);
     } else {
       resultString = result;

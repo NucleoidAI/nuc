@@ -8706,5 +8706,588 @@ const MCPs = [
       required: ["pages"],
     },
   },
+  {
+    id: "019fa200-0000-4000-8000-000000000001",
+    action: "TELCO:pcm_to_wav",
+    label: "Telco",
+    provider: "TELCO",
+    description:
+      "Convert all PCM audio files (.pcm) in a directory to WAV format",
+    direction: "OUTGOING",
+    lib: "mcp",
+    icon: "mdi:waveform",
+    inputSchema: {
+      type: "object",
+      properties: {
+        directoryPath: {
+          type: "string",
+          description: "Absolute path to the directory containing .pcm files.",
+        },
+      },
+      required: ["directoryPath"],
+    },
+    outputSchema: {
+      type: "object",
+      properties: {
+        success: {
+          type: "boolean",
+        },
+        converted: {
+          type: "array",
+          description: "List of output .wav file paths.",
+        },
+        errors: {
+          type: "array",
+        },
+        totalFound: {
+          type: "number",
+        },
+        totalConverted: {
+          type: "number",
+        },
+        message: {
+          type: "string",
+        },
+      },
+    },
+  },
+  {
+    id: "019fa200-0000-4000-8000-000000000002",
+    action: "TELCO:transcribe_meeting",
+    label: "Telco",
+    provider: "TELCO",
+    description:
+      "Transcribe WAV audio files in a directory with the self-hosted ASR service, write each transcript as a .txt file next to the audio, and return the individual and combined transcripts. Speaker recordings can be skipped when only the mixed meeting transcript is needed. Existing .txt files in the directory are reused, so re-running on the same meeting does not transcribe a second time.",
+    direction: "OUTGOING",
+    lib: "mcp",
+    icon: "mdi:microphone-multiple",
+    inputSchema: {
+      type: "object",
+      properties: {
+        directoryPath: {
+          type: "string",
+          description:
+            "Absolute path to the directory containing .wav files. The .txt transcripts are written into this same directory.",
+        },
+        force: {
+          type: "boolean",
+          description:
+            "Re-transcribe even when a .txt transcript already exists, overwriting it. Defaults to false.",
+        },
+        includeSpeakerTranscripts: {
+          type: "boolean",
+          description:
+            "Whether to transcribe participant WAV files in addition to meeting-audio.wav. Defaults to true. Set to false when only the mixed full-meeting transcript is needed.",
+        },
+      },
+      required: ["directoryPath"],
+    },
+    outputSchema: {
+      type: "object",
+      properties: {
+        full_meeting_transcript: {
+          type: "string",
+          description: "Combined transcript of all audio files in order.",
+        },
+        speaker_transcripts: {
+          type: "array",
+          description: "Each participant's individual transcript.",
+          items: {
+            type: "object",
+            properties: {
+              id: {
+                type: "string",
+              },
+              transcript: {
+                type: "string",
+              },
+            },
+            required: ["id", "transcript"],
+          },
+        },
+        error: {
+          type: "string",
+        },
+      },
+    },
+  },
+  {
+    id: "019fa200-0000-4000-8000-000000000003",
+    action: "TELCO:summarize_meeting",
+    label: "Telco",
+    provider: "TELCO",
+    description:
+      "Summarize a full meeting transcript into a structured Turkish summary: an overall summary paragraph and the highlights. Works from the combined transcript alone, with no per-speaker recording, and deliberately produces no next steps",
+    direction: "OUTGOING",
+    lib: "mcp",
+    icon: "mdi:text-box-check",
+    inputSchema: {
+      type: "object",
+      properties: {
+        transcript: {
+          type: "string",
+          description:
+            "The full meeting transcript to turn into meeting notes.",
+        },
+      },
+      required: ["transcript"],
+    },
+    outputSchema: {
+      type: "object",
+      properties: {
+        summary: {
+          type: "string",
+          description:
+            "A 3-5 sentence paragraph covering the purpose of the meeting, the main topics and how it ended.",
+        },
+        highlights: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              topic: {
+                type: "string",
+                description: "The meeting topic heading.",
+              },
+              highlights: {
+                type: "array",
+                items: {
+                  type: "string",
+                },
+                description:
+                  "The key points, requests, proposals and decisions for this topic.",
+              },
+            },
+            required: ["topic", "highlights"],
+          },
+          description:
+            "Important meeting topics, each with its own list of highlights.",
+        },
+        error: {
+          type: "string",
+        },
+      },
+    },
+  },
+  {
+    id: "019fa200-0000-4000-8000-000000000004",
+    action: "TELCO:summarize_meeting_by_speaker",
+    label: "Telco",
+    provider: "TELCO",
+    description:
+      "Summarize a meeting into a structured Turkish summary: an overall summary paragraph, the highlights, and the next steps. Receives both the combined transcript and each participant's own recording, so statements and next step owners are attributed to the right speaker",
+    direction: "OUTGOING",
+    lib: "mcp",
+    icon: "mdi:text-box-check",
+    inputSchema: {
+      type: "object",
+      properties: {
+        full_meeting_transcript: {
+          type: "string",
+          description:
+            "Combined transcript from transcribe_meeting, giving the chronological flow of the meeting.",
+        },
+        speaker_transcripts: {
+          type: "array",
+          description:
+            "Each participant's individual transcript, from transcribe_meeting's output. Pass this array through unchanged - it is what makes speaker attribution possible.",
+          items: {
+            type: "object",
+            properties: {
+              id: {
+                type: "string",
+              },
+              transcript: {
+                type: "string",
+              },
+            },
+            required: ["id", "transcript"],
+          },
+        },
+      },
+      required: ["full_meeting_transcript", "speaker_transcripts"],
+    },
+    outputSchema: {
+      type: "object",
+      properties: {
+        summary: {
+          type: "string",
+          description:
+            "A 3-5 sentence paragraph covering the purpose of the meeting, the main topics and how it ended.",
+        },
+        highlights: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              topic: {
+                type: "string",
+                description: "The meeting topic heading.",
+              },
+              highlights: {
+                type: "array",
+                items: {
+                  type: "string",
+                },
+                description:
+                  "The key points, requests, proposals and decisions for this topic.",
+              },
+            },
+            required: ["topic", "highlights"],
+          },
+          description:
+            "Important meeting topics, each with its own list of highlights.",
+        },
+        next_steps: {
+          type: "array",
+          items: {
+            type: "string",
+          },
+          description:
+            "Concrete action items, each as '<owner>, <what they will do>' with the deadline appended when the transcript states one.",
+        },
+        error: {
+          type: "string",
+        },
+      },
+    },
+  },
+  {
+    id: "019fa200-0000-4000-8000-000000000005",
+    action: "TELCO:judge_summary",
+    label: "Telco",
+    provider: "TELCO",
+    description:
+      "Evaluate meeting notes with a Turkish LLM judge prompt. Returns 0-100 scores for the meeting summary, next steps, topics, highlights, overall quality and accuracy, plus a short Turkish justification. Next steps are not evaluated for variant A because that variant does not generate them.",
+    direction: "OUTGOING",
+    lib: "mcp",
+    icon: "mdi:gavel",
+    inputSchema: {
+      type: "object",
+      properties: {
+        transcript: {
+          type: "string",
+          description:
+            "The meeting transcript the notes are judged against. Pass full_meeting_transcript from transcribe_meeting through unchanged.",
+        },
+        summary: {
+          description:
+            "The generated meeting summary text. For backward compatibility, the whole summarization result object is also accepted.",
+        },
+        highlights: {
+          type: "array",
+          description:
+            "The highlights array from the summarization step. Pass it through unchanged so topics and highlights can be evaluated.",
+          items: {
+            type: "object",
+            properties: {
+              topic: {
+                type: "string",
+              },
+              highlights: {
+                type: "array",
+                items: {
+                  type: "string",
+                },
+              },
+            },
+            required: ["topic", "highlights"],
+          },
+        },
+        next_steps: {
+          type: "array",
+          description:
+            "The next_steps array from the summarization step. Required at runtime for variants that generate next steps; omit it for variant A.",
+          items: {
+            type: "string",
+          },
+        },
+        speaker_transcripts: {
+          type: "array",
+          description:
+            "Optional. Each participant's individual transcript from transcribe_meeting. Pass it whenever the summary attributes statements or next steps to specific speakers, so the judge can verify those attributions instead of marking them unsupported - the combined transcript alone carries no speaker labels.",
+          items: {
+            type: "object",
+            properties: {
+              id: {
+                type: "string",
+              },
+              transcript: {
+                type: "string",
+              },
+            },
+            required: ["id", "transcript"],
+          },
+        },
+        variant: {
+          type: "string",
+          description:
+            "Label of the summarization variant being judged (e.g. 'A', 'B'), echoed back in the output.",
+        },
+      },
+      required: ["transcript", "summary", "highlights"],
+    },
+    outputSchema: {
+      type: "object",
+      properties: {
+        variant: {
+          type: "string",
+        },
+        meeting_summary: {
+          type: "number",
+          description:
+            "0-100: how well the meeting summary reflects the purpose, developments, decisions and outcomes.",
+        },
+        next_steps: {
+          type: ["number", "null"],
+          description:
+            "0-100: completeness and accuracy of the next steps. Null for variant A because next steps are not evaluated.",
+        },
+        topics: {
+          type: "number",
+          description:
+            "0-100: completeness and correct organization of the main topics.",
+        },
+        highlights: {
+          type: "number",
+          description:
+            "0-100: whether critical decisions and important points were selected correctly.",
+        },
+        overall: {
+          type: "number",
+          description:
+            "0-100: holistic usability score; it cannot exceed the accuracy score.",
+        },
+        accuracy: {
+          type: "number",
+          description:
+            "0-100: how well the claims in the notes are supported by the transcript and available speaker recordings.",
+        },
+        reasoning: {
+          type: "string",
+          description:
+            "A Turkish evaluation of at most 150 words identifying concrete strengths and weaknesses.",
+        },
+        error: {
+          type: "string",
+        },
+      },
+    },
+  },
+  {
+    id: "019fa200-0000-4000-8000-000000000006",
+    action: "TELCO:prepare_meeting_attachments",
+    label: "Telco",
+    provider: "TELCO",
+    description:
+      "Write the full meeting transcript, each speaker's transcript and the LLM judge's evaluation to .txt files on disk, and return them as a list of email attachment descriptors ({ filename, path }) that can be passed straight to GREY:send_email or GREY:send_email_ews. Meeting audio is NOT attached unless includeAudio is explicitly turned on",
+    direction: "OUTGOING",
+    lib: "mcp",
+    icon: "mdi:paperclip",
+    inputSchema: {
+      type: "object",
+      properties: {
+        directoryPath: {
+          type: "string",
+          description:
+            "Absolute path to the meeting directory containing the .wav files. Transcript .txt files and the audio zip are written into its 'attachments' subdirectory.",
+        },
+        full_meeting_transcript: {
+          type: "string",
+          description:
+            "Combined transcript from transcribe_meeting. Pass through unchanged.",
+        },
+        speaker_transcripts: {
+          type: "array",
+          description:
+            "Each participant's individual transcript from transcribe_meeting. Pass this array through unchanged.",
+          items: {
+            type: "object",
+            properties: {
+              id: {
+                type: "string",
+              },
+              transcript: {
+                type: "string",
+              },
+            },
+            required: ["id", "transcript"],
+          },
+        },
+        participants: {
+          type: "array",
+          description:
+            "Optional participants list from meeting metadata, used to put real names in the transcript file names.",
+          items: {
+            type: "object",
+            properties: {
+              id: {
+                type: "string",
+              },
+              name: {
+                type: "string",
+              },
+            },
+            required: ["id"],
+          },
+        },
+        judgement: {
+          type: "object",
+          description:
+            "The LLM judge's result from TELCO:judge_summary. Pass it through unchanged and it is written to a .txt file and attached alongside the transcripts.",
+          properties: {
+            variant: {
+              type: "string",
+            },
+            meeting_summary: {
+              type: "number",
+            },
+            next_steps: {
+              type: ["number", "null"],
+            },
+            topics: {
+              type: "number",
+            },
+            highlights: {
+              type: "number",
+            },
+            overall: {
+              type: "number",
+            },
+            accuracy: {
+              type: "number",
+            },
+            reasoning: {
+              type: "string",
+            },
+          },
+        },
+        includeAudio: {
+          type: "boolean",
+          description:
+            "Whether to bundle the .wav audio files into meeting-audio.zip and attach it. Defaults to false - meeting audio is not emailed.",
+        },
+        maxTotalBytes: {
+          type: "number",
+          description:
+            "Total attachment size budget in bytes. Attachments that would exceed it are reported in 'skipped' instead of attached. Defaults to 20971520 (20MB).",
+        },
+      },
+      required: ["directoryPath"],
+    },
+    outputSchema: {
+      type: "object",
+      properties: {
+        attachments: {
+          type: "array",
+          description:
+            "Attachment descriptors to pass unchanged to GREY:send_email or GREY:send_email_ews through the 'attachments' parameter.",
+          items: {
+            type: "object",
+            properties: {
+              filename: {
+                type: "string",
+              },
+              path: {
+                type: "string",
+              },
+            },
+          },
+        },
+        audioArchive: {
+          type: "object",
+          description:
+            "Details of the generated audio zip, only present when includeAudio was turned on.",
+          properties: {
+            filename: {
+              type: "string",
+            },
+            entries: {
+              type: "array",
+              items: {
+                type: "string",
+              },
+            },
+            bytes: {
+              type: "number",
+            },
+          },
+        },
+        skipped: {
+          type: "array",
+          description: "Attachments left out because of the size budget.",
+          items: {
+            type: "object",
+            properties: {
+              filename: {
+                type: "string",
+              },
+              reason: {
+                type: "string",
+              },
+            },
+          },
+        },
+        totalBytes: {
+          type: "number",
+        },
+        attachmentsDirectory: {
+          type: "string",
+        },
+        error: {
+          type: "string",
+        },
+      },
+    },
+  },
+  {
+    id: "019fa200-0000-4000-8000-000000000007",
+    action: "TELCO:resolve_participants",
+    label: "Telco",
+    provider: "TELCO",
+    description:
+      "Replace participant IDs with their real names, anywhere they appear (recursively) inside a text transcript or a structured summary object, using a participants list from metadata",
+    direction: "OUTGOING",
+    lib: "mcp",
+    icon: "mdi:account-convert",
+    inputSchema: {
+      type: "object",
+      properties: {
+        content: {
+          description:
+            "The transcript string or structured summary object (e.g. output of summarize_meeting_by_speaker) containing participant IDs to resolve.",
+        },
+        participants: {
+          type: "array",
+          description: "Array of participant objects from meeting metadata.",
+          items: {
+            type: "object",
+            properties: {
+              id: {
+                type: "string",
+              },
+              name: {
+                type: "string",
+              },
+            },
+            required: ["id", "name"],
+          },
+        },
+      },
+      required: ["content", "participants"],
+    },
+    outputSchema: {
+      type: "object",
+      properties: {
+        content: {
+          description:
+            "The same input shape (string or object), with IDs replaced by participant names.",
+        },
+        error: {
+          type: "string",
+        },
+      },
+    },
+  },
 ];
 export default MCPs;

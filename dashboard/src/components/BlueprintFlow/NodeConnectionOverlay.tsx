@@ -154,6 +154,13 @@ export default function NodeConnectionOverlay({
 
       for (const field of targetFields.inputs) {
         if (explicit.has(`${node.id}:${field}`)) continue;
+        if (
+          Object.prototype.hasOwnProperty.call(
+            node.raw?.properties?.parameters ?? {},
+            field
+          )
+        )
+          continue;
 
         for (const parentId of parents) {
           if (nodeFields[parentId]?.outputs.includes(field)) {

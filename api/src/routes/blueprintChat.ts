@@ -125,9 +125,7 @@ router.post("/", async (req, res) => {
     const blueprint = await agentFn.Blueprint({
       history: fullHistory,
       content,
-      existingBlueprint: referenceBlueprint
-        ? blueprintFn.stripDetails(referenceBlueprint)
-        : null,
+      existingBlueprint: referenceBlueprint,
       meta: llmMeta,
     });
 

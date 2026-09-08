@@ -1413,6 +1413,35 @@ function BlueprintFlowWidget({
     setHasLocalChanges(true);
   };
 
+  const handleOverrideParameter = (
+    nodeId: string,
+    field: string,
+    value: unknown
+  ) => {
+    if (readOnly) return;
+    setGraphData((prev) => {
+      const node = prev?.nodes[nodeId];
+      if (!node || node.nodeType !== "NORMAL") return prev;
+      const parameters = { ...node.raw?.properties?.parameters };
+      if (value === undefined) delete parameters[field];
+      else parameters[field] = value;
+      return {
+        ...prev,
+        nodes: {
+          ...prev.nodes,
+          [nodeId]: {
+            ...node,
+            raw: {
+              ...node.raw,
+              properties: { ...node.raw?.properties, parameters },
+            },
+          },
+        },
+      };
+    });
+    setHasLocalChanges(true);
+  };
+
   const handleToggleForceNode = (node: { id: string }) => {
     setGraphData((prev) => {
       if (!prev) return prev;
@@ -1595,6 +1624,7 @@ function BlueprintFlowWidget({
           showConnections={showConnections}
           onConnectParameter={handleConnectParameter}
           onDisconnectParameter={handleDisconnectParameter}
+          onOverrideParameter={handleOverrideParameter}
           onToggleForceNode={handleToggleForceNode}
         />
       )}

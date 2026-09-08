@@ -963,6 +963,55 @@ function sanitizeFlow(flow: unknown[]): unknown[] {
   });
 }
 
+function restoreCosmetics(
+  flow: unknown[],
+  existingNodes?: unknown[],
+): unknown[] {
+  const previous = new Map<string, Record<string, unknown>>();
+
+  for (const node of existingNodes ?? []) {
+    const n = node as Record<string, unknown>;
+    if (typeof n?.id === "string") {
+      previous.set(n.id, (n.properties as Record<string, unknown>) ?? {});
+    }
+  }
+
+  return flow.map((node) => {
+    const n = node as Record<string, unknown>;
+    const props = (n.properties as Record<string, unknown>) ?? {};
+    const previousProps = previous.get(n.id as string) ?? {};
+
+    const label =
+      (typeof props.label === "string" && props.label) ||
+      (typeof previousProps.label === "string" && previousProps.label) ||
+      (typeof props.action === "string" &&
+        props.action.replace(/^PLATFORM:/i, "")) ||
+      (n.id as string);
+
+    const icon =
+      (typeof props.icon === "string" && props.icon) ||
+      (typeof previousProps.icon === "string" && previousProps.icon) ||
+      (n.type === "CONDITION" ? "mdi:source-branch" : "mdi:circle-outline");
+
+    const description =
+      typeof props.description === "string"
+        ? props.description
+        : typeof previousProps.description === "string"
+          ? previousProps.description
+          : undefined;
+
+    return {
+      ...n,
+      properties: {
+        ...props,
+        label,
+        icon,
+        ...(description !== undefined && { description }),
+      },
+    };
+  });
+}
+
 async function Blueprint({
   history,
   content,
@@ -974,16 +1023,20 @@ async function Blueprint({
     content: string;
   }[];
   content: string;
-  existingBlueprint?: object | null;
+  existingBlueprint?: { nodes?: unknown[] } | null;
   meta?: LLMMeta;
 }) {
+  const blueprintForLLM = existingBlueprint
+    ? blueprintFn.stripDetails(existingBlueprint)
+    : null;
+
   const context = [
-    ...(existingBlueprint
+    ...(blueprintForLLM
       ? [
           {
             role: "system" as const,
             content: {
-              existingBlueprint,
+              existingBlueprint: blueprintForLLM,
             },
           },
         ]
@@ -1000,7 +1053,10 @@ async function Blueprint({
   });
 
   if (Array.isArray(response.flow)) {
-    response.flow = sanitizeFlow(response.flow);
+    response.flow = restoreCosmetics(
+      sanitizeFlow(response.flow),
+      existingBlueprint?.nodes,
+    );
   }
 
   return response;

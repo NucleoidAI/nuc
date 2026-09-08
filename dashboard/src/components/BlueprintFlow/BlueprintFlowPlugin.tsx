@@ -1,3 +1,4 @@
+import NodeInputOverride from "./NodeInputOverride";
 import {
   Divider,
   ListItemIcon,
@@ -710,7 +711,14 @@ type FlowGraphNode = import("./helper").DefinitionGraphNode & {
   [key: string]: unknown;
 };
 
-export type NodeFields = { inputs: string[]; outputs: string[] };
+export type NodeFields = {
+  inputs: string[];
+  outputs: string[];
+  inputProperties?: Record<
+    string,
+    { type: string; description?: string; nullable?: boolean }
+  >;
+};
 
 const FIELDS_PANEL_ROW_HEIGHT = 2;
 const FIELDS_PANEL_ROW_GAP = 2;
@@ -854,11 +862,13 @@ function NodeHandles({
   boundFields,
   hasForceNode,
   onHandleDragStart,
+  onOverrideParameter,
 }: {
   node: FlowGraphNode;
   fields: NodeFields;
   boundFields?: Set<string>;
   hasForceNode?: boolean;
+  onOverrideParameter?: (nodeId: string, field: string, value: unknown) => void;
   onHandleDragStart?: (
     nodeId: string,
     field: string,
@@ -894,7 +904,18 @@ function NodeHandles({
                 {...(isForceTarget && { title: `Input: ${field}` })}
               />
               <FieldLabel align="left" bound={bound} title={field}>
-                {field}
+                {onOverrideParameter && fields.inputProperties?.[field] ? (
+                  <NodeInputOverride
+                    field={field}
+                    schema={fields.inputProperties[field]}
+                    parameters={node.raw?.properties?.parameters ?? {}}
+                    onChange={(value) =>
+                      onOverrideParameter(node.id, field, value)
+                    }
+                  />
+                ) : (
+                  field
+                )}
               </FieldLabel>
             </FieldRow>
           );
@@ -957,6 +978,11 @@ function FlowNodeRenderer({
       e: React.MouseEvent
     ) => void;
     onToggleForce?: (node: FlowGraphNode) => void;
+    onOverrideParameter?: (
+      nodeId: string,
+      field: string,
+      value: unknown
+    ) => void;
     [key: string]: unknown;
   };
 }) {
@@ -971,6 +997,7 @@ function FlowNodeRenderer({
     hasForceNode,
     onHandleDragStart,
     onToggleForce,
+    onOverrideParameter,
   } = nodeStyle || {};
   const fields = node.nodeType === "NORMAL" ? nodeFields?.[node.id] : undefined;
   const isForceNode = Boolean(
@@ -1045,6 +1072,7 @@ function FlowNodeRenderer({
             boundFields={boundFieldsByNode?.[node.id]}
             hasForceNode={hasForceNode}
             onHandleDragStart={onHandleDragStart}
+            onOverrideParameter={isReadOnly ? undefined : onOverrideParameter}
           />
         )}
       <HighlightOverlay

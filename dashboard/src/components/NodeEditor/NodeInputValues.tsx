@@ -1,4 +1,6 @@
+import MarkdownRenderer from "../MarkdownRenderer/MarkdownRenderer";
 import { isRefValue } from "../BlueprintFlow/helper";
+import { useState } from "react";
 import { Box, MenuItem, Stack, TextField, Typography } from "@mui/material";
 
 type InputSchema = { type: string; description?: string; nullable?: boolean };
@@ -69,11 +71,14 @@ export default function NodeInputValues({
   properties,
   parameters,
   onChange,
+  menuZIndexOffset = 3,
 }: {
   properties: Record<string, InputSchema>;
   parameters: Record<string, unknown>;
   onChange: (parameters: Record<string, unknown>) => void;
+  menuZIndexOffset?: number;
 }) {
+  const [editingField, setEditingField] = useState<string | null>(null);
   if (!Object.keys(properties).length) return null;
   return (
     <Stack spacing={2} sx={{ mb: 2 }}>
@@ -105,7 +110,9 @@ export default function NodeInputValues({
               select
               SelectProps={{
                 MenuProps: {
-                  sx: { zIndex: (theme) => theme.zIndex.modal + 3 },
+                  sx: {
+                    zIndex: (theme) => theme.zIndex.modal + menuZIndexOffset,
+                  },
                 },
               }}
               size="small"
@@ -127,39 +134,96 @@ export default function NodeInputValues({
             {isReference && (
               <Typography variant="caption">{value.$ref}</Typography>
             )}
-            {mode === "fixed" && (
-              <TextField
-                size="small"
-                label={`${field} value`}
-                select={schema.type === "boolean"}
-                SelectProps={{
-                  MenuProps: {
-                    sx: { zIndex: (theme) => theme.zIndex.modal + 3 },
-                  },
-                }}
-                multiline={schema.type === "object" || schema.type === "array"}
-                value={
-                  typeof value === "string" ? value : JSON.stringify(value)
-                }
-                error={Boolean(error)}
-                helperText={error || schema.description}
-                onChange={(event) =>
-                  onChange({
-                    ...parameters,
-                    [field]: parseInput(event.target.value, schema.type),
-                  })
-                }
-              >
-                {schema.type === "boolean" && [
-                  <MenuItem key="true" value="true">
-                    true
-                  </MenuItem>,
-                  <MenuItem key="false" value="false">
-                    false
-                  </MenuItem>,
-                ]}
-              </TextField>
-            )}
+            {mode === "fixed" &&
+              (schema.type !== "string" ||
+                editingField === field ||
+                Boolean(error)) && (
+                <TextField
+                  autoFocus={schema.type === "string"}
+                  onBlur={() => setEditingField(null)}
+                  size="small"
+                  label={`${field} value`}
+                  select={schema.type === "boolean"}
+                  SelectProps={{
+                    MenuProps: {
+                      sx: {
+                        zIndex: (theme) =>
+                          theme.zIndex.modal + menuZIndexOffset,
+                      },
+                    },
+                  }}
+                  multiline={
+                    schema.type === "string" ||
+                    schema.type === "object" ||
+                    schema.type === "array"
+                  }
+                  value={
+                    typeof value === "string" ? value : JSON.stringify(value)
+                  }
+                  error={Boolean(error)}
+                  helperText={error || schema.description}
+                  onChange={(event) =>
+                    onChange({
+                      ...parameters,
+                      [field]: parseInput(event.target.value, schema.type),
+                    })
+                  }
+                >
+                  {schema.type === "boolean" && [
+                    <MenuItem key="true" value="true">
+                      true
+                    </MenuItem>,
+                    <MenuItem key="false" value="false">
+                      false
+                    </MenuItem>,
+                  ]}
+                </TextField>
+              )}
+            {mode === "fixed" &&
+              schema.type === "string" &&
+              editingField !== field &&
+              !error &&
+              typeof value === "string" && (
+                <Box
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Edit ${field} value`}
+                  title="Click to edit"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    setEditingField(field);
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      setEditingField(field);
+                    }
+                  }}
+                  sx={{
+                    border: 1,
+                    borderColor: "divider",
+                    borderRadius: 1,
+                    p: 1.5,
+                    minWidth: 0,
+                    minHeight: 56,
+                    cursor: "text",
+                    "&:hover": { borderColor: "text.primary" },
+                    "&:focus-visible": {
+                      outline: "2px solid",
+                      outlineColor: "primary.main",
+                    },
+                  }}
+                >
+                  <MarkdownRenderer
+                    sx={{
+                      overflowWrap: "anywhere",
+                      overflowX: "auto",
+                    }}
+                  >
+                    {value.trim() ? value : "Click to enter a value"}
+                  </MarkdownRenderer>
+                </Box>
+              )}
           </Stack>
         );
       })}

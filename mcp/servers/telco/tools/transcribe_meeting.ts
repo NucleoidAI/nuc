@@ -8,7 +8,7 @@ import path from "path";
 const MOCK = false;
 
 const POLL_INTERVAL_MS = 3_000;
-const POLL_TIMEOUT_MS = 10 * 60_000;
+const POLL_TIMEOUT_MS = 9 * 60_000;
 const MAX_CONSECUTIVE_SERVER_ERRORS = 5;
 
 const MIX_FILE_STEM = "meeting-audio";

@@ -17,7 +17,13 @@ class McpClient {
 
   async connectToServer({ env = {} }: { env?: Record<string, string> } = {}) {
     try {
-      const serverPath = path.join(path.dirname(process.cwd()), 'mcp', 'servers', this.name, 'index.ts');
+      const serverPath = path.join(
+        path.dirname(process.cwd()),
+        "mcp",
+        "servers",
+        this.name,
+        "index.ts",
+      );
       this.transport = new StdioClientTransport({
         command: "bun",
         args: [serverPath],
@@ -36,7 +42,7 @@ class McpClient {
       }));
       console.log(
         "Connected to server with tools:",
-        tools.map(({ name }) => name)
+        tools.map(({ name }) => name),
       );
     } catch (e) {
       this.isConnected = false;
@@ -63,10 +69,14 @@ class McpClient {
 
   async callTool(toolName: string, params: any) {
     this.ensureConnected();
-    return this.mcp.callTool({
-      name: toolName,
-      arguments: params,
-    });
+    return this.mcp.callTool(
+      {
+        name: toolName,
+        arguments: params,
+      },
+      CallToolResultSchema,
+      { timeout: 10 * 60_000 },
+    );
   }
 
   async listTools(params = undefined, options = undefined) {

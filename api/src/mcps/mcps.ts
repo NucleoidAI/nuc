@@ -8760,7 +8760,7 @@ const MCPs = [
       "Transcribe WAV audio files in a directory with the self-hosted ASR service, write each transcript as a .txt file next to the audio, and return the individual and combined transcripts. Speaker recordings can be skipped when only the mixed meeting transcript is needed. Existing .txt files in the directory are reused, so re-running on the same meeting does not transcribe a second time.",
     direction: "OUTGOING",
     lib: "mcp",
-    icon: "mdi:microphone-multiple",
+    icon: "mdi:account-voice",
     inputSchema: {
       type: "object",
       properties: {

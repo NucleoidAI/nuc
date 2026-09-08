@@ -374,7 +374,7 @@
             "action": "TELCO:transcribe_meeting",
             "description": "Transcribe only meeting-audio.wav with the self-hosted ASR service. Skip participant recordings because Variant A does not use speaker transcripts. The transcript is cached as a .txt file next to the audio",
             "label": "Transcribe Meeting",
-            "icon": "mdi:microphone-multiple"
+            "icon": "mdi:account-voice"
           },
           "next": ["019fa100-0003-4000-8000-000000000001"],
           "createdAt": "2026-08-20T10:00:00Z"

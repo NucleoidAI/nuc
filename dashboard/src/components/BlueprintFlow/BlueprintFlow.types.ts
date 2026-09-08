@@ -37,4 +37,5 @@ export interface BlueprintFlowProps {
   onConnectParameter?: (binding: ParameterBinding) => void;
   onDisconnectParameter?: (targetNodeId: string, targetField: string) => void;
   onToggleForceNode?: (node: { id: string }) => void;
+  liteMode?: boolean;
 }

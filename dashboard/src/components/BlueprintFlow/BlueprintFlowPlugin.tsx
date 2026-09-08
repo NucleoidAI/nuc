@@ -9,6 +9,8 @@ import { Iconify, InfoNode } from "@canmingir/link/platform/components";
 import React, { useState } from "react";
 import { alpha, styled } from "@mui/material/styles";
 
+const FORCE_COLOR = "#b8860b";
+
 const AddButtonWrapper = styled("div")(({ theme }) => ({
   position: "absolute",
   top: "8px",
@@ -74,6 +76,25 @@ const EditButtonWrapper = styled("div")(({ theme }) => ({
     boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
     color: theme.palette?.primary.main,
   },
+}));
+
+const ForceIndicatorWrapper = styled("div", {
+  shouldForwardProp: (prop) => prop !== "readonly",
+})<{ readonly?: boolean }>(({ theme, readonly }) => ({
+  position: "absolute",
+  top: "8px",
+  right: readonly ? "8px" : "72px",
+  width: "24px",
+  height: "24px",
+  borderRadius: "50%",
+  backgroundColor: theme.palette?.background?.paper || "#fff",
+  color: FORCE_COLOR,
+  border: `1px solid ${FORCE_COLOR}`,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+  zIndex: 10,
 }));
 
 const HighlightOverlay = styled("div")<{
@@ -554,8 +575,6 @@ const SuperviseNeededBadge = styled("div")(({ theme }) => {
   };
 });
 
-const FORCE_COLOR = "#b8860b";
-
 const ForceBadge = styled("div")(({ theme }) => ({
   position: "absolute",
   top: "-13px",
@@ -580,10 +599,8 @@ const ForceBadge = styled("div")(({ theme }) => ({
   zIndex: 6,
 }));
 
-const NodeWrapper = styled("div", {
-  shouldForwardProp: (prop) => prop !== "isforce",
-})<{ isforce?: boolean }>(({ isforce }) => {
-  const stepColor = isforce ? FORCE_COLOR : "#174f77";
+const NodeWrapper = styled("div")(() => {
+  const stepColor = "#174f77";
   const steppedShadow = `
     1px 1px 0 ${stepColor},
     2px 2px 0 ${stepColor},
@@ -957,6 +974,7 @@ function FlowNodeRenderer({
       e: React.MouseEvent
     ) => void;
     onToggleForce?: (node: FlowGraphNode) => void;
+    liteMode?: boolean;
     [key: string]: unknown;
   };
 }) {
@@ -971,6 +989,7 @@ function FlowNodeRenderer({
     hasForceNode,
     onHandleDragStart,
     onToggleForce,
+    liteMode,
   } = nodeStyle || {};
   const fields = node.nodeType === "NORMAL" ? nodeFields?.[node.id] : undefined;
   const isForceNode = Boolean(
@@ -1025,12 +1044,19 @@ function FlowNodeRenderer({
 
   return (
     <NodeWrapper
-      isforce={isForceNode}
       title={isForceNode ? "Force node: action is guaranteed" : undefined}
       onContextMenu={handleContextMenu}
       onMouseDownCapture={handleMouseDownCapture}
     >
-      {isForceNode && (
+      {isForceNode && isReadOnly && (
+        <ForceIndicatorWrapper
+          readonly
+          title="Force node: action is guaranteed"
+        >
+          <Iconify icon="mdi:lightning-bolt" width={16} height={16} />
+        </ForceIndicatorWrapper>
+      )}
+      {isForceNode && !liteMode && changeType && changeType !== "unchanged" && (
         <ForceBadge>
           <Iconify icon="mdi:lightning-bolt" width={11} height={11} />
           force
@@ -1095,6 +1121,11 @@ function FlowNodeRenderer({
             <EditButtonWrapper onClick={handleEditClick} title="Edit node">
               <Iconify icon="mdi:pencil" width={16} height={16} />
             </EditButtonWrapper>
+            {isForceNode && (
+              <ForceIndicatorWrapper title="Force node: action is guaranteed">
+                <Iconify icon="mdi:lightning-bolt" width={16} height={16} />
+              </ForceIndicatorWrapper>
+            )}
             <AddButtonWrapper onClick={handleAddClick} title="Add child node">
               <Iconify icon="mdi:plus" width={16} height={16} />
             </AddButtonWrapper>

@@ -8,6 +8,7 @@ import Supervising from "../models/Supervising";
 import agentFn from "../functions/agent";
 import { event } from "node-event-test-package/client";
 import express from "express";
+import mcpServer from "../functions/mcpServer";
 import schemas from "../schemas";
 
 const router = express.Router();
@@ -246,6 +247,75 @@ router.get("/:agentId/blueprints", async (req, res) => {
   const blueprints = await BlueprintModel.findAll({ where: { agentId } });
 
   res.json(blueprints);
+});
+
+router.get("/:agentId/mcp-servers", async (req, res) => {
+  const { projectId: sessionTeamId } = req.session;
+  const { agentId } = req.params;
+
+  await mcpServer.assertScopeBelongsToTeam({ agentId, sessionTeamId });
+
+  const servers = await mcpServer.listServers({ agentId });
+
+  res.json(servers);
+});
+
+router.put("/:agentId/mcp-servers/:serverId", async (req, res) => {
+  const { projectId: sessionTeamId } = req.session;
+  const { agentId, serverId } = req.params;
+
+  await mcpServer.assertScopeBelongsToTeam({ agentId, sessionTeamId });
+
+  const assignment = await mcpServer.assign({ serverId, agentId });
+
+  res.json(assignment);
+});
+
+router.delete("/:agentId/mcp-servers/:serverId", async (req, res) => {
+  const { projectId: sessionTeamId } = req.session;
+  const { agentId, serverId } = req.params;
+
+  await mcpServer.assertScopeBelongsToTeam({ agentId, sessionTeamId });
+
+  await mcpServer.unassign({ serverId, agentId });
+
+  res.status(204).end();
+});
+
+router.get("/:agentId/mcp-servers/:serverId/envs", async (req, res) => {
+  const { projectId: sessionTeamId } = req.session;
+  const { agentId, serverId } = req.params;
+
+  await mcpServer.assertScopeBelongsToTeam({ agentId, sessionTeamId });
+  await mcpServer.getServer({ serverId });
+
+  const envs = await mcpServer.listEnvs({ serverId, agentId });
+
+  res.json(envs);
+});
+
+router.put("/:agentId/mcp-servers/:serverId/envs/:key", async (req, res) => {
+  const { projectId: sessionTeamId } = req.session;
+  const { agentId, serverId, key } = req.params;
+  const { value } = Joi.attempt(req.body, schemas.MCPServer.env.set);
+
+  await mcpServer.assertScopeBelongsToTeam({ agentId, sessionTeamId });
+  await mcpServer.getServer({ serverId });
+
+  const env = await mcpServer.setEnv({ serverId, key, value, agentId });
+
+  res.json(env);
+});
+
+router.delete("/:agentId/mcp-servers/:serverId/envs/:key", async (req, res) => {
+  const { projectId: sessionTeamId } = req.session;
+  const { agentId, serverId, key } = req.params;
+
+  await mcpServer.assertScopeBelongsToTeam({ agentId, sessionTeamId });
+
+  await mcpServer.deleteEnv({ serverId, key, agentId });
+
+  res.status(204).end();
 });
 
 export default router;

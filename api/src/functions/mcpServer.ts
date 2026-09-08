@@ -9,6 +9,7 @@ import MCPProvider from "../models/MCPProvider";
 import MCPServer from "../models/MCPServer";
 import MCPServerAssignment from "../models/MCPServerAssignment";
 import MCPServerEnv from "../models/MCPServerEnv";
+import { Op } from "sequelize";
 
 type Scope = {
   teamId?: string | null;
@@ -151,22 +152,24 @@ async function assign({
   return MCPServerAssignment.create({ serverId, teamId, agentId });
 }
 
-async function getAssignment({
+async function unassign({
   serverId,
-  assignmentId,
-}: {
-  serverId: string;
-  assignmentId: string;
-}) {
+  teamId,
+  agentId,
+}: { serverId: string } & Scope) {
   const assignment = await MCPServerAssignment.findOne({
-    where: { id: assignmentId, serverId },
+    where: {
+      serverId,
+      teamId: teamId ?? null,
+      agentId: agentId ?? null,
+    },
   });
 
   if (!assignment) {
     throw new NotFoundError();
   }
 
-  return assignment;
+  await assignment.destroy();
 }
 
 async function listAssignments({ serverId }: { serverId: string }) {
@@ -232,6 +235,51 @@ async function setEnv({
   return MCPServerEnv.create({ serverId, key, value, teamId, agentId });
 }
 
+async function listEnvs({
+  serverId,
+  teamId,
+  agentId,
+}: { serverId: string } & Scope) {
+  const agentInstance = agentId ? await Agent.findByPk(agentId) : null;
+  const scopedTeamId = agentId ? agentInstance?.teamId ?? null : teamId ?? null;
+
+  const scopes: Record<string, unknown>[] = [];
+
+  if (scopedTeamId) {
+    scopes.push({ teamId: scopedTeamId, agentId: null });
+  }
+
+  if (agentId) {
+    scopes.push({ agentId });
+  }
+
+  return MCPServerEnv.findAll({
+    where: { serverId, [Op.or]: scopes },
+  });
+}
+
+async function deleteEnv({
+  serverId,
+  key,
+  teamId,
+  agentId,
+}: { serverId: string; key: string } & Scope) {
+  const env = await MCPServerEnv.findOne({
+    where: {
+      serverId,
+      key,
+      teamId: teamId ?? null,
+      agentId: agentId ?? null,
+    },
+  });
+
+  if (!env) {
+    throw new NotFoundError();
+  }
+
+  await env.destroy();
+}
+
 async function resolveEnv({
   serverId,
   teamId,
@@ -250,11 +298,13 @@ export default {
   assertScopeBelongsToTeam,
   assign,
   createServer,
+  deleteEnv,
   getServer,
-  getAssignment,
   listAssignments,
+  listEnvs,
   listServers,
   listTools,
   resolveEnv,
   setEnv,
+  unassign,
 };

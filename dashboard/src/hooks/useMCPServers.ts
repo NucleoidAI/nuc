@@ -45,8 +45,8 @@ export type MCPTool = {
   direction: "INCOMING" | "OUTGOING";
 };
 
-function scopeQuery({ teamId, agentId }: MCPScope): string {
-  return agentId ? `agentId=${agentId}` : `teamId=${teamId}`;
+function scopePath({ teamId, agentId }: MCPScope): string {
+  return agentId ? `/agents/${agentId}` : `/projects/${teamId}`;
 }
 
 function useMCPServers() {
@@ -61,7 +61,7 @@ function useMCPServers() {
 
   const getAssignedServers = useCallback((scope: MCPScope) => {
     const { data, loading, error, fetch } = Api(
-      () => http.get(`/mcp-servers?${scopeQuery(scope)}`),
+      () => http.get(`${scopePath(scope)}/mcp-servers`),
       [scope.teamId, scope.agentId]
     );
 
@@ -89,25 +89,20 @@ function useMCPServers() {
 
   const assign = async ({
     serverId,
-    teamId,
-    agentId,
+    ...scope
   }: { serverId: string } & MCPScope) => {
-    const response = await http.post(`/mcp-servers/${serverId}/assignments`, {
-      teamId: agentId ? undefined : teamId,
-      agentId,
-    });
+    const response = await http.put(
+      `${scopePath(scope)}/mcp-servers/${serverId}`
+    );
 
     return response.data as MCPServerAssignment;
   };
 
   const unassign = async ({
     serverId,
-    assignmentId,
-  }: {
-    serverId: string;
-    assignmentId: string;
-  }) => {
-    await http.delete(`/mcp-servers/${serverId}/assignments/${assignmentId}`);
+    ...scope
+  }: { serverId: string } & MCPScope) => {
+    await http.delete(`${scopePath(scope)}/mcp-servers/${serverId}`);
   };
 
   const listTools = async (serverId: string) => {
@@ -116,42 +111,44 @@ function useMCPServers() {
     return response.data as MCPTool[];
   };
 
-  const listEnvs = async (serverId: string) => {
-    const response = await http.get(`/mcp-servers/${serverId}/envs`);
+  const listEnvs = async (serverId: string, scope: MCPScope) => {
+    const response = await http.get(
+      `${scopePath(scope)}/mcp-servers/${serverId}/envs`
+    );
 
     return response.data as MCPServerEnv[];
   };
 
-  const createEnv = async ({
+  const setEnv = async ({
     serverId,
     key,
     value,
-    teamId,
-    agentId,
+    ...scope
   }: { serverId: string; key: string; value: string } & MCPScope) => {
-    const response = await http.post(`/mcp-servers/${serverId}/envs`, {
-      key,
-      value,
-      teamId: agentId ? undefined : teamId,
-      agentId,
-    });
+    const response = await http.put(
+      `${scopePath(scope)}/mcp-servers/${serverId}/envs/${encodeURIComponent(
+        key
+      )}`,
+      { value }
+    );
 
     return response.data as MCPServerEnv;
   };
 
   const deleteEnv = async ({
     serverId,
-    envId,
-  }: {
-    serverId: string;
-    envId: string;
-  }) => {
-    await http.delete(`/mcp-servers/${serverId}/envs/${envId}`);
+    key,
+    ...scope
+  }: { serverId: string; key: string } & MCPScope) => {
+    await http.delete(
+      `${scopePath(scope)}/mcp-servers/${serverId}/envs/${encodeURIComponent(
+        key
+      )}`
+    );
   };
 
   return {
     assign,
-    createEnv,
     deleteEnv,
     getAllServers,
     getAssignedServers,
@@ -159,6 +156,7 @@ function useMCPServers() {
     listAssignments,
     listEnvs,
     listTools,
+    setEnv,
     unassign,
   };
 }

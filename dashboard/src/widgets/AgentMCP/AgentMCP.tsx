@@ -37,13 +37,13 @@ const AgentMCP = ({ agent }: { agent?: { id: string; name: string } }) => {
 
   const {
     assign,
-    createEnv,
     deleteEnv,
     getAllServers,
     getAssignedServers,
     getProviders,
     listEnvs,
     listTools,
+    setEnv,
   } = useMCPServers();
 
   const { providers } = getProviders();
@@ -132,7 +132,7 @@ const AgentMCP = ({ agent }: { agent?: { id: string; name: string } }) => {
   const loadServerConfig = async (serverId: string) => {
     const [serverTools, serverEnvs] = await Promise.all([
       listTools(serverId),
-      listEnvs(serverId),
+      listEnvs(serverId, scope),
     ]);
 
     setTools(serverTools);
@@ -325,11 +325,11 @@ const AgentMCP = ({ agent }: { agent?: { id: string; name: string } }) => {
           tools={tools}
           envs={envs}
           onCreateEnv={async (entry) => {
-            await createEnv({ serverId: activeServer.id, ...entry, ...scope });
+            await setEnv({ serverId: activeServer.id, ...entry, ...scope });
             await loadServerConfig(activeServer.id);
           }}
-          onDeleteEnv={async (envId) => {
-            await deleteEnv({ serverId: activeServer.id, envId });
+          onDeleteEnv={async (key) => {
+            await deleteEnv({ serverId: activeServer.id, key, ...scope });
             await loadServerConfig(activeServer.id);
           }}
         />

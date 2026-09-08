@@ -71,13 +71,16 @@ const MCPServerDrawer = ({
   tools: MCPTool[];
   envs: MCPServerEnv[];
   onCreateEnv: (entry: { key: string; value: string }) => Promise<void>;
-  onDeleteEnv: (envId: string) => Promise<void>;
+  onDeleteEnv: (key: string) => Promise<void>;
 }) => {
   const [tab, setTab] = React.useState(0);
   const [envKey, setEnvKey] = React.useState("");
   const [envValue, setEnvValue] = React.useState("");
 
   const scopeName = scope.agentId ? "agent" : "team";
+
+  const ownedByScope = (env: MCPServerEnv) =>
+    scope.agentId ? env.agentId === scope.agentId : env.teamId === scope.teamId;
 
   const handleAddEnv = async () => {
     await onCreateEnv({ key: envKey.trim(), value: envValue });
@@ -201,7 +204,8 @@ const MCPServerDrawer = ({
                   <TableCell align="right">
                     <IconButton
                       size="small"
-                      onClick={() => onDeleteEnv(env.id)}
+                      disabled={!ownedByScope(env)}
+                      onClick={() => onDeleteEnv(env.key)}
                     >
                       <Icon icon="mdi:delete-outline" width="18" height="18" />
                     </IconButton>

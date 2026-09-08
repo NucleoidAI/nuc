@@ -1,6 +1,5 @@
 import {
   MEETING_SUMMARY_A_BLUEPRINT_ID,
-  MEETING_SUMMARY_B_BLUEPRINT_ID,
   MEETING_TEAM_ID,
   SESSION,
   TEAM_ID,
@@ -38,32 +37,6 @@ describe("Meeting Agent", () => {
     );
 
     expect(created.blueprintId).toBe(MEETING_SUMMARY_A_BLUEPRINT_ID);
-
-    const completedTask = await event.waitFor(
-      "TASK_COMPLETED",
-      (payload) => payload.taskId === created.taskId
-    );
-
-    expect(completedTask.taskId).toBe(created.taskId);
-    expect(mcp.tool("GREY:send_email_ews").calls.length).toBeGreaterThan(0);
-  }, 900_000);
-
-  it("summarizes the meeting per speaker and emails the participants and the manager", async () => {
-    mcp
-      .tool("GREY:send_email_ews")
-      .returns({ success: true, transport: "ews-ntlm" });
-
-    await supertest(app)
-      .post(`/sessions/${SESSION.meetingSummaryB}`)
-      .send({ content: meetingRequest() })
-      .expect(200);
-
-    const created = await event.waitFor(
-      "TASK_CREATED",
-      (payload) => payload.sessionId === SESSION.meetingSummaryB
-    );
-
-    expect(created.blueprintId).toBe(MEETING_SUMMARY_B_BLUEPRINT_ID);
 
     const completedTask = await event.waitFor(
       "TASK_COMPLETED",

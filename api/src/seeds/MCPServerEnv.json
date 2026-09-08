@@ -357,7 +357,7 @@
       "id": "019f9c01-0000-4000-8000-000000000053",
       "serverId": "telco",
       "key": "EWS_URL",
-      "value": "https://mail.example.com/EWS/Exchange.asmx",
+      "value": "https://ews.test/EWS/Exchange.asmx",
       "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
       "agentId": null
     },
@@ -365,7 +365,7 @@
       "id": "019f9c01-0000-4000-8000-000000000054",
       "serverId": "telco",
       "key": "EWS_URL",
-      "value": "https://mail.example.com/EWS/Exchange.asmx",
+      "value": "https://ews.test/EWS/Exchange.asmx",
       "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
       "agentId": null
     },
@@ -373,7 +373,7 @@
       "id": "019f9c01-0000-4000-8000-000000000055",
       "serverId": "telco",
       "key": "EWS_URL",
-      "value": "https://mail.example.com/EWS/Exchange.asmx",
+      "value": "https://ews.test/EWS/Exchange.asmx",
       "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
       "agentId": null
     },
@@ -381,7 +381,7 @@
       "id": "019f9c01-0000-4000-8000-000000000056",
       "serverId": "telco",
       "key": "EWS_URL",
-      "value": "https://mail.example.com/EWS/Exchange.asmx",
+      "value": "https://ews.test/EWS/Exchange.asmx",
       "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
       "agentId": null
     },
@@ -389,7 +389,7 @@
       "id": "019f9c01-0000-4000-8000-000000000057",
       "serverId": "telco",
       "key": "EWS_USER",
-      "value": "DOMAIN\\username",
+      "value": "GREYTEST\\ews-test",
       "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
       "agentId": null
     },
@@ -397,7 +397,7 @@
       "id": "019f9c01-0000-4000-8000-000000000058",
       "serverId": "telco",
       "key": "EWS_USER",
-      "value": "DOMAIN\\username",
+      "value": "GREYTEST\\ews-test",
       "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
       "agentId": null
     },
@@ -405,7 +405,7 @@
       "id": "019f9c01-0000-4000-8000-000000000059",
       "serverId": "telco",
       "key": "EWS_USER",
-      "value": "DOMAIN\\username",
+      "value": "GREYTEST\\ews-test",
       "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
       "agentId": null
     },
@@ -413,7 +413,7 @@
       "id": "019f9c01-0000-4000-8000-000000000060",
       "serverId": "telco",
       "key": "EWS_USER",
-      "value": "DOMAIN\\username",
+      "value": "GREYTEST\\ews-test",
       "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
       "agentId": null
     },
@@ -421,7 +421,7 @@
       "id": "019f9c01-0000-4000-8000-000000000061",
       "serverId": "telco",
       "key": "EWS_PASS",
-      "value": "changeme",
+      "value": "greycollar-ews-test-only",
       "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
       "agentId": null
     },
@@ -429,7 +429,7 @@
       "id": "019f9c01-0000-4000-8000-000000000062",
       "serverId": "telco",
       "key": "EWS_PASS",
-      "value": "changeme",
+      "value": "greycollar-ews-test-only",
       "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
       "agentId": null
     },
@@ -437,7 +437,7 @@
       "id": "019f9c01-0000-4000-8000-000000000063",
       "serverId": "telco",
       "key": "EWS_PASS",
-      "value": "changeme",
+      "value": "greycollar-ews-test-only",
       "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
       "agentId": null
     },
@@ -445,7 +445,7 @@
       "id": "019f9c01-0000-4000-8000-000000000064",
       "serverId": "telco",
       "key": "EWS_PASS",
-      "value": "changeme",
+      "value": "greycollar-ews-test-only",
       "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
       "agentId": null
     },
@@ -453,7 +453,7 @@
       "id": "019f9c01-0000-4000-8000-000000000065",
       "serverId": "telco",
       "key": "EWS_MAILBOX",
-      "value": "noreply@example.com",
+      "value": "ews-test@example.test",
       "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
       "agentId": null
     },
@@ -461,7 +461,7 @@
       "id": "019f9c01-0000-4000-8000-000000000066",
       "serverId": "telco",
       "key": "EWS_MAILBOX",
-      "value": "noreply@example.com",
+      "value": "ews-test@example.test",
       "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
       "agentId": null
     },
@@ -469,7 +469,7 @@
       "id": "019f9c01-0000-4000-8000-000000000067",
       "serverId": "telco",
       "key": "EWS_MAILBOX",
-      "value": "noreply@example.com",
+      "value": "ews-test@example.test",
       "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
       "agentId": null
     },
@@ -477,7 +477,7 @@
       "id": "019f9c01-0000-4000-8000-000000000068",
       "serverId": "telco",
       "key": "EWS_MAILBOX",
-      "value": "noreply@example.com",
+      "value": "ews-test@example.test",
       "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
       "agentId": null
     },
@@ -510,6 +510,102 @@
       "serverId": "telco",
       "key": "EWS_FROM",
       "value": "noreply@example.com",
+      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000073",
+      "serverId": "telco",
+      "key": "ASR_ENDPOINT_URL",
+      "value": "https://openrouter.ai/api/v1",
+      "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000074",
+      "serverId": "telco",
+      "key": "ASR_ENDPOINT_URL",
+      "value": "https://openrouter.ai/api/v1",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000075",
+      "serverId": "telco",
+      "key": "ASR_ENDPOINT_URL",
+      "value": "https://openrouter.ai/api/v1",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000076",
+      "serverId": "telco",
+      "key": "ASR_ENDPOINT_URL",
+      "value": "https://openrouter.ai/api/v1",
+      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000077",
+      "serverId": "telco",
+      "key": "ASR_API_KEY",
+      "value": "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",
+      "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000078",
+      "serverId": "telco",
+      "key": "ASR_API_KEY",
+      "value": "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",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000079",
+      "serverId": "telco",
+      "key": "ASR_API_KEY",
+      "value": "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",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000080",
+      "serverId": "telco",
+      "key": "ASR_API_KEY",
+      "value": "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",
+      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000081",
+      "serverId": "telco",
+      "key": "EWS_MOCK",
+      "value": "true",
+      "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000082",
+      "serverId": "telco",
+      "key": "EWS_MOCK",
+      "value": "true",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000083",
+      "serverId": "telco",
+      "key": "EWS_MOCK",
+      "value": "true",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "agentId": null
+    },
+    {
+      "id": "019f9c01-0000-4000-8000-000000000084",
+      "serverId": "telco",
+      "key": "EWS_MOCK",
+      "value": "true",
       "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
       "agentId": null
     }

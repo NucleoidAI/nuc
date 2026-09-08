@@ -178,11 +178,21 @@ export const sendEmailEwsTool: Tool<any> = {
       const user = process.env.EWS_USER;
       const pass = process.env.EWS_PASS;
       const mailbox = process.env.EWS_MAILBOX;
+      const mock = process.env.EWS_MOCK === "true";
 
       if (!serviceUrl) throw new Error("EWS_URL is not set");
       if (!user) throw new Error("EWS_USER is not set");
       if (!pass) throw new Error("EWS_PASS is not set");
       if (!mailbox) throw new Error("EWS_MAILBOX is not set");
+      if (
+        mock &&
+        (serviceUrl !== "https://ews.test/EWS/Exchange.asmx" ||
+          user !== "GREYTEST\\ews-test" ||
+          pass !== "greycollar-ews-test-only" ||
+          mailbox !== "ews-test@example.test")
+      ) {
+        throw new Error("EWS mock credentials do not match the documented test configuration");
+      }
       if (!subject)
         throw new Error("subject is required when template is not set");
       if (!text && !html) {
@@ -218,9 +228,9 @@ export const sendEmailEwsTool: Tool<any> = {
 
       logger.debug(
         { tool: "TELCO:send_email_ews", to: args.to, mailbox },
-        "Sending email via EWS"
+        mock ? "Simulating email via EWS mock" : "Sending email via EWS"
       );
-      await runEwsWorker(payload);
+      if (!mock) await runEwsWorker(payload);
 
       logger.info(
         {
@@ -229,9 +239,10 @@ export const sendEmailEwsTool: Tool<any> = {
           to: args.to,
           subject,
           mailbox,
+          mock,
           attachments: attachments.map((attachment) => attachment.filename),
         },
-        "EWS email sent successfully"
+        mock ? "EWS mock succeeded; no email was sent" : "EWS email sent successfully"
       );
 
       return {
@@ -240,7 +251,8 @@ export const sendEmailEwsTool: Tool<any> = {
             type: "text",
             text: JSON.stringify({
               success: true,
-              transport: "ews-ntlm",
+              transport: mock ? "ews-mock" : "ews-ntlm",
+              ...(mock ? { mock: true } : {}),
               mailbox,
               to: args.to,
               subject,

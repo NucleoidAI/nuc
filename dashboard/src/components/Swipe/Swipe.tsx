@@ -10,7 +10,7 @@ type PaletteColor =
   | "warning"
   | "info";
 
-const ForceStepSwipe = ({
+const Swipe = ({
   checked,
   onChange,
   theme,
@@ -35,14 +35,11 @@ const ForceStepSwipe = ({
   offLabel?: string;
   onLabel?: string;
   color?: PaletteColor;
-  /** Palette color for the off (untracked) track background. Defaults to `background.paper`. */
   idleColor?: PaletteColor;
   variant?: "solid" | "gradient";
   width?: number;
   height?: number;
-  /** Gap between the thumb and the track edge. */
   trackPadding?: number;
-  /** Thumb diameter. Defaults to `height - trackPadding * 2` (fills the track). */
   thumbSize?: number;
   showThumbIcon?: boolean;
 }) => {
@@ -204,7 +201,6 @@ const ForceStepSwipe = ({
           )}, ${alpha(pc.main, (1 - bandMix + 0.3) * bandOpacity)})`
         : idleBackground;
   } else {
-    // Solid: a single flat color that stays constant on both sides.
     trackBackground = alpha(theme.palette[color].main, 1);
   }
 
@@ -372,4 +368,4 @@ const ForceStepSwipe = ({
   );
 };
 
-export default ForceStepSwipe;
+export default Swipe;

@@ -1,8 +1,8 @@
 import { DrawerLayout } from "@canmingir/link/layouts";
-import ForceStepSwipe from "../ForceStepSwipe/ForceStepSwipe";
 import { Iconify } from "@canmingir/link/platform/components";
 import PseudocodeViewer from "./PseudocodeViewer";
 import SearchIcon from "@mui/icons-material/Search";
+import Swipe from "../Swipe/Swipe";
 import { useState } from "react";
 
 import {
@@ -347,7 +347,7 @@ const NodeEditorDrawer = ({
             </Typography>
           </Box>
           <Box sx={{ flexShrink: 0 }}>
-            <ForceStepSwipe
+            <Swipe
               checked={newNodePseudocodeEnabled}
               onChange={(value) => setNewNodePseudocodeEnabled?.(value)}
               theme={theme}
@@ -392,7 +392,7 @@ const NodeEditorDrawer = ({
           </Typography>
         </Box>
         <Box sx={{ flexShrink: 0 }}>
-          <ForceStepSwipe
+          <Swipe
             checked={!!newNodeForce}
             onChange={(value) => setNewNodeForce?.(value)}
             theme={theme}

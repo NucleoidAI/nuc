@@ -1,8 +1,3 @@
-import CloseIcon from "@mui/icons-material/Close";
-import ForceStepSwipe from "../ForceStepSwipe/ForceStepSwipe";
-import React from "react";
-import TuneIcon from "@mui/icons-material/Tune";
-
 import {
   Box,
   Dialog,
@@ -14,6 +9,11 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+
+import CloseIcon from "@mui/icons-material/Close";
+import React from "react";
+import Swipe from "../Swipe/Swipe";
+import TuneIcon from "@mui/icons-material/Tune";
 
 const SettingsDialog = ({
   showSettings,
@@ -81,7 +81,7 @@ const SettingsDialog = ({
                 Determines whether execution requires human supervision when
                 uncertainty is detected.
               </Typography>
-              <ForceStepSwipe
+              <Swipe
                 checked={!blocking}
                 onChange={(value) => setBlocking(!value)}
                 theme={theme}
@@ -111,7 +111,7 @@ const SettingsDialog = ({
               <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                 Defines how execution is handled between AI and the platform.
               </Typography>
-              <ForceStepSwipe
+              <Swipe
                 checked={!!liteMode}
                 onChange={setLiteMode}
                 theme={theme}

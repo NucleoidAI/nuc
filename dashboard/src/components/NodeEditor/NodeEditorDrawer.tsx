@@ -1,8 +1,6 @@
 import { DrawerLayout } from "@canmingir/link/layouts";
-import { Iconify } from "@canmingir/link/platform/components";
 import PseudocodeViewer from "./PseudocodeViewer";
 import SearchIcon from "@mui/icons-material/Search";
-import Swipe from "../Swipe/Swipe";
 import { useState } from "react";
 
 import {
@@ -23,6 +21,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import { Iconify, LinkSwipe } from "@canmingir/link/platform/components";
 
 const NodeEditorDrawer = ({
   drawerOpen,
@@ -347,7 +346,7 @@ const NodeEditorDrawer = ({
             </Typography>
           </Box>
           <Box sx={{ flexShrink: 0 }}>
-            <Swipe
+            <LinkSwipe
               checked={newNodePseudocodeEnabled}
               onChange={(value) => setNewNodePseudocodeEnabled?.(value)}
               theme={theme}
@@ -392,12 +391,13 @@ const NodeEditorDrawer = ({
           </Typography>
         </Box>
         <Box sx={{ flexShrink: 0 }}>
-          <Swipe
+          <LinkSwipe
             checked={!!newNodeForce}
             onChange={(value) => setNewNodeForce?.(value)}
             theme={theme}
             ariaLabel="Force node"
             height={50}
+            thumbIcon="⚡️"
           />
         </Box>
       </Box>

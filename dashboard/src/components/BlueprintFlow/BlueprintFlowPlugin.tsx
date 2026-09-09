@@ -1,3 +1,11 @@
+import { styled } from "@mui/material/styles";
+
+import {
+  ConnectionsPanel,
+  Iconify,
+  InfoNode,
+  handleDataAttrs,
+} from "@canmingir/link/platform/components";
 import {
   Divider,
   ListItemIcon,
@@ -5,9 +13,7 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import { Iconify, InfoNode } from "@canmingir/link/platform/components";
 import React, { useState } from "react";
-import { alpha, styled } from "@mui/material/styles";
 
 const FORCE_COLOR = "#b8860b";
 
@@ -745,126 +751,6 @@ function fieldsPanelHeight(nodeFields?: Record<string, NodeFields>) {
   return rows * FIELDS_PANEL_ROW_HEIGHT + (rows - 1) * FIELDS_PANEL_ROW_GAP;
 }
 
-const FieldsPanel = styled("div")(({ theme }) => ({
-  position: "absolute",
-  top: "calc(100% + 10px)",
-  left: 0,
-  width: "100%",
-  minWidth: 260,
-  display: "flex",
-  gap: 10,
-  padding: 10,
-  borderRadius: 12,
-  background: theme.palette.background.paper,
-  border: `1px solid ${theme.palette.divider}`,
-  boxShadow:
-    theme.palette.mode === "dark"
-      ? "0 6px 18px rgba(0,0,0,0.5)"
-      : "0 6px 18px rgba(0,0,0,0.12)",
-  zIndex: 25,
-  cursor: "default",
-}));
-
-const FieldColumn = styled("div")<{ align: "left" | "right" }>(
-  ({ align, theme }) => ({
-    flex: 1,
-    minWidth: 0,
-    display: "flex",
-    flexDirection: "column",
-    gap: 2,
-    ...(align === "right" && {
-      paddingLeft: 10,
-      borderLeft: `1px solid ${theme.palette.divider}`,
-    }),
-  })
-);
-
-const ColumnLabel = styled("div")<{ align: "left" | "right" }>(
-  ({ align, theme }) => ({
-    display: "flex",
-    alignItems: "center",
-    gap: 4,
-    justifyContent: align === "right" ? "flex-end" : "flex-start",
-    marginBottom: 4,
-    fontSize: 9,
-    fontWeight: 800,
-    textTransform: "uppercase",
-    letterSpacing: "0.08em",
-    color: theme.palette.text.disabled,
-  })
-);
-
-const FieldRow = styled("div")<{ align: "left" | "right" }>(
-  ({ align, theme }) => ({
-    display: "flex",
-    alignItems: "center",
-    gap: 6,
-    padding: "3px 4px",
-    borderRadius: 6,
-    flexDirection: align === "right" ? "row-reverse" : "row",
-    transition: "background-color 0.15s ease",
-    "&:hover": {
-      backgroundColor: theme.palette.action.hover,
-    },
-  })
-);
-
-const Dot = styled("div")<{
-  variant: "in" | "out";
-  bound?: string;
-  interactive?: string;
-}>(({ variant, bound, interactive, theme }) => {
-  const isBound = bound === "true";
-  const disabled = interactive === "false";
-  const accent =
-    variant === "out"
-      ? theme.palette.secondary.main
-      : theme.palette.primary.main;
-
-  return {
-    position: "relative",
-    flexShrink: 0,
-    boxSizing: "content-box",
-    width: 9,
-    height: 9,
-    borderRadius: "50%",
-    background: isBound ? accent : theme.palette.background.paper,
-    border: `2px solid ${isBound ? accent : theme.palette.grey[400]}`,
-    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
-    cursor: disabled ? "default" : "crosshair",
-    opacity: disabled ? 0.35 : 1,
-    pointerEvents: "auto",
-    transition:
-      "transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease",
-    ...(!disabled && {
-      "&:hover": {
-        transform: "scale(1.35)",
-        borderColor: accent,
-        boxShadow: `0 0 0 2px ${
-          theme.palette.background.paper
-        }, 0 0 0 5px ${alpha(accent, 0.22)}`,
-      },
-    }),
-  };
-});
-
-const FieldLabel = styled("div")<{ align: "left" | "right"; bound?: string }>(
-  ({ align, bound, theme }) => ({
-    flex: 1,
-    minWidth: 0,
-    fontSize: 11,
-    fontWeight: bound === "true" ? 600 : 400,
-    color:
-      bound === "true"
-        ? theme.palette.text.primary
-        : theme.palette.text.secondary,
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    textAlign: align,
-  })
-);
-
 function NodeHandles({
   node,
   fields,
@@ -886,71 +772,40 @@ function NodeHandles({
     (node.raw?.properties as { force?: boolean } | undefined)?.force
   );
 
-  return (
-    <FieldsPanel
-      sx={{ mt: -1, ml: 0.6 }}
-      onMouseDown={(e) => e.stopPropagation()}
-    >
-      <FieldColumn align="left">
-        <ColumnLabel align="left">
-          <Iconify icon="mdi:arrow-down-left" width={10} height={10} />
-          Inputs
-        </ColumnLabel>
-        {fields.inputs.map((field) => {
-          const bound = boundFields?.has(field) ? "true" : "false";
-          return (
-            <FieldRow key={`in-${field}`} align="left">
-              <Dot
-                variant="in"
-                bound={bound}
-                interactive={isForceTarget ? "true" : "false"}
-                {...(isForceTarget && { "data-handle-type": "in" })}
-                data-in-handle=""
-                data-node-id={node.id}
-                data-field={field}
-                {...(isForceTarget && { title: `Input: ${field}` })}
-              />
-              <FieldLabel align="left" bound={bound} title={field}>
-                {field}
-              </FieldLabel>
-            </FieldRow>
-          );
-        })}
-      </FieldColumn>
+  const inputs = fields.inputs.map((field) => ({
+    name: field,
+    bound: boundFields?.has(field) ?? false,
+    interactive: isForceTarget,
+    title: isForceTarget ? `Input: ${field}` : undefined,
+    dataAttrs: {
+      ...handleDataAttrs("in", node.id, field),
+      "data-in-handle": "",
+      ...(isForceTarget ? { "data-in-bindable": "" } : {}),
+    },
+  }));
 
-      <FieldColumn align="right">
-        <ColumnLabel align="right">
-          Outputs
-          <Iconify icon="mdi:arrow-up-right" width={10} height={10} />
-        </ColumnLabel>
-        {fields.outputs.map((field) => (
-          <FieldRow key={`out-${field}`} align="right">
-            <Dot
-              variant="out"
-              interactive={hasForceNode ? "true" : "false"}
-              data-handle-type="out"
-              data-node-id={node.id}
-              data-field={field}
-              {...(hasForceNode && {
-                title: `Output: ${field === "result" ? "result (raw)" : field}`,
-              })}
-              onMouseDown={
-                hasForceNode
-                  ? (e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      onHandleDragStart?.(node.id, field, e);
-                    }
-                  : undefined
-              }
-            />
-            <FieldLabel align="right" title={field}>
-              {field === "result" ? "result" : field}
-            </FieldLabel>
-          </FieldRow>
-        ))}
-      </FieldColumn>
-    </FieldsPanel>
+  const outputs = fields.outputs.map((field) => ({
+    name: field,
+    interactive: Boolean(hasForceNode),
+    title: hasForceNode
+      ? `Output: ${field === "result" ? "result (raw)" : field}`
+      : undefined,
+    dataAttrs: handleDataAttrs("out", node.id, field),
+    onHandleMouseDown: hasForceNode
+      ? (e: React.MouseEvent) => {
+          e.stopPropagation();
+          e.preventDefault();
+          onHandleDragStart?.(node.id, field, e);
+        }
+      : undefined,
+  }));
+
+  return (
+    <ConnectionsPanel
+      inputs={inputs}
+      outputs={outputs}
+      sx={{ mt: -1, ml: 0.6 }}
+    />
   );
 }
 

@@ -13,7 +13,7 @@ import useAllIntegrations from "../../hooks/useAllIntegrations";
 import { Flow, FlowMiniMap } from "@canmingir/link/platform/components";
 
 import NodeConnectionOverlay, { type DragState } from "./NodeConnectionOverlay";
-import React, { useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 export default function BlueprintFlow({
   graphData,
@@ -107,6 +107,75 @@ export default function BlueprintFlow({
     [graphData]
   );
 
+  const impliedConnections = useMemo(() => {
+    if (!showConnections || !graphData?.nodes) return [];
+
+    const parentsById = new Map<string, Set<string>>();
+    for (const node of Object.values(graphData.nodes)) {
+      const childIds: string[] = [];
+      if (Array.isArray(node.next)) childIds.push(...node.next);
+      else if (typeof node.next === "string") childIds.push(node.next);
+      if (node.trueNext) childIds.push(...node.trueNext);
+      if (node.falseNext) childIds.push(...node.falseNext);
+
+      for (const childId of childIds) {
+        if (!parentsById.has(childId)) parentsById.set(childId, new Set());
+        parentsById.get(childId)!.add(node.id);
+      }
+    }
+
+    const explicit = new Set<string>();
+    for (const node of Object.values(graphData.nodes)) {
+      const bound = boundFieldsByNode[node.id];
+      if (!bound) continue;
+      for (const field of bound) explicit.add(`${node.id}:${field}`);
+    }
+
+    const result: {
+      sourceNodeId: string;
+      targetNodeId: string;
+      field: string;
+    }[] = [];
+
+    for (const node of Object.values(graphData.nodes)) {
+      if (node.nodeType !== "NORMAL") continue;
+      const isForce = Boolean(
+        (node.raw?.properties as { force?: boolean } | undefined)?.force
+      );
+      if (isForce) continue;
+
+      const targetFields = nodeFields[node.id];
+      if (!targetFields?.inputs.length) continue;
+
+      const parents = parentsById.get(node.id);
+      if (!parents?.size) continue;
+
+      for (const field of targetFields.inputs) {
+        if (explicit.has(`${node.id}:${field}`)) continue;
+
+        for (const parentId of parents) {
+          if (nodeFields[parentId]?.outputs.includes(field)) {
+            result.push({
+              sourceNodeId: parentId,
+              targetNodeId: node.id,
+              field,
+            });
+          }
+        }
+      }
+    }
+
+    return result;
+  }, [showConnections, graphData, nodeFields, boundFieldsByNode]);
+
+  const labelForImpliedConnection = useCallback(
+    (b: { sourceNodeId: string; field: string }) =>
+      `"${b.field}" is passed implicitly from ${
+        graphData.nodes[b.sourceNodeId]?.label ?? b.sourceNodeId
+      } by matching name — mark this node as a force node to bind it explicitly.`,
+    [graphData]
+  );
+
   const miniMapNodes = useMemo(
     () => (graphData ? definitionGraphToRawNodes(graphData) : []),
     [graphData]
@@ -143,6 +212,11 @@ export default function BlueprintFlow({
         fitViewAlign="start"
         onChange={readOnly ? undefined : onFlowChange}
         variant="horizontal"
+        impliedConnections={impliedConnections}
+        showImpliedConnections={
+          !readOnly && showConnections && impliedConnections.length > 0
+        }
+        labelForImpliedConnection={labelForImpliedConnection}
         style={() => ({
           direction: "horizontal",
           onAdd: readOnly ? undefined : onAddNodeClick,
@@ -164,7 +238,6 @@ export default function BlueprintFlow({
         <NodeConnectionOverlay
           containerRef={flowContainerRef}
           graphData={graphData}
-          nodeFields={nodeFields}
           dragging={dragging}
           onDragEnd={() => setDragging(null)}
           onConnect={(binding) => onConnectParameter?.(binding)}

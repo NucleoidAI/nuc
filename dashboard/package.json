@@ -17,7 +17,7 @@
     "build:storybook": "storybook build"
   },
   "dependencies": {
-    "@canmingir/link": "^1.2.68",
+    "@canmingir/link": "^1.2.72",
     "@cypress/vite-dev-server": "^5.1.1",
     "@emotion/css": "^11.11.2",
     "@emotion/react": "^11.14.0",

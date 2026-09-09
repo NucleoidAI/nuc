@@ -1,6 +1,5 @@
 import CloseIcon from "@mui/icons-material/Close";
-import React from "react";
-import Swipe from "../Swipe/Swipe";
+import { LinkSwipe } from "@canmingir/link/platform/components";
 import TuneIcon from "@mui/icons-material/Tune";
 
 import {
@@ -81,7 +80,7 @@ const SettingsDialog = ({
                 Determines whether execution requires human supervision when
                 uncertainty is detected.
               </Typography>
-              <Swipe
+              <LinkSwipe
                 checked={!blocking}
                 onChange={(value) => setBlocking(!value)}
                 theme={theme}
@@ -111,7 +110,7 @@ const SettingsDialog = ({
               <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                 Defines how execution is handled between AI and the platform.
               </Typography>
-              <Swipe
+              <LinkSwipe
                 checked={!!liteMode}
                 onChange={setLiteMode}
                 theme={theme}
@@ -122,6 +121,7 @@ const SettingsDialog = ({
                 width={70}
                 height={30}
                 thumbSize={20}
+                thumbIcon="⚡️"
               />
               <Typography
                 variant="caption"

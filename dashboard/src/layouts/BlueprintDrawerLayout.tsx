@@ -10,12 +10,12 @@ import SettingsDialog from "../components/SettingsDialog/SettingsDialog";
 import SettingsIcon from "@mui/icons-material/Settings";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import SupervisingChat from "../components/SupervisingChat";
-import { publish } from "@nucleoidai/react-event";
 import useBlueprint from "../hooks/useBlueprint";
 import useSupervisings from "../hooks/useSupervisings";
 
 import { Box, Fab, Grid, SvgIcon, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { publish, useEvent } from "@nucleoidai/react-event";
 import { storage, useStorage } from "@nucleoidjs/webstorage";
 
 const BlueprintDrawerLayout = ({
@@ -111,6 +111,11 @@ const BlueprintDrawerLayout = ({
     );
   };
 
+  const [reopenRequest] = useEvent<{ requestedAt: number | null }>(
+    "SUPERVISE_CHAT_REOPEN",
+    { requestedAt: null }
+  );
+
   useEffect(() => {
     publish("BLUEPRINT_CONTEXT", { context: drawerOpen ? context : null });
   }, [drawerOpen, context]);
@@ -118,8 +123,21 @@ const BlueprintDrawerLayout = ({
   useEffect(() => {
     return () => {
       publish("BLUEPRINT_CONTEXT", { context: null });
+      publish("SUPERVISE_CHAT", { canReopen: false });
     };
   }, []);
+
+  useEffect(() => {
+    publish("SUPERVISE_CHAT", {
+      canReopen: drawerOpen && !!supervise && !superviseChatOpen,
+    });
+  }, [drawerOpen, supervise, superviseChatOpen]);
+
+  useEffect(() => {
+    if (reopenRequest?.requestedAt && supervise) {
+      setSuperviseChatOpen(true);
+    }
+  }, [reopenRequest, supervise]);
 
   const { patchBlueprint } = useBlueprint();
   const { approveBlueprintChat } = useSupervisings();

@@ -179,23 +179,8 @@
       "title": "Order and Compliance",
       "description": "Find product, assign compliance certificate, create purchase order, write process to LLM, and send email.",
       "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
-      "skill": "**Product Order — Certificate-Backed Purchase**\n\nUse this Blueprint when a product order must have a compliance certificate assigned before a purchase order can be created.\n\nFlow: Ask user to select a product → Find product → Check certificate via knowledge lookup → Assign certificate → Create purchase order → Send email.\n\nExits after emailing confirmation of the completed purchase order.",
+      "skill": "**Product Order \u2014 Certificate-Backed Purchase**\n\nUse this Blueprint when a product order must have a compliance certificate assigned before a purchase order can be created.\n\nThe order request arrives with the product already chosen \u2014 it comes in from the requesting system, so do not ask which product to order.\n\nFlow: Find product \u2192 Check certificate via knowledge lookup \u2192 Assign certificate \u2192 Create purchase order \u2192 Send email.\n\nExits after emailing confirmation of the completed purchase order.",
       "nodes": [
-        {
-          "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction",
-            "parameters": {
-              "question": "Which product would you like to order?"
-            },
-            "description": "Ask user to select a product",
-            "label": "Select a Product",
-            "icon": "mdi:account-question"
-          },
-          "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
         {
           "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
           "type": "NORMAL",
@@ -274,7 +259,7 @@
         ],
         "referenceBlueprint": null,
         "supervising": null,
-        "userRequest": "Find the product, assign its compliance certificate, create a purchase order and record the process.",
+        "userRequest": "A product order request came in. Find the product, assign its compliance certificate, create a purchase order and record the process.",
         "capturedAt": "2025-06-26T06:00:00Z"
       }
     },

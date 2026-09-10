@@ -44,23 +44,19 @@ describe("Order Agent", () => {
     await event.publish("SESSION_USER_MESSAGED", {
       agentId: ORDER_AGENT_ID,
       sessionId: SESSION.happyPath,
-      content: JSON.stringify({ intent: "create_order" }),
+      content: JSON.stringify({
+        intent: "create_order",
+        product: "product-1",
+        quantity: 5,
+        city: "Atlanta",
+      }),
     });
 
     const created = await event.waitFor("TASK_CREATED");
     const added = await event.waitFor("STEP_ADDED");
 
     expect(created.blueprintId).toBe(ORDER_BLUEPRINT_ID);
-    expect(added.action).toBe("PLATFORM:user_interaction");
-
-    const waitingStep = await event.waitFor("STEP_WAITING_FOR_USER");
-    expect(waitingStep.stepId).toBe(added.stepId);
-
-    await event.publish("SESSION_USER_MESSAGED", {
-      agentId: ORDER_AGENT_ID,
-      sessionId: SESSION.happyPath,
-      content: JSON.stringify({ product: "product-1" }),
-    });
+    expect(added.action).toBe("ORDER:find_product");
 
     const completedTask = await event.waitFor("TASK_COMPLETED");
     expect(completedTask.taskId).toBe(created.taskId);
@@ -101,23 +97,19 @@ describe("Order Agent", () => {
     await event.publish("SESSION_USER_MESSAGED", {
       agentId: ORDER_AGENT_ID,
       sessionId: SESSION.supervisedKnowledge,
-      content: JSON.stringify({ intent: "create_order" }),
+      content: JSON.stringify({
+        intent: "create_order",
+        product: "product-4",
+        quantity: 5,
+        city: "Atlanta",
+      }),
     });
 
     const created = await event.waitFor("TASK_CREATED");
     const added = await event.waitFor("STEP_ADDED");
 
     expect(created.blueprintId).toBe(ORDER_BLUEPRINT_ID);
-    expect(added.action).toBe("PLATFORM:user_interaction");
-
-    const waitingStep = await event.waitFor("STEP_WAITING_FOR_USER");
-    expect(waitingStep.stepId).toBe(added.stepId);
-
-    await event.publish("SESSION_USER_MESSAGED", {
-      agentId: ORDER_AGENT_ID,
-      sessionId: SESSION.supervisedKnowledge,
-      content: JSON.stringify({ product: "product-4" }),
-    });
+    expect(added.action).toBe("ORDER:find_product");
 
     const raised = await event.waitFor("STEP_SUPERVISED_NEEDED");
 
@@ -193,26 +185,22 @@ describe("Order Agent", () => {
       await event.publish("SESSION_USER_MESSAGED", {
         agentId: ORDER_AGENT_ID,
         sessionId: SESSION.supervisedBlueprint,
-        content: JSON.stringify({ intent: "create_order" }),
+        content: JSON.stringify({
+          intent: "create_order",
+          product: "product-3",
+          quantity: 5,
+          city: "Atlanta",
+        }),
       });
 
       const created = await event.waitFor("TASK_CREATED");
       const added = await event.waitFor("STEP_ADDED");
 
       expect(created.blueprintId).toBe(ORDER_BLUEPRINT_ID);
-      expect(added.action).toBe("PLATFORM:user_interaction");
+      expect(added.action).toBe("ORDER:find_product");
 
       const elsewhere = (payload: { taskId?: string }) =>
         payload.taskId !== created.taskId;
-
-      const waitingStep = await event.waitFor("STEP_WAITING_FOR_USER");
-      expect(waitingStep.stepId).toBe(added.stepId);
-
-      await event.publish("SESSION_USER_MESSAGED", {
-        agentId: ORDER_AGENT_ID,
-        sessionId: SESSION.supervisedBlueprint,
-        content: JSON.stringify({ product: "product-3" }),
-      });
 
       const raised = await event.waitFor("STEP_SUPERVISED_NEEDED");
 

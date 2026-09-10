@@ -12,18 +12,6 @@ import { COMPLIANCE_AGENT_ID, COMPLIANCE_BLUEPRINT_ID, NODE } from "./ids";
 function supervisedHandoffNodes() {
   return [
     {
-      id: NODE.selectProduct,
-      type: "NORMAL",
-      properties: {
-        label: "Select a Product",
-        icon: "mdi:account-question",
-        action: "PLATFORM:user_interaction",
-        description: "Ask user to select a product",
-        parameters: { question: "Which product would you like to order?" },
-      },
-      next: [NODE.findProduct],
-    },
-    {
       id: NODE.findProduct,
       type: "NORMAL",
       properties: {

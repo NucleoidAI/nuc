@@ -23,7 +23,6 @@ const SESSION = {
 };
 
 const NODE = {
-  selectProduct: "f0e0d0c0-a0b0-4000-8000-000000000000",
   findProduct: "f1e1d1c1-a1b1-4111-8111-111111111111",
   knowledgeLookup: "f3e3d3c3-a3b3-4333-8333-333333333333",
   assignCertificate: "f2e2d2c2-a2b2-4222-8222-222222222222",

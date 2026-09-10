@@ -130,7 +130,7 @@
     {
       "id": "stripe",
       "mcpProviderId": "019f9c00-0000-4000-8000-000000000022",
-      "description": "Stripe MCP server exposing 15 tools.",
+      "description": "Stripe mock MCP server exposing 11 tools for customers, payments and refunds.",
       "icon": "simple-icons:stripe"
     },
     {
@@ -144,6 +144,12 @@
       "mcpProviderId": "019f9c00-0000-4000-8000-000000000024",
       "description": "Twilio MCP server exposing 15 tools.",
       "icon": "simple-icons:twilio"
+    },
+    {
+      "id": "fedex",
+      "mcpProviderId": "9fceba9d-df06-5fb1-a0eb-ca664b27bebb",
+      "description": "FedEx mock MCP server exposing 6 tools for rates, shipments and tracking.",
+      "icon": "simple-icons:fedex"
     }
   ]
 }

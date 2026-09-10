@@ -14,9 +14,9 @@ cd mcp
 ORACLE_MOCK_URL=http://localhost:5203 bun run db:reset:oracle
 ```
 
-This resets only `ORDER_*` tables and updates their reset baseline.
-Other mock tables are preserved. It replaces existing data in those MCP tables;
-run it explicitly during setup or when a reset is intended.
+This removes all existing Oracle mock tables and their data, then creates only
+the `ORDER_*` seed tables and replaces the reset baseline. This also runs whenever
+`predev` invokes `db:reset`.
 
 Each table stores a unique `RECORD_ID` and a serialized `PAYLOAD`. This preserves
 the existing MCP data contract, including scalar lists, duplicate business keys,
@@ -29,7 +29,7 @@ Read-modify-write updates are intended for mock workflows and are not transactio
 
 Telco continues to use its local JSON database. `bun run db:reset` resets both
 the local telco database and the order tables in Oracle; `bun run db:reset:oracle`
-resets only the order tables in Oracle.
+replaces all Oracle mock tables with the order seed tables.
 
 Reset always refreshes the local order JSON fixture too. If Oracle cannot be reached,
 reset succeeds with a warning so `predev` can continue. HTTP/API errors still fail.

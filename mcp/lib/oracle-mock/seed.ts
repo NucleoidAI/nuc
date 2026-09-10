@@ -2,7 +2,7 @@ import path from "node:path";
 import { readFile, copyFile } from "node:fs/promises";
 import { oracleRequest, OracleUnavailableError } from "./database.js";
 
-// Merge only MCP-owned tables; keep the mock's existing HR and procurement tables.
+// Replace the entire mock schema with the order seed tables.
 async function main() {
 const tables: Array<{ name: string; columns: Record<string, string>; rows: Array<{ RECORD_ID: string; PAYLOAD: string }> }> = [];
 for (const domain of ["order"]) {
@@ -20,7 +20,7 @@ for (const domain of ["order"]) {
     });
   }
 }
-await oracleRequest("/seed", "POST", { mode: "merge", tables });
+await oracleRequest("/seed", "POST", { mode: "replace", tables });
 console.log("Oracle mock MCP tables reset from seed.");
 
 }

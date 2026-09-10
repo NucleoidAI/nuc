@@ -608,6 +608,70 @@
       "value": "true",
       "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
       "agentId": null
+    },
+    {
+      "id": "b8ec3a2b-8907-5a91-ba8d-0dd8f96675a8",
+      "serverId": "stripe",
+      "key": "STRIPE_API_URL",
+      "value": "http://localhost:5204",
+      "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
+      "agentId": null
+    },
+    {
+      "id": "108198fd-1bc8-5098-825f-4c5d9a6af5f9",
+      "serverId": "fedex",
+      "key": "FEDEX_API_URL",
+      "value": "http://localhost:5205",
+      "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
+      "agentId": null
+    },
+    {
+      "id": "a8c983b6-9fd3-5434-9480-10e295ca2cd8",
+      "serverId": "stripe",
+      "key": "STRIPE_API_URL",
+      "value": "http://localhost:5204",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "agentId": null
+    },
+    {
+      "id": "e0e8c3de-81b9-57ae-9412-2d5c7c58b179",
+      "serverId": "fedex",
+      "key": "FEDEX_API_URL",
+      "value": "http://localhost:5205",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "agentId": null
+    },
+    {
+      "id": "4155229a-da0c-5663-a1f6-4336df021168",
+      "serverId": "stripe",
+      "key": "STRIPE_API_URL",
+      "value": "http://localhost:5204",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "agentId": null
+    },
+    {
+      "id": "44d01ac6-737d-59f4-b3b0-13eabc322cef",
+      "serverId": "fedex",
+      "key": "FEDEX_API_URL",
+      "value": "http://localhost:5205",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "agentId": null
+    },
+    {
+      "id": "c5ab8133-aa78-54c4-a9b4-87591998a8a1",
+      "serverId": "stripe",
+      "key": "STRIPE_API_URL",
+      "value": "http://localhost:5204",
+      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
+      "agentId": null
+    },
+    {
+      "id": "6c89a4eb-1acf-5611-b36d-5e019ab5db27",
+      "serverId": "fedex",
+      "key": "FEDEX_API_URL",
+      "value": "http://localhost:5205",
+      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
+      "agentId": null
     }
   ]
 }

@@ -42,7 +42,7 @@ const AgentDevToolWidget = ({
   );
   const context = blueprintContext?.context ?? null;
 
-  const [superviseChat] = useEvent<{ canReopen: boolean }>("SUPERVISE_CHAT", {
+  const [superviseChat] = useEvent<{ canReopen: boolean }>("SUPERVISOR_CHAT", {
     canReopen: false,
   });
   const canReopenSupervise = Boolean(superviseChat?.canReopen);
@@ -156,7 +156,7 @@ const AgentDevToolWidget = ({
                   label: "Supervise",
                   tooltip: "Reopen resolve supervise chat",
                   onClick: () =>
-                    publish("SUPERVISE_CHAT_REOPEN", {
+                    publish("SUPERVISOR_CHAT_REOPEN", {
                       requestedAt: Date.now(),
                     }),
                   sx: {

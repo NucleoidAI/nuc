@@ -112,7 +112,7 @@ const BlueprintDrawerLayout = ({
   };
 
   const [reopenRequest] = useEvent<{ requestedAt: number | null }>(
-    "SUPERVISE_CHAT_REOPEN",
+    "SUPERVISOR_CHAT_REOPEN",
     { requestedAt: null }
   );
 
@@ -123,12 +123,12 @@ const BlueprintDrawerLayout = ({
   useEffect(() => {
     return () => {
       publish("BLUEPRINT_CONTEXT", { context: null });
-      publish("SUPERVISE_CHAT", { canReopen: false });
+      publish("SUPERVISOR_CHAT", { canReopen: false });
     };
   }, []);
 
   useEffect(() => {
-    publish("SUPERVISE_CHAT", {
+    publish("SUPERVISOR_CHAT", {
       canReopen: drawerOpen && !!supervise && !superviseChatOpen,
     });
   }, [drawerOpen, supervise, superviseChatOpen]);

@@ -1,6 +1,6 @@
 import path from "node:path";
-import { readFile } from "node:fs/promises";
-import { oracleRequest } from "./database.js";
+import { readFile, copyFile } from "node:fs/promises";
+import { oracleRequest, OracleUnavailableError } from "./database.js";
 
 // Merge only MCP-owned tables; keep the mock's existing HR and procurement tables.
 async function main() {
@@ -8,6 +8,7 @@ const tables: Array<{ name: string; columns: Record<string, string>; rows: Array
 for (const domain of ["order"]) {
   const file = path.join(__dirname, `../../servers/${domain}/db/seeds/seed.json`);
   const database = JSON.parse(await readFile(file, "utf8"));
+  await copyFile(file, path.join(__dirname, `../../servers/${domain}/db/database.json`));
   for (const [name, records] of Object.entries(database)) {
     tables.push({
       name: `${domain}_${name}`.toUpperCase(),
@@ -23,4 +24,11 @@ await oracleRequest("/seed", "POST", { mode: "merge", tables });
 console.log("Oracle mock MCP tables reset from seed.");
 
 }
-main().catch(error => { console.error(error); process.exitCode = 1; });
+main().catch(error => {
+  if (error instanceof OracleUnavailableError) {
+    console.warn("Oracle mock unavailable; local order JSON database reset. Continuing with JSON fallback.");
+    return;
+  }
+  console.error(error);
+  process.exitCode = 1;
+});

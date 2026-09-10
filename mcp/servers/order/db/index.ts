@@ -1,4 +1,5 @@
-import { createOracleDatabase } from "../../../lib/oracle-mock/database.js";
+import path from "node:path";
+import { createDatabaseWithFallback } from "../../../lib/oracle-mock/database.js";
 
 interface Database {
   vendors: Array<{
@@ -31,6 +32,5 @@ export const {
   findAll,
   insert,
   update,
-  remove,
   getDatabasePath,
-} = createOracleDatabase<Database>("order");
+} = createDatabaseWithFallback<Database>("order", path.join(__dirname, "database.json"));

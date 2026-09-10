@@ -121,7 +121,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 async function startServer() {
   await getDatabase();
-  console.log("[MCP] Oracle mock connected at:", getDatabasePath());
+  console.log("[MCP] Database initialized at:", getDatabasePath());
 
   const transport = new StdioServerTransport();
   await server.connect(transport);

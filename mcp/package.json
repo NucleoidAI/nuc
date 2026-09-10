@@ -5,9 +5,10 @@
   "author": "GreyTeam",
   "scripts": {
     "debug": "ts-node debugger.ts",
-    "db:reset": "rm -rf servers/telco/db/database.json && cp servers/telco/db/seeds/seed.json servers/telco/db/database.json && rm -rf servers/order/db/database.json && cp servers/order/db/seeds/seed.json servers/order/db/database.json",
+    "db:reset": "cp servers/telco/db/seeds/seed.json servers/telco/db/database.json && bun run db:reset:oracle",
     "prepare": "exit 0",
-    "test": "exit 0"
+    "test": "exit 0",
+    "db:reset:oracle": "bun lib/oracle-mock/seed.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.35.0",

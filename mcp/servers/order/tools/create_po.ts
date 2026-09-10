@@ -32,7 +32,7 @@ export const createPOTool: Tool<CreatePOInput> = {
         "Creating purchase order",
       );
 
-      const product = findOne("products", "id", args.product_id);
+      const product = await findOne("products", "id", args.product_id);
 
       if (!product) {
         logger.warn(
@@ -51,7 +51,7 @@ export const createPOTool: Tool<CreatePOInput> = {
         };
       }
 
-      const cities = findAll("cities") as unknown as string[];
+      const cities = (await findAll("cities")) as unknown as string[];
       if (!cities.includes(args.city)) {
         logger.warn(
           { tool: "ORDER:create_po", city: args.city },
@@ -72,7 +72,7 @@ export const createPOTool: Tool<CreatePOInput> = {
         };
       }
 
-      const existingOrders = findAll("purchase_orders");
+      const existingOrders = await findAll("purchase_orders");
       const orderId = `po-${1000 + existingOrders.length + 1}`;
 
       const newOrder = {
@@ -82,7 +82,7 @@ export const createPOTool: Tool<CreatePOInput> = {
         quantity: args.quantity,
       };
 
-      insert("purchase_orders", newOrder);
+      await insert("purchase_orders", newOrder);
 
       logger.info(
         { tool: "ORDER:create_po", order_id: orderId, product_id: args.product_id },

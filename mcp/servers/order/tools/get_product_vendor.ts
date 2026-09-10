@@ -24,7 +24,7 @@ export const getProductVendorTool: Tool<GetProductVendorInput> = {
         "Getting vendor for product",
       );
 
-      const product = findOne("products", "id", args.product_id);
+      const product = await findOne("products", "id", args.product_id);
 
       if (!product) {
         logger.warn(
@@ -43,7 +43,7 @@ export const getProductVendorTool: Tool<GetProductVendorInput> = {
         };
       }
 
-      const vendor = findOne("vendors", "id", (product as any).vendor_id);
+      const vendor = await findOne("vendors", "id", (product as any).vendor_id);
 
       if (!vendor) {
         logger.warn(

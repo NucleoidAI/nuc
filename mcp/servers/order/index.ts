@@ -120,8 +120,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 });
 
 async function startServer() {
-  getDatabase();
-  console.log("[MCP] JSON database initialized at:", getDatabasePath());
+  await getDatabase();
+  console.log("[MCP] Oracle mock connected at:", getDatabasePath());
 
   const transport = new StdioServerTransport();
   await server.connect(transport);

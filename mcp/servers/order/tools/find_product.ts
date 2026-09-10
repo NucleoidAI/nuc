@@ -31,11 +31,11 @@ export const findProductTool: Tool<FindProductInput> = {
       let product = null;
 
       if (args.product_id) {
-        product = findOne("products", "id", args.product_id);
+        product = await findOne("products", "id", args.product_id);
       } else if (args.name) {
-        product = findOne("products", "name", args.name);
+        product = await findOne("products", "name", args.name);
       } else {
-        const products = findAll("products");
+        const products = await findAll("products");
         return {
           content: [
             {

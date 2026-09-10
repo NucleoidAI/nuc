@@ -24,7 +24,7 @@ export const checkProductCertificateTool: Tool<CheckProductCertificateInput> = {
         "Checking product certificate",
       );
 
-      const product = findOne("products", "id", args.product_id);
+      const product = await findOne("products", "id", args.product_id);
 
       if (!product) {
         logger.warn(
@@ -43,7 +43,7 @@ export const checkProductCertificateTool: Tool<CheckProductCertificateInput> = {
         };
       }
 
-      const productCertificate = findOne(
+      const productCertificate = await findOne(
         "product_certificates",
         "product_id",
         args.product_id,

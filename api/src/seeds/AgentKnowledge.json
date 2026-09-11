@@ -2,6 +2,11 @@
   "sequence": 11,
   "seed": [
     {
+      "id": "502d74eb-8ab7-4350-80af-f203f6011ff1",
+      "knowledgeId": "be4f83d1-0e56-4989-873c-051b83e6b843",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
+    },
+    {
       "id": "696f3250-3a97-48c0-af71-eea745edff38",
       "knowledgeId": "0b6e8e55-3d02-4f59-966f-e6339ba27095",
       "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729"

@@ -2,6 +2,13 @@
   "sequence": 5,
   "seed": [
     {
+      "id": "be4f83d1-0e56-4989-873c-051b83e6b843",
+      "type": "TEXT",
+      "text": "The order management manager's email address is halilcengel@greycollar.ai.",
+      "status": "COMPLETED",
+      "createdAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
       "id": "0b6e8e55-3d02-4f59-966f-e6339ba27095",
       "type": "URL",
       "url": "https://www.financialmanagementandstrategy.com/resources",

@@ -8,7 +8,9 @@ export const createPaymentIntentTool = defineTool({
   properties: {
     amount,
     currency: string("Three-letter currency code"),
-    customer: string("Customer ID"),
+    customer: string(
+      "An existing Stripe customer ID returned by create_customer or list_customers. Omit it unless you have one; an unknown ID is rejected",
+    ),
     description: string("Payment description"),
     confirm: {
       type: "boolean",

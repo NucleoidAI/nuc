@@ -1198,7 +1198,7 @@
     "blueprint": {
       "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
       "title": "Order and Compliance",
-      "description": "Find product, assign compliance certificate, create purchase order, write process to LLM, and send email.",
+      "description": "Ask the user to select a product, find it, check its compliance certificate, assign it, create the purchase order, prepare the payment, charge it once the user approves and ship it, then send email.",
       "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
       "nodes": [
         {
@@ -1221,6 +1221,16 @@
             "action": "ORDER:find_product",
             "icon": "mdi:magnify"
           },
+          "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:knowledge_lookup",
+            "icon": "mdi:book-search"
+          },
           "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
@@ -1241,6 +1251,57 @@
             "action": "ORDER:create_po",
             "icon": "mdi:file-document-plus"
           },
+          "next": ["f5e5d5c5-a5b5-4555-8555-555555555555"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f5e5d5c5-a5b5-4555-8555-555555555555",
+          "type": "NORMAL",
+          "properties": {
+            "action": "STRIPE:create_payment_intent",
+            "icon": "mdi:credit-card-outline"
+          },
+          "next": ["f9e9d9c9-a9b9-4999-8999-999999999999"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f9e9d9c9-a9b9-4999-8999-999999999999",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "icon": "mdi:account-question"
+          },
+          "next": ["faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa",
+          "type": "CONDITION",
+          "properties": {
+            "action": "PLATFORM:decision",
+            "icon": "mdi:source-branch"
+          },
+          "true": ["f7e7d7c7-a7b7-4777-8777-777777777777"],
+          "false": ["fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f7e7d7c7-a7b7-4777-8777-777777777777",
+          "type": "NORMAL",
+          "properties": {
+            "action": "STRIPE:confirm_payment_intent",
+            "icon": "mdi:check-decagram"
+          },
+          "next": ["f8e8d8c8-a8b8-4888-8888-888888888888"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f8e8d8c8-a8b8-4888-8888-888888888888",
+          "type": "NORMAL",
+          "properties": {
+            "action": "FEDEX:create_shipment",
+            "icon": "mdi:truck-delivery-outline"
+          },
           "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
@@ -1251,12 +1312,42 @@
             "action": "GREY:send_email",
             "icon": "mdi:email"
           },
+          "next": ["fcecdccc-acbc-4ccc-8ccc-cccccccccccc"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb",
+          "type": "NORMAL",
+          "properties": {
+            "action": "STRIPE:cancel_payment_intent",
+            "icon": "mdi:credit-card-off-outline"
+          },
+          "next": ["fdeddcdc-adbd-4ddd-8ddd-dddddddddddd"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "fdeddcdc-adbd-4ddd-8ddd-dddddddddddd",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "icon": "mdi:bell-off"
+          },
+          "next": ["fcecdccc-acbc-4ccc-8ccc-cccccccccccc"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "fcecdccc-acbc-4ccc-8ccc-cccccccccccc",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "icon": "mdi:check"
+          },
           "next": null,
           "createdAt": "2025-06-26T06:00:00Z"
         }
       ]
     },
-    "content": "Process an order with compliance certificate check.",
+    "content": "Process an order with compliance certificate check, then take the payment and ship it.",
     "knowledge": [
       {
         "id": "c1d2e3f4-0001-4001-8001-aaaaaaaaaaaa",
@@ -1276,16 +1367,16 @@
     "task": {
       "id": "e1f2a3b4-c5d6-4001-8001-100000000001",
       "status": "COMPLETED",
-      "description": "Process order and compliance check for the product.",
+      "description": "Process an order with a compliance certificate check and a user-approved payment before shipping.",
       "blueprintId": "f4e3d2c1-b0a0-4000-8000-100000000001"
     },
-    "answer": "Starting order compliance process. I'll find the product, verify its certificate, and create a PO if compliant."
+    "answer": "Starting order compliance process. I'll find the product, verify its certificate and open a PO, then ask you to approve the charge before it is taken and ship it."
   },
   {
     "blueprint": {
       "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
       "title": "Order and Compliance",
-      "description": "Find product, assign compliance certificate, create purchase order, write process to LLM, and send email.",
+      "description": "Ask the user to select a product, find it, check its compliance certificate, assign it, create the purchase order, prepare the payment, charge it once the user approves and ship it, then send email.",
       "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
       "nodes": [
         {
@@ -1308,6 +1399,16 @@
             "action": "ORDER:find_product",
             "icon": "mdi:magnify"
           },
+          "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:knowledge_lookup",
+            "icon": "mdi:book-search"
+          },
           "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
@@ -1328,6 +1429,57 @@
             "action": "ORDER:create_po",
             "icon": "mdi:file-document-plus"
           },
+          "next": ["f5e5d5c5-a5b5-4555-8555-555555555555"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f5e5d5c5-a5b5-4555-8555-555555555555",
+          "type": "NORMAL",
+          "properties": {
+            "action": "STRIPE:create_payment_intent",
+            "icon": "mdi:credit-card-outline"
+          },
+          "next": ["f9e9d9c9-a9b9-4999-8999-999999999999"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f9e9d9c9-a9b9-4999-8999-999999999999",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "icon": "mdi:account-question"
+          },
+          "next": ["faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa",
+          "type": "CONDITION",
+          "properties": {
+            "action": "PLATFORM:decision",
+            "icon": "mdi:source-branch"
+          },
+          "true": ["f7e7d7c7-a7b7-4777-8777-777777777777"],
+          "false": ["fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f7e7d7c7-a7b7-4777-8777-777777777777",
+          "type": "NORMAL",
+          "properties": {
+            "action": "STRIPE:confirm_payment_intent",
+            "icon": "mdi:check-decagram"
+          },
+          "next": ["f8e8d8c8-a8b8-4888-8888-888888888888"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f8e8d8c8-a8b8-4888-8888-888888888888",
+          "type": "NORMAL",
+          "properties": {
+            "action": "FEDEX:create_shipment",
+            "icon": "mdi:truck-delivery-outline"
+          },
           "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
@@ -1338,12 +1490,42 @@
             "action": "GREY:send_email",
             "icon": "mdi:email"
           },
+          "next": ["fcecdccc-acbc-4ccc-8ccc-cccccccccccc"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb",
+          "type": "NORMAL",
+          "properties": {
+            "action": "STRIPE:cancel_payment_intent",
+            "icon": "mdi:credit-card-off-outline"
+          },
+          "next": ["fdeddcdc-adbd-4ddd-8ddd-dddddddddddd"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "fdeddcdc-adbd-4ddd-8ddd-dddddddddddd",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "icon": "mdi:bell-off"
+          },
+          "next": ["fcecdccc-acbc-4ccc-8ccc-cccccccccccc"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "fcecdccc-acbc-4ccc-8ccc-cccccccccccc",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "icon": "mdi:check"
+          },
           "next": null,
           "createdAt": "2025-06-26T06:00:00Z"
         }
       ]
     },
-    "content": "I need to create a purchase order but first verify the product certificate.",
+    "content": "I need to create a purchase order but first verify the product certificate, then charge me and ship it.",
     "knowledge": [
       {
         "id": "c1d2e3f4-0001-4001-8001-aaaaaaaaaaaa",
@@ -1363,16 +1545,16 @@
     "task": {
       "id": "e1f2a3b4-c5d6-4001-8001-100000000002",
       "status": "COMPLETED",
-      "description": "Process order and compliance check for the product.",
+      "description": "Process an order with a compliance certificate check and a user-approved payment before shipping.",
       "blueprintId": "f4e3d2c1-b0a0-4000-8000-100000000001"
     },
-    "answer": "I'll find the product, check its compliance certificate, and if valid, I'll open a PO and notify via email."
+    "answer": "I'll find the product, check its compliance certificate, open the PO and prepare the payment. Nothing is charged until you approve it; after that I'll ship it and notify via email."
   },
   {
     "blueprint": {
       "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
       "title": "Order and Compliance",
-      "description": "Find product, assign compliance certificate, create purchase order, write process to LLM, and send email.",
+      "description": "Ask the user to select a product, find it, check its compliance certificate, assign it, create the purchase order, prepare the payment, charge it once the user approves and ship it, then send email.",
       "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
       "nodes": [
         {
@@ -1395,6 +1577,16 @@
             "action": "ORDER:find_product",
             "icon": "mdi:magnify"
           },
+          "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:knowledge_lookup",
+            "icon": "mdi:book-search"
+          },
           "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
@@ -1415,6 +1607,57 @@
             "action": "ORDER:create_po",
             "icon": "mdi:file-document-plus"
           },
+          "next": ["f5e5d5c5-a5b5-4555-8555-555555555555"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f5e5d5c5-a5b5-4555-8555-555555555555",
+          "type": "NORMAL",
+          "properties": {
+            "action": "STRIPE:create_payment_intent",
+            "icon": "mdi:credit-card-outline"
+          },
+          "next": ["f9e9d9c9-a9b9-4999-8999-999999999999"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f9e9d9c9-a9b9-4999-8999-999999999999",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "icon": "mdi:account-question"
+          },
+          "next": ["faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa",
+          "type": "CONDITION",
+          "properties": {
+            "action": "PLATFORM:decision",
+            "icon": "mdi:source-branch"
+          },
+          "true": ["f7e7d7c7-a7b7-4777-8777-777777777777"],
+          "false": ["fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f7e7d7c7-a7b7-4777-8777-777777777777",
+          "type": "NORMAL",
+          "properties": {
+            "action": "STRIPE:confirm_payment_intent",
+            "icon": "mdi:check-decagram"
+          },
+          "next": ["f8e8d8c8-a8b8-4888-8888-888888888888"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f8e8d8c8-a8b8-4888-8888-888888888888",
+          "type": "NORMAL",
+          "properties": {
+            "action": "FEDEX:create_shipment",
+            "icon": "mdi:truck-delivery-outline"
+          },
           "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
@@ -1425,12 +1668,42 @@
             "action": "GREY:send_email",
             "icon": "mdi:email"
           },
+          "next": ["fcecdccc-acbc-4ccc-8ccc-cccccccccccc"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb",
+          "type": "NORMAL",
+          "properties": {
+            "action": "STRIPE:cancel_payment_intent",
+            "icon": "mdi:credit-card-off-outline"
+          },
+          "next": ["fdeddcdc-adbd-4ddd-8ddd-dddddddddddd"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "fdeddcdc-adbd-4ddd-8ddd-dddddddddddd",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "icon": "mdi:bell-off"
+          },
+          "next": ["fcecdccc-acbc-4ccc-8ccc-cccccccccccc"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "fcecdccc-acbc-4ccc-8ccc-cccccccccccc",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "icon": "mdi:check"
+          },
           "next": null,
           "createdAt": "2025-06-26T06:00:00Z"
         }
       ]
     },
-    "content": "Check if product is compliant and open a PO.",
+    "content": "Check if product is compliant, open a PO and charge it after I confirm.",
     "knowledge": [
       {
         "id": "c1d2e3f4-0001-4001-8001-aaaaaaaaaaaa",
@@ -1450,16 +1723,16 @@
     "task": {
       "id": "e1f2a3b4-c5d6-4001-8001-100000000003",
       "status": "COMPLETED",
-      "description": "Process order and compliance check for the product.",
+      "description": "Process an order with a compliance certificate check and a user-approved payment before shipping.",
       "blueprintId": "f4e3d2c1-b0a0-4000-8000-100000000001"
     },
-    "answer": "Checking product compliance certificate now. PO will be created and manager will be emailed if certificate is valid."
+    "answer": "Checking product compliance certificate now. PO will be created and the payment prepared; I'll ask you to confirm the charge before taking it, then ship the order."
   },
   {
     "blueprint": {
       "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
       "title": "Order and Compliance",
-      "description": "Find product, assign compliance certificate, create purchase order, write process to LLM, and send email.",
+      "description": "Ask the user to select a product, find it, check its compliance certificate, assign it, create the purchase order, prepare the payment, charge it once the user approves and ship it, then send email.",
       "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
       "nodes": [
         {
@@ -1482,6 +1755,16 @@
             "action": "ORDER:find_product",
             "icon": "mdi:magnify"
           },
+          "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:knowledge_lookup",
+            "icon": "mdi:book-search"
+          },
           "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
@@ -1502,6 +1785,57 @@
             "action": "ORDER:create_po",
             "icon": "mdi:file-document-plus"
           },
+          "next": ["f5e5d5c5-a5b5-4555-8555-555555555555"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f5e5d5c5-a5b5-4555-8555-555555555555",
+          "type": "NORMAL",
+          "properties": {
+            "action": "STRIPE:create_payment_intent",
+            "icon": "mdi:credit-card-outline"
+          },
+          "next": ["f9e9d9c9-a9b9-4999-8999-999999999999"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f9e9d9c9-a9b9-4999-8999-999999999999",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "icon": "mdi:account-question"
+          },
+          "next": ["faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa",
+          "type": "CONDITION",
+          "properties": {
+            "action": "PLATFORM:decision",
+            "icon": "mdi:source-branch"
+          },
+          "true": ["f7e7d7c7-a7b7-4777-8777-777777777777"],
+          "false": ["fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f7e7d7c7-a7b7-4777-8777-777777777777",
+          "type": "NORMAL",
+          "properties": {
+            "action": "STRIPE:confirm_payment_intent",
+            "icon": "mdi:check-decagram"
+          },
+          "next": ["f8e8d8c8-a8b8-4888-8888-888888888888"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f8e8d8c8-a8b8-4888-8888-888888888888",
+          "type": "NORMAL",
+          "properties": {
+            "action": "FEDEX:create_shipment",
+            "icon": "mdi:truck-delivery-outline"
+          },
           "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
@@ -1512,12 +1846,42 @@
             "action": "GREY:send_email",
             "icon": "mdi:email"
           },
+          "next": ["fcecdccc-acbc-4ccc-8ccc-cccccccccccc"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb",
+          "type": "NORMAL",
+          "properties": {
+            "action": "STRIPE:cancel_payment_intent",
+            "icon": "mdi:credit-card-off-outline"
+          },
+          "next": ["fdeddcdc-adbd-4ddd-8ddd-dddddddddddd"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "fdeddcdc-adbd-4ddd-8ddd-dddddddddddd",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "icon": "mdi:bell-off"
+          },
+          "next": ["fcecdccc-acbc-4ccc-8ccc-cccccccccccc"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "fcecdccc-acbc-4ccc-8ccc-cccccccccccc",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "icon": "mdi:check"
+          },
           "next": null,
           "createdAt": "2025-06-26T06:00:00Z"
         }
       ]
     },
-    "content": "Order a product after verifying its compliance certificate and notify the manager.",
+    "content": "Order a product after verifying its compliance certificate, take the payment once I approve it and notify the manager.",
     "knowledge": [
       {
         "id": "c1d2e3f4-0001-4001-8001-aaaaaaaaaaaa",
@@ -1537,10 +1901,175 @@
     "task": {
       "id": "e1f2a3b4-c5d6-4001-8001-100000000004",
       "status": "COMPLETED",
-      "description": "Process order and compliance check for the product.",
+      "description": "Process an order with a compliance certificate check and a user-approved payment before shipping.",
       "blueprintId": "f4e3d2c1-b0a0-4000-8000-100000000001"
     },
-    "answer": "Starting compliance-gated order flow. Finding product, then checking certificate. If valid, PO will be opened and manager notified."
+    "answer": "Starting compliance-gated order flow. Finding product, then checking certificate. If valid, the PO is opened and the payment prepared; once you approve the charge I'll ship it and notify the manager."
+  },
+  {
+    "blueprint": {
+      "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+      "title": "Order and Compliance",
+      "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "nodes": [
+        {
+          "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:find_product",
+            "icon": "mdi:magnify"
+          },
+          "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:knowledge_lookup",
+            "icon": "mdi:book-search"
+          },
+          "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:assign_certificate",
+            "icon": "mdi:certificate-outline"
+          },
+          "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+          "type": "NORMAL",
+          "properties": {
+            "action": "ORDER:create_po",
+            "icon": "mdi:file-document-plus"
+          },
+          "next": ["f5e5d5c5-a5b5-4555-8555-555555555555"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f5e5d5c5-a5b5-4555-8555-555555555555",
+          "type": "NORMAL",
+          "properties": {
+            "action": "STRIPE:create_payment_intent",
+            "icon": "mdi:credit-card-outline"
+          },
+          "next": ["f9e9d9c9-a9b9-4999-8999-999999999999"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f9e9d9c9-a9b9-4999-8999-999999999999",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "icon": "mdi:account-question"
+          },
+          "next": ["faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa",
+          "type": "CONDITION",
+          "properties": {
+            "action": "PLATFORM:decision",
+            "icon": "mdi:source-branch"
+          },
+          "true": ["f7e7d7c7-a7b7-4777-8777-777777777777"],
+          "false": ["fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f7e7d7c7-a7b7-4777-8777-777777777777",
+          "type": "NORMAL",
+          "properties": {
+            "action": "STRIPE:confirm_payment_intent",
+            "icon": "mdi:check-decagram"
+          },
+          "next": ["f8e8d8c8-a8b8-4888-8888-888888888888"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f8e8d8c8-a8b8-4888-8888-888888888888",
+          "type": "NORMAL",
+          "properties": {
+            "action": "FEDEX:create_shipment",
+            "icon": "mdi:truck-delivery-outline"
+          },
+          "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+          "type": "NORMAL",
+          "properties": {
+            "action": "GREY:send_email",
+            "icon": "mdi:email"
+          },
+          "next": ["fcecdccc-acbc-4ccc-8ccc-cccccccccccc"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb",
+          "type": "NORMAL",
+          "properties": {
+            "action": "STRIPE:cancel_payment_intent",
+            "icon": "mdi:credit-card-off-outline"
+          },
+          "next": ["fdeddcdc-adbd-4ddd-8ddd-dddddddddddd"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "fdeddcdc-adbd-4ddd-8ddd-dddddddddddd",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "icon": "mdi:bell-off"
+          },
+          "next": ["fcecdccc-acbc-4ccc-8ccc-cccccccccccc"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "fcecdccc-acbc-4ccc-8ccc-cccccccccccc",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "icon": "mdi:check"
+          },
+          "next": null,
+          "createdAt": "2025-06-26T06:00:00Z"
+        }
+      ]
+    },
+    "content": "Order the product, ask me to approve the payment before charging, then ship it to the customer.",
+    "knowledge": [
+      {
+        "id": "c1d2e3f4-0001-4001-8001-aaaaaaaaaaaa",
+        "type": "TEXT",
+        "text": "Product compliance certificate is required before creating a purchase order.",
+        "status": "COMPLETED",
+        "createdAt": "2025-06-26T06:00:00Z"
+      },
+      {
+        "id": "c1d2e3f4-0003-4003-8003-cccccccccccc",
+        "type": "TEXT",
+        "text": "The charge needs the user's approval; only an approved payment is confirmed and shipped, and the confirmation email carries the tracking number.",
+        "status": "COMPLETED",
+        "createdAt": "2025-06-26T06:00:00Z"
+      }
+    ],
+    "task": {
+      "id": "e1f2a3b4-c5d6-4001-8001-100000000002",
+      "status": "COMPLETED",
+      "description": "Process an order with a compliance certificate check and a user-approved payment before shipping.",
+      "blueprintId": "f4e3d2c1-b0a0-4000-8000-100000000001"
+    },
+    "answer": "Starting the order. I'll verify the certificate, open the PO and prepare the payment, then ask you to approve the charge before anything is taken. Once approved, I'll ship it and email the confirmation with the tracking number."
   },
   {
     "blueprint": {

@@ -704,7 +704,7 @@ const MCPs = [
     label: "Order",
     provider: "ORDER",
     description:
-      "Create a Purchase Order (PO) for a product. Returns the created purchase order details.",
+      "Create a Purchase Order (PO) for a product. Returns the purchase order with its total amount in minor currency units, total weight in kilograms and the ship-from / ship-to postal codes.",
     direction: "OUTGOING",
     icon: "mdi:file-document-plus",
     lib: "mcp",
@@ -3586,10 +3586,9 @@ const MCPs = [
         name: {
           type: "string",
           description: "The customer's full name.",
-          nullable: true,
         },
       },
-      required: ["email"],
+      required: ["email", "name"],
     },
     outputSchema: {
       type: "object",
@@ -3807,24 +3806,26 @@ const MCPs = [
     action: "STRIPE:create_refund",
     label: "Stripe",
     provider: "STRIPE",
-    description: "Issue a full or partial refund for a charge.",
+    description:
+      "Refund a successful payment; omit amount for its remaining refundable balance. Uses the local enterprise mock API; no real charges.",
     direction: "OUTGOING",
     icon: "simple-icons:stripe",
     lib: "mcp",
     inputSchema: {
       type: "object",
       properties: {
-        charge_id: {
+        payment_intent: {
           type: "string",
-          description: ".",
+          description: "The succeeded payment intent ID to refund.",
         },
         amount: {
-          type: "number",
-          description: "Amount to refund. Omit for a full refund.",
+          type: "integer",
+          description:
+            "Amount to refund in minor currency units. Omit for a full refund.",
           nullable: true,
         },
       },
-      required: ["charge_id"],
+      required: ["payment_intent"],
     },
     outputSchema: {
       type: "object",
@@ -4114,6 +4115,521 @@ const MCPs = [
         },
       },
       required: ["coupon_id"],
+    },
+  },
+  {
+    id: "e5f6a7b8-5000-4000-8000-000000000016",
+    action: "STRIPE:create_payment_intent",
+    label: "Stripe",
+    provider: "STRIPE",
+    description:
+      "Create a payment intent for an amount in minor currency units; confirm defaults to false. Uses the local enterprise mock API; no real charges.",
+    direction: "OUTGOING",
+    icon: "simple-icons:stripe",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        amount: {
+          type: "integer",
+          description:
+            "Positive amount in minor currency units (e.g. 1000 = USD 10.00).",
+        },
+        currency: {
+          type: "string",
+          description: "Three-letter ISO currency code (e.g. usd).",
+        },
+        description: {
+          type: "string",
+          description: "Description shown on the payment.",
+          nullable: true,
+        },
+        confirm: {
+          type: "boolean",
+          description: "Immediately simulate a successful payment when true.",
+          nullable: true,
+        },
+      },
+      required: ["amount", "currency"],
+    },
+    outputSchema: {
+      type: "object",
+      properties: {
+        id: {
+          type: "string",
+          description: ".",
+        },
+        status: {
+          type: "string",
+          description: ".",
+        },
+        amount: {
+          type: "number",
+          description: ".",
+        },
+      },
+      required: ["id", "status"],
+    },
+  },
+  {
+    id: "e5f6a7b8-5000-4000-8000-000000000017",
+    action: "STRIPE:confirm_payment_intent",
+    label: "Stripe",
+    provider: "STRIPE",
+    description:
+      "Confirm an unconfirmed payment intent so it succeeds. Uses the local enterprise mock API; no real charges.",
+    direction: "OUTGOING",
+    icon: "simple-icons:stripe",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        payment_intent_id: {
+          type: "string",
+          description: "The payment intent ID to confirm.",
+        },
+      },
+      required: ["payment_intent_id"],
+    },
+    outputSchema: {
+      type: "object",
+      properties: {
+        id: {
+          type: "string",
+          description: ".",
+        },
+        status: {
+          type: "string",
+          description: ".",
+        },
+      },
+      required: ["id", "status"],
+    },
+  },
+  {
+    id: "e5f6a7b8-5000-4000-8000-000000000018",
+    action: "STRIPE:cancel_payment_intent",
+    label: "Stripe",
+    provider: "STRIPE",
+    description:
+      "Cancel an unconfirmed payment intent. Uses the local enterprise mock API; no real charges.",
+    direction: "OUTGOING",
+    icon: "simple-icons:stripe",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        payment_intent_id: {
+          type: "string",
+          description: "The payment intent ID to cancel.",
+        },
+      },
+      required: ["payment_intent_id"],
+    },
+    outputSchema: {
+      type: "object",
+      properties: {
+        id: {
+          type: "string",
+          description: ".",
+        },
+        status: {
+          type: "string",
+          description: ".",
+        },
+      },
+      required: ["id", "status"],
+    },
+  },
+  {
+    id: "e5f6a7b8-5000-4000-8000-000000000019",
+    action: "STRIPE:get_payment_intent",
+    label: "Stripe",
+    provider: "STRIPE",
+    description:
+      "Retrieve a payment intent by its ID. Uses the local enterprise mock API; no real charges.",
+    direction: "OUTGOING",
+    icon: "simple-icons:stripe",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        id: {
+          type: "string",
+          description: "The payment intent ID to retrieve.",
+        },
+      },
+      required: ["id"],
+    },
+    outputSchema: {
+      type: "object",
+      properties: {
+        id: {
+          type: "string",
+          description: ".",
+        },
+        status: {
+          type: "string",
+          description: ".",
+        },
+        amount: {
+          type: "number",
+          description: ".",
+        },
+      },
+      required: ["id", "status"],
+    },
+  },
+  {
+    id: "e5f6a7b8-5000-4000-8000-000000000020",
+    action: "STRIPE:list_payment_intents",
+    label: "Stripe",
+    provider: "STRIPE",
+    description:
+      "List payment intents with pagination. Uses the local enterprise mock API; no real charges.",
+    direction: "OUTGOING",
+    icon: "simple-icons:stripe",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        limit: {
+          type: "integer",
+          description: "How many payment intents to return (1-100).",
+          nullable: true,
+        },
+        starting_after: {
+          type: "string",
+          description: "Pagination cursor from the previous response.",
+          nullable: true,
+        },
+        customer: {
+          type: "string",
+          description: "Only return payment intents for this customer ID.",
+          nullable: true,
+        },
+      },
+      required: [],
+    },
+  },
+  {
+    id: "e5f6a7b8-5000-4000-8000-000000000021",
+    action: "STRIPE:list_customers",
+    label: "Stripe",
+    provider: "STRIPE",
+    description:
+      "List customers with pagination. Uses the local enterprise mock API; no real charges.",
+    direction: "OUTGOING",
+    icon: "simple-icons:stripe",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        limit: {
+          type: "integer",
+          description: "How many customers to return (1-100).",
+          nullable: true,
+        },
+        starting_after: {
+          type: "string",
+          description: "Pagination cursor from the previous response.",
+          nullable: true,
+        },
+      },
+      required: [],
+    },
+  },
+  {
+    id: "e5f6a7b8-5000-4000-8000-000000000022",
+    action: "STRIPE:get_customer",
+    label: "Stripe",
+    provider: "STRIPE",
+    description:
+      "Retrieve a customer by its ID. Uses the local enterprise mock API; no real charges.",
+    direction: "OUTGOING",
+    icon: "simple-icons:stripe",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        id: {
+          type: "string",
+          description: "The customer ID to retrieve.",
+        },
+      },
+      required: ["id"],
+    },
+  },
+  {
+    id: "e5f6a7b8-5000-4000-8000-000000000023",
+    action: "STRIPE:list_refunds",
+    label: "Stripe",
+    provider: "STRIPE",
+    description:
+      "List refunds with pagination. Uses the local enterprise mock API; no real charges.",
+    direction: "OUTGOING",
+    icon: "simple-icons:stripe",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        limit: {
+          type: "integer",
+          description: "How many refunds to return (1-100).",
+          nullable: true,
+        },
+        starting_after: {
+          type: "string",
+          description: "Pagination cursor from the previous response.",
+          nullable: true,
+        },
+        payment_intent: {
+          type: "string",
+          description: "Only return refunds for this payment intent ID.",
+          nullable: true,
+        },
+      },
+      required: [],
+    },
+  },
+  {
+    id: "e5f6a7b8-5000-4000-8000-000000000024",
+    action: "STRIPE:get_refund",
+    label: "Stripe",
+    provider: "STRIPE",
+    description:
+      "Retrieve a refund by its ID. Uses the local enterprise mock API; no real charges.",
+    direction: "OUTGOING",
+    icon: "simple-icons:stripe",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        id: {
+          type: "string",
+          description: "The refund ID to retrieve.",
+        },
+      },
+      required: ["id"],
+    },
+  },
+  {
+    id: "f7e8d9c0-7000-4000-8000-000000000001",
+    action: "FEDEX:create_shipment",
+    label: "FedEx",
+    provider: "FEDEX",
+    description:
+      "Create a one-package shipment and return its tracking number. Uses the local enterprise mock API; no real shipping.",
+    direction: "OUTGOING",
+    icon: "simple-icons:fedex",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        sender_postal_code: {
+          type: "string",
+          description: "Origin postal code.",
+        },
+        sender_country_code: {
+          type: "string",
+          description: "Origin two-letter country code.",
+        },
+        recipient_postal_code: {
+          type: "string",
+          description: "Destination postal code.",
+        },
+        recipient_country_code: {
+          type: "string",
+          description: "Destination two-letter country code.",
+        },
+        recipient_name: {
+          type: "string",
+          description: "Recipient name.",
+          nullable: true,
+        },
+        weight: {
+          type: "number",
+          description: "Package weight.",
+        },
+        weight_units: {
+          type: "string",
+          description: "Weight units; defaults to KG.",
+          enum: ["KG", "LB"],
+          nullable: true,
+        },
+        service_type: {
+          type: "string",
+          description: "Service level; defaults to FEDEX_GROUND.",
+          enum: ["FEDEX_GROUND", "FEDEX_2_DAY", "PRIORITY_OVERNIGHT"],
+          nullable: true,
+        },
+      },
+      required: [
+        "sender_postal_code",
+        "sender_country_code",
+        "recipient_postal_code",
+        "recipient_country_code",
+        "weight",
+      ],
+    },
+    outputSchema: {
+      type: "object",
+      properties: {
+        tracking_number: {
+          type: "string",
+          description: ".",
+        },
+        service_type: {
+          type: "string",
+          description: ".",
+        },
+      },
+      required: ["tracking_number"],
+    },
+  },
+  {
+    id: "f7e8d9c0-7000-4000-8000-000000000002",
+    action: "FEDEX:get_rate_quote",
+    label: "FedEx",
+    provider: "FEDEX",
+    description:
+      "Get a simulated USD rate for one package. Uses the local enterprise mock API; no real shipping.",
+    direction: "OUTGOING",
+    icon: "simple-icons:fedex",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        sender_postal_code: {
+          type: "string",
+          description: "Origin postal code.",
+        },
+        sender_country_code: {
+          type: "string",
+          description: "Origin two-letter country code.",
+        },
+        recipient_postal_code: {
+          type: "string",
+          description: "Destination postal code.",
+        },
+        recipient_country_code: {
+          type: "string",
+          description: "Destination two-letter country code.",
+        },
+        recipient_name: {
+          type: "string",
+          description: "Recipient name.",
+          nullable: true,
+        },
+        weight: {
+          type: "number",
+          description: "Package weight.",
+        },
+        weight_units: {
+          type: "string",
+          description: "Weight units; defaults to KG.",
+          enum: ["KG", "LB"],
+          nullable: true,
+        },
+        service_type: {
+          type: "string",
+          description: "Service level; defaults to FEDEX_GROUND.",
+          enum: ["FEDEX_GROUND", "FEDEX_2_DAY", "PRIORITY_OVERNIGHT"],
+          nullable: true,
+        },
+      },
+      required: [
+        "sender_postal_code",
+        "sender_country_code",
+        "recipient_postal_code",
+        "recipient_country_code",
+        "weight",
+      ],
+    },
+  },
+  {
+    id: "f7e8d9c0-7000-4000-8000-000000000003",
+    action: "FEDEX:track_shipment",
+    label: "FedEx",
+    provider: "FEDEX",
+    description:
+      "Track a shipment and retrieve its scan history. Uses the local enterprise mock API; no real shipping.",
+    direction: "OUTGOING",
+    icon: "simple-icons:fedex",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        tracking_number: {
+          type: "string",
+          description: "Tracking number returned by create_shipment.",
+        },
+      },
+      required: ["tracking_number"],
+    },
+  },
+  {
+    id: "f7e8d9c0-7000-4000-8000-000000000004",
+    action: "FEDEX:cancel_shipment",
+    label: "FedEx",
+    provider: "FEDEX",
+    description:
+      "Cancel a shipment that has not been delivered or canceled. Uses the local enterprise mock API; no real shipping.",
+    direction: "OUTGOING",
+    icon: "simple-icons:fedex",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        tracking_number: {
+          type: "string",
+          description: "Tracking number of the shipment to cancel.",
+        },
+      },
+      required: ["tracking_number"],
+    },
+  },
+  {
+    id: "f7e8d9c0-7000-4000-8000-000000000005",
+    action: "FEDEX:list_shipments",
+    label: "FedEx",
+    provider: "FEDEX",
+    description:
+      "List all demo shipments. Uses the local enterprise mock API; no real shipping.",
+    direction: "OUTGOING",
+    icon: "simple-icons:fedex",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    id: "f7e8d9c0-7000-4000-8000-000000000006",
+    action: "FEDEX:update_shipment_status",
+    label: "FedEx",
+    provider: "FEDEX",
+    description:
+      "Simulate a shipment scan (demo-only). Uses the local enterprise mock API; no real shipping.",
+    direction: "OUTGOING",
+    icon: "simple-icons:fedex",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        tracking_number: {
+          type: "string",
+          description: "Tracking number of the shipment to scan.",
+        },
+        status: {
+          type: "string",
+          description:
+            "Picked up, in transit, out for delivery, delivered, canceled.",
+          enum: ["PU", "IT", "OD", "DL", "CA"],
+        },
+      },
+      required: ["tracking_number", "status"],
     },
   },
   {

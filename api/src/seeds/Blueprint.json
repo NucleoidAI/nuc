@@ -177,9 +177,9 @@
     {
       "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
       "title": "Order and Compliance",
-      "description": "Find product, assign compliance certificate, create purchase order, write process to LLM, and send email.",
+      "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
       "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
-      "skill": "**Product Order \u2014 Certificate-Backed Purchase**\n\nUse this Blueprint when a product order must have a compliance certificate assigned before a purchase order can be created.\n\nThe order request arrives with the product already chosen \u2014 it comes in from the requesting system, so do not ask which product to order.\n\nFlow: Find product \u2192 Check certificate via knowledge lookup \u2192 Assign certificate \u2192 Create purchase order \u2192 Send email.\n\nExits after emailing confirmation of the completed purchase order.",
+      "skill": "**Product Order \u2014 Certificate-Backed Purchase**\n\nUse this Blueprint when a product order must have a compliance certificate assigned before a purchase order can be created.\n\nThe order request arrives with the product already chosen \u2014 it comes in from the requesting system, so do not ask which product to order.\n\nFlow: Find product \u2192 Check certificate via knowledge lookup \u2192 Assign certificate \u2192 Create purchase order \u2192 Create payment \u2192 Ask the user to approve the charge \u2192 [Not approved: cancel the payment, notify, end] \u2192 Confirm payment \u2192 Create shipment \u2192 Send email.\n\nThe payment intent is created unconfirmed, so nothing is charged until the user approves it. Only an approved payment is confirmed, shipped and emailed; a declined one is cancelled and the purchase order stays unpaid.\n\nExits after emailing confirmation of the completed purchase order, or early with a cancellation notice if the user declines the charge.",
       "nodes": [
         {
           "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
@@ -222,9 +222,70 @@
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:create_po",
-            "description": "Create a Purchase Order for the certified product",
+            "description": "Create a Purchase Order for the certified product; it returns total_amount, currency, total_weight_kg and the ship_from / ship_to postal codes used by the next steps",
             "label": "Create Purchase Order",
             "icon": "mdi:file-document-plus"
+          },
+          "next": ["f5e5d5c5-a5b5-4555-8555-555555555555"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f5e5d5c5-a5b5-4555-8555-555555555555",
+          "type": "NORMAL",
+          "properties": {
+            "action": "STRIPE:create_payment_intent",
+            "description": "Create a payment intent for the purchase order using its total_amount and currency, with the PO number in the description. Leave the customer field empty \u2014 this flow has no Stripe customer and an invented ID is rejected",
+            "label": "Create Payment",
+            "icon": "mdi:credit-card-outline"
+          },
+          "next": ["f9e9d9c9-a9b9-4999-8999-999999999999"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f9e9d9c9-a9b9-4999-8999-999999999999",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "description": "Ask the user to approve the payment before the card is charged. Write the question from the live data: name the purchase order number, the product and the amount in major units with its currency, and ask for a yes/no answer",
+            "label": "Confirm Payment with User",
+            "icon": "mdi:account-question"
+          },
+          "next": ["faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa",
+          "type": "CONDITION",
+          "properties": {
+            "action": "PLATFORM:decision",
+            "description": "Decide based on the user's answer whether the payment may be charged",
+            "label": "Check Payment Approval",
+            "icon": "mdi:source-branch"
+          },
+          "true": ["f7e7d7c7-a7b7-4777-8777-777777777777"],
+          "false": ["fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f7e7d7c7-a7b7-4777-8777-777777777777",
+          "type": "NORMAL",
+          "properties": {
+            "action": "STRIPE:confirm_payment_intent",
+            "description": "Confirm the payment intent so the purchase order is paid before the goods are shipped",
+            "label": "Confirm Payment",
+            "icon": "mdi:check-decagram"
+          },
+          "next": ["f8e8d8c8-a8b8-4888-8888-888888888888"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f8e8d8c8-a8b8-4888-8888-888888888888",
+          "type": "NORMAL",
+          "properties": {
+            "action": "FEDEX:create_shipment",
+            "description": "Create the outbound shipment for the paid purchase order using the ship_from and ship_to postal codes and total_weight_kg, and return the tracking number",
+            "label": "Create Shipment",
+            "icon": "mdi:truck-delivery-outline"
           },
           "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
           "createdAt": "2025-06-26T06:00:00Z"
@@ -234,9 +295,45 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:send_email",
-            "description": "Send email notification about the completed purchase order",
+            "description": "Send email notification about the completed purchase order, including the payment confirmation and the shipment tracking number",
             "label": "Send Email",
             "icon": "mdi:email"
+          },
+          "next": ["fcecdccc-acbc-4ccc-8ccc-cccccccccccc"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb",
+          "type": "NORMAL",
+          "properties": {
+            "action": "STRIPE:cancel_payment_intent",
+            "description": "Cancel the unconfirmed payment intent because the user declined the charge",
+            "label": "Cancel Payment",
+            "icon": "mdi:credit-card-off-outline"
+          },
+          "next": ["fdeddcdc-adbd-4ddd-8ddd-dddddddddddd"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "fdeddcdc-adbd-4ddd-8ddd-dddddddddddd",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Tell the user the payment was cancelled and nothing was shipped; the purchase order stays unpaid",
+            "label": "Notify Cancellation",
+            "icon": "mdi:bell-off"
+          },
+          "next": ["fcecdccc-acbc-4ccc-8ccc-cccccccccccc"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "fcecdccc-acbc-4ccc-8ccc-cccccccccccc",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "Mark the order workflow as complete",
+            "label": "Complete",
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2025-06-26T06:00:00Z"
@@ -259,7 +356,7 @@
         ],
         "referenceBlueprint": null,
         "supervising": null,
-        "userRequest": "A product order request came in. Find the product, assign its compliance certificate, create a purchase order and record the process.",
+        "userRequest": "A product order request came in. Find the product, assign its compliance certificate, create a purchase order, ask me to approve the payment, then ship it and record the process.",
         "capturedAt": "2025-06-26T06:00:00Z"
       }
     },

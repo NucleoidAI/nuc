@@ -3,46 +3,116 @@
     {
       "id": "vnd-1",
       "name": "Vendor Alpha",
-      "email": "alpha@vendor.com"
+      "email": "alpha@vendor.com",
+      "postal_code": "30301",
+      "country_code": "US"
     },
     {
       "id": "vnd-2",
       "name": "Vendor Beta",
-      "email": "beta@vendor.com"
+      "email": "beta@vendor.com",
+      "postal_code": "60601",
+      "country_code": "US"
     },
     {
       "id": "vnd-3",
       "name": "Vendor Gamma",
-      "email": "gamma@vendor.com"
+      "email": "gamma@vendor.com",
+      "postal_code": "94105",
+      "country_code": "US"
     }
   ],
   "products": [
-    { "id": "prd-1", "name": "product-1", "vendor_id": "vnd-1" },
-    { "id": "prd-2", "name": "product-2", "vendor_id": "vnd-2" },
-    { "id": "prd-3", "name": "product-3", "vendor_id": "vnd-3" },
-    { "id": "prd-4", "name": "product-4", "vendor_id": "vnd-1" }
+    {
+      "id": "prd-1",
+      "name": "product-1",
+      "vendor_id": "vnd-1",
+      "unit_price": 12500,
+      "currency": "usd",
+      "weight_kg": 2.5
+    },
+    {
+      "id": "prd-2",
+      "name": "product-2",
+      "vendor_id": "vnd-2",
+      "unit_price": 8900,
+      "currency": "usd",
+      "weight_kg": 1.2
+    },
+    {
+      "id": "prd-3",
+      "name": "product-3",
+      "vendor_id": "vnd-3",
+      "unit_price": 45000,
+      "currency": "usd",
+      "weight_kg": 7.5
+    },
+    {
+      "id": "prd-4",
+      "name": "product-4",
+      "vendor_id": "vnd-1",
+      "unit_price": 19900,
+      "currency": "usd",
+      "weight_kg": 3
+    }
   ],
   "certificates": ["FFC", "CE"],
   "product_certificates": [],
-  "cities": ["Atlanta", "New York", "Chicago", "Houston", "San Francisco"],
+  "cities": [
+    { "name": "Atlanta", "postal_code": "30303", "country_code": "US" },
+    { "name": "New York", "postal_code": "10001", "country_code": "US" },
+    { "name": "Chicago", "postal_code": "60601", "country_code": "US" },
+    { "name": "Houston", "postal_code": "77002", "country_code": "US" },
+    { "name": "San Francisco", "postal_code": "94105", "country_code": "US" }
+  ],
   "purchase_orders": [
     {
       "order_id": "po-1001",
       "product_id": "prd-1",
       "city": "Atlanta",
-      "quantity": 5
+      "quantity": 5,
+      "unit_price": 12500,
+      "currency": "usd",
+      "total_amount": 62500,
+      "total_weight_kg": 12.5,
+      "ship_from": { "postal_code": "30301", "country_code": "US" },
+      "ship_to": {
+        "city": "Atlanta",
+        "postal_code": "30303",
+        "country_code": "US"
+      }
     },
     {
       "order_id": "po-1002",
       "product_id": "prd-2",
       "city": "Chicago",
-      "quantity": 10
+      "quantity": 10,
+      "unit_price": 8900,
+      "currency": "usd",
+      "total_amount": 89000,
+      "total_weight_kg": 12,
+      "ship_from": { "postal_code": "60601", "country_code": "US" },
+      "ship_to": {
+        "city": "Chicago",
+        "postal_code": "60601",
+        "country_code": "US"
+      }
     },
     {
       "order_id": "po-1003",
       "product_id": "prd-3",
       "city": "New York",
-      "quantity": 2
+      "quantity": 2,
+      "unit_price": 45000,
+      "currency": "usd",
+      "total_amount": 90000,
+      "total_weight_kg": 15,
+      "ship_from": { "postal_code": "94105", "country_code": "US" },
+      "ship_to": {
+        "city": "New York",
+        "postal_code": "10001",
+        "country_code": "US"
+      }
     }
   ]
 }

@@ -6,7 +6,7 @@ import logger from "../../../logger/logger.js";
 export const createPOTool: Tool<CreatePOInput> = {
   name: "ORDER:create_po",
   description:
-    "Create a Purchase Order (PO) for a product. Requires the product to exist and a valid city. Returns the created purchase order details.",
+    "Create a Purchase Order (PO) for a product. Requires the product to exist and a valid city. Returns the purchase order with its total amount in minor currency units, total weight in kilograms and the ship-from / ship-to postal codes.",
   inputSchema: {
     type: "object",
     properties: {
@@ -51,8 +51,13 @@ export const createPOTool: Tool<CreatePOInput> = {
         };
       }
 
-      const cities = (await findAll("cities")) as unknown as string[];
-      if (!cities.includes(args.city)) {
+      const cities = (await findAll("cities")) as unknown as Array<{
+        name: string;
+        postal_code: string;
+        country_code: string;
+      }>;
+      const destination = cities.find((city) => city.name === args.city);
+      if (!destination) {
         logger.warn(
           { tool: "ORDER:create_po", city: args.city },
           "Invalid city",
@@ -64,7 +69,7 @@ export const createPOTool: Tool<CreatePOInput> = {
               type: "text",
               text: JSON.stringify({
                 error: "INVALID_CITY",
-                available_cities: cities,
+                available_cities: cities.map((city) => city.name),
               }),
             },
           ],
@@ -72,14 +77,35 @@ export const createPOTool: Tool<CreatePOInput> = {
         };
       }
 
+      const vendor = (await findOne(
+        "vendors",
+        "id",
+        (product as any).vendor_id,
+      )) as any;
+
       const existingOrders = await findAll("purchase_orders");
       const orderId = `po-${1000 + existingOrders.length + 1}`;
 
+      const unitPrice = (product as any).unit_price;
       const newOrder = {
         order_id: orderId,
         product_id: args.product_id,
         city: args.city,
         quantity: args.quantity,
+        unit_price: unitPrice,
+        currency: (product as any).currency,
+        total_amount: unitPrice * args.quantity,
+        total_weight_kg:
+          Math.round((product as any).weight_kg * args.quantity * 1000) / 1000,
+        ship_from: {
+          postal_code: vendor?.postal_code,
+          country_code: vendor?.country_code,
+        },
+        ship_to: {
+          city: destination.name,
+          postal_code: destination.postal_code,
+          country_code: destination.country_code,
+        },
       };
 
       await insert("purchase_orders", newOrder);

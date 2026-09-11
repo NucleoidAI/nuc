@@ -279,11 +279,11 @@
     "existing": false
   },
   {
-    "content": "I want to order item to Atlanta.",
+    "content": "I want to order item to Atlanta, charge me after I confirm and ship it there.",
     "decision": "BLUEPRINT",
     "Blueprint": {
       "title": "Order and Compliance",
-      "description": "Find product, check certificate, assign if found or handoff if missing, create purchase order, and send email.",
+      "description": "Find product, check certificate, assign if found or handoff if missing, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
       "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
       "nodes": [
         {
@@ -347,6 +347,57 @@
             "action": "ORDER:create_po",
             "icon": "mdi:file-document-plus"
           },
+          "next": ["f5e5d5c5-a5b5-4555-8555-555555555555"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f5e5d5c5-a5b5-4555-8555-555555555555",
+          "type": "NORMAL",
+          "properties": {
+            "action": "STRIPE:create_payment_intent",
+            "icon": "mdi:credit-card-outline"
+          },
+          "next": ["f9e9d9c9-a9b9-4999-8999-999999999999"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f9e9d9c9-a9b9-4999-8999-999999999999",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "icon": "mdi:account-question"
+          },
+          "next": ["faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa",
+          "type": "CONDITION",
+          "properties": {
+            "action": "PLATFORM:decision",
+            "icon": "mdi:source-branch"
+          },
+          "true": ["f7e7d7c7-a7b7-4777-8777-777777777777"],
+          "false": ["fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f7e7d7c7-a7b7-4777-8777-777777777777",
+          "type": "NORMAL",
+          "properties": {
+            "action": "STRIPE:confirm_payment_intent",
+            "icon": "mdi:check-decagram"
+          },
+          "next": ["f8e8d8c8-a8b8-4888-8888-888888888888"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "f8e8d8c8-a8b8-4888-8888-888888888888",
+          "type": "NORMAL",
+          "properties": {
+            "action": "FEDEX:create_shipment",
+            "icon": "mdi:truck-delivery-outline"
+          },
           "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
@@ -356,6 +407,26 @@
           "properties": {
             "action": "GREY:send_email",
             "icon": "mdi:email"
+          },
+          "next": null,
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb",
+          "type": "NORMAL",
+          "properties": {
+            "action": "STRIPE:cancel_payment_intent",
+            "icon": "mdi:credit-card-off-outline"
+          },
+          "next": ["fdeddcdc-adbd-4ddd-8ddd-dddddddddddd"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "fdeddcdc-adbd-4ddd-8ddd-dddddddddddd",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "icon": "mdi:bell-off"
           },
           "next": null,
           "createdAt": "2025-06-26T06:00:00Z"

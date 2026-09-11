@@ -48,6 +48,7 @@ router.post("/", async (req, res) => {
     sessionFn.get({ sessionId }),
     agentFn.blueprintChatContext({
       agentId,
+      teamId,
       blueprintId,
       supervising: supervisingInstance
         ? {

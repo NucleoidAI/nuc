@@ -469,6 +469,27 @@ async function task({ taskId }: { taskId: string }) {
       });
     }
 
+    const targetAgent = await Agent.findByPk(handoffParams.targetAgentId);
+    const targetBlueprint = handoffParams.targetBlueprintId
+      ? await blueprintFn
+          .get({ blueprintId: handoffParams.targetBlueprintId })
+          .catch(() => null)
+      : null;
+
+    if (!targetAgent || (handoffParams.targetBlueprintId && !targetBlueprint)) {
+      return await taskFn.update({
+        taskId,
+        status: "FAILED",
+        comment: `Handoff target does not exist: agent ${
+          handoffParams.targetAgentId
+        }${
+          handoffParams.targetBlueprintId
+            ? `, blueprint ${handoffParams.targetBlueprintId}`
+            : ""
+        }. Use an agent and blueprint id that exist on this team.`,
+      });
+    }
+
     const stepsToInherit = await taskFn.listSteps({ taskId });
     const inheritedSteps = stepsToInherit.map(({ s }) => ({
       s,
@@ -753,12 +774,47 @@ type BlueprintChatContextSummary = {
   supervising: { question?: string; status?: string } | null;
 };
 
+async function handoffTargets({
+  agentId,
+  teamId,
+}: {
+  agentId: string;
+  teamId?: string | null;
+}) {
+  if (!teamId) {
+    return [];
+  }
+
+  const agentInstances = await Agent.findAll({ where: { teamId } });
+
+  return Promise.all(
+    agentInstances
+      .filter((instance) => instance.id !== agentId)
+      .map(async (instance) => ({
+        targetAgentId: instance.id,
+        name: instance.name,
+        description: instance.description,
+        blueprints: (
+          await blueprintFn.list({
+            agentId: instance.id,
+            includeDetails: false,
+          })
+        ).map(({ id, title }: { id: string; title: string }) => ({
+          targetBlueprintId: id,
+          title,
+        })),
+      })),
+  );
+}
+
 async function blueprintChatContext({
   agentId,
+  teamId,
   blueprintId,
   supervising,
 }: {
   agentId: string;
+  teamId?: string | null;
   blueprintId?: string | null;
   supervising?: {
     id: string;
@@ -771,11 +827,15 @@ async function blueprintChatContext({
   messages: { role: "system"; content: string }[];
   summary: BlueprintChatContextSummary;
 }> {
-  const [agentInfo, agentKnowledge, referenceBlueprint] = await Promise.all([
-    info({ agentId }),
-    knowledge({ agentId }),
-    blueprintId ? blueprintFn.getWithNodes(blueprintId) : Promise.resolve(null),
-  ]);
+  const [agentInfo, agentKnowledge, referenceBlueprint, targets] =
+    await Promise.all([
+      info({ agentId }),
+      knowledge({ agentId }),
+      blueprintId
+        ? blueprintFn.getWithNodes(blueprintId)
+        : Promise.resolve(null),
+      handoffTargets({ agentId, teamId }),
+    ]);
 
   const blueprintForLLM = referenceBlueprint
     ? blueprintFn.stripDetails(referenceBlueprint)
@@ -795,6 +855,10 @@ async function blueprintChatContext({
     ...(supervising
       ? [{ role: "system" as const, content: JSON.stringify({ supervising }) }]
       : []),
+    {
+      role: "system" as const,
+      content: JSON.stringify({ handoffTargets: targets }),
+    },
   ];
 
   const agentContent = agentInfo.content as {

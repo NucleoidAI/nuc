@@ -31,9 +31,12 @@ test("All 17 tools expose unique names, schemas and handlers", () => {
   const tools = [...stripe, ...fedex];
   expect(tools.length).toBe(17);
   expect(new Set(tools.map((t) => t.name)).size).toBe(17);
-  for (const t of tools)
+  for (const t of tools) {
+    expect(t.name).toMatch(/^(STRIPE|FEDEX):[a-z_]+$/);
+    expect(t.description.length).toBeGreaterThan(0);
     for (const key of t.inputSchema.required)
       expect(t.inputSchema.properties[key]).toBeDefined();
+  }
 });
 test("Stripe forwards pagination and integer payment amounts", async () => {
   const calls = stub({ object: "list", data: [] });

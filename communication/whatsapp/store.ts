@@ -1,3 +1,4 @@
+//AI-generated
 import storage from "../Storage";
 import { whatsappConfig } from "./config";
 
@@ -7,7 +8,11 @@ type Conversation = {
   phoneNumberId: string;
 };
 
-function conversationKey({ projectId, waId, phoneNumberId }: Conversation): string {
+function conversationKey({
+  projectId,
+  waId,
+  phoneNumberId,
+}: Conversation): string {
   return `whatsapp:conversation:${projectId}:${phoneNumberId}:${waId}`;
 }
 
@@ -28,11 +33,19 @@ function rememberSession({
   storage.set(sessionKey({ sessionId }), conversation, sessionTtlMs);
 }
 
-function findSessionId({ conversation }: { conversation: Conversation }): string | null {
+function findSessionId({
+  conversation,
+}: {
+  conversation: Conversation;
+}): string | null {
   return storage.get(conversationKey(conversation));
 }
 
-function findConversation({ sessionId }: { sessionId: string }): Conversation | null {
+function findConversation({
+  sessionId,
+}: {
+  sessionId: string;
+}): Conversation | null {
   return storage.get(sessionKey({ sessionId }));
 }
 
@@ -46,7 +59,11 @@ function forgetSession({ sessionId }: { sessionId: string }): void {
   storage.delete(sessionKey({ sessionId }));
 }
 
-function forgetConversation({ conversation }: { conversation: Conversation }): string | null {
+function forgetConversation({
+  conversation,
+}: {
+  conversation: Conversation;
+}): string | null {
   const sessionId = findSessionId({ conversation });
 
   storage.delete(conversationKey(conversation));
@@ -58,5 +75,11 @@ function forgetConversation({ conversation }: { conversation: Conversation }): s
   return sessionId;
 }
 
-export { findConversation, findSessionId, forgetConversation, forgetSession, rememberSession };
+export {
+  findConversation,
+  findSessionId,
+  forgetConversation,
+  forgetSession,
+  rememberSession,
+};
 export type { Conversation };

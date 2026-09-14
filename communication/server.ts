@@ -12,8 +12,6 @@ import testChat from "./test_chat/testChat";
 import webhook from "./chat/webhook";
 import whatsapp from "./whatsapp/webhook";
 import whatsappSession from "./whatsapp/session";
-//import kafkaConfig from "./config.kafka";
-//import txqConfig from "./config.txq";
 
 dotenv.config();
 

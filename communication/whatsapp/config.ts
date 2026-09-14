@@ -1,3 +1,4 @@
+//AI-generated
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -43,7 +44,10 @@ function whatsappConfig(): WhatsappConfig {
   return {
     verifyToken: process.env.WHATSAPP_VERIFY_TOKEN ?? "",
     accessToken: process.env.WHATSAPP_ACCESS_TOKEN ?? "",
-    graphUrl: (process.env.WHATSAPP_GRAPH_URL ?? DEFAULT_GRAPH_URL).replace(/\/+$/, ""),
+    graphUrl: (process.env.WHATSAPP_GRAPH_URL ?? DEFAULT_GRAPH_URL).replace(
+      /\/+$/,
+      "",
+    ),
     apiVersion: process.env.WHATSAPP_API_VERSION ?? DEFAULT_API_VERSION,
     fallbackBlueprintId: process.env.WHATSAPP_BLUEPRINT_ID ?? "",
     sessionTtlMs: readPositiveNumber({

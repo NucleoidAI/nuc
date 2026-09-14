@@ -1,3 +1,4 @@
+//AI-generated
 import express from "express";
 import { createSession } from "../api/createSession";
 import { createServiceToken } from "./token";
@@ -38,7 +39,11 @@ function onlyDigits(value: string): string {
   return value.replace(/\D/g, "");
 }
 
-function extractMessages({ payload }: { payload: CloudApiPayload }): InboundMessage[] {
+function extractMessages({
+  payload,
+}: {
+  payload: CloudApiPayload;
+}): InboundMessage[] {
   const changes = (payload.entry ?? []).flatMap((entry) => entry.changes ?? []);
 
   return changes.flatMap((change) => {
@@ -59,7 +64,9 @@ function extractMessages({ payload }: { payload: CloudApiPayload }): InboundMess
         return [];
       }
 
-      const contact = (value.contacts ?? []).find((entry) => entry.wa_id === waId);
+      const contact = (value.contacts ?? []).find(
+        (entry) => entry.wa_id === waId,
+      );
 
       return [
         {
@@ -87,7 +94,9 @@ async function resolveBlueprintId({
   const match = communications.find(
     (communication) =>
       communication.channelType === "WHATSAPP" &&
-      codes.includes(onlyDigits(communication.channelCode) || communication.channelCode),
+      codes.includes(
+        onlyDigits(communication.channelCode) || communication.channelCode,
+      ),
   );
 
   if (match) {
@@ -117,12 +126,17 @@ async function openSession({
   const blueprintId = await resolveBlueprintId({ accessToken, message });
   const blueprint = await getBlueprint(accessToken, blueprintId);
 
-  const session = await createSession(accessToken, blueprint.agentId, blueprintId, {
-    channel: "WHATSAPP",
-    from: message.waId,
-    name: message.profileName,
-    phoneNumberId: message.phoneNumberId,
-  });
+  const session = await createSession(
+    accessToken,
+    blueprint.agentId,
+    blueprintId,
+    {
+      channel: "WHATSAPP",
+      from: message.waId,
+      name: message.profileName,
+      phoneNumberId: message.phoneNumberId,
+    },
+  );
 
   if (session.agentId !== blueprint.agentId) {
     console.warn("WhatsApp session opened with an unexpected agent", {
@@ -159,7 +173,8 @@ async function handleInbound({
   };
 
   const sessionId =
-    findSessionId({ conversation }) ?? (await openSession({ accessToken, projectId, message }));
+    findSessionId({ conversation }) ??
+    (await openSession({ accessToken, projectId, message }));
 
   await sendMessageToSession(sessionId, accessToken, message.text);
 }
@@ -181,10 +196,13 @@ router.get("/:projectId", (req, res) => {
 
 router.delete("/:projectId/conversations/:waId", (req, res) => {
   const { projectId, waId } = req.params;
-  const phoneNumberId = typeof req.query.phoneNumberId === "string" ? req.query.phoneNumberId : "";
+  const phoneNumberId =
+    typeof req.query.phoneNumberId === "string" ? req.query.phoneNumberId : "";
 
   if (!phoneNumberId) {
-    return res.status(400).json({ error: "phoneNumberId query parameter is required" });
+    return res
+      .status(400)
+      .json({ error: "phoneNumberId query parameter is required" });
   }
 
   const sessionId = forgetConversation({

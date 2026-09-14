@@ -1,8 +1,15 @@
+//AI-generated
 import { event } from "@canmingir/link-express/event/client";
 import { findConversation, forgetSession } from "./store";
 import { sendText } from "./send";
 
-async function deliver({ sessionId, content }: { sessionId: string; content: string }): Promise<void> {
+async function deliver({
+  sessionId,
+  content,
+}: {
+  sessionId: string;
+  content: string;
+}): Promise<void> {
   const conversation = findConversation({ sessionId });
 
   if (!conversation) {

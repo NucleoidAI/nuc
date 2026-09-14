@@ -84,7 +84,7 @@
       }
     ],
     "task": {
-      "id": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
+      "id": "0a0e5ada-078a-4057-9420-0a2dcf52e972",
       "status": "COMPLETED",
       "description": "Check product availability, if not exist, create order.",
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
@@ -176,7 +176,7 @@
       }
     ],
     "task": {
-      "id": "a77ff167-c4f2-44dc-9e8f-e9e645682447",
+      "id": "69f09382-c03a-47d7-b7aa-a9e9ff6d09c0",
       "status": "COMPLETED",
       "description": "Check product availability, if not exist, create order.",
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
@@ -268,7 +268,7 @@
       }
     ],
     "task": {
-      "id": "a77ff167-c4f2-44dc-9e8f-e9e645682448",
+      "id": "b648eace-d876-4278-a56b-a64e7c338e6b",
       "status": "COMPLETED",
       "description": "Check product availability, if not exist, create order.",
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
@@ -360,7 +360,7 @@
       }
     ],
     "task": {
-      "id": "a77ff167-c4f2-44dc-9e8f-e9e645682449",
+      "id": "397af110-4b8e-481d-98f4-8b34802dcc0c",
       "status": "COMPLETED",
       "description": "Check product availability, if not exist, create order.",
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
@@ -1196,13 +1196,13 @@
   },
   {
     "blueprint": {
-      "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+      "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
       "title": "Order and Compliance",
       "description": "Ask the user to select a product, find it, check its compliance certificate, assign it, create the purchase order, prepare the payment, charge it once the user approves and ship it, then send email.",
       "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
       "nodes": [
         {
-          "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
+          "id": "ffe7081c-f922-4e30-9ac8-0fdf094913b2",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
@@ -1211,132 +1211,132 @@
             },
             "icon": "mdi:account-question"
           },
-          "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+          "next": ["3b2bd895-1df4-4cb6-827c-35874f43615f"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+          "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:find_product",
             "icon": "mdi:magnify"
           },
-          "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+          "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
+          "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:knowledge_lookup",
             "icon": "mdi:book-search"
           },
-          "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+          "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+          "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:assign_certificate",
             "icon": "mdi:certificate-outline"
           },
-          "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+          "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+          "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:create_po",
             "icon": "mdi:file-document-plus"
           },
-          "next": ["f5e5d5c5-a5b5-4555-8555-555555555555"],
+          "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f5e5d5c5-a5b5-4555-8555-555555555555",
+          "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
           "type": "NORMAL",
           "properties": {
             "action": "STRIPE:create_payment_intent",
             "icon": "mdi:credit-card-outline"
           },
-          "next": ["f9e9d9c9-a9b9-4999-8999-999999999999"],
+          "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f9e9d9c9-a9b9-4999-8999-999999999999",
+          "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
             "icon": "mdi:account-question"
           },
-          "next": ["faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa"],
+          "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa",
+          "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
             "icon": "mdi:source-branch"
           },
-          "true": ["f7e7d7c7-a7b7-4777-8777-777777777777"],
-          "false": ["fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb"],
+          "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
+          "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f7e7d7c7-a7b7-4777-8777-777777777777",
+          "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
           "type": "NORMAL",
           "properties": {
             "action": "STRIPE:confirm_payment_intent",
             "icon": "mdi:check-decagram"
           },
-          "next": ["f8e8d8c8-a8b8-4888-8888-888888888888"],
+          "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f8e8d8c8-a8b8-4888-8888-888888888888",
+          "id": "738b438a-757d-4653-8bc2-b921b130503c",
           "type": "NORMAL",
           "properties": {
             "action": "FEDEX:create_shipment",
             "icon": "mdi:truck-delivery-outline"
           },
-          "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+          "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+          "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
           "type": "NORMAL",
           "properties": {
             "action": "GREY:send_email",
             "icon": "mdi:email"
           },
-          "next": ["fcecdccc-acbc-4ccc-8ccc-cccccccccccc"],
+          "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb",
+          "id": "7447fdbc-a273-40d5-a822-843d98865292",
           "type": "NORMAL",
           "properties": {
             "action": "STRIPE:cancel_payment_intent",
             "icon": "mdi:credit-card-off-outline"
           },
-          "next": ["fdeddcdc-adbd-4ddd-8ddd-dddddddddddd"],
+          "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "fdeddcdc-adbd-4ddd-8ddd-dddddddddddd",
+          "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
             "icon": "mdi:bell-off"
           },
-          "next": ["fcecdccc-acbc-4ccc-8ccc-cccccccccccc"],
+          "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "fcecdccc-acbc-4ccc-8ccc-cccccccccccc",
+          "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
@@ -1350,14 +1350,14 @@
     "content": "Process an order with compliance certificate check, then take the payment and ship it.",
     "knowledge": [
       {
-        "id": "c1d2e3f4-0001-4001-8001-aaaaaaaaaaaa",
+        "id": "0a850a06-1eac-4df1-aa14-1fe5457246a7",
         "type": "TEXT",
         "text": "Product compliance certificate is required before creating a purchase order.",
         "status": "COMPLETED",
         "createdAt": "2025-06-26T06:00:00Z"
       },
       {
-        "id": "c1d2e3f4-0002-4002-8002-bbbbbbbbbbbb",
+        "id": "b9f498a8-0967-475f-87ce-aa215078805d",
         "type": "TEXT",
         "text": "Manager email address is halilibrahimcengel7@gmail.com.",
         "status": "COMPLETED",
@@ -1365,22 +1365,22 @@
       }
     ],
     "task": {
-      "id": "e1f2a3b4-c5d6-4001-8001-100000000001",
+      "id": "ebada8a7-5b3c-4d18-b0be-7973c675742b",
       "status": "COMPLETED",
       "description": "Process an order with a compliance certificate check and a user-approved payment before shipping.",
-      "blueprintId": "f4e3d2c1-b0a0-4000-8000-100000000001"
+      "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e"
     },
     "answer": "Starting order compliance process. I'll find the product, verify its certificate and open a PO, then ask you to approve the charge before it is taken and ship it."
   },
   {
     "blueprint": {
-      "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+      "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
       "title": "Order and Compliance",
       "description": "Ask the user to select a product, find it, check its compliance certificate, assign it, create the purchase order, prepare the payment, charge it once the user approves and ship it, then send email.",
       "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
       "nodes": [
         {
-          "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
+          "id": "ffe7081c-f922-4e30-9ac8-0fdf094913b2",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
@@ -1389,132 +1389,132 @@
             },
             "icon": "mdi:account-question"
           },
-          "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+          "next": ["3b2bd895-1df4-4cb6-827c-35874f43615f"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+          "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:find_product",
             "icon": "mdi:magnify"
           },
-          "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+          "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
+          "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:knowledge_lookup",
             "icon": "mdi:book-search"
           },
-          "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+          "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+          "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:assign_certificate",
             "icon": "mdi:certificate-outline"
           },
-          "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+          "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+          "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:create_po",
             "icon": "mdi:file-document-plus"
           },
-          "next": ["f5e5d5c5-a5b5-4555-8555-555555555555"],
+          "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f5e5d5c5-a5b5-4555-8555-555555555555",
+          "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
           "type": "NORMAL",
           "properties": {
             "action": "STRIPE:create_payment_intent",
             "icon": "mdi:credit-card-outline"
           },
-          "next": ["f9e9d9c9-a9b9-4999-8999-999999999999"],
+          "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f9e9d9c9-a9b9-4999-8999-999999999999",
+          "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
             "icon": "mdi:account-question"
           },
-          "next": ["faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa"],
+          "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa",
+          "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
             "icon": "mdi:source-branch"
           },
-          "true": ["f7e7d7c7-a7b7-4777-8777-777777777777"],
-          "false": ["fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb"],
+          "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
+          "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f7e7d7c7-a7b7-4777-8777-777777777777",
+          "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
           "type": "NORMAL",
           "properties": {
             "action": "STRIPE:confirm_payment_intent",
             "icon": "mdi:check-decagram"
           },
-          "next": ["f8e8d8c8-a8b8-4888-8888-888888888888"],
+          "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f8e8d8c8-a8b8-4888-8888-888888888888",
+          "id": "738b438a-757d-4653-8bc2-b921b130503c",
           "type": "NORMAL",
           "properties": {
             "action": "FEDEX:create_shipment",
             "icon": "mdi:truck-delivery-outline"
           },
-          "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+          "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+          "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
           "type": "NORMAL",
           "properties": {
             "action": "GREY:send_email",
             "icon": "mdi:email"
           },
-          "next": ["fcecdccc-acbc-4ccc-8ccc-cccccccccccc"],
+          "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb",
+          "id": "7447fdbc-a273-40d5-a822-843d98865292",
           "type": "NORMAL",
           "properties": {
             "action": "STRIPE:cancel_payment_intent",
             "icon": "mdi:credit-card-off-outline"
           },
-          "next": ["fdeddcdc-adbd-4ddd-8ddd-dddddddddddd"],
+          "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "fdeddcdc-adbd-4ddd-8ddd-dddddddddddd",
+          "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
             "icon": "mdi:bell-off"
           },
-          "next": ["fcecdccc-acbc-4ccc-8ccc-cccccccccccc"],
+          "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "fcecdccc-acbc-4ccc-8ccc-cccccccccccc",
+          "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
@@ -1528,14 +1528,14 @@
     "content": "I need to create a purchase order but first verify the product certificate, then charge me and ship it.",
     "knowledge": [
       {
-        "id": "c1d2e3f4-0001-4001-8001-aaaaaaaaaaaa",
+        "id": "0a850a06-1eac-4df1-aa14-1fe5457246a7",
         "type": "TEXT",
         "text": "Product compliance certificate is required before creating a purchase order.",
         "status": "COMPLETED",
         "createdAt": "2025-06-26T06:00:00Z"
       },
       {
-        "id": "c1d2e3f4-0002-4002-8002-bbbbbbbbbbbb",
+        "id": "b9f498a8-0967-475f-87ce-aa215078805d",
         "type": "TEXT",
         "text": "Manager email address is halilibrahimcengel7@gmail.com.",
         "status": "COMPLETED",
@@ -1543,22 +1543,22 @@
       }
     ],
     "task": {
-      "id": "e1f2a3b4-c5d6-4001-8001-100000000002",
+      "id": "a545bea6-dc24-4fed-9b21-5eb4a426daeb",
       "status": "COMPLETED",
       "description": "Process an order with a compliance certificate check and a user-approved payment before shipping.",
-      "blueprintId": "f4e3d2c1-b0a0-4000-8000-100000000001"
+      "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e"
     },
     "answer": "I'll find the product, check its compliance certificate, open the PO and prepare the payment. Nothing is charged until you approve it; after that I'll ship it and notify via email."
   },
   {
     "blueprint": {
-      "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+      "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
       "title": "Order and Compliance",
       "description": "Ask the user to select a product, find it, check its compliance certificate, assign it, create the purchase order, prepare the payment, charge it once the user approves and ship it, then send email.",
       "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
       "nodes": [
         {
-          "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
+          "id": "ffe7081c-f922-4e30-9ac8-0fdf094913b2",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
@@ -1567,132 +1567,132 @@
             },
             "icon": "mdi:account-question"
           },
-          "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+          "next": ["3b2bd895-1df4-4cb6-827c-35874f43615f"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+          "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:find_product",
             "icon": "mdi:magnify"
           },
-          "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+          "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
+          "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:knowledge_lookup",
             "icon": "mdi:book-search"
           },
-          "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+          "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+          "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:assign_certificate",
             "icon": "mdi:certificate-outline"
           },
-          "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+          "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+          "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:create_po",
             "icon": "mdi:file-document-plus"
           },
-          "next": ["f5e5d5c5-a5b5-4555-8555-555555555555"],
+          "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f5e5d5c5-a5b5-4555-8555-555555555555",
+          "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
           "type": "NORMAL",
           "properties": {
             "action": "STRIPE:create_payment_intent",
             "icon": "mdi:credit-card-outline"
           },
-          "next": ["f9e9d9c9-a9b9-4999-8999-999999999999"],
+          "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f9e9d9c9-a9b9-4999-8999-999999999999",
+          "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
             "icon": "mdi:account-question"
           },
-          "next": ["faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa"],
+          "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa",
+          "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
             "icon": "mdi:source-branch"
           },
-          "true": ["f7e7d7c7-a7b7-4777-8777-777777777777"],
-          "false": ["fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb"],
+          "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
+          "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f7e7d7c7-a7b7-4777-8777-777777777777",
+          "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
           "type": "NORMAL",
           "properties": {
             "action": "STRIPE:confirm_payment_intent",
             "icon": "mdi:check-decagram"
           },
-          "next": ["f8e8d8c8-a8b8-4888-8888-888888888888"],
+          "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f8e8d8c8-a8b8-4888-8888-888888888888",
+          "id": "738b438a-757d-4653-8bc2-b921b130503c",
           "type": "NORMAL",
           "properties": {
             "action": "FEDEX:create_shipment",
             "icon": "mdi:truck-delivery-outline"
           },
-          "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+          "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+          "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
           "type": "NORMAL",
           "properties": {
             "action": "GREY:send_email",
             "icon": "mdi:email"
           },
-          "next": ["fcecdccc-acbc-4ccc-8ccc-cccccccccccc"],
+          "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb",
+          "id": "7447fdbc-a273-40d5-a822-843d98865292",
           "type": "NORMAL",
           "properties": {
             "action": "STRIPE:cancel_payment_intent",
             "icon": "mdi:credit-card-off-outline"
           },
-          "next": ["fdeddcdc-adbd-4ddd-8ddd-dddddddddddd"],
+          "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "fdeddcdc-adbd-4ddd-8ddd-dddddddddddd",
+          "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
             "icon": "mdi:bell-off"
           },
-          "next": ["fcecdccc-acbc-4ccc-8ccc-cccccccccccc"],
+          "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "fcecdccc-acbc-4ccc-8ccc-cccccccccccc",
+          "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
@@ -1706,14 +1706,14 @@
     "content": "Check if product is compliant, open a PO and charge it after I confirm.",
     "knowledge": [
       {
-        "id": "c1d2e3f4-0001-4001-8001-aaaaaaaaaaaa",
+        "id": "0a850a06-1eac-4df1-aa14-1fe5457246a7",
         "type": "TEXT",
         "text": "Product compliance certificate is required before creating a purchase order.",
         "status": "COMPLETED",
         "createdAt": "2025-06-26T06:00:00Z"
       },
       {
-        "id": "c1d2e3f4-0002-4002-8002-bbbbbbbbbbbb",
+        "id": "b9f498a8-0967-475f-87ce-aa215078805d",
         "type": "TEXT",
         "text": "Manager email address is halilibrahimcengel7@gmail.com.",
         "status": "COMPLETED",
@@ -1721,22 +1721,22 @@
       }
     ],
     "task": {
-      "id": "e1f2a3b4-c5d6-4001-8001-100000000003",
+      "id": "0176f3d0-e032-43f6-8b03-701171eb7f97",
       "status": "COMPLETED",
       "description": "Process an order with a compliance certificate check and a user-approved payment before shipping.",
-      "blueprintId": "f4e3d2c1-b0a0-4000-8000-100000000001"
+      "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e"
     },
     "answer": "Checking product compliance certificate now. PO will be created and the payment prepared; I'll ask you to confirm the charge before taking it, then ship the order."
   },
   {
     "blueprint": {
-      "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+      "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
       "title": "Order and Compliance",
       "description": "Ask the user to select a product, find it, check its compliance certificate, assign it, create the purchase order, prepare the payment, charge it once the user approves and ship it, then send email.",
       "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
       "nodes": [
         {
-          "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
+          "id": "ffe7081c-f922-4e30-9ac8-0fdf094913b2",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
@@ -1745,132 +1745,132 @@
             },
             "icon": "mdi:account-question"
           },
-          "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+          "next": ["3b2bd895-1df4-4cb6-827c-35874f43615f"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+          "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:find_product",
             "icon": "mdi:magnify"
           },
-          "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+          "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
+          "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:knowledge_lookup",
             "icon": "mdi:book-search"
           },
-          "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+          "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+          "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:assign_certificate",
             "icon": "mdi:certificate-outline"
           },
-          "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+          "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+          "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:create_po",
             "icon": "mdi:file-document-plus"
           },
-          "next": ["f5e5d5c5-a5b5-4555-8555-555555555555"],
+          "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f5e5d5c5-a5b5-4555-8555-555555555555",
+          "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
           "type": "NORMAL",
           "properties": {
             "action": "STRIPE:create_payment_intent",
             "icon": "mdi:credit-card-outline"
           },
-          "next": ["f9e9d9c9-a9b9-4999-8999-999999999999"],
+          "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f9e9d9c9-a9b9-4999-8999-999999999999",
+          "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
             "icon": "mdi:account-question"
           },
-          "next": ["faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa"],
+          "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa",
+          "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
             "icon": "mdi:source-branch"
           },
-          "true": ["f7e7d7c7-a7b7-4777-8777-777777777777"],
-          "false": ["fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb"],
+          "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
+          "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f7e7d7c7-a7b7-4777-8777-777777777777",
+          "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
           "type": "NORMAL",
           "properties": {
             "action": "STRIPE:confirm_payment_intent",
             "icon": "mdi:check-decagram"
           },
-          "next": ["f8e8d8c8-a8b8-4888-8888-888888888888"],
+          "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f8e8d8c8-a8b8-4888-8888-888888888888",
+          "id": "738b438a-757d-4653-8bc2-b921b130503c",
           "type": "NORMAL",
           "properties": {
             "action": "FEDEX:create_shipment",
             "icon": "mdi:truck-delivery-outline"
           },
-          "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+          "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+          "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
           "type": "NORMAL",
           "properties": {
             "action": "GREY:send_email",
             "icon": "mdi:email"
           },
-          "next": ["fcecdccc-acbc-4ccc-8ccc-cccccccccccc"],
+          "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb",
+          "id": "7447fdbc-a273-40d5-a822-843d98865292",
           "type": "NORMAL",
           "properties": {
             "action": "STRIPE:cancel_payment_intent",
             "icon": "mdi:credit-card-off-outline"
           },
-          "next": ["fdeddcdc-adbd-4ddd-8ddd-dddddddddddd"],
+          "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "fdeddcdc-adbd-4ddd-8ddd-dddddddddddd",
+          "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
             "icon": "mdi:bell-off"
           },
-          "next": ["fcecdccc-acbc-4ccc-8ccc-cccccccccccc"],
+          "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "fcecdccc-acbc-4ccc-8ccc-cccccccccccc",
+          "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
@@ -1884,14 +1884,14 @@
     "content": "Order a product after verifying its compliance certificate, take the payment once I approve it and notify the manager.",
     "knowledge": [
       {
-        "id": "c1d2e3f4-0001-4001-8001-aaaaaaaaaaaa",
+        "id": "0a850a06-1eac-4df1-aa14-1fe5457246a7",
         "type": "TEXT",
         "text": "Product compliance certificate is required before creating a purchase order.",
         "status": "COMPLETED",
         "createdAt": "2025-06-26T06:00:00Z"
       },
       {
-        "id": "c1d2e3f4-0002-4002-8002-bbbbbbbbbbbb",
+        "id": "b9f498a8-0967-475f-87ce-aa215078805d",
         "type": "TEXT",
         "text": "Manager email address is halilibrahimcengel7@gmail.com.",
         "status": "COMPLETED",
@@ -1899,143 +1899,143 @@
       }
     ],
     "task": {
-      "id": "e1f2a3b4-c5d6-4001-8001-100000000004",
+      "id": "56dd2fad-9c00-4845-bdbf-3a9930166483",
       "status": "COMPLETED",
       "description": "Process an order with a compliance certificate check and a user-approved payment before shipping.",
-      "blueprintId": "f4e3d2c1-b0a0-4000-8000-100000000001"
+      "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e"
     },
     "answer": "Starting compliance-gated order flow. Finding product, then checking certificate. If valid, the PO is opened and the payment prepared; once you approve the charge I'll ship it and notify the manager."
   },
   {
     "blueprint": {
-      "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+      "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
       "title": "Order and Compliance",
       "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
       "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
       "nodes": [
         {
-          "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+          "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:find_product",
             "icon": "mdi:magnify"
           },
-          "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+          "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
+          "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:knowledge_lookup",
             "icon": "mdi:book-search"
           },
-          "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+          "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+          "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:assign_certificate",
             "icon": "mdi:certificate-outline"
           },
-          "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+          "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+          "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:create_po",
             "icon": "mdi:file-document-plus"
           },
-          "next": ["f5e5d5c5-a5b5-4555-8555-555555555555"],
+          "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f5e5d5c5-a5b5-4555-8555-555555555555",
+          "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
           "type": "NORMAL",
           "properties": {
             "action": "STRIPE:create_payment_intent",
             "icon": "mdi:credit-card-outline"
           },
-          "next": ["f9e9d9c9-a9b9-4999-8999-999999999999"],
+          "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f9e9d9c9-a9b9-4999-8999-999999999999",
+          "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
             "icon": "mdi:account-question"
           },
-          "next": ["faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa"],
+          "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa",
+          "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
             "icon": "mdi:source-branch"
           },
-          "true": ["f7e7d7c7-a7b7-4777-8777-777777777777"],
-          "false": ["fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb"],
+          "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
+          "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f7e7d7c7-a7b7-4777-8777-777777777777",
+          "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
           "type": "NORMAL",
           "properties": {
             "action": "STRIPE:confirm_payment_intent",
             "icon": "mdi:check-decagram"
           },
-          "next": ["f8e8d8c8-a8b8-4888-8888-888888888888"],
+          "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f8e8d8c8-a8b8-4888-8888-888888888888",
+          "id": "738b438a-757d-4653-8bc2-b921b130503c",
           "type": "NORMAL",
           "properties": {
             "action": "FEDEX:create_shipment",
             "icon": "mdi:truck-delivery-outline"
           },
-          "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+          "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+          "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
           "type": "NORMAL",
           "properties": {
             "action": "GREY:send_email",
             "icon": "mdi:email"
           },
-          "next": ["fcecdccc-acbc-4ccc-8ccc-cccccccccccc"],
+          "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb",
+          "id": "7447fdbc-a273-40d5-a822-843d98865292",
           "type": "NORMAL",
           "properties": {
             "action": "STRIPE:cancel_payment_intent",
             "icon": "mdi:credit-card-off-outline"
           },
-          "next": ["fdeddcdc-adbd-4ddd-8ddd-dddddddddddd"],
+          "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "fdeddcdc-adbd-4ddd-8ddd-dddddddddddd",
+          "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
             "icon": "mdi:bell-off"
           },
-          "next": ["fcecdccc-acbc-4ccc-8ccc-cccccccccccc"],
+          "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "fcecdccc-acbc-4ccc-8ccc-cccccccccccc",
+          "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
@@ -2049,14 +2049,14 @@
     "content": "Order the product, ask me to approve the payment before charging, then ship it to the customer.",
     "knowledge": [
       {
-        "id": "c1d2e3f4-0001-4001-8001-aaaaaaaaaaaa",
+        "id": "0a850a06-1eac-4df1-aa14-1fe5457246a7",
         "type": "TEXT",
         "text": "Product compliance certificate is required before creating a purchase order.",
         "status": "COMPLETED",
         "createdAt": "2025-06-26T06:00:00Z"
       },
       {
-        "id": "c1d2e3f4-0003-4003-8003-cccccccccccc",
+        "id": "a59b94e7-e954-4c2e-a5be-ea9ad6d8030b",
         "type": "TEXT",
         "text": "The charge needs the user's approval; only an approved payment is confirmed and shipped, and the confirmation email carries the tracking number.",
         "status": "COMPLETED",
@@ -2064,42 +2064,42 @@
       }
     ],
     "task": {
-      "id": "e1f2a3b4-c5d6-4001-8001-100000000002",
+      "id": "a545bea6-dc24-4fed-9b21-5eb4a426daeb",
       "status": "COMPLETED",
       "description": "Process an order with a compliance certificate check and a user-approved payment before shipping.",
-      "blueprintId": "f4e3d2c1-b0a0-4000-8000-100000000001"
+      "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e"
     },
     "answer": "Starting the order. I'll verify the certificate, open the PO and prepare the payment, then ask you to approve the charge before anything is taken. Once approved, I'll ship it and email the confirmation with the tracking number."
   },
   {
     "blueprint": {
-      "id": "c2b1a0d9-e8f7-4c2b-9100-300000000001",
+      "id": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
       "title": "Compliance Certificate Notification",
       "description": "Check the compliance certificate status of a product and inform the user about the result.",
       "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
       "nodes": [
         {
-          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000002",
+          "id": "81b62178-c7e0-4af1-9eb9-a559a0a9290e",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:knowledge_lookup",
             "icon": "mdi:book-search"
           },
-          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000003"],
+          "next": ["8f01126f-97b1-4b47-8c3c-b09de10879f9"],
           "createdAt": "2025-06-29T08:00:00Z"
         },
         {
-          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000003",
+          "id": "8f01126f-97b1-4b47-8c3c-b09de10879f9",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
             "icon": "mdi:bell"
           },
-          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000004"],
+          "next": ["5ce77c06-8c90-45f7-9981-efbc07b7aec0"],
           "createdAt": "2025-06-29T08:00:00Z"
         },
         {
-          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000004",
+          "id": "5ce77c06-8c90-45f7-9981-efbc07b7aec0",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
@@ -2113,7 +2113,7 @@
     "content": "Check product compliance certificate and inform the user about the result.",
     "knowledge": [
       {
-        "id": "d2e3f4a5-0001-4001-8001-cccccccccccc",
+        "id": "96764c82-4e5a-4e15-b071-8b622152fc40",
         "type": "TEXT",
         "text": "Compliance certificates must be verified before any order or regulatory step.",
         "status": "COMPLETED",
@@ -2121,42 +2121,42 @@
       }
     ],
     "task": {
-      "id": "f2a3b4c5-d6e7-4002-8002-200000000001",
+      "id": "876e5263-2ae1-4c4c-bc3e-98d99ba79bcf",
       "status": "COMPLETED",
       "description": "Verify compliance certificate for the product and notify the user.",
-      "blueprintId": "c2b1a0d9-e8f7-4c2b-9100-300000000001"
+      "blueprintId": "98cdf921-c608-46ff-ad35-83c994ef8cc7"
     },
     "answer": "Checking product compliance certificate and notifying the user about the result."
   },
   {
     "blueprint": {
-      "id": "c2b1a0d9-e8f7-4c2b-9100-300000000001",
+      "id": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
       "title": "Compliance Certificate Notification",
       "description": "Check the compliance certificate status of a product and inform the user about the result.",
       "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
       "nodes": [
         {
-          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000002",
+          "id": "81b62178-c7e0-4af1-9eb9-a559a0a9290e",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:knowledge_lookup",
             "icon": "mdi:book-search"
           },
-          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000003"],
+          "next": ["8f01126f-97b1-4b47-8c3c-b09de10879f9"],
           "createdAt": "2025-06-29T08:00:00Z"
         },
         {
-          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000003",
+          "id": "8f01126f-97b1-4b47-8c3c-b09de10879f9",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
             "icon": "mdi:bell"
           },
-          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000004"],
+          "next": ["5ce77c06-8c90-45f7-9981-efbc07b7aec0"],
           "createdAt": "2025-06-29T08:00:00Z"
         },
         {
-          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000004",
+          "id": "5ce77c06-8c90-45f7-9981-efbc07b7aec0",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
@@ -2170,7 +2170,7 @@
     "content": "I need to verify whether the product has a compliance certificate.",
     "knowledge": [
       {
-        "id": "d2e3f4a5-0001-4001-8001-cccccccccccc",
+        "id": "96764c82-4e5a-4e15-b071-8b622152fc40",
         "type": "TEXT",
         "text": "Compliance certificates must be verified before any order or regulatory step.",
         "status": "COMPLETED",
@@ -2178,42 +2178,42 @@
       }
     ],
     "task": {
-      "id": "f2a3b4c5-d6e7-4002-8002-200000000002",
+      "id": "edda7854-7f59-4476-bcee-d8d72f4cfce3",
       "status": "COMPLETED",
       "description": "Verify compliance certificate for the product and notify the user.",
-      "blueprintId": "c2b1a0d9-e8f7-4c2b-9100-300000000001"
+      "blueprintId": "98cdf921-c608-46ff-ad35-83c994ef8cc7"
     },
     "answer": "I'll check the product's compliance certificate right away and inform you of the findings."
   },
   {
     "blueprint": {
-      "id": "c2b1a0d9-e8f7-4c2b-9100-300000000001",
+      "id": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
       "title": "Compliance Certificate Notification",
       "description": "Check the compliance certificate status of a product and inform the user about the result.",
       "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
       "nodes": [
         {
-          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000002",
+          "id": "81b62178-c7e0-4af1-9eb9-a559a0a9290e",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:knowledge_lookup",
             "icon": "mdi:book-search"
           },
-          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000003"],
+          "next": ["8f01126f-97b1-4b47-8c3c-b09de10879f9"],
           "createdAt": "2025-06-29T08:00:00Z"
         },
         {
-          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000003",
+          "id": "8f01126f-97b1-4b47-8c3c-b09de10879f9",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
             "icon": "mdi:bell"
           },
-          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000004"],
+          "next": ["5ce77c06-8c90-45f7-9981-efbc07b7aec0"],
           "createdAt": "2025-06-29T08:00:00Z"
         },
         {
-          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000004",
+          "id": "5ce77c06-8c90-45f7-9981-efbc07b7aec0",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
@@ -2227,7 +2227,7 @@
     "content": "Run a compliance check on the product and send the result to the user.",
     "knowledge": [
       {
-        "id": "d2e3f4a5-0001-4001-8001-cccccccccccc",
+        "id": "96764c82-4e5a-4e15-b071-8b622152fc40",
         "type": "TEXT",
         "text": "Compliance certificates must be verified before any order or regulatory step.",
         "status": "COMPLETED",
@@ -2235,10 +2235,10 @@
       }
     ],
     "task": {
-      "id": "f2a3b4c5-d6e7-4002-8002-200000000003",
+      "id": "8ea625fb-9959-487d-ab77-2a203c4502ec",
       "status": "COMPLETED",
       "description": "Verify compliance certificate for the product and notify the user.",
-      "blueprintId": "c2b1a0d9-e8f7-4c2b-9100-300000000001"
+      "blueprintId": "98cdf921-c608-46ff-ad35-83c994ef8cc7"
     },
     "answer": "Running compliance certificate check now. Once verified, I'll send the result directly to the user."
   }

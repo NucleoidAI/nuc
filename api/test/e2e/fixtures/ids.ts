@@ -5,11 +5,11 @@ const ONBOARDING_TEAM_ID = "e6d4744d-a11b-4c75-acad-e24a02903729";
 const ORDER_AGENT_ID = "9f156dc6-bf9b-4541-8d0c-6764cb0d6487";
 const COMPLIANCE_AGENT_ID = "0780b66b-9e22-4e52-9ade-858fc81a5361";
 
-const MEETING_AGENT_ID = "019f4a02-1111-4222-8333-444455556666";
+const MEETING_AGENT_ID = "ab2d404b-3358-45eb-a468-338485924fea";
 const ONBOARDING_AGENT_ID = "019f6a11-0000-4000-8000-000000000001";
 
-const ORDER_BLUEPRINT_ID = "f4e3d2c1-b0a0-4000-8000-100000000001";
-const COMPLIANCE_BLUEPRINT_ID = "c2b1a0d9-e8f7-4c2b-9100-300000000001";
+const ORDER_BLUEPRINT_ID = "85a763a3-30cc-409f-881f-828e17c44c9e";
+const COMPLIANCE_BLUEPRINT_ID = "98cdf921-c608-46ff-ad35-83c994ef8cc7";
 const MEETING_SUMMARY_A_BLUEPRINT_ID = "019fa100-0000-4000-8000-000000000001";
 const ONBOARDING_BLUEPRINT_ID = "019f6a10-0000-4000-8000-000000000001";
 
@@ -23,11 +23,11 @@ const SESSION = {
 };
 
 const NODE = {
-  findProduct: "f1e1d1c1-a1b1-4111-8111-111111111111",
-  knowledgeLookup: "f3e3d3c3-a3b3-4333-8333-333333333333",
-  assignCertificate: "f2e2d2c2-a2b2-4222-8222-222222222222",
-  createPurchaseOrder: "f4e4d4c4-a4b4-4444-8444-444444444444",
-  sendEmail: "f6e6d6c6-a6b6-4666-8666-666666666666",
+  findProduct: "3b2bd895-1df4-4cb6-827c-35874f43615f",
+  knowledgeLookup: "b375d835-67bc-46f6-a2eb-825a8481e4b4",
+  assignCertificate: "3e8ba55f-ff37-41c3-befd-758e32df3f99",
+  createPurchaseOrder: "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
+  sendEmail: "9cc14d43-419c-4d3c-90a1-42133caff37b",
   certificateExists: "83a2a833-57bc-41b0-8871-be0dd2866ac7",
   handoff: "26ca02ed-92d9-49ce-b152-ca8536e92202",
 };

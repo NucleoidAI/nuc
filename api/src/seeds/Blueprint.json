@@ -175,14 +175,14 @@
       }
     },
     {
-      "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+      "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
       "title": "Order and Compliance",
       "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
       "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
       "skill": "**Product Order \u2014 Certificate-Backed Purchase**\n\nUse this Blueprint when a product order must have a compliance certificate assigned before a purchase order can be created.\n\nThe order request arrives with the product already chosen \u2014 it comes in from the requesting system, so do not ask which product to order.\n\nFlow: Find product \u2192 Check certificate via knowledge lookup \u2192 Assign certificate \u2192 Create purchase order \u2192 Create payment \u2192 Ask the user to approve the charge \u2192 [Not approved: cancel the payment, notify, end] \u2192 Confirm payment \u2192 Create shipment \u2192 Send email.\n\nThe payment intent is created unconfirmed, so nothing is charged until the user approves it. Only an approved payment is confirmed, shipped and emailed; a declined one is cancelled and the purchase order stays unpaid.\n\nExits after emailing confirmation of the completed purchase order, or early with a cancellation notice if the user declines the charge.",
       "nodes": [
         {
-          "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+          "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:find_product",
@@ -190,11 +190,11 @@
             "label": "Find Product",
             "icon": "mdi:magnify"
           },
-          "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+          "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
+          "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:knowledge_lookup",
@@ -202,11 +202,11 @@
             "label": "Check Certificate",
             "icon": "mdi:book-search"
           },
-          "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+          "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+          "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:assign_certificate",
@@ -214,11 +214,11 @@
             "label": "Assign Certificate",
             "icon": "mdi:certificate-outline"
           },
-          "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+          "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+          "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:create_po",
@@ -226,11 +226,11 @@
             "label": "Create Purchase Order",
             "icon": "mdi:file-document-plus"
           },
-          "next": ["f5e5d5c5-a5b5-4555-8555-555555555555"],
+          "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f5e5d5c5-a5b5-4555-8555-555555555555",
+          "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
           "type": "NORMAL",
           "properties": {
             "action": "STRIPE:create_payment_intent",
@@ -238,11 +238,11 @@
             "label": "Create Payment",
             "icon": "mdi:credit-card-outline"
           },
-          "next": ["f9e9d9c9-a9b9-4999-8999-999999999999"],
+          "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f9e9d9c9-a9b9-4999-8999-999999999999",
+          "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:user_interaction",
@@ -250,11 +250,11 @@
             "label": "Confirm Payment with User",
             "icon": "mdi:account-question"
           },
-          "next": ["faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa"],
+          "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "faeadaca-aaba-4aaa-8aaa-aaaaaaaaaaaa",
+          "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
           "type": "CONDITION",
           "properties": {
             "action": "PLATFORM:decision",
@@ -262,12 +262,12 @@
             "label": "Check Payment Approval",
             "icon": "mdi:source-branch"
           },
-          "true": ["f7e7d7c7-a7b7-4777-8777-777777777777"],
-          "false": ["fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb"],
+          "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
+          "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f7e7d7c7-a7b7-4777-8777-777777777777",
+          "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
           "type": "NORMAL",
           "properties": {
             "action": "STRIPE:confirm_payment_intent",
@@ -275,11 +275,11 @@
             "label": "Confirm Payment",
             "icon": "mdi:check-decagram"
           },
-          "next": ["f8e8d8c8-a8b8-4888-8888-888888888888"],
+          "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f8e8d8c8-a8b8-4888-8888-888888888888",
+          "id": "738b438a-757d-4653-8bc2-b921b130503c",
           "type": "NORMAL",
           "properties": {
             "action": "FEDEX:create_shipment",
@@ -287,11 +287,11 @@
             "label": "Create Shipment",
             "icon": "mdi:truck-delivery-outline"
           },
-          "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+          "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+          "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
           "type": "NORMAL",
           "properties": {
             "action": "GREY:send_email",
@@ -299,11 +299,11 @@
             "label": "Send Email",
             "icon": "mdi:email"
           },
-          "next": ["fcecdccc-acbc-4ccc-8ccc-cccccccccccc"],
+          "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "fbebdbcb-abbb-4bbb-8bbb-bbbbbbbbbbbb",
+          "id": "7447fdbc-a273-40d5-a822-843d98865292",
           "type": "NORMAL",
           "properties": {
             "action": "STRIPE:cancel_payment_intent",
@@ -311,11 +311,11 @@
             "label": "Cancel Payment",
             "icon": "mdi:credit-card-off-outline"
           },
-          "next": ["fdeddcdc-adbd-4ddd-8ddd-dddddddddddd"],
+          "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "fdeddcdc-adbd-4ddd-8ddd-dddddddddddd",
+          "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
@@ -323,11 +323,11 @@
             "label": "Notify Cancellation",
             "icon": "mdi:bell-off"
           },
-          "next": ["fcecdccc-acbc-4ccc-8ccc-cccccccccccc"],
+          "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "fcecdccc-acbc-4ccc-8ccc-cccccccccccc",
+          "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
@@ -361,14 +361,14 @@
       }
     },
     {
-      "id": "c2b1a0d9-e8f7-4c2b-9100-300000000001",
+      "id": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
       "title": "Compliance Certificate Request",
       "description": "Find the vendor of a product that is missing a compliance certificate and send them an email requesting the certificate, then notify the user.",
       "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
       "skill": "**Compliance Certificate Request — Vendor Follow-up**\n\nUse this Blueprint when a product is missing its compliance certificate and the vendor must be contacted directly to obtain it.\n\nFlow: Get product vendor → Email vendor requesting certificate → Notify user that the vendor was contacted → Complete.\n\nExits after notifying the user; the certificate itself arrives out of band once the vendor responds.",
       "nodes": [
         {
-          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000002",
+          "id": "81b62178-c7e0-4af1-9eb9-a559a0a9290e",
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:get_product_vendor",
@@ -376,11 +376,11 @@
             "label": "Get Product Vendor",
             "icon": "mdi:domain"
           },
-          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000003"],
+          "next": ["8f01126f-97b1-4b47-8c3c-b09de10879f9"],
           "createdAt": "2025-06-29T08:00:00Z"
         },
         {
-          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000003",
+          "id": "8f01126f-97b1-4b47-8c3c-b09de10879f9",
           "type": "NORMAL",
           "properties": {
             "action": "GREY:send_email",
@@ -388,11 +388,11 @@
             "label": "Email Vendor",
             "icon": "mdi:email"
           },
-          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000004"],
+          "next": ["5ce77c06-8c90-45f7-9981-efbc07b7aec0"],
           "createdAt": "2025-06-29T08:00:00Z"
         },
         {
-          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000004",
+          "id": "5ce77c06-8c90-45f7-9981-efbc07b7aec0",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
@@ -400,11 +400,11 @@
             "label": "Notify User",
             "icon": "mdi:bell"
           },
-          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000005"],
+          "next": ["707f211a-fe38-479c-bab4-0b2cd957464c"],
           "createdAt": "2025-06-29T08:00:00Z"
         },
         {
-          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000005",
+          "id": "707f211a-fe38-479c-bab4-0b2cd957464c",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
@@ -432,7 +432,7 @@
       "id": "019fa100-0000-4000-8000-000000000001",
       "title": "Meeting Summary A - Full Transcript Only",
       "description": "Variant A of the meeting summarizer A/B test. Converts PCM recordings to WAV, transcribes only the mixed meeting-audio recording, and summarizes that full transcript into an overall summary and the meeting's highlights. It deliberately skips per-speaker transcription, produces no next steps and attributes nothing to individual speakers. A Turkish LLM judge scores meeting summary, topics, highlights, overall quality and accuracy on a 0-100 scale; next steps are explicitly not evaluated. The summary is emailed to the meeting participants, with the full transcript and the judge's evaluation attached as files. Meeting audio is not sent.",
-      "agentId": "019f4a02-1111-4222-8333-444455556666",
+      "agentId": "ab2d404b-3358-45eb-a468-338485924fea",
       "blocking": false,
       "force": true,
       "skill": "**Meeting Recording - Summary Variant A (transcript only)**\n\nUse this Blueprint for the lightweight arm of the summarizer A/B test: only the mixed meeting recording is transcribed, and the summary is written from that full transcript without transcribing each participant's own recording.\n\nFlow: Convert PCM to WAV -> Transcribe only meeting-audio.wav -> Summarize the full transcript (summary + highlights) -> Judge the summary against the transcript -> Prepare transcript and judgement attachments -> Send email to all participants -> Complete.\n\nProduces a summary and highlights only - no next steps, no speaker transcription, no speaker attribution and no separate manager email. The full transcript and the LLM evaluation go out as attachments; the meeting audio does not. Exits after emailing the participants.",

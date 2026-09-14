@@ -53,7 +53,7 @@
       }
     },
     {
-      "id": "3c9d7a1e-5b6f-4a2c-9d0e-8f1a2b3c4d5e",
+      "id": "d815e0d5-d48b-4e5f-b9c0-f561d25c12b3",
       "description": "Transcribe a meeting recording, produce a speaker-attributed summary, resolve participant names, and email the summary to all participants.",
       "knowledge": [
         {
@@ -156,7 +156,7 @@
       }
     },
     {
-      "id": "6f7a8b9c-0d1e-4f2a-8b3c-4d5e6f7a8b9c",
+      "id": "96cd25bc-53aa-4d43-a911-51c1d4d2bbe8",
       "description": "Create a new employee account and approve their onboarding request.",
       "knowledge": [
         {

@@ -590,10 +590,11 @@ async function step({
     `[agent.step] dispatching stepId=${stepId} action=${action} actionType=${actionType}`,
   );
 
+  let mcpClient: { close: () => Promise<void> } | undefined;
+
   try {
     let actionFn;
     let result;
-    let mcpClient;
 
     const step = await taskFn.getStep({ stepId });
     taskId = step.taskId;
@@ -766,6 +767,16 @@ async function step({
       } else {
         platform.logger.error(
           `step ${stepId} failed before taskId resolved; skipping log: ${err.message}`,
+        );
+      }
+    }
+  } finally {
+    if (mcpClient) {
+      try {
+        await mcpClient.close();
+      } catch (closeErr) {
+        platform.logger.error(
+          `failed to close MCP client for step ${stepId}: ${closeErr}`,
         );
       }
     }
@@ -1066,8 +1077,8 @@ function restoreCosmetics(
       typeof props.description === "string"
         ? props.description
         : typeof previousProps.description === "string"
-          ? previousProps.description
-          : undefined;
+        ? previousProps.description
+        : undefined;
 
     return {
       ...n,

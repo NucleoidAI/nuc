@@ -1,12 +1,37 @@
 import MCPs from "../mcps/mcps";
 import { NotFoundError } from "@canmingir/link-express/error";
+import mcpServer from "./mcpServer";
 
-function list() {
+type Scope = {
+  teamId?: string | null;
+  agentId?: string | null;
+};
+
+function serverIdOf(action: string) {
+  return action.split(":")[0].toLowerCase();
+}
+
+async function list(scope: Scope = {}) {
   if (!MCPs || MCPs.length === 0) {
     throw new NotFoundError();
   }
 
-  const mcps = MCPs.map((provider) => ({
+  const { teamId, agentId } = scope;
+
+  let catalog = MCPs;
+
+  if (teamId || agentId) {
+    const assigned = await mcpServer.listAssignedServerIds({
+      teamId,
+      agentId,
+    });
+
+    catalog = MCPs.filter((provider) =>
+      assigned.has(serverIdOf(provider.action))
+    );
+  }
+
+  const mcps = catalog.map((provider) => ({
     id: provider.id,
     provider: provider.provider,
     label: provider.label,

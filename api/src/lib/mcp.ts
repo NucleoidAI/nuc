@@ -11,6 +11,8 @@ async function connect({
   teamId?: string | null;
   agentId?: string | null;
 }) {
+  await mcpServer.assertAssigned({ serverId: name, teamId, agentId });
+
   const mcpClient = new McpClient({
     name,
     version: "1.0.0",

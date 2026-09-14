@@ -172,6 +172,57 @@ async function unassign({
   await assignment.destroy();
 }
 
+function assignmentScopes({ teamId, agentId }: Scope) {
+  const scopes: Record<string, unknown>[] = [];
+
+  if (teamId) {
+    scopes.push({ teamId, agentId: null });
+  }
+
+  if (agentId) {
+    scopes.push({ agentId });
+  }
+
+  return scopes;
+}
+
+async function listAssignedServerIds({
+  teamId,
+  agentId,
+}: Scope): Promise<Set<string>> {
+  const scopes = assignmentScopes({ teamId, agentId });
+
+  if (scopes.length === 0) {
+    return new Set();
+  }
+
+  const assignments = await MCPServerAssignment.findAll({
+    where: { [Op.or]: scopes },
+  });
+
+  return new Set(assignments.map((assignment) => assignment.serverId));
+}
+
+async function assertAssigned({
+  serverId,
+  teamId,
+  agentId,
+}: { serverId: string } & Scope) {
+  if (!teamId && !agentId) {
+    throw new AuthenticationError();
+  }
+
+  const assignment = await MCPServerAssignment.findOne({
+    where: { serverId, [Op.or]: assignmentScopes({ teamId, agentId }) },
+  });
+
+  if (!assignment) {
+    throw new AuthenticationError();
+  }
+
+  return assignment;
+}
+
 async function listAssignments({ serverId }: { serverId: string }) {
   return MCPServerAssignment.findAll({ where: { serverId } });
 }
@@ -295,11 +346,13 @@ async function resolveEnv({
 }
 
 export default {
+  assertAssigned,
   assertScopeBelongsToTeam,
   assign,
   createServer,
   deleteEnv,
   getServer,
+  listAssignedServerIds,
   listAssignments,
   listEnvs,
   listServers,

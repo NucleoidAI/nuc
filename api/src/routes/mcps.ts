@@ -5,7 +5,7 @@ import mcp from "../functions/mcp";
 const router = express.Router();
 
 router.get("/", async (_req, res) => {
-  const allMCPs = mcp.list();
+  const allMCPs = await mcp.list();
 
   res.json(allMCPs);
 });

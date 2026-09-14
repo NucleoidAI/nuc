@@ -310,6 +310,11 @@ async function task({ taskId }: { taskId: string }) {
 
   const { inheritedSteps: inherited } = await taskFn.get({ taskId });
 
+  const mcpContext = await mcpFn.list({
+    agentId,
+    teamId: agentInstance?.teamId,
+  });
+
   const context = [
     ...(
       await Promise.all([
@@ -330,7 +335,7 @@ async function task({ taskId }: { taskId: string }) {
         ]
       : []),
     isBlocking ? actions.list() : actions.listNonBlockings(),
-    mcpFn.list(),
+    mcpContext,
   ];
 
   const meta: LLMMeta = { agentId, sessionId, taskId };

@@ -104,7 +104,7 @@
       "icon": "mdi:atlassian"
     },
     {
-      "id": "project-notifier",
+      "id": "project_notifier",
       "mcpProviderId": "019f9c00-0000-4000-8000-000000000018",
       "description": "Project Notifier MCP server exposing 1 tool.",
       "icon": "mdi:projector-screen"

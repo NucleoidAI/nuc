@@ -145,13 +145,6 @@
       "createdAt": "2026-07-14T10:00:00.000Z"
     },
     {
-      "id": "019f414c-0000-4000-8000-000000000001",
-      "type": "TEXT",
-      "text": "The manager's email address is halilcengel@greycollar.ai. Meeting summaries should also be sent to this address.",
-      "status": "COMPLETED",
-      "createdAt": "2026-08-18T10:00:00.000Z"
-    },
-    {
       "id": "019f7a21-0000-4000-8000-000000000001",
       "type": "DATA",
       "text": "{\"reference_range\":{\"metric\":\"system.cpu.utilization\",\"attributes\":{\"state\":\"used\"},\"min\":0.0,\"max\":0.85,\"unit\":\"1\"}}",

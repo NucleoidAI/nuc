@@ -24,7 +24,7 @@ const config = {
     },
   },
   postgres: {
-    uri: "sqlite::memory:",
+    uri: "sqlite:///:memory:",
     debug: false,
     sync: true,
   },

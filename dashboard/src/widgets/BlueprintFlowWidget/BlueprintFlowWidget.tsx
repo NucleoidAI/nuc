@@ -32,6 +32,7 @@ interface Blueprint {
   description: string;
   agentId: string;
   blocking?: boolean;
+  executionMode?: "NORMAL" | "LITE";
   skill?: string;
 }
 
@@ -99,6 +100,7 @@ function BlueprintFlowWidget({
   teamId,
   blocking: blockingProp,
   onBlockingChange: onBlockingChangeProp,
+  liteMode = false,
   showConnections: showConnectionsProp,
   onDescriptionChange,
   onDescriptionLoadingChange,
@@ -130,6 +132,7 @@ function BlueprintFlowWidget({
   teamId?: string;
   blocking?: boolean;
   onBlockingChange?: (value: boolean) => void;
+  liteMode?: boolean;
   showConnections?: boolean;
   onSave?: () => void;
 }) {
@@ -1519,7 +1522,9 @@ function BlueprintFlowWidget({
         taskId,
         blueprintNodes?.messages,
         blocking,
-        generated?.skill || localSkill || blueprintNodes?.skill || undefined
+        generated?.skill || localSkill || blueprintNodes?.skill || undefined,
+        undefined,
+        liteMode ? "LITE" : "NORMAL"
       );
 
       lastSavedRef.current = {
@@ -1626,6 +1631,7 @@ function BlueprintFlowWidget({
           onDisconnectParameter={handleDisconnectParameter}
           onOverrideParameter={handleOverrideParameter}
           onToggleForceNode={handleToggleForceNode}
+          liteMode={liteMode}
         />
       )}
 

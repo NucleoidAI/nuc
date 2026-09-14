@@ -100,7 +100,35 @@ const BlueprintCard = ({
             </SourcedAvatar>
 
             <ListItemText
-              primary={<Typography color="inherit">{item.title}</Typography>}
+              primary={
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Typography color="inherit">{item.title}</Typography>
+                  {item.executionMode === "LITE" && (
+                    <Box
+                      sx={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        px: 1,
+                        py: 0.5,
+                        borderRadius: 999,
+                        fontSize: 11,
+                        fontWeight: 700,
+                        letterSpacing: "0.08em",
+                        textTransform: "uppercase",
+                        color: "#b8860b",
+                        border: "1px solid #b8860b",
+                        lineHeight: 1.6,
+                      }}
+                    >
+                      <Iconify
+                        icon="mdi:lightning-bolt"
+                        width={12}
+                        height={12}
+                      />
+                    </Box>
+                  )}
+                </Box>
+              }
               secondary={item.description}
               slotProps={{
                 primary: {

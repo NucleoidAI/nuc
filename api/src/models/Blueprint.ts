@@ -12,8 +12,16 @@ import Node from "../schemas/Node";
 
 export type BlueprintContext = {
   agent?: { name?: string | null; description?: string | null };
-  knowledge?: { type?: string | null; question?: string | null; text?: string | null }[];
-  referenceBlueprint?: { id?: string | null; title?: string | null; nodeCount: number } | null;
+  knowledge?: {
+    type?: string | null;
+    question?: string | null;
+    text?: string | null;
+  }[];
+  referenceBlueprint?: {
+    id?: string | null;
+    title?: string | null;
+    nodeCount: number;
+  } | null;
   supervising?: { question?: string | null; status?: string | null } | null;
   userRequest?: string | null;
   capturedAt?: string | null;
@@ -55,6 +63,11 @@ class Blueprint extends Model {
   @AllowNull(false)
   @Column(DataType.BOOLEAN)
   declare blocking: boolean;
+
+  @Default("NORMAL")
+  @AllowNull(false)
+  @Column(DataType.STRING)
+  declare executionMode: "NORMAL" | "LITE";
 
   @AllowNull(true)
   @Column({

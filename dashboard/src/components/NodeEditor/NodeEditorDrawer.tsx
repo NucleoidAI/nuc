@@ -1,6 +1,4 @@
 import { DrawerLayout } from "@canmingir/link/layouts";
-import ForceStepSwipe from "../ForceStepSwipe/ForceStepSwipe";
-import { Iconify } from "@canmingir/link/platform/components";
 import PseudocodeViewer from "./PseudocodeViewer";
 import SearchIcon from "@mui/icons-material/Search";
 import { useState } from "react";
@@ -23,6 +21,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import { Iconify, LinkSwipe } from "@canmingir/link/platform/components";
 import NodeInputValues, { getInputError } from "./NodeInputValues";
 
 const NodeEditorDrawer = ({
@@ -352,12 +351,13 @@ const NodeEditorDrawer = ({
             </Typography>
           </Box>
           <Box sx={{ flexShrink: 0 }}>
-            <ForceStepSwipe
+            <LinkSwipe
               checked={newNodePseudocodeEnabled}
               onChange={(value) => setNewNodePseudocodeEnabled?.(value)}
               theme={theme}
               disabled={!newNodeInstructions.trim() || pseudocodeLoading}
               ariaLabel="Generate pseudocode"
+              height={50}
             />
           </Box>
         </Box>
@@ -396,10 +396,13 @@ const NodeEditorDrawer = ({
           </Typography>
         </Box>
         <Box sx={{ flexShrink: 0 }}>
-          <ForceStepSwipe
+          <LinkSwipe
             checked={!!newNodeForce}
             onChange={(value) => setNewNodeForce?.(value)}
             theme={theme}
+            ariaLabel="Force node"
+            height={50}
+            thumbIcon="⚡️"
           />
         </Box>
       </Box>

@@ -1,4 +1,12 @@
 import NodeInputOverride from "./NodeInputOverride";
+import { styled } from "@mui/material/styles";
+
+import {
+  ConnectionsPanel,
+  Iconify,
+  InfoNode,
+  handleDataAttrs,
+} from "@canmingir/link/platform/components";
 import {
   Divider,
   ListItemIcon,
@@ -6,9 +14,9 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import { Iconify, InfoNode } from "@canmingir/link/platform/components";
 import React, { useState } from "react";
-import { alpha, styled } from "@mui/material/styles";
+
+const FORCE_COLOR = "#b8860b";
 
 const AddButtonWrapper = styled("div")(({ theme }) => ({
   position: "absolute",
@@ -75,6 +83,25 @@ const EditButtonWrapper = styled("div")(({ theme }) => ({
     boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
     color: theme.palette?.primary.main,
   },
+}));
+
+const ForceIndicatorWrapper = styled("div", {
+  shouldForwardProp: (prop) => prop !== "readonly",
+})<{ readonly?: boolean }>(({ theme, readonly }) => ({
+  position: "absolute",
+  top: "8px",
+  right: readonly ? "8px" : "72px",
+  width: "24px",
+  height: "24px",
+  borderRadius: "50%",
+  backgroundColor: theme.palette?.background?.paper || "#fff",
+  color: FORCE_COLOR,
+  border: `1px solid ${FORCE_COLOR}`,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+  zIndex: 10,
 }));
 
 const HighlightOverlay = styled("div")<{
@@ -555,8 +582,6 @@ const SuperviseNeededBadge = styled("div")(({ theme }) => {
   };
 });
 
-const FORCE_COLOR = "#b8860b";
-
 const ForceBadge = styled("div")(({ theme }) => ({
   position: "absolute",
   top: "-13px",
@@ -581,10 +606,8 @@ const ForceBadge = styled("div")(({ theme }) => ({
   zIndex: 6,
 }));
 
-const NodeWrapper = styled("div", {
-  shouldForwardProp: (prop) => prop !== "isforce",
-})<{ isforce?: boolean }>(({ isforce }) => {
-  const stepColor = isforce ? FORCE_COLOR : "#174f77";
+const NodeWrapper = styled("div")(() => {
+  const stepColor = "#174f77";
   const steppedShadow = `
     1px 1px 0 ${stepColor},
     2px 2px 0 ${stepColor},
@@ -736,126 +759,6 @@ function fieldsPanelHeight(nodeFields?: Record<string, NodeFields>) {
   return rows * FIELDS_PANEL_ROW_HEIGHT + (rows - 1) * FIELDS_PANEL_ROW_GAP;
 }
 
-const FieldsPanel = styled("div")(({ theme }) => ({
-  position: "absolute",
-  top: "calc(100% + 10px)",
-  left: 0,
-  width: "100%",
-  minWidth: 260,
-  display: "flex",
-  gap: 10,
-  padding: 10,
-  borderRadius: 12,
-  background: theme.palette.background.paper,
-  border: `1px solid ${theme.palette.divider}`,
-  boxShadow:
-    theme.palette.mode === "dark"
-      ? "0 6px 18px rgba(0,0,0,0.5)"
-      : "0 6px 18px rgba(0,0,0,0.12)",
-  zIndex: 25,
-  cursor: "default",
-}));
-
-const FieldColumn = styled("div")<{ align: "left" | "right" }>(
-  ({ align, theme }) => ({
-    flex: 1,
-    minWidth: 0,
-    display: "flex",
-    flexDirection: "column",
-    gap: 2,
-    ...(align === "right" && {
-      paddingLeft: 10,
-      borderLeft: `1px solid ${theme.palette.divider}`,
-    }),
-  })
-);
-
-const ColumnLabel = styled("div")<{ align: "left" | "right" }>(
-  ({ align, theme }) => ({
-    display: "flex",
-    alignItems: "center",
-    gap: 4,
-    justifyContent: align === "right" ? "flex-end" : "flex-start",
-    marginBottom: 4,
-    fontSize: 9,
-    fontWeight: 800,
-    textTransform: "uppercase",
-    letterSpacing: "0.08em",
-    color: theme.palette.text.disabled,
-  })
-);
-
-const FieldRow = styled("div")<{ align: "left" | "right" }>(
-  ({ align, theme }) => ({
-    display: "flex",
-    alignItems: "center",
-    gap: 6,
-    padding: "3px 4px",
-    borderRadius: 6,
-    flexDirection: align === "right" ? "row-reverse" : "row",
-    transition: "background-color 0.15s ease",
-    "&:hover": {
-      backgroundColor: theme.palette.action.hover,
-    },
-  })
-);
-
-const Dot = styled("div")<{
-  variant: "in" | "out";
-  bound?: string;
-  interactive?: string;
-}>(({ variant, bound, interactive, theme }) => {
-  const isBound = bound === "true";
-  const disabled = interactive === "false";
-  const accent =
-    variant === "out"
-      ? theme.palette.secondary.main
-      : theme.palette.primary.main;
-
-  return {
-    position: "relative",
-    flexShrink: 0,
-    boxSizing: "content-box",
-    width: 9,
-    height: 9,
-    borderRadius: "50%",
-    background: isBound ? accent : theme.palette.background.paper,
-    border: `2px solid ${isBound ? accent : theme.palette.grey[400]}`,
-    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
-    cursor: disabled ? "default" : "crosshair",
-    opacity: disabled ? 0.35 : 1,
-    pointerEvents: "auto",
-    transition:
-      "transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease",
-    ...(!disabled && {
-      "&:hover": {
-        transform: "scale(1.35)",
-        borderColor: accent,
-        boxShadow: `0 0 0 2px ${
-          theme.palette.background.paper
-        }, 0 0 0 5px ${alpha(accent, 0.22)}`,
-      },
-    }),
-  };
-});
-
-const FieldLabel = styled("div")<{ align: "left" | "right"; bound?: string }>(
-  ({ align, bound, theme }) => ({
-    flex: 1,
-    minWidth: 0,
-    fontSize: 11,
-    fontWeight: bound === "true" ? 600 : 400,
-    color:
-      bound === "true"
-        ? theme.palette.text.primary
-        : theme.palette.text.secondary,
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    textAlign: align,
-  })
-);
-
 function NodeHandles({
   node,
   fields,
@@ -879,82 +782,57 @@ function NodeHandles({
     (node.raw?.properties as { force?: boolean } | undefined)?.force
   );
 
-  return (
-    <FieldsPanel
-      sx={{ mt: -1, ml: 0.6 }}
-      onMouseDown={(e) => e.stopPropagation()}
-    >
-      <FieldColumn align="left">
-        <ColumnLabel align="left">
-          <Iconify icon="mdi:arrow-down-left" width={10} height={10} />
-          Inputs
-        </ColumnLabel>
-        {fields.inputs.map((field) => {
-          const bound = boundFields?.has(field) ? "true" : "false";
-          return (
-            <FieldRow key={`in-${field}`} align="left">
-              <Dot
-                variant="in"
-                bound={bound}
-                interactive={isForceTarget ? "true" : "false"}
-                {...(isForceTarget && { "data-handle-type": "in" })}
-                data-in-handle=""
-                data-node-id={node.id}
-                data-field={field}
-                {...(isForceTarget && { title: `Input: ${field}` })}
-              />
-              <FieldLabel align="left" bound={bound} title={field}>
-                {onOverrideParameter && fields.inputProperties?.[field] ? (
-                  <NodeInputOverride
-                    field={field}
-                    schema={fields.inputProperties[field]}
-                    parameters={node.raw?.properties?.parameters ?? {}}
-                    onChange={(value) =>
-                      onOverrideParameter(node.id, field, value)
-                    }
-                  />
-                ) : (
-                  field
-                )}
-              </FieldLabel>
-            </FieldRow>
-          );
-        })}
-      </FieldColumn>
+  const inputs = fields.inputs.map((field) => ({
+    name: field,
+    bound: boundFields?.has(field) ?? false,
+    interactive: isForceTarget,
+    title: isForceTarget ? `Input: ${field}` : undefined,
+    dataAttrs: {
+      ...handleDataAttrs("in", node.id, field),
+      "data-in-handle": "",
+      ...(isForceTarget ? { "data-in-bindable": "" } : {}),
+    },
+  }));
 
-      <FieldColumn align="right">
-        <ColumnLabel align="right">
-          Outputs
-          <Iconify icon="mdi:arrow-up-right" width={10} height={10} />
-        </ColumnLabel>
-        {fields.outputs.map((field) => (
-          <FieldRow key={`out-${field}`} align="right">
-            <Dot
-              variant="out"
-              interactive={hasForceNode ? "true" : "false"}
-              data-handle-type="out"
-              data-node-id={node.id}
-              data-field={field}
-              {...(hasForceNode && {
-                title: `Output: ${field === "result" ? "result (raw)" : field}`,
-              })}
-              onMouseDown={
-                hasForceNode
-                  ? (e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      onHandleDragStart?.(node.id, field, e);
-                    }
-                  : undefined
-              }
-            />
-            <FieldLabel align="right" title={field}>
-              {field === "result" ? "result" : field}
-            </FieldLabel>
-          </FieldRow>
-        ))}
-      </FieldColumn>
-    </FieldsPanel>
+  const outputs = fields.outputs.map((field) => ({
+    name: field,
+    interactive: Boolean(hasForceNode),
+    title: hasForceNode
+      ? `Output: ${field === "result" ? "result (raw)" : field}`
+      : undefined,
+    dataAttrs: handleDataAttrs("out", node.id, field),
+    onHandleMouseDown: hasForceNode
+      ? (e: React.MouseEvent) => {
+          e.stopPropagation();
+          e.preventDefault();
+          onHandleDragStart?.(node.id, field, e);
+        }
+      : undefined,
+  }));
+
+  const renderLabel = (name: string, side: "in" | "out") => {
+    if (side !== "in" || !onOverrideParameter) return name;
+
+    const schema = fields.inputProperties?.[name];
+    if (!schema) return name;
+
+    return (
+      <NodeInputOverride
+        field={name}
+        schema={schema}
+        parameters={node.raw?.properties?.parameters ?? {}}
+        onChange={(value) => onOverrideParameter(node.id, name, value)}
+      />
+    );
+  };
+
+  return (
+    <ConnectionsPanel
+      inputs={inputs}
+      outputs={outputs}
+      renderLabel={renderLabel}
+      sx={{ mt: -1, ml: 0.6 }}
+    />
   );
 }
 
@@ -983,6 +861,7 @@ function FlowNodeRenderer({
       field: string,
       value: unknown
     ) => void;
+    liteMode?: boolean;
     [key: string]: unknown;
   };
 }) {
@@ -998,6 +877,7 @@ function FlowNodeRenderer({
     onHandleDragStart,
     onToggleForce,
     onOverrideParameter,
+    liteMode,
   } = nodeStyle || {};
   const fields = node.nodeType === "NORMAL" ? nodeFields?.[node.id] : undefined;
   const isForceNode = Boolean(
@@ -1052,12 +932,19 @@ function FlowNodeRenderer({
 
   return (
     <NodeWrapper
-      isforce={isForceNode}
       title={isForceNode ? "Force node: action is guaranteed" : undefined}
       onContextMenu={handleContextMenu}
       onMouseDownCapture={handleMouseDownCapture}
     >
-      {isForceNode && (
+      {isForceNode && isReadOnly && (
+        <ForceIndicatorWrapper
+          readonly
+          title="Force node: action is guaranteed"
+        >
+          <Iconify icon="mdi:lightning-bolt" width={16} height={16} />
+        </ForceIndicatorWrapper>
+      )}
+      {isForceNode && !liteMode && changeType && changeType !== "unchanged" && (
         <ForceBadge>
           <Iconify icon="mdi:lightning-bolt" width={11} height={11} />
           force
@@ -1123,6 +1010,11 @@ function FlowNodeRenderer({
             <EditButtonWrapper onClick={handleEditClick} title="Edit node">
               <Iconify icon="mdi:pencil" width={16} height={16} />
             </EditButtonWrapper>
+            {isForceNode && (
+              <ForceIndicatorWrapper title="Force node: action is guaranteed">
+                <Iconify icon="mdi:lightning-bolt" width={16} height={16} />
+              </ForceIndicatorWrapper>
+            )}
             <AddButtonWrapper onClick={handleAddClick} title="Add child node">
               <Iconify icon="mdi:plus" width={16} height={16} />
             </AddButtonWrapper>

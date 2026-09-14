@@ -49,9 +49,14 @@ function useBlueprint() {
 
   const [blueprintUpserted] = useEvent("BLUEPRINT_UPSERTED", null);
   const [blueprintPatched] = useEvent("BLUEPRINT_PATCHED", null);
+  const [projectSelected] = useEvent("PROJECT_SELECTED", { projectId: null });
 
   const getBlueprint = (fetchState: DependencyArray = [], agentId?: string) => {
-    const eventDependencies = [blueprintUpserted, blueprintPatched];
+    const eventDependencies = [
+      blueprintUpserted,
+      blueprintPatched,
+      projectSelected,
+    ];
 
     const url = agentId ? `/agents/${agentId}/blueprints` : `/blueprints`;
 
@@ -163,7 +168,8 @@ function useBlueprint() {
     }>,
     blocking?: boolean,
     skill?: string,
-    context?: BlueprintContext
+    context?: BlueprintContext,
+    executionMode?: "NORMAL" | "LITE"
   ) => {
     if (!blueprintId) {
       blueprintId = uuidv4();
@@ -179,6 +185,7 @@ function useBlueprint() {
       ...(blocking !== undefined && { blocking }),
       ...(skill !== undefined && { skill }),
       ...(context !== undefined && { context }),
+      ...(executionMode !== undefined && { executionMode }),
     });
     if (response?.data) {
       publish("BLUEPRINT_UPSERTED", { Blueprint: response.data });
@@ -188,7 +195,7 @@ function useBlueprint() {
 
   const patchBlueprint = async (
     blueprintId: string,
-    fields: { blocking?: boolean }
+    fields: { blocking?: boolean; executionMode?: "NORMAL" | "LITE" }
   ) => {
     const response = await http.patch(`/blueprints/${blueprintId}`, fields);
     if (response?.data) {

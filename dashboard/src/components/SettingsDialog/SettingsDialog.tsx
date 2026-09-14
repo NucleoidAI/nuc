@@ -1,7 +1,5 @@
 import CloseIcon from "@mui/icons-material/Close";
-import LockIcon from "@mui/icons-material/Lock";
-import LockOpenIcon from "@mui/icons-material/LockOpen";
-import React from "react";
+import { LinkSwipe } from "@canmingir/link/platform/components";
 import TuneIcon from "@mui/icons-material/Tune";
 
 import {
@@ -10,10 +8,10 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-  Switch,
   Tab,
   Tabs,
   Typography,
+  useTheme,
 } from "@mui/material";
 
 const SettingsDialog = ({
@@ -23,7 +21,11 @@ const SettingsDialog = ({
   setSettingsTab,
   blocking,
   setBlocking,
+  liteMode,
+  setLiteMode,
 }) => {
+  const theme = useTheme();
+
   return (
     <Dialog
       open={showSettings}
@@ -72,27 +74,26 @@ const SettingsDialog = ({
           {settingsTab === 0 && (
             <Box>
               <Typography variant="subtitle2" gutterBottom>
-                Execution mode
+                Supervision Mode
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                Controls how errors in this blueprint are handled during
-                execution.
+                Determines whether execution requires human supervision when
+                uncertainty is detected.
               </Typography>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                {blocking ? (
-                  <LockIcon fontSize="small" />
-                ) : (
-                  <LockOpenIcon fontSize="small" />
-                )}
-                <Typography variant="body2">
-                  {blocking ? "Blocking" : "Non-blocking"}
-                </Typography>
-                <Switch
-                  checked={!blocking}
-                  onChange={(e) => setBlocking(!e.target.checked)}
-                  color="success"
-                />
-              </Box>
+              <LinkSwipe
+                checked={!blocking}
+                onChange={(value) => setBlocking(!value)}
+                theme={theme}
+                color="primary"
+                variant="solid"
+                showThumbIcon={false}
+                offLabel="Blocking"
+                onLabel="Non-blocking"
+                ariaLabel="Execution mode"
+                width={70}
+                height={30}
+                thumbSize={20}
+              />
               <Typography
                 variant="caption"
                 color="text.secondary"
@@ -101,6 +102,35 @@ const SettingsDialog = ({
                 {blocking
                   ? "Errors escalate to supervisor and halt the flow."
                   : "Errors are skipped and the flow continues."}
+              </Typography>
+
+              <Typography variant="subtitle2" gutterBottom sx={{ mt: 4 }}>
+                Execution Mode
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                Defines how execution is handled between AI and the platform.
+              </Typography>
+              <LinkSwipe
+                checked={!!liteMode}
+                onChange={setLiteMode}
+                theme={theme}
+                idleColor="primary"
+                offLabel="Normal"
+                onLabel="Lite"
+                ariaLabel="Force mode"
+                width={70}
+                height={30}
+                thumbSize={20}
+                thumbIcon="⚡️"
+              />
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ mt: 1.5, display: "block" }}
+              >
+                {liteMode
+                  ? "Force nodes show only the lightning icon, no badge."
+                  : "Force nodes show a badge while the flow has unsaved changes."}
               </Typography>
             </Box>
           )}

@@ -6,6 +6,7 @@ const Blueprint = {
     description: z.string(),
     agentId: z.string().uuid(),
     blocking: z.boolean().optional(),
+    executionMode: z.enum(["NORMAL", "LITE"]).optional(),
     skill: z.string().optional(),
     context: z
       .object({
@@ -21,7 +22,7 @@ const Blueprint = {
               type: z.string().nullish(),
               question: z.string().nullish(),
               text: z.string().nullish(),
-            })
+            }),
           )
           .optional(),
         referenceBlueprint: z
@@ -67,7 +68,7 @@ const Blueprint = {
           true: z.array(z.string()).nullish(),
           false: z.array(z.string()).nullish(),
           createdAt: z.string().optional(),
-        })
+        }),
       )
       .optional(),
     messages: z
@@ -76,7 +77,7 @@ const Blueprint = {
           content: z.string(),
           role: z.enum(["user", "assistant"]),
           createdAt: z.string().or(z.date()),
-        })
+        }),
       )
       .optional(),
   }),
@@ -86,7 +87,7 @@ const Blueprint = {
         z.object({
           role: z.enum(["user", "system", "assistant"]),
           content: z.string(),
-        })
+        }),
       )
       .optional(),
     content: z.string(),
@@ -96,7 +97,7 @@ const Blueprint = {
       z.object({
         role: z.enum(["user", "system", "assistant"]),
         content: z.string(),
-      })
+      }),
     ),
     content: z.string(),
   }),
@@ -127,7 +128,7 @@ const Blueprint = {
         true: z.array(z.string()).nullish(),
         false: z.array(z.string()).nullish(),
         createdAt: z.string().optional(),
-      })
+      }),
     ),
   }),
 };

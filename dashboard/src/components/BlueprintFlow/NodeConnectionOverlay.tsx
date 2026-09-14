@@ -23,14 +23,6 @@ interface PathInfo {
   targetNodeId: string;
   targetField: string;
   temp?: boolean;
-  implied?: boolean;
-  title?: string;
-}
-
-interface ImpliedBinding {
-  sourceNodeId: string;
-  targetNodeId: string;
-  field: string;
 }
 
 function collectHandles(container: HTMLElement) {
@@ -74,7 +66,6 @@ function bezierPath(x1: number, y1: number, x2: number, y2: number) {
 export default function NodeConnectionOverlay({
   containerRef,
   graphData,
-  nodeFields,
   dragging,
   onDragEnd,
   onConnect,
@@ -82,7 +73,6 @@ export default function NodeConnectionOverlay({
 }: {
   containerRef: React.RefObject<HTMLDivElement>;
   graphData: DefinitionGraph;
-  nodeFields?: Record<string, { inputs: string[]; outputs: string[] }>;
   dragging: DragState | null;
   onDragEnd: () => void;
   onConnect: (binding: ParameterBinding) => void;
@@ -117,66 +107,6 @@ export default function NodeConnectionOverlay({
     return result;
   }, [graphData]);
 
-  const impliedBindings: ImpliedBinding[] = useMemo(() => {
-    if (!nodeFields) return [];
-
-    const parentsById = new Map<string, Set<string>>();
-    for (const node of Object.values(graphData.nodes)) {
-      const childIds: string[] = [];
-      if (Array.isArray(node.next)) childIds.push(...node.next);
-      else if (typeof node.next === "string") childIds.push(node.next);
-      if (node.trueNext) childIds.push(...node.trueNext);
-      if (node.falseNext) childIds.push(...node.falseNext);
-
-      for (const childId of childIds) {
-        if (!parentsById.has(childId)) parentsById.set(childId, new Set());
-        parentsById.get(childId)!.add(node.id);
-      }
-    }
-
-    const explicit = new Set(
-      bindings.map((b) => `${b.targetNodeId}:${b.targetField}`)
-    );
-    const result: ImpliedBinding[] = [];
-
-    for (const node of Object.values(graphData.nodes)) {
-      if (node.nodeType !== "NORMAL") continue;
-      const isForce = Boolean(
-        (node.raw?.properties as { force?: boolean } | undefined)?.force
-      );
-      if (isForce) continue;
-
-      const targetFields = nodeFields[node.id];
-      if (!targetFields?.inputs.length) continue;
-
-      const parents = parentsById.get(node.id);
-      if (!parents?.size) continue;
-
-      for (const field of targetFields.inputs) {
-        if (explicit.has(`${node.id}:${field}`)) continue;
-        if (
-          Object.prototype.hasOwnProperty.call(
-            node.raw?.properties?.parameters ?? {},
-            field
-          )
-        )
-          continue;
-
-        for (const parentId of parents) {
-          if (nodeFields[parentId]?.outputs.includes(field)) {
-            result.push({
-              sourceNodeId: parentId,
-              targetNodeId: node.id,
-              field,
-            });
-          }
-        }
-      }
-    }
-
-    return result;
-  }, [graphData, nodeFields, bindings]);
-
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -197,24 +127,6 @@ export default function NodeConnectionOverlay({
           d: bezierPath(s.x, s.y, t.x, t.y),
           targetNodeId: b.targetNodeId,
           targetField: b.targetField,
-        });
-      }
-
-      for (const ib of impliedBindings) {
-        const sourceEl = handles.get(`out:${ib.sourceNodeId}:${ib.field}`);
-        const targetEl = handles.get(`in:${ib.targetNodeId}:${ib.field}`);
-        if (!sourceEl || !targetEl) continue;
-        const s = sourceAnchor(sourceEl.getBoundingClientRect(), containerRect);
-        const t = targetAnchor(targetEl.getBoundingClientRect(), containerRect);
-        nextPaths.push({
-          id: `implied:${ib.sourceNodeId}:${ib.targetNodeId}:${ib.field}`,
-          d: bezierPath(s.x, s.y, t.x, t.y),
-          targetNodeId: ib.targetNodeId,
-          targetField: ib.field,
-          implied: true,
-          title: `"${ib.field}" is passed implicitly from ${
-            graphData.nodes[ib.sourceNodeId]?.label ?? ib.sourceNodeId
-          } by matching name — mark this node as a force node to bind it explicitly.`,
         });
       }
 
@@ -248,7 +160,7 @@ export default function NodeConnectionOverlay({
 
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [containerRef, graphData, bindings, impliedBindings, dragging]);
+  }, [containerRef, graphData, bindings, dragging]);
 
   useEffect(() => {
     if (!dragging) return;
@@ -260,7 +172,7 @@ export default function NodeConnectionOverlay({
     const handleMouseUp = (e: MouseEvent) => {
       const dropped = (
         document.elementFromPoint(e.clientX, e.clientY) as HTMLElement | null
-      )?.closest('[data-handle-type="in"]') as HTMLElement | null;
+      )?.closest("[data-in-bindable]") as HTMLElement | null;
 
       if (dropped) {
         const { nodeId, field } = dropped.dataset;
@@ -295,57 +207,31 @@ export default function NodeConnectionOverlay({
         height="100%"
         style={{ position: "absolute", inset: 0, overflow: "visible" }}
       >
-        {paths.map((p) => {
-          if (p.implied) {
-            return (
-              <g key={p.id}>
-                <path
-                  d={p.d}
-                  fill="none"
-                  stroke={theme.palette.action.disabled}
-                  strokeWidth={1.5}
-                  strokeDasharray="2 4"
-                  strokeLinecap="round"
-                />
-                <path
-                  d={p.d}
-                  fill="none"
-                  stroke="transparent"
-                  strokeWidth={12}
-                  style={{ pointerEvents: "auto", cursor: "help" }}
-                >
-                  <title>{p.title}</title>
-                </path>
-              </g>
-            );
-          }
-
-          return (
-            <g key={p.id}>
+        {paths.map((p) => (
+          <g key={p.id}>
+            <path
+              d={p.d}
+              fill="none"
+              stroke={
+                p.temp
+                  ? theme.palette.primary.light
+                  : theme.palette.primary.main
+              }
+              strokeWidth={p.temp ? 1.5 : 2}
+              strokeDasharray={p.temp ? "4 4" : undefined}
+            />
+            {!p.temp && (
               <path
                 d={p.d}
                 fill="none"
-                stroke={
-                  p.temp
-                    ? theme.palette.primary.light
-                    : theme.palette.primary.main
-                }
-                strokeWidth={p.temp ? 1.5 : 2}
-                strokeDasharray={p.temp ? "4 4" : undefined}
+                stroke="transparent"
+                strokeWidth={14}
+                style={{ pointerEvents: "auto", cursor: "pointer" }}
+                onClick={() => onDisconnect(p.targetNodeId, p.targetField)}
               />
-              {!p.temp && (
-                <path
-                  d={p.d}
-                  fill="none"
-                  stroke="transparent"
-                  strokeWidth={14}
-                  style={{ pointerEvents: "auto", cursor: "pointer" }}
-                  onClick={() => onDisconnect(p.targetNodeId, p.targetField)}
-                />
-              )}
-            </g>
-          );
-        })}
+            )}
+          </g>
+        ))}
       </svg>
     </Box>
   );

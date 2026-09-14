@@ -4,7 +4,6 @@ import type { Theme } from "@mui/material/styles";
 import useAgent from "../../hooks/useAgent";
 import useBlueprint from "../../hooks/useBlueprint";
 import useChatSessions from "../../hooks/useChatSessions";
-import { useEvent } from "@nucleoidai/react-event";
 import useSession from "../../hooks/useSession";
 
 import {
@@ -20,6 +19,7 @@ import {
   Iconify,
   SidebarChat,
 } from "@canmingir/link/platform/components";
+import { publish, useEvent } from "@nucleoidai/react-event";
 import { useCallback, useEffect, useState } from "react";
 
 interface AgentDevToolWidgetProps {
@@ -49,6 +49,11 @@ const AgentDevToolWidget = ({
     { context: null }
   );
   const context = blueprintContext?.context ?? null;
+
+  const [superviseChat] = useEvent<{ canReopen: boolean }>("SUPERVISOR_CHAT", {
+    canReopen: false,
+  });
+  const canReopenSupervise = Boolean(superviseChat?.canReopen);
 
   const {
     sessionId,
@@ -151,16 +156,40 @@ const AgentDevToolWidget = ({
         onSessionSelect={handleSessionSelect}
         onNewSession={handleNewSession}
         beta={beta}
-        topAction={
-          context
-            ? {
-                icon: "solar:layers-minimalistic-bold",
-                label: "Context",
-                tooltip: "Blueprint context",
-                onClick: () => setContextOpen(true),
-              }
-            : undefined
-        }
+        topActions={[
+          ...(canReopenSupervise
+            ? [
+                {
+                  icon: "solar:users-group-rounded-bold",
+                  label: "Supervise",
+                  tooltip: "Reopen resolve supervise chat",
+                  onClick: () =>
+                    publish("SUPERVISOR_CHAT_REOPEN", {
+                      requestedAt: Date.now(),
+                    }),
+                  sx: {
+                    color: "#ffa726",
+                    "&:hover": {
+                      color: "#ffa726",
+                      bgcolor: "rgba(255, 152, 0, 0.12)",
+                      borderColor: "rgba(255, 152, 0, 0.3)",
+                      transform: "scale(1.08)",
+                    },
+                  },
+                },
+              ]
+            : []),
+          ...(context
+            ? [
+                {
+                  icon: "solar:layers-minimalistic-bold",
+                  label: "Context",
+                  tooltip: "Blueprint context",
+                  onClick: () => setContextOpen(true),
+                },
+              ]
+            : []),
+        ]}
       >
         {({ open: chatOpen, handleToggle: chatToggle, onNewSession }) => (
           <ThemeProvider

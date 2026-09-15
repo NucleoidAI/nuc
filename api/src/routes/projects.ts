@@ -88,7 +88,8 @@ router.get("/:projectId/mcp-servers/:serverId/envs", async (req, res) => {
 
 router.put("/:projectId/mcp-servers/:serverId/envs/:key", async (req, res) => {
   const { projectId: sessionTeamId } = req.session;
-  const { projectId: teamId, serverId, key } = req.params;
+  const { projectId: teamId, serverId } = req.params;
+  const key = Joi.attempt(req.params.key, schemas.MCPServer.env.key);
   const { value } = Joi.attempt(req.body, schemas.MCPServer.env.set);
 
   await mcpServer.assertScopeBelongsToTeam({ teamId, sessionTeamId });
@@ -103,7 +104,8 @@ router.delete(
   "/:projectId/mcp-servers/:serverId/envs/:key",
   async (req, res) => {
     const { projectId: sessionTeamId } = req.session;
-    const { projectId: teamId, serverId, key } = req.params;
+    const { projectId: teamId, serverId } = req.params;
+    const key = Joi.attempt(req.params.key, schemas.MCPServer.env.key);
 
     await mcpServer.assertScopeBelongsToTeam({ teamId, sessionTeamId });
 

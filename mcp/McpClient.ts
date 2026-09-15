@@ -17,13 +17,21 @@ class McpClient {
 
   async connectToServer({ env = {} }: { env?: Record<string, string> } = {}) {
     try {
-      const serverPath = path.join(
+      if (!/^[a-zA-Z0-9_-]+$/.test(this.name)) {
+        throw new Error(`Invalid MCP server name: ${this.name}`);
+      }
+
+      const serversRoot = path.resolve(
         path.dirname(process.cwd()),
         "mcp",
         "servers",
-        this.name,
-        "index.ts",
       );
+      const serverPath = path.resolve(serversRoot, this.name, "index.ts");
+
+      if (!serverPath.startsWith(serversRoot + path.sep)) {
+        throw new Error(`Invalid MCP server path: ${this.name}`);
+      }
+
       this.transport = new StdioClientTransport({
         command: "bun",
         args: [serverPath],

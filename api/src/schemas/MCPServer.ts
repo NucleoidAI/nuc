@@ -19,7 +19,11 @@ const RESERVED_ENV_PREFIXES = ["LD_", "DYLD_", "BUN_", "NODE_"];
 
 const MCPServer = {
   create: Joi.object({
-    id: Joi.string().min(1).max(255).required(),
+    id: Joi.string()
+      .min(1)
+      .max(255)
+      .pattern(/^[a-zA-Z0-9_-]+$/)
+      .required(),
     mcpProviderId: uuid.required(),
     description: Joi.string().allow("", null).optional(),
     icon: Joi.string().allow("", null).optional(),

@@ -60,3 +60,73 @@ export interface ConfigurationInput {
 export interface PortConnectionWithTechnicalSupportInput {
   assignment_id: string; // Port assignment ID
 }
+
+export interface SpeakerTranscript {
+  id: string;
+  transcript: string;
+}
+
+export interface MeetingHighlight {
+  topic: string;
+  highlights: string[];
+}
+
+export interface MeetingParticipant {
+  id: string;
+  name?: string;
+}
+
+export interface MeetingJudgement {
+  variant?: string | null;
+  meeting_summary?: number;
+  next_steps?: number | null;
+  topics?: number;
+  highlights?: number;
+  overall?: number;
+  accuracy?: number;
+  reasoning?: string;
+}
+
+export interface PcmToWavInput {
+  directoryPath: string;
+}
+
+export interface TranscribeMeetingInput {
+  directoryPath: string;
+  force?: boolean;
+  includeSpeakerTranscripts?: boolean;
+}
+
+export interface SummarizeMeetingInput {
+  summary_prompt?: string;
+  transcript?: string;
+}
+
+export interface SummarizeMeetingBySpeakerInput {
+  full_meeting_transcript?: string;
+  speaker_transcripts?: SpeakerTranscript[];
+}
+
+export interface JudgeSummaryInput {
+  transcript?: string;
+  summary?: unknown;
+  highlights?: MeetingHighlight[];
+  next_steps?: string[];
+  speaker_transcripts?: SpeakerTranscript[];
+  variant?: string;
+}
+
+export interface PrepareMeetingAttachmentsInput {
+  directoryPath: string;
+  full_meeting_transcript?: string;
+  speaker_transcripts?: SpeakerTranscript[];
+  participants?: MeetingParticipant[];
+  judgement?: MeetingJudgement;
+  includeAudio?: boolean;
+  maxTotalBytes?: number;
+}
+
+export interface ResolveParticipantsInput {
+  content: unknown;
+  participants: { id: string; name: string }[];
+}

@@ -1,3 +1,5 @@
+import { parseByNodeRef } from "../helper";
+
 type ValidationError = {
   nodeId: string;
   nodeLabel: string;
@@ -13,6 +15,7 @@ type ValidationResult = {
 };
 
 type IntegrationSchema = {
+  required?: string[];
   type?: string;
   properties?: Record<
     string,
@@ -36,6 +39,7 @@ type Integration = {
 };
 
 type GraphNode = {
+  raw?: { properties?: { parameters?: Record<string, unknown> } };
   id: string;
   label?: string;
   action?: string;
@@ -87,23 +91,18 @@ function validateSchemaCompatibility(
     outputProps.includes(prop)
   );
 
-  const missingProperties = inputProps.filter((prop) => {
-    const inputProp = inputSchema.properties![prop];
-    if (inputProp.nullable) {
-      return false;
-    }
-    return !outputProps.includes(prop);
-  });
+  const missingProperties = (inputSchema.required ?? []).filter(
+    (prop) => !outputProps.includes(prop)
+  );
 
   const contextuallyAvailable = missingProperties.filter((prop) =>
     allAvailableProperties.has(prop)
   );
 
-  const hasAtLeastOneMatch =
-    matchingProperties.length > 0 || contextuallyAvailable.length > 0;
-
   return {
-    isCompatible: missingProperties.length === 0 || hasAtLeastOneMatch,
+    isCompatible: missingProperties.every((prop) =>
+      allAvailableProperties.has(prop)
+    ),
     missingProperties,
     matchingProperties,
     contextuallyAvailable,
@@ -112,85 +111,57 @@ function validateSchemaCompatibility(
 
 function validateFlow(
   graphData: { nodes: Record<string, GraphNode>; roots: string[] },
-  integrations: Integration[],
-  allOutputProperties?: Set<string>
+  integrations: Integration[]
 ): ValidationResult {
   const errors: ValidationError[] = [];
+  if (!graphData?.nodes || !integrations) return { isValid: true, errors };
 
-  if (!graphData?.nodes || !integrations) {
-    return { isValid: true, errors: [] };
-  }
-  const propertyMap = allOutputProperties ?? buildPropertyMap(integrations);
+  const integrationMap = new Map(
+    integrations.map((integration) => [integration.action, integration])
+  );
 
-  const integrationMap = new Map<string, Integration>();
-  integrations.forEach((integration) => {
-    integrationMap.set(integration.action, integration);
-  });
-
-  Object.values(graphData.nodes).forEach((node) => {
-    if (!node.action || node.nodeType === "CONDITION") {
-      return;
-    }
-
-    const currentIntegration = integrationMap.get(node.action);
-    if (!currentIntegration) {
-      return;
-    }
-
-    const nextNodeIds: string[] = [];
-    if (node.nodeType === "CONDITION") {
-      if (node.trueNext) nextNodeIds.push(...node.trueNext);
-      if (node.falseNext) nextNodeIds.push(...node.falseNext);
-    } else {
-      if (typeof node.next === "string") {
-        nextNodeIds.push(node.next);
-      } else if (Array.isArray(node.next)) {
-        nextNodeIds.push(...node.next);
-      }
-    }
-
-    nextNodeIds.forEach((nextNodeId) => {
-      const nextNode = graphData.nodes[nextNodeId];
-      if (!nextNode?.action || nextNode.nodeType === "CONDITION") {
-        return;
-      }
-
-      const nextIntegration = integrationMap.get(nextNode.action);
-      if (!nextIntegration) {
-        return;
-      }
-
-      const { isCompatible, missingProperties } = validateSchemaCompatibility(
-        currentIntegration.outputSchema,
-        nextIntegration.inputSchema,
-        propertyMap
-      );
-
-      if (!isCompatible) {
-        const unavailableProperties = missingProperties.filter(
-          (prop) => !propertyMap.has(prop)
+  // Unbound inputs are generated from task context at runtime, and fixed values
+  // are merged into those inputs. Only explicit output references require a
+  // matching source node/field; input and output names need not otherwise match.
+  for (const node of Object.values(graphData.nodes)) {
+    if (!node.action || node.nodeType === "CONDITION") continue;
+    for (const [field, value] of Object.entries(
+      node.raw?.properties?.parameters ?? {}
+    )) {
+      const ref = parseByNodeRef(value);
+      if (!ref) continue;
+      const source = graphData.nodes[ref.sourceNodeId];
+      const outputSchema = source?.action
+        ? integrationMap.get(source.action)?.outputSchema
+        : undefined;
+      const sourceField = ref.sourceField.split(/[.[]/, 1)[0];
+      const missingSource = !source;
+      const missingField =
+        ref.sourceField !== "result" &&
+        outputSchema?.properties !== undefined &&
+        !Object.prototype.hasOwnProperty.call(
+          outputSchema.properties,
+          sourceField
         );
+      if (!missingSource && !missingField) continue;
 
-        errors.push({
-          nodeId: node.id,
-          nodeLabel: node.label || node.id,
-          nextNodeId: nextNode.id,
-          nextNodeLabel: nextNode.label || nextNode.id,
-          missingProperties: unavailableProperties,
-          message: `Node "${node.label || node.id}" → "${
-            nextNode.label || nextNode.id
-          }": Required properties not available anywhere in the system: ${unavailableProperties.join(
-            ", "
-          )}`,
-        });
-      }
-    });
-  });
-
-  return {
-    isValid: errors.length === 0,
-    errors,
-  };
+      const sourceLabel = source?.label || ref.sourceNodeId;
+      const targetLabel = node.label || node.id;
+      errors.push({
+        nodeId: ref.sourceNodeId,
+        nodeLabel: sourceLabel,
+        nextNodeId: node.id,
+        nextNodeLabel: targetLabel,
+        missingProperties: [field],
+        message: `Node "${targetLabel}": Input "${field}" references ${
+          missingSource
+            ? `missing node "${sourceLabel}"`
+            : `missing output "${ref.sourceField}" on node "${sourceLabel}"`
+        }.`,
+      });
+    }
+  }
+  return { isValid: errors.length === 0, errors };
 }
 
 type CompatibleNode = {

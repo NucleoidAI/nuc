@@ -2,6 +2,13 @@
   "sequence": 5,
   "seed": [
     {
+      "id": "be4f83d1-0e56-4989-873c-051b83e6b843",
+      "type": "TEXT",
+      "text": "The order management manager's email address is halilcengel@greycollar.ai.",
+      "status": "COMPLETED",
+      "createdAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
       "id": "0b6e8e55-3d02-4f59-966f-e6339ba27095",
       "type": "URL",
       "url": "https://www.financialmanagementandstrategy.com/resources",
@@ -117,14 +124,14 @@
       "createdAt": "1970-01-20T22:08:14.337Z"
     },
     {
-      "id": "b1c2d3e4-f5a6-4b1c-9001-200000000001",
+      "id": "fe903f32-6794-47ab-90e5-4bb7babb556b",
       "type": "DATA",
       "text": "{\"product_id\": \"prd-1\", \"product_name\": \"product-1\", \"certificate\": \"FFC\"}",
       "status": "COMPLETED",
       "createdAt": "2025-06-26T06:00:00.000Z"
     },
     {
-      "id": "b1c2d3e4-f5a6-4b1c-9002-200000000002",
+      "id": "cd7df4f2-514f-48df-8f71-1ece01b94deb",
       "type": "DATA",
       "text": "{\"product_id\": \"prd-2\", \"product_name\": \"product-2\", \"certificate\": \"CE\"}",
       "status": "COMPLETED",
@@ -136,13 +143,6 @@
       "text": "The manager's email address is halilcengel@greycollar.ai. Onboarding notifications should be sent to this address.",
       "status": "COMPLETED",
       "createdAt": "2026-07-14T10:00:00.000Z"
-    },
-    {
-      "id": "019f414c-0000-4000-8000-000000000001",
-      "type": "TEXT",
-      "text": "The manager's email address is halilcengel@greycollar.ai. Meeting summaries should also be sent to this address.",
-      "status": "COMPLETED",
-      "createdAt": "2026-08-18T10:00:00.000Z"
     },
     {
       "id": "019f7a21-0000-4000-8000-000000000001",

@@ -2,8 +2,7 @@ import { CreateEmployeeInput, Tool } from "./types";
 
 import logger from "../../../logger/logger.js";
 
-const AD_API_BASE_URL =
-  process.env.ACTIVE_DIRECTORY_API_URL || "http://localhost:5200";
+const AD_API_BASE_URL = process.env.ACTIVE_DIRECTORY_API_URL;
 
 export const createEmployeeTool: Tool<CreateEmployeeInput> = {
   name: "ACTIVEDIRECTORY:create_employee",

@@ -22,8 +22,11 @@ import {
   useTheme,
 } from "@mui/material";
 import { Iconify, LinkSwipe } from "@canmingir/link/platform/components";
+import NodeInputValues, { getInputError } from "./NodeInputValues";
 
 const NodeEditorDrawer = ({
+  parameters = {},
+  onParametersChange,
   drawerOpen,
   handleDrawerClose,
   selectedParentNode,
@@ -62,6 +65,8 @@ const NodeEditorDrawer = ({
   setHandoffTargetBlueprintId,
   availableAgentBlueprints = [],
 }: {
+  parameters?: Record<string, unknown>;
+  onParametersChange?: (parameters: Record<string, unknown>) => void;
   drawerOpen: boolean;
   handleDrawerClose: () => void;
   selectedParentNode: {
@@ -812,40 +817,12 @@ const NodeEditorDrawer = ({
               </Typography>
             </Box>
 
-            {selectedIntegration.inputSchema?.properties && (
-              <Box sx={{ mb: 2 }}>
-                <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
-                  Input Schema
-                </Typography>
-                <Box sx={{ pl: 2 }}>
-                  {Object.entries(
-                    selectedIntegration.inputSchema.properties
-                  ).map(
-                    ([key, value]: [
-                      string,
-                      {
-                        type: string;
-                        description?: string;
-                        nullable?: boolean;
-                      }
-                    ]) => (
-                      <Box key={key} sx={{ mb: 0.5 }}>
-                        <Typography variant="body2" component="span">
-                          <strong>{key}:</strong>{" "}
-                          <Typography
-                            component="span"
-                            variant="body2"
-                            color="text.secondary"
-                          >
-                            {value.type}
-                            {value.description && ` - ${value.description}`}
-                          </Typography>
-                        </Typography>
-                      </Box>
-                    )
-                  )}
-                </Box>
-              </Box>
+            {onParametersChange && (
+              <NodeInputValues
+                properties={selectedIntegration.inputSchema?.properties ?? {}}
+                parameters={parameters}
+                onChange={onParametersChange}
+              />
             )}
 
             {selectedIntegration.outputSchema?.properties && (
@@ -892,6 +869,12 @@ const NodeEditorDrawer = ({
         onClick={handleSubmit}
         disabled={
           !newNodeLabel ||
+          (newNodeType === "NORMAL" &&
+            Object.entries(
+              selectedIntegration?.inputSchema?.properties ?? {}
+            ).some(([field, schema]) =>
+              getInputError({ parameters, field, schema })
+            )) ||
           (newNodeType === "HANDOFF" && !handoffTargetAgentId) ||
           (newNodeType !== "CONDITION" &&
             newNodeType !== "HANDOFF" &&

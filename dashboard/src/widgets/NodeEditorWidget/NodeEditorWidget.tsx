@@ -8,6 +8,8 @@ import React, { useEffect, useState } from "react";
 import { getNextNodeId, isValidIntegration } from "./helper";
 
 const NodeEditorWidget = ({
+  parameters = {},
+  onParametersChange,
   drawerOpen,
   handleDrawerClose,
   selectedParentNode,
@@ -40,6 +42,8 @@ const NodeEditorWidget = ({
   handoffTargetBlueprintId = "",
   setHandoffTargetBlueprintId,
 }: {
+  parameters?: Record<string, unknown>;
+  onParametersChange?: (parameters: Record<string, unknown>) => void;
   drawerOpen: boolean;
   handleDrawerClose: () => void;
   selectedParentNode: {
@@ -243,6 +247,8 @@ const NodeEditorWidget = ({
 
   return (
     <NodeEditorDrawer
+      parameters={parameters}
+      onParametersChange={onParametersChange}
       pseudocode={pseudocode}
       drawerOpen={drawerOpen}
       handleDrawerClose={handleDrawerClose}

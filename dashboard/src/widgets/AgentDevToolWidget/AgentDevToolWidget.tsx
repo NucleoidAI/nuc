@@ -1,11 +1,19 @@
 import type { BlueprintContext } from "../../hooks/useBlueprint";
 import BlueprintContextDetails from "../../components/BlueprintContextDetails/BlueprintContextDetails";
+import type { Theme } from "@mui/material/styles";
 import useAgent from "../../hooks/useAgent";
 import useBlueprint from "../../hooks/useBlueprint";
 import useChatSessions from "../../hooks/useChatSessions";
 import useSession from "../../hooks/useSession";
 
-import { Box, Drawer, IconButton, Portal, Typography } from "@mui/material";
+import {
+  Box,
+  Drawer,
+  IconButton,
+  Portal,
+  ThemeProvider,
+  Typography,
+} from "@mui/material";
 import {
   DevTool,
   Iconify,
@@ -184,27 +192,38 @@ const AgentDevToolWidget = ({
         ]}
       >
         {({ open: chatOpen, handleToggle: chatToggle, onNewSession }) => (
-          <SidebarChat
-            title="Chat"
-            open={chatOpen}
-            handleToggle={chatToggle}
-            history={messages}
-            handleNewUserMessage={handleNewUserMessage}
-            readOnly={readOnly}
-            sessionId={sessionId}
-            selectedConversationId={conversationId || undefined}
-            sound={sound}
-            Presets={
-              Blueprint
-                ? Array.isArray(Blueprint)
-                  ? Blueprint
-                  : [Blueprint]
-                : []
-            }
-            selectedPreset={selectedBlueprint}
-            onPresetChange={handleBlueprintChange}
-            onNewSession={onNewSession}
-          />
+          <ThemeProvider
+            theme={(theme: Theme) => ({
+              ...theme,
+              zIndex: {
+                ...theme.zIndex,
+                drawer: theme.zIndex.modal + 3,
+                modal: theme.zIndex.modal + 4,
+              },
+            })}
+          >
+            <SidebarChat
+              title="Chat"
+              open={chatOpen}
+              handleToggle={chatToggle}
+              history={messages}
+              handleNewUserMessage={handleNewUserMessage}
+              readOnly={readOnly}
+              sessionId={sessionId}
+              selectedConversationId={conversationId || undefined}
+              sound={sound}
+              Presets={
+                Blueprint
+                  ? Array.isArray(Blueprint)
+                    ? Blueprint
+                    : [Blueprint]
+                  : []
+              }
+              selectedPreset={selectedBlueprint}
+              onPresetChange={handleBlueprintChange}
+              onNewSession={onNewSession}
+            />
+          </ThemeProvider>
         )}
       </DevTool>
       <Drawer

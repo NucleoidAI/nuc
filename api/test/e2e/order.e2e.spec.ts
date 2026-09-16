@@ -14,6 +14,63 @@ import { supervisedHandoffNodes } from "./fixtures/supervisedBlueprint";
 describe("Order Agent", () => {
   afterEach(event.releaseAll);
 
+  const purchaseOrder = (orderId: string, productId: string) => ({
+    order_id: orderId,
+    product_id: productId,
+    city: "Atlanta",
+    quantity: 5,
+    total_amount: 62500,
+    currency: "USD",
+    total_weight_kg: 12.5,
+    ship_from_postal_code: "30301",
+    ship_to_postal_code: "30303",
+  });
+
+  const stubPaymentAndShipment = (intentId: string, tracking: string) => {
+    mcp.tool("STRIPE:create_payment_intent").returns({
+      payment_intent: {
+        id: intentId,
+        amount: 6250000,
+        currency: "usd",
+        status: "requires_confirmation",
+      },
+    });
+
+    mcp.tool("STRIPE:confirm_payment_intent").returns({
+      payment_intent: {
+        id: intentId,
+        amount_received: 6250000,
+        currency: "usd",
+        status: "succeeded",
+      },
+    });
+
+    mcp.tool("FEDEX:create_shipment").returns({
+      shipment: {
+        tracking_number: tracking,
+        carrier: "FEDEX",
+        status: "LABEL_CREATED",
+      },
+    });
+
+    mcp.tool("STRIPE:cancel_payment_intent").expectsNoCalls();
+  };
+
+  const approvePayment = async (sessionId: string, taskId: string) => {
+    await event.waitFor(
+      "STEP_WAITING_FOR_USER",
+      (payload) =>
+        payload.taskId === taskId &&
+        payload.action === "PLATFORM:user_interaction",
+    );
+
+    await event.publish("SESSION_USER_MESSAGED", {
+      agentId: ORDER_AGENT_ID,
+      sessionId,
+      content: "Yes, approve the payment and charge the card.",
+    });
+  };
+
   it("completes an order when the product is certified", async () => {
     mcp.tool("ORDER:find_product").returns({
       product: { id: "prd-1", name: "product-1", vendor_id: "vnd-1" },
@@ -27,14 +84,9 @@ describe("Order Agent", () => {
     mcp
       .tool("ORDER:create_po")
       .expects({ product_id: "prd-1" })
-      .returns({
-        purchase_order: {
-          order_id: "po-2001",
-          product_id: "prd-1",
-          city: "Atlanta",
-          quantity: 5,
-        },
-      });
+      .returns({ purchase_order: purchaseOrder("po-2001", "prd-1") });
+
+    stubPaymentAndShipment("pi_e2e_2001", "794000000001");
 
     mcp
       .tool("GREY:send_email")
@@ -44,23 +96,21 @@ describe("Order Agent", () => {
     await event.publish("SESSION_USER_MESSAGED", {
       agentId: ORDER_AGENT_ID,
       sessionId: SESSION.happyPath,
-      content: JSON.stringify({ intent: "create_order" }),
+      content: JSON.stringify({
+        intent: "create_order",
+        product: "product-1",
+        quantity: 5,
+        city: "Atlanta",
+      }),
     });
 
     const created = await event.waitFor("TASK_CREATED");
     const added = await event.waitFor("STEP_ADDED");
 
     expect(created.blueprintId).toBe(ORDER_BLUEPRINT_ID);
-    expect(added.action).toBe("PLATFORM:user_interaction");
+    expect(added.action).toBe("ORDER:find_product");
 
-    const waitingStep = await event.waitFor("STEP_WAITING_FOR_USER");
-    expect(waitingStep.stepId).toBe(added.stepId);
-
-    await event.publish("SESSION_USER_MESSAGED", {
-      agentId: ORDER_AGENT_ID,
-      sessionId: SESSION.happyPath,
-      content: JSON.stringify({ product: "product-1" }),
-    });
+    await approvePayment(SESSION.happyPath, created.taskId);
 
     const completedTask = await event.waitFor("TASK_COMPLETED");
     expect(completedTask.taskId).toBe(created.taskId);
@@ -68,6 +118,10 @@ describe("Order Agent", () => {
     expect(mcp.tool("ORDER:create_po").lastCall).toMatchObject({
       product_id: "prd-1",
     });
+
+    expect(mcp.tool("STRIPE:create_payment_intent").calls).toHaveLength(1);
+    expect(mcp.tool("STRIPE:confirm_payment_intent").calls).toHaveLength(1);
+    expect(mcp.tool("FEDEX:create_shipment").calls).toHaveLength(1);
   }, 600_000);
 
   it("completes an order after the supervisor provides the missing certificate knowledge", async () => {
@@ -83,14 +137,9 @@ describe("Order Agent", () => {
     mcp
       .tool("ORDER:create_po")
       .expects({ product_id: "prd-4" })
-      .returns({
-        purchase_order: {
-          order_id: "po-2002",
-          product_id: "prd-4",
-          city: "Atlanta",
-          quantity: 5,
-        },
-      });
+      .returns({ purchase_order: purchaseOrder("po-2002", "prd-4") });
+
+    stubPaymentAndShipment("pi_e2e_2002", "794000000002");
 
     mcp
       .tool("GREY:send_email")
@@ -101,23 +150,19 @@ describe("Order Agent", () => {
     await event.publish("SESSION_USER_MESSAGED", {
       agentId: ORDER_AGENT_ID,
       sessionId: SESSION.supervisedKnowledge,
-      content: JSON.stringify({ intent: "create_order" }),
+      content: JSON.stringify({
+        intent: "create_order",
+        product: "product-4",
+        quantity: 5,
+        city: "Atlanta",
+      }),
     });
 
     const created = await event.waitFor("TASK_CREATED");
     const added = await event.waitFor("STEP_ADDED");
 
     expect(created.blueprintId).toBe(ORDER_BLUEPRINT_ID);
-    expect(added.action).toBe("PLATFORM:user_interaction");
-
-    const waitingStep = await event.waitFor("STEP_WAITING_FOR_USER");
-    expect(waitingStep.stepId).toBe(added.stepId);
-
-    await event.publish("SESSION_USER_MESSAGED", {
-      agentId: ORDER_AGENT_ID,
-      sessionId: SESSION.supervisedKnowledge,
-      content: JSON.stringify({ product: "product-4" }),
-    });
+    expect(added.action).toBe("ORDER:find_product");
 
     const raised = await event.waitFor("STEP_SUPERVISED_NEEDED");
 
@@ -153,6 +198,8 @@ describe("Order Agent", () => {
         .join("\n"),
     ).toContain("prd-4");
 
+    await approvePayment(SESSION.supervisedKnowledge, created.taskId);
+
     const completedTask = await event.waitFor("TASK_COMPLETED");
     expect(completedTask.taskId).toBe(created.taskId);
 
@@ -160,6 +207,9 @@ describe("Order Agent", () => {
       product_id: "prd-4",
       certificate: "CE",
     });
+
+    expect(mcp.tool("STRIPE:confirm_payment_intent").calls).toHaveLength(1);
+    expect(mcp.tool("FEDEX:create_shipment").calls).toHaveLength(1);
   }, 600_000);
 
   it("hands the order over to the compliance manager agent when the supervisor adds a handoff", async () => {
@@ -193,26 +243,22 @@ describe("Order Agent", () => {
       await event.publish("SESSION_USER_MESSAGED", {
         agentId: ORDER_AGENT_ID,
         sessionId: SESSION.supervisedBlueprint,
-        content: JSON.stringify({ intent: "create_order" }),
+        content: JSON.stringify({
+          intent: "create_order",
+          product: "product-3",
+          quantity: 5,
+          city: "Atlanta",
+        }),
       });
 
       const created = await event.waitFor("TASK_CREATED");
       const added = await event.waitFor("STEP_ADDED");
 
       expect(created.blueprintId).toBe(ORDER_BLUEPRINT_ID);
-      expect(added.action).toBe("PLATFORM:user_interaction");
+      expect(added.action).toBe("ORDER:find_product");
 
       const elsewhere = (payload: { taskId?: string }) =>
         payload.taskId !== created.taskId;
-
-      const waitingStep = await event.waitFor("STEP_WAITING_FOR_USER");
-      expect(waitingStep.stepId).toBe(added.stepId);
-
-      await event.publish("SESSION_USER_MESSAGED", {
-        agentId: ORDER_AGENT_ID,
-        sessionId: SESSION.supervisedBlueprint,
-        content: JSON.stringify({ product: "product-3" }),
-      });
 
       const raised = await event.waitFor("STEP_SUPERVISED_NEEDED");
 

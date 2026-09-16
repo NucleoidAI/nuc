@@ -5,42 +5,37 @@ import path from "path";
 
 class McpClient {
   private name: string;
-  private tool: string;
   private version: string;
   private mcp!: Client;
   private transport!: StdioClientTransport;
   private isConnected = false;
 
-  constructor({
-    name,
-    version,
-    tool,
-  }: {
-    name: string;
-    version: string;
-    tool: string;
-  }) {
+  constructor({ name, version }: { name: string; version: string }) {
     this.name = name;
-    this.tool = tool;
     this.version = version;
   }
 
-  async connectToServer({
-    credentials,
-  }: {
-    credentials: {
-      clientId: string;
-      clientSecret: string;
-      redirectUris: string[];
-      refreshToken: string;
-    };
-  }) {
+  async connectToServer({ env = {} }: { env?: Record<string, string> } = {}) {
     try {
-      const serverPath = path.join(path.dirname(process.cwd()), 'mcp', 'servers', this.name, 'index.ts');
+      if (!/^[a-zA-Z0-9_-]+$/.test(this.name)) {
+        throw new Error(`Invalid MCP server name: ${this.name}`);
+      }
+
+      const serversRoot = path.resolve(
+        path.dirname(process.cwd()),
+        "mcp",
+        "servers",
+      );
+      const serverPath = path.resolve(serversRoot, this.name, "index.ts");
+
+      if (!serverPath.startsWith(serversRoot + path.sep)) {
+        throw new Error(`Invalid MCP server path: ${this.name}`);
+      }
+
       this.transport = new StdioClientTransport({
         command: "bun",
-        args: [serverPath, `'${JSON.stringify({ credentials })}'`],
-        env: { ...process.env },
+        args: [serverPath],
+        env: { ...(process.env as Record<string, string>), ...env },
       });
 
       this.mcp = new Client({ name: this.name, version: this.version });
@@ -55,7 +50,7 @@ class McpClient {
       }));
       console.log(
         "Connected to server with tools:",
-        tools.map(({ name }) => name)
+        tools.map(({ name }) => name),
       );
     } catch (e) {
       this.isConnected = false;
@@ -82,10 +77,14 @@ class McpClient {
 
   async callTool(toolName: string, params: any) {
     this.ensureConnected();
-    return this.mcp.callTool({
-      name: toolName,
-      arguments: params,
-    });
+    return this.mcp.callTool(
+      {
+        name: toolName,
+        arguments: params,
+      },
+      CallToolResultSchema,
+      { timeout: 10 * 60_000 },
+    );
   }
 
   async listTools(params = undefined, options = undefined) {

@@ -162,7 +162,7 @@ router.patch("/:supervisingId/demo", async (req, res) => {
 
   if (answer.includes("handoff")) {
     response = {
-      id: "f4e3d2c1-b0a0-4000-8000-100000000001",
+      id: "85a763a3-30cc-409f-881f-828e17c44c9e",
       title: "Order and Compliance",
       description:
         "This workflow manages the procurement process for a product requiring compliance certification. It begins by prompting the user to select a product, retrieves the product details, and checks whether a compliance certificate is already assigned. If a certificate exists, the system assigns one, then creates a purchase order and sends a confirmation email. If no certificate is found, the task is handed off to a dedicated compliance manager agent for further handling.",
@@ -170,7 +170,7 @@ router.patch("/:supervisingId/demo", async (req, res) => {
       blocking: true,
       nodes: [
         {
-          id: "f0e0d0c0-a0b0-4000-8000-000000000000",
+          id: "ffe7081c-f922-4e30-9ac8-0fdf094913b2",
           properties: {
             label: "Select a Product",
             icon: "mdi:account-question",
@@ -178,11 +178,11 @@ router.patch("/:supervisingId/demo", async (req, res) => {
             description: "Ask user to select a product",
           },
           type: "NORMAL",
-          next: ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+          next: ["3b2bd895-1df4-4cb6-827c-35874f43615f"],
           createdAt: "2025-06-26T06:00:00Z",
         },
         {
-          id: "f1e1d1c1-a1b1-4111-8111-111111111111",
+          id: "3b2bd895-1df4-4cb6-827c-35874f43615f",
           properties: {
             label: "Find Product",
             icon: "mdi:magnify",
@@ -190,11 +190,11 @@ router.patch("/:supervisingId/demo", async (req, res) => {
             description: "Search and retrieve the product details",
           },
           type: "NORMAL",
-          next: ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+          next: ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
           createdAt: "2025-06-26T06:00:00Z",
         },
         {
-          id: "f3e3d3c3-a3b3-4333-8333-333333333333",
+          id: "b375d835-67bc-46f6-a2eb-825a8481e4b4",
           properties: {
             label: "Knowledge Lookup",
             icon: "mdi:book-search",
@@ -207,7 +207,7 @@ router.patch("/:supervisingId/demo", async (req, res) => {
           createdAt: "2025-06-26T06:00:00Z",
         },
         {
-          id: "f2e2d2c2-a2b2-4222-8222-222222222222",
+          id: "3e8ba55f-ff37-41c3-befd-758e32df3f99",
           properties: {
             label: "Assign Certificate",
             icon: "mdi:certificate-outline",
@@ -215,11 +215,11 @@ router.patch("/:supervisingId/demo", async (req, res) => {
             description: "Assign a compliance certificate to the product",
           },
           type: "NORMAL",
-          next: ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+          next: ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
           createdAt: "2025-06-26T06:00:00Z",
         },
         {
-          id: "f4e4d4c4-a4b4-4444-8444-444444444444",
+          id: "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
           properties: {
             label: "Create Purchase Order",
             icon: "mdi:file-document-plus",
@@ -227,11 +227,11 @@ router.patch("/:supervisingId/demo", async (req, res) => {
             description: "Create a Purchase Order for the certified product",
           },
           type: "NORMAL",
-          next: ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+          next: ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
           createdAt: "2025-06-26T06:00:00Z",
         },
         {
-          id: "f6e6d6c6-a6b6-4666-8666-666666666666",
+          id: "9cc14d43-419c-4d3c-90a1-42133caff37b",
           properties: {
             label: "Send Email",
             icon: "mdi:email",
@@ -253,7 +253,7 @@ router.patch("/:supervisingId/demo", async (req, res) => {
               "A decision node that branches the flow based on conditions.",
           },
           type: "CONDITION",
-          true: ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+          true: ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
           false: ["26ca02ed-92d9-49ce-b152-ca8536e92202"],
           createdAt: "2026-06-29T16:47:27.253Z",
         },
@@ -271,7 +271,7 @@ router.patch("/:supervisingId/demo", async (req, res) => {
       ],
       Nodes: [
         {
-          id: "f0e0d0c0-a0b0-4000-8000-000000000000",
+          id: "ffe7081c-f922-4e30-9ac8-0fdf094913b2",
           properties: {
             label: "Select a Product",
             icon: "mdi:account-question",
@@ -279,11 +279,11 @@ router.patch("/:supervisingId/demo", async (req, res) => {
             description: "Ask user to select a product",
           },
           type: "NORMAL",
-          next: ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+          next: ["3b2bd895-1df4-4cb6-827c-35874f43615f"],
           createdAt: "2025-06-26T06:00:00Z",
         },
         {
-          id: "f1e1d1c1-a1b1-4111-8111-111111111111",
+          id: "3b2bd895-1df4-4cb6-827c-35874f43615f",
           properties: {
             label: "Find Product",
             icon: "mdi:magnify",
@@ -291,11 +291,11 @@ router.patch("/:supervisingId/demo", async (req, res) => {
             description: "Search and retrieve the product details",
           },
           type: "NORMAL",
-          next: ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+          next: ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
           createdAt: "2025-06-26T06:00:00Z",
         },
         {
-          id: "f3e3d3c3-a3b3-4333-8333-333333333333",
+          id: "b375d835-67bc-46f6-a2eb-825a8481e4b4",
           properties: {
             label: "Knowledge Lookup",
             icon: "mdi:book-search",
@@ -308,7 +308,7 @@ router.patch("/:supervisingId/demo", async (req, res) => {
           createdAt: "2025-06-26T06:00:00Z",
         },
         {
-          id: "f2e2d2c2-a2b2-4222-8222-222222222222",
+          id: "3e8ba55f-ff37-41c3-befd-758e32df3f99",
           properties: {
             label: "Assign Certificate",
             icon: "mdi:certificate-outline",
@@ -316,11 +316,11 @@ router.patch("/:supervisingId/demo", async (req, res) => {
             description: "Assign a compliance certificate to the product",
           },
           type: "NORMAL",
-          next: ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+          next: ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
           createdAt: "2025-06-26T06:00:00Z",
         },
         {
-          id: "f4e4d4c4-a4b4-4444-8444-444444444444",
+          id: "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
           properties: {
             label: "Create Purchase Order",
             icon: "mdi:file-document-plus",
@@ -328,11 +328,11 @@ router.patch("/:supervisingId/demo", async (req, res) => {
             description: "Create a Purchase Order for the certified product",
           },
           type: "NORMAL",
-          next: ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+          next: ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
           createdAt: "2025-06-26T06:00:00Z",
         },
         {
-          id: "f6e6d6c6-a6b6-4666-8666-666666666666",
+          id: "9cc14d43-419c-4d3c-90a1-42133caff37b",
           properties: {
             label: "Send Email",
             icon: "mdi:email",
@@ -354,7 +354,7 @@ router.patch("/:supervisingId/demo", async (req, res) => {
               "A decision node that branches the flow based on conditions.",
           },
           type: "CONDITION",
-          true: ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+          true: ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
           false: ["26ca02ed-92d9-49ce-b152-ca8536e92202"],
           createdAt: "2026-06-29T16:47:27.253Z",
         },

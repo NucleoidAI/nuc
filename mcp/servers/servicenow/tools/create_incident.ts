@@ -2,8 +2,7 @@ import { CreateIncidentInput, Tool } from "./types";
 
 import logger from "../../../logger/logger.js";
 
-const SERVICENOW_API_BASE_URL =
-  process.env.SERVICENOW_API_URL || "http://localhost:5199";
+const SERVICENOW_API_BASE_URL = process.env.SERVICENOW_API_URL;
 
 export const createIncidentTool: Tool<CreateIncidentInput> = {
   name: "SERVICENOW:create_incident",

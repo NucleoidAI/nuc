@@ -126,7 +126,7 @@
       ],
       "steps": [
         {
-          "taskId": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
+          "taskId": "0a0e5ada-078a-4057-9420-0a2dcf52e972",
           "action": "GREY:check_product_count",
           "status": "COMPLETED",
           "parameters": {
@@ -135,7 +135,7 @@
           "comment": "Checking product count"
         },
         {
-          "taskId": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
+          "taskId": "0a0e5ada-078a-4057-9420-0a2dcf52e972",
           "action": "PLATFORM:decision",
           "status": "COMPLETED",
           "comment": "Making decision",
@@ -143,7 +143,7 @@
             "condition": "product_count <= 0",
             "true": [
               {
-                "taskId": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
+                "taskId": "0a0e5ada-078a-4057-9420-0a2dcf52e972",
                 "action": "GREY:create_order",
                 "status": "COMPLETED",
                 "parameters": {
@@ -155,7 +155,7 @@
                 "comment": "Reusing the productId already given to check_product_count (steps[0]) via $ref instead of retyping it"
               },
               {
-                "taskId": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
+                "taskId": "0a0e5ada-078a-4057-9420-0a2dcf52e972",
                 "action": "PLATFORM:message_user",
                 "status": "COMPLETED",
                 "parameters": {
@@ -166,7 +166,7 @@
                 "comment": "Notifying user about product order creation"
               },
               {
-                "taskId": "a777ff167-c4f2-44dc-9e8f-e9e645682446",
+                "taskId": "a45600c8c-0749-4628-b16e-6f55f907595e",
                 "action": "GREY:send_email",
                 "status": "COMPLETED",
                 "parameters": {
@@ -177,7 +177,7 @@
                 "comment": "Sending email"
               },
               {
-                "taskId": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
+                "taskId": "0a0e5ada-078a-4057-9420-0a2dcf52e972",
                 "action": "PLATFORM:complete",
                 "status": "COMPLETED",
                 "parameters": {},
@@ -186,7 +186,7 @@
             ],
             "false": [
               {
-                "taskId": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
+                "taskId": "0a0e5ada-078a-4057-9420-0a2dcf52e972",
                 "action": "GREY:reduce_product_count",
                 "status": "COMPLETED",
                 "parameters": {
@@ -198,7 +198,7 @@
                 "comment": "Reusing the productId already given to check_product_count (steps[0]) via $ref instead of retyping it"
               },
               {
-                "taskId": "a77ff167-c4f2-44dc-9e8f-e9e645682446",
+                "taskId": "0a0e5ada-078a-4057-9420-0a2dcf52e972",
                 "action": "PLATFORM:complete",
                 "status": "COMPLETED",
                 "parameters": {},
@@ -753,69 +753,69 @@
       "description": "Create a purchase order for product-1 (prd-1).",
       "sessionId": "019b6e75-oc01-oc01-oc01-oc0100000001",
       "Blueprint": {
-        "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+        "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
         "title": "Order and Compliance",
         "description": "Find product, assign compliance certificate, create purchase order, and send email.",
         "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
         "nodes": [
           {
-            "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
+            "id": "ffe7081c-f922-4e30-9ac8-0fdf094913b2",
             "type": "NORMAL",
             "properties": {
               "action": "PLATFORM:user_interaction",
               "label": "Select a Product",
               "icon": "mdi:account-question"
             },
-            "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+            "next": ["3b2bd895-1df4-4cb6-827c-35874f43615f"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
-            "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+            "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
             "type": "NORMAL",
             "properties": {
               "action": "ORDER:find_product",
               "label": "Find Product",
               "icon": "mdi:magnify"
             },
-            "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+            "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
-            "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
+            "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
             "type": "NORMAL",
             "properties": {
               "action": "PLATFORM:knowledge_lookup",
               "label": "Knowledge Lookup",
               "icon": "mdi:book-search"
             },
-            "next": ["f3e3d3c4-a3b3-4333-8333-444444444444"],
+            "next": ["4c4fb94a-6995-470e-805c-16de1f6b4a9e"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
-            "id": "f3e3d3c4-a3b3-4333-8333-444444444444",
+            "id": "4c4fb94a-6995-470e-805c-16de1f6b4a9e",
             "type": "CONDITION",
             "properties": {
               "action": "PLATFORM:decision",
               "label": "Is Certificate Found?",
               "icon": "mdi:source-branch"
             },
-            "true": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
-            "false": ["f3e3d3c5-a3b3-4333-8333-555555555555"],
+            "true": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
+            "false": ["1f1f4d1c-0c3e-40b8-9432-75433bd673e4"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
-            "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+            "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
             "type": "NORMAL",
             "properties": {
               "action": "ORDER:assign_certificate",
               "label": "Assign Certificate",
               "icon": "mdi:certificate-outline"
             },
-            "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+            "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
-            "id": "f3e3d3c5-a3b3-4333-8333-555555555555",
+            "id": "1f1f4d1c-0c3e-40b8-9432-75433bd673e4",
             "type": "HANDOFF",
             "properties": {
               "action": "PLATFORM:handoff",
@@ -826,18 +826,18 @@
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
-            "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+            "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
             "type": "NORMAL",
             "properties": {
               "action": "ORDER:create_po",
               "label": "Create Purchase Order",
               "icon": "mdi:file-document-plus"
             },
-            "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+            "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
-            "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+            "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
             "type": "NORMAL",
             "properties": {
               "action": "GREY:send_email",
@@ -934,8 +934,8 @@
               "$ref": "steps[1].result.id"
             }
           },
-          "result": "{\"product_id\": \"prd-1\", \"certificate\": \"FFC\", \"has_certificate\": true}",
-          "comment": "Reusing the product id find_product already resolved (steps[1].result.id) via $ref instead of retyping it"
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-1\\\", \\\"product_name\\\": \\\"product-1\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-2\\\", \\\"product_name\\\": \\\"product-2\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base holds a certificate record for prd-1 (FFC) among its entries"
         },
         {
           "taskId": "task-oc-001",
@@ -943,7 +943,7 @@
           "status": "COMPLETED",
           "comment": "Certificate found for prd-1, proceeding with order creation",
           "parameters": {
-            "condition": "certificate.has_certificate == TRUE",
+            "condition": "knowledge_base_has_certificate_record_for_product == TRUE",
             "true": [
               {
                 "taskId": "task-oc-001",
@@ -953,12 +953,10 @@
                   "product_id": {
                     "$ref": "steps[1].result.id"
                   },
-                  "certificate": {
-                    "$ref": "steps[2].result.certificate"
-                  }
+                  "certificate": "FFC"
                 },
                 "result": "{\"product_id\": \"prd-1\", \"certificate\": \"FFC\", \"assigned\": true}",
-                "comment": "Reusing product_id (steps[1].result.id) and certificate (steps[2].result.certificate) via $ref instead of retyping them"
+                "comment": "Reusing product_id (steps[1].result.id) via $ref; the certificate value is read out of the knowledge entry text, which $ref cannot address"
               },
               {
                 "taskId": "task-oc-001",
@@ -999,7 +997,7 @@
                 "status": "COMPLETED",
                 "parameters": {
                   "targetAgentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
-                  "targetBlueprintId": "c2b1a0d9-e8f7-4c2b-9100-300000000001",
+                  "targetBlueprintId": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
                   "context": "Product prd-1 has no compliance certificate. Cannot proceed with order without certification."
                 },
                 "comment": "Handing off to compliance agent for certificate assignment"
@@ -1014,69 +1012,69 @@
       "description": "Create a purchase order for product-3 (prd-3) — no certificate in knowledge, agent asks supervisor who adds a decision node to the blueprint, agent then follows updated blueprint and handoffs to compliance agent.",
       "sessionId": "019b6e75-oc02-oc02-oc02-oc0200000002",
       "Blueprint": {
-        "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+        "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
         "title": "Order and Compliance",
         "description": "Find product, assign compliance certificate, create purchase order, and send email.",
         "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
         "nodes": [
           {
-            "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
+            "id": "ffe7081c-f922-4e30-9ac8-0fdf094913b2",
             "type": "NORMAL",
             "properties": {
               "action": "PLATFORM:user_interaction",
               "label": "Select a Product",
               "icon": "mdi:account-question"
             },
-            "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+            "next": ["3b2bd895-1df4-4cb6-827c-35874f43615f"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
-            "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+            "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
             "type": "NORMAL",
             "properties": {
               "action": "ORDER:find_product",
               "label": "Find Product",
               "icon": "mdi:magnify"
             },
-            "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+            "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
-            "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
+            "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
             "type": "NORMAL",
             "properties": {
               "action": "PLATFORM:knowledge_lookup",
               "label": "Knowledge Lookup",
               "icon": "mdi:book-search"
             },
-            "next": ["f3e3d3c4-a3b3-4333-8333-444444444444"],
+            "next": ["4c4fb94a-6995-470e-805c-16de1f6b4a9e"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
-            "id": "f3e3d3c4-a3b3-4333-8333-444444444444",
+            "id": "4c4fb94a-6995-470e-805c-16de1f6b4a9e",
             "type": "CONDITION",
             "properties": {
               "action": "PLATFORM:decision",
               "label": "Is Certificate Found?",
               "icon": "mdi:source-branch"
             },
-            "true": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
-            "false": ["f3e3d3c5-a3b3-4333-8333-555555555555"],
+            "true": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
+            "false": ["1f1f4d1c-0c3e-40b8-9432-75433bd673e4"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
-            "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+            "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
             "type": "NORMAL",
             "properties": {
               "action": "ORDER:assign_certificate",
               "label": "Assign Certificate",
               "icon": "mdi:certificate-outline"
             },
-            "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+            "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
-            "id": "f3e3d3c5-a3b3-4333-8333-555555555555",
+            "id": "1f1f4d1c-0c3e-40b8-9432-75433bd673e4",
             "type": "HANDOFF",
             "properties": {
               "action": "PLATFORM:handoff",
@@ -1087,18 +1085,18 @@
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
-            "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+            "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
             "type": "NORMAL",
             "properties": {
               "action": "ORDER:create_po",
               "label": "Create Purchase Order",
               "icon": "mdi:file-document-plus"
             },
-            "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+            "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
-            "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+            "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
             "type": "NORMAL",
             "properties": {
               "action": "GREY:send_email",
@@ -1191,8 +1189,8 @@
           "parameters": {
             "product_id": "prd-3"
           },
-          "result": "{\"product_id\": \"prd-3\", \"certificate\": null, \"has_certificate\": false}",
-          "comment": "Product prd-3 has no compliance certificate"
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-1\\\", \\\"product_name\\\": \\\"product-1\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-2\\\", \\\"product_name\\\": \\\"product-2\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base only holds certificate records for prd-1, prd-2 - there is no entry for prd-3, so its certificate is unknown"
         },
         {
           "taskId": "task-oc-002",
@@ -1211,7 +1209,7 @@
           "status": "COMPLETED",
           "comment": "Decision node added by supervisor to blueprint — no certificate found for prd-3, taking false branch",
           "parameters": {
-            "condition": "certificate.has_certificate == TRUE",
+            "condition": "knowledge_base_has_certificate_record_for_product == TRUE",
             "true": [
               {
                 "taskId": "task-oc-002",
@@ -1227,7 +1225,7 @@
                 "status": "COMPLETED",
                 "parameters": {
                   "targetAgentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
-                  "targetBlueprintId": "c2b1a0d9-e8f7-4c2b-9100-300000000001",
+                  "targetBlueprintId": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
                   "context": "Product prd-3 has no compliance certificate. Cannot proceed with purchase order without certification. Please assign the appropriate certificate."
                 },
                 "comment": "Handing off to compliance agent per supervisor's blueprint update"
@@ -1242,7 +1240,7 @@
       "description": "Create a purchase order for product-3 (prd-3) — no certificate in knowledge initially. Blueprint has no handoff node. Agent asks supervisor; supervisor adds certificate to knowledge base only (blueprint NOT changed). Agent resumes, re-checks certificate with updated knowledge, finds it, and completes the order.",
       "sessionId": "019b6e75-oc03-oc03-oc03-oc0300000003",
       "Blueprint": {
-        "id": "a1b2c3d4-e5f6-4000-8000-100000000002",
+        "id": "89407d96-27ec-42a0-97d1-cf42066dea2e",
         "title": "Order and Compliance (No Handoff)",
         "description": "Find product, check and assign compliance certificate, create purchase order, and send email.",
         "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
@@ -1358,7 +1356,7 @@
         {
           "id": "kn-c3-005",
           "type": "TEXT",
-          "text": "prd-3 has ISO 9001 compliance certificate",
+          "text": "prd-3 has CE compliance certificate",
           "status": "COMPLETED",
           "createdAt": "2026-06-29T08:00:00Z"
         }
@@ -1398,8 +1396,8 @@
           "parameters": {
             "product_id": "prd-3"
           },
-          "result": "{\"product_id\": \"prd-3\", \"certificate\": null, \"has_certificate\": false}",
-          "comment": "No certificate found for prd-3 — knowledge base had no entry for prd-3 certificate at this point"
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-1\\\", \\\"product_name\\\": \\\"product-1\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-2\\\", \\\"product_name\\\": \\\"product-2\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base only holds certificate records for prd-1, prd-2 - there is no entry for prd-3, so its certificate is unknown"
         },
         {
           "taskId": "task-oc-003",
@@ -1410,7 +1408,7 @@
             "sessionId": "019b6e75-oc03-oc03-oc03-oc0300000003",
             "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
           },
-          "comment": "Supervisor added 'prd-3 has ISO 9001 compliance certificate' to the knowledge base. Blueprint was NOT changed."
+          "comment": "Supervisor added 'prd-3 has CE compliance certificate' to the knowledge base. Blueprint was NOT changed."
         },
         {
           "taskId": "task-oc-003",
@@ -1419,8 +1417,8 @@
           "parameters": {
             "product_id": "prd-3"
           },
-          "result": "{\"product_id\": \"prd-3\", \"certificate\": \"ISO 9001\", \"has_certificate\": true}",
-          "comment": "Re-checked certificate after supervisor updated knowledge base — ISO 9001 now found for prd-3"
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-1\\\", \\\"product_name\\\": \\\"product-1\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-2\\\", \\\"product_name\\\": \\\"product-2\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"ca2d3aaf-6ecc-4b71-abe6-3be6285793cd\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-3\\\", \\\"product_name\\\": \\\"product-3\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base holds a certificate record for prd-3 (CE) among its entries"
         },
         {
           "taskId": "task-oc-003",
@@ -1428,10 +1426,10 @@
           "status": "COMPLETED",
           "parameters": {
             "product_id": "prd-3",
-            "certificate": "ISO 9001"
+            "certificate": "CE"
           },
-          "result": "{\"product_id\": \"prd-3\", \"certificate\": \"ISO 9001\", \"assigned\": true}",
-          "comment": "Assigned ISO 9001 certificate to prd-3"
+          "result": "{\"product_id\": \"prd-3\", \"certificate\": \"CE\", \"assigned\": true}",
+          "comment": "Assigned CE certificate to prd-3"
         },
         {
           "taskId": "task-oc-003",
@@ -1452,7 +1450,7 @@
           "parameters": {
             "to": "halilibrahimcengel7@gmail.com",
             "subject": "Purchase Order Created",
-            "text": "Purchase order po-2003 has been created for product prd-3 with ISO 9001 certificate."
+            "text": "Purchase order po-2003 has been created for product prd-3 with CE certificate."
           },
           "comment": "Email sent to manager"
         },
@@ -1469,46 +1467,46 @@
       "description": "Product prd-3 has no compliance certificate in the knowledge base. Order cannot proceed without certification. Please assign the appropriate certificate or coordinate with vendor GlobalParts Ltd (compliance@globalparts.com) to obtain it.",
       "sessionId": "019b6e75-oc02-oc02-oc02-oc0200000002",
       "Blueprint": {
-        "id": "c2b1a0d9-e8f7-4c2b-9100-300000000001",
+        "id": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
         "title": "Compliance Certificate Request",
         "description": "Find the vendor of a product missing a compliance certificate and send them an email requesting the certificate, then notify the user.",
         "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
         "nodes": [
           {
-            "id": "c2b1a0d9-e8f7-4c2b-9100-300000000002",
+            "id": "81b62178-c7e0-4af1-9eb9-a559a0a9290e",
             "type": "NORMAL",
             "properties": {
               "action": "ORDER:get_product_vendor",
               "label": "Get Product Vendor",
               "icon": "mdi:domain"
             },
-            "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000003"],
+            "next": ["8f01126f-97b1-4b47-8c3c-b09de10879f9"],
             "createdAt": "2025-06-29T08:00:00Z"
           },
           {
-            "id": "c2b1a0d9-e8f7-4c2b-9100-300000000003",
+            "id": "8f01126f-97b1-4b47-8c3c-b09de10879f9",
             "type": "NORMAL",
             "properties": {
               "action": "GREY:send_email",
               "label": "Email Vendor",
               "icon": "mdi:email"
             },
-            "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000004"],
+            "next": ["5ce77c06-8c90-45f7-9981-efbc07b7aec0"],
             "createdAt": "2025-06-29T08:00:00Z"
           },
           {
-            "id": "c2b1a0d9-e8f7-4c2b-9100-300000000004",
+            "id": "5ce77c06-8c90-45f7-9981-efbc07b7aec0",
             "type": "NORMAL",
             "properties": {
               "action": "PLATFORM:message_user",
               "label": "Notify User",
               "icon": "mdi:bell"
             },
-            "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000005"],
+            "next": ["707f211a-fe38-479c-bab4-0b2cd957464c"],
             "createdAt": "2025-06-29T08:00:00Z"
           },
           {
-            "id": "c2b1a0d9-e8f7-4c2b-9100-300000000005",
+            "id": "707f211a-fe38-479c-bab4-0b2cd957464c",
             "type": "NORMAL",
             "properties": {
               "action": "PLATFORM:complete",
@@ -1575,14 +1573,14 @@
           "parameters": {
             "product_id": "prd-3"
           },
-          "result": "{\"product_id\": \"prd-3\", \"certificate\": null, \"has_certificate\": false}",
-          "comment": "prd-3 has no certificate in knowledge base"
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-1\\\", \\\"product_name\\\": \\\"product-1\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-2\\\", \\\"product_name\\\": \\\"product-2\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base only holds certificate records for prd-1, prd-2 - there is no entry for prd-3, so its certificate is unknown"
         },
         {
           "action": "PLATFORM:ask_supervisor",
           "status": "COMPLETED",
           "parameters": {
-            "question": "Product prd-3 has no compliance certificate in the knowledge base. Should I manually assign a certificate (e.g., ISO 9001) or proceed with a handoff to the compliance agent to contact vendor GlobalParts Ltd (compliance@globalparts.com)?",
+            "question": "Product prd-3 has no compliance certificate in the knowledge base. Should I manually assign a certificate or proceed with a handoff to the compliance agent to contact vendor GlobalParts Ltd (compliance@globalparts.com)?",
             "sessionId": "019b6e75-oc02-oc02-oc02-oc0200000002",
             "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
           },
@@ -1593,7 +1591,7 @@
           "status": "COMPLETED",
           "parameters": {
             "targetAgentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
-            "targetBlueprintId": "c2b1a0d9-e8f7-4c2b-9100-300000000001",
+            "targetBlueprintId": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
             "context": "Product prd-3 has no compliance certificate in the knowledge base. Order cannot proceed without certification. Please assign the appropriate certificate or coordinate with vendor GlobalParts Ltd (compliance@globalparts.com) to obtain it."
           },
           "comment": "Handing off to compliance agent as per supervisor's instruction"
@@ -1645,69 +1643,69 @@
       "description": "Create a purchase order for product-4 (prd-4). Knowledge base explicitly states prd-4 has no compliance certificate assigned.",
       "sessionId": "019b6e75-oc04-oc04-oc04-oc0400000004",
       "Blueprint": {
-        "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+        "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
         "title": "Order and Compliance",
         "description": "Find product, assign compliance certificate, create purchase order, and send email.",
         "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
         "nodes": [
           {
-            "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
+            "id": "ffe7081c-f922-4e30-9ac8-0fdf094913b2",
             "type": "NORMAL",
             "properties": {
               "action": "PLATFORM:user_interaction",
               "label": "Select a Product",
               "icon": "mdi:account-question"
             },
-            "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
+            "next": ["3b2bd895-1df4-4cb6-827c-35874f43615f"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
-            "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+            "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
             "type": "NORMAL",
             "properties": {
               "action": "ORDER:find_product",
               "label": "Find Product",
               "icon": "mdi:magnify"
             },
-            "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+            "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
-            "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
+            "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
             "type": "NORMAL",
             "properties": {
               "action": "PLATFORM:knowledge_lookup",
               "label": "Knowledge Lookup",
               "icon": "mdi:book-search"
             },
-            "next": ["f3e3d3c4-a3b3-4333-8333-444444444444"],
+            "next": ["4c4fb94a-6995-470e-805c-16de1f6b4a9e"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
-            "id": "f3e3d3c4-a3b3-4333-8333-444444444444",
+            "id": "4c4fb94a-6995-470e-805c-16de1f6b4a9e",
             "type": "CONDITION",
             "properties": {
               "action": "PLATFORM:decision",
               "label": "Is Certificate Found?",
               "icon": "mdi:source-branch"
             },
-            "true": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
-            "false": ["f3e3d3c5-a3b3-4333-8333-555555555555"],
+            "true": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
+            "false": ["1f1f4d1c-0c3e-40b8-9432-75433bd673e4"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
-            "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+            "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
             "type": "NORMAL",
             "properties": {
               "action": "ORDER:assign_certificate",
               "label": "Assign Certificate",
               "icon": "mdi:certificate-outline"
             },
-            "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+            "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
-            "id": "f3e3d3c5-a3b3-4333-8333-555555555555",
+            "id": "1f1f4d1c-0c3e-40b8-9432-75433bd673e4",
             "type": "NORMAL",
             "properties": {
               "action": "PLATFORM:ask_supervisor",
@@ -1718,18 +1716,18 @@
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
-            "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+            "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
             "type": "NORMAL",
             "properties": {
               "action": "ORDER:create_po",
               "label": "Create Purchase Order",
               "icon": "mdi:file-document-plus"
             },
-            "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+            "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
             "createdAt": "2025-06-26T06:00:00Z"
           },
           {
-            "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+            "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
             "type": "NORMAL",
             "properties": {
               "action": "GREY:send_email",
@@ -1806,8 +1804,8 @@
           "parameters": {
             "product_id": "prd-4"
           },
-          "result": "{\"product_id\": \"prd-4\", \"certificate\": null, \"has_certificate\": false}",
-          "comment": "Knowledge base explicitly states prd-4 has no compliance certificate. Other products like prd-2 (CE) exist but I must NOT infer or assume a certificate for prd-4 — the knowledge base is the only authoritative source."
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-1\\\", \\\"product_name\\\": \\\"product-1\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-2\\\", \\\"product_name\\\": \\\"product-2\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base only holds certificate records for prd-1, prd-2 - there is no entry for prd-4, so its certificate is unknown"
         },
         {
           "taskId": "task-oc-004",
@@ -1815,7 +1813,7 @@
           "status": "COMPLETED",
           "comment": "No certificate found for prd-4 — taking the false branch as defined in blueprint",
           "parameters": {
-            "condition": "certificate.has_certificate == TRUE",
+            "condition": "knowledge_base_has_certificate_record_for_product == TRUE",
             "true": [
               {
                 "taskId": "task-oc-004",
@@ -1844,7 +1842,7 @@
     {
       "id": "telco-port-fail-001",
       "description": "Setup internet subscription for user address. Port allocation fails with NOT_AVAILABLE_PORT error — agent asks supervisor, supervisor instructs to notify user and complete.",
-      "sessionId": "039d9f86-9b12-4a7c-b8d1-2f3e4a5b6c7d",
+      "sessionId": "6a7ef8e1-71c2-4d23-b76c-73f4a8f4a8e6",
       "blueprint": {
         "id": "ca7g8022-f343-570e-a171-3992963g7f70",
         "title": "Basic Internet Subscription Setup",
@@ -2071,7 +2069,7 @@
                 "status": "COMPLETED",
                 "parameters": {
                   "question": "Port allocation failed with NOT_AVAILABLE_PORT for BBK 988. There are no available ports at this location. How should I proceed?",
-                  "sessionId": "039d9f86-9b12-4a7c-b8d1-2f3e4a5b6c7d",
+                  "sessionId": "6a7ef8e1-71c2-4d23-b76c-73f4a8f4a8e6",
                   "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
                 },
                 "comment": "Supervisor instructed to notify user that no ports are available at this address and complete the task"
@@ -2081,7 +2079,7 @@
                 "action": "PLATFORM:message_user",
                 "status": "COMPLETED",
                 "parameters": {
-                  "sessionId": "039d9f86-9b12-4a7c-b8d1-2f3e4a5b6c7d",
+                  "sessionId": "6a7ef8e1-71c2-4d23-b76c-73f4a8f4a8e6",
                   "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
                   "message": "Unfortunately, there are no available ports at your address at this time. Please contact our support team at 444 1 444 for further assistance."
                 },
@@ -2146,7 +2144,7 @@
       }
     },
     {
-      "id": "9b1c2d3e-4f5a-4b6c-8d7e-9f0a1b2c3d4e",
+      "id": "57194259-25cb-47ea-89a2-c6d7afd08309",
       "description": "Look up infrastructure inventory by address and allocate a port for the customer.",
       "knowledge": [],
       "tools": [
@@ -2205,7 +2203,7 @@
       }
     },
     {
-      "id": "1c2d3e4f-5a6b-4c7d-8e9f-0a1b2c3d4e5f",
+      "id": "dec2dda5-54b0-479a-8dc2-5a3477b29a38",
       "description": "Allocate a port for the customer's device and connect it.",
       "knowledge": [],
       "tools": [
@@ -2238,7 +2236,7 @@
       }
     },
     {
-      "id": "2d3e4f5a-6b7c-4d8e-9f0a-1b2c3d4e5f6a",
+      "id": "4a6f9e13-4198-4a9f-8a6e-81f43a9b40f3",
       "description": "Find a product by name and look up its vendor information.",
       "knowledge": [],
       "tools": [
@@ -2277,6 +2275,1303 @@
           }
         },
         "comment": "find_product already resolved the product id (steps[1].result.id) - reuse it via $ref instead of retyping it",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "order-cert-missing-block-001",
+      "description": "Order product-3 (prd-3) - the knowledge base holds no certificate record for it.",
+      "sessionId": "019b6e75-cm01-cm01-cm01-cm0100000001",
+      "Blueprint": {
+        "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
+        "title": "Order and Compliance",
+        "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "label": "Find Product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:knowledge_lookup",
+              "label": "Check Certificate",
+              "icon": "mdi:book-search"
+            },
+            "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "label": "Assign Certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "label": "Create Purchase Order",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:create_payment_intent",
+              "label": "Create Payment",
+              "icon": "mdi:credit-card-outline"
+            },
+            "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "label": "Confirm Payment with User",
+              "icon": "mdi:account-question"
+            },
+            "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "label": "Check Payment Approval",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
+            "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:confirm_payment_intent",
+              "label": "Confirm Payment",
+              "icon": "mdi:check-decagram"
+            },
+            "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "738b438a-757d-4653-8bc2-b921b130503c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "FEDEX:create_shipment",
+              "label": "Create Shipment",
+              "icon": "mdi:truck-delivery-outline"
+            },
+            "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "label": "Send Email",
+              "icon": "mdi:email"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "7447fdbc-a273-40d5-a822-843d98865292",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:cancel_payment_intent",
+              "label": "Cancel Payment",
+              "icon": "mdi:credit-card-off-outline"
+            },
+            "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "label": "Notify Cancellation",
+              "icon": "mdi:bell-off"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "label": "Complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "kn-cert-001",
+          "type": "TEXT",
+          "text": "prd-1 has FFC compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-cert-002",
+          "type": "TEXT",
+          "text": "prd-2 has CE compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        }
+      ],
+      "tools": [
+        "ORDER:find_product",
+        "PLATFORM:knowledge_lookup",
+        "PLATFORM:ask_supervisor",
+        "ORDER:assign_certificate",
+        "ORDER:create_po",
+        "STRIPE:create_payment_intent",
+        "GREY:send_email"
+      ],
+      "steps": [
+        {
+          "taskId": "task-cert-block",
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "name": "product-3"
+          },
+          "result": "{\"product\": {\"id\": \"prd-3\", \"name\": \"product-3\", \"vendor_id\": \"vnd-3\", \"unit_price\": 45000, \"currency\": \"usd\", \"weight_kg\": 7.5}}",
+          "comment": "Product resolved from the order request"
+        },
+        {
+          "taskId": "task-cert-block",
+          "action": "PLATFORM:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": {
+              "$ref": "steps[0].result.product.id"
+            }
+          },
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-1\\\", \\\"product_name\\\": \\\"product-1\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-2\\\", \\\"product_name\\\": \\\"product-2\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base only holds certificate records for prd-1 and prd-2 - there is no entry for prd-3, so its certificate is unknown"
+        }
+      ],
+      "next_step": {
+        "action": "PLATFORM:ask_supervisor",
+        "parameters": {
+          "question": "product-3 (prd-3) has no compliance certificate in the knowledge base. Which certificate should I assign to it, or should I stop the order?"
+        },
+        "comment": "The knowledge lookup returned certificate records for prd-1 and prd-2 only - nothing for prd-3. A certificate may only come from the knowledge base or a supervisor, so escalate and wait for the answer instead of assigning an invented one and moving on to the purchase order",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "order-cert-missing-block-002",
+      "description": "The supervisor answered which certificate prd-3 should get.",
+      "sessionId": "019b6e75-cm01-cm01-cm01-cm0100000002",
+      "Blueprint": {
+        "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
+        "title": "Order and Compliance",
+        "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "label": "Find Product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:knowledge_lookup",
+              "label": "Check Certificate",
+              "icon": "mdi:book-search"
+            },
+            "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "label": "Assign Certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "label": "Create Purchase Order",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:create_payment_intent",
+              "label": "Create Payment",
+              "icon": "mdi:credit-card-outline"
+            },
+            "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "label": "Confirm Payment with User",
+              "icon": "mdi:account-question"
+            },
+            "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "label": "Check Payment Approval",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
+            "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:confirm_payment_intent",
+              "label": "Confirm Payment",
+              "icon": "mdi:check-decagram"
+            },
+            "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "738b438a-757d-4653-8bc2-b921b130503c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "FEDEX:create_shipment",
+              "label": "Create Shipment",
+              "icon": "mdi:truck-delivery-outline"
+            },
+            "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "label": "Send Email",
+              "icon": "mdi:email"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "7447fdbc-a273-40d5-a822-843d98865292",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:cancel_payment_intent",
+              "label": "Cancel Payment",
+              "icon": "mdi:credit-card-off-outline"
+            },
+            "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "label": "Notify Cancellation",
+              "icon": "mdi:bell-off"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "label": "Complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "kn-cert-001",
+          "type": "TEXT",
+          "text": "prd-1 has FFC compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        }
+      ],
+      "tools": [
+        "ORDER:find_product",
+        "PLATFORM:knowledge_lookup",
+        "PLATFORM:ask_supervisor",
+        "ORDER:assign_certificate",
+        "ORDER:create_po",
+        "STRIPE:create_payment_intent",
+        "GREY:send_email"
+      ],
+      "steps": [
+        {
+          "taskId": "task-cert-block",
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "name": "product-3"
+          },
+          "result": "{\"product\": {\"id\": \"prd-3\", \"name\": \"product-3\", \"vendor_id\": \"vnd-3\", \"unit_price\": 45000, \"currency\": \"usd\", \"weight_kg\": 7.5}}",
+          "comment": "Product resolved from the order request"
+        },
+        {
+          "taskId": "task-cert-block",
+          "action": "PLATFORM:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": {
+              "$ref": "steps[0].result.product.id"
+            }
+          },
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-1\\\", \\\"product_name\\\": \\\"product-1\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-2\\\", \\\"product_name\\\": \\\"product-2\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base only holds certificate records for prd-1 and prd-2 - there is no entry for prd-3, so its certificate is unknown"
+        },
+        {
+          "taskId": "task-cert-block",
+          "action": "PLATFORM:ask_supervisor",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "product-3 (prd-3) has no compliance certificate in the knowledge base. Which certificate should I assign to it, or should I stop the order?"
+          },
+          "result": "{\"status\": \"ANSWERED\", \"answer\": \"Assign CE to prd-3, the vendor filed it last week.\"}",
+          "comment": "The supervisor answered with the certificate to use"
+        }
+      ],
+      "next_step": {
+        "action": "ORDER:assign_certificate",
+        "parameters": {
+          "product_id": {
+            "$ref": "steps[0].result.product.id"
+          },
+          "certificate": "CE"
+        },
+        "comment": "The certificate now comes from the supervisor's answer (steps[2].result.answer), not from a guess - only a value the knowledge base or the supervisor provided may be assigned",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "order-pay-block-001",
+      "description": "Create a purchase order for product-1 (prd-1), then prepare its payment.",
+      "sessionId": "019b6e75-op01-op01-op01-op0100000001",
+      "Blueprint": {
+        "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
+        "title": "Order and Compliance",
+        "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "label": "Find Product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:knowledge_lookup",
+              "label": "Check Certificate",
+              "icon": "mdi:book-search"
+            },
+            "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "label": "Assign Certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "label": "Create Purchase Order",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:create_payment_intent",
+              "label": "Create Payment",
+              "icon": "mdi:credit-card-outline"
+            },
+            "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "label": "Confirm Payment with User",
+              "icon": "mdi:account-question"
+            },
+            "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "label": "Check Payment Approval",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
+            "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:confirm_payment_intent",
+              "label": "Confirm Payment",
+              "icon": "mdi:check-decagram"
+            },
+            "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "738b438a-757d-4653-8bc2-b921b130503c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "FEDEX:create_shipment",
+              "label": "Create Shipment",
+              "icon": "mdi:truck-delivery-outline"
+            },
+            "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "label": "Send Email",
+              "icon": "mdi:email"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "7447fdbc-a273-40d5-a822-843d98865292",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:cancel_payment_intent",
+              "label": "Cancel Payment",
+              "icon": "mdi:credit-card-off-outline"
+            },
+            "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "label": "Notify Cancellation",
+              "icon": "mdi:bell-off"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "label": "Complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "kn-cert-001",
+          "type": "TEXT",
+          "text": "prd-1 has FFC compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-cert-004",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        }
+      ],
+      "tools": [
+        "ORDER:find_product",
+        "PLATFORM:knowledge_lookup",
+        "ORDER:assign_certificate",
+        "ORDER:create_po",
+        "STRIPE:create_payment_intent",
+        "STRIPE:confirm_payment_intent",
+        "STRIPE:cancel_payment_intent",
+        "FEDEX:create_shipment",
+        "GREY:send_email"
+      ],
+      "steps": [
+        {
+          "taskId": "task-op-001",
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "name": "product-1"
+          },
+          "result": "{\"product\": {\"id\": \"prd-1\", \"name\": \"product-1\", \"unit_price\": 12500, \"currency\": \"usd\", \"weight_kg\": 2.5}}",
+          "comment": "Product resolved from the order request"
+        },
+        {
+          "taskId": "task-op-001",
+          "action": "PLATFORM:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": {
+              "$ref": "steps[0].result.product.id"
+            }
+          },
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-1\\\", \\\"product_name\\\": \\\"product-1\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-2\\\", \\\"product_name\\\": \\\"product-2\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base holds a certificate record for prd-1 (FFC) among its entries"
+        },
+        {
+          "taskId": "task-op-001",
+          "action": "ORDER:assign_certificate",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": {
+              "$ref": "steps[0].result.product.id"
+            },
+            "certificate": "FFC"
+          },
+          "result": "{\"product_id\": \"prd-1\", \"certificate\": \"FFC\", \"assigned\": true}",
+          "comment": "Reusing product_id and certificate via $ref instead of retyping them"
+        },
+        {
+          "taskId": "task-op-001",
+          "action": "ORDER:create_po",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": {
+              "$ref": "steps[0].result.product.id"
+            },
+            "city": "Atlanta",
+            "quantity": 1
+          },
+          "result": "{\"purchase_order\": {\"order_id\": \"po-2001\", \"product_id\": \"prd-1\", \"city\": \"Atlanta\", \"quantity\": 1, \"unit_price\": 12500, \"currency\": \"usd\", \"total_amount\": 12500, \"total_weight_kg\": 2.5, \"ship_from\": {\"postal_code\": \"30301\", \"country_code\": \"US\"}, \"ship_to\": {\"city\": \"Atlanta\", \"postal_code\": \"30303\", \"country_code\": \"US\"}}}",
+          "comment": "The purchase order carries the amount, weight and postal codes the payment and shipment steps need"
+        }
+      ],
+      "next_step": {
+        "action": "STRIPE:create_payment_intent",
+        "parameters": {
+          "amount": {
+            "$ref": "steps[3].result.purchase_order.total_amount"
+          },
+          "currency": {
+            "$ref": "steps[3].result.purchase_order.currency"
+          },
+          "description": "Purchase order po-2001 for product-1 (prd-1)"
+        },
+        "comment": "The purchase order already carries total_amount and currency (steps[3]) - reuse them via $ref. The customer field is omitted: no Stripe customer was created in this flow and an invented ID is rejected",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "order-pay-block-002",
+      "description": "The user approved the charge for purchase order po-2001.",
+      "sessionId": "019b6e75-op02-op02-op02-op0200000002",
+      "Blueprint": {
+        "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
+        "title": "Order and Compliance",
+        "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "label": "Find Product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:knowledge_lookup",
+              "label": "Check Certificate",
+              "icon": "mdi:book-search"
+            },
+            "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "label": "Assign Certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "label": "Create Purchase Order",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:create_payment_intent",
+              "label": "Create Payment",
+              "icon": "mdi:credit-card-outline"
+            },
+            "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "label": "Confirm Payment with User",
+              "icon": "mdi:account-question"
+            },
+            "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "label": "Check Payment Approval",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
+            "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:confirm_payment_intent",
+              "label": "Confirm Payment",
+              "icon": "mdi:check-decagram"
+            },
+            "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "738b438a-757d-4653-8bc2-b921b130503c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "FEDEX:create_shipment",
+              "label": "Create Shipment",
+              "icon": "mdi:truck-delivery-outline"
+            },
+            "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "label": "Send Email",
+              "icon": "mdi:email"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "7447fdbc-a273-40d5-a822-843d98865292",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:cancel_payment_intent",
+              "label": "Cancel Payment",
+              "icon": "mdi:credit-card-off-outline"
+            },
+            "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "label": "Notify Cancellation",
+              "icon": "mdi:bell-off"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "label": "Complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "kn-cert-001",
+          "type": "TEXT",
+          "text": "prd-1 has FFC compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-cert-004",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        }
+      ],
+      "tools": [
+        "ORDER:find_product",
+        "PLATFORM:knowledge_lookup",
+        "ORDER:assign_certificate",
+        "ORDER:create_po",
+        "STRIPE:create_payment_intent",
+        "STRIPE:confirm_payment_intent",
+        "STRIPE:cancel_payment_intent",
+        "FEDEX:create_shipment",
+        "GREY:send_email"
+      ],
+      "steps": [
+        {
+          "taskId": "task-op-001",
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "name": "product-1"
+          },
+          "result": "{\"product\": {\"id\": \"prd-1\", \"name\": \"product-1\", \"unit_price\": 12500, \"currency\": \"usd\", \"weight_kg\": 2.5}}",
+          "comment": "Product resolved from the order request"
+        },
+        {
+          "taskId": "task-op-001",
+          "action": "PLATFORM:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": {
+              "$ref": "steps[0].result.product.id"
+            }
+          },
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-1\\\", \\\"product_name\\\": \\\"product-1\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-2\\\", \\\"product_name\\\": \\\"product-2\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base holds a certificate record for prd-1 (FFC) among its entries"
+        },
+        {
+          "taskId": "task-op-001",
+          "action": "ORDER:assign_certificate",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": {
+              "$ref": "steps[0].result.product.id"
+            },
+            "certificate": "FFC"
+          },
+          "result": "{\"product_id\": \"prd-1\", \"certificate\": \"FFC\", \"assigned\": true}",
+          "comment": "Reusing product_id and certificate via $ref instead of retyping them"
+        },
+        {
+          "taskId": "task-op-001",
+          "action": "ORDER:create_po",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": {
+              "$ref": "steps[0].result.product.id"
+            },
+            "city": "Atlanta",
+            "quantity": 1
+          },
+          "result": "{\"purchase_order\": {\"order_id\": \"po-2001\", \"product_id\": \"prd-1\", \"city\": \"Atlanta\", \"quantity\": 1, \"unit_price\": 12500, \"currency\": \"usd\", \"total_amount\": 12500, \"total_weight_kg\": 2.5, \"ship_from\": {\"postal_code\": \"30301\", \"country_code\": \"US\"}, \"ship_to\": {\"city\": \"Atlanta\", \"postal_code\": \"30303\", \"country_code\": \"US\"}}}",
+          "comment": "The purchase order carries the amount, weight and postal codes the payment and shipment steps need"
+        },
+        {
+          "taskId": "task-op-001",
+          "action": "STRIPE:create_payment_intent",
+          "status": "COMPLETED",
+          "parameters": {
+            "amount": {
+              "$ref": "steps[3].result.purchase_order.total_amount"
+            },
+            "currency": {
+              "$ref": "steps[3].result.purchase_order.currency"
+            },
+            "description": "Purchase order po-2001 for product-1 (prd-1)"
+          },
+          "result": "{\"id\": \"pi_demo0001\", \"status\": \"requires_confirmation\", \"amount\": 12500, \"currency\": \"usd\"}",
+          "comment": "Amount and currency come from the purchase order (steps[3]) via $ref; no Stripe customer exists in this flow, so the customer field is left out entirely"
+        },
+        {
+          "taskId": "task-op-001",
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Purchase order po-2001 for product-1 totals 125.00 usd. Confirm the charge? (yes/no)"
+          },
+          "result": "yes",
+          "comment": "The user approved the charge before anything is taken"
+        }
+      ],
+      "next_step": {
+        "action": "PLATFORM:decision",
+        "parameters": {
+          "condition": "user_approval == TRUE",
+          "true": [
+            {
+              "taskId": "task-op-001",
+              "action": "STRIPE:confirm_payment_intent",
+              "status": "COMPLETED",
+              "parameters": {
+                "payment_intent_id": {
+                  "$ref": "steps[4].result.id"
+                }
+              },
+              "result": "{\"id\": \"pi_demo0001\", \"status\": \"succeeded\", \"amount\": 12500}",
+              "comment": "Confirming the intent the user approved (steps[4].result.id) via $ref"
+            },
+            {
+              "taskId": "task-op-001",
+              "action": "FEDEX:create_shipment",
+              "status": "COMPLETED",
+              "parameters": {
+                "sender_postal_code": {
+                  "$ref": "steps[3].result.purchase_order.ship_from.postal_code"
+                },
+                "sender_country_code": {
+                  "$ref": "steps[3].result.purchase_order.ship_from.country_code"
+                },
+                "recipient_postal_code": {
+                  "$ref": "steps[3].result.purchase_order.ship_to.postal_code"
+                },
+                "recipient_country_code": {
+                  "$ref": "steps[3].result.purchase_order.ship_to.country_code"
+                },
+                "weight": {
+                  "$ref": "steps[3].result.purchase_order.total_weight_kg"
+                },
+                "weight_units": "KG",
+                "service_type": "FEDEX_GROUND"
+              },
+              "result": "{\"tracking_number\": \"794123456789\", \"service_type\": \"FEDEX_GROUND\"}",
+              "comment": "Every address and weight value comes from the purchase order (steps[3]) via $ref - none of them are invented"
+            },
+            {
+              "taskId": "task-op-001",
+              "action": "GREY:send_email",
+              "status": "COMPLETED",
+              "parameters": {
+                "to": "halilibrahimcengel7@gmail.com",
+                "subject": "Purchase Order po-2001 paid and shipped",
+                "text": "Purchase order po-2001 for product-1 (prd-1) was paid (125.00 usd) and shipped with tracking number 794123456789."
+              },
+              "comment": "Email carries the payment status and the tracking number"
+            },
+            {
+              "taskId": "task-op-001",
+              "action": "PLATFORM:complete",
+              "status": "COMPLETED",
+              "comment": "Order paid, shipped and reported"
+            }
+          ],
+          "false": [
+            {
+              "taskId": "task-op-001",
+              "action": "STRIPE:cancel_payment_intent",
+              "status": "COMPLETED",
+              "parameters": {
+                "payment_intent_id": {
+                  "$ref": "steps[4].result.id"
+                }
+              },
+              "result": "{\"id\": \"pi_demo0001\", \"status\": \"canceled\"}",
+              "comment": "The user declined, so the unconfirmed intent is cancelled instead of charged"
+            },
+            {
+              "taskId": "task-op-001",
+              "action": "PLATFORM:message_user",
+              "status": "COMPLETED",
+              "parameters": {
+                "message": "The payment was cancelled, so nothing was charged and nothing was shipped. Purchase order po-2001 stays unpaid."
+              },
+              "comment": "Telling the user why the order stopped"
+            },
+            {
+              "taskId": "task-op-001",
+              "action": "PLATFORM:complete",
+              "status": "COMPLETED",
+              "comment": "Order workflow closed without a charge"
+            }
+          ]
+        },
+        "comment": "The user answered yes (steps[5].result), so the approved branch runs: confirm the payment, ship it and email the confirmation",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "order-pay-block-003",
+      "description": "The payment for purchase order po-2001 is prepared and needs the user's approval.",
+      "sessionId": "019b6e75-op03-op03-op03-op0300000002",
+      "Blueprint": {
+        "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
+        "title": "Order and Compliance",
+        "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "label": "Find Product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:knowledge_lookup",
+              "label": "Check Certificate",
+              "icon": "mdi:book-search"
+            },
+            "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "label": "Assign Certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "label": "Create Purchase Order",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:create_payment_intent",
+              "label": "Create Payment",
+              "icon": "mdi:credit-card-outline"
+            },
+            "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "label": "Confirm Payment with User",
+              "icon": "mdi:account-question"
+            },
+            "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "label": "Check Payment Approval",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
+            "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:confirm_payment_intent",
+              "label": "Confirm Payment",
+              "icon": "mdi:check-decagram"
+            },
+            "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "738b438a-757d-4653-8bc2-b921b130503c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "FEDEX:create_shipment",
+              "label": "Create Shipment",
+              "icon": "mdi:truck-delivery-outline"
+            },
+            "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "label": "Send Email",
+              "icon": "mdi:email"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "7447fdbc-a273-40d5-a822-843d98865292",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:cancel_payment_intent",
+              "label": "Cancel Payment",
+              "icon": "mdi:credit-card-off-outline"
+            },
+            "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "label": "Notify Cancellation",
+              "icon": "mdi:bell-off"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "label": "Complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "kn-cert-001",
+          "type": "TEXT",
+          "text": "prd-1 has FFC compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-cert-004",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        }
+      ],
+      "tools": [
+        "ORDER:find_product",
+        "PLATFORM:knowledge_lookup",
+        "ORDER:assign_certificate",
+        "ORDER:create_po",
+        "STRIPE:create_payment_intent",
+        "STRIPE:confirm_payment_intent",
+        "STRIPE:cancel_payment_intent",
+        "FEDEX:create_shipment",
+        "GREY:send_email"
+      ],
+      "steps": [
+        {
+          "taskId": "task-op-001",
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "name": "product-1"
+          },
+          "result": "{\"product\": {\"id\": \"prd-1\", \"name\": \"product-1\", \"unit_price\": 12500, \"currency\": \"usd\", \"weight_kg\": 2.5}}",
+          "comment": "Product resolved from the order request"
+        },
+        {
+          "taskId": "task-op-001",
+          "action": "PLATFORM:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": {
+              "$ref": "steps[0].result.product.id"
+            }
+          },
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-1\\\", \\\"product_name\\\": \\\"product-1\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-2\\\", \\\"product_name\\\": \\\"product-2\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base holds a certificate record for prd-1 (FFC) among its entries"
+        },
+        {
+          "taskId": "task-op-001",
+          "action": "ORDER:assign_certificate",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": {
+              "$ref": "steps[0].result.product.id"
+            },
+            "certificate": "FFC"
+          },
+          "result": "{\"product_id\": \"prd-1\", \"certificate\": \"FFC\", \"assigned\": true}",
+          "comment": "Reusing product_id and certificate via $ref instead of retyping them"
+        },
+        {
+          "taskId": "task-op-001",
+          "action": "ORDER:create_po",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": {
+              "$ref": "steps[0].result.product.id"
+            },
+            "city": "Atlanta",
+            "quantity": 1
+          },
+          "result": "{\"purchase_order\": {\"order_id\": \"po-2001\", \"product_id\": \"prd-1\", \"city\": \"Atlanta\", \"quantity\": 1, \"unit_price\": 12500, \"currency\": \"usd\", \"total_amount\": 12500, \"total_weight_kg\": 2.5, \"ship_from\": {\"postal_code\": \"30301\", \"country_code\": \"US\"}, \"ship_to\": {\"city\": \"Atlanta\", \"postal_code\": \"30303\", \"country_code\": \"US\"}}}",
+          "comment": "The purchase order carries the amount, weight and postal codes the payment and shipment steps need"
+        },
+        {
+          "taskId": "task-op-001",
+          "action": "STRIPE:create_payment_intent",
+          "status": "COMPLETED",
+          "parameters": {
+            "amount": {
+              "$ref": "steps[3].result.purchase_order.total_amount"
+            },
+            "currency": {
+              "$ref": "steps[3].result.purchase_order.currency"
+            },
+            "description": "Purchase order po-2001 for product-1 (prd-1)"
+          },
+          "result": "{\"id\": \"pi_demo0001\", \"status\": \"requires_confirmation\", \"amount\": 12500, \"currency\": \"usd\"}",
+          "comment": "Amount and currency come from the purchase order (steps[3]) via $ref; no Stripe customer exists in this flow, so the customer field is left out entirely"
+        }
+      ],
+      "next_step": {
+        "action": "PLATFORM:user_interaction",
+        "parameters": {
+          "question": "Purchase order po-2001 for product-1 (prd-1) totals 125.00 usd, shipping to Atlanta. Confirm the charge? (yes/no)"
+        },
+        "comment": "The node carries no fixed question - write it from the live data: the purchase order number (steps[3]), the product and the amount converted from minor units (steps[4]), then ask for a yes/no answer",
         "result_score": 0.95
       }
     }

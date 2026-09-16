@@ -10,8 +10,8 @@ import session from "./test_chat/session";
 import { setupSwagger } from "./swagger";
 import testChat from "./test_chat/testChat";
 import webhook from "./chat/webhook";
-//import kafkaConfig from "./config.kafka";
-//import txqConfig from "./config.txq";
+import whatsapp from "./whatsapp/webhook";
+import whatsappSession from "./whatsapp/session";
 
 dotenv.config();
 
@@ -62,6 +62,9 @@ const startServer = async () => {
   mainApp.use("/bot", slackProxy);
   mainApp.use("/test-chat", testChat);
   mainApp.use("/webhook", webhook);
+  mainApp.use("/whatsapp", whatsapp);
+
+  await whatsappSession.setup();
 
   const server = http.createServer(mainApp);
 

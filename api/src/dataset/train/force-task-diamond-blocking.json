@@ -32,7 +32,7 @@
       }
     },
     {
-      "id": "9b1c2d3e-4f5a-4b6c-8d7e-9f0a1b2c3d4e",
+      "id": "57194259-25cb-47ea-89a2-c6d7afd08309",
       "description": "Look up infrastructure inventory by address and allocate a port for the customer.",
       "knowledge": [],
       "tools": [
@@ -81,7 +81,7 @@
       }
     },
     {
-      "id": "1c2d3e4f-5a6b-4c7d-8e9f-0a1b2c3d4e5f",
+      "id": "dec2dda5-54b0-479a-8dc2-5a3477b29a38",
       "description": "Allocate a port for the customer's device and connect it.",
       "knowledge": [],
       "tools": ["TELCO:port_allocation", "TELCO:port_connection", "PLATFORM:complete"],
@@ -108,7 +108,7 @@
       }
     },
     {
-      "id": "2d3e4f5a-6b7c-4d8e-9f0a-1b2c3d4e5f6a",
+      "id": "4a6f9e13-4198-4a9f-8a6e-81f43a9b40f3",
       "description": "Find a product by name and look up its vendor information.",
       "knowledge": [],
       "tools": ["PLATFORM:user_interaction", "ORDER:find_product", "ORDER:get_product_vendor", "PLATFORM:complete"],

@@ -1,107 +1,37 @@
-import Agent from "../models/Agent";
-import MCP from "../models/MCP";
 import MCPs from "../mcps/mcps";
 import { NotFoundError } from "@canmingir/link-express/error";
-import axios from "axios";
+import mcpServer from "./mcpServer";
 
-async function read({
-  agentId,
-  teamId,
-}: {
-  teamId?: string;
-  agentId?: string;
-}) {
-  const mcpWhere: {
-    agentId?: string;
-    teamId?: string;
-  } = {};
+type Scope = {
+  teamId?: string | null;
+  agentId?: string | null;
+};
 
-  if (agentId) {
-    const agentInstance = await Agent.findByPk(agentId);
-
-    if (!agentInstance) {
-      throw new Error("INVALID_AGENT");
-    }
-
-    mcpWhere.agentId = agentId;
-  } else if (teamId) {
-    mcpWhere.teamId = teamId;
-  }
-
-  const mcpInstance = await MCP.findAll({
-    where: mcpWhere,
-  });
-
-  return mcpInstance
-    .map((mcp) => mcp.toJSON())
-    .map(({ Agent, ...mcpData }) => ({
-      ...mcpData,
-      agentId: mcpData.agentId,
-      teamId: mcpData.teamId,
-    }));
+function serverIdOf(action: string) {
+  return action.split(":")[0].toLowerCase();
 }
 
-async function create({
-  authorizationCode,
-  mcpId,
-  teamId,
-  agentId,
-}: {
-  authorizationCode: string;
-  mcpId: string;
-  teamId?: string;
-  agentId?: string;
-}) {
-  if ((agentId && teamId) || (!agentId && !teamId)) {
-    throw new Error("EITHER_AGENT_ID_OR_TEAM_ID_REQUIRED");
-  }
-
-  const params = new URLSearchParams();
-
-  const mcpAuth = MCPs.find((mcp) => mcp.id === mcpId);
-
-  if (!mcpAuth) {
-    throw new NotFoundError();
-  }
-
-  if (!mcpAuth.oauth) {
-    throw new Error("NO_OAUTH_CONFIG");
-  }
-
-  const { clientId, clientSecret, redirectUri, tokenUrl } = mcpAuth.oauth;
-
-  if (clientId && clientSecret && redirectUri && tokenUrl) {
-    params.append("code", authorizationCode);
-    params.append("client_id", clientId);
-    params.append("client_secret", clientSecret);
-    params.append("redirect_uri", redirectUri);
-    params.append("grant_type", "authorization_code");
-  }
-
-  const response = await axios.post(tokenUrl, params, {
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-  });
-
-  const tokens = response.data;
-
-  const { refresh_token } = tokens;
-
-  await MCP.create({
-    refreshToken: refresh_token,
-    mcpId,
-    teamId,
-    agentId,
-  });
-}
-
-function list() {
+async function list(scope: Scope = {}) {
   if (!MCPs || MCPs.length === 0) {
     throw new NotFoundError();
   }
 
-  const mcps = MCPs.map((provider) => ({
+  const { teamId, agentId } = scope;
+
+  let catalog = MCPs;
+
+  if (teamId || agentId) {
+    const assigned = await mcpServer.listAssignedServerIds({
+      teamId,
+      agentId,
+    });
+
+    catalog = MCPs.filter((provider) =>
+      assigned.has(serverIdOf(provider.action))
+    );
+  }
+
+  const mcps = catalog.map((provider) => ({
     id: provider.id,
     provider: provider.provider,
     label: provider.label,
@@ -133,14 +63,4 @@ function list() {
   };
 }
 
-async function get({ mcpId }: { mcpId: string }) {
-  const mcpItem = await MCP.findByPk(mcpId);
-
-  if (!mcpItem) {
-    throw new NotFoundError();
-  }
-
-  return mcpItem.toJSON();
-}
-
-export default { read, get, create, list };
+export default { list };

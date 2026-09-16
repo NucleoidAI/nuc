@@ -72,6 +72,7 @@ function AgentLayout({
   loading,
   initialTab,
   allAgentIds,
+  onChatOpenChange,
 }: {
   agent: {
     id: string;
@@ -82,6 +83,7 @@ function AgentLayout({
   loading: boolean;
   initialTab?: string;
   allAgentIds?: string[];
+  onChatOpenChange?: (open: boolean) => void;
 }) {
   const { beta } = config;
 
@@ -120,6 +122,7 @@ function AgentLayout({
 
   const handleDevToolOpenChange = (open: boolean) => {
     setChatOpen(open);
+    onChatOpenChange?.(open);
   };
 
   const handleTabChange = (newTab: string) => {

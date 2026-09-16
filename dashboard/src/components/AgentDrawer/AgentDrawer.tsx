@@ -2,12 +2,13 @@ import AgentLayout from "../../layouts/AgentLayout";
 import { Iconify } from "@canmingir/link/platform/components";
 
 import { Box, Button, Dialog, DialogContent } from "@mui/material";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const AgentDrawer = ({ open, onClose, agent, initialTab, allAgentIds }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [chatOpen, setChatOpen] = useState(false);
 
   const handleClose = useCallback(() => {
     onClose?.();
@@ -18,6 +19,7 @@ const AgentDrawer = ({ open, onClose, agent, initialTab, allAgentIds }) => {
   return (
     <Dialog
       open={open}
+      disableEnforceFocus={chatOpen}
       onClose={handleClose}
       maxWidth={false}
       sx={{
@@ -63,6 +65,7 @@ const AgentDrawer = ({ open, onClose, agent, initialTab, allAgentIds }) => {
           loading={false}
           initialTab={initialTab}
           allAgentIds={allAgentIds}
+          onChatOpenChange={setChatOpen}
         />
       </DialogContent>
     </Dialog>

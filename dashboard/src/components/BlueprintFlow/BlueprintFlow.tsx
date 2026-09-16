@@ -8,7 +8,6 @@ import ValidationButtons from "./Validation/ValidationButtons";
 import ValidationErrorView from "./Validation/ValidationErrorView";
 import { blueprintFlowPlugin } from "./BlueprintFlowPlugin";
 import { definitionGraphToRawNodes } from "./miniTypes";
-import { isRefValue } from "./helper";
 import useAllIntegrations from "../../hooks/useAllIntegrations";
 import { Flow, FlowMiniMap } from "@canmingir/link/platform/components";
 
@@ -42,6 +41,7 @@ export default function BlueprintFlow({
   showConnections = false,
   onConnectParameter,
   onDisconnectParameter,
+  onOverrideParameter,
   onToggleForceNode,
   liteMode = false,
 }: BlueprintFlowProps) {
@@ -71,7 +71,11 @@ export default function BlueprintFlow({
       );
 
       if (inputs.length || outputs.length) {
-        result[node.id] = { inputs, outputs };
+        result[node.id] = {
+          inputs,
+          outputs,
+          inputProperties: integration.inputSchema?.properties,
+        };
       }
     }
     return result;
@@ -90,7 +94,7 @@ export default function BlueprintFlow({
       if (!params) continue;
       const bound = new Set(
         Object.entries(params)
-          .filter(([, value]) => isRefValue(value))
+          .filter(([, value]) => value !== undefined)
           .map(([field]) => field)
       );
       if (bound.size) result[node.id] = bound;
@@ -230,6 +234,7 @@ export default function BlueprintFlow({
           onHandleDragStart: (nodeId: string, field: string) =>
             setDragging({ sourceNodeId: nodeId, sourceField: field }),
           onToggleForce: readOnly ? undefined : onToggleForceNode,
+          onOverrideParameter: readOnly ? undefined : onOverrideParameter,
           liteMode,
         })}
       />

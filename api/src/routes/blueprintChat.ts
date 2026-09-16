@@ -48,6 +48,7 @@ router.post("/", async (req, res) => {
     sessionFn.get({ sessionId }),
     agentFn.blueprintChatContext({
       agentId,
+      teamId,
       blueprintId,
       supervising: supervisingInstance
         ? {
@@ -125,9 +126,7 @@ router.post("/", async (req, res) => {
     const blueprint = await agentFn.Blueprint({
       history: fullHistory,
       content,
-      existingBlueprint: referenceBlueprint
-        ? blueprintFn.stripDetails(referenceBlueprint)
-        : null,
+      existingBlueprint: referenceBlueprint,
       meta: llmMeta,
     });
 

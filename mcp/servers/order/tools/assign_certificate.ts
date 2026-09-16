@@ -28,7 +28,7 @@ export const assignCertificateTool: Tool<AssignCertificateInput> = {
         "Assigning certificate to product",
       );
 
-      const product = findOne("products", "id", args.product_id);
+      const product = await findOne("products", "id", args.product_id);
 
       if (!product) {
         logger.warn(
@@ -47,7 +47,7 @@ export const assignCertificateTool: Tool<AssignCertificateInput> = {
         };
       }
 
-      const validCertificates = findAll("certificates") as unknown as string[];
+      const validCertificates = (await findAll("certificates")) as unknown as string[];
       if (!validCertificates.includes(args.certificate)) {
         logger.warn(
           { tool: "ORDER:assign_certificate", certificate: args.certificate },
@@ -67,14 +67,14 @@ export const assignCertificateTool: Tool<AssignCertificateInput> = {
         };
       }
 
-      const existing = findOne("product_certificates", "product_id", args.product_id);
+      const existing = await findOne("product_certificates", "product_id", args.product_id);
 
       if (existing) {
-        update("product_certificates", "product_id", args.product_id, {
+        await update("product_certificates", "product_id", args.product_id, {
           certificate: args.certificate,
         });
       } else {
-        insert("product_certificates", {
+        await insert("product_certificates", {
           product_id: args.product_id,
           certificate: args.certificate,
         });

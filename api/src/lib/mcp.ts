@@ -1,22 +1,36 @@
 import McpClient from "../../../mcp/McpClient";
+import mcpServer from "../functions/mcpServer";
 import platform from "@canmingir/link-express";
 
-async function connect({ name, tool }: { name: string; tool: string }) {
+async function connect({
+  name,
+  teamId,
+  agentId,
+}: {
+  name: string;
+  teamId?: string | null;
+  agentId?: string | null;
+}) {
+  await mcpServer.assertAssigned({ serverId: name, teamId, agentId });
+
   const mcpClient = new McpClient({
     name,
-    tool,
     version: "1.0.0",
   });
 
+  let env: Record<string, string> = {};
+
   try {
-    await mcpClient.connectToServer({
-      credentials: {
-        clientId: process.env.GDRIVE_CLIENT_ID as string,
-        clientSecret: process.env.GDRIVE_CLIENT_SECRET as string,
-        redirectUris: [process.env.GDRIVE_REDIRECT_URI as string],
-        refreshToken: process.env.GDRIVE_REFRESH_TOKEN as string,
-      },
-    });
+    env = await mcpServer.resolveEnv({ serverId: name, teamId, agentId });
+  } catch (error) {
+    platform.logger.error(
+      `Failed to resolve env for MCP server "${name}": ${error}`
+    );
+    throw error;
+  }
+
+  try {
+    await mcpClient.connectToServer({ env });
 
     return mcpClient;
   } catch (error) {

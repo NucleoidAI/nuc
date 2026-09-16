@@ -336,7 +336,7 @@ export const sendEmailTool: Tool<any> = {
       attachments: {
         type: "array",
         description:
-          "Files to attach. Each item is { filename, path } for a file on disk, or { filename, content } for inline content. Pass the 'attachments' array returned by PLATFORM:prepare_meeting_attachments through unchanged.",
+          "Files to attach. Each item is { filename, path } for a file on disk, or { filename, content } for inline content. Pass the 'attachments' array returned by TELCO:prepare_meeting_attachments through unchanged.",
         items: {
           type: "object",
           properties: {

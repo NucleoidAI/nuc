@@ -7,7 +7,6 @@
       "description": "Checks port availability at the user's residential address. Presents compatible internet speed packages for user selection. Allocates a port and creates the subscription order. Notifies the user and completes port configuration and physical connection",
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
       "skill": "**Internet Subscription — Availability-Gated, Silent Setup**\n\nUse this Blueprint when a new subscription requires inventory validation before proceeding and no user notification is needed after port allocation.\n\nFlow: Retrieve BBK → Check inventory → [No inventory: end] → List speed products → User selects package → Allocate port → Configure port → Connect port to residence.\n\nExits silently after port connection. Exits early if inventory is unavailable.",
-      "executionMode": "NORMAL",
       "nodes": [
         {
           "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
@@ -176,30 +175,14 @@
       }
     },
     {
-      "id": "f4e3d2c1-b0a0-4000-8000-100000000001",
+      "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
       "title": "Order and Compliance",
-      "description": "Find product, assign compliance certificate, create purchase order, write process to LLM, and send email.",
+      "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
       "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
-      "skill": "**Product Order — Certificate-Backed Purchase**\n\nUse this Blueprint when a product order must have a compliance certificate assigned before a purchase order can be created.\n\nFlow: Ask user to select a product → Find product → Check certificate via knowledge lookup → Assign certificate → Create purchase order → Send email.\n\nExits after emailing confirmation of the completed purchase order.",
-      "executionMode": "NORMAL",
+      "skill": "**Product Order \u2014 Certificate-Backed Purchase**\n\nUse this Blueprint when a product order must have a compliance certificate assigned before a purchase order can be created.\n\nThe order request arrives with the product already chosen \u2014 it comes in from the requesting system, so do not ask which product to order.\n\nFlow: Find product \u2192 Check certificate via knowledge lookup \u2192 Assign certificate \u2192 Create purchase order \u2192 Create payment \u2192 Ask the user to approve the charge \u2192 [Not approved: cancel the payment, notify, end] \u2192 Confirm payment \u2192 Create shipment \u2192 Send email.\n\nThe payment intent is created unconfirmed, so nothing is charged until the user approves it. Only an approved payment is confirmed, shipped and emailed; a declined one is cancelled and the purchase order stays unpaid.\n\nExits after emailing confirmation of the completed purchase order, or early with a cancellation notice if the user declines the charge.",
       "nodes": [
         {
-          "id": "f0e0d0c0-a0b0-4000-8000-000000000000",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction",
-            "parameters": {
-              "question": "Which product would you like to order?"
-            },
-            "description": "Ask user to select a product",
-            "label": "Select a Product",
-            "icon": "mdi:account-question"
-          },
-          "next": ["f1e1d1c1-a1b1-4111-8111-111111111111"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "f1e1d1c1-a1b1-4111-8111-111111111111",
+          "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:find_product",
@@ -207,11 +190,11 @@
             "label": "Find Product",
             "icon": "mdi:magnify"
           },
-          "next": ["f3e3d3c3-a3b3-4333-8333-333333333333"],
+          "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f3e3d3c3-a3b3-4333-8333-333333333333",
+          "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:knowledge_lookup",
@@ -219,11 +202,11 @@
             "label": "Check Certificate",
             "icon": "mdi:book-search"
           },
-          "next": ["f2e2d2c2-a2b2-4222-8222-222222222222"],
+          "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f2e2d2c2-a2b2-4222-8222-222222222222",
+          "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:assign_certificate",
@@ -231,29 +214,126 @@
             "label": "Assign Certificate",
             "icon": "mdi:certificate-outline"
           },
-          "next": ["f4e4d4c4-a4b4-4444-8444-444444444444"],
+          "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f4e4d4c4-a4b4-4444-8444-444444444444",
+          "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:create_po",
-            "description": "Create a Purchase Order for the certified product",
+            "description": "Create a Purchase Order for the certified product; it returns total_amount, currency, total_weight_kg and the ship_from / ship_to postal codes used by the next steps",
             "label": "Create Purchase Order",
             "icon": "mdi:file-document-plus"
           },
-          "next": ["f6e6d6c6-a6b6-4666-8666-666666666666"],
+          "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
           "createdAt": "2025-06-26T06:00:00Z"
         },
         {
-          "id": "f6e6d6c6-a6b6-4666-8666-666666666666",
+          "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
+          "type": "NORMAL",
+          "properties": {
+            "action": "STRIPE:create_payment_intent",
+            "description": "Create a payment intent for the purchase order using its total_amount and currency, with the PO number in the description. Leave the customer field empty \u2014 this flow has no Stripe customer and an invented ID is rejected",
+            "label": "Create Payment",
+            "icon": "mdi:credit-card-outline"
+          },
+          "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:user_interaction",
+            "description": "Ask the user to approve the payment before the card is charged. Write the question from the live data: name the purchase order number, the product and the amount in major units with its currency, and ask for a yes/no answer",
+            "label": "Confirm Payment with User",
+            "icon": "mdi:account-question"
+          },
+          "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
+          "type": "CONDITION",
+          "properties": {
+            "action": "PLATFORM:decision",
+            "description": "Decide based on the user's answer whether the payment may be charged",
+            "label": "Check Payment Approval",
+            "icon": "mdi:source-branch"
+          },
+          "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
+          "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
+          "type": "NORMAL",
+          "properties": {
+            "action": "STRIPE:confirm_payment_intent",
+            "description": "Confirm the payment intent so the purchase order is paid before the goods are shipped",
+            "label": "Confirm Payment",
+            "icon": "mdi:check-decagram"
+          },
+          "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "738b438a-757d-4653-8bc2-b921b130503c",
+          "type": "NORMAL",
+          "properties": {
+            "action": "FEDEX:create_shipment",
+            "description": "Create the outbound shipment for the paid purchase order using the ship_from and ship_to postal codes and total_weight_kg, and return the tracking number",
+            "label": "Create Shipment",
+            "icon": "mdi:truck-delivery-outline"
+          },
+          "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
           "type": "NORMAL",
           "properties": {
             "action": "GREY:send_email",
-            "description": "Send email notification about the completed purchase order",
+            "description": "Send email notification about the completed purchase order, including the payment confirmation and the shipment tracking number",
             "label": "Send Email",
             "icon": "mdi:email"
+          },
+          "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "7447fdbc-a273-40d5-a822-843d98865292",
+          "type": "NORMAL",
+          "properties": {
+            "action": "STRIPE:cancel_payment_intent",
+            "description": "Cancel the unconfirmed payment intent because the user declined the charge",
+            "label": "Cancel Payment",
+            "icon": "mdi:credit-card-off-outline"
+          },
+          "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Tell the user the payment was cancelled and nothing was shipped; the purchase order stays unpaid",
+            "label": "Notify Cancellation",
+            "icon": "mdi:bell-off"
+          },
+          "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "Mark the order workflow as complete",
+            "label": "Complete",
+            "icon": "mdi:check"
           },
           "next": null,
           "createdAt": "2025-06-26T06:00:00Z"
@@ -276,20 +356,19 @@
         ],
         "referenceBlueprint": null,
         "supervising": null,
-        "userRequest": "Find the product, assign its compliance certificate, create a purchase order and record the process.",
+        "userRequest": "A product order request came in. Find the product, assign its compliance certificate, create a purchase order, ask me to approve the payment, then ship it and record the process.",
         "capturedAt": "2025-06-26T06:00:00Z"
       }
     },
     {
-      "id": "c2b1a0d9-e8f7-4c2b-9100-300000000001",
+      "id": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
       "title": "Compliance Certificate Request",
       "description": "Find the vendor of a product that is missing a compliance certificate and send them an email requesting the certificate, then notify the user.",
       "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
       "skill": "**Compliance Certificate Request — Vendor Follow-up**\n\nUse this Blueprint when a product is missing its compliance certificate and the vendor must be contacted directly to obtain it.\n\nFlow: Get product vendor → Email vendor requesting certificate → Notify user that the vendor was contacted → Complete.\n\nExits after notifying the user; the certificate itself arrives out of band once the vendor responds.",
-      "executionMode": "LITE",
       "nodes": [
         {
-          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000002",
+          "id": "81b62178-c7e0-4af1-9eb9-a559a0a9290e",
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:get_product_vendor",
@@ -297,11 +376,11 @@
             "label": "Get Product Vendor",
             "icon": "mdi:domain"
           },
-          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000003"],
+          "next": ["8f01126f-97b1-4b47-8c3c-b09de10879f9"],
           "createdAt": "2025-06-29T08:00:00Z"
         },
         {
-          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000003",
+          "id": "8f01126f-97b1-4b47-8c3c-b09de10879f9",
           "type": "NORMAL",
           "properties": {
             "action": "GREY:send_email",
@@ -309,11 +388,11 @@
             "label": "Email Vendor",
             "icon": "mdi:email"
           },
-          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000004"],
+          "next": ["5ce77c06-8c90-45f7-9981-efbc07b7aec0"],
           "createdAt": "2025-06-29T08:00:00Z"
         },
         {
-          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000004",
+          "id": "5ce77c06-8c90-45f7-9981-efbc07b7aec0",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
@@ -321,11 +400,11 @@
             "label": "Notify User",
             "icon": "mdi:bell"
           },
-          "next": ["c2b1a0d9-e8f7-4c2b-9100-300000000005"],
+          "next": ["707f211a-fe38-479c-bab4-0b2cd957464c"],
           "createdAt": "2025-06-29T08:00:00Z"
         },
         {
-          "id": "c2b1a0d9-e8f7-4c2b-9100-300000000005",
+          "id": "707f211a-fe38-479c-bab4-0b2cd957464c",
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
@@ -353,17 +432,16 @@
       "id": "019fa100-0000-4000-8000-000000000001",
       "title": "Meeting Summary A - Full Transcript Only",
       "description": "Variant A of the meeting summarizer A/B test. Converts PCM recordings to WAV, transcribes only the mixed meeting-audio recording, and summarizes that full transcript into an overall summary and the meeting's highlights. It deliberately skips per-speaker transcription, produces no next steps and attributes nothing to individual speakers. A Turkish LLM judge scores meeting summary, topics, highlights, overall quality and accuracy on a 0-100 scale; next steps are explicitly not evaluated. The summary is emailed to the meeting participants, with the full transcript and the judge's evaluation attached as files. Meeting audio is not sent.",
-      "agentId": "019f4a02-1111-4222-8333-444455556666",
+      "agentId": "ab2d404b-3358-45eb-a468-338485924fea",
       "blocking": false,
       "force": true,
       "skill": "**Meeting Recording - Summary Variant A (transcript only)**\n\nUse this Blueprint for the lightweight arm of the summarizer A/B test: only the mixed meeting recording is transcribed, and the summary is written from that full transcript without transcribing each participant's own recording.\n\nFlow: Convert PCM to WAV -> Transcribe only meeting-audio.wav -> Summarize the full transcript (summary + highlights) -> Judge the summary against the transcript -> Prepare transcript and judgement attachments -> Send email to all participants -> Complete.\n\nProduces a summary and highlights only - no next steps, no speaker transcription, no speaker attribution and no separate manager email. The full transcript and the LLM evaluation go out as attachments; the meeting audio does not. Exits after emailing the participants.",
-      "executionMode": "NORMAL",
       "nodes": [
         {
           "id": "019fa100-0001-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
-            "action": "PLATFORM:pcm_to_wav",
+            "action": "TELCO:pcm_to_wav",
             "description": "Convert all PCM audio files in the meeting directory to WAV format",
             "label": "Convert PCM to WAV",
             "icon": "mdi:waveform"
@@ -375,10 +453,10 @@
           "id": "019fa100-0002-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
-            "action": "PLATFORM:transcribe_meeting",
+            "action": "TELCO:transcribe_meeting",
             "description": "Transcribe only meeting-audio.wav with the self-hosted ASR service. Skip participant recordings because Variant A does not use speaker transcripts. The transcript is cached as a .txt file next to the audio",
             "label": "Transcribe Meeting",
-            "icon": "mdi:microphone-multiple"
+            "icon": "mdi:account-voice"
           },
           "next": ["019fa100-0003-4000-8000-000000000001"],
           "createdAt": "2026-08-20T10:00:00Z"
@@ -387,10 +465,13 @@
           "id": "019fa100-0003-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
-            "action": "PLATFORM:summarize_meeting",
+            "action": "TELCO:summarize_meeting",
             "description": "Summarize the combined meeting transcript into an overall summary and the meeting's highlights",
             "label": "Summarize Meeting",
-            "icon": "mdi:text-box-check"
+            "icon": "mdi:text-box-check",
+            "parameters": {
+              "summary_prompt": "Sen, toplantı transkriptlerini analiz edip profesyonel toplantı notları çıkaran bir asistansın.\n\nAşağıda ###TRANSKRIPT### etiketleri arasında bir toplantının tam konuşma metni yer alıyor.\nBu metni analiz et ve çıktıyı TAMAMEN TÜRKÇE olarak, tam olarak aşağıdaki yapıda üret:\n\n# [Toplantıyı özetleyen 2-4 kelimelik kısa bir başlık]\n\n## Toplantı Özeti\n[Toplantının amacını, konuşulan ana konuları ve nasıl sonuçlandığını anlatan 3-5 cümlelik akıcı bir paragraf.]\n\n## Konular ve Öne Çıkanlar\n[Toplantıda ele alınan önemli ana konuları ayrı konu başlıkları olarak listele.\nHer konu başlığının altında yalnızca o konuyla ilgili önemli noktaları, talepleri,\nönerileri ve alınan kararları 1-3 maddelik bir liste halinde yaz.]\n\nKURALLAR:\n1. Yalnızca transkriptte geçen bilgileri kullan; isim, tarih, sayı, fiyat veya karar ASLA uydurma.\n2. Transkript hangi dilde olursa olsun çıktıyı Türkçe yaz; ürün, şirket ve kişi adlarını olduğu gibi bırak.\n3. Tarafsız ve profesyonel bir dil kullan; kendi yorumunu veya değerlendirmeni ekleme.\n4. Selamlaşma, hal hatır sorma gibi işle ilgisi olmayan kısımları özete dahil etme.\n5. Emin olmadığın bir bilgiyi kesinmiş gibi yazma; belirsiz kalan maddeleri atla.\n6. Çıktıya yukarıdaki yapı dışında hiçbir giriş, açıklama veya kapanış cümlesi ekleme."
+            }
           },
           "next": ["019fa100-0004-4000-8000-000000000001"],
           "createdAt": "2026-08-20T10:00:00Z"
@@ -399,7 +480,7 @@
           "id": "019fa100-0004-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
-            "action": "PLATFORM:judge_summary",
+            "action": "TELCO:judge_summary",
             "description": "Use a Turkish LLM judge to score the meeting summary, topics, highlights, overall quality and accuracy from 0 to 100; do not evaluate next steps because variant A does not generate them",
             "label": "Judge Summary",
             "icon": "mdi:gavel"
@@ -411,7 +492,7 @@
           "id": "019fa100-0005-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
-            "action": "PLATFORM:prepare_meeting_attachments",
+            "action": "TELCO:prepare_meeting_attachments",
             "description": "Write the full meeting transcript and the LLM judge's evaluation to files and collect them as email attachments. The meeting audio is not attached",
             "label": "Prepare Attachments",
             "icon": "mdi:paperclip"
@@ -423,7 +504,7 @@
           "id": "019fa100-0006-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
-            "action": "GREY:send_email_ews",
+            "action": "TELCO:send_email_ews",
             "description": "Email the summary through EWS to all meeting participants using the 'meeting_summary_a' template, attaching the transcripts and the LLM evaluation",
             "label": "Email Participants",
             "icon": "mdi:email-send"
@@ -446,160 +527,11 @@
       ]
     },
     {
-      "id": "019fa200-0000-4000-8000-000000000001",
-      "title": "Meeting Summary B - Speaker Attributed",
-      "description": "Variant B of the meeting summarizer A/B test. Converts per-participant PCM recordings to WAV, transcribes both each participant individually and the meeting as a whole, then summarizes both together into an overall summary, the meeting's highlights and the next steps. Because every participant's own recording is passed in, statements and next step owners are attributed to the right speaker. Participant IDs are resolved to real names, and a Turkish LLM judge scores meeting summary, next steps, topics, highlights, overall quality and accuracy on a 0-100 scale. The result is emailed to all participants and, as a separate step, to the manager whose address comes from the agent's knowledge base - with the transcripts and the judge's evaluation attached as files. Meeting audio is not sent.",
-      "agentId": "019f4a02-1111-4222-8333-444455556666",
-      "blocking": false,
-      "force": true,
-      "skill": "**Meeting Recording - Summary Variant B (speaker attributed)**\n\nUse this Blueprint for the detailed arm of the summarizer A/B test: every participant is transcribed separately as well as the meeting as a whole, and both are given to the model so the summary can say who said what and who owns each next step.\n\nFlow: Convert PCM to WAV -> Transcribe meeting -> Summarize by speaker (summary + highlights + next steps) -> Resolve participant IDs to names -> Judge the summary against the transcript and the per-speaker recordings -> Prepare transcript and judgement attachments -> Send email to all participants -> Get manager email from knowledge -> Send email to the manager -> Complete.\n\nThe transcripts and the LLM evaluation go out as attachments; the meeting audio does not. Exits after emailing the resolved summary to every meeting participant and separately to the manager.",
-      "executionMode": "NORMAL",
-      "nodes": [
-        {
-          "id": "019fa200-0001-4000-8000-000000000001",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:pcm_to_wav",
-            "description": "Convert all PCM audio files in the meeting directory to WAV format",
-            "label": "Convert PCM to WAV",
-            "icon": "mdi:waveform"
-          },
-          "next": ["019fa200-0002-4000-8000-000000000001"],
-          "createdAt": "2026-08-20T10:00:00Z"
-        },
-        {
-          "id": "019fa200-0002-4000-8000-000000000001",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:transcribe_meeting",
-            "description": "Transcribe each WAV file individually with the self-hosted ASR service and collect the full meeting transcript together with the per-speaker transcripts. Transcripts are cached as .txt files next to the audio, so re-running the meeting does not transcribe again",
-            "label": "Transcribe Meeting",
-            "icon": "mdi:microphone-multiple"
-          },
-          "next": ["019fa200-0003-4000-8000-000000000001"],
-          "createdAt": "2026-07-08T10:00:00Z"
-        },
-        {
-          "id": "019fa200-0003-4000-8000-000000000001",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:summarize_meeting_by_speaker",
-            "description": "Summarize the combined transcript plus each participant's own recording into an overall summary, the meeting's highlights and the next steps, attributed to the right speaker",
-            "label": "Summarize Meeting By Speaker",
-            "icon": "mdi:text-box-check"
-          },
-          "next": ["019fa200-0004-4000-8000-000000000001"],
-          "createdAt": "2026-07-08T10:00:00Z"
-        },
-        {
-          "id": "019fa200-0004-4000-8000-000000000001",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:resolve_participants",
-            "description": "Replace speaker IDs with real participant names, anywhere they appear in the summary",
-            "label": "Resolve Participants",
-            "icon": "mdi:account-convert"
-          },
-          "next": ["019fa200-0005-4000-8000-000000000001"],
-          "createdAt": "2026-08-20T10:00:00Z"
-        },
-        {
-          "id": "019fa200-0005-4000-8000-000000000001",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:judge_summary",
-            "description": "Use a Turkish LLM judge to score the meeting summary, next steps, topics, highlights, overall quality and accuracy from 0 to 100; verify speaker attributions against the individual recordings",
-            "label": "Judge Summary",
-            "icon": "mdi:gavel"
-          },
-          "next": ["019fa200-0006-4000-8000-000000000001"],
-          "createdAt": "2026-08-20T10:00:00Z"
-        },
-        {
-          "id": "019fa200-0006-4000-8000-000000000001",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:prepare_meeting_attachments",
-            "description": "Write the full meeting transcript, each speaker's transcript and the LLM judge's evaluation to files and collect them as email attachments. The meeting audio is not attached",
-            "label": "Prepare Attachments",
-            "icon": "mdi:paperclip"
-          },
-          "next": ["019fa200-0007-4000-8000-000000000001"],
-          "createdAt": "2026-07-08T10:00:00Z"
-        },
-        {
-          "id": "019fa200-0007-4000-8000-000000000001",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:send_email_ews",
-            "description": "Email the resolved speaker-attributed summary through EWS to all meeting participants using the 'meeting_summary_b' template, attaching the transcripts and the LLM evaluation",
-            "label": "Email Participants",
-            "icon": "mdi:email-send"
-          },
-          "next": ["019fa200-0008-4000-8000-000000000001"],
-          "createdAt": "2026-07-08T10:00:00Z"
-        },
-        {
-          "id": "019fa200-0008-4000-8000-000000000001",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:knowledge_lookup",
-            "description": "Look up the agent's knowledge base to find the manager's email address for meeting summary notifications",
-            "label": "Get Manager Email",
-            "icon": "mdi:book-search"
-          },
-          "next": ["019fa200-0009-4000-8000-000000000001"],
-          "createdAt": "2026-07-08T10:00:00Z"
-        },
-        {
-          "id": "019fa200-0009-4000-8000-000000000001",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:send_email_ews",
-            "description": "Email the resolved summary through EWS to the manager's email address found in the knowledge base, using the 'meeting_summary_b' template and attaching the transcripts and the LLM evaluation",
-            "label": "Email Manager",
-            "icon": "mdi:email-send"
-          },
-          "next": ["019fa200-0010-4000-8000-000000000001"],
-          "createdAt": "2026-07-08T10:00:00Z"
-        },
-        {
-          "id": "019fa200-0010-4000-8000-000000000001",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "description": "Mark the variant B meeting summary workflow as complete",
-            "label": "Complete",
-            "icon": "mdi:check"
-          },
-          "next": null,
-          "createdAt": "2026-08-20T10:00:00Z"
-        }
-      ],
-      "context": {
-        "agent": {
-          "name": "meeting_agent",
-          "description": "An agent that retrieves meeting transcripts, extracts personalized summaries and action items, and delivers them via email."
-        },
-        "knowledge": [
-          {
-            "type": "TEXT",
-            "text": "The manager's email address is halilcengel@greycollar.ai. Meeting summaries should also be sent to this address."
-          }
-        ],
-        "referenceBlueprint": null,
-        "supervising": null,
-        "userRequest": "Transcribe the meeting recording per participant, summarise it and email the summary and action items.",
-        "capturedAt": "2026-07-08T10:00:00Z"
-      }
-    },
-    {
       "id": "019f5c00-0000-4000-8000-000000000001",
       "title": "VM Provisioning Request",
       "description": "Handles a virtual machine provisioning request. The agent collects VM requirements from the user, creates the VM on AWS, and shares the instance details with the user.",
       "agentId": "3c8f1d5e-7b2a-4e91-a6d4-58c0f9b3e712",
       "skill": "**VM Provisioning — Collect & Create**\n\nUse this Blueprint when a user requests a new virtual machine and its requirements need to be gathered before provisioning.\n\nFlow: Collect VM requirements from user → Create VM on AWS → Share VM details with user → Complete.\n\nExits after sharing the created VM's instance details with the user.",
-      "executionMode": "NORMAL",
       "nodes": [
         {
           "id": "019f5c00-0001-4000-8000-000000000001",
@@ -671,7 +603,6 @@
       "description": "Handles a virtual machine termination request. The agent collects the instance ID from the user, confirms the termination since it is permanent, terminates the VM on AWS, and shares the result with the user.",
       "agentId": "3c8f1d5e-7b2a-4e91-a6d4-58c0f9b3e712",
       "skill": "**VM Termination — Confirmation-Gated**\n\nUse this Blueprint when a user requests VM termination and explicit confirmation is required before this irreversible action proceeds.\n\nFlow: Collect instance ID → Confirm termination → [Not confirmed: notify cancellation, end] → Terminate VM → Share termination result.\n\nExits after sharing the termination result, or exits early with a cancellation notice if the user declines to confirm.",
-      "executionMode": "NORMAL",
       "nodes": [
         {
           "id": "019f5c01-0001-4000-8000-000000000001",
@@ -784,7 +715,6 @@
       "agentId": "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
       "blocking": false,
       "skill": "**VM Metrics Health Check — Threshold-Gated Alerting**\n\nUse this Blueprint when incoming OTLP metrics from a VM need to be evaluated against reference ranges and should only raise an alert on a violation.\n\nFlow: Get reference ranges from knowledge → Evaluate metrics against ranges → [No violations: complete silently] → Create ServiceNow incident for violations → Complete.\n\nExits silently when all metrics are within range. Exits after creating an incident when any metric falls outside its reference range.",
-      "executionMode": "NORMAL",
       "nodes": [
         {
           "id": "019f7a20-0001-4000-8000-000000000001",
@@ -911,7 +841,6 @@
       "description": "Handles new employee onboarding. The agent takes the incoming employee's information (first name, last name, employee ID, department, job role, manager, location, ServiceNow request number), creates the employee's user account in Active Directory via the Active Directory MCP, approves the corresponding employee request in ServiceNow via the ServiceNow MCP, looks up the manager's email address from the agent's knowledge, emails the created account details to the manager, and sends a welcome email to the new employee's address.",
       "agentId": "019f6a11-0000-4000-8000-000000000001",
       "skill": "**Employee Onboarding — AD Provisioning & Notifications**\n\nUse this Blueprint when a new employee request needs an Active Directory account created, its ServiceNow request approved, and the manager and employee notified.\n\nFlow: Create employee in Active Directory → Approve request in ServiceNow → Get manager email from knowledge → Email manager with account details → Email new employee a welcome message → Complete.\n\nExits after sending the welcome email to the new employee.",
-      "executionMode": "NORMAL",
       "nodes": [
         {
           "id": "019f6a10-0002-4000-8000-000000000002",

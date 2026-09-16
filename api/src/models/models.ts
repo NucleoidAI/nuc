@@ -62,24 +62,44 @@ async function init() {
     foreignKey: "agentId",
   });
 
-  // MCP <-> Project (many-to-many)
-  models.MCP.belongsToMany(models.Project, {
-    through: "MCP",
-    foreignKey: "id",
+  // MCPProvider <-> MCPServer
+  models.MCPProvider.hasMany(models.MCPServer, {
+    foreignKey: "mcpProviderId",
+    as: "servers",
   });
-  models.Project.belongsToMany(models.MCP, {
-    through: "MCP",
-    foreignKey: "teamId",
+  models.MCPServer.belongsTo(models.MCPProvider, {
+    foreignKey: "mcpProviderId",
+    as: "provider",
   });
 
-  // MCP <-> Agent
-  models.MCP.belongsTo(models.Agent, {
+  // MCPServer <-> MCPServerAssignment
+  models.MCPServer.hasMany(models.MCPServerAssignment, {
+    foreignKey: "serverId",
+    as: "assignments",
+    onDelete: "CASCADE",
+  });
+  models.MCPServerAssignment.belongsTo(models.MCPServer, {
+    foreignKey: "serverId",
+    as: "server",
+  });
+
+  // MCPServerAssignment <-> Project / Agent
+  models.MCPServerAssignment.belongsTo(models.Project, {
+    foreignKey: "teamId",
+  });
+  models.MCPServerAssignment.belongsTo(models.Agent, {
     foreignKey: "agentId",
   });
 
-  // MCP <-> Project (belongsTo)
-  models.MCP.belongsTo(models.Project, {
-    foreignKey: "teamId",
+  // MCPServer <-> MCPServerEnv
+  models.MCPServer.hasMany(models.MCPServerEnv, {
+    foreignKey: "serverId",
+    as: "envs",
+    onDelete: "CASCADE",
+  });
+  models.MCPServerEnv.belongsTo(models.MCPServer, {
+    foreignKey: "serverId",
+    as: "server",
   });
 
   // AgentKnowledge associations
@@ -237,6 +257,15 @@ async function init() {
     await models.AgentKnowledge.destroy({
       where: { agentId: agent.id },
     });
+    await models.MCPServerAssignment.destroy({ where: { agentId: agent.id } });
+    await models.MCPServerEnv.destroy({ where: { agentId: agent.id } });
+  });
+
+  models.MCPServer.addHook("beforeDestroy", async (server) => {
+    const serverId = server.getDataValue("id");
+
+    await models.MCPServerEnv.destroy({ where: { serverId } });
+    await models.MCPServerAssignment.destroy({ where: { serverId } });
   });
 
   models.TeamMessage.addHook("beforeCreate", async (message: any) => {

@@ -83,7 +83,7 @@ async function transcribeFile(
 export const transcribeMeetingTool: Tool<TranscribeMeetingInput> = {
   name: "TELCO:transcribe_meeting",
   description:
-    "Transcribe WAV audio files in a directory with the self-hosted ASR service, write each transcript as a .txt file next to the audio, and return the individual and combined transcripts. Speaker recordings can be skipped when only the mixed meeting transcript is needed. Existing .txt files in the directory are reused, so re-running on the same meeting does not transcribe a second time.",
+    "Transcribe WAV audio files in a directory with the self-hosted ASR service, write each transcript as a .txt file next to the audio, and return the individual and combined transcripts. Speaker recordings can be skipped when only the mixed meeting transcript is needed. Every run transcribes the current audio and overwrites any existing .txt file.",
   inputSchema: {
     type: "object",
     properties: {
@@ -91,11 +91,6 @@ export const transcribeMeetingTool: Tool<TranscribeMeetingInput> = {
         type: "string",
         description:
           "Absolute path to the directory containing .wav files. The .txt transcripts are written into this same directory.",
-      },
-      force: {
-        type: "boolean",
-        description:
-          "Re-transcribe even when a .txt transcript already exists, overwriting it. Defaults to false.",
       },
       includeSpeakerTranscripts: {
         type: "boolean",
@@ -107,7 +102,6 @@ export const transcribeMeetingTool: Tool<TranscribeMeetingInput> = {
   },
   handler: async ({
     directoryPath,
-    force,
     includeSpeakerTranscripts = true,
   }: TranscribeMeetingInput) => {
     try {
@@ -189,23 +183,15 @@ export const transcribeMeetingTool: Tool<TranscribeMeetingInput> = {
 
         let transcription: string;
 
-        if (!force && fs.existsSync(transcriptPath)) {
-          logger.info(
-            { tool: "TELCO:transcribe_meeting", transcriptPath },
-            "Reusing cached transcript",
-          );
-          transcription = await fs.promises.readFile(transcriptPath, "utf8");
-        } else {
-          try {
-            transcription = await transcribeFile(filePath, baseUrl);
-          } catch (err: unknown) {
-            const message = err instanceof Error ? err.message : String(err);
-            return toolResult({
-              error: `Failed on file ${file}: ${message}`,
-            });
-          }
-          await fs.promises.writeFile(transcriptPath, transcription, "utf8");
+        try {
+          transcription = await transcribeFile(filePath, baseUrl);
+        } catch (err: unknown) {
+          const message = err instanceof Error ? err.message : String(err);
+          return toolResult({
+            error: `Failed on file ${file}: ${message}`,
+          });
         }
+        await fs.promises.writeFile(transcriptPath, transcription, "utf8");
 
         if (stem.toLowerCase() === MIX_FILE_STEM) {
           mixTranscript = transcription;

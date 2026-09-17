@@ -201,6 +201,92 @@ async function teamChat({
   });
 }
 
+async function approvalDecision({
+  question,
+  content,
+  meta,
+}: {
+  question?: string;
+  content: string;
+  meta?: LLMMeta;
+}) {
+  const { decision } = await generate({
+    dataset: dataset.train.approval,
+    context: [],
+    content: { question, content },
+    json_format: "{ decision: <APPROVED|REJECTED|UNCLEAR> }",
+    meta,
+  });
+
+  return String(decision ?? "").toUpperCase();
+}
+
+async function waitingApproval({ sessionId }: { sessionId: string }) {
+  const sessionInstance = await session.get({ sessionId });
+
+  if (!sessionInstance) {
+    throw new Error("Session not found");
+  }
+
+  const agentInstance = await Agent.findByPk(sessionInstance.agentId);
+
+  if (!agentInstance) {
+    throw new Error("Agent not found");
+  }
+
+  const tasks = await taskFn.list({
+    teamId: agentInstance.teamId,
+    agentId: sessionInstance.agentId,
+    status: "IN_PROGRESS",
+    sessionId,
+    includeSteps: true,
+  });
+
+  for (const task of tasks) {
+    const step = task.steps.find(
+      (step) => step.status === "WAITING_FOR_APPROVAL",
+    );
+
+    if (step) {
+      return { agentId: sessionInstance.agentId, taskId: task.id, step };
+    }
+  }
+
+  return null;
+}
+
+async function approve({
+  sessionId,
+  decision,
+  comment,
+}: {
+  sessionId: string;
+  decision: "APPROVED" | "REJECTED";
+  comment?: string;
+}) {
+  const waiting = await waitingApproval({ sessionId });
+
+  if (!waiting) {
+    throw new Error("No step is waiting for approval in this session");
+  }
+
+  if (comment) {
+    await taskFn.updateStepComment({
+      taskId: waiting.taskId,
+      stepId: waiting.step.id,
+      comment,
+    });
+  }
+
+  await taskFn.updateStep({
+    stepId: waiting.step.id,
+    result: decision,
+    status: "COMPLETED",
+  });
+
+  return { taskId: waiting.taskId, stepId: waiting.step.id, decision };
+}
+
 function resolveCurrentNode(
   nodes: any[],
   completedSteps: { action: string; result?: string; nodeId?: string | null }[],
@@ -222,8 +308,11 @@ function resolveCurrentNode(
       : currentNode.properties?.action === step.action;
     if (!stepMatchesNode) break;
 
-    if (currentNode.type === "CONDITION") {
-      const tookTrue = step.result === "true";
+    if (currentNode.type === "CONDITION" || currentNode.type === "APPROVAL") {
+      const tookTrue =
+        currentNode.type === "APPROVAL"
+          ? step.result === "APPROVED"
+          : step.result === "true";
       const nextIds = tookTrue
         ? currentNode.true || []
         : currentNode.false || [];
@@ -347,6 +436,31 @@ async function task({ taskId }: { taskId: string }) {
   const currentNode = blueprint?.nodes?.length
     ? resolveCurrentNode(blueprint.nodes, completedSteps)
     : undefined;
+
+  if (currentNode?.type === "APPROVAL") {
+    const pending = currentTask.steps.some(
+      (step) =>
+        step.nodeId === currentNode.id &&
+        step.status === "WAITING_FOR_APPROVAL",
+    );
+
+    if (pending) {
+      return;
+    }
+
+    const question =
+      currentNode.properties?.question ||
+      currentNode.properties?.instructions ||
+      currentNode.properties?.label;
+
+    return await taskFn.addStep({
+      taskId,
+      action: "PLATFORM:customer_approval",
+      parameters: { question, sessionId, agentId },
+      comment: "Waiting for the customer to approve or reject.",
+      nodeId: currentNode.id,
+    });
+  }
 
   const isForceNode = currentNode?.properties?.force === true;
 
@@ -578,6 +692,8 @@ async function step({
     actionType = "SUPERVISED";
   } else if (action === "PLATFORM:user_interaction") {
     actionType = "INTERACTION";
+  } else if (action === "PLATFORM:customer_approval") {
+    actionType = "APPROVAL";
   } else if (action === "SUPERVISOR_RESPONDED") {
     actionType = "SUPERVISED_RESPONDED";
   } else {
@@ -647,12 +763,15 @@ async function step({
       });
     } else if (actionType === "INTERACTION") {
       actionFn = require("../actions/interaction").default;
+    } else if (actionType === "APPROVAL") {
+      actionFn = require("../actions/customer_approval").default;
     }
 
     if (
       actionType === "ACTION" ||
       actionType === "SUPERVISED" ||
-      actionType === "INTERACTION"
+      actionType === "INTERACTION" ||
+      actionType === "APPROVAL"
     ) {
       const steps = await taskFn.listSteps({ taskId });
 
@@ -693,7 +812,23 @@ async function step({
       resultString = result;
     }
 
-    if (actionType === "INTERACTION") {
+    if (actionType === "APPROVAL") {
+      await taskFn.updateStep({
+        stepId,
+        result: resultString,
+        status: "WAITING_FOR_APPROVAL",
+      });
+      await stepScoreFn.create({
+        taskId,
+        stepId,
+        parameters,
+        output: resultString,
+        status: "COMPLETED",
+        knowledgeScore: stepKnowledgeScore,
+        hallucinationScore: stepHallucinationScore,
+        resultScore: stepResultScore,
+      });
+    } else if (actionType === "INTERACTION") {
       await taskFn.updateStep({
         stepId,
         result: resultString,
@@ -1300,6 +1435,43 @@ async function chat({
     includeSteps: true,
   });
 
+  const approvalTask = task.find((task) =>
+    task.steps.some((step) => step.status === "WAITING_FOR_APPROVAL"),
+  );
+
+  if (approvalTask) {
+    const approvalStep = approvalTask.steps.find(
+      (step) => step.status === "WAITING_FOR_APPROVAL",
+    );
+
+    const question = approvalStep?.parameters?.question;
+
+    const decision = await approvalDecision({
+      question,
+      content,
+      meta: { agentId, sessionId, taskId: approvalTask.id },
+    });
+
+    if (decision === "APPROVED" || decision === "REJECTED") {
+      await taskFn.updateStep({
+        stepId: approvalStep.id,
+        result: decision,
+        status: "COMPLETED",
+      });
+    } else {
+      await session.addConversation({
+        sessionId,
+        agentId,
+        role: "ASSISTANT",
+        content: question
+          ? `I still need your decision. ${question}`
+          : "I still need your approval to continue.",
+      });
+    }
+
+    return;
+  }
+
   const waitingTask = task.find((task) =>
     task.steps.some((step) => step.status === "WAITING_FOR_USER"),
   );
@@ -1504,6 +1676,8 @@ export default {
   chat,
   task,
   step,
+  approve,
+  waitingApproval,
   Blueprint,
   blueprintName,
   blueprintChatContext,

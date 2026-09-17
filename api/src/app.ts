@@ -17,6 +17,7 @@ import modelPricings from "./routes/modelPricings";
 import organizations from "./routes/organizations";
 import platform from "@canmingir/link-express";
 import projects from "./routes/projects";
+import sessionApprovals from "./routes/sessionApprovals";
 import sessions from "./routes/sessions";
 import statistics from "./routes/statistics";
 import stepScores from "./routes/stepScores";
@@ -41,6 +42,8 @@ function createApp() {
   const { express: app, authorization } = platform;
 
   app.use(telemetryMiddleware());
+
+  app.use("/sessions", sessionApprovals);
 
   app.use(authorization.verify);
   app.use(authorization.authorize("ADMIN"));

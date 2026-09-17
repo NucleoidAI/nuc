@@ -1,5 +1,6 @@
 import Blueprint from "./train/blueprint.json";
 import approval from "./train/approval.json";
+import approvalQuestion from "./train/approval-question.json";
 import decision from "./train/decision.json";
 import blueprintChat from "./train/blueprint-chat.json";
 import blueprintChatDecision from "./train/blueprint-chat-decision.json";
@@ -151,6 +152,12 @@ export default {
       role: "system" as const,
       content: JSON.stringify({
         train: approval,
+      }),
+    },
+    approvalQuestion: {
+      role: "system" as const,
+      content: JSON.stringify({
+        train: approvalQuestion,
       }),
     },
   },

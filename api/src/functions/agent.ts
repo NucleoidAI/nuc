@@ -201,6 +201,43 @@ async function teamChat({
   });
 }
 
+async function approvalQuestion({
+  instructions,
+  label,
+  context,
+  content,
+  meta,
+}: {
+  instructions?: string;
+  label?: string;
+  context?: {
+    role: "user" | "system" | "assistant";
+    content: string | object | object[];
+  }[];
+  content: string | object;
+  meta?: LLMMeta;
+}) {
+  const fallback = instructions || label;
+
+  try {
+    const { question } = await generate({
+      dataset: dataset.train.approvalQuestion,
+      context,
+      content: { instructions, label, task: content },
+      json_format: "{ question: <QUESTION> }",
+      meta,
+    });
+
+    const generated = typeof question === "string" ? question.trim() : "";
+
+    return generated || fallback;
+  } catch (error) {
+    platform.logger.error(error);
+
+    return fallback;
+  }
+}
+
 async function approvalDecision({
   question,
   content,
@@ -450,8 +487,13 @@ async function task({ taskId }: { taskId: string }) {
 
     const question =
       currentNode.properties?.question ||
-      currentNode.properties?.instructions ||
-      currentNode.properties?.label;
+      (await approvalQuestion({
+        instructions: currentNode.properties?.instructions,
+        label: currentNode.properties?.label,
+        context,
+        content: currentTask,
+        meta,
+      }));
 
     return await taskFn.addStep({
       taskId,

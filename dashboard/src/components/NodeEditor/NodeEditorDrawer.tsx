@@ -449,7 +449,7 @@ const NodeEditorDrawer = ({
           value={newNodeQuestion}
           onChange={(e) => setNewNodeQuestion?.(e.target.value)}
           placeholder="Shall I place the order? Please approve or reject."
-          helperText="Sent to the customer while the flow waits for a decision. Leave empty to use the instructions or the label."
+          helperText="Sent to the customer while the flow waits for a decision. Leave empty to have it written from the instructions and the live task data."
           autoComplete="off"
           inputProps={{
             autoComplete: "off",

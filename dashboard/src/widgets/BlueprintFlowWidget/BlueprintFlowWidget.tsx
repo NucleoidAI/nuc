@@ -15,6 +15,7 @@ import {
   buildByNodeRef,
   buildDefinitionGraph,
   getAncestorNodes,
+  isBranchNodeType,
 } from "../../components/BlueprintFlow/helper";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -55,6 +56,9 @@ function graphToNodes(graphData: DefinitionGraph) {
           Object.keys(node.raw.properties.parameters).length > 0 && {
             parameters: node.raw.properties.parameters,
           }),
+        ...(node.nodeType === "APPROVAL" && {
+          question: node.raw?.properties?.question,
+        }),
         ...(node.nodeType === "HANDOFF" && {
           targetAgentId: node.raw?.properties?.targetAgentId,
           targetBlueprintId:
@@ -64,7 +68,7 @@ function graphToNodes(graphData: DefinitionGraph) {
       createdAt: node.createdAt,
     };
 
-    if (node.nodeType === "CONDITION") {
+    if (isBranchNodeType(node.nodeType)) {
       return {
         ...baseNode,
         true: node.trueNext || node.raw?.true || [],
@@ -298,6 +302,7 @@ function BlueprintFlowWidget({
   const [editingNodeId, setEditingNodeId] = useState<string | null>(null);
   const [newNodeLabel, setNewNodeLabel] = useState("");
   const [newNodeInstructions, setNewNodeInstructions] = useState("");
+  const [newNodeQuestion, setNewNodeQuestion] = useState("");
   const [newNodeDescription, setNewNodeDescription] = useState("");
   const [newNodePseudocodeEnabled, setNewNodePseudocodeEnabled] =
     useState(false);
@@ -475,6 +480,7 @@ function BlueprintFlowWidget({
     setSelectedParentNode(node);
     setNewNodeLabel("");
     setNewNodeInstructions("");
+    setNewNodeQuestion("");
     setNewNodeDescription("");
     setNewNodeForce(false);
     setNewNodeParameters({});
@@ -502,6 +508,7 @@ function BlueprintFlowWidget({
         ""
     );
     setNewNodeForce(Boolean(node?.raw?.properties?.force));
+    setNewNodeQuestion(node?.raw?.properties?.question || "");
     setNewNodeParameters({ ...node?.raw?.properties?.parameters });
     setNewNodeType(nodeType);
     setNodePseudocode(node?.raw?.properties?.pseudocode || "");
@@ -530,7 +537,7 @@ function BlueprintFlowWidget({
       if (parentNode) {
         setSelectedParentNode(parentNode);
 
-        if (parentNode.nodeType === "CONDITION") {
+        if (isBranchNodeType(parentNode.nodeType)) {
           const isOnTrueBranch = parentNode.trueNext?.includes(node.id);
           const isOnFalseBranch = parentNode.falseNext?.includes(node.id);
 
@@ -555,12 +562,16 @@ function BlueprintFlowWidget({
     const nodeIcon =
       newNodeType === "CONDITION"
         ? "mdi:help-circle-outline"
+        : newNodeType === "APPROVAL"
+        ? "mdi:account-check"
         : newNodeType === "HANDOFF"
         ? "mdi:account-arrow-right"
         : "mdi:cube-outline";
     const actionType =
       newNodeType === "CONDITION"
         ? "PLATFORM:decision"
+        : newNodeType === "APPROVAL"
+        ? "PLATFORM:customer_approval"
         : newNodeType === "HANDOFF"
         ? "PLATFORM:handoff"
         : selectedIntegration?.action;
@@ -568,6 +579,8 @@ function BlueprintFlowWidget({
       newNodeDescription.trim() ||
       (newNodeType === "CONDITION"
         ? "A decision node that branches the flow based on conditions."
+        : newNodeType === "APPROVAL"
+        ? "Waits for the customer to approve or reject before continuing."
         : newNodeType === "HANDOFF"
         ? "Transfer this task to another agent's blueprint."
         : selectedIntegration?.description || "");
@@ -580,9 +593,11 @@ function BlueprintFlowWidget({
       if (!nodeToUpdate) return prevData;
 
       const isChangingToCondition =
-        newNodeType === "CONDITION" && nodeToUpdate.nodeType !== "CONDITION";
+        isBranchNodeType(newNodeType) &&
+        !isBranchNodeType(nodeToUpdate.nodeType);
       const isChangingToNormal =
-        newNodeType !== "CONDITION" && nodeToUpdate.nodeType === "CONDITION";
+        !isBranchNodeType(newNodeType) &&
+        isBranchNodeType(nodeToUpdate.nodeType);
 
       let updatedNode;
 
@@ -610,6 +625,7 @@ function BlueprintFlowWidget({
               ...nodeToUpdate.raw?.properties,
               label: newNodeLabel,
               instructions: newNodeInstructions,
+              question: newNodeQuestion,
               pseudocodeEnabled: newNodePseudocodeEnabled,
               pseudocode: nodePseudocode,
               force: newNodeForce,
@@ -647,6 +663,7 @@ function BlueprintFlowWidget({
               ...nodeToUpdate.raw?.properties,
               label: newNodeLabel,
               instructions: newNodeInstructions,
+              question: newNodeQuestion,
               pseudocodeEnabled: newNodePseudocodeEnabled,
               pseudocode: nodePseudocode,
               force: newNodeForce,
@@ -679,6 +696,7 @@ function BlueprintFlowWidget({
               ...nodeToUpdate.raw?.properties,
               label: newNodeLabel,
               instructions: newNodeInstructions,
+              question: newNodeQuestion,
               pseudocodeEnabled: newNodePseudocodeEnabled,
               pseudocode: nodePseudocode,
               force: newNodeForce,
@@ -709,6 +727,7 @@ function BlueprintFlowWidget({
               ...nodeToUpdate.raw?.properties,
               label: newNodeLabel,
               instructions: newNodeInstructions,
+              question: newNodeQuestion,
               pseudocodeEnabled: newNodePseudocodeEnabled,
               pseudocode: nodePseudocode,
               force: newNodeForce,
@@ -742,6 +761,7 @@ function BlueprintFlowWidget({
     setSelectedParentNode(null);
     setNewNodeLabel("");
     setNewNodeInstructions("");
+    setNewNodeQuestion("");
     setNewNodeDescription("");
     setNewNodeForce(false);
     setNewNodeParameters({});
@@ -780,12 +800,16 @@ function BlueprintFlowWidget({
     const nodeIcon =
       newNodeType === "CONDITION"
         ? "mdi:source-branch"
+        : newNodeType === "APPROVAL"
+        ? "mdi:account-check"
         : newNodeType === "HANDOFF"
         ? "mdi:account-arrow-right"
         : selectedIntegration?.icon;
     const actionType =
       newNodeType === "CONDITION"
         ? "PLATFORM:decision"
+        : newNodeType === "APPROVAL"
+        ? "PLATFORM:customer_approval"
         : newNodeType === "HANDOFF"
         ? "PLATFORM:handoff"
         : selectedIntegration?.action;
@@ -794,102 +818,106 @@ function BlueprintFlowWidget({
       newNodeDescription.trim() ||
       (newNodeType === "CONDITION"
         ? "A decision node that branches the flow based on conditions."
+        : newNodeType === "APPROVAL"
+        ? "Waits for the customer to approve or reject before continuing."
         : newNodeType === "HANDOFF"
         ? "Transfer this task to another agent's blueprint."
         : selectedIntegration?.description || "");
     if (selectedParentNode.id === "starter") {
-      const firstNode =
-        newNodeType === "CONDITION"
-          ? {
+      const firstNode = isBranchNodeType(newNodeType)
+        ? {
+            id: newId,
+            label: newNodeLabel,
+            description: descriptionText,
+            nodeType: newNodeType,
+            action: actionType,
+            icon: nodeIcon,
+            createdAt: currentTime,
+            connectorType: "decision" as const,
+            trueNext: [],
+            falseNext: [],
+            next: null,
+            raw: {
               id: newId,
-              label: newNodeLabel,
-              description: descriptionText,
-              nodeType: newNodeType,
-              action: actionType,
-              icon: nodeIcon,
-              createdAt: currentTime,
-              connectorType: "decision" as const,
-              trueNext: [],
-              falseNext: [],
-              next: null,
-              raw: {
-                id: newId,
-                type: newNodeType,
-                properties: {
-                  action: actionType,
-                  label: newNodeLabel,
-                  instructions: newNodeInstructions,
-                  pseudocodeEnabled: newNodePseudocodeEnabled,
-                  pseudocode: nodePseudocode,
-                  force: newNodeForce,
-                  parameters: parametersToSave,
-                  description: descriptionText,
-                  icon: nodeIcon,
-                },
-                true: [],
-                false: [],
-                createdAt: currentTime,
+              type: newNodeType,
+              properties: {
+                action: actionType,
+                label: newNodeLabel,
+                instructions: newNodeInstructions,
+                question: newNodeQuestion,
+                pseudocodeEnabled: newNodePseudocodeEnabled,
+                pseudocode: nodePseudocode,
+                force: newNodeForce,
+                parameters: parametersToSave,
+                description: descriptionText,
+                icon: nodeIcon,
               },
-            }
-          : newNodeType === "HANDOFF"
-          ? {
+              true: [],
+              false: [],
+              createdAt: currentTime,
+            },
+          }
+        : newNodeType === "HANDOFF"
+        ? {
+            id: newId,
+            label: newNodeLabel,
+            description: descriptionText,
+            nodeType: newNodeType,
+            action: actionType,
+            icon: nodeIcon,
+            createdAt: currentTime,
+            connectorType: "default" as const,
+            next: null,
+            raw: {
               id: newId,
-              label: newNodeLabel,
-              description: descriptionText,
-              nodeType: newNodeType,
-              action: actionType,
-              icon: nodeIcon,
-              createdAt: currentTime,
-              connectorType: "default" as const,
-              next: null,
-              raw: {
-                id: newId,
-                type: newNodeType,
-                properties: {
-                  action: actionType,
-                  label: newNodeLabel,
-                  instructions: newNodeInstructions,
-                  pseudocodeEnabled: newNodePseudocodeEnabled,
-                  pseudocode: nodePseudocode,
-                  force: newNodeForce,
-                  parameters: parametersToSave,
-                  description: descriptionText,
-                  icon: nodeIcon,
-                  targetAgentId: handoffTargetAgentId,
-                  targetBlueprintId: handoffTargetBlueprintId || undefined,
-                },
-                next: null,
-                createdAt: currentTime,
+              type: newNodeType,
+              properties: {
+                action: actionType,
+                label: newNodeLabel,
+                instructions: newNodeInstructions,
+                question: newNodeQuestion,
+                pseudocodeEnabled: newNodePseudocodeEnabled,
+                pseudocode: nodePseudocode,
+                force: newNodeForce,
+                parameters: parametersToSave,
+                description: descriptionText,
+                icon: nodeIcon,
+                targetAgentId: handoffTargetAgentId,
+                targetBlueprintId: handoffTargetBlueprintId || undefined,
               },
-            }
-          : {
+              next: null,
+              createdAt: currentTime,
+            },
+          }
+        : {
+            id: newId,
+            label: newNodeLabel,
+            description: descriptionText,
+            nodeType: newNodeType,
+            action: actionType,
+            icon: nodeIcon,
+            createdAt: currentTime,
+            connectorType: "default" as const,
+            next: null,
+            raw: {
               id: newId,
-              label: newNodeLabel,
-              description: descriptionText,
-              nodeType: newNodeType,
-              action: actionType,
-              icon: nodeIcon,
-              createdAt: currentTime,
-              connectorType: "default" as const,
-              next: null,
-              raw: {
-                id: newId,
-                type: newNodeType,
-                properties: {
-                  action: actionType,
-                  label: newNodeLabel,
-                  instructions: newNodeInstructions,
-                  pseudocodeEnabled: newNodePseudocodeEnabled,
-                  pseudocode: nodePseudocode,
-                  force: newNodeForce,
-                  parameters: parametersToSave,
-                  description: descriptionText,
-                  icon: nodeIcon,
-                },
-                next: [],
-                createdAt: currentTime,
+              type: newNodeType,
+              properties: {
+                action: actionType,
+                label: newNodeLabel,
+                instructions: newNodeInstructions,
+                question: newNodeQuestion,
+                pseudocodeEnabled: newNodePseudocodeEnabled,
+                pseudocode: nodePseudocode,
+                force: newNodeForce,
+                parameters: parametersToSave,
+                description: descriptionText,
+                icon: nodeIcon,
               },
-            };
+              next: [],
+              createdAt: currentTime,
+            },
+          };
 
       setGraphData({
         nodes: { [newId]: firstNode },
@@ -908,7 +936,7 @@ function BlueprintFlowWidget({
 
       if (!parentNode) return prevData;
 
-      const isParentCondition = parentNode.nodeType === "CONDITION";
+      const isParentCondition = isBranchNodeType(parentNode.nodeType);
       const existingTrueNext = parentNode.trueNext;
       const existingFalseNext = parentNode.falseNext;
 
@@ -923,18 +951,49 @@ function BlueprintFlowWidget({
         inheritedNext = parentNode.next;
       }
 
-      const newNode =
-        newNodeType === "CONDITION"
-          ? {
+      const newNode = isBranchNodeType(newNodeType)
+        ? {
+            id: newId,
+            label: newNodeLabel,
+            description: descriptionText,
+            nodeType: newNodeType,
+            action: actionType,
+            icon: nodeIcon,
+            createdAt: currentTime,
+            connectorType: "decision" as const,
+            trueNext:
+              inheritedNextBranch === "true"
+                ? Array.isArray(inheritedNext)
+                  ? inheritedNext
+                  : inheritedNext
+                  ? [inheritedNext]
+                  : []
+                : [],
+            falseNext:
+              inheritedNextBranch === "false"
+                ? Array.isArray(inheritedNext)
+                  ? inheritedNext
+                  : inheritedNext
+                  ? [inheritedNext]
+                  : []
+                : [],
+            next: inheritedNextBranch !== "none" ? inheritedNext : null,
+            raw: {
               id: newId,
-              label: newNodeLabel,
-              description: descriptionText,
-              nodeType: newNodeType,
-              action: actionType,
-              icon: nodeIcon,
-              createdAt: currentTime,
-              connectorType: "decision" as const,
-              trueNext:
+              type: newNodeType,
+              properties: {
+                action: actionType,
+                label: newNodeLabel,
+                instructions: newNodeInstructions,
+                question: newNodeQuestion,
+                pseudocodeEnabled: newNodePseudocodeEnabled,
+                pseudocode: nodePseudocode,
+                force: newNodeForce,
+                parameters: parametersToSave,
+                description: descriptionText,
+                icon: nodeIcon,
+              },
+              true:
                 inheritedNextBranch === "true"
                   ? Array.isArray(inheritedNext)
                     ? inheritedNext
@@ -942,7 +1001,7 @@ function BlueprintFlowWidget({
                     ? [inheritedNext]
                     : []
                   : [],
-              falseNext:
+              false:
                 inheritedNextBranch === "false"
                   ? Array.isArray(inheritedNext)
                     ? inheritedNext
@@ -950,99 +1009,70 @@ function BlueprintFlowWidget({
                     ? [inheritedNext]
                     : []
                   : [],
-              next: inheritedNextBranch !== "none" ? inheritedNext : null,
-              raw: {
-                id: newId,
-                type: newNodeType,
-                properties: {
-                  action: actionType,
-                  label: newNodeLabel,
-                  instructions: newNodeInstructions,
-                  pseudocodeEnabled: newNodePseudocodeEnabled,
-                  pseudocode: nodePseudocode,
-                  force: newNodeForce,
-                  parameters: parametersToSave,
-                  description: descriptionText,
-                  icon: nodeIcon,
-                },
-                true:
-                  inheritedNextBranch === "true"
-                    ? Array.isArray(inheritedNext)
-                      ? inheritedNext
-                      : inheritedNext
-                      ? [inheritedNext]
-                      : []
-                    : [],
-                false:
-                  inheritedNextBranch === "false"
-                    ? Array.isArray(inheritedNext)
-                      ? inheritedNext
-                      : inheritedNext
-                      ? [inheritedNext]
-                      : []
-                    : [],
-                createdAt: currentTime,
-              },
-            }
-          : newNodeType === "HANDOFF"
-          ? {
-              id: newId,
-              label: newNodeLabel,
-              description: descriptionText,
-              nodeType: newNodeType,
-              action: actionType,
-              icon: nodeIcon,
               createdAt: currentTime,
-              connectorType: "default" as const,
+            },
+          }
+        : newNodeType === "HANDOFF"
+        ? {
+            id: newId,
+            label: newNodeLabel,
+            description: descriptionText,
+            nodeType: newNodeType,
+            action: actionType,
+            icon: nodeIcon,
+            createdAt: currentTime,
+            connectorType: "default" as const,
+            next: null,
+            raw: {
+              id: newId,
+              type: newNodeType,
+              properties: {
+                action: actionType,
+                label: newNodeLabel,
+                instructions: newNodeInstructions,
+                question: newNodeQuestion,
+                pseudocodeEnabled: newNodePseudocodeEnabled,
+                pseudocode: nodePseudocode,
+                force: newNodeForce,
+                parameters: parametersToSave,
+                description: descriptionText,
+                icon: nodeIcon,
+                targetAgentId: handoffTargetAgentId,
+                targetBlueprintId: handoffTargetBlueprintId || undefined,
+              },
               next: null,
-              raw: {
-                id: newId,
-                type: newNodeType,
-                properties: {
-                  action: actionType,
-                  label: newNodeLabel,
-                  instructions: newNodeInstructions,
-                  pseudocodeEnabled: newNodePseudocodeEnabled,
-                  pseudocode: nodePseudocode,
-                  force: newNodeForce,
-                  parameters: parametersToSave,
-                  description: descriptionText,
-                  icon: nodeIcon,
-                  targetAgentId: handoffTargetAgentId,
-                  targetBlueprintId: handoffTargetBlueprintId || undefined,
-                },
-                next: null,
-                createdAt: currentTime,
-              },
-            }
-          : {
-              id: newId,
-              label: newNodeLabel,
-              description: descriptionText,
-              nodeType: newNodeType,
-              action: actionType,
-              icon: nodeIcon,
               createdAt: currentTime,
-              connectorType: "default" as const,
-              next: inheritedNext,
-              raw: {
-                id: newId,
-                type: newNodeType,
-                properties: {
-                  action: actionType,
-                  label: newNodeLabel,
-                  instructions: newNodeInstructions,
-                  pseudocodeEnabled: newNodePseudocodeEnabled,
-                  pseudocode: nodePseudocode,
-                  force: newNodeForce,
-                  parameters: parametersToSave,
-                  description: descriptionText,
-                  icon: nodeIcon,
-                },
-                next: inheritedNext ? [inheritedNext] : [],
-                createdAt: currentTime,
+            },
+          }
+        : {
+            id: newId,
+            label: newNodeLabel,
+            description: descriptionText,
+            nodeType: newNodeType,
+            action: actionType,
+            icon: nodeIcon,
+            createdAt: currentTime,
+            connectorType: "default" as const,
+            next: inheritedNext,
+            raw: {
+              id: newId,
+              type: newNodeType,
+              properties: {
+                action: actionType,
+                label: newNodeLabel,
+                instructions: newNodeInstructions,
+                question: newNodeQuestion,
+                pseudocodeEnabled: newNodePseudocodeEnabled,
+                pseudocode: nodePseudocode,
+                force: newNodeForce,
+                parameters: parametersToSave,
+                description: descriptionText,
+                icon: nodeIcon,
               },
-            };
+              next: inheritedNext ? [inheritedNext] : [],
+              createdAt: currentTime,
+            },
+          };
 
       let updatedParent;
       if (isParentCondition) {
@@ -1120,7 +1150,7 @@ function BlueprintFlowWidget({
           trueNext?: string[] | null;
           falseNext?: string[] | null;
         }) => {
-          if (node.nodeType === "CONDITION") {
+          if (isBranchNodeType(node.nodeType)) {
             if (node.trueNext) {
               node.trueNext.forEach((id) => referenced.add(id));
             }
@@ -1160,7 +1190,7 @@ function BlueprintFlowWidget({
       const deletedNode = currentNodes[node.id];
       if (!deletedNode) return prev;
 
-      const isDeletedCondition = deletedNode.nodeType === "CONDITION";
+      const isDeletedCondition = isBranchNodeType(deletedNode.nodeType);
       const trueChildren: string[] = isDeletedCondition
         ? deletedNode.trueNext || []
         : [];
@@ -1179,7 +1209,7 @@ function BlueprintFlowWidget({
 
       Object.keys(currentNodes).forEach((id) => {
         const n = currentNodes[id];
-        if (n.nodeType === "CONDITION") {
+        if (isBranchNodeType(n.nodeType)) {
           const inTrue = n.trueNext?.includes(node.id);
           const inFalse = n.falseNext?.includes(node.id);
           if (inTrue || inFalse) {
@@ -1251,7 +1281,7 @@ function BlueprintFlowWidget({
           if (falseSubtree.has(cid) || !currentNodes[cid]) continue;
           falseSubtree.add(cid);
           const cn = currentNodes[cid];
-          if (cn.nodeType === "CONDITION") {
+          if (isBranchNodeType(cn.nodeType)) {
             [...(cn.trueNext || []), ...(cn.falseNext || [])].forEach((id) =>
               queue.push(id)
             );
@@ -1271,7 +1301,7 @@ function BlueprintFlowWidget({
             trueNext?: string[] | null;
             falseNext?: string[] | null;
           }) => {
-            if (n.nodeType === "CONDITION") {
+            if (isBranchNodeType(n.nodeType)) {
               n.trueNext?.forEach((id) => stillReferenced.add(id));
               n.falseNext?.forEach((id) => stillReferenced.add(id));
             } else {
@@ -1297,7 +1327,7 @@ function BlueprintFlowWidget({
           trueNext?: string[] | null;
           falseNext?: string[] | null;
         }) => {
-          if (n.nodeType === "CONDITION") {
+          if (isBranchNodeType(n.nodeType)) {
             n.trueNext?.forEach((id) => referenced.add(id));
             n.falseNext?.forEach((id) => referenced.add(id));
           } else {
@@ -1321,7 +1351,7 @@ function BlueprintFlowWidget({
       if (!prev) return prev;
       const currentNodes = { ...prev.nodes };
       const n = currentNodes[node.id];
-      if (!n || n.nodeType !== "CONDITION") return prev;
+      if (!n || !isBranchNodeType(n.nodeType)) return prev;
 
       const newTrueNext = n.falseNext || [];
       const newFalseNext = n.trueNext || [];
@@ -1573,6 +1603,7 @@ function BlueprintFlowWidget({
     setSelectedParentNode(starterParent);
     setNewNodeLabel("");
     setNewNodeInstructions("");
+    setNewNodeQuestion("");
     setNodePseudocode("");
     setNewNodePseudocodeEnabled(false);
     setNewNodeType("NORMAL");
@@ -1645,6 +1676,8 @@ function BlueprintFlowWidget({
         setNewNodeLabel={setNewNodeLabel}
         newNodeInstructions={newNodeInstructions}
         setNewNodeInstructions={setNewNodeInstructions}
+        newNodeQuestion={newNodeQuestion}
+        setNewNodeQuestion={setNewNodeQuestion}
         newNodeDescription={newNodeDescription}
         setNewNodeDescription={setNewNodeDescription}
         newNodePseudocodeEnabled={newNodePseudocodeEnabled}

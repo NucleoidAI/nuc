@@ -1,4 +1,4 @@
-import { parseByNodeRef } from "../helper";
+import { isBranchNodeType, parseByNodeRef } from "../helper";
 
 type ValidationError = {
   nodeId: string;
@@ -124,7 +124,7 @@ function validateFlow(
   // are merged into those inputs. Only explicit output references require a
   // matching source node/field; input and output names need not otherwise match.
   for (const node of Object.values(graphData.nodes)) {
-    if (!node.action || node.nodeType === "CONDITION") continue;
+    if (!node.action || isBranchNodeType(node.nodeType)) continue;
     for (const [field, value] of Object.entries(
       node.raw?.properties?.parameters ?? {}
     )) {

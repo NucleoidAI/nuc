@@ -1,6 +1,12 @@
+export const BRANCH_NODE_TYPES = ["CONDITION", "APPROVAL"];
+
+export function isBranchNodeType(nodeType?: string) {
+  return BRANCH_NODE_TYPES.includes(nodeType ?? "");
+}
+
 type DefinitionNode = {
   id: string;
-  type: "NORMAL" | "CONDITION" | string;
+  type: "NORMAL" | "CONDITION" | "APPROVAL" | string;
   properties?: {
     action?: string;
     label?: string;
@@ -87,7 +93,7 @@ export function buildDefinitionGraph(
       icon: typeof props.icon === "string" ? props.icon : undefined,
       createdAt: node.createdAt,
       raw: node,
-      connectorType: node.type === "CONDITION" ? "decision" : "default",
+      connectorType: isBranchNodeType(node.type) ? "decision" : "default",
     };
   }
 

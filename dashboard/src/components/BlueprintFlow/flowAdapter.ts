@@ -1,3 +1,5 @@
+import { isBranchNodeType } from "./helper";
+
 function convertToNodesAndEdges(data) {
   if (!data || !Array.isArray(data) || data.length === 0) {
     return { nodes: [], edges: [] };
@@ -17,7 +19,7 @@ function convertToNodesAndEdges(data) {
   let edgeIdCounter = 0;
 
   data.forEach((item) => {
-    if (item.type === "CONDITION") {
+    if (isBranchNodeType(item.type)) {
       if (item.true) {
         const trueNodes = Array.isArray(item.true) ? item.true : [item.true];
         trueNodes.forEach((targetId) => {
@@ -30,7 +32,9 @@ function convertToNodesAndEdges(data) {
                 stroke: "#22c55e",
                 strokeDasharray: "5.5",
               },
-              data: { conditionResult: "true" },
+              data: {
+                conditionResult: item.type === "APPROVAL" ? "approved" : "true",
+              },
             });
           }
         });
@@ -50,7 +54,10 @@ function convertToNodesAndEdges(data) {
                 stroke: "#ef4444",
                 strokeDasharray: "5.5",
               },
-              data: { conditionResult: "false" },
+              data: {
+                conditionResult:
+                  item.type === "APPROVAL" ? "rejected" : "false",
+              },
             });
           }
         });

@@ -18,6 +18,8 @@ const NodeEditorWidget = ({
   setNewNodeLabel,
   newNodeInstructions,
   setNewNodeInstructions,
+  newNodeQuestion,
+  setNewNodeQuestion,
   newNodeDescription,
   setNewNodeDescription,
   newNodePseudocodeEnabled,
@@ -60,6 +62,8 @@ const NodeEditorWidget = ({
   setNewNodeLabel: (label: string) => void;
   newNodeInstructions: string;
   setNewNodeInstructions: (instructions: string) => void;
+  newNodeQuestion?: string;
+  setNewNodeQuestion?: (question: string) => void;
   newNodeDescription?: string;
   setNewNodeDescription?: (description: string) => void;
   newNodePseudocodeEnabled?: boolean;
@@ -171,7 +175,11 @@ const NodeEditorWidget = ({
 
   const transformedActions = Array.isArray(actions?.content?.actions)
     ? actions.content.actions
-        .filter((action) => action.action !== "PLATFORM:decision")
+        .filter(
+          (action) =>
+            action.action !== "PLATFORM:decision" &&
+            action.action !== "PLATFORM:customer_approval"
+        )
         .map((action) => ({
           id: action.action,
           action: action.action,
@@ -257,6 +265,8 @@ const NodeEditorWidget = ({
       setNewNodeLabel={setNewNodeLabel}
       newNodeInstructions={newNodeInstructions}
       setNewNodeInstructions={setNewNodeInstructions}
+      newNodeQuestion={newNodeQuestion}
+      setNewNodeQuestion={setNewNodeQuestion}
       newNodeDescription={newNodeDescription}
       setNewNodeDescription={setNewNodeDescription}
       newNodePseudocodeEnabled={newNodePseudocodeEnabled}

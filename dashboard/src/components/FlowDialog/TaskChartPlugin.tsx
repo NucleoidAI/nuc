@@ -37,7 +37,10 @@ export const taskChartPlugin = {
         bg = "error.light";
       }
       shadowLevel = shadowLevel ?? 2;
-    } else if (status === "WAITING_FOR_USER") {
+    } else if (
+      status === "WAITING_FOR_USER" ||
+      status === "WAITING_FOR_APPROVAL"
+    ) {
       borderColor = borderColor || "warning.light";
       if (!styleTokens.bg) {
         bg = "warning.light";

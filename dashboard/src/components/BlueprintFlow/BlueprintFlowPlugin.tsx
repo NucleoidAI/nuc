@@ -17,6 +17,9 @@ import {
 import React, { useState } from "react";
 
 const FORCE_COLOR = "#b8860b";
+const APPROVAL_BORDER_COLOR = "linear-gradient(135deg, #ffb02e66, #ff6b0059)";
+const APPROVAL_BG_FROM = "rgba(255, 176, 46, 0.22)";
+const APPROVAL_BG_TO = "rgba(255, 107, 0, 0.30)";
 
 const AddButtonWrapper = styled("div")(({ theme }) => ({
   position: "absolute",
@@ -642,8 +645,9 @@ const NodeWrapper = styled("div")(() => {
 export const blueprintFlowPlugin = {
   id: "blueprintChart",
 
-  style: ({ style }) => {
+  style: ({ node, style }) => {
     const styleTokens = style || {};
+    const isApproval = node?.nodeType === "APPROVAL";
 
     const connectionsGap = styleTokens.showConnections
       ? fieldsPanelHeight(
@@ -651,9 +655,11 @@ export const blueprintFlowPlugin = {
         )
       : 0;
 
-    const bgFrom = undefined;
-    const bgTo = undefined;
-    const borderColor = "linear-gradient(135deg, #c684ff33, #078dee4d)";
+    const bgFrom = isApproval ? APPROVAL_BG_FROM : undefined;
+    const bgTo = isApproval ? APPROVAL_BG_TO : undefined;
+    const borderColor = isApproval
+      ? APPROVAL_BORDER_COLOR
+      : "linear-gradient(135deg, #c684ff33, #078dee4d)";
     const borderRadius = 16;
     const shadowLevel = 1;
     const minWidth = 420;
@@ -687,10 +693,11 @@ export const blueprintFlowPlugin = {
     if (node?.connectorType === "decision" && child) {
       const trueNext = node?.trueNext || [];
       const falseNext = node?.falseNext || [];
+      const isApproval = node?.nodeType === "APPROVAL";
 
       if (trueNext.includes(child.id)) {
         return {
-          label: "true",
+          label: isApproval ? "approved" : "true",
           labelStyle: {
             fontSize: "12px",
             fontWeight: 600,
@@ -705,7 +712,7 @@ export const blueprintFlowPlugin = {
 
       if (falseNext.includes(child.id)) {
         return {
-          label: "false",
+          label: isApproval ? "rejected" : "false",
           labelStyle: {
             fontSize: "12px",
             fontWeight: 600,

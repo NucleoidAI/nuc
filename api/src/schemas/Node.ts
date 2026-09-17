@@ -45,6 +45,27 @@ const HandoffNode = z.object({
   }),
 });
 
-const Node = z.discriminatedUnion("type", [ConditionNode, NormalNode, HandoffNode]);
+const ApprovalNode = z.object({
+  id: z.string(),
+  type: z.literal("APPROVAL"),
+  true: z.array(z.string().nullable()).nullable(),
+  false: z.array(z.string().nullable()).nullable(),
+  properties: z.object({
+    label: z.string(),
+    icon: z.string(),
+    question: z.string().optional(),
+    instructions: z.string().optional(),
+    pseudocode: z.string().optional(),
+    pseudocodeEnabled: z.boolean().optional(),
+    force: z.boolean().optional(),
+  }),
+});
+
+const Node = z.discriminatedUnion("type", [
+  ConditionNode,
+  NormalNode,
+  HandoffNode,
+  ApprovalNode,
+]);
 
 export default Node;

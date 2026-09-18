@@ -1621,19 +1621,11 @@
     },
     {
       "id": "5524f617-8aaa-408f-8c9e-f49048252f56",
-      "description": "Summarize a meeting from the combined transcript only (variant A), have an LLM judge score the notes, and email them to the participants.",
-      "knowledge": [
-        {
-          "type": "TEXT",
-          "text": "Meeting name: Yonetim Sync. Meeting date: 2026-08-14."
-        }
-      ],
+      "description": "Summarize a meeting from the combined transcript only (variant A) and email the notes to the participants at yonetim-sync@example.com.",
       "tools": [
         "TELCO:pcm_to_wav",
         "TELCO:transcribe_meeting",
         "TELCO:summarize_meeting",
-        "TELCO:judge_summary",
-        "TELCO:prepare_meeting_attachments",
         "TELCO:send_email_ews",
         "PLATFORM:complete"
       ],
@@ -1671,19 +1663,11 @@
     },
     {
       "id": "2101853f-3178-4856-a6bd-33b40a306533",
-      "description": "Summarize a meeting from the combined transcript only (variant A), have an LLM judge score the notes, and email them to the participants.",
-      "knowledge": [
-        {
-          "type": "TEXT",
-          "text": "Meeting name: Yonetim Sync. Meeting date: 2026-08-14."
-        }
-      ],
+      "description": "Summarize a meeting from the combined transcript only (variant A) and email the notes to the participants at yonetim-sync@example.com.",
       "tools": [
         "TELCO:pcm_to_wav",
         "TELCO:transcribe_meeting",
         "TELCO:summarize_meeting",
-        "TELCO:judge_summary",
-        "TELCO:prepare_meeting_attachments",
         "TELCO:send_email_ews",
         "PLATFORM:complete"
       ],
@@ -1730,19 +1714,11 @@
     },
     {
       "id": "d30c6ece-2c55-4aae-aaba-f517dc525076",
-      "description": "Summarize a meeting from the combined transcript only (variant A), have an LLM judge score the notes, and email them to the participants.",
-      "knowledge": [
-        {
-          "type": "TEXT",
-          "text": "Meeting name: Yonetim Sync. Meeting date: 2026-08-14."
-        }
-      ],
+      "description": "Summarize a meeting from the combined transcript only (variant A) and email the notes to the participants at yonetim-sync@example.com.",
       "tools": [
         "TELCO:pcm_to_wav",
         "TELCO:transcribe_meeting",
         "TELCO:summarize_meeting",
-        "TELCO:judge_summary",
-        "TELCO:prepare_meeting_attachments",
         "TELCO:send_email_ews",
         "PLATFORM:complete"
       ],
@@ -1779,20 +1755,20 @@
         }
       ],
       "next_step": {
-        "action": "TELCO:judge_summary",
+        "action": "TELCO:send_email_ews",
         "parameters": {
-          "transcript": {
-            "$ref": "steps[1].result.full_meeting_transcript"
-          },
-          "summary": {
-            "$ref": "steps[2].result.summary"
-          },
-          "highlights": {
-            "$ref": "steps[2].result.highlights"
-          },
-          "variant": "A"
+          "to": "yonetim-sync@example.com",
+          "template": "meeting_summary_a",
+          "data": {
+            "summary": {
+              "$ref": "steps[2].result.summary"
+            },
+            "highlights": {
+              "$ref": "steps[2].result.highlights"
+            }
+          }
         },
-        "comment": "Both the transcript and the generated notes already exist in earlier steps - every one of them is passed by $ref. next_steps is omitted because variant A does not produce them.",
+        "comment": "The generated notes already exist in steps[2] - the summary and highlights are passed by $ref instead of being retyped. The recipient comes from the task description; nothing else is invented. Variant A sends no attachments and produces no next steps.",
         "result_score": 0.95
       }
     },

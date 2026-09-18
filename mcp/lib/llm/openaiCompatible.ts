@@ -46,7 +46,7 @@ function createOpenAICompatibleAdapter(
       messages = [],
       responseFormat,
       temperature = 0,
-      max_tokens = 4096,
+      max_tokens = 8192,
     }: GenerateParams) {
       const chatMessages = [
         ...messages,

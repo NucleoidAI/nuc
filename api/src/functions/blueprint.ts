@@ -45,12 +45,15 @@ function withoutCosmetics<T extends { properties?: object }>(nodes: T[]): T[] {
   });
 }
 
-function stripDetails<T extends { nodes?: unknown }>(blueprint: T): T {
-  if (!Array.isArray(blueprint?.nodes)) {
-    return blueprint;
-  }
+function stripDetails<T extends { nodes?: unknown }>(blueprint: T) {
+  const { description, skill, ...rest } = blueprint as T & {
+    description?: unknown;
+    skill?: unknown;
+  };
 
-  return { ...blueprint, nodes: withoutCosmetics(blueprint.nodes) };
+  return Array.isArray(blueprint?.nodes)
+    ? { ...rest, nodes: withoutCosmetics(blueprint.nodes) }
+    : rest;
 }
 
 function sanitizePseudocode(nodes?: NodeType[]) {

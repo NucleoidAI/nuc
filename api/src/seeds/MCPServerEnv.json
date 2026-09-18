@@ -482,38 +482,6 @@
       "agentId": null
     },
     {
-      "id": "019f9c01-0000-4000-8000-000000000069",
-      "serverId": "telco",
-      "key": "EWS_FROM",
-      "value": "noreply@example.com",
-      "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
-      "agentId": null
-    },
-    {
-      "id": "019f9c01-0000-4000-8000-000000000070",
-      "serverId": "telco",
-      "key": "EWS_FROM",
-      "value": "noreply@example.com",
-      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
-      "agentId": null
-    },
-    {
-      "id": "019f9c01-0000-4000-8000-000000000071",
-      "serverId": "telco",
-      "key": "EWS_FROM",
-      "value": "noreply@example.com",
-      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
-      "agentId": null
-    },
-    {
-      "id": "019f9c01-0000-4000-8000-000000000072",
-      "serverId": "telco",
-      "key": "EWS_FROM",
-      "value": "noreply@example.com",
-      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
-      "agentId": null
-    },
-    {
       "id": "019f9c01-0000-4000-8000-000000000073",
       "serverId": "telco",
       "key": "ASR_ENDPOINT_URL",

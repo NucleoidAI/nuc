@@ -19,17 +19,11 @@ const SUMMARY_MODEL = process.env.SUMMARY_LLM_MODEL || "qwen/qwen3.8-27b";
 const DEFAULT_SUMMARY_PROMPT = `Sen, toplantı transkriptlerini analiz edip profesyonel toplantı notları çıkaran bir asistansın.
 
 Aşağıda ###TRANSKRIPT### etiketleri arasında bir toplantının tam konuşma metni yer alıyor.
-Bu metni analiz et ve çıktıyı TAMAMEN TÜRKÇE olarak, tam olarak aşağıdaki yapıda üret:
+Bu metni analiz et ve sonucu TAMAMEN TÜRKÇE olarak üret.
 
-# [Toplantıyı özetleyen 2-4 kelimelik kısa bir başlık]
-
-## Toplantı Özeti
-[Toplantının amacını, konuşulan ana konuları ve nasıl sonuçlandığını anlatan 3-5 cümlelik akıcı bir paragraf.]
-
-## Konular ve Öne Çıkanlar
-[Toplantıda ele alınan önemli ana konuları ayrı konu başlıkları olarak listele.
-Her konu başlığının altında yalnızca o konuyla ilgili önemli noktaları, talepleri,
-önerileri ve alınan kararları 1-3 maddelik bir liste halinde yaz.]
+ALANLAR:
+- summary: Toplantının amacını, konuşulan ana konuları ve nasıl sonuçlandığını anlatan 3-5 cümlelik tek bir akıcı paragraf.
+- highlights: Toplantıda ele alınan her önemli ana konu için bir kayıt. topic alanına konu başlığını yaz; highlights alanına yalnızca o konuyla ilgili önemli noktaları, talepleri, önerileri ve alınan kararları 1-3 madde halinde yaz.
 
 KURALLAR:
 1. Yalnızca transkriptte geçen bilgileri kullan; isim, tarih, sayı, fiyat veya karar ASLA uydurma.
@@ -37,7 +31,7 @@ KURALLAR:
 3. Tarafsız ve profesyonel bir dil kullan; kendi yorumunu veya değerlendirmeni ekleme.
 4. Selamlaşma, hal hatır sorma gibi işle ilgisi olmayan kısımları özete dahil etme.
 5. Emin olmadığın bir bilgiyi kesinmiş gibi yazma; belirsiz kalan maddeleri atla.
-6. Çıktıya yukarıdaki yapı dışında hiçbir giriş, açıklama veya kapanış cümlesi ekleme.`;
+6. Hiçbir alanın içine Markdown başlığı, madde işareti veya satır sonu koyma; her alan tek parça düz metin olsun.`;
 
 export const summarizeMeetingTool: Tool<SummarizeMeetingInput> = {
   name: "TELCO:summarize_meeting",

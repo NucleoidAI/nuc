@@ -139,6 +139,37 @@ function unwrapSchemaValues(obj: unknown): unknown {
   return obj;
 }
 
+const CONTROL_CHAR_ESCAPES: Record<string, string> = {
+  "\n": "\\n",
+  "\r": "\\r",
+  "\t": "\\t",
+  "\b": "\\b",
+  "\f": "\\f",
+};
+
+function escapeControlCharsInStrings(content: string): string | null {
+  let result = "";
+  let inString = false;
+  let escaped = false;
+  let changed = false;
+
+  for (const ch of content) {
+    if (inString && !escaped && ch < " ") {
+      result += CONTROL_CHAR_ESCAPES[ch] ?? "";
+      changed = true;
+      continue;
+    }
+
+    result += ch;
+
+    if (escaped) escaped = false;
+    else if (inString && ch === "\\") escaped = true;
+    else if (ch === '"') inString = !inString;
+  }
+
+  return changed ? result : null;
+}
+
 // Multi-strategy cascade for recovering JSON from a model response that
 // doesn't parse cleanly: markdown-fenced blocks, the first JSON-like
 // substring (optionally with unquoted keys fixed), and brace/bracket repair.
@@ -197,6 +228,23 @@ function parseJsonWithRepair(content: string, providerLabel: string): unknown {
     }
   }
 
+  const escapedControls = escapeControlCharsInStrings(stripMarkdownFence(content));
+  if (escapedControls) {
+    try {
+      return JSON.parse(escapedControls);
+    } catch {
+      /* fall through */
+    }
+
+    const escapedRepaired = repairUnbalancedJSON(escapedControls);
+    if (escapedRepaired) {
+      try {
+        return JSON.parse(escapedRepaired);
+      } catch {
+        /* fall through */
+      }
+    }
+  }
   console.error(
     `Failed to parse ${providerLabel} response as JSON:`,
     content.substring(0, 500),

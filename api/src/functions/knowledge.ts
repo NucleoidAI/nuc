@@ -117,7 +117,7 @@ async function list({
   teamId?: string;
   agentId?: string;
   type?: string;
-  options?: { includeSteps?: boolean };
+  options?: { includeSteps?: boolean; includeTask?: boolean };
 }) {
   const typeWhere = {} as {
     type?: string;
@@ -158,16 +158,22 @@ async function list({
           [Op.or]: knowledgeWhere,
         },
       },
-      {
-        model: Task,
-        required: false,
-        include: options.includeSteps
-          ? {
-              model: Step,
-              as: "steps",
-            }
-          : [],
-      },
+      ...(options.includeTask
+        ? [
+            {
+              model: Task,
+              required: false,
+              include: options.includeSteps
+                ? [
+                    {
+                      model: Step,
+                      as: "steps",
+                    },
+                  ]
+                : [],
+            },
+          ]
+        : []),
     ],
   });
 

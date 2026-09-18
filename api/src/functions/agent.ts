@@ -49,31 +49,24 @@ async function info({ agentId }) {
   };
 }
 
-async function knowledge({
-  agentId,
-  taskId,
-}: {
-  agentId: string;
-  taskId?: string;
-}) {
+async function knowledge({ agentId }: { agentId: string }) {
   const knowledgeList = await knowledgeFn.list({
     agentId,
-    options: { includeSteps: true },
+    options: { includeTask: false },
   });
 
   const knowledge_base = knowledgeList
-    .filter(
-      (knowledge) =>
-        !taskId || !(knowledge.type === "TASK" && knowledge.taskId === taskId),
-    )
-    .map(({ type, question, answer, text, content, Task }) => ({
+    .map(({ type, question, answer, text, content }) => ({
       type,
       question,
       answer,
       text,
       content,
-      Task,
-    }));
+    }))
+    .filter(
+      ({ question, answer, text, content }) =>
+        question || answer || text || content,
+    );
 
   return {
     role: "system",
@@ -319,7 +312,7 @@ async function task({ taskId }: { taskId: string }) {
     ...(
       await Promise.all([
         info({ agentId }),
-        knowledge({ agentId, taskId }),
+        knowledge({ agentId }),
         Blueprints({ agentId }),
         sessionId ? conversations({ sessionId }) : Promise.resolve([]),
       ])

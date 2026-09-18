@@ -431,11 +431,11 @@
     {
       "id": "019fa100-0000-4000-8000-000000000001",
       "title": "Meeting Summary A - Full Transcript Only",
-      "description": "Variant A of the meeting summarizer A/B test. Converts PCM recordings to WAV, transcribes only the mixed meeting-audio recording, and summarizes that full transcript into an overall summary and the meeting's highlights. It deliberately skips per-speaker transcription, produces no next steps and attributes nothing to individual speakers. A Turkish LLM judge scores meeting summary, topics, highlights, overall quality and accuracy on a 0-100 scale; next steps are explicitly not evaluated. The summary is emailed to the meeting participants, with the full transcript and the judge's evaluation attached as files. Meeting audio is not sent.",
+      "description": "Variant A of the meeting summarizer A/B test. Converts PCM recordings to WAV, transcribes only the mixed meeting-audio recording with includeSpeakerTranscripts disabled, and summarizes that full transcript into an overall summary and the meeting's highlights. The summarizer reads the transcript straight from the transcription step's result through a parameter reference, so the transcript is never retyped or regenerated. It deliberately skips per-speaker transcription, produces no next steps and attributes nothing to individual speakers. The summary is emailed to the meeting participants; the transcript is not judged and nothing is attached.",
       "agentId": "ab2d404b-3358-45eb-a468-338485924fea",
       "blocking": false,
       "force": true,
-      "skill": "**Meeting Recording - Summary Variant A (transcript only)**\n\nUse this Blueprint for the lightweight arm of the summarizer A/B test: only the mixed meeting recording is transcribed, and the summary is written from that full transcript without transcribing each participant's own recording.\n\nFlow: Convert PCM to WAV -> Transcribe only meeting-audio.wav -> Summarize the full transcript (summary + highlights) -> Judge the summary against the transcript -> Prepare transcript and judgement attachments -> Send email to all participants -> Complete.\n\nProduces a summary and highlights only - no next steps, no speaker transcription, no speaker attribution and no separate manager email. The full transcript and the LLM evaluation go out as attachments; the meeting audio does not. Exits after emailing the participants.",
+      "skill": "**Meeting Recording - Summary Variant A (transcript only)**\n\nUse this Blueprint for the lightweight arm of the summarizer A/B test: only the mixed meeting recording is transcribed, and the summary is written from that full transcript without transcribing each participant's own recording.\n\nFlow: Convert PCM to WAV -> Transcribe only meeting-audio.wav (includeSpeakerTranscripts: false) -> Summarize the full transcript, read by reference from the transcription result (summary + highlights) -> Send email to all participants -> Complete.\n\nProduces a summary and highlights only - no next steps, no speaker transcription, no speaker attribution, no LLM judgement, no attachments and no separate manager email. Exits after emailing the participants.",
       "nodes": [
         {
           "id": "019fa100-0001-4000-8000-000000000001",
@@ -456,7 +456,10 @@
             "action": "TELCO:transcribe_meeting",
             "description": "Transcribe only meeting-audio.wav with the self-hosted ASR service. Skip participant recordings because Variant A does not use speaker transcripts. The transcript is cached as a .txt file next to the audio",
             "label": "Transcribe Meeting",
-            "icon": "mdi:account-voice"
+            "icon": "mdi:account-voice",
+            "parameters": {
+              "includeSpeakerTranscripts": false
+            }
           },
           "next": ["019fa100-0003-4000-8000-000000000001"],
           "createdAt": "2026-08-20T10:00:00Z"
@@ -466,36 +469,16 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:summarize_meeting",
-            "description": "Summarize the combined meeting transcript into an overall summary and the meeting's highlights",
+            "force": true,
+            "description": "Summarize the combined meeting transcript into an overall summary and the meeting's highlights. The transcript is taken by reference from the Transcribe Meeting node result, never retyped or regenerated",
             "label": "Summarize Meeting",
             "icon": "mdi:text-box-check",
             "parameters": {
-              "summary_prompt": "Sen, toplantı transkriptlerini analiz edip profesyonel toplantı notları çıkaran bir asistansın.\n\nAşağıda ###TRANSKRIPT### etiketleri arasında bir toplantının tam konuşma metni yer alıyor.\nBu metni analiz et ve çıktıyı TAMAMEN TÜRKÇE olarak, tam olarak aşağıdaki yapıda üret:\n\n# [Toplantıyı özetleyen 2-4 kelimelik kısa bir başlık]\n\n## Toplantı Özeti\n[Toplantının amacını, konuşulan ana konuları ve nasıl sonuçlandığını anlatan 3-5 cümlelik akıcı bir paragraf.]\n\n## Konular ve Öne Çıkanlar\n[Toplantıda ele alınan önemli ana konuları ayrı konu başlıkları olarak listele.\nHer konu başlığının altında yalnızca o konuyla ilgili önemli noktaları, talepleri,\nönerileri ve alınan kararları 1-3 maddelik bir liste halinde yaz.]\n\nKURALLAR:\n1. Yalnızca transkriptte geçen bilgileri kullan; isim, tarih, sayı, fiyat veya karar ASLA uydurma.\n2. Transkript hangi dilde olursa olsun çıktıyı Türkçe yaz; ürün, şirket ve kişi adlarını olduğu gibi bırak.\n3. Tarafsız ve profesyonel bir dil kullan; kendi yorumunu veya değerlendirmeni ekleme.\n4. Selamlaşma, hal hatır sorma gibi işle ilgisi olmayan kısımları özete dahil etme.\n5. Emin olmadığın bir bilgiyi kesinmiş gibi yazma; belirsiz kalan maddeleri atla.\n6. Çıktıya yukarıdaki yapı dışında hiçbir giriş, açıklama veya kapanış cümlesi ekleme."
+              "transcript": {
+                "$ref": "byNode.019fa100-0002-4000-8000-000000000001.result.full_meeting_transcript"
+              },
+              "summary_prompt": "Sen, toplantı transkriptlerini analiz edip profesyonel toplantı notları çıkaran bir asistansın.\n\nAşağıda ###TRANSKRIPT### etiketleri arasında bir toplantının tam konuşma metni yer alıyor.\nBu metni analiz et ve sonucu TAMAMEN TÜRKÇE olarak üret.\n\nALANLAR:\n- summary: Toplantının amacını, konuşulan ana konuları ve nasıl sonuçlandığını anlatan 3-5 cümlelik tek bir akıcı paragraf.\n- highlights: Toplantıda ele alınan her önemli ana konu için bir kayıt. topic alanına konu başlığını yaz; highlights alanına yalnızca o konuyla ilgili önemli noktaları, talepleri, önerileri ve alınan kararları 1-3 madde halinde yaz.\n\nKURALLAR:\n1. Yalnızca transkriptte geçen bilgileri kullan; isim, tarih, sayı, fiyat veya karar ASLA uydurma.\n2. Transkript hangi dilde olursa olsun çıktıyı Türkçe yaz; ürün, şirket ve kişi adlarını olduğu gibi bırak.\n3. Tarafsız ve profesyonel bir dil kullan; kendi yorumunu veya değerlendirmeni ekleme.\n4. Selamlaşma, hal hatır sorma gibi işle ilgisi olmayan kısımları özete dahil etme.\n5. Emin olmadığın bir bilgiyi kesinmiş gibi yazma; belirsiz kalan maddeleri atla.\n6. Hiçbir alanın içine Markdown başlığı, madde işareti veya satır sonu koyma; her alan tek parça düz metin olsun."
             }
-          },
-          "next": ["019fa100-0004-4000-8000-000000000001"],
-          "createdAt": "2026-08-20T10:00:00Z"
-        },
-        {
-          "id": "019fa100-0004-4000-8000-000000000001",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:judge_summary",
-            "description": "Use a Turkish LLM judge to score the meeting summary, topics, highlights, overall quality and accuracy from 0 to 100; do not evaluate next steps because variant A does not generate them",
-            "label": "Judge Summary",
-            "icon": "mdi:gavel"
-          },
-          "next": ["019fa100-0005-4000-8000-000000000001"],
-          "createdAt": "2026-08-20T10:00:00Z"
-        },
-        {
-          "id": "019fa100-0005-4000-8000-000000000001",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:prepare_meeting_attachments",
-            "description": "Write the full meeting transcript and the LLM judge's evaluation to files and collect them as email attachments. The meeting audio is not attached",
-            "label": "Prepare Attachments",
-            "icon": "mdi:paperclip"
           },
           "next": ["019fa100-0006-4000-8000-000000000001"],
           "createdAt": "2026-08-20T10:00:00Z"
@@ -505,7 +488,8 @@
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:send_email_ews",
-            "description": "Email the summary through EWS to all meeting participants using the 'meeting_summary_a' template, attaching the transcripts and the LLM evaluation",
+            "description": "Email the summary through EWS to all meeting participants using the 'meeting_summary_a' template",
+            "instructions": "Send email to all participants",
             "label": "Email Participants",
             "icon": "mdi:email-send"
           },

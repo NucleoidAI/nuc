@@ -25,25 +25,12 @@ const SUMMARY_MODEL = process.env.SUMMARY_LLM_MODEL || "qwen/qwen3.8-27b";
 const PROMPT = `Sen, toplantı transkriptlerini analiz edip profesyonel toplantı notları çıkaran bir asistansın.
 
 Aşağıda ###TRANSKRIPT### etiketleri arasında bir toplantının tam konuşma metni yer alıyor.
-Bu metni analiz et ve çıktıyı TAMAMEN TÜRKÇE olarak, tam olarak aşağıdaki yapıda üret:
+Bu metni analiz et ve sonucu TAMAMEN TÜRKÇE olarak üret.
 
-# [Toplantıyı özetleyen 2-4 kelimelik kısa bir başlık]
-
-## Toplantı Özeti
-[Toplantının amacını, konuşulan ana konuları ve nasıl sonuçlandığını anlatan 3-5 cümlelik akıcı bir paragraf.]
-
-## Sonraki Adımlar
-[Toplantıda kararlaştırılan somut aksiyon maddelerini listele. Her madde
-"- [Sorumlu kişi], [yapılacak iş]" formatında olsun; metinde son tarih geçiyorsa cümleye ekle
-(örn. "... ve Cuma gününe kadar dönüş yapacak"). Sorumlu kişi alanına, işi üstlenen
-konuşmacının ###KONUSMACI_KAYITLARI### bölümündeki kimliğini (örn. 16778240) aynen yaz;
-oraya isim yazma, isim uydurma veya tahmin etme. İşi hangi konuşmacının üstlendiğini
-kayıtlardan tespit edemiyorsan bu maddeyi yazma. Metinden net bir anlam cikmiyorsa buraya yazma]
-
-## Konular ve Öne Çıkanlar
-[Toplantıda ele alınan önemli ana konuları ayrı konu başlıkları olarak listele.
-Her konu başlığının altında yalnızca o konuyla ilgili önemli noktaları, talepleri,
-önerileri ve alınan kararları 1-3 maddelik bir liste halinde yaz.]
+ALANLAR:
+- summary: Toplantının amacını, konuşulan ana konuları ve nasıl sonuçlandığını anlatan 3-5 cümlelik tek bir akıcı paragraf.
+- highlights: Toplantıda ele alınan her önemli ana konu için bir kayıt. topic alanına konu başlığını yaz; highlights alanına yalnızca o konuyla ilgili önemli noktaları, talepleri, önerileri ve alınan kararları 1-3 madde halinde yaz.
+- next_steps: Toplantıda kararlaştırılan somut aksiyon maddeleri. Her madde "<sorumlu konuşmacı kimliği>, <yapılacak iş>" biçiminde olsun; metinde son tarih geçiyorsa cümleye ekle (örn. "... ve Cuma gününe kadar dönüş yapacak"). Sorumlu alanına, işi üstlenen konuşmacının ###KONUSMACI_KAYITLARI### bölümündeki kimliğini (örn. 16778240) aynen yaz; oraya isim yazma, isim uydurma veya tahmin etme. İşi hangi konuşmacının üstlendiğini kayıtlardan tespit edemiyorsan bu maddeyi yazma.
 
 KURALLAR:
 1. Yalnızca transkriptte geçen bilgileri kullan; isim, tarih, sayı, fiyat veya karar ASLA uydurma.
@@ -51,9 +38,8 @@ KURALLAR:
 3. Tarafsız ve profesyonel bir dil kullan; kendi yorumunu veya değerlendirmeni ekleme.
 4. Selamlaşma, hal hatır sorma gibi işle ilgisi olmayan kısımları özete dahil etme.
 5. Emin olmadığın bir bilgiyi kesinmiş gibi yazma; belirsiz kalan maddeleri atla.
-6. Çıktıya yukarıdaki yapı dışında hiçbir giriş, açıklama veya kapanış cümlesi ekleme.
-7. Sonraki Adımlar'daki sorumlu alanında yalnızca konuşmacı kimliğini kullan; bu kimlikler
-sonraki adımda gerçek isimlerle değiştirilecektir, bu yüzden ismi sen yazmaya çalışma.`;
+6. Hiçbir alanın içine Markdown başlığı, madde işareti veya satır sonu koyma; her alan tek parça düz metin olsun.
+7. next_steps'teki sorumlu alanında yalnızca konuşmacı kimliğini kullan; bu kimlikler sonraki adımda gerçek isimlerle değiştirilecektir, bu yüzden ismi sen yazmaya çalışma.`;
 
 function speakerBlock(speakerTranscripts: SpeakerTranscript[]): string {
   const speakers = speakerTranscripts

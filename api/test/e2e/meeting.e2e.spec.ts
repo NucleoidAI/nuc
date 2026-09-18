@@ -5,8 +5,6 @@ import {
   TEAM_ID,
 } from "./fixtures/ids";
 import {
-  MEETING_ATTACHMENTS_DIR,
-  meetingAttachments,
   meetingRequest,
   meetingTranscripts,
   meetingWavFiles,
@@ -30,7 +28,6 @@ describe("Meeting Agent", () => {
   it("summarizes the meeting from the full transcript only and emails the participants", async () => {
     const wavFiles = meetingWavFiles();
     const transcripts = meetingTranscripts();
-    const attachments = meetingAttachments();
 
     mcp.tool("TELCO:pcm_to_wav").returns({
       success: true,
@@ -58,22 +55,8 @@ describe("Meeting Agent", () => {
       ],
     });
 
-    mcp.tool("TELCO:judge_summary").returns({
-      variant: "A",
-      meeting_summary: 75,
-      next_steps: null,
-      topics: 80,
-      highlights: 85,
-      overall: 75,
-      accuracy: 75,
-      reasoning: "Notlar ana basliklari dogru yansitmistir.",
-    });
-
-    mcp.tool("TELCO:prepare_meeting_attachments").returns({
-      attachments,
-      totalBytes: 1024,
-      attachmentsDirectory: MEETING_ATTACHMENTS_DIR,
-    });
+    mcp.tool("TELCO:judge_summary").expectsNoCalls();
+    mcp.tool("TELCO:prepare_meeting_attachments").expectsNoCalls();
 
     mcp
       .tool("TELCO:send_email_ews")
@@ -97,6 +80,12 @@ describe("Meeting Agent", () => {
     );
 
     expect(completedTask.taskId).toBe(created.taskId);
+    expect(mcp.tool("TELCO:transcribe_meeting").lastCall).toMatchObject({
+      includeSpeakerTranscripts: false,
+    });
+    expect(mcp.tool("TELCO:summarize_meeting").lastCall).toMatchObject({
+      transcript: transcripts.full_meeting_transcript,
+    });
     expect(mcp.tool("TELCO:send_email_ews").calls.length).toBeGreaterThan(0);
   }, 900_000);
 });

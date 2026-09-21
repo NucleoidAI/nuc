@@ -43,9 +43,8 @@ function createApp() {
 
   app.use(telemetryMiddleware());
 
-  app.use("/sessions", sessionApprovals);
+  platform.publicRouter.use("/sessions", sessionApprovals);
 
-  app.use(authorization.verify);
   app.use(authorization.authorize("ADMIN"));
 
   app.use("/projects", projects);

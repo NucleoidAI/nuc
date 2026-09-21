@@ -16,6 +16,14 @@ function isAuthorized(req: express.Request) {
   return header === token;
 }
 
+async function pending(sessionId: string) {
+  try {
+    return await agentFn.waitingApproval({ sessionId });
+  } catch (error) {
+    return null;
+  }
+}
+
 router.get("/:sessionId/approval", async (req, res) => {
   if (!isAuthorized(req)) {
     return res.status(401).end();
@@ -23,7 +31,7 @@ router.get("/:sessionId/approval", async (req, res) => {
 
   const { sessionId } = req.params;
 
-  const waiting = await agentFn.waitingApproval({ sessionId });
+  const waiting = await pending(sessionId);
 
   if (!waiting) {
     return res.status(404).end();
@@ -52,7 +60,7 @@ router.post("/:sessionId/approval", async (req, res) => {
     })
   );
 
-  const waiting = await agentFn.waitingApproval({ sessionId });
+  const waiting = await pending(sessionId);
 
   if (!waiting) {
     return res.status(404).end();

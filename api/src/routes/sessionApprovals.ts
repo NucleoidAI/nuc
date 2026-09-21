@@ -1,6 +1,7 @@
 import Joi from "joi";
 import agentFn from "../functions/agent";
 import express from "express";
+import sessionFn from "../functions/session";
 
 const router = express.Router();
 
@@ -65,6 +66,12 @@ router.post("/:sessionId/approval", async (req, res) => {
   if (!waiting) {
     return res.status(404).end();
   }
+
+  await sessionFn.logConversation({
+    sessionId,
+    role: "USER",
+    content: JSON.stringify({ decision, ...(comment && { comment }) }),
+  });
 
   const result = await agentFn.approve({ sessionId, decision, comment });
 

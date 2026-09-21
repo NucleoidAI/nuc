@@ -640,6 +640,38 @@
       "value": "http://localhost:5205",
       "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
       "agentId": null
+    },
+    {
+      "id": "727608fc-483a-58a6-9cf2-02e34cb6f0f4",
+      "serverId": "as400",
+      "key": "AS400_API_URL",
+      "value": "http://localhost:5207",
+      "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
+      "agentId": null
+    },
+    {
+      "id": "48976db4-5a9c-59c8-b8f5-fa2bc838d25b",
+      "serverId": "as400",
+      "key": "AS400_API_URL",
+      "value": "http://localhost:5207",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "agentId": null
+    },
+    {
+      "id": "02c19233-398b-5dc3-abc8-bd2adf90c376",
+      "serverId": "as400",
+      "key": "AS400_API_URL",
+      "value": "http://localhost:5207",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "agentId": null
+    },
+    {
+      "id": "9d76d282-e4a2-50fe-bb59-edfb94c82697",
+      "serverId": "as400",
+      "key": "AS400_API_URL",
+      "value": "http://localhost:5207",
+      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
+      "agentId": null
     }
   ]
 }

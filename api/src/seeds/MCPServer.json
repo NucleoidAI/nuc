@@ -150,6 +150,12 @@
       "mcpProviderId": "9fceba9d-df06-5fb1-a0eb-ca664b27bebb",
       "description": "FedEx mock MCP server exposing 6 tools for rates, shipments and tracking.",
       "icon": "simple-icons:fedex"
+    },
+    {
+      "id": "as400",
+      "mcpProviderId": "12ee510a-4822-538e-bc19-c60a56c6f3da",
+      "description": "IBM i (AS/400) mock MCP server exposing 20 tools for library files, users, policies, SQL, CL commands, jobs and operator messages.",
+      "icon": "simple-icons:ibm"
     }
   ]
 }

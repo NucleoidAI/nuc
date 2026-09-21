@@ -16,7 +16,13 @@ const availableChannels = [
     inputLabel: "Phone Number",
   },
   { id: "slack", label: "Slack", icon: "devicon:slack" },
-  { id: "email", label: "Email", icon: "mdi:email-outline" },
+  {
+    id: "email",
+    label: "Email",
+    icon: "mdi:email-outline",
+    requiresInput: true,
+    inputLabel: "Email Address",
+  },
 ];
 
 const Communication = () => {

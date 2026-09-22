@@ -21,6 +21,7 @@ const STEP_STATUS_COLOR: Record<string, string> = {
   IN_PROGRESS: "primary.main",
   SUPERVISED_NEEDED: "warning.main",
   WAITING_FOR_USER: "info.main",
+  WAITING_FOR_APPROVAL: "warning.main",
   LOW_CONFIDENCE: "warning.dark",
 };
 

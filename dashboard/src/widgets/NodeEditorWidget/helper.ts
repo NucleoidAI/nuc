@@ -1,3 +1,5 @@
+import { isBranchNodeType } from "../../components/BlueprintFlow/helper";
+
 export const isValidIntegration = (integration) => {
   return (
     typeof integration === "object" &&
@@ -24,7 +26,7 @@ export const hasMatchingProperties = (parentOutputSchema, childInputSchema) => {
 export const getNextNodeId = (selectedParentNode, selectedBranch) => {
   if (!selectedParentNode) return null;
 
-  if (selectedParentNode.nodeType === "CONDITION") {
+  if (isBranchNodeType(selectedParentNode.nodeType)) {
     if (selectedBranch === "true") {
       return selectedParentNode.trueNext?.[0];
     } else {

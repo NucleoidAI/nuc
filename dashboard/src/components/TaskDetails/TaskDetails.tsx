@@ -97,6 +97,10 @@ const TaskDetails = ({
       label: "Waiting for user",
       color: "warning.main",
     },
+    WAITING_FOR_APPROVAL: {
+      label: "Waiting for approval",
+      color: "warning.main",
+    },
     SUPERVISED_NEEDED: {
       label: "Supervision Raised",
       color: "info.main",

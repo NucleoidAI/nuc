@@ -93,6 +93,7 @@ export interface PcmToWavInput {
 
 export interface TranscribeMeetingInput {
   directoryPath: string;
+  force?: boolean;
   includeSpeakerTranscripts?: boolean;
 }
 

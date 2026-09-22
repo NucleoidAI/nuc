@@ -105,6 +105,8 @@ const TaskStepDialog = ({
                 ? "Completed"
                 : status === "WAITING_FOR_USER"
                 ? "Waiting for user"
+                : status === "WAITING_FOR_APPROVAL"
+                ? "Waiting for approval"
                 : status === "SUPERVISED_NEEDED"
                 ? "Supervised Needed"
                 : status === "FAILED"

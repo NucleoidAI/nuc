@@ -45,6 +45,7 @@ class Step extends Model {
       "COMPLETED",
       "FAILED",
       "WAITING_FOR_USER",
+      "WAITING_FOR_APPROVAL",
       "LOW_CONFIDENCE",
     ],
   ])
@@ -55,6 +56,7 @@ class Step extends Model {
     | "COMPLETED"
     | "FAILED"
     | "WAITING_FOR_USER"
+    | "WAITING_FOR_APPROVAL"
     | "LOW_CONFIDENCE";
 
   @AllowNull(false)

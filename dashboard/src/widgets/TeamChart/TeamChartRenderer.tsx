@@ -30,6 +30,8 @@ export const TeamChartRenderer = (node) => {
         teamOverlayColor: "rgba(0,0,0,0.45)",
         teamHeight: 140,
         nodeSx: { minWidth: 400, minHeight: 130 },
+        childrenLayout: "stack",
+        stackOverlap: -15,
       };
 
     case "Blueprint":

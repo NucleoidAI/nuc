@@ -4,6 +4,7 @@ import {
   mergeNodeParameters,
 } from "../lib/nodeParameterBindings";
 import type { LLMMeta } from "../lib/llmLog";
+import { resolveCurrentNode } from "../lib/blueprintNodes";
 import Agent from "../models/Agent";
 import MCPs from "../mcps/mcps";
 import actions from "../actions";
@@ -315,53 +316,6 @@ async function approve({
   });
 
   return { taskId: waiting.taskId, stepId: waiting.step.id, decision };
-}
-
-function resolveCurrentNode(
-  nodes: any[],
-  completedSteps: { action: string; result?: string; nodeId?: string | null }[],
-) {
-  const allNextIds = new Set(
-    nodes.flatMap((n) => [
-      ...(Array.isArray(n.next) ? n.next : n.next ? [n.next] : []),
-      ...(n.true || []),
-      ...(n.false || []),
-    ]),
-  );
-  let currentNode = nodes.find((n) => !allNextIds.has(n.id));
-
-  for (const step of completedSteps) {
-    if (!currentNode) break;
-
-    const stepMatchesNode = step.nodeId
-      ? step.nodeId === currentNode.id
-      : currentNode.properties?.action === step.action;
-    if (!stepMatchesNode) break;
-
-    if (currentNode.type === "CONDITION" || currentNode.type === "APPROVAL") {
-      const tookTrue =
-        currentNode.type === "APPROVAL"
-          ? step.result === "APPROVED"
-          : step.result === "true";
-      const nextIds = tookTrue
-        ? currentNode.true || []
-        : currentNode.false || [];
-      currentNode = nextIds.length
-        ? nodes.find((n) => nextIds.includes(n.id))
-        : undefined;
-    } else {
-      const nextIds = Array.isArray(currentNode.next)
-        ? currentNode.next
-        : currentNode.next
-        ? [currentNode.next]
-        : [];
-      currentNode = nextIds.length
-        ? nodes.find((n) => nextIds.includes(n.id))
-        : undefined;
-    }
-  }
-
-  return currentNode;
 }
 
 async function forceNodeStep({

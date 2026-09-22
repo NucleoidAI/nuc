@@ -5181,6 +5181,92 @@ const MCPs = [
     },
   },
   {
+    id: "019fb211-0000-4000-8000-000000000011",
+    action: "S3:upload_file",
+    label: "AWS S3",
+    provider: "S3",
+    description:
+      "Upload a file that is already on this machine's filesystem into the bucket, reading it straight off disk. Use this for a file another system handed over as a path, instead of reading the bytes yourself and passing them to S3:put_object. Give 'key' to choose where it lands; without one the file keeps its own name under the configured prefix.",
+    direction: "OUTGOING",
+    icon: "simple-icons:amazons3",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        path: {
+          type: "string",
+          description:
+            "Absolute path of the file to upload, for example /srv/intake/8f2c/aspirin.mol",
+        },
+        bucket: {
+          type: "string",
+          description:
+            "Bucket name. Leave it out to use the bucket this server is configured with (S3_BUCKET).",
+          nullable: true,
+        },
+        key: {
+          type: "string",
+          description:
+            "Full object key to write, for example intake/8f2c/aspirin.mol. Defaults to the file's own name under the configured prefix (S3_PREFIX).",
+          nullable: true,
+        },
+        content_type: {
+          type: "string",
+          description:
+            "MIME type to store against the object, for example chemical/x-mdl-molfile",
+          nullable: true,
+        },
+      },
+      required: ["path"],
+    },
+    outputSchema: {
+      type: "object",
+      properties: {
+        bucket: {
+          type: "string",
+          description: "Bucket the file was uploaded to",
+        },
+        key: {
+          type: "string",
+          description: "Key the file was uploaded to",
+        },
+        path: {
+          type: "string",
+          description: "Absolute path the bytes were read from",
+        },
+        content_length: {
+          type: "integer",
+          description: "Size of the uploaded file, in bytes",
+        },
+        content_type: {
+          type: "string",
+          description: "MIME type stored against the object, null when none was given",
+          nullable: true,
+        },
+        etag: {
+          type: "string",
+          description: "ETag S3 reports for the new object, quotes included",
+          nullable: true,
+        },
+        version_id: {
+          type: "string",
+          description:
+            "Version ID of the new object, null on a bucket without versioning",
+          nullable: true,
+        },
+      },
+      required: [
+        "bucket",
+        "key",
+        "path",
+        "content_length",
+        "content_type",
+        "etag",
+        "version_id",
+      ],
+    },
+  },
+  {
     id: "019fb221-0000-4000-8000-000000000001",
     action: "CHEM:mol_to_sdf",
     label: "Chemistry",

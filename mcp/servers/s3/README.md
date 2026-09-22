@@ -12,7 +12,7 @@ server ID `s3`.
 Tools (prefix `S3:`):
 
 - Browse: `list_buckets`, `list_objects`, `get_object_metadata`
-- Read and write: `get_object`, `put_object`
+- Read and write: `get_object`, `put_object`, `upload_file`
 - Rearrange: `copy_object`, `move_object`, `delete_object`
 - Hand off to people: `download_url`, `upload_url`
 
@@ -33,6 +33,8 @@ from configuration alone.
 | --------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------ |
 | `S3_BUCKET`                                   | yes      | Default bucket for tools called without `bucket`.                                                                        |
 | `S3_REGION`                                   | no       | Falls back to `AWS_REGION`, then `eu-central-1`.                                                                         |
+| `S3_PREFIX`                                   | no       | Key prefix `upload_file` uses when no `key` is given. Empty by default.                                                  |
+| `S3_UPLOAD_ROOT`                              | no       | Directory `upload_file` is confined to. Unset, any readable path is allowed.                                             |
 | `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` | yes      | Read from the process environment by the SDK's default credential chain, so an instance role or `AWS_PROFILE` works too. |
 
 Configure `S3_BUCKET` and `S3_REGION` per team or agent in MCP environment
@@ -46,6 +48,14 @@ them in the root `.env.local`, which is why the stack has to be started with
 otherwise, and refuses anything over 5 MB — hand those out with
 `download_url` instead. `put_object` takes either `content` (text) or
 `content_base64`, never both.
+
+`upload_file` uploads a file that is already on the machine running this
+server, by path, without the bytes ever passing through the model. It is what
+another system's handover of a file path should go through — the file intake
+portal writes the upload to disk and sends only that path, and this tool puts
+it in the bucket. Without a `key` the file keeps its own name under
+`S3_PREFIX`; the 100 MB ceiling sends anything larger to `upload_url`. Set
+`S3_UPLOAD_ROOT` to confine it to one directory tree.
 
 S3 has no rename, so `move_object` copies then deletes; the source is only
 removed after the copy succeeds. `delete_object` on an unversioned bucket is

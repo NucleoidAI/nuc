@@ -1,4 +1,7 @@
 import { afterEach, beforeEach, expect, test } from "bun:test";
+import { mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { tools as s3Tools } from "../servers/s3/tools";
 import { s3 } from "../servers/s3/client";
 
@@ -50,9 +53,9 @@ const bodyOf = (bytes: Uint8Array) => ({
   ContentLength: bytes.byteLength,
 });
 
-test("All 10 tools expose unique names, schemas and handlers", () => {
-  expect(s3Tools.length).toBe(10);
-  expect(new Set(s3Tools.map((t) => t.name)).size).toBe(10);
+test("All 11 tools expose unique names, schemas and handlers", () => {
+  expect(s3Tools.length).toBe(11);
+  expect(new Set(s3Tools.map((t) => t.name)).size).toBe(11);
   for (const candidate of s3Tools) {
     expect(candidate.name).toMatch(/^S3:[a-z_]+$/);
     expect(candidate.description.length).toBeGreaterThan(0);
@@ -202,6 +205,51 @@ test("upload_url signs a PUT link", async () => {
   );
   expect(result.method).toBe("PUT");
   expect(result.url).toContain("X-Amz-Expires=900");
+});
+
+test("upload_file reads the file off disk and defaults the key to its name", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "s3-upload-"));
+  writeFileSync(join(dir, "aspirin.mol"), "counts\nM  END\n");
+  const calls = stub({ ETag: '"abc"' });
+
+  const named = await payload(
+    await tool("S3:upload_file").handler({
+      path: join(dir, "aspirin.mol"),
+      key: "intake/8f2c/aspirin.mol",
+      content_type: "chemical/x-mdl-molfile",
+    }),
+  );
+  expect(named.key).toBe("intake/8f2c/aspirin.mol");
+  expect(named.bucket).toBe("greycollar-demo");
+  expect(named.content_length).toBe(14);
+  expect(named.etag).toBe('"abc"');
+  expect(Buffer.from(calls[0].input.Body).toString()).toBe("counts\nM  END\n");
+
+  process.env.S3_PREFIX = "intake";
+  const fallback = await payload(
+    await tool("S3:upload_file").handler({ path: join(dir, "aspirin.mol") }),
+  );
+  expect(fallback.key).toBe("intake/aspirin.mol");
+  delete process.env.S3_PREFIX;
+});
+
+test("upload_file refuses a missing file and a path outside S3_UPLOAD_ROOT", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "s3-upload-"));
+  writeFileSync(join(dir, "aspirin.mol"), "counts\nM  END\n");
+  const calls = stub({});
+
+  expect(
+    (await tool("S3:upload_file").handler({ path: join(dir, "missing.mol") }))
+      .isError,
+  ).toBe(true);
+
+  process.env.S3_UPLOAD_ROOT = join(dir, "allowed");
+  expect(
+    (await tool("S3:upload_file").handler({ path: join(dir, "aspirin.mol") }))
+      .isError,
+  ).toBe(true);
+  delete process.env.S3_UPLOAD_ROOT;
+  expect(calls.length).toBe(0);
 });
 
 test("Out of range and unknown arguments are rejected before any AWS call", async () => {

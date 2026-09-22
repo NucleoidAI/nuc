@@ -8,6 +8,7 @@ import { moveObjectTool } from "./move_object";
 import { deleteObjectTool } from "./delete_object";
 import { downloadUrlTool } from "./download_url";
 import { uploadUrlTool } from "./upload_url";
+import { uploadFileTool } from "./upload_file";
 
 export const tools = [
   listBucketsTool,
@@ -20,4 +21,5 @@ export const tools = [
   deleteObjectTool,
   downloadUrlTool,
   uploadUrlTool,
+  uploadFileTool,
 ];

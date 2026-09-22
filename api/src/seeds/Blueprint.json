@@ -908,9 +908,9 @@
     {
       "id": "019fb220-0000-4000-8000-000000000001",
       "title": "Uploaded File Intake",
-      "description": "Entry point for files dropped into the enterprise file intake portal. The portal stores the upload in S3 and POSTs the metadata (filename, content type, size, checksum, requested target format, the S3 bucket and key, and a download URL) to this blueprint's webhook, which opens a session for the file format agent. Every upload is first read back out of S3; if what comes back is a molfile it is converted to SDF and written beside the original under the same name with an .sdf extension.",
+      "description": "Entry point for files dropped into the enterprise file intake portal. The portal stores the upload in S3 and POSTs the metadata (filename, content type, size, checksum, requested target format, the S3 bucket and key, and a download URL) to this blueprint's webhook, which opens a session for the file format agent. Every upload is first read back out of S3; if what comes back is a molfile it is converted to SDF and written beside the original, under the same base name but with an .sdf extension - the uploaded object itself is never overwritten.",
       "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5",
-      "skill": "**Uploaded File Intake — Convert MOL to SDF in S3**\n\nThis Blueprint is triggered by a webhook from the file intake portal, not by a chat message. The webhook body carries `fileId`, `filename`, `contentType`, `size`, `checksum`, `uploadedAt`, `uploadedBy`, `note`, `targetFormat`, `downloadUrl`, `bucket`, `key` and `region`. The portal has already written the file to S3 at `bucket`/`key` before calling this webhook, so always work from `bucket` and `key` and never from `downloadUrl`.\n\nFlow: Read the upload back out of S3 → decide from what came back whether it is a molfile to convert → [Yes: convert to SDF → write the SDF back to S3 → confirm] / [No: say why it was skipped] → Complete.\n\nThe read always happens first, for every upload, so the decision is made on the actual bytes and not on the metadata alone.\n\nThe decision node is judged by a separate model that sees only the condition text and the task context, so write conditions that quote the actual filename, the content that was read and the target format instead of referring to `filename` or `targetFormat` as variables - an expression like `filename.endsWith('.mol')` cannot be evaluated and comes back false.\n\nConvert only when what was read from S3 is a molfile: the text holds a V2000 or V3000 counts line and an `M  END` terminator, or `filename` ends in `.mol` or `.sdf`, or `contentType` is a molfile type - and `targetFormat` is empty or `sdf`. Anything else is skipped - this agent has no other converter wired up yet.\n\nThe output key keeps the input's folder and base name and only swaps the extension for `.sdf`: an upload at `intake/<fileId>/aspirin.mol` is written back as `intake/<fileId>/aspirin.sdf` in the same bucket. Never overwrite the uploaded file itself, and store the SDF with content type `chemical/x-mdl-sdfile`.",
+      "skill": "**Uploaded File Intake — Convert MOL to SDF in S3**\n\nThis Blueprint is triggered by a webhook from the file intake portal, not by a chat message. The webhook body carries `fileId`, `filename`, `contentType`, `size`, `checksum`, `uploadedAt`, `uploadedBy`, `note`, `targetFormat`, `downloadUrl`, `bucket`, `key` and `region`. The portal has already written the file to S3 at `bucket`/`key` before calling this webhook, so always work from `bucket` and `key` and never from `downloadUrl`.\n\nFlow: Read the upload back out of S3 → decide from what came back whether it is a molfile to convert → [Yes: convert to SDF → write the SDF back to S3] / [No: nothing further] → Complete.\n\nThe blueprint runs silently: it messages nobody on either branch. The written SDF and the completed task are the whole output.\n\nThe read always happens first, for every upload, so the decision is made on the actual bytes and not on the metadata alone.\n\nThe decision node is judged by a separate model that sees only the condition text and the task context, so write conditions that quote the actual filename, the content that was read and the target format instead of referring to `filename` or `targetFormat` as variables - an expression like `filename.endsWith('.mol')` cannot be evaluated and comes back false.\n\nConvert only when what was read from S3 is a molfile: the text holds a V2000 or V3000 counts line and an `M  END` terminator, or `filename` ends in `.mol` or `.sdf`, or `contentType` is a molfile type - and `targetFormat` is empty or `sdf`. Anything else is skipped - this agent has no other converter wired up yet.\n\nNothing downstream of the read is retyped or chosen by hand: the conversion node takes `content` and `source_key` by reference from the read step, and the write node takes `bucket` from the read step and `key` and `content` from the conversion step's `output_key` and `sdf`. `output_key` is the read key with the extension swapped for `.sdf`, so an upload at `intake/<fileId>/aspirin.mol` is written back as `intake/<fileId>/aspirin.sdf` in the same bucket with content type `chemical/x-mdl-sdfile`, and the uploaded `.mol` key is never overwritten.",
       "nodes": [
         {
           "id": "019fb220-0002-4000-8000-000000000002",
@@ -934,7 +934,7 @@
             "icon": "mdi:source-branch"
           },
           "true": ["019fb220-0003-4000-8000-000000000003"],
-          "false": ["019fb220-0006-4000-8000-000000000006"],
+          "false": ["019fb220-0007-4000-8000-000000000007"],
           "createdAt": "2026-09-22T10:00:00Z"
         },
         {
@@ -942,12 +942,16 @@
           "type": "NORMAL",
           "properties": {
             "action": "CHEM:mol_to_sdf",
-            "description": "Convert the MOL blocks that were read from S3 into a single SDF document, attaching the upload's file ID and original filename as data fields",
+            "force": true,
+            "description": "Convert the MOL blocks that were read from S3 into a single SDF document. The molfile text and the key it was read from are both taken by reference from the read step, so the content is never retyped and the result carries output_key - the same key with the extension swapped for .sdf",
             "label": "Convert MOL to SDF",
             "icon": "mdi:molecule",
             "parameters": {
               "content": {
                 "$ref": "byNode.019fb220-0002-4000-8000-000000000002.result.content"
+              },
+              "source_key": {
+                "$ref": "byNode.019fb220-0002-4000-8000-000000000002.result.key"
               }
             }
           },
@@ -959,38 +963,22 @@
           "type": "NORMAL",
           "properties": {
             "action": "S3:put_object",
-            "description": "Write the converted SDF back to the same bucket and the same folder as the upload, keeping the base name and swapping the extension for .sdf, with content type chemical/x-mdl-sdfile. Do not overwrite the uploaded file",
+            "force": true,
+            "description": "Write the converted SDF to S3. Bucket comes by reference from the read step, key and body by reference from the conversion step - output_key and sdf - so the SDF is written beside the upload as a .sdf object with content type chemical/x-mdl-sdfile, and the uploaded .mol key is never touched",
             "label": "Write SDF to S3",
             "icon": "mdi:cloud-upload-outline",
             "parameters": {
+              "bucket": {
+                "$ref": "byNode.019fb220-0002-4000-8000-000000000002.result.bucket"
+              },
+              "key": {
+                "$ref": "byNode.019fb220-0003-4000-8000-000000000003.result.output_key"
+              },
               "content": {
                 "$ref": "byNode.019fb220-0003-4000-8000-000000000003.result.sdf"
-              }
+              },
+              "content_type": "chemical/x-mdl-sdfile"
             }
-          },
-          "next": ["019fb220-0005-4000-8000-000000000005"],
-          "createdAt": "2026-09-22T10:00:00Z"
-        },
-        {
-          "id": "019fb220-0005-4000-8000-000000000005",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "description": "Confirm the conversion, naming the uploaded file, how many records the SDF holds and the bucket and key the SDF was written to",
-            "label": "Notify Conversion Result",
-            "icon": "mdi:bell"
-          },
-          "next": ["019fb220-0007-4000-8000-000000000007"],
-          "createdAt": "2026-09-22T10:00:00Z"
-        },
-        {
-          "id": "019fb220-0006-4000-8000-000000000006",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "description": "Tell the user the upload was read from S3 but not converted, naming the file, its content type and the requested target format, and say that only molfile to SDF conversion is wired up",
-            "label": "Notify Upload Skipped",
-            "icon": "mdi:information-outline"
           },
           "next": ["019fb220-0007-4000-8000-000000000007"],
           "createdAt": "2026-09-22T10:00:00Z"
@@ -1016,7 +1004,7 @@
         "knowledge": [],
         "referenceBlueprint": null,
         "supervising": null,
-        "userRequest": "When a file is uploaded to the intake portal it is already in S3; take the webhook, read the file back out of S3 first, then check its type, and if it is a molfile convert it to SDF and write the SDF back to S3 under the same name.",
+        "userRequest": "When a file is uploaded to the intake portal it is already in S3; take the webhook, read the file back out of S3 first, then check its type, and if it is a molfile convert it to SDF and write the SDF back to S3 next to the original as a .sdf object, without touching the upload.",
         "capturedAt": "2026-09-22T10:00:00Z"
       }
     },

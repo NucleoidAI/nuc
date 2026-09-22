@@ -4,6 +4,12 @@ import { dataFrom, parseRecords, titlesFrom, toSdf } from "../molfile";
 
 const MAX_BYTES = 1024 * 1024;
 
+function sdfKeyFor(key: string) {
+  const slash = key.lastIndexOf("/");
+  const dot = key.lastIndexOf(".");
+  return (dot > slash + 1 ? key.slice(0, dot) : key) + ".sdf";
+}
+
 export const molToSdfTool = defineLocalTool({
   name: "CHEM:mol_to_sdf",
   description:
@@ -17,6 +23,9 @@ export const molToSdfTool = defineLocalTool({
     ),
     data: string(
       'SDF data fields to attach, as JSON. An object applies to every record, an array applies one entry per record, for example {"ID":"CPD-1","SOURCE":"inbox"}.',
+    ),
+    source_key: string(
+      "Key or filename the molfile was read from, for example intake/<id>/aspirin.mol. Returned back as output_key with the extension swapped for .sdf, so the SDF can be written beside the original.",
     ),
     max_bytes: {
       type: "integer",
@@ -42,6 +51,7 @@ export const molToSdfTool = defineLocalTool({
         `The SDF is ${bytes} bytes, over the ${limit} byte limit. Convert fewer records at a time.`,
       );
     return {
+      ...(args.source_key && { output_key: sdfKeyFor(args.source_key) }),
       record_count: records.length,
       bytes,
       titles: records.map((record) => record.mol[0].trim()),

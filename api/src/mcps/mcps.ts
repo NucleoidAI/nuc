@@ -4857,6 +4857,59 @@ const MCPs = [
       },
       required: ["key"],
     },
+    outputSchema: {
+      type: "object",
+      properties: {
+        bucket: {
+          type: "string",
+          description: "Bucket the object was read from",
+        },
+        key: {
+          type: "string",
+          description: "Full key of the object that was read",
+        },
+        content: {
+          type: "string",
+          description:
+            "The object body, as UTF-8 text when it decodes as text and as base64 otherwise - see encoding",
+        },
+        encoding: {
+          type: "string",
+          description: "How content is encoded: utf-8 or base64",
+          enum: ["utf-8", "base64"],
+        },
+        content_type: {
+          type: "string",
+          description:
+            "MIME type stored against the object, null when S3 holds none",
+          nullable: true,
+        },
+        content_length: {
+          type: "integer",
+          description: "Size of the body that was read, in bytes",
+        },
+        last_modified: {
+          type: "string",
+          description: "ISO 8601 timestamp of the object's last write",
+          nullable: true,
+        },
+        etag: {
+          type: "string",
+          description: "ETag S3 reports for the object, quotes included",
+          nullable: true,
+        },
+      },
+      required: [
+        "bucket",
+        "key",
+        "content",
+        "encoding",
+        "content_type",
+        "content_length",
+        "last_modified",
+        "etag",
+      ],
+    },
   },
   {
     id: "019fb211-0000-4000-8000-000000000005",
@@ -4901,6 +4954,35 @@ const MCPs = [
         },
       },
       required: ["key"],
+    },
+    outputSchema: {
+      type: "object",
+      properties: {
+        bucket: {
+          type: "string",
+          description: "Bucket the object was written to",
+        },
+        key: {
+          type: "string",
+          description: "Key the object was written to",
+        },
+        content_length: {
+          type: "integer",
+          description: "Size of the body that was written, in bytes",
+        },
+        etag: {
+          type: "string",
+          description: "ETag S3 reports for the new version, quotes included",
+          nullable: true,
+        },
+        version_id: {
+          type: "string",
+          description:
+            "Version ID of the new object, null on a bucket without versioning",
+          nullable: true,
+        },
+      },
+      required: ["bucket", "key", "content_length", "etag", "version_id"],
     },
   },
   {
@@ -5128,6 +5210,12 @@ const MCPs = [
             'SDF data fields to attach, as JSON. An object applies to every record, an array applies one entry per record, for example {"ID":"CPD-1","SOURCE":"inbox"}.',
           nullable: true,
         },
+        source_key: {
+          type: "string",
+          description:
+            "Key or filename the molfile was read from, for example intake/<id>/aspirin.mol. Returned back as output_key with the extension swapped for .sdf, so the SDF can be written beside the original.",
+          nullable: true,
+        },
         max_bytes: {
           type: "integer",
           description:
@@ -5138,6 +5226,48 @@ const MCPs = [
         },
       },
       required: ["content"],
+    },
+    outputSchema: {
+      type: "object",
+      properties: {
+        sdf: {
+          type: "string",
+          description:
+            "The whole SDF document as text, every record terminated with $$$$",
+        },
+        output_key: {
+          type: "string",
+          description:
+            "Only present when source_key was given: that key with the extension swapped for .sdf, ready to write the SDF beside the original",
+          nullable: true,
+        },
+        record_count: {
+          type: "integer",
+          description: "How many records the SDF holds",
+        },
+        bytes: {
+          type: "integer",
+          description: "Size of the SDF in bytes",
+        },
+        titles: {
+          type: "array",
+          description: "Title line of each record, in order",
+          items: {
+            type: "string",
+          },
+        },
+        data_fields: {
+          type: "array",
+          description: "Data field tags carried by each record, in order",
+          items: {
+            type: "array",
+            items: {
+              type: "string",
+            },
+          },
+        },
+      },
+      required: ["sdf", "record_count", "bytes", "titles", "data_fields"],
     },
   },
   {

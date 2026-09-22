@@ -153,3 +153,24 @@ test("rejects unknown arguments", async () => {
   expect(result.isError).toBe(true);
   expect(result.error).toContain("Unknown argument");
 });
+
+test("derives the sdf key from source_key, keeping folder and base name", async () => {
+  const result = await call({
+    content: water,
+    source_key: "intake/d392a2c1/ethanol.mol",
+  });
+  expect(result.output_key).toBe("intake/d392a2c1/ethanol.sdf");
+});
+
+test("appends .sdf when the source key has no extension of its own", async () => {
+  expect((await call({ content: water, source_key: "intake/ethanol" })).output_key).toBe(
+    "intake/ethanol.sdf",
+  );
+  expect((await call({ content: water, source_key: "intake/.hidden" })).output_key).toBe(
+    "intake/.hidden.sdf",
+  );
+});
+
+test("leaves output_key out when no source_key is given", async () => {
+  expect(await call({ content: water })).not.toHaveProperty("output_key");
+});

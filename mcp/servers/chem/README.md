@@ -39,10 +39,17 @@ What it does handle:
 | `content`   | Required. Molfile text, possibly several blocks, possibly already an SDF.                                 |
 | `title`     | Title line to set. A JSON array sets one title per record in order; a bare string titles a single record. |
 | `data`      | JSON. An object applies to every record, an array applies one entry per record.                           |
+| `source_key` | Key or filename the molfile came from. Echoed back as `output_key` with the extension swapped for `.sdf`. |
 | `max_bytes` | Refuse output over this size. Defaults to 1 MB.                                                           |
 
 `Field` in `mcp/lib/mock-api-tool.ts` only models scalars, which is why `title`
 and `data` take JSON in a string rather than real arrays.
+
+`output_key` exists so a blueprint does not have to let a model invent the
+destination key: the read step's `key` goes in as `source_key`, `output_key`
+comes back as the same folder and base name with `.sdf`, and the write step
+binds its `key` to it. Without it a model asked to store the SDF "under the
+same name" will happily overwrite the molfile it just read.
 
 The SDF comes back as text in the result, so a large conversion lands in the
 agent's context. Over 1 MB the tool refuses instead; hand the result to

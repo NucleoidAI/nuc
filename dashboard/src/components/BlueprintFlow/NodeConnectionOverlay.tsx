@@ -22,7 +22,23 @@ interface PathInfo {
   d: string;
   targetNodeId: string;
   targetField: string;
+  sourceNodeId?: string;
+  sourceField?: string;
   temp?: boolean;
+  isDirect?: boolean;
+}
+
+function childIdsOf(node: {
+  next?: string | string[];
+  trueNext?: string[];
+  falseNext?: string[];
+}): string[] {
+  const ids: string[] = [];
+  if (Array.isArray(node.next)) ids.push(...node.next);
+  else if (typeof node.next === "string") ids.push(node.next);
+  if (node.trueNext) ids.push(...node.trueNext);
+  if (node.falseNext) ids.push(...node.falseNext);
+  return ids;
 }
 
 function collectHandles(container: HTMLElement) {
@@ -82,6 +98,18 @@ export default function NodeConnectionOverlay({
   const rafRef = useRef<number>(0);
   const mousePosRef = useRef<{ x: number; y: number } | null>(null);
   const [paths, setPaths] = useState<PathInfo[]>([]);
+  const [hoveredHandle, setHoveredHandle] = useState<string | null>(null);
+
+  const directParents: Record<string, Set<string>> = useMemo(() => {
+    const result: Record<string, Set<string>> = {};
+    for (const node of Object.values(graphData.nodes)) {
+      for (const childId of childIdsOf(node)) {
+        if (!result[childId]) result[childId] = new Set();
+        result[childId].add(node.id);
+      }
+    }
+    return result;
+  }, [graphData]);
 
   const bindings: ParameterBinding[] = useMemo(() => {
     const result: ParameterBinding[] = [];
@@ -127,6 +155,9 @@ export default function NodeConnectionOverlay({
           d: bezierPath(s.x, s.y, t.x, t.y),
           targetNodeId: b.targetNodeId,
           targetField: b.targetField,
+          sourceNodeId: b.sourceNodeId,
+          sourceField: b.sourceField,
+          isDirect: directParents[b.targetNodeId]?.has(b.sourceNodeId) ?? false,
         });
       }
 
@@ -160,7 +191,41 @@ export default function NodeConnectionOverlay({
 
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [containerRef, graphData, bindings, dragging]);
+  }, [containerRef, graphData, bindings, dragging, directParents]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleOver = (e: MouseEvent) => {
+      const el = (e.target as HTMLElement)?.closest(
+        "[data-handle-type][data-node-id][data-field]"
+      ) as HTMLElement | null;
+      if (!el) return;
+      const { nodeId, field } = el.dataset;
+      if (!nodeId || !field) return;
+      setHoveredHandle(`${nodeId}:${field}`);
+    };
+
+    const handleOut = (e: MouseEvent) => {
+      const el = (e.target as HTMLElement)?.closest(
+        "[data-handle-type][data-node-id][data-field]"
+      ) as HTMLElement | null;
+      if (!el) return;
+      setHoveredHandle((current) => {
+        const { nodeId, field } = el.dataset;
+        if (current === `${nodeId}:${field}`) return null;
+        return current;
+      });
+    };
+
+    container.addEventListener("mouseover", handleOver);
+    container.addEventListener("mouseout", handleOut);
+    return () => {
+      container.removeEventListener("mouseover", handleOver);
+      container.removeEventListener("mouseout", handleOut);
+    };
+  }, [containerRef]);
 
   useEffect(() => {
     if (!dragging) return;
@@ -207,31 +272,38 @@ export default function NodeConnectionOverlay({
         height="100%"
         style={{ position: "absolute", inset: 0, overflow: "visible" }}
       >
-        {paths.map((p) => (
-          <g key={p.id}>
-            <path
-              d={p.d}
-              fill="none"
-              stroke={
-                p.temp
-                  ? theme.palette.primary.light
-                  : theme.palette.primary.main
-              }
-              strokeWidth={p.temp ? 1.5 : 2}
-              strokeDasharray={p.temp ? "4 4" : undefined}
-            />
-            {!p.temp && (
+        {paths
+          .filter((p) => {
+            if (p.temp || p.isDirect) return true;
+            if (!hoveredHandle) return false;
+            return (
+              hoveredHandle === `${p.targetNodeId}:${p.targetField}` ||
+              hoveredHandle === `${p.sourceNodeId}:${p.sourceField}`
+            );
+          })
+          .map((p) => (
+            <g key={p.id}>
               <path
                 d={p.d}
                 fill="none"
-                stroke="transparent"
-                strokeWidth={14}
-                style={{ pointerEvents: "auto", cursor: "pointer" }}
-                onClick={() => onDisconnect(p.targetNodeId, p.targetField)}
+                stroke={
+                  p.temp ? theme.palette.grey[400] : theme.palette.grey[600]
+                }
+                strokeWidth={p.temp ? 1.5 : 2}
+                strokeDasharray={p.temp ? "4 4" : undefined}
               />
-            )}
-          </g>
-        ))}
+              {!p.temp && (
+                <path
+                  d={p.d}
+                  fill="none"
+                  stroke="transparent"
+                  strokeWidth={14}
+                  style={{ pointerEvents: "auto", cursor: "pointer" }}
+                  onClick={() => onDisconnect(p.targetNodeId, p.targetField)}
+                />
+              )}
+            </g>
+          ))}
       </svg>
     </Box>
   );

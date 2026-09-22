@@ -61,6 +61,19 @@ export function validateArgs(
       throw new Error(`Invalid ${name}: expected ${field.enum.join(", ")}`);
   }
 }
+export function dropBlankOptionals(
+  inputSchema: Tool["inputSchema"],
+  args: Record<string, unknown>,
+): Record<string, unknown> {
+  if (!args || typeof args !== "object" || Array.isArray(args)) return args;
+  const cleaned: Record<string, unknown> = {};
+  for (const [name, value] of Object.entries(args)) {
+    const blank = typeof value === "string" && !value.trim();
+    if (blank && !inputSchema.required.includes(name)) continue;
+    cleaned[name] = value;
+  }
+  return cleaned;
+}
 export function defineTool(config: {
   name: string;
   description: string;
@@ -90,6 +103,7 @@ export function defineTool(config: {
         isError,
       });
       try {
+        args = dropBlankOptionals(inputSchema, args);
         validateArgs(inputSchema, args);
         const base = process.env[config.env];
         if (!base) throw new Error(`${config.env} is not configured`);

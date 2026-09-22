@@ -2118,6 +2118,486 @@
       "serverId": "s3",
       "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
       "agentId": null
+    },
+    {
+      "id": "fa893ec2-f86b-594f-aeb4-b2dc24153baa",
+      "serverId": "gdrive",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "7b432304-b630-5018-bd2a-c120db85cdc6",
+      "serverId": "servicenow",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "eccf1fd9-8b29-536d-8dfa-2d2caf38a929",
+      "serverId": "slack",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "a3d1c376-2ec9-5546-9785-2eefc3404aa4",
+      "serverId": "discord",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "7c818092-7ab1-5ba2-9baf-80dca1e90219",
+      "serverId": "jira",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "51d62f78-451d-5c3d-a47b-ad41d5fedd18",
+      "serverId": "github",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "fd71bce2-77bb-5021-8663-5878db5503c4",
+      "serverId": "grey",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "e7823f21-e606-5ecf-ba26-84dca4095576",
+      "serverId": "telco",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "992bb42d-787f-5a03-9db7-a00a2cf6e848",
+      "serverId": "order",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "d0fdf7a1-b617-59c8-aa54-d268209ebc9f",
+      "serverId": "activedirectory",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "01d54615-efcc-53d6-bacf-471811d8b134",
+      "serverId": "sap",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "8729c7f5-bbbf-5ff5-8d61-6598597c9c36",
+      "serverId": "salesforce",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "9a1d2e97-943b-55b4-ae71-d42c527cf118",
+      "serverId": "aws",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "3a6439f3-45b0-5d23-a6cf-f7bf47e72094",
+      "serverId": "hubspot",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "18e6362b-740d-521b-abd4-1640aea66933",
+      "serverId": "oracle",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "cabcd552-f90f-5547-ba11-85cad910614b",
+      "serverId": "microsoft",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "268d7436-f204-5a0a-91a2-443f7853404b",
+      "serverId": "atlassian",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "f6c5c76e-5d53-52aa-bc54-7a2910f62f96",
+      "serverId": "project_notifier",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "6a43f2df-e85e-50f5-8d0c-0659a22eab75",
+      "serverId": "zendesk",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "9bd61e39-9405-5c52-8bb9-e4e0cc939ed2",
+      "serverId": "docusign",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "8c55d354-de45-591b-adcd-71a9349153a6",
+      "serverId": "netsuite",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "42dbf210-05eb-5809-9b7e-c7e98473ad03",
+      "serverId": "stripe",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "92ab5b9c-c152-5337-83f2-8fe387a1c44f",
+      "serverId": "snowflake",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "823b04ba-8ea8-5a89-bfbc-0ee7cf76b714",
+      "serverId": "twilio",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "651d174c-1103-5ba2-a332-64351b7c3ad0",
+      "serverId": "fedex",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "15c8e54d-ee32-5d53-8a56-0f2e1ba3902d",
+      "serverId": "as400",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "eff24488-612e-5bb7-9d20-88744000d3b2",
+      "serverId": "gdrive",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "e3977f10-8d50-5990-8e40-23ade0e0b8e6",
+      "serverId": "servicenow",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "7f1d6b67-eadb-5a7e-9e79-7d8dd9a2eb2f",
+      "serverId": "slack",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "91c7f7d7-a09d-5b17-abe3-1d3af86a5faa",
+      "serverId": "discord",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "5d9c9506-0653-5381-93c5-e343ee1ada03",
+      "serverId": "jira",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "35e9c630-ee5c-5998-b280-57c1d85d1dff",
+      "serverId": "github",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "54d3019c-8b54-5ff9-991a-99487372075e",
+      "serverId": "grey",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "a8520e7f-faa9-5ff0-9853-c93fe3deb4ce",
+      "serverId": "telco",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "2cd74dcd-5ec5-5217-a19a-f2ccc1be243a",
+      "serverId": "order",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "3beb4e3a-a2b5-5437-b03a-caafe736ac5a",
+      "serverId": "activedirectory",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "fafa666e-0c61-5191-872a-eb7663f896a9",
+      "serverId": "sap",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "8edbb39d-2bef-5db2-ae0b-5c30dc2d940e",
+      "serverId": "salesforce",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "0d583f48-8b7e-55bc-95a5-ba8d75255377",
+      "serverId": "aws",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "8fde5ce1-c913-57e4-ae09-ab0673f137d4",
+      "serverId": "hubspot",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "5c5b2291-9122-5a26-a56e-a54ba06e8fe4",
+      "serverId": "oracle",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "2392f849-f40e-500b-aee5-d209e6efd2de",
+      "serverId": "microsoft",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "5efd226b-5f11-5693-8a2c-dec48385183a",
+      "serverId": "atlassian",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "d71518d2-7d95-5c76-8e0c-8745cf94ae71",
+      "serverId": "project_notifier",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "51fcb69e-84d7-5542-961b-eaddffc2f4e0",
+      "serverId": "zendesk",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "648d8571-8007-585c-ad6f-ec6d0b26837b",
+      "serverId": "docusign",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "b651c13c-5ed2-58e7-8da6-0787abf8572c",
+      "serverId": "netsuite",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "f8b2f0f6-570d-58ef-8859-78d2b218f335",
+      "serverId": "stripe",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "1d2aebdd-30ee-5d01-ab1a-0caeba5f614a",
+      "serverId": "snowflake",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "75b07224-3878-5527-b59f-c9e15fbf07ae",
+      "serverId": "twilio",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "5d3491de-5567-5f9c-abde-87ad0137f14c",
+      "serverId": "fedex",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "c30b049c-2344-51b4-80aa-4632e6986f6a",
+      "serverId": "chem",
+      "teamId": null,
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+    },
+    {
+      "id": "8b4f25a2-6c52-550a-afbf-09e73b0e25f9",
+      "serverId": "gdrive",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "fcc18d0c-2abb-561f-a31f-3ca527929a1b",
+      "serverId": "servicenow",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "8697f33d-e21d-5937-95ae-c26b9fbbd080",
+      "serverId": "slack",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "9985751f-8efe-5af3-896b-7e00843416e0",
+      "serverId": "discord",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "25ca32c9-6312-5b92-aed1-bb904fd0ca2e",
+      "serverId": "jira",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "a4bfe28a-c73c-519c-a204-79db33912278",
+      "serverId": "github",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "09b85632-8b10-5e2f-add6-fad5abfe78b8",
+      "serverId": "grey",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "a9b86ffa-6a95-52be-92c2-22eebe9c8b0f",
+      "serverId": "telco",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "0afcc275-8bad-590d-85ff-c84e447cbadb",
+      "serverId": "order",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "4a2c697b-5c9d-5bcd-abbe-4df5bbfa76a4",
+      "serverId": "activedirectory",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "a38e330f-384d-547f-b4f5-ba3f9fa73e67",
+      "serverId": "sap",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "13d6226d-9ca1-5222-96f8-0c4e5cdeaab2",
+      "serverId": "salesforce",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "31e23a2b-7d48-5f27-ba69-8d8a230e0724",
+      "serverId": "aws",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "9cbeb88c-f5af-5faf-bac0-e64a0c57fa11",
+      "serverId": "hubspot",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "f91a98ba-f09e-54e3-8e0e-477ed4e78e3c",
+      "serverId": "oracle",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "66391748-639c-565a-8172-d78ab0d31ef8",
+      "serverId": "microsoft",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "c607097e-ecb6-522a-ad58-f2389f8732a1",
+      "serverId": "atlassian",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "0baded20-07bd-57db-acb3-5e3871c76090",
+      "serverId": "project_notifier",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "ecad3461-5d17-5a85-9cbe-c903d67182dd",
+      "serverId": "zendesk",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "46248789-5d38-5da4-be9c-d890a020b613",
+      "serverId": "docusign",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "99d43e76-870d-59f0-8f9c-c8c7101f9590",
+      "serverId": "netsuite",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "a3ae4ec3-6891-5d54-9259-5c957549faa7",
+      "serverId": "stripe",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "39954e44-a712-5d61-a504-6a4e0f9307ab",
+      "serverId": "snowflake",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "c84b44bd-114f-5830-8a5a-8fed043b6eea",
+      "serverId": "twilio",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "0b7e4901-4220-50b7-b5c6-5f2c14e96d08",
+      "serverId": "fedex",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "0646b7c9-6b35-5c17-a020-dd9022dc322e",
+      "serverId": "as400",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "1f732a91-df34-5de6-a510-e705c4fbc62b",
+      "serverId": "s3",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+    },
+    {
+      "id": "6cdf041a-7a2a-526d-81fd-03f95c16d2fe",
+      "serverId": "chem",
+      "teamId": null,
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
     }
   ]
 }

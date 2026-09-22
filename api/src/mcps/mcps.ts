@@ -4633,6 +4633,514 @@ const MCPs = [
     },
   },
   {
+    id: "019fb210-0000-4000-8000-000000000001",
+    action: "AS400:get_policy",
+    label: "AS/400",
+    provider: "AS400",
+    description:
+      "Read one POLMAST record by policy number: holder, type, status, cover dates, premium, sum insured and the risk address and contact details held against that policy. Uses the local IBM i (AS/400) enterprise mock API.",
+    direction: "OUTGOING",
+    icon: "simple-icons:ibm",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        policy_id: {
+          type: "string",
+          description: "Policy number, for example MTR-20260041.",
+        },
+      },
+      required: ["policy_id"],
+    },
+  },
+  {
+    id: "019fb210-0000-4000-8000-000000000002",
+    action: "AS400:update_policy",
+    label: "AS/400",
+    provider: "AS400",
+    description:
+      "Change a POLMAST record — status, renewal date, premium, sum insured, or the risk address and contact details the policy is registered against. The policy number itself cannot be changed. Uses the local IBM i (AS/400) enterprise mock API.",
+    direction: "OUTGOING",
+    icon: "simple-icons:ibm",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        policy_id: {
+          type: "string",
+          description:
+            "Policy number of the record to change, for example MTR-20260041.",
+        },
+        status: {
+          type: "string",
+          description: "A active, L lapsed, C cancelled, P pending.",
+          enum: ["A", "L", "C", "P"],
+        },
+        renewal_date: {
+          type: "string",
+          description: "Renewal date as YYYY-MM-DD.",
+        },
+        premium: {
+          type: "number",
+          minimum: 0,
+          description: "Premium per payment.",
+        },
+        payment_frequency: {
+          type: "string",
+          description: "M monthly, A annual.",
+          enum: ["M", "A"],
+        },
+        sum_insured: {
+          type: "number",
+          minimum: 0,
+          description: "Sum insured.",
+        },
+        address_1: {
+          type: "string",
+          description: "Risk address line 1.",
+        },
+        address_2: {
+          type: "string",
+          description: "Risk address line 2.",
+        },
+        city: {
+          type: "string",
+          description: "Town or city.",
+        },
+        county: {
+          type: "string",
+          description: "County.",
+        },
+        postcode: {
+          type: "string",
+          description: "Postcode, up to 8 characters.",
+        },
+        phone: {
+          type: "string",
+          description: "Contact telephone for this policy.",
+        },
+        mobile: {
+          type: "string",
+          description: "Contact mobile for this policy.",
+        },
+        email: {
+          type: "string",
+          description: "Contact e-mail for this policy.",
+        },
+      },
+      required: ["policy_id"],
+    },
+  },
+  {
+    id: "019fb211-0000-4000-8000-000000000001",
+    action: "S3:list_buckets",
+    label: "AWS S3",
+    provider: "S3",
+    description:
+      "List every S3 bucket the configured AWS credentials can see, with the region each one was created in. Use this to discover bucket names before working on objects.",
+    direction: "OUTGOING",
+    icon: "simple-icons:amazons3",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    id: "019fb211-0000-4000-8000-000000000002",
+    action: "S3:list_objects",
+    label: "AWS S3",
+    provider: "S3",
+    description:
+      "List the objects in a bucket, newest page first. Narrow the result with 'prefix' to look inside one folder, and set 'delimiter' to '/' to get folder names back as prefixes instead of every nested key. Pass the returned 'next_token' back in to read the following page.",
+    direction: "OUTGOING",
+    icon: "simple-icons:amazons3",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        bucket: {
+          type: "string",
+          description:
+            "Bucket name. Leave it out to use the bucket this server is configured with (S3_BUCKET).",
+          nullable: true,
+        },
+        prefix: {
+          type: "string",
+          description:
+            "Only list keys starting with this prefix, for example invoices/2026/",
+          nullable: true,
+        },
+        delimiter: {
+          type: "string",
+          description:
+            "Group keys sharing a prefix up to this character. Use '/' to browse folder by folder.",
+          nullable: true,
+        },
+        max_keys: {
+          type: "integer",
+          description: "How many keys to return per page. Defaults to 100.",
+          minimum: 1,
+          maximum: 1000,
+          nullable: true,
+        },
+        next_token: {
+          type: "string",
+          description:
+            "Continuation token from a previous list_objects call, to read the next page",
+          nullable: true,
+        },
+      },
+      required: [],
+    },
+  },
+  {
+    id: "019fb211-0000-4000-8000-000000000003",
+    action: "S3:get_object_metadata",
+    label: "AWS S3",
+    provider: "S3",
+    description:
+      "Check whether an object exists and read its size, MIME type, last modified date and storage class without downloading the body. Use this before reading, overwriting or deleting a key.",
+    direction: "OUTGOING",
+    icon: "simple-icons:amazons3",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        bucket: {
+          type: "string",
+          description:
+            "Bucket name. Leave it out to use the bucket this server is configured with (S3_BUCKET).",
+          nullable: true,
+        },
+        key: {
+          type: "string",
+          description: "Full key of the object to inspect",
+        },
+      },
+      required: ["key"],
+    },
+  },
+  {
+    id: "019fb211-0000-4000-8000-000000000004",
+    action: "S3:get_object",
+    label: "AWS S3",
+    provider: "S3",
+    description:
+      "Read the contents of one object. Text files come back as plain text, anything else as base64. Objects larger than 5 MB are refused - use S3:download_url for those instead.",
+    direction: "OUTGOING",
+    icon: "simple-icons:amazons3",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        bucket: {
+          type: "string",
+          description:
+            "Bucket name. Leave it out to use the bucket this server is configured with (S3_BUCKET).",
+          nullable: true,
+        },
+        key: {
+          type: "string",
+          description:
+            "Full object key, for example invoices/2026/INV-1041.pdf",
+        },
+        max_bytes: {
+          type: "integer",
+          description:
+            "Refuse the read if the object is larger than this. Defaults to 5242880.",
+          minimum: 1,
+          maximum: 5242880,
+          nullable: true,
+        },
+      },
+      required: ["key"],
+    },
+  },
+  {
+    id: "019fb211-0000-4000-8000-000000000005",
+    action: "S3:put_object",
+    label: "AWS S3",
+    provider: "S3",
+    description:
+      "Write an object, creating it or overwriting whatever is already at that key. Give text in 'content', or binary in 'content_base64'. Writing to an existing key replaces it, so read it first if the old version still matters.",
+    direction: "OUTGOING",
+    icon: "simple-icons:amazons3",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        bucket: {
+          type: "string",
+          description:
+            "Bucket name. Leave it out to use the bucket this server is configured with (S3_BUCKET).",
+          nullable: true,
+        },
+        key: {
+          type: "string",
+          description:
+            "Full object key to write, for example reports/q3-summary.md",
+        },
+        content: {
+          type: "string",
+          description: "The object body as UTF-8 text",
+          nullable: true,
+        },
+        content_base64: {
+          type: "string",
+          description:
+            "The object body as base64, for anything that is not text",
+          nullable: true,
+        },
+        content_type: {
+          type: "string",
+          description:
+            "MIME type to store against the object, for example application/pdf",
+          nullable: true,
+        },
+      },
+      required: ["key"],
+    },
+  },
+  {
+    id: "019fb211-0000-4000-8000-000000000006",
+    action: "S3:copy_object",
+    label: "AWS S3",
+    provider: "S3",
+    description:
+      "Copy an object to another key, optionally into a different bucket. The source is left untouched. Use this to duplicate a file or to take a backup before overwriting one.",
+    direction: "OUTGOING",
+    icon: "simple-icons:amazons3",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        source_bucket: {
+          type: "string",
+          description:
+            "Bucket the source object lives in. Defaults to the configured bucket (S3_BUCKET).",
+          nullable: true,
+        },
+        source_key: {
+          type: "string",
+          description: "Key of the object to copy from",
+        },
+        bucket: {
+          type: "string",
+          description:
+            "Bucket name. Leave it out to use the bucket this server is configured with (S3_BUCKET).",
+          nullable: true,
+        },
+        destination_key: {
+          type: "string",
+          description: "Key to copy the object to",
+        },
+        content_type: {
+          type: "string",
+          description:
+            "Replace the stored MIME type on the copy instead of carrying the original over",
+          nullable: true,
+        },
+      },
+      required: ["source_key", "destination_key"],
+    },
+  },
+  {
+    id: "019fb211-0000-4000-8000-000000000007",
+    action: "S3:move_object",
+    label: "AWS S3",
+    provider: "S3",
+    description:
+      "Move or rename an object: copy it to the new key, then delete the original. S3 has no native rename, so this is how a key gets changed. The source is only deleted once the copy has succeeded.",
+    direction: "OUTGOING",
+    icon: "simple-icons:amazons3",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        source_bucket: {
+          type: "string",
+          description:
+            "Bucket the source object lives in. Defaults to the configured bucket (S3_BUCKET).",
+          nullable: true,
+        },
+        source_key: {
+          type: "string",
+          description: "Current key of the object",
+        },
+        bucket: {
+          type: "string",
+          description:
+            "Bucket name. Leave it out to use the bucket this server is configured with (S3_BUCKET).",
+          nullable: true,
+        },
+        destination_key: {
+          type: "string",
+          description: "Key the object should end up at",
+        },
+      },
+      required: ["source_key", "destination_key"],
+    },
+  },
+  {
+    id: "019fb211-0000-4000-8000-000000000008",
+    action: "S3:delete_object",
+    label: "AWS S3",
+    provider: "S3",
+    description:
+      "Permanently delete one object. On a bucket without versioning this cannot be undone, so confirm the key with S3:get_object_metadata first. S3 reports success even when the key never existed.",
+    direction: "OUTGOING",
+    icon: "simple-icons:amazons3",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        bucket: {
+          type: "string",
+          description:
+            "Bucket name. Leave it out to use the bucket this server is configured with (S3_BUCKET).",
+          nullable: true,
+        },
+        key: {
+          type: "string",
+          description: "Full key of the object to delete",
+        },
+        version_id: {
+          type: "string",
+          description:
+            "Delete this specific version instead of adding a delete marker, on a versioned bucket",
+          nullable: true,
+        },
+      },
+      required: ["key"],
+    },
+  },
+  {
+    id: "019fb211-0000-4000-8000-000000000009",
+    action: "S3:download_url",
+    label: "AWS S3",
+    provider: "S3",
+    description:
+      "Create a time limited download link for an object, so a person can fetch it without AWS credentials. Use this for large files and for anything that should be handed to a customer, instead of reading the body with S3:get_object.",
+    direction: "OUTGOING",
+    icon: "simple-icons:amazons3",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        bucket: {
+          type: "string",
+          description:
+            "Bucket name. Leave it out to use the bucket this server is configured with (S3_BUCKET).",
+          nullable: true,
+        },
+        key: {
+          type: "string",
+          description: "Full key of the object to hand out",
+        },
+        expires_in: {
+          type: "integer",
+          description:
+            "How long the link stays valid, in seconds. Defaults to 900, at most 7 days.",
+          minimum: 60,
+          maximum: 604800,
+          nullable: true,
+        },
+        download_as: {
+          type: "string",
+          description:
+            "Filename the browser should save the file as, instead of the key",
+          nullable: true,
+        },
+      },
+      required: ["key"],
+    },
+  },
+  {
+    id: "019fb211-0000-4000-8000-000000000010",
+    action: "S3:upload_url",
+    label: "AWS S3",
+    provider: "S3",
+    description:
+      "Create a time limited upload link, so someone can PUT a file straight into the bucket without AWS credentials. Use this when the file is too large to pass through S3:put_object or is not yet in hand.",
+    direction: "OUTGOING",
+    icon: "simple-icons:amazons3",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        bucket: {
+          type: "string",
+          description:
+            "Bucket name. Leave it out to use the bucket this server is configured with (S3_BUCKET).",
+          nullable: true,
+        },
+        key: {
+          type: "string",
+          description: "Key the uploaded file should be stored under",
+        },
+        content_type: {
+          type: "string",
+          description:
+            "MIME type the uploader must send. When set, their PUT has to match it.",
+          nullable: true,
+        },
+        expires_in: {
+          type: "integer",
+          description:
+            "How long the link stays valid, in seconds. Defaults to 900, at most 7 days.",
+          minimum: 60,
+          maximum: 604800,
+          nullable: true,
+        },
+      },
+      required: ["key"],
+    },
+  },
+  {
+    id: "019fb221-0000-4000-8000-000000000001",
+    action: "CHEM:mol_to_sdf",
+    label: "Chemistry",
+    provider: "CHEM",
+    description:
+      "Convert one or more MOL blocks (V2000 or V3000) into a single SDF document. Several molfiles pasted one after another become several SDF records, and SDF given as input keeps the data fields it already carries. The atom and bond blocks are passed through untouched - no chemistry is inferred, nothing is re-computed. Returns the SDF as text; write it somewhere with S3:put_object if it needs to be stored.",
+    direction: "OUTGOING",
+    icon: "simple-icons:molecule",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        content: {
+          type: "string",
+          description:
+            "The molfile text. May hold several MOL blocks back to back, or already be an SDF.",
+        },
+        title: {
+          type: "string",
+          description:
+            'Title line to set on the record. For several records give a JSON array in order, for example ["aspirin","caffeine"]. Leave it out to keep the titles already in the input.',
+          nullable: true,
+        },
+        data: {
+          type: "string",
+          description:
+            'SDF data fields to attach, as JSON. An object applies to every record, an array applies one entry per record, for example {"ID":"CPD-1","SOURCE":"inbox"}.',
+          nullable: true,
+        },
+        max_bytes: {
+          type: "integer",
+          description:
+            "Refuse to return an SDF larger than this. Defaults to 1048576.",
+          minimum: 1,
+          maximum: 1048576,
+          nullable: true,
+        },
+      },
+      required: ["content"],
+    },
+  },
+  {
     id: "e6a7b8c9-6000-4000-8000-000000000001",
     action: "SNOWFLAKE:run_query",
     label: "Snowflake",

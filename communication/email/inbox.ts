@@ -202,14 +202,23 @@ async function fetchUnseen({ client }: { client: ImapFlow }): Promise<void> {
   const lock = await client.getMailboxLock(emailConfig().imap.folder);
 
   try {
-    for await (const message of client.fetch(
-      { seen: false },
+    const uids = await client.search({ seen: false }, { uid: true });
+
+    if (!uids || !uids.length) {
+      return;
+    }
+
+    const messages = await client.fetchAll(
+      uids,
       { source: true, uid: true },
-    )) {
+      { uid: true },
+    );
+
+    for (const message of messages) {
       const parsed = await simpleParser(message.source);
       const mail = toInboundMail({ parsed });
 
-      await client.messageFlagsAdd({ uid: String(message.uid) }, ["\\Seen"], {
+      await client.messageFlagsAdd(String(message.uid), ["\\Seen"], {
         uid: true,
       });
 

@@ -904,6 +904,214 @@
         "userRequest": "Onboard a new employee: take their details, create their Active Directory account and notify the manager.",
         "capturedAt": "2026-07-14T10:00:00Z"
       }
+    },
+    {
+      "id": "019fb220-0000-4000-8000-000000000001",
+      "title": "Uploaded File Intake",
+      "description": "Entry point for files dropped into the enterprise file intake portal. The portal stores the upload in S3 and POSTs the metadata (filename, content type, size, checksum, requested target format, the S3 bucket and key, and a download URL) to this blueprint's webhook, which opens a session for the file format agent. Every upload is first read back out of S3; if what comes back is a molfile it is converted to SDF and written beside the original under the same name with an .sdf extension.",
+      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5",
+      "skill": "**Uploaded File Intake — Convert MOL to SDF in S3**\n\nThis Blueprint is triggered by a webhook from the file intake portal, not by a chat message. The webhook body carries `fileId`, `filename`, `contentType`, `size`, `checksum`, `uploadedAt`, `uploadedBy`, `note`, `targetFormat`, `downloadUrl`, `bucket`, `key` and `region`. The portal has already written the file to S3 at `bucket`/`key` before calling this webhook, so always work from `bucket` and `key` and never from `downloadUrl`.\n\nFlow: Read the upload back out of S3 → decide from what came back whether it is a molfile to convert → [Yes: convert to SDF → write the SDF back to S3 → confirm] / [No: say why it was skipped] → Complete.\n\nThe read always happens first, for every upload, so the decision is made on the actual bytes and not on the metadata alone.\n\nThe decision node is judged by a separate model that sees only the condition text and the task context, so write conditions that quote the actual filename, the content that was read and the target format instead of referring to `filename` or `targetFormat` as variables - an expression like `filename.endsWith('.mol')` cannot be evaluated and comes back false.\n\nConvert only when what was read from S3 is a molfile: the text holds a V2000 or V3000 counts line and an `M  END` terminator, or `filename` ends in `.mol` or `.sdf`, or `contentType` is a molfile type - and `targetFormat` is empty or `sdf`. Anything else is skipped - this agent has no other converter wired up yet.\n\nThe output key keeps the input's folder and base name and only swaps the extension for `.sdf`: an upload at `intake/<fileId>/aspirin.mol` is written back as `intake/<fileId>/aspirin.sdf` in the same bucket. Never overwrite the uploaded file itself, and store the SDF with content type `chemical/x-mdl-sdfile`.",
+      "nodes": [
+        {
+          "id": "019fb220-0002-4000-8000-000000000002",
+          "type": "NORMAL",
+          "properties": {
+            "action": "S3:get_object",
+            "description": "Read the uploaded file back out of S3 using the bucket and key the webhook carried. This runs first for every upload, before anything has been decided about the file, so the next node can judge the bytes that actually arrived",
+            "label": "Read Uploaded File from S3",
+            "icon": "mdi:cloud-download-outline"
+          },
+          "next": ["019fb220-0001-4000-8000-000000000001"],
+          "createdAt": "2026-09-22T10:00:00Z"
+        },
+        {
+          "id": "019fb220-0001-4000-8000-000000000001",
+          "type": "CONDITION",
+          "properties": {
+            "action": "PLATFORM:decision",
+            "description": "Decides whether the file just read out of S3 is a molfile that should become an SDF. Write the condition so it can be judged on its own, quoting the values from the webhook and the content that was read rather than naming variables: for example \"the file 'ethanol.mol' read from S3 begins with a MOL counts line ending in V2000 and carries an M  END terminator, and the requested target format 'sdf' is empty or sdf\". True when the content read from S3 is a MOL or SDF document, or the filename ends in .mol or .sdf, or the content type is a molfile type, and the requested target format is empty or sdf. False for every other upload",
+            "label": "Molfile to convert?",
+            "icon": "mdi:source-branch"
+          },
+          "true": ["019fb220-0003-4000-8000-000000000003"],
+          "false": ["019fb220-0006-4000-8000-000000000006"],
+          "createdAt": "2026-09-22T10:00:00Z"
+        },
+        {
+          "id": "019fb220-0003-4000-8000-000000000003",
+          "type": "NORMAL",
+          "properties": {
+            "action": "CHEM:mol_to_sdf",
+            "description": "Convert the MOL blocks that were read from S3 into a single SDF document, attaching the upload's file ID and original filename as data fields",
+            "label": "Convert MOL to SDF",
+            "icon": "mdi:molecule",
+            "parameters": {
+              "content": {
+                "$ref": "byNode.019fb220-0002-4000-8000-000000000002.result.content"
+              }
+            }
+          },
+          "next": ["019fb220-0004-4000-8000-000000000004"],
+          "createdAt": "2026-09-22T10:00:00Z"
+        },
+        {
+          "id": "019fb220-0004-4000-8000-000000000004",
+          "type": "NORMAL",
+          "properties": {
+            "action": "S3:put_object",
+            "description": "Write the converted SDF back to the same bucket and the same folder as the upload, keeping the base name and swapping the extension for .sdf, with content type chemical/x-mdl-sdfile. Do not overwrite the uploaded file",
+            "label": "Write SDF to S3",
+            "icon": "mdi:cloud-upload-outline",
+            "parameters": {
+              "content": {
+                "$ref": "byNode.019fb220-0003-4000-8000-000000000003.result.sdf"
+              }
+            }
+          },
+          "next": ["019fb220-0005-4000-8000-000000000005"],
+          "createdAt": "2026-09-22T10:00:00Z"
+        },
+        {
+          "id": "019fb220-0005-4000-8000-000000000005",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Confirm the conversion, naming the uploaded file, how many records the SDF holds and the bucket and key the SDF was written to",
+            "label": "Notify Conversion Result",
+            "icon": "mdi:bell"
+          },
+          "next": ["019fb220-0007-4000-8000-000000000007"],
+          "createdAt": "2026-09-22T10:00:00Z"
+        },
+        {
+          "id": "019fb220-0006-4000-8000-000000000006",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Tell the user the upload was read from S3 but not converted, naming the file, its content type and the requested target format, and say that only molfile to SDF conversion is wired up",
+            "label": "Notify Upload Skipped",
+            "icon": "mdi:information-outline"
+          },
+          "next": ["019fb220-0007-4000-8000-000000000007"],
+          "createdAt": "2026-09-22T10:00:00Z"
+        },
+        {
+          "id": "019fb220-0007-4000-8000-000000000007",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "Mark the file intake workflow as complete",
+            "label": "Complete",
+            "icon": "mdi:check"
+          },
+          "next": null,
+          "createdAt": "2026-09-22T10:00:00Z"
+        }
+      ],
+      "context": {
+        "agent": {
+          "name": "file_format_agent",
+          "description": "An agent that converts files between formats such as PDF, DOCX, XLSX, CSV and image types, and returns the converted document to the requester."
+        },
+        "knowledge": [],
+        "referenceBlueprint": null,
+        "supervising": null,
+        "userRequest": "When a file is uploaded to the intake portal it is already in S3; take the webhook, read the file back out of S3 first, then check its type, and if it is a molfile convert it to SDF and write the SDF back to S3 under the same name.",
+        "capturedAt": "2026-09-22T10:00:00Z"
+      }
+    },
+    {
+      "id": "019fb200-0000-4000-8000-000000000001",
+      "title": "Policy Contact Detail Update",
+      "description": "Handles a caller who wants the contact details held against their policy changed. The agent takes the policy number, reads the POLMAST record from the IBM i (AS/400) system, decides whether the caller asked for a telephone or an address change, writes the new value back to the policy record, and then messages the caller confirming what was changed.",
+      "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64",
+      "skill": "**Policy Contact Update \u2014 Lookup, Amend, Confirm**\n\nUse this Blueprint when a caller gives a policy number and asks for the telephone or the address on that policy to be changed.\n\nFlow: Get policy by policy number \u2192 Decide phone or address change \u2192 [Phone: update telephone] / [Address: update address] \u2192 Message the user with the confirmation \u2192 Complete.\n\nAlways read the policy first so the current values are known before writing. Change only the field the caller asked for and leave the rest of the record untouched.",
+      "nodes": [
+        {
+          "id": "019fb200-0001-4000-8000-000000000001",
+          "type": "NORMAL",
+          "properties": {
+            "action": "AS400:get_policy",
+            "description": "Read the POLMAST record for the policy number given by the caller to confirm it exists and to capture the current contact details",
+            "label": "Get Policy by Policy No",
+            "icon": "mdi:file-document-outline"
+          },
+          "next": ["019fb200-0002-4000-8000-000000000002"],
+          "createdAt": "2026-09-21T10:00:00Z"
+        },
+        {
+          "id": "019fb200-0002-4000-8000-000000000002",
+          "type": "CONDITION",
+          "properties": {
+            "action": "PLATFORM:decision",
+            "description": "Evaluates which detail the caller asked to change. Routes to the telephone update if it is a phone number, otherwise to the address update",
+            "label": "Phone or address change?",
+            "icon": "mdi:source-branch"
+          },
+          "true": ["019fb200-0003-4000-8000-000000000003"],
+          "false": ["019fb200-0004-4000-8000-000000000004"],
+          "createdAt": "2026-09-21T10:00:00Z"
+        },
+        {
+          "id": "019fb200-0003-4000-8000-000000000003",
+          "type": "NORMAL",
+          "properties": {
+            "action": "AS400:update_policy",
+            "description": "Write the new telephone or mobile number to the policy record, leaving every other field as it was",
+            "label": "Update Phone on Policy",
+            "icon": "mdi:phone-settings"
+          },
+          "next": ["019fb200-0005-4000-8000-000000000005"],
+          "createdAt": "2026-09-21T10:00:00Z"
+        },
+        {
+          "id": "019fb200-0004-4000-8000-000000000004",
+          "type": "NORMAL",
+          "properties": {
+            "action": "AS400:update_policy",
+            "description": "Write the new risk address lines, city, county and postcode to the policy record, leaving every other field as it was",
+            "label": "Update Address on Policy",
+            "icon": "mdi:home-edit"
+          },
+          "next": ["019fb200-0005-4000-8000-000000000005"],
+          "createdAt": "2026-09-21T10:00:00Z"
+        },
+        {
+          "id": "019fb200-0005-4000-8000-000000000005",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:message_user",
+            "description": "Message the caller confirming the policy number, the field that was changed and its new value",
+            "label": "Notify User",
+            "icon": "mdi:bell"
+          },
+          "next": ["019fb200-0006-4000-8000-000000000006"],
+          "createdAt": "2026-09-21T10:00:00Z"
+        },
+        {
+          "id": "019fb200-0006-4000-8000-000000000006",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:complete",
+            "description": "Mark the contact detail update workflow as complete",
+            "label": "Complete",
+            "icon": "mdi:check"
+          },
+          "next": null,
+          "createdAt": "2026-09-21T10:00:00Z"
+        }
+      ],
+      "context": {
+        "agent": {
+          "name": "user_profile_agent",
+          "description": "An agent that updates user account information such as name, email, phone number, department and title across directory and profile systems."
+        },
+        "knowledge": [],
+        "referenceBlueprint": null,
+        "supervising": null,
+        "userRequest": "Find the record from the policy number, update the detail the user asked for (telephone or address) and message the user afterwards.",
+        "capturedAt": "2026-09-21T10:00:00Z"
+      }
     }
   ]
 }

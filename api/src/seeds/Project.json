@@ -13,6 +13,13 @@
       "coach": "Sophia",
       "icon": ":ph:briefcase-duotone:",
       "organizationId": "dfb990bb-81dd-4584-82ce-050eb8f6a12f"
+    },
+    {
+      "id": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "name": "IT Operations Team",
+      "coach": "Noah",
+      "icon": ":ph:gear-six-duotone:",
+      "organizationId": "dfb990bb-81dd-4584-82ce-050eb8f6a12f"
     }
   ]
 }

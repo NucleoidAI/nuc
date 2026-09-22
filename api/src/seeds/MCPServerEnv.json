@@ -672,6 +672,94 @@
       "value": "http://localhost:5207",
       "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
       "agentId": null
+    },
+    {
+      "id": "3f81c47a-2e59-5b60-9d13-7ca4802f6b91",
+      "serverId": "as400",
+      "key": "AS400_API_URL",
+      "value": "http://localhost:5207",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "9885aafe-89ed-56c7-8470-a48d3bf92422",
+      "serverId": "s3",
+      "key": "S3_BUCKET",
+      "value": "s3-demo-bucket-grey",
+      "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
+      "agentId": null
+    },
+    {
+      "id": "f951a25e-0f0d-5ccb-9661-cf416a578ecd",
+      "serverId": "s3",
+      "key": "S3_REGION",
+      "value": "us-east-2",
+      "teamId": "488edd32-93cd-491f-a108-f872e39517cc",
+      "agentId": null
+    },
+    {
+      "id": "64bf0064-9bcc-54e8-a9a9-b90d77e03d6b",
+      "serverId": "s3",
+      "key": "S3_BUCKET",
+      "value": "s3-demo-bucket-grey",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "agentId": null
+    },
+    {
+      "id": "35284957-32b3-594e-89da-743d21c375e6",
+      "serverId": "s3",
+      "key": "S3_REGION",
+      "value": "us-east-2",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "agentId": null
+    },
+    {
+      "id": "b31d797a-5b9e-54aa-9e19-f9a8fb295ee6",
+      "serverId": "s3",
+      "key": "S3_BUCKET",
+      "value": "s3-demo-bucket-grey",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "agentId": null
+    },
+    {
+      "id": "d35ede57-22d1-5a44-b4a6-a963f8cef92c",
+      "serverId": "s3",
+      "key": "S3_REGION",
+      "value": "us-east-2",
+      "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+      "agentId": null
+    },
+    {
+      "id": "aeceda17-1a17-53fc-9018-1828d1bf6204",
+      "serverId": "s3",
+      "key": "S3_BUCKET",
+      "value": "s3-demo-bucket-grey",
+      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
+      "agentId": null
+    },
+    {
+      "id": "7f2528aa-8e2f-5481-aee2-b2f79271bd2b",
+      "serverId": "s3",
+      "key": "S3_REGION",
+      "value": "us-east-2",
+      "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729",
+      "agentId": null
+    },
+    {
+      "id": "b872e05a-5dc5-5da7-96c9-154af415cb9f",
+      "serverId": "s3",
+      "key": "S3_BUCKET",
+      "value": "s3-demo-bucket-grey",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
+    },
+    {
+      "id": "eb2dc6b6-abea-5be3-a7c5-9760becb7548",
+      "serverId": "s3",
+      "key": "S3_REGION",
+      "value": "us-east-2",
+      "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+      "agentId": null
     }
   ]
 }

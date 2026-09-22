@@ -686,6 +686,15 @@ export const blueprintFlowPlugin = {
       levelGap: styleTokens.levelGap ?? 15,
       startGap,
       endGap,
+      nodeHeight:
+        maxHeight +
+        (styleTokens.showConnections
+          ? connectionsPanelPixelHeight(
+              (
+                styleTokens.nodeFields as Record<string, NodeFields> | undefined
+              )?.[node?.id]
+            )
+          : 0),
     };
   },
 
@@ -752,6 +761,15 @@ export type NodeFields = {
 
 const FIELDS_PANEL_ROW_HEIGHT = 2;
 const FIELDS_PANEL_ROW_GAP = 2;
+
+function connectionsPanelPixelHeight(fields?: NodeFields) {
+  if (!fields) return 0;
+  const rows = Math.max(fields.inputs.length, fields.outputs.length);
+  if (rows === 0) return 0;
+  return (
+    (rows * FIELDS_PANEL_ROW_HEIGHT + (rows - 1) * FIELDS_PANEL_ROW_GAP) * 8
+  );
+}
 
 function fieldsPanelHeight(nodeFields?: Record<string, NodeFields>) {
   const rows = Math.max(

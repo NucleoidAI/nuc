@@ -221,6 +221,7 @@ export default function BlueprintFlow({
           !readOnly && showConnections && impliedConnections.length > 0
         }
         labelForImpliedConnection={labelForImpliedConnection}
+        layout="dag"
         style={() => ({
           direction: "horizontal",
           onAdd: readOnly ? undefined : onAddNodeClick,

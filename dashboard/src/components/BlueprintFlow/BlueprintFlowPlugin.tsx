@@ -17,9 +17,9 @@ import {
 import React, { useState } from "react";
 
 const FORCE_COLOR = "#b8860b";
-const APPROVAL_BORDER_COLOR = "linear-gradient(135deg, #ffb02e66, #ff6b0059)";
-const APPROVAL_BG_FROM = "rgba(255, 176, 46, 0.22)";
-const APPROVAL_BG_TO = "rgba(255, 107, 0, 0.30)";
+const APPROVAL_BORDER_COLOR = "linear-gradient(135deg, #fde04766, #ca8a0459)";
+const APPROVAL_BG_FROM = "rgba(199, 176, 59, 0.4)";
+const APPROVAL_BG_TO = "rgba(202, 138, 4, 0.50)";
 
 const AddButtonWrapper = styled("div")(({ theme }) => ({
   position: "absolute",
@@ -609,8 +609,10 @@ const ForceBadge = styled("div")(({ theme }) => ({
   zIndex: 6,
 }));
 
-const NodeWrapper = styled("div")(() => {
-  const stepColor = "#174f77";
+const NodeWrapper = styled("div", {
+  shouldForwardProp: (prop) => prop !== "isApproval",
+})<{ isApproval?: boolean }>(({ isApproval }) => {
+  const stepColor = isApproval ? "#6b5709" : "#174f77";
   const steppedShadow = `
     1px 1px 0 ${stepColor},
     2px 2px 0 ${stepColor},
@@ -939,6 +941,7 @@ function FlowNodeRenderer({
 
   return (
     <NodeWrapper
+      isApproval={node.nodeType === "APPROVAL"}
       title={isForceNode ? "Force node: action is guaranteed" : undefined}
       onContextMenu={handleContextMenu}
       onMouseDownCapture={handleMouseDownCapture}

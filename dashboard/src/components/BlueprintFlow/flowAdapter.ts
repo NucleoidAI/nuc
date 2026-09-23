@@ -1,4 +1,10 @@
-import { isBranchNodeType } from "./helper";
+import {
+  isBranchNodeType,
+  isSwitchNodeType,
+  normalizeSwitchCases,
+} from "./helper";
+
+const SWITCH_EDGE_COLOR = "#7c5cff";
 
 function convertToNodesAndEdges(data) {
   if (!data || !Array.isArray(data) || data.length === 0) {
@@ -62,6 +68,23 @@ function convertToNodesAndEdges(data) {
           }
         });
       }
+    } else if (isSwitchNodeType(item.type)) {
+      normalizeSwitchCases(item).forEach((switchCase) => {
+        if (switchCase.nodeId) {
+          edges.push({
+            id: `edge-${edgeIdCounter++}`,
+            source: item.id,
+            target: switchCase.nodeId,
+            style: {
+              stroke: SWITCH_EDGE_COLOR,
+              strokeDasharray: "5.5",
+            },
+            data: {
+              caseLabel: switchCase.label,
+            },
+          });
+        }
+      });
     } else if (item.next) {
       const nextNodes = Array.isArray(item.next) ? item.next : [item.next];
 

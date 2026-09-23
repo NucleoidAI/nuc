@@ -96,6 +96,44 @@
     }
   },
   {
+    "action": "PLATFORM:switch",
+    "label": "Platform",
+    "lib": "switch",
+    "description": "A switch node that picks one of several branches based on the instructions and the task context",
+    "icon": "mdi:call-split",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "instructions": {
+          "type": "string",
+          "description": "How to pick the branch."
+        },
+        "cases": {
+          "type": "array",
+          "description": "The branches to choose from, each with a nodeId and a label."
+        }
+      },
+      "required": ["cases"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "nodeId": {
+          "type": "string",
+          "description": "The id of the selected branch."
+        },
+        "label": {
+          "type": "string",
+          "description": "The label of the selected branch."
+        },
+        "reason": {
+          "type": "string",
+          "description": "Why that branch was selected."
+        }
+      }
+    }
+  },
+  {
     "action": "PLATFORM:user_interaction",
     "label": "Platform",
     "lib": "interaction",

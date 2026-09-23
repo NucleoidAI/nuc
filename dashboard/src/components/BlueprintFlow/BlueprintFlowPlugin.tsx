@@ -20,6 +20,9 @@ const FORCE_COLOR = "#b8860b";
 const APPROVAL_BORDER_COLOR = "linear-gradient(135deg, #ffb02e66, #ff6b0059)";
 const APPROVAL_BG_FROM = "rgba(255, 176, 46, 0.22)";
 const APPROVAL_BG_TO = "rgba(255, 107, 0, 0.30)";
+const SWITCH_BORDER_COLOR = "linear-gradient(135deg, #7c5cff66, #00c2ff59)";
+const SWITCH_BG_FROM = "rgba(124, 92, 255, 0.20)";
+const SWITCH_BG_TO = "rgba(0, 194, 255, 0.26)";
 
 const AddButtonWrapper = styled("div")(({ theme }) => ({
   position: "absolute",
@@ -648,6 +651,7 @@ export const blueprintFlowPlugin = {
   style: ({ node, style }) => {
     const styleTokens = style || {};
     const isApproval = node?.nodeType === "APPROVAL";
+    const isSwitch = node?.nodeType === "SWITCH";
 
     const connectionsGap = styleTokens.showConnections
       ? fieldsPanelHeight(
@@ -655,10 +659,20 @@ export const blueprintFlowPlugin = {
         )
       : 0;
 
-    const bgFrom = isApproval ? APPROVAL_BG_FROM : undefined;
-    const bgTo = isApproval ? APPROVAL_BG_TO : undefined;
+    const bgFrom = isApproval
+      ? APPROVAL_BG_FROM
+      : isSwitch
+      ? SWITCH_BG_FROM
+      : undefined;
+    const bgTo = isApproval
+      ? APPROVAL_BG_TO
+      : isSwitch
+      ? SWITCH_BG_TO
+      : undefined;
     const borderColor = isApproval
       ? APPROVAL_BORDER_COLOR
+      : isSwitch
+      ? SWITCH_BORDER_COLOR
       : "linear-gradient(135deg, #c684ff33, #078dee4d)";
     const borderRadius = 16;
     const shadowLevel = 1;
@@ -699,6 +713,29 @@ export const blueprintFlowPlugin = {
   },
 
   edge: ({ node, child }) => {
+    if (node?.nodeType === "SWITCH" && child) {
+      const label = (node?.cases || []).find(
+        (switchCase) => switchCase.nodeId === child.id
+      )?.label;
+
+      if (label) {
+        return {
+          label,
+          labelStyle: {
+            fontSize: "12px",
+            fontWeight: 600,
+            color: "#4b4e4c",
+            textColor: "#5b3fd9",
+          },
+          labelPosition: 0.4,
+          labelOffsetX: 10,
+          labelOffsetY: -14,
+        };
+      }
+
+      return {};
+    }
+
     if (node?.connectorType === "decision" && child) {
       const trueNext = node?.trueNext || [];
       const falseNext = node?.falseNext || [];

@@ -4,7 +4,7 @@ import {
   mergeNodeParameters,
 } from "../lib/nodeParameterBindings";
 import type { LLMMeta } from "../lib/llmLog";
-import { resolveCurrentNode } from "../lib/blueprintNodes";
+import { resolveCurrentNode, switchCases } from "../lib/blueprintNodes";
 import Agent from "../models/Agent";
 import MCPs from "../mcps/mcps";
 import actions from "../actions";
@@ -447,6 +447,35 @@ async function task({ taskId }: { taskId: string }) {
       action: "PLATFORM:customer_approval",
       parameters: { question, sessionId, agentId },
       comment: "Waiting for the customer to approve or reject.",
+      nodeId: currentNode.id,
+    });
+  }
+
+  if (currentNode?.type === "SWITCH") {
+    const cases = switchCases(currentNode, blueprint?.nodes ?? []);
+
+    if (!cases.length) {
+      return await taskFn.update({
+        taskId,
+        status: "FAILED",
+        comment: `Switch node "${
+          currentNode.properties?.label ?? currentNode.id
+        }" has no branches to choose from.`,
+      });
+    }
+
+    return await taskFn.addStep({
+      taskId,
+      action: "PLATFORM:switch",
+      parameters: {
+        instructions:
+          currentNode.properties?.pseudocodeEnabled &&
+          currentNode.properties?.pseudocode
+            ? currentNode.properties.pseudocode
+            : currentNode.properties?.instructions,
+        cases,
+      },
+      comment: "Choosing the branch that matches the task.",
       nodeId: currentNode.id,
     });
   }
@@ -1195,7 +1224,11 @@ function restoreCosmetics(
     const icon =
       (typeof props.icon === "string" && props.icon) ||
       (typeof previousProps.icon === "string" && previousProps.icon) ||
-      (n.type === "CONDITION" ? "mdi:source-branch" : "mdi:circle-outline");
+      (n.type === "CONDITION"
+        ? "mdi:source-branch"
+        : n.type === "SWITCH"
+        ? "mdi:call-split"
+        : "mdi:circle-outline");
 
     const description =
       typeof props.description === "string"

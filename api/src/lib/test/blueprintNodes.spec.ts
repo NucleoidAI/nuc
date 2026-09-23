@@ -1,6 +1,6 @@
 import { describe, it } from "bun:test";
 import assert from "node:assert/strict";
-import { resolveCurrentNode } from "../blueprintNodes";
+import { resolveCurrentNode, switchCases } from "../blueprintNodes";
 
 const nodes = [
   {
@@ -86,5 +86,78 @@ describe("blueprint node walking", () => {
 
   it("matches a step without a node id by its action", () => {
     assert.equal(walked([{ action: "S3:upload_file", result: "{}" }]), "read");
+  });
+});
+
+const switchNodes = [
+  {
+    id: "route",
+    type: "SWITCH",
+    properties: {
+      action: "PLATFORM:switch",
+      label: "Route by intent",
+      cases: [
+        { nodeId: "refund", label: "Refund request" },
+        { nodeId: "shipping", label: "Shipping question" },
+      ],
+    },
+    next: ["refund", "shipping", "other"],
+  },
+  {
+    id: "refund",
+    type: "NORMAL",
+    properties: { action: "ORDER:refund", label: "Refund" },
+  },
+  {
+    id: "shipping",
+    type: "NORMAL",
+    properties: { action: "ORDER:track", label: "Track shipment" },
+  },
+  {
+    id: "other",
+    type: "NORMAL",
+    properties: { action: "PLATFORM:complete", label: "Fallback" },
+    next: null,
+  },
+];
+
+const switched = (result: string) =>
+  resolveCurrentNode(switchNodes, [
+    { action: "PLATFORM:switch", nodeId: "route", result },
+  ])?.id;
+
+describe("switch node walking", () => {
+  it("starts at the switch when nothing points to it", () => {
+    assert.equal(resolveCurrentNode(switchNodes, [])?.id, "route");
+  });
+
+  it("follows the branch the step result selected", () => {
+    assert.equal(switched(JSON.stringify({ nodeId: "shipping" })), "shipping");
+    assert.equal(switched(JSON.stringify({ nodeId: "refund" })), "refund");
+  });
+
+  it("accepts a bare node id as the result", () => {
+    assert.equal(switched("other"), "other");
+  });
+
+  it("falls back to the first branch on an unknown or unparsable result", () => {
+    assert.equal(switched(JSON.stringify({ nodeId: "missing" })), "refund");
+    assert.equal(switched("not json"), "refund");
+  });
+});
+
+describe("switch cases", () => {
+  it("lists one case per next id, labelled from the node or its target", () => {
+    assert.deepEqual(switchCases(switchNodes[0], switchNodes), [
+      { nodeId: "refund", label: "Refund request" },
+      { nodeId: "shipping", label: "Shipping question" },
+      { nodeId: "other", label: "Fallback" },
+    ]);
+  });
+
+  it("falls back to the node id when no label is available", () => {
+    assert.deepEqual(switchCases({ type: "SWITCH", next: ["a"] }), [
+      { nodeId: "a", label: "a" },
+    ]);
   });
 });

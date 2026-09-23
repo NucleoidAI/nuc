@@ -1,7 +1,7 @@
 import { DrawerLayout } from "@canmingir/link/layouts";
 import PseudocodeViewer from "./PseudocodeViewer";
 import SearchIcon from "@mui/icons-material/Search";
-import { isBranchNodeType } from "../BlueprintFlow/helper";
+import type { SwitchCase } from "../BlueprintFlow/helper";
 import { useState } from "react";
 
 import {
@@ -24,6 +24,7 @@ import {
 } from "@mui/material";
 import { Iconify, LinkSwipe } from "@canmingir/link/platform/components";
 import NodeInputValues, { getInputError } from "./NodeInputValues";
+import { isBranchNodeType, isSwitchNodeType } from "../BlueprintFlow/helper";
 
 const NodeEditorDrawer = ({
   parameters = {},
@@ -46,6 +47,11 @@ const NodeEditorDrawer = ({
   setNewNodeForce,
   newNodeType,
   setNewNodeType,
+  newNodeCaseLabel = "",
+  setNewNodeCaseLabel,
+  switchCases = [],
+  setSwitchCases,
+  caseTargetLabels = {},
   selectedBranch,
   setSelectedBranch,
   inheritedNextBranch,
@@ -96,6 +102,11 @@ const NodeEditorDrawer = ({
   setNewNodeForce?: (force: boolean) => void;
   newNodeType: string;
   setNewNodeType: (type: string) => void;
+  newNodeCaseLabel?: string;
+  setNewNodeCaseLabel?: (label: string) => void;
+  switchCases?: SwitchCase[];
+  setSwitchCases?: (cases: SwitchCase[]) => void;
+  caseTargetLabels?: Record<string, string>;
   selectedBranch: "true" | "false";
   setSelectedBranch: (branch: "true" | "false") => void;
   inheritedNextBranch: "true" | "false" | "none";
@@ -269,16 +280,22 @@ const NodeEditorDrawer = ({
   const ITEMS_PER_PAGE = 3;
 
   const isApprovalNode = newNodeType === "APPROVAL";
+  const isSwitchNode = isSwitchNodeType(newNodeType);
   const isParentBranch = isBranchNodeType(selectedParentNode?.nodeType);
   const isParentApproval = selectedParentNode?.nodeType === "APPROVAL";
+  const isParentSwitch = isSwitchNodeType(selectedParentNode?.nodeType);
   const usesIntegration =
-    !isBranchNodeType(newNodeType) && newNodeType !== "HANDOFF";
+    !isBranchNodeType(newNodeType) &&
+    !isSwitchNodeType(newNodeType) &&
+    newNodeType !== "HANDOFF";
 
   const descriptionPlaceholder =
     newNodeType === "CONDITION"
       ? "A decision node that branches the flow based on conditions."
       : isApprovalNode
       ? "Waits for the customer to approve or reject before continuing."
+      : isSwitchNode
+      ? "Routes the flow to one of several branches, chosen by the agent."
       : newNodeType === "HANDOFF"
       ? "Transfer this task to another agent's blueprint."
       : selectedIntegration?.description || "";
@@ -434,6 +451,7 @@ const NodeEditorDrawer = ({
         >
           <MenuItem value="NORMAL">Normal</MenuItem>
           <MenuItem value="CONDITION">Condition</MenuItem>
+          <MenuItem value="SWITCH">Switch</MenuItem>
           <MenuItem value="APPROVAL">Customer Approval</MenuItem>
           <MenuItem value="HANDOFF">Handoff</MenuItem>
         </Select>
@@ -533,6 +551,76 @@ const NodeEditorDrawer = ({
             </MenuItem>
           </Select>
         </FormControl>
+      )}
+
+      {isParentSwitch && (
+        <TextField
+          label="Case label"
+          variant="outlined"
+          fullWidth
+          value={newNodeCaseLabel}
+          onChange={(e) => setNewNodeCaseLabel?.(e.target.value)}
+          placeholder="Refund request"
+          helperText={`The agent routes to this branch when the case matches. Leave empty to use the node label.`}
+          autoComplete="off"
+          inputProps={{
+            autoComplete: "off",
+            autoCorrect: "off",
+            spellCheck: false,
+          }}
+        />
+      )}
+
+      {isSwitchNode && editMode && switchCases.length > 0 && (
+        <Box>
+          <Typography variant="subtitle2" gutterBottom>
+            Cases
+          </Typography>
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            display="block"
+            sx={{ mb: 1.5 }}
+          >
+            The agent picks one of these branches from the instructions and the
+            live task data.
+          </Typography>
+          <Stack spacing={1.5}>
+            {switchCases.map((switchCase, index) => (
+              <TextField
+                key={switchCase.nodeId}
+                label={caseTargetLabels[switchCase.nodeId] || switchCase.nodeId}
+                variant="outlined"
+                fullWidth
+                size="small"
+                value={switchCase.label ?? ""}
+                onChange={(e) =>
+                  setSwitchCases?.(
+                    switchCases.map((item, itemIndex) =>
+                      itemIndex === index
+                        ? { ...item, label: e.target.value }
+                        : item
+                    )
+                  )
+                }
+                placeholder={caseTargetLabels[switchCase.nodeId] || ""}
+                autoComplete="off"
+                inputProps={{
+                  autoComplete: "off",
+                  autoCorrect: "off",
+                  spellCheck: false,
+                }}
+              />
+            ))}
+          </Stack>
+        </Box>
+      )}
+
+      {isSwitchNode && !editMode && (
+        <Typography variant="caption" color="text.secondary">
+          Add child nodes to this switch; each child becomes a case the agent
+          chooses between.
+        </Typography>
       )}
 
       {isBranchNodeType(newNodeType) && hasInheritedNext && (

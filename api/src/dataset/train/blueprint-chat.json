@@ -1264,5 +1264,88 @@
         "createdAt": "2026-09-11T08:00:00Z"
       }
     ]
+  },
+  {
+    "history": [],
+    "content": "When a customer writes in, read what they want and send them down the right path: a refund, a delivery question, or a technical problem. Handle each one separately.",
+    "response": "Here's the flow for your request.",
+    "title": "Customer Request Routing",
+    "description": "Reads the customer's message and routes it to the refund, delivery or technical branch.",
+    "flow": [
+      {
+        "id": "3f1b6c20-1c2b-4c1a-9d4a-4c1f0a5f7a11",
+        "type": "NORMAL",
+        "properties": {
+          "action": "PLATFORM:user_interaction",
+          "label": "Ask What They Need",
+          "icon": "mdi:account-question"
+        },
+        "next": ["8a2d4e31-2f3c-4b6d-8e2f-5d3a1b6c8d22"],
+        "createdAt": "2025-06-19T06:02:00Z"
+      },
+      {
+        "id": "8a2d4e31-2f3c-4b6d-8e2f-5d3a1b6c8d22",
+        "type": "SWITCH",
+        "properties": {
+          "action": "PLATFORM:switch",
+          "label": "Route By Intent",
+          "icon": "mdi:call-split",
+          "instructions": "Send the customer to the branch that matches what they asked for.",
+          "cases": [
+            {
+              "nodeId": "b4c5d6e7-3a4b-4c5d-9e6f-7a8b9c0d1e33",
+              "label": "Refund request"
+            },
+            {
+              "nodeId": "c5d6e7f8-4b5c-4d6e-8f70-8b9c0d1e2f44",
+              "label": "Delivery question"
+            },
+            {
+              "nodeId": "d6e7f809-5c6d-4e7f-9081-9c0d1e2f3a55",
+              "label": "Technical problem"
+            }
+          ]
+        },
+        "next": [
+          "b4c5d6e7-3a4b-4c5d-9e6f-7a8b9c0d1e33",
+          "c5d6e7f8-4b5c-4d6e-8f70-8b9c0d1e2f44",
+          "d6e7f809-5c6d-4e7f-9081-9c0d1e2f3a55"
+        ],
+        "createdAt": "2025-06-19T06:02:00Z"
+      },
+      {
+        "id": "b4c5d6e7-3a4b-4c5d-9e6f-7a8b9c0d1e33",
+        "type": "NORMAL",
+        "properties": {
+          "action": "GREY:create_refund",
+          "label": "Create Refund",
+          "icon": "mdi:cash-refund"
+        },
+        "next": null,
+        "createdAt": "2025-06-19T06:02:00Z"
+      },
+      {
+        "id": "c5d6e7f8-4b5c-4d6e-8f70-8b9c0d1e2f44",
+        "type": "NORMAL",
+        "properties": {
+          "action": "GREY:track_shipment",
+          "label": "Track Shipment",
+          "icon": "mdi:truck-delivery"
+        },
+        "next": null,
+        "createdAt": "2025-06-19T06:02:00Z"
+      },
+      {
+        "id": "d6e7f809-5c6d-4e7f-9081-9c0d1e2f3a55",
+        "type": "NORMAL",
+        "properties": {
+          "action": "PLATFORM:ask_supervisor",
+          "label": "Escalate To Support",
+          "icon": "mdi:lifebuoy"
+        },
+        "next": null,
+        "createdAt": "2025-06-19T06:02:00Z"
+      }
+    ]
   }
 ]

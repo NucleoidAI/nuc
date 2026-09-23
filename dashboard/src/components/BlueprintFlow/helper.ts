@@ -4,6 +4,26 @@ export function isBranchNodeType(nodeType?: string) {
   return BRANCH_NODE_TYPES.includes(nodeType ?? "");
 }
 
+export function isSwitchNodeType(nodeType?: string) {
+  return nodeType === "SWITCH";
+}
+
+export type SwitchCase = {
+  nodeId: string;
+  label?: string;
+  description?: string;
+};
+
+export function normalizeSwitchCases(node: {
+  next?: string[] | null;
+  properties?: { cases?: SwitchCase[] };
+}): SwitchCase[] {
+  const declared = node.properties?.cases ?? [];
+  const byNodeId = new Map(declared.map((item) => [item.nodeId, item]));
+
+  return (node.next ?? []).map((nodeId) => byNodeId.get(nodeId) ?? { nodeId });
+}
+
 type DefinitionNode = {
   id: string;
   type: "NORMAL" | "CONDITION" | "APPROVAL" | string;
@@ -16,6 +36,7 @@ type DefinitionNode = {
     icon?: string;
     description?: string;
     parameters?: Record<string, unknown>;
+    cases?: SwitchCase[];
     [key: string]: unknown;
   };
   next?: string[] | null;
@@ -39,6 +60,7 @@ export type DefinitionGraphNode = {
   createdAt?: string;
   raw: DefinitionNode;
   connectorType: "decision" | "default";
+  cases?: SwitchCase[];
   next?: string | string[];
   trueNext?: string[];
   falseNext?: string[];
@@ -94,6 +116,9 @@ export function buildDefinitionGraph(
       createdAt: node.createdAt,
       raw: node,
       connectorType: isBranchNodeType(node.type) ? "decision" : "default",
+      ...(isSwitchNodeType(node.type) && {
+        cases: normalizeSwitchCases(node),
+      }),
     };
   }
 

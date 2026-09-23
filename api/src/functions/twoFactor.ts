@@ -29,7 +29,7 @@ export async function completeTwoFactor(
       },
     );
     if (!updated) throw new Error("Verification link already used");
-  } else if (channel !== "sms" && channel !== "whatsapp") {
+  } else if (channel !== "whatsapp") {
     throw new Error("Invalid verification channel");
   }
   const [claimed] = await Step.update(

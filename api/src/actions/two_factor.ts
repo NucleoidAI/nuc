@@ -13,7 +13,7 @@ async function run({
   meta: { taskId: string; stepId: string };
 }) {
   const { channel, recipient, question } = parameters;
-  if (!["email", "sms", "whatsapp"].includes(channel))
+  if (!["email", "whatsapp"].includes(channel))
     throw new Error("Invalid 2FA channel");
   if (!recipient?.trim() || !question?.trim())
     throw new Error("2FA requires recipient and question");

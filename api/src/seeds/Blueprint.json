@@ -1068,8 +1068,8 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:two_factor",
-            "description": "Ask the policyholder to approve the requested contact detail change before updating the policy. Choose the channel and existing recipient contact using the agent knowledge and the retrieved policy.",
-            "instructions": "Choose channel automatically according to the agent knowledge and the requested change. Use the existing contact details from the retrieved policy or another trusted customer record for recipient, never the replacement contact detail. Set question to a clear approval request identifying the policy and requested change. Wait for approval before continuing.",
+            "description": "Ask the policyholder to approve the requested contact detail change before updating the policy.",
+            "instructions": "Follow the agent knowledge to pick the channel. Take the recipient from the retrieved policy, never the replacement contact detail.",
             "label": "Verify Contact Change (2FA)",
             "icon": "mdi:shield-key",
             "force": true

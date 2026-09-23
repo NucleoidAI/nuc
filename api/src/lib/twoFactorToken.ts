@@ -27,7 +27,9 @@ export function approvalLinks(
       "TWO_FACTOR_PUBLIC_URL is required for email approval links",
     );
   const url = new URL(
-    `${base.replace(/\/$/, "")}/sessions/${encodeURIComponent(sessionId)}/two-factor/email`,
+    `${base.replace(/\/$/, "")}/sessions/${encodeURIComponent(
+      sessionId,
+    )}/two-factor/email`,
   );
   if (
     url.protocol !== "https:" &&

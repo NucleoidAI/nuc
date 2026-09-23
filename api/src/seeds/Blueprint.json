@@ -1047,9 +1047,9 @@
     {
       "id": "019fb200-0000-4000-8000-000000000001",
       "title": "Policy Contact Detail Update",
-      "description": "Handles a caller who wants the contact details held against their policy changed. The agent takes the policy number, reads the POLMAST record from the IBM i (AS/400) system, requests 2FA approval using the channel selected from agent knowledge, and only after approval decides whether the caller asked for a telephone or an address change, writes the new value back to the policy record, and messages the caller confirming what was changed.",
+      "description": "Handles a caller who wants the contact details held against their policy changed. The agent takes the policy number, reads the POLMAST record from the IBM i (AS/400) system, requests 2FA approval using the channel selected from agent knowledge, and only after approval routes the request through a switch to either the telephone or the address change, writes the new value back to the policy record, and messages the caller confirming what was changed.",
       "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64",
-      "skill": "**Policy Contact Update \u2014 Lookup, Verify, Amend, Confirm**\n\nUse this Blueprint when a caller gives a policy number and asks for the telephone or the address on that policy to be changed.\n\nFlow: Get policy by policy number \u2192 Request 2FA approval (choose channel from agent knowledge) \u2192 Decide phone or address change \u2192 [Phone: update telephone] / [Address: update address] \u2192 Message the user with the confirmation \u2192 Complete.\n\nAlways read the policy first and obtain 2FA approval before writing. Use existing trusted contact details for verification. Change only the field the caller asked for and leave the rest of the record untouched.",
+      "skill": "**Policy Contact Update \u2014 Lookup, Verify, Amend, Confirm**\n\nUse this Blueprint when a caller gives a policy number and asks for the telephone or the address on that policy to be changed.\n\nFlow: Get policy by policy number \u2192 Request 2FA approval (choose channel from agent knowledge) \u2192 Switch on phone or address change \u2192 [Phone: update telephone] / [Address: update address] \u2192 Message the user with the confirmation \u2192 Complete.\n\nAlways read the policy first and obtain 2FA approval before writing. Use existing trusted contact details for verification. Change only the field the caller asked for and leave the rest of the record untouched.",
       "nodes": [
         {
           "id": "019fb200-0001-4000-8000-000000000001",
@@ -1079,15 +1079,30 @@
         },
         {
           "id": "019fb200-0002-4000-8000-000000000002",
-          "type": "CONDITION",
+          "type": "SWITCH",
           "properties": {
-            "action": "PLATFORM:decision",
-            "description": "Evaluates which detail the caller asked to change. Routes to the telephone update if it is a phone number, otherwise to the address update",
+            "action": "PLATFORM:switch",
+            "description": "Picks the branch that matches the detail the caller asked to change: the telephone update for a phone or mobile number, the address update for the risk address",
             "label": "Phone or address change?",
-            "icon": "mdi:source-branch"
+            "icon": "mdi:call-split",
+            "instructions": "Send the request to the branch that matches the contact detail the caller asked to change.",
+            "cases": [
+              {
+                "nodeId": "019fb200-0003-4000-8000-000000000003",
+                "label": "Phone change",
+                "description": "The caller wants the telephone or mobile number on the policy changed"
+              },
+              {
+                "nodeId": "019fb200-0004-4000-8000-000000000004",
+                "label": "Address change",
+                "description": "The caller wants the risk address lines, city, county or postcode on the policy changed"
+              }
+            ]
           },
-          "true": ["019fb200-0003-4000-8000-000000000003"],
-          "false": ["019fb200-0004-4000-8000-000000000004"],
+          "next": [
+            "019fb200-0003-4000-8000-000000000003",
+            "019fb200-0004-4000-8000-000000000004"
+          ],
           "createdAt": "2026-09-21T10:00:00Z"
         },
         {

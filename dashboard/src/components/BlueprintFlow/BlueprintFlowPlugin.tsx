@@ -610,9 +610,9 @@ const ForceBadge = styled("div")(({ theme }) => ({
 }));
 
 const NodeWrapper = styled("div", {
-  shouldForwardProp: (prop) => prop !== "isapproval",
-})<{ isapproval?: boolean }>(({ isapproval }) => {
-  const stepColor = isapproval ? "#6b5709" : "#174f77";
+  shouldForwardProp: (prop) => prop !== "isApproval",
+})<{ isApproval?: boolean }>(({ isApproval }) => {
+  const stepColor = isApproval ? "#6b5709" : "#174f77";
   const steppedShadow = `
     1px 1px 0 ${stepColor},
     2px 2px 0 ${stepColor},
@@ -941,7 +941,7 @@ function FlowNodeRenderer({
 
   return (
     <NodeWrapper
-      isapproval={node.nodeType === "APPROVAL"}
+      isApproval={node.nodeType === "APPROVAL"}
       title={isForceNode ? "Force node: action is guaranteed" : undefined}
       onContextMenu={handleContextMenu}
       onMouseDownCapture={handleMouseDownCapture}

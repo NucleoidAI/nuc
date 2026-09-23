@@ -4732,6 +4732,101 @@ const MCPs = [
     },
   },
   {
+    id: "019fb210-0000-4000-8000-000000000003",
+    action: "AS400:update_policy_phone",
+    label: "AS/400",
+    provider: "AS400",
+    description:
+      "Change the contact telephone and/or mobile number held against a POLMAST record. Every other field on the policy is left as it was. Uses the local IBM i (AS/400) enterprise mock API.",
+    direction: "OUTGOING",
+    icon: "simple-icons:ibm",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        policy_id: {
+          type: "string",
+          description:
+            "Policy number of the record to change, for example MTR-20260041.",
+        },
+        phone: {
+          type: "string",
+          description: "New contact telephone for this policy.",
+        },
+        mobile: {
+          type: "string",
+          description: "New contact mobile for this policy.",
+        },
+      },
+      required: ["policy_id"],
+    },
+    outputSchema: {
+      type: "object",
+      properties: {
+        status: { type: "string" },
+        policy_id: { type: "string" },
+        phone: { type: "string", nullable: true },
+        mobile: { type: "string", nullable: true },
+      },
+      required: ["status", "policy_id"],
+    },
+  },
+  {
+    id: "019fb210-0000-4000-8000-000000000004",
+    action: "AS400:update_policy_address",
+    label: "AS/400",
+    provider: "AS400",
+    description:
+      "Change the risk address held against a POLMAST record — address lines, town or city, county and postcode. Every other field on the policy is left as it was. Uses the local IBM i (AS/400) enterprise mock API.",
+    direction: "OUTGOING",
+    icon: "simple-icons:ibm",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        policy_id: {
+          type: "string",
+          description:
+            "Policy number of the record to change, for example MTR-20260041.",
+        },
+        address_1: {
+          type: "string",
+          description: "New risk address line 1.",
+        },
+        address_2: {
+          type: "string",
+          description: "New risk address line 2.",
+        },
+        city: {
+          type: "string",
+          description: "New town or city.",
+        },
+        county: {
+          type: "string",
+          description: "New county.",
+        },
+        postcode: {
+          type: "string",
+          description: "New postcode, up to 8 characters.",
+        },
+      },
+      required: ["policy_id"],
+    },
+    outputSchema: {
+      type: "object",
+      properties: {
+        status: { type: "string" },
+        policy_id: { type: "string" },
+        address_1: { type: "string", nullable: true },
+        address_2: { type: "string", nullable: true },
+        city: { type: "string", nullable: true },
+        county: { type: "string", nullable: true },
+        postcode: { type: "string", nullable: true },
+      },
+      required: ["status", "policy_id"],
+    },
+  },
+  {
     id: "019fb211-0000-4000-8000-000000000001",
     action: "S3:list_buckets",
     label: "AWS S3",

@@ -11,6 +11,8 @@ import { getPolicyTool } from "./get_policy";
 import { listUserPoliciesTool } from "./list_user_policies";
 import { createPolicyTool } from "./create_policy";
 import { updatePolicyTool } from "./update_policy";
+import { updatePolicyPhoneTool } from "./update_policy_phone";
+import { updatePolicyAddressTool } from "./update_policy_address";
 import { runSqlTool } from "./run_sql";
 import { runClCommandTool } from "./run_cl_command";
 import { listMessagesTool } from "./list_messages";
@@ -33,6 +35,8 @@ export const tools = [
   listUserPoliciesTool,
   createPolicyTool,
   updatePolicyTool,
+  updatePolicyPhoneTool,
+  updatePolicyAddressTool,
   runSqlTool,
   runClCommandTool,
   listMessagesTool,

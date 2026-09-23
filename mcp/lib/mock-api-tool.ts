@@ -86,6 +86,7 @@ export function defineTool(config: {
     body?: unknown;
     query?: Record<string, unknown>;
   };
+  response?: (payload: any, args: Record<string, any>) => unknown;
 }): Tool {
   const inputSchema = {
     type: "object" as const,
@@ -137,7 +138,11 @@ export function defineTool(config: {
         const trackingError = payload?.output?.completeTrackResults?.some(
           (entry: any) => entry.trackResults?.some((track: any) => track.error),
         );
-        return result(payload, !response.ok || Boolean(trackingError));
+        const failed = !response.ok || Boolean(trackingError);
+        return result(
+          !failed && config.response ? config.response(payload, args) : payload,
+          failed,
+        );
       } catch (error) {
         return result(
           { error: error instanceof Error ? error.message : String(error) },

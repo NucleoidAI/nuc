@@ -1094,7 +1094,7 @@
           "id": "019fb200-0003-4000-8000-000000000003",
           "type": "NORMAL",
           "properties": {
-            "action": "AS400:update_policy",
+            "action": "AS400:update_policy_phone",
             "description": "Write the new telephone or mobile number to the policy record, leaving every other field as it was",
             "label": "Update Phone on Policy",
             "icon": "mdi:phone-settings"
@@ -1106,7 +1106,7 @@
           "id": "019fb200-0004-4000-8000-000000000004",
           "type": "NORMAL",
           "properties": {
-            "action": "AS400:update_policy",
+            "action": "AS400:update_policy_address",
             "description": "Write the new risk address lines, city, county and postcode to the policy record, leaving every other field as it was",
             "label": "Update Address on Policy",
             "icon": "mdi:home-edit"

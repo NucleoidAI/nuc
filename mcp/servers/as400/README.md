@@ -11,7 +11,8 @@ Tools (prefix `AS400:`):
   `get_record`
 - Users: `find_user`, `get_user`, `create_user`, `update_user`
 - Policies: `find_policy`, `get_policy`, `list_user_policies`,
-  `create_policy`, `update_policy`
+  `create_policy`, `update_policy`, `update_policy_phone`,
+  `update_policy_address`
 - Free form: `run_sql`, `run_cl_command`
 - Operations: `list_messages`, `reply_to_message`, `send_message`,
   `list_jobs`, `submit_job`

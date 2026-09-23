@@ -27,9 +27,9 @@ function stub(payload: unknown = {}, status = 200) {
 const body = (calls: { init: RequestInit }[]) =>
   JSON.parse(String(calls[0].init.body));
 
-test("All 20 tools expose unique names, schemas and handlers", () => {
-  expect(as400.length).toBe(20);
-  expect(new Set(as400.map((t) => t.name)).size).toBe(20);
+test("All 22 tools expose unique names, schemas and handlers", () => {
+  expect(as400.length).toBe(22);
+  expect(new Set(as400.map((t) => t.name)).size).toBe(22);
   for (const candidate of as400) {
     expect(candidate.name).toMatch(/^AS400:[a-z_]+$/);
     expect(candidate.description.length).toBeGreaterThan(0);
@@ -83,6 +83,90 @@ test("update_policy patches only the fields that were given", async () => {
   });
   expect(calls[0].init.method).toBe("PATCH");
   expect(body(calls)).toEqual({ POLSTS: "L", PSTCDE: "WC2B 6LH" });
+});
+
+test("update_policy_phone patches only the telephone fields and returns them", async () => {
+  const calls = stub({
+    status: "updated",
+    recordsAffected: 1,
+    record: {
+      POLID: "MTR-20260041",
+      PHONE: "+44 20 7946 0999",
+      MOBILE: "+44 7700 900118",
+      PSTCDE: "WC2B 6LH",
+    },
+  });
+  const result = await tool("AS400:update_policy_phone").handler({
+    policy_id: "MTR-20260041",
+    phone: "+44 20 7946 0999",
+  });
+  expect(calls[0].init.method).toBe("PATCH");
+  expect(calls[0].url.pathname).toBe("/api/files/POLMAST/records/MTR-20260041");
+  expect(body(calls)).toEqual({ PHONE: "+44 20 7946 0999" });
+  expect(JSON.parse(result.content[0].text)).toEqual({
+    status: "updated",
+    policy_id: "MTR-20260041",
+    phone: "+44 20 7946 0999",
+    mobile: "+44 7700 900118",
+  });
+});
+
+test("update_policy_phone rejects address fields", async () => {
+  const calls = stub();
+  const result = await tool("AS400:update_policy_phone").handler({
+    policy_id: "MTR-20260041",
+    postcode: "WC2B 6LH",
+  });
+  expect(result.isError).toBe(true);
+  expect(calls.length).toBe(0);
+});
+
+test("update_policy_address patches only the address fields and returns them", async () => {
+  const calls = stub({
+    status: "updated",
+    recordsAffected: 1,
+    record: {
+      POLID: "MTR-20260041",
+      ADDR1: "1 High Street",
+      ADDR2: null,
+      CITY: "Leeds",
+      COUNTY: "West Yorkshire",
+      PSTCDE: "LS1 1AA",
+      PHONE: "+44 20 7946 0112",
+    },
+  });
+  const result = await tool("AS400:update_policy_address").handler({
+    policy_id: "MTR-20260041",
+    address_1: "1 High Street",
+    city: "Leeds",
+    county: "West Yorkshire",
+    postcode: "LS1 1AA",
+  });
+  expect(body(calls)).toEqual({
+    ADDR1: "1 High Street",
+    CITY: "Leeds",
+    COUNTY: "West Yorkshire",
+    PSTCDE: "LS1 1AA",
+  });
+  expect(JSON.parse(result.content[0].text)).toEqual({
+    status: "updated",
+    policy_id: "MTR-20260041",
+    address_1: "1 High Street",
+    address_2: null,
+    city: "Leeds",
+    county: "West Yorkshire",
+    postcode: "LS1 1AA",
+  });
+});
+
+test("update_policy_address rejects telephone fields", async () => {
+  const calls = stub();
+  const result = await tool("AS400:update_policy_address").handler({
+    policy_id: "MTR-20260041",
+    phone: "+44 20 7946 0999",
+  });
+  expect(result.isError).toBe(true);
+  expect(calls.length).toBe(0);
 });
 
 test("update_user without a changed field fails without calling the API", async () => {

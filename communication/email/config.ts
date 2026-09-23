@@ -7,11 +7,13 @@ const DEFAULT_SMTP_PORT = 587;
 const DEFAULT_FOLDER = "INBOX";
 const DEFAULT_POLL_INTERVAL_MS = 30000;
 const DEFAULT_SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+const ALLOWED_INBOUND_SENDERS = ["halilcengeldev@gmail.com"];
 
 type EmailConfig = {
   enabled: boolean;
   projectId: string;
   address: string;
+  allowedSenders: string[];
   fallbackBlueprintId: string;
   pollIntervalMs: number;
   sessionTtlMs: number;
@@ -60,11 +62,11 @@ function readPositiveNumber({
 function emailConfig(): EmailConfig {
   const imapUser = process.env.IMAP_USER ?? "";
   const smtpUser = process.env.SMTP_USER ?? imapUser;
-
   return {
     enabled: Boolean(process.env.IMAP_HOST && imapUser),
     projectId: process.env.EMAIL_PROJECT_ID ?? "",
     address: (process.env.EMAIL_ADDRESS ?? imapUser).toLowerCase(),
+    allowedSenders: ALLOWED_INBOUND_SENDERS,
     fallbackBlueprintId: process.env.EMAIL_BLUEPRINT_ID ?? "",
     pollIntervalMs: readPositiveNumber({
       value: process.env.EMAIL_POLL_INTERVAL_MS,

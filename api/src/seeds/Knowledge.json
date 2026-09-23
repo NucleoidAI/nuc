@@ -192,6 +192,13 @@
       "text": "VM metric alert emails should be sent to halilibrahimcengel7@gmail.com.",
       "status": "COMPLETED",
       "createdAt": "2026-07-16T10:00:00.000Z"
+    },
+    {
+      "id": "019fb230-0001-4000-8000-000000000001",
+      "type": "TEXT",
+      "text": "Use email for phone number changes. Use WhatsApp for all other changes.",
+      "status": "COMPLETED",
+      "createdAt": "2026-09-23T10:00:00.000Z"
     }
   ]
 }

@@ -301,6 +301,10 @@ async function approve({
     throw new Error("No step is waiting for approval in this session");
   }
 
+  if (waiting.step.action === "PLATFORM:two_factor") {
+    throw new Error("Use the 2FA verification endpoint");
+  }
+
   if (comment) {
     await taskFn.updateStepComment({
       taskId: waiting.taskId,
@@ -355,9 +359,12 @@ async function forceNodeStep({
 }
 
 async function task({ taskId }: { taskId: string }) {
-  const { agentId, description, sessionId, blueprintId } = await taskFn.get({
-    taskId,
-  });
+  const { agentId, description, sessionId, blueprintId, status } =
+    await taskFn.get({
+      taskId,
+    });
+
+  if (status !== "IN_PROGRESS") return;
 
   console.log(agentId, blueprintId, sessionId);
 
@@ -366,6 +373,9 @@ async function task({ taskId }: { taskId: string }) {
     blueprintId,
     steps: await taskFn.listSteps({ taskId }),
   };
+
+  if (currentTask.steps.some((step) => step.status === "WAITING_FOR_APPROVAL"))
+    return;
 
   //TODO: Loop detection
   if (currentTask.steps.length > 20) {
@@ -480,7 +490,8 @@ async function task({ taskId }: { taskId: string }) {
     });
   }
 
-  const isForceNode = currentNode?.properties?.force === true;
+  const isForceNode = currentNode?.properties?.force === true ||
+    currentNode?.properties?.action === "PLATFORM:two_factor";
 
   const nodeAction = currentNode?.properties?.action;
 
@@ -710,7 +721,10 @@ async function step({
     actionType = "SUPERVISED";
   } else if (action === "PLATFORM:user_interaction") {
     actionType = "INTERACTION";
-  } else if (action === "PLATFORM:customer_approval") {
+  } else if (
+    action === "PLATFORM:customer_approval" ||
+    action === "PLATFORM:two_factor"
+  ) {
     actionType = "APPROVAL";
   } else if (action === "SUPERVISOR_RESPONDED") {
     actionType = "SUPERVISED_RESPONDED";
@@ -782,7 +796,10 @@ async function step({
     } else if (actionType === "INTERACTION") {
       actionFn = require("../actions/interaction").default;
     } else if (actionType === "APPROVAL") {
-      actionFn = require("../actions/customer_approval").default;
+      actionFn =
+        action === "PLATFORM:two_factor"
+          ? require("../actions/two_factor").default
+          : require("../actions/customer_approval").default;
     }
 
     if (
@@ -805,7 +822,7 @@ async function step({
           )
           .join("\n"),
         parameters: runParameters,
-        meta: { taskId },
+        meta: { taskId, stepId },
       });
 
       console.debug(
@@ -904,6 +921,9 @@ async function step({
     }
   } catch (err: unknown) {
     if (err instanceof Error) {
+      if (action === "PLATFORM:two_factor" && taskId) {
+        await taskFn.update({ taskId, status: "FAILED", comment: err.message });
+      }
       await taskFn.updateStep({
         stepId,
         result: err.message,
@@ -1465,6 +1485,16 @@ async function chat({
     const approvalStep = approvalTask.steps.find(
       (step) => step.status === "WAITING_FOR_APPROVAL",
     );
+
+    if (approvalStep?.action === "PLATFORM:two_factor") {
+      await session.addConversation({
+        sessionId,
+        agentId,
+        role: "ASSISTANT",
+        content: "Please complete the pending 2FA verification to continue.",
+      });
+      return;
+    }
 
     const question = approvalStep?.parameters?.question;
 

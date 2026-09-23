@@ -1047,9 +1047,9 @@
     {
       "id": "019fb200-0000-4000-8000-000000000001",
       "title": "Policy Contact Detail Update",
-      "description": "Handles a caller who wants the contact details held against their policy changed. The agent takes the policy number, reads the POLMAST record from the IBM i (AS/400) system, decides whether the caller asked for a telephone or an address change, writes the new value back to the policy record, and then messages the caller confirming what was changed.",
+      "description": "Handles a caller who wants the contact details held against their policy changed. The agent takes the policy number, reads the POLMAST record from the IBM i (AS/400) system, requests 2FA approval using the channel selected from agent knowledge, and only after approval decides whether the caller asked for a telephone or an address change, writes the new value back to the policy record, and messages the caller confirming what was changed.",
       "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64",
-      "skill": "**Policy Contact Update \u2014 Lookup, Amend, Confirm**\n\nUse this Blueprint when a caller gives a policy number and asks for the telephone or the address on that policy to be changed.\n\nFlow: Get policy by policy number \u2192 Decide phone or address change \u2192 [Phone: update telephone] / [Address: update address] \u2192 Message the user with the confirmation \u2192 Complete.\n\nAlways read the policy first so the current values are known before writing. Change only the field the caller asked for and leave the rest of the record untouched.",
+      "skill": "**Policy Contact Update \u2014 Lookup, Verify, Amend, Confirm**\n\nUse this Blueprint when a caller gives a policy number and asks for the telephone or the address on that policy to be changed.\n\nFlow: Get policy by policy number \u2192 Request 2FA approval (choose channel from agent knowledge) \u2192 Decide phone or address change \u2192 [Phone: update telephone] / [Address: update address] \u2192 Message the user with the confirmation \u2192 Complete.\n\nAlways read the policy first and obtain 2FA approval before writing. Use existing trusted contact details for verification. Change only the field the caller asked for and leave the rest of the record untouched.",
       "nodes": [
         {
           "id": "019fb200-0001-4000-8000-000000000001",
@@ -1060,8 +1060,22 @@
             "label": "Get Policy by Policy No",
             "icon": "mdi:file-document-outline"
           },
-          "next": ["019fb200-0002-4000-8000-000000000002"],
+          "next": ["019fb200-0007-4000-8000-000000000007"],
           "createdAt": "2026-09-21T10:00:00Z"
+        },
+        {
+          "id": "019fb200-0007-4000-8000-000000000007",
+          "type": "NORMAL",
+          "properties": {
+            "action": "PLATFORM:two_factor",
+            "description": "Ask the policyholder to approve the requested contact detail change before updating the policy. Choose the channel and existing recipient contact using the agent knowledge and the retrieved policy.",
+            "instructions": "Choose channel automatically according to the agent knowledge and the requested change. Use the existing contact details from the retrieved policy or another trusted customer record for recipient, never the replacement contact detail. Set question to a clear approval request identifying the policy and requested change. Wait for approval before continuing.",
+            "label": "Verify Contact Change (2FA)",
+            "icon": "mdi:shield-key",
+            "force": true
+          },
+          "next": ["019fb200-0002-4000-8000-000000000002"],
+          "createdAt": "2026-09-23T10:00:00Z"
         },
         {
           "id": "019fb200-0002-4000-8000-000000000002",

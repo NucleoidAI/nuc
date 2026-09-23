@@ -198,7 +198,7 @@ async function handleInbound({ mail }: { mail: InboundMail }): Promise<void> {
 }
 
 async function fetchUnseen({ client }: { client: ImapFlow }): Promise<void> {
-  const { address } = emailConfig();
+  const { address, allowedSenders } = emailConfig();
   const lock = await client.getMailboxLock(emailConfig().imap.folder);
 
   try {
@@ -222,7 +222,12 @@ async function fetchUnseen({ client }: { client: ImapFlow }): Promise<void> {
         uid: true,
       });
 
-      if (!mail || mail.from === address || isAutomated({ parsed })) {
+      if (
+        !mail ||
+        mail.from === address ||
+        !allowedSenders.includes(mail.from) ||
+        isAutomated({ parsed })
+      ) {
         continue;
       }
 

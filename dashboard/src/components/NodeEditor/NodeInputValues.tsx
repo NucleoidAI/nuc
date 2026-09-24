@@ -1,6 +1,7 @@
 import MarkdownRenderer from "../MarkdownRenderer/MarkdownRenderer";
 import { isRefValue } from "../BlueprintFlow/helper";
 import { useState } from "react";
+
 import { Box, MenuItem, Stack, TextField, Typography } from "@mui/material";
 
 type InputSchema = {
@@ -93,10 +94,6 @@ export default function NodeInputValues({
         <Typography variant="subtitle2" fontWeight="bold">
           Input values
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Fixed values are saved in the blueprint and used every time this node
-          runs.
-        </Typography>
       </Box>
       {Object.entries(properties).map(([field, schema]) => {
         const value = parameters[field];
@@ -123,7 +120,6 @@ export default function NodeInputValues({
                 },
               }}
               size="small"
-              label={`${field} source`}
               value={mode}
               onChange={(event) => {
                 const next = { ...parameters };
@@ -139,9 +135,6 @@ export default function NodeInputValues({
                 <MenuItem value="reference">Connected output</MenuItem>
               )}
             </TextField>
-            {isReference && (
-              <Typography variant="caption">{value.$ref}</Typography>
-            )}
             {mode === "fixed" &&
               (Boolean(schema.enum?.length) ||
                 schema.type !== "string" ||
@@ -173,7 +166,6 @@ export default function NodeInputValues({
                     typeof value === "string" ? value : JSON.stringify(value)
                   }
                   error={Boolean(error)}
-                  helperText={error || schema.description}
                   onChange={(event) =>
                     onChange({
                       ...parameters,

@@ -2,6 +2,10 @@ import type { RawNode } from "../BlueprintFlow/miniTypes";
 import useBlueprint from "../../hooks/useBlueprint";
 import { useMemo } from "react";
 
+import {
+  APPROVAL_BG_TO,
+  APPROVAL_BORDER_SOLID,
+} from "../BlueprintFlow/BlueprintFlowPlugin";
 import { Box, Skeleton, Typography } from "@mui/material";
 import {
   FlowSvgContent,
@@ -39,6 +43,15 @@ export function BlueprintFlowMiniPreview({
 
   const nodes: RawNode[] = blueprintNodes?.nodes || [];
   const dotColor = alpha(theme.palette.divider, 0.08);
+
+  const miniMapStyle = (node: { type?: string }) => {
+    const isApproval = node?.type === "APPROVAL";
+    if (!isApproval) return {};
+    return {
+      bg: APPROVAL_BG_TO,
+      borderColor: APPROVAL_BORDER_SOLID,
+    };
+  };
 
   if (!nodes.length) {
     return (
@@ -85,6 +98,7 @@ export function BlueprintFlowMiniPreview({
         svgW={svgW}
         svgH={svgH}
         uid={blueprintId}
+        style={miniMapStyle}
       />
     </Box>
   );

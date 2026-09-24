@@ -20,9 +20,11 @@ const FORCE_COLOR = "#b8860b";
 const SWITCH_BORDER_COLOR = "linear-gradient(135deg, #7c5cff66, #00c2ff59)";
 const SWITCH_BG_FROM = "rgba(124, 92, 255, 0.20)";
 const SWITCH_BG_TO = "rgba(0, 194, 255, 0.26)";
-const APPROVAL_BORDER_COLOR = "linear-gradient(135deg, #fde04766, #ca8a0459)";
-const APPROVAL_BG_FROM = "rgba(199, 176, 59, 0.4)";
-const APPROVAL_BG_TO = "rgba(202, 138, 4, 0.50)";
+export const APPROVAL_BORDER_COLOR =
+  "linear-gradient(135deg, #fde04766, #ca8a0459)";
+export const APPROVAL_BORDER_SOLID = "#ca8a04";
+export const APPROVAL_BG_FROM = "rgba(199, 176, 59, 0.4)";
+export const APPROVAL_BG_TO = "rgba(202, 138, 4, 0.50)";
 
 const AddButtonWrapper = styled("div")(({ theme }) => ({
   position: "absolute",

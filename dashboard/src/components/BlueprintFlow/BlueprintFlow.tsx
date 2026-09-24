@@ -190,14 +190,20 @@ export default function BlueprintFlow({
     [graphData]
   );
 
-  const miniMapStyle = useCallback((node: { nodeType?: string }) => {
-    const isApproval = node?.nodeType === "APPROVAL";
-    if (!isApproval) return {};
-    return {
-      bg: APPROVAL_BG_TO,
-      borderColor: APPROVAL_BORDER_SOLID,
-    };
-  }, []);
+  const miniMapStyle = useCallback(
+    (node: { nodeType?: string; properties?: { action?: string } }) => {
+      console.log("node", node);
+      const isApproval =
+        node?.nodeType === "APPROVAL" ||
+        node?.properties?.action === "PLATFORM:two_factor";
+      if (!isApproval) return {};
+      return {
+        bg: APPROVAL_BG_TO,
+        borderColor: APPROVAL_BORDER_SOLID,
+      };
+    },
+    []
+  );
 
   return (
     <Box

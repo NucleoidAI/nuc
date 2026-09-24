@@ -1,14 +1,12 @@
 import NodeEditorDrawer from "../../components/NodeEditor/NodeEditorDrawer";
+import type { SwitchCase } from "../../components/BlueprintFlow/helper";
+
 import useAgents from "../../hooks/useAgents";
 import useBlueprint from "../../hooks/useBlueprint";
 import useMCPs from "../../hooks/useMCPs";
 
-import type {
-  DefinitionGraph,
-  SwitchCase,
-} from "../../components/BlueprintFlow/helper";
-
 import React, { useEffect, useState } from "react";
+
 import { getNextNodeId, isValidIntegration } from "./helper";
 
 const NodeEditorWidget = ({

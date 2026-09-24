@@ -44,8 +44,13 @@ export function BlueprintFlowMiniPreview({
   const nodes: RawNode[] = blueprintNodes?.nodes || [];
   const dotColor = alpha(theme.palette.divider, 0.08);
 
-  const miniMapStyle = (node: { type?: string }) => {
-    const isApproval = node?.type === "APPROVAL";
+  const miniMapStyle = (node: {
+    type?: string;
+    properties?: { action?: string };
+  }) => {
+    const isApproval =
+      node?.type === "APPROVAL" ||
+      node?.properties?.action === "PLATFORM:two_factor";
     if (!isApproval) return {};
     return {
       bg: APPROVAL_BG_TO,

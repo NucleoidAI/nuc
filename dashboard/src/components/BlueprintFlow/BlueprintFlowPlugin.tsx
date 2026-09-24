@@ -654,7 +654,8 @@ export const blueprintFlowPlugin = {
 
   style: ({ node, style }) => {
     const styleTokens = style || {};
-    const isApproval = node?.nodeType === "APPROVAL";
+    const isApproval =
+      node?.nodeType === "APPROVAL" || node?.action === "PLATFORM:two_factor";
     const isSwitch = node?.nodeType === "SWITCH";
 
     const connectionsGap = styleTokens.showConnections

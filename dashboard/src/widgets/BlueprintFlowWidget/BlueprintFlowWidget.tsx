@@ -305,7 +305,7 @@ function BlueprintFlowWidget({
   const [newNodeQuestion, setNewNodeQuestion] = useState("");
   const [newNodeDescription, setNewNodeDescription] = useState("");
   const [newNodePseudocodeEnabled, setNewNodePseudocodeEnabled] =
-    useState(false);
+    useState(true);
   const [pseudocodeLoading, setPseudocodeLoading] = useState(false);
   const [newNodeForce, setNewNodeForce] = useState(false);
   const [newNodeParameters, setNewNodeParameters] = useState<
@@ -441,6 +441,23 @@ function BlueprintFlowWidget({
     }
   }, [graphData, mcps, showValidationErrors]);
 
+  const generateNodePseudocode = async (instructions: string) => {
+    const effectiveAgentId =
+      agentId || blueprintNodes?.agentId || blueprint?.agentId;
+
+    setPseudocodeLoading(true);
+
+    try {
+      setNodePseudocode(
+        await generatePseudocode(instructions, effectiveAgentId)
+      );
+    } catch {
+      setNodePseudocode("");
+    } finally {
+      setPseudocodeLoading(false);
+    }
+  };
+
   const handlePseudocodeEnabledChange = async (enabled: boolean) => {
     setNewNodePseudocodeEnabled(enabled);
 
@@ -449,17 +466,36 @@ function BlueprintFlowWidget({
       return;
     }
 
-    setPseudocodeLoading(true);
-
-    try {
-      setNodePseudocode(await generatePseudocode(newNodeInstructions, agentId));
-    } catch {
-      setNodePseudocode("");
-      setNewNodePseudocodeEnabled(false);
-    } finally {
-      setPseudocodeLoading(false);
-    }
+    await generateNodePseudocode(newNodeInstructions);
   };
+
+  const pseudocodeDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null
+  );
+
+  useEffect(() => {
+    if (!drawerOpen || !newNodePseudocodeEnabled) return;
+
+    if (pseudocodeDebounceRef.current) {
+      clearTimeout(pseudocodeDebounceRef.current);
+    }
+
+    if (!newNodeInstructions.trim()) {
+      setNodePseudocode("");
+      return;
+    }
+
+    pseudocodeDebounceRef.current = setTimeout(() => {
+      generateNodePseudocode(newNodeInstructions);
+    }, 1200);
+
+    return () => {
+      if (pseudocodeDebounceRef.current) {
+        clearTimeout(pseudocodeDebounceRef.current);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newNodeInstructions, newNodePseudocodeEnabled, drawerOpen]);
 
   const handleIntegrationChange = (integration) => {
     setNewNodeDescription((current) =>
@@ -485,7 +521,7 @@ function BlueprintFlowWidget({
     setNewNodeForce(false);
     setNewNodeParameters({});
     setNodePseudocode("");
-    setNewNodePseudocodeEnabled(false);
+    setNewNodePseudocodeEnabled(true);
     setNewNodeType("NORMAL");
     setSelectedBranch("true");
     setInheritedNextBranch("none");
@@ -512,9 +548,7 @@ function BlueprintFlowWidget({
     setNewNodeParameters({ ...node?.raw?.properties?.parameters });
     setNewNodeType(nodeType);
     setNodePseudocode(node?.raw?.properties?.pseudocode || "");
-    setNewNodePseudocodeEnabled(
-      node?.raw?.properties?.pseudocodeEnabled === true
-    );
+    setNewNodePseudocodeEnabled(true);
 
     if (nodeType === "HANDOFF") {
       setHandoffTargetAgentId(node?.raw?.properties?.targetAgentId || "");
@@ -1605,7 +1639,7 @@ function BlueprintFlowWidget({
     setNewNodeInstructions("");
     setNewNodeQuestion("");
     setNodePseudocode("");
-    setNewNodePseudocodeEnabled(false);
+    setNewNodePseudocodeEnabled(true);
     setNewNodeType("NORMAL");
     setSelectedBranch("true");
     setShowValidationErrors(false);
@@ -1671,7 +1705,6 @@ function BlueprintFlowWidget({
         drawerOpen={drawerOpen}
         handleDrawerClose={handleDrawerClose}
         selectedParentNode={selectedParentNode}
-        graphData={graphData}
         newNodeLabel={newNodeLabel}
         setNewNodeLabel={setNewNodeLabel}
         newNodeInstructions={newNodeInstructions}

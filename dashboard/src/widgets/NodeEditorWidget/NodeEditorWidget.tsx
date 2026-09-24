@@ -1,4 +1,3 @@
-import type { DefinitionGraph } from "../../components/BlueprintFlow/helper";
 import NodeEditorDrawer from "../../components/NodeEditor/NodeEditorDrawer";
 import useAgents from "../../hooks/useAgents";
 import useBlueprint from "../../hooks/useBlueprint";
@@ -13,7 +12,6 @@ const NodeEditorWidget = ({
   drawerOpen,
   handleDrawerClose,
   selectedParentNode,
-  graphData,
   newNodeLabel,
   setNewNodeLabel,
   newNodeInstructions,
@@ -57,7 +55,6 @@ const NodeEditorWidget = ({
     trueNext?: string[];
     falseNext?: string[];
   };
-  graphData: DefinitionGraph;
   newNodeLabel: string;
   setNewNodeLabel: (label: string) => void;
   newNodeInstructions: string;
@@ -220,7 +217,7 @@ const NodeEditorWidget = ({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editMode, editingNode, drawerOpen]);
+  }, [editMode, editingNode, drawerOpen, allIntegrations]);
 
   const filteredIntegrations = searchQuery
     ? allIntegrations.filter(
@@ -237,19 +234,7 @@ const NodeEditorWidget = ({
       )
     : allIntegrations;
 
-  const parentIntegration = selectedParentNode?.action
-    ? allIntegrations.find(
-        (integration) => integration?.action === selectedParentNode?.action
-      )
-    : null;
-
   const nextNodeId = getNextNodeId(selectedParentNode, selectedBranch);
-  const nextNode = nextNodeId && graphData?.nodes?.[nextNodeId];
-  const nextIntegration = nextNode?.action
-    ? allIntegrations.find(
-        (integration) => integration?.action === nextNode.action
-      )
-    : null;
 
   const hasInheritedNext = !!nextNodeId;
 
@@ -286,8 +271,6 @@ const NodeEditorWidget = ({
       setSearchQuery={setSearchQuery}
       selectedIntegration={selectedIntegration}
       setSelectedIntegration={setSelectedIntegration}
-      parentIntegration={parentIntegration}
-      nextIntegration={nextIntegration}
       handleSubmit={handleSubmit}
       editMode={editMode}
       availableAgents={availableAgents}

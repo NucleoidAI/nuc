@@ -42,7 +42,7 @@ const INITIAL_NODE_EDITOR: NodeEditorState = {
   editingNodeId: null,
   label: "",
   instructions: "",
-  pseudocodeEnabled: false,
+  pseudocodeEnabled: true,
   pseudocode: "",
   pseudocodeLoading: false,
   nodeType: "NORMAL",
@@ -510,8 +510,7 @@ function APITab({ agentId }: { agentId: string }) {
         editingNodeId: graphNode.id,
         label: graphNode.label || "",
         instructions: (graphNode.raw?.properties?.instructions as string) || "",
-        pseudocodeEnabled:
-          graphNode.raw?.properties?.pseudocodeEnabled === true,
+        pseudocodeEnabled: true,
         pseudocode: (graphNode.raw?.properties?.pseudocode as string) || "",
         pseudocodeLoading: false,
         nodeType: graphNode.nodeType || "NORMAL",
@@ -532,6 +531,21 @@ function APITab({ agentId }: { agentId: string }) {
     [activeResourcePath]
   );
 
+  const generateNodePseudocode = async (instructions: string) => {
+    setNodeEditor((p) => ({ ...p, pseudocodeLoading: true }));
+
+    try {
+      const pseudocode = await generatePseudocode(instructions, agentId);
+      setNodeEditor((p) => ({ ...p, pseudocode, pseudocodeLoading: false }));
+    } catch {
+      setNodeEditor((p) => ({
+        ...p,
+        pseudocode: "",
+        pseudocodeLoading: false,
+      }));
+    }
+  };
+
   const handlePseudocodeEnabledChange = async (enabled: boolean) => {
     setNodeEditor((p) => ({ ...p, pseudocodeEnabled: enabled }));
 
@@ -540,23 +554,36 @@ function APITab({ agentId }: { agentId: string }) {
       return;
     }
 
-    setNodeEditor((p) => ({ ...p, pseudocodeLoading: true }));
-
-    try {
-      const pseudocode = await generatePseudocode(
-        nodeEditor.instructions,
-        agentId
-      );
-      setNodeEditor((p) => ({ ...p, pseudocode, pseudocodeLoading: false }));
-    } catch {
-      setNodeEditor((p) => ({
-        ...p,
-        pseudocode: "",
-        pseudocodeEnabled: false,
-        pseudocodeLoading: false,
-      }));
-    }
+    await generateNodePseudocode(nodeEditor.instructions);
   };
+
+  const pseudocodeDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null
+  );
+
+  useEffect(() => {
+    if (!nodeEditor.open || !nodeEditor.pseudocodeEnabled) return;
+
+    if (pseudocodeDebounceRef.current) {
+      clearTimeout(pseudocodeDebounceRef.current);
+    }
+
+    if (!nodeEditor.instructions.trim()) {
+      setNodeEditor((p) => ({ ...p, pseudocode: "" }));
+      return;
+    }
+
+    pseudocodeDebounceRef.current = setTimeout(() => {
+      generateNodePseudocode(nodeEditor.instructions);
+    }, 1200);
+
+    return () => {
+      if (pseudocodeDebounceRef.current) {
+        clearTimeout(pseudocodeDebounceRef.current);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nodeEditor.instructions, nodeEditor.pseudocodeEnabled, nodeEditor.open]);
 
   const handleNodeSubmit = () => {
     if (!activeResourcePath || !flowGraphData) return;
@@ -731,7 +758,6 @@ function APITab({ agentId }: { agentId: string }) {
         drawerOpen={nodeEditor.open}
         handleDrawerClose={() => setNodeEditor(INITIAL_NODE_EDITOR)}
         selectedParentNode={nodeEditor.parentNode}
-        graphData={flowGraphData}
         newNodeLabel={nodeEditor.label}
         setNewNodeLabel={(v: string) =>
           setNodeEditor((p) => ({ ...p, label: v }))

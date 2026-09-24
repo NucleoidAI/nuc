@@ -19,7 +19,7 @@
     "install:communication": "cd ./communication && bun install",
     "install:server-dashboard": "cd ./server-dashboard && bun install",
     "install:mcp": "cd ./mcp && bun install",
-    "install": "bun run install:api && bun run install:dashboard && bun run install:communication && bun run install:server-dashboard && bun run install:mcp",
+    "install": "bun run install:api && bun run install:dashboard && bun run install:communication && bun run install:server-dashboard && bun run install:mcp && bun run install:demo",
     "install:api": "cd ./api && bun install",
     "test:api": "cd ./api && bun run test",
     "test:dashboard": "cd ./dashboard && bun run test",
@@ -41,7 +41,10 @@
     "lint:dashboard": "cd ./dashboard && bun run lint",
     "lint": "bun run lint:dashboard",
     "typecheck:dashboard": "cd ./dashboard && bun run typecheck",
-    "typecheck": "bun run typecheck:dashboard"
+    "typecheck": "bun run typecheck:dashboard",
+    "demo": "dotenv -e .env.local -- bun demo/server.ts",
+    "install:demo": "cd ./demo && bun install",
+    "demo:overlay": "cd demo/overlay && swift run -c release DemoOverlay"
   },
   "dependencies": {
     "@aws-sdk/client-ec2": "^3.1085.0",

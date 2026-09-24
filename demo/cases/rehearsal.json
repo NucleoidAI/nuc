@@ -1,0 +1,36 @@
+{
+  "name": "Rehearsal (timers only)",
+  "description": "Check the layouts and the indicator without running GreyCollar",
+  "indicator": { "position": "bottom", "size": 150 },
+  "windows": {
+    "left": { "type": "chrome", "url": "https://example.com" },
+    "right": { "type": "chrome", "url": "https://example.org" }
+  },
+  "steps": [
+    {
+      "id": "one",
+      "title": "Full screen",
+      "note": "One window across the whole stage.",
+      "layout": { "preset": "full", "panes": [{ "window": "left" }] },
+      "advance": [{ "delay": 5000 }]
+    },
+    {
+      "id": "two",
+      "title": "Split view",
+      "note": "Two windows side by side.",
+      "layout": {
+        "preset": "columns",
+        "panes": [{ "window": "left" }, { "window": "right" }]
+      },
+      "advance": [{ "delay": 5000 }]
+    },
+    {
+      "id": "three",
+      "title": "Main + side",
+      "layout": {
+        "preset": "main-right",
+        "panes": [{ "window": "right" }, { "window": "left" }]
+      }
+    }
+  ]
+}

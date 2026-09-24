@@ -3,6 +3,7 @@ import { ParsedMail, simpleParser } from "mailparser";
 import { createServiceToken } from "./token";
 import { createSession } from "../api/createSession";
 import { emailConfig } from "./config";
+import { event } from "@canmingir/link-express/event/client";
 import { findSessionId, rememberSession, Thread } from "./store";
 import { getBlueprint } from "../api/getBlueprint";
 import { getCommunications } from "../api/getCommunications";
@@ -195,6 +196,17 @@ async function handleInbound({ mail }: { mail: InboundMail }): Promise<void> {
   rememberSession({ thread, sessionId });
 
   await sendMessageToSession(sessionId, accessToken, mail.text);
+
+  await event.publish("EMAIL_RECEIVED", {
+    sessionId,
+    newSession: !existingSessionId,
+    from: mail.from,
+    fromName: mail.fromName,
+    to: mail.recipients,
+    subject: mail.subject,
+    text: mail.text,
+    mailbox: address,
+  });
 }
 
 async function fetchUnseen({ client }: { client: ImapFlow }): Promise<void> {

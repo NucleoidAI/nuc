@@ -1,0 +1,200 @@
+{
+  "name": "Policy Address Update",
+  "description": "Customer emails an address change, GreyCollar reads the policy from IBM i, gets WhatsApp 2FA approval and updates the address",
+  "vars": {
+    "policyBlueprintId": "019fb200-0000-4000-8000-000000000001"
+  },
+  "indicator": {
+    "position": "right",
+    "size": 360
+  },
+  "gap": 8,
+  "captures": [
+    {
+      "event": "TASK_CREATED",
+      "where": {
+        "blueprintId": "{{policyBlueprintId}}"
+      },
+      "capture": {
+        "taskId": "taskId",
+        "agentId": "agentId"
+      }
+    }
+  ],
+  "windows": {
+    "gmail": {
+      "type": "chrome",
+      "url": "https://mail.google.com/mail/u/4/#sent"
+    },
+    "greycollar": {
+      "type": "chrome-app",
+      "app": "BGTS AI Platform"
+    },
+    "ibm": {
+      "type": "chrome-app",
+      "app": "IBM i (AS:400) — CORPSYS1"
+    },
+    "whatsapp": {
+      "type": "chrome-app",
+      "app": "WhatsApp Business"
+    }
+  },
+  "steps": [
+    {
+      "id": "send-email",
+      "title": "Customer emails an address change",
+      "note": "Send the prepared email from Gmail with the policy number and the new address.",
+      "layout": {
+        "panes": [
+          {
+            "window": "gmail",
+            "side": "full"
+          }
+        ]
+      },
+      "advance": [
+        {
+          "event": "EMAIL_RECEIVED",
+          "capture": {
+            "sessionId": "sessionId",
+            "customer": "from"
+          },
+          "label": "Waiting for the email to reach GreyCollar"
+        }
+      ]
+    },
+    {
+      "id": "task-created",
+      "title": "Task lands in GreyCollar",
+      "note": "The email from {{customer}} opened a Policy Contact Detail Update task. Show the task and its plan.",
+      "layout": {
+        "ratio": 0.5,
+        "panes": [
+          {
+            "window": "gmail",
+            "side": "left"
+          },
+          {
+            "window": "greycollar",
+            "side": "right",
+            "route": "/agents/{{agentId}}?tab=tasks"
+          }
+        ]
+      },
+      "advance": [
+        {
+          "event": "STEP_ADDED",
+          "where": {
+            "taskId": "{{taskId}}"
+          },
+          "capture": {
+            "lookupStepId": "stepId"
+          },
+          "label": "Waiting for the first step"
+        }
+      ]
+    },
+    {
+      "id": "policy-lookup",
+      "title": "Policy read from IBM i",
+      "note": "The agent reads the POLMAST record from the AS/400 using the policy number.",
+      "layout": {
+        "ratio": 0.5,
+        "panes": [
+          {
+            "window": "ibm",
+            "side": "left"
+          },
+          {
+            "window": "greycollar",
+            "side": "right"
+          }
+        ]
+      },
+      "advance": [
+        {
+          "event": "STEP_ADDED",
+          "where": {
+            "taskId": "{{taskId}}",
+            "action": "PLATFORM:two_factor"
+          },
+          "label": "Waiting for the 2FA step"
+        }
+      ]
+    },
+    {
+      "id": "two-factor",
+      "title": "WhatsApp 2FA approval",
+      "note": "Before writing anything the agent asks the policy holder for approval on WhatsApp. Approve the request.",
+      "layout": {
+        "ratio": 0.5,
+        "panes": [
+          {
+            "side": "left",
+            "window": "whatsapp"
+          },
+          {
+            "side": "right",
+            "window": "greycollar"
+          }
+        ]
+      },
+      "advance": [
+        {
+          "event": "STEP_COMPLETED",
+          "where": {
+            "taskId": "{{taskId}}",
+            "action": "PLATFORM:two_factor",
+            "result": "APPROVED"
+          },
+          "label": "Waiting for the 2FA approval"
+        }
+      ]
+    },
+    {
+      "id": "address-update",
+      "title": "Address updated in IBM i",
+      "note": "After approval the agent writes the new address to the policy record and confirms it to the customer.",
+      "layout": {
+        "panes": [
+          {
+            "side": "left",
+            "window": "ibm"
+          },
+          {
+            "side": "right",
+            "window": "greycollar"
+          }
+        ],
+        "ratio": 0.5
+      },
+      "advance": [
+        {
+          "event": "TASK_COMPLETED",
+          "where": {
+            "taskId": "{{taskId}}"
+          },
+          "label": "Waiting for the task to complete"
+        }
+      ]
+    },
+    {
+      "id": "confirmation",
+      "title": "Customer gets the confirmation",
+      "note": "Show the confirmation email in Gmail next to the completed task in GreyCollar.",
+      "layout": {
+        "ratio": 0.5,
+        "panes": [
+          {
+            "side": "left",
+            "window": "greycollar"
+          },
+          {
+            "side": "right",
+            "window": "gmail"
+          }
+        ]
+      }
+    }
+  ]
+}

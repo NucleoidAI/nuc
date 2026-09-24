@@ -25,6 +25,14 @@ async function deliver({
       references: thread.references,
     });
 
+    await event.publish("EMAIL_SENT", {
+      sessionId,
+      to: thread.from,
+      subject: thread.subject,
+      text: content,
+      mailbox: thread.mailbox,
+    });
+
     if (messageId) {
       const sent = messageId.replace(/^<|>$/g, "");
 

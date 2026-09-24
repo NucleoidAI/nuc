@@ -39,6 +39,7 @@ function TasksWidget({
     "All" | "COMPLETED" | "IN_PROGRESS"
   >("All");
   const [query, setQuery] = useState<string>("");
+  const [detailsExpanded, setDetailsExpanded] = useState<boolean>(false);
   const [selectedTask, setSelectedTask] = useState<{
     id: string;
     description: string;
@@ -161,14 +162,15 @@ function TasksWidget({
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: supervisionRaised
-              ? "1fr"
-              : { xs: "1fr", md: "380px 1fr" },
+            gridTemplateColumns:
+              supervisionRaised || detailsExpanded
+                ? "1fr"
+                : { xs: "1fr", md: "380px 1fr" },
             gap: 2,
             alignItems: "start",
           }}
         >
-          {!supervisionRaised && (
+          {!supervisionRaised && !detailsExpanded && (
             <Card
               sx={{
                 borderRadius: 2,
@@ -262,6 +264,8 @@ function TasksWidget({
                     steps={steps}
                     agentId={agentId}
                     getSteps={getSteps}
+                    isExpanded={detailsExpanded}
+                    onToggleExpand={() => setDetailsExpanded((prev) => !prev)}
                   />
                 </Box>
               </Card>

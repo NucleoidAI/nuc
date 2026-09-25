@@ -61,13 +61,14 @@ export const toTeamTree = (teams, Blueprints) => {
         teamId: c.teamId,
         description: c.description,
         aiEngineId: c.aiEngineId,
-        children: agentBlueprints.map((r) => ({
+        children: agentBlueprints.map((r, index) => ({
           id: r.id,
           nodeKind: "Blueprint",
           title: r.title,
           description: r.description,
           nodes: r.nodes,
           agentId: r.agentId,
+          stackIndex: index,
         })),
       };
     }),

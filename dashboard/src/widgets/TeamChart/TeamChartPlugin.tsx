@@ -69,6 +69,18 @@ export const teamChartPlugin = {
     };
   },
 
+  edge: ({ child }) => {
+    const isStackedChild =
+      typeof child?.stackIndex === "number" && child.stackIndex > 0;
+
+    if (!isStackedChild) return null;
+
+    return {
+      lineWidth: 0.5,
+      showArrow: false,
+    };
+  },
+
   node: ({ node, title, nodeStyle }) => {
     const nodeSx = nodeStyle.nodeSx || {};
     const width = nodeStyle.nodeWidth ?? 350;

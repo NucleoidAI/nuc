@@ -83,11 +83,11 @@
     },
     {
       "id": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5",
-      "name": "file_format_agent",
+      "name": "chem_file_agent",
       "icon": "ph:file-arrow-up-duotone",
       "teamId": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
       "aiEngineId": "816642c9-8a97-41d6-88fc-0f369e26646c",
-      "description": "An agent that converts files between formats such as PDF, DOCX, XLSX, CSV and image types, and returns the converted document to the requester."
+      "description": "An agent that stores files uploaded through the intake portal in S3 and converts molfiles (MOL) to SDF, writing the result beside the original."
     }
   ]
 }

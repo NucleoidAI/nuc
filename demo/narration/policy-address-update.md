@@ -34,7 +34,7 @@ A customer emails to change the address on their policy. The GreyCollar agent re
 
 ## 2 · Task lands in GreyCollar
 
-**Screen:** Gmail on the left, BGTS AI Platform on the right (the page of the agent running the task).
+**Screen:** Gmail on the left, GreyCollar on the right (the page of the agent running the task).
 
 **Behind the scenes:** The agent read the email and understood that it is a contact detail change. Following the blueprint it opened a task with this plan:
 **read the policy → get 2FA approval → decide phone or address → update → notify the customer → complete**.
@@ -50,7 +50,7 @@ A customer emails to change the address on their policy. The GreyCollar agent re
 
 ## 3 · Policy read from IBM i
 
-**Screen:** IBM i (AS/400) on the left, BGTS on the right.
+**Screen:** IBM i (AS/400) on the left, GreyCollar on the right.
 
 **Behind the scenes:** Using the `AS400:get_policy` tool, the agent reads the **POLMAST** record for the policy number in the email: holder, policy type, status, cover dates, premium, sum insured, and the address and contact details on file. This confirms the policy exists and captures its current details.
 
@@ -65,7 +65,7 @@ A customer emails to change the address on their policy. The GreyCollar agent re
 
 ## 4 · WhatsApp 2FA approval
 
-**Screen:** WhatsApp Business on the left, BGTS on the right.
+**Screen:** WhatsApp Business on the left, GreyCollar on the right.
 
 **Presenter action:** **Approve** the request that arrives in WhatsApp.
 
@@ -85,7 +85,7 @@ A customer emails to change the address on their policy. The GreyCollar agent re
 
 ## 5 · Address updated in IBM i
 
-**Screen:** IBM i (AS/400) on the left, BGTS on the right.
+**Screen:** IBM i (AS/400) on the left, GreyCollar on the right.
 
 **Behind the scenes:** At the blueprint's "Phone or address change?" decision the agent took the **address** branch. Using `AS400:update_policy_address` it updated only the address lines, city, county and postcode on the POLMAST record and left the rest of the record untouched. It then sent the customer a confirmation.
 
@@ -100,7 +100,7 @@ A customer emails to change the address on their policy. The GreyCollar agent re
 
 ## 6 · Customer gets the confirmation
 
-**Screen:** BGTS on the left, Gmail on the right.
+**Screen:** GreyCollar on the left, Gmail on the right.
 
 **Presenter action:** Open the confirmation email from the agent in Gmail.
 

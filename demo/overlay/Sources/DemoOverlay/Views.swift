@@ -149,25 +149,34 @@ struct Header: View {
                     .help(state.connected ? "Event bus connected" : "Event bus offline")
                 Text(def.name).fontWeight(.semibold).lineLimit(1)
                 Spacer(minLength: 4)
-                Text(clock(elapsed)).font(.system(size: 11, design: .monospaced)).foregroundStyle(Color.muted)
             }
-            GeometryReader { geometry in
-                ZStack(alignment: .leading) {
-                    Capsule().fill(Color.white.opacity(0.12))
-                    Capsule().fill(Color.accent).frame(width: geometry.size.width * progress)
+            HStack(spacing: 8) {
+                GeometryReader { geometry in
+                    ZStack(alignment: .leading) {
+                        Capsule().fill(Color.white.opacity(0.12))
+                        Capsule().fill(Color.accent).frame(width: geometry.size.width * progress)
+                    }
+                }
+                .frame(height: 3)
+                .animation(.easeOut(duration: 0.4), value: progress)
+
+                if state.mode == "manual" {
+                    Text("MANUAL")
+                        .font(.system(size: 8.5, weight: .bold))
+                        .kerning(1)
+                        .padding(.horizontal, 5)
+                        .padding(.vertical, 2)
+                        .foregroundStyle(Color.warn)
+                        .overlay(Capsule().strokeBorder(Color.warn.opacity(0.6)))
+                        .fixedSize()
+                        .help("Manual mode: you arrange the windows")
                 }
             }
-            .frame(height: 3)
-            .animation(.easeOut(duration: 0.4), value: progress)
         }
     }
 
     private var progress: Double {
         state.finished ? 1 : Double(state.index) / Double(max(def.steps.count, 1))
-    }
-
-    private var elapsed: Double {
-        (state.finished ? state.entered(def.steps.count) ?? client.now : client.now) - state.startedAt
     }
 }
 
@@ -185,7 +194,7 @@ struct StepRow: View {
 
     var body: some View {
         Button {
-            client.send("goto", ["index": index])
+            client.send("goto", ["index": index, "arrange": true])
         } label: {
             HStack(alignment: .top, spacing: 9) {
                 ZStack {
@@ -203,24 +212,12 @@ struct StepRow: View {
                     .foregroundStyle(kind == .later ? Color.faint : Color.muted)
                     .lineLimit(compact ? 2 : 1)
                     .frame(maxWidth: .infinity, alignment: .leading)
-
-                if !compact, kind == .done, let time = duration {
-                    Text(time).font(.system(size: 10, design: .monospaced)).foregroundStyle(Color.faint)
-                }
             }
             .padding(.vertical, 5)
             .padding(.horizontal, 6)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-    }
-
-    private var duration: String? {
-        guard let start = state.entered(index), let end = state.entered(index + 1) else {
-            return nil
-        }
-
-        return clock(end - start)
     }
 }
 
@@ -238,13 +235,7 @@ struct NowCard: View {
             } else {
                 let step = def.steps[state.index]
 
-                HStack {
-                    Text("NOW · \(state.index + 1)/\(def.steps.count)")
-                    Spacer()
-                    if let entered = state.entered(state.index) {
-                        Text(clock(client.now - entered)).font(.system(size: 10, design: .monospaced))
-                    }
-                }
+                Text("NOW · \(state.index + 1)/\(def.steps.count)")
                 .font(.system(size: 10, weight: .bold))
                 .kerning(1.2)
                 .foregroundStyle(Color.accent)
@@ -274,6 +265,13 @@ struct NowCard: View {
             }
         }
         .padding(compact ? 10 : 13)
+        .contentShape(RoundedRectangle(cornerRadius: 12))
+        .onTapGesture {
+            if !state.finished {
+                client.send("arrange")
+            }
+        }
+        .help(state.finished ? "" : "Open this step's windows")
         .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
         .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(Color.accent.opacity(0.9)))
         .shadow(color: Color.accent.opacity(0.25), radius: 8)
@@ -281,7 +279,7 @@ struct NowCard: View {
 
     private func waits(_ step: Step) -> [String] {
         guard let triggers = step.advance, !triggers.isEmpty else {
-            return ["Press ⌃⌥→ to continue"]
+            return ["Press Page Down to continue"]
         }
 
         return triggers.map(describe)
@@ -295,6 +293,17 @@ struct NowCard: View {
         if let delay = trigger.delay {
             let entered = state.entered(state.index) ?? client.now
             return "auto in \(clock(delay - (client.now - entered) + 999))"
+        }
+
+        if let window = trigger.window {
+            switch trigger.state {
+            case "fullscreen":
+                return "Make \(window) full screen"
+            case "front":
+                return "Bring \(window) to the front"
+            default:
+                return "Open \(window)"
+            }
         }
 
         let filters = (trigger.where ?? [:])
@@ -335,7 +344,7 @@ struct Controls: View {
 
     var body: some View {
         HStack(spacing: 6) {
-            IconButton(symbol: "chevron.left", help: "Previous (⌃⌥←)") { client.send("prev") }
+            IconButton(symbol: "chevron.left", help: "Previous (Page Up)") { client.send("prev") }
             Button {
                 client.send("next")
             } label: {
@@ -347,7 +356,7 @@ struct Controls: View {
                     .foregroundStyle(Color.black.opacity(0.8))
             }
             .buttonStyle(.plain)
-            .help("Next (⌃⌥→)")
+            .help("Next (Page Down)")
             IconButton(symbol: "arrow.counterclockwise", help: "Restart (⌃⌥R)") { client.send("restart") }
             IconButton(symbol: "rectangle.split.2x1", help: "Edit layout") { actions.editLayout() }
             IconButton(symbol: "gearshape", help: "Setup (⌃⌥S)") { actions.setup() }
@@ -379,18 +388,12 @@ struct Ticker: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             ForEach(Array(state.log.prefix(limit).enumerated()), id: \.offset) { _, entry in
-                Text("\(time(entry.at)) \(entry.matched ? "▸" : "·") \(entry.type)\(entry.simulated ? " (sim)" : "")")
+                Text("\(entry.matched ? "▸" : "·") \(entry.type)\(entry.simulated ? " (sim)" : "")")
                     .foregroundStyle(entry.matched ? Color.accent : Color.faint)
                     .lineLimit(1)
             }
         }
         .font(.system(size: 10, design: .monospaced))
-    }
-
-    private func time(_ at: Double) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm:ss"
-        return formatter.string(from: Date(timeIntervalSince1970: at / 1000))
     }
 }
 
@@ -402,6 +405,7 @@ struct Alerts: View {
         let alerts = [
             state.connected ? nil : "Event bus offline (\(state.eventUrl))",
             state.layoutError.map { "Layout: \($0)" },
+            state.watchError.map { "Window watch: \($0)" },
             client.error,
         ].compactMap { $0 }
 

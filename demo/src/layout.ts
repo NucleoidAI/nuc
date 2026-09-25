@@ -141,4 +141,11 @@ function resolve(layout: Layout, stage: Rect, gap: number) {
   }));
 }
 
-export { place, presetFrames, resolve, split };
+function coverage(window: Rect, area: Rect): number {
+  const w = Math.min(window.x + window.w, area.x + area.w) - Math.max(window.x, area.x);
+  const h = Math.min(window.y + window.h, area.y + area.h) - Math.max(window.y, area.y);
+
+  return w > 0 && h > 0 && area.w > 0 && area.h > 0 ? (w * h) / (area.w * area.h) : 0;
+}
+
+export { coverage, place, presetFrames, resolve, split };

@@ -47,6 +47,8 @@ enum JSONValue: Decodable {
 struct Trigger: Decodable {
     let event: String?
     let delay: Double?
+    let window: String?
+    let state: String?
     let label: String?
     let `where`: [String: JSONValue]?
 }
@@ -121,7 +123,9 @@ struct RunnerState: Decodable {
     let enteredAt: [Double?]
     let log: [LogEntry]
     let connected: Bool
+    let mode: String?
     let layoutError: String?
+    let watchError: String?
     let indicatorRect: Rect?
     let indicator: EffectiveIndicator?
     let currentLayout: LayoutDef?

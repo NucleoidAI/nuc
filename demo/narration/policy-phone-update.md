@@ -32,7 +32,7 @@ A customer emails to change the phone number on their policy. The GreyCollar age
 
 ## 2 · Task lands in GreyCollar
 
-**Screen:** Gmail on the left, BGTS AI Platform on the right (the page of the agent running the task).
+**Screen:** Gmail on the left, GreyCollar on the right (the page of the agent running the task).
 
 **Behind the scenes:** The agent read the email, recognised a contact detail change and opened a task with the same blueprint:
 **read the policy → get 2FA approval → decide phone or address → update → notify the customer → complete**.
@@ -47,7 +47,7 @@ A customer emails to change the phone number on their policy. The GreyCollar age
 
 ## 3 · Policy read from IBM i
 
-**Screen:** IBM i (AS/400) on the left, BGTS on the right.
+**Screen:** IBM i (AS/400) on the left, GreyCollar on the right.
 
 **Behind the scenes:** Using `AS400:get_policy`, the agent reads the **POLMAST** record for the policy number in the email: holder, status, cover details and the contact details on file. The approval request will go to the trusted contact details on this record.
 
@@ -61,7 +61,7 @@ A customer emails to change the phone number on their policy. The GreyCollar age
 
 ## 4 · Email approval
 
-**Screen:** Outlook (greycollar.ai profile) on the left, BGTS on the right.
+**Screen:** Outlook (greycollar.ai profile) on the left, GreyCollar on the right.
 
 **Presenter action:** Open the **"Approval required"** email in Outlook and click **Approve**.
 
@@ -82,7 +82,7 @@ A customer emails to change the phone number on their policy. The GreyCollar age
 
 ## 5 · Phone number updated in IBM i
 
-**Screen:** IBM i (AS/400) on the left, BGTS on the right.
+**Screen:** IBM i (AS/400) on the left, GreyCollar on the right.
 
 **Behind the scenes:** At the "Phone or address change?" decision the agent took the **phone** branch. Using `AS400:update_policy_phone` it updated only the telephone and/or mobile field on the POLMAST record and left the rest of the record untouched. It then sent the customer a confirmation.
 
@@ -97,7 +97,7 @@ A customer emails to change the phone number on their policy. The GreyCollar age
 
 ## 6 · Customer gets the confirmation
 
-**Screen:** BGTS on the left, Gmail on the right.
+**Screen:** GreyCollar on the left, Gmail on the right.
 
 **Presenter action:** Open the confirmation email from the agent in Gmail.
 

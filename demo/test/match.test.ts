@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { capture, joinRoute, matches, render, renderIfReady } from "../src/match";
-import { presetFrames, resolve, split } from "../src/layout";
+import { coverage, presetFrames, resolve, split } from "../src/layout";
 
 describe("matches", () => {
   const payload = {
@@ -147,5 +147,19 @@ describe("routes", () => {
   test("renderIfReady waits for every var", () => {
     expect(renderIfReady("/agents/{{agentId}}", {})).toBeNull();
     expect(renderIfReady("/agents/{{agentId}}", { agentId: "a1" })).toBe("/agents/a1");
+  });
+});
+
+describe("coverage", () => {
+  const stage = { x: 0, y: 25, w: 1560, h: 875 };
+
+  test("a window filling the stage or the whole screen covers it", () => {
+    expect(coverage(stage, stage)).toBe(1);
+    expect(coverage({ x: 0, y: 0, w: 1920, h: 1080 }, stage)).toBe(1);
+  });
+
+  test("half a stage or a disjoint window does not", () => {
+    expect(coverage({ x: 0, y: 25, w: 780, h: 875 }, stage)).toBeCloseTo(0.5);
+    expect(coverage({ x: 1600, y: 25, w: 300, h: 875 }, stage)).toBe(0);
   });
 });

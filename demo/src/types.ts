@@ -11,8 +11,11 @@ type Condition =
       exists?: boolean;
     };
 
+type Mode = "auto" | "manual";
+
 type EventTrigger = {
   event: string;
+  mode?: Mode;
   where?: Record<string, Condition>;
   capture?: Record<string, string>;
   label?: string;
@@ -20,10 +23,20 @@ type EventTrigger = {
 
 type DelayTrigger = {
   delay: number;
+  mode?: Mode;
   label?: string;
 };
 
-type Trigger = EventTrigger | DelayTrigger;
+type WindowState = "open" | "front" | "fullscreen";
+
+type WindowTrigger = {
+  window: string;
+  state: WindowState;
+  mode?: Mode;
+  label?: string;
+};
+
+type Trigger = EventTrigger | DelayTrigger | WindowTrigger;
 
 type WindowDef =
   | { type: "chrome"; url?: string; profile?: string }
@@ -60,6 +73,7 @@ type IndicatorPosition = "left" | "right" | "top" | "bottom";
 type DemoCase = {
   name: string;
   description?: string;
+  mode?: Mode;
   vars?: Record<string, string>;
   indicator?: {
     position?: IndicatorPosition;
@@ -83,6 +97,7 @@ export type {
   Frame,
   IndicatorPosition,
   Layout,
+  Mode,
   Pane,
   Preset,
   Rect,
@@ -90,4 +105,6 @@ export type {
   Step,
   Trigger,
   WindowDef,
+  WindowState,
+  WindowTrigger,
 };

@@ -24,11 +24,12 @@
   "windows": {
     "gmail": {
       "type": "chrome",
+      "profile": "Default",
       "url": "https://mail.google.com/mail/u/4/#sent"
     },
     "greycollar": {
       "type": "chrome-app",
-      "app": "BGTS AI Platform"
+      "app": "GreyCollar - Supervised AI Agents"
     },
     "ibm": {
       "type": "chrome-app",

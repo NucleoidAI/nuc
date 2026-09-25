@@ -20,6 +20,7 @@ final class OverlaySettings: ObservableObject {
     @Published var reserve: Bool { didSet { save() } }
     @Published var opacity: Double { didSet { save() } }
     @Published var caseFile: String? { didSet { save() } }
+    @Published var mode: String { didSet { save() } }
 
     private let defaults = UserDefaults.standard
 
@@ -31,6 +32,7 @@ final class OverlaySettings: ObservableObject {
         reserve = defaults.object(forKey: "reserve") as? Bool ?? true
         opacity = defaults.object(forKey: "opacity") as? Double ?? fallbackOpacity
         caseFile = defaults.string(forKey: "caseFile")
+        mode = defaults.string(forKey: "mode") ?? "auto"
 
         if screen >= NSScreen.screens.count {
             screen = 0
@@ -79,6 +81,7 @@ final class OverlaySettings: ObservableObject {
         defaults.set(reserve, forKey: "reserve")
         defaults.set(opacity, forKey: "opacity")
         defaults.set(caseFile, forKey: "caseFile")
+        defaults.set(mode, forKey: "mode")
     }
 }
 
@@ -89,6 +92,7 @@ struct SetupView: View {
     let start: () -> Void
 
     private let positions = [("left", "Left"), ("right", "Right"), ("top", "Top"), ("bottom", "Bottom")]
+    private let modes = [("auto", "Auto"), ("manual", "Manual")]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -103,84 +107,103 @@ struct SetupView: View {
                     .foregroundStyle(Color.muted)
             }
 
-            group("Screen") {
-                VStack(spacing: 6) {
-                    ForEach(settings.screens) { screen in
-                        choice(selected: settings.screen == screen.id) {
-                            settings.screen = screen.id
-                        } label: {
-                            Image(systemName: screen.size.width >= screen.size.height ? "display" : "rectangle.portrait")
-                            Text(screen.name).fontWeight(.medium)
-                            Spacer()
-                            Text("\(Int(screen.size.width))×\(Int(screen.size.height))\(screen.primary ? " · main" : "")")
-                                .font(.system(size: 11, design: .monospaced))
-                                .foregroundStyle(Color.muted)
-                        }
-                    }
-                }
-            }
-
-            group("Indicator") {
-                HStack(alignment: .top, spacing: 14) {
-                    Preview(settings: settings)
-                        .frame(width: 130, height: 130)
-
-                    VStack(alignment: .leading, spacing: 10) {
-                        Picker("", selection: $settings.position) {
-                            ForEach(positions, id: \.0) { value, label in
-                                Text(label).tag(value)
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 16) {
+                    group("Screen") {
+                        VStack(spacing: 6) {
+                            ForEach(settings.screens) { screen in
+                                choice(selected: settings.screen == screen.id) {
+                                    settings.screen = screen.id
+                                } label: {
+                                    Image(systemName: screen.size.width >= screen.size.height ? "display" : "rectangle.portrait")
+                                    Text(screen.name).fontWeight(.medium)
+                                    Spacer()
+                                    Text("\(Int(screen.size.width))×\(Int(screen.size.height))\(screen.primary ? " · main" : "")")
+                                        .font(.system(size: 11, design: .monospaced))
+                                        .foregroundStyle(Color.muted)
+                                }
                             }
                         }
-                        .pickerStyle(.segmented)
-                        .labelsHidden()
-
-                        slider(
-                            settings.vertical ? "Width" : "Height",
-                            value: Binding(get: { settings.size }, set: { settings.size = $0 }),
-                            range: settings.sizeRange,
-                            format: { "\(Int($0)) pt" }
-                        )
-
-                        slider(
-                            "Opacity",
-                            value: $settings.opacity,
-                            range: 0.4...1,
-                            format: { "\(Int($0 * 100))%" }
-                        )
-
-                        Toggle("Keep windows out of the strip", isOn: $settings.reserve)
-                            .toggleStyle(.switch)
-                            .controlSize(.small)
-                            .font(.system(size: 12))
                     }
-                }
-            }
 
-            group("Demo") {
-                ScrollView {
-                    VStack(spacing: 6) {
-                        ForEach(client.cases) { item in
-                            choice(selected: settings.caseFile == item.file) {
-                                settings.caseFile = item.file
-                            } label: {
-                                Text(item.name).fontWeight(.medium)
-                                Spacer()
-                                Text("\(item.steps) steps").font(.system(size: 11)).foregroundStyle(Color.muted)
+                    group("Indicator") {
+                        HStack(alignment: .top, spacing: 14) {
+                            Preview(settings: settings)
+                                .frame(width: 130, height: 130)
+
+                            VStack(alignment: .leading, spacing: 10) {
+                                Picker("", selection: $settings.position) {
+                                    ForEach(positions, id: \.0) { value, label in
+                                        Text(label).tag(value)
+                                    }
+                                }
+                                .pickerStyle(.segmented)
+                                .labelsHidden()
+
+                                slider(
+                                    settings.vertical ? "Width" : "Height",
+                                    value: Binding(get: { settings.size }, set: { settings.size = $0 }),
+                                    range: settings.sizeRange,
+                                    format: { "\(Int($0)) pt" }
+                                )
+
+                                slider(
+                                    "Opacity",
+                                    value: $settings.opacity,
+                                    range: 0.4...1,
+                                    format: { "\(Int($0 * 100))%" }
+                                )
+
+                                Toggle("Keep windows out of the strip", isOn: $settings.reserve)
+                                    .toggleStyle(.switch)
+                                    .controlSize(.small)
+                                    .font(.system(size: 12))
                             }
                         }
+                    }
 
-                        if client.cases.isEmpty {
-                            Text(client.online ? "No demo cases found in demo/cases" : "Start the runner: bun run demo")
-                                .font(.system(size: 12, design: .monospaced))
+                    group("Mode") {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Picker("", selection: $settings.mode) {
+                                ForEach(modes, id: \.0) { value, label in
+                                    Text(label).tag(value)
+                                }
+                            }
+                            .pickerStyle(.segmented)
+                            .labelsHidden()
+
+                            Text(settings.mode == "manual"
+                                ? "You open and arrange the windows. Steps advance on events, window changes or Next."
+                                : "The runner opens and arranges the windows for every step.")
+                                .font(.system(size: 11))
                                 .foregroundStyle(Color.muted)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+
+                    group("Demo") {
+                        VStack(spacing: 6) {
+                            ForEach(client.cases) { item in
+                                choice(selected: settings.caseFile == item.file) {
+                                    settings.caseFile = item.file
+                                } label: {
+                                    Text(item.name).fontWeight(.medium)
+                                    Spacer()
+                                    Text("\(item.steps) steps").font(.system(size: 11)).foregroundStyle(Color.muted)
+                                }
+                            }
+
+                            if client.cases.isEmpty {
+                                Text(client.online ? "No demo cases found in demo/cases" : "Start the runner: bun run demo")
+                                    .font(.system(size: 12, design: .monospaced))
+                                    .foregroundStyle(Color.muted)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
                         }
                     }
                 }
-                .frame(maxHeight: 170)
+                .padding(.bottom, 4)
             }
-
-            Spacer(minLength: 0)
 
             if let error = client.error {
                 Text(error)

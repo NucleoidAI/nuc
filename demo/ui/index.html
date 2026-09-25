@@ -509,6 +509,12 @@
           return `auto in ${clock(left + 999)}`;
         }
 
+        if ("window" in trigger) {
+          const verbs = { fullscreen: "Make {w} full screen", front: "Bring {w} to the front" };
+
+          return (verbs[trigger.state] ?? "Open {w}").replace("{w}", trigger.window);
+        }
+
         const where = Object.entries(trigger.where ?? {})
           .map(([key, condition]) => {
             if (condition === null || typeof condition !== "object") {
@@ -615,6 +621,7 @@
         const alerts = [
           !state.connected && `Event bus offline (${state.eventUrl})`,
           state.layoutError && `Layout: ${state.layoutError}`,
+          state.watchError && `Window watch: ${state.watchError}`,
           error,
         ].filter(Boolean);
 
@@ -668,7 +675,7 @@
         if (target.dataset.act) {
           send(target.dataset.act);
         } else if (target.dataset.goto) {
-          send("goto", { index: Number(target.dataset.goto) });
+          send("goto", { index: Number(target.dataset.goto), arrange: true });
         } else if (target.dataset.load) {
           send("load", { file: target.dataset.load });
         }
@@ -685,7 +692,7 @@
           return;
         }
 
-        const actions = { ArrowRight: "next", " ": "next", ArrowLeft: "prev", r: "restart", l: "arrange" };
+        const actions = { ArrowRight: "next", " ": "next", PageDown: "next", ArrowLeft: "prev", PageUp: "prev", r: "restart", l: "arrange" };
         const action = actions[event.key];
 
         if (action) {

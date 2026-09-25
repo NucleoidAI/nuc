@@ -7,8 +7,10 @@ import {
   chromeApps,
   chromeProfiles,
   findChromeApp,
+  probeWindows,
   profileDirectory,
   screen,
+  type WindowStatus,
 } from "./src/macos";
 import {
   capture,
@@ -19,21 +21,28 @@ import {
   renderIfReady,
   type Vars,
 } from "./src/match";
-import { resolve, split } from "./src/layout";
+import { coverage, resolve, split } from "./src/layout";
 import type {
   DemoCase,
   EventTrigger,
   IndicatorPosition,
   Layout,
+  Mode,
   Pane,
   Rect,
+  Step,
   Trigger,
   WindowDef,
+  WindowTrigger,
 } from "./src/types";
 
 const PORT = Number(process.env.DEMO_PORT ?? 4600);
 const EVENT_URL = process.env.DEMO_EVENT_URL ?? "http://localhost:8080";
-const ARRANGE = process.env.DEMO_ARRANGE !== "0" && process.platform === "darwin";
+const MODE: Mode =
+  process.env.DEMO_MODE === "manual" || process.env.DEMO_ARRANGE === "0" ? "manual" : "auto";
+const WATCH_MS = 700;
+const FULLSCREEN_COVERAGE = 0.9;
+const WINDOW_STATES = ["open", "front", "fullscreen"];
 const SCREEN = Number(process.env.DEMO_SCREEN ?? 0);
 const CASES_DIR = path.join(import.meta.dir, "cases");
 const UI_FILE = path.join(import.meta.dir, "ui", "index.html");
@@ -42,6 +51,7 @@ const INDICATOR_URL = `http://localhost:${PORT}/`;
 
 type Settings = {
   screen: number;
+  mode?: Mode;
   position?: IndicatorPosition;
   size?: number;
   reserve?: boolean;
@@ -65,15 +75,18 @@ const state = {
   enteredAt: [] as number[],
   log: [] as LogEntry[],
   connected: false,
-  arrange: ARRANGE,
   layoutError: null as string | null,
+  watchError: null as string | null,
   indicatorRect: null as Rect | null,
+  stageRect: null as Rect | null,
   settings: { screen: SCREEN } as Settings,
 };
 
 const windows = new WindowManager();
 const shown = new Set<string>();
 let timer: ReturnType<typeof setTimeout> | null = null;
+let watchGeneration = 0;
+const armed = new Set<number>();
 let queue: Promise<void> = Promise.resolve();
 let screenRect: Rect | null = null;
 let server: ReturnType<typeof Bun.serve>;
@@ -90,10 +103,44 @@ async function listCases() {
   );
 }
 
+function currentMode(): Mode {
+  return state.settings.mode ?? state.def?.mode ?? MODE;
+}
+
+function arranging(): boolean {
+  return currentMode() === "auto" && process.platform === "darwin";
+}
+
+function active(trigger: Trigger): boolean {
+  return !trigger.mode || trigger.mode === currentMode();
+}
+
+function windowTriggers(step: Step): WindowTrigger[] {
+  return (step.advance ?? []).filter(
+    (trigger): trigger is WindowTrigger => "window" in trigger && active(trigger),
+  );
+}
+
 function validate(def: DemoCase) {
   if (!def.name || !Array.isArray(def.steps) || def.steps.length === 0) {
     throw new Error("A demo case needs a name and at least one step");
   }
+
+  def.steps.forEach((step) =>
+    (step.advance ?? []).forEach((trigger) => {
+      if (!("window" in trigger)) {
+        return;
+      }
+
+      if (!def.windows?.[trigger.window]) {
+        throw new Error(`Step "${step.id}" waits for unknown window "${trigger.window}"`);
+      }
+
+      if (!WINDOW_STATES.includes(trigger.state)) {
+        throw new Error(`Step "${step.id}" uses unknown window state "${trigger.state}"`);
+      }
+    }),
+  );
 
   def.steps.forEach((step) =>
     step.layout?.panes.forEach((pane) => {
@@ -124,9 +171,9 @@ function renderedCase(def: DemoCase | null): DemoCase | null {
       ...step,
       title: render(step.title, state.vars),
       note: step.note && render(step.note, state.vars),
-      advance: step.advance?.map(
-        (trigger) => renderDeep(trigger, state.vars) as Trigger,
-      ),
+      advance: step.advance
+        ?.filter(active)
+        .map((trigger) => renderDeep(trigger, state.vars) as Trigger),
     })),
   };
 }
@@ -155,8 +202,10 @@ function snapshot() {
     enteredAt: state.enteredAt,
     log: state.log,
     connected: state.connected,
-    arrange: state.arrange,
+    mode: currentMode(),
+    arrange: arranging(),
     layoutError: state.layoutError,
+    watchError: state.watchError,
     indicatorRect: state.indicatorRect,
     indicator: state.def ? indicatorSettings(state.def) : null,
     currentLayout: state.def ? effectiveLayout(state.def, state.index) : null,
@@ -199,7 +248,7 @@ function waitsForVars(def: DemoCase): boolean {
   );
 }
 
-async function applyLayout() {
+async function applyLayout(force: boolean) {
   const def = state.def;
 
   if (!def || process.platform !== "darwin") {
@@ -208,26 +257,27 @@ async function applyLayout() {
 
   screenRect ??= await screen(state.settings.screen);
 
-  await placeWindows(def, screenRect);
+  await placeWindows(def, screenRect, force);
 
-  if (windows.pushedDown > 0 && state.arrange) {
+  if (windows.pushedDown > 0 && (arranging() || force)) {
     const offset = windows.pushedDown;
 
     windows.pushedDown = 0;
     screenRect = { ...screenRect, y: screenRect.y + offset, h: screenRect.h - offset };
-    await placeWindows(def, screenRect);
+    await placeWindows(def, screenRect, force);
     windows.pushedDown = 0;
   }
 }
 
-async function placeWindows(def: DemoCase, area: Rect) {
+async function placeWindows(def: DemoCase, area: Rect, force: boolean) {
   const settings = indicatorSettings(def);
   const { indicator, stage: reserved } = split(area, settings.position, settings.size);
   const stage = settings.reserve ? reserved : area;
 
   state.indicatorRect = indicator;
+  state.stageRect = stage;
 
-  if (!state.arrange) {
+  if (!arranging() && !force) {
     return;
   }
 
@@ -269,9 +319,9 @@ async function placeWindows(def: DemoCase, area: Rect) {
   }
 }
 
-function arrange() {
+function arrange(force = false) {
   queue = queue
-    .then(applyLayout)
+    .then(() => applyLayout(force))
     .then(() => {
       state.layoutError = null;
     })
@@ -282,7 +332,133 @@ function arrange() {
     .finally(broadcast);
 }
 
-function goto(index: number) {
+function probeUrl(def: DemoCase, slot: string, windowDef: WindowDef): string | undefined {
+  if (windowDef.type !== "chrome") {
+    return undefined;
+  }
+
+  const pane = effectiveLayout(def, state.index)?.panes.find((candidate) => candidate.window === slot);
+  const template =
+    pane?.url ?? (pane?.route && windowDef.url ? joinRoute(windowDef.url, pane.route) : undefined);
+
+  return (template && renderIfReady(template, state.vars)) || windowDef.url;
+}
+
+function holds(trigger: WindowTrigger, status: WindowStatus | undefined): boolean {
+  if (!status?.open) {
+    return false;
+  }
+
+  switch (trigger.state) {
+    case "front":
+      return status.front;
+    case "fullscreen":
+      return (
+        status.native ||
+        (!!status.frame &&
+          !!state.stageRect &&
+          coverage(status.frame, state.stageRect) >= FULLSCREEN_COVERAGE)
+      );
+    default:
+      return true;
+  }
+}
+
+async function checkWindows(generation: number) {
+  const def = state.def;
+
+  if (!def || state.finished) {
+    return;
+  }
+
+  const triggers = windowTriggers(def.steps[state.index]);
+  const slots = [...new Set(triggers.map((trigger) => trigger.window))];
+
+  try {
+    const statuses = await probeWindows(
+      slots.map((slot) => ({
+        slot,
+        def: def.windows[slot],
+        url: probeUrl(def, slot, def.windows[slot]),
+      })),
+    );
+
+    if (generation !== watchGeneration) {
+      return;
+    }
+
+    if (state.watchError) {
+      state.watchError = null;
+      broadcast();
+    }
+
+    const fired = triggers.findIndex((trigger, index) => {
+      if (!holds(trigger, statuses[trigger.window])) {
+        armed.add(index);
+        return false;
+      }
+
+      return armed.has(index);
+    });
+
+    if (fired >= 0) {
+      const trigger = triggers[fired];
+
+      state.log = [
+        {
+          at: Date.now(),
+          type: `WINDOW ${trigger.window} ${trigger.state}`,
+          payload: trigger,
+          matched: true,
+          simulated: false,
+        },
+        ...state.log,
+      ].slice(0, 40);
+      next();
+    }
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+
+    if (generation === watchGeneration && state.watchError !== message) {
+      state.watchError = message;
+      console.error("Window watch failed", message);
+      broadcast();
+    }
+  }
+}
+
+function watchWindows() {
+  const generation = ++watchGeneration;
+  const def = state.def;
+
+  armed.clear();
+  state.watchError = null;
+
+  if (
+    !def ||
+    state.finished ||
+    process.platform !== "darwin" ||
+    windowTriggers(def.steps[state.index]).length === 0
+  ) {
+    return;
+  }
+
+  const tick = async () => {
+    if (generation !== watchGeneration) {
+      return;
+    }
+
+    await checkWindows(generation);
+
+    if (generation === watchGeneration) {
+      setTimeout(tick, WATCH_MS);
+    }
+  };
+
+  void tick();
+}
+
+function goto(index: number, force = false) {
   const def = state.def;
 
   if (!def) {
@@ -300,15 +476,16 @@ function goto(index: number) {
   state.enteredAt.length = state.index + 1;
 
   const delays = (def.steps[state.index].advance ?? [])
-    .filter((trigger) => "delay" in trigger)
+    .filter((trigger) => "delay" in trigger && active(trigger))
     .map((trigger) => (trigger as { delay: number }).delay);
 
   if (delays.length > 0) {
     timer = setTimeout(next, Math.min(...delays));
   }
 
+  watchWindows();
   broadcast();
-  arrange();
+  arrange(force);
 }
 
 function next() {
@@ -326,6 +503,7 @@ function next() {
 
     state.finished = true;
     state.enteredAt[def.steps.length] = Date.now();
+    watchWindows();
     broadcast();
     return;
   }
@@ -388,7 +566,7 @@ async function load(file: string) {
 
   validate(def);
 
-  for (const window of state.arrange ? Object.values(def.windows) : []) {
+  for (const window of arranging() ? Object.values(def.windows) : []) {
     if (window.type === "chrome" && window.profile) {
       await profileDirectory(window.profile);
     }
@@ -426,7 +604,7 @@ function onEvent(type: string, payload: unknown, simulated = false) {
   if (def && !state.finished) {
     const trigger = (def.steps[state.index].advance ?? []).find(
       (candidate): candidate is EventTrigger =>
-        "event" in candidate && matches(candidate, type, payload, state.vars),
+        "event" in candidate && active(candidate) && matches(candidate, type, payload, state.vars),
     );
 
     if (trigger) {
@@ -445,6 +623,29 @@ const listener = new EventListener(EVENT_URL, onEvent, (connected) => {
   broadcast();
 });
 
+function refreshMode() {
+  if (state.def && !state.finished) {
+    const delays = (state.def.steps[state.index].advance ?? []).some(
+      (trigger) => "delay" in trigger && trigger.mode,
+    );
+
+    if (delays) {
+      goto(state.index);
+      return;
+    }
+
+    watchWindows();
+  }
+
+  broadcast();
+  arrange();
+}
+
+function setMode(mode: Mode) {
+  state.settings = { ...state.settings, mode };
+  refreshMode();
+}
+
 async function handle(action: string, body: Record<string, unknown>) {
   switch (action) {
     case "next":
@@ -457,15 +658,17 @@ async function handle(action: string, body: Record<string, unknown>) {
       restart();
       break;
     case "goto":
-      goto(Number(body.index));
+      goto(Number(body.index), body.arrange === true);
       break;
     case "arrange":
       screenRect = null;
-      arrange();
+      arrange(true);
       break;
     case "toggle-arrange":
-      state.arrange = !state.arrange && process.platform === "darwin";
-      arrange();
+      setMode(currentMode() === "auto" ? "manual" : "auto");
+      break;
+    case "mode":
+      setMode(body.mode === "manual" ? "manual" : "auto");
       break;
     case "set-layout":
       await setLayout(Number(body.index ?? state.index), body.layout as Layout);
@@ -473,12 +676,14 @@ async function handle(action: string, body: Record<string, unknown>) {
     case "configure":
       state.settings = {
         screen: Number(body.screen ?? state.settings.screen),
+        mode:
+          body.mode === "auto" || body.mode === "manual" ? body.mode : state.settings.mode,
         position: (body.position as IndicatorPosition) ?? state.settings.position,
         size: body.size === undefined ? state.settings.size : Number(body.size),
         reserve: body.reserve === undefined ? state.settings.reserve : Boolean(body.reserve),
       };
       screenRect = null;
-      arrange();
+      refreshMode();
       break;
     case "cases":
       server.publish("state", JSON.stringify({ kind: "cases", cases: await listCases() }));
@@ -566,7 +771,7 @@ server = Bun.serve({
   },
 });
 
-console.log(`🎬 Demo runner on ${INDICATOR_URL} (events: ${EVENT_URL}, arrange: ${state.arrange})`);
+console.log(`🎬 Demo runner on ${INDICATOR_URL} (events: ${EVENT_URL}, mode: ${MODE})`);
 
 const initial = process.argv[2] ?? process.env.DEMO_CASE;
 

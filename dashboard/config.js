@@ -2,7 +2,7 @@ const isBrowser = typeof window !== "undefined";
 
 const config = {
   appId: "10b7bc8c-a49c-4002-b0ec-63599e4b5210",
-  name: "BGTS AI Platform",
+  name: "GreyCollar",
   base: "/dashboard",
   beta: true,
   api: isBrowser ? `${window.location.origin}/api` : "http://localhost:4000",

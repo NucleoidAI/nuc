@@ -238,7 +238,7 @@ function ensureHelper(): Promise<void> {
 
 async function appPid(app: ChromeApp): Promise<number | null> {
   const proc = Bun.spawn(["ps", "-axo", "pid=,command="], { stdout: "pipe" });
-  const executable = `${app.path}/Contents/MacOS/`;
+  const executable = `/${path.basename(app.path)}/Contents/MacOS/`;
   const line = (await new Response(proc.stdout).text())
     .split("\n")
     .find((entry) => entry.includes(executable));
@@ -337,6 +337,140 @@ async function openProfileWindow(profile: string, url: string): Promise<number> 
   }
 
   throw new Error(`Chrome did not open a window for profile "${profile}"`);
+}
+
+type WindowProbe = { slot: string; def: WindowDef; url?: string };
+
+type WindowStatus = { open: boolean; front: boolean; native: boolean; frame: Rect | null };
+
+type ProbedChrome = {
+  id: number;
+  index: number;
+  url: string;
+  tabs: number;
+  minimized: boolean;
+  frame: Rect;
+};
+
+type ProbedApp = {
+  frontmost: boolean;
+  window: { frame: Rect; fullscreen: boolean; minimized: boolean } | null;
+} | null;
+
+const probedChromeApps = new Map<string, Promise<ChromeApp>>();
+
+function probedChromeApp(name: string): Promise<ChromeApp> {
+  let app = probedChromeApps.get(name);
+
+  if (!app) {
+    app = findChromeApp(name);
+    app.catch(() => probedChromeApps.delete(name));
+    probedChromeApps.set(name, app);
+  }
+
+  return app;
+}
+
+function hostOf(url: string): string {
+  try {
+    return new URL(url).host;
+  } catch {
+    return "";
+  }
+}
+
+async function probeWindows(probes: WindowProbe[]): Promise<Record<string, WindowStatus>> {
+  const processes = probes.flatMap(({ def }) => (def.type === "app" ? [def.process ?? def.app] : []));
+  const out = await osascript(
+    `const input = ${JSON.stringify(processes)};
+const se = Application("System Events");
+const frontmost = se.processes.whose({ frontmost: true })();
+const front = frontmost.length ? frontmost[0].bundleIdentifier() : "";
+const chromeApp = Application("Google Chrome");
+const chrome = chromeApp.running()
+  ? chromeApp.windows().flatMap((w, index) => {
+      try {
+        const b = w.bounds();
+        return [{ id: Number(w.id()), index, url: w.activeTab().url(), tabs: w.tabs.length, minimized: w.minimized(), frame: { x: b.x, y: b.y, w: b.width, h: b.height } }];
+      } catch (e) {
+        return [];
+      }
+    })
+  : [];
+const read = (w, name) => { try { return w.attributes.byName(name).value() === true; } catch (e) { return false; } };
+const apps = Object.fromEntries(input.map((name) => {
+  const p = se.processes.byName(name);
+  if (!p.exists()) return [name, null];
+  const ws = p.windows();
+  if (!ws.length) return [name, { frontmost: p.frontmost(), window: null }];
+  const [x, y] = ws[0].position();
+  const [w, h] = ws[0].size();
+  return [name, { frontmost: p.frontmost(), window: { frame: { x, y, w, h }, fullscreen: read(ws[0], "AXFullScreen"), minimized: read(ws[0], "AXMinimized") } }];
+}));
+JSON.stringify({ front, chrome, apps });`,
+    "JavaScript",
+  );
+
+  const { front, chrome, apps } = JSON.parse(out) as {
+    front: string;
+    chrome: ProbedChrome[];
+    apps: Record<string, ProbedApp>;
+  };
+
+  const claimed = new Set<number>();
+  const result: Record<string, WindowStatus> = {};
+  const closed: WindowStatus = { open: false, front: false, native: false, frame: null };
+  const ordered = [...probes].sort(
+    (a, b) => Number(b.def.type === "chrome-app") - Number(a.def.type === "chrome-app"),
+  );
+
+  for (const { slot, def, url } of ordered) {
+    if (def.type === "app") {
+      const app = apps[def.process ?? def.app];
+      const window = app?.window;
+
+      result[slot] =
+        app && window && !window.minimized
+          ? { open: true, front: app.frontmost, native: window.fullscreen, frame: window.frame }
+          : closed;
+      continue;
+    }
+
+    const free = chrome.filter((window) => !claimed.has(window.id) && !window.minimized);
+    let match: ProbedChrome | undefined;
+    let bundle = "com.google.Chrome";
+
+    if (def.type === "chrome-app") {
+      const app = await probedChromeApp(def.app);
+      const host = hostOf(url ?? app.url);
+
+      bundle = app.bundleId;
+      match = free.find((window) => window.tabs === 1 && host && hostOf(window.url) === host);
+    } else {
+      const target = url ?? def.url ?? "";
+      const page = target.split(/[#?]/)[0];
+      const host = hostOf(target);
+
+      match =
+        free.find((window) => page && window.url.startsWith(page)) ??
+        free.find((window) => host && hostOf(window.url) === host);
+    }
+
+    if (!match) {
+      result[slot] = closed;
+      continue;
+    }
+
+    claimed.add(match.id);
+    result[slot] = {
+      open: true,
+      front: match.index === 0 && (front === "com.google.Chrome" || front === bundle),
+      native: false,
+      frame: match.frame,
+    };
+  }
+
+  return result;
 }
 
 class WindowManager {
@@ -445,8 +579,8 @@ end tell`);
   if minimized of w then set minimized of w to false
   set bounds of w to ${bounds}
   if ${quote(navigate)} is not "" then set URL of active tab of w to ${quote(navigate)}
-  set index of w to 1
   activate
+  set index of w to 1
   return (wid as text) & "|" & ((item 2 of (get bounds of w)) as integer as text)
 end tell`);
 
@@ -476,12 +610,15 @@ end tell`);
   }
 }
 
+export type { WindowProbe, WindowStatus };
+
 export {
   WindowManager,
   chromeApps,
   chromeProfiles,
   findChromeApp,
   osascript,
+  probeWindows,
   profileDirectory,
   screen,
 };

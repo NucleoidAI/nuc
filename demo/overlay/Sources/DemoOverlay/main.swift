@@ -13,14 +13,14 @@ final class HotKeys {
     private static var installed = false
     private var refs: [EventHotKeyRef?] = []
 
-    func register(keyCode: Int, id: UInt32, action: @escaping () -> Void) {
+    func register(keyCode: Int, id: UInt32, modifiers: Int = controlKey | optionKey, action: @escaping () -> Void) {
         HotKeys.installIfNeeded()
         HotKeys.actions[id] = action
 
         var ref: EventHotKeyRef?
         let hotKeyID = EventHotKeyID(signature: OSType(0x444D_4F46), id: id)
         let status = RegisterEventHotKey(
-            UInt32(keyCode), UInt32(controlKey | optionKey), hotKeyID,
+            UInt32(keyCode), UInt32(modifiers), hotKeyID,
             GetApplicationEventTarget(), 0, &ref
         )
 
@@ -60,6 +60,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let actions = OverlayActions()
     private var cancellables = Set<AnyCancellable>()
     private var lastFrame: NSRect?
+    private let rectangle = RectangleGaps()
+    private var signals: [DispatchSourceSignal] = []
 
     override init() {
         let environment = ProcessInfo.processInfo.environment
@@ -70,6 +72,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        rectangle.restore()
+        handleSignals()
+
         panel = OverlayPanel(
             contentRect: setupFrame(),
             styleMask: [.borderless, .nonactivatingPanel],
@@ -126,6 +131,32 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         showSetup()
     }
 
+    func applicationWillTerminate(_ notification: Notification) {
+        rectangle.restore()
+    }
+
+    private func handleSignals() {
+        for code in [SIGINT, SIGTERM, SIGHUP] {
+            signal(code, SIG_IGN)
+            let source = DispatchSource.makeSignalSource(signal: code, queue: .main)
+            source.setEventHandler { NSApp.terminate(nil) }
+            source.resume()
+            signals.append(source)
+        }
+    }
+
+    private func syncRectangle() {
+        guard !settings.configuring, client.state?.def != nil else {
+            return
+        }
+
+        if settings.reserve {
+            rectangle.apply(position: settings.position, size: settings.size, mainScreen: settings.screen == 0)
+        } else {
+            rectangle.restore()
+        }
+    }
+
     private func setupStatusItem() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         statusItem.button?.image = NSImage(systemSymbolName: "play.rectangle.on.rectangle", accessibilityDescription: "Demo")
@@ -133,8 +164,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let menu = NSMenu()
         let items: [(String, Selector)] = [
             ("Setup…  ⌃⌥S", #selector(showSetup)),
-            ("Next  ⌃⌥→", #selector(next)),
-            ("Previous  ⌃⌥←", #selector(previous)),
+            ("Next  Page Down", #selector(next)),
+            ("Previous  Page Up", #selector(previous)),
             ("Restart  ⌃⌥R", #selector(restart)),
             ("Re-apply layout  ⌃⌥L", #selector(arrange)),
             ("Show / Hide  ⌃⌥H", #selector(toggle)),
@@ -152,8 +183,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func setupHotKeys() {
-        hotKeys.register(keyCode: kVK_RightArrow, id: 1) { [weak self] in self?.next() }
-        hotKeys.register(keyCode: kVK_LeftArrow, id: 2) { [weak self] in self?.previous() }
+        hotKeys.register(keyCode: kVK_PageDown, id: 1, modifiers: 0) { [weak self] in self?.next() }
+        hotKeys.register(keyCode: kVK_PageUp, id: 2, modifiers: 0) { [weak self] in self?.previous() }
         hotKeys.register(keyCode: kVK_ANSI_R, id: 3) { [weak self] in self?.restart() }
         hotKeys.register(keyCode: kVK_ANSI_L, id: 4) { [weak self] in self?.arrange() }
         hotKeys.register(keyCode: kVK_ANSI_H, id: 5) { [weak self] in self?.toggle() }
@@ -238,10 +269,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             "position": settings.position,
             "size": settings.size,
             "reserve": settings.reserve,
+            "mode": settings.mode,
         ])
     }
 
     private func reposition() {
+        syncRectangle()
+
         let frame = settings.configuring
             ? setupFrame()
             : settings.editingLayout ? setupFrame(width: 460, height: 560) : stripFrame()

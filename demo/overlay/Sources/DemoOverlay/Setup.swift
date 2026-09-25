@@ -93,6 +93,7 @@ struct SetupView: View {
 
     private let positions = [("left", "Left"), ("right", "Right"), ("top", "Top"), ("bottom", "Bottom")]
     private let modes = [("auto", "Auto"), ("manual", "Manual")]
+    private let styles = [(true, "Docked"), (false, "Overlay")]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -132,6 +133,21 @@ struct SetupView: View {
                                 .frame(width: 130, height: 130)
 
                             VStack(alignment: .leading, spacing: 10) {
+                                Picker("", selection: $settings.reserve) {
+                                    ForEach(styles, id: \.0) { value, label in
+                                        Text(label).tag(value)
+                                    }
+                                }
+                                .pickerStyle(.segmented)
+                                .labelsHidden()
+
+                                Text(settings.reserve
+                                    ? "Windows are resized to make room for the strip."
+                                    : "The strip floats over your windows; they keep their full size.")
+                                    .font(.system(size: 11))
+                                    .foregroundStyle(Color.muted)
+                                    .fixedSize(horizontal: false, vertical: true)
+
                                 Picker("", selection: $settings.position) {
                                     ForEach(positions, id: \.0) { value, label in
                                         Text(label).tag(value)
@@ -154,10 +170,6 @@ struct SetupView: View {
                                     format: { "\(Int($0 * 100))%" }
                                 )
 
-                                Toggle("Keep windows out of the strip", isOn: $settings.reserve)
-                                    .toggleStyle(.switch)
-                                    .controlSize(.small)
-                                    .font(.system(size: 12))
                             }
                         }
                     }
@@ -319,7 +331,7 @@ struct Preview: View {
                     .overlay(RoundedRectangle(cornerRadius: 4).strokeBorder(Color.white.opacity(0.25)))
 
                 RoundedRectangle(cornerRadius: 3)
-                    .fill(Color.accent.opacity(0.7))
+                    .fill(Color.accent.opacity(settings.reserve ? 0.7 : 0.45))
                     .frame(
                         width: settings.vertical ? strip : nil,
                         height: settings.vertical ? nil : strip

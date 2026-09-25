@@ -339,7 +339,6 @@ struct Pulse: View {
 
 struct Controls: View {
     @ObservedObject var client: RunnerClient
-    @EnvironmentObject var actions: OverlayActions
     let state: RunnerState
 
     var body: some View {
@@ -357,11 +356,34 @@ struct Controls: View {
             }
             .buttonStyle(.plain)
             .help("Next (Page Down)")
-            IconButton(symbol: "arrow.counterclockwise", help: "Restart (⌃⌥R)") { client.send("restart") }
-            IconButton(symbol: "rectangle.split.2x1", help: "Edit layout") { actions.editLayout() }
-            IconButton(symbol: "gearshape", help: "Setup (⌃⌥S)") { actions.setup() }
-            IconButton(symbol: "xmark", help: "Quit overlay") { actions.quit() }
+            MoreMenu(client: client)
         }
+    }
+}
+
+struct MoreMenu: View {
+    @ObservedObject var client: RunnerClient
+    @EnvironmentObject var actions: OverlayActions
+
+    var body: some View {
+        Menu {
+            Button("Restart  ⌃⌥R") { client.send("restart") }
+            Button("Re-apply layout  ⌃⌥L") { client.send("arrange") }
+            Button("Edit layout…") { actions.editLayout() }
+            Divider()
+            Button("Setup…  ⌃⌥S") { actions.setup() }
+            Button("Hide overlay  ⌃⌥H") { actions.hide() }
+            Divider()
+            Button("Quit overlay") { actions.quit() }
+        } label: {
+            Image(systemName: "ellipsis")
+        }
+        .menuStyle(.borderlessButton)
+        .menuIndicator(.hidden)
+        .fixedSize()
+        .frame(width: 28, height: 28)
+        .background(Color.card, in: RoundedRectangle(cornerRadius: 8))
+        .help("More")
     }
 }
 

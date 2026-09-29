@@ -6,6 +6,7 @@ import {
 import type { LLMMeta } from "../lib/llmLog";
 import {
   findNodeAhead,
+  isForcedNode,
   resolveCurrentNode,
   switchCases,
 } from "../lib/blueprintNodes";
@@ -445,7 +446,9 @@ async function task({ taskId }: { taskId: string }) {
     if (pending) {
       return;
     }
+  }
 
+  if (currentNode?.type === "APPROVAL" && isForcedNode(currentNode)) {
     const question =
       currentNode.properties?.question ||
       (await approvalQuestion({
@@ -465,38 +468,7 @@ async function task({ taskId }: { taskId: string }) {
     });
   }
 
-  if (currentNode?.type === "SWITCH") {
-    const cases = switchCases(currentNode, blueprint?.nodes ?? []);
-
-    if (!cases.length) {
-      return await taskFn.update({
-        taskId,
-        status: "FAILED",
-        comment: `Switch node "${
-          currentNode.properties?.label ?? currentNode.id
-        }" has no branches to choose from.`,
-      });
-    }
-
-    return await taskFn.addStep({
-      taskId,
-      action: "PLATFORM:switch",
-      parameters: {
-        instructions:
-          currentNode.properties?.pseudocodeEnabled &&
-          currentNode.properties?.pseudocode
-            ? currentNode.properties.pseudocode
-            : currentNode.properties?.instructions,
-        cases,
-      },
-      comment: "Choosing the branch that matches the task.",
-      nodeId: currentNode.id,
-    });
-  }
-
-  const isForceNode =
-    currentNode?.properties?.force === true ||
-    currentNode?.properties?.action === "PLATFORM:two_factor";
+  const isForceNode = isForcedNode(currentNode);
 
   const nodeAction = currentNode?.properties?.action;
 
@@ -701,6 +673,20 @@ async function task({ taskId }: { taskId: string }) {
   } else if (action === "PLATFORM:message_user") {
     parameters.sessionId = sessionId;
     parameters.agentId = agentId;
+  } else if (action === "PLATFORM:customer_approval") {
+    parameters.question ??= matchedNode?.properties?.question;
+    parameters.sessionId = sessionId;
+    parameters.agentId = agentId;
+  } else if (
+    action === "PLATFORM:switch" &&
+    matchedNode?.type === "SWITCH"
+  ) {
+    parameters.cases = switchCases(matchedNode, blueprint?.nodes ?? []);
+    parameters.instructions =
+      (matchedNode.properties?.pseudocodeEnabled &&
+        matchedNode.properties?.pseudocode) ||
+      matchedNode.properties?.instructions ||
+      parameters.instructions;
   }
 
   await taskFn.addStep({

@@ -63,12 +63,12 @@ function selectedSwitchId(step: { result?: string }, nextIds: string[]) {
   return nextIds[0];
 }
 
-function isEngineNode(node: any) {
-  return (
-    node.type !== "NORMAL" ||
-    node.properties?.force === true ||
-    node.properties?.action === "PLATFORM:two_factor"
-  );
+export function isForcedNode(node: any) {
+  return node?.properties?.force === true;
+}
+
+function successorIdsOf(node: any): string[] {
+  return [...nextIdsOf(node), ...(node.true || []), ...(node.false || [])];
 }
 
 export function findNodeAhead(
@@ -76,19 +76,22 @@ export function findNodeAhead(
   currentNode: any,
   matches: (node: any) => boolean,
 ) {
-  const seen = new Set<string>();
-  let node = currentNode;
+  if (matches(currentNode)) return currentNode;
+  if (isForcedNode(currentNode)) return undefined;
 
-  while (node && !seen.has(node.id)) {
-    seen.add(node.id);
-    if (node !== currentNode && isEngineNode(node)) return undefined;
+  const seen = new Set<string>([currentNode.id]);
+  const queue = successorIdsOf(currentNode);
+
+  while (queue.length) {
+    const id = queue.shift() as string;
+    if (seen.has(id)) continue;
+    seen.add(id);
+
+    const node = nodes.find((n) => n.id === id);
+    if (!node || isForcedNode(node)) continue;
     if (matches(node)) return node;
-    if (isEngineNode(node)) return undefined;
 
-    const nextIds = nextIdsOf(node);
-    node = nextIds.length
-      ? nodes.find((n) => nextIds.includes(n.id))
-      : undefined;
+    queue.push(...successorIdsOf(node));
   }
 
   return undefined;

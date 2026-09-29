@@ -1,6 +1,10 @@
 import { describe, it } from "bun:test";
 import assert from "node:assert/strict";
-import { findNodeAhead, resolveCurrentNode } from "../blueprintNodes";
+import {
+  findNodeAhead,
+  isForcedNode,
+  resolveCurrentNode,
+} from "../blueprintNodes";
 
 const node = (
   id: string,
@@ -67,6 +71,15 @@ describe("resolveCurrentNode", () => {
     assert.equal(current?.id, "pay");
   });
 
+  it("continues after a branch node skipped by the model", () => {
+    const current = resolveCurrentNode(nodes, [
+      { action: "STRIPE:create_payment_intent", nodeId: "pay" },
+      { action: "STRIPE:cancel_payment_intent", nodeId: "cancel" },
+    ]);
+
+    assert.equal(current, undefined);
+  });
+
   it("follows the approval branch", () => {
     const current = resolveCurrentNode(nodes, [
       { action: "STRIPE:create_payment_intent", nodeId: "pay" },
@@ -101,14 +114,53 @@ describe("findNodeAhead", () => {
     assert.equal(found?.id, "pay");
   });
 
-  it("does not look past an approval node", () => {
-    const found = findNodeAhead(
-      nodes,
-      nodes[0],
-      byAction("STRIPE:confirm_payment_intent"),
+  it("looks past a non-forced approval into its branches", () => {
+    assert.equal(
+      findNodeAhead(nodes, nodes[0], byAction("STRIPE:confirm_payment_intent"))
+        ?.id,
+      "confirm",
+    );
+    assert.equal(
+      findNodeAhead(nodes, nodes[0], byAction("STRIPE:cancel_payment_intent"))
+        ?.id,
+      "cancel",
+    );
+  });
+
+  it("does not look past a forced approval", () => {
+    const forcedApproval = nodes.map((n) =>
+      n.id === "approval"
+        ? { ...n, properties: { ...n.properties, force: true } }
+        : n,
     );
 
-    assert.equal(found, undefined);
+    assert.equal(
+      findNodeAhead(
+        forcedApproval,
+        forcedApproval[0],
+        byAction("STRIPE:confirm_payment_intent"),
+      ),
+      undefined,
+    );
+  });
+
+  it("looks into switch cases", () => {
+    const switched = [
+      node("start", "A:run", "pick"),
+      {
+        id: "pick",
+        type: "SWITCH",
+        properties: { action: "PLATFORM:switch" },
+        next: ["left", "right"],
+      },
+      node("left", "L:run", null),
+      node("right", "R:run", null),
+    ];
+
+    assert.equal(
+      findNodeAhead(switched, switched[0], byAction("R:run"))?.id,
+      "right",
+    );
   });
 
   it("does not skip a force node", () => {
@@ -137,5 +189,12 @@ describe("findNodeAhead", () => {
     );
 
     assert.equal(found, undefined);
+  });
+});
+
+describe("isForcedNode", () => {
+  it("only treats nodes marked force as forced", () => {
+    assert.equal(isForcedNode(node("a", "A:run", null, { force: true })), true);
+    assert.equal(isForcedNode(node("a", "PLATFORM:two_factor", null)), false);
   });
 });

@@ -1979,6 +1979,7 @@ function BlueprintFlowWidget({
       )}
 
       <NodeEditorWidget
+        graphData={graphData}
         pseudocode={nodePseudocode}
         drawerOpen={drawerOpen}
         handleDrawerClose={handleDrawerClose}

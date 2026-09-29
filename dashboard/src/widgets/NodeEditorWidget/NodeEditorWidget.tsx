@@ -1,9 +1,13 @@
 import NodeEditorDrawer from "../../components/NodeEditor/NodeEditorDrawer";
-import type { SwitchCase } from "../../components/BlueprintFlow/helper";
 
 import useAgents from "../../hooks/useAgents";
 import useBlueprint from "../../hooks/useBlueprint";
 import useMCPs from "../../hooks/useMCPs";
+
+import type {
+  DefinitionGraph,
+  SwitchCase,
+} from "../../components/BlueprintFlow/helper";
 
 import React, { useEffect, useState } from "react";
 
@@ -48,6 +52,7 @@ const NodeEditorWidget = ({
   setHandoffTargetAgentId,
   handoffTargetBlueprintId = "",
   setHandoffTargetBlueprintId,
+  graphData,
 }: {
   parameters?: Record<string, unknown>;
   onParametersChange?: (parameters: Record<string, unknown>) => void;
@@ -125,6 +130,7 @@ const NodeEditorWidget = ({
   setHandoffTargetAgentId?: (id: string) => void;
   handoffTargetBlueprintId?: string;
   setHandoffTargetBlueprintId?: (id: string) => void;
+  graphData?: DefinitionGraph | null;
   editingNode?: {
     id: string;
     label?: string;

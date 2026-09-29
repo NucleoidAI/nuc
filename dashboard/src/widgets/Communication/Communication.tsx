@@ -48,6 +48,7 @@ const Communication = () => {
                 base.requiresInput && code
                   ? `${base.label} (${code})`
                   : base.label,
+              name: base.label,
               icon: base.icon,
               code,
             });

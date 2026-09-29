@@ -4,6 +4,7 @@ import { completeTwoFactor } from "../functions/twoFactor";
 import Joi from "joi";
 import agentFn from "../functions/agent";
 import express from "express";
+import schemas from "../schemas";
 import sessionFn from "../functions/session";
 
 const router = express.Router();
@@ -28,7 +29,6 @@ async function pending(sessionId: string) {
   }
 }
 
-// The external channel listener can discover requests created by any session.
 router.get("/two-factor/pending", async (req, res) => {
   if (!isAuthorized(req)) return res.status(401).end();
   res.set("Cache-Control", "no-store");
@@ -160,16 +160,6 @@ router.post("/:sessionId/two-factor", async (req, res) => {
   }
 });
 
-const emailDecisionSchema = Joi.object({
-  stepId: Joi.string()
-    .guid({ version: ["uuidv4"] })
-    .required(),
-  token: Joi.string()
-    .pattern(/^[a-f0-9]{64}$/)
-    .required(),
-  decision: Joi.string().valid("APPROVED", "REJECTED").required(),
-});
-
 router.all("/:sessionId/two-factor/email", (req, res, next) => {
   res.set({
     "Cache-Control": "no-store",
@@ -181,7 +171,7 @@ router.all("/:sessionId/two-factor/email", (req, res, next) => {
 });
 
 router.get("/:sessionId/two-factor/email", (req, res) => {
-  const { error, value } = emailDecisionSchema.validate(req.query);
+  const { error, value } = schemas.Session.emailDecision.validate(req.query);
   if (error) return res.status(400).send("Invalid approval link.");
   const label = value.decision === "APPROVED" ? "Approve" : "Reject";
   return res
@@ -195,7 +185,7 @@ router.post(
   "/:sessionId/two-factor/email",
   express.urlencoded({ extended: false }),
   async (req, res) => {
-    const { error, value } = emailDecisionSchema.validate(req.body);
+    const { error, value } = schemas.Session.emailDecision.validate(req.body);
     if (error) return res.status(400).send("Invalid approval link.");
     const waiting = await pending(req.params.sessionId);
     if (

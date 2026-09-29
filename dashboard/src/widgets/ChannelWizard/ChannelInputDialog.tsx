@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
-const CommunicationInputDialog = ({
+const ChannelInputDialog = ({
   open,
   onClose,
   onSubmit,
@@ -62,4 +62,4 @@ const CommunicationInputDialog = ({
   );
 };
 
-export default CommunicationInputDialog;
+export default ChannelInputDialog;

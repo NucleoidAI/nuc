@@ -1,7 +1,7 @@
+import ChannelBlueprintSelection from "./ChannelBlueprintSelection";
+import ChannelInputDialog from "./ChannelInputDialog";
+import ChannelSelection from "./ChannelSelection";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CommunicationBlueprintSelection from "./CommunicationBlueprintSelection";
-import CommunicationChannelSelection from "./CommunicationChannelSelection";
-import CommunicationInputDialog from "./CommunicationInputDialog";
 import EmailChannelDialog from "./EmailChannelDialog";
 import React from "react";
 
@@ -18,7 +18,7 @@ import {
   Typography,
 } from "@mui/material";
 
-const CommunicationWizard = ({
+const ChannelWizard = ({
   open,
   onClose,
   channels,
@@ -232,7 +232,7 @@ const CommunicationWizard = ({
             }}
           >
             {tabIndex === 0 && (
-              <CommunicationChannelSelection
+              <ChannelSelection
                 channels={channels}
                 availableChannels={availableChannels}
                 connections={connections}
@@ -281,7 +281,7 @@ const CommunicationWizard = ({
                   </Typography>
                 </Box>
               ) : (
-                <CommunicationBlueprintSelection
+                <ChannelBlueprintSelection
                   Blueprints={Blueprints}
                   selectedRights={selectedRights}
                   onRightsChange={setSelectedRights}
@@ -328,7 +328,7 @@ const CommunicationWizard = ({
       />
 
       {pendingChannelOption && !pendingChannelOption.configurable && (
-        <CommunicationInputDialog
+        <ChannelInputDialog
           open={inputDialogOpen}
           onClose={() => {
             setInputDialogOpen(false);
@@ -342,4 +342,4 @@ const CommunicationWizard = ({
   );
 };
 
-export default CommunicationWizard;
+export default ChannelWizard;

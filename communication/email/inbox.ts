@@ -165,7 +165,7 @@ async function handleInbound({
 
   const accessToken = createServiceToken({ projectId });
   const thread: Thread = {
-    communicationId: mailbox.id,
+    channelId: mailbox.id,
     projectId,
     mailbox: address,
     threadId: mail.threadId,

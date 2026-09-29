@@ -1,4 +1,4 @@
-import Communication from "../models/Communication";
+import Channel from "../models/Channel";
 import { NotFoundError } from "@canmingir/link-express/error";
 
 type ServerConfig = { pass?: string } & Record<string, unknown>;
@@ -26,8 +26,8 @@ function maskConfig(config: EmailConfig | null) {
   return { ...config, imap: mask(config.imap), smtp: mask(config.smtp) };
 }
 
-function toResponse(communication: Communication) {
-  const json = communication.toJSON();
+function toResponse(channel: Channel) {
+  const json = channel.toJSON();
 
   return { ...json, config: maskConfig(json.config) };
 }
@@ -45,19 +45,19 @@ function mergeSecrets(
 }
 
 async function list() {
-  const communications = await Communication.findAll();
+  const channels = await Channel.findAll();
 
-  return communications.map(toResponse);
+  return channels.map(toResponse);
 }
 
 async function listMailboxes() {
-  const communications = await Communication.findAll({
+  const channels = await Channel.findAll({
     where: { channelType: "EMAIL" },
   });
 
-  return communications
-    .map((communication) => communication.toJSON())
-    .filter((communication) => communication.config);
+  return channels
+    .map((channel) => channel.toJSON())
+    .filter((channel) => channel.config);
 }
 
 async function create({
@@ -73,7 +73,7 @@ async function create({
   projectId?: string;
   config?: EmailConfig;
 }) {
-  const communication = await Communication.create({
+  const channel = await Channel.create({
     channelType,
     channelCode: config?.address ? String(config.address) : channelCode,
     blueprintId,
@@ -81,45 +81,45 @@ async function create({
     config: config ?? null,
   });
 
-  return toResponse(communication);
+  return toResponse(channel);
 }
 
-async function get({ communicationId }: { communicationId: string }) {
-  const communication = await Communication.findByPk(communicationId);
+async function get({ channelId }: { channelId: string }) {
+  const channel = await Channel.findByPk(channelId);
 
-  if (!communication) {
+  if (!channel) {
     throw new NotFoundError();
   }
 
-  return toResponse(communication);
+  return toResponse(channel);
 }
 
 async function update({
-  communicationId,
+  channelId,
   config,
 }: {
-  communicationId: string;
+  channelId: string;
   config: EmailConfig;
 }) {
-  const communication = await Communication.findByPk(communicationId);
+  const channel = await Channel.findByPk(channelId);
 
-  if (!communication) {
+  if (!channel) {
     throw new NotFoundError();
   }
 
-  const merged = mergeSecrets(config, communication.config as EmailConfig);
+  const merged = mergeSecrets(config, channel.config as EmailConfig);
 
-  await communication.update({
+  await channel.update({
     config: merged,
     channelCode: String(merged.address),
   });
 
-  return toResponse(communication);
+  return toResponse(channel);
 }
 
-async function remove({ communicationId }: { communicationId: string }) {
-  const deleted = await Communication.destroy({
-    where: { id: communicationId },
+async function remove({ channelId }: { channelId: string }) {
+  const deleted = await Channel.destroy({
+    where: { id: channelId },
   });
 
   if (!deleted) {

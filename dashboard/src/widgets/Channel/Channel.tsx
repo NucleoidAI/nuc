@@ -1,8 +1,8 @@
 import AddIcon from "@mui/icons-material/Add";
-import CommunicationDiagram from "../../components/CommunicationDiagram/CommunicationDiagram";
-import CommunicationWizard from "../CommunicationWizard/CommunicationWizard";
+import ChannelDiagram from "../../components/ChannelDiagram/ChannelDiagram";
+import ChannelWizard from "../ChannelWizard/ChannelWizard";
 import useBlueprint from "../../hooks/useBlueprint";
-import useCommunications from "../../hooks/useCommunications";
+import useChannels from "../../hooks/useChannels";
 
 import { Box, CircularProgress, Fab, Stack } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -26,28 +26,24 @@ const availableChannels = [
   },
 ];
 
-const Communication = () => {
+const Channel = () => {
   const { getBlueprint } = useBlueprint();
   const { Blueprint: blueprintList, loading, error } = getBlueprint();
 
-  const {
-    getCommunications,
-    createCommunication,
-    updateCommunication,
-    deleteCommunication,
-  } = useCommunications();
-  const { communications } = getCommunications();
+  const { getChannels, createChannel, updateChannel, deleteChannel } =
+    useChannels();
+  const { channels: records } = getChannels();
 
   const [channels, setChannels] = useState([]);
   const [connections, setConnections] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
-    if (communications && Array.isArray(communications)) {
+    if (records && Array.isArray(records)) {
       const channelMap = new Map();
-      communications.forEach((comm) => {
-        const typeLower = comm.channelType.toLowerCase();
-        const code = comm.channelCode;
+      records.forEach((record) => {
+        const typeLower = record.channelType.toLowerCase();
+        const code = record.channelCode;
         const id = `${typeLower}-${code}`;
         if (!channelMap.has(id)) {
           const base = availableChannels.find((c) => c.id === typeLower);
@@ -61,23 +57,23 @@ const Communication = () => {
                   : base.label,
               icon: base.icon,
               code,
-              config: comm.config ?? null,
-              communicationIds: [comm.id],
+              config: record.config ?? null,
+              recordIds: [record.id],
             });
           }
         } else {
-          channelMap.get(id).communicationIds.push(comm.id);
+          channelMap.get(id).recordIds.push(record.id);
         }
       });
       setChannels(Array.from(channelMap.values()));
       setConnections(
-        communications.map((comm) => ({
-          left: `${comm.channelType.toLowerCase()}-${comm.channelCode}`,
-          right: `tbp-${comm.blueprintId}`,
+        records.map((record) => ({
+          left: `${record.channelType.toLowerCase()}-${record.channelCode}`,
+          right: `tbp-${record.blueprintId}`,
         }))
       );
     }
-  }, [communications]);
+  }, [records]);
 
   const handleAddChannel = (newChannel) => {
     setChannels((prev) => [...prev, newChannel]);
@@ -86,26 +82,27 @@ const Communication = () => {
   const handleUpdateChannelConfig = async (channelId, config) => {
     const channel = channels.find((c) => c.id === channelId);
 
-    if (!channel?.communicationIds?.length) {
+    if (!channel?.recordIds?.length) {
       setChannels((prev) =>
         prev.map((c) => (c.id === channelId ? { ...c, config } : c))
       );
       return;
     }
 
-    for (const id of channel.communicationIds) {
-      await updateCommunication(id, config);
+    for (const id of channel.recordIds) {
+      await updateChannel(id, config);
     }
   };
 
   const handleDeleteChannel = async (channelId) => {
-    const communicationToDelete = communications.find(
-      (comm) =>
-        `${comm.channelType.toLowerCase()}-${comm.channelCode}` === channelId
+    const recordToDelete = records.find(
+      (record) =>
+        `${record.channelType.toLowerCase()}-${record.channelCode}` ===
+        channelId
     );
 
-    if (communicationToDelete) {
-      await deleteCommunication(communicationToDelete.id);
+    if (recordToDelete) {
+      await deleteChannel(recordToDelete.id);
       setChannels((prev) => prev.filter((c) => c.id !== channelId));
       setConnections((prev) => prev.filter((c) => c.left !== channelId));
     }
@@ -115,7 +112,7 @@ const Communication = () => {
     const channel = channels.find((c) => c.id === channelId);
     if (channel) {
       for (const rid of blueprintIds) {
-        await createCommunication({
+        await createChannel({
           channelType: channel.type.toUpperCase(),
           channelCode: channel.code,
           blueprintId: rid.replace(/^tbp-/, ""),
@@ -158,7 +155,7 @@ const Communication = () => {
       }}
     >
       <Box position="relative">
-        <CommunicationDiagram
+        <ChannelDiagram
           channels={channels}
           Blueprints={Blueprints}
           connections={connections}
@@ -173,7 +170,7 @@ const Communication = () => {
           }}
         />
 
-        <CommunicationWizard
+        <ChannelWizard
           open={dialogOpen}
           onClose={() => setDialogOpen(false)}
           channels={channels}
@@ -208,4 +205,4 @@ const Communication = () => {
   );
 };
 
-export default Communication;
+export default Channel;

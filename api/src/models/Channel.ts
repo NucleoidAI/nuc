@@ -10,11 +10,11 @@ import {
 } from "@canmingir/link-express/sequelize";
 
 @Table({
-  tableName: "Communication",
+  tableName: "Channel",
   timestamps: false,
   underscored: true,
 })
-class Communication extends Model {
+class Channel extends Model {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)
@@ -44,4 +44,4 @@ class Communication extends Model {
   declare Blueprint?: any;
 }
 
-export default Communication;
+export default Channel;

@@ -15,7 +15,7 @@ import {
   useTheme,
 } from "@mui/material";
 
-const CommunicationChannelSelection = ({
+const ChannelSelection = ({
   channels,
   availableChannels,
   connections,
@@ -183,4 +183,4 @@ const CommunicationChannelSelection = ({
   );
 };
 
-export default CommunicationChannelSelection;
+export default ChannelSelection;

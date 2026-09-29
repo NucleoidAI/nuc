@@ -2,7 +2,7 @@ import storage from "../Storage";
 import { emailConfig } from "./config";
 
 type Thread = {
-  communicationId: string;
+  channelId: string;
   projectId: string;
   mailbox: string;
   threadId: string;

@@ -25,7 +25,7 @@ const emailConfig = Joi.object({
   }).required(),
 });
 
-const Communication = {
+const Channel = {
   create: Joi.object({
     channelType: Joi.string().valid("WHATSAPP", "SLACK", "EMAIL").required(),
     channelCode: Joi.string().required(),
@@ -43,4 +43,4 @@ const Communication = {
   }),
 };
 
-export default Communication;
+export default Channel;

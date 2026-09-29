@@ -23,7 +23,7 @@ type Mailbox = {
 };
 
 const getMailboxes = async (accessToken: string) => {
-  const { data } = await http.get("/communications/mailboxes", {
+  const { data } = await http.get("/channels/mailboxes", {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },

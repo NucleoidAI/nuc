@@ -6,7 +6,7 @@ import React, { useMemo } from "react";
 const DEFAULT_BLUEPRINT_ICON =
   "healthicons:crisis-response-center-person-outline";
 
-function CommunicationDiagram(props) {
+function ChannelDiagram(props) {
   const {
     channels,
     Blueprints,
@@ -119,7 +119,7 @@ function CommunicationDiagram(props) {
       >
         {isEmpty ? (
           <Typography variant="h6" color="textSecondary" textAlign="center">
-            No communication connections available
+            No channel connections available
           </Typography>
         ) : (
           <>
@@ -239,4 +239,4 @@ function CommunicationDiagram(props) {
   );
 }
 
-export default CommunicationDiagram;
+export default ChannelDiagram;

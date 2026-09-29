@@ -16,7 +16,7 @@ async function deliver({
     return;
   }
 
-  const mailbox = findMailbox({ id: thread.communicationId });
+  const mailbox = findMailbox({ id: thread.channelId });
 
   if (!mailbox) {
     console.error("Email delivery skipped, mailbox no longer configured", {

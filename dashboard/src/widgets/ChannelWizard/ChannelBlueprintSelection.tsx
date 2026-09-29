@@ -3,7 +3,7 @@ import React from "react";
 
 import { Card, Radio, Typography, useTheme } from "@mui/material";
 
-const CommunicationBlueprintSelection = ({
+const ChannelBlueprintSelection = ({
   Blueprints,
   selectedRights,
   onRightsChange,
@@ -85,4 +85,4 @@ const CommunicationBlueprintSelection = ({
   );
 };
 
-export default CommunicationBlueprintSelection;
+export default ChannelBlueprintSelection;

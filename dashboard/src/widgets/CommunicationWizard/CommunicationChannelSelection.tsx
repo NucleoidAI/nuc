@@ -2,6 +2,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Icon } from "@iconify/react";
 import React from "react";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 import {
   Box,
@@ -21,10 +22,12 @@ const CommunicationChannelSelection = ({
   leftSelection,
   onChannelSelect,
   onChannelDelete,
+  onChannelConfigure,
   onChannelAddRequest,
 }: {
   channels: Array<{
     id: string;
+    type?: string;
     label: string;
     icon: string;
   }>;
@@ -33,6 +36,7 @@ const CommunicationChannelSelection = ({
     label: string;
     icon: string;
     requiresInput?: boolean;
+    configurable?: boolean;
   }>;
   connections?: Array<{
     left: string;
@@ -41,6 +45,7 @@ const CommunicationChannelSelection = ({
   leftSelection?: string | null;
   onChannelSelect: (channelId: string) => void;
   onChannelDelete: (channelId: string) => void;
+  onChannelConfigure?: (channelId: string) => void;
   onChannelAddRequest: (optionId: string) => void;
 }) => {
   const theme = useTheme();
@@ -53,6 +58,9 @@ const CommunicationChannelSelection = ({
     onChannelAddRequest(optionId);
     handleAddChannelClose();
   };
+
+  const isConfigurable = (type) =>
+    !!(availableChannels || []).find((c) => c.id === type)?.configurable;
 
   const isChannelConnected = (channelId) => {
     return connections?.some((conn) => conn.left === channelId);
@@ -110,15 +118,29 @@ const CommunicationChannelSelection = ({
                 )}
               </Box>
             </Box>
-            <IconButton
-              size="small"
-              onClick={(e) => {
-                e.stopPropagation();
-                onChannelDelete(node.id);
-              }}
-            >
-              <DeleteIcon fontSize="small" />
-            </IconButton>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              {onChannelConfigure && isConfigurable(node.type) && (
+                <IconButton
+                  size="small"
+                  aria-label="Channel settings"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onChannelConfigure(node.id);
+                  }}
+                >
+                  <SettingsIcon fontSize="small" />
+                </IconButton>
+              )}
+              <IconButton
+                size="small"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onChannelDelete(node.id);
+                }}
+              >
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </Box>
           </Card>
         );
       })}

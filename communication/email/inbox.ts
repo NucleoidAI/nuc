@@ -2,11 +2,12 @@ import { ImapFlow } from "imapflow";
 import { ParsedMail, simpleParser } from "mailparser";
 import { createServiceToken } from "./token";
 import { createSession } from "../api/createSession";
-import { emailConfig } from "./config";
+import { emailConfig, withEnvSecrets } from "./config";
 import { event } from "@canmingir/link-express/event/client";
 import { findSessionId, rememberSession, Thread } from "./store";
+import { getMailboxes, Mailbox } from "../api/getMailboxes";
 import { getBlueprint } from "../api/getBlueprint";
-import { getCommunications } from "../api/getCommunications";
+import { replaceMailboxes } from "./mailboxes";
 import { sendMessageToSession } from "../api/sendMessageSession";
 
 type InboundMail = {
@@ -109,52 +110,23 @@ function isAutomated({ parsed }: { parsed: ParsedMail }): boolean {
   );
 }
 
-async function resolveBlueprintId({
-  accessToken,
-  mail,
-}: {
-  accessToken: string;
-  mail: InboundMail;
-}): Promise<string> {
-  const { address, fallbackBlueprintId } = emailConfig();
-  const codes = [...mail.recipients, address];
-  const communications = await getCommunications(accessToken);
-
-  const match = communications.find(
-    (communication) =>
-      communication.channelType === "EMAIL" &&
-      codes.includes(communication.channelCode.trim().toLowerCase()),
-  );
-
-  if (match) {
-    return match.blueprintId;
-  }
-
-  if (!fallbackBlueprintId) {
-    throw new Error(
-      `No EMAIL communication is registered for "${mail.recipients.join(", ")}"`,
-    );
-  }
-
-  return fallbackBlueprintId;
-}
-
 async function openSession({
   accessToken,
+  mailbox,
   thread,
   mail,
 }: {
   accessToken: string;
+  mailbox: Mailbox;
   thread: Thread;
   mail: InboundMail;
 }): Promise<string> {
-  const blueprintId = await resolveBlueprintId({ accessToken, mail });
-  const blueprint = await getBlueprint(accessToken, blueprintId);
+  const blueprint = await getBlueprint(accessToken, mailbox.blueprintId);
 
   const session = await createSession(
     accessToken,
     blueprint.agentId,
-    blueprintId,
+    mailbox.blueprintId,
     {
       channel: "EMAIL",
       from: mail.from,
@@ -169,15 +141,31 @@ async function openSession({
   return session.id;
 }
 
-async function handleInbound({ mail }: { mail: InboundMail }): Promise<void> {
-  const { projectId, address } = emailConfig();
+function mailboxProjectId({ mailbox }: { mailbox: Mailbox }): string {
+  const projectId = mailbox.projectId || emailConfig().projectId;
 
   if (!projectId) {
-    throw new Error("EMAIL_PROJECT_ID environment variable is required");
+    throw new Error(
+      `No project is linked to mailbox ${mailbox.config.address} and EMAIL_PROJECT_ID is not set`,
+    );
   }
+
+  return projectId;
+}
+
+async function handleInbound({
+  mailbox,
+  mail,
+}: {
+  mailbox: Mailbox;
+  mail: InboundMail;
+}): Promise<void> {
+  const projectId = mailboxProjectId({ mailbox });
+  const { address } = mailbox.config;
 
   const accessToken = createServiceToken({ projectId });
   const thread: Thread = {
+    communicationId: mailbox.id,
     projectId,
     mailbox: address,
     threadId: mail.threadId,
@@ -191,7 +179,8 @@ async function handleInbound({ mail }: { mail: InboundMail }): Promise<void> {
   const existingSessionId = findSessionId({ thread });
 
   const sessionId =
-    existingSessionId ?? (await openSession({ accessToken, thread, mail }));
+    existingSessionId ??
+    (await openSession({ accessToken, mailbox, thread, mail }));
 
   rememberSession({ thread, sessionId });
 
@@ -209,9 +198,27 @@ async function handleInbound({ mail }: { mail: InboundMail }): Promise<void> {
   });
 }
 
-async function fetchUnseen({ client }: { client: ImapFlow }): Promise<void> {
-  const { address, allowedSenders } = emailConfig();
-  const lock = await client.getMailboxLock(emailConfig().imap.folder);
+function isAllowedSender({
+  mailbox,
+  from,
+}: {
+  mailbox: Mailbox;
+  from: string;
+}): boolean {
+  const { allowedSenders } = mailbox.config;
+
+  return !allowedSenders?.length || allowedSenders.includes(from);
+}
+
+async function fetchUnseen({
+  client,
+  mailbox,
+}: {
+  client: ImapFlow;
+  mailbox: Mailbox;
+}): Promise<void> {
+  const { address, imap } = mailbox.config;
+  const lock = await client.getMailboxLock(imap.folder || "INBOX");
 
   try {
     const uids = await client.search({ seen: false }, { uid: true });
@@ -237,16 +244,17 @@ async function fetchUnseen({ client }: { client: ImapFlow }): Promise<void> {
       if (
         !mail ||
         mail.from === address ||
-        !allowedSenders.includes(mail.from) ||
+        !isAllowedSender({ mailbox, from: mail.from }) ||
         isAutomated({ parsed })
       ) {
         continue;
       }
 
       try {
-        await handleInbound({ mail });
+        await handleInbound({ mailbox, mail });
       } catch (error: unknown) {
         console.error("Email inbound message failed", {
+          mailbox: address,
           from: mail.from,
           subject: mail.subject,
           error,
@@ -258,8 +266,8 @@ async function fetchUnseen({ client }: { client: ImapFlow }): Promise<void> {
   }
 }
 
-async function connect(): Promise<ImapFlow> {
-  const { imap } = emailConfig();
+async function connect({ mailbox }: { mailbox: Mailbox }): Promise<ImapFlow> {
+  const { imap } = mailbox.config;
 
   const client = new ImapFlow({
     host: imap.host,
@@ -275,36 +283,95 @@ async function connect(): Promise<ImapFlow> {
   return client;
 }
 
-async function setup(): Promise<void> {
-  const { enabled, pollIntervalMs, imap } = emailConfig();
+type Connection = { key: string; client: ImapFlow | null };
 
-  if (!enabled) {
-    console.log("📭 Email channel disabled (IMAP_HOST or IMAP_USER missing)");
-    return;
+const connections = new Map<string, Connection>();
+
+async function disconnect({ id }: { id: string }): Promise<void> {
+  const connection = connections.get(id);
+
+  connections.delete(id);
+
+  if (connection?.client) {
+    await connection.client.logout().catch(() => undefined);
+  }
+}
+
+async function pollMailbox({ mailbox }: { mailbox: Mailbox }): Promise<void> {
+  const key = JSON.stringify(mailbox.config.imap);
+  const existing = connections.get(mailbox.id);
+
+  if (existing && existing.key !== key) {
+    await disconnect({ id: mailbox.id });
   }
 
-  let client: ImapFlow | null = null;
+  const connection = connections.get(mailbox.id) ?? { key, client: null };
+
+  connections.set(mailbox.id, connection);
+
+  try {
+    if (!connection.client || !connection.client.usable) {
+      connection.client = await connect({ mailbox });
+    }
+
+    await fetchUnseen({ client: connection.client, mailbox });
+  } catch (error: unknown) {
+    console.error("Email poll failed", {
+      mailbox: mailbox.config.address,
+      error,
+    });
+
+    await disconnect({ id: mailbox.id });
+  }
+}
+
+async function loadMailboxes(): Promise<Mailbox[]> {
+  const { projectId } = emailConfig();
+  const accessToken = createServiceToken({ projectId });
+  const list = await getMailboxes(accessToken);
+  const seen = new Set<string>();
+
+  return list.map(withEnvSecrets).filter((mailbox) => {
+    const address = mailbox.config.address.toLowerCase();
+
+    if (seen.has(address)) {
+      return false;
+    }
+
+    seen.add(address);
+
+    return true;
+  });
+}
+
+async function setup(): Promise<void> {
+  const { pollIntervalMs } = emailConfig();
 
   const poll = async (): Promise<void> => {
     try {
-      if (!client || !client.usable) {
-        client = await connect();
-      }
+      const mailboxes = await loadMailboxes();
 
-      await fetchUnseen({ client });
+      replaceMailboxes({ list: mailboxes });
+
+      const activeIds = new Set(mailboxes.map((mailbox) => mailbox.id));
+
+      await Promise.all(
+        [...connections.keys()]
+          .filter((id) => !activeIds.has(id))
+          .map((id) => disconnect({ id })),
+      );
+
+      await Promise.all(
+        mailboxes.map((mailbox) => pollMailbox({ mailbox })),
+      );
     } catch (error: unknown) {
-      console.error("Email poll failed", error);
-
-      if (client) {
-        await client.logout().catch(() => undefined);
-        client = null;
-      }
+      console.error("Email mailbox refresh failed", error);
     } finally {
       setTimeout(poll, pollIntervalMs);
     }
   };
 
-  console.log(`📬 Email channel polling ${imap.user} every ${pollIntervalMs}ms`);
+  console.log(`📬 Email channel polling configured mailboxes every ${pollIntervalMs}ms`);
 
   await poll();
 }

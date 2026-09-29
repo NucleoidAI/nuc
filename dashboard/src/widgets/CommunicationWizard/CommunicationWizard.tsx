@@ -2,6 +2,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CommunicationBlueprintSelection from "./CommunicationBlueprintSelection";
 import CommunicationChannelSelection from "./CommunicationChannelSelection";
 import CommunicationInputDialog from "./CommunicationInputDialog";
+import EmailChannelDialog from "./EmailChannelDialog";
 import React from "react";
 
 import {
@@ -26,6 +27,7 @@ const CommunicationWizard = ({
   connections,
   onAddChannel,
   onDeleteChannel,
+  onUpdateChannelConfig,
   onConnect,
   blueprintIcon,
 }) => {
@@ -35,6 +37,8 @@ const CommunicationWizard = ({
   const [inputDialogOpen, setInputDialogOpen] = React.useState(false);
   const [pendingChannelOption, setPendingChannelOption] = React.useState(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [emailDialogOpen, setEmailDialogOpen] = React.useState(false);
+  const [editingChannel, setEditingChannel] = React.useState(null);
   const handleDialogClose = () => {
     onClose();
     setTabIndex(0);
@@ -42,6 +46,8 @@ const CommunicationWizard = ({
     setSelectedRights([]);
     setInputDialogOpen(false);
     setPendingChannelOption(null);
+    setEmailDialogOpen(false);
+    setEditingChannel(null);
   };
 
   const handleTabChange = (_event, newValue) => setTabIndex(newValue);
@@ -62,7 +68,11 @@ const CommunicationWizard = ({
     const option = (availableChannels || []).find((c) => c.id === optionId);
     if (!option) return;
 
-    if (option.requiresInput) {
+    if (option.configurable) {
+      setPendingChannelOption(option);
+      setEditingChannel(null);
+      setEmailDialogOpen(true);
+    } else if (option.requiresInput) {
       setPendingChannelOption(option);
       setInputDialogOpen(true);
     } else {
@@ -93,6 +103,44 @@ const CommunicationWizard = ({
     }
     setInputDialogOpen(false);
     setPendingChannelOption(null);
+  };
+
+  const handleChannelConfigure = (channelId) => {
+    const channel = (channels || []).find((c) => c.id === channelId);
+    if (!channel) return;
+    setEditingChannel(channel);
+    setEmailDialogOpen(true);
+  };
+
+  const closeEmailDialog = () => {
+    setEmailDialogOpen(false);
+    setEditingChannel(null);
+    setPendingChannelOption(null);
+  };
+
+  const handleEmailDialogSubmit = async (config) => {
+    if (editingChannel) {
+      if (onUpdateChannelConfig) {
+        await onUpdateChannelConfig(editingChannel.id, config);
+      }
+      closeEmailDialog();
+      return;
+    }
+
+    if (pendingChannelOption) {
+      const newChannel = {
+        type: pendingChannelOption.id,
+        id: `${pendingChannelOption.id}-${config.address}`,
+        label: `${pendingChannelOption.label} (${config.address})`,
+        icon: pendingChannelOption.icon,
+        code: config.address,
+        config,
+      };
+      onAddChannel && onAddChannel(newChannel);
+      setLeftSelection(newChannel.id);
+      setTabIndex(1);
+    }
+    closeEmailDialog();
   };
 
   const getExistingConnection = (channelId) => {
@@ -191,6 +239,7 @@ const CommunicationWizard = ({
                 leftSelection={leftSelection}
                 onChannelSelect={handleChannelSelect}
                 onChannelDelete={onDeleteChannel}
+                onChannelConfigure={handleChannelConfigure}
                 onChannelAddRequest={handleChannelAddRequest}
               />
             )}
@@ -271,7 +320,14 @@ const CommunicationWizard = ({
         </DialogActions>
       </Dialog>
 
-      {pendingChannelOption && (
+      <EmailChannelDialog
+        open={emailDialogOpen}
+        onClose={closeEmailDialog}
+        onSubmit={handleEmailDialogSubmit}
+        initialConfig={editingChannel?.config}
+      />
+
+      {pendingChannelOption && !pendingChannelOption.configurable && (
         <CommunicationInputDialog
           open={inputDialogOpen}
           onClose={() => {

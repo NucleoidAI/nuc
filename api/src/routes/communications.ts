@@ -10,13 +10,18 @@ router.get("/", async (req, res) => {
   res.status(200).json(comms);
 });
 
+router.get("/mailboxes", async (req, res) => {
+  const mailboxes = await communication.listMailboxes();
+  res.status(200).json(mailboxes);
+});
+
 router.get("/:id", async (req, res) => {
   const comm = await communication.get({ communicationId: req.params.id });
   res.status(200).json(comm);
 });
 
 router.post("/", async (req, res) => {
-  const { channelCode, channelType, blueprintId } = Joi.attempt(
+  const { channelCode, channelType, blueprintId, config } = Joi.attempt(
     req.body,
     schemas.Communication.create
   );
@@ -25,8 +30,20 @@ router.post("/", async (req, res) => {
     channelCode,
     channelType,
     blueprintId,
+    projectId: req.session?.projectId,
+    config,
   });
   res.status(201).json(comm);
+});
+
+router.patch("/:id", async (req, res) => {
+  const { config } = Joi.attempt(req.body, schemas.Communication.update);
+
+  const comm = await communication.update({
+    communicationId: req.params.id,
+    config,
+  });
+  res.status(200).json(comm);
 });
 
 router.delete("/:id", async (req, res) => {

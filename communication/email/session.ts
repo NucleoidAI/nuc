@@ -1,5 +1,5 @@
 import { event } from "@canmingir/link-express/event/client";
-import { emailConfig } from "./config";
+import { findMailbox } from "./mailboxes";
 import { findThread, forgetSession, rememberSession } from "./store";
 import { sendReply } from "./send";
 
@@ -16,8 +16,19 @@ async function deliver({
     return;
   }
 
+  const mailbox = findMailbox({ id: thread.communicationId });
+
+  if (!mailbox) {
+    console.error("Email delivery skipped, mailbox no longer configured", {
+      sessionId,
+      mailbox: thread.mailbox,
+    });
+    return;
+  }
+
   try {
     const messageId = await sendReply({
+      mailbox,
       to: thread.from,
       subject: thread.subject,
       body: content,
@@ -51,10 +62,6 @@ async function deliver({
 }
 
 async function setup(): Promise<void> {
-  if (!emailConfig().enabled) {
-    return;
-  }
-
   await event.subscribe<{ sessionId: string; content: string }>(
     "AI_ASSISTANT_MESSAGED",
     async ({ sessionId, content }) => {

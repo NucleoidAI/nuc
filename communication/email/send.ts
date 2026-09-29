@@ -1,30 +1,32 @@
 import nodemailer, { Transporter } from "nodemailer";
-import { emailConfig } from "./config";
+import { Mailbox } from "../api/getMailboxes";
 
-let transporter: Transporter | null = null;
+const transporters = new Map<string, { key: string; transporter: Transporter }>();
 
-function getTransporter(): Transporter {
-  if (transporter) {
-    return transporter;
+function getTransporter({ mailbox }: { mailbox: Mailbox }): Transporter {
+  const { smtp } = mailbox.config;
+  const key = JSON.stringify(smtp);
+  const cached = transporters.get(mailbox.id);
+
+  if (cached && cached.key === key) {
+    return cached.transporter;
   }
 
-  const { smtp } = emailConfig();
+  cached?.transporter.close();
 
   if (!smtp.host) {
-    throw new Error("SMTP_HOST environment variable is required");
+    throw new Error(`SMTP host is not configured for ${mailbox.config.address}`);
   }
 
-  if (!smtp.from) {
-    throw new Error("SMTP_FROM (or SMTP_USER) environment variable is required");
-  }
-
-  transporter = nodemailer.createTransport({
+  const transporter = nodemailer.createTransport({
     host: smtp.host,
     port: smtp.port,
     secure: smtp.secure,
     ...(smtp.user ? { auth: { user: smtp.user, pass: smtp.pass } } : {}),
     tls: { rejectUnauthorized: smtp.rejectUnauthorized },
   });
+
+  transporters.set(mailbox.id, { key, transporter });
 
   return transporter;
 }
@@ -36,22 +38,24 @@ function replySubject({ subject }: { subject: string }): string {
 }
 
 async function sendReply({
+  mailbox,
   to,
   subject,
   body,
   inReplyTo,
   references,
 }: {
+  mailbox: Mailbox;
   to: string;
   subject: string;
   body: string;
   inReplyTo: string;
   references: string[];
 }): Promise<string> {
-  const { smtp } = emailConfig();
+  const { smtp, address } = mailbox.config;
 
-  const info = await getTransporter().sendMail({
-    from: smtp.from,
+  const info = await getTransporter({ mailbox }).sendMail({
+    from: smtp.from || address,
     to,
     subject: replySubject({ subject }),
     text: body,

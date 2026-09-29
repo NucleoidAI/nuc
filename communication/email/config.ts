@@ -1,40 +1,15 @@
 import dotenv from "dotenv";
+import { Mailbox } from "../api/getMailboxes";
 
 dotenv.config();
 
-const DEFAULT_IMAP_PORT = 993;
-const DEFAULT_SMTP_PORT = 587;
-const DEFAULT_FOLDER = "INBOX";
 const DEFAULT_POLL_INTERVAL_MS = 30000;
 const DEFAULT_SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000;
-const ALLOWED_INBOUND_SENDERS = ["halilcengeldev@gmail.com"];
 
 type EmailConfig = {
-  enabled: boolean;
   projectId: string;
-  address: string;
-  allowedSenders: string[];
-  fallbackBlueprintId: string;
   pollIntervalMs: number;
   sessionTtlMs: number;
-  imap: {
-    host: string;
-    port: number;
-    secure: boolean;
-    user: string;
-    pass: string;
-    folder: string;
-    rejectUnauthorized: boolean;
-  };
-  smtp: {
-    host: string;
-    port: number;
-    secure: boolean;
-    user: string;
-    pass: string;
-    from: string;
-    rejectUnauthorized: boolean;
-  };
 };
 
 function readPositiveNumber({
@@ -60,14 +35,8 @@ function readPositiveNumber({
 }
 
 function emailConfig(): EmailConfig {
-  const imapUser = process.env.IMAP_USER ?? "";
-  const smtpUser = process.env.SMTP_USER ?? imapUser;
   return {
-    enabled: Boolean(process.env.IMAP_HOST && imapUser),
     projectId: process.env.EMAIL_PROJECT_ID ?? "",
-    address: (process.env.EMAIL_ADDRESS ?? imapUser).toLowerCase(),
-    allowedSenders: ALLOWED_INBOUND_SENDERS,
-    fallbackBlueprintId: process.env.EMAIL_BLUEPRINT_ID ?? "",
     pollIntervalMs: readPositiveNumber({
       value: process.env.EMAIL_POLL_INTERVAL_MS,
       fallback: DEFAULT_POLL_INTERVAL_MS,
@@ -78,34 +47,55 @@ function emailConfig(): EmailConfig {
       fallback: DEFAULT_SESSION_TTL_MS,
       name: "EMAIL_SESSION_TTL_MS",
     }),
-    imap: {
-      host: process.env.IMAP_HOST ?? "",
-      port: readPositiveNumber({
-        value: process.env.IMAP_PORT,
-        fallback: DEFAULT_IMAP_PORT,
-        name: "IMAP_PORT",
-      }),
-      secure: process.env.IMAP_SECURE !== "false",
-      user: imapUser,
-      pass: process.env.IMAP_PASS ?? "",
-      folder: process.env.IMAP_FOLDER ?? DEFAULT_FOLDER,
-      rejectUnauthorized: process.env.IMAP_TLS_REJECT_UNAUTHORIZED !== "false",
-    },
-    smtp: {
-      host: process.env.SMTP_HOST ?? "",
-      port: readPositiveNumber({
-        value: process.env.SMTP_PORT,
-        fallback: DEFAULT_SMTP_PORT,
-        name: "SMTP_PORT",
-      }),
-      secure: process.env.SMTP_SECURE === "true",
-      user: smtpUser,
-      pass: process.env.SMTP_PASS ?? process.env.IMAP_PASS ?? "",
-      from: process.env.SMTP_FROM ?? smtpUser,
-      rejectUnauthorized: process.env.SMTP_TLS_REJECT_UNAUTHORIZED !== "false",
+  };
+}
+
+function envPassword({
+  user,
+  envUser,
+  envPass,
+}: {
+  user: string;
+  envUser: string | undefined;
+  envPass: string | undefined;
+}): string {
+  return envUser && envPass && user.toLowerCase() === envUser.toLowerCase()
+    ? envPass
+    : "";
+}
+
+function withEnvSecrets(mailbox: Mailbox): Mailbox {
+  const { imap, smtp } = mailbox.config;
+  const imapUser = process.env.IMAP_USER;
+  const smtpUser = process.env.SMTP_USER ?? imapUser;
+
+  return {
+    ...mailbox,
+    config: {
+      ...mailbox.config,
+      imap: {
+        ...imap,
+        pass:
+          imap.pass ||
+          envPassword({
+            user: imap.user,
+            envUser: imapUser,
+            envPass: process.env.IMAP_PASS,
+          }),
+      },
+      smtp: {
+        ...smtp,
+        pass:
+          smtp.pass ||
+          envPassword({
+            user: smtp.user,
+            envUser: smtpUser,
+            envPass: process.env.SMTP_PASS ?? process.env.IMAP_PASS,
+          }),
+      },
     },
   };
 }
 
-export { emailConfig };
+export { emailConfig, withEnvSecrets };
 export type { EmailConfig };

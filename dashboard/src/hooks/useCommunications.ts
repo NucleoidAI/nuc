@@ -7,6 +7,7 @@ export type CommunicationPayload = {
   channelType: string;
   channelCode: string;
   blueprintId: string;
+  config?: Record<string, unknown>;
 };
 
 function useCommunications() {
@@ -14,9 +15,14 @@ function useCommunications() {
 
   const [communicationCreated] = useEvent("COMMUNICATION_CREATED", null);
   const [communicationDeleted] = useEvent("COMMUNICATION_DELETED", null);
+  const [communicationUpdated] = useEvent("COMMUNICATION_UPDATED", null);
 
   const getCommunications = () => {
-    const eventDependencies = [communicationCreated, communicationDeleted];
+    const eventDependencies = [
+      communicationCreated,
+      communicationDeleted,
+      communicationUpdated,
+    ];
 
     const { data, loading, error, fetch } = Api(
       () => http.get("/communications"),
@@ -41,12 +47,26 @@ function useCommunications() {
     return response.data;
   };
 
+  const updateCommunication = async (
+    id: string,
+    config: Record<string, unknown>
+  ) => {
+    const response = await http.patch(`/communications/${id}`, { config });
+    publish("COMMUNICATION_UPDATED", { communication: response.data });
+    return response.data;
+  };
+
   const deleteCommunication = async (id: string) => {
     await http.delete(`/communications/${id}`);
     publish("COMMUNICATION_DELETED", { id });
   };
 
-  return { getCommunications, createCommunication, deleteCommunication };
+  return {
+    getCommunications,
+    createCommunication,
+    updateCommunication,
+    deleteCommunication,
+  };
 }
 
 export default useCommunications;

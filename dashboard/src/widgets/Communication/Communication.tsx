@@ -21,6 +21,7 @@ const availableChannels = [
     label: "Email",
     icon: "mdi:email-outline",
     requiresInput: true,
+    configurable: true,
     inputLabel: "Email Address",
   },
 ];
@@ -29,8 +30,12 @@ const Communication = () => {
   const { getBlueprint } = useBlueprint();
   const { Blueprint: blueprintList, loading, error } = getBlueprint();
 
-  const { getCommunications, createCommunication, deleteCommunication } =
-    useCommunications();
+  const {
+    getCommunications,
+    createCommunication,
+    updateCommunication,
+    deleteCommunication,
+  } = useCommunications();
   const { communications } = getCommunications();
 
   const [channels, setChannels] = useState([]);
@@ -56,8 +61,12 @@ const Communication = () => {
                   : base.label,
               icon: base.icon,
               code,
+              config: comm.config ?? null,
+              communicationIds: [comm.id],
             });
           }
+        } else {
+          channelMap.get(id).communicationIds.push(comm.id);
         }
       });
       setChannels(Array.from(channelMap.values()));
@@ -72,6 +81,21 @@ const Communication = () => {
 
   const handleAddChannel = (newChannel) => {
     setChannels((prev) => [...prev, newChannel]);
+  };
+
+  const handleUpdateChannelConfig = async (channelId, config) => {
+    const channel = channels.find((c) => c.id === channelId);
+
+    if (!channel?.communicationIds?.length) {
+      setChannels((prev) =>
+        prev.map((c) => (c.id === channelId ? { ...c, config } : c))
+      );
+      return;
+    }
+
+    for (const id of channel.communicationIds) {
+      await updateCommunication(id, config);
+    }
   };
 
   const handleDeleteChannel = async (channelId) => {
@@ -95,6 +119,7 @@ const Communication = () => {
           channelType: channel.type.toUpperCase(),
           channelCode: channel.code,
           blueprintId: rid.replace(/^tbp-/, ""),
+          ...(channel.config ? { config: channel.config } : {}),
         });
       }
     }
@@ -157,6 +182,7 @@ const Communication = () => {
           connections={connections}
           onAddChannel={handleAddChannel}
           onDeleteChannel={handleDeleteChannel}
+          onUpdateChannelConfig={handleUpdateChannelConfig}
           onConnect={handleConnect}
           blueprintIcon="healthicons:crisis-response-center-person-outline"
         />

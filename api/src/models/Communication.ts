@@ -33,6 +33,14 @@ class Communication extends Model {
   @Column(DataType.UUID)
   declare blueprintId: string;
 
+  @AllowNull(true)
+  @Column(DataType.UUID)
+  declare projectId: string | null;
+
+  @AllowNull(true)
+  @Column(DataType.JSON)
+  declare config: Record<string, unknown> | null;
+
   declare Blueprint?: any;
 }
 

@@ -4,7 +4,11 @@ import {
   mergeNodeParameters,
 } from "../lib/nodeParameterBindings";
 import type { LLMMeta } from "../lib/llmLog";
-import { resolveCurrentNode, switchCases } from "../lib/blueprintNodes";
+import {
+  findNodeAhead,
+  resolveCurrentNode,
+  switchCases,
+} from "../lib/blueprintNodes";
 import Agent from "../models/Agent";
 import MCPs from "../mcps/mcps";
 import actions from "../actions";
@@ -490,7 +494,8 @@ async function task({ taskId }: { taskId: string }) {
     });
   }
 
-  const isForceNode = currentNode?.properties?.force === true ||
+  const isForceNode =
+    currentNode?.properties?.force === true ||
     currentNode?.properties?.action === "PLATFORM:two_factor";
 
   const nodeAction = currentNode?.properties?.action;
@@ -535,10 +540,19 @@ async function task({ taskId }: { taskId: string }) {
           meta,
         }));
 
-  const nodeId = currentNode?.id ?? null;
+  const matchedNode = currentNode
+    ? findNodeAhead(
+        blueprint?.nodes ?? [],
+        currentNode,
+        (node) =>
+          node.properties?.action === action ||
+          (node === currentNode && !node.properties?.action),
+      )
+    : undefined;
+  const nodeId = matchedNode?.id ?? null;
 
   const rawParameters = mergeNodeParameters({
-    node: currentNode,
+    node: matchedNode,
     action,
     generated: llmParameters,
   });

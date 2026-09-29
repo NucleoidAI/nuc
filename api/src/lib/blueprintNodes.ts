@@ -63,6 +63,67 @@ function selectedSwitchId(step: { result?: string }, nextIds: string[]) {
   return nextIds[0];
 }
 
+function isEngineNode(node: any) {
+  return (
+    node.type !== "NORMAL" ||
+    node.properties?.force === true ||
+    node.properties?.action === "PLATFORM:two_factor"
+  );
+}
+
+export function findNodeAhead(
+  nodes: any[],
+  currentNode: any,
+  matches: (node: any) => boolean,
+) {
+  const seen = new Set<string>();
+  let node = currentNode;
+
+  while (node && !seen.has(node.id)) {
+    seen.add(node.id);
+    if (node !== currentNode && isEngineNode(node)) return undefined;
+    if (matches(node)) return node;
+    if (isEngineNode(node)) return undefined;
+
+    const nextIds = nextIdsOf(node);
+    node = nextIds.length
+      ? nodes.find((n) => nextIds.includes(n.id))
+      : undefined;
+  }
+
+  return undefined;
+}
+
+function nodeAfter(
+  nodes: any[],
+  node: any,
+  step: { result?: string },
+) {
+  if (node.type === "CONDITION" || node.type === "APPROVAL") {
+    const tookTrue =
+      node.type === "APPROVAL"
+        ? step.result === "APPROVED"
+        : tookTrueBranch(step);
+    const nextIds = tookTrue ? node.true || [] : node.false || [];
+    return nextIds.length
+      ? nodes.find((n) => nextIds.includes(n.id))
+      : undefined;
+  }
+
+  const nextIds = nextIdsOf(node);
+
+  if (node.type === "SWITCH") {
+    const selected = nextIds.length
+      ? selectedSwitchId(step, nextIds)
+      : undefined;
+    return selected ? nodes.find((n) => n.id === selected) : undefined;
+  }
+
+  return nextIds.length
+    ? nodes.find((n) => nextIds.includes(n.id))
+    : undefined;
+}
+
 export function resolveCurrentNode(
   nodes: any[],
   completedSteps: { action: string; result?: string; nodeId?: string | null }[],
@@ -79,34 +140,14 @@ export function resolveCurrentNode(
   for (const step of completedSteps) {
     if (!currentNode) break;
 
-    const stepMatchesNode = step.nodeId
-      ? step.nodeId === currentNode.id
-      : currentNode.properties?.action === step.action;
-    if (!stepMatchesNode) break;
+    const matched = findNodeAhead(nodes, currentNode, (node) =>
+      step.nodeId
+        ? node.id === step.nodeId
+        : node.properties?.action === step.action,
+    );
+    if (!matched) continue;
 
-    if (currentNode.type === "CONDITION" || currentNode.type === "APPROVAL") {
-      const tookTrue =
-        currentNode.type === "APPROVAL"
-          ? step.result === "APPROVED"
-          : tookTrueBranch(step);
-      const nextIds = tookTrue
-        ? currentNode.true || []
-        : currentNode.false || [];
-      currentNode = nextIds.length
-        ? nodes.find((n) => nextIds.includes(n.id))
-        : undefined;
-    } else if (currentNode.type === "SWITCH") {
-      const nextIds = nextIdsOf(currentNode);
-      const selected = nextIds.length
-        ? selectedSwitchId(step, nextIds)
-        : undefined;
-      currentNode = selected ? nodes.find((n) => n.id === selected) : undefined;
-    } else {
-      const nextIds = nextIdsOf(currentNode);
-      currentNode = nextIds.length
-        ? nodes.find((n) => nextIds.includes(n.id))
-        : undefined;
-    }
+    currentNode = nodeAfter(nodes, matched, step);
   }
 
   return currentNode;

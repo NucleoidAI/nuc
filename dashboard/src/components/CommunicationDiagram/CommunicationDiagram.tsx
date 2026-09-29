@@ -6,7 +6,31 @@ import React, { useMemo } from "react";
 const DEFAULT_BLUEPRINT_ICON =
   "healthicons:crisis-response-center-person-outline";
 
-function CommunicationDiagram(props) {
+function CommunicationDiagram(props: {
+  channels?: {
+    id: string;
+    type?: string;
+    name?: string;
+    label?: string;
+    code?: string;
+    icon?: string;
+  }[];
+  Blueprints?: { id: string; title?: string; icon?: string }[];
+  connections?: { left: string; right: string }[];
+  colorMap: Record<string, string>;
+  nodeWidth?: number;
+  nodeHeight?: number;
+  leftX?: number;
+  horizontalGap?: number;
+  initialTop?: number;
+  verticalGap?: number;
+  containerProps?: React.ComponentProps<typeof Container>;
+  showRightIcons?: boolean;
+  showLeftIcons?: boolean;
+  blueprintIcon?: string;
+  renderChannelNode?: (node: Record<string, unknown>) => React.ReactNode;
+  renderBlueprintNode?: (node: Record<string, unknown>) => React.ReactNode;
+}) {
   const {
     channels,
     Blueprints,
@@ -88,7 +112,7 @@ function CommunicationDiagram(props) {
         x2 - dx
       },${y2} ${x2},${y2}`;
       const strokeColor =
-        colorMap?.[leftNode.type] || theme.palette.text.secondary;
+        colorMap[leftNode.type] || theme.palette.text.secondary;
       return (
         <path
           key={`${left}-${right}`}
@@ -173,9 +197,7 @@ function CommunicationDiagram(props) {
                   >
                     <path
                       d="M0,0 L0,6 L6,3 Z"
-                      fill={
-                        colorMap?.[node.type] || theme.palette.text.secondary
-                      }
+                      fill={colorMap[node.type] || theme.palette.text.secondary}
                     />
                   </marker>
                 ))}

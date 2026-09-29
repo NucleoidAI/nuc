@@ -132,10 +132,6 @@ const Communication = () => {
           channels={channels}
           Blueprints={Blueprints}
           connections={connections}
-          availableChannels={availableChannels}
-          onAddChannel={handleAddChannel}
-          onDeleteChannel={handleDeleteChannel}
-          onConnect={handleConnect}
           colorMap={{
             whatsapp: "#25D366",
             slack: "#4A154B",

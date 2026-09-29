@@ -626,9 +626,15 @@ async function task({ taskId }: { taskId: string }) {
     }
 
     const stepsToInherit = await taskFn.listSteps({ taskId });
-    const inheritedSteps = stepsToInherit.map(({ s }) => ({
-      s,
-    }));
+    const inheritedSteps = stepsToInherit.map(
+      ({ action, status, parameters, result, comment }) => ({
+        action,
+        status,
+        parameters,
+        result,
+        comment,
+      }),
+    );
 
     const newTask = await taskFn.create({
       agentId: handoffParams.targetAgentId,

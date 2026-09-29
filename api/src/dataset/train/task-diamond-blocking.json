@@ -3789,9 +3789,9 @@
           "action": "ORDER:find_product",
           "status": "COMPLETED",
           "parameters": {
-            "product_id": "prd-4"
+            "product_id": "prd-7"
           },
-          "result": "{\"product\": {\"id\": \"prd-4\", \"name\": \"product-4\", \"vendor_id\": \"vnd-1\", \"unit_price\": 19900, \"currency\": \"usd\", \"weight_kg\": 3}}",
+          "result": "{\"product\": {\"id\": \"prd-7\", \"name\": \"product-7\", \"vendor_id\": \"vnd-2\", \"unit_price\": 8400, \"currency\": \"usd\", \"weight_kg\": 1.2}}",
           "comment": "Product resolved from the order request"
         },
         {
@@ -3804,7 +3804,7 @@
             }
           },
           "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-1\\\", \\\"product_name\\\": \\\"product-1\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-2\\\", \\\"product_name\\\": \\\"product-2\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
-          "comment": "The knowledge base holds certificate records for prd-1 and prd-2 only - there is no entry for prd-4"
+          "comment": "The knowledge base holds certificate records for prd-1 and prd-2 only - there is no entry for prd-7"
         },
         {
           "taskId": "1c3a17dd-678c-4b73-82b8-081dd5d3fbd4",
@@ -3822,13 +3822,13 @@
               {
                 "action": "PLATFORM:ask_supervisor",
                 "parameters": {
-                  "question": "Product prd-4 has no compliance certificate in the knowledge base. Should I assign one or halt the order?"
+                  "question": "Product prd-7 has no compliance certificate in the knowledge base. Should I assign one or halt the order?"
                 },
                 "comment": "The blueprint had no path for a missing certificate yet"
               }
             ]
           },
-          "result": "{\"result\": false, \"actions\": [{\"action\": \"PLATFORM:ask_supervisor\", \"parameters\": {\"question\": \"Product prd-4 has no compliance certificate in the knowledge base. Should I assign one or halt the order?\"}, \"comment\": \"The blueprint had no path for a missing certificate yet\"}]}",
+          "result": "{\"result\": false, \"actions\": [{\"action\": \"PLATFORM:ask_supervisor\", \"parameters\": {\"question\": \"Product prd-7 has no compliance certificate in the knowledge base. Should I assign one or halt the order?\"}, \"comment\": \"The blueprint had no path for a missing certificate yet\"}]}",
           "comment": "Decided before the blueprint had a missing-certificate path, so the only option was to escalate"
         },
         {
@@ -3836,10 +3836,10 @@
           "action": "PLATFORM:ask_supervisor",
           "status": "COMPLETED",
           "parameters": {
-            "question": "Product prd-4 has no compliance certificate in the knowledge base. Should I assign one or halt the order?"
+            "question": "Product prd-7 has no compliance certificate in the knowledge base. Should I assign one or halt the order?"
           },
           "result": "Blueprint manually updated",
-          "comment": "Escalated the missing certificate for prd-4 to the supervisor"
+          "comment": "Escalated the missing certificate for prd-7 to the supervisor"
         }
       ],
       "next_step": {
@@ -3847,9 +3847,9 @@
         "parameters": {
           "targetAgentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
           "targetBlueprintId": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
-          "context": "Product prd-4 (product-4) has no compliance certificate in the knowledge base, so its purchase order cannot be created. Obtain a certificate for it."
+          "context": "The order for product-7 (prd-7) is on hold: no compliance certificate is recorded for it. Request the certificate from the product's vendor."
         },
-        "comment": "'Blueprint manually updated' (steps[3].result) means the supervisor answered by changing the blueprint, not by adding knowledge - the question is resolved and must not be asked again. The updated blueprint's 'If certificate exists' condition sends a product without a certificate to 'Hand off to compliance_manager agent'; prd-4 still has no certificate (steps[1]), so follow that branch. The earlier decision (steps[2]) was made before this change and its ask_supervisor action is stale",
+        "comment": "'Blueprint manually updated' (steps[3].result) means the supervisor answered by changing the blueprint, not by adding knowledge - the question is resolved and must not be asked again. The updated blueprint's 'If certificate exists' condition sends a product without a certificate to 'Hand off to compliance_manager agent'; prd-7 still has no certificate (steps[1]), so follow that branch. The earlier decision (steps[2]) was made before this change and its ask_supervisor action is stale",
         "result_score": 0.9
       }
     }

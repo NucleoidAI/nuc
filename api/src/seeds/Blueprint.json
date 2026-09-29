@@ -179,7 +179,7 @@
       "title": "Order and Compliance",
       "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
       "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
-      "skill": "**Product Order \u2014 Certificate-Backed Purchase**\n\nUse this Blueprint when a product order must have a compliance certificate assigned before a purchase order can be created.\n\nThe order request arrives with the product already chosen \u2014 it comes in from the requesting system, so do not ask which product to order.\n\nFlow: Find product \u2192 Check certificate via knowledge lookup \u2192 Assign certificate \u2192 Create purchase order \u2192 Create payment \u2192 Ask the user to approve the charge \u2192 [Not approved: cancel the payment, notify, end] \u2192 Confirm payment \u2192 Create shipment \u2192 Send email.\n\nThe payment intent is created unconfirmed, so nothing is charged until the user approves it. Only an approved payment is confirmed, shipped and emailed; a declined one is cancelled and the purchase order stays unpaid.\n\nExits after emailing confirmation of the completed purchase order, or early with a cancellation notice if the user declines the charge.",
+      "skill": "**Product Order \u2014 Certificate-Backed Purchase**\n\nUse this Blueprint when a product order must have a compliance certificate assigned before a purchase order can be created.\n\nThe order request arrives with the product already chosen \u2014 it comes in from the requesting system, so do not ask which product to order.\n\nFlow: Find product \u2192 Check certificate via knowledge lookup \u2192 Assign certificate \u2192 Create purchase order \u2192 Create payment \u2192 Customer approval for the charge \u2192 [Rejected: cancel the payment, notify, end] \u2192 Confirm payment \u2192 Create shipment \u2192 Send email.\n\nThe payment intent is created unconfirmed, so nothing is charged until the user approves it. The approval is a single Customer Approval node that asks the question and then waits: the decision arrives either as the customer's reply in the session or through the session approval endpoint. Only an approved payment is confirmed, shipped and emailed; a rejected one is cancelled and the purchase order stays unpaid.\n\nExits after emailing confirmation of the completed purchase order, or early with a cancellation notice if the user declines the charge.",
       "nodes": [
         {
           "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
@@ -243,24 +243,13 @@
         },
         {
           "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
-          "type": "NORMAL",
+          "type": "APPROVAL",
           "properties": {
-            "action": "PLATFORM:user_interaction",
-            "description": "Ask the user to approve the payment before the card is charged. Write the question from the live data: name the purchase order number, the product and the amount in major units with its currency, and ask for a yes/no answer",
-            "label": "Confirm Payment with User",
-            "icon": "mdi:account-question"
-          },
-          "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
-          "type": "CONDITION",
-          "properties": {
-            "action": "PLATFORM:decision",
-            "description": "Decide based on the user's answer whether the payment may be charged",
-            "label": "Check Payment Approval",
-            "icon": "mdi:source-branch"
+            "action": "PLATFORM:customer_approval",
+            "description": "Ask the customer to approve the payment before the card is charged, then wait for the decision from the session or the approval endpoint",
+            "label": "Payment Approval",
+            "icon": "mdi:account-check",
+            "instructions": "Ask the customer to approve the payment before the card is charged. Write the question from the live data: name the purchase order number, the product and the amount in major units with its currency."
           },
           "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
           "false": ["7447fdbc-a273-40d5-a822-843d98865292"],

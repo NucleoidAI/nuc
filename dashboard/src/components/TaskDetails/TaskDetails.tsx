@@ -27,6 +27,8 @@ const TaskDetails = ({
   steps,
   agentId,
   getSteps,
+  isExpanded = false,
+  onToggleExpand,
 }: {
   task: {
     status: string;
@@ -44,6 +46,8 @@ const TaskDetails = ({
   }>;
   agentId: string;
   getSteps: (taskId: string) => void;
+  isExpanded?: boolean;
+  onToggleExpand?: () => void;
 }) => {
   const [openFlow, setOpenFlow] = useState<boolean>(false);
   const [stepResult, setStepResult] = useState<boolean>(false);
@@ -95,6 +99,10 @@ const TaskDetails = ({
     },
     WAITING_FOR_USER: {
       label: "Waiting for user",
+      color: "warning.main",
+    },
+    WAITING_FOR_APPROVAL: {
+      label: "Waiting for approval",
       color: "warning.main",
     },
     SUPERVISED_NEEDED: {
@@ -166,6 +174,16 @@ const TaskDetails = ({
           <Tooltip title="Task Details">
             <Fab color="default" onClick={() => setTaskResult(true)}>
               <Iconify icon="material-symbols:table-eye-outline" />
+            </Fab>
+          </Tooltip>
+        )}
+
+        {onToggleExpand && (
+          <Tooltip title={isExpanded ? "Minimize" : "Expand"}>
+            <Fab color="default" onClick={onToggleExpand} sx={{ ml: "auto" }}>
+              <Iconify
+                icon={isExpanded ? "boxicons:minimize" : "boxicons:maximize"}
+              />
             </Fab>
           </Tooltip>
         )}

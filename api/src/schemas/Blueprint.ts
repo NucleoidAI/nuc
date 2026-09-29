@@ -55,6 +55,7 @@ const Blueprint = {
               action: z.string().optional(),
               description: z.string().optional(),
               instructions: z.string().optional(),
+              question: z.string().optional(),
               pseudocode: z.string().optional(),
               pseudocodeEnabled: z.boolean().optional(),
               parameters: z.record(z.string(), z.unknown()).optional(),

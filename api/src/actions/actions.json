@@ -122,6 +122,32 @@
     }
   },
   {
+    "action": "PLATFORM:customer_approval",
+    "label": "Platform",
+    "lib": "customer_approval",
+    "description": "Ask the customer to approve or reject, then wait until a decision arrives from the session or the approval endpoint",
+    "icon": "mdi:account-check",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "question": {
+          "type": "string",
+          "description": "The approval request shown to the customer."
+        }
+      },
+      "required": ["question"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "decision": {
+          "type": "string",
+          "description": "APPROVED or REJECTED."
+        }
+      }
+    }
+  },
+  {
     "action": "PLATFORM:complete",
     "label": "Platform",
     "description": "Mark the workflow as complete",

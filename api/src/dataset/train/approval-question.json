@@ -1,0 +1,71 @@
+[
+  {
+    "instructions": "Ask the customer to approve the payment before the card is charged. Name the purchase order number, the product and the amount in major units with its currency.",
+    "label": "Payment Approval",
+    "task": {
+      "description": "Order product-1 for the customer",
+      "steps": [
+        {
+          "action": "ORDER:create_po",
+          "result": "{\"po_number\": \"po-2001\", \"product_name\": \"product-1\", \"total_amount\": 12500, \"currency\": \"usd\"}"
+        },
+        {
+          "action": "STRIPE:create_payment_intent",
+          "result": "{\"id\": \"pi_3Q1\", \"status\": \"requires_confirmation\", \"amount\": 12500, \"currency\": \"usd\"}"
+        }
+      ]
+    },
+    "question": "Purchase order po-2001 for product-1 comes to 125.00 USD. The payment is prepared but nothing has been charged yet. Do you approve it?"
+  },
+  {
+    "instructions": "Ask the customer to approve the payment before the card is charged. Name the purchase order number, the product and the amount in major units with its currency.",
+    "label": "Payment Approval",
+    "task": {
+      "description": "Sipariş için ödeme onayı al",
+      "steps": [
+        {
+          "action": "ORDER:create_po",
+          "result": "{\"po_number\": \"po-3110\", \"product_name\": \"ürün-2\", \"total_amount\": 48000, \"currency\": \"try\"}"
+        }
+      ]
+    },
+    "question": "po-3110 numaralı satın alma siparişi, ürün-2 için toplam 480,00 TRY tutarında. Ödeme hazır ancak henüz tahsil edilmedi. Onaylıyor musunuz?"
+  },
+  {
+    "instructions": "Ask the customer to confirm the plan upgrade and its monthly price before it is applied.",
+    "label": "Upgrade Approval",
+    "task": {
+      "description": "Upgrade the customer's subscription",
+      "steps": [
+        {
+          "action": "BILLING:quote_plan",
+          "result": "{\"plan\": \"Premium\", \"monthly_price\": 4990, \"currency\": \"usd\"}"
+        }
+      ]
+    },
+    "question": "Upgrading your subscription to Premium costs 49.90 USD per month. Do you approve the upgrade?"
+  },
+  {
+    "instructions": "Ask the customer to approve the shipment address before the parcel is dispatched.",
+    "label": "Address Approval",
+    "task": {
+      "description": "Ship the order",
+      "steps": [
+        {
+          "action": "ORDER:get_shipping_address",
+          "result": "{\"line1\": \"Bagdat Cad. No:120\", \"city\": \"Istanbul\", \"postal_code\": \"34728\"}"
+        }
+      ]
+    },
+    "question": "The parcel will be shipped to Bagdat Cad. No:120, 34728 Istanbul. Do you approve this address?"
+  },
+  {
+    "instructions": "Ask the customer to approve the refund amount before it is issued.",
+    "label": "Refund Approval",
+    "task": {
+      "description": "Refund the cancelled order",
+      "steps": []
+    },
+    "question": "I need your approval before issuing the refund. Do you approve it?"
+  }
+]

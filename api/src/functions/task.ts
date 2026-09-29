@@ -177,7 +177,8 @@ async function updateStep({
     | "SUPERVISED_NEEDED"
     | "COMPLETED"
     | "FAILED"
-    | "WAITING_FOR_USER";
+    | "WAITING_FOR_USER"
+    | "WAITING_FOR_APPROVAL";
 }) {
   const { taskId, action, parameters } = await Step.findOne({
     where: { id: stepId },

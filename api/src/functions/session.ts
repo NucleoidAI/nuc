@@ -82,6 +82,28 @@ async function addConversation({
   return conversation;
 }
 
+async function logConversation({
+  sessionId,
+  role,
+  content,
+}: {
+  sessionId: string;
+  role: "ASSISTANT" | "USER";
+  content: string;
+}) {
+  const session = await Session.findByPk(sessionId);
+
+  if (!session) {
+    throw new Error("Session not found");
+  }
+
+  return await Conversation.create({
+    content,
+    role,
+    sessionId,
+  });
+}
+
 async function get({ sessionId }: { sessionId: string }) {
   return await Session.findByPk(sessionId);
 }
@@ -97,5 +119,6 @@ export default {
   create,
   get,
   addConversation,
+  logConversation,
   listConversations,
 };

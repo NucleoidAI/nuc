@@ -17,6 +17,9 @@ import {
 import React, { useState } from "react";
 
 const FORCE_COLOR = "#b8860b";
+const APPROVAL_BORDER_COLOR = "linear-gradient(135deg, #fde04766, #ca8a0459)";
+const APPROVAL_BG_FROM = "rgba(199, 176, 59, 0.4)";
+const APPROVAL_BG_TO = "rgba(202, 138, 4, 0.50)";
 
 const AddButtonWrapper = styled("div")(({ theme }) => ({
   position: "absolute",
@@ -606,8 +609,10 @@ const ForceBadge = styled("div")(({ theme }) => ({
   zIndex: 6,
 }));
 
-const NodeWrapper = styled("div")(() => {
-  const stepColor = "#174f77";
+const NodeWrapper = styled("div", {
+  shouldForwardProp: (prop) => prop !== "isApproval",
+})<{ isApproval?: boolean }>(({ isApproval }) => {
+  const stepColor = isApproval ? "#6b5709" : "#174f77";
   const steppedShadow = `
     1px 1px 0 ${stepColor},
     2px 2px 0 ${stepColor},
@@ -642,8 +647,9 @@ const NodeWrapper = styled("div")(() => {
 export const blueprintFlowPlugin = {
   id: "blueprintChart",
 
-  style: ({ style }) => {
+  style: ({ node, style }) => {
     const styleTokens = style || {};
+    const isApproval = node?.nodeType === "APPROVAL";
 
     const connectionsGap = styleTokens.showConnections
       ? fieldsPanelHeight(
@@ -651,9 +657,11 @@ export const blueprintFlowPlugin = {
         )
       : 0;
 
-    const bgFrom = undefined;
-    const bgTo = undefined;
-    const borderColor = "linear-gradient(135deg, #c684ff33, #078dee4d)";
+    const bgFrom = isApproval ? APPROVAL_BG_FROM : undefined;
+    const bgTo = isApproval ? APPROVAL_BG_TO : undefined;
+    const borderColor = isApproval
+      ? APPROVAL_BORDER_COLOR
+      : "linear-gradient(135deg, #c684ff33, #078dee4d)";
     const borderRadius = 16;
     const shadowLevel = 1;
     const minWidth = 420;
@@ -687,10 +695,11 @@ export const blueprintFlowPlugin = {
     if (node?.connectorType === "decision" && child) {
       const trueNext = node?.trueNext || [];
       const falseNext = node?.falseNext || [];
+      const isApproval = node?.nodeType === "APPROVAL";
 
       if (trueNext.includes(child.id)) {
         return {
-          label: "true",
+          label: isApproval ? "approved" : "true",
           labelStyle: {
             fontSize: "12px",
             fontWeight: 600,
@@ -705,7 +714,7 @@ export const blueprintFlowPlugin = {
 
       if (falseNext.includes(child.id)) {
         return {
-          label: "false",
+          label: isApproval ? "rejected" : "false",
           labelStyle: {
             fontSize: "12px",
             fontWeight: 600,
@@ -932,6 +941,7 @@ function FlowNodeRenderer({
 
   return (
     <NodeWrapper
+      isApproval={node.nodeType === "APPROVAL"}
       title={isForceNode ? "Force node: action is guaranteed" : undefined}
       onContextMenu={handleContextMenu}
       onMouseDownCapture={handleMouseDownCapture}

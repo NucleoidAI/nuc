@@ -1,6 +1,7 @@
 import { describe, it } from "bun:test";
 import assert from "node:assert/strict";
 import {
+  conditionBranch,
   findNodeAhead,
   isForcedNode,
   resolveCurrentNode,
@@ -196,5 +197,19 @@ describe("isForcedNode", () => {
   it("only treats nodes marked force as forced", () => {
     assert.equal(isForcedNode(node("a", "A:run", null, { force: true })), true);
     assert.equal(isForcedNode(node("a", "PLATFORM:two_factor", null)), false);
+  });
+});
+
+describe("conditionBranch", () => {
+  it("describes the blueprint nodes a condition branch leads to", () => {
+    assert.deepEqual(conditionBranch(["confirm", "missing"], nodes), [
+      {
+        nodeId: "confirm",
+        action: "STRIPE:confirm_payment_intent",
+        label: undefined,
+        description: undefined,
+      },
+    ]);
+    assert.deepEqual(conditionBranch(undefined, nodes), []);
   });
 });

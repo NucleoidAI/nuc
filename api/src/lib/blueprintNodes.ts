@@ -23,6 +23,22 @@ function nextIdsOf(node: any): string[] {
   return Array.isArray(node?.next) ? node.next : node?.next ? [node.next] : [];
 }
 
+export function conditionBranch(ids: string[] | undefined, nodes: any[]) {
+  return (ids ?? []).flatMap((id) => {
+    const target = nodes.find((n) => n.id === id);
+    if (!target) return [];
+
+    return [
+      {
+        nodeId: target.id,
+        action: target.properties?.action,
+        label: target.properties?.label,
+        description: target.properties?.description,
+      },
+    ];
+  });
+}
+
 export function switchCases(node: any, nodes?: any[]): SwitchCase[] {
   const declared = Array.isArray(node?.properties?.cases)
     ? (node.properties.cases as SwitchCase[])

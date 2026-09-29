@@ -5,6 +5,7 @@ import {
 } from "../lib/nodeParameterBindings";
 import type { LLMMeta } from "../lib/llmLog";
 import {
+  conditionBranch,
   findNodeAhead,
   isForcedNode,
   resolveCurrentNode,
@@ -687,6 +688,18 @@ async function task({ taskId }: { taskId: string }) {
         matchedNode.properties?.pseudocode) ||
       matchedNode.properties?.instructions ||
       parameters.instructions;
+  } else if (
+    action === "PLATFORM:decision" &&
+    matchedNode?.type === "CONDITION"
+  ) {
+    const nodes = blueprint?.nodes ?? [];
+    parameters.condition =
+      (matchedNode.properties?.pseudocodeEnabled &&
+        matchedNode.properties?.pseudocode) ||
+      matchedNode.properties?.instructions?.trim() ||
+      parameters.condition;
+    parameters.true = conditionBranch(matchedNode.true, nodes);
+    parameters.false = conditionBranch(matchedNode.false, nodes);
   }
 
   await taskFn.addStep({

@@ -26,6 +26,10 @@ const emailConfig = Joi.object({
 });
 
 const Channel = {
+  list: Joi.object({
+    type: Joi.string().valid("WHATSAPP", "SLACK", "EMAIL"),
+    secrets: Joi.boolean().default(false),
+  }),
   create: Joi.object({
     channelType: Joi.string().valid("WHATSAPP", "SLACK", "EMAIL").required(),
     channelCode: Joi.string().required(),

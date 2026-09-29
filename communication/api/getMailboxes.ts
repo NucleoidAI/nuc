@@ -23,13 +23,14 @@ type Mailbox = {
 };
 
 const getMailboxes = async (accessToken: string) => {
-  const { data } = await http.get("/channels/mailboxes", {
+  const { data } = await http.get("/channels", {
+    params: { type: "EMAIL", secrets: true },
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
   });
 
-  return data as Mailbox[];
+  return (data as Mailbox[]).filter((mailbox) => mailbox.config);
 };
 
 export { getMailboxes };

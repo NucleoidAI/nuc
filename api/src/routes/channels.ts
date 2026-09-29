@@ -6,13 +6,10 @@ import schemas from "../schemas";
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const channels = await channel.list();
-  res.status(200).json(channels);
-});
+  const { type, secrets } = Joi.attempt(req.query, schemas.Channel.list);
 
-router.get("/mailboxes", async (req, res) => {
-  const mailboxes = await channel.listMailboxes();
-  res.status(200).json(mailboxes);
+  const channels = await channel.list({ type, secrets });
+  res.status(200).json(channels);
 });
 
 router.get("/:id", async (req, res) => {

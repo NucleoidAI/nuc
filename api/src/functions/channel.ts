@@ -44,20 +44,20 @@ function mergeSecrets(
   return { ...next, imap: keep("imap"), smtp: keep("smtp") };
 }
 
-async function list() {
-  const channels = await Channel.findAll();
-
-  return channels.map(toResponse);
-}
-
-async function listMailboxes() {
+async function list({
+  type,
+  secrets = false,
+}: {
+  type?: string;
+  secrets?: boolean;
+} = {}) {
   const channels = await Channel.findAll({
-    where: { channelType: "EMAIL" },
+    where: type ? { channelType: type } : {},
   });
 
-  return channels
-    .map((channel) => channel.toJSON())
-    .filter((channel) => channel.config);
+  return channels.map((channel) =>
+    secrets ? channel.toJSON() : toResponse(channel)
+  );
 }
 
 async function create({
@@ -129,4 +129,4 @@ async function remove({ channelId }: { channelId: string }) {
   return true;
 }
 
-export default { list, listMailboxes, create, get, update, remove };
+export default { list, create, get, update, remove };

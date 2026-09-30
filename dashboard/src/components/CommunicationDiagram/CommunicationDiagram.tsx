@@ -22,8 +22,8 @@ function CommunicationDiagram(props: {
   nodeHeight?: number;
   leftX?: number;
   horizontalGap?: number;
-  initialTop?: number;
   verticalGap?: number;
+  minHeight?: number | string;
   containerProps?: React.ComponentProps<typeof Container>;
   showRightIcons?: boolean;
   showLeftIcons?: boolean;
@@ -39,8 +39,8 @@ function CommunicationDiagram(props: {
     nodeHeight = 120,
     leftX = 0,
     horizontalGap = 500,
-    initialTop = 20,
     verticalGap = 20,
+    minHeight = "60vh",
     colorMap,
     containerProps,
     showRightIcons = true,
@@ -52,44 +52,66 @@ function CommunicationDiagram(props: {
 
   const theme = useTheme();
 
+  const leftChannels = useMemo(
+    () =>
+      (channels || []).filter((node) =>
+        (connections || []).some((c) => c.left === node.id)
+      ),
+    [channels, connections]
+  );
+
+  const rightBlueprints = useMemo(
+    () =>
+      (Blueprints || []).filter((resp) =>
+        (connections || []).some((c) => c.right === resp.id)
+      ),
+    [Blueprints, connections]
+  );
+
+  const maxCount = Math.max(leftChannels.length, rightBlueprints.length);
+  const containerHeight = Math.max(
+    maxCount * nodeHeight + Math.max(maxCount - 1, 0) * verticalGap,
+    0
+  );
+
+  const columnOffset = (count: number) =>
+    ((maxCount - count) * (nodeHeight + verticalGap)) / 2;
+
   const positionsLeft = useMemo(
     () =>
-      (channels || [])
-        .filter((node) => (connections || []).some((c) => c.left === node.id))
-        .map((node, idx) => ({
-          ...node,
-          x: leftX,
-          y: initialTop + idx * (nodeHeight + verticalGap),
-        })),
-    [channels, connections, leftX, initialTop, nodeHeight, verticalGap]
+      leftChannels.map((node, idx) => ({
+        ...node,
+        x: leftX,
+        y: columnOffset(leftChannels.length) + idx * (nodeHeight + verticalGap),
+      })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [leftChannels, leftX, nodeHeight, verticalGap, maxCount]
   );
 
   const rightNodes = useMemo(
     () =>
-      (Blueprints || [])
-        .filter((resp) => (connections || []).some((c) => c.right === resp.id))
-        .map((resp, idx) => ({
-          ...resp,
-          id: resp.id,
-          icon: resp.icon || blueprintIcon,
-          x: leftX + horizontalGap,
-          y: initialTop + idx * (nodeHeight + verticalGap),
-        })),
+      rightBlueprints.map((resp, idx) => ({
+        ...resp,
+        id: resp.id,
+        icon: resp.icon || blueprintIcon,
+        x: leftX + horizontalGap,
+        y:
+          columnOffset(rightBlueprints.length) +
+          idx * (nodeHeight + verticalGap),
+      })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
-      Blueprints,
-      connections,
+      rightBlueprints,
       leftX,
       horizontalGap,
-      initialTop,
       nodeHeight,
       verticalGap,
+      maxCount,
       blueprintIcon,
     ]
   );
 
   const isEmpty = !connections || connections.length === 0;
-  const maxCount = Math.max(positionsLeft.length, rightNodes.length);
-  const containerHeight = initialTop + maxCount * (nodeHeight + verticalGap);
 
   const renderEdges = () =>
     (connections || []).map(({ left, right }) => {
@@ -128,84 +150,92 @@ function CommunicationDiagram(props: {
   return (
     <Container maxWidth="md" sx={{ mt: 4, mb: 4 }} {...containerProps}>
       <Box
-        position="relative"
-        width={isEmpty ? "100%" : leftX + horizontalGap + nodeWidth}
-        height={isEmpty ? "60vh" : containerHeight}
-        mx="auto"
+        minHeight={minHeight}
         display="flex"
         alignItems="center"
         justifyContent="center"
       >
-        {isEmpty ? (
-          <Typography variant="h6" color="textSecondary" textAlign="center">
-            No communication connections available
-          </Typography>
-        ) : (
-          <>
-            {positionsLeft.map((node) => {
-              if (renderChannelNode) return renderChannelNode(node);
+        <Box
+          position="relative"
+          width={isEmpty ? "100%" : leftX + horizontalGap + nodeWidth}
+          height={isEmpty ? "auto" : containerHeight}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+        >
+          {isEmpty ? (
+            <Typography variant="h6" color="textSecondary" textAlign="center">
+              No communication connections available
+            </Typography>
+          ) : (
+            <>
+              {positionsLeft.map((node) => {
+                if (renderChannelNode) return renderChannelNode(node);
 
-              return (
-                <DiagramNodeCard
-                  key={node.id}
-                  node={node}
-                  width={nodeWidth}
-                  height={nodeHeight}
-                  title={node.name || node.label}
-                  subtitle={node.code || node.type}
-                  showIcon={showLeftIcons}
-                />
-              );
-            })}
-
-            {rightNodes.map((node) => {
-              if (renderBlueprintNode) return renderBlueprintNode(node);
-
-              return (
-                <DiagramNodeCard
-                  key={node.id}
-                  node={node}
-                  width={nodeWidth}
-                  height={nodeHeight}
-                  title={node.title}
-                  subtitle="Blueprint"
-                  showIcon={showRightIcons}
-                />
-              );
-            })}
-
-            <svg
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                pointerEvents: "none",
-              }}
-            >
-              <defs>
-                {positionsLeft.map((node) => (
-                  <marker
+                return (
+                  <DiagramNodeCard
                     key={node.id}
-                    id={`arrow-${node.id}`}
-                    markerWidth="6"
-                    markerHeight="6"
-                    refX="4.5"
-                    refY="3"
-                    orient="auto"
-                  >
-                    <path
-                      d="M0,0 L0,6 L6,3 Z"
-                      fill={colorMap[node.type] || theme.palette.text.secondary}
-                    />
-                  </marker>
-                ))}
-              </defs>
-              {renderEdges()}
-            </svg>
-          </>
-        )}
+                    node={node}
+                    width={nodeWidth}
+                    height={nodeHeight}
+                    title={node.name || node.label}
+                    subtitle={node.code || node.type}
+                    showIcon={showLeftIcons}
+                  />
+                );
+              })}
+
+              {rightNodes.map((node) => {
+                if (renderBlueprintNode) return renderBlueprintNode(node);
+
+                return (
+                  <DiagramNodeCard
+                    key={node.id}
+                    node={node}
+                    width={nodeWidth}
+                    height={nodeHeight}
+                    title={node.title}
+                    subtitle="Blueprint"
+                    showIcon={showRightIcons}
+                  />
+                );
+              })}
+
+              <svg
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  pointerEvents: "none",
+                }}
+              >
+                <defs>
+                  {positionsLeft.map((node) => (
+                    <marker
+                      key={node.id}
+                      id={`arrow-${node.id}`}
+                      markerWidth="6"
+                      markerHeight="6"
+                      refX="4.5"
+                      refY="3"
+                      orient="auto"
+                    >
+                      <path
+                        d="M0,0 L0,6 L6,3 Z"
+                        fill={
+                          colorMap[node.type] || theme.palette.text.secondary
+                        }
+                      />
+                    </marker>
+                  ))}
+                </defs>
+                {renderEdges()}
+              </svg>
+            </>
+          )}
+        </Box>
       </Box>
     </Container>
   );

@@ -2345,22 +2345,13 @@
           },
           {
             "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
-            "type": "NORMAL",
+            "type": "APPROVAL",
             "properties": {
-              "action": "PLATFORM:user_interaction",
-              "label": "Confirm Payment with User",
-              "icon": "mdi:account-question"
-            },
-            "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
-            "createdAt": "2025-06-26T06:00:00Z"
-          },
-          {
-            "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
-            "type": "CONDITION",
-            "properties": {
-              "action": "PLATFORM:decision",
-              "label": "Check Payment Approval",
-              "icon": "mdi:source-branch"
+              "action": "PLATFORM:customer_approval",
+              "description": "Ask the customer to approve the payment before the card is charged, then wait for the decision from the session or the approval endpoint",
+              "label": "Payment Approval",
+              "icon": "mdi:account-check",
+              "instructions": "Ask the customer to approve the payment before the card is charged. Write the question from the live data: name the purchase order number, the product and the amount in major units with its currency."
             },
             "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
             "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
@@ -2559,22 +2550,13 @@
           },
           {
             "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
-            "type": "NORMAL",
+            "type": "APPROVAL",
             "properties": {
-              "action": "PLATFORM:user_interaction",
-              "label": "Confirm Payment with User",
-              "icon": "mdi:account-question"
-            },
-            "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
-            "createdAt": "2025-06-26T06:00:00Z"
-          },
-          {
-            "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
-            "type": "CONDITION",
-            "properties": {
-              "action": "PLATFORM:decision",
-              "label": "Check Payment Approval",
-              "icon": "mdi:source-branch"
+              "action": "PLATFORM:customer_approval",
+              "description": "Ask the customer to approve the payment before the card is charged, then wait for the decision from the session or the approval endpoint",
+              "label": "Payment Approval",
+              "icon": "mdi:account-check",
+              "instructions": "Ask the customer to approve the payment before the card is charged. Write the question from the live data: name the purchase order number, the product and the amount in major units with its currency."
             },
             "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
             "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
@@ -2779,22 +2761,13 @@
           },
           {
             "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
-            "type": "NORMAL",
+            "type": "APPROVAL",
             "properties": {
-              "action": "PLATFORM:user_interaction",
-              "label": "Confirm Payment with User",
-              "icon": "mdi:account-question"
-            },
-            "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
-            "createdAt": "2025-06-26T06:00:00Z"
-          },
-          {
-            "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
-            "type": "CONDITION",
-            "properties": {
-              "action": "PLATFORM:decision",
-              "label": "Check Payment Approval",
-              "icon": "mdi:source-branch"
+              "action": "PLATFORM:customer_approval",
+              "description": "Ask the customer to approve the payment before the card is charged, then wait for the decision from the session or the approval endpoint",
+              "label": "Payment Approval",
+              "icon": "mdi:account-check",
+              "instructions": "Ask the customer to approve the payment before the card is charged. Write the question from the live data: name the purchase order number, the product and the amount in major units with its currency."
             },
             "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
             "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
@@ -3028,22 +3001,13 @@
           },
           {
             "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
-            "type": "NORMAL",
+            "type": "APPROVAL",
             "properties": {
-              "action": "PLATFORM:user_interaction",
-              "label": "Confirm Payment with User",
-              "icon": "mdi:account-question"
-            },
-            "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
-            "createdAt": "2025-06-26T06:00:00Z"
-          },
-          {
-            "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
-            "type": "CONDITION",
-            "properties": {
-              "action": "PLATFORM:decision",
-              "label": "Check Payment Approval",
-              "icon": "mdi:source-branch"
+              "action": "PLATFORM:customer_approval",
+              "description": "Ask the customer to approve the payment before the card is charged, then wait for the decision from the session or the approval endpoint",
+              "label": "Payment Approval",
+              "icon": "mdi:account-check",
+              "instructions": "Ask the customer to approve the payment before the card is charged. Write the question from the live data: name the purchase order number, the product and the amount in major units with its currency."
             },
             "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
             "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
@@ -3212,107 +3176,23 @@
         },
         {
           "taskId": "task-op-001",
-          "action": "PLATFORM:user_interaction",
+          "action": "PLATFORM:customer_approval",
           "status": "COMPLETED",
           "parameters": {
-            "question": "Purchase order po-2001 for product-1 totals 125.00 usd. Confirm the charge? (yes/no)"
+            "question": "Purchase order po-2001 for product-1 (prd-1) totals 125.00 usd, shipping to Atlanta. Do you approve the charge?"
           },
-          "result": "yes",
-          "comment": "The user approved the charge before anything is taken"
+          "result": "APPROVED",
+          "comment": "The payment approval node asks the customer before anything is charged"
         }
       ],
       "next_step": {
-        "action": "PLATFORM:decision",
+        "action": "STRIPE:confirm_payment_intent",
         "parameters": {
-          "condition": "user_approval == TRUE",
-          "true": [
-            {
-              "taskId": "task-op-001",
-              "action": "STRIPE:confirm_payment_intent",
-              "status": "COMPLETED",
-              "parameters": {
-                "payment_intent_id": {
-                  "$ref": "steps[4].result.id"
-                }
-              },
-              "result": "{\"id\": \"pi_demo0001\", \"status\": \"succeeded\", \"amount\": 12500}",
-              "comment": "Confirming the intent the user approved (steps[4].result.id) via $ref"
-            },
-            {
-              "taskId": "task-op-001",
-              "action": "FEDEX:create_shipment",
-              "status": "COMPLETED",
-              "parameters": {
-                "sender_postal_code": {
-                  "$ref": "steps[3].result.purchase_order.ship_from.postal_code"
-                },
-                "sender_country_code": {
-                  "$ref": "steps[3].result.purchase_order.ship_from.country_code"
-                },
-                "recipient_postal_code": {
-                  "$ref": "steps[3].result.purchase_order.ship_to.postal_code"
-                },
-                "recipient_country_code": {
-                  "$ref": "steps[3].result.purchase_order.ship_to.country_code"
-                },
-                "weight": {
-                  "$ref": "steps[3].result.purchase_order.total_weight_kg"
-                },
-                "weight_units": "KG",
-                "service_type": "FEDEX_GROUND"
-              },
-              "result": "{\"tracking_number\": \"794123456789\", \"service_type\": \"FEDEX_GROUND\"}",
-              "comment": "Every address and weight value comes from the purchase order (steps[3]) via $ref - none of them are invented"
-            },
-            {
-              "taskId": "task-op-001",
-              "action": "GREY:send_email",
-              "status": "COMPLETED",
-              "parameters": {
-                "to": "halilibrahimcengel7@gmail.com",
-                "subject": "Purchase Order po-2001 paid and shipped",
-                "text": "Purchase order po-2001 for product-1 (prd-1) was paid (125.00 usd) and shipped with tracking number 794123456789."
-              },
-              "comment": "Email carries the payment status and the tracking number"
-            },
-            {
-              "taskId": "task-op-001",
-              "action": "PLATFORM:complete",
-              "status": "COMPLETED",
-              "comment": "Order paid, shipped and reported"
-            }
-          ],
-          "false": [
-            {
-              "taskId": "task-op-001",
-              "action": "STRIPE:cancel_payment_intent",
-              "status": "COMPLETED",
-              "parameters": {
-                "payment_intent_id": {
-                  "$ref": "steps[4].result.id"
-                }
-              },
-              "result": "{\"id\": \"pi_demo0001\", \"status\": \"canceled\"}",
-              "comment": "The user declined, so the unconfirmed intent is cancelled instead of charged"
-            },
-            {
-              "taskId": "task-op-001",
-              "action": "PLATFORM:message_user",
-              "status": "COMPLETED",
-              "parameters": {
-                "message": "The payment was cancelled, so nothing was charged and nothing was shipped. Purchase order po-2001 stays unpaid."
-              },
-              "comment": "Telling the user why the order stopped"
-            },
-            {
-              "taskId": "task-op-001",
-              "action": "PLATFORM:complete",
-              "status": "COMPLETED",
-              "comment": "Order workflow closed without a charge"
-            }
-          ]
+          "payment_intent_id": {
+            "$ref": "steps[4].result.id"
+          }
         },
-        "comment": "The user answered yes (steps[5].result), so the approved branch runs: confirm the payment, ship it and email the confirmation",
+        "comment": "The customer approved the charge (steps[5].result is APPROVED), so the approval node's true branch runs: confirm the payment intent from steps[4] via $ref",
         "result_score": 0.95
       }
     },
@@ -3383,22 +3263,13 @@
           },
           {
             "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
-            "type": "NORMAL",
+            "type": "APPROVAL",
             "properties": {
-              "action": "PLATFORM:user_interaction",
-              "label": "Confirm Payment with User",
-              "icon": "mdi:account-question"
-            },
-            "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
-            "createdAt": "2025-06-26T06:00:00Z"
-          },
-          {
-            "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
-            "type": "CONDITION",
-            "properties": {
-              "action": "PLATFORM:decision",
-              "label": "Check Payment Approval",
-              "icon": "mdi:source-branch"
+              "action": "PLATFORM:customer_approval",
+              "description": "Ask the customer to approve the payment before the card is charged, then wait for the decision from the session or the approval endpoint",
+              "label": "Payment Approval",
+              "icon": "mdi:account-check",
+              "instructions": "Ask the customer to approve the payment before the card is charged. Write the question from the live data: name the purchase order number, the product and the amount in major units with its currency."
             },
             "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
             "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
@@ -3567,11 +3438,11 @@
         }
       ],
       "next_step": {
-        "action": "PLATFORM:user_interaction",
+        "action": "PLATFORM:customer_approval",
         "parameters": {
-          "question": "Purchase order po-2001 for product-1 (prd-1) totals 125.00 usd, shipping to Atlanta. Confirm the charge? (yes/no)"
+          "question": "Purchase order po-2001 for product-1 (prd-1) totals 125.00 usd, shipping to Atlanta. Do you approve the charge?"
         },
-        "comment": "The node carries no fixed question - write it from the live data: the purchase order number (steps[3]), the product and the amount converted from minor units (steps[4]), then ask for a yes/no answer",
+        "comment": "The next node is the Payment Approval node (PLATFORM:customer_approval), not a free-form user question - write its question from the live data: the purchase order number (steps[3]), the product and the amount converted from minor units (steps[4])",
         "result_score": 0.95
       }
     },

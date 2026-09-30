@@ -336,7 +336,7 @@ async function forceNodeStep({
   meta,
 }: {
   currentNode: any;
-  currentTask: { description: string; blueprintId: string; steps: any[] };
+  currentTask: { blueprintId: string; steps: any[] };
   context: {
     role: "user" | "system" | "assistant";
     content: object | string;
@@ -375,7 +375,6 @@ async function task({ taskId }: { taskId: string }) {
   console.log(agentId, blueprintId, sessionId);
 
   const currentTask = {
-    description,
     blueprintId,
     steps: await taskFn.listSteps({ taskId }),
   };
@@ -684,10 +683,7 @@ async function task({ taskId }: { taskId: string }) {
     parameters.question ??= matchedNode?.properties?.question;
     parameters.sessionId = sessionId;
     parameters.agentId = agentId;
-  } else if (
-    action === "PLATFORM:switch" &&
-    matchedNode?.type === "SWITCH"
-  ) {
+  } else if (action === "PLATFORM:switch" && matchedNode?.type === "SWITCH") {
     parameters.cases = switchCases(matchedNode, blueprint?.nodes ?? []);
     parameters.defaultCase = matchedNode.properties?.defaultCase;
     parameters.instructions =
@@ -1606,13 +1602,6 @@ async function chat({
         blueprintToTaskResponse.task,
       blueprintId: selectedBlueprintId,
       sessionId,
-    });
-
-    await session.addConversation({
-      sessionId,
-      agentId,
-      role: "ASSISTANT",
-      content: blueprintToTaskResponse.answer,
     });
   } else {
     if (task.length > 0) {

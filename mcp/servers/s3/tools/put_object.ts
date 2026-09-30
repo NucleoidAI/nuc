@@ -20,9 +20,9 @@ export const putObjectTool = defineAwsTool({
   },
   required: ["key"],
   run: async (args) => {
-    if (!args.content && !args.content_base64)
+    if (args.content === undefined && args.content_base64 === undefined)
       throw new Error("Either content or content_base64 is required");
-    if (args.content && args.content_base64)
+    if (args.content !== undefined && args.content_base64 !== undefined)
       throw new Error("Give either content or content_base64, not both");
     const bucket = bucketOf(args);
     const body = args.content_base64

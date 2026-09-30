@@ -1,377 +1,379 @@
-[
-  {
-    "content": {
-      "nodes": [
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_bbk_by_address"
+{
+  "data": [
+    {
+      "content": {
+        "nodes": [
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_bbk_by_address"
+            },
+            "next": ["node-2"]
           },
-          "next": ["node-2"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_inventory"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_inventory"
+            },
+            "next": ["node-3"]
           },
-          "next": ["node-3"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_product_by_speed"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_product_by_speed"
+            },
+            "next": ["node-4"]
           },
-          "next": ["node-4"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction"
+            },
+            "next": ["node-5"]
           },
-          "next": ["node-5"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_allocation"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_allocation"
+            },
+            "next": ["node-6"]
           },
-          "next": ["node-6"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user"
+            },
+            "next": ["node-7"]
           },
-          "next": ["node-7"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:configuration"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:configuration"
+            },
+            "next": ["node-8"]
           },
-          "next": ["node-8"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_connection"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_connection"
+            },
+            "next": ["node-9"]
           },
-          "next": ["node-9"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete"
-          },
-          "next": null
-        }
-      ]
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete"
+            },
+            "next": null
+          }
+        ]
+      },
+      "skill": "**Internet Subscription — Direct Setup With Notification**\n\nUse this Blueprint when a new internet subscription is initiated for a known address with no inventory availability gate.\n\nFlow: Retrieve BBK → Check inventory (no gate) → List speed products → User selects package → Allocate port → Notify user → Configure port → Connect port to residence.\n\nExits once the port is physically connected. No branching; all steps execute unconditionally."
     },
-    "skill": "**Internet Subscription — Direct Setup With Notification**\n\nUse this Blueprint when a new internet subscription is initiated for a known address with no inventory availability gate.\n\nFlow: Retrieve BBK → Check inventory (no gate) → List speed products → User selects package → Allocate port → Notify user → Configure port → Connect port to residence.\n\nExits once the port is physically connected. No branching; all steps execute unconditionally."
-  },
-  {
-    "content": {
-      "nodes": [
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_bbk_by_address"
+    {
+      "content": {
+        "nodes": [
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_bbk_by_address"
+            },
+            "next": ["node-2"]
           },
-          "next": ["node-2"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_inventory"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_inventory"
+            },
+            "next": ["node-3"]
           },
-          "next": ["node-3"]
-        },
-        {
-          "type": "CONDITION",
-          "properties": {
-            "action": "PLATFORM:decision"
+          {
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision"
+            },
+            "true": ["node-4"],
+            "false": ["node-9"]
           },
-          "true": ["node-4"],
-          "false": ["node-9"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_product_by_speed"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_product_by_speed"
+            },
+            "next": ["node-5"]
           },
-          "next": ["node-5"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction"
+            },
+            "next": ["node-6"]
           },
-          "next": ["node-6"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_allocation"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_allocation"
+            },
+            "next": ["node-7"]
           },
-          "next": ["node-7"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:configuration"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:configuration"
+            },
+            "next": ["node-8"]
           },
-          "next": ["node-8"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_connection"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_connection"
+            },
+            "next": ["node-10"]
           },
-          "next": ["node-10"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete"
+            },
+            "next": null
           },
-          "next": null
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete"
-          },
-          "next": null
-        }
-      ]
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete"
+            },
+            "next": null
+          }
+        ]
+      },
+      "skill": "**Internet Subscription — Availability-Gated, Silent Setup**\n\nUse this Blueprint when a new subscription requires inventory validation before proceeding and no user notification is needed after port allocation.\n\nFlow: Retrieve BBK → Check inventory → [No inventory: end] → List speed products → User selects package → Allocate port → Configure port → Connect port to residence.\n\nExits silently after port connection. Exits early if inventory is unavailable."
     },
-    "skill": "**Internet Subscription — Availability-Gated, Silent Setup**\n\nUse this Blueprint when a new subscription requires inventory validation before proceeding and no user notification is needed after port allocation.\n\nFlow: Retrieve BBK → Check inventory → [No inventory: end] → List speed products → User selects package → Allocate port → Configure port → Connect port to residence.\n\nExits silently after port connection. Exits early if inventory is unavailable."
-  },
-  {
-    "content": {
-      "nodes": [
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_bbk_by_address"
+    {
+      "content": {
+        "nodes": [
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_bbk_by_address"
+            },
+            "next": ["node-2"]
           },
-          "next": ["node-2"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_inventory"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_inventory"
+            },
+            "next": ["node-3"]
           },
-          "next": ["node-3"]
-        },
-        {
-          "type": "CONDITION",
-          "properties": {
-            "action": "PLATFORM:decision"
+          {
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision"
+            },
+            "true": ["node-4"],
+            "false": ["node-9"]
           },
-          "true": ["node-4"],
-          "false": ["node-9"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_product_by_speed"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_product_by_speed"
+            },
+            "next": ["node-5"]
           },
-          "next": ["node-5"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction"
+            },
+            "next": ["node-6"]
           },
-          "next": ["node-6"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_allocation"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_allocation"
+            },
+            "next": ["node-7"]
           },
-          "next": ["node-7"]
-        },
-        {
-          "type": "CONDITION",
-          "properties": {
-            "action": "PLATFORM:decision"
+          {
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision"
+            },
+            "true": ["node-8"],
+            "false": ["node-10"]
           },
-          "true": ["node-8"],
-          "false": ["node-10"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:configuration"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:configuration"
+            },
+            "next": ["node-11"]
           },
-          "next": ["node-11"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete"
+            },
+            "next": null
           },
-          "next": null
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user"
+            },
+            "next": ["node-12"]
           },
-          "next": ["node-12"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_connection"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_connection"
+            },
+            "next": ["node-13"]
           },
-          "next": ["node-13"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete"
+            },
+            "next": null
           },
-          "next": null
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete"
-          },
-          "next": null
-        }
-      ]
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete"
+            },
+            "next": null
+          }
+        ]
+      },
+      "skill": "**Internet Subscription — Dual Availability Check (Inventory + Port)**\n\nUse this Blueprint when both inventory and port availability must be verified before completing a subscription.\n\nFlow: Retrieve BBK → Check inventory → [No inventory: end] → List speed products → User selects package → Allocate port → [No port: notify user, end] → Configure port → Connect port to residence.\n\nExits after port connection. Exits early if inventory is unavailable, or notifies the user and exits if port allocation fails."
     },
-    "skill": "**Internet Subscription — Dual Availability Check (Inventory + Port)**\n\nUse this Blueprint when both inventory and port availability must be verified before completing a subscription.\n\nFlow: Retrieve BBK → Check inventory → [No inventory: end] → List speed products → User selects package → Allocate port → [No port: notify user, end] → Configure port → Connect port to residence.\n\nExits after port connection. Exits early if inventory is unavailable, or notifies the user and exits if port allocation fails."
-  },
-  {
-    "content": {
-      "nodes": [
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction"
+    {
+      "content": {
+        "nodes": [
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction"
+            },
+            "next": ["node-2"]
           },
-          "next": ["node-2"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_bbk_by_address"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_bbk_by_address"
+            },
+            "next": ["node-3"]
           },
-          "next": ["node-3"]
-        },
-        {
-          "type": "CONDITION",
-          "properties": {
-            "action": "PLATFORM:decision"
+          {
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision"
+            },
+            "true": ["node-4"],
+            "false": ["node-8"]
           },
-          "true": ["node-4"],
-          "false": ["node-8"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_inventory"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_inventory"
+            },
+            "next": ["node-5"]
           },
-          "next": ["node-5"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_product_by_speed"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_product_by_speed"
+            },
+            "next": ["node-6"]
           },
-          "next": ["node-6"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction"
+            },
+            "next": ["node-7"]
           },
-          "next": ["node-7"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete"
+            },
+            "next": null
           },
-          "next": null
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user"
+            },
+            "next": ["node-9"]
           },
-          "next": ["node-9"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete"
-          },
-          "next": null
-        }
-      ]
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete"
+            },
+            "next": null
+          }
+        ]
+      },
+      "skill": "**Internet Subscription — User-Provided Address With Validation**\n\nUse this Blueprint when the user's address is unknown and must be collected and validated before retrieving infrastructure data.\n\nFlow: Collect address from user → Retrieve BBK → [Invalid address: notify user, end] → Check inventory → List speed products → User selects package.\n\nExits once the user selects a product. Exits early with a notification if the address is not found in the system."
     },
-    "skill": "**Internet Subscription — User-Provided Address With Validation**\n\nUse this Blueprint when the user's address is unknown and must be collected and validated before retrieving infrastructure data.\n\nFlow: Collect address from user → Retrieve BBK → [Invalid address: notify user, end] → Check inventory → List speed products → User selects package.\n\nExits once the user selects a product. Exits early with a notification if the address is not found in the system."
-  },
-  {
-    "content": {
-      "nodes": [
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_bbk_by_address"
+    {
+      "content": {
+        "nodes": [
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_bbk_by_address"
+            },
+            "next": ["node-2"]
           },
-          "next": ["node-2"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_inventory"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_inventory"
+            },
+            "next": ["node-3"]
           },
-          "next": ["node-3"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_product_by_speed"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_product_by_speed"
+            },
+            "next": ["node-4"]
           },
-          "next": ["node-4"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction"
+            },
+            "next": ["node-5"]
           },
-          "next": ["node-5"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_allocation"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_allocation"
+            },
+            "next": ["node-6"]
           },
-          "next": ["node-6"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user"
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user"
+            },
+            "next": ["node-7"]
           },
-          "next": ["node-7"]
-        },
-        {
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete"
-          },
-          "next": null
-        }
-      ]
-    },
-    "skill": "**Internet Subscription — Port Unavailability Terminates Flow**\n\nUse this Blueprint when a subscription attempt should end immediately if no port is available, skipping configuration and connection steps.\n\nFlow: Retrieve BBK → Check inventory → List speed products → User selects package → Allocate port → Notify user of unavailability → End.\n\nExits after notifying the user that no port is available. Does not proceed to port configuration or connection."
-  }
-]
+          {
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete"
+            },
+            "next": null
+          }
+        ]
+      },
+      "skill": "**Internet Subscription — Port Unavailability Terminates Flow**\n\nUse this Blueprint when a subscription attempt should end immediately if no port is available, skipping configuration and connection steps.\n\nFlow: Retrieve BBK → Check inventory → List speed products → User selects package → Allocate port → Notify user of unavailability → End.\n\nExits after notifying the user that no port is available. Does not proceed to port configuration or connection."
+    }
+  ]
+}

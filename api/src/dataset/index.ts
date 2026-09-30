@@ -26,31 +26,31 @@ import teamChat from "./train/team-chat.json";
 export default {
   policy: {
     role: "system" as const,
-    content: JSON.stringify({ policy }),
+    content: JSON.stringify({ policy: policy.data }),
   },
   train: {
     Blueprint: {
       role: "system" as const,
       content: JSON.stringify({
-        train: Blueprint,
+        train: Blueprint.data,
       }),
     },
     chat: {
       role: "system" as const,
       content: JSON.stringify({
-        train: chat,
+        train: chat.data,
       }),
     },
     humanInLoop: {
       role: "system" as const,
       content: JSON.stringify({
-        train: humanInLoop,
+        train: humanInLoop.data,
       }),
     },
     pseudocode: {
       role: "system" as const,
       content: JSON.stringify({
-        train: pseudocode,
+        train: pseudocode.data,
       }),
     },
     taskDiamondBlocking: {
@@ -80,91 +80,91 @@ export default {
     teamChat: {
       role: "system" as const,
       content: JSON.stringify({
-        train: teamChat,
+        train: teamChat.data,
       }),
     },
     blueprintChat: {
       role: "system" as const,
       content: JSON.stringify({
-        train: blueprintChat,
+        train: blueprintChat.data,
       }),
     },
     blueprintChatDecision: {
       role: "system" as const,
       content: JSON.stringify({
-        train: blueprintChatDecision,
+        train: blueprintChatDecision.data,
       }),
     },
     blueprintChatSufficiency: {
       role: "system" as const,
       content: JSON.stringify({
-        train: blueprintChatSufficiency,
+        train: blueprintChatSufficiency.data,
       }),
     },
     blueprintChatEvaluation: {
       role: "system" as const,
       content: JSON.stringify({
-        train: blueprintChatEvaluation,
+        train: blueprintChatEvaluation.data,
       }),
     },
     blueprintChatKnowledge: {
       role: "system" as const,
       content: JSON.stringify({
-        train: blueprintChatKnowledge,
+        train: blueprintChatKnowledge.data,
       }),
     },
     blueprintName: {
       role: "system" as const,
       content: JSON.stringify({
-        train: blueprintName,
+        train: blueprintName.data,
       }),
     },
     blueprintDescription: {
       role: "system" as const,
       content: JSON.stringify({
-        train: blueprintDescription,
+        train: blueprintDescription.data,
       }),
     },
     blueprintSkill: {
       role: "system" as const,
       content: JSON.stringify({
-        train: blueprintSkill,
+        train: blueprintSkill.data,
       }),
     },
     blueprintDiamond: {
       role: "system" as const,
       content: JSON.stringify({
-        train: blueprintDiamond,
+        train: blueprintDiamond.data,
       }),
     },
     knowledgeScore: {
       role: "system" as const,
       content: JSON.stringify({
-        train: knowledgeScore,
+        train: knowledgeScore.data,
       }),
     },
     decision: {
       role: "system" as const,
       content: JSON.stringify({
-        train: decision,
+        train: decision.data,
       }),
     },
     approval: {
       role: "system" as const,
       content: JSON.stringify({
-        train: approval,
+        train: approval.data,
       }),
     },
     approvalQuestion: {
       role: "system" as const,
       content: JSON.stringify({
-        train: approvalQuestion,
+        train: approvalQuestion.data,
       }),
     },
     switch: {
       role: "system" as const,
       content: JSON.stringify({
-        train: switchCase,
+        train: switchCase.data,
       }),
     },
   },

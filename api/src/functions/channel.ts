@@ -44,6 +44,7 @@ function mergeSecrets(
   return { ...next, imap: keep("imap"), smtp: keep("smtp") };
 }
 
+// TODO: Scope by projectId; secrets=true returns every project's mailbox credentials to any authenticated caller. Move secret retrieval to a service-only route for the communication service.
 async function list({
   type,
   secrets = false,
@@ -84,6 +85,7 @@ async function create({
   return toResponse(channel);
 }
 
+// TODO: Enforce project ownership; lookup is by channel id only.
 async function get({ channelId }: { channelId: string }) {
   const channel = await Channel.findByPk(channelId);
 
@@ -94,6 +96,7 @@ async function get({ channelId }: { channelId: string }) {
   return toResponse(channel);
 }
 
+// TODO: Enforce project ownership; lookup is by channel id only.
 async function update({
   channelId,
   config,
@@ -103,7 +106,7 @@ async function update({
 }) {
   const channel = await Channel.findByPk(channelId);
 
-  if (!channel) {
+  if (!channel || channel.channelType !== "EMAIL") {
     throw new NotFoundError();
   }
 
@@ -117,6 +120,7 @@ async function update({
   return toResponse(channel);
 }
 
+// TODO: Enforce project ownership; delete is by channel id only.
 async function remove({ channelId }: { channelId: string }) {
   const deleted = await Channel.destroy({
     where: { id: channelId },

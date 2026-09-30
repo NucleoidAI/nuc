@@ -110,6 +110,9 @@ async function update({
     throw new NotFoundError();
   }
 
+  if (channel.channelType !== "EMAIL")
+    throw new Error("Only EMAIL channels can have email configuration");
+
   const merged = mergeSecrets(config, channel.config as EmailConfig);
 
   await channel.update({

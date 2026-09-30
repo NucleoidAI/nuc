@@ -246,6 +246,7 @@
           "type": "APPROVAL",
           "properties": {
             "action": "PLATFORM:customer_approval",
+            "force": true,
             "description": "Ask the customer to approve the payment before the card is charged, then wait for the decision from the session or the approval endpoint",
             "label": "Payment Approval",
             "icon": "mdi:account-check",

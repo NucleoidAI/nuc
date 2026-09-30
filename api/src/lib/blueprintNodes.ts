@@ -73,10 +73,10 @@ function selectedSwitchId(step: { result?: string }, nextIds: string[]) {
     if (typeof parsed?.nodeId === "string" && nextIds.includes(parsed.nodeId))
       return parsed.nodeId;
   } catch {
-    return nextIds[0];
+    return undefined;
   }
 
-  return nextIds[0];
+  return undefined;
 }
 
 export function isForcedNode(node: any) {

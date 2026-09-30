@@ -94,6 +94,40 @@ describe("resolveCurrentNode", () => {
     assert.equal(current?.id, "confirm");
   });
 
+  it("does not fall into the first switch case for an unknown result", () => {
+    const switched = [
+      {
+        id: "pick",
+        type: "SWITCH",
+        properties: { action: "PLATFORM:switch" },
+        next: ["left", "right"],
+      },
+      node("left", "L:run", null),
+      node("right", "R:run", null),
+    ];
+
+    assert.equal(
+      resolveCurrentNode(switched, [
+        {
+          action: "PLATFORM:switch",
+          nodeId: "pick",
+          result: JSON.stringify({ nodeId: "right" }),
+        },
+      ])?.id,
+      "right",
+    );
+    assert.equal(
+      resolveCurrentNode(switched, [
+        {
+          action: "PLATFORM:switch",
+          nodeId: "pick",
+          result: JSON.stringify({ nodeId: "unknown" }),
+        },
+      ]),
+      undefined,
+    );
+  });
+
   it("still matches legacy steps without a nodeId by action", () => {
     const current = resolveCurrentNode(nodes, [
       { action: "ORDER:find_product" },

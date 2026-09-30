@@ -2,6 +2,38 @@ import { generate } from "../lib/llm";
 import type { LLMMeta } from "../lib/llmLog";
 import dataset from "../dataset";
 
+type Case = { nodeId: string; label?: string; description?: string };
+
+const normalize = (value: unknown) =>
+  typeof value === "string" ? value.trim().toLowerCase() : "";
+
+export function selectCase(
+  options: Case[],
+  answer: unknown,
+  defaultCase?: string,
+) {
+  const wanted = normalize(answer);
+
+  const matched = wanted
+    ? options.find((option) => normalize(option.nodeId) === wanted) ??
+      options.find((option) => normalize(option.label) === wanted)
+    : undefined;
+
+  if (matched) return matched;
+
+  const fallback = defaultCase
+    ? options.find((option) => option.nodeId === defaultCase)
+    : undefined;
+
+  if (fallback) return fallback;
+
+  throw new Error(
+    `SWITCH_INVALID_CASE: model returned ${JSON.stringify(
+      answer,
+    )}, expected one of ${options.map((option) => option.nodeId).join(", ")}`,
+  );
+}
+
 async function run({
   context,
   parameters,
@@ -10,11 +42,12 @@ async function run({
   context: string;
   parameters: {
     instructions?: string;
-    cases: { nodeId: string; label?: string; description?: string }[];
+    cases: Case[];
+    defaultCase?: string;
   };
   meta?: LLMMeta;
 }) {
-  const { instructions, cases } = parameters;
+  const { instructions, cases, defaultCase } = parameters;
 
   const options = (cases ?? []).filter((option) => option?.nodeId);
 
@@ -30,10 +63,7 @@ async function run({
     meta,
   });
 
-  const selected =
-    options.find((option) => option.nodeId === nodeId) ??
-    options.find((option) => option.label === nodeId) ??
-    options[0];
+  const selected = selectCase(options, nodeId, defaultCase);
 
   return {
     nodeId: selected.nodeId,

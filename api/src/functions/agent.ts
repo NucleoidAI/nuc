@@ -689,6 +689,7 @@ async function task({ taskId }: { taskId: string }) {
     matchedNode?.type === "SWITCH"
   ) {
     parameters.cases = switchCases(matchedNode, blueprint?.nodes ?? []);
+    parameters.defaultCase = matchedNode.properties?.defaultCase;
     parameters.instructions =
       (matchedNode.properties?.pseudocodeEnabled &&
         matchedNode.properties?.pseudocode) ||

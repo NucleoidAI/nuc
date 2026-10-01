@@ -59,13 +59,15 @@ function toContentString(content: string | object | object[]): string {
   return typeof content === "string" ? content : JSON.stringify(content);
 }
 
-function inferSource(): string | undefined {
+function inferSource(
+  entry: (...args: never[]) => unknown,
+): string | undefined {
   const originalPrepareStackTrace = Error.prepareStackTrace;
   try {
     const holder: { stack?: NodeJS.CallSite[] } = {};
     Error.prepareStackTrace = (_err, stack) =>
       stack as unknown as NodeJS.CallSite[];
-    Error.captureStackTrace(holder, generate);
+    Error.captureStackTrace(holder, entry);
     const caller = holder.stack?.[0];
     if (!caller) return undefined;
 
@@ -114,7 +116,7 @@ async function generate({
   max_tokens?: number;
   meta?: LLMMeta;
 }) {
-  const resolvedSource = meta?.source ? undefined : inferSource();
+  const resolvedSource = meta?.source ? undefined : inferSource(generate);
 
   const messages = [
     ...context.map(({ role, content }) => ({
@@ -144,4 +146,4 @@ async function generate({
   });
 }
 
-export { generate };
+export { generate, inferSource };

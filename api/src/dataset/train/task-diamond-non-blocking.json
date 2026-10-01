@@ -3,7 +3,7 @@
     {
       "id": "0cbfbecd-5e0d-4924-b5fd-6de262285936",
       "description": "Check product availability, if not exist, create order.",
-      "Blueprint": {
+      "selected_blueprint": {
         "id": "ba6f7911-e232-469d-9060-2881852f6e59",
         "title": "Product Order",
         "description": "Check product availability, if not exist, create order.",
@@ -209,7 +209,7 @@
       "id": "2efhdhff-7g2f-6b46-d7hf-8fg484407b58",
       "description": "Setup internet subscription at user's address.",
       "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
-      "blueprint": {
+      "selected_blueprint": {
         "id": "ca7g8022-f343-570e-a171-3992963g7f70",
         "title": "Basic Internet Subscription Setup",
         "description": "Offer internet packages based on the user's residential address and provide available internet packages for the selected address.",
@@ -400,7 +400,7 @@
       "id": "5hkjgmih-8h4g-7d57-e9jh-0igf495519d60",
       "description": "Setup internet subscription for a US residential address with full notification flow.",
       "sessionId": "029c8g97-0c29-94h4-0cfg-04ef00h8d9ee",
-      "blueprint": {
+      "selected_blueprint": {
         "id": "ca7g8022-f343-570e-a171-3992963g7f70",
         "title": "Basic Internet Subscription Setup",
         "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
@@ -674,7 +674,7 @@
       "id": "hnd-nb-0001-0001-0001-0001-000000000001",
       "description": "Customer completed onboarding, hand off to support agent for follow-up.",
       "sessionId": "session-hnd-nb-0001",
-      "Blueprint": {
+      "selected_blueprint": {
         "id": "bp-hnd-nb-0001-0001-0001-0001-000000000001",
         "title": "Onboarding to Support Handoff",
         "description": "Complete onboarding steps and hand off to support agent for follow-up.",
@@ -730,7 +730,7 @@
       "id": "order-cert-nonblock-001",
       "description": "Create a purchase order for product-2 (prd-2).",
       "sessionId": "019b6e75-nb01-nb01-nb01-nb0100000001",
-      "Blueprint": {
+      "selected_blueprint": {
         "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
         "title": "Order and Compliance",
         "description": "Find product, assign compliance certificate, create purchase order, and send email.",
@@ -988,7 +988,7 @@
       "id": "order-cert-nonblock-002",
       "description": "Create a purchase order for product-4 (prd-4) which has no compliance certificate.",
       "sessionId": "019b6e75-nb02-nb02-nb02-nb0200000002",
-      "Blueprint": {
+      "selected_blueprint": {
         "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
         "title": "Order and Compliance",
         "description": "Find product, assign compliance certificate, create purchase order, and send email.",
@@ -1222,7 +1222,7 @@
       "id": "6bb390aa-e188-4856-9397-43995023c8c9",
       "description": "Transcribe a meeting recording, produce a speaker-attributed summary, resolve participant names, and email the summary to all participants.",
       "sessionId": "e3706303-e31b-41ed-a553-0facb7e3811a",
-      "blueprint": {
+      "selected_blueprint": {
         "id": "d493adda-eaa4-4bd3-9bd2-769b74dca14a",
         "title": "Meeting Recording Transcription & Summary",
         "description": "Converts per-participant PCM recordings to WAV, transcribes each one, produces a structured meeting summary attributed by speaker ID, resolves participant IDs to real names in that summary, and emails it to all participants.",
@@ -1776,7 +1776,7 @@
       "id": "order-cert-missing-nonblock-001",
       "description": "Order product-3 (prd-3) - the knowledge base holds no certificate record for it.",
       "sessionId": "019b6e75-cm02-cm02-cm02-cm0200000001",
-      "Blueprint": {
+      "selected_blueprint": {
         "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
         "title": "Order and Compliance",
         "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
@@ -1981,7 +1981,7 @@
       "id": "order-cert-missing-nonblock-002",
       "description": "The supervisor answered which certificate prd-3 should get.",
       "sessionId": "019b6e75-cm02-cm02-cm02-cm0200000002",
-      "Blueprint": {
+      "selected_blueprint": {
         "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
         "title": "Order and Compliance",
         "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
@@ -2192,7 +2192,7 @@
       "id": "order-pay-nonblock-001",
       "description": "Create a purchase order for product-1 (prd-1), then prepare its payment.",
       "sessionId": "019b6e75-op01-op01-op01-op0100000001",
-      "Blueprint": {
+      "selected_blueprint": {
         "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
         "title": "Order and Compliance",
         "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
@@ -2432,7 +2432,7 @@
       "id": "order-pay-nonblock-002",
       "description": "The user approved the charge for purchase order po-2001.",
       "sessionId": "019b6e75-op02-op02-op02-op0200000002",
-      "Blueprint": {
+      "selected_blueprint": {
         "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
         "title": "Order and Compliance",
         "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
@@ -2694,7 +2694,7 @@
       "id": "order-pay-nonblock-003",
       "description": "The payment for purchase order po-2001 is prepared and needs the user's approval.",
       "sessionId": "019b6e75-op03-op03-op03-op0300000002",
-      "Blueprint": {
+      "selected_blueprint": {
         "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
         "title": "Order and Compliance",
         "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",

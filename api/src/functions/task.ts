@@ -116,6 +116,9 @@ async function list({
         ]
       : [],
     where,
+    ...(includeSteps && {
+      order: [[{ model: Step, as: "steps" }, "createdAt", "ASC"]],
+    }),
   });
 
   return taskInstances.map((task) => task.toJSON());
@@ -157,6 +160,10 @@ async function addStep({
   });
 
   return step.toJSON();
+}
+
+async function count({ blueprintId }: { blueprintId: string }) {
+  return await Task.count({ where: { blueprintId } });
 }
 
 async function getStep({ stepId }: { stepId: string }) {
@@ -235,6 +242,7 @@ export default {
   get,
   update,
   list,
+  count,
   getStep,
   addStep,
   updateStep,

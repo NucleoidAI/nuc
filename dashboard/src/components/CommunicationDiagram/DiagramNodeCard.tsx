@@ -24,7 +24,8 @@ function DiagramNodeCard(props) {
         overflow: "hidden",
         borderRadius: 2,
         border: `1px solid rgba(145, 142, 142, 0.09)`,
-        bgcolor: "rgba(163, 160, 160, 0.09)",
+        bgcolor: "#1e2730",
+        backgroundImage: `linear-gradient(rgba(163, 160, 160, 0.09), rgba(163, 160, 160, 0.09))`,
         boxShadow: `
             4px 4px 0 rgba(154, 151, 151, 0.18),
             5px 5px 5px rgba(0, 0, 0, 0.5)

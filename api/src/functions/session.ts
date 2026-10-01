@@ -23,6 +23,7 @@ async function create({
     type,
     agentId,
     ...(blueprintId && { blueprintId }),
+    ...(variables && { variables }),
   });
 
   await event.publish("SESSION_INITIATED", {

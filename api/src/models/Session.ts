@@ -31,6 +31,10 @@ class Session extends Model {
   @Column(DataType.UUID)
   declare blueprintId: string | null;
 
+  @AllowNull(true)
+  @Column(DataType.JSON)
+  declare variables: Record<string, unknown> | null;
+
   declare agent?: any;
 
   declare conversations?: any[];

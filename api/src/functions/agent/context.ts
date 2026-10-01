@@ -38,6 +38,12 @@ async function blueprint({ blueprintId }: { blueprintId: string }) {
   return blueprintFn.get({ blueprintId, includeDetails: false });
 }
 
+async function sessionVariables({ sessionId }: { sessionId: string }) {
+  const sessionInstance = await session.get({ sessionId });
+
+  return (sessionInstance?.variables ?? {}) as Record<string, unknown>;
+}
+
 async function conversations({
   sessionId,
 }: {
@@ -89,12 +95,14 @@ async function taskContext({
   teamId,
   blueprintId,
   inheritedSteps,
+  variables,
   isBlocking,
 }: {
   agentId: string;
   teamId?: string;
   blueprintId?: string;
   inheritedSteps?: object[] | null;
+  variables: Record<string, unknown>;
   isBlocking: boolean;
 }) {
   const [knowledge_base, selected_blueprint, mcp_tools] = await Promise.all([
@@ -107,10 +115,18 @@ async function taskContext({
     knowledge_base,
     selected_blueprint,
     ...(inheritedSteps?.length && { inherited_context_steps: inheritedSteps }),
+    ...(Object.keys(variables).length && { session_variables: variables }),
     mcp_tools,
     actions: actions.definitions({ blocking: isBlocking }),
   };
 }
 
 export type { ChatHistory, ContextMessage };
-export { blueprint, conversations, handoffTargets, knowledge, taskContext };
+export {
+  blueprint,
+  conversations,
+  handoffTargets,
+  knowledge,
+  sessionVariables,
+  taskContext,
+};

@@ -10,13 +10,23 @@ import {
   getParameterGenerationContext,
   mergeNodeParameters,
 } from "../../lib/nodeParameterBindings";
-import { type ContextMessage, conversations, taskContext } from "./context";
+import {
+  type ContextMessage,
+  conversations,
+  sessionVariables,
+  taskContext,
+} from "./context";
 import type { LLMMeta } from "../../lib/llmLog";
 import Agent from "../../models/Agent";
 import MCPs from "../../mcps/mcps";
 import actions from "../../actions";
 import agentData from "../agentData";
 import { approvalQuestion } from "./approval";
+import {
+  type Definition,
+  judgeParameters,
+  selectNextAction,
+} from "./judgments";
 import blueprintFn from "../blueprint";
 import dataset from "../../dataset";
 import platform from "@canmingir/link-express";
@@ -28,6 +38,8 @@ import taskFn from "../task";
 
 const MAX_STEPS = 20;
 const MAX_PARAMETER_ATTEMPTS = 2;
+const MIN_INPUTS_AVAILABLE = 0.5;
+const SUPERVISOR_ACTION = "PLATFORM:ask_supervisor";
 
 type Step = Awaited<ReturnType<typeof taskFn.listSteps>>[number];
 type CurrentTask = {
@@ -39,7 +51,8 @@ type Params = Record<string, unknown>;
 type ActionSelection = {
   action: string;
   comment?: string;
-  knowledgeScore?: number;
+  resultScore?: number;
+  probabilities?: Record<string, number>;
   bound?: boolean;
 };
 
@@ -72,31 +85,6 @@ async function finish({
   return taskFn.update({ taskId, result, comment, status: "COMPLETED" });
 }
 
-async function scoring({
-  context,
-  meta,
-}: {
-  context: ContextMessage[];
-  meta?: LLMMeta;
-}) {
-  const merged: Record<string, unknown> = {};
-  for (const { content } of context) {
-    if (content && typeof content === "object") {
-      Object.assign(merged, content);
-    }
-  }
-
-  const { knowledge_score } = await generate({
-    dataset: dataset.train.knowledgeScore,
-    content: merged,
-    json_format: "{ knowledge_score: <0.0-1.0> }",
-    meta,
-  });
-
-  const parsed = parseFloat(String(knowledge_score));
-  return !isNaN(parsed) ? parsed : undefined;
-}
-
 function definitionOf(action?: string) {
   if (!action) return undefined;
 
@@ -105,15 +93,13 @@ function definitionOf(action?: string) {
 
 async function selectAction({
   currentNode,
-  currentTask,
-  context,
-  isBlocking,
+  state,
+  options,
   meta,
 }: {
   currentNode: any;
-  currentTask: CurrentTask;
-  context: ContextMessage[];
-  isBlocking: boolean;
+  state: object;
+  options: Definition[];
   meta: LLMMeta;
 }): Promise<ActionSelection> {
   const nodeAction = currentNode?.properties?.action;
@@ -131,25 +117,21 @@ async function selectAction({
     };
   }
 
-  const [selection, knowledgeScore] = await Promise.all([
-    isForcedNode(currentNode) && nodeAction
-      ? { action: nodeAction }
-      : generate({
-          dataset: isBlocking
-            ? dataset.train.taskDiamondBlocking
-            : dataset.train.taskDiamondNonBlocking,
-          context,
-          content: currentTask,
-          json_format:
-            "{ next_step: { action: <ACTION>, comment: <COMMENT> } }",
-          meta,
-        }).then(
-          ({ next_step }) => next_step as { action: string; comment?: string }
-        ),
-    scoring({ context, meta }),
-  ]);
+  const selection = await selectNextAction({ state, options, meta });
 
-  return { ...selection, knowledgeScore };
+  const { probabilities } = selection;
+
+  if (isForcedNode(currentNode) && nodeAction) {
+    return {
+      action: nodeAction,
+      resultScore: probabilities[nodeAction],
+      probabilities,
+    };
+  }
+
+  const { action } = selection;
+
+  return { action, resultScore: probabilities[action], probabilities };
 }
 
 async function generateParameters({
@@ -160,6 +142,7 @@ async function generateParameters({
   isBlocking,
   meta,
   previousError,
+  escalatedFrom,
 }: {
   action: string;
   node: any;
@@ -168,17 +151,9 @@ async function generateParameters({
   isBlocking: boolean;
   meta: LLMMeta;
   previousError?: string;
-}): Promise<{ parameters: Params; comment?: string; result_score?: unknown }> {
-  const definition = definitionOf(action);
-
-  if (
-    definition &&
-    !Object.keys(definition.inputSchema?.properties ?? {}).length
-  ) {
-    return { parameters: {} };
-  }
-
-  const { next_step, result_score } = (await generate({
+  escalatedFrom?: object;
+}): Promise<{ parameters: Params; comment?: string }> {
+  const { next_step } = (await generate({
     dataset: isBlocking
       ? dataset.train.forceTaskDiamondBlocking
       : dataset.train.forceTaskDiamondNonBlocking,
@@ -186,20 +161,19 @@ async function generateParameters({
     content: {
       ...currentTask,
       forced_action: action,
+      ...(escalatedFrom && { escalated_from: escalatedFrom }),
       ...(previousError && { previous_error: previousError }),
     },
     json_format:
-      "{ next_step: { parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
+      "{ next_step: { parameters: <PARAMETER>, comment: <COMMENT> } }",
     meta,
   })) as {
     next_step?: { parameters?: Params; comment?: string };
-    result_score?: unknown;
   };
 
   return {
     parameters: next_step?.parameters ?? {},
     comment: next_step?.comment,
-    result_score,
   };
 }
 
@@ -223,6 +197,8 @@ async function prepareParameters({
   isBlocking,
   meta,
   refSource,
+  judged,
+  escalatedFrom,
 }: {
   selection: ActionSelection;
   node: any;
@@ -231,26 +207,32 @@ async function prepareParameters({
   isBlocking: boolean;
   meta: LLMMeta;
   refSource: Record<string, unknown>;
+  judged: Promise<Params>;
+  escalatedFrom?: object;
 }) {
   let previousError: string | undefined;
 
   for (let attempt = 1; ; attempt++) {
-    const generation = selection.bound
-      ? { parameters: {} }
-      : await generateParameters({
-          action: selection.action,
-          node,
-          currentTask,
-          context,
-          isBlocking,
-          meta,
-          previousError,
-        });
+    const [generation, judgedParameters] = await Promise.all([
+      selection.bound
+        ? { parameters: {} }
+        : generateParameters({
+            action: selection.action,
+            node,
+            currentTask,
+            context,
+            isBlocking,
+            meta,
+            previousError,
+            escalatedFrom,
+          }),
+      judged,
+    ]);
 
     const parameters: Params = mergeNodeParameters({
       node,
       action: selection.action,
-      generated: generation.parameters,
+      generated: { ...generation.parameters, ...judgedParameters },
     });
 
     try {
@@ -476,9 +458,10 @@ async function runTask({ taskId }: { taskId: string }) {
     return fail(taskId, "Failed due to too many steps");
   }
 
-  const [agentInstance, blueprint] = await Promise.all([
+  const [agentInstance, blueprint, variables] = await Promise.all([
     agentId ? agentData.get({ agentId }) : null,
     blueprintId ? blueprintFn.get({ blueprintId }) : null,
+    sessionId ? sessionVariables({ sessionId }) : {},
   ]);
 
   const isBlocking = blueprint?.blocking !== false;
@@ -491,6 +474,7 @@ async function runTask({ taskId }: { taskId: string }) {
       teamId: agentInstance?.teamId,
       blueprintId,
       inheritedSteps,
+      variables,
       isBlocking,
     }),
     sessionId ? conversations({ sessionId }) : [],
@@ -529,47 +513,131 @@ async function runTask({ taskId }: { taskId: string }) {
     });
   }
 
-  const selection = await selectAction({
+  const decisionState = {
+    selected_blueprint: taskData.selected_blueprint,
+    steps: currentTask.steps.map(
+      ({ index, action, status, parameters, result, comment }) => ({
+        index,
+        action,
+        status,
+        parameters,
+        result,
+        comment,
+      })
+    ),
+    knowledge_base: taskData.knowledge_base,
+    ...(inheritedSteps?.length && { inherited_context_steps: inheritedSteps }),
+    ...(Object.keys(variables).length && { session_variables: variables }),
+    conversation: history,
+  };
+
+  const options = [...taskData.actions, ...taskData.mcp_tools] as Definition[];
+
+  const refSource = {
+    steps,
+    inherited_steps: inheritedSteps ?? [],
+    session_variables: variables,
+    byNode: Object.fromEntries(
+      steps.filter((s) => s.nodeId).map((s) => [s.nodeId, s])
+    ),
+  };
+
+  const plan = async (selection: ActionSelection, escalatedFrom?: object) => {
+    const matchedNode = currentNode
+      ? findNodeAhead(
+          nodes,
+          currentNode,
+          (node) =>
+            node.properties?.action === selection.action ||
+            (node === currentNode && !node.properties?.action)
+        )
+      : undefined;
+
+    const judgment =
+      selection.bound || escalatedFrom
+        ? Promise.resolve({ filled: {}, inputsAvailable: undefined })
+        : judgeParameters({
+            action: selection.action,
+            definition: definitionOf(selection.action) as
+              | Definition
+              | undefined,
+            skipFields: Object.keys(matchedNode?.properties?.parameters ?? {}),
+            state: decisionState,
+            steps,
+            inheritedSteps: (inheritedSteps ?? []) as Step[],
+            variables,
+            meta,
+          });
+
+    const prepared = await prepareParameters({
+      selection,
+      node: matchedNode,
+      currentTask,
+      context,
+      isBlocking,
+      meta,
+      judged: judgment.then(({ filled }) => filled),
+      refSource,
+      escalatedFrom,
+    });
+
+    return {
+      matchedNode,
+      prepared,
+      inputsAvailable: (await judgment).inputsAvailable,
+    };
+  };
+
+  let selection = await selectAction({
     currentNode,
-    currentTask,
-    context,
-    isBlocking,
+    state: decisionState,
+    options,
     meta,
   });
 
-  const { action, knowledgeScore } = selection;
+  const initial = await plan(selection);
+  const { inputsAvailable } = initial;
+  let { matchedNode, prepared } = initial;
 
-  const matchedNode = currentNode
-    ? findNodeAhead(
-        nodes,
-        currentNode,
-        (node) =>
-          node.properties?.action === action ||
-          (node === currentNode && !node.properties?.action)
-      )
-    : undefined;
+  if (
+    inputsAvailable !== undefined &&
+    inputsAvailable < MIN_INPUTS_AVAILABLE &&
+    selection.action !== SUPERVISOR_ACTION
+  ) {
+    const canEscalate = options.some(
+      ({ action }) => action === SUPERVISOR_ACTION
+    );
 
-  const prepared = await prepareParameters({
-    selection,
-    node: matchedNode,
-    currentTask,
-    context,
-    isBlocking,
-    meta,
-    refSource: {
-      steps,
-      inherited_steps: inheritedSteps ?? [],
-      byNode: Object.fromEntries(
-        steps.filter((s) => s.nodeId).map((s) => [s.nodeId, s])
-      ),
-    },
-  });
+    console.debug(
+      `[jev] inputs for ${
+        selection.action
+      } available with ${inputsAvailable} < ${MIN_INPUTS_AVAILABLE}; ${
+        canEscalate
+          ? `escalating to ${SUPERVISOR_ACTION}`
+          : "supervisor not available, keeping selection"
+      }`
+    );
+
+    if (canEscalate) {
+      const escalatedFrom = { action: selection.action, inputs: "missing" };
+
+      selection = {
+        action: SUPERVISOR_ACTION,
+        resultScore: selection.probabilities?.[SUPERVISOR_ACTION],
+        probabilities: selection.probabilities,
+      };
+
+      ({ matchedNode, prepared } = await plan(selection, escalatedFrom));
+    }
+  }
+
+  const { action } = selection;
 
   if (!prepared.ok) {
     return fail(taskId, prepared.error);
   }
 
-  const { parameters, resolvedParameters, result_score } = prepared;
+  const { parameters, resolvedParameters } = prepared;
   const comment = selection.comment ?? prepared.comment ?? "";
 
   const outcome = {
@@ -603,9 +671,7 @@ async function runTask({ taskId }: { taskId: string }) {
       agentId,
     }),
     comment,
-    knowledgeScore,
-    resultScore:
-      result_score != null ? parseFloat(String(result_score)) : undefined,
+    resultScore: selection.resultScore,
     nodeId: matchedNode?.id ?? null,
   });
 }

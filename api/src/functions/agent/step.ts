@@ -4,6 +4,7 @@ import actions from "../../actions";
 import platform from "@canmingir/link-express";
 import { resolveParameterRefs } from "../../lib/parameterRefs";
 import session from "../session";
+import { sessionVariables } from "./context";
 import stepScoreFn from "../stepScore";
 import taskFn from "../task";
 
@@ -124,7 +125,7 @@ async function step({
     // TODO: hallucinationScore will be calculated separately in the future
     const hallucinationScore = knowledgeScore;
 
-    const [steps, { inheritedSteps, agentId }] = await Promise.all([
+    const [steps, { inheritedSteps, agentId, sessionId }] = await Promise.all([
       taskFn.listSteps({ taskId }),
       taskFn.get({ taskId }),
     ]);
@@ -134,6 +135,7 @@ async function step({
     const runParameters = resolveParameterRefs(parameters, {
       steps: priorSteps,
       inherited_steps: inheritedSteps ?? [],
+      session_variables: sessionId ? await sessionVariables({ sessionId }) : {},
       byNode: Object.fromEntries(
         priorSteps.filter((s) => s.nodeId).map((s) => [s.nodeId, s])
       ),

@@ -11,7 +11,6 @@ import blueprintName from "./train/blueprint-name.json";
 import blueprintSkill from "./train/blueprint-skill.json";
 import chat from "./train/chat.json";
 import humanInLoop from "./train/human-in-loop.json";
-import knowledgeScore from "./train/knowledge-score.json";
 import policy from "./policy.json";
 import pseudocode from "./train/pseudocode.json";
 import switchCase from "./train/switch.json";
@@ -121,12 +120,6 @@ export default {
       role: "system" as const,
       content: JSON.stringify({
         train: blueprintSkill.data,
-      }),
-    },
-    knowledgeScore: {
-      role: "system" as const,
-      content: JSON.stringify({
-        train: knowledgeScore.data,
       }),
     },
     decision: {

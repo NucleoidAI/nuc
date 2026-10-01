@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { createSession } from "../api/createSession";
 import { getBlueprint } from "../api/getBlueprint";
 import { sendMessageToSession } from "../api/sendMessageSession";
+import sessionResult from "./sessionResult";
 
 const router = express.Router();
 
@@ -17,6 +18,17 @@ router.use((req, res, next) => {
 });
 
 router.use(express.json());
+
+const DEFAULT_WAIT_SECONDS = 60;
+const MAX_WAIT_SECONDS = 120;
+
+const waitSeconds = (raw: unknown): number => {
+  const seconds = Number(raw);
+  if (!Number.isFinite(seconds) || seconds <= 0) return DEFAULT_WAIT_SECONDS;
+  return Math.min(seconds, MAX_WAIT_SECONDS);
+};
+
+const statusCodes = { COMPLETED: 200, FAILED: 422, PENDING: 202 };
 
 const createServiceToken = (projectId: string): string => {
   const jwtSecret = process.env.JWT_SECRET;
@@ -43,9 +55,28 @@ router.post("/:projectId/:blueprintId", async (req, res) => {
 
     const session = await createSession(token, agentId, blueprintId, variables);
 
-    await sendMessageToSession(session.id, token, JSON.stringify(variables));
+    if (req.query.wait !== "true") {
+      await sendMessageToSession(session.id, token, JSON.stringify(variables));
+      return res.status(201).json({ sessionId: session.id });
+    }
 
-    return res.status(201).json({ sessionId: session.id });
+    const watcher = sessionResult.watch(
+      session.id,
+      waitSeconds(req.query.timeout) * 1000,
+    );
+
+    try {
+      await sendMessageToSession(session.id, token, JSON.stringify(variables));
+    } catch (error) {
+      watcher.cancel();
+      throw error;
+    }
+
+    const outcome = await watcher.result;
+
+    return res
+      .status(statusCodes[outcome.status])
+      .json({ sessionId: session.id, ...outcome });
   } catch (error: any) {
     return res.status(500).json({ error: error?.message });
   }

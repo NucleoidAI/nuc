@@ -51,6 +51,8 @@ async function update({
 
   if (status === "COMPLETED") {
     await event.publish("TASK_COMPLETED", { taskId, result, comment });
+  } else {
+    await event.publish("TASK_FAILED", { taskId, comment });
   }
 }
 

@@ -11,6 +11,7 @@ import http from "http";
 import session from "./test_chat/session";
 import { setupSwagger } from "./swagger";
 import testChat from "./test_chat/testChat";
+import sessionResult from "./chat/sessionResult";
 import webhook from "./chat/webhook";
 import whatsapp from "./whatsapp/webhook";
 import whatsappSession from "./whatsapp/session";
@@ -65,6 +66,8 @@ const startServer = async () => {
   mainApp.use("/test-chat", testChat);
   mainApp.use("/webhook", webhook);
   mainApp.use("/whatsapp", whatsapp);
+
+  await sessionResult.setup();
 
   await whatsappSession.setup();
 

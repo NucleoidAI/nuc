@@ -117,6 +117,29 @@ export function getParameterGenerationContext({
   });
 }
 
+export function getForcedActionContext({
+  context,
+  action,
+}: {
+  context: ContextMessage[];
+  action?: string;
+}): ContextMessage[] {
+  if (!action) return context;
+
+  return context.map((message) => {
+    if (!isRecord(message.content)) return message;
+    const content = { ...message.content };
+    for (const key of ["actions", "mcps"]) {
+      const definitions = content[key];
+      if (!Array.isArray(definitions)) continue;
+      content[key] = definitions.filter(
+        (definition) => isRecord(definition) && definition.action === action
+      );
+    }
+    return { ...message, content };
+  });
+}
+
 export function mergeNodeParameters({
   node,
   action,

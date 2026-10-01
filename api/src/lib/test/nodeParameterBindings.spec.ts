@@ -2,6 +2,7 @@ import { describe, it } from "bun:test";
 import assert from "node:assert/strict";
 import {
   getBoundNodeStep,
+  getForcedActionContext,
   getParameterGenerationContext,
   mergeNodeParameters,
 } from "../nodeParameterBindings";
@@ -147,5 +148,46 @@ describe("blueprint parameter generation", () => {
       () => resolveParameterRefs(parameters, {}),
       /Unable to resolve/
     );
+  });
+
+  it("keeps only the forced action's definition without mutating context", () => {
+    const context = [
+      { role: "user" as const, content: "translate this" },
+      {
+        role: "system" as const,
+        content: {
+          actions: [
+            { action: "TEST:run", inputSchema },
+            { action: "TEST:other", inputSchema },
+          ],
+        },
+      },
+      {
+        role: "system" as const,
+        content: {
+          mcps: [
+            { action: "TEST:other", inputSchema },
+            { action: "TEST:run", inputSchema },
+          ],
+        },
+      },
+      { role: "system" as const, content: { agent: { name: "Translator" } } },
+    ];
+    const original = JSON.stringify(context);
+    const result = getForcedActionContext({ context, action: "TEST:run" });
+    assert.deepEqual(result, [
+      context[0],
+      { role: "system", content: { actions: [{ action: "TEST:run", inputSchema }] } },
+      { role: "system", content: { mcps: [{ action: "TEST:run", inputSchema }] } },
+      context[3],
+    ]);
+    assert.equal(JSON.stringify(context), original);
+  });
+
+  it("leaves context untouched when there is no forced action", () => {
+    const context = [
+      { role: "system" as const, content: { actions: [{ action: "TEST:run" }] } },
+    ];
+    assert.equal(getForcedActionContext({ context }), context);
   });
 });

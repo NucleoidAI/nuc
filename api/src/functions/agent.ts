@@ -1,5 +1,6 @@
 import {
   getBoundNodeStep,
+  getForcedActionContext,
   getParameterGenerationContext,
   mergeNodeParameters,
 } from "../lib/nodeParameterBindings";
@@ -481,36 +482,40 @@ async function task({ taskId }: { taskId: string }) {
     inputSchema: definition?.inputSchema,
   });
   const generationContext = getParameterGenerationContext({
-    context,
+    context: isForceNode
+      ? getForcedActionContext({ context, action: nodeAction })
+      : context,
     node: currentNode,
   });
-  const knowledgeScore = boundStep
-    ? undefined
-    : await scoring({ context, meta });
 
-  const {
-    next_step: { action, parameters: llmParameters, comment },
-    result_score,
-  } =
+  const [
+    knowledgeScore,
+    {
+      next_step: { action, parameters: llmParameters, comment },
+      result_score,
+    },
+  ] = await Promise.all([
+    boundStep || isForceNode ? undefined : scoring({ context, meta }),
     boundStep ??
-    (isForceNode
-      ? await forceNodeStep({
-          currentNode,
-          currentTask,
-          context: generationContext,
-          isBlocking,
-          meta,
-        })
-      : await generate({
-          dataset: isBlocking
-            ? dataset.train.taskDiamondBlocking
-            : dataset.train.taskDiamondNonBlocking,
-          context: generationContext,
-          content: currentTask,
-          json_format:
-            "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
-          meta,
-        }));
+      (isForceNode
+        ? forceNodeStep({
+            currentNode,
+            currentTask,
+            context: generationContext,
+            isBlocking,
+            meta,
+          })
+        : generate({
+            dataset: isBlocking
+              ? dataset.train.taskDiamondBlocking
+              : dataset.train.taskDiamondNonBlocking,
+            context: generationContext,
+            content: currentTask,
+            json_format:
+              "{ next_step: { action: <ACTION>, parameters: <PARAMETER>, comment: <COMMENT> }, result_score: <0.0-1.0> }",
+            meta,
+          })),
+  ]);
 
   const matchedNode = currentNode
     ? findNodeAhead(

@@ -5,13 +5,16 @@ import { inferSource } from "./llm";
 import type { LLMMeta } from "./llmLog";
 import type { DecisionAdapter, DecisionAnswers } from "./types";
 
-type ProviderKey = "TYPESAFE";
+type ProviderKey = "TYPESAFE" | "CLOUDFLARE" | "OPENROUTER" | "LAYA";
 
 const PROVIDER_LOADERS: Record<
   ProviderKey,
   () => Promise<{ default: DecisionAdapter }>
 > = {
   TYPESAFE: () => import("./typesafe"),
+  CLOUDFLARE: () => import("./cloudflare"),
+  OPENROUTER: () => import("./openrouterDecision"),
+  LAYA: () => import("./laya"),
 };
 
 function parseProviderModel(raw: string): {

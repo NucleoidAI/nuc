@@ -133,6 +133,7 @@ const TaskFlowStepDialog = ({
             borderRadius: 2,
             backgroundImage: "none",
             bgcolor: "background.default",
+            outline: "none",
           },
         },
       }}
@@ -210,7 +211,7 @@ const TaskFlowStepDialog = ({
           display: "flex",
           flexDirection: "column",
           gap: 1,
-          overflow: "hidden",
+          overflow: "auto",
         }}
       >
         <Stack

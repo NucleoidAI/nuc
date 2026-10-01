@@ -62,6 +62,10 @@ async function get({ taskId }: { taskId: string }) {
   return taskInstance.toJSON();
 }
 
+async function count({ blueprintId }: { blueprintId: string }) {
+  return Task.count({ where: { blueprintId } });
+}
+
 async function getWithSteps({ taskId }: { taskId: string }) {
   const taskInstance = await Task.findOne({
     where: { id: taskId },
@@ -235,6 +239,7 @@ async function listSteps({ taskId }: { taskId: string }) {
 export default {
   create,
   get,
+  count,
   update,
   list,
   getStep,

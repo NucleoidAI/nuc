@@ -1152,6 +1152,7 @@
       "title": "Text Translation",
       "description": "Translates the text the user provides into the requested target language with the local translation model, then sends the translation back to the user.",
       "agentId": "c38523e7-2e22-44e5-aa0d-f92c7d240315",
+      "executionMode": "LITE",
       "skill": "**Text Translation — Local LLM**\n\nUse this Blueprint when the user asks for a piece of text to be translated into another language.\n\nFlow: Translate the text with the local LLM → Send the translation to the user → Complete.\n\nThe text to translate goes into content unchanged, the requested language into target_lang, and the language of the text into source_lang only when the user states it; otherwise it is left out so the model detects it. The translation is sent to the user by reference from the translate step's result, never retyped or regenerated.",
       "nodes": [
         {

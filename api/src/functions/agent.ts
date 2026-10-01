@@ -480,6 +480,8 @@ async function task({ taskId }: { taskId: string }) {
   const boundStep = getBoundNodeStep({
     node: currentNode,
     inputSchema: definition?.inputSchema,
+    injectedFields:
+      nodeAction === "PLATFORM:message_user" ? ["sessionId", "agentId"] : [],
   });
   const generationContext = getParameterGenerationContext({
     context: isForceNode
@@ -1592,19 +1594,29 @@ async function chat({
       includeDetails: false,
     });
 
-    const blueprintToTaskResponse = await blueprintToTask({
-      history: conversationsData,
-      knowledge: knowledgeData,
-      content: content,
-      Blueprint: blueprintData,
-      meta: { agentId, sessionId },
-    });
+    let description: string;
+
+    if (blueprintData.executionMode === "LITE") {
+      const previousTasks = await taskFn.count({
+        blueprintId: selectedBlueprintId,
+      });
+      description = `${blueprintData.title} #${previousTasks + 1}`;
+    } else {
+      const blueprintToTaskResponse = await blueprintToTask({
+        history: conversationsData,
+        knowledge: knowledgeData,
+        content: content,
+        Blueprint: blueprintData,
+        meta: { agentId, sessionId },
+      });
+      description =
+        blueprintToTaskResponse.task?.description ||
+        blueprintToTaskResponse.task;
+    }
 
     await taskFn.create({
       agentId,
-      description:
-        blueprintToTaskResponse.task?.description ||
-        blueprintToTaskResponse.task,
+      description,
       blueprintId: selectedBlueprintId,
       sessionId,
     });

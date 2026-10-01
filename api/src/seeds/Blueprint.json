@@ -355,6 +355,7 @@
       "title": "Compliance Certificate Request",
       "description": "Find the vendor of a product that is missing a compliance certificate and send them an email requesting the certificate, then notify the user.",
       "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "executionMode": "LITE",
       "skill": "**Compliance Certificate Request — Vendor Follow-up**\n\nUse this Blueprint when a product is missing its compliance certificate and the vendor must be contacted directly to obtain it.\n\nFlow: Get product vendor → Email vendor requesting certificate → Notify user that the vendor was contacted → Complete.\n\nExits after notifying the user; the certificate itself arrives out of band once the vendor responds.",
       "nodes": [
         {
@@ -362,6 +363,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "ORDER:get_product_vendor",
+            "force": true,
             "description": "Find the vendor of the product that is missing a compliance certificate",
             "label": "Get Product Vendor",
             "icon": "mdi:domain"
@@ -374,6 +376,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "GREY:send_email",
+            "force": true,
             "description": "Send an email to the vendor requesting the compliance certificate for the product",
             "label": "Email Vendor",
             "icon": "mdi:email"
@@ -386,6 +389,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:message_user",
+            "force": true,
             "description": "Notify the user that the vendor has been contacted for the compliance certificate",
             "label": "Notify User",
             "icon": "mdi:bell"
@@ -398,6 +402,7 @@
           "type": "NORMAL",
           "properties": {
             "action": "PLATFORM:complete",
+            "force": true,
             "description": "Mark the compliance certificate request as complete",
             "label": "Complete",
             "icon": "mdi:check"

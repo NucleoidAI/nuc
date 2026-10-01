@@ -10628,5 +10628,59 @@ const MCPs = [
       },
     },
   },
+  {
+    id: "019fa200-0000-4000-8000-000000000008",
+    action: "TELCO:translate",
+    label: "Telco",
+    provider: "TELCO",
+    description:
+      "Translate text from a source language into a target language using a local LLM. Returns the translated text only.",
+    direction: "OUTGOING",
+    lib: "mcp",
+    icon: "mdi:translate",
+    inputSchema: {
+      type: "object",
+      properties: {
+        content: {
+          type: "string",
+          description: "The text to translate.",
+        },
+        target_lang: {
+          type: "string",
+          description:
+            "The language to translate into, as a name or code (e.g. 'English', 'en', 'tr').",
+        },
+        source_lang: {
+          type: "string",
+          description:
+            "The language of the content, as a name or code. Omit to auto-detect.",
+          nullable: true,
+        },
+      },
+      required: ["content", "target_lang"],
+    },
+    outputSchema: {
+      type: "object",
+      properties: {
+        translation: {
+          type: "string",
+          description: "The translated text.",
+        },
+        source_lang: {
+          type: "string",
+          description:
+            "The source language as given in the input, or null when it was auto-detected.",
+          nullable: true,
+        },
+        target_lang: {
+          type: "string",
+          description: "The target language as given in the input.",
+        },
+        error: {
+          type: "string",
+        },
+      },
+    },
+  },
 ];
 export default MCPs;

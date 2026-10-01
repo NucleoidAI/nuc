@@ -130,3 +130,9 @@ export interface ResolveParticipantsInput {
   content: unknown;
   participants: { id: string; name: string }[];
 }
+
+export interface TranslateInput {
+  content: string;
+  target_lang: string;
+  source_lang?: string;
+}

@@ -13,6 +13,7 @@ import { sendEmailEwsTool } from "./send_email_ews";
 import { summarizeMeetingBySpeakerTool } from "./summarize_meeting_by_speaker";
 import { summarizeMeetingTool } from "./summarize_meeting";
 import { transcribeMeetingTool } from "./transcribe_meeting";
+import { translateTool } from "./translate";
 
 export const tools = [
   addressTool,
@@ -30,4 +31,5 @@ export const tools = [
   prepareMeetingAttachmentsTool,
   resolveParticipantsTool,
   sendEmailEwsTool,
+  translateTool,
 ];

@@ -86,9 +86,7 @@ const TaskFlowNode = ({
   icon: string;
   inputs?: StepField[];
   outputs?: StepField[];
-  /** input names that a previous step produced — rendered as filled dots */
   boundInputs?: Set<string>;
-  /** fields whose link is only drawn on hover (producer is not adjacent) */
   hiddenFields?: Set<string>;
   showConnections?: boolean;
   onFieldHover?: (field: string | null) => void;
@@ -141,7 +139,7 @@ const TaskFlowNode = ({
             },
           }))}
           sx={{
-            top: 193,
+            top: 203,
             left: 5,
             "[data-handle-type]": { cursor: "help" },
           }}
@@ -158,7 +156,8 @@ const TaskFlowNode = ({
         nodeStyle={{
           minWidth: 420,
           maxWidth: 420,
-          minHeight: 190,
+          minHeight: 200,
+          maxHeight: 200,
           borderColor: "rgba(145, 142, 142, 0.2)",
           bgFrom: "rgba(163, 160, 160, 0.2)",
           bgTo: "rgba(163, 160, 160, 0.3)",

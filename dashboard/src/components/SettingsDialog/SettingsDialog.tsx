@@ -1,6 +1,7 @@
 import CloseIcon from "@mui/icons-material/Close";
 import { LinkSwipe } from "@canmingir/link/platform/components";
 import TuneIcon from "@mui/icons-material/Tune";
+import config from "../../../config";
 
 import {
   Box,
@@ -23,6 +24,21 @@ const SettingsDialog = ({
   setBlocking,
   liteMode,
   setLiteMode,
+  api = false,
+  setApi,
+  blueprintId,
+}: {
+  showSettings: boolean;
+  setShowSettings: (value: boolean) => void;
+  settingsTab: number;
+  setSettingsTab: (value: number) => void;
+  blocking: boolean;
+  setBlocking: (value: boolean) => void;
+  liteMode: boolean;
+  setLiteMode: (value: boolean) => void;
+  api?: boolean;
+  setApi?: (value: boolean) => void;
+  blueprintId?: string;
 }) => {
   const theme = useTheme();
 
@@ -132,6 +148,52 @@ const SettingsDialog = ({
                   ? "Force nodes show only the lightning icon, no badge."
                   : "Force nodes show a badge while the flow has unsaved changes."}
               </Typography>
+
+              {setApi && (
+                <>
+                  <Typography variant="subtitle2" gutterBottom sx={{ mt: 4 }}>
+                    API
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mb: 2 }}
+                  >
+                    Expose this blueprint as an HTTP endpoint with request and
+                    response nodes.
+                  </Typography>
+                  <LinkSwipe
+                    checked={api}
+                    onChange={setApi}
+                    theme={theme}
+                    color="primary"
+                    variant="solid"
+                    showThumbIcon={false}
+                    offLabel="Off"
+                    onLabel="On"
+                    ariaLabel="API"
+                    width={70}
+                    height={30}
+                    thumbSize={20}
+                  />
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{
+                      mt: 1.5,
+                      display: "block",
+                      ...(api && {
+                        fontFamily: "monospace",
+                        wordBreak: "break-all",
+                      }),
+                    }}
+                  >
+                    {api
+                      ? `POST ${config.api}/execute/${blueprintId}`
+                      : "Turning this on adds Request and Response nodes to the flow. Turning it off removes them."}
+                  </Typography>
+                </>
+              )}
             </Box>
           )}
         </Box>

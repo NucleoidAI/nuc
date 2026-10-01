@@ -9,12 +9,14 @@ async function create({
   blueprintId,
   sessionId,
   inheritedSteps,
+  request,
 }: {
   agentId: string;
   description: string;
   blueprintId?: string;
   sessionId?: string;
   inheritedSteps?: object[];
+  request?: { nodeId: string; body: Record<string, unknown> };
 }) {
   const task = await Task.create({
     agentId,
@@ -24,6 +26,18 @@ async function create({
     sessionId,
     inheritedSteps: inheritedSteps?.length ? inheritedSteps : null,
   });
+
+  if (request) {
+    await Step.create({
+      taskId: task.id,
+      action: "PLATFORM:api_request",
+      parameters: request.body,
+      result: JSON.stringify(request.body),
+      comment: "Received API request.",
+      status: "COMPLETED",
+      nodeId: request.nodeId,
+    });
+  }
 
   await event.publish("TASK_CREATED", {
     taskId: task.id,
@@ -53,6 +67,31 @@ async function update({
     await event.publish("TASK_COMPLETED", { taskId, result, comment });
   } else {
     await event.publish("TASK_FAILED", { taskId, comment });
+  }
+}
+
+async function waitFor({
+  taskId,
+  timeoutMs,
+  intervalMs = 500,
+}: {
+  taskId: string;
+  timeoutMs: number;
+  intervalMs?: number;
+}) {
+  const deadline = Date.now() + timeoutMs;
+
+  for (;;) {
+    const task = await Task.findByPk(taskId);
+
+    if (task && task.status !== "IN_PROGRESS") return task.toJSON();
+
+    const remaining = deadline - Date.now();
+    if (remaining <= 0) return null;
+
+    await new Promise((resolve) =>
+      setTimeout(resolve, Math.min(intervalMs, remaining)),
+    );
   }
 }
 
@@ -241,6 +280,7 @@ export default {
   get,
   count,
   update,
+  waitFor,
   list,
   getStep,
   addStep,

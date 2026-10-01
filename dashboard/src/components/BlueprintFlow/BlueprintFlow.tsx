@@ -13,6 +13,11 @@ import {
   APPROVAL_BORDER_SOLID,
   blueprintFlowPlugin,
 } from "./BlueprintFlowPlugin";
+import {
+  type ApiField,
+  isApiNodeType,
+  toInputProperty,
+} from "../ApiNode/apiNodes";
 
 import { Flow, FlowMiniMap } from "@canmingir/link/platform/components";
 
@@ -59,6 +64,23 @@ export default function BlueprintFlow({
 
     const result: Record<string, NodeFields> = {};
     for (const node of Object.values(graphData.nodes)) {
+      if (isApiNodeType(node.nodeType)) {
+        const fields = (node.raw?.properties?.fields ?? []) as ApiField[];
+        const names = fields.map((field) => field.name).filter(Boolean);
+        if (!names.length) continue;
+        result[node.id] =
+          node.nodeType === "START"
+            ? { inputs: [], outputs: names }
+            : {
+                inputs: names,
+                outputs: [],
+                inputProperties: Object.fromEntries(
+                  fields.map((field) => [field.name, toInputProperty(field)])
+                ),
+              };
+        continue;
+      }
+
       if (node.nodeType !== "NORMAL" || !node.action) continue;
       const integration = allIntegrations.find((i) => i.action === node.action);
       if (!integration) continue;
@@ -111,6 +133,7 @@ export default function BlueprintFlow({
     () =>
       Object.values(graphData?.nodes ?? {}).some(
         (node) =>
+          node.nodeType === "END" ||
           (node.raw?.properties as { force?: boolean } | undefined)?.force
       ),
     [graphData]

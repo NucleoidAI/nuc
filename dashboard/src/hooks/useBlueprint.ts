@@ -169,7 +169,8 @@ function useBlueprint() {
     blocking?: boolean,
     skill?: string,
     context?: BlueprintContext,
-    executionMode?: "NORMAL" | "LITE"
+    executionMode?: "NORMAL" | "LITE",
+    api?: boolean
   ) => {
     if (!blueprintId) {
       blueprintId = uuidv4();
@@ -186,6 +187,7 @@ function useBlueprint() {
       ...(skill !== undefined && { skill }),
       ...(context !== undefined && { context }),
       ...(executionMode !== undefined && { executionMode }),
+      ...(api !== undefined && { api }),
     });
     if (response?.data) {
       publish("BLUEPRINT_UPSERTED", { Blueprint: response.data });
@@ -195,7 +197,11 @@ function useBlueprint() {
 
   const patchBlueprint = async (
     blueprintId: string,
-    fields: { blocking?: boolean; executionMode?: "NORMAL" | "LITE" }
+    fields: {
+      blocking?: boolean;
+      executionMode?: "NORMAL" | "LITE";
+      api?: boolean;
+    }
   ) => {
     const response = await http.patch(`/blueprints/${blueprintId}`, fields);
     if (response?.data) {

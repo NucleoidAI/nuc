@@ -16,8 +16,10 @@ import Agent from "../models/Agent";
 import MCPs from "../mcps/mcps";
 import actions from "../actions";
 import agentData from "./agentData";
+import apiSchema from "../lib/apiSchema";
 import blueprintFn from "./blueprint";
 import dataset from "../dataset";
+import { endNodeOf } from "../lib/apiNodes";
 import { generate } from "../lib/llm";
 import knowledgeFn from "./knowledge";
 import mcpFn from "./mcp";
@@ -365,6 +367,76 @@ async function forceNodeStep({
   return result;
 }
 
+async function respond({
+  taskId,
+  node,
+  source,
+  description,
+  blueprintId,
+  sessionId,
+  agentId,
+}: {
+  taskId: string;
+  node: any;
+  source: Record<string, unknown>;
+  description: string;
+  blueprintId?: string;
+  sessionId?: string;
+  agentId: string;
+}) {
+  let result: string;
+
+  try {
+    const values = resolveParameterRefs(
+      (node.properties?.parameters ?? {}) as Record<string, unknown>,
+      source,
+    );
+    const response = apiSchema.validate(node.properties?.fields ?? [], values, {
+      strict: false,
+    });
+
+    if (!response.success) {
+      throw new Error(
+        `Response does not match the response schema: ${response.issues
+          .map(({ path, message }) => `${path || "(root)"}: ${message}`)
+          .join("; ")}`,
+      );
+    }
+
+    result = JSON.stringify(response.data);
+  } catch (err) {
+    return await taskFn.update({
+      taskId,
+      status: "FAILED",
+      comment:
+        err instanceof Error ? err.message : "Failed to build the API response",
+    });
+  }
+
+  await stepScoreFn.create({
+    taskId,
+    parameters: { description, blueprintId },
+    output: result,
+    status: "COMPLETED",
+  });
+
+  if (sessionId) {
+    await session.addConversation({
+      sessionId,
+      agentId,
+      role: "ASSISTANT",
+      content: "Task has been completed.",
+    });
+  }
+
+  return await taskFn.update({
+    taskId,
+    result,
+    comment: "Responded with the API response.",
+    status: "COMPLETED",
+  });
+}
+
 async function task({ taskId }: { taskId: string }) {
   const { agentId, description, sessionId, blueprintId, status } =
     await taskFn.get({
@@ -436,6 +508,28 @@ async function task({ taskId }: { taskId: string }) {
   const currentNode = blueprint?.nodes?.length
     ? resolveCurrentNode(blueprint.nodes, completedSteps)
     : undefined;
+
+  const refSource = {
+    steps: currentTask.steps,
+    inherited_steps: inherited ?? [],
+    byNode: Object.fromEntries(
+      currentTask.steps.filter((s) => s.nodeId).map((s) => [s.nodeId, s]),
+    ),
+  };
+
+  const endNode = endNodeOf(blueprint?.nodes);
+
+  if (currentNode?.type === "END") {
+    return await respond({
+      taskId,
+      node: currentNode,
+      source: refSource,
+      description,
+      blueprintId,
+      sessionId,
+      agentId,
+    });
+  }
 
   if (currentNode?.type === "APPROVAL") {
     const pending = currentTask.steps.some(
@@ -536,18 +630,10 @@ async function task({ taskId }: { taskId: string }) {
     generated: llmParameters,
   });
 
-  const byNode = Object.fromEntries(
-    currentTask.steps.filter((s) => s.nodeId).map((s) => [s.nodeId, s]),
-  );
-
   let parameters: Record<string, unknown>;
   let resolvedParameters: Record<string, unknown>;
   try {
-    resolvedParameters = resolveParameterRefs(rawParameters, {
-      steps: currentTask.steps,
-      inherited_steps: inherited ?? [],
-      byNode,
-    });
+    resolvedParameters = resolveParameterRefs(rawParameters, refSource);
     parameters = rawParameters;
   } catch (err) {
     return await taskFn.update({
@@ -563,7 +649,17 @@ async function task({ taskId }: { taskId: string }) {
   const resultScore =
     result_score != null ? parseFloat(String(result_score)) : undefined;
 
-  if (action === "PLATFORM:complete") {
+  if (action === "PLATFORM:complete" && endNode) {
+    return await respond({
+      taskId,
+      node: endNode,
+      source: refSource,
+      description,
+      blueprintId,
+      sessionId,
+      agentId,
+    });
+  } else if (action === "PLATFORM:complete") {
     const steps = await taskFn.listSteps({ taskId });
 
     let result;

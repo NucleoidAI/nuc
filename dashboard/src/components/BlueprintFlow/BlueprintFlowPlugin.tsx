@@ -25,6 +25,13 @@ export const APPROVAL_BORDER_COLOR =
 export const APPROVAL_BORDER_SOLID = "#ca8a04";
 export const APPROVAL_BG_FROM = "rgba(199, 176, 59, 0.4)";
 export const APPROVAL_BG_TO = "rgba(202, 138, 4, 0.50)";
+const API_BORDER_COLOR = "linear-gradient(135deg, #22c55e66, #0ea5e959)";
+const API_BG_FROM = "rgba(34, 197, 94, 0.18)";
+const API_BG_TO = "rgba(14, 165, 233, 0.24)";
+
+function isApiNode(node?: { nodeType?: string }) {
+  return node?.nodeType === "START" || node?.nodeType === "END";
+}
 
 const AddButtonWrapper = styled("div")(({ theme }) => ({
   position: "absolute",
@@ -657,6 +664,7 @@ export const blueprintFlowPlugin = {
     const isApproval =
       node?.nodeType === "APPROVAL" || node?.action === "PLATFORM:two_factor";
     const isSwitch = node?.nodeType === "SWITCH";
+    const isApi = isApiNode(node);
 
     const connectionsGap = styleTokens.showConnections
       ? fieldsPanelHeight(
@@ -668,16 +676,22 @@ export const blueprintFlowPlugin = {
       ? APPROVAL_BG_FROM
       : isSwitch
       ? SWITCH_BG_FROM
+      : isApi
+      ? API_BG_FROM
       : undefined;
     const bgTo = isApproval
       ? APPROVAL_BG_TO
       : isSwitch
       ? SWITCH_BG_TO
+      : isApi
+      ? API_BG_TO
       : undefined;
     const borderColor = isApproval
       ? APPROVAL_BORDER_COLOR
       : isSwitch
       ? SWITCH_BORDER_COLOR
+      : isApi
+      ? API_BORDER_COLOR
       : "linear-gradient(135deg, #c684ff33, #078dee4d)";
     const borderRadius = 16;
     const shadowLevel = 1;
@@ -845,9 +859,9 @@ function NodeHandles({
     e: React.MouseEvent
   ) => void;
 }) {
-  const isForceTarget = Boolean(
-    (node.raw?.properties as { force?: boolean } | undefined)?.force
-  );
+  const isForceTarget =
+    node.nodeType === "END" ||
+    Boolean((node.raw?.properties as { force?: boolean } | undefined)?.force);
 
   const inputs = fields.inputs.map((field) => ({
     name: field,
@@ -946,7 +960,10 @@ function FlowNodeRenderer({
     onOverrideParameter,
     liteMode,
   } = nodeStyle || {};
-  const fields = node.nodeType === "NORMAL" ? nodeFields?.[node.id] : undefined;
+  const isLocked = isApiNode(node);
+  const canAddChild = node.nodeType !== "END";
+  const fields =
+    node.nodeType === "NORMAL" || isLocked ? nodeFields?.[node.id] : undefined;
   const isForceNode = Boolean(
     (node.raw?.properties as { force?: boolean } | undefined)?.force
   );
@@ -1069,12 +1086,14 @@ function FlowNodeRenderer({
       <InfoNode node={node} nodeStyle={nodeStyle}>
         {!isReadOnly && (
           <>
-            <DeleteButtonWrapper
-              onClick={handleDeleteClick}
-              title="Delete node"
-            >
-              <Iconify icon="mdi:delete-outline" width={16} height={16} />
-            </DeleteButtonWrapper>
+            {!isLocked && (
+              <DeleteButtonWrapper
+                onClick={handleDeleteClick}
+                title="Delete node"
+              >
+                <Iconify icon="mdi:delete-outline" width={16} height={16} />
+              </DeleteButtonWrapper>
+            )}
             <EditButtonWrapper onClick={handleEditClick} title="Edit node">
               <Iconify icon="mdi:pencil" width={16} height={16} />
             </EditButtonWrapper>
@@ -1083,9 +1102,11 @@ function FlowNodeRenderer({
                 <Iconify icon="mdi:lightning-bolt" width={16} height={16} />
               </ForceIndicatorWrapper>
             )}
-            <AddButtonWrapper onClick={handleAddClick} title="Add child node">
-              <Iconify icon="mdi:plus" width={16} height={16} />
-            </AddButtonWrapper>
+            {canAddChild && (
+              <AddButtonWrapper onClick={handleAddClick} title="Add child node">
+                <Iconify icon="mdi:plus" width={16} height={16} />
+              </AddButtonWrapper>
+            )}
           </>
         )}
       </InfoNode>
@@ -1103,17 +1124,19 @@ function FlowNodeRenderer({
           sx={{ zIndex: (theme) => theme.zIndex.modal + 3 }}
           slotProps={{ paper: { sx: { minWidth: 180 } } }}
         >
-          <MenuItem
-            onClick={(e) => {
-              handleAddClick(e);
-              handleClose();
-            }}
-          >
-            <ListItemIcon>
-              <Iconify icon="mdi:plus" width={18} height={18} />
-            </ListItemIcon>
-            <ListItemText>Add child node</ListItemText>
-          </MenuItem>
+          {canAddChild && (
+            <MenuItem
+              onClick={(e) => {
+                handleAddClick(e);
+                handleClose();
+              }}
+            >
+              <ListItemIcon>
+                <Iconify icon="mdi:plus" width={18} height={18} />
+              </ListItemIcon>
+              <ListItemText>Add child node</ListItemText>
+            </MenuItem>
+          )}
           <MenuItem
             onClick={(e) => {
               handleEditClick(e);
@@ -1125,7 +1148,7 @@ function FlowNodeRenderer({
             </ListItemIcon>
             <ListItemText>Edit node</ListItemText>
           </MenuItem>
-          {onToggleForce && (
+          {onToggleForce && !isLocked && (
             <MenuItem
               onClick={(e) => {
                 handleToggleForceClick(e);
@@ -1148,19 +1171,21 @@ function FlowNodeRenderer({
               </ListItemText>
             </MenuItem>
           )}
-          <Divider />
-          <MenuItem
-            onClick={(e) => {
-              handleDeleteClick(e);
-              handleClose();
-            }}
-            sx={{ color: "error.main" }}
-          >
-            <ListItemIcon sx={{ color: "error.main" }}>
-              <Iconify icon="mdi:delete-outline" width={18} height={18} />
-            </ListItemIcon>
-            <ListItemText>Delete node</ListItemText>
-          </MenuItem>
+          {!isLocked && <Divider />}
+          {!isLocked && (
+            <MenuItem
+              onClick={(e) => {
+                handleDeleteClick(e);
+                handleClose();
+              }}
+              sx={{ color: "error.main" }}
+            >
+              <ListItemIcon sx={{ color: "error.main" }}>
+                <Iconify icon="mdi:delete-outline" width={18} height={18} />
+              </ListItemIcon>
+              <ListItemText>Delete node</ListItemText>
+            </MenuItem>
+          )}
         </Menu>
       )}
     </NodeWrapper>

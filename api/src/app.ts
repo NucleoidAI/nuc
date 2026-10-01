@@ -2,6 +2,7 @@ import "express";
 
 import agentFn from "./functions/agent";
 import agents from "./routes/agents";
+import blueprintApi from "./routes/blueprintApi";
 import blueprintChat from "./routes/blueprintChat";
 import blueprints from "./routes/blueprints";
 import channels from "./routes/channels";
@@ -44,6 +45,8 @@ function createApp() {
   app.use(telemetryMiddleware());
 
   platform.publicRouter.use("/sessions", sessionApprovals);
+  // TODO: Authenticate blueprint API calls before exposing them beyond development
+  platform.publicRouter.use("/execute", blueprintApi);
 
   app.use(authorization.authorize("ADMIN"));
 

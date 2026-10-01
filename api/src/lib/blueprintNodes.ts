@@ -156,6 +156,13 @@ export function resolveCurrentNode(
   );
   let currentNode = nodes.find((n) => !allNextIds.has(n.id));
 
+  if (
+    currentNode?.type === "START" &&
+    !completedSteps.some((step) => step.nodeId === currentNode.id)
+  ) {
+    currentNode = nodeAfter(nodes, currentNode, {});
+  }
+
   for (const step of completedSteps) {
     if (!currentNode) break;
 

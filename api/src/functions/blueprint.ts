@@ -3,6 +3,7 @@ import BluePrint, { BlueprintContext } from "../models/Blueprint";
 import BlueprintMessage from "../models/BlueprintMessage";
 import { NotFoundError } from "@canmingir/link-express/error";
 import agentFn from "./agent";
+import { applyApiNodes } from "../lib/apiNodes";
 
 type NodeType = {
   id: string;
@@ -22,6 +23,7 @@ type NodeType = {
   next?: string[] | null;
   true?: string[] | null;
   false?: string[] | null;
+  [key: string]: unknown;
 };
 
 const COSMETIC_PROPERTIES = ["label", "description", "pseudocodeEnabled"];
@@ -143,21 +145,25 @@ async function upsert(
   skill?: string,
   context?: BlueprintContext,
   executionMode?: "NORMAL" | "LITE",
+  api?: boolean,
 ) {
   let Blueprint;
 
-  const sanitizedNodes = sanitizePseudocode(nodes);
-
   const existingBlueprint = await BluePrint.findByPk(id);
+
+  const isApi = api ?? existingBlueprint?.api ?? false;
+  const apiNodes = applyApiNodes(sanitizePseudocode(nodes) ?? [], isApi);
+  const sanitizedNodes = nodes || isApi ? apiNodes : null;
 
   if (existingBlueprint) {
     await existingBlueprint.update({
       title,
       description,
       agentId,
-      nodes: sanitizedNodes || null,
+      nodes: sanitizedNodes,
       ...(blocking !== undefined && { blocking }),
       ...(executionMode !== undefined && { executionMode }),
+      ...(api !== undefined && { api }),
       ...(skill !== undefined && { skill }),
       ...(context !== undefined && { context }),
     });
@@ -169,9 +175,10 @@ async function upsert(
       title,
       description,
       agentId,
-      nodes: sanitizedNodes || null,
+      nodes: sanitizedNodes,
       ...(blocking !== undefined && { blocking }),
       ...(executionMode !== undefined && { executionMode }),
+      ...(api !== undefined && { api }),
       ...(skill !== undefined && { skill }),
       ...(context !== undefined && { context }),
     });
@@ -266,6 +273,7 @@ async function patch({
   blocking,
   executionMode,
   skill,
+  api,
 }: {
   blueprintId: string;
   title?: string;
@@ -273,6 +281,7 @@ async function patch({
   blocking?: boolean;
   executionMode?: "NORMAL" | "LITE";
   skill?: string;
+  api?: boolean;
 }) {
   const Blueprint = await BluePrint.findByPk(blueprintId);
 
@@ -286,6 +295,10 @@ async function patch({
     ...(blocking !== undefined && { blocking }),
     ...(executionMode !== undefined && { executionMode }),
     ...(skill !== undefined && { skill }),
+    ...(api !== undefined && {
+      api,
+      nodes: applyApiNodes(Blueprint.nodes ?? [], api),
+    }),
   });
 
   return Blueprint.toJSON();

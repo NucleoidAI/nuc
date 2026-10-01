@@ -17,9 +17,14 @@ import {
 import React, { useState } from "react";
 
 const FORCE_COLOR = "#b8860b";
-const APPROVAL_BORDER_COLOR = "linear-gradient(135deg, #fde04766, #ca8a0459)";
-const APPROVAL_BG_FROM = "rgba(199, 176, 59, 0.4)";
-const APPROVAL_BG_TO = "rgba(202, 138, 4, 0.50)";
+const SWITCH_BORDER_COLOR = "linear-gradient(135deg, #7c5cff66, #00c2ff59)";
+const SWITCH_BG_FROM = "rgba(124, 92, 255, 0.20)";
+const SWITCH_BG_TO = "rgba(0, 194, 255, 0.26)";
+export const APPROVAL_BORDER_COLOR =
+  "linear-gradient(135deg, #fde04766, #ca8a0459)";
+export const APPROVAL_BORDER_SOLID = "#ca8a04";
+export const APPROVAL_BG_FROM = "rgba(199, 176, 59, 0.4)";
+export const APPROVAL_BG_TO = "rgba(202, 138, 4, 0.50)";
 
 const AddButtonWrapper = styled("div")(({ theme }) => ({
   position: "absolute",
@@ -649,7 +654,9 @@ export const blueprintFlowPlugin = {
 
   style: ({ node, style }) => {
     const styleTokens = style || {};
-    const isApproval = node?.nodeType === "APPROVAL";
+    const isApproval =
+      node?.nodeType === "APPROVAL" || node?.action === "PLATFORM:two_factor";
+    const isSwitch = node?.nodeType === "SWITCH";
 
     const connectionsGap = styleTokens.showConnections
       ? fieldsPanelHeight(
@@ -657,10 +664,20 @@ export const blueprintFlowPlugin = {
         )
       : 0;
 
-    const bgFrom = isApproval ? APPROVAL_BG_FROM : undefined;
-    const bgTo = isApproval ? APPROVAL_BG_TO : undefined;
+    const bgFrom = isApproval
+      ? APPROVAL_BG_FROM
+      : isSwitch
+      ? SWITCH_BG_FROM
+      : undefined;
+    const bgTo = isApproval
+      ? APPROVAL_BG_TO
+      : isSwitch
+      ? SWITCH_BG_TO
+      : undefined;
     const borderColor = isApproval
       ? APPROVAL_BORDER_COLOR
+      : isSwitch
+      ? SWITCH_BORDER_COLOR
       : "linear-gradient(135deg, #c684ff33, #078dee4d)";
     const borderRadius = 16;
     const shadowLevel = 1;
@@ -688,10 +705,42 @@ export const blueprintFlowPlugin = {
       levelGap: styleTokens.levelGap ?? 15,
       startGap,
       endGap,
+      nodeHeight:
+        maxHeight +
+        (styleTokens.showConnections
+          ? connectionsPanelPixelHeight(
+              (
+                styleTokens.nodeFields as Record<string, NodeFields> | undefined
+              )?.[node?.id]
+            )
+          : 0),
     };
   },
 
   edge: ({ node, child }) => {
+    if (node?.nodeType === "SWITCH" && child) {
+      const label = (node?.cases || []).find(
+        (switchCase) => switchCase.nodeId === child.id
+      )?.label;
+
+      if (label) {
+        return {
+          label,
+          labelStyle: {
+            fontSize: "12px",
+            fontWeight: 600,
+            color: "#4b4e4c",
+            textColor: "#5b3fd9",
+          },
+          labelPosition: 0.4,
+          labelOffsetX: 10,
+          labelOffsetY: -14,
+        };
+      }
+
+      return {};
+    }
+
     if (node?.connectorType === "decision" && child) {
       const trueNext = node?.trueNext || [];
       const falseNext = node?.falseNext || [];
@@ -754,6 +803,15 @@ export type NodeFields = {
 
 const FIELDS_PANEL_ROW_HEIGHT = 2;
 const FIELDS_PANEL_ROW_GAP = 2;
+
+function connectionsPanelPixelHeight(fields?: NodeFields) {
+  if (!fields) return 0;
+  const rows = Math.max(fields.inputs.length, fields.outputs.length);
+  if (rows === 0) return 0;
+  return (
+    (rows * FIELDS_PANEL_ROW_HEIGHT + (rows - 1) * FIELDS_PANEL_ROW_GAP) * 8
+  );
+}
 
 function fieldsPanelHeight(nodeFields?: Record<string, NodeFields>) {
   const rows = Math.max(

@@ -1,0 +1,131 @@
+{
+  "data": [
+    {
+      "context": "{\"steps\":[{\"action\":\"PLATFORM:user_interaction\",\"status\":\"COMPLETED\",\"parameters\":{\"question\":\"How can I help you today?\"},\"result\":\"I was charged twice for my last order, I want my money back\"}]}",
+      "instructions": "Route the customer to the branch that matches their intent.",
+      "cases": [
+        { "nodeId": "n-refund", "label": "Refund request" },
+        { "nodeId": "n-shipping", "label": "Shipping question" },
+        { "nodeId": "n-technical", "label": "Technical support" }
+      ],
+      "nodeId": "n-refund",
+      "reason": "The customer reports a double charge and asks for their money back."
+    },
+    {
+      "context": "{\"steps\":[{\"action\":\"PLATFORM:user_interaction\",\"status\":\"COMPLETED\",\"parameters\":{\"question\":\"How can I help you today?\"},\"result\":\"Where is my package? It should have arrived on Monday.\"}]}",
+      "instructions": "Route the customer to the branch that matches their intent.",
+      "cases": [
+        { "nodeId": "n-refund", "label": "Refund request" },
+        { "nodeId": "n-shipping", "label": "Shipping question" },
+        { "nodeId": "n-technical", "label": "Technical support" }
+      ],
+      "nodeId": "n-shipping",
+      "reason": "The customer is asking about the whereabouts of a late delivery."
+    },
+    {
+      "context": "{\"steps\":[{\"action\":\"PLATFORM:user_interaction\",\"status\":\"COMPLETED\",\"parameters\":{\"question\":\"How can I help you today?\"},\"result\":\"The app crashes every time I open the settings screen\"}]}",
+      "instructions": "Route the customer to the branch that matches their intent.",
+      "cases": [
+        { "nodeId": "n-refund", "label": "Refund request" },
+        { "nodeId": "n-shipping", "label": "Shipping question" },
+        { "nodeId": "n-technical", "label": "Technical support" }
+      ],
+      "nodeId": "n-technical",
+      "reason": "A crash in the application is a technical problem."
+    },
+    {
+      "context": "{\"steps\":[{\"action\":\"ORDER:find_order\",\"status\":\"COMPLETED\",\"result\":\"{\\\"order_id\\\":\\\"po-9001\\\",\\\"total\\\":24500,\\\"currency\\\":\\\"usd\\\",\\\"customer_tier\\\":\\\"enterprise\\\"}\"}]}",
+      "instructions": "Pick the approval path by the size of the order and the customer tier.",
+      "cases": [
+        {
+          "nodeId": "n-auto",
+          "label": "Auto approve",
+          "description": "Orders under 1000 for any tier."
+        },
+        {
+          "nodeId": "n-manager",
+          "label": "Manager approval",
+          "description": "Orders between 1000 and 10000."
+        },
+        {
+          "nodeId": "n-director",
+          "label": "Director approval",
+          "description": "Orders above 10000 or enterprise customers."
+        }
+      ],
+      "nodeId": "n-director",
+      "reason": "The order totals 24500 for an enterprise customer, which is above the 10000 threshold."
+    },
+    {
+      "context": "{\"steps\":[{\"action\":\"ORDER:find_order\",\"status\":\"COMPLETED\",\"result\":\"{\\\"order_id\\\":\\\"po-9002\\\",\\\"total\\\":320,\\\"currency\\\":\\\"usd\\\",\\\"customer_tier\\\":\\\"standard\\\"}\"}]}",
+      "instructions": "Pick the approval path by the size of the order and the customer tier.",
+      "cases": [
+        {
+          "nodeId": "n-auto",
+          "label": "Auto approve",
+          "description": "Orders under 1000 for any tier."
+        },
+        {
+          "nodeId": "n-manager",
+          "label": "Manager approval",
+          "description": "Orders between 1000 and 10000."
+        },
+        {
+          "nodeId": "n-director",
+          "label": "Director approval",
+          "description": "Orders above 10000 or enterprise customers."
+        }
+      ],
+      "nodeId": "n-auto",
+      "reason": "A 320 order from a standard customer falls under the 1000 auto approval limit."
+    },
+    {
+      "context": "{\"steps\":[{\"action\":\"PLATFORM:knowledge_lookup\",\"status\":\"COMPLETED\",\"result\":\"{\\\"language\\\":\\\"tr\\\",\\\"confidence\\\":0.97}\"}]}",
+      "instructions": "Continue in the language the customer wrote in.",
+      "cases": [
+        { "nodeId": "n-tr", "label": "Turkish" },
+        { "nodeId": "n-en", "label": "English" },
+        { "nodeId": "n-es", "label": "Spanish" }
+      ],
+      "nodeId": "n-tr",
+      "reason": "The detected language is Turkish with high confidence."
+    },
+    {
+      "context": "{\"steps\":[{\"action\":\"TELCO:get_inventory\",\"status\":\"COMPLETED\",\"result\":\"{\\\"bbk\\\":\\\"990\\\",\\\"technology\\\":\\\"FIBER\\\",\\\"slots\\\":4}\"}]}",
+      "instructions": "Select the provisioning flow for the technology available at the address.",
+      "cases": [
+        { "nodeId": "n-fiber", "label": "Fiber provisioning" },
+        { "nodeId": "n-vdsl", "label": "VDSL provisioning" },
+        { "nodeId": "n-none", "label": "No coverage" }
+      ],
+      "nodeId": "n-fiber",
+      "reason": "The inventory reports FIBER technology with four free slots."
+    },
+    {
+      "context": "{\"steps\":[{\"action\":\"TELCO:get_inventory\",\"status\":\"COMPLETED\",\"result\":\"{\\\"error\\\":\\\"ADDRESS_NOT_FOUND\\\"}\"}]}",
+      "instructions": "Select the provisioning flow for the technology available at the address.",
+      "cases": [
+        { "nodeId": "n-fiber", "label": "Fiber provisioning" },
+        { "nodeId": "n-vdsl", "label": "VDSL provisioning" },
+        { "nodeId": "n-none", "label": "No coverage" }
+      ],
+      "nodeId": "n-none",
+      "reason": "The address could not be found in the inventory, so no technology is available."
+    },
+    {
+      "context": "{\"steps\":[{\"action\":\"PLATFORM:user_interaction\",\"status\":\"COMPLETED\",\"parameters\":{\"question\":\"What would you like to do?\"},\"result\":\"hmm, not sure yet\"}]}",
+      "instructions": "Route the customer to the branch that matches their intent. Use the fallback when the intent is unclear.",
+      "cases": [
+        { "nodeId": "n-buy", "label": "New purchase" },
+        { "nodeId": "n-cancel", "label": "Cancellation" },
+        {
+          "nodeId": "n-fallback",
+          "label": "Ask again",
+          "description": "Use when the intent cannot be determined."
+        }
+      ],
+      "nodeId": "n-fallback",
+      "reason": "The customer has not stated an intent, so the flow asks again."
+    }
+  ]
+}

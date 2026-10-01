@@ -150,6 +150,24 @@
       "mcpProviderId": "9fceba9d-df06-5fb1-a0eb-ca664b27bebb",
       "description": "FedEx mock MCP server exposing 6 tools for rates, shipments and tracking.",
       "icon": "simple-icons:fedex"
+    },
+    {
+      "id": "as400",
+      "mcpProviderId": "12ee510a-4822-538e-bc19-c60a56c6f3da",
+      "description": "IBM i (AS/400) mock MCP server exposing 20 tools for library files, users, policies, SQL, CL commands, jobs and operator messages.",
+      "icon": "simple-icons:ibm"
+    },
+    {
+      "id": "s3",
+      "mcpProviderId": "8288c793-5f27-5b98-ab60-bc7342a4f1e1",
+      "description": "AWS S3 MCP server exposing 10 tools for listing, reading, writing, copying, moving, deleting objects and issuing presigned download/upload links. Talks to real S3.",
+      "icon": "simple-icons:amazons3"
+    },
+    {
+      "id": "chem",
+      "mcpProviderId": "9ca39d6b-12d7-467c-adf2-1d5b30d158eb",
+      "description": "Chemistry file format MCP server. Converts MOL blocks (V2000 or V3000) into SDF records, merging several molfiles into one document and attaching SDF data fields. Runs locally, no external API.",
+      "icon": "simple-icons:molecule"
     }
   ]
 }

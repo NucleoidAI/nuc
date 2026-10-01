@@ -4,7 +4,7 @@ import agentFn from "./functions/agent";
 import agents from "./routes/agents";
 import blueprintChat from "./routes/blueprintChat";
 import blueprints from "./routes/blueprints";
-import communications from "./routes/communications";
+import channels from "./routes/channels";
 import engines from "./routes/engines";
 import { event } from "@canmingir/link-express/event/client";
 import knowledge from "./routes/knowledge";
@@ -66,7 +66,7 @@ function createApp() {
   app.use("/mcps", mcps);
   app.use("/mcp-providers", mcpProviders);
   app.use("/mcp-servers", mcpServers);
-  app.use("/communications", communications);
+  app.use("/channels", channels);
 
   setImmediate(() => {
     app.use((_req, res) => res.status(404).end());

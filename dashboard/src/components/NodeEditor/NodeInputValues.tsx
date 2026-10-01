@@ -4,7 +4,12 @@ import { useState } from "react";
 
 import { Box, MenuItem, Stack, TextField, Typography } from "@mui/material";
 
-type InputSchema = { type: string; description?: string; nullable?: boolean };
+type InputSchema = {
+  type: string;
+  description?: string;
+  nullable?: boolean;
+  enum?: string[];
+};
 
 export function getInputError({
   parameters,
@@ -19,6 +24,8 @@ export function getInputError({
   const value = parameters[field];
   if (isRefValue(value)) return "";
   if (value === null && schema.nullable) return "";
+  if (schema.enum && !schema.enum.includes(value as string))
+    return "Select a valid option.";
   switch (schema.type) {
     case "number":
     case "integer":
@@ -117,7 +124,8 @@ export default function NodeInputValues({
               onChange={(event) => {
                 const next = { ...parameters };
                 if (event.target.value === "automatic") delete next[field];
-                else next[field] = defaultValue(schema.type);
+                else
+                  next[field] = schema.enum?.[0] ?? defaultValue(schema.type);
                 onChange(next);
               }}
             >
@@ -128,14 +136,18 @@ export default function NodeInputValues({
               )}
             </TextField>
             {mode === "fixed" &&
-              (schema.type !== "string" ||
+              (Boolean(schema.enum?.length) ||
+                schema.type !== "string" ||
                 editingField === field ||
                 Boolean(error)) && (
                 <TextField
                   autoFocus={schema.type === "string"}
                   onBlur={() => setEditingField(null)}
                   size="small"
-                  select={schema.type === "boolean"}
+                  label={`${field} value`}
+                  select={
+                    schema.type === "boolean" || Boolean(schema.enum?.length)
+                  }
                   SelectProps={{
                     MenuProps: {
                       sx: {
@@ -145,9 +157,10 @@ export default function NodeInputValues({
                     },
                   }}
                   multiline={
-                    schema.type === "string" ||
-                    schema.type === "object" ||
-                    schema.type === "array"
+                    !schema.enum?.length &&
+                    (schema.type === "string" ||
+                      schema.type === "object" ||
+                      schema.type === "array")
                   }
                   value={
                     typeof value === "string" ? value : JSON.stringify(value)
@@ -160,6 +173,11 @@ export default function NodeInputValues({
                     })
                   }
                 >
+                  {schema.enum?.map((option) => (
+                    <MenuItem key={option} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
                   {schema.type === "boolean" && [
                     <MenuItem key="true" value="true">
                       true
@@ -172,6 +190,7 @@ export default function NodeInputValues({
               )}
             {mode === "fixed" &&
               schema.type === "string" &&
+              !schema.enum?.length &&
               editingField !== field &&
               !error &&
               typeof value === "string" && (

@@ -1,10 +1,16 @@
-import type { DefinitionGraph } from "../../components/BlueprintFlow/helper";
 import NodeEditorDrawer from "../../components/NodeEditor/NodeEditorDrawer";
+
 import useAgents from "../../hooks/useAgents";
 import useBlueprint from "../../hooks/useBlueprint";
 import useMCPs from "../../hooks/useMCPs";
 
+import type {
+  DefinitionGraph,
+  SwitchCase,
+} from "../../components/BlueprintFlow/helper";
+
 import React, { useEffect, useState } from "react";
+
 import { getNextNodeId, isValidIntegration } from "./helper";
 
 const NodeEditorWidget = ({
@@ -13,7 +19,6 @@ const NodeEditorWidget = ({
   drawerOpen,
   handleDrawerClose,
   selectedParentNode,
-  graphData,
   newNodeLabel,
   setNewNodeLabel,
   newNodeInstructions,
@@ -29,6 +34,10 @@ const NodeEditorWidget = ({
   setNewNodeForce,
   newNodeType,
   setNewNodeType,
+  newNodeCaseLabel = "",
+  setNewNodeCaseLabel,
+  switchCases = [],
+  setSwitchCases,
   selectedBranch,
   setSelectedBranch,
   inheritedNextBranch = "none",
@@ -43,6 +52,7 @@ const NodeEditorWidget = ({
   setHandoffTargetAgentId,
   handoffTargetBlueprintId = "",
   setHandoffTargetBlueprintId,
+  graphData,
 }: {
   parameters?: Record<string, unknown>;
   onParametersChange?: (parameters: Record<string, unknown>) => void;
@@ -57,7 +67,6 @@ const NodeEditorWidget = ({
     trueNext?: string[];
     falseNext?: string[];
   };
-  graphData: DefinitionGraph;
   newNodeLabel: string;
   setNewNodeLabel: (label: string) => void;
   newNodeInstructions: string;
@@ -73,6 +82,10 @@ const NodeEditorWidget = ({
   setNewNodeForce?: (force: boolean) => void;
   newNodeType: string;
   setNewNodeType: (type: string) => void;
+  newNodeCaseLabel?: string;
+  setNewNodeCaseLabel?: (label: string) => void;
+  switchCases?: SwitchCase[];
+  setSwitchCases?: (cases: SwitchCase[]) => void;
   selectedBranch: "true" | "false";
   setSelectedBranch: (branch: "true" | "false") => void;
   inheritedNextBranch?: "true" | "false" | "none";
@@ -117,6 +130,7 @@ const NodeEditorWidget = ({
   setHandoffTargetAgentId?: (id: string) => void;
   handoffTargetBlueprintId?: string;
   setHandoffTargetBlueprintId?: (id: string) => void;
+  graphData?: DefinitionGraph | null;
   editingNode?: {
     id: string;
     label?: string;
@@ -178,6 +192,7 @@ const NodeEditorWidget = ({
         .filter(
           (action) =>
             action.action !== "PLATFORM:decision" &&
+            action.action !== "PLATFORM:switch" &&
             action.action !== "PLATFORM:customer_approval"
         )
         .map((action) => ({
@@ -220,7 +235,7 @@ const NodeEditorWidget = ({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editMode, editingNode, drawerOpen]);
+  }, [editMode, editingNode, drawerOpen, allIntegrations]);
 
   const filteredIntegrations = searchQuery
     ? allIntegrations.filter(
@@ -237,21 +252,16 @@ const NodeEditorWidget = ({
       )
     : allIntegrations;
 
-  const parentIntegration = selectedParentNode?.action
-    ? allIntegrations.find(
-        (integration) => integration?.action === selectedParentNode?.action
-      )
-    : null;
-
   const nextNodeId = getNextNodeId(selectedParentNode, selectedBranch);
-  const nextNode = nextNodeId && graphData?.nodes?.[nextNodeId];
-  const nextIntegration = nextNode?.action
-    ? allIntegrations.find(
-        (integration) => integration?.action === nextNode.action
-      )
-    : null;
 
   const hasInheritedNext = !!nextNodeId;
+
+  const caseTargetLabels = Object.fromEntries(
+    switchCases.map(({ nodeId }) => [
+      nodeId,
+      graphData?.nodes?.[nodeId]?.label ?? nodeId,
+    ])
+  );
 
   return (
     <NodeEditorDrawer
@@ -276,6 +286,11 @@ const NodeEditorWidget = ({
       setNewNodeForce={setNewNodeForce}
       newNodeType={newNodeType}
       setNewNodeType={setNewNodeType}
+      newNodeCaseLabel={newNodeCaseLabel}
+      setNewNodeCaseLabel={setNewNodeCaseLabel}
+      switchCases={switchCases}
+      setSwitchCases={setSwitchCases}
+      caseTargetLabels={caseTargetLabels}
       selectedBranch={selectedBranch}
       setSelectedBranch={setSelectedBranch}
       inheritedNextBranch={inheritedNextBranch}
@@ -286,8 +301,6 @@ const NodeEditorWidget = ({
       setSearchQuery={setSearchQuery}
       selectedIntegration={selectedIntegration}
       setSelectedIntegration={setSelectedIntegration}
-      parentIntegration={parentIntegration}
-      nextIntegration={nextIntegration}
       handleSubmit={handleSubmit}
       editMode={editMode}
       availableAgents={availableAgents}

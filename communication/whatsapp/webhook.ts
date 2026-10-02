@@ -4,7 +4,7 @@ import { createSession } from "../api/createSession";
 import { createServiceToken } from "./token";
 import { findSessionId, forgetConversation, rememberSession } from "./store";
 import { getBlueprint } from "../api/getBlueprint";
-import { getCommunications } from "../api/getCommunications";
+import { getChannels } from "../api/getChannels";
 import { sendMessageToSession } from "../api/sendMessageSession";
 import { whatsappConfig } from "./config";
 
@@ -88,14 +88,14 @@ async function resolveBlueprintId({
   accessToken: string;
   message: InboundMessage;
 }): Promise<string> {
-  const communications = await getCommunications(accessToken);
+  const channels = await getChannels(accessToken);
   const codes = [message.phoneNumberId, onlyDigits(message.displayPhoneNumber)];
 
-  const match = communications.find(
-    (communication) =>
-      communication.channelType === "WHATSAPP" &&
+  const match = channels.find(
+    (channel) =>
+      channel.channelType === "WHATSAPP" &&
       codes.includes(
-        onlyDigits(communication.channelCode) || communication.channelCode,
+        onlyDigits(channel.channelCode) || channel.channelCode,
       ),
   );
 
@@ -107,7 +107,7 @@ async function resolveBlueprintId({
 
   if (!fallbackBlueprintId) {
     throw new Error(
-      `No WHATSAPP communication is registered for channel code "${message.phoneNumberId}"`,
+      `No WHATSAPP channel is registered for channel code "${message.phoneNumberId}"`,
     );
   }
 

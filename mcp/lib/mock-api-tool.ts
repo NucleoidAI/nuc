@@ -17,7 +17,7 @@ export interface Tool {
     additionalProperties: false;
   };
   handler: (
-    args: Record<string, unknown>
+    args: Record<string, unknown>,
   ) => Promise<{ content: { type: "text"; text: string }[]; isError: boolean }>;
 }
 export const string = (description: string): Field => ({
@@ -31,6 +31,49 @@ export const amount: Field = {
   description:
     "Positive amount in minor currency units (e.g. 1000 = USD 10.00).",
 };
+export function validateArgs(
+  inputSchema: Tool["inputSchema"],
+  args: Record<string, unknown>,
+) {
+  if (!args || typeof args !== "object" || Array.isArray(args))
+    throw new Error("Arguments must be an object");
+  for (const name of inputSchema.required)
+    if (args[name] === undefined) throw new Error(`${name} is required`);
+  for (const [name, value] of Object.entries(args)) {
+    const field = inputSchema.properties[name];
+    if (!field) throw new Error(`Unknown argument: ${name}`);
+    if (
+      field.type === "integer"
+        ? !Number.isSafeInteger(value)
+        : typeof value !== field.type
+    )
+      throw new Error(`Invalid ${name}: expected ${field.type}`);
+    if (
+      typeof value === "number" &&
+      (!Number.isFinite(value) ||
+        (field.minimum !== undefined && value < field.minimum) ||
+        (field.maximum !== undefined && value > field.maximum))
+    )
+      throw new Error(`Invalid ${name}: outside allowed range`);
+    if (typeof value === "string" && !value.trim())
+      throw new Error(`${name} must not be empty`);
+    if (field.enum && !field.enum.includes(String(value)))
+      throw new Error(`Invalid ${name}: expected ${field.enum.join(", ")}`);
+  }
+}
+export function dropBlankOptionals(
+  inputSchema: Tool["inputSchema"],
+  args: Record<string, unknown>,
+): Record<string, unknown> {
+  if (!args || typeof args !== "object" || Array.isArray(args)) return args;
+  const cleaned: Record<string, unknown> = {};
+  for (const [name, value] of Object.entries(args)) {
+    const blank = typeof value === "string" && !value.trim();
+    if (blank && !inputSchema.required.includes(name)) continue;
+    cleaned[name] = value;
+  }
+  return cleaned;
+}
 export function defineTool(config: {
   name: string;
   description: string;
@@ -43,6 +86,7 @@ export function defineTool(config: {
     body?: unknown;
     query?: Record<string, unknown>;
   };
+  response?: (payload: any, args: Record<string, any>) => unknown;
 }): Tool {
   const inputSchema = {
     type: "object" as const,
@@ -60,33 +104,8 @@ export function defineTool(config: {
         isError,
       });
       try {
-        if (!args || typeof args !== "object" || Array.isArray(args))
-          throw new Error("Arguments must be an object");
-        for (const name of inputSchema.required)
-          if (args[name] === undefined) throw new Error(`${name} is required`);
-        for (const [name, value] of Object.entries(args)) {
-          const field = inputSchema.properties[name];
-          if (!field) throw new Error(`Unknown argument: ${name}`);
-          if (
-            field.type === "integer"
-              ? !Number.isSafeInteger(value)
-              : typeof value !== field.type
-          )
-            throw new Error(`Invalid ${name}: expected ${field.type}`);
-          if (
-            typeof value === "number" &&
-            (!Number.isFinite(value) ||
-              (field.minimum !== undefined && value < field.minimum) ||
-              (field.maximum !== undefined && value > field.maximum))
-          )
-            throw new Error(`Invalid ${name}: outside allowed range`);
-          if (typeof value === "string" && !value.trim())
-            throw new Error(`${name} must not be empty`);
-          if (field.enum && !field.enum.includes(String(value)))
-            throw new Error(
-              `Invalid ${name}: expected ${field.enum.join(", ")}`
-            );
-        }
+        args = dropBlankOptionals(inputSchema, args);
+        validateArgs(inputSchema, args);
         const base = process.env[config.env];
         if (!base) throw new Error(`${config.env} is not configured`);
         const url = new URL(base);
@@ -113,17 +132,21 @@ export function defineTool(config: {
           payload = JSON.parse(text);
         } catch {
           throw new Error(
-            `Mock API returned non-JSON (HTTP ${response.status})`
+            `Mock API returned non-JSON (HTTP ${response.status})`,
           );
         }
         const trackingError = payload?.output?.completeTrackResults?.some(
-          (entry: any) => entry.trackResults?.some((track: any) => track.error)
+          (entry: any) => entry.trackResults?.some((track: any) => track.error),
         );
-        return result(payload, !response.ok || Boolean(trackingError));
+        const failed = !response.ok || Boolean(trackingError);
+        return result(
+          !failed && config.response ? config.response(payload, args) : payload,
+          failed,
+        );
       } catch (error) {
         return result(
           { error: error instanceof Error ? error.message : String(error) },
-          true
+          true,
         );
       }
     },

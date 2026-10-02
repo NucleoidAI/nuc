@@ -26,7 +26,10 @@ async function run({
   });
 
   const isTrue = result === true || result === "true";
-  return isTrue ? trueActions : falseActions;
+  return {
+    result: isTrue,
+    actions: (isTrue ? trueActions : falseActions) ?? [],
+  };
 }
 
 export default { run };

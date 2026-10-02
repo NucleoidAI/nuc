@@ -62,6 +62,15 @@ const Blueprint = {
               targetAgentId: z.string().optional(),
               targetBlueprintId: z.string().optional(),
               force: z.boolean().optional(),
+              cases: z
+                .array(
+                  z.object({
+                    nodeId: z.string(),
+                    label: z.string().optional(),
+                    description: z.string().optional(),
+                  }),
+                )
+                .optional(),
             })
             .optional(),
           type: z.string(),
@@ -122,6 +131,15 @@ const Blueprint = {
             instructions: z.string().optional(),
             pseudocode: z.string().optional(),
             pseudocodeEnabled: z.boolean().optional(),
+            cases: z
+              .array(
+                z.object({
+                  nodeId: z.string(),
+                  label: z.string().optional(),
+                  description: z.string().optional(),
+                }),
+              )
+              .optional(),
           })
           .optional(),
         type: z.string(),

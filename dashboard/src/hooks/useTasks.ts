@@ -106,6 +106,7 @@ function useTasks(agentId: string, initialFetchState: DependencyArray = []) {
     tasks: result.tasks,
     loading: result.loading,
     error: result.error,
+    getTasks: result.fetch,
     steps: currentSteps,
     stepsLoading,
     getSteps,

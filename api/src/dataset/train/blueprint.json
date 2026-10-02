@@ -1,2245 +1,2247 @@
-[
-  {
-    "blueprint": {
-      "id": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "title": "Product Order",
-      "description": "Check product availability, if not exist, create order.",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "nodes": [
-        {
-          "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:check_product_count",
-            "icon": "mdi:check"
-          },
-          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
-          "type": "CONDITION",
-          "properties": {
-            "action": "PLATFORM:decision",
-            "icon": "mdi:source-branch"
-          },
-          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
-          "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:create_order",
-            "icon": "mdi:cart-plus"
-          },
-          "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "2a69ce9c-32e9-49c9-ad7c-b631d890359b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:send_email",
-            "icon": "mdi:email"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:03:00Z"
-        },
-        {
-          "id": "5be22de7-9673-448d-a1b5-dc23a8789b5c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:reduce_product_count",
-            "icon": "mdi:minus"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        }
-      ]
-    },
-    "content": "Check battery availability, if not exist, create order.",
-    "knowledge": [
-      {
-        "id": "66f2e2e0-dd81-4a1c-9474-089558b43084",
-        "type": "TEXT",
-        "text": "Battery product id is btr-123",
-        "status": "COMPLETED",
-        "createdAt": "1970-01-20T22:08:14.337Z"
-      },
-      {
-        "id": "94e582fd-9190-4fb8-936a-327424ac6c77",
-        "type": "TEXT",
-        "text": "If Battery is not available, order 10 Battery",
-        "status": "COMPLETED",
-        "createdAt": "1970-01-20T22:08:14.337Z"
-      },
-      {
-        "id": "18a6dc62-9c58-49db-ae61-eef9042102b2",
-        "type": "TEXT",
-        "text": "Manager email address is halilibrahimcengel7@gmail.com.",
-        "status": "COMPLETED",
-        "createdAt": "1970-01-20T22:08:14.337Z"
-      }
-    ],
-    "task": {
-      "id": "0a0e5ada-078a-4057-9420-0a2dcf52e972",
-      "status": "COMPLETED",
-      "description": "Check product availability, if not exist, create order.",
-      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
-    },
-    "answer": "Checking stock for btr-123. I'll order 10 units if needed."
-  },
-  {
-    "blueprint": {
-      "id": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "title": "Product Order",
-      "description": "Check product availability, if not exist, create order.",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "nodes": [
-        {
-          "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:check_product_count",
-            "icon": "mdi:check"
-          },
-          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
-          "type": "CONDITION",
-          "properties": {
-            "action": "PLATFORM:decision",
-            "icon": "mdi:source-branch"
-          },
-          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
-          "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:create_order",
-            "icon": "mdi:cart-plus"
-          },
-          "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "2a69ce9c-32e9-49c9-ad7c-b631d890359b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:send_email",
-            "icon": "mdi:email"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:03:00Z"
-        },
-        {
-          "id": "5be22de7-9673-448d-a1b5-dc23a8789b5c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:reduce_product_count",
-            "icon": "mdi:minus"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        }
-      ]
-    },
-    "content": "Do we have enough batteries in stock?",
-    "knowledge": [
-      {
-        "id": "66f2e2e0-dd81-4a1c-9474-089558b43084",
-        "type": "TEXT",
-        "text": "Battery product id is btr-123",
-        "status": "COMPLETED",
-        "createdAt": "1970-01-20T22:08:14.337Z"
-      },
-      {
-        "id": "94e582fd-9190-4fb8-936a-327424ac6c77",
-        "type": "TEXT",
-        "text": "If Battery is not available, order 10 Battery",
-        "status": "COMPLETED",
-        "createdAt": "1970-01-20T22:08:14.337Z"
-      },
-      {
-        "id": "18a6dc62-9c58-49db-ae61-eef9042102b2",
-        "type": "TEXT",
-        "text": "Manager email address is halilibrahimcengel7@gmail.com.",
-        "status": "COMPLETED",
-        "createdAt": "1970-01-20T22:08:14.337Z"
-      }
-    ],
-    "task": {
-      "id": "69f09382-c03a-47d7-b7aa-a9e9ff6d09c0",
-      "status": "COMPLETED",
-      "description": "Check product availability, if not exist, create order.",
-      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
-    },
-    "answer": "Checking battery stock now. I'll order 10 units of btr-123 if it's low."
-  },
-  {
-    "blueprint": {
-      "id": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "title": "Product Order",
-      "description": "Check product availability, if not exist, create order.",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "nodes": [
-        {
-          "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:check_product_count",
-            "icon": "mdi:check"
-          },
-          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
-          "type": "CONDITION",
-          "properties": {
-            "action": "PLATFORM:decision",
-            "icon": "mdi:source-branch"
-          },
-          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
-          "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:create_order",
-            "icon": "mdi:cart-plus"
-          },
-          "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "2a69ce9c-32e9-49c9-ad7c-b631d890359b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:send_email",
-            "icon": "mdi:email"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:03:00Z"
-        },
-        {
-          "id": "5be22de7-9673-448d-a1b5-dc23a8789b5c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:reduce_product_count",
-            "icon": "mdi:minus"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        }
-      ]
-    },
-    "content": "I need to restock batteries",
-    "knowledge": [
-      {
-        "id": "66f2e2e0-dd81-4a1c-9474-089558b43084",
-        "type": "TEXT",
-        "text": "Battery product id is btr-123",
-        "status": "COMPLETED",
-        "createdAt": "1970-01-20T22:08:14.337Z"
-      },
-      {
-        "id": "94e582fd-9190-4fb8-936a-327424ac6c77",
-        "type": "TEXT",
-        "text": "If Battery is not available, order 10 Battery",
-        "status": "COMPLETED",
-        "createdAt": "1970-01-20T22:08:14.337Z"
-      },
-      {
-        "id": "18a6dc62-9c58-49db-ae61-eef9042102b2",
-        "type": "TEXT",
-        "text": "Manager email address is halilibrahimcengel7@gmail.com.",
-        "status": "COMPLETED",
-        "createdAt": "1970-01-20T22:08:14.337Z"
-      }
-    ],
-    "task": {
-      "id": "b648eace-d876-4278-a56b-a64e7c338e6b",
-      "status": "COMPLETED",
-      "description": "Check product availability, if not exist, create order.",
-      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
-    },
-    "answer": "Starting restock check. I'll order 10 units of btr-123 if stock is low. Manager will get an email."
-  },
-  {
-    "blueprint": {
-      "id": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "title": "Product Order",
-      "description": "Check product availability, if not exist, create order.",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "nodes": [
-        {
-          "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:check_product_count",
-            "icon": "mdi:check"
-          },
-          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
-          "type": "CONDITION",
-          "properties": {
-            "action": "PLATFORM:decision",
-            "icon": "mdi:source-branch"
-          },
-          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
-          "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:create_order",
-            "icon": "mdi:cart-plus"
-          },
-          "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "2a69ce9c-32e9-49c9-ad7c-b631d890359b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:send_email",
-            "icon": "mdi:email"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:03:00Z"
-        },
-        {
-          "id": "5be22de7-9673-448d-a1b5-dc23a8789b5c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:reduce_product_count",
-            "icon": "mdi:minus"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        }
-      ]
-    },
-    "content": "Order batteries please",
-    "knowledge": [
-      {
-        "id": "66f2e2e0-dd81-4a1c-9474-089558b43084",
-        "type": "TEXT",
-        "text": "Battery product id is btr-123",
-        "status": "COMPLETED",
-        "createdAt": "1970-01-20T22:08:14.337Z"
-      },
-      {
-        "id": "94e582fd-9190-4fb8-936a-327424ac6c77",
-        "type": "TEXT",
-        "text": "If Battery is not available, order 10 Battery",
-        "status": "COMPLETED",
-        "createdAt": "1970-01-20T22:08:14.337Z"
-      },
-      {
-        "id": "18a6dc62-9c58-49db-ae61-eef9042102b2",
-        "type": "TEXT",
-        "text": "Manager email address is halilibrahimcengel7@gmail.com.",
-        "status": "COMPLETED",
-        "createdAt": "1970-01-20T22:08:14.337Z"
-      }
-    ],
-    "task": {
-      "id": "397af110-4b8e-481d-98f4-8b34802dcc0c",
-      "status": "COMPLETED",
-      "description": "Check product availability, if not exist, create order.",
-      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
-    },
-    "answer": "Checking stock for btr-123. I'll place an order for 10 units if needed. Manager gets an email."
-  },
-  {
-    "blueprint": {
-      "id": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "title": "Basic Internet Subscription Setup",
-      "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "nodes": [
-        {
-          "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_bbk_by_address",
-            "icon": "mdi:map-marker"
-          },
-          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_inventory",
-            "icon": "mdi:server"
-          },
-          "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b209c-2e5a-777f-a04a-11960363fb25",
-          "type": "CONDITION",
-          "properties": {
-            "action": "PLATFORM:decision",
-            "icon": "mdi:source-branch"
-          },
-          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
-          "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_product_by_speed",
-            "icon": "mdi:speedometer"
-          },
-          "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction",
-            "parameters": {
-              "question": "What is your address?"
+{
+  "data": [
+    {
+      "blueprint": {
+        "id": "ba6f7911-e232-469d-9060-2881852f6e59",
+        "title": "Product Order",
+        "description": "Check product availability, if not exist, create order.",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:check_product_count",
+              "icon": "mdi:check"
             },
-            "icon": "mdi:user"
-          },
-          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_allocation",
-            "icon": "mdi:link"
-          },
-          "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:bell"
-          },
-          "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:configuration",
-            "icon": "mdi:settings"
-          },
-          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b32f6-5878-73fb-8411-55916778d9a4",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_connection",
-            "icon": "mdi:ethernet"
-          },
-          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        }
-      ]
-    },
-    "content": "I want to setup internet subscription at my address.",
-    "task": {
-      "id": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
-      "status": "COMPLETED",
-      "description": "Setup internet subscription at user's address.",
-      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
-    },
-    "answer": "Internet subscription is being initiated."
-  },
-  {
-    "blueprint": {
-      "id": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "title": "Basic Internet Subscription Setup",
-      "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "nodes": [
-        {
-          "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_bbk_by_address",
-            "icon": "mdi:map-marker"
-          },
-          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_inventory",
-            "icon": "mdi:server"
-          },
-          "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b209c-2e5a-777f-a04a-11960363fb25",
-          "type": "CONDITION",
-          "properties": {
-            "action": "PLATFORM:decision",
-            "icon": "mdi:source-branch"
-          },
-          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
-          "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_product_by_speed",
-            "icon": "mdi:speedometer"
-          },
-          "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:bell"
-          },
-          "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b0270-c493-7072-9d50-87952c5dc547",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction",
-            "icon": "mdi:user"
-          },
-          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_allocation",
-            "icon": "mdi:link"
-          },
-          "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:bell"
-          },
-          "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:configuration",
-            "icon": "mdi:settings"
-          },
-          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b32f6-5878-73fb-8411-55916778d9a4",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_connection",
-            "icon": "mdi:ethernet"
-          },
-          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        }
-      ]
-    },
-    "content": "I need internet at home",
-    "task": {
-      "id": "b88gg278-d5g3-55ed-a0g9-f0f756793558",
-      "status": "COMPLETED",
-      "description": "Setup internet subscription at user's address.",
-      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
-    },
-    "answer": "Internet subscription is being initiated."
-  },
-  {
-    "blueprint": {
-      "id": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "title": "Basic Internet Subscription Setup",
-      "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "nodes": [
-        {
-          "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_bbk_by_address",
-            "icon": "mdi:map-marker"
-          },
-          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_inventory",
-            "icon": "mdi:server"
-          },
-          "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b209c-2e5a-777f-a04a-11960363fb25",
-          "type": "CONDITION",
-          "properties": {
-            "action": "PLATFORM:decision",
-            "icon": "mdi:source-branch"
-          },
-          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
-          "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_product_by_speed",
-            "icon": "mdi:speedometer"
-          },
-          "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:bell"
-          },
-          "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b0270-c493-7072-9d50-87952c5dc547",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction",
-            "icon": "mdi:user"
-          },
-          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_allocation",
-            "icon": "mdi:link"
-          },
-          "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:bell"
-          },
-          "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:configuration",
-            "icon": "mdi:settings"
-          },
-          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b32f6-5878-73fb-8411-55916778d9a4",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_connection",
-            "icon": "mdi:ethernet"
-          },
-          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        }
-      ]
-    },
-    "content": "Can you get me internet service?",
-    "task": {
-      "id": "b88gg278-d5g3-55ed-a0g9-f0f756793559",
-      "status": "COMPLETED",
-      "description": "Setup internet subscription at user's address.",
-      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
-    },
-    "answer": "Internet subscription is being initiated."
-  },
-  {
-    "blueprint": {
-      "id": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "title": "Basic Internet Subscription Setup",
-      "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "nodes": [
-        {
-          "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_bbk_by_address",
-            "icon": "mdi:map-marker"
-          },
-          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_inventory",
-            "icon": "mdi:server"
-          },
-          "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b209c-2e5a-777f-a04a-11960363fb25",
-          "type": "CONDITION",
-          "properties": {
-            "action": "PLATFORM:decision",
-            "icon": "mdi:source-branch"
-          },
-          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
-          "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_product_by_speed",
-            "icon": "mdi:speedometer"
-          },
-          "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:bell"
-          },
-          "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b0270-c493-7072-9d50-87952c5dc547",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction",
-            "icon": "mdi:user"
-          },
-          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_allocation",
-            "icon": "mdi:link"
-          },
-          "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:bell"
-          },
-          "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:configuration",
-            "icon": "mdi:settings"
-          },
-          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b32f6-5878-73fb-8411-55916778d9a4",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_connection",
-            "icon": "mdi:ethernet"
-          },
-          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        }
-      ]
-    },
-    "content": "Setup new internet connection",
-    "task": {
-      "id": "b88gg278-d5g3-55ed-a0g9-f0f756793560",
-      "status": "COMPLETED",
-      "description": "Setup internet subscription at user's address.",
-      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
-    },
-    "answer": "Internet subscription is being initiated."
-  },
-  {
-    "blueprint": {
-      "id": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "title": "Basic Internet Subscription Setup",
-      "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "nodes": [
-        {
-          "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_bbk_by_address",
-            "icon": "mdi:map-marker"
-          },
-          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_inventory",
-            "icon": "mdi:server"
-          },
-          "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b209c-2e5a-777f-a04a-11960363fb25",
-          "type": "CONDITION",
-          "properties": {
-            "action": "PLATFORM:decision",
-            "icon": "mdi:source-branch"
-          },
-          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
-          "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_product_by_speed",
-            "icon": "mdi:speedometer"
-          },
-          "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:bell"
-          },
-          "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b0270-c493-7072-9d50-87952c5dc547",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction",
-            "icon": "mdi:user"
-          },
-          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_allocation",
-            "icon": "mdi:link"
-          },
-          "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:bell"
-          },
-          "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:configuration",
-            "icon": "mdi:settings"
-          },
-          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b32f6-5878-73fb-8411-55916778d9a4",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_connection",
-            "icon": "mdi:ethernet"
-          },
-          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        }
-      ]
-    },
-    "content": "I want to subscribe to internet",
-    "task": {
-      "id": "b88gg278-d5g3-55ed-a0g9-f0f756793561",
-      "status": "COMPLETED",
-      "description": "Setup internet subscription at user's address.",
-      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
-    },
-    "answer": "Internet subscription is being initiated."
-  },
-  {
-    "blueprint": {
-      "id": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "title": "Basic Internet Subscription Setup",
-      "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "nodes": [
-        {
-          "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_bbk_by_address",
-            "icon": "mdi:map-marker"
-          },
-          "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_inventory",
-            "icon": "mdi:server"
-          },
-          "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b209c-2e5a-777f-a04a-11960363fb25",
-          "type": "CONDITION",
-          "properties": {
-            "action": "PLATFORM:decision",
-            "icon": "mdi:source-branch"
-          },
-          "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
-          "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:get_product_by_speed",
-            "icon": "mdi:speedometer"
-          },
-          "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:bell"
-          },
-          "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b0270-c493-7072-9d50-87952c5dc547",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction",
-            "icon": "mdi:user"
-          },
-          "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_allocation",
-            "icon": "mdi:link"
-          },
-          "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:bell"
-          },
-          "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:configuration",
-            "icon": "mdi:settings"
-          },
-          "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b32f6-5878-73fb-8411-55916778d9a4",
-          "type": "NORMAL",
-          "properties": {
-            "action": "TELCO:port_connection",
-            "icon": "mdi:ethernet"
-          },
-          "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
-          "createdAt": "2025-06-19T06:02:00Z"
-        },
-        {
-          "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check"
-          },
-          "next": null,
-          "createdAt": "2025-06-19T06:02:00Z"
-        }
-      ]
-    },
-    "content": "Help me get broadband internet",
-    "task": {
-      "id": "b88gg278-d5g3-55ed-a0g9-f0f756793562",
-      "status": "COMPLETED",
-      "description": "Setup internet subscription at user's address.",
-      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
-    },
-    "answer": "Internet subscription is being initiated."
-  },
-  {
-    "blueprint": {
-      "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
-      "title": "Order and Compliance",
-      "description": "Ask the user to select a product, find it, check its compliance certificate, assign it, create the purchase order, prepare the payment, charge it once the user approves and ship it, then send email.",
-      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
-      "nodes": [
-        {
-          "id": "ffe7081c-f922-4e30-9ac8-0fdf094913b2",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction",
-            "parameters": {
-              "question": "Which product would you like to order?"
+            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "icon": "mdi:source-branch"
             },
-            "icon": "mdi:account-question"
+            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+            "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
+            "createdAt": "2025-06-19T06:02:00Z"
           },
-          "next": ["3b2bd895-1df4-4cb6-827c-35874f43615f"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
-          "type": "NORMAL",
-          "properties": {
-            "action": "ORDER:find_product",
-            "icon": "mdi:magnify"
-          },
-          "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:knowledge_lookup",
-            "icon": "mdi:book-search"
-          },
-          "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
-          "type": "NORMAL",
-          "properties": {
-            "action": "ORDER:assign_certificate",
-            "icon": "mdi:certificate-outline"
-          },
-          "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
-          "type": "NORMAL",
-          "properties": {
-            "action": "ORDER:create_po",
-            "icon": "mdi:file-document-plus"
-          },
-          "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
-          "type": "NORMAL",
-          "properties": {
-            "action": "STRIPE:create_payment_intent",
-            "icon": "mdi:credit-card-outline"
-          },
-          "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction",
-            "icon": "mdi:account-question"
-          },
-          "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
-          "type": "CONDITION",
-          "properties": {
-            "action": "PLATFORM:decision",
-            "icon": "mdi:source-branch"
-          },
-          "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
-          "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
-          "type": "NORMAL",
-          "properties": {
-            "action": "STRIPE:confirm_payment_intent",
-            "icon": "mdi:check-decagram"
-          },
-          "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "738b438a-757d-4653-8bc2-b921b130503c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "FEDEX:create_shipment",
-            "icon": "mdi:truck-delivery-outline"
-          },
-          "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:send_email",
-            "icon": "mdi:email"
-          },
-          "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "7447fdbc-a273-40d5-a822-843d98865292",
-          "type": "NORMAL",
-          "properties": {
-            "action": "STRIPE:cancel_payment_intent",
-            "icon": "mdi:credit-card-off-outline"
-          },
-          "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:bell-off"
-          },
-          "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check"
-          },
-          "next": null,
-          "createdAt": "2025-06-26T06:00:00Z"
-        }
-      ]
-    },
-    "content": "Process an order with compliance certificate check, then take the payment and ship it.",
-    "knowledge": [
-      {
-        "id": "0a850a06-1eac-4df1-aa14-1fe5457246a7",
-        "type": "TEXT",
-        "text": "Product compliance certificate is required before creating a purchase order.",
-        "status": "COMPLETED",
-        "createdAt": "2025-06-26T06:00:00Z"
-      },
-      {
-        "id": "b9f498a8-0967-475f-87ce-aa215078805d",
-        "type": "TEXT",
-        "text": "Manager email address is halilibrahimcengel7@gmail.com.",
-        "status": "COMPLETED",
-        "createdAt": "2025-06-26T06:00:00Z"
-      }
-    ],
-    "task": {
-      "id": "ebada8a7-5b3c-4d18-b0be-7973c675742b",
-      "status": "COMPLETED",
-      "description": "Process an order with a compliance certificate check and a user-approved payment before shipping.",
-      "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e"
-    },
-    "answer": "Starting order compliance process. I'll find the product, verify its certificate and open a PO, then ask you to approve the charge before it is taken and ship it."
-  },
-  {
-    "blueprint": {
-      "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
-      "title": "Order and Compliance",
-      "description": "Ask the user to select a product, find it, check its compliance certificate, assign it, create the purchase order, prepare the payment, charge it once the user approves and ship it, then send email.",
-      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
-      "nodes": [
-        {
-          "id": "ffe7081c-f922-4e30-9ac8-0fdf094913b2",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction",
-            "parameters": {
-              "question": "Which product would you like to order?"
+          {
+            "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:create_order",
+              "icon": "mdi:cart-plus"
             },
-            "icon": "mdi:account-question"
+            "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
+            "createdAt": "2025-06-19T06:02:00Z"
           },
-          "next": ["3b2bd895-1df4-4cb6-827c-35874f43615f"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
-          "type": "NORMAL",
-          "properties": {
-            "action": "ORDER:find_product",
-            "icon": "mdi:magnify"
-          },
-          "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:knowledge_lookup",
-            "icon": "mdi:book-search"
-          },
-          "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
-          "type": "NORMAL",
-          "properties": {
-            "action": "ORDER:assign_certificate",
-            "icon": "mdi:certificate-outline"
-          },
-          "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
-          "type": "NORMAL",
-          "properties": {
-            "action": "ORDER:create_po",
-            "icon": "mdi:file-document-plus"
-          },
-          "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
-          "type": "NORMAL",
-          "properties": {
-            "action": "STRIPE:create_payment_intent",
-            "icon": "mdi:credit-card-outline"
-          },
-          "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction",
-            "icon": "mdi:account-question"
-          },
-          "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
-          "type": "CONDITION",
-          "properties": {
-            "action": "PLATFORM:decision",
-            "icon": "mdi:source-branch"
-          },
-          "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
-          "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
-          "type": "NORMAL",
-          "properties": {
-            "action": "STRIPE:confirm_payment_intent",
-            "icon": "mdi:check-decagram"
-          },
-          "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "738b438a-757d-4653-8bc2-b921b130503c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "FEDEX:create_shipment",
-            "icon": "mdi:truck-delivery-outline"
-          },
-          "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:send_email",
-            "icon": "mdi:email"
-          },
-          "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "7447fdbc-a273-40d5-a822-843d98865292",
-          "type": "NORMAL",
-          "properties": {
-            "action": "STRIPE:cancel_payment_intent",
-            "icon": "mdi:credit-card-off-outline"
-          },
-          "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:bell-off"
-          },
-          "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check"
-          },
-          "next": null,
-          "createdAt": "2025-06-26T06:00:00Z"
-        }
-      ]
-    },
-    "content": "I need to create a purchase order but first verify the product certificate, then charge me and ship it.",
-    "knowledge": [
-      {
-        "id": "0a850a06-1eac-4df1-aa14-1fe5457246a7",
-        "type": "TEXT",
-        "text": "Product compliance certificate is required before creating a purchase order.",
-        "status": "COMPLETED",
-        "createdAt": "2025-06-26T06:00:00Z"
-      },
-      {
-        "id": "b9f498a8-0967-475f-87ce-aa215078805d",
-        "type": "TEXT",
-        "text": "Manager email address is halilibrahimcengel7@gmail.com.",
-        "status": "COMPLETED",
-        "createdAt": "2025-06-26T06:00:00Z"
-      }
-    ],
-    "task": {
-      "id": "a545bea6-dc24-4fed-9b21-5eb4a426daeb",
-      "status": "COMPLETED",
-      "description": "Process an order with a compliance certificate check and a user-approved payment before shipping.",
-      "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e"
-    },
-    "answer": "I'll find the product, check its compliance certificate, open the PO and prepare the payment. Nothing is charged until you approve it; after that I'll ship it and notify via email."
-  },
-  {
-    "blueprint": {
-      "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
-      "title": "Order and Compliance",
-      "description": "Ask the user to select a product, find it, check its compliance certificate, assign it, create the purchase order, prepare the payment, charge it once the user approves and ship it, then send email.",
-      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
-      "nodes": [
-        {
-          "id": "ffe7081c-f922-4e30-9ac8-0fdf094913b2",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction",
-            "parameters": {
-              "question": "Which product would you like to order?"
+          {
+            "id": "2a69ce9c-32e9-49c9-ad7c-b631d890359b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "icon": "mdi:email"
             },
-            "icon": "mdi:account-question"
+            "next": null,
+            "createdAt": "2025-06-19T06:03:00Z"
           },
-          "next": ["3b2bd895-1df4-4cb6-827c-35874f43615f"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
-          "type": "NORMAL",
-          "properties": {
-            "action": "ORDER:find_product",
-            "icon": "mdi:magnify"
-          },
-          "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:knowledge_lookup",
-            "icon": "mdi:book-search"
-          },
-          "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
-          "type": "NORMAL",
-          "properties": {
-            "action": "ORDER:assign_certificate",
-            "icon": "mdi:certificate-outline"
-          },
-          "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
-          "type": "NORMAL",
-          "properties": {
-            "action": "ORDER:create_po",
-            "icon": "mdi:file-document-plus"
-          },
-          "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
-          "type": "NORMAL",
-          "properties": {
-            "action": "STRIPE:create_payment_intent",
-            "icon": "mdi:credit-card-outline"
-          },
-          "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction",
-            "icon": "mdi:account-question"
-          },
-          "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
-          "type": "CONDITION",
-          "properties": {
-            "action": "PLATFORM:decision",
-            "icon": "mdi:source-branch"
-          },
-          "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
-          "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
-          "type": "NORMAL",
-          "properties": {
-            "action": "STRIPE:confirm_payment_intent",
-            "icon": "mdi:check-decagram"
-          },
-          "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "738b438a-757d-4653-8bc2-b921b130503c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "FEDEX:create_shipment",
-            "icon": "mdi:truck-delivery-outline"
-          },
-          "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:send_email",
-            "icon": "mdi:email"
-          },
-          "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "7447fdbc-a273-40d5-a822-843d98865292",
-          "type": "NORMAL",
-          "properties": {
-            "action": "STRIPE:cancel_payment_intent",
-            "icon": "mdi:credit-card-off-outline"
-          },
-          "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:bell-off"
-          },
-          "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check"
-          },
-          "next": null,
-          "createdAt": "2025-06-26T06:00:00Z"
-        }
-      ]
-    },
-    "content": "Check if product is compliant, open a PO and charge it after I confirm.",
-    "knowledge": [
-      {
-        "id": "0a850a06-1eac-4df1-aa14-1fe5457246a7",
-        "type": "TEXT",
-        "text": "Product compliance certificate is required before creating a purchase order.",
-        "status": "COMPLETED",
-        "createdAt": "2025-06-26T06:00:00Z"
-      },
-      {
-        "id": "b9f498a8-0967-475f-87ce-aa215078805d",
-        "type": "TEXT",
-        "text": "Manager email address is halilibrahimcengel7@gmail.com.",
-        "status": "COMPLETED",
-        "createdAt": "2025-06-26T06:00:00Z"
-      }
-    ],
-    "task": {
-      "id": "0176f3d0-e032-43f6-8b03-701171eb7f97",
-      "status": "COMPLETED",
-      "description": "Process an order with a compliance certificate check and a user-approved payment before shipping.",
-      "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e"
-    },
-    "answer": "Checking product compliance certificate now. PO will be created and the payment prepared; I'll ask you to confirm the charge before taking it, then ship the order."
-  },
-  {
-    "blueprint": {
-      "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
-      "title": "Order and Compliance",
-      "description": "Ask the user to select a product, find it, check its compliance certificate, assign it, create the purchase order, prepare the payment, charge it once the user approves and ship it, then send email.",
-      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
-      "nodes": [
-        {
-          "id": "ffe7081c-f922-4e30-9ac8-0fdf094913b2",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction",
-            "parameters": {
-              "question": "Which product would you like to order?"
+          {
+            "id": "5be22de7-9673-448d-a1b5-dc23a8789b5c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:reduce_product_count",
+              "icon": "mdi:minus"
             },
-            "icon": "mdi:account-question"
-          },
-          "next": ["3b2bd895-1df4-4cb6-827c-35874f43615f"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
-          "type": "NORMAL",
-          "properties": {
-            "action": "ORDER:find_product",
-            "icon": "mdi:magnify"
-          },
-          "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:knowledge_lookup",
-            "icon": "mdi:book-search"
-          },
-          "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
-          "type": "NORMAL",
-          "properties": {
-            "action": "ORDER:assign_certificate",
-            "icon": "mdi:certificate-outline"
-          },
-          "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
-          "type": "NORMAL",
-          "properties": {
-            "action": "ORDER:create_po",
-            "icon": "mdi:file-document-plus"
-          },
-          "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
-          "type": "NORMAL",
-          "properties": {
-            "action": "STRIPE:create_payment_intent",
-            "icon": "mdi:credit-card-outline"
-          },
-          "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction",
-            "icon": "mdi:account-question"
-          },
-          "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
-          "type": "CONDITION",
-          "properties": {
-            "action": "PLATFORM:decision",
-            "icon": "mdi:source-branch"
-          },
-          "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
-          "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
-          "type": "NORMAL",
-          "properties": {
-            "action": "STRIPE:confirm_payment_intent",
-            "icon": "mdi:check-decagram"
-          },
-          "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "738b438a-757d-4653-8bc2-b921b130503c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "FEDEX:create_shipment",
-            "icon": "mdi:truck-delivery-outline"
-          },
-          "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:send_email",
-            "icon": "mdi:email"
-          },
-          "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "7447fdbc-a273-40d5-a822-843d98865292",
-          "type": "NORMAL",
-          "properties": {
-            "action": "STRIPE:cancel_payment_intent",
-            "icon": "mdi:credit-card-off-outline"
-          },
-          "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:bell-off"
-          },
-          "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check"
-          },
-          "next": null,
-          "createdAt": "2025-06-26T06:00:00Z"
-        }
-      ]
-    },
-    "content": "Order a product after verifying its compliance certificate, take the payment once I approve it and notify the manager.",
-    "knowledge": [
-      {
-        "id": "0a850a06-1eac-4df1-aa14-1fe5457246a7",
-        "type": "TEXT",
-        "text": "Product compliance certificate is required before creating a purchase order.",
-        "status": "COMPLETED",
-        "createdAt": "2025-06-26T06:00:00Z"
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
       },
-      {
-        "id": "b9f498a8-0967-475f-87ce-aa215078805d",
-        "type": "TEXT",
-        "text": "Manager email address is halilibrahimcengel7@gmail.com.",
-        "status": "COMPLETED",
-        "createdAt": "2025-06-26T06:00:00Z"
-      }
-    ],
-    "task": {
-      "id": "56dd2fad-9c00-4845-bdbf-3a9930166483",
-      "status": "COMPLETED",
-      "description": "Process an order with a compliance certificate check and a user-approved payment before shipping.",
-      "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e"
-    },
-    "answer": "Starting compliance-gated order flow. Finding product, then checking certificate. If valid, the PO is opened and the payment prepared; once you approve the charge I'll ship it and notify the manager."
-  },
-  {
-    "blueprint": {
-      "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
-      "title": "Order and Compliance",
-      "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
-      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
-      "nodes": [
+      "content": "Check battery availability, if not exist, create order.",
+      "knowledge": [
         {
-          "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
-          "type": "NORMAL",
-          "properties": {
-            "action": "ORDER:find_product",
-            "icon": "mdi:magnify"
-          },
-          "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
-          "createdAt": "2025-06-26T06:00:00Z"
+          "id": "66f2e2e0-dd81-4a1c-9474-089558b43084",
+          "type": "TEXT",
+          "text": "Battery product id is btr-123",
+          "status": "COMPLETED",
+          "createdAt": "1970-01-20T22:08:14.337Z"
         },
         {
-          "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:knowledge_lookup",
-            "icon": "mdi:book-search"
-          },
-          "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
-          "createdAt": "2025-06-26T06:00:00Z"
+          "id": "94e582fd-9190-4fb8-936a-327424ac6c77",
+          "type": "TEXT",
+          "text": "If Battery is not available, order 10 Battery",
+          "status": "COMPLETED",
+          "createdAt": "1970-01-20T22:08:14.337Z"
         },
         {
-          "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
-          "type": "NORMAL",
-          "properties": {
-            "action": "ORDER:assign_certificate",
-            "icon": "mdi:certificate-outline"
-          },
-          "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
-          "type": "NORMAL",
-          "properties": {
-            "action": "ORDER:create_po",
-            "icon": "mdi:file-document-plus"
-          },
-          "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
-          "type": "NORMAL",
-          "properties": {
-            "action": "STRIPE:create_payment_intent",
-            "icon": "mdi:credit-card-outline"
-          },
-          "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:user_interaction",
-            "icon": "mdi:account-question"
-          },
-          "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
-          "type": "CONDITION",
-          "properties": {
-            "action": "PLATFORM:decision",
-            "icon": "mdi:source-branch"
-          },
-          "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
-          "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
-          "type": "NORMAL",
-          "properties": {
-            "action": "STRIPE:confirm_payment_intent",
-            "icon": "mdi:check-decagram"
-          },
-          "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "738b438a-757d-4653-8bc2-b921b130503c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "FEDEX:create_shipment",
-            "icon": "mdi:truck-delivery-outline"
-          },
-          "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
-          "type": "NORMAL",
-          "properties": {
-            "action": "GREY:send_email",
-            "icon": "mdi:email"
-          },
-          "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "7447fdbc-a273-40d5-a822-843d98865292",
-          "type": "NORMAL",
-          "properties": {
-            "action": "STRIPE:cancel_payment_intent",
-            "icon": "mdi:credit-card-off-outline"
-          },
-          "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:bell-off"
-          },
-          "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
-          "createdAt": "2025-06-26T06:00:00Z"
-        },
-        {
-          "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check"
-          },
-          "next": null,
-          "createdAt": "2025-06-26T06:00:00Z"
+          "id": "18a6dc62-9c58-49db-ae61-eef9042102b2",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com.",
+          "status": "COMPLETED",
+          "createdAt": "1970-01-20T22:08:14.337Z"
         }
-      ]
-    },
-    "content": "Order the product, ask me to approve the payment before charging, then ship it to the customer.",
-    "knowledge": [
-      {
-        "id": "0a850a06-1eac-4df1-aa14-1fe5457246a7",
-        "type": "TEXT",
-        "text": "Product compliance certificate is required before creating a purchase order.",
+      ],
+      "task": {
+        "id": "0a0e5ada-078a-4057-9420-0a2dcf52e972",
         "status": "COMPLETED",
-        "createdAt": "2025-06-26T06:00:00Z"
+        "description": "Check product availability, if not exist, create order.",
+        "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
       },
-      {
-        "id": "a59b94e7-e954-4c2e-a5be-ea9ad6d8030b",
-        "type": "TEXT",
-        "text": "The charge needs the user's approval; only an approved payment is confirmed and shipped, and the confirmation email carries the tracking number.",
-        "status": "COMPLETED",
-        "createdAt": "2025-06-26T06:00:00Z"
-      }
-    ],
-    "task": {
-      "id": "a545bea6-dc24-4fed-9b21-5eb4a426daeb",
-      "status": "COMPLETED",
-      "description": "Process an order with a compliance certificate check and a user-approved payment before shipping.",
-      "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e"
+      "answer": "Checking stock for btr-123. I'll order 10 units if needed."
     },
-    "answer": "Starting the order. I'll verify the certificate, open the PO and prepare the payment, then ask you to approve the charge before anything is taken. Once approved, I'll ship it and email the confirmation with the tracking number."
-  },
-  {
-    "blueprint": {
-      "id": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
-      "title": "Compliance Certificate Notification",
-      "description": "Check the compliance certificate status of a product and inform the user about the result.",
-      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
-      "nodes": [
-        {
-          "id": "81b62178-c7e0-4af1-9eb9-a559a0a9290e",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:knowledge_lookup",
-            "icon": "mdi:book-search"
+    {
+      "blueprint": {
+        "id": "ba6f7911-e232-469d-9060-2881852f6e59",
+        "title": "Product Order",
+        "description": "Check product availability, if not exist, create order.",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:check_product_count",
+              "icon": "mdi:check"
+            },
+            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+            "createdAt": "2025-06-19T06:02:00Z"
           },
-          "next": ["8f01126f-97b1-4b47-8c3c-b09de10879f9"],
-          "createdAt": "2025-06-29T08:00:00Z"
+          {
+            "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+            "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:create_order",
+              "icon": "mdi:cart-plus"
+            },
+            "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "2a69ce9c-32e9-49c9-ad7c-b631d890359b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "icon": "mdi:email"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:03:00Z"
+          },
+          {
+            "id": "5be22de7-9673-448d-a1b5-dc23a8789b5c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:reduce_product_count",
+              "icon": "mdi:minus"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "content": "Do we have enough batteries in stock?",
+      "knowledge": [
+        {
+          "id": "66f2e2e0-dd81-4a1c-9474-089558b43084",
+          "type": "TEXT",
+          "text": "Battery product id is btr-123",
+          "status": "COMPLETED",
+          "createdAt": "1970-01-20T22:08:14.337Z"
         },
         {
-          "id": "8f01126f-97b1-4b47-8c3c-b09de10879f9",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:bell"
-          },
-          "next": ["5ce77c06-8c90-45f7-9981-efbc07b7aec0"],
-          "createdAt": "2025-06-29T08:00:00Z"
+          "id": "94e582fd-9190-4fb8-936a-327424ac6c77",
+          "type": "TEXT",
+          "text": "If Battery is not available, order 10 Battery",
+          "status": "COMPLETED",
+          "createdAt": "1970-01-20T22:08:14.337Z"
         },
         {
-          "id": "5ce77c06-8c90-45f7-9981-efbc07b7aec0",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check"
+          "id": "18a6dc62-9c58-49db-ae61-eef9042102b2",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com.",
+          "status": "COMPLETED",
+          "createdAt": "1970-01-20T22:08:14.337Z"
+        }
+      ],
+      "task": {
+        "id": "69f09382-c03a-47d7-b7aa-a9e9ff6d09c0",
+        "status": "COMPLETED",
+        "description": "Check product availability, if not exist, create order.",
+        "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
+      },
+      "answer": "Checking battery stock now. I'll order 10 units of btr-123 if it's low."
+    },
+    {
+      "blueprint": {
+        "id": "ba6f7911-e232-469d-9060-2881852f6e59",
+        "title": "Product Order",
+        "description": "Check product availability, if not exist, create order.",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:check_product_count",
+              "icon": "mdi:check"
+            },
+            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+            "createdAt": "2025-06-19T06:02:00Z"
           },
-          "next": null,
+          {
+            "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+            "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:create_order",
+              "icon": "mdi:cart-plus"
+            },
+            "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "2a69ce9c-32e9-49c9-ad7c-b631d890359b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "icon": "mdi:email"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:03:00Z"
+          },
+          {
+            "id": "5be22de7-9673-448d-a1b5-dc23a8789b5c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:reduce_product_count",
+              "icon": "mdi:minus"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "content": "I need to restock batteries",
+      "knowledge": [
+        {
+          "id": "66f2e2e0-dd81-4a1c-9474-089558b43084",
+          "type": "TEXT",
+          "text": "Battery product id is btr-123",
+          "status": "COMPLETED",
+          "createdAt": "1970-01-20T22:08:14.337Z"
+        },
+        {
+          "id": "94e582fd-9190-4fb8-936a-327424ac6c77",
+          "type": "TEXT",
+          "text": "If Battery is not available, order 10 Battery",
+          "status": "COMPLETED",
+          "createdAt": "1970-01-20T22:08:14.337Z"
+        },
+        {
+          "id": "18a6dc62-9c58-49db-ae61-eef9042102b2",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com.",
+          "status": "COMPLETED",
+          "createdAt": "1970-01-20T22:08:14.337Z"
+        }
+      ],
+      "task": {
+        "id": "b648eace-d876-4278-a56b-a64e7c338e6b",
+        "status": "COMPLETED",
+        "description": "Check product availability, if not exist, create order.",
+        "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
+      },
+      "answer": "Starting restock check. I'll order 10 units of btr-123 if stock is low. Manager will get an email."
+    },
+    {
+      "blueprint": {
+        "id": "ba6f7911-e232-469d-9060-2881852f6e59",
+        "title": "Product Order",
+        "description": "Check product availability, if not exist, create order.",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:check_product_count",
+              "icon": "mdi:check"
+            },
+            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+            "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:create_order",
+              "icon": "mdi:cart-plus"
+            },
+            "next": ["2a69ce9c-32e9-49c9-ad7c-b631d890359b"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "2a69ce9c-32e9-49c9-ad7c-b631d890359b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "icon": "mdi:email"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:03:00Z"
+          },
+          {
+            "id": "5be22de7-9673-448d-a1b5-dc23a8789b5c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:reduce_product_count",
+              "icon": "mdi:minus"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "content": "Order batteries please",
+      "knowledge": [
+        {
+          "id": "66f2e2e0-dd81-4a1c-9474-089558b43084",
+          "type": "TEXT",
+          "text": "Battery product id is btr-123",
+          "status": "COMPLETED",
+          "createdAt": "1970-01-20T22:08:14.337Z"
+        },
+        {
+          "id": "94e582fd-9190-4fb8-936a-327424ac6c77",
+          "type": "TEXT",
+          "text": "If Battery is not available, order 10 Battery",
+          "status": "COMPLETED",
+          "createdAt": "1970-01-20T22:08:14.337Z"
+        },
+        {
+          "id": "18a6dc62-9c58-49db-ae61-eef9042102b2",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com.",
+          "status": "COMPLETED",
+          "createdAt": "1970-01-20T22:08:14.337Z"
+        }
+      ],
+      "task": {
+        "id": "397af110-4b8e-481d-98f4-8b34802dcc0c",
+        "status": "COMPLETED",
+        "description": "Check product availability, if not exist, create order.",
+        "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
+      },
+      "answer": "Checking stock for btr-123. I'll place an order for 10 units if needed. Manager gets an email."
+    },
+    {
+      "blueprint": {
+        "id": "ba6f7911-e232-469d-9060-2881852f6e59",
+        "title": "Basic Internet Subscription Setup",
+        "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_bbk_by_address",
+              "icon": "mdi:map-marker"
+            },
+            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_inventory",
+              "icon": "mdi:server"
+            },
+            "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209c-2e5a-777f-a04a-11960363fb25",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+            "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_product_by_speed",
+              "icon": "mdi:speedometer"
+            },
+            "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "parameters": {
+                "question": "What is your address?"
+              },
+              "icon": "mdi:user"
+            },
+            "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_allocation",
+              "icon": "mdi:link"
+            },
+            "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell"
+            },
+            "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:configuration",
+              "icon": "mdi:settings"
+            },
+            "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-5878-73fb-8411-55916778d9a4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_connection",
+              "icon": "mdi:ethernet"
+            },
+            "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "content": "I want to setup internet subscription at my address.",
+      "task": {
+        "id": "b88gg278-d5g3-55ed-a0g9-f0f756793557",
+        "status": "COMPLETED",
+        "description": "Setup internet subscription at user's address.",
+        "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
+      },
+      "answer": "Internet subscription is being initiated."
+    },
+    {
+      "blueprint": {
+        "id": "ba6f7911-e232-469d-9060-2881852f6e59",
+        "title": "Basic Internet Subscription Setup",
+        "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_bbk_by_address",
+              "icon": "mdi:map-marker"
+            },
+            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_inventory",
+              "icon": "mdi:server"
+            },
+            "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209c-2e5a-777f-a04a-11960363fb25",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+            "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_product_by_speed",
+              "icon": "mdi:speedometer"
+            },
+            "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell"
+            },
+            "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b0270-c493-7072-9d50-87952c5dc547",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "icon": "mdi:user"
+            },
+            "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_allocation",
+              "icon": "mdi:link"
+            },
+            "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell"
+            },
+            "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:configuration",
+              "icon": "mdi:settings"
+            },
+            "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-5878-73fb-8411-55916778d9a4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_connection",
+              "icon": "mdi:ethernet"
+            },
+            "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "content": "I need internet at home",
+      "task": {
+        "id": "b88gg278-d5g3-55ed-a0g9-f0f756793558",
+        "status": "COMPLETED",
+        "description": "Setup internet subscription at user's address.",
+        "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
+      },
+      "answer": "Internet subscription is being initiated."
+    },
+    {
+      "blueprint": {
+        "id": "ba6f7911-e232-469d-9060-2881852f6e59",
+        "title": "Basic Internet Subscription Setup",
+        "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_bbk_by_address",
+              "icon": "mdi:map-marker"
+            },
+            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_inventory",
+              "icon": "mdi:server"
+            },
+            "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209c-2e5a-777f-a04a-11960363fb25",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+            "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_product_by_speed",
+              "icon": "mdi:speedometer"
+            },
+            "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell"
+            },
+            "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b0270-c493-7072-9d50-87952c5dc547",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "icon": "mdi:user"
+            },
+            "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_allocation",
+              "icon": "mdi:link"
+            },
+            "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell"
+            },
+            "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:configuration",
+              "icon": "mdi:settings"
+            },
+            "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-5878-73fb-8411-55916778d9a4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_connection",
+              "icon": "mdi:ethernet"
+            },
+            "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "content": "Can you get me internet service?",
+      "task": {
+        "id": "b88gg278-d5g3-55ed-a0g9-f0f756793559",
+        "status": "COMPLETED",
+        "description": "Setup internet subscription at user's address.",
+        "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
+      },
+      "answer": "Internet subscription is being initiated."
+    },
+    {
+      "blueprint": {
+        "id": "ba6f7911-e232-469d-9060-2881852f6e59",
+        "title": "Basic Internet Subscription Setup",
+        "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_bbk_by_address",
+              "icon": "mdi:map-marker"
+            },
+            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_inventory",
+              "icon": "mdi:server"
+            },
+            "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209c-2e5a-777f-a04a-11960363fb25",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+            "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_product_by_speed",
+              "icon": "mdi:speedometer"
+            },
+            "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell"
+            },
+            "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b0270-c493-7072-9d50-87952c5dc547",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "icon": "mdi:user"
+            },
+            "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_allocation",
+              "icon": "mdi:link"
+            },
+            "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell"
+            },
+            "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:configuration",
+              "icon": "mdi:settings"
+            },
+            "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-5878-73fb-8411-55916778d9a4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_connection",
+              "icon": "mdi:ethernet"
+            },
+            "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "content": "Setup new internet connection",
+      "task": {
+        "id": "b88gg278-d5g3-55ed-a0g9-f0f756793560",
+        "status": "COMPLETED",
+        "description": "Setup internet subscription at user's address.",
+        "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
+      },
+      "answer": "Internet subscription is being initiated."
+    },
+    {
+      "blueprint": {
+        "id": "ba6f7911-e232-469d-9060-2881852f6e59",
+        "title": "Basic Internet Subscription Setup",
+        "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_bbk_by_address",
+              "icon": "mdi:map-marker"
+            },
+            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_inventory",
+              "icon": "mdi:server"
+            },
+            "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209c-2e5a-777f-a04a-11960363fb25",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+            "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_product_by_speed",
+              "icon": "mdi:speedometer"
+            },
+            "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell"
+            },
+            "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b0270-c493-7072-9d50-87952c5dc547",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "icon": "mdi:user"
+            },
+            "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_allocation",
+              "icon": "mdi:link"
+            },
+            "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell"
+            },
+            "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:configuration",
+              "icon": "mdi:settings"
+            },
+            "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-5878-73fb-8411-55916778d9a4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_connection",
+              "icon": "mdi:ethernet"
+            },
+            "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "content": "I want to subscribe to internet",
+      "task": {
+        "id": "b88gg278-d5g3-55ed-a0g9-f0f756793561",
+        "status": "COMPLETED",
+        "description": "Setup internet subscription at user's address.",
+        "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
+      },
+      "answer": "Internet subscription is being initiated."
+    },
+    {
+      "blueprint": {
+        "id": "ba6f7911-e232-469d-9060-2881852f6e59",
+        "title": "Basic Internet Subscription Setup",
+        "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_bbk_by_address",
+              "icon": "mdi:map-marker"
+            },
+            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_inventory",
+              "icon": "mdi:server"
+            },
+            "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209c-2e5a-777f-a04a-11960363fb25",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+            "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_product_by_speed",
+              "icon": "mdi:speedometer"
+            },
+            "next": ["019c4c9f-6864-7329-a872-a65efbbdb4d1"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019c4c9f-6864-7329-a872-a65efbbdb4d1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell"
+            },
+            "next": ["019b0270-c493-7072-9d50-87952c5dc547"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b0270-c493-7072-9d50-87952c5dc547",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "icon": "mdi:user"
+            },
+            "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_allocation",
+              "icon": "mdi:link"
+            },
+            "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell"
+            },
+            "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:configuration",
+              "icon": "mdi:settings"
+            },
+            "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-5878-73fb-8411-55916778d9a4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_connection",
+              "icon": "mdi:ethernet"
+            },
+            "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "content": "Help me get broadband internet",
+      "task": {
+        "id": "b88gg278-d5g3-55ed-a0g9-f0f756793562",
+        "status": "COMPLETED",
+        "description": "Setup internet subscription at user's address.",
+        "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
+      },
+      "answer": "Internet subscription is being initiated."
+    },
+    {
+      "blueprint": {
+        "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
+        "title": "Order and Compliance",
+        "description": "Ask the user to select a product, find it, check its compliance certificate, assign it, create the purchase order, prepare the payment, charge it once the user approves and ship it, then send email.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "ffe7081c-f922-4e30-9ac8-0fdf094913b2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "parameters": {
+                "question": "Which product would you like to order?"
+              },
+              "icon": "mdi:account-question"
+            },
+            "next": ["3b2bd895-1df4-4cb6-827c-35874f43615f"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:knowledge_lookup",
+              "icon": "mdi:book-search"
+            },
+            "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:create_payment_intent",
+              "icon": "mdi:credit-card-outline"
+            },
+            "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "icon": "mdi:account-question"
+            },
+            "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
+            "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:confirm_payment_intent",
+              "icon": "mdi:check-decagram"
+            },
+            "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "738b438a-757d-4653-8bc2-b921b130503c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "FEDEX:create_shipment",
+              "icon": "mdi:truck-delivery-outline"
+            },
+            "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "icon": "mdi:email"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "7447fdbc-a273-40d5-a822-843d98865292",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:cancel_payment_intent",
+              "icon": "mdi:credit-card-off-outline"
+            },
+            "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell-off"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "content": "Process an order with compliance certificate check, then take the payment and ship it.",
+      "knowledge": [
+        {
+          "id": "0a850a06-1eac-4df1-aa14-1fe5457246a7",
+          "type": "TEXT",
+          "text": "Product compliance certificate is required before creating a purchase order.",
+          "status": "COMPLETED",
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "b9f498a8-0967-475f-87ce-aa215078805d",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com.",
+          "status": "COMPLETED",
+          "createdAt": "2025-06-26T06:00:00Z"
+        }
+      ],
+      "task": {
+        "id": "ebada8a7-5b3c-4d18-b0be-7973c675742b",
+        "status": "COMPLETED",
+        "description": "Process an order with a compliance certificate check and a user-approved payment before shipping.",
+        "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e"
+      },
+      "answer": "Starting order compliance process. I'll find the product, verify its certificate and open a PO, then ask you to approve the charge before it is taken and ship it."
+    },
+    {
+      "blueprint": {
+        "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
+        "title": "Order and Compliance",
+        "description": "Ask the user to select a product, find it, check its compliance certificate, assign it, create the purchase order, prepare the payment, charge it once the user approves and ship it, then send email.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "ffe7081c-f922-4e30-9ac8-0fdf094913b2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "parameters": {
+                "question": "Which product would you like to order?"
+              },
+              "icon": "mdi:account-question"
+            },
+            "next": ["3b2bd895-1df4-4cb6-827c-35874f43615f"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:knowledge_lookup",
+              "icon": "mdi:book-search"
+            },
+            "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:create_payment_intent",
+              "icon": "mdi:credit-card-outline"
+            },
+            "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "icon": "mdi:account-question"
+            },
+            "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
+            "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:confirm_payment_intent",
+              "icon": "mdi:check-decagram"
+            },
+            "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "738b438a-757d-4653-8bc2-b921b130503c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "FEDEX:create_shipment",
+              "icon": "mdi:truck-delivery-outline"
+            },
+            "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "icon": "mdi:email"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "7447fdbc-a273-40d5-a822-843d98865292",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:cancel_payment_intent",
+              "icon": "mdi:credit-card-off-outline"
+            },
+            "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell-off"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "content": "I need to create a purchase order but first verify the product certificate, then charge me and ship it.",
+      "knowledge": [
+        {
+          "id": "0a850a06-1eac-4df1-aa14-1fe5457246a7",
+          "type": "TEXT",
+          "text": "Product compliance certificate is required before creating a purchase order.",
+          "status": "COMPLETED",
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "b9f498a8-0967-475f-87ce-aa215078805d",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com.",
+          "status": "COMPLETED",
+          "createdAt": "2025-06-26T06:00:00Z"
+        }
+      ],
+      "task": {
+        "id": "a545bea6-dc24-4fed-9b21-5eb4a426daeb",
+        "status": "COMPLETED",
+        "description": "Process an order with a compliance certificate check and a user-approved payment before shipping.",
+        "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e"
+      },
+      "answer": "I'll find the product, check its compliance certificate, open the PO and prepare the payment. Nothing is charged until you approve it; after that I'll ship it and notify via email."
+    },
+    {
+      "blueprint": {
+        "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
+        "title": "Order and Compliance",
+        "description": "Ask the user to select a product, find it, check its compliance certificate, assign it, create the purchase order, prepare the payment, charge it once the user approves and ship it, then send email.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "ffe7081c-f922-4e30-9ac8-0fdf094913b2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "parameters": {
+                "question": "Which product would you like to order?"
+              },
+              "icon": "mdi:account-question"
+            },
+            "next": ["3b2bd895-1df4-4cb6-827c-35874f43615f"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:knowledge_lookup",
+              "icon": "mdi:book-search"
+            },
+            "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:create_payment_intent",
+              "icon": "mdi:credit-card-outline"
+            },
+            "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "icon": "mdi:account-question"
+            },
+            "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
+            "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:confirm_payment_intent",
+              "icon": "mdi:check-decagram"
+            },
+            "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "738b438a-757d-4653-8bc2-b921b130503c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "FEDEX:create_shipment",
+              "icon": "mdi:truck-delivery-outline"
+            },
+            "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "icon": "mdi:email"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "7447fdbc-a273-40d5-a822-843d98865292",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:cancel_payment_intent",
+              "icon": "mdi:credit-card-off-outline"
+            },
+            "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell-off"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "content": "Check if product is compliant, open a PO and charge it after I confirm.",
+      "knowledge": [
+        {
+          "id": "0a850a06-1eac-4df1-aa14-1fe5457246a7",
+          "type": "TEXT",
+          "text": "Product compliance certificate is required before creating a purchase order.",
+          "status": "COMPLETED",
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "b9f498a8-0967-475f-87ce-aa215078805d",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com.",
+          "status": "COMPLETED",
+          "createdAt": "2025-06-26T06:00:00Z"
+        }
+      ],
+      "task": {
+        "id": "0176f3d0-e032-43f6-8b03-701171eb7f97",
+        "status": "COMPLETED",
+        "description": "Process an order with a compliance certificate check and a user-approved payment before shipping.",
+        "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e"
+      },
+      "answer": "Checking product compliance certificate now. PO will be created and the payment prepared; I'll ask you to confirm the charge before taking it, then ship the order."
+    },
+    {
+      "blueprint": {
+        "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
+        "title": "Order and Compliance",
+        "description": "Ask the user to select a product, find it, check its compliance certificate, assign it, create the purchase order, prepare the payment, charge it once the user approves and ship it, then send email.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "ffe7081c-f922-4e30-9ac8-0fdf094913b2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "parameters": {
+                "question": "Which product would you like to order?"
+              },
+              "icon": "mdi:account-question"
+            },
+            "next": ["3b2bd895-1df4-4cb6-827c-35874f43615f"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:knowledge_lookup",
+              "icon": "mdi:book-search"
+            },
+            "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:create_payment_intent",
+              "icon": "mdi:credit-card-outline"
+            },
+            "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "icon": "mdi:account-question"
+            },
+            "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
+            "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:confirm_payment_intent",
+              "icon": "mdi:check-decagram"
+            },
+            "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "738b438a-757d-4653-8bc2-b921b130503c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "FEDEX:create_shipment",
+              "icon": "mdi:truck-delivery-outline"
+            },
+            "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "icon": "mdi:email"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "7447fdbc-a273-40d5-a822-843d98865292",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:cancel_payment_intent",
+              "icon": "mdi:credit-card-off-outline"
+            },
+            "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell-off"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "content": "Order a product after verifying its compliance certificate, take the payment once I approve it and notify the manager.",
+      "knowledge": [
+        {
+          "id": "0a850a06-1eac-4df1-aa14-1fe5457246a7",
+          "type": "TEXT",
+          "text": "Product compliance certificate is required before creating a purchase order.",
+          "status": "COMPLETED",
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "b9f498a8-0967-475f-87ce-aa215078805d",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com.",
+          "status": "COMPLETED",
+          "createdAt": "2025-06-26T06:00:00Z"
+        }
+      ],
+      "task": {
+        "id": "56dd2fad-9c00-4845-bdbf-3a9930166483",
+        "status": "COMPLETED",
+        "description": "Process an order with a compliance certificate check and a user-approved payment before shipping.",
+        "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e"
+      },
+      "answer": "Starting compliance-gated order flow. Finding product, then checking certificate. If valid, the PO is opened and the payment prepared; once you approve the charge I'll ship it and notify the manager."
+    },
+    {
+      "blueprint": {
+        "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
+        "title": "Order and Compliance",
+        "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:knowledge_lookup",
+              "icon": "mdi:book-search"
+            },
+            "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:create_payment_intent",
+              "icon": "mdi:credit-card-outline"
+            },
+            "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "icon": "mdi:account-question"
+            },
+            "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
+            "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:confirm_payment_intent",
+              "icon": "mdi:check-decagram"
+            },
+            "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "738b438a-757d-4653-8bc2-b921b130503c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "FEDEX:create_shipment",
+              "icon": "mdi:truck-delivery-outline"
+            },
+            "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "icon": "mdi:email"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "7447fdbc-a273-40d5-a822-843d98865292",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:cancel_payment_intent",
+              "icon": "mdi:credit-card-off-outline"
+            },
+            "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell-off"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "content": "Order the product, ask me to approve the payment before charging, then ship it to the customer.",
+      "knowledge": [
+        {
+          "id": "0a850a06-1eac-4df1-aa14-1fe5457246a7",
+          "type": "TEXT",
+          "text": "Product compliance certificate is required before creating a purchase order.",
+          "status": "COMPLETED",
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
+        {
+          "id": "a59b94e7-e954-4c2e-a5be-ea9ad6d8030b",
+          "type": "TEXT",
+          "text": "The charge needs the user's approval; only an approved payment is confirmed and shipped, and the confirmation email carries the tracking number.",
+          "status": "COMPLETED",
+          "createdAt": "2025-06-26T06:00:00Z"
+        }
+      ],
+      "task": {
+        "id": "a545bea6-dc24-4fed-9b21-5eb4a426daeb",
+        "status": "COMPLETED",
+        "description": "Process an order with a compliance certificate check and a user-approved payment before shipping.",
+        "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e"
+      },
+      "answer": "Starting the order. I'll verify the certificate, open the PO and prepare the payment, then ask you to approve the charge before anything is taken. Once approved, I'll ship it and email the confirmation with the tracking number."
+    },
+    {
+      "blueprint": {
+        "id": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
+        "title": "Compliance Certificate Notification",
+        "description": "Check the compliance certificate status of a product and inform the user about the result.",
+        "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+        "nodes": [
+          {
+            "id": "81b62178-c7e0-4af1-9eb9-a559a0a9290e",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:knowledge_lookup",
+              "icon": "mdi:book-search"
+            },
+            "next": ["8f01126f-97b1-4b47-8c3c-b09de10879f9"],
+            "createdAt": "2025-06-29T08:00:00Z"
+          },
+          {
+            "id": "8f01126f-97b1-4b47-8c3c-b09de10879f9",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell"
+            },
+            "next": ["5ce77c06-8c90-45f7-9981-efbc07b7aec0"],
+            "createdAt": "2025-06-29T08:00:00Z"
+          },
+          {
+            "id": "5ce77c06-8c90-45f7-9981-efbc07b7aec0",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-29T08:00:00Z"
+          }
+        ]
+      },
+      "content": "Check product compliance certificate and inform the user about the result.",
+      "knowledge": [
+        {
+          "id": "96764c82-4e5a-4e15-b071-8b622152fc40",
+          "type": "TEXT",
+          "text": "Compliance certificates must be verified before any order or regulatory step.",
+          "status": "COMPLETED",
           "createdAt": "2025-06-29T08:00:00Z"
         }
-      ]
-    },
-    "content": "Check product compliance certificate and inform the user about the result.",
-    "knowledge": [
-      {
-        "id": "96764c82-4e5a-4e15-b071-8b622152fc40",
-        "type": "TEXT",
-        "text": "Compliance certificates must be verified before any order or regulatory step.",
+      ],
+      "task": {
+        "id": "876e5263-2ae1-4c4c-bc3e-98d99ba79bcf",
         "status": "COMPLETED",
-        "createdAt": "2025-06-29T08:00:00Z"
-      }
-    ],
-    "task": {
-      "id": "876e5263-2ae1-4c4c-bc3e-98d99ba79bcf",
-      "status": "COMPLETED",
-      "description": "Verify compliance certificate for the product and notify the user.",
-      "blueprintId": "98cdf921-c608-46ff-ad35-83c994ef8cc7"
+        "description": "Verify compliance certificate for the product and notify the user.",
+        "blueprintId": "98cdf921-c608-46ff-ad35-83c994ef8cc7"
+      },
+      "answer": "Checking product compliance certificate and notifying the user about the result."
     },
-    "answer": "Checking product compliance certificate and notifying the user about the result."
-  },
-  {
-    "blueprint": {
-      "id": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
-      "title": "Compliance Certificate Notification",
-      "description": "Check the compliance certificate status of a product and inform the user about the result.",
-      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
-      "nodes": [
-        {
-          "id": "81b62178-c7e0-4af1-9eb9-a559a0a9290e",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:knowledge_lookup",
-            "icon": "mdi:book-search"
+    {
+      "blueprint": {
+        "id": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
+        "title": "Compliance Certificate Notification",
+        "description": "Check the compliance certificate status of a product and inform the user about the result.",
+        "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+        "nodes": [
+          {
+            "id": "81b62178-c7e0-4af1-9eb9-a559a0a9290e",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:knowledge_lookup",
+              "icon": "mdi:book-search"
+            },
+            "next": ["8f01126f-97b1-4b47-8c3c-b09de10879f9"],
+            "createdAt": "2025-06-29T08:00:00Z"
           },
-          "next": ["8f01126f-97b1-4b47-8c3c-b09de10879f9"],
-          "createdAt": "2025-06-29T08:00:00Z"
-        },
-        {
-          "id": "8f01126f-97b1-4b47-8c3c-b09de10879f9",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:bell"
+          {
+            "id": "8f01126f-97b1-4b47-8c3c-b09de10879f9",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell"
+            },
+            "next": ["5ce77c06-8c90-45f7-9981-efbc07b7aec0"],
+            "createdAt": "2025-06-29T08:00:00Z"
           },
-          "next": ["5ce77c06-8c90-45f7-9981-efbc07b7aec0"],
-          "createdAt": "2025-06-29T08:00:00Z"
-        },
+          {
+            "id": "5ce77c06-8c90-45f7-9981-efbc07b7aec0",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-29T08:00:00Z"
+          }
+        ]
+      },
+      "content": "I need to verify whether the product has a compliance certificate.",
+      "knowledge": [
         {
-          "id": "5ce77c06-8c90-45f7-9981-efbc07b7aec0",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check"
-          },
-          "next": null,
+          "id": "96764c82-4e5a-4e15-b071-8b622152fc40",
+          "type": "TEXT",
+          "text": "Compliance certificates must be verified before any order or regulatory step.",
+          "status": "COMPLETED",
           "createdAt": "2025-06-29T08:00:00Z"
         }
-      ]
-    },
-    "content": "I need to verify whether the product has a compliance certificate.",
-    "knowledge": [
-      {
-        "id": "96764c82-4e5a-4e15-b071-8b622152fc40",
-        "type": "TEXT",
-        "text": "Compliance certificates must be verified before any order or regulatory step.",
+      ],
+      "task": {
+        "id": "edda7854-7f59-4476-bcee-d8d72f4cfce3",
         "status": "COMPLETED",
-        "createdAt": "2025-06-29T08:00:00Z"
-      }
-    ],
-    "task": {
-      "id": "edda7854-7f59-4476-bcee-d8d72f4cfce3",
-      "status": "COMPLETED",
-      "description": "Verify compliance certificate for the product and notify the user.",
-      "blueprintId": "98cdf921-c608-46ff-ad35-83c994ef8cc7"
+        "description": "Verify compliance certificate for the product and notify the user.",
+        "blueprintId": "98cdf921-c608-46ff-ad35-83c994ef8cc7"
+      },
+      "answer": "I'll check the product's compliance certificate right away and inform you of the findings."
     },
-    "answer": "I'll check the product's compliance certificate right away and inform you of the findings."
-  },
-  {
-    "blueprint": {
-      "id": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
-      "title": "Compliance Certificate Notification",
-      "description": "Check the compliance certificate status of a product and inform the user about the result.",
-      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
-      "nodes": [
-        {
-          "id": "81b62178-c7e0-4af1-9eb9-a559a0a9290e",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:knowledge_lookup",
-            "icon": "mdi:book-search"
+    {
+      "blueprint": {
+        "id": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
+        "title": "Compliance Certificate Notification",
+        "description": "Check the compliance certificate status of a product and inform the user about the result.",
+        "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+        "nodes": [
+          {
+            "id": "81b62178-c7e0-4af1-9eb9-a559a0a9290e",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:knowledge_lookup",
+              "icon": "mdi:book-search"
+            },
+            "next": ["8f01126f-97b1-4b47-8c3c-b09de10879f9"],
+            "createdAt": "2025-06-29T08:00:00Z"
           },
-          "next": ["8f01126f-97b1-4b47-8c3c-b09de10879f9"],
-          "createdAt": "2025-06-29T08:00:00Z"
-        },
-        {
-          "id": "8f01126f-97b1-4b47-8c3c-b09de10879f9",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "icon": "mdi:bell"
+          {
+            "id": "8f01126f-97b1-4b47-8c3c-b09de10879f9",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell"
+            },
+            "next": ["5ce77c06-8c90-45f7-9981-efbc07b7aec0"],
+            "createdAt": "2025-06-29T08:00:00Z"
           },
-          "next": ["5ce77c06-8c90-45f7-9981-efbc07b7aec0"],
-          "createdAt": "2025-06-29T08:00:00Z"
-        },
+          {
+            "id": "5ce77c06-8c90-45f7-9981-efbc07b7aec0",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-29T08:00:00Z"
+          }
+        ]
+      },
+      "content": "Run a compliance check on the product and send the result to the user.",
+      "knowledge": [
         {
-          "id": "5ce77c06-8c90-45f7-9981-efbc07b7aec0",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "icon": "mdi:check"
-          },
-          "next": null,
+          "id": "96764c82-4e5a-4e15-b071-8b622152fc40",
+          "type": "TEXT",
+          "text": "Compliance certificates must be verified before any order or regulatory step.",
+          "status": "COMPLETED",
           "createdAt": "2025-06-29T08:00:00Z"
         }
-      ]
-    },
-    "content": "Run a compliance check on the product and send the result to the user.",
-    "knowledge": [
-      {
-        "id": "96764c82-4e5a-4e15-b071-8b622152fc40",
-        "type": "TEXT",
-        "text": "Compliance certificates must be verified before any order or regulatory step.",
+      ],
+      "task": {
+        "id": "8ea625fb-9959-487d-ab77-2a203c4502ec",
         "status": "COMPLETED",
-        "createdAt": "2025-06-29T08:00:00Z"
-      }
-    ],
-    "task": {
-      "id": "8ea625fb-9959-487d-ab77-2a203c4502ec",
-      "status": "COMPLETED",
-      "description": "Verify compliance certificate for the product and notify the user.",
-      "blueprintId": "98cdf921-c608-46ff-ad35-83c994ef8cc7"
-    },
-    "answer": "Running compliance certificate check now. Once verified, I'll send the result directly to the user."
-  }
-]
+        "description": "Verify compliance certificate for the product and notify the user.",
+        "blueprintId": "98cdf921-c608-46ff-ad35-83c994ef8cc7"
+      },
+      "answer": "Running compliance certificate check now. Once verified, I'll send the result directly to the user."
+    }
+  ]
+}

@@ -18,7 +18,7 @@ import {
   TextField,
   useMediaQuery,
 } from "@mui/material";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 function TasksWidget({
   agentId,
@@ -31,7 +31,12 @@ function TasksWidget({
 }) {
   const [aiResponded] = useEvent("AI_RESPONDED", null);
 
-  const { tasks, steps, getSteps, loading } = useTasks(agentId, [aiResponded]);
+  const { tasks, steps, getSteps, getTasks, loading } = useTasks(agentId, [
+    aiResponded,
+  ]);
+
+  const getTasksRef = useRef(getTasks);
+  getTasksRef.current = getTasks;
 
   const isLoading = useLoading(loading);
 
@@ -39,6 +44,7 @@ function TasksWidget({
     "All" | "COMPLETED" | "IN_PROGRESS"
   >("All");
   const [query, setQuery] = useState<string>("");
+  const [detailsExpanded, setDetailsExpanded] = useState<boolean>(false);
   const [selectedTask, setSelectedTask] = useState<{
     id: string;
     description: string;
@@ -84,11 +90,21 @@ function TasksWidget({
       if (task) {
         setSelectedTask(task);
       }
-    } else if (!selectedTask && filteredTasks.length) {
+    } else if (!selectedTask?.id && filteredTasks.length) {
       setSelectedTask(filteredTasks[0]);
     }
     // eslint-disable-next-line
   }, [filteredTasks.length, supervisionRaised, taskId, tasks]);
+
+  useEffect(() => {
+    if (!agentId) return;
+
+    const interval = setInterval(() => {
+      getTasksRef.current();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [agentId]);
 
   useEffect(() => {
     if (!selectedTask?.id) return;
@@ -161,14 +177,15 @@ function TasksWidget({
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: supervisionRaised
-              ? "1fr"
-              : { xs: "1fr", md: "380px 1fr" },
+            gridTemplateColumns:
+              supervisionRaised || detailsExpanded
+                ? "1fr"
+                : { xs: "1fr", md: "380px 1fr" },
             gap: 2,
             alignItems: "start",
           }}
         >
-          {!supervisionRaised && (
+          {!supervisionRaised && !detailsExpanded && (
             <Card
               sx={{
                 borderRadius: 2,
@@ -262,6 +279,8 @@ function TasksWidget({
                     steps={steps}
                     agentId={agentId}
                     getSteps={getSteps}
+                    isExpanded={detailsExpanded}
+                    onToggleExpand={() => setDetailsExpanded((prev) => !prev)}
                   />
                 </Box>
               </Card>

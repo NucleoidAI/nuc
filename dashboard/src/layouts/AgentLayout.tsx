@@ -2,7 +2,7 @@ import APITab from "../widgets/APITab/APITab";
 import AgentDevToolWidget from "../widgets/AgentDevToolWidget";
 import AgentMCP from "../widgets/AgentMCP/AgentMCP";
 import BlueprintsWidget from "../widgets/BlueprintsWidget/BlueprintsWidget";
-import Communication from "../widgets/Communication/Communication";
+import Channel from "../widgets/Channel/Channel";
 import { Iconify } from "@canmingir/link/platform/components";
 import Knowledge from "../widgets/Knowledge/Knowledge";
 import Profile from "../widgets/Profile/Profile";
@@ -51,8 +51,8 @@ const TABS = [
     icon: <Iconify icon="material-symbols:task" width={24} />,
   },
   {
-    value: "communication",
-    label: "Communication",
+    value: "channels",
+    label: "Channels",
     icon: <Iconify icon="material-symbols:chat" width={24} />,
   },
   {
@@ -193,7 +193,7 @@ function AgentLayout({
         {currentTab === "supervisings" && <Supervising agentId={agent.id} />}
         {currentTab === "tasks" && <TasksWidget agentId={agent.id} />}
         {currentTab === "mcps" && <AgentMCP agent={agent} />}
-        {currentTab === "communication" && <Communication />}
+        {currentTab === "channels" && <Channel />}
         {currentTab === "api" && !beta && <APITab agentId={agent.id} />}
       </Box>
 

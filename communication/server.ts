@@ -3,6 +3,8 @@ import config from "./config";
 import { createApp } from "./app";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import dotenv from "dotenv";
+import emailInbox from "./email/inbox";
+import emailSession from "./email/session";
 import { event } from "@canmingir/link-express/event/client";
 import express from "express";
 import http from "http";
@@ -65,6 +67,9 @@ const startServer = async () => {
   mainApp.use("/whatsapp", whatsapp);
 
   await whatsappSession.setup();
+
+  await emailSession.setup();
+  emailInbox.setup().catch(console.error);
 
   const server = http.createServer(mainApp);
 

@@ -1,7 +1,7 @@
 import { DrawerLayout } from "@canmingir/link/layouts";
 import PseudocodeViewer from "./PseudocodeViewer";
 import SearchIcon from "@mui/icons-material/Search";
-import { isBranchNodeType } from "../BlueprintFlow/helper";
+import type { SwitchCase } from "../BlueprintFlow/helper";
 import { useState } from "react";
 
 import {
@@ -16,6 +16,8 @@ import {
   Pagination,
   Select,
   Stack,
+  Tab,
+  Tabs,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
@@ -24,6 +26,7 @@ import {
 } from "@mui/material";
 import { Iconify, LinkSwipe } from "@canmingir/link/platform/components";
 import NodeInputValues, { getInputError } from "./NodeInputValues";
+import { isBranchNodeType, isSwitchNodeType } from "../BlueprintFlow/helper";
 
 const NodeEditorDrawer = ({
   parameters = {},
@@ -46,6 +49,11 @@ const NodeEditorDrawer = ({
   setNewNodeForce,
   newNodeType,
   setNewNodeType,
+  newNodeCaseLabel = "",
+  setNewNodeCaseLabel,
+  switchCases = [],
+  setSwitchCases,
+  caseTargetLabels = {},
   selectedBranch,
   setSelectedBranch,
   inheritedNextBranch,
@@ -56,8 +64,6 @@ const NodeEditorDrawer = ({
   setSearchQuery,
   selectedIntegration,
   setSelectedIntegration,
-  parentIntegration,
-  nextIntegration,
   handleSubmit,
   editMode,
   pseudocode,
@@ -96,6 +102,11 @@ const NodeEditorDrawer = ({
   setNewNodeForce?: (force: boolean) => void;
   newNodeType: string;
   setNewNodeType: (type: string) => void;
+  newNodeCaseLabel?: string;
+  setNewNodeCaseLabel?: (label: string) => void;
+  switchCases?: SwitchCase[];
+  setSwitchCases?: (cases: SwitchCase[]) => void;
+  caseTargetLabels?: Record<string, string>;
   selectedBranch: "true" | "false";
   setSelectedBranch: (branch: "true" | "false") => void;
   inheritedNextBranch: "true" | "false" | "none";
@@ -192,68 +203,6 @@ const NodeEditorDrawer = ({
       >;
     };
   }) => void;
-  parentIntegration: {
-    id: string;
-    action: string;
-    provider: string;
-    description: string;
-    icon: string;
-    direction: string;
-    lib: string;
-    inputSchema: {
-      type?: string;
-      properties?: Record<
-        string,
-        {
-          type: string;
-          description?: string;
-          nullable?: boolean;
-        }
-      >;
-    };
-    outputSchema?: {
-      type?: string;
-      properties?: Record<
-        string,
-        {
-          type: string;
-          description?: string;
-          nullable?: boolean;
-        }
-      >;
-    };
-  };
-  nextIntegration: {
-    id: string;
-    action: string;
-    provider: string;
-    description: string;
-    icon: string;
-    direction: string;
-    lib: string;
-    inputSchema: {
-      type?: string;
-      properties?: Record<
-        string,
-        {
-          type: string;
-          description?: string;
-          nullable?: boolean;
-        }
-      >;
-    };
-    outputSchema?: {
-      type?: string;
-      properties?: Record<
-        string,
-        {
-          type: string;
-          description?: string;
-          nullable?: boolean;
-        }
-      >;
-    };
-  };
   handleSubmit: () => void;
   editMode?: boolean;
   pseudocode?: string;
@@ -266,24 +215,33 @@ const NodeEditorDrawer = ({
 }) => {
   const theme = useTheme();
   const [integrationPage, setIntegrationPage] = useState(1);
+  const [activeTab, setActiveTab] = useState<"node" | "details" | "params">(
+    "node"
+  );
   const ITEMS_PER_PAGE = 3;
 
   const isApprovalNode = newNodeType === "APPROVAL";
+  const isSwitchNode = isSwitchNodeType(newNodeType);
   const isParentBranch = isBranchNodeType(selectedParentNode?.nodeType);
   const isParentApproval = selectedParentNode?.nodeType === "APPROVAL";
+  const isParentSwitch = isSwitchNodeType(selectedParentNode?.nodeType);
   const usesIntegration =
-    !isBranchNodeType(newNodeType) && newNodeType !== "HANDOFF";
+    !isBranchNodeType(newNodeType) &&
+    !isSwitchNodeType(newNodeType) &&
+    newNodeType !== "HANDOFF";
 
   const descriptionPlaceholder =
     newNodeType === "CONDITION"
       ? "A decision node that branches the flow based on conditions."
       : isApprovalNode
       ? "Waits for the customer to approve or reject before continuing."
+      : isSwitchNode
+      ? "Routes the flow to one of several branches, chosen by the agent."
       : newNodeType === "HANDOFF"
       ? "Transfer this task to another agent's blueprint."
       : selectedIntegration?.description || "";
 
-  const formFields = (
+  const nodeFields = (
     <Stack spacing={2}>
       <TextField
         label="Label"
@@ -309,7 +267,6 @@ const NodeEditorDrawer = ({
         value={newNodeDescription}
         onChange={(e) => setNewNodeDescription?.(e.target.value)}
         placeholder={descriptionPlaceholder}
-        helperText="Shown on the node card. Leave empty to use the default."
         autoComplete="off"
         inputProps={{
           autoComplete: "off",
@@ -318,8 +275,44 @@ const NodeEditorDrawer = ({
         }}
       />
 
-      <Box>
+      <Box
+        sx={{
+          border: "1px solid",
+          borderColor: "divider",
+          borderRadius: 1,
+          p: 1,
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Box>
+            <Typography variant="subtitle2" fontWeight="bold">
+              Pseudocode
+            </Typography>
+          </Box>
+
+          <Box sx={{ mt: 1 }}>
+            <LinkSwipe
+              checked={newNodePseudocodeEnabled}
+              onChange={(value) => setNewNodePseudocodeEnabled?.(value)}
+              theme={theme}
+              color="primary"
+              variant="solid"
+              disabled={pseudocodeLoading}
+              ariaLabel="Generate pseudocode"
+              height={30}
+              width={90}
+            />
+          </Box>
+        </Box>
+
         <TextField
+          sx={{ mt: 2 }}
           label="Instructions"
           variant="outlined"
           fullWidth
@@ -341,49 +334,11 @@ const NodeEditorDrawer = ({
           }}
         />
 
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 1.5,
-            mt: 1.5,
-          }}
-        >
-          <Box sx={{ textAlign: "left", flex: 1, minWidth: 0 }}>
-            <Typography variant="subtitle2" fontWeight="bold">
-              Pseudocode
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              {!newNodeInstructions.trim()
-                ? "Write the instructions first to generate pseudocode from them."
-                : pseudocodeLoading
-                ? "Generating..."
-                : newNodePseudocodeEnabled
-                ? "The agent receives this instead of the instructions."
-                : "Send generated pseudocode instead of the instructions."}
-            </Typography>
-          </Box>
-          <Box sx={{ flexShrink: 0 }}>
-            <LinkSwipe
-              checked={newNodePseudocodeEnabled}
-              onChange={(value) => setNewNodePseudocodeEnabled?.(value)}
-              theme={theme}
-              disabled={!newNodeInstructions.trim() || pseudocodeLoading}
-              ariaLabel="Generate pseudocode"
-              height={50}
-            />
-          </Box>
-        </Box>
-
         {newNodePseudocodeEnabled && !pseudocodeLoading && (
-          <Box sx={{ mt: 1.5 }}>
+          <Box sx={{ mt: 1 }}>
             {pseudocode && pseudocode.trim() ? (
               <PseudocodeViewer code={pseudocode} />
-            ) : (
-              <Typography variant="caption" color="text.secondary">
-                Not available
-              </Typography>
-            )}
+            ) : null}
           </Box>
         )}
       </Box>
@@ -434,6 +389,7 @@ const NodeEditorDrawer = ({
         >
           <MenuItem value="NORMAL">Normal</MenuItem>
           <MenuItem value="CONDITION">Condition</MenuItem>
+          <MenuItem value="SWITCH">Switch</MenuItem>
           <MenuItem value="APPROVAL">Customer Approval</MenuItem>
           <MenuItem value="HANDOFF">Handoff</MenuItem>
         </Select>
@@ -533,6 +489,76 @@ const NodeEditorDrawer = ({
             </MenuItem>
           </Select>
         </FormControl>
+      )}
+
+      {isParentSwitch && (
+        <TextField
+          label="Case label"
+          variant="outlined"
+          fullWidth
+          value={newNodeCaseLabel}
+          onChange={(e) => setNewNodeCaseLabel?.(e.target.value)}
+          placeholder="Refund request"
+          helperText={`The agent routes to this branch when the case matches. Leave empty to use the node label.`}
+          autoComplete="off"
+          inputProps={{
+            autoComplete: "off",
+            autoCorrect: "off",
+            spellCheck: false,
+          }}
+        />
+      )}
+
+      {isSwitchNode && editMode && switchCases.length > 0 && (
+        <Box>
+          <Typography variant="subtitle2" gutterBottom>
+            Cases
+          </Typography>
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            display="block"
+            sx={{ mb: 1.5 }}
+          >
+            The agent picks one of these branches from the instructions and the
+            live task data.
+          </Typography>
+          <Stack spacing={1.5}>
+            {switchCases.map((switchCase, index) => (
+              <TextField
+                key={switchCase.nodeId}
+                label={caseTargetLabels[switchCase.nodeId] || switchCase.nodeId}
+                variant="outlined"
+                fullWidth
+                size="small"
+                value={switchCase.label ?? ""}
+                onChange={(e) =>
+                  setSwitchCases?.(
+                    switchCases.map((item, itemIndex) =>
+                      itemIndex === index
+                        ? { ...item, label: e.target.value }
+                        : item
+                    )
+                  )
+                }
+                placeholder={caseTargetLabels[switchCase.nodeId] || ""}
+                autoComplete="off"
+                inputProps={{
+                  autoComplete: "off",
+                  autoCorrect: "off",
+                  spellCheck: false,
+                }}
+              />
+            ))}
+          </Stack>
+        </Box>
+      )}
+
+      {isSwitchNode && !editMode && (
+        <Typography variant="caption" color="text.secondary">
+          Add child nodes to this switch; each child becomes a case the agent
+          chooses between.
+        </Typography>
       )}
 
       {isBranchNodeType(newNodeType) && hasInheritedNext && (
@@ -715,117 +741,11 @@ const NodeEditorDrawer = ({
           )}
         </Box>
       )}
+    </Stack>
+  );
 
-      {usesIntegration && (parentIntegration || nextIntegration) && (
-        <Box
-          sx={{
-            p: 2,
-            border: "1px solid",
-            borderColor: "divider",
-            borderRadius: 1,
-            bgcolor: "background.default",
-          }}
-        >
-          <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
-            Data Flow Context
-          </Typography>
-
-          {parentIntegration?.outputSchema?.properties && (
-            <Box sx={{ mb: nextIntegration ? 2 : 0 }}>
-              <Typography
-                variant="subtitle2"
-                fontWeight="bold"
-                color="primary"
-                gutterBottom
-              >
-                Parent Node: {parentIntegration.action}
-              </Typography>
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                display="block"
-                sx={{ mb: 1 }}
-              >
-                Output (available data):
-              </Typography>
-              <Box sx={{ pl: 2 }}>
-                {Object.entries(parentIntegration.outputSchema.properties).map(
-                  ([key, value]: [
-                    string,
-                    {
-                      type: string;
-                      description?: string;
-                      nullable?: boolean;
-                    }
-                  ]) => (
-                    <Box key={key} sx={{ mb: 0.5 }}>
-                      <Typography variant="body2" component="span">
-                        <strong>{key}:</strong>{" "}
-                        <Typography
-                          component="span"
-                          variant="body2"
-                          color="text.secondary"
-                        >
-                          {value.type}
-                          {value.description && ` - ${value.description}`}
-                        </Typography>
-                      </Typography>
-                    </Box>
-                  )
-                )}
-              </Box>
-            </Box>
-          )}
-
-          {nextIntegration?.inputSchema?.properties && (
-            <Box>
-              <Typography
-                variant="subtitle2"
-                fontWeight="bold"
-                color="error"
-                gutterBottom
-              >
-                Next Node: {nextIntegration.action}
-              </Typography>
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                display="block"
-                sx={{ mb: 1 }}
-              >
-                Input (required data):
-              </Typography>
-              <Box sx={{ pl: 2 }}>
-                {Object.entries(nextIntegration.inputSchema.properties).map(
-                  ([key, value]: [
-                    string,
-                    {
-                      type: string;
-                      description?: string;
-                      nullable?: boolean;
-                    }
-                  ]) => (
-                    <Box key={key} sx={{ mb: 0.5 }}>
-                      <Typography variant="body2" component="span">
-                        <strong>{key}:</strong>{" "}
-                        <Typography
-                          component="span"
-                          variant="body2"
-                          color="text.secondary"
-                        >
-                          {value.type}
-                          {value.description && ` - ${value.description}`}
-                        </Typography>
-                      </Typography>
-                    </Box>
-                  )
-                )}
-              </Box>
-            </Box>
-          )}
-        </Box>
-      )}
-
+  const detailsFields = (
+    <Stack spacing={2}>
       {selectedIntegration?.id && usesIntegration && (
         <Box
           sx={{
@@ -836,26 +756,14 @@ const NodeEditorDrawer = ({
             bgcolor: "background.paper",
           }}
         >
-          <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
-            Selected Integration Details
-          </Typography>
-
-          <Box sx={{ mb: 2 }}>
+          <Box sx={{ mb: 1 }}>
             <Typography variant="subtitle2" color="primary" gutterBottom>
               {selectedIntegration.action}
             </Typography>
-            <Typography variant="body2" color="text.secondary" paragraph>
+            <Typography variant="body2" color="text.secondary">
               {selectedIntegration.description}
             </Typography>
           </Box>
-
-          {onParametersChange && (
-            <NodeInputValues
-              properties={selectedIntegration.inputSchema?.properties ?? {}}
-              parameters={parameters}
-              onChange={onParametersChange}
-            />
-          )}
 
           {selectedIntegration.outputSchema?.properties && (
             <Box>
@@ -894,32 +802,56 @@ const NodeEditorDrawer = ({
           )}
         </Box>
       )}
-
-      <Button
-        size="large"
-        variant="contained"
-        onClick={handleSubmit}
-        disabled={
-          !newNodeLabel ||
-          (newNodeType === "NORMAL" &&
-            Object.entries(
-              selectedIntegration?.inputSchema?.properties ?? {}
-            ).some(([field, schema]) =>
-              getInputError({ parameters, field, schema })
-            )) ||
-          (newNodeType === "HANDOFF" && !handoffTargetAgentId) ||
-          (usesIntegration && !selectedIntegration?.id)
-        }
-      >
-        {editMode ? "Save Node" : "Add Node"}
-      </Button>
     </Stack>
   );
+
+  const paramsFields = (
+    <Stack spacing={2}>
+      {usesIntegration && selectedIntegration?.id && onParametersChange ? (
+        <NodeInputValues
+          properties={selectedIntegration.inputSchema?.properties ?? {}}
+          parameters={parameters}
+          onChange={onParametersChange}
+        />
+      ) : (
+        <Typography variant="body2" color="text.secondary">
+          Select an integration to configure its parameters.
+        </Typography>
+      )}
+    </Stack>
+  );
+
+  const submitButton = (
+    <Button
+      size="large"
+      variant="contained"
+      fullWidth
+      onClick={handleSubmit}
+      disabled={
+        !newNodeLabel ||
+        (newNodeType === "NORMAL" &&
+          Object.entries(
+            selectedIntegration?.inputSchema?.properties ?? {}
+          ).some(([field, schema]) =>
+            getInputError({ parameters, field, schema })
+          )) ||
+        (newNodeType === "HANDOFF" && !handoffTargetAgentId) ||
+        (usesIntegration && !selectedIntegration?.id)
+      }
+    >
+      {editMode ? "Save Node" : "Add Node"}
+    </Button>
+  );
+
+  const onDrawerClose = () => {
+    setActiveTab("node");
+    handleDrawerClose();
+  };
 
   return (
     <DrawerLayout
       open={drawerOpen}
-      onClose={handleDrawerClose}
+      onClose={onDrawerClose}
       mode="narrow"
       sx={{ zIndex: (theme) => theme.zIndex.modal + 2 }}
       title={
@@ -935,7 +867,46 @@ const NodeEditorDrawer = ({
         </Box>
       }
     >
-      <Box data-cy="node-editor-drawer">{formFields}</Box>
+      <Box
+        data-cy="node-editor-drawer"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+        }}
+      >
+        <Tabs
+          value={activeTab}
+          onChange={(_, value) => setActiveTab(value)}
+          sx={{ mb: 2, borderBottom: 1, borderColor: "divider" }}
+        >
+          <Tab label="Node" value="node" />
+          <Tab label="Details" value="details" />
+          <Tab label="Params" value="params" />
+        </Tabs>
+
+        <Box sx={{ flex: 1, overflowY: "auto" }}>
+          <Box sx={{ display: activeTab === "node" ? "block" : "none" }}>
+            {nodeFields}
+          </Box>
+          <Box sx={{ display: activeTab === "details" ? "block" : "none" }}>
+            {detailsFields}
+          </Box>
+          <Box sx={{ display: activeTab === "params" ? "block" : "none" }}>
+            {paramsFields}
+          </Box>
+        </Box>
+
+        <Box
+          sx={{
+            pt: 2,
+            borderTop: 1,
+            borderColor: "divider",
+          }}
+        >
+          {submitButton}
+        </Box>
+      </Box>
     </DrawerLayout>
   );
 };

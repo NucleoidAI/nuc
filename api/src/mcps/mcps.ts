@@ -5335,7 +5335,8 @@ const MCPs = [
         },
         content_type: {
           type: "string",
-          description: "MIME type stored against the object, null when none was given",
+          description:
+            "MIME type stored against the object, null when none was given",
           nullable: true,
         },
         etag: {
@@ -5369,7 +5370,7 @@ const MCPs = [
     description:
       "Convert one or more MOL blocks (V2000 or V3000) into a single SDF document. Several molfiles pasted one after another become several SDF records, and SDF given as input keeps the data fields it already carries. The atom and bond blocks are passed through untouched - no chemistry is inferred, nothing is re-computed. Returns the SDF as text; write it somewhere with S3:put_object if it needs to be stored.",
     direction: "OUTGOING",
-    icon: "simple-icons:molecule",
+    icon: "simple-icons:moleculer",
     lib: "mcp",
     inputSchema: {
       type: "object",

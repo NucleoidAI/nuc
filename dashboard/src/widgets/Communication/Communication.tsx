@@ -134,8 +134,7 @@ const Communication = () => {
           backgroundImage: `repeating-linear-gradient(145deg, #252424 0 2px, transparent 2px 15px, #252424 15px 16px, transparent 16px 29px)`,
           borderRadius: 2,
           p: 2,
-          mb: 2,
-          height: "70vh",
+          height: "70%",
         }}
       >
         <CommunicationDiagram

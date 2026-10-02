@@ -40,7 +40,7 @@ function CommunicationDiagram(props: {
     leftX = 0,
     horizontalGap = 500,
     verticalGap = 20,
-    minHeight = "60vh",
+    minHeight = "55vh",
     colorMap,
     containerProps,
     showRightIcons = true,

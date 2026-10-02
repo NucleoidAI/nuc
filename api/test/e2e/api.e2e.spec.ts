@@ -1,4 +1,5 @@
 import { ORDER_AGENT_ID } from "./fixtures/ids";
+import { mcp } from "./mocks/mcp";
 import { randomUUID } from "node:crypto";
 import supertest from "supertest";
 
@@ -101,6 +102,22 @@ describe("Blueprint API", () => {
 
     expect(response.body).toEqual({ customer: "Ada", plan: "PRO" });
     expect(response.headers["x-task-id"]).toEqual(expect.any(String));
+
+    await supertest(app)
+      .post(`/execute/${blueprint.id}`)
+      .send({ name: "Ada", plan: "PRO" })
+      .expect(200);
+
+    const { default: Task } = await import("../../src/models/Task");
+    const tasks = await Task.findAll({
+      where: { blueprintId: blueprint.id },
+      order: [["createdAt", "ASC"]],
+    });
+
+    expect(tasks.map((task) => task.description)).toEqual([
+      "API blueprint #1",
+      "API blueprint #2",
+    ]);
   }, 60_000);
 
   it("rejects missing, invalid and unknown fields in strict mode", async () => {
@@ -252,4 +269,178 @@ describe("Blueprint API", () => {
 
     await supertest(app).post(`/execute/${blueprint.id}`).send({}).expect(404);
   });
+});
+
+describe("Blueprint API in LITE mode", () => {
+  const llmCalls = async (taskId: string) => {
+    const { default: LLMLog } = await import("../../src/models/LLMLog");
+    return LLMLog.count({ where: { taskId } });
+  };
+
+  const stepsOf = async (taskId: string) => {
+    const { default: Step } = await import("../../src/models/Step");
+    const steps = await Step.findAll({
+      where: { taskId },
+      order: [["createdAt", "ASC"]],
+    });
+    return steps.map((step) => [step.action, step.status]);
+  };
+
+  const findNode = (next: string[]) => ({
+    id: "find",
+    type: "NORMAL",
+    next,
+    properties: {
+      label: "Find",
+      icon: "mdi:magnify",
+      action: "ORDER:find_product",
+      parameters: { product_id: ref("name"), name: ref("name") },
+    },
+  });
+
+  it("runs every node in graph order without calling the LLM", async () => {
+    mcp
+      .tool("ORDER:find_product")
+      .returns({ product_id: "prd-1", name: "product-1" });
+
+    const blueprint = await createBlueprint({
+      api: true,
+      executionMode: "LITE",
+      nodes: [
+        startNode({ fields: requestFields }, ["find"]),
+        findNode([END]),
+        endNode({
+          fields: [{ name: "product", type: "string" }],
+          parameters: { product: { $ref: "byNode.find.result.product_id" } },
+        }),
+      ],
+    });
+
+    const response = await supertest(app)
+      .post(`/execute/${blueprint.id}`)
+      .send({ name: "product-1", plan: "FREE" })
+      .expect(200);
+
+    const taskId = response.headers["x-task-id"];
+
+    expect(response.body).toEqual({ product: "prd-1" });
+    expect(mcp.tool("ORDER:find_product").lastCall).toEqual({
+      product_id: "product-1",
+      name: "product-1",
+    });
+    expect(await llmCalls(taskId)).toBe(0);
+  }, 60_000);
+
+  describe("Text Translation blueprint", () => {
+    const TRANSLATION_BLUEPRINT_ID = "d7aaf3a2-40b9-480f-9f70-5c4b13f3f934";
+
+    it("returns the translation without calling the LLM", async () => {
+      mcp
+        .tool("TELCO:translate")
+        .returns({ translation: "Hello", target_lang: "en" });
+
+      const response = await supertest(app)
+        .post(`/execute/${TRANSLATION_BLUEPRINT_ID}`)
+        .send({ content: "Merhaba", target_lang: "en", source_lang: "tr" })
+        .expect(200);
+
+      expect(response.body).toEqual({ translation: "Hello" });
+      expect(mcp.tool("TELCO:translate").lastCall).toEqual({
+        content: "Merhaba",
+        target_lang: "en",
+        source_lang: "tr",
+      });
+      expect(await llmCalls(response.headers["x-task-id"])).toBe(0);
+    }, 60_000);
+
+    it("leaves source_lang out when the request omits it", async () => {
+      mcp
+        .tool("TELCO:translate")
+        .returns({ translation: "Hello", target_lang: "en" });
+
+      const response = await supertest(app)
+        .post(`/execute/${TRANSLATION_BLUEPRINT_ID}`)
+        .send({ content: "Merhaba", target_lang: "en" })
+        .expect(200);
+
+      expect(response.body).toEqual({ translation: "Hello" });
+      expect(mcp.tool("TELCO:translate").lastCall).toEqual({
+        content: "Merhaba",
+        target_lang: "en",
+      });
+      expect(await llmCalls(response.headers["x-task-id"])).toBe(0);
+    }, 60_000);
+  });
+
+  it("skips a failed node and continues when blocking is off", async () => {
+    mcp.tool("ORDER:find_product").fails({ error: "catalog unavailable" });
+
+    const blueprint = await createBlueprint({
+      api: true,
+      executionMode: "LITE",
+      blocking: false,
+      nodes: [
+        startNode({ fields: requestFields }, ["find"]),
+        findNode(["notify"]),
+        {
+          id: "notify",
+          type: "NORMAL",
+          next: [END],
+          properties: {
+            label: "Notify",
+            icon: "mdi:message-text",
+            action: "PLATFORM:message_user",
+            parameters: { message: ref("name") },
+          },
+        },
+        greetingEnd,
+      ],
+    });
+
+    const response = await supertest(app)
+      .post(`/execute/${blueprint.id}`)
+      .send({ name: "Ada", plan: "PRO" })
+      .expect(200);
+
+    const taskId = response.headers["x-task-id"];
+
+    expect(response.body).toEqual({ customer: "Ada", plan: "PRO" });
+    expect(await stepsOf(taskId)).toEqual([
+      ["PLATFORM:api_request", "COMPLETED"],
+      ["ORDER:find_product", "FAILED"],
+      ["PLATFORM:message_user", "COMPLETED"],
+    ]);
+    expect(await llmCalls(taskId)).toBe(0);
+  }, 60_000);
+
+  it("retries a failed node without asking the supervisor when blocking is on", async () => {
+    mcp.tool("ORDER:find_product").fails({ error: "catalog unavailable" });
+
+    const blueprint = await createBlueprint({
+      api: true,
+      executionMode: "LITE",
+      blocking: true,
+      nodes: [
+        startNode({ fields: requestFields, timeout: 20 }, ["find"]),
+        findNode([END]),
+        greetingEnd,
+      ],
+    });
+
+    const response = await supertest(app)
+      .post(`/execute/${blueprint.id}`)
+      .send({ name: "Ada", plan: "PRO" })
+      .expect(422);
+
+    const steps = await stepsOf(response.body.taskId);
+
+    expect(response.body.message).toBe("Failed due to too many steps");
+    expect(steps).not.toContainEqual(
+      expect.arrayContaining(["PLATFORM:ask_supervisor"])
+    );
+    expect(steps.slice(1)).toEqual(
+      Array(steps.length - 1).fill(["ORDER:find_product", "FAILED"])
+    );
+    expect(await llmCalls(response.body.taskId)).toBe(0);
+  }, 60_000);
 });

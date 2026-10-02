@@ -1150,57 +1150,93 @@
     {
       "id": "d7aaf3a2-40b9-480f-9f70-5c4b13f3f934",
       "title": "Text Translation",
-      "description": "Translates the text the user provides into the requested target language with the local translation model, then sends the translation back to the user.",
+      "description": "Translates the text in the API request into the requested target language with the local translation model and returns the translation in the response.",
       "agentId": "c38523e7-2e22-44e5-aa0d-f92c7d240315",
       "executionMode": "LITE",
-      "skill": "**Text Translation — Local LLM**\n\nUse this Blueprint when the user asks for a piece of text to be translated into another language.\n\nFlow: Translate the text with the local LLM → Send the translation to the user → Complete.\n\nThe text to translate goes into content unchanged, the requested language into target_lang, and the language of the text into source_lang only when the user states it; otherwise it is left out so the model detects it. The translation is sent to the user by reference from the translate step's result, never retyped or regenerated.",
+      "api": true,
+      "skill": "**Text Translation — Local LLM**\n\nUse this Blueprint when a piece of text needs to be translated into another language.\n\nFlow: Request (content, target_lang, optional source_lang) → Translate the text with the local LLM → Respond with the translation.\n\nThe text to translate goes into content unchanged, the requested language into target_lang, and the language of the text into source_lang only when the request states it; otherwise it is left out so the model detects it. The response carries the translate step's result by reference, never retyped or regenerated.",
       "nodes": [
+        {
+          "id": "api-start",
+          "type": "START",
+          "next": [
+            "e9c9442b-6e74-4795-8b00-e4a8132652ad"
+          ],
+          "properties": {
+            "label": "Request",
+            "icon": "mdi:api",
+            "fields": [
+              {
+                "name": "content",
+                "type": "string",
+                "minLength": 1,
+                "description": "The text to translate."
+              },
+              {
+                "name": "target_lang",
+                "type": "string",
+                "minLength": 1,
+                "description": "The language to translate into, as a name or code."
+              },
+              {
+                "name": "source_lang",
+                "type": "string",
+                "minLength": 1,
+                "required": false,
+                "description": "The language of the text. Omit to auto-detect."
+              }
+            ],
+            "strict": false,
+            "timeout": 60
+          },
+          "createdAt": "2026-10-01T10:00:00Z"
+        },
         {
           "id": "e9c9442b-6e74-4795-8b00-e4a8132652ad",
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:translate",
             "force": true,
-            "description": "Translate the user's text into the requested target language with the local LLM. Pass the text unchanged as content, the requested language as target_lang, and source_lang only if the user specified it",
+            "description": "Translate the requested text into the target language with the local LLM. Content, target_lang and source_lang come from the API request; source_lang is omitted when the request leaves it out so the model detects it",
             "label": "Translate",
-            "icon": "mdi:translate"
-          },
-          "next": [
-            "9fd583d8-7a89-4c74-86d1-9ebc1ca8e64d"
-          ],
-          "createdAt": "2026-10-01T10:00:00Z"
-        },
-        {
-          "id": "9fd583d8-7a89-4c74-86d1-9ebc1ca8e64d",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:message_user",
-            "force": true,
-            "description": "Send the translation to the user. The message is taken by reference from the Translate node result, never retyped or regenerated",
-            "label": "Send Translation",
-            "icon": "mdi:message-text",
+            "icon": "mdi:translate",
             "parameters": {
-              "message": {
-                "$ref": "byNode.e9c9442b-6e74-4795-8b00-e4a8132652ad.result.translation"
+              "content": {
+                "$ref": "byNode.api-start.result.content"
+              },
+              "target_lang": {
+                "$ref": "byNode.api-start.result.target_lang"
+              },
+              "source_lang": {
+                "$ref": "byNode.api-start.result.source_lang"
               }
             }
           },
           "next": [
-            "61fbf161-c552-4968-93a1-608b82d454ff"
+            "api-end"
           ],
           "createdAt": "2026-10-01T10:00:00Z"
         },
         {
-          "id": "61fbf161-c552-4968-93a1-608b82d454ff",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "force": true,
-            "description": "Mark the translation request as complete",
-            "label": "Complete",
-            "icon": "mdi:check"
-          },
+          "id": "api-end",
+          "type": "END",
           "next": null,
+          "properties": {
+            "label": "Response",
+            "icon": "mdi:export",
+            "fields": [
+              {
+                "name": "translation",
+                "type": "string",
+                "description": "The translated text."
+              }
+            ],
+            "parameters": {
+              "translation": {
+                "$ref": "byNode.e9c9442b-6e74-4795-8b00-e4a8132652ad.result.translation"
+              }
+            }
+          },
           "createdAt": "2026-10-01T10:00:00Z"
         }
       ],

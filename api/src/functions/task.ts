@@ -70,28 +70,52 @@ async function update({
   }
 }
 
+const waiters = new Map<string, Set<() => void>>();
+
+let listening: Promise<unknown> | undefined;
+
 async function waitFor({
   taskId,
   timeoutMs,
-  intervalMs = 500,
 }: {
   taskId: string;
   timeoutMs: number;
-  intervalMs?: number;
 }) {
-  const deadline = Date.now() + timeoutMs;
+  listening ??= Promise.all(
+    ["TASK_COMPLETED", "TASK_FAILED"].map((type) =>
+      event.subscribe<{ taskId: string }>(type, ({ taskId }) => {
+        waiters.get(taskId)?.forEach((notify) => notify());
+      }),
+    ),
+  ).catch((error) => {
+    listening = undefined;
+    throw error;
+  });
 
-  for (;;) {
+  await listening;
+
+  let notify!: () => void;
+  const settled = new Promise<void>((resolve) => (notify = resolve));
+  const timer = setTimeout(notify, timeoutMs);
+
+  const taskWaiters = waiters.get(taskId) ?? new Set<() => void>();
+  taskWaiters.add(notify);
+  waiters.set(taskId, taskWaiters);
+
+  try {
     const task = await Task.findByPk(taskId);
-
     if (task && task.status !== "IN_PROGRESS") return task.toJSON();
 
-    const remaining = deadline - Date.now();
-    if (remaining <= 0) return null;
+    await settled;
 
-    await new Promise((resolve) =>
-      setTimeout(resolve, Math.min(intervalMs, remaining)),
-    );
+    const settledTask = await Task.findByPk(taskId);
+    return settledTask && settledTask.status !== "IN_PROGRESS"
+      ? settledTask.toJSON()
+      : null;
+  } finally {
+    clearTimeout(timer);
+    taskWaiters.delete(notify);
+    if (!taskWaiters.size) waiters.delete(taskId);
   }
 }
 

@@ -1,6 +1,7 @@
 import {
   getBoundNodeStep,
   getForcedActionContext,
+  getLiteNodeStep,
   getParameterGenerationContext,
   mergeNodeParameters,
 } from "../lib/nodeParameterBindings";
@@ -8,6 +9,7 @@ import type { LLMMeta } from "../lib/llmLog";
 import {
   conditionBranch,
   findNodeAhead,
+  forceAllNodes,
   isForcedNode,
   resolveCurrentNode,
   switchCases,
@@ -19,7 +21,11 @@ import agentData from "./agentData";
 import apiSchema from "../lib/apiSchema";
 import blueprintFn from "./blueprint";
 import dataset from "../dataset";
-import { endNodeOf } from "../lib/apiNodes";
+import {
+  endNodeOf,
+  omitMissingRequestRefs,
+  startNodeOf,
+} from "../lib/apiNodes";
 import { generate } from "../lib/llm";
 import knowledgeFn from "./knowledge";
 import mcpFn from "./mcp";
@@ -370,6 +376,7 @@ async function forceNodeStep({
 async function respond({
   taskId,
   node,
+  start,
   source,
   description,
   blueprintId,
@@ -378,7 +385,8 @@ async function respond({
 }: {
   taskId: string;
   node: any;
-  source: Record<string, unknown>;
+  start?: any;
+  source: { steps: any[] } & Record<string, unknown>;
   description: string;
   blueprintId?: string;
   sessionId?: string;
@@ -388,7 +396,11 @@ async function respond({
 
   try {
     const values = resolveParameterRefs(
-      (node.properties?.parameters ?? {}) as Record<string, unknown>,
+      omitMissingRequestRefs({
+        parameters: node.properties?.parameters ?? {},
+        start,
+        steps: source.steps,
+      }),
       source,
     );
     const response = apiSchema.validate(node.properties?.fields ?? [], values, {
@@ -468,6 +480,10 @@ async function task({ taskId }: { taskId: string }) {
 
   const blueprint = blueprintId ? await blueprintFn.get({ blueprintId }) : null;
   const isBlocking = blueprint?.blocking !== false;
+  const isLite = blueprint?.executionMode === "LITE";
+  const nodes: any[] = isLite
+    ? forceAllNodes(blueprint?.nodes ?? [])
+    : blueprint?.nodes ?? [];
 
   const { inheritedSteps: inherited } = await taskFn.get({ taskId });
 
@@ -501,12 +517,17 @@ async function task({ taskId }: { taskId: string }) {
 
   const meta: LLMMeta = { agentId, sessionId, taskId };
 
+  const passedStatuses =
+    isLite && !isBlocking
+      ? ["COMPLETED", "WAITING_FOR_USER", "FAILED"]
+      : ["COMPLETED", "WAITING_FOR_USER"];
+
   const completedSteps = currentTask.steps.filter((s) =>
-    ["COMPLETED", "WAITING_FOR_USER"].includes(s.status),
+    passedStatuses.includes(s.status),
   );
 
-  const currentNode = blueprint?.nodes?.length
-    ? resolveCurrentNode(blueprint.nodes, completedSteps)
+  const currentNode = nodes.length
+    ? resolveCurrentNode(nodes, completedSteps)
     : undefined;
 
   const refSource = {
@@ -517,12 +538,14 @@ async function task({ taskId }: { taskId: string }) {
     ),
   };
 
-  const endNode = endNodeOf(blueprint?.nodes);
+  const startNode = startNodeOf(nodes);
+  const endNode = endNodeOf(nodes);
 
   if (currentNode?.type === "END") {
     return await respond({
       taskId,
       node: currentNode,
+      start: startNode,
       source: refSource,
       description,
       blueprintId,
@@ -571,10 +594,17 @@ async function task({ taskId }: { taskId: string }) {
     ? MCPs.find((mcp) => mcp.action === nodeAction) ?? actions.find(nodeAction)
     : undefined;
 
-  const boundStep = getBoundNodeStep({
-    node: currentNode,
-    inputSchema: definition?.inputSchema,
-  });
+  const boundStep =
+    getBoundNodeStep({
+      node: currentNode,
+      inputSchema: definition?.inputSchema,
+    }) ??
+    (isLite
+      ? getLiteNodeStep({
+          node: currentNode,
+          inputSchema: definition?.inputSchema,
+        })
+      : undefined);
   const generationContext = getParameterGenerationContext({
     context: isForceNode
       ? getForcedActionContext({ context, action: nodeAction })
@@ -613,7 +643,7 @@ async function task({ taskId }: { taskId: string }) {
 
   const matchedNode = currentNode
     ? findNodeAhead(
-        blueprint?.nodes ?? [],
+        nodes,
         currentNode,
         (node) =>
           node.properties?.action === action ||
@@ -622,10 +652,14 @@ async function task({ taskId }: { taskId: string }) {
     : undefined;
   const nodeId = matchedNode?.id ?? null;
 
-  const rawParameters = mergeNodeParameters({
-    node: matchedNode,
-    action,
-    generated: llmParameters,
+  const rawParameters = omitMissingRequestRefs({
+    parameters: mergeNodeParameters({
+      node: matchedNode,
+      action,
+      generated: llmParameters,
+    }),
+    start: startNode,
+    steps: currentTask.steps,
   });
 
   let parameters: Record<string, unknown>;
@@ -651,6 +685,7 @@ async function task({ taskId }: { taskId: string }) {
     return await respond({
       taskId,
       node: endNode,
+      start: startNode,
       source: refSource,
       description,
       blueprintId,
@@ -785,7 +820,7 @@ async function task({ taskId }: { taskId: string }) {
     parameters.sessionId = sessionId;
     parameters.agentId = agentId;
   } else if (action === "PLATFORM:switch" && matchedNode?.type === "SWITCH") {
-    parameters.cases = switchCases(matchedNode, blueprint?.nodes ?? []);
+    parameters.cases = switchCases(matchedNode, nodes);
     parameters.defaultCase = matchedNode.properties?.defaultCase;
     parameters.instructions =
       (matchedNode.properties?.pseudocodeEnabled &&
@@ -796,7 +831,6 @@ async function task({ taskId }: { taskId: string }) {
     action === "PLATFORM:decision" &&
     matchedNode?.type === "CONDITION"
   ) {
-    const nodes = blueprint?.nodes ?? [];
     parameters.condition =
       (matchedNode.properties?.pseudocodeEnabled &&
         matchedNode.properties?.pseudocode) ||

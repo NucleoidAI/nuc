@@ -1,3 +1,5 @@
+import { refPathOf } from "./parameterRefs";
+
 export type FlowNode = {
   id: string;
   type: string;
@@ -104,4 +106,50 @@ export function withoutApiNodes(nodes: FlowNode[]): FlowNode[] {
 
 export function applyApiNodes(nodes: FlowNode[], enabled: boolean): FlowNode[] {
   return enabled ? withApiNodes(nodes) : withoutApiNodes(nodes);
+}
+
+function requestOf(
+  start: FlowNode,
+  steps: { nodeId?: string | null; result?: unknown }[]
+) {
+  const result = steps.find((step) => step.nodeId === start.id)?.result;
+  if (typeof result !== "string") return result ?? {};
+
+  try {
+    return JSON.parse(result);
+  } catch {
+    return {};
+  }
+}
+
+export function omitMissingRequestRefs({
+  parameters,
+  start,
+  steps,
+}: {
+  parameters: Record<string, unknown>;
+  start?: FlowNode;
+  steps: { nodeId?: string | null; result?: unknown }[];
+}): Record<string, unknown> {
+  if (!start) return parameters;
+
+  const optional = new Set(
+    (start.properties?.fields ?? [])
+      .filter((field: { required?: boolean }) => field.required === false)
+      .map((field: { name: string }) => field.name)
+  );
+  if (!optional.size) return parameters;
+
+  const request = requestOf(start, steps);
+  const prefix = `byNode.${start.id}.result.`;
+
+  return Object.fromEntries(
+    Object.entries(parameters).filter(([, value]) => {
+      const path = refPathOf(value);
+      if (!path?.startsWith(prefix)) return true;
+
+      const field = path.slice(prefix.length).split(/[.[]/, 1)[0];
+      return !optional.has(field) || field in request;
+    })
+  );
 }

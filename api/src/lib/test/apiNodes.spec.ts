@@ -5,6 +5,7 @@ import {
   API_START_NODE_ID,
   applyApiNodes,
   type FlowNode,
+  omitMissingRequestRefs,
 } from "../apiNodes";
 import Node from "../../schemas/Node";
 import { resolveCurrentNode } from "../blueprintNodes";
@@ -94,5 +95,65 @@ describe("resolveCurrentNode with START", () => {
     ]);
 
     assert.equal(current?.id, API_END_NODE_ID);
+  });
+});
+
+describe("omitMissingRequestRefs", () => {
+  const start: FlowNode = {
+    id: API_START_NODE_ID,
+    type: "START",
+    properties: {
+      fields: [
+        { name: "content", type: "string" },
+        { name: "source_lang", type: "string", required: false },
+      ],
+    },
+  };
+  const ref = (path: string) => ({
+    $ref: `byNode.${API_START_NODE_ID}.${path}`,
+  });
+  const parameters = {
+    content: ref("result.content"),
+    source_lang: ref("result.source_lang"),
+    fixed: "x",
+  };
+  const stepsWith = (body: Record<string, unknown>) => [
+    { nodeId: API_START_NODE_ID, result: JSON.stringify(body) },
+  ];
+
+  it("drops references to optional request fields the request left out", () => {
+    assert.deepEqual(
+      omitMissingRequestRefs({
+        parameters,
+        start,
+        steps: stepsWith({ content: "hi" }),
+      }),
+      { content: ref("result.content"), fixed: "x" }
+    );
+  });
+
+  it("keeps them when the request sent the field", () => {
+    assert.deepEqual(
+      omitMissingRequestRefs({
+        parameters,
+        start,
+        steps: stepsWith({ content: "hi", source_lang: "tr" }),
+      }),
+      parameters
+    );
+  });
+
+  it("never drops references to required fields", () => {
+    assert.deepEqual(
+      omitMissingRequestRefs({ parameters, start, steps: stepsWith({}) }),
+      { content: ref("result.content"), fixed: "x" }
+    );
+  });
+
+  it("leaves parameters alone without a START node", () => {
+    assert.equal(
+      omitMissingRequestRefs({ parameters, start: undefined, steps: [] }),
+      parameters
+    );
   });
 });

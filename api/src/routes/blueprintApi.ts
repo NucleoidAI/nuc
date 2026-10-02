@@ -52,9 +52,11 @@ router.post("/:blueprintId", async (req, res) => {
     blueprintId,
   });
 
+  const executedTasks = await taskFn.count({ blueprintId });
+
   const task = await taskFn.create({
     agentId: blueprint.agentId,
-    description: blueprint.title,
+    description: `${blueprint.title} #${executedTasks + 1}`,
     blueprintId,
     sessionId: session.id,
     request: { nodeId: start.id, body: request.data },

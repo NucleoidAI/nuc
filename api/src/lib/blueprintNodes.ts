@@ -83,6 +83,13 @@ export function isForcedNode(node: any) {
   return node?.properties?.force === true;
 }
 
+export function forceAllNodes<T extends { properties?: object }>(nodes: T[]) {
+  return nodes.map((node) => ({
+    ...node,
+    properties: { ...node.properties, force: true },
+  }));
+}
+
 function successorIdsOf(node: any): string[] {
   return [...nextIdsOf(node), ...(node.true || []), ...(node.false || [])];
 }

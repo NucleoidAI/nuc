@@ -67,6 +67,33 @@ export function getBoundNodeStep({
   };
 }
 
+export function getLiteNodeStep({
+  node,
+  inputSchema,
+}: {
+  node?: Node;
+  inputSchema?: InputSchema;
+}) {
+  const action = node?.properties?.action;
+  if (!action) return undefined;
+
+  const decidesInAction = node.type === "CONDITION" || node.type === "SWITCH";
+  const takesNoInput =
+    inputSchema !== undefined &&
+    !Object.keys(inputSchema.properties ?? {}).length;
+
+  if (!decidesInAction && !takesNoInput) return undefined;
+
+  return {
+    next_step: {
+      action,
+      parameters: {},
+      comment: "Executing blueprint node without generated parameters.",
+    },
+    result_score: undefined,
+  };
+}
+
 export function getParameterGenerationContext({
   context,
   node,

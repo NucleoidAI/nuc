@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   conditionBranch,
   findNodeAhead,
+  forceAllNodes,
   isForcedNode,
   resolveCurrentNode,
 } from "../blueprintNodes";
@@ -245,5 +246,16 @@ describe("conditionBranch", () => {
       },
     ]);
     assert.deepEqual(conditionBranch(undefined, nodes), []);
+  });
+});
+
+describe("forceAllNodes", () => {
+  it("marks every node as forced without mutating the input", () => {
+    const original = [node("a", "X:a", "b"), node("b", "X:b", null)];
+    const forced = forceAllNodes(original);
+
+    assert.ok(forced.every(isForcedNode));
+    assert.ok(!original.some(isForcedNode));
+    assert.equal(findNodeAhead(forced, forced[0], byAction("X:b")), undefined);
   });
 });

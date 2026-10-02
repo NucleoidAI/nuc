@@ -109,7 +109,7 @@ export function getParameterGenerationContext({
   return context.map((message) => {
     if (!isRecord(message.content)) return message;
     const content = { ...message.content };
-    for (const key of ["actions", "mcps"]) {
+    for (const key of ["actions", "mcp_tools"]) {
       const definitions = content[key];
       if (!Array.isArray(definitions)) continue;
       content[key] = definitions.map((definition) => {
@@ -156,7 +156,7 @@ export function getForcedActionContext({
   return context.map((message) => {
     if (!isRecord(message.content)) return message;
     const content = { ...message.content };
-    for (const key of ["actions", "mcps"]) {
+    for (const key of ["actions", "mcp_tools"]) {
       const definitions = content[key];
       if (!Array.isArray(definitions)) continue;
       content[key] = definitions.filter(

@@ -13,12 +13,47 @@ type OpenAICompatibleOptions = {
   extractCost?: boolean;
 };
 
-type OpenAIErrorResponse = {
-  error?: {
-    message?: string;
-    code?: string | number;
-  };
+type ProviderError = {
+  message?: string;
+  code?: string | number;
+  metadata?: { error_type?: string };
 };
+
+type OpenAIErrorResponse = {
+  error?: ProviderError;
+};
+
+const MAX_ATTEMPTS = 2;
+const RETRYABLE_CODES = new Set([408, 429, 500, 502, 503, 504]);
+
+function choiceError(choice: OpenAI.ChatCompletion.Choice) {
+  const { error } = choice as { error?: ProviderError };
+
+  if (error) return error;
+
+  if ((choice.finish_reason as string) === "error") {
+    return { message: "provider finished the response with an error" };
+  }
+
+  return undefined;
+}
+
+function isRetryable(error: ProviderError) {
+  return (
+    RETRYABLE_CODES.has(Number(error.code)) ||
+    error.metadata?.error_type === "provider_unavailable"
+  );
+}
+
+function describe(providerLabel: string, error: ProviderError) {
+  const code = error.code ? ` (${error.code})` : "";
+  const type = error.metadata?.error_type
+    ? ` [${error.metadata.error_type}]`
+    : "";
+  const details = error.message || "response contains no choices";
+
+  return `${providerLabel} request failed${code}${type}: ${details}`;
+}
 
 function isResponseFormatError(err: unknown): boolean {
   const message = err instanceof Error ? err.message : String(err);
@@ -30,7 +65,7 @@ function isResponseFormatError(err: unknown): boolean {
 }
 
 function createOpenAICompatibleAdapter(
-  options: OpenAICompatibleOptions,
+  options: OpenAICompatibleOptions
 ): LLMAdapter {
   const {
     providerLabel,
@@ -79,67 +114,95 @@ function createOpenAICompatibleAdapter(
         ...(max_tokens && { max_tokens }),
       };
 
-      const startedAt = Date.now();
-      let response: OpenAI.ChatCompletion;
-      try {
-        response = (await client.chat.completions.create({
-          ...baseParams,
-          response_format: { type: "json_object" },
-        })) as OpenAI.ChatCompletion;
-      } catch (err) {
-        if (jsonModeFallback && isResponseFormatError(err)) {
-          console.warn(
-            `Model ${model} does not support response_format, retrying without it.`,
-          );
-          response = (await client.chat.completions.create(
-            baseParams,
-          )) as OpenAI.ChatCompletion;
-        } else {
+      const request = async () => {
+        try {
+          return (await client.chat.completions.create({
+            ...baseParams,
+            response_format: { type: "json_object" },
+          })) as OpenAI.ChatCompletion;
+        } catch (err) {
+          if (jsonModeFallback && isResponseFormatError(err)) {
+            console.warn(
+              `Model ${model} does not support response_format, retrying without it.`
+            );
+            return (await client.chat.completions.create(
+              baseParams
+            )) as OpenAI.ChatCompletion;
+          }
           throw err;
         }
-      }
+      };
 
-      console.debug(`[${providerLabel}] response:`, JSON.stringify(response));
+      let response: OpenAI.ChatCompletion;
+      let firstChoice: OpenAI.ChatCompletion.Choice;
 
-      const firstChoice = response.choices?.[0];
-      if (!firstChoice) {
-        const { error } = response as unknown as OpenAIErrorResponse;
-        const details = error?.message || "response contains no choices";
-        const code = error?.code ? ` (${error.code})` : "";
-        throw new Error(`${providerLabel} request failed${code}: ${details}`);
+      for (let attempt = 1; ; attempt++) {
+        const startedAt = Date.now();
+        response = await request();
+
+        console.debug(`[${providerLabel}] response:`, JSON.stringify(response));
+
+        const choice = response.choices?.[0];
+
+        if (choice) {
+          const usage = response.usage as
+            | (OpenAI.CompletionUsage & { cost?: number })
+            | undefined;
+
+          if (usage) {
+            const { prompt_tokens, completion_tokens } = usage;
+            console.info({ prompt_tokens, completion_tokens });
+          }
+
+          logLLM({
+            provider: providerLabel,
+            model: response.model || model,
+            messages: chatMessages,
+            response,
+            inputTokens: usage?.prompt_tokens,
+            outputTokens: usage?.completion_tokens,
+            totalTokens: usage?.total_tokens,
+            cost: extractCost ? usage?.cost : undefined,
+            durationMs: Date.now() - startedAt,
+            meta,
+          });
+        }
+
+        const error = choice
+          ? choiceError(choice)
+          : (response as unknown as OpenAIErrorResponse).error ?? {};
+
+        if (!error) {
+          firstChoice = choice!;
+          break;
+        }
+
+        if (attempt < MAX_ATTEMPTS && isRetryable(error)) {
+          console.warn(
+            `${describe(providerLabel, error)}. Retrying (${attempt}/${
+              MAX_ATTEMPTS - 1
+            }).`
+          );
+          continue;
+        }
+
+        throw new Error(describe(providerLabel, error));
       }
 
       const content = firstChoice.message.content;
-      const usage = response.usage as
-        | (OpenAI.CompletionUsage & { cost?: number })
-        | undefined;
-
-      if (usage) {
-        const { prompt_tokens, completion_tokens } = usage;
-        console.info({ prompt_tokens, completion_tokens });
-      }
-
-      logLLM({
-        provider: providerLabel,
-        model: response.model || model,
-        messages: chatMessages,
-        response,
-        inputTokens: usage?.prompt_tokens,
-        outputTokens: usage?.completion_tokens,
-        totalTokens: usage?.total_tokens,
-        cost: extractCost ? usage?.cost : undefined,
-        durationMs: Date.now() - startedAt,
-        meta,
-      });
+      const usage = response.usage;
 
       if (!content) {
         if (firstChoice.finish_reason === "length") {
           throw new Error(
             `${providerLabel} truncated the response for model ${model} before any content was produced ` +
               `(max_tokens=${max_tokens}, reasoning_tokens=${
-                (usage as { completion_tokens_details?: { reasoning_tokens?: number } })
-                  ?.completion_tokens_details?.reasoning_tokens ?? 0
-              }). Raise max_tokens or disable reasoning for this model.`,
+                (
+                  usage as {
+                    completion_tokens_details?: { reasoning_tokens?: number };
+                  }
+                )?.completion_tokens_details?.reasoning_tokens ?? 0
+              }). Raise max_tokens or disable reasoning for this model.`
           );
         }
         throw new Error(`${providerLabel} is not responding`);

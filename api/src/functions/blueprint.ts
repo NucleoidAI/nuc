@@ -49,9 +49,10 @@ function withoutCosmetics<T extends { properties?: object }>(nodes: T[]): T[] {
 }
 
 function stripDetails<T extends { nodes?: unknown }>(blueprint: T) {
-  const { description, skill, ...rest } = blueprint as T & {
+  const { description, skill, context, ...rest } = blueprint as T & {
     description?: unknown;
     skill?: unknown;
+    context?: unknown;
   };
 
   return Array.isArray(blueprint?.nodes)

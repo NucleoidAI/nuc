@@ -185,6 +185,9 @@ async function list({
         ]
       : [],
     where,
+    ...(includeSteps && {
+      order: [[{ model: Step, as: "steps" }, "createdAt", "ASC"]],
+    }),
   });
 
   return taskInstances.map((task) => task.toJSON());

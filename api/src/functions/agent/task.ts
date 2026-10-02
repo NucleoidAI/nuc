@@ -515,6 +515,13 @@ async function runTask({ taskId }: { taskId: string }) {
 
   const decisionState = {
     selected_blueprint: taskData.selected_blueprint,
+    ...(currentNode && {
+      current_node: {
+        id: currentNode.id,
+        type: currentNode.type,
+        action: currentNode.properties?.action ?? null,
+      },
+    }),
     steps: currentTask.steps.map(
       ({ index, action, status, parameters, result, comment }) => ({
         index,

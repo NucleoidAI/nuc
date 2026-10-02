@@ -238,6 +238,9 @@ async function selectNextAction({
         {
           select: "next_action",
           workflow: "`selected_blueprint`",
+          ...("current_node" in state && {
+            current_position: "`current_node`",
+          }),
           executed_steps: "`steps`",
           context: [
             "`session_variables`",

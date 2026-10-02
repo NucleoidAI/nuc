@@ -18,7 +18,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-
 import type {
   MCPServer,
   MCPServerEnv,

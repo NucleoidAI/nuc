@@ -6,7 +6,6 @@ import { Box, Card, CardContent, Typography } from "@mui/material";
 const FALLBACK_ICON = "mdi:server-network";
 
 const MCPServerCard = ({
-  serverId,
   providerName,
   description,
   icon,
@@ -21,10 +20,11 @@ const MCPServerCard = ({
   return (
     <Card
       sx={{
-        height: 200,
+        height: "170px",
         width: "100%",
         display: "flex",
         flexDirection: "column",
+        p: 2,
         transformStyle: "preserve-3d",
         transform:
           "perspective(1500px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)",
@@ -52,9 +52,7 @@ const MCPServerCard = ({
           display: "flex",
           justifyContent: "flex-start",
           alignItems: "center",
-          gap: 1,
-          padding: 1,
-          minWidth: 0,
+          gap: 2,
         }}
       >
         <Box
@@ -67,8 +65,11 @@ const MCPServerCard = ({
             width: 56,
             height: 56,
             borderRadius: 1,
-            background: "linear-gradient(145deg, #3a3f4b, #1f232b)",
-            boxShadow: "4px 4px 0 #1f232b",
+            background: "rgba(255, 255, 255, 0.1)",
+            boxShadow: `
+            4px 4px 0 rgba(255, 255, 255, 0.1),
+            5px 5px 5px rgba(0, 0, 0, 0.5)
+          `,
             transform: "perspective(300px) rotateX(0deg) rotateY(0deg)",
             transformStyle: "preserve-3d",
             transition: "transform 0.3s",
@@ -84,8 +85,6 @@ const MCPServerCard = ({
           variant="h6"
           title={providerName}
           sx={{
-            ml: 1,
-            minWidth: 0,
             display: "-webkit-box",
             WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical",
@@ -99,31 +98,19 @@ const MCPServerCard = ({
       <CardContent
         sx={{
           flex: 1,
-          minHeight: 0,
           overflow: "hidden",
-          pt: 0,
+          p: 0,
+          "&:last-child": { pb: 0 },
         }}
       >
-        <Typography
-          variant="subtitle1"
-          title={serverId}
-          sx={{
-            mb: 1,
-            display: "-webkit-box",
-            WebkitLineClamp: 1,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-            wordBreak: "break-word",
-          }}
-        >
-          {serverId}
-        </Typography>
         <Typography
           variant="body2"
           title={description ?? undefined}
           sx={{
+            mt: 3.5,
+            ml: 0.3,
             display: "-webkit-box",
-            WebkitLineClamp: 3,
+            WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical",
             overflow: "hidden",
             textOverflow: "ellipsis",

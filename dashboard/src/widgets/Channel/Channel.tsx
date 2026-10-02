@@ -55,6 +55,7 @@ const Channel = () => {
                 base.requiresInput && code
                   ? `${base.label} (${code})`
                   : base.label,
+              name: base.label,
               icon: base.icon,
               code,
               config: record.config ?? null,
@@ -150,19 +151,32 @@ const Channel = () => {
     <Box
       sx={{
         width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        boxSizing: "border-box",
         px: 2,
         pb: 2,
       }}
     >
-      <Box position="relative">
+      <Box
+        position="relative"
+        sx={{
+          backgroundColor: "rgb(28, 28, 29)",
+          backgroundImage: `repeating-linear-gradient(145deg, #252424 0 2px, transparent 2px 15px, #252424 15px 16px, transparent 16px 29px)`,
+          borderRadius: 2,
+          p: 2,
+          flex: 1,
+          minHeight: 0,
+          overflowY: "auto",
+          overflowX: "hidden",
+        }}
+      >
         <ChannelDiagram
           channels={channels}
           Blueprints={Blueprints}
           connections={connections}
-          availableChannels={availableChannels}
-          onAddChannel={handleAddChannel}
-          onDeleteChannel={handleDeleteChannel}
-          onConnect={handleConnect}
+          minHeight="100%"
           colorMap={{
             whatsapp: "#25D366",
             slack: "#4A154B",

@@ -150,36 +150,6 @@ describe("blueprint parameter generation", () => {
     );
   });
 
-  it("treats runtime-injected fields as bound", () => {
-    const messageNode = {
-      type: "NORMAL",
-      properties: {
-        action: "PLATFORM:message_user",
-        force: true,
-        parameters: { message: { $ref: "byNode.previous.result.text" } },
-      },
-    };
-    const messageSchema = {
-      properties: {
-        sessionId: { type: "string" },
-        agentId: { type: "string" },
-        message: { type: "string" },
-      },
-      required: ["message"],
-    };
-    assert.equal(
-      getBoundNodeStep({ node: messageNode, inputSchema: messageSchema }),
-      undefined
-    );
-    assert.ok(
-      getBoundNodeStep({
-        node: messageNode,
-        inputSchema: messageSchema,
-        injectedFields: ["sessionId", "agentId"],
-      })
-    );
-  });
-
   it("keeps only the forced action's definition without mutating context", () => {
     const context = [
       { role: "user" as const, content: "translate this" },

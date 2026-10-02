@@ -202,6 +202,51 @@ describe("Blueprint API", () => {
     });
   }, 60_000);
 
+  it("fills session and agent for platform actions without exposing them as inputs", async () => {
+    const actions = await supertest(app).get("/mcps/actions").expect(200);
+    const exposesSessionId = JSON.stringify(actions.body).includes(
+      '"sessionId"'
+    );
+
+    expect(exposesSessionId).toBe(false);
+
+    const blueprint = await createBlueprint({
+      api: true,
+      nodes: [
+        startNode({ fields: requestFields }, ["notify"]),
+        {
+          id: "notify",
+          type: "NORMAL",
+          next: [END],
+          properties: {
+            label: "Notify",
+            icon: "mdi:message-text",
+            action: "PLATFORM:message_user",
+            force: true,
+            parameters: { message: ref("name") },
+          },
+        },
+        greetingEnd,
+      ],
+    });
+
+    const response = await supertest(app)
+      .post(`/execute/${blueprint.id}`)
+      .send({ name: "Ada", plan: "FREE" })
+      .expect(200);
+
+    const sessionId = response.headers["x-session-id"];
+    const conversations = await supertest(app)
+      .get(`/sessions/${sessionId}`)
+      .expect(200);
+
+    expect(
+      conversations.body.map(
+        (conversation: { content: string }) => conversation.content
+      )
+    ).toContain("Ada");
+  }, 60_000);
+
   it("returns 404 for blueprints without the API feature", async () => {
     const blueprint = await createBlueprint({ nodes: [] });
 

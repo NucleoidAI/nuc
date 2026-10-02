@@ -19,9 +19,9 @@ class Session extends Model {
   declare id: string;
 
   @AllowNull(false)
-  @IsIn([["CHAT", "EMAIL"]])
+  @IsIn([["CHAT", "EMAIL", "API"]])
   @Column(DataType.STRING)
-  declare type: "CHAT" | "EMAIL";
+  declare type: "CHAT" | "EMAIL" | "API";
 
   @AllowNull(false)
   @Column(DataType.UUID)

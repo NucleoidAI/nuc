@@ -5,6 +5,7 @@ import apiSchema from "../lib/apiSchema";
 import express from "express";
 import { startNodeOf } from "../lib/apiNodes";
 import taskFn from "../functions/task";
+import sessionFn from "../functions/session";
 import { z } from "zod";
 
 const router = express.Router();
@@ -45,10 +46,17 @@ router.post("/:blueprintId", async (req, res) => {
       .json({ error: "INVALID_REQUEST", issues: request.issues });
   }
 
+  const session = await sessionFn.create({
+    type: "API",
+    agentId: blueprint.agentId,
+    blueprintId,
+  });
+
   const task = await taskFn.create({
     agentId: blueprint.agentId,
     description: blueprint.title,
     blueprintId,
+    sessionId: session.id,
     request: { nodeId: start.id, body: request.data },
   });
 
@@ -58,6 +66,7 @@ router.post("/:blueprintId", async (req, res) => {
   });
 
   res.setHeader("X-Task-Id", task.id);
+  res.setHeader("X-Session-Id", session.id);
 
   if (!finished) {
     return res.status(504).json({ error: "TIMEOUT", taskId: task.id });

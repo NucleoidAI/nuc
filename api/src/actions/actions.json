@@ -229,14 +229,6 @@
     "inputSchema": {
       "type": "object",
       "properties": {
-        "sessionId": {
-          "type": "string",
-          "description": "The session ID."
-        },
-        "agentId": {
-          "type": "string",
-          "description": "The agent ID."
-        },
         "question": {
           "type": "string",
           "description": "The question to ask the supervisor."
@@ -534,14 +526,6 @@
     "inputSchema": {
       "type": "object",
       "properties": {
-        "sessionId": {
-          "type": "string",
-          "description": "The session ID."
-        },
-        "agentId": {
-          "type": "string",
-          "description": "The agent ID."
-        },
         "message": {
           "type": "string",
           "description": "The message to send to the user."

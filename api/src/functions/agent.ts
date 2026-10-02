@@ -574,8 +574,6 @@ async function task({ taskId }: { taskId: string }) {
   const boundStep = getBoundNodeStep({
     node: currentNode,
     inputSchema: definition?.inputSchema,
-    injectedFields:
-      nodeAction === "PLATFORM:message_user" ? ["sessionId", "agentId"] : [],
   });
   const generationContext = getParameterGenerationContext({
     context: isForceNode

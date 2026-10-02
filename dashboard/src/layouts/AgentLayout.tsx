@@ -166,8 +166,19 @@ function AgentLayout({
 
   return (
     <>
-      <Box>
-        <Stack margin={2} sx={{ position: "relative", marginTop: 0 }}>
+      <Box
+        sx={{
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          flex: 1,
+          minHeight: 0,
+        }}
+      >
+        <Stack
+          margin={2}
+          sx={{ position: "relative", marginTop: 0, flexShrink: 0 }}
+        >
           {loading ? (
             <Skeleton variant="rectangular" height={200} />
           ) : (
@@ -183,18 +194,20 @@ function AgentLayout({
             />
           )}
         </Stack>
-        {currentTab === "profile" && <Profile agentId={agent.id} />}
-        {currentTab === "knowledge-base" && (
-          <Knowledge teamId={agent.teamId} agentId={agent.id} />
-        )}
-        {currentTab === "blueprints" && (
-          <BlueprintsWidget teamId={agent.teamId} agentId={agent.id} />
-        )}
-        {currentTab === "supervisings" && <Supervising agentId={agent.id} />}
-        {currentTab === "tasks" && <TasksWidget agentId={agent.id} />}
-        {currentTab === "mcps" && <AgentMCP agent={agent} />}
-        {currentTab === "communication" && <Communication />}
-        {currentTab === "api" && !beta && <APITab agentId={agent.id} />}
+        <Box sx={{ flex: 1, minHeight: 0 }}>
+          {currentTab === "profile" && <Profile agentId={agent.id} />}
+          {currentTab === "knowledge-base" && (
+            <Knowledge teamId={agent.teamId} agentId={agent.id} />
+          )}
+          {currentTab === "blueprints" && (
+            <BlueprintsWidget teamId={agent.teamId} agentId={agent.id} />
+          )}
+          {currentTab === "supervisings" && <Supervising agentId={agent.id} />}
+          {currentTab === "tasks" && <TasksWidget agentId={agent.id} />}
+          {currentTab === "mcps" && <AgentMCP agent={agent} />}
+          {currentTab === "communication" && <Communication />}
+          {currentTab === "api" && !beta && <APITab agentId={agent.id} />}
+        </Box>
       </Box>
 
       <AgentDevToolWidget

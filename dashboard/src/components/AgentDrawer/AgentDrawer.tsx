@@ -59,7 +59,16 @@ const AgentDrawer = ({ open, onClose, agent, initialTab, allAgentIds }) => {
           <Iconify icon="material-symbols:close" width={20} />
         </Button>
       </Box>
-      <DialogContent sx={{ p: 1, mt: 3, width: "100%", height: "80vh" }}>
+      <DialogContent
+        sx={{
+          p: 1,
+          mt: 3,
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <AgentLayout
           agent={agent}
           loading={false}

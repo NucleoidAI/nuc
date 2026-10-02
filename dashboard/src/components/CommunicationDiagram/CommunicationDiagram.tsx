@@ -148,20 +148,23 @@ function CommunicationDiagram(props: {
     });
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4, mb: 4 }} {...containerProps}>
+    <Container maxWidth="md" sx={{ height: "100%" }} {...containerProps}>
       <Box
         minHeight={minHeight}
+        height="100%"
         display="flex"
-        alignItems="center"
+        alignItems="flex-start"
         justifyContent="center"
       >
         <Box
           position="relative"
           width={isEmpty ? "100%" : leftX + horizontalGap + nodeWidth}
           height={isEmpty ? "auto" : containerHeight}
+          flexShrink={0}
           display="flex"
           alignItems="center"
           justifyContent="center"
+          sx={{ my: "auto" }}
         >
           {isEmpty ? (
             <Typography variant="h6" color="textSecondary" textAlign="center">

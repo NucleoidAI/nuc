@@ -123,6 +123,10 @@ const Communication = () => {
     <Box
       sx={{
         width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        boxSizing: "border-box",
         px: 2,
         pb: 2,
       }}
@@ -134,13 +138,17 @@ const Communication = () => {
           backgroundImage: `repeating-linear-gradient(145deg, #252424 0 2px, transparent 2px 15px, #252424 15px 16px, transparent 16px 29px)`,
           borderRadius: 2,
           p: 2,
-          height: "70%",
+          flex: 1,
+          minHeight: 0,
+          overflowY: "auto",
+          overflowX: "hidden",
         }}
       >
         <CommunicationDiagram
           channels={channels}
           Blueprints={Blueprints}
           connections={connections}
+          minHeight="100%"
           colorMap={{
             whatsapp: "#25D366",
             slack: "#4A154B",

@@ -3,6 +3,7 @@ import type { DefinitionGraph } from "./helper";
 export interface RawNode {
   id: string;
   type: string;
+  nodeType?: string;
   properties?: {
     label?: string;
     action?: string;
@@ -18,6 +19,7 @@ export function definitionGraphToRawNodes(graph: DefinitionGraph): RawNode[] {
   return Object.values(graph.nodes).map((n) => ({
     id: n.id,
     type: n.nodeType,
+    nodeType: n.nodeType,
     properties: {
       label: n.label,
       action: n.action,

@@ -16,6 +16,7 @@ type NodeType = {
     targetAgentId?: string;
     targetBlueprintId?: string;
     force?: boolean;
+    cases?: { nodeId: string; label?: string; description?: string }[];
   };
   type: string;
   next?: string[] | null;

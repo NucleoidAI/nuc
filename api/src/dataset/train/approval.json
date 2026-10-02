@@ -1,72 +1,74 @@
-[
-  {
-    "question": "Purchase order po-2001 for product-1 totals 125.00 USD. Do you approve the charge?",
-    "content": "yes, go ahead",
-    "decision": "APPROVED"
-  },
-  {
-    "question": "Purchase order po-2001 for product-1 totals 125.00 USD. Do you approve the charge?",
-    "content": "no, cancel it",
-    "decision": "REJECTED"
-  },
-  {
-    "question": "I will upgrade your plan to Premium for 49.90 USD per month. Do you confirm?",
-    "content": "how much is the yearly price?",
-    "decision": "UNCLEAR"
-  },
-  {
-    "question": "I will upgrade your plan to Premium for 49.90 USD per month. Do you confirm?",
-    "content": "let me think about it",
-    "decision": "UNCLEAR"
-  },
-  {
-    "question": "I will upgrade your plan to Premium for 49.90 USD per month. Do you confirm?",
-    "content": "confirm",
-    "decision": "APPROVED"
-  },
-  {
-    "question": "I will cancel your subscription at the end of the billing period. Do you approve?",
-    "content": "yeah that's fine",
-    "decision": "APPROVED"
-  },
-  {
-    "question": "I will cancel your subscription at the end of the billing period. Do you approve?",
-    "content": "no way, keep it",
-    "decision": "REJECTED"
-  },
-  {
-    "question": "I will cancel your subscription at the end of the billing period. Do you approve?",
-    "content": "what happens to my data?",
-    "decision": "UNCLEAR"
-  },
-  {
-    "question": "The refund of 250 TRY will be sent to your card. Do you approve?",
-    "content": "fine",
-    "decision": "APPROVED"
-  },
-  {
-    "question": "The refund of 250 TRY will be sent to your card. Do you approve?",
-    "content": "no",
-    "decision": "REJECTED"
-  },
-  {
-    "question": "The refund of 250 TRY will be sent to your card. Do you approve?",
-    "content": "kartıma mı yoksa hesabıma mı gelecek?",
-    "decision": "UNCLEAR"
-  },
-  {
-    "question": "I am going to assign this ticket to the billing team. Do you approve?",
-    "content": "approved",
-    "decision": "APPROVED"
-  },
-  {
-    "question": "I am going to assign this ticket to the billing team. Do you approve?",
-    "content": "rejected",
-    "decision": "REJECTED"
-  },
-  {
-    "question": "I am going to assign this ticket to the billing team. Do you approve?",
-    "content": "I want to change my shipping address",
-    "decision": "UNCLEAR"
-  }
-]
+{
+  "data": [
+    {
+      "question": "Purchase order po-2001 for product-1 totals 125.00 USD. Do you approve the charge?",
+      "content": "yes, go ahead",
+      "decision": "APPROVED"
+    },
+    {
+      "question": "Purchase order po-2001 for product-1 totals 125.00 USD. Do you approve the charge?",
+      "content": "no, cancel it",
+      "decision": "REJECTED"
+    },
+    {
+      "question": "I will upgrade your plan to Premium for 49.90 USD per month. Do you confirm?",
+      "content": "how much is the yearly price?",
+      "decision": "UNCLEAR"
+    },
+    {
+      "question": "I will upgrade your plan to Premium for 49.90 USD per month. Do you confirm?",
+      "content": "let me think about it",
+      "decision": "UNCLEAR"
+    },
+    {
+      "question": "I will upgrade your plan to Premium for 49.90 USD per month. Do you confirm?",
+      "content": "confirm",
+      "decision": "APPROVED"
+    },
+    {
+      "question": "I will cancel your subscription at the end of the billing period. Do you approve?",
+      "content": "yeah that's fine",
+      "decision": "APPROVED"
+    },
+    {
+      "question": "I will cancel your subscription at the end of the billing period. Do you approve?",
+      "content": "no way, keep it",
+      "decision": "REJECTED"
+    },
+    {
+      "question": "I will cancel your subscription at the end of the billing period. Do you approve?",
+      "content": "what happens to my data?",
+      "decision": "UNCLEAR"
+    },
+    {
+      "question": "The refund of 250 TRY will be sent to your card. Do you approve?",
+      "content": "fine",
+      "decision": "APPROVED"
+    },
+    {
+      "question": "The refund of 250 TRY will be sent to your card. Do you approve?",
+      "content": "no",
+      "decision": "REJECTED"
+    },
+    {
+      "question": "The refund of 250 TRY will be sent to your card. Do you approve?",
+      "content": "kartıma mı yoksa hesabıma mı gelecek?",
+      "decision": "UNCLEAR"
+    },
+    {
+      "question": "I am going to assign this ticket to the billing team. Do you approve?",
+      "content": "approved",
+      "decision": "APPROVED"
+    },
+    {
+      "question": "I am going to assign this ticket to the billing team. Do you approve?",
+      "content": "rejected",
+      "decision": "REJECTED"
+    },
+    {
+      "question": "I am going to assign this ticket to the billing team. Do you approve?",
+      "content": "I want to change my shipping address",
+      "decision": "UNCLEAR"
+    }
+  ]
+}

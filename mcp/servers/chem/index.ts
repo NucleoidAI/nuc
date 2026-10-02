@@ -1,0 +1,7 @@
+#!/usr/bin/env bun
+import { startMockServer } from "../../lib/mock-mcp-server";
+import { tools } from "./tools";
+startMockServer("chem", tools).catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

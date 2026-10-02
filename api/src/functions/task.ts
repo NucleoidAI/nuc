@@ -219,6 +219,7 @@ async function updateStepComment({
 async function listSteps({ taskId }: { taskId: string }) {
   const steps = await Step.findAll({
     where: { taskId },
+    order: [["createdAt", "ASC"]],
   });
 
   return steps

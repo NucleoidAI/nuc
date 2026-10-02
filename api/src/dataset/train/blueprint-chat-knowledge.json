@@ -1,82 +1,84 @@
-[
-  {
-    "content": "Our product prices are updated every Monday at 9am.",
-    "knowledge": "Product prices are updated every Monday at 9am."
-  },
-  {
-    "content": "The customer ID format is CUS-XXXXXX where X is a digit.",
-    "knowledge": "Customer ID format is CUS-XXXXXX where X is a digit."
-  },
-  {
-    "content": "We offer three subscription tiers: Basic, Pro, and Enterprise.",
-    "knowledge": "There are three subscription tiers: Basic, Pro, and Enterprise."
-  },
-  {
-    "content": "Refund requests must be submitted within 30 days of purchase.",
-    "knowledge": "Refund requests must be submitted within 30 days of purchase."
-  },
-  {
-    "content": "Our support team works Monday through Friday, 9am to 6pm.",
-    "knowledge": "Support team working hours are Monday to Friday, 9am to 6pm."
-  },
-  {
-    "content": "The API base URL is https://api.example.com/v2.",
-    "knowledge": "The API base URL is https://api.example.com/v2."
-  },
-  {
-    "content": "Premium customers get priority support with a 2-hour response SLA.",
-    "knowledge": "Premium customers have a 2-hour response SLA for support."
-  },
-  {
-    "content": "The minimum order quantity is 5 units.",
-    "knowledge": "Minimum order quantity is 5 units."
-  },
-  {
-    "content": "We operate in the US, UK, and Germany.",
-    "knowledge": "The company operates in the US, UK, and Germany."
-  },
-  {
-    "content": "Invoices are generated automatically at the end of each billing cycle.",
-    "knowledge": "Invoices are generated automatically at the end of each billing cycle."
-  },
-  {
-    "content": "Our onboarding process takes about 3 business days to complete.",
-    "knowledge": "Onboarding process duration is approximately 3 business days."
-  },
-  {
-    "content": "Each workspace can have a maximum of 50 active users.",
-    "knowledge": "Maximum active users per workspace is 50."
-  },
-  {
-    "content": "Passwords must be at least 12 characters and include a special character.",
-    "knowledge": "Password policy requires at least 12 characters including a special character."
-  },
-  {
-    "content": "We use Stripe for payment processing.",
-    "knowledge": "Payment processing is handled by Stripe."
-  },
-  {
-    "content": "All data is stored in the EU region by default.",
-    "knowledge": "Data is stored in the EU region by default."
-  },
-  {
-    "content": "Add CE certificate for product prd-3.",
-    "knowledge": "Product prd-3 has compliance certificate CE."
-  },
-  {
-    "content": "Product prd-5 is certified under ISO-9001 standard.",
-    "knowledge": "Product prd-5 is certified under ISO-9001 standard."
-  },
-  {
-    "content": "Customer cust-42 prefers bank transfer as payment method.",
-    "knowledge": "Customer cust-42 prefers bank transfer as payment method."
-  },
-  {
-    "content": "The compliance check for category A products must be completed within 3 business days.",
-    "knowledge": "Compliance check for category A products must be completed within 3 business days."
-  },
-  {
-    "content": "When no certificate is on file, the compliance team email is compliance@company.com.",
-    "knowledge": "Compliance team contact email is compliance@company.com for certificate inquiries."
-  }
-]
+{
+  "data": [
+    {
+      "content": "Our product prices are updated every Monday at 9am.",
+      "knowledge": "Product prices are updated every Monday at 9am."
+    },
+    {
+      "content": "The customer ID format is CUS-XXXXXX where X is a digit.",
+      "knowledge": "Customer ID format is CUS-XXXXXX where X is a digit."
+    },
+    {
+      "content": "We offer three subscription tiers: Basic, Pro, and Enterprise.",
+      "knowledge": "There are three subscription tiers: Basic, Pro, and Enterprise."
+    },
+    {
+      "content": "Refund requests must be submitted within 30 days of purchase.",
+      "knowledge": "Refund requests must be submitted within 30 days of purchase."
+    },
+    {
+      "content": "Our support team works Monday through Friday, 9am to 6pm.",
+      "knowledge": "Support team working hours are Monday to Friday, 9am to 6pm."
+    },
+    {
+      "content": "The API base URL is https://api.example.com/v2.",
+      "knowledge": "The API base URL is https://api.example.com/v2."
+    },
+    {
+      "content": "Premium customers get priority support with a 2-hour response SLA.",
+      "knowledge": "Premium customers have a 2-hour response SLA for support."
+    },
+    {
+      "content": "The minimum order quantity is 5 units.",
+      "knowledge": "Minimum order quantity is 5 units."
+    },
+    {
+      "content": "We operate in the US, UK, and Germany.",
+      "knowledge": "The company operates in the US, UK, and Germany."
+    },
+    {
+      "content": "Invoices are generated automatically at the end of each billing cycle.",
+      "knowledge": "Invoices are generated automatically at the end of each billing cycle."
+    },
+    {
+      "content": "Our onboarding process takes about 3 business days to complete.",
+      "knowledge": "Onboarding process duration is approximately 3 business days."
+    },
+    {
+      "content": "Each workspace can have a maximum of 50 active users.",
+      "knowledge": "Maximum active users per workspace is 50."
+    },
+    {
+      "content": "Passwords must be at least 12 characters and include a special character.",
+      "knowledge": "Password policy requires at least 12 characters including a special character."
+    },
+    {
+      "content": "We use Stripe for payment processing.",
+      "knowledge": "Payment processing is handled by Stripe."
+    },
+    {
+      "content": "All data is stored in the EU region by default.",
+      "knowledge": "Data is stored in the EU region by default."
+    },
+    {
+      "content": "Add CE certificate for product prd-3.",
+      "knowledge": "Product prd-3 has compliance certificate CE."
+    },
+    {
+      "content": "Product prd-5 is certified under ISO-9001 standard.",
+      "knowledge": "Product prd-5 is certified under ISO-9001 standard."
+    },
+    {
+      "content": "Customer cust-42 prefers bank transfer as payment method.",
+      "knowledge": "Customer cust-42 prefers bank transfer as payment method."
+    },
+    {
+      "content": "The compliance check for category A products must be completed within 3 business days.",
+      "knowledge": "Compliance check for category A products must be completed within 3 business days."
+    },
+    {
+      "content": "When no certificate is on file, the compliance team email is compliance@company.com.",
+      "knowledge": "Compliance team contact email is compliance@company.com for certificate inquiries."
+    }
+  ]
+}

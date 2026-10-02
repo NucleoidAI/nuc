@@ -430,16 +430,43 @@
       "agentId": "ab2d404b-3358-45eb-a468-338485924fea",
       "blocking": false,
       "force": true,
-      "skill": "**Meeting Recording - Summary Variant A (transcript only)**\n\nUse this Blueprint for the lightweight arm of the summarizer A/B test: only the mixed meeting recording is transcribed, and the summary is written from that full transcript without transcribing each participant's own recording.\n\nFlow: Convert PCM to WAV -> Transcribe only meeting-audio.wav (includeSpeakerTranscripts: false) -> Summarize the full transcript, read by reference from the transcription result (summary + highlights) -> Send email to all participants -> Complete.\n\nProduces a summary and highlights only - no next steps, no speaker transcription, no speaker attribution, no LLM judgement, no attachments and no separate manager email. Exits after emailing the participants.",
+      "api": true,
+      "skill": "**Meeting Recording - Summary Variant A (transcript only)**\n\nUse this Blueprint for the lightweight arm of the summarizer A/B test: only the mixed meeting recording is transcribed, and the summary is written from that full transcript without transcribing each participant's own recording.\n\nFlow: Request (directoryPath) -> Convert PCM to WAV -> Transcribe only meeting-audio.wav (includeSpeakerTranscripts: false) -> Summarize the full transcript, read by reference from the transcription result (summary + highlights) -> Send email to all participants -> Respond with the summary and highlights.\n\nThe meeting directory comes from the API request and is passed by reference to the conversion and transcription steps. Produces a summary and highlights only - no next steps, no speaker transcription, no speaker attribution, no LLM judgement, no attachments and no separate manager email. The response carries the summarize step's result by reference, never retyped or regenerated.",
       "nodes": [
+        {
+          "id": "api-start",
+          "type": "START",
+          "next": ["019fa100-0001-4000-8000-000000000001"],
+          "properties": {
+            "label": "Request",
+            "icon": "mdi:api",
+            "fields": [
+              {
+                "name": "directoryPath",
+                "type": "string",
+                "minLength": 1,
+                "description": "Absolute path to the meeting directory containing the .pcm recordings."
+              }
+            ],
+            "strict": false,
+            "timeout": 300
+          },
+          "createdAt": "2026-07-08T10:00:00Z"
+        },
         {
           "id": "019fa100-0001-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:pcm_to_wav",
-            "description": "Convert all PCM audio files in the meeting directory to WAV format",
+            "force": true,
+            "description": "Convert all PCM audio files in the meeting directory from the API request to WAV format",
             "label": "Convert PCM to WAV",
-            "icon": "mdi:waveform"
+            "icon": "mdi:waveform",
+            "parameters": {
+              "directoryPath": {
+                "$ref": "byNode.api-start.result.directoryPath"
+              }
+            }
           },
           "next": ["019fa100-0002-4000-8000-000000000001"],
           "createdAt": "2026-07-08T10:00:00Z"
@@ -454,6 +481,9 @@
             "label": "Transcribe Meeting",
             "icon": "mdi:account-voice",
             "parameters": {
+              "directoryPath": {
+                "$ref": "byNode.api-start.result.directoryPath"
+              },
               "includeSpeakerTranscripts": false
             }
           },
@@ -489,19 +519,53 @@
             "label": "Email Participants",
             "icon": "mdi:email-send"
           },
-          "next": ["019fa100-0007-4000-8000-000000000001"],
+          "next": ["api-end"],
           "createdAt": "2026-08-20T10:00:00Z"
         },
         {
-          "id": "019fa100-0007-4000-8000-000000000001",
-          "type": "NORMAL",
-          "properties": {
-            "action": "PLATFORM:complete",
-            "description": "Mark the variant A meeting summary workflow as complete",
-            "label": "Complete",
-            "icon": "mdi:check"
-          },
+          "id": "api-end",
+          "type": "END",
           "next": null,
+          "properties": {
+            "label": "Response",
+            "icon": "mdi:export",
+            "fields": [
+              {
+                "name": "summary",
+                "type": "string",
+                "description": "The overall meeting summary."
+              },
+              {
+                "name": "highlights",
+                "type": "array",
+                "description": "The meeting's highlights grouped by topic.",
+                "items": {
+                  "type": "object",
+                  "fields": [
+                    {
+                      "name": "topic",
+                      "type": "string",
+                      "description": "The topic title."
+                    },
+                    {
+                      "name": "highlights",
+                      "type": "array",
+                      "description": "Key points raised on the topic.",
+                      "items": { "type": "string" }
+                    }
+                  ]
+                }
+              }
+            ],
+            "parameters": {
+              "summary": {
+                "$ref": "byNode.019fa100-0003-4000-8000-000000000001.result.summary"
+              },
+              "highlights": {
+                "$ref": "byNode.019fa100-0003-4000-8000-000000000001.result.highlights"
+              }
+            }
+          },
           "createdAt": "2026-08-20T10:00:00Z"
         }
       ]
@@ -1242,7 +1306,7 @@
       ],
       "context": {
         "agent": {
-          "name": "Translator",
+          "name": "translator_agent",
           "description": "A translation agent that translates text into the requested language."
         },
         "knowledge": [],

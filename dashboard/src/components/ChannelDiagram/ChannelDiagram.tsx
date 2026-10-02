@@ -6,7 +6,7 @@ import React, { useMemo } from "react";
 const DEFAULT_BLUEPRINT_ICON =
   "healthicons:crisis-response-center-person-outline";
 
-function CommunicationDiagram(props: {
+function ChannelDiagram(props: {
   channels?: {
     id: string;
     type?: string;

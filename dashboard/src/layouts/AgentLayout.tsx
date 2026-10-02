@@ -205,7 +205,7 @@ function AgentLayout({
           {currentTab === "supervisings" && <Supervising agentId={agent.id} />}
           {currentTab === "tasks" && <TasksWidget agentId={agent.id} />}
           {currentTab === "mcps" && <AgentMCP agent={agent} />}
-          {currentTab === "communication" && <Communication />}
+          {currentTab === "channels" && <Channel />}
           {currentTab === "api" && !beta && <APITab agentId={agent.id} />}
         </Box>
       </Box>

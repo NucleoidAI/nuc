@@ -172,7 +172,7 @@ const Channel = () => {
           overflowX: "hidden",
         }}
       >
-        <CommunicationDiagram
+        <ChannelDiagram
           channels={channels}
           Blueprints={Blueprints}
           connections={connections}

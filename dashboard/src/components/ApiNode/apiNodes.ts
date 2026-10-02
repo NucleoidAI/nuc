@@ -67,6 +67,57 @@ export function toInputProperty(field: ApiType & { description?: string }) {
   return { type, description: field.description };
 }
 
+const FORMAT_SAMPLES = {
+  email: "user@example.com",
+  url: "https://example.com",
+  uuid: "00000000-0000-4000-8000-000000000000",
+  datetime: "2026-01-01T00:00:00Z",
+};
+
+function sampleValue(type: ApiType): unknown {
+  if (type.type === "string") {
+    if (type.format) return FORMAT_SAMPLES[type.format];
+    const text = "example".padEnd(type.minLength ?? 0, "x");
+    return type.maxLength !== undefined ? text.slice(0, type.maxLength) : text;
+  }
+  if (type.type === "number") {
+    return type.min ?? (type.max !== undefined ? Math.min(0, type.max) : 0);
+  }
+  if (type.type === "boolean") return true;
+  if (type.type === "enum") return type.values?.[0] ?? "";
+  if (type.type === "array") {
+    const count = Math.min(
+      Math.max(type.minItems ?? 1, 1),
+      type.maxItems ?? Infinity
+    );
+    return Array.from({ length: count }, () =>
+      sampleValue(type.items ?? { type: "string" })
+    );
+  }
+  return sampleBody(type.fields ?? []);
+}
+
+export function sampleBody(fields: ApiField[]): Record<string, unknown> {
+  return Object.fromEntries(
+    fields
+      .filter((field) => field.name)
+      .map((field) => [field.name, sampleValue(field)])
+  );
+}
+
+export function curlCommand(endpoint: string, fields: ApiField[]) {
+  const body = JSON.stringify(sampleBody(fields), null, 2).replace(
+    /'/g,
+    "'\\''"
+  );
+
+  return [
+    `curl -X POST '${endpoint}' \\`,
+    `  -H 'Content-Type: application/json' \\`,
+    `  -d '${body}'`,
+  ].join("\n");
+}
+
 function boundErrors(path: string, type: ApiType) {
   const pairs: [keyof ApiType, keyof ApiType][] = [
     ["minLength", "maxLength"],

@@ -1760,7 +1760,11 @@ function BlueprintFlowWidget({
       const targetNode = prev.nodes[targetNodeId];
       if (!targetNode) return prev;
 
-      if (!targetNode.raw?.properties?.force && targetNode.nodeType !== "END")
+      if (
+        !liteMode &&
+        !targetNode.raw?.properties?.force &&
+        targetNode.nodeType !== "END"
+      )
         return prev;
 
       const ancestors = getAncestorNodes(prev, targetNodeId);

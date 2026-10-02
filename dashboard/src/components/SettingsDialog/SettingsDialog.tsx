@@ -100,15 +100,14 @@ const SettingsDialog = ({
                 checked={!blocking}
                 onChange={(value) => setBlocking(!value)}
                 theme={theme}
-                color="primary"
-                variant="solid"
-                showThumbIcon={false}
-                offLabel="Full Mode"
-                onLabel="Lite Mode"
-                ariaLabel="Execution mode"
+                idleColor="primary"
+                offLabel="Training Mode"
+                onLabel="Inference Mode"
+                ariaLabel="Supervision mode"
                 width={70}
                 height={30}
                 thumbSize={20}
+                thumbIcon="⚡️"
               />
               <Typography
                 variant="caption"
@@ -130,14 +129,15 @@ const SettingsDialog = ({
                 checked={!!liteMode}
                 onChange={setLiteMode}
                 theme={theme}
-                idleColor="primary"
-                offLabel="Training Mode"
-                onLabel="Inference Mode"
-                ariaLabel="Force mode"
+                color="primary"
+                variant="solid"
+                showThumbIcon={false}
+                offLabel="Full Mode"
+                onLabel="Lite Mode"
+                ariaLabel="Execution mode"
                 width={70}
                 height={30}
                 thumbSize={20}
-                thumbIcon="⚡️"
               />
               <Typography
                 variant="caption"

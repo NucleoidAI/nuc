@@ -68,15 +68,17 @@ export default function BlueprintFlow({
         const fields = (node.raw?.properties?.fields ?? []) as ApiField[];
         const names = fields.map((field) => field.name).filter(Boolean);
         if (!names.length) continue;
+        const apiFields = fields.filter((field) => field.name);
         result[node.id] =
           node.nodeType === "START"
-            ? { inputs: [], outputs: names }
+            ? { inputs: [], outputs: names, apiFields }
             : {
                 inputs: names,
                 outputs: [],
                 inputProperties: Object.fromEntries(
                   fields.map((field) => [field.name, toInputProperty(field)])
                 ),
+                apiFields,
               };
         continue;
       }
@@ -131,12 +133,13 @@ export default function BlueprintFlow({
 
   const hasForceNode = useMemo(
     () =>
+      liteMode ||
       Object.values(graphData?.nodes ?? {}).some(
         (node) =>
           node.nodeType === "END" ||
           (node.raw?.properties as { force?: boolean } | undefined)?.force
       ),
-    [graphData]
+    [graphData, liteMode]
   );
 
   const impliedConnections = useMemo(() => {
@@ -174,7 +177,7 @@ export default function BlueprintFlow({
       const isForce = Boolean(
         (node.raw?.properties as { force?: boolean } | undefined)?.force
       );
-      if (isForce) continue;
+      if (isForce || liteMode) continue;
 
       const targetFields = nodeFields[node.id];
       if (!targetFields?.inputs.length) continue;
@@ -198,7 +201,7 @@ export default function BlueprintFlow({
     }
 
     return result;
-  }, [showConnections, graphData, nodeFields, boundFieldsByNode]);
+  }, [showConnections, graphData, nodeFields, boundFieldsByNode, liteMode]);
 
   const labelForImpliedConnection = useCallback(
     (b: { sourceNodeId: string; field: string }) =>

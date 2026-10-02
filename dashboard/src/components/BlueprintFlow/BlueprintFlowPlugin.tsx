@@ -1,3 +1,5 @@
+import type { ApiField } from "../ApiNode/apiNodes";
+import ApiFieldsPanel from "../ApiNode/ApiFieldsPanel";
 import NodeInputOverride from "./NodeInputOverride";
 import { styled } from "@mui/material/styles";
 
@@ -813,6 +815,7 @@ export type NodeFields = {
     string,
     { type: string; description?: string; nullable?: boolean }
   >;
+  apiFields?: ApiField[];
 };
 
 const FIELDS_PANEL_ROW_HEIGHT = 2;
@@ -845,6 +848,7 @@ function NodeHandles({
   fields,
   boundFields,
   hasForceNode,
+  liteMode,
   onHandleDragStart,
   onOverrideParameter,
 }: {
@@ -852,6 +856,7 @@ function NodeHandles({
   fields: NodeFields;
   boundFields?: Set<string>;
   hasForceNode?: boolean;
+  liteMode?: boolean;
   onOverrideParameter?: (nodeId: string, field: string, value: unknown) => void;
   onHandleDragStart?: (
     nodeId: string,
@@ -861,6 +866,7 @@ function NodeHandles({
 }) {
   const isForceTarget =
     node.nodeType === "END" ||
+    Boolean(liteMode) ||
     Boolean((node.raw?.properties as { force?: boolean } | undefined)?.force);
 
   const inputs = fields.inputs.map((field) => ({
@@ -906,6 +912,21 @@ function NodeHandles({
       />
     );
   };
+
+  if (fields.apiFields) {
+    const isRequest = node.nodeType === "START";
+
+    return (
+      <ApiFieldsPanel
+        side={isRequest ? "out" : "in"}
+        title={isRequest ? "Request" : "Response"}
+        fields={fields.apiFields}
+        handles={isRequest ? outputs : inputs}
+        renderLabel={(name) => renderLabel(name, isRequest ? "out" : "in")}
+        sx={{ mt: -1, ml: 0.6 }}
+      />
+    );
+  }
 
   return (
     <ConnectionsPanel
@@ -1043,6 +1064,7 @@ function FlowNodeRenderer({
             fields={fields}
             boundFields={boundFieldsByNode?.[node.id]}
             hasForceNode={hasForceNode}
+            liteMode={liteMode}
             onHandleDragStart={onHandleDragStart}
             onOverrideParameter={isReadOnly ? undefined : onOverrideParameter}
           />

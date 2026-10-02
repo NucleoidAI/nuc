@@ -1,5 +1,6 @@
 import ApiFieldList from "./ApiFieldList";
 import { DrawerLayout } from "@canmingir/link/layouts";
+import EndpointCard from "./EndpointCard";
 import config from "../../../config";
 
 import {
@@ -7,6 +8,7 @@ import {
   API_TIMEOUT_MAX,
   type ApiField,
   apiFieldErrors,
+  curlCommand,
 } from "./apiNodes";
 import {
   Alert,
@@ -15,6 +17,8 @@ import {
   FormControlLabel,
   Stack,
   Switch,
+  Tab,
+  Tabs,
   TextField,
   Typography,
 } from "@mui/material";
@@ -49,6 +53,9 @@ export default function ApiNodeDrawer({
   const [fields, setFields] = useState<ApiField[]>([]);
   const [strict, setStrict] = useState(false);
   const [timeoutDraft, setTimeoutDraft] = useState(String(API_TIMEOUT_DEFAULT));
+  const [activeTab, setActiveTab] = useState<"node" | "fields" | "settings">(
+    "node"
+  );
 
   useEffect(() => {
     if (!open || !node) return;
@@ -57,6 +64,7 @@ export default function ApiNodeDrawer({
     setFields(properties.fields ?? []);
     setStrict(Boolean(properties.strict));
     setTimeoutDraft(String(properties.timeout ?? API_TIMEOUT_DEFAULT));
+    setActiveTab("node");
   }, [open, node]);
 
   const timeoutValue = Number(timeoutDraft);
@@ -80,75 +88,113 @@ export default function ApiNodeDrawer({
       }
     >
       <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-        <Stack spacing={2} sx={{ flex: 1, overflowY: "auto", pt: 1, pb: 2 }}>
-          <TextField
-            size="small"
-            label="Label"
-            value={label}
-            onChange={(event) => setLabel(event.target.value)}
-            fullWidth
+        <Tabs
+          value={activeTab}
+          onChange={(_, value) => setActiveTab(value)}
+          sx={{ mb: 2, borderBottom: 1, borderColor: "divider" }}
+        >
+          <Tab label="Node" value="node" />
+          <Tab
+            label={`Fields (${fields.length})`}
+            value="fields"
+            sx={errors.length ? { color: "warning.main" } : undefined}
           />
+          {isStart && (
+            <Tab
+              label="Settings"
+              value="settings"
+              sx={timeoutInvalid ? { color: "warning.main" } : undefined}
+            />
+          )}
+        </Tabs>
 
-          {isStart ? (
-            <>
-              <Box>
-                <Typography variant="caption" color="text.secondary">
-                  Endpoint
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{ fontFamily: "monospace", wordBreak: "break-all" }}
-                >
-                  POST {endpoint}
-                </Typography>
-              </Box>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={strict}
-                    onChange={(event) => setStrict(event.target.checked)}
-                  />
-                }
-                label="Reject unknown fields"
-              />
-              <Typography variant="caption" color="text.secondary">
-                {strict
-                  ? "Requests with fields that are not in the schema fail with 400."
-                  : "Fields that are not in the schema are dropped before the task starts."}
-              </Typography>
+        <Box sx={{ flex: 1, overflowY: "auto", pb: 2 }}>
+          <Box sx={{ display: activeTab === "node" ? "block" : "none" }}>
+            <Stack spacing={2} sx={{ pt: 1 }}>
               <TextField
                 size="small"
-                type="number"
-                label="Timeout (seconds)"
-                value={timeoutDraft}
-                onChange={(event) => setTimeoutDraft(event.target.value)}
-                error={timeoutInvalid}
-                helperText={
-                  timeoutInvalid
-                    ? `Enter a whole number between 1 and ${API_TIMEOUT_MAX}`
-                    : "The request returns 504 if the task is still running after this."
-                }
-                inputProps={{ min: 1, max: API_TIMEOUT_MAX, step: 1 }}
+                label="Label"
+                value={label}
+                onChange={(event) => setLabel(event.target.value)}
+                fullWidth
               />
-            </>
-          ) : (
-            <Typography variant="body2" color="text.secondary">
-              Fill each response field from the flow with parameter connections,
-              the same way tool inputs are bound.
-            </Typography>
-          )}
+              {isStart ? (
+                <Box>
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ display: "block", mb: 0.75 }}
+                  >
+                    Endpoint
+                  </Typography>
+                  <EndpointCard
+                    endpoint={endpoint}
+                    curl={curlCommand(endpoint, fields)}
+                  />
+                </Box>
+              ) : (
+                <Typography variant="body2" color="text.secondary">
+                  Fill each response field from the flow with parameter
+                  connections, the same way tool inputs are bound.
+                </Typography>
+              )}
+            </Stack>
+          </Box>
 
-          <Typography variant="subtitle2">Fields</Typography>
-          <ApiFieldList fields={fields} onChange={setFields} />
+          <Box sx={{ display: activeTab === "fields" ? "block" : "none" }}>
+            <Stack spacing={2}>
+              <ApiFieldList fields={fields} onChange={setFields} />
+              {errors.length > 0 && (
+                <Alert severity="warning">
+                  {errors.map((error) => (
+                    <div key={error}>{error}</div>
+                  ))}
+                </Alert>
+              )}
+            </Stack>
+          </Box>
 
-          {errors.length > 0 && (
-            <Alert severity="warning">
-              {errors.map((error) => (
-                <div key={error}>{error}</div>
-              ))}
-            </Alert>
+          {isStart && (
+            <Box sx={{ display: activeTab === "settings" ? "block" : "none" }}>
+              <Stack spacing={2} sx={{ pt: 1 }}>
+                <Box>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={strict}
+                        onChange={(event) => setStrict(event.target.checked)}
+                      />
+                    }
+                    label="Reject unknown fields"
+                  />
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ display: "block" }}
+                  >
+                    {strict
+                      ? "Requests with fields that are not in the schema fail with 400."
+                      : "Fields that are not in the schema are dropped before the task starts."}
+                  </Typography>
+                </Box>
+                <TextField
+                  size="small"
+                  type="number"
+                  label="Timeout (seconds)"
+                  value={timeoutDraft}
+                  onChange={(event) => setTimeoutDraft(event.target.value)}
+                  error={timeoutInvalid}
+                  helperText={
+                    timeoutInvalid
+                      ? `Enter a whole number between 1 and ${API_TIMEOUT_MAX}`
+                      : "The request returns 504 if the task is still running after this."
+                  }
+                  inputProps={{ min: 1, max: API_TIMEOUT_MAX, step: 1 }}
+                />
+              </Stack>
+            </Box>
           )}
-        </Stack>
+        </Box>
 
         <Box sx={{ pt: 2, borderTop: 1, borderColor: "divider" }}>
           <Button

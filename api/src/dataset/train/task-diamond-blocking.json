@@ -2345,22 +2345,13 @@
           },
           {
             "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
-            "type": "NORMAL",
+            "type": "APPROVAL",
             "properties": {
-              "action": "PLATFORM:user_interaction",
-              "label": "Confirm Payment with User",
-              "icon": "mdi:account-question"
-            },
-            "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
-            "createdAt": "2025-06-26T06:00:00Z"
-          },
-          {
-            "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
-            "type": "CONDITION",
-            "properties": {
-              "action": "PLATFORM:decision",
-              "label": "Check Payment Approval",
-              "icon": "mdi:source-branch"
+              "action": "PLATFORM:customer_approval",
+              "description": "Ask the customer to approve the payment before the card is charged, then wait for the decision from the session or the approval endpoint",
+              "label": "Payment Approval",
+              "icon": "mdi:account-check",
+              "instructions": "Ask the customer to approve the payment before the card is charged. Write the question from the live data: name the purchase order number, the product and the amount in major units with its currency."
             },
             "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
             "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
@@ -2559,22 +2550,13 @@
           },
           {
             "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
-            "type": "NORMAL",
+            "type": "APPROVAL",
             "properties": {
-              "action": "PLATFORM:user_interaction",
-              "label": "Confirm Payment with User",
-              "icon": "mdi:account-question"
-            },
-            "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
-            "createdAt": "2025-06-26T06:00:00Z"
-          },
-          {
-            "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
-            "type": "CONDITION",
-            "properties": {
-              "action": "PLATFORM:decision",
-              "label": "Check Payment Approval",
-              "icon": "mdi:source-branch"
+              "action": "PLATFORM:customer_approval",
+              "description": "Ask the customer to approve the payment before the card is charged, then wait for the decision from the session or the approval endpoint",
+              "label": "Payment Approval",
+              "icon": "mdi:account-check",
+              "instructions": "Ask the customer to approve the payment before the card is charged. Write the question from the live data: name the purchase order number, the product and the amount in major units with its currency."
             },
             "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
             "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
@@ -2779,22 +2761,13 @@
           },
           {
             "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
-            "type": "NORMAL",
+            "type": "APPROVAL",
             "properties": {
-              "action": "PLATFORM:user_interaction",
-              "label": "Confirm Payment with User",
-              "icon": "mdi:account-question"
-            },
-            "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
-            "createdAt": "2025-06-26T06:00:00Z"
-          },
-          {
-            "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
-            "type": "CONDITION",
-            "properties": {
-              "action": "PLATFORM:decision",
-              "label": "Check Payment Approval",
-              "icon": "mdi:source-branch"
+              "action": "PLATFORM:customer_approval",
+              "description": "Ask the customer to approve the payment before the card is charged, then wait for the decision from the session or the approval endpoint",
+              "label": "Payment Approval",
+              "icon": "mdi:account-check",
+              "instructions": "Ask the customer to approve the payment before the card is charged. Write the question from the live data: name the purchase order number, the product and the amount in major units with its currency."
             },
             "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
             "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
@@ -3028,22 +3001,13 @@
           },
           {
             "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
-            "type": "NORMAL",
+            "type": "APPROVAL",
             "properties": {
-              "action": "PLATFORM:user_interaction",
-              "label": "Confirm Payment with User",
-              "icon": "mdi:account-question"
-            },
-            "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
-            "createdAt": "2025-06-26T06:00:00Z"
-          },
-          {
-            "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
-            "type": "CONDITION",
-            "properties": {
-              "action": "PLATFORM:decision",
-              "label": "Check Payment Approval",
-              "icon": "mdi:source-branch"
+              "action": "PLATFORM:customer_approval",
+              "description": "Ask the customer to approve the payment before the card is charged, then wait for the decision from the session or the approval endpoint",
+              "label": "Payment Approval",
+              "icon": "mdi:account-check",
+              "instructions": "Ask the customer to approve the payment before the card is charged. Write the question from the live data: name the purchase order number, the product and the amount in major units with its currency."
             },
             "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
             "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
@@ -3212,107 +3176,23 @@
         },
         {
           "taskId": "task-op-001",
-          "action": "PLATFORM:user_interaction",
+          "action": "PLATFORM:customer_approval",
           "status": "COMPLETED",
           "parameters": {
-            "question": "Purchase order po-2001 for product-1 totals 125.00 usd. Confirm the charge? (yes/no)"
+            "question": "Purchase order po-2001 for product-1 (prd-1) totals 125.00 usd, shipping to Atlanta. Do you approve the charge?"
           },
-          "result": "yes",
-          "comment": "The user approved the charge before anything is taken"
+          "result": "APPROVED",
+          "comment": "The payment approval node asks the customer before anything is charged"
         }
       ],
       "next_step": {
-        "action": "PLATFORM:decision",
+        "action": "STRIPE:confirm_payment_intent",
         "parameters": {
-          "condition": "user_approval == TRUE",
-          "true": [
-            {
-              "taskId": "task-op-001",
-              "action": "STRIPE:confirm_payment_intent",
-              "status": "COMPLETED",
-              "parameters": {
-                "payment_intent_id": {
-                  "$ref": "steps[4].result.id"
-                }
-              },
-              "result": "{\"id\": \"pi_demo0001\", \"status\": \"succeeded\", \"amount\": 12500}",
-              "comment": "Confirming the intent the user approved (steps[4].result.id) via $ref"
-            },
-            {
-              "taskId": "task-op-001",
-              "action": "FEDEX:create_shipment",
-              "status": "COMPLETED",
-              "parameters": {
-                "sender_postal_code": {
-                  "$ref": "steps[3].result.purchase_order.ship_from.postal_code"
-                },
-                "sender_country_code": {
-                  "$ref": "steps[3].result.purchase_order.ship_from.country_code"
-                },
-                "recipient_postal_code": {
-                  "$ref": "steps[3].result.purchase_order.ship_to.postal_code"
-                },
-                "recipient_country_code": {
-                  "$ref": "steps[3].result.purchase_order.ship_to.country_code"
-                },
-                "weight": {
-                  "$ref": "steps[3].result.purchase_order.total_weight_kg"
-                },
-                "weight_units": "KG",
-                "service_type": "FEDEX_GROUND"
-              },
-              "result": "{\"tracking_number\": \"794123456789\", \"service_type\": \"FEDEX_GROUND\"}",
-              "comment": "Every address and weight value comes from the purchase order (steps[3]) via $ref - none of them are invented"
-            },
-            {
-              "taskId": "task-op-001",
-              "action": "GREY:send_email",
-              "status": "COMPLETED",
-              "parameters": {
-                "to": "halilibrahimcengel7@gmail.com",
-                "subject": "Purchase Order po-2001 paid and shipped",
-                "text": "Purchase order po-2001 for product-1 (prd-1) was paid (125.00 usd) and shipped with tracking number 794123456789."
-              },
-              "comment": "Email carries the payment status and the tracking number"
-            },
-            {
-              "taskId": "task-op-001",
-              "action": "PLATFORM:complete",
-              "status": "COMPLETED",
-              "comment": "Order paid, shipped and reported"
-            }
-          ],
-          "false": [
-            {
-              "taskId": "task-op-001",
-              "action": "STRIPE:cancel_payment_intent",
-              "status": "COMPLETED",
-              "parameters": {
-                "payment_intent_id": {
-                  "$ref": "steps[4].result.id"
-                }
-              },
-              "result": "{\"id\": \"pi_demo0001\", \"status\": \"canceled\"}",
-              "comment": "The user declined, so the unconfirmed intent is cancelled instead of charged"
-            },
-            {
-              "taskId": "task-op-001",
-              "action": "PLATFORM:message_user",
-              "status": "COMPLETED",
-              "parameters": {
-                "message": "The payment was cancelled, so nothing was charged and nothing was shipped. Purchase order po-2001 stays unpaid."
-              },
-              "comment": "Telling the user why the order stopped"
-            },
-            {
-              "taskId": "task-op-001",
-              "action": "PLATFORM:complete",
-              "status": "COMPLETED",
-              "comment": "Order workflow closed without a charge"
-            }
-          ]
+          "payment_intent_id": {
+            "$ref": "steps[4].result.id"
+          }
         },
-        "comment": "The user answered yes (steps[5].result), so the approved branch runs: confirm the payment, ship it and email the confirmation",
+        "comment": "The customer approved the charge (steps[5].result is APPROVED), so the approval node's true branch runs: confirm the payment intent from steps[4] via $ref",
         "result_score": 0.95
       }
     },
@@ -3383,22 +3263,13 @@
           },
           {
             "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
-            "type": "NORMAL",
+            "type": "APPROVAL",
             "properties": {
-              "action": "PLATFORM:user_interaction",
-              "label": "Confirm Payment with User",
-              "icon": "mdi:account-question"
-            },
-            "next": ["6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e"],
-            "createdAt": "2025-06-26T06:00:00Z"
-          },
-          {
-            "id": "6f35e3b3-60c5-4c5b-910a-76d1aedd3d3e",
-            "type": "CONDITION",
-            "properties": {
-              "action": "PLATFORM:decision",
-              "label": "Check Payment Approval",
-              "icon": "mdi:source-branch"
+              "action": "PLATFORM:customer_approval",
+              "description": "Ask the customer to approve the payment before the card is charged, then wait for the decision from the session or the approval endpoint",
+              "label": "Payment Approval",
+              "icon": "mdi:account-check",
+              "instructions": "Ask the customer to approve the payment before the card is charged. Write the question from the live data: name the purchase order number, the product and the amount in major units with its currency."
             },
             "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
             "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
@@ -3567,12 +3438,290 @@
         }
       ],
       "next_step": {
-        "action": "PLATFORM:user_interaction",
+        "action": "PLATFORM:customer_approval",
         "parameters": {
-          "question": "Purchase order po-2001 for product-1 (prd-1) totals 125.00 usd, shipping to Atlanta. Confirm the charge? (yes/no)"
+          "question": "Purchase order po-2001 for product-1 (prd-1) totals 125.00 usd, shipping to Atlanta. Do you approve the charge?"
         },
-        "comment": "The node carries no fixed question - write it from the live data: the purchase order number (steps[3]), the product and the amount converted from minor units (steps[4]), then ask for a yes/no answer",
+        "comment": "The next node is the Payment Approval node (PLATFORM:customer_approval), not a free-form user question - write its question from the live data: the purchase order number (steps[3]), the product and the amount converted from minor units (steps[4])",
         "result_score": 0.95
+      }
+    },
+    {
+      "id": "8745e97b-6149-4f73-af51-af783da8b290",
+      "description": "The supervisor answered a missing-certificate question by manually updating the blueprint: a condition now hands a product without a certificate off to the compliance_manager agent. The agent must follow the updated blueprint instead of asking the supervisor again.",
+      "sessionId": "8fde22b4-4b6d-4697-b166-f316296cfced",
+      "Blueprint": {
+        "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
+        "title": "Order and Compliance",
+        "description": "Find product, check its certificate; if it exists assign it and continue with purchase order, payment approval, shipment and email, otherwise hand off to the compliance_manager agent.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "description": "Search and retrieve the product details",
+              "label": "Find Product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:knowledge_lookup",
+              "description": "Look up the agent's knowledge base to find the product's compliance certificate. This reflects live knowledge updates from the supervisor.",
+              "label": "Check Certificate",
+              "icon": "mdi:book-search"
+            },
+            "next": ["593af8f9-c9ec-4912-b9e0-84ee2803f1a3"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "description": "Assign a compliance certificate to the product",
+              "label": "Assign Certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "description": "Create a Purchase Order for the certified product; it returns total_amount, currency, total_weight_kg and the ship_from / ship_to postal codes used by the next steps",
+              "label": "Create Purchase Order",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:create_payment_intent",
+              "description": "Create a payment intent for the purchase order using its total_amount and currency, with the PO number in the description. Leave the customer field empty — this flow has no Stripe customer and an invented ID is rejected",
+              "label": "Create Payment",
+              "icon": "mdi:credit-card-outline"
+            },
+            "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
+            "type": "APPROVAL",
+            "properties": {
+              "action": "PLATFORM:customer_approval",
+              "description": "Ask the customer to approve the payment before the card is charged, then wait for the decision from the session or the approval endpoint",
+              "label": "Payment Approval",
+              "icon": "mdi:account-check",
+              "instructions": "Ask the customer to approve the payment before the card is charged. Write the question from the live data: name the purchase order number, the product and the amount in major units with its currency."
+            },
+            "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
+            "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:confirm_payment_intent",
+              "description": "Confirm the payment intent so the purchase order is paid before the goods are shipped",
+              "label": "Confirm Payment",
+              "icon": "mdi:check-decagram"
+            },
+            "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "738b438a-757d-4653-8bc2-b921b130503c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "FEDEX:create_shipment",
+              "description": "Create the outbound shipment for the paid purchase order using the ship_from and ship_to postal codes and total_weight_kg, and return the tracking number",
+              "label": "Create Shipment",
+              "icon": "mdi:truck-delivery-outline"
+            },
+            "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "description": "Send email notification about the completed purchase order, including the payment confirmation and the shipment tracking number",
+              "label": "Send Email",
+              "icon": "mdi:email"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "7447fdbc-a273-40d5-a822-843d98865292",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:cancel_payment_intent",
+              "description": "Cancel the unconfirmed payment intent because the user declined the charge",
+              "label": "Cancel Payment",
+              "icon": "mdi:credit-card-off-outline"
+            },
+            "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "description": "Tell the user the payment was cancelled and nothing was shipped; the purchase order stays unpaid",
+              "label": "Notify Cancellation",
+              "icon": "mdi:bell-off"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "description": "Mark the order workflow as complete",
+              "label": "Complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "593af8f9-c9ec-4912-b9e0-84ee2803f1a3",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "label": "If certificate exists",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
+            "false": ["bd0a271c-aef4-463c-82d6-625d1c796fea"],
+            "createdAt": "2026-09-29T14:14:03Z"
+          },
+          {
+            "id": "bd0a271c-aef4-463c-82d6-625d1c796fea",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:handoff",
+              "label": "Hand off to compliance_manager agent",
+              "icon": "mdi:account-arrow-right"
+            },
+            "next": null,
+            "createdAt": "2026-09-29T14:14:25Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "086aef39-a1ff-4ace-aca4-529057164e50",
+          "type": "TEXT",
+          "text": "prd-1 has FFC compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "d0209aeb-5ca9-4e56-a864-1ff3c5fa26d6",
+          "type": "TEXT",
+          "text": "prd-2 has CE compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        }
+      ],
+      "tools": [
+        "ORDER:find_product",
+        "PLATFORM:knowledge_lookup",
+        "PLATFORM:decision",
+        "PLATFORM:ask_supervisor",
+        "PLATFORM:handoff",
+        "ORDER:assign_certificate",
+        "ORDER:create_po",
+        "STRIPE:create_payment_intent",
+        "GREY:send_email"
+      ],
+      "steps": [
+        {
+          "taskId": "1c3a17dd-678c-4b73-82b8-081dd5d3fbd4",
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "prd-7"
+          },
+          "result": "{\"product\": {\"id\": \"prd-7\", \"name\": \"product-7\", \"vendor_id\": \"vnd-2\", \"unit_price\": 8400, \"currency\": \"usd\", \"weight_kg\": 1.2}}",
+          "comment": "Product resolved from the order request"
+        },
+        {
+          "taskId": "1c3a17dd-678c-4b73-82b8-081dd5d3fbd4",
+          "action": "PLATFORM:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": {
+              "$ref": "steps[0].result.product.id"
+            }
+          },
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-1\\\", \\\"product_name\\\": \\\"product-1\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-2\\\", \\\"product_name\\\": \\\"product-2\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base holds certificate records for prd-1 and prd-2 only - there is no entry for prd-7"
+        },
+        {
+          "taskId": "1c3a17dd-678c-4b73-82b8-081dd5d3fbd4",
+          "action": "PLATFORM:decision",
+          "status": "COMPLETED",
+          "parameters": {
+            "condition": "knowledge_base_has_certificate_record_for_product == TRUE",
+            "true": [
+              {
+                "action": "ORDER:assign_certificate",
+                "comment": "Assign the certificate found in the knowledge base"
+              }
+            ],
+            "false": [
+              {
+                "action": "PLATFORM:ask_supervisor",
+                "parameters": {
+                  "question": "Product prd-7 has no compliance certificate in the knowledge base. Should I assign one or halt the order?"
+                },
+                "comment": "The blueprint had no path for a missing certificate yet"
+              }
+            ]
+          },
+          "result": "{\"result\": false, \"actions\": [{\"action\": \"PLATFORM:ask_supervisor\", \"parameters\": {\"question\": \"Product prd-7 has no compliance certificate in the knowledge base. Should I assign one or halt the order?\"}, \"comment\": \"The blueprint had no path for a missing certificate yet\"}]}",
+          "comment": "Decided before the blueprint had a missing-certificate path, so the only option was to escalate"
+        },
+        {
+          "taskId": "1c3a17dd-678c-4b73-82b8-081dd5d3fbd4",
+          "action": "PLATFORM:ask_supervisor",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Product prd-7 has no compliance certificate in the knowledge base. Should I assign one or halt the order?"
+          },
+          "result": "Blueprint manually updated",
+          "comment": "Escalated the missing certificate for prd-7 to the supervisor"
+        }
+      ],
+      "next_step": {
+        "action": "PLATFORM:handoff",
+        "parameters": {
+          "targetAgentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+          "targetBlueprintId": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
+          "context": "The order for product-7 (prd-7) is on hold: no compliance certificate is recorded for it. Request the certificate from the product's vendor."
+        },
+        "comment": "'Blueprint manually updated' (steps[3].result) means the supervisor answered by changing the blueprint, not by adding knowledge - the question is resolved and must not be asked again. The updated blueprint's 'If certificate exists' condition sends a product without a certificate to 'Hand off to compliance_manager agent'; prd-7 still has no certificate (steps[1]), so follow that branch. The earlier decision (steps[2]) was made before this change and its ask_supervisor action is stale",
+        "result_score": 0.9
       }
     }
   ]

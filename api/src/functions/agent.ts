@@ -4,6 +4,13 @@ import {
   mergeNodeParameters,
 } from "../lib/nodeParameterBindings";
 import type { LLMMeta } from "../lib/llmLog";
+import {
+  conditionBranch,
+  findNodeAhead,
+  isForcedNode,
+  resolveCurrentNode,
+  switchCases,
+} from "../lib/blueprintNodes";
 import Agent from "../models/Agent";
 import MCPs from "../mcps/mcps";
 import actions from "../actions";
@@ -300,6 +307,10 @@ async function approve({
     throw new Error("No step is waiting for approval in this session");
   }
 
+  if (waiting.step.action === "PLATFORM:two_factor") {
+    throw new Error("Use the 2FA verification endpoint");
+  }
+
   if (comment) {
     await taskFn.updateStepComment({
       taskId: waiting.taskId,
@@ -317,53 +328,6 @@ async function approve({
   return { taskId: waiting.taskId, stepId: waiting.step.id, decision };
 }
 
-function resolveCurrentNode(
-  nodes: any[],
-  completedSteps: { action: string; result?: string; nodeId?: string | null }[],
-) {
-  const allNextIds = new Set(
-    nodes.flatMap((n) => [
-      ...(Array.isArray(n.next) ? n.next : n.next ? [n.next] : []),
-      ...(n.true || []),
-      ...(n.false || []),
-    ]),
-  );
-  let currentNode = nodes.find((n) => !allNextIds.has(n.id));
-
-  for (const step of completedSteps) {
-    if (!currentNode) break;
-
-    const stepMatchesNode = step.nodeId
-      ? step.nodeId === currentNode.id
-      : currentNode.properties?.action === step.action;
-    if (!stepMatchesNode) break;
-
-    if (currentNode.type === "CONDITION" || currentNode.type === "APPROVAL") {
-      const tookTrue =
-        currentNode.type === "APPROVAL"
-          ? step.result === "APPROVED"
-          : step.result === "true";
-      const nextIds = tookTrue
-        ? currentNode.true || []
-        : currentNode.false || [];
-      currentNode = nextIds.length
-        ? nodes.find((n) => nextIds.includes(n.id))
-        : undefined;
-    } else {
-      const nextIds = Array.isArray(currentNode.next)
-        ? currentNode.next
-        : currentNode.next
-        ? [currentNode.next]
-        : [];
-      currentNode = nextIds.length
-        ? nodes.find((n) => nextIds.includes(n.id))
-        : undefined;
-    }
-  }
-
-  return currentNode;
-}
-
 async function forceNodeStep({
   currentNode,
   currentTask,
@@ -372,7 +336,7 @@ async function forceNodeStep({
   meta,
 }: {
   currentNode: any;
-  currentTask: { description: string; blueprintId: string; steps: any[] };
+  currentTask: { blueprintId: string; steps: any[] };
   context: {
     role: "user" | "system" | "assistant";
     content: object | string;
@@ -401,17 +365,22 @@ async function forceNodeStep({
 }
 
 async function task({ taskId }: { taskId: string }) {
-  const { agentId, description, sessionId, blueprintId } = await taskFn.get({
-    taskId,
-  });
+  const { agentId, description, sessionId, blueprintId, status } =
+    await taskFn.get({
+      taskId,
+    });
+
+  if (status !== "IN_PROGRESS") return;
 
   console.log(agentId, blueprintId, sessionId);
 
   const currentTask = {
-    description,
     blueprintId,
     steps: await taskFn.listSteps({ taskId }),
   };
+
+  if (currentTask.steps.some((step) => step.status === "WAITING_FOR_APPROVAL"))
+    return;
 
   //TODO: Loop detection
   if (currentTask.steps.length > 20) {
@@ -477,7 +446,9 @@ async function task({ taskId }: { taskId: string }) {
     if (pending) {
       return;
     }
+  }
 
+  if (currentNode?.type === "APPROVAL" && isForcedNode(currentNode)) {
     const question =
       currentNode.properties?.question ||
       (await approvalQuestion({
@@ -497,7 +468,7 @@ async function task({ taskId }: { taskId: string }) {
     });
   }
 
-  const isForceNode = currentNode?.properties?.force === true;
+  const isForceNode = isForcedNode(currentNode);
 
   const nodeAction = currentNode?.properties?.action;
 
@@ -541,10 +512,19 @@ async function task({ taskId }: { taskId: string }) {
           meta,
         }));
 
-  const nodeId = currentNode?.id ?? null;
+  const matchedNode = currentNode
+    ? findNodeAhead(
+        blueprint?.nodes ?? [],
+        currentNode,
+        (node) =>
+          node.properties?.action === action ||
+          (node === currentNode && !node.properties?.action),
+      )
+    : undefined;
+  const nodeId = matchedNode?.id ?? null;
 
   const rawParameters = mergeNodeParameters({
-    node: currentNode,
+    node: matchedNode,
     action,
     generated: llmParameters,
   });
@@ -645,9 +625,15 @@ async function task({ taskId }: { taskId: string }) {
     }
 
     const stepsToInherit = await taskFn.listSteps({ taskId });
-    const inheritedSteps = stepsToInherit.map(({ s }) => ({
-      s,
-    }));
+    const inheritedSteps = stepsToInherit.map(
+      ({ action, status, parameters, result, comment }) => ({
+        action,
+        status,
+        parameters,
+        result,
+        comment,
+      }),
+    );
 
     const newTask = await taskFn.create({
       agentId: handoffParams.targetAgentId,
@@ -693,6 +679,30 @@ async function task({ taskId }: { taskId: string }) {
   } else if (action === "PLATFORM:message_user") {
     parameters.sessionId = sessionId;
     parameters.agentId = agentId;
+  } else if (action === "PLATFORM:customer_approval") {
+    parameters.question ??= matchedNode?.properties?.question;
+    parameters.sessionId = sessionId;
+    parameters.agentId = agentId;
+  } else if (action === "PLATFORM:switch" && matchedNode?.type === "SWITCH") {
+    parameters.cases = switchCases(matchedNode, blueprint?.nodes ?? []);
+    parameters.defaultCase = matchedNode.properties?.defaultCase;
+    parameters.instructions =
+      (matchedNode.properties?.pseudocodeEnabled &&
+        matchedNode.properties?.pseudocode) ||
+      matchedNode.properties?.instructions ||
+      parameters.instructions;
+  } else if (
+    action === "PLATFORM:decision" &&
+    matchedNode?.type === "CONDITION"
+  ) {
+    const nodes = blueprint?.nodes ?? [];
+    parameters.condition =
+      (matchedNode.properties?.pseudocodeEnabled &&
+        matchedNode.properties?.pseudocode) ||
+      matchedNode.properties?.instructions?.trim() ||
+      parameters.condition;
+    parameters.true = conditionBranch(matchedNode.true, nodes);
+    parameters.false = conditionBranch(matchedNode.false, nodes);
   }
 
   await taskFn.addStep({
@@ -727,7 +737,10 @@ async function step({
     actionType = "SUPERVISED";
   } else if (action === "PLATFORM:user_interaction") {
     actionType = "INTERACTION";
-  } else if (action === "PLATFORM:customer_approval") {
+  } else if (
+    action === "PLATFORM:customer_approval" ||
+    action === "PLATFORM:two_factor"
+  ) {
     actionType = "APPROVAL";
   } else if (action === "SUPERVISOR_RESPONDED") {
     actionType = "SUPERVISED_RESPONDED";
@@ -799,7 +812,10 @@ async function step({
     } else if (actionType === "INTERACTION") {
       actionFn = require("../actions/interaction").default;
     } else if (actionType === "APPROVAL") {
-      actionFn = require("../actions/customer_approval").default;
+      actionFn =
+        action === "PLATFORM:two_factor"
+          ? require("../actions/two_factor").default
+          : require("../actions/customer_approval").default;
     }
 
     if (
@@ -822,7 +838,7 @@ async function step({
           )
           .join("\n"),
         parameters: runParameters,
-        meta: { taskId },
+        meta: { taskId, stepId },
       });
 
       console.debug(
@@ -921,6 +937,9 @@ async function step({
     }
   } catch (err: unknown) {
     if (err instanceof Error) {
+      if (action === "PLATFORM:two_factor" && taskId) {
+        await taskFn.update({ taskId, status: "FAILED", comment: err.message });
+      }
       await taskFn.updateStep({
         stepId,
         result: err.message,
@@ -1241,7 +1260,11 @@ function restoreCosmetics(
     const icon =
       (typeof props.icon === "string" && props.icon) ||
       (typeof previousProps.icon === "string" && previousProps.icon) ||
-      (n.type === "CONDITION" ? "mdi:source-branch" : "mdi:circle-outline");
+      (n.type === "CONDITION"
+        ? "mdi:source-branch"
+        : n.type === "SWITCH"
+        ? "mdi:call-split"
+        : "mdi:circle-outline");
 
     const description =
       typeof props.description === "string"
@@ -1479,6 +1502,16 @@ async function chat({
       (step) => step.status === "WAITING_FOR_APPROVAL",
     );
 
+    if (approvalStep?.action === "PLATFORM:two_factor") {
+      await session.addConversation({
+        sessionId,
+        agentId,
+        role: "ASSISTANT",
+        content: "Please complete the pending 2FA verification to continue.",
+      });
+      return;
+    }
+
     const question = approvalStep?.parameters?.question;
 
     const decision = await approvalDecision({
@@ -1569,13 +1602,6 @@ async function chat({
         blueprintToTaskResponse.task,
       blueprintId: selectedBlueprintId,
       sessionId,
-    });
-
-    await session.addConversation({
-      sessionId,
-      agentId,
-      role: "ASSISTANT",
-      content: blueprintToTaskResponse.answer,
     });
   } else {
     if (task.length > 0) {

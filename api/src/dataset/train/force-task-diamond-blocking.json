@@ -138,6 +138,66 @@
         "comment": "find_product already resolved the product id (steps[1].result.id) - reuse it via $ref instead of retyping it",
         "result_score": 0.95
       }
+    },
+    {
+      "id": "7c2d5b84-0f16-4e7a-9c33-2b5f1a6d90e8",
+      "description": "The caller wants the address on policy HOM-20260204 changed to 3 Bay Tree Cottages, St Ives.",
+      "knowledge": [
+        {
+          "type": "TEXT",
+          "text": "2FA channel selection. Phone number change -> channel is email. Any other change, address included -> channel is whatsapp."
+        }
+      ],
+      "tools": ["AS400:get_policy", "PLATFORM:two_factor", "AS400:update_policy_address", "PLATFORM:complete"],
+      "steps": [
+        {
+          "action": "AS400:get_policy",
+          "status": "COMPLETED",
+          "parameters": { "policy_id": "HOM-20260204" },
+          "result": "{\"record\": {\"POLID\": \"HOM-20260204\", \"EMAIL\": \"holder@corp.co.uk\", \"MOBILE\": \"+44 7700 900118\", \"ADDR1\": \"12 Kingsway\"}}",
+          "comment": "Read the policy before changing it"
+        }
+      ],
+      "forced_action": "PLATFORM:two_factor",
+      "next_step": {
+        "parameters": {
+          "channel": "whatsapp",
+          "recipient": { "$ref": "steps[0].result.record.MOBILE" },
+          "question": "Please approve changing the address on policy HOM-20260204 to 3 Bay Tree Cottages, St Ives."
+        },
+        "comment": "The knowledge reserves email for phone number changes, so an address change goes over WhatsApp - recipient is the number already held on the policy (steps[0].result.record.MOBILE) via $ref, never the new value the caller gave",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "3e8a1f47-9b25-4c6d-8e02-5d7c4b1a2f93",
+      "description": "The caller wants the telephone number on policy MTR-20260041 changed to +44 20 7946 0999.",
+      "knowledge": [
+        {
+          "type": "TEXT",
+          "text": "2FA channel selection. Phone number change -> channel is email. Any other change, address included -> channel is whatsapp."
+        }
+      ],
+      "tools": ["AS400:get_policy", "PLATFORM:two_factor", "AS400:update_policy_phone", "PLATFORM:complete"],
+      "steps": [
+        {
+          "action": "AS400:get_policy",
+          "status": "COMPLETED",
+          "parameters": { "policy_id": "MTR-20260041" },
+          "result": "{\"record\": {\"POLID\": \"MTR-20260041\", \"EMAIL\": \"mark.ellis@corp.co.uk\", \"PHONE\": \"+44 20 7946 0112\", \"MOBILE\": \"+44 7700 900118\"}}",
+          "comment": "Read the policy before changing it"
+        }
+      ],
+      "forced_action": "PLATFORM:two_factor",
+      "next_step": {
+        "parameters": {
+          "channel": "email",
+          "recipient": { "$ref": "steps[0].result.record.EMAIL" },
+          "question": "Please approve changing the telephone number on policy MTR-20260041 to +44 20 7946 0999."
+        },
+        "comment": "The knowledge sends phone number changes over email, so the approval goes to the e-mail already held on the policy (steps[0].result.record.EMAIL) via $ref - the number being replaced cannot be trusted to approve its own change",
+        "result_score": 0.95
+      }
     }
   ]
 }

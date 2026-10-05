@@ -3,6 +3,7 @@ import BlueprintFlowSkeleton from "../../components/Skeletons/BlueprintFlowSkele
 import NodeEditorWidget from "../NodeEditorWidget/NodeEditorWidget";
 import type { ParameterBinding } from "../../components/BlueprintFlow/NodeConnectionOverlay";
 import SampleNode from "../../components/BlueprintFlow/Samples/SampleNode";
+import type { SwitchCase } from "../../components/BlueprintFlow/helper";
 import { publish } from "@nucleoidai/react-event";
 import useBlueprint from "../../hooks/useBlueprint";
 import useMCPs from "../../hooks/useMCPs";
@@ -16,6 +17,7 @@ import {
   buildDefinitionGraph,
   getAncestorNodes,
   isBranchNodeType,
+  isSwitchNodeType,
 } from "../../components/BlueprintFlow/helper";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -59,6 +61,9 @@ function graphToNodes(graphData: DefinitionGraph) {
         ...(node.nodeType === "APPROVAL" && {
           question: node.raw?.properties?.question,
         }),
+        ...(node.nodeType === "SWITCH" && {
+          cases: node.cases ?? node.raw?.properties?.cases ?? [],
+        }),
         ...(node.nodeType === "HANDOFF" && {
           targetAgentId: node.raw?.properties?.targetAgentId,
           targetBlueprintId:
@@ -87,6 +92,11 @@ function graphToNodes(graphData: DefinitionGraph) {
         : null,
     };
   });
+}
+
+function nextIdsOf(node?: { next?: string | string[] | null }): string[] {
+  if (!node) return [];
+  return Array.isArray(node.next) ? node.next : node.next ? [node.next] : [];
 }
 
 function BlueprintFlowWidget({
@@ -312,6 +322,8 @@ function BlueprintFlowWidget({
     Record<string, unknown>
   >({});
   const [newNodeType, setNewNodeType] = useState("NORMAL");
+  const [newNodeCaseLabel, setNewNodeCaseLabel] = useState("");
+  const [switchCases, setSwitchCases] = useState<SwitchCase[]>([]);
   const [handoffTargetAgentId, setHandoffTargetAgentId] = useState("");
   const [handoffTargetBlueprintId, setHandoffTargetBlueprintId] = useState("");
   const [selectedBranch, setSelectedBranch] = useState<"true" | "false">(
@@ -523,6 +535,8 @@ function BlueprintFlowWidget({
     setNodePseudocode("");
     setNewNodePseudocodeEnabled(true);
     setNewNodeType("NORMAL");
+    setNewNodeCaseLabel("");
+    setSwitchCases([]);
     setSelectedBranch("true");
     setInheritedNextBranch("none");
     setShowValidationErrors(false);
@@ -550,6 +564,19 @@ function BlueprintFlowWidget({
     setNodePseudocode(node?.raw?.properties?.pseudocode || "");
     setNewNodePseudocodeEnabled(true);
 
+    if (isSwitchNodeType(nodeType)) {
+      setSwitchCases(
+        nextIdsOf(node).map(
+          (nodeId) =>
+            (node?.cases ?? node?.raw?.properties?.cases ?? []).find(
+              (item) => item.nodeId === nodeId
+            ) ?? { nodeId }
+        )
+      );
+    } else {
+      setSwitchCases([]);
+    }
+
     if (nodeType === "HANDOFF") {
       setHandoffTargetAgentId(node?.raw?.properties?.targetAgentId || "");
       setHandoffTargetBlueprintId(
@@ -570,6 +597,13 @@ function BlueprintFlowWidget({
 
       if (parentNode) {
         setSelectedParentNode(parentNode);
+
+        if (isSwitchNodeType(parentNode.nodeType)) {
+          setNewNodeCaseLabel(
+            (parentNode.cases ?? []).find((item) => item.nodeId === node.id)
+              ?.label ?? ""
+          );
+        }
 
         if (isBranchNodeType(parentNode.nodeType)) {
           const isOnTrueBranch = parentNode.trueNext?.includes(node.id);
@@ -596,6 +630,8 @@ function BlueprintFlowWidget({
     const nodeIcon =
       newNodeType === "CONDITION"
         ? "mdi:help-circle-outline"
+        : newNodeType === "SWITCH"
+        ? "mdi:call-split"
         : newNodeType === "APPROVAL"
         ? "mdi:account-check"
         : newNodeType === "HANDOFF"
@@ -604,6 +640,8 @@ function BlueprintFlowWidget({
     const actionType =
       newNodeType === "CONDITION"
         ? "PLATFORM:decision"
+        : newNodeType === "SWITCH"
+        ? "PLATFORM:switch"
         : newNodeType === "APPROVAL"
         ? "PLATFORM:customer_approval"
         : newNodeType === "HANDOFF"
@@ -613,6 +651,8 @@ function BlueprintFlowWidget({
       newNodeDescription.trim() ||
       (newNodeType === "CONDITION"
         ? "A decision node that branches the flow based on conditions."
+        : newNodeType === "SWITCH"
+        ? "Routes the flow to one of several branches, chosen by the agent."
         : newNodeType === "APPROVAL"
         ? "Waits for the customer to approve or reject before continuing."
         : newNodeType === "HANDOFF"
@@ -626,16 +666,116 @@ function BlueprintFlowWidget({
 
       if (!nodeToUpdate) return prevData;
 
+      const wasSwitch = isSwitchNodeType(nodeToUpdate.nodeType);
+      const willBeSwitch = isSwitchNodeType(newNodeType);
       const isChangingToCondition =
         isBranchNodeType(newNodeType) &&
         !isBranchNodeType(nodeToUpdate.nodeType);
       const isChangingToNormal =
         !isBranchNodeType(newNodeType) &&
+        !willBeSwitch &&
         isBranchNodeType(nodeToUpdate.nodeType);
 
       let updatedNode;
 
-      if (isChangingToCondition) {
+      if (willBeSwitch) {
+        const childIds = wasSwitch
+          ? nextIdsOf(nodeToUpdate)
+          : isBranchNodeType(nodeToUpdate.nodeType)
+          ? [
+              ...(nodeToUpdate.trueNext || []),
+              ...(nodeToUpdate.falseNext || []),
+            ]
+          : nextIdsOf(nodeToUpdate);
+
+        const editedCases = wasSwitch ? switchCases : [];
+        const cases = childIds.map(
+          (nodeId) =>
+            editedCases.find((item) => item.nodeId === nodeId) ?? {
+              nodeId,
+              label: currentNodes[nodeId]?.label,
+            }
+        );
+
+        updatedNode = {
+          ...nodeToUpdate,
+          label: newNodeLabel,
+          description: descriptionText,
+          action: actionType,
+          icon: nodeIcon,
+          nodeType: newNodeType,
+          connectorType: "default" as const,
+          cases,
+          next: childIds.length ? childIds : null,
+          trueNext: undefined,
+          falseNext: undefined,
+          raw: {
+            ...nodeToUpdate.raw,
+            type: newNodeType,
+            properties: {
+              ...nodeToUpdate.raw?.properties,
+              label: newNodeLabel,
+              instructions: newNodeInstructions,
+              pseudocodeEnabled: newNodePseudocodeEnabled,
+              pseudocode: nodePseudocode,
+              force: newNodeForce,
+              description: descriptionText,
+              action: actionType,
+              icon: nodeIcon,
+              cases,
+            },
+            next: childIds,
+            true: undefined,
+            false: undefined,
+          },
+        };
+      } else if (wasSwitch) {
+        const survivingNext = nextIdsOf(nodeToUpdate).slice(0, 1);
+        const willBranch = isBranchNodeType(newNodeType);
+        const isHandoff = newNodeType === "HANDOFF";
+        const keptProperties = { ...nodeToUpdate.raw?.properties };
+        delete keptProperties.cases;
+
+        updatedNode = {
+          ...nodeToUpdate,
+          label: newNodeLabel,
+          description: descriptionText,
+          action: actionType,
+          icon: nodeIcon,
+          nodeType: newNodeType,
+          connectorType: willBranch
+            ? ("decision" as const)
+            : ("default" as const),
+          cases: undefined,
+          trueNext: willBranch ? survivingNext : undefined,
+          falseNext: willBranch ? [] : undefined,
+          next: isHandoff ? null : survivingNext[0] ?? null,
+          raw: {
+            ...nodeToUpdate.raw,
+            type: newNodeType,
+            properties: {
+              ...keptProperties,
+              label: newNodeLabel,
+              instructions: newNodeInstructions,
+              question: newNodeQuestion,
+              pseudocodeEnabled: newNodePseudocodeEnabled,
+              pseudocode: nodePseudocode,
+              force: newNodeForce,
+              parameters: parametersToSave,
+              description: descriptionText,
+              action: actionType,
+              icon: nodeIcon,
+              ...(isHandoff && {
+                targetAgentId: handoffTargetAgentId,
+                targetBlueprintId: handoffTargetBlueprintId || undefined,
+              }),
+            },
+            next: willBranch || isHandoff ? null : survivingNext,
+            true: willBranch ? survivingNext : undefined,
+            false: willBranch ? [] : undefined,
+          },
+        };
+      } else if (isChangingToCondition) {
         const existingNext = nodeToUpdate.next;
         updatedNode = {
           ...nodeToUpdate,
@@ -802,6 +942,8 @@ function BlueprintFlowWidget({
     setNodePseudocode("");
     setNewNodePseudocodeEnabled(false);
     setNewNodeType("NORMAL");
+    setNewNodeCaseLabel("");
+    setSwitchCases([]);
     setSelectedBranch("true");
     setInheritedNextBranch("none");
     setHandoffTargetAgentId("");
@@ -834,6 +976,8 @@ function BlueprintFlowWidget({
     const nodeIcon =
       newNodeType === "CONDITION"
         ? "mdi:source-branch"
+        : newNodeType === "SWITCH"
+        ? "mdi:call-split"
         : newNodeType === "APPROVAL"
         ? "mdi:account-check"
         : newNodeType === "HANDOFF"
@@ -842,6 +986,8 @@ function BlueprintFlowWidget({
     const actionType =
       newNodeType === "CONDITION"
         ? "PLATFORM:decision"
+        : newNodeType === "SWITCH"
+        ? "PLATFORM:switch"
         : newNodeType === "APPROVAL"
         ? "PLATFORM:customer_approval"
         : newNodeType === "HANDOFF"
@@ -852,13 +998,45 @@ function BlueprintFlowWidget({
       newNodeDescription.trim() ||
       (newNodeType === "CONDITION"
         ? "A decision node that branches the flow based on conditions."
+        : newNodeType === "SWITCH"
+        ? "Routes the flow to one of several branches, chosen by the agent."
         : newNodeType === "APPROVAL"
         ? "Waits for the customer to approve or reject before continuing."
         : newNodeType === "HANDOFF"
         ? "Transfer this task to another agent's blueprint."
         : selectedIntegration?.description || "");
     if (selectedParentNode.id === "starter") {
-      const firstNode = isBranchNodeType(newNodeType)
+      const firstNode = isSwitchNodeType(newNodeType)
+        ? {
+            id: newId,
+            label: newNodeLabel,
+            description: descriptionText,
+            nodeType: newNodeType,
+            action: actionType,
+            icon: nodeIcon,
+            createdAt: currentTime,
+            connectorType: "default" as const,
+            cases: [],
+            next: null,
+            raw: {
+              id: newId,
+              type: newNodeType,
+              properties: {
+                action: actionType,
+                label: newNodeLabel,
+                instructions: newNodeInstructions,
+                pseudocodeEnabled: newNodePseudocodeEnabled,
+                pseudocode: nodePseudocode,
+                force: newNodeForce,
+                description: descriptionText,
+                icon: nodeIcon,
+                cases: [],
+              },
+              next: [],
+              createdAt: currentTime,
+            },
+          }
+        : isBranchNodeType(newNodeType)
         ? {
             id: newId,
             label: newNodeLabel,
@@ -971,6 +1149,7 @@ function BlueprintFlowWidget({
       if (!parentNode) return prevData;
 
       const isParentCondition = isBranchNodeType(parentNode.nodeType);
+      const isParentSwitch = isSwitchNodeType(parentNode.nodeType);
       const existingTrueNext = parentNode.trueNext;
       const existingFalseNext = parentNode.falseNext;
 
@@ -981,11 +1160,53 @@ function BlueprintFlowWidget({
         } else {
           inheritedNext = existingFalseNext?.[0] || null;
         }
+      } else if (isParentSwitch) {
+        inheritedNext = null;
       } else {
         inheritedNext = parentNode.next;
       }
 
-      const newNode = isBranchNodeType(newNodeType)
+      const switchInheritedIds = inheritedNext
+        ? Array.isArray(inheritedNext)
+          ? inheritedNext
+          : [inheritedNext]
+        : [];
+      const switchInheritedCases = switchInheritedIds.map((nodeId) => ({
+        nodeId,
+        label: currentNodes[nodeId]?.label,
+      }));
+
+      const newNode = isSwitchNodeType(newNodeType)
+        ? {
+            id: newId,
+            label: newNodeLabel,
+            description: descriptionText,
+            nodeType: newNodeType,
+            action: actionType,
+            icon: nodeIcon,
+            createdAt: currentTime,
+            connectorType: "default" as const,
+            cases: switchInheritedCases,
+            next: switchInheritedIds.length ? switchInheritedIds : null,
+            raw: {
+              id: newId,
+              type: newNodeType,
+              properties: {
+                action: actionType,
+                label: newNodeLabel,
+                instructions: newNodeInstructions,
+                pseudocodeEnabled: newNodePseudocodeEnabled,
+                pseudocode: nodePseudocode,
+                force: newNodeForce,
+                description: descriptionText,
+                icon: nodeIcon,
+                cases: switchInheritedCases,
+              },
+              next: switchInheritedIds,
+              createdAt: currentTime,
+            },
+          }
+        : isBranchNodeType(newNodeType)
         ? {
             id: newId,
             label: newNodeLabel,
@@ -1161,6 +1382,29 @@ function BlueprintFlowWidget({
             },
           };
         }
+      } else if (isParentSwitch) {
+        const parentNextIds = [...nextIdsOf(parentNode), newId];
+        const parentCases = [
+          ...(parentNode.cases ?? []),
+          {
+            nodeId: newId,
+            label: newNodeCaseLabel.trim() || newNodeLabel,
+          },
+        ];
+
+        updatedParent = {
+          ...parentNode,
+          cases: parentCases,
+          next: parentNextIds,
+          raw: {
+            ...parentNode.raw,
+            properties: {
+              ...parentNode.raw?.properties,
+              cases: parentCases,
+            },
+            next: parentNextIds,
+          },
+        };
       } else {
         updatedParent = {
           ...parentNode,
@@ -1231,13 +1475,11 @@ function BlueprintFlowWidget({
       const falseChildren: string[] = isDeletedCondition
         ? deletedNode.falseNext || []
         : [];
-      const normalChildren: string[] = !isDeletedCondition
-        ? deletedNode.next
-          ? Array.isArray(deletedNode.next)
-            ? deletedNode.next
-            : [deletedNode.next]
-          : []
-        : [];
+      const normalChildren: string[] = isDeletedCondition
+        ? []
+        : isSwitchNodeType(deletedNode.nodeType)
+        ? nextIdsOf(deletedNode).slice(0, 1)
+        : nextIdsOf(deletedNode);
 
       const dedup = (arr: string[]) => [...new Set(arr)];
 
@@ -1275,6 +1517,40 @@ function BlueprintFlowWidget({
               trueNext: newTrueNext,
               falseNext: newFalseNext,
               raw: { ...n.raw, true: newTrueNext, false: newFalseNext },
+            };
+          }
+        } else if (isSwitchNodeType(n.nodeType)) {
+          const parentNextIds = nextIdsOf(n);
+          if (parentNextIds.includes(node.id)) {
+            const replacement = isDeletedCondition
+              ? trueChildren
+              : normalChildren;
+            const removedCase = (n.cases ?? []).find(
+              (item) => item.nodeId === node.id
+            );
+
+            const newNext = dedup(
+              parentNextIds.flatMap((id) =>
+                id === node.id ? replacement : [id]
+              )
+            );
+            const newCases = newNext.map(
+              (nodeId) =>
+                (n.cases ?? []).find((item) => item.nodeId === nodeId) ??
+                (removedCase
+                  ? { ...removedCase, nodeId }
+                  : { nodeId, label: currentNodes[nodeId]?.label })
+            );
+
+            currentNodes[id] = {
+              ...n,
+              cases: newCases,
+              next: newNext.length ? newNext : null,
+              raw: {
+                ...n.raw,
+                properties: { ...n.raw?.properties, cases: newCases },
+                next: newNext,
+              },
             };
           }
         } else {
@@ -1641,6 +1917,8 @@ function BlueprintFlowWidget({
     setNodePseudocode("");
     setNewNodePseudocodeEnabled(true);
     setNewNodeType("NORMAL");
+    setNewNodeCaseLabel("");
+    setSwitchCases([]);
     setSelectedBranch("true");
     setShowValidationErrors(false);
     setDrawerOpen(true);
@@ -1701,6 +1979,7 @@ function BlueprintFlowWidget({
       )}
 
       <NodeEditorWidget
+        graphData={graphData}
         pseudocode={nodePseudocode}
         drawerOpen={drawerOpen}
         handleDrawerClose={handleDrawerClose}
@@ -1722,6 +2001,10 @@ function BlueprintFlowWidget({
         setNewNodeForce={setNewNodeForce}
         newNodeType={newNodeType}
         setNewNodeType={setNewNodeType}
+        newNodeCaseLabel={newNodeCaseLabel}
+        setNewNodeCaseLabel={setNewNodeCaseLabel}
+        switchCases={switchCases}
+        setSwitchCases={setSwitchCases}
         selectedBranch={selectedBranch}
         setSelectedBranch={setSelectedBranch}
         inheritedNextBranch={inheritedNextBranch}

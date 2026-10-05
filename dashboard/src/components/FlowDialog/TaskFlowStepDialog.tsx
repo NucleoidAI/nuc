@@ -16,7 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useCallback, useState } from "react";
-import { StepField, getStatusConfig } from "./helper";
+import { StepField, getStatusConfig } from "./util";
 
 const paneSx = {
   position: "relative",

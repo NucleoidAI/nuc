@@ -5,7 +5,7 @@ import { taskChartPlugin } from "./TaskChartPlugin";
 
 import { Box, Stack, Typography } from "@mui/material";
 import React, { useCallback, useMemo, useState } from "react";
-import { buildFieldBindings, buildTimelineGraph } from "./helper";
+import { buildFieldBindings, buildTimelineGraph } from "./util";
 
 const TaskTree = ({ open, setOpen, treeData }) => {
   const data = useMemo(() => buildTimelineGraph(treeData), [treeData]);

@@ -7,7 +7,7 @@ import {
   InfoNode,
   handleDataAttrs,
 } from "@canmingir/link/platform/components";
-import { StepField, getStatusConfig } from "./helper";
+import { StepField, getStatusConfig } from "./util";
 
 type StatusColor = ReturnType<typeof getStatusConfig>["color"];
 

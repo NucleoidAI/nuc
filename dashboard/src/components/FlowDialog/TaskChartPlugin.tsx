@@ -6,7 +6,7 @@ import {
   getStepInputs,
   getStepOutputs,
   splitAction,
-} from "./helper";
+} from "./util";
 
 export const taskChartPlugin = {
   id: "taskChart",

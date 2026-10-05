@@ -123,17 +123,14 @@ const TaskFlowStepDialog = ({
     <Dialog
       open={open}
       onClose={onClose}
-      fullWidth
-      maxWidth="lg"
+      type="medium"
       sx={{ zIndex: (theme) => theme.zIndex.modal + 3 }}
       slotProps={{
         paper: {
           sx: {
-            height: "50vh",
             borderRadius: 2,
             backgroundImage: "none",
             bgcolor: "background.default",
-            outline: "none",
           },
         },
       }}

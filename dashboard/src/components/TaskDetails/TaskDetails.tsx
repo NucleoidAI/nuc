@@ -3,9 +3,9 @@ import FlowDialog from "../FlowDialog/FlowDialog";
 import { Iconify } from "@canmingir/link/platform/components";
 import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
 import SupervisingTask from "../SupervisingTask/SupervisingTask";
+import TaskFlowStepDialog from "../FlowDialog/TaskFlowStepDialog";
 import TaskIcon from "@mui/icons-material/Task";
 import TaskResultDialog from "../TaskResultDialog/TaskResultDialog";
-import TaskStepDialog from "../TaskStepDialog/TaskStepDialog";
 
 import {
   Box,
@@ -21,6 +21,15 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
+
+type TaskStep = {
+  comment: string;
+  createdAt: string;
+  status: string;
+  action?: string;
+  parameters?: unknown;
+  result: string | object | object[];
+};
 
 const TaskDetails = ({
   task,
@@ -38,19 +47,13 @@ const TaskDetails = ({
     description: string;
     id: string;
   };
-  steps: Array<{
-    comment: string;
-    createdAt: string;
-    status: string;
-    result: string | object | object[];
-  }>;
+  steps: TaskStep[];
   agentId: string;
   getSteps: (taskId: string) => void;
   isExpanded?: boolean;
   onToggleExpand?: () => void;
 }) => {
   const [openFlow, setOpenFlow] = useState<boolean>(false);
-  const [stepResult, setStepResult] = useState<boolean>(false);
   const [taskResult, setTaskResult] = useState<boolean>(false);
   const [supervisingTask, setSupervisingTask] = useState<boolean>(false);
   const stepsEndRef = useRef<HTMLDivElement>(null);
@@ -64,17 +67,7 @@ const TaskDetails = ({
     prevStepsLengthRef.current = currentLength;
   }, [steps]);
 
-  const [step, setStep] = useState<{
-    comment: string;
-    createdAt: string;
-    status: string;
-    result: string | object | object[];
-  }>({
-    comment: "",
-    createdAt: "",
-    status: "",
-    result: "",
-  });
+  const [selectedStep, setSelectedStep] = useState<TaskStep | null>(null);
 
   if (!task || !task.id) {
     return (
@@ -258,8 +251,7 @@ const TaskDetails = ({
                       <Fab
                         color="default"
                         onClick={() => {
-                          setStep(step);
-                          setStepResult(true);
+                          setSelectedStep(step);
                         }}
                       >
                         <Iconify icon="material-symbols:folder-eye-outline" />
@@ -282,7 +274,21 @@ const TaskDetails = ({
 
       <TaskResultDialog open={taskResult} setOpen={setTaskResult} task={task} />
 
-      <TaskStepDialog open={stepResult} setOpen={setStepResult} step={step} />
+      <TaskFlowStepDialog
+        open={Boolean(selectedStep)}
+        onClose={() => setSelectedStep(null)}
+        step={
+          selectedStep && {
+            ...selectedStep,
+            label:
+              selectedStep.action?.replace(/^PLATFORM:/i, "") ||
+              selectedStep.comment ||
+              "Step",
+            inputs: [],
+            outputs: [],
+          }
+        }
+      />
 
       <FlowDialog open={openFlow} setOpen={setOpenFlow} steps={steps} />
     </Stack>

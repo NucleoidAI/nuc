@@ -109,7 +109,14 @@ const TaskTree = ({ open, setOpen, treeData }) => {
         </Box>
       </Stack>
 
-      <Box sx={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
+      <Box
+        sx={{
+          flex: 1,
+          minHeight: 0,
+          overflow: "hidden",
+          '& path[stroke-dasharray="2 4"]': { strokeDasharray: "none" },
+        }}
+      >
         <Flow
           data={data}
           height={"100%"}

@@ -109,9 +109,6 @@ const TaskFlowNode = ({
             name: field.name,
             bound: boundInputs.has(field.name),
             interactive: hiddenFields.has(field.name),
-            title: hiddenFields.has(field.name)
-              ? `"${field.name}" comes from an earlier step — hover to trace`
-              : undefined,
             dataAttrs: {
               ...handleDataAttrs("in", nodeId, field.name),
               ...(hiddenFields.has(field.name)
@@ -125,9 +122,6 @@ const TaskFlowNode = ({
           outputs={outputs.map((field) => ({
             name: field.name,
             interactive: hiddenFields.has(field.name),
-            title: hiddenFields.has(field.name)
-              ? `"${field.name}" is used by a later step — hover to trace`
-              : undefined,
             dataAttrs: {
               ...handleDataAttrs("out", nodeId, field.name),
               ...(hiddenFields.has(field.name)
@@ -141,7 +135,6 @@ const TaskFlowNode = ({
           sx={{
             top: 203,
             left: 5,
-            "[data-handle-type]": { cursor: "help" },
           }}
         />
       )}

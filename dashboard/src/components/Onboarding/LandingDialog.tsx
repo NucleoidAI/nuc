@@ -32,11 +32,15 @@ const LandingDialog = () => {
   return (
     <Dialog
       open={open}
-      fullWidth
-      maxWidth={"sm"}
+      type="small"
       onClose={(event: React.KeyboardEvent) =>
         event.key === "Escape" ? handleClose() : null
       }
+      sx={{
+        "& .MuiDialog-paper": {
+          height: "auto",
+        },
+      }}
     >
       <ClosableDialogTitle handleClose={handleClose} />
       <DialogContent>

@@ -119,7 +119,7 @@ const TaskStepDialog = ({
             value={createdAt ? new Date(createdAt).toLocaleTimeString() : "-"}
           />
           <InfoCard
-            label="Parameters"
+            label="Input"
             sx={{ position: "relative" }}
             value={
               step.parameters && typeof step.parameters === "object" ? (
@@ -164,7 +164,7 @@ const TaskStepDialog = ({
             }
           />
           <InfoCard
-            label="Result"
+            label="Output"
             sx={{ position: "relative" }}
             value={
               <>

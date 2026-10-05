@@ -156,7 +156,6 @@ const PopChat = ({
 
   if (!open) return null;
 
-  console.log("blueprints", Blueprints);
 
   return (
     <Draggable cancel={".noDrag"}>

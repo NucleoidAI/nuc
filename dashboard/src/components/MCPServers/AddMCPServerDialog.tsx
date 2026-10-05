@@ -15,7 +15,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-
 import type { MCPProvider, MCPServer } from "../../hooks/useMCPServers";
 
 const FALLBACK_ICON = "mdi:server-network";
@@ -53,7 +52,12 @@ const AddMCPServerDialog = ({
   }, [providersById, search, servers]);
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+    <Dialog
+      open={open}
+      onClose={onClose}
+      type="xsmall"
+      sx={{ "& .MuiDialog-paper": { height: "auto" } }}
+    >
       <DialogTitle
         sx={{
           display: "flex",

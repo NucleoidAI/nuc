@@ -727,13 +727,10 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
     <Dialog
       data-cy="team-dialog"
-      maxWidth={false}
+      type="large"
       slotProps={{
         paper: {
           sx: {
-            width: "100%",
-            height: "100%",
-            outline: "none",
             display: "flex",
             flexDirection: "column",
           },

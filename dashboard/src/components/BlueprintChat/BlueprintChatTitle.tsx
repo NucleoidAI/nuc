@@ -180,8 +180,7 @@ const BlueprintChatTitle = ({ title, setTitle }) => {
       <Dialog
         open={isEditing}
         onClose={handleCancelClick}
-        fullWidth
-        maxWidth="sm"
+        type="xsmall"
         sx={{
           zIndex: (theme) => theme.zIndex.modal + 2,
           "& .MuiDrawer-paper": {
@@ -198,6 +197,7 @@ const BlueprintChatTitle = ({ title, setTitle }) => {
 
           paper: {
             sx: {
+              height: "auto",
               borderRadius: 3,
               background: `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.background.default} 100%)`,
               backdropFilter: "blur(20px)",

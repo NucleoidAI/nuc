@@ -4,6 +4,7 @@ import "@mui/material/Card";
 import "@mui/material/IconButton";
 import "@mui/material/Fab";
 import "@mui/material/Stack";
+import "@mui/material/Dialog";
 
 declare module "@mui/material/styles" {
   interface TypeBackground {
@@ -42,5 +43,11 @@ declare module "@mui/material/Fab" {
 declare module "@mui/material/Paper" {
   interface PaperPropsVariantOverrides {
     "profile-card": true;
+  }
+}
+
+declare module "@mui/material/Dialog" {
+  interface DialogProps {
+    type?: "xsmall" | "small" | "medium" | "large";
   }
 }

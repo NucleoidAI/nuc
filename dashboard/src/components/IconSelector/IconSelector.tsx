@@ -60,18 +60,13 @@ export default function IconSelector({
       </Stack>
       <Dialog
         data-cy="avatar-selection"
+        type="small"
         open={emojiDialogOpen}
         onClose={() => setEmojiDialogOpen(false)}
         slotProps={{
           paper: {
             sx: {
               backgroundColor: "background.default",
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              maxHeight: "50vh",
-              width: { xs: "90%", sm: 500 },
             },
           },
         }}

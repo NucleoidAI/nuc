@@ -17,7 +17,10 @@
     "axios": "^1.7.7",
     "dotenv": "^16.4.5",
     "http-proxy-middleware": "^3.0.3",
+    "imapflow": "^2.0.5",
     "jsonwebtoken": "^9.0.2",
+    "mailparser": "^3.9.28",
+    "nodemailer": "^10.0.10",
     "socket.io": "^4.8.1",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^11.0.4"

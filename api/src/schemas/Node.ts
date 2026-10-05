@@ -30,6 +30,29 @@ const NormalNode = z.object({
   }),
 });
 
+const SwitchNode = z.object({
+  id: z.string(),
+  type: z.literal("SWITCH"),
+  next: z.array(z.string().nullable()).nullable(),
+  properties: z.object({
+    label: z.string(),
+    icon: z.string(),
+    instructions: z.string().optional(),
+    pseudocode: z.string().optional(),
+    pseudocodeEnabled: z.boolean().optional(),
+    force: z.boolean().optional(),
+    cases: z
+      .array(
+        z.object({
+          nodeId: z.string(),
+          label: z.string().optional(),
+          description: z.string().optional(),
+        }),
+      )
+      .optional(),
+  }),
+});
+
 const HandoffNode = z.object({
   id: z.string(),
   type: z.literal("HANDOFF"),
@@ -64,6 +87,7 @@ const ApprovalNode = z.object({
 const Node = z.discriminatedUnion("type", [
   ConditionNode,
   NormalNode,
+  SwitchNode,
   HandoffNode,
   ApprovalNode,
 ]);

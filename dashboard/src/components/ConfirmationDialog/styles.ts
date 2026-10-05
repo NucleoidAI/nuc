@@ -1,10 +1,10 @@
 const styles = {
-  dialogTitle: { backgroundColor: "primary.main", color: "background.default" },
+  dialogTitle: { backgroundColor: "background.paper", color: "white" },
   dialogActions: {
     backgroundColor: "background.paper",
     color: "text.secondary",
   },
-  dialogContentText: { color: "primary.main", marginTop: "15px" },
+  dialogContentText: { color: "text.secondary" },
 };
 
 export default styles;

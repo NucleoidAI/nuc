@@ -60,16 +60,11 @@ export default function AvatarSelector({
         data-cy="avatar-selection"
         open={emojiDialogOpen}
         onClose={() => setEmojiDialogOpen(false)}
+        type="small"
         slotProps={{
           paper: {
             sx: {
               backgroundColor: "background.default",
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              maxHeight: "50vh",
-              width: { xs: "90%", sm: 500 },
             },
           },
         }}

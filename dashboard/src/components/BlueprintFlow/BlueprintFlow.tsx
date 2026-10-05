@@ -6,9 +6,14 @@ import type { NodeFields } from "./BlueprintFlowPlugin";
 import SuccessSnackbar from "./Validation/SuccessSnackbar";
 import ValidationButtons from "./Validation/ValidationButtons";
 import ValidationErrorView from "./Validation/ValidationErrorView";
-import { blueprintFlowPlugin } from "./BlueprintFlowPlugin";
 import { definitionGraphToRawNodes } from "./miniTypes";
 import useAllIntegrations from "../../hooks/useAllIntegrations";
+import {
+  APPROVAL_BG_TO,
+  APPROVAL_BORDER_SOLID,
+  blueprintFlowPlugin,
+} from "./BlueprintFlowPlugin";
+
 import { Flow, FlowMiniMap } from "@canmingir/link/platform/components";
 
 import NodeConnectionOverlay, { type DragState } from "./NodeConnectionOverlay";
@@ -185,6 +190,20 @@ export default function BlueprintFlow({
     [graphData]
   );
 
+  const miniMapStyle = useCallback(
+    (node: { nodeType?: string; properties?: { action?: string } }) => {
+      const isApproval =
+        node?.nodeType === "APPROVAL" ||
+        node?.properties?.action === "PLATFORM:two_factor";
+      if (!isApproval) return {};
+      return {
+        bg: APPROVAL_BG_TO,
+        borderColor: APPROVAL_BORDER_SOLID,
+      };
+    },
+    []
+  );
+
   return (
     <Box
       ref={flowContainerRef}
@@ -221,6 +240,7 @@ export default function BlueprintFlow({
           !readOnly && showConnections && impliedConnections.length > 0
         }
         labelForImpliedConnection={labelForImpliedConnection}
+        layout="dag"
         style={() => ({
           direction: "horizontal",
           onAdd: readOnly ? undefined : onAddNodeClick,
@@ -253,7 +273,11 @@ export default function BlueprintFlow({
       )}
 
       {!isSuperviseFlow && (
-        <FlowMiniMap nodes={miniMapNodes} flowContainerRef={flowContainerRef} />
+        <FlowMiniMap
+          nodes={miniMapNodes}
+          flowContainerRef={flowContainerRef}
+          style={miniMapStyle}
+        />
       )}
 
       {!readOnly && hasDifferences && !drawerOpen && (

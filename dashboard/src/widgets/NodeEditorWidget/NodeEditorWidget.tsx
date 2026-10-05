@@ -1,9 +1,16 @@
 import NodeEditorDrawer from "../../components/NodeEditor/NodeEditorDrawer";
+
 import useAgents from "../../hooks/useAgents";
 import useBlueprint from "../../hooks/useBlueprint";
 import useMCPs from "../../hooks/useMCPs";
 
+import type {
+  DefinitionGraph,
+  SwitchCase,
+} from "../../components/BlueprintFlow/helper";
+
 import React, { useEffect, useState } from "react";
+
 import { getNextNodeId, isValidIntegration } from "./helper";
 
 const NodeEditorWidget = ({
@@ -27,6 +34,10 @@ const NodeEditorWidget = ({
   setNewNodeForce,
   newNodeType,
   setNewNodeType,
+  newNodeCaseLabel = "",
+  setNewNodeCaseLabel,
+  switchCases = [],
+  setSwitchCases,
   selectedBranch,
   setSelectedBranch,
   inheritedNextBranch = "none",
@@ -41,6 +52,7 @@ const NodeEditorWidget = ({
   setHandoffTargetAgentId,
   handoffTargetBlueprintId = "",
   setHandoffTargetBlueprintId,
+  graphData,
 }: {
   parameters?: Record<string, unknown>;
   onParametersChange?: (parameters: Record<string, unknown>) => void;
@@ -70,6 +82,10 @@ const NodeEditorWidget = ({
   setNewNodeForce?: (force: boolean) => void;
   newNodeType: string;
   setNewNodeType: (type: string) => void;
+  newNodeCaseLabel?: string;
+  setNewNodeCaseLabel?: (label: string) => void;
+  switchCases?: SwitchCase[];
+  setSwitchCases?: (cases: SwitchCase[]) => void;
   selectedBranch: "true" | "false";
   setSelectedBranch: (branch: "true" | "false") => void;
   inheritedNextBranch?: "true" | "false" | "none";
@@ -114,6 +130,7 @@ const NodeEditorWidget = ({
   setHandoffTargetAgentId?: (id: string) => void;
   handoffTargetBlueprintId?: string;
   setHandoffTargetBlueprintId?: (id: string) => void;
+  graphData?: DefinitionGraph | null;
   editingNode?: {
     id: string;
     label?: string;
@@ -175,6 +192,7 @@ const NodeEditorWidget = ({
         .filter(
           (action) =>
             action.action !== "PLATFORM:decision" &&
+            action.action !== "PLATFORM:switch" &&
             action.action !== "PLATFORM:customer_approval"
         )
         .map((action) => ({
@@ -238,6 +256,13 @@ const NodeEditorWidget = ({
 
   const hasInheritedNext = !!nextNodeId;
 
+  const caseTargetLabels = Object.fromEntries(
+    switchCases.map(({ nodeId }) => [
+      nodeId,
+      graphData?.nodes?.[nodeId]?.label ?? nodeId,
+    ])
+  );
+
   return (
     <NodeEditorDrawer
       parameters={parameters}
@@ -261,6 +286,11 @@ const NodeEditorWidget = ({
       setNewNodeForce={setNewNodeForce}
       newNodeType={newNodeType}
       setNewNodeType={setNewNodeType}
+      newNodeCaseLabel={newNodeCaseLabel}
+      setNewNodeCaseLabel={setNewNodeCaseLabel}
+      switchCases={switchCases}
+      setSwitchCases={setSwitchCases}
+      caseTargetLabels={caseTargetLabels}
       selectedBranch={selectedBranch}
       setSelectedBranch={setSelectedBranch}
       inheritedNextBranch={inheritedNextBranch}

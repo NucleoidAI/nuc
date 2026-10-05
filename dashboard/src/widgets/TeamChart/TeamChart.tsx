@@ -77,7 +77,7 @@ function TeamChart() {
     | "tasks"
     | "Blueprints"
     | "supervisings"
-    | "communication"
+    | "channels"
     | "mcps"
   >("profile");
 

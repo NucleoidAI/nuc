@@ -17,7 +17,7 @@ function Profile({ agentId }: { agentId: string }) {
   const renderAbout = <AgentAbout agent={agent} updateAgent={updateAgent} />;
 
   return (
-    <Stack margin={1} spacing={1}>
+    <Stack margin={2} spacing={1}>
       <Grid container spacing={1}>
         <Grid
           size={{

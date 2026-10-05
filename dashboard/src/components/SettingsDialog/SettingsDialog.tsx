@@ -30,10 +30,13 @@ const SettingsDialog = ({
     <Dialog
       open={showSettings}
       onClose={() => setShowSettings(false)}
-      fullWidth
-      maxWidth="md"
+      type="small"
       sx={{
         zIndex: (theme) => theme.zIndex.modal + 3,
+        "& .MuiDialog-paper": {
+          height: "auto",
+          width: "auto",
+        },
       }}
     >
       <DialogTitle sx={{ pb: 0 }}>
@@ -87,8 +90,8 @@ const SettingsDialog = ({
                 color="primary"
                 variant="solid"
                 showThumbIcon={false}
-                offLabel="Blocking"
-                onLabel="Non-blocking"
+                offLabel="Full Mode"
+                onLabel="Lite Mode"
                 ariaLabel="Execution mode"
                 width={70}
                 height={30}
@@ -115,8 +118,8 @@ const SettingsDialog = ({
                 onChange={setLiteMode}
                 theme={theme}
                 idleColor="primary"
-                offLabel="Normal"
-                onLabel="Lite"
+                offLabel="Training Mode"
+                onLabel="Inference Mode"
                 ariaLabel="Force mode"
                 width={70}
                 height={30}

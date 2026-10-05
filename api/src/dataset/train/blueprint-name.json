@@ -1,17 +1,19 @@
-[
-  {
-    "title": "Product Stock Management",
-    "description": "If product is not available, create order. if available reduce product count.",
-    "content": "If product is not available, create order. if available reduce product count.",
-    "history": [
-      {
-        "content": "If product is not available, create order. if available reduce product count.",
-        "role": "user"
-      },
-      {
-        "content": "Here’s the flow for your request.",
-        "role": "assistant"
-      }
-    ]
-  }
-]
+{
+  "data": [
+    {
+      "title": "Product Stock Management",
+      "description": "If product is not available, create order. if available reduce product count.",
+      "content": "If product is not available, create order. if available reduce product count.",
+      "history": [
+        {
+          "content": "If product is not available, create order. if available reduce product count.",
+          "role": "user"
+        },
+        {
+          "content": "Here’s the flow for your request.",
+          "role": "assistant"
+        }
+      ]
+    }
+  ]
+}

@@ -324,13 +324,10 @@ function AgentWizard({ onSubmit, open, onClose, itemToEdit }) {
   return (
     <Dialog
       data-cy="agent-dialog"
-      maxWidth={false}
+      type="large"
       slotProps={{
         paper: {
           sx: {
-            width: "100%",
-            height: "100%",
-            outline: "none",
             display: "flex",
             flexDirection: "column",
           },

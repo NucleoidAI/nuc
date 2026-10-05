@@ -156,8 +156,6 @@ const PopChat = ({
 
   if (!open) return null;
 
-  console.log("blueprints", Blueprints);
-
   return (
     <Draggable cancel={".noDrag"}>
       <Box sx={readOnly ? styles.readOnlyBoxHeader : styles.boxHeader}>

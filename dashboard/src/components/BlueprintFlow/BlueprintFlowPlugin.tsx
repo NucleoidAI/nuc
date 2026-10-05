@@ -658,12 +658,6 @@ export const blueprintFlowPlugin = {
       node?.nodeType === "APPROVAL" || node?.action === "PLATFORM:two_factor";
     const isSwitch = node?.nodeType === "SWITCH";
 
-    const connectionsGap = styleTokens.showConnections
-      ? fieldsPanelHeight(
-          styleTokens.nodeFields as Record<string, NodeFields> | undefined
-        )
-      : 0;
-
     const bgFrom = isApproval
       ? APPROVAL_BG_FROM
       : isSwitch
@@ -701,19 +695,16 @@ export const blueprintFlowPlugin = {
       maxHeight,
       shape,
       borderRadius,
-      gap: (styleTokens.gap ?? 6) + connectionsGap,
+      gap: styleTokens.gap ?? 6,
       levelGap: styleTokens.levelGap ?? 15,
       startGap,
       endGap,
-      nodeHeight:
-        maxHeight +
-        (styleTokens.showConnections
-          ? connectionsPanelPixelHeight(
-              (
-                styleTokens.nodeFields as Record<string, NodeFields> | undefined
-              )?.[node?.id]
-            )
-          : 0),
+      nodeHeight: maxHeight,
+      layoutExtraSpacing: styleTokens.showConnections
+        ? maxConnectionsPanelPixelHeight(
+            styleTokens.nodeFields as Record<string, NodeFields> | undefined
+          )
+        : 0,
     };
   },
 
@@ -801,29 +792,28 @@ export type NodeFields = {
   >;
 };
 
-const FIELDS_PANEL_ROW_HEIGHT = 2;
+const FIELDS_PANEL_ROW_HEIGHT = 21;
 const FIELDS_PANEL_ROW_GAP = 2;
+const FIELDS_PANEL_CHROME = 20 + 16 + 2;
 
 function connectionsPanelPixelHeight(fields?: NodeFields) {
   if (!fields) return 0;
   const rows = Math.max(fields.inputs.length, fields.outputs.length);
   if (rows === 0) return 0;
   return (
-    (rows * FIELDS_PANEL_ROW_HEIGHT + (rows - 1) * FIELDS_PANEL_ROW_GAP) * 8
+    rows * FIELDS_PANEL_ROW_HEIGHT +
+    (rows - 1) * FIELDS_PANEL_ROW_GAP +
+    FIELDS_PANEL_CHROME
   );
 }
 
-function fieldsPanelHeight(nodeFields?: Record<string, NodeFields>) {
-  const rows = Math.max(
+function maxConnectionsPanelPixelHeight(
+  nodeFields?: Record<string, NodeFields>
+) {
+  return Math.max(
     0,
-    ...Object.values(nodeFields ?? {}).map((f) =>
-      Math.max(f.inputs.length, f.outputs.length)
-    )
+    ...Object.values(nodeFields ?? {}).map(connectionsPanelPixelHeight)
   );
-
-  if (rows === 0) return 0;
-
-  return rows * FIELDS_PANEL_ROW_HEIGHT + (rows - 1) * FIELDS_PANEL_ROW_GAP;
 }
 
 function NodeHandles({

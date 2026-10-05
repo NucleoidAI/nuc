@@ -116,7 +116,7 @@ const CommunicationWizard = ({
 
   return (
     <>
-      <Dialog open={open} onClose={handleDialogClose} fullWidth maxWidth="md">
+      <Dialog open={open} onClose={handleDialogClose} type="small">
         <DialogTitle>Connect Channel to Task Blueprint</DialogTitle>
         <DialogContent sx={{ minHeight: 200 }}>
           <Tabs value={tabIndex} onChange={handleTabChange}>

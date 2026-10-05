@@ -21,16 +21,11 @@ const AgentDrawer = ({ open, onClose, agent, initialTab, allAgentIds }) => {
       open={open}
       disableEnforceFocus={chatOpen}
       onClose={handleClose}
-      maxWidth={false}
+      type="large"
       sx={{
         "& .MuiDialog-paper": {
           position: "relative",
           overflow: "visible",
-        },
-      }}
-      slotProps={{
-        paper: {
-          sx: { width: "100%", height: "100%", outline: "none" },
         },
       }}
     >

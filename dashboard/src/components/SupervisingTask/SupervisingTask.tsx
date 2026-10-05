@@ -67,8 +67,7 @@ const SupervisingTask = ({ open, setOpen, taskId, agentId }) => {
           reset();
         }
       }}
-      fullWidth
-      maxWidth="sm"
+      type="small"
       sx={{
         zIndex: (theme) => theme.zIndex.modal + 2,
       }}

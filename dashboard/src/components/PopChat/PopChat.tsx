@@ -156,7 +156,6 @@ const PopChat = ({
 
   if (!open) return null;
 
-
   return (
     <Draggable cancel={".noDrag"}>
       <Box sx={readOnly ? styles.readOnlyBoxHeader : styles.boxHeader}>

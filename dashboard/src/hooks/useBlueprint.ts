@@ -24,6 +24,14 @@ type NodeType = {
   dependencyId?: string | null;
 };
 
+export type BlueprintNodeOutput = {
+  nodeId: string;
+  nodeLabel: string;
+  nodeIcon?: string | null;
+  field: string;
+  description?: string | null;
+};
+
 export type BlueprintContext = {
   agent?: { name?: string | null; description?: string | null };
   knowledge?: {
@@ -42,6 +50,7 @@ export type BlueprintContext = {
   } | null;
   userRequest?: string | null;
   capturedAt?: string | null;
+  nodeOutputs?: BlueprintNodeOutput[];
 };
 
 function useBlueprint() {

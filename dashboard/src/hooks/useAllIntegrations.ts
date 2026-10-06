@@ -1,5 +1,6 @@
 import { isValidIntegration } from "../widgets/NodeEditorWidget/helper";
 import useMCPs from "./useMCPs";
+import { useMemo } from "react";
 
 export type IntegrationSchema = {
   type?: string;
@@ -27,37 +28,39 @@ function useAllIntegrations(): Integration[] {
   const { mcps } = getMCPs();
   const { actions } = getActions();
 
-  const transformedActions: Integration[] = Array.isArray(
-    actions?.content?.actions
-  )
-    ? actions.content.actions
-        .filter((action) => action.action !== "PLATFORM:decision")
-        .map((action) => ({
-          id: action.action,
-          action: action.action,
-          provider: "PLATFORM",
-          label: action.label,
-          description:
-            action.description || action.action.replace("PLATFORM:", ""),
-          icon: action.icon || "",
-          direction: "internal",
-          lib: action.lib || "",
-          inputSchema: action.inputSchema || {
-            type: "object",
-            properties: {},
-          },
-          outputSchema: action.outputSchema || {
-            type: "object",
-            properties: {},
-          },
-        }))
-    : [];
+  return useMemo(() => {
+    const transformedActions: Integration[] = Array.isArray(
+      actions?.content?.actions
+    )
+      ? actions.content.actions
+          .filter((action) => action.action !== "PLATFORM:decision")
+          .map((action) => ({
+            id: action.action,
+            action: action.action,
+            provider: "PLATFORM",
+            label: action.label,
+            description:
+              action.description || action.action.replace("PLATFORM:", ""),
+            icon: action.icon || "",
+            direction: "internal",
+            lib: action.lib || "",
+            inputSchema: action.inputSchema || {
+              type: "object",
+              properties: {},
+            },
+            outputSchema: action.outputSchema || {
+              type: "object",
+              properties: {},
+            },
+          }))
+      : [];
 
-  const integrationsList: Integration[] = Array.isArray(mcps?.content.mcps)
-    ? mcps.content.mcps.filter(isValidIntegration)
-    : [];
+    const integrationsList: Integration[] = Array.isArray(mcps?.content.mcps)
+      ? mcps.content.mcps.filter(isValidIntegration)
+      : [];
 
-  return [...transformedActions, ...integrationsList];
+    return [...transformedActions, ...integrationsList];
+  }, [actions, mcps]);
 }
 
 export default useAllIntegrations;

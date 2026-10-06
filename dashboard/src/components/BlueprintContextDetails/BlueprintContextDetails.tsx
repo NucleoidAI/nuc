@@ -1,7 +1,14 @@
 import type { BlueprintContext as BlueprintContextData } from "../../hooks/useBlueprint";
 import React from "react";
 
-import { Box, Chip, Divider, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Chip,
+  Divider,
+  Tooltip,
+  Typography,
+  useTheme,
+} from "@mui/material";
 
 const Section = ({
   label,
@@ -53,6 +60,7 @@ const BlueprintContextDetails = ({
     supervising,
     userRequest,
     capturedAt,
+    nodeOutputs = [],
   } = context;
 
   return (
@@ -87,6 +95,45 @@ const BlueprintContextDetails = ({
         ) : (
           <Typography variant="caption" sx={{ color: "text.disabled" }}>
             No knowledge
+          </Typography>
+        )}
+      </Section>
+
+      <Section label="Outputs">
+        {nodeOutputs.length > 0 ? (
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+            {nodeOutputs.map((output, i) => (
+              <Tooltip
+                key={`${output.nodeId}-${output.field}-${i}`}
+                title={
+                  <>
+                    <Typography variant="caption" sx={{ fontWeight: 700 }}>
+                      From: {output.nodeLabel}
+                    </Typography>
+                    {output.description && (
+                      <Typography
+                        variant="caption"
+                        sx={{ display: "block", mt: 0.25 }}
+                      >
+                        {output.description}
+                      </Typography>
+                    )}
+                  </>
+                }
+                arrow
+              >
+                <Chip
+                  label={output.field}
+                  size="small"
+                  variant="outlined"
+                  sx={{ fontFamily: "monospace", cursor: "default" }}
+                />
+              </Tooltip>
+            ))}
+          </Box>
+        ) : (
+          <Typography variant="caption" sx={{ color: "text.disabled" }}>
+            No outputs
           </Typography>
         )}
       </Section>

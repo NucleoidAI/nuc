@@ -17,14 +17,16 @@ import {
 import React, { useState } from "react";
 
 const FORCE_COLOR = "#b8860b";
-const SWITCH_BORDER_COLOR = "linear-gradient(135deg, #7c5cff66, #00c2ff59)";
-const SWITCH_BG_FROM = "rgba(124, 92, 255, 0.20)";
-const SWITCH_BG_TO = "rgba(0, 194, 255, 0.26)";
-export const APPROVAL_BORDER_COLOR =
-  "linear-gradient(135deg, #fde04766, #ca8a0459)";
-export const APPROVAL_BORDER_SOLID = "#ca8a04";
-export const APPROVAL_BG_FROM = "rgba(199, 176, 59, 0.4)";
-export const APPROVAL_BG_TO = "rgba(202, 138, 4, 0.50)";
+const DECISION_BORDER_COLOR = "linear-gradient(135deg, #4A4F54, #2E3136)";
+const DECISION_BG_FROM = "#4A4F54";
+const DECISION_BG_TO = "#2E3136";
+const SWITCH_BORDER_COLOR = DECISION_BORDER_COLOR;
+const SWITCH_BG_FROM = DECISION_BG_FROM;
+const SWITCH_BG_TO = DECISION_BG_TO;
+export const APPROVAL_BORDER_COLOR = DECISION_BORDER_COLOR;
+export const APPROVAL_BORDER_SOLID = "#616161";
+export const APPROVAL_BG_FROM = DECISION_BG_FROM;
+export const APPROVAL_BG_TO = DECISION_BG_TO;
 
 const AddButtonWrapper = styled("div")(({ theme }) => ({
   position: "absolute",
@@ -615,10 +617,15 @@ const ForceBadge = styled("div")(({ theme }) => ({
 }));
 
 const NodeWrapper = styled("div", {
-  shouldForwardProp: (prop) => prop !== "isApproval",
-})<{ isApproval?: boolean }>(({ isApproval }) => {
-  const stepColor = isApproval ? "#6b5709" : "#174f77";
-  const steppedShadow = `
+  shouldForwardProp: (prop) => prop !== "isApproval" && prop !== "isDecision",
+})<{ isApproval?: boolean; isDecision?: boolean }>(
+  ({ isApproval, isDecision }) => {
+    const stepColor = isDecision
+      ? "#4a4a4a"
+      : isApproval
+      ? "#6b5709"
+      : "#174f77";
+    const steppedShadow = `
     1px 1px 0 ${stepColor},
     2px 2px 0 ${stepColor},
     3px 3px 0 ${stepColor},
@@ -630,53 +637,55 @@ const NodeWrapper = styled("div", {
     20px 20px 40px rgba(0, 0, 0, 0.5)
   `;
 
-  return {
-    position: "relative",
-    width: "100%",
-    height: "100%",
-    borderRadius: "16px",
-    transformStyle: "preserve-3d",
-    transform: "perspective(1500px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)",
-    boxShadow: steppedShadow,
-    transition:
-      "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, filter 0.25s ease",
-    "&:hover": {
+    return {
+      position: "relative",
+      width: "100%",
+      height: "100%",
+      borderRadius: "16px",
+      transformStyle: "preserve-3d",
       transform:
-        "perspective(1500px) rotateX(0deg) rotateY(-10deg) rotateZ(0deg)",
-      filter: "brightness(1.070)",
+        "perspective(1500px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)",
       boxShadow: steppedShadow,
-    },
-  };
-});
+      transition:
+        "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, filter 0.25s ease",
+      "&:hover": {
+        transform:
+          "perspective(1500px) rotateX(0deg) rotateY(-10deg) rotateZ(0deg)",
+        filter: "brightness(1.070)",
+        boxShadow: steppedShadow,
+      },
+    };
+  }
+);
 
 export const blueprintFlowPlugin = {
   id: "blueprintChart",
 
   style: ({ node, style }) => {
     const styleTokens = style || {};
-    const isApproval =
-      node?.nodeType === "APPROVAL" || node?.action === "PLATFORM:two_factor";
+    const isApproval = node?.nodeType === "APPROVAL";
     const isSwitch = node?.nodeType === "SWITCH";
+    const isDecision = isApproval || node?.connectorType === "decision";
 
-    const bgFrom = isApproval
-      ? APPROVAL_BG_FROM
+    const bgFrom = isDecision
+      ? DECISION_BG_FROM
       : isSwitch
       ? SWITCH_BG_FROM
       : undefined;
-    const bgTo = isApproval
-      ? APPROVAL_BG_TO
+    const bgTo = isDecision
+      ? DECISION_BG_TO
       : isSwitch
       ? SWITCH_BG_TO
       : undefined;
-    const borderColor = isApproval
-      ? APPROVAL_BORDER_COLOR
+    const borderColor = isDecision
+      ? DECISION_BORDER_COLOR
       : isSwitch
       ? SWITCH_BORDER_COLOR
       : "linear-gradient(135deg, #c684ff33, #078dee4d)";
     const borderRadius = 16;
     const shadowLevel = 1;
-    const minWidth = 420;
-    const maxWidth = 420;
+    const minWidth = isDecision || isSwitch ? 315 : 420;
+    const maxWidth = isDecision || isSwitch ? 315 : 420;
     const minHeight = 210;
     const maxHeight = 210;
     const shape = 16;
@@ -816,6 +825,14 @@ function maxConnectionsPanelPixelHeight(
   );
 }
 
+const DECISION_DESCRIPTION_MAX_LENGTH = 60;
+
+function truncateDescription(description?: string) {
+  if (!description) return description;
+  if (description.length <= DECISION_DESCRIPTION_MAX_LENGTH) return description;
+  return `${description.slice(0, DECISION_DESCRIPTION_MAX_LENGTH).trimEnd()}…`;
+}
+
 function NodeHandles({
   node,
   fields,
@@ -940,6 +957,16 @@ function FlowNodeRenderer({
   const isForceNode = Boolean(
     (node.raw?.properties as { force?: boolean } | undefined)?.force
   );
+  const isDecisionNode =
+    node.nodeType === "APPROVAL" ||
+    node.nodeType === "SWITCH" ||
+    node.connectorType === "decision";
+  // Decision/switch cards render at a square, compact size — truncate the
+  // description so the icon, label and action still fit without growing
+  // the card beyond its normal footprint.
+  const infoNode = isDecisionNode
+    ? { ...node, description: truncateDescription(node.description) }
+    : node;
   const isReadOnly = !onAdd && !onEdit && !onSwapBranch && !onDelete;
   const [contextMenu, setContextMenu] = useState<{
     mouseX: number;
@@ -990,6 +1017,7 @@ function FlowNodeRenderer({
   return (
     <NodeWrapper
       isApproval={node.nodeType === "APPROVAL"}
+      isDecision={isDecisionNode}
       title={isForceNode ? "Force node: action is guaranteed" : undefined}
       onContextMenu={handleContextMenu}
       onMouseDownCapture={handleMouseDownCapture}
@@ -1056,7 +1084,7 @@ function FlowNodeRenderer({
           </>
         )
       )}
-      <InfoNode node={node} nodeStyle={nodeStyle}>
+      <InfoNode node={infoNode} nodeStyle={nodeStyle}>
         {!isReadOnly && (
           <>
             <DeleteButtonWrapper

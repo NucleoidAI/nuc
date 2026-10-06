@@ -193,8 +193,7 @@ export default function BlueprintFlow({
   const miniMapStyle = useCallback(
     (node: { nodeType?: string; properties?: { action?: string } }) => {
       const isApproval =
-        node?.nodeType === "APPROVAL" ||
-        node?.properties?.action === "PLATFORM:two_factor";
+        node?.nodeType === "APPROVAL" || node?.nodeType === "DECISION";
       if (!isApproval) return {};
       return {
         bg: APPROVAL_BG_TO,

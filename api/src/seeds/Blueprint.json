@@ -426,12 +426,12 @@
     {
       "id": "019fa100-0000-4000-8000-000000000001",
       "title": "Meeting Summary A - Full Transcript Only",
-      "description": "Variant A of the meeting summarizer A/B test. Converts PCM recordings to WAV, transcribes only the mixed meeting-audio recording with includeSpeakerTranscripts disabled, and summarizes that full transcript into an overall summary and the meeting's highlights. The summarizer reads the transcript straight from the transcription step's result through a parameter reference, so the transcript is never retyped or regenerated. It deliberately skips per-speaker transcription, produces no next steps and attributes nothing to individual speakers. The summary is emailed to the meeting participants; the transcript is not judged and nothing is attached.",
+      "description": "Variant A of the meeting summarizer A/B test. Converts PCM recordings to WAV, transcribes only the mixed meeting-audio recording with includeSpeakerTranscripts disabled, and summarizes that full transcript into an overall summary and the meeting's highlights. The summarizer reads the transcript straight from the transcription step's result through a parameter reference, so the transcript is never retyped or regenerated. It deliberately skips per-speaker transcription, produces no next steps and attributes nothing to individual speakers. The summary email is rendered from a template in its own step and then sent to the participants' email addresses from the API request, with the attendee names listed in it; the transcript is not judged and nothing is attached.",
       "agentId": "ab2d404b-3358-45eb-a468-338485924fea",
       "blocking": false,
       "force": true,
       "api": true,
-      "skill": "**Meeting Recording - Summary Variant A (transcript only)**\n\nUse this Blueprint for the lightweight arm of the summarizer A/B test: only the mixed meeting recording is transcribed, and the summary is written from that full transcript without transcribing each participant's own recording.\n\nFlow: Request (directoryPath, meetingId, topic, status, participants, recording, attendees) -> Convert PCM to WAV -> Transcribe only meeting-audio.wav (includeSpeakerTranscripts: false) -> Summarize the full transcript, read by reference from the transcription result (summary + highlights) -> Send email to all participants -> Respond with the summary and highlights.\n\nThe meeting directory comes from the API request and is passed by reference to the conversion and transcription steps. Produces a summary and highlights only - no next steps, no speaker transcription, no speaker attribution, no LLM judgement, no attachments and no separate manager email. The response carries the summarize step's result by reference, never retyped or regenerated.",
+      "skill": "**Meeting Recording - Summary Variant A (transcript only)**\n\nUse this Blueprint for the lightweight arm of the summarizer A/B test: only the mixed meeting recording is transcribed, and the summary is written from that full transcript without transcribing each participant's own recording.\n\nFlow: Request (directoryPath, meetingId, topic, status, participants, recording, attendees) -> Convert PCM to WAV -> Transcribe only meeting-audio.wav (includeSpeakerTranscripts: false) -> Summarize the full transcript, read by reference from the transcription result (summary + highlights) -> Prepare the email from the 'meeting_summary_a' template -> Send the prepared email to the participants' email addresses -> Respond with the summary and highlights.\n\nThe meeting directory comes from the API request and is passed by reference to the conversion and transcription steps. Produces a summary and highlights only - no next steps, no speaker transcription, no speaker attribution, no LLM judgement, no attachments and no separate manager email. The response carries the summarize step's result by reference, never retyped or regenerated.",
       "nodes": [
         {
           "id": "api-start",
@@ -540,7 +540,7 @@
               {
                 "name": "attendees",
                 "type": "array",
-                "description": "Email addresses of the meeting attendees.",
+                "description": "Full names of the meeting attendees, shown as the participants in the summary email.",
                 "items": { "type": "string" }
               }
             ],
@@ -602,18 +602,63 @@
               "summary_prompt": "Sen, toplantı transkriptlerini analiz edip profesyonel toplantı notları çıkaran bir asistansın.\n\nAşağıda ###TRANSKRIPT### etiketleri arasında bir toplantının tam konuşma metni yer alıyor.\nBu metni analiz et ve sonucu TAMAMEN TÜRKÇE olarak üret.\n\nALANLAR:\n- summary: Toplantının amacını, konuşulan ana konuları ve nasıl sonuçlandığını anlatan 3-5 cümlelik tek bir akıcı paragraf.\n- highlights: Toplantıda ele alınan her önemli ana konu için bir kayıt. topic alanına konu başlığını yaz; highlights alanına yalnızca o konuyla ilgili önemli noktaları, talepleri, önerileri ve alınan kararları 1-3 madde halinde yaz.\n\nKURALLAR:\n1. Yalnızca transkriptte geçen bilgileri kullan; isim, tarih, sayı, fiyat veya karar ASLA uydurma.\n2. Transkript hangi dilde olursa olsun çıktıyı Türkçe yaz; ürün, şirket ve kişi adlarını olduğu gibi bırak.\n3. Tarafsız ve profesyonel bir dil kullan; kendi yorumunu veya değerlendirmeni ekleme.\n4. Selamlaşma, hal hatır sorma gibi işle ilgisi olmayan kısımları özete dahil etme.\n5. Emin olmadığın bir bilgiyi kesinmiş gibi yazma; belirsiz kalan maddeleri atla.\n6. Hiçbir alanın içine Markdown başlığı, madde işareti veya satır sonu koyma; her alan tek parça düz metin olsun."
             }
           },
-          "next": ["019fa100-0006-4000-8000-000000000001"],
+          "next": ["019fa100-0005-4000-8000-000000000001"],
           "createdAt": "2026-08-20T10:00:00Z"
+        },
+        {
+          "id": "019fa100-0005-4000-8000-000000000001",
+          "type": "NORMAL",
+          "properties": {
+            "action": "TELCO:prepare_email",
+            "force": true,
+            "description": "Render the summary email from the 'meeting_summary_a' template. The meeting topic and the attendee names come from the API request and the summary and highlights are taken by reference from the Summarize Meeting node result, never retyped or regenerated",
+            "label": "Prepare Email",
+            "icon": "mdi:email-edit",
+            "parameters": {
+              "template": "meeting_summary_a",
+              "meetingName": {
+                "$ref": "byNode.api-start.result.topic"
+              },
+              "meetingDate": null,
+              "attendees": {
+                "$ref": "byNode.api-start.result.attendees"
+              },
+              "summary": {
+                "$ref": "byNode.019fa100-0003-4000-8000-000000000001.result.summary"
+              },
+              "highlights": {
+                "$ref": "byNode.019fa100-0003-4000-8000-000000000001.result.highlights"
+              },
+              "next_steps": null
+            }
+          },
+          "next": ["019fa100-0006-4000-8000-000000000001"],
+          "createdAt": "2026-10-07T10:00:00Z"
         },
         {
           "id": "019fa100-0006-4000-8000-000000000001",
           "type": "NORMAL",
           "properties": {
             "action": "TELCO:send_email_ews",
-            "description": "Email the summary through EWS to all meeting participants using the 'meeting_summary_a' template",
-            "instructions": "Send email to all participants",
+            "force": true,
+            "description": "Send the prepared email through EWS to the email addresses of the participants in the API request. Subject, text and HTML are taken by reference from the Prepare Email node result",
             "label": "Email Participants",
-            "icon": "mdi:email-send"
+            "icon": "mdi:email-send",
+            "parameters": {
+              "to": {
+                "$ref": "byNode.api-start.result.participants"
+              },
+              "subject": {
+                "$ref": "byNode.019fa100-0005-4000-8000-000000000001.result.subject"
+              },
+              "text": {
+                "$ref": "byNode.019fa100-0005-4000-8000-000000000001.result.text"
+              },
+              "html": {
+                "$ref": "byNode.019fa100-0005-4000-8000-000000000001.result.html"
+              },
+              "attachments": []
+            }
           },
           "next": ["api-end"],
           "createdAt": "2026-08-20T10:00:00Z"

@@ -135,3 +135,13 @@ export interface TranslateInput {
   target_lang: string;
   source_lang?: string;
 }
+
+export interface PrepareEmailInput {
+  template: string;
+  meetingName?: string | null;
+  meetingDate?: string | null;
+  attendees?: string[] | null;
+  summary?: string | null;
+  highlights?: MeetingHighlight[] | null;
+  next_steps?: string[] | null;
+}

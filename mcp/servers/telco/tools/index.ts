@@ -6,6 +6,7 @@ import { judgeSummaryTool } from "./judge_summary";
 import { pcmToWavTool } from "./pcm_to_wav";
 import { portAllocationTool } from "./port_allocation";
 import { portConnectionTool } from "./port_connection";
+import { prepareEmailTool } from "./prepare_email";
 import { prepareMeetingAttachmentsTool } from "./prepare_meeting_attachments";
 import { productManagementSystemTool } from "./product_management_system";
 import { resolveParticipantsTool } from "./resolve_participants";
@@ -30,6 +31,7 @@ export const tools = [
   judgeSummaryTool,
   prepareMeetingAttachmentsTool,
   resolveParticipantsTool,
+  prepareEmailTool,
   sendEmailEwsTool,
   translateTool,
 ];

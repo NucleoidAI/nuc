@@ -1719,6 +1719,7 @@
         "TELCO:pcm_to_wav",
         "TELCO:transcribe_meeting",
         "TELCO:summarize_meeting",
+        "TELCO:prepare_email",
         "TELCO:send_email_ews",
         "PLATFORM:complete"
       ],
@@ -1755,20 +1756,17 @@
         }
       ],
       "next_step": {
-        "action": "TELCO:send_email_ews",
+        "action": "TELCO:prepare_email",
         "parameters": {
-          "to": "yonetim-sync@example.com",
           "template": "meeting_summary_a",
-          "data": {
-            "summary": {
-              "$ref": "steps[2].result.summary"
-            },
-            "highlights": {
-              "$ref": "steps[2].result.highlights"
-            }
+          "summary": {
+            "$ref": "steps[2].result.summary"
+          },
+          "highlights": {
+            "$ref": "steps[2].result.highlights"
           }
         },
-        "comment": "The generated notes already exist in steps[2] - the summary and highlights are passed by $ref instead of being retyped. The recipient comes from the task description; nothing else is invented. Variant A sends no attachments and produces no next steps.",
+        "comment": "The email is rendered from the 'meeting_summary_a' template before it is sent. The generated notes already exist in steps[2] - the summary and highlights are passed by $ref instead of being retyped. Variant A produces no next steps.",
         "result_score": 0.95
       }
     },

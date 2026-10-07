@@ -272,7 +272,7 @@ const MCPs = [
     label: "Telco EWS",
     provider: "TELCO",
     description:
-      "Send an email through Exchange Web Services using NTLM authentication. Supports plain text, HTML, predefined meeting templates, and attachments.",
+      "Send an email through Exchange Web Services using NTLM authentication. Sends ready-made subject, text and HTML content with optional attachments; use TELCO:prepare_email to render a template first.",
     direction: "OUTGOING",
     icon: "mdi:microsoft-outlook",
     lib: "mcp",
@@ -281,34 +281,21 @@ const MCPs = [
       properties: {
         to: {
           type: "string",
-          description: "The email address of the recipient.",
+          description:
+            "The recipient email address. Several recipients can be separated with ',' or ';', or given as a list of addresses or of objects with an 'email' field (e.g. meeting participants); entries without an email are skipped.",
         },
         subject: {
           type: "string",
-          description:
-            "The subject of the email. Not needed when 'template' is set.",
-          nullable: true,
+          description: "The subject of the email.",
         },
         text: {
           type: "string",
-          description:
-            "The plain-text body. Not needed when 'template' or 'html' is set.",
+          description: "The plain-text body. Not needed when 'html' is set.",
           nullable: true,
         },
         html: {
           type: "string",
-          description: "The HTML body. Not needed when 'template' is set.",
-          nullable: true,
-        },
-        template: {
-          type: "string",
-          description:
-            "Predefined template name: 'meeting_summary_a' or 'meeting_summary_b'.",
-          nullable: true,
-        },
-        data: {
-          type: "object",
-          description: "Structured data used by the selected template.",
+          description: "The HTML body. Not needed when 'text' is set.",
           nullable: true,
         },
         attachments: {
@@ -328,7 +315,79 @@ const MCPs = [
           nullable: true,
         },
       },
-      required: ["to"],
+      required: ["to", "subject"],
+    },
+  },
+  {
+    id: "ca540721-8224-4636-bb7b-d83b7e66500e",
+    action: "TELCO:prepare_email",
+    label: "Telco",
+    provider: "TELCO",
+    description:
+      "Render a predefined meeting email template and return the email's subject, plain-text body and HTML body, ready to be passed to TELCO:send_email_ews. Does not send anything.",
+    direction: "OUTGOING",
+    icon: "mdi:email-edit",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        template: {
+          type: "string",
+          description:
+            "Predefined template name: 'meeting_summary_a' or 'meeting_summary_b'.",
+        },
+        meetingName: {
+          type: "string",
+          description: "The meeting name, used in the subject and the title.",
+          nullable: true,
+        },
+        meetingDate: {
+          type: "string",
+          description: "The meeting date, shown under the title and in the subject.",
+          nullable: true,
+        },
+        attendees: {
+          type: "array",
+          items: { type: "string" },
+          description: "Full names of the attendees, listed as the participants.",
+          nullable: true,
+        },
+        summary: {
+          type: "string",
+          description: "The overall meeting summary.",
+          nullable: true,
+        },
+        highlights: {
+          type: "array",
+          description: "The meeting's highlights grouped by topic.",
+          items: {
+            type: "object",
+            properties: {
+              topic: { type: "string" },
+              highlights: { type: "array", items: { type: "string" } },
+            },
+            required: ["topic", "highlights"],
+          },
+          nullable: true,
+        },
+        next_steps: {
+          type: "array",
+          items: { type: "string" },
+          description:
+            "Next steps the meeting left behind. Rendered by 'meeting_summary_b' only.",
+          nullable: true,
+        },
+      },
+      required: ["template"],
+    },
+    outputSchema: {
+      type: "object",
+      properties: {
+        subject: { type: "string", description: "The rendered subject." },
+        text: { type: "string", description: "The rendered plain-text body." },
+        html: { type: "string", description: "The rendered HTML body." },
+      },
+      required: ["subject", "text", "html"],
     },
   },
   {

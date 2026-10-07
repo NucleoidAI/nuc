@@ -143,13 +143,27 @@ export function omitMissingRequestRefs({
   const request = requestOf(start, steps);
   const prefix = `byNode.${start.id}.result.`;
 
-  return Object.fromEntries(
-    Object.entries(parameters).filter(([, value]) => {
-      const path = refPathOf(value);
-      if (!path?.startsWith(prefix)) return true;
+  const isPresent = (value: unknown) => {
+    const path = refPathOf(value);
+    if (!path?.startsWith(prefix)) return true;
 
-      const field = path.slice(prefix.length).split(/[.[]/, 1)[0];
-      return !optional.has(field) || field in request;
-    })
-  );
+    const field = path.slice(prefix.length).split(/[.[]/, 1)[0];
+    return !optional.has(field) || field in request;
+  };
+
+  const omit = (values: Record<string, unknown>): Record<string, unknown> =>
+    Object.fromEntries(
+      Object.entries(values)
+        .filter(([, value]) => isPresent(value))
+        .map(([key, value]) => [
+          key,
+          isPlainObject(value) && !refPathOf(value) ? omit(value) : value,
+        ])
+    );
+
+  return omit(parameters);
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
 }

@@ -3,10 +3,7 @@ import path from "path";
 import { spawn } from "child_process";
 import logger from "../../../logger/logger.js";
 import { Tool } from "./types";
-import {
-  buildAttachments,
-  TEMPLATES,
-} from "../../grey/tools/send_email.js";
+import { buildAttachments } from "../../grey/tools/send_email.js";
 
 const WORKER_PATH = path.join(__dirname, "ews_send_worker.cjs");
 
@@ -68,39 +65,26 @@ function runEwsWorker(payload: Record<string, any>): Promise<void> {
 export const sendEmailEwsTool: Tool<any> = {
   name: "TELCO:send_email_ews",
   description:
-    "Send an email through Exchange Web Services (EWS) using NTLM authentication. Requires EWS_URL, EWS_USER, EWS_PASS, and EWS_MAILBOX environment variables. Accepts the same content, template, and attachment inputs as GREY:send_email.",
+    "Send an email through Exchange Web Services (EWS) using NTLM authentication. Requires EWS_URL, EWS_USER, EWS_PASS, and EWS_MAILBOX environment variables. Sends ready-made content; use TELCO:prepare_email to render a template into subject, text and html first.",
   inputSchema: {
     type: "object",
     properties: {
       to: {
         type: "string",
-        description: "Recipient email address",
+        description:
+          "Recipient email address. Several recipients can be separated with ',' or ';', or given as a list of addresses or of objects with an 'email' field (e.g. meeting participants); entries without an email are skipped.",
       },
       subject: {
         type: "string",
-        description:
-          "Email subject. Required unless 'template' is set (the template supplies its own subject).",
+        description: "Email subject.",
       },
       text: {
         type: "string",
-        description:
-          "Plain text email body. Required unless 'template' or 'html' is set.",
+        description: "Plain text email body. Required unless 'html' is set.",
       },
       html: {
         type: "string",
-        description:
-          "HTML email body (optional, overridden when 'template' is set)",
-      },
-      template: {
-        type: "string",
-        description: `Name of a predefined email template. Available: ${Object.keys(
-          TEMPLATES
-        ).join(", ")}`,
-      },
-      data: {
-        type: "object",
-        description:
-          "Structured data to render into the template named by 'template'.",
+        description: "HTML email body. Required unless 'text' is set.",
       },
       attachments: {
         type: "array",
@@ -136,14 +120,11 @@ export const sendEmailEwsTool: Tool<any> = {
         tool: "TELCO:send_email_ews",
         to: args.to,
         subject: args.subject,
-        template: args.template,
       },
       "EWS email send attempt initiated"
     );
 
-    let subject = args.subject;
-    let text = args.text;
-    let html = args.html;
+    const { subject, text, html } = args;
 
     const { attachments, missing } = buildAttachments(args.attachments);
     if (missing.length) {
@@ -151,26 +132,6 @@ export const sendEmailEwsTool: Tool<any> = {
         { tool: "TELCO:send_email_ews", missing },
         "Skipping attachments whose files do not exist"
       );
-    }
-
-    if (args.template) {
-      const render = TEMPLATES[args.template];
-      if (!render) {
-        const errorMessage = `Unknown template "${
-          args.template
-        }". Available templates: ${Object.keys(TEMPLATES).join(", ")}`;
-        return {
-          content: [
-            { type: "text", text: JSON.stringify({ error: errorMessage }) },
-          ],
-          isError: true,
-        };
-      }
-
-      const rendered = render(args.data ?? {});
-      subject = rendered.subject;
-      text = rendered.text;
-      html = rendered.html;
     }
 
     try {
@@ -193,14 +154,15 @@ export const sendEmailEwsTool: Tool<any> = {
       ) {
         throw new Error("EWS mock credentials do not match the documented test configuration");
       }
-      if (!subject)
-        throw new Error("subject is required when template is not set");
-      if (!text && !html) {
-        throw new Error("text or html is required when template is not set");
-      }
+      if (!subject) throw new Error("subject is required");
+      if (!text && !html) throw new Error("text or html is required");
 
-      const recipients = String(args.to)
-        .split(/[;,]/)
+      const recipients = [args.to]
+        .flat()
+        .map((recipient) =>
+          recipient && typeof recipient === "object" ? recipient.email : recipient
+        )
+        .flatMap((recipient) => String(recipient ?? "").split(/[;,]/))
         .map((recipient) => recipient.trim())
         .filter(Boolean);
       if (!recipients.length) throw new Error("to must contain a recipient");

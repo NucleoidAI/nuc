@@ -127,8 +127,9 @@ function boundSelection({
   currentNode: any;
   isLite: boolean;
 }): ActionSelection | undefined {
-  const inputSchema = definitionOf(currentNode?.properties?.action)
-    ?.inputSchema;
+  const inputSchema = definitionOf(
+    currentNode?.properties?.action,
+  )?.inputSchema;
 
   const boundStep =
     getBoundNodeStep({ node: currentNode, inputSchema }) ??
@@ -173,7 +174,7 @@ function matchNode(state: TaskState, action: string) {
     currentNode,
     (node) =>
       node.properties?.action === action ||
-      (node === currentNode && !node.properties?.action)
+      (node === currentNode && !node.properties?.action),
   );
 }
 
@@ -307,8 +308,7 @@ function platformParameters({
 }
 
 async function complete(state: TaskState, comment?: string) {
-  const { taskId, agentId, sessionId, description, blueprintId, steps } =
-    state;
+  const { taskId, agentId, sessionId, description, blueprintId, steps } = state;
   const result = steps[steps.length - 1]?.result ?? undefined;
 
   if (sessionId) {
@@ -350,7 +350,7 @@ async function respond(state: TaskState, node: any) {
         start: startNode,
         steps: refSource.steps,
       }),
-      refSource
+      refSource,
     );
     const response = apiSchema.validate(node.properties?.fields ?? [], values, {
       strict: false,
@@ -360,7 +360,7 @@ async function respond(state: TaskState, node: any) {
       throw new Error(
         `Response does not match the response schema: ${response.issues
           .map(({ path, message }) => `${path || "(root)"}: ${message}`)
-          .join("; ")}`
+          .join("; ")}`,
       );
     }
 
@@ -368,7 +368,7 @@ async function respond(state: TaskState, node: any) {
   } catch (err) {
     return fail(
       taskId,
-      err instanceof Error ? err.message : "Failed to build the API response"
+      err instanceof Error ? err.message : "Failed to build the API response",
     );
   }
 
@@ -392,8 +392,7 @@ async function respond(state: TaskState, node: any) {
 }
 
 async function handoff(state: TaskState, parameters: Params, comment?: string) {
-  const { taskId, agentId, sessionId, description, blueprintId, steps } =
-    state;
+  const { taskId, agentId, sessionId, description, blueprintId, steps } = state;
   const { targetAgentId, targetBlueprintId, context } = parameters as {
     targetAgentId: string;
     targetBlueprintId?: string;
@@ -403,7 +402,7 @@ async function handoff(state: TaskState, parameters: Params, comment?: string) {
   if (targetAgentId === agentId) {
     return fail(
       taskId,
-      "Self-handoff detected: agent attempted to hand off to itself. Follow the assigned blueprint instead."
+      "Self-handoff detected: agent attempted to hand off to itself. Follow the assigned blueprint instead.",
     );
   }
 
@@ -419,7 +418,7 @@ async function handoff(state: TaskState, parameters: Params, comment?: string) {
       taskId,
       `Handoff target does not exist: agent ${targetAgentId}${
         targetBlueprintId ? `, blueprint ${targetBlueprintId}` : ""
-      }. Use an agent and blueprint id that exist on this team.`
+      }. Use an agent and blueprint id that exist on this team.`,
     );
   }
 
@@ -435,7 +434,7 @@ async function handoff(state: TaskState, parameters: Params, comment?: string) {
         parameters,
         result,
         comment,
-      })
+      }),
     ),
   });
 
@@ -573,7 +572,7 @@ async function load({
     inherited_steps: inheritedSteps ?? [],
     session_variables: variables,
     byNode: Object.fromEntries(
-      steps.filter((s) => s.nodeId).map((s) => [s.nodeId, s])
+      steps.filter((s) => s.nodeId).map((s) => [s.nodeId, s]),
     ),
   };
 

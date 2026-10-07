@@ -10330,11 +10330,6 @@ const MCPs = [
           description:
             "Absolute path to the directory containing .wav files. The .txt transcripts are written into this same directory.",
         },
-        force: {
-          type: "boolean",
-          description:
-            "Re-transcribe even when a .txt transcript already exists, overwriting it. Defaults to false.",
-        },
         includeSpeakerTranscripts: {
           type: "boolean",
           description:

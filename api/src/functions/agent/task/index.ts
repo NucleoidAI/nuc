@@ -1,9 +1,10 @@
+import config from "../../../../config";
 import decisionTask from "./decision";
 import { fail } from "./common";
 import llmTask from "./llm";
 import platform from "@canmingir/link-express";
 
-const run = process.env.PLATFORM_DECISION ? decisionTask : llmTask;
+const run = config.decision?.enabled ? decisionTask : llmTask;
 
 async function task({ taskId }: { taskId: string }) {
   try {

@@ -431,7 +431,7 @@
       "blocking": false,
       "force": true,
       "api": true,
-      "skill": "**Meeting Recording - Summary Variant A (transcript only)**\n\nUse this Blueprint for the lightweight arm of the summarizer A/B test: only the mixed meeting recording is transcribed, and the summary is written from that full transcript without transcribing each participant's own recording.\n\nFlow: Request (directoryPath) -> Convert PCM to WAV -> Transcribe only meeting-audio.wav (includeSpeakerTranscripts: false) -> Summarize the full transcript, read by reference from the transcription result (summary + highlights) -> Send email to all participants -> Respond with the summary and highlights.\n\nThe meeting directory comes from the API request and is passed by reference to the conversion and transcription steps. Produces a summary and highlights only - no next steps, no speaker transcription, no speaker attribution, no LLM judgement, no attachments and no separate manager email. The response carries the summarize step's result by reference, never retyped or regenerated.",
+      "skill": "**Meeting Recording - Summary Variant A (transcript only)**\n\nUse this Blueprint for the lightweight arm of the summarizer A/B test: only the mixed meeting recording is transcribed, and the summary is written from that full transcript without transcribing each participant's own recording.\n\nFlow: Request (directoryPath, meetingId, topic, status, participants, recording, attendees) -> Convert PCM to WAV -> Transcribe only meeting-audio.wav (includeSpeakerTranscripts: false) -> Summarize the full transcript, read by reference from the transcription result (summary + highlights) -> Send email to all participants -> Respond with the summary and highlights.\n\nThe meeting directory comes from the API request and is passed by reference to the conversion and transcription steps. Produces a summary and highlights only - no next steps, no speaker transcription, no speaker attribution, no LLM judgement, no attachments and no separate manager email. The response carries the summarize step's result by reference, never retyped or regenerated.",
       "nodes": [
         {
           "id": "api-start",
@@ -446,6 +446,102 @@
                 "type": "string",
                 "minLength": 1,
                 "description": "Absolute path to the meeting directory containing the .pcm recordings."
+              },
+              {
+                "name": "meetingId",
+                "type": "string",
+                "required": false,
+                "description": "The Zoom meeting id."
+              },
+              {
+                "name": "topic",
+                "type": "string",
+                "required": false,
+                "description": "The meeting topic."
+              },
+              {
+                "name": "status",
+                "type": "string",
+                "required": false,
+                "description": "The recording status reported by the meeting bot, e.g. completed."
+              },
+              {
+                "name": "participants",
+                "type": "array",
+                "description": "Participants recorded by the meeting bot.",
+                "items": {
+                  "type": "object",
+                  "fields": [
+                    {
+                      "name": "userId",
+                      "type": "string",
+                      "required": false,
+                      "description": "The participant's id within the meeting."
+                    },
+                    {
+                      "name": "participantUserId",
+                      "type": "string",
+                      "required": false,
+                      "description": "The participant's Zoom user id."
+                    },
+                    {
+                      "name": "name",
+                      "type": "string",
+                      "required": false,
+                      "description": "The participant's display name."
+                    },
+                    {
+                      "name": "email",
+                      "type": "string",
+                      "required": false,
+                      "description": "The participant's email address."
+                    },
+                    {
+                      "name": "joinTime",
+                      "type": "string",
+                      "required": false,
+                      "description": "When the participant joined."
+                    },
+                    {
+                      "name": "leaveTime",
+                      "type": "string",
+                      "required": false,
+                      "description": "When the participant left."
+                    },
+                    {
+                      "name": "audioFile",
+                      "type": "string",
+                      "required": false,
+                      "description": "The participant's own audio recording file name."
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "recording",
+                "type": "object",
+                "required": false,
+                "description": "The meeting recording files inside directoryPath.",
+                "fields": [
+                  {
+                    "name": "mixedAudio",
+                    "type": "string",
+                    "required": false,
+                    "description": "The mixed meeting audio file name."
+                  },
+                  {
+                    "name": "video",
+                    "type": "string",
+                    "required": false,
+                    "description": "The meeting video file name."
+                  }
+                ]
+              },
+              {
+                "name": "attendees",
+                "type": "array",
+                "description": "Email addresses of the meeting attendees.",
+                "items": { "type": "string" }
               }
             ],
             "strict": false,

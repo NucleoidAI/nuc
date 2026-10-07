@@ -92,11 +92,6 @@ export const transcribeMeetingTool: Tool<TranscribeMeetingInput> = {
         description:
           "Absolute path to the directory containing .wav files. The .txt transcripts are written into this same directory.",
       },
-      force: {
-        type: "boolean",
-        description:
-          "Re-transcribe even when a .txt transcript already exists, overwriting it. Defaults to false.",
-      },
       includeSpeakerTranscripts: {
         type: "boolean",
         description:
@@ -107,7 +102,6 @@ export const transcribeMeetingTool: Tool<TranscribeMeetingInput> = {
   },
   handler: async ({
     directoryPath,
-    force,
     includeSpeakerTranscripts = true,
   }: TranscribeMeetingInput) => {
     try {
@@ -189,7 +183,7 @@ export const transcribeMeetingTool: Tool<TranscribeMeetingInput> = {
 
         let transcription: string;
 
-        if (!force && fs.existsSync(transcriptPath)) {
+        if (fs.existsSync(transcriptPath)) {
           logger.info(
             { tool: "TELCO:transcribe_meeting", transcriptPath },
             "Reusing cached transcript",

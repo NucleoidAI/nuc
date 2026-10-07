@@ -44,8 +44,7 @@ async function scoring({
 }
 
 async function selectAction(state: TaskState): Promise<ActionSelection> {
-  const { currentNode, currentTask, context, isBlocking, isLite, meta } =
-    state;
+  const { currentNode, currentTask, context, isBlocking, isLite, meta } = state;
 
   const bound = boundSelection({ currentNode, isLite });
 
@@ -67,7 +66,7 @@ async function selectAction(state: TaskState): Promise<ActionSelection> {
       json_format: "{ next_step: { action: <ACTION>, comment: <COMMENT> } }",
       meta,
     }).then(
-      ({ next_step }) => next_step as { action: string; comment?: string }
+      ({ next_step }) => next_step as { action: string; comment?: string },
     ),
     scoring({ context, meta }),
   ]);

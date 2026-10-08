@@ -30,7 +30,7 @@ async function knowledge({ agentId }: { agentId: string }) {
     }))
     .filter(
       ({ question, answer, text, content }) =>
-        question || answer || text || content
+        question || answer || text || content,
     );
 }
 
@@ -86,7 +86,7 @@ async function handoffTargets({
           targetBlueprintId: id,
           title,
         })),
-      }))
+      })),
   );
 }
 
@@ -105,7 +105,7 @@ async function taskContext({
   variables: Record<string, unknown>;
   isBlocking: boolean;
 }) {
-  const [knowledge_base, selected_blueprint, mcp_tools] = await Promise.all([
+  const [knowledge_base, blueprint, mcp_tools] = await Promise.all([
     knowledge({ agentId }),
     blueprintId ? blueprint({ blueprintId }) : null,
     mcpFn.tools({ agentId, teamId }, { includeMock: false }),
@@ -113,7 +113,7 @@ async function taskContext({
 
   return {
     knowledge_base,
-    selected_blueprint,
+    blueprint,
     ...(inheritedSteps?.length && { inherited_context_steps: inheritedSteps }),
     ...(Object.keys(variables).length && { session_variables: variables }),
     mcp_tools,

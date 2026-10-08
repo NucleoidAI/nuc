@@ -188,6 +188,9 @@
             "action": "ORDER:find_product",
             "description": "Search and retrieve the product details",
             "label": "Find Product",
+            "instructions": "Find the product the customer asked for. If no product matches, stop with PRODUCT_NOT_FOUND.",
+            "pseudocode": "product = Product.find(p => p.name == request.productName)\n\nif not product:\n    throw \"PRODUCT_NOT_FOUND\"",
+            "pseudocodeEnabled": true,
             "icon": "mdi:magnify"
           },
           "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
@@ -200,6 +203,9 @@
             "action": "PLATFORM:knowledge_lookup",
             "description": "Look up the agent's knowledge base to find the product's compliance certificate. This reflects live knowledge updates from the supervisor.",
             "label": "Check Certificate",
+            "instructions": "Look up the compliance certificate of the found product in the knowledge base. If there is none, stop with CERTIFICATE_NOT_FOUND.",
+            "pseudocode": "certificate = knowledge.find(k => k.product_id == product.id).certificate\n\nif not certificate:\n    throw \"CERTIFICATE_NOT_FOUND\"",
+            "pseudocodeEnabled": true,
             "icon": "mdi:book-search"
           },
           "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
@@ -224,6 +230,9 @@
             "action": "ORDER:create_po",
             "description": "Create a Purchase Order for the certified product; it returns total_amount, currency, total_weight_kg and the ship_from / ship_to postal codes used by the next steps",
             "label": "Create Purchase Order",
+            "instructions": "Create a purchase order only for a certified product.",
+            "pseudocode": "if not product.certificate:\n    throw \"PRODUCT_NOT_CERTIFIED\"\n\norder = PurchaseOrder(product)",
+            "pseudocodeEnabled": true,
             "icon": "mdi:file-document-plus"
           },
           "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
@@ -236,6 +245,9 @@
             "action": "STRIPE:create_payment_intent",
             "description": "Create a payment intent for the purchase order using its total_amount and currency, with the PO number in the description. Leave the customer field empty \u2014 this flow has no Stripe customer and an invented ID is rejected",
             "label": "Create Payment",
+            "instructions": "Create the payment intent from the purchase order's total_amount and currency, with the PO number in the description. Leave the customer empty.",
+            "pseudocode": "payment = PaymentIntent()\npayment.amount = order.total_amount\npayment.currency = order.currency\npayment.description = order.number\npayment.customer = null",
+            "pseudocodeEnabled": true,
             "icon": "mdi:credit-card-outline"
           },
           "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
@@ -249,6 +261,8 @@
             "force": true,
             "description": "Ask the customer to approve the payment before the card is charged, then wait for the decision from the session or the approval endpoint",
             "label": "Payment Approval",
+            "pseudocode": "approval = Approval()\napproval.question = \"Do you approve the payment of \" + order.total_amount + \" \" + order.currency + \" for \" + product.name + \" on purchase order \" + order.number + \"?\"",
+            "pseudocodeEnabled": true,
             "icon": "mdi:account-check",
             "instructions": "Ask the customer to approve the payment before the card is charged. Write the question from the live data: name the purchase order number, the product and the amount in major units with its currency."
           },
@@ -263,6 +277,9 @@
             "action": "STRIPE:confirm_payment_intent",
             "description": "Confirm the payment intent so the purchase order is paid before the goods are shipped",
             "label": "Confirm Payment",
+            "instructions": "Confirm the payment only after the customer approved it.",
+            "pseudocode": "if approval.approved:\n    payment.status = \"CONFIRMED\"",
+            "pseudocodeEnabled": true,
             "icon": "mdi:check-decagram"
           },
           "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
@@ -275,6 +292,9 @@
             "action": "FEDEX:create_shipment",
             "description": "Create the outbound shipment for the paid purchase order using the ship_from and ship_to postal codes and total_weight_kg, and return the tracking number",
             "label": "Create Shipment",
+            "instructions": "Ship only a paid purchase order, using its ship_from and ship_to postal codes and total_weight_kg.",
+            "pseudocode": "if payment.status != \"CONFIRMED\":\n    throw \"ORDER_NOT_PAID\"\n\nshipment = Shipment()\nshipment.from = order.ship_from\nshipment.to = order.ship_to\nshipment.weight = order.total_weight_kg",
+            "pseudocodeEnabled": true,
             "icon": "mdi:truck-delivery-outline"
           },
           "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
@@ -287,6 +307,9 @@
             "action": "GREY:send_email",
             "description": "Send email notification about the completed purchase order, including the payment confirmation and the shipment tracking number",
             "label": "Send Email",
+            "instructions": "Email the customer the purchase order number, the payment confirmation and the tracking number.",
+            "pseudocode": "email = Email()\nemail.subject = \"Purchase order \" + order.number + \" completed\"\nemail.body = \"Payment \" + payment.status + \", tracking number \" + shipment.trackingNumber",
+            "pseudocodeEnabled": true,
             "icon": "mdi:email"
           },
           "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
@@ -299,6 +322,9 @@
             "action": "STRIPE:cancel_payment_intent",
             "description": "Cancel the unconfirmed payment intent because the user declined the charge",
             "label": "Cancel Payment",
+            "instructions": "Cancel the payment intent when the customer declined the charge.",
+            "pseudocode": "if not approval.approved:\n    payment.status = \"CANCELLED\"",
+            "pseudocodeEnabled": true,
             "icon": "mdi:credit-card-off-outline"
           },
           "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
@@ -311,6 +337,9 @@
             "action": "PLATFORM:message_user",
             "description": "Tell the user the payment was cancelled and nothing was shipped; the purchase order stays unpaid",
             "label": "Notify Cancellation",
+            "instructions": "Tell the customer the payment was cancelled, nothing was shipped and the purchase order stays unpaid.",
+            "pseudocode": "if payment.status == \"CANCELLED\":\n    message = \"Payment for purchase order \" + order.number + \" was cancelled. Nothing was shipped.\"",
+            "pseudocodeEnabled": true,
             "icon": "mdi:bell-off"
           },
           "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],

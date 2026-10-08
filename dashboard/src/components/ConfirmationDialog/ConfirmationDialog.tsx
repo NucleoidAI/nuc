@@ -14,10 +14,11 @@ const ConfirmationDialog = ({ open, onClose, onConfirm, title, content }) => (
   <Dialog
     open={open}
     onClose={onClose}
+    type="xsmall"
     aria-labelledby="alert-dialog-title"
     aria-describedby="alert-dialog-description"
     slotProps={{
-      paper: { sx: { borderRadius: "10px" } },
+      paper: { sx: { borderRadius: 2, height: "auto" } },
     }}
   >
     <DialogTitle id="alert-dialog-title" sx={styles.dialogTitle}>
@@ -35,7 +36,7 @@ const ConfirmationDialog = ({ open, onClose, onConfirm, title, content }) => (
       <Button
         data-cy="confirm"
         onClick={onConfirm}
-        color={"secondary"}
+        color={"primary"}
         variant="contained"
       >
         Confirm

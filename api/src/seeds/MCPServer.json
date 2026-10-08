@@ -167,7 +167,7 @@
       "id": "chem",
       "mcpProviderId": "9ca39d6b-12d7-467c-adf2-1d5b30d158eb",
       "description": "Chemistry file format MCP server. Converts MOL blocks (V2000 or V3000) into SDF records, merging several molfiles into one document and attaching SDF data fields. Runs locally, no external API.",
-      "icon": "simple-icons:molecule"
+      "icon": "simple-icons:moleculer"
     }
   ]
 }

@@ -46,10 +46,13 @@ const SettingsDialog = ({
     <Dialog
       open={showSettings}
       onClose={() => setShowSettings(false)}
-      fullWidth
-      maxWidth="md"
+      type="small"
       sx={{
         zIndex: (theme) => theme.zIndex.modal + 3,
+        "& .MuiDialog-paper": {
+          height: "auto",
+          width: "auto",
+        },
       }}
     >
       <DialogTitle sx={{ pb: 0 }}>

@@ -22,7 +22,14 @@ import {
 import { Flow, FlowMiniMap } from "@canmingir/link/platform/components";
 
 import NodeConnectionOverlay, { type DragState } from "./NodeConnectionOverlay";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+type FlowHandle = {
+  getZoom: () => number;
+  getOffset: () => { x: number; y: number };
+  getContainerEl: () => HTMLElement | null;
+  setCenter: (x: number, y: number, options?: { zoom?: number }) => void;
+};
 
 export default function BlueprintFlow({
   graphData,
@@ -54,10 +61,44 @@ export default function BlueprintFlow({
   onOverrideParameter,
   onToggleForceNode,
   liteMode = false,
+  selectedNodeId,
 }: BlueprintFlowProps) {
   const flowContainerRef = useRef<HTMLDivElement>(null);
+  const flowRef = useRef<FlowHandle>(null);
   const [dragging, setDragging] = useState<DragState | null>(null);
   const allIntegrations = useAllIntegrations();
+
+  useEffect(() => {
+    if (!selectedNodeId) return;
+
+    const frame = requestAnimationFrame(() => {
+      const handle = flowRef.current;
+      const containerEl = handle?.getContainerEl();
+      if (!handle || !containerEl) return;
+
+      const nodeEl = containerEl.querySelector(
+        `[data-node-id="${selectedNodeId}"]`
+      );
+      if (!nodeEl) return;
+
+      const nodeRect = nodeEl.getBoundingClientRect();
+      const containerRect = containerEl.getBoundingClientRect();
+      const zoom = handle.getZoom();
+      const offset = handle.getOffset();
+
+      const originX = containerRect.left + containerRect.width / 2;
+      const originY = containerRect.top + containerRect.height / 2;
+      const nodeCenterX = nodeRect.left + nodeRect.width / 2;
+      const nodeCenterY = nodeRect.top + nodeRect.height / 2;
+
+      const contentX = (nodeCenterX - originX - offset.x) / zoom;
+      const contentY = (nodeCenterY - originY - offset.y) / zoom;
+
+      handle.setCenter(contentX, contentY, { zoom });
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [selectedNodeId, enrichedGraphData]);
 
   const nodeFields: Record<string, NodeFields> = useMemo(() => {
     if (!showConnections || !graphData?.nodes) return {};
@@ -218,10 +259,8 @@ export default function BlueprintFlow({
 
   const miniMapStyle = useCallback(
     (node: { nodeType?: string; properties?: { action?: string } }) => {
-      console.log("node", node);
       const isApproval =
-        node?.nodeType === "APPROVAL" ||
-        node?.properties?.action === "PLATFORM:two_factor";
+        node?.nodeType === "APPROVAL" || node?.nodeType === "DECISION";
       if (!isApproval) return {};
       return {
         bg: APPROVAL_BG_TO,
@@ -251,6 +290,7 @@ export default function BlueprintFlow({
         )}
 
       <Flow
+        ref={flowRef}
         data={enrichedGraphData}
         plugin={blueprintFlowPlugin}
         editable={!readOnly}

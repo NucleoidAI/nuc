@@ -19,14 +19,16 @@ import {
 import React, { useState } from "react";
 
 const FORCE_COLOR = "#b8860b";
-const SWITCH_BORDER_COLOR = "linear-gradient(135deg, #7c5cff66, #00c2ff59)";
-const SWITCH_BG_FROM = "rgba(124, 92, 255, 0.20)";
-const SWITCH_BG_TO = "rgba(0, 194, 255, 0.26)";
-export const APPROVAL_BORDER_COLOR =
-  "linear-gradient(135deg, #fde04766, #ca8a0459)";
-export const APPROVAL_BORDER_SOLID = "#ca8a04";
-export const APPROVAL_BG_FROM = "rgba(199, 176, 59, 0.4)";
-export const APPROVAL_BG_TO = "rgba(202, 138, 4, 0.50)";
+const DECISION_BORDER_COLOR = "linear-gradient(135deg, #4A4F54, #2E3136)";
+const DECISION_BG_FROM = "#4A4F54";
+const DECISION_BG_TO = "#2E3136";
+const SWITCH_BORDER_COLOR = DECISION_BORDER_COLOR;
+const SWITCH_BG_FROM = DECISION_BG_FROM;
+const SWITCH_BG_TO = DECISION_BG_TO;
+export const APPROVAL_BORDER_COLOR = DECISION_BORDER_COLOR;
+export const APPROVAL_BORDER_SOLID = "#616161";
+export const APPROVAL_BG_FROM = DECISION_BG_FROM;
+export const APPROVAL_BG_TO = DECISION_BG_TO;
 const API_BORDER_COLOR = "linear-gradient(135deg, #22c55e66, #0ea5e959)";
 const API_BG_FROM = "rgba(34, 197, 94, 0.18)";
 const API_BG_TO = "rgba(14, 165, 233, 0.24)";
@@ -127,156 +129,194 @@ const HighlightOverlay = styled("div")<{
   isused?: string;
   islastused?: string;
   isfailed?: string;
-}>(({ changetype, haserror, isused, islastused, isfailed, theme }) => {
-  const isDark = theme.palette.mode === "dark";
+  isselected?: string;
+}>(
+  ({
+    changetype,
+    haserror,
+    isused,
+    islastused,
+    isfailed,
+    isselected,
+    theme,
+  }) => {
+    const isDark = theme.palette.mode === "dark";
 
-  if (isfailed === "true") {
-    const failedColor = {
-      border: isDark ? "#ef5350" : "#f44336",
-      glow: "244, 67, 54",
-      bg: "244, 67, 54",
-    };
+    if (isselected === "true") {
+      const selectedColor = {
+        border: isDark ? "#abaaa8" : "#abaaa8",
+        glow: "33, 150, 243",
+        bg: "33, 150, 243",
+      };
 
-    return {
-      position: "absolute",
-      top: "-2px",
-      left: "-2px",
-      right: "-2px",
-      bottom: "-2px",
-      border: `3px solid ${failedColor.border}`,
-      borderRadius: "18px",
-      pointerEvents: "none",
-      zIndex: 5,
-      background: `linear-gradient(135deg, rgba(${failedColor.bg}, 0.12) 0%, rgba(${failedColor.bg}, 0.04) 100%)`,
-      boxShadow: `
+      return {
+        position: "absolute",
+        top: "-2px",
+        left: "-2px",
+        right: "-2px",
+        bottom: "-2px",
+        border: `3px solid ${selectedColor.border}`,
+        borderRadius: "18px",
+        pointerEvents: "none",
+        zIndex: 5,
+        background: `linear-gradient(135deg, rgba(${selectedColor.bg}, 0.12) 0%, rgba(${selectedColor.bg}, 0.04) 100%)`,
+        boxShadow: `
+          0 0 0 1px rgba(${selectedColor.glow}, 0.15),
+          0 0 20px rgba(${selectedColor.glow}, 0.35),
+          0 0 40px rgba(${selectedColor.glow}, 0.2),
+          inset 0 0 30px rgba(${selectedColor.glow}, 0.1)
+        `,
+      };
+    }
+
+    if (isfailed === "true") {
+      const failedColor = {
+        border: isDark ? "#ef5350" : "#f44336",
+        glow: "244, 67, 54",
+        bg: "244, 67, 54",
+      };
+
+      return {
+        position: "absolute",
+        top: "-2px",
+        left: "-2px",
+        right: "-2px",
+        bottom: "-2px",
+        border: `3px solid ${failedColor.border}`,
+        borderRadius: "18px",
+        pointerEvents: "none",
+        zIndex: 5,
+        background: `linear-gradient(135deg, rgba(${failedColor.bg}, 0.12) 0%, rgba(${failedColor.bg}, 0.04) 100%)`,
+        boxShadow: `
           0 0 0 1px rgba(${failedColor.glow}, 0.15),
           0 0 20px rgba(${failedColor.glow}, 0.35),
           0 0 40px rgba(${failedColor.glow}, 0.2),
           inset 0 0 30px rgba(${failedColor.glow}, 0.1)
         `,
-    };
-  }
+      };
+    }
 
-  if (islastused === "true") {
-    const warningColor = {
-      border: isDark ? "#ffa726" : "#ff9800",
-      glow: "255, 152, 0",
-      bg: "255, 152, 0",
-    };
+    if (islastused === "true") {
+      const warningColor = {
+        border: isDark ? "#ffa726" : "#ff9800",
+        glow: "255, 152, 0",
+        bg: "255, 152, 0",
+      };
 
-    return {
-      position: "absolute",
-      top: "-2px",
-      left: "-2px",
-      right: "-2px",
-      bottom: "-2px",
-      border: `3px solid ${warningColor.border}`,
-      borderRadius: "18px",
-      pointerEvents: "none",
-      zIndex: 5,
-      background: `linear-gradient(135deg, rgba(${warningColor.bg}, 0.12) 0%, rgba(${warningColor.bg}, 0.04) 100%)`,
-      boxShadow: `
+      return {
+        position: "absolute",
+        top: "-2px",
+        left: "-2px",
+        right: "-2px",
+        bottom: "-2px",
+        border: `3px solid ${warningColor.border}`,
+        borderRadius: "18px",
+        pointerEvents: "none",
+        zIndex: 5,
+        background: `linear-gradient(135deg, rgba(${warningColor.bg}, 0.12) 0%, rgba(${warningColor.bg}, 0.04) 100%)`,
+        boxShadow: `
           0 0 0 1px rgba(${warningColor.glow}, 0.15),
           0 0 20px rgba(${warningColor.glow}, 0.35),
           0 0 40px rgba(${warningColor.glow}, 0.2),
           inset 0 0 30px rgba(${warningColor.glow}, 0.1)
         `,
-    };
-  }
+      };
+    }
 
-  if (isused === "true") {
-    const usedColor = {
-      border: isDark ? "#66bb6a" : "#4caf50",
-      glow: "76, 175, 80",
-      bg: "76, 175, 80",
-    };
+    if (isused === "true") {
+      const usedColor = {
+        border: isDark ? "#66bb6a" : "#4caf50",
+        glow: "76, 175, 80",
+        bg: "76, 175, 80",
+      };
 
-    return {
-      position: "absolute",
-      top: "-2px",
-      left: "-2px",
-      right: "-2px",
-      bottom: "-2px",
-      border: `2px solid ${usedColor.border}`,
-      borderRadius: "18px",
-      pointerEvents: "none",
-      zIndex: 5,
-      background: `linear-gradient(135deg, rgba(${usedColor.bg}, 0.08) 0%, rgba(${usedColor.bg}, 0.04) 100%)`,
-      boxShadow: `
+      return {
+        position: "absolute",
+        top: "-2px",
+        left: "-2px",
+        right: "-2px",
+        bottom: "-2px",
+        border: `2px solid ${usedColor.border}`,
+        borderRadius: "18px",
+        pointerEvents: "none",
+        zIndex: 5,
+        background: `linear-gradient(135deg, rgba(${usedColor.bg}, 0.08) 0%, rgba(${usedColor.bg}, 0.04) 100%)`,
+        boxShadow: `
           0 0 0 1px rgba(${usedColor.glow}, 0.1),
           0 0 15px rgba(${usedColor.glow}, 0.2),
           inset 0 0 20px rgba(${usedColor.glow}, 0.06)
         `,
-    };
-  }
+      };
+    }
 
-  if (haserror === "true") {
-    const errorColor = {
-      border: isDark ? "#ef5350" : "#f44336",
-      glow: "244, 67, 54",
-      bg: "244, 67, 54",
-    };
+    if (haserror === "true") {
+      const errorColor = {
+        border: isDark ? "#ef5350" : "#f44336",
+        glow: "244, 67, 54",
+        bg: "244, 67, 54",
+      };
 
-    return {
-      position: "absolute",
-      top: "-2px",
-      left: "-2px",
-      right: "-2px",
-      bottom: "-2px",
-      border: `3px solid ${errorColor.border}`,
-      borderRadius: "18px",
-      pointerEvents: "none",
-      zIndex: 5,
-      background: `linear-gradient(135deg, rgba(${errorColor.bg}, 0.12) 0%, rgba(${errorColor.bg}, 0.04) 100%)`,
-      boxShadow: `
+      return {
+        position: "absolute",
+        top: "-2px",
+        left: "-2px",
+        right: "-2px",
+        bottom: "-2px",
+        border: `3px solid ${errorColor.border}`,
+        borderRadius: "18px",
+        pointerEvents: "none",
+        zIndex: 5,
+        background: `linear-gradient(135deg, rgba(${errorColor.bg}, 0.12) 0%, rgba(${errorColor.bg}, 0.04) 100%)`,
+        boxShadow: `
           0 0 0 1px rgba(${errorColor.glow}, 0.15),
           0 0 20px rgba(${errorColor.glow}, 0.35),
           0 0 40px rgba(${errorColor.glow}, 0.2),
           inset 0 0 30px rgba(${errorColor.glow}, 0.1)
         `,
+      };
+    }
+
+    const colors = {
+      added: {
+        border: isDark ? "#66bb6a" : "#4caf50",
+        glow: isDark ? "76, 175, 80" : "76, 175, 80",
+        bg: isDark ? "76, 175, 80" : "76, 175, 80",
+      },
+      modified: {
+        border: isDark ? "#ffa726" : "#ff9800",
+        glow: isDark ? "255, 167, 38" : "255, 152, 0",
+        bg: isDark ? "255, 167, 38" : "255, 152, 0",
+      },
+      removed: {
+        border: isDark ? "#ef5350" : "#f44336",
+        glow: isDark ? "239, 83, 80" : "244, 67, 54",
+        bg: isDark ? "239, 83, 80" : "244, 67, 54",
+      },
     };
-  }
 
-  const colors = {
-    added: {
-      border: isDark ? "#66bb6a" : "#4caf50",
-      glow: isDark ? "76, 175, 80" : "76, 175, 80",
-      bg: isDark ? "76, 175, 80" : "76, 175, 80",
-    },
-    modified: {
-      border: isDark ? "#ffa726" : "#ff9800",
-      glow: isDark ? "255, 167, 38" : "255, 152, 0",
-      bg: isDark ? "255, 167, 38" : "255, 152, 0",
-    },
-    removed: {
-      border: isDark ? "#ef5350" : "#f44336",
-      glow: isDark ? "239, 83, 80" : "244, 67, 54",
-      bg: isDark ? "239, 83, 80" : "244, 67, 54",
-    },
-  };
+    const config = colors[changetype];
+    if (!config) return { display: "none" };
 
-  const config = colors[changetype];
-  if (!config) return { display: "none" };
-
-  return {
-    position: "absolute",
-    top: "-2px",
-    left: "-2px",
-    right: "-2px",
-    bottom: "-2px",
-    border: `3px solid ${config.border}`,
-    borderRadius: "18px",
-    pointerEvents: "none",
-    zIndex: 5,
-    background: `linear-gradient(135deg, rgba(${config.bg}, 0.08) 0%, rgba(${config.bg}, 0.02) 100%)`,
-    boxShadow: `
+    return {
+      position: "absolute",
+      top: "-2px",
+      left: "-2px",
+      right: "-2px",
+      bottom: "-2px",
+      border: `3px solid ${config.border}`,
+      borderRadius: "18px",
+      pointerEvents: "none",
+      zIndex: 5,
+      background: `linear-gradient(135deg, rgba(${config.bg}, 0.08) 0%, rgba(${config.bg}, 0.02) 100%)`,
+      boxShadow: `
         0 0 0 1px rgba(${config.glow}, 0.1),
         0 0 20px rgba(${config.glow}, 0.25),
         0 0 40px rgba(${config.glow}, 0.15),
         inset 0 0 30px rgba(${config.glow}, 0.08)
       `,
-  };
-});
+    };
+  }
+);
 
 const ChangeBadge = styled("div")<{ changetype?: string }>(
   ({ changetype, theme }) => {
@@ -624,10 +664,15 @@ const ForceBadge = styled("div")(({ theme }) => ({
 }));
 
 const NodeWrapper = styled("div", {
-  shouldForwardProp: (prop) => prop !== "isApproval",
-})<{ isApproval?: boolean }>(({ isApproval }) => {
-  const stepColor = isApproval ? "#6b5709" : "#174f77";
-  const steppedShadow = `
+  shouldForwardProp: (prop) => prop !== "isApproval" && prop !== "isDecision",
+})<{ isApproval?: boolean; isDecision?: boolean }>(
+  ({ isApproval, isDecision }) => {
+    const stepColor = isDecision
+      ? "#4a4a4a"
+      : isApproval
+      ? "#6b5709"
+      : "#174f77";
+    const steppedShadow = `
     1px 1px 0 ${stepColor},
     2px 2px 0 ${stepColor},
     3px 3px 0 ${stepColor},
@@ -639,57 +684,53 @@ const NodeWrapper = styled("div", {
     20px 20px 40px rgba(0, 0, 0, 0.5)
   `;
 
-  return {
-    position: "relative",
-    width: "100%",
-    height: "100%",
-    borderRadius: "16px",
-    transformStyle: "preserve-3d",
-    transform: "perspective(1500px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)",
-    boxShadow: steppedShadow,
-    transition:
-      "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, filter 0.25s ease",
-    "&:hover": {
+    return {
+      position: "relative",
+      width: "100%",
+      height: "100%",
+      borderRadius: "16px",
+      transformStyle: "preserve-3d",
       transform:
-        "perspective(1500px) rotateX(0deg) rotateY(-10deg) rotateZ(0deg)",
-      filter: "brightness(1.070)",
+        "perspective(1500px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)",
       boxShadow: steppedShadow,
-    },
-  };
-});
+      transition:
+        "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, filter 0.25s ease",
+      "&:hover": {
+        transform:
+          "perspective(1500px) rotateX(0deg) rotateY(-10deg) rotateZ(0deg)",
+        filter: "brightness(1.070)",
+        boxShadow: steppedShadow,
+      },
+    };
+  }
+);
 
 export const blueprintFlowPlugin = {
   id: "blueprintChart",
 
   style: ({ node, style }) => {
     const styleTokens = style || {};
-    const isApproval =
-      node?.nodeType === "APPROVAL" || node?.action === "PLATFORM:two_factor";
+    const isApproval = node?.nodeType === "APPROVAL";
     const isSwitch = node?.nodeType === "SWITCH";
     const isApi = isApiNode(node);
+    const isDecision = isApproval || node?.connectorType === "decision";
 
-    const connectionsGap = styleTokens.showConnections
-      ? fieldsPanelHeight(
-          styleTokens.nodeFields as Record<string, NodeFields> | undefined
-        )
-      : 0;
-
-    const bgFrom = isApproval
-      ? APPROVAL_BG_FROM
+    const bgFrom = isDecision
+      ? DECISION_BG_FROM
       : isSwitch
       ? SWITCH_BG_FROM
       : isApi
       ? API_BG_FROM
       : undefined;
-    const bgTo = isApproval
-      ? APPROVAL_BG_TO
+    const bgTo = isDecision
+      ? DECISION_BG_TO
       : isSwitch
       ? SWITCH_BG_TO
       : isApi
       ? API_BG_TO
       : undefined;
-    const borderColor = isApproval
-      ? APPROVAL_BORDER_COLOR
+    const borderColor = isDecision
+      ? DECISION_BORDER_COLOR
       : isSwitch
       ? SWITCH_BORDER_COLOR
       : isApi
@@ -697,8 +738,8 @@ export const blueprintFlowPlugin = {
       : "linear-gradient(135deg, #c684ff33, #078dee4d)";
     const borderRadius = 16;
     const shadowLevel = 1;
-    const minWidth = 420;
-    const maxWidth = 420;
+    const minWidth = isDecision || isSwitch ? 315 : 420;
+    const maxWidth = isDecision || isSwitch ? 315 : 420;
     const minHeight = 210;
     const maxHeight = 210;
     const shape = 16;
@@ -717,19 +758,16 @@ export const blueprintFlowPlugin = {
       maxHeight,
       shape,
       borderRadius,
-      gap: (styleTokens.gap ?? 6) + connectionsGap,
+      gap: styleTokens.gap ?? 6,
       levelGap: styleTokens.levelGap ?? 15,
       startGap,
       endGap,
-      nodeHeight:
-        maxHeight +
-        (styleTokens.showConnections
-          ? connectionsPanelPixelHeight(
-              (
-                styleTokens.nodeFields as Record<string, NodeFields> | undefined
-              )?.[node?.id]
-            )
-          : 0),
+      nodeHeight: maxHeight,
+      layoutExtraSpacing: styleTokens.showConnections
+        ? maxConnectionsPanelPixelHeight(
+            styleTokens.nodeFields as Record<string, NodeFields> | undefined
+          )
+        : 0,
     };
   },
 
@@ -805,6 +843,7 @@ type FlowGraphNode = import("./helper").DefinitionGraphNode & {
   isUsed?: boolean;
   isLastUsed?: boolean;
   isFailed?: boolean;
+  isSelected?: boolean;
   [key: string]: unknown;
 };
 
@@ -818,29 +857,36 @@ export type NodeFields = {
   apiFields?: ApiField[];
 };
 
-const FIELDS_PANEL_ROW_HEIGHT = 2;
+const FIELDS_PANEL_ROW_HEIGHT = 21;
 const FIELDS_PANEL_ROW_GAP = 2;
+const FIELDS_PANEL_CHROME = 20 + 16 + 2;
 
 function connectionsPanelPixelHeight(fields?: NodeFields) {
   if (!fields) return 0;
   const rows = Math.max(fields.inputs.length, fields.outputs.length);
   if (rows === 0) return 0;
   return (
-    (rows * FIELDS_PANEL_ROW_HEIGHT + (rows - 1) * FIELDS_PANEL_ROW_GAP) * 8
+    rows * FIELDS_PANEL_ROW_HEIGHT +
+    (rows - 1) * FIELDS_PANEL_ROW_GAP +
+    FIELDS_PANEL_CHROME
   );
 }
 
-function fieldsPanelHeight(nodeFields?: Record<string, NodeFields>) {
-  const rows = Math.max(
+function maxConnectionsPanelPixelHeight(
+  nodeFields?: Record<string, NodeFields>
+) {
+  return Math.max(
     0,
-    ...Object.values(nodeFields ?? {}).map((f) =>
-      Math.max(f.inputs.length, f.outputs.length)
-    )
+    ...Object.values(nodeFields ?? {}).map(connectionsPanelPixelHeight)
   );
+}
 
-  if (rows === 0) return 0;
+const DECISION_DESCRIPTION_MAX_LENGTH = 60;
 
-  return rows * FIELDS_PANEL_ROW_HEIGHT + (rows - 1) * FIELDS_PANEL_ROW_GAP;
+function truncateDescription(description?: string) {
+  if (!description) return description;
+  if (description.length <= DECISION_DESCRIPTION_MAX_LENGTH) return description;
+  return `${description.slice(0, DECISION_DESCRIPTION_MAX_LENGTH).trimEnd()}…`;
 }
 
 function NodeHandles({
@@ -988,6 +1034,16 @@ function FlowNodeRenderer({
   const isForceNode = Boolean(
     (node.raw?.properties as { force?: boolean } | undefined)?.force
   );
+  const isDecisionNode =
+    node.nodeType === "APPROVAL" ||
+    node.nodeType === "SWITCH" ||
+    node.connectorType === "decision";
+  // Decision/switch cards render at a square, compact size — truncate the
+  // description so the icon, label and action still fit without growing
+  // the card beyond its normal footprint.
+  const infoNode = isDecisionNode
+    ? { ...node, description: truncateDescription(node.description) }
+    : node;
   const isReadOnly = !onAdd && !onEdit && !onSwapBranch && !onDelete;
   const [contextMenu, setContextMenu] = useState<{
     mouseX: number;
@@ -999,6 +1055,7 @@ function FlowNodeRenderer({
   const isUsed = node.isUsed;
   const isLastUsed = node.isLastUsed;
   const isFailed = node.isFailed;
+  const isSelected = node.isSelected;
 
   const handleContextMenu = (e: React.MouseEvent) => {
     if (isReadOnly) return;
@@ -1038,6 +1095,7 @@ function FlowNodeRenderer({
   return (
     <NodeWrapper
       isApproval={node.nodeType === "APPROVAL"}
+      isDecision={isDecisionNode}
       title={isForceNode ? "Force node: action is guaranteed" : undefined}
       onContextMenu={handleContextMenu}
       onMouseDownCapture={handleMouseDownCapture}
@@ -1075,6 +1133,7 @@ function FlowNodeRenderer({
         isused={isUsed ? "true" : "false"}
         islastused={isLastUsed ? "true" : "false"}
         isfailed={isFailed ? "true" : "false"}
+        isselected={isSelected ? "true" : "false"}
       />
       {hasError ? (
         <>
@@ -1105,7 +1164,7 @@ function FlowNodeRenderer({
           </>
         )
       )}
-      <InfoNode node={node} nodeStyle={nodeStyle}>
+      <InfoNode node={infoNode} nodeStyle={nodeStyle}>
         {!isReadOnly && (
           <>
             {!isLocked && (

@@ -1,22 +1,46 @@
-import { Icon } from "@iconify/react";
+import DiagramNodeCard from "./DiagramNodeCard";
 
-import { Box, Card, Container, Typography, useTheme } from "@mui/material";
+import { Box, Container, Typography, useTheme } from "@mui/material";
 import React, { useMemo } from "react";
 
 const DEFAULT_BLUEPRINT_ICON =
   "healthicons:crisis-response-center-person-outline";
 
-function ChannelDiagram(props) {
+function ChannelDiagram(props: {
+  channels?: {
+    id: string;
+    type?: string;
+    name?: string;
+    label?: string;
+    code?: string;
+    icon?: string;
+  }[];
+  Blueprints?: { id: string; title?: string; icon?: string }[];
+  connections?: { left: string; right: string }[];
+  colorMap: Record<string, string>;
+  nodeWidth?: number;
+  nodeHeight?: number;
+  leftX?: number;
+  horizontalGap?: number;
+  verticalGap?: number;
+  minHeight?: number | string;
+  containerProps?: React.ComponentProps<typeof Container>;
+  showRightIcons?: boolean;
+  showLeftIcons?: boolean;
+  blueprintIcon?: string;
+  renderChannelNode?: (node: Record<string, unknown>) => React.ReactNode;
+  renderBlueprintNode?: (node: Record<string, unknown>) => React.ReactNode;
+}) {
   const {
     channels,
     Blueprints,
     connections,
-    nodeWidth = 260,
-    nodeHeight = 180,
+    nodeWidth = 300,
+    nodeHeight = 120,
     leftX = 0,
     horizontalGap = 500,
-    initialTop = 20,
     verticalGap = 20,
+    minHeight = "55vh",
     colorMap,
     containerProps,
     showRightIcons = true,
@@ -28,49 +52,66 @@ function ChannelDiagram(props) {
 
   const theme = useTheme();
 
+  const leftChannels = useMemo(
+    () =>
+      (channels || []).filter((node) =>
+        (connections || []).some((c) => c.left === node.id)
+      ),
+    [channels, connections]
+  );
+
+  const rightBlueprints = useMemo(
+    () =>
+      (Blueprints || []).filter((resp) =>
+        (connections || []).some((c) => c.right === resp.id)
+      ),
+    [Blueprints, connections]
+  );
+
+  const maxCount = Math.max(leftChannels.length, rightBlueprints.length);
+  const containerHeight = Math.max(
+    maxCount * nodeHeight + Math.max(maxCount - 1, 0) * verticalGap,
+    0
+  );
+
+  const columnOffset = (count: number) =>
+    ((maxCount - count) * (nodeHeight + verticalGap)) / 2;
+
   const positionsLeft = useMemo(
     () =>
-      (channels || []).map((node, idx) => ({
+      leftChannels.map((node, idx) => ({
         ...node,
         x: leftX,
-        y: initialTop + idx * (nodeHeight + verticalGap),
+        y: columnOffset(leftChannels.length) + idx * (nodeHeight + verticalGap),
       })),
-    [channels, leftX, initialTop, nodeHeight, verticalGap]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [leftChannels, leftX, nodeHeight, verticalGap, maxCount]
   );
 
   const rightNodes = useMemo(
     () =>
-      (Blueprints || []).map((resp, idx) => ({
+      rightBlueprints.map((resp, idx) => ({
         ...resp,
         id: resp.id,
         icon: resp.icon || blueprintIcon,
         x: leftX + horizontalGap,
-        y: initialTop + idx * (nodeHeight + verticalGap),
+        y:
+          columnOffset(rightBlueprints.length) +
+          idx * (nodeHeight + verticalGap),
       })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
-      Blueprints,
+      rightBlueprints,
       leftX,
       horizontalGap,
-      initialTop,
       nodeHeight,
       verticalGap,
+      maxCount,
       blueprintIcon,
     ]
   );
 
   const isEmpty = !connections || connections.length === 0;
-  const maxCount = Math.max(positionsLeft.length, rightNodes.length);
-  const containerHeight = initialTop + maxCount * (nodeHeight + verticalGap);
-
-  const internalColorMap = useMemo(
-    () => ({
-      whatsapp: theme.palette.success.main,
-      slack: theme.palette.info.main,
-      email: theme.palette.primary.main,
-      ...colorMap,
-    }),
-    [theme, colorMap]
-  );
 
   const renderEdges = () =>
     (connections || []).map(({ left, right }) => {
@@ -93,7 +134,7 @@ function ChannelDiagram(props) {
         x2 - dx
       },${y2} ${x2},${y2}`;
       const strokeColor =
-        internalColorMap[leftNode.type] || theme.palette.text.secondary;
+        colorMap[leftNode.type] || theme.palette.text.secondary;
       return (
         <path
           key={`${left}-${right}`}
@@ -107,133 +148,97 @@ function ChannelDiagram(props) {
     });
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4, mb: 4 }} {...containerProps}>
+    <Container maxWidth="md" sx={{ height: "100%" }} {...containerProps}>
       <Box
-        position="relative"
-        width={isEmpty ? "100%" : leftX + horizontalGap + nodeWidth}
-        height={isEmpty ? "60vh" : containerHeight}
-        mx="auto"
+        minHeight={minHeight}
+        height="100%"
         display="flex"
-        alignItems="center"
+        alignItems="flex-start"
         justifyContent="center"
       >
-        {isEmpty ? (
-          <Typography variant="h6" color="textSecondary" textAlign="center">
-            No channel connections available
-          </Typography>
-        ) : (
-          <>
-            {positionsLeft
-              .filter((node) =>
-                (connections || []).some((c) => c.left === node.id)
-              )
-              .map((node) =>
-                renderChannelNode ? (
-                  renderChannelNode(node)
-                ) : (
-                  <Card
-                    key={node.id}
-                    sx={{
-                      position: "absolute",
-                      width: nodeWidth,
-                      height: nodeHeight,
-                      top: node.y,
-                      left: node.x,
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      boxShadow: 3,
-                      borderRadius: 2,
-                      bgcolor: theme.palette.background.paper,
-                    }}
-                  >
-                    {showLeftIcons && (
-                      <Icon icon={node.icon} width="48" height="48" />
-                    )}
-                    <Typography
-                      variant="subtitle2"
-                      sx={{ mt: 1, textAlign: "center" }}
-                    >
-                      {node.label}
-                    </Typography>
-                  </Card>
-                )
-              )}
+        <Box
+          position="relative"
+          width={isEmpty ? "100%" : leftX + horizontalGap + nodeWidth}
+          height={isEmpty ? "auto" : containerHeight}
+          flexShrink={0}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          sx={{ my: "auto" }}
+        >
+          {isEmpty ? (
+            <Typography variant="h6" color="textSecondary" textAlign="center">
+              No communication connections available
+            </Typography>
+          ) : (
+            <>
+              {positionsLeft.map((node) => {
+                if (renderChannelNode) return renderChannelNode(node);
 
-            {rightNodes
-              .filter((node) =>
-                (connections || []).some((c) => c.right === node.id)
-              )
-              .map((node) =>
-                renderBlueprintNode ? (
-                  renderBlueprintNode(node)
-                ) : (
-                  <Card
+                return (
+                  <DiagramNodeCard
                     key={node.id}
-                    sx={{
-                      position: "absolute",
-                      width: nodeWidth,
-                      height: nodeHeight,
-                      top: node.y,
-                      left: node.x,
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      boxShadow: 3,
-                      borderRadius: 2,
-                      bgcolor: theme.palette.background.paper,
-                    }}
-                  >
-                    {showRightIcons && (
-                      <Icon icon={node.icon} width="36" height="36" />
-                    )}
-                    <Typography
-                      variant="subtitle2"
-                      sx={{ mt: 1, textAlign: "center" }}
-                    >
-                      {node.title}
-                    </Typography>
-                  </Card>
-                )
-              )}
+                    node={node}
+                    width={nodeWidth}
+                    height={nodeHeight}
+                    title={node.name || node.label}
+                    subtitle={node.code || node.type}
+                    showIcon={showLeftIcons}
+                  />
+                );
+              })}
 
-            <svg
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                pointerEvents: "none",
-              }}
-            >
-              <defs>
-                {positionsLeft.map((node) => (
-                  <marker
+              {rightNodes.map((node) => {
+                if (renderBlueprintNode) return renderBlueprintNode(node);
+
+                return (
+                  <DiagramNodeCard
                     key={node.id}
-                    id={`arrow-${node.id}`}
-                    markerWidth="6"
-                    markerHeight="6"
-                    refX="4.5"
-                    refY="3"
-                    orient="auto"
-                  >
-                    <path
-                      d="M0,0 L0,6 L6,3 Z"
-                      fill={
-                        internalColorMap[node.type] ||
-                        theme.palette.text.secondary
-                      }
-                    />
-                  </marker>
-                ))}
-              </defs>
-              {renderEdges()}
-            </svg>
-          </>
-        )}
+                    node={node}
+                    width={nodeWidth}
+                    height={nodeHeight}
+                    title={node.title}
+                    subtitle="Blueprint"
+                    showIcon={showRightIcons}
+                  />
+                );
+              })}
+
+              <svg
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  pointerEvents: "none",
+                }}
+              >
+                <defs>
+                  {positionsLeft.map((node) => (
+                    <marker
+                      key={node.id}
+                      id={`arrow-${node.id}`}
+                      markerWidth="6"
+                      markerHeight="6"
+                      refX="4.5"
+                      refY="3"
+                      orient="auto"
+                    >
+                      <path
+                        d="M0,0 L0,6 L6,3 Z"
+                        fill={
+                          colorMap[node.type] || theme.palette.text.secondary
+                        }
+                      />
+                    </marker>
+                  ))}
+                </defs>
+                {renderEdges()}
+              </svg>
+            </>
+          )}
+        </Box>
       </Box>
     </Container>
   );

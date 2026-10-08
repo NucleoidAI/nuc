@@ -1,24 +1,13 @@
 import type { BlueprintContext } from "../../hooks/useBlueprint";
 import BlueprintContextDetails from "../../components/BlueprintContextDetails/BlueprintContextDetails";
+import { DrawerLayout } from "@canmingir/link/layouts";
 import type { Theme } from "@mui/material/styles";
 import useAgent from "../../hooks/useAgent";
 import useBlueprint from "../../hooks/useBlueprint";
 import useChatSessions from "../../hooks/useChatSessions";
 import useSession from "../../hooks/useSession";
-
-import {
-  Box,
-  Drawer,
-  IconButton,
-  Portal,
-  ThemeProvider,
-  Typography,
-} from "@mui/material";
-import {
-  DevTool,
-  Iconify,
-  SidebarChat,
-} from "@canmingir/link/platform/components";
+import { Box, Portal, ThemeProvider, Typography } from "@mui/material";
+import { DevTool, SidebarChat } from "@canmingir/link/platform/components";
 import { publish, useEvent } from "@nucleoidai/react-event";
 import { useCallback, useEffect, useState } from "react";
 
@@ -142,6 +131,11 @@ const AgentDevToolWidget = ({
     sendMessage(content);
   };
 
+  const handleOutputClick = useCallback((nodeId: string) => {
+    publish("BLUEPRINT_HIGHLIGHT_NODE", { nodeId });
+    setContextOpen(false);
+  }, []);
+
   return (
     <Portal>
       <DevTool
@@ -226,38 +220,31 @@ const AgentDevToolWidget = ({
           </ThemeProvider>
         )}
       </DevTool>
-      <Drawer
+      <DrawerLayout
         anchor="right"
+        mode="narrow"
         open={Boolean(context) && contextOpen}
         onClose={() => setContextOpen(false)}
         sx={{ zIndex: (theme) => theme.zIndex.modal + 4 }}
         slotProps={{ paper: { sx: { width: 420, p: 2 } } }}
+        title={
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            sx={{ pr: 6 }}
+          >
+            <Typography variant="h6">Context</Typography>
+          </Box>
+        }
       >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            mb: 0.5,
-          }}
-        >
-          <Typography variant="subtitle1">Contexts</Typography>
-          <IconButton size="small" onClick={() => setContextOpen(false)}>
-            <Iconify
-              icon="solar:close-circle-bold"
-              sx={{ width: 16, height: 16 }}
-            />
-          </IconButton>
+        <Box>
+          <BlueprintContextDetails
+            context={context}
+            onOutputClick={handleOutputClick}
+          />
         </Box>
-
-        <Typography variant="caption" color="text.secondary">
-          What this flow was built from
-        </Typography>
-
-        <Box sx={{ mt: 2 }}>
-          <BlueprintContextDetails context={context} />
-        </Box>
-      </Drawer>
+      </DrawerLayout>
     </Portal>
   );
 };

@@ -111,9 +111,17 @@ jobs:
             fi
           done
 
+      - name: Update package.json version
+        if: ${{ inputs.setup_version && startsWith(github.ref, 'refs/tags/') }}
+        run: |
+          cd ${{ inputs.dependency_path }}
+          npm pkg set version="${{ steps.resolve_tag.outputs.tag }}"
+          echo "✓ Set package.json version to $(jq -r .version package.json)"
+
       - name: Update version.json
         if: ${{ inputs.setup_version }}
         run: |
+          VERSION=$(jq -r .version "${{ inputs.dependency_path }}/package.json")
           CONFIG_PATHS="${{ inputs.config_paths }}"
 
           if [ -z "$CONFIG_PATHS" ]; then
@@ -124,8 +132,8 @@ jobs:
           FIRST_PATH=$(echo "${PATHS[0]}" | xargs)
 
           if [ -d "${FIRST_PATH}/src" ]; then
-            echo "{ \"version\": \"${{ steps.resolve_tag.outputs.tag }}\" }" > ${FIRST_PATH}/src/version.json
-            echo "✓ Updated version.json in ${FIRST_PATH}/src"
+            echo "{ \"version\": \"${VERSION}\" }" > ${FIRST_PATH}/src/version.json
+            echo "✓ Updated version.json in ${FIRST_PATH}/src to ${VERSION}"
           fi
 
       - name: Setup Bun

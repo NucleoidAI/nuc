@@ -6,6 +6,7 @@ import type { ParameterBinding } from "../../components/BlueprintFlow/NodeConnec
 import SampleNode from "../../components/BlueprintFlow/Samples/SampleNode";
 import type { SwitchCase } from "../../components/BlueprintFlow/helper";
 import { publish } from "@nucleoidai/react-event";
+import useAllIntegrations from "../../hooks/useAllIntegrations";
 import useBlueprint from "../../hooks/useBlueprint";
 import useMCPs from "../../hooks/useMCPs";
 import { v4 as uuid } from "uuid";
@@ -127,6 +128,7 @@ function BlueprintFlowWidget({
   usedNodeIds,
   lastUsedNodeId,
   failedNodeId,
+  selectedNodeId,
   isSuperviseFlow = false,
   agentId,
   readOnly = false,
@@ -160,6 +162,7 @@ function BlueprintFlowWidget({
   usedNodeIds?: Set<string>;
   lastUsedNodeId?: string | null;
   failedNodeId?: string | null;
+  selectedNodeId?: string | null;
   isSuperviseFlow?: boolean;
   agentId?: string;
   readOnly?: boolean;
@@ -198,6 +201,7 @@ function BlueprintFlowWidget({
   const { blueprintNodes, loading } = getBlueprintWithNode(blueprint?.id);
   const { getMCPs } = useMCPs();
   const { mcps } = getMCPs();
+  const allIntegrations = useAllIntegrations();
 
   const hasDifferences = useMemo(() => {
     if (!baselineNodes?.nodes || !graphData?.nodes) return false;
@@ -241,6 +245,7 @@ function BlueprintFlowWidget({
       const isUsed = usedNodeIds && usedNodeIds.has(nodeId);
       const isLastUsed = lastUsedNodeId === nodeId;
       const isFailed = failedNodeId === nodeId;
+      const isSelected = selectedNodeId === nodeId;
 
       acc[nodeId] = {
         ...node,
@@ -249,6 +254,7 @@ function BlueprintFlowWidget({
         isUsed,
         isLastUsed,
         isFailed,
+        isSelected,
       };
 
       return acc;
@@ -263,6 +269,7 @@ function BlueprintFlowWidget({
     usedNodeIds,
     lastUsedNodeId,
     failedNodeId,
+    selectedNodeId,
   ]);
 
   const [localDescription, setLocalDescription] = useState("");
@@ -402,10 +409,50 @@ function BlueprintFlowWidget({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [graphData]);
 
+  const nodeOutputs = useMemo(() => {
+    if (!graphData?.nodes) return [];
+
+    const result: {
+      nodeId: string;
+      nodeLabel: string;
+      nodeIcon?: string | null;
+      field: string;
+      description?: string | null;
+    }[] = [];
+
+    for (const node of Object.values(graphData.nodes)) {
+      if (node.nodeType !== "NORMAL" || !node.action) continue;
+
+      const integration = allIntegrations.find((i) => i.action === node.action);
+      const outputProperties = integration?.outputSchema?.properties ?? {};
+      const fields = Array.from(
+        new Set(["result", ...Object.keys(outputProperties)])
+      );
+
+      for (const field of fields) {
+        result.push({
+          nodeId: node.id,
+          nodeLabel: node.label || node.action,
+          nodeIcon: node.icon,
+          field,
+          description: outputProperties[field]?.description ?? null,
+        });
+      }
+    }
+
+    return result;
+  }, [graphData, allIntegrations]);
+
   useEffect(() => {
-    onContextChange?.(blueprintNodes?.context ?? null);
+    onContextChange?.(
+      blueprintNodes?.context
+        ? { ...blueprintNodes.context, nodeOutputs }
+        : nodeOutputs.length
+        ? { nodeOutputs }
+        : null
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [blueprintNodes?.context]);
+  }, [blueprintNodes?.context, nodeOutputs]);
 
   useEffect(
     () => {
@@ -2051,6 +2098,7 @@ function BlueprintFlowWidget({
           onOverrideParameter={handleOverrideParameter}
           onToggleForceNode={handleToggleForceNode}
           liteMode={liteMode}
+          selectedNodeId={selectedNodeId}
         />
       )}
 

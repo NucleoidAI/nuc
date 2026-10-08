@@ -3,43 +3,43 @@
   "seed": [
     {
       "id": "019f9c00-0000-4000-8000-000000000001",
-      "name": "GDRIVE"
+      "name": "GDrive"
     },
     {
       "id": "019f9c00-0000-4000-8000-000000000002",
-      "name": "SERVICENOW"
+      "name": "ServiceNow"
     },
     {
       "id": "019f9c00-0000-4000-8000-000000000003",
-      "name": "SLACK"
+      "name": "Slack"
     },
     {
       "id": "019f9c00-0000-4000-8000-000000000004",
-      "name": "DISCORD"
+      "name": "Discord"
     },
     {
       "id": "019f9c00-0000-4000-8000-000000000005",
-      "name": "JIRA"
+      "name": "Jira"
     },
     {
       "id": "019f9c00-0000-4000-8000-000000000006",
-      "name": "GITHUB"
+      "name": "Github"
     },
     {
       "id": "019f9c00-0000-4000-8000-000000000007",
-      "name": "GREY"
+      "name": "Grey"
     },
     {
       "id": "019f9c00-0000-4000-8000-000000000008",
-      "name": "TELCO"
+      "name": "Telco"
     },
     {
       "id": "019f9c00-0000-4000-8000-000000000009",
-      "name": "ORDER"
+      "name": "Order"
     },
     {
       "id": "019f9c00-0000-4000-8000-000000000010",
-      "name": "ACTIVE DIRECTORY"
+      "name": "Active Directory"
     },
     {
       "id": "019f9c00-0000-4000-8000-000000000011",
@@ -47,7 +47,7 @@
     },
     {
       "id": "019f9c00-0000-4000-8000-000000000012",
-      "name": "SALESFORCE"
+      "name": "Salesforce"
     },
     {
       "id": "019f9c00-0000-4000-8000-000000000013",
@@ -55,19 +55,19 @@
     },
     {
       "id": "019f9c00-0000-4000-8000-000000000014",
-      "name": "HUBSPOT"
+      "name": "HubSpot"
     },
     {
       "id": "019f9c00-0000-4000-8000-000000000015",
-      "name": "ORACLE"
+      "name": "Oracle"
     },
     {
       "id": "019f9c00-0000-4000-8000-000000000016",
-      "name": "MICROSOFT"
+      "name": "Microsoft"
     },
     {
       "id": "019f9c00-0000-4000-8000-000000000017",
-      "name": "ATLASSIAN"
+      "name": "Atlassian"
     },
     {
       "id": "019f9c00-0000-4000-8000-000000000018",
@@ -75,31 +75,31 @@
     },
     {
       "id": "019f9c00-0000-4000-8000-000000000019",
-      "name": "ZENDESK"
+      "name": "Zendesk"
     },
     {
       "id": "019f9c00-0000-4000-8000-000000000020",
-      "name": "DOCUSIGN"
+      "name": "Docusign"
     },
     {
       "id": "019f9c00-0000-4000-8000-000000000021",
-      "name": "NETSUITE"
+      "name": "NetSuite"
     },
     {
       "id": "019f9c00-0000-4000-8000-000000000022",
-      "name": "STRIPE"
+      "name": "Stripe"
     },
     {
       "id": "019f9c00-0000-4000-8000-000000000023",
-      "name": "SNOWFLAKE"
+      "name": "Snowflake"
     },
     {
       "id": "019f9c00-0000-4000-8000-000000000024",
-      "name": "TWILIO"
+      "name": "Twilio"
     },
     {
       "id": "9fceba9d-df06-5fb1-a0eb-ca664b27bebb",
-      "name": "FEDEX"
+      "name": "FedEx"
     },
     {
       "id": "12ee510a-4822-538e-bc19-c60a56c6f3da",
@@ -111,7 +111,7 @@
     },
     {
       "id": "9ca39d6b-12d7-467c-adf2-1d5b30d158eb",
-      "name": "CHEM"
+      "name": "Chem"
     }
   ]
 }

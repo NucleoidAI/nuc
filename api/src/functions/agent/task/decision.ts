@@ -30,7 +30,7 @@ function decisionStateOf(state: TaskState) {
     state;
 
   return {
-    selected_blueprint: taskData.selected_blueprint,
+    blueprint: taskData.blueprint,
     ...(currentNode && {
       current_node: {
         id: currentNode.id,
@@ -46,7 +46,7 @@ function decisionStateOf(state: TaskState) {
         parameters,
         result,
         comment,
-      })
+      }),
     ),
     knowledge_base: taskData.knowledge_base,
     ...(inheritedSteps?.length && { inherited_context_steps: inheritedSteps }),
@@ -212,7 +212,7 @@ async function decisionTask({ taskId }: { taskId: string }) {
     selection.action !== SUPERVISOR_ACTION
   ) {
     const canEscalate = options.some(
-      ({ action }) => action === SUPERVISOR_ACTION
+      ({ action }) => action === SUPERVISOR_ACTION,
     );
 
     console.debug(
@@ -222,7 +222,7 @@ async function decisionTask({ taskId }: { taskId: string }) {
         canEscalate
           ? `escalating to ${SUPERVISOR_ACTION}`
           : "supervisor not available, keeping selection"
-      }`
+      }`,
     );
 
     if (canEscalate) {

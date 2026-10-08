@@ -75,7 +75,7 @@ function leaves(value: unknown, path: string, depth: number, out: Candidate[]) {
     parsed
       .slice(0, MAX_ARRAY_ITEMS)
       .forEach((item, index) =>
-        leaves(item, `${path}[${index}]`, depth + 1, out)
+        leaves(item, `${path}[${index}]`, depth + 1, out),
       );
     return;
   }
@@ -111,7 +111,7 @@ function refCandidates({
         const found: Candidate[] = [];
         leaves(step[field], `${prefix}[${index}].${field}`, 0, found);
         candidates.push(
-          ...found.map((candidate) => ({ ...candidate, action: step.action }))
+          ...found.map((candidate) => ({ ...candidate, action: step.action })),
         );
       }
     });
@@ -123,7 +123,7 @@ function refCandidates({
 }
 
 const LOG_LIST_LIMIT = 2;
-const LOG_FULL_KEYS = new Set(["selected_blueprint"]);
+const LOG_FULL_KEYS = new Set(["blueprint"]);
 
 function previewList(value: unknown): unknown {
   if (Array.isArray(value)) {
@@ -139,7 +139,7 @@ function previewList(value: unknown): unknown {
       Object.entries(value).map(([key, item]) => [
         key,
         LOG_FULL_KEYS.has(key) ? item : previewList(item),
-      ])
+      ]),
     );
   }
 
@@ -163,7 +163,7 @@ function previewQuestions(questions: Questions) {
           }),
         },
       ];
-    })
+    }),
   );
 }
 
@@ -183,17 +183,17 @@ function previewAnswers(answers: Record<string, unknown>) {
           probabilities: Object.fromEntries(
             Object.entries(probabilities)
               .filter(([, probability]) => probability > 0)
-              .sort(([, a], [, b]) => b - a)
+              .sort(([, a], [, b]) => b - a),
           ),
         },
       ];
-    })
+    }),
   );
 }
 
 async function askJev<const Q extends Questions>(
   source: string,
-  { state, questions, meta }: { state: object; questions: Q; meta: LLMMeta }
+  { state, questions, meta }: { state: object; questions: Q; meta: LLMMeta },
 ) {
   const request = { state: json(state), questions };
 
@@ -205,8 +205,8 @@ async function askJev<const Q extends Questions>(
         questions: previewQuestions(questions),
       },
       null,
-      2
-    )
+      2,
+    ),
   );
 
   const answers = await ask({
@@ -216,7 +216,7 @@ async function askJev<const Q extends Questions>(
 
   console.debug(
     `[jev] ${source} answers:`,
-    JSON.stringify(previewAnswers(answers), null, 2)
+    JSON.stringify(previewAnswers(answers), null, 2),
   );
 
   return answers;
@@ -237,7 +237,7 @@ async function selectNextAction({
       next_action: choice(
         {
           select: "next_action",
-          workflow: "`selected_blueprint`",
+          workflow: "`blueprint`",
           ...("current_node" in state && {
             current_position: "`current_node`",
           }),
@@ -257,8 +257,8 @@ async function selectNextAction({
               description: description ?? null,
               parameters: Object.keys(inputSchema?.properties ?? {}),
             },
-          ])
-        )
+          ]),
+        ),
       ),
     },
     meta,
@@ -295,7 +295,7 @@ async function judgeParameters({
   const candidates = refCandidates({ steps, inheritedSteps, variables });
 
   const fields = Object.entries(properties).filter(
-    ([field]) => !PLATFORM_FIELDS.has(field) && !skipFields.includes(field)
+    ([field]) => !PLATFORM_FIELDS.has(field) && !skipFields.includes(field),
   );
 
   const questions: Record<string, Question> = {};
@@ -318,10 +318,10 @@ async function judgeParameters({
         { select: "parameter_value", action, parameter },
         {
           ...Object.fromEntries(
-            schema.enum.map((value) => [String(value), { value }])
+            schema.enum.map((value) => [String(value), { value }]),
           ),
           ...(!required.has(field) && { [NONE]: { value: null } }),
-        }
+        },
       );
       plan[id] = { field, kind: "enum", values: schema.enum };
       return;
@@ -330,7 +330,7 @@ async function judgeParameters({
     if (schema.type === "boolean") {
       questions[id] = noul(
         { decide: "parameter_is_true", action, parameter },
-        { true: { value: true }, false: { value: false } }
+        { true: { value: true }, false: { value: false } },
       );
       plan[id] = { field, kind: "boolean" };
       return;
@@ -355,9 +355,9 @@ async function judgeParameters({
           candidates.map(({ path, value, action: from }) => [
             path,
             { value, from_action: from ?? null },
-          ])
+          ]),
         ),
-      }
+      },
     );
     plan[id] = { field, kind: "ref" };
   });
@@ -382,7 +382,7 @@ async function judgeParameters({
           "`conversation`",
         ],
       },
-      { true: { inputs: "available" }, false: { inputs: "missing" } }
+      { true: { inputs: "available" }, false: { inputs: "missing" } },
     );
   }
 
@@ -429,7 +429,7 @@ async function judgeParameters({
 
     console.debug(
       `[jev] judgeParameters filled ${action}:`,
-      JSON.stringify(filled, null, 2)
+      JSON.stringify(filled, null, 2),
     );
 
     return { filled, inputsAvailable };

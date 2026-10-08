@@ -120,156 +120,194 @@ const HighlightOverlay = styled("div")<{
   isused?: string;
   islastused?: string;
   isfailed?: string;
-}>(({ changetype, haserror, isused, islastused, isfailed, theme }) => {
-  const isDark = theme.palette.mode === "dark";
+  isselected?: string;
+}>(
+  ({
+    changetype,
+    haserror,
+    isused,
+    islastused,
+    isfailed,
+    isselected,
+    theme,
+  }) => {
+    const isDark = theme.palette.mode === "dark";
 
-  if (isfailed === "true") {
-    const failedColor = {
-      border: isDark ? "#ef5350" : "#f44336",
-      glow: "244, 67, 54",
-      bg: "244, 67, 54",
-    };
+    if (isselected === "true") {
+      const selectedColor = {
+        border: isDark ? "#abaaa8" : "#abaaa8",
+        glow: "33, 150, 243",
+        bg: "33, 150, 243",
+      };
 
-    return {
-      position: "absolute",
-      top: "-2px",
-      left: "-2px",
-      right: "-2px",
-      bottom: "-2px",
-      border: `3px solid ${failedColor.border}`,
-      borderRadius: "18px",
-      pointerEvents: "none",
-      zIndex: 5,
-      background: `linear-gradient(135deg, rgba(${failedColor.bg}, 0.12) 0%, rgba(${failedColor.bg}, 0.04) 100%)`,
-      boxShadow: `
+      return {
+        position: "absolute",
+        top: "-2px",
+        left: "-2px",
+        right: "-2px",
+        bottom: "-2px",
+        border: `3px solid ${selectedColor.border}`,
+        borderRadius: "18px",
+        pointerEvents: "none",
+        zIndex: 5,
+        background: `linear-gradient(135deg, rgba(${selectedColor.bg}, 0.12) 0%, rgba(${selectedColor.bg}, 0.04) 100%)`,
+        boxShadow: `
+          0 0 0 1px rgba(${selectedColor.glow}, 0.15),
+          0 0 20px rgba(${selectedColor.glow}, 0.35),
+          0 0 40px rgba(${selectedColor.glow}, 0.2),
+          inset 0 0 30px rgba(${selectedColor.glow}, 0.1)
+        `,
+      };
+    }
+
+    if (isfailed === "true") {
+      const failedColor = {
+        border: isDark ? "#ef5350" : "#f44336",
+        glow: "244, 67, 54",
+        bg: "244, 67, 54",
+      };
+
+      return {
+        position: "absolute",
+        top: "-2px",
+        left: "-2px",
+        right: "-2px",
+        bottom: "-2px",
+        border: `3px solid ${failedColor.border}`,
+        borderRadius: "18px",
+        pointerEvents: "none",
+        zIndex: 5,
+        background: `linear-gradient(135deg, rgba(${failedColor.bg}, 0.12) 0%, rgba(${failedColor.bg}, 0.04) 100%)`,
+        boxShadow: `
           0 0 0 1px rgba(${failedColor.glow}, 0.15),
           0 0 20px rgba(${failedColor.glow}, 0.35),
           0 0 40px rgba(${failedColor.glow}, 0.2),
           inset 0 0 30px rgba(${failedColor.glow}, 0.1)
         `,
-    };
-  }
+      };
+    }
 
-  if (islastused === "true") {
-    const warningColor = {
-      border: isDark ? "#ffa726" : "#ff9800",
-      glow: "255, 152, 0",
-      bg: "255, 152, 0",
-    };
+    if (islastused === "true") {
+      const warningColor = {
+        border: isDark ? "#ffa726" : "#ff9800",
+        glow: "255, 152, 0",
+        bg: "255, 152, 0",
+      };
 
-    return {
-      position: "absolute",
-      top: "-2px",
-      left: "-2px",
-      right: "-2px",
-      bottom: "-2px",
-      border: `3px solid ${warningColor.border}`,
-      borderRadius: "18px",
-      pointerEvents: "none",
-      zIndex: 5,
-      background: `linear-gradient(135deg, rgba(${warningColor.bg}, 0.12) 0%, rgba(${warningColor.bg}, 0.04) 100%)`,
-      boxShadow: `
+      return {
+        position: "absolute",
+        top: "-2px",
+        left: "-2px",
+        right: "-2px",
+        bottom: "-2px",
+        border: `3px solid ${warningColor.border}`,
+        borderRadius: "18px",
+        pointerEvents: "none",
+        zIndex: 5,
+        background: `linear-gradient(135deg, rgba(${warningColor.bg}, 0.12) 0%, rgba(${warningColor.bg}, 0.04) 100%)`,
+        boxShadow: `
           0 0 0 1px rgba(${warningColor.glow}, 0.15),
           0 0 20px rgba(${warningColor.glow}, 0.35),
           0 0 40px rgba(${warningColor.glow}, 0.2),
           inset 0 0 30px rgba(${warningColor.glow}, 0.1)
         `,
-    };
-  }
+      };
+    }
 
-  if (isused === "true") {
-    const usedColor = {
-      border: isDark ? "#66bb6a" : "#4caf50",
-      glow: "76, 175, 80",
-      bg: "76, 175, 80",
-    };
+    if (isused === "true") {
+      const usedColor = {
+        border: isDark ? "#66bb6a" : "#4caf50",
+        glow: "76, 175, 80",
+        bg: "76, 175, 80",
+      };
 
-    return {
-      position: "absolute",
-      top: "-2px",
-      left: "-2px",
-      right: "-2px",
-      bottom: "-2px",
-      border: `2px solid ${usedColor.border}`,
-      borderRadius: "18px",
-      pointerEvents: "none",
-      zIndex: 5,
-      background: `linear-gradient(135deg, rgba(${usedColor.bg}, 0.08) 0%, rgba(${usedColor.bg}, 0.04) 100%)`,
-      boxShadow: `
+      return {
+        position: "absolute",
+        top: "-2px",
+        left: "-2px",
+        right: "-2px",
+        bottom: "-2px",
+        border: `2px solid ${usedColor.border}`,
+        borderRadius: "18px",
+        pointerEvents: "none",
+        zIndex: 5,
+        background: `linear-gradient(135deg, rgba(${usedColor.bg}, 0.08) 0%, rgba(${usedColor.bg}, 0.04) 100%)`,
+        boxShadow: `
           0 0 0 1px rgba(${usedColor.glow}, 0.1),
           0 0 15px rgba(${usedColor.glow}, 0.2),
           inset 0 0 20px rgba(${usedColor.glow}, 0.06)
         `,
-    };
-  }
+      };
+    }
 
-  if (haserror === "true") {
-    const errorColor = {
-      border: isDark ? "#ef5350" : "#f44336",
-      glow: "244, 67, 54",
-      bg: "244, 67, 54",
-    };
+    if (haserror === "true") {
+      const errorColor = {
+        border: isDark ? "#ef5350" : "#f44336",
+        glow: "244, 67, 54",
+        bg: "244, 67, 54",
+      };
 
-    return {
-      position: "absolute",
-      top: "-2px",
-      left: "-2px",
-      right: "-2px",
-      bottom: "-2px",
-      border: `3px solid ${errorColor.border}`,
-      borderRadius: "18px",
-      pointerEvents: "none",
-      zIndex: 5,
-      background: `linear-gradient(135deg, rgba(${errorColor.bg}, 0.12) 0%, rgba(${errorColor.bg}, 0.04) 100%)`,
-      boxShadow: `
+      return {
+        position: "absolute",
+        top: "-2px",
+        left: "-2px",
+        right: "-2px",
+        bottom: "-2px",
+        border: `3px solid ${errorColor.border}`,
+        borderRadius: "18px",
+        pointerEvents: "none",
+        zIndex: 5,
+        background: `linear-gradient(135deg, rgba(${errorColor.bg}, 0.12) 0%, rgba(${errorColor.bg}, 0.04) 100%)`,
+        boxShadow: `
           0 0 0 1px rgba(${errorColor.glow}, 0.15),
           0 0 20px rgba(${errorColor.glow}, 0.35),
           0 0 40px rgba(${errorColor.glow}, 0.2),
           inset 0 0 30px rgba(${errorColor.glow}, 0.1)
         `,
+      };
+    }
+
+    const colors = {
+      added: {
+        border: isDark ? "#66bb6a" : "#4caf50",
+        glow: isDark ? "76, 175, 80" : "76, 175, 80",
+        bg: isDark ? "76, 175, 80" : "76, 175, 80",
+      },
+      modified: {
+        border: isDark ? "#ffa726" : "#ff9800",
+        glow: isDark ? "255, 167, 38" : "255, 152, 0",
+        bg: isDark ? "255, 167, 38" : "255, 152, 0",
+      },
+      removed: {
+        border: isDark ? "#ef5350" : "#f44336",
+        glow: isDark ? "239, 83, 80" : "244, 67, 54",
+        bg: isDark ? "239, 83, 80" : "244, 67, 54",
+      },
     };
-  }
 
-  const colors = {
-    added: {
-      border: isDark ? "#66bb6a" : "#4caf50",
-      glow: isDark ? "76, 175, 80" : "76, 175, 80",
-      bg: isDark ? "76, 175, 80" : "76, 175, 80",
-    },
-    modified: {
-      border: isDark ? "#ffa726" : "#ff9800",
-      glow: isDark ? "255, 167, 38" : "255, 152, 0",
-      bg: isDark ? "255, 167, 38" : "255, 152, 0",
-    },
-    removed: {
-      border: isDark ? "#ef5350" : "#f44336",
-      glow: isDark ? "239, 83, 80" : "244, 67, 54",
-      bg: isDark ? "239, 83, 80" : "244, 67, 54",
-    },
-  };
+    const config = colors[changetype];
+    if (!config) return { display: "none" };
 
-  const config = colors[changetype];
-  if (!config) return { display: "none" };
-
-  return {
-    position: "absolute",
-    top: "-2px",
-    left: "-2px",
-    right: "-2px",
-    bottom: "-2px",
-    border: `3px solid ${config.border}`,
-    borderRadius: "18px",
-    pointerEvents: "none",
-    zIndex: 5,
-    background: `linear-gradient(135deg, rgba(${config.bg}, 0.08) 0%, rgba(${config.bg}, 0.02) 100%)`,
-    boxShadow: `
+    return {
+      position: "absolute",
+      top: "-2px",
+      left: "-2px",
+      right: "-2px",
+      bottom: "-2px",
+      border: `3px solid ${config.border}`,
+      borderRadius: "18px",
+      pointerEvents: "none",
+      zIndex: 5,
+      background: `linear-gradient(135deg, rgba(${config.bg}, 0.08) 0%, rgba(${config.bg}, 0.02) 100%)`,
+      boxShadow: `
         0 0 0 1px rgba(${config.glow}, 0.1),
         0 0 20px rgba(${config.glow}, 0.25),
         0 0 40px rgba(${config.glow}, 0.15),
         inset 0 0 30px rgba(${config.glow}, 0.08)
       `,
-  };
-});
+    };
+  }
+);
 
 const ChangeBadge = styled("div")<{ changetype?: string }>(
   ({ changetype, theme }) => {
@@ -789,6 +827,7 @@ type FlowGraphNode = import("./helper").DefinitionGraphNode & {
   isUsed?: boolean;
   isLastUsed?: boolean;
   isFailed?: boolean;
+  isSelected?: boolean;
   [key: string]: unknown;
 };
 
@@ -978,6 +1017,7 @@ function FlowNodeRenderer({
   const isUsed = node.isUsed;
   const isLastUsed = node.isLastUsed;
   const isFailed = node.isFailed;
+  const isSelected = node.isSelected;
 
   const handleContextMenu = (e: React.MouseEvent) => {
     if (isReadOnly) return;
@@ -1054,6 +1094,7 @@ function FlowNodeRenderer({
         isused={isUsed ? "true" : "false"}
         islastused={isLastUsed ? "true" : "false"}
         isfailed={isFailed ? "true" : "false"}
+        isselected={isSelected ? "true" : "false"}
       />
       {hasError ? (
         <>

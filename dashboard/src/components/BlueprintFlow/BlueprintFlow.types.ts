@@ -39,4 +39,5 @@ export interface BlueprintFlowProps {
   onOverrideParameter?: (nodeId: string, field: string, value: unknown) => void;
   onToggleForceNode?: (node: { id: string }) => void;
   liteMode?: boolean;
+  selectedNodeId?: string | null;
 }

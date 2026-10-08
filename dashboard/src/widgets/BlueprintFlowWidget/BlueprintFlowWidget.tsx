@@ -109,6 +109,7 @@ function BlueprintFlowWidget({
   usedNodeIds,
   lastUsedNodeId,
   failedNodeId,
+  selectedNodeId,
   isSuperviseFlow = false,
   agentId,
   readOnly = false,
@@ -141,6 +142,7 @@ function BlueprintFlowWidget({
   usedNodeIds?: Set<string>;
   lastUsedNodeId?: string | null;
   failedNodeId?: string | null;
+  selectedNodeId?: string | null;
   isSuperviseFlow?: boolean;
   agentId?: string;
   readOnly?: boolean;
@@ -222,6 +224,7 @@ function BlueprintFlowWidget({
       const isUsed = usedNodeIds && usedNodeIds.has(nodeId);
       const isLastUsed = lastUsedNodeId === nodeId;
       const isFailed = failedNodeId === nodeId;
+      const isSelected = selectedNodeId === nodeId;
 
       acc[nodeId] = {
         ...node,
@@ -230,6 +233,7 @@ function BlueprintFlowWidget({
         isUsed,
         isLastUsed,
         isFailed,
+        isSelected,
       };
 
       return acc;
@@ -244,6 +248,7 @@ function BlueprintFlowWidget({
     usedNodeIds,
     lastUsedNodeId,
     failedNodeId,
+    selectedNodeId,
   ]);
 
   const [localDescription, setLocalDescription] = useState("");
@@ -2017,6 +2022,7 @@ function BlueprintFlowWidget({
           onOverrideParameter={handleOverrideParameter}
           onToggleForceNode={handleToggleForceNode}
           liteMode={liteMode}
+          selectedNodeId={selectedNodeId}
         />
       )}
 

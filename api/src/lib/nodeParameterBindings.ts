@@ -61,7 +61,7 @@ export function getBoundNodeStep({
     next_step: {
       action,
       parameters: {},
-      comment: "Executing blueprint node with configured input values.",
+      comment: `Executing ${action} with configured input values.`,
     },
     result_score: undefined,
   };
@@ -88,7 +88,7 @@ export function getLiteNodeStep({
     next_step: {
       action,
       parameters: {},
-      comment: "Executing blueprint node without generated parameters.",
+      comment: `Executing ${action} without generated parameters.`,
     },
     result_score: undefined,
   };

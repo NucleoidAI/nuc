@@ -26,7 +26,7 @@ describe("blueprint parameter generation", () => {
       next_step: {
         action: "TEST:run",
         parameters: {},
-        comment: "Executing blueprint node with configured input values.",
+        comment: "Executing TEST:run with configured input values.",
       },
       result_score: undefined,
     });

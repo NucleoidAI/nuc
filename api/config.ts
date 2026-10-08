@@ -32,7 +32,7 @@ const config = {
     region: "us-east-1",
   },
   decision: {
-    enabled: true,
+    enabled: false,
   },
   event: {
     type: "inMemory" as const,

@@ -465,7 +465,8 @@ async function conclude({
 }) {
   const { action } = selection;
   const { parameters, resolvedParameters } = prepared;
-  const comment = selection.comment ?? prepared.comment ?? "";
+  const comment =
+    selection.comment || prepared.comment || `Executing ${action}.`;
 
   if (action === "PLATFORM:complete" && state.endNode) {
     return respond(state, state.endNode);

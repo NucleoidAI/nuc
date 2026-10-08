@@ -69,6 +69,11 @@ class Blueprint extends Model {
   @Column(DataType.STRING)
   declare executionMode: "NORMAL" | "LITE";
 
+  @Default(false)
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  declare api: boolean;
+
   @AllowNull(true)
   @Column({
     type: DataType.JSONB,

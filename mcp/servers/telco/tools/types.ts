@@ -93,7 +93,6 @@ export interface PcmToWavInput {
 
 export interface TranscribeMeetingInput {
   directoryPath: string;
-  force?: boolean;
   includeSpeakerTranscripts?: boolean;
 }
 
@@ -129,4 +128,20 @@ export interface PrepareMeetingAttachmentsInput {
 export interface ResolveParticipantsInput {
   content: unknown;
   participants: { id: string; name: string }[];
+}
+
+export interface TranslateInput {
+  content: string;
+  target_lang: string;
+  source_lang?: string;
+}
+
+export interface PrepareEmailInput {
+  template: string;
+  meetingName?: string | null;
+  meetingDate?: string | null;
+  attendees?: string[] | null;
+  summary?: string | null;
+  highlights?: MeetingHighlight[] | null;
+  next_steps?: string[] | null;
 }

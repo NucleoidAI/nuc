@@ -19,9 +19,9 @@ class Session extends Model {
   declare id: string;
 
   @AllowNull(false)
-  @IsIn([["CHAT", "EMAIL"]])
+  @IsIn([["CHAT", "EMAIL", "API"]])
   @Column(DataType.STRING)
-  declare type: "CHAT" | "EMAIL";
+  declare type: "CHAT" | "EMAIL" | "API";
 
   @AllowNull(false)
   @Column(DataType.UUID)
@@ -30,6 +30,10 @@ class Session extends Model {
   @AllowNull(true)
   @Column(DataType.UUID)
   declare blueprintId: string | null;
+
+  @AllowNull(true)
+  @Column(DataType.JSON)
+  declare variables: Record<string, unknown> | null;
 
   declare agent?: any;
 

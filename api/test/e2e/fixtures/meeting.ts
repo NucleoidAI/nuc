@@ -90,6 +90,7 @@ function meetingRequest(): string {
       mixedAudio: "meeting-audio.wav",
     },
     participants: PARTICIPANTS,
+    attendees: PARTICIPANTS.map(({ name }) => name),
   });
 }
 

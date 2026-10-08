@@ -1,3 +1,5 @@
+import type { ApiField } from "../ApiNode/apiNodes";
+import ApiFieldsPanel from "../ApiNode/ApiFieldsPanel";
 import NodeInputOverride from "./NodeInputOverride";
 import { styled } from "@mui/material/styles";
 
@@ -27,6 +29,13 @@ export const APPROVAL_BORDER_COLOR = DECISION_BORDER_COLOR;
 export const APPROVAL_BORDER_SOLID = "#616161";
 export const APPROVAL_BG_FROM = DECISION_BG_FROM;
 export const APPROVAL_BG_TO = DECISION_BG_TO;
+const API_BORDER_COLOR = "linear-gradient(135deg, #22c55e66, #0ea5e959)";
+const API_BG_FROM = "rgba(34, 197, 94, 0.18)";
+const API_BG_TO = "rgba(14, 165, 233, 0.24)";
+
+function isApiNode(node?: { nodeType?: string }) {
+  return node?.nodeType === "START" || node?.nodeType === "END";
+}
 
 const AddButtonWrapper = styled("div")(({ theme }) => ({
   position: "absolute",
@@ -703,22 +712,29 @@ export const blueprintFlowPlugin = {
     const styleTokens = style || {};
     const isApproval = node?.nodeType === "APPROVAL";
     const isSwitch = node?.nodeType === "SWITCH";
+    const isApi = isApiNode(node);
     const isDecision = isApproval || node?.connectorType === "decision";
 
     const bgFrom = isDecision
       ? DECISION_BG_FROM
       : isSwitch
       ? SWITCH_BG_FROM
+      : isApi
+      ? API_BG_FROM
       : undefined;
     const bgTo = isDecision
       ? DECISION_BG_TO
       : isSwitch
       ? SWITCH_BG_TO
+      : isApi
+      ? API_BG_TO
       : undefined;
     const borderColor = isDecision
       ? DECISION_BORDER_COLOR
       : isSwitch
       ? SWITCH_BORDER_COLOR
+      : isApi
+      ? API_BORDER_COLOR
       : "linear-gradient(135deg, #c684ff33, #078dee4d)";
     const borderRadius = 16;
     const shadowLevel = 1;
@@ -838,6 +854,7 @@ export type NodeFields = {
     string,
     { type: string; description?: string; nullable?: boolean }
   >;
+  apiFields?: ApiField[];
 };
 
 const FIELDS_PANEL_ROW_HEIGHT = 21;
@@ -877,6 +894,7 @@ function NodeHandles({
   fields,
   boundFields,
   hasForceNode,
+  liteMode,
   onHandleDragStart,
   onOverrideParameter,
 }: {
@@ -884,6 +902,7 @@ function NodeHandles({
   fields: NodeFields;
   boundFields?: Set<string>;
   hasForceNode?: boolean;
+  liteMode?: boolean;
   onOverrideParameter?: (nodeId: string, field: string, value: unknown) => void;
   onHandleDragStart?: (
     nodeId: string,
@@ -891,9 +910,10 @@ function NodeHandles({
     e: React.MouseEvent
   ) => void;
 }) {
-  const isForceTarget = Boolean(
-    (node.raw?.properties as { force?: boolean } | undefined)?.force
-  );
+  const isForceTarget =
+    node.nodeType === "END" ||
+    Boolean(liteMode) ||
+    Boolean((node.raw?.properties as { force?: boolean } | undefined)?.force);
 
   const inputs = fields.inputs.map((field) => ({
     name: field,
@@ -938,6 +958,21 @@ function NodeHandles({
       />
     );
   };
+
+  if (fields.apiFields) {
+    const isRequest = node.nodeType === "START";
+
+    return (
+      <ApiFieldsPanel
+        side={isRequest ? "out" : "in"}
+        title={isRequest ? "Request" : "Response"}
+        fields={fields.apiFields}
+        handles={isRequest ? outputs : inputs}
+        renderLabel={(name) => renderLabel(name, isRequest ? "out" : "in")}
+        sx={{ mt: -1, ml: 0.6 }}
+      />
+    );
+  }
 
   return (
     <ConnectionsPanel
@@ -992,7 +1027,10 @@ function FlowNodeRenderer({
     onOverrideParameter,
     liteMode,
   } = nodeStyle || {};
-  const fields = node.nodeType === "NORMAL" ? nodeFields?.[node.id] : undefined;
+  const isLocked = isApiNode(node);
+  const canAddChild = node.nodeType !== "END";
+  const fields =
+    node.nodeType === "NORMAL" || isLocked ? nodeFields?.[node.id] : undefined;
   const isForceNode = Boolean(
     (node.raw?.properties as { force?: boolean } | undefined)?.force
   );
@@ -1084,6 +1122,7 @@ function FlowNodeRenderer({
             fields={fields}
             boundFields={boundFieldsByNode?.[node.id]}
             hasForceNode={hasForceNode}
+            liteMode={liteMode}
             onHandleDragStart={onHandleDragStart}
             onOverrideParameter={isReadOnly ? undefined : onOverrideParameter}
           />
@@ -1128,12 +1167,14 @@ function FlowNodeRenderer({
       <InfoNode node={infoNode} nodeStyle={nodeStyle}>
         {!isReadOnly && (
           <>
-            <DeleteButtonWrapper
-              onClick={handleDeleteClick}
-              title="Delete node"
-            >
-              <Iconify icon="mdi:delete-outline" width={16} height={16} />
-            </DeleteButtonWrapper>
+            {!isLocked && (
+              <DeleteButtonWrapper
+                onClick={handleDeleteClick}
+                title="Delete node"
+              >
+                <Iconify icon="mdi:delete-outline" width={16} height={16} />
+              </DeleteButtonWrapper>
+            )}
             <EditButtonWrapper onClick={handleEditClick} title="Edit node">
               <Iconify icon="mdi:pencil" width={16} height={16} />
             </EditButtonWrapper>
@@ -1142,9 +1183,11 @@ function FlowNodeRenderer({
                 <Iconify icon="mdi:lightning-bolt" width={16} height={16} />
               </ForceIndicatorWrapper>
             )}
-            <AddButtonWrapper onClick={handleAddClick} title="Add child node">
-              <Iconify icon="mdi:plus" width={16} height={16} />
-            </AddButtonWrapper>
+            {canAddChild && (
+              <AddButtonWrapper onClick={handleAddClick} title="Add child node">
+                <Iconify icon="mdi:plus" width={16} height={16} />
+              </AddButtonWrapper>
+            )}
           </>
         )}
       </InfoNode>
@@ -1162,17 +1205,19 @@ function FlowNodeRenderer({
           sx={{ zIndex: (theme) => theme.zIndex.modal + 3 }}
           slotProps={{ paper: { sx: { minWidth: 180 } } }}
         >
-          <MenuItem
-            onClick={(e) => {
-              handleAddClick(e);
-              handleClose();
-            }}
-          >
-            <ListItemIcon>
-              <Iconify icon="mdi:plus" width={18} height={18} />
-            </ListItemIcon>
-            <ListItemText>Add child node</ListItemText>
-          </MenuItem>
+          {canAddChild && (
+            <MenuItem
+              onClick={(e) => {
+                handleAddClick(e);
+                handleClose();
+              }}
+            >
+              <ListItemIcon>
+                <Iconify icon="mdi:plus" width={18} height={18} />
+              </ListItemIcon>
+              <ListItemText>Add child node</ListItemText>
+            </MenuItem>
+          )}
           <MenuItem
             onClick={(e) => {
               handleEditClick(e);
@@ -1184,7 +1229,7 @@ function FlowNodeRenderer({
             </ListItemIcon>
             <ListItemText>Edit node</ListItemText>
           </MenuItem>
-          {onToggleForce && (
+          {onToggleForce && !isLocked && (
             <MenuItem
               onClick={(e) => {
                 handleToggleForceClick(e);
@@ -1207,19 +1252,21 @@ function FlowNodeRenderer({
               </ListItemText>
             </MenuItem>
           )}
-          <Divider />
-          <MenuItem
-            onClick={(e) => {
-              handleDeleteClick(e);
-              handleClose();
-            }}
-            sx={{ color: "error.main" }}
-          >
-            <ListItemIcon sx={{ color: "error.main" }}>
-              <Iconify icon="mdi:delete-outline" width={18} height={18} />
-            </ListItemIcon>
-            <ListItemText>Delete node</ListItemText>
-          </MenuItem>
+          {!isLocked && <Divider />}
+          {!isLocked && (
+            <MenuItem
+              onClick={(e) => {
+                handleDeleteClick(e);
+                handleClose();
+              }}
+              sx={{ color: "error.main" }}
+            >
+              <ListItemIcon sx={{ color: "error.main" }}>
+                <Iconify icon="mdi:delete-outline" width={18} height={18} />
+              </ListItemIcon>
+              <ListItemText>Delete node</ListItemText>
+            </MenuItem>
+          )}
         </Menu>
       )}
     </NodeWrapper>

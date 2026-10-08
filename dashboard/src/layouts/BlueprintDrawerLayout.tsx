@@ -42,6 +42,7 @@ const BlueprintDrawerLayout = ({
     agentId: string;
     skill?: string;
     executionMode?: "NORMAL" | "LITE";
+    api?: boolean;
     context?: BlueprintContextData | null;
   };
   handleAiResponse?: (response: {
@@ -91,6 +92,7 @@ const BlueprintDrawerLayout = ({
   const [liteMode, setLiteMode] = useState<boolean>(
     selectedItem?.executionMode === "LITE"
   );
+  const [api, setApi] = useState<boolean>(Boolean(selectedItem?.api));
   const [showConnections] = useStorage(
     "greycollar",
     "blueprintdrawerlayout",
@@ -192,6 +194,7 @@ const BlueprintDrawerLayout = ({
 
   useEffect(() => {
     setLiteMode(selectedItem?.executionMode === "LITE");
+    setApi(Boolean(selectedItem?.api));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedItem?.id]);
 
@@ -229,6 +232,7 @@ const BlueprintDrawerLayout = ({
         blocking={blocking}
         onBlockingChange={handleBlockingChange}
         liteMode={liteMode}
+        api={api}
         showConnections={showConnections}
         onSkillChange={setSkill}
         onSkillLoadingChange={setSkillLoading}
@@ -364,6 +368,9 @@ const BlueprintDrawerLayout = ({
         setBlocking={handleBlockingChange}
         liteMode={liteMode}
         setLiteMode={handleLiteModeChange}
+        api={api}
+        setApi={setApi}
+        blueprintId={selectedItem?.id}
       />
     </Box>
   );

@@ -24,11 +24,10 @@ afterEach(() => {
 
 const args = { to: "recipient@example.test", subject: "Test", text: "Hello" };
 
-test("mock prepares a template and attachments without starting the worker", async () => {
+test("mock sends prepared content and attachments without starting the worker", async () => {
   const result = await sendEmailEwsTool.handler({
-    to: args.to,
-    template: "meeting_summary_a",
-    data: {},
+    ...args,
+    to: [args.to, "second@example.test"],
     attachments: [{ filename: "transcript.txt", content: "Meeting transcript" }],
   });
   expect(result.isError).toBe(false);
@@ -49,8 +48,21 @@ for (const key of ["EWS_URL", "EWS_USER", "EWS_PASS", "EWS_MAILBOX"]) {
   });
 }
 
+test("mock sends to the emails of participant objects and skips those without one", async () => {
+  const result = await sendEmailEwsTool.handler({
+    ...args,
+    to: [{ name: "Ayşe", email: "ayse@example.test" }, { name: "Mehmet", email: "" }],
+  });
+  expect(result.isError).toBe(false);
+});
+
+test("mock rejects participants that have no email", async () => {
+  const result = await sendEmailEwsTool.handler({ ...args, to: [{ name: "Mehmet", email: "" }] });
+  expect(result.isError).toBe(true);
+});
+
 test("mock preserves message validation", async () => {
-  for (const invalid of [{ ...args, to: "" }, { ...args, subject: "" }, { ...args, text: "" }, { ...args, template: "unknown" }]) {
+  for (const invalid of [{ ...args, to: "" }, { ...args, subject: "" }, { ...args, text: "" }, { ...args, to: [] }]) {
     expect((await sendEmailEwsTool.handler(invalid)).isError).toBe(true);
   }
 });

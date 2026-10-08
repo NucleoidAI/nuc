@@ -39,7 +39,12 @@ type Integration = {
 };
 
 type GraphNode = {
-  raw?: { properties?: { parameters?: Record<string, unknown> } };
+  raw?: {
+    properties?: {
+      parameters?: Record<string, unknown>;
+      fields?: { name: string; type: string }[];
+    };
+  };
   id: string;
   label?: string;
   action?: string;
@@ -124,16 +129,27 @@ function validateFlow(
   // are merged into those inputs. Only explicit output references require a
   // matching source node/field; input and output names need not otherwise match.
   for (const node of Object.values(graphData.nodes)) {
-    if (!node.action || isBranchNodeType(node.nodeType)) continue;
+    if (
+      (!node.action && node.nodeType !== "END") ||
+      isBranchNodeType(node.nodeType)
+    )
+      continue;
     for (const [field, value] of Object.entries(
       node.raw?.properties?.parameters ?? {}
     )) {
       const ref = parseByNodeRef(value);
       if (!ref) continue;
       const source = graphData.nodes[ref.sourceNodeId];
-      const outputSchema = source?.action
-        ? integrationMap.get(source.action)?.outputSchema
-        : undefined;
+      const outputSchema =
+        source?.nodeType === "START"
+          ? {
+              properties: Object.fromEntries(
+                (source.raw?.properties?.fields ?? []).map((f) => [f.name, f])
+              ),
+            }
+          : source?.action
+          ? integrationMap.get(source.action)?.outputSchema
+          : undefined;
       const sourceField = ref.sourceField.split(/[.[]/, 1)[0];
       const missingSource = !source;
       const missingField =

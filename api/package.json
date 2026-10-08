@@ -21,6 +21,7 @@
     "@opentelemetry/host-metrics": "^0.36.2",
     "@opentelemetry/instrumentation-runtime-node": "^0.20.0",
     "@opentelemetry/sdk-metrics": "^2.1.0",
+    "@typesafe-ai/sdk": "^0.6.0",
     "axios": "^1.15.2",
     "dotenv": "^17.4.2",
     "express": "^4.21.2",

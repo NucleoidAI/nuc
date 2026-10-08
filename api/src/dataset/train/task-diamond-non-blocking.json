@@ -3,7 +3,7 @@
     {
       "id": "0cbfbecd-5e0d-4924-b5fd-6de262285936",
       "description": "Check product availability, if not exist, create order.",
-      "Blueprint": {
+      "blueprint": {
         "id": "ba6f7911-e232-469d-9060-2881852f6e59",
         "title": "Product Order",
         "description": "Check product availability, if not exist, create order.",
@@ -674,7 +674,7 @@
       "id": "hnd-nb-0001-0001-0001-0001-000000000001",
       "description": "Customer completed onboarding, hand off to support agent for follow-up.",
       "sessionId": "session-hnd-nb-0001",
-      "Blueprint": {
+      "blueprint": {
         "id": "bp-hnd-nb-0001-0001-0001-0001-000000000001",
         "title": "Onboarding to Support Handoff",
         "description": "Complete onboarding steps and hand off to support agent for follow-up.",
@@ -730,7 +730,7 @@
       "id": "order-cert-nonblock-001",
       "description": "Create a purchase order for product-2 (prd-2).",
       "sessionId": "019b6e75-nb01-nb01-nb01-nb0100000001",
-      "Blueprint": {
+      "blueprint": {
         "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
         "title": "Order and Compliance",
         "description": "Find product, assign compliance certificate, create purchase order, and send email.",
@@ -988,7 +988,7 @@
       "id": "order-cert-nonblock-002",
       "description": "Create a purchase order for product-4 (prd-4) which has no compliance certificate.",
       "sessionId": "019b6e75-nb02-nb02-nb02-nb0200000002",
-      "Blueprint": {
+      "blueprint": {
         "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
         "title": "Order and Compliance",
         "description": "Find product, assign compliance certificate, create purchase order, and send email.",
@@ -1719,6 +1719,7 @@
         "TELCO:pcm_to_wav",
         "TELCO:transcribe_meeting",
         "TELCO:summarize_meeting",
+        "TELCO:prepare_email",
         "TELCO:send_email_ews",
         "PLATFORM:complete"
       ],
@@ -1755,20 +1756,17 @@
         }
       ],
       "next_step": {
-        "action": "TELCO:send_email_ews",
+        "action": "TELCO:prepare_email",
         "parameters": {
-          "to": "yonetim-sync@example.com",
           "template": "meeting_summary_a",
-          "data": {
-            "summary": {
-              "$ref": "steps[2].result.summary"
-            },
-            "highlights": {
-              "$ref": "steps[2].result.highlights"
-            }
+          "summary": {
+            "$ref": "steps[2].result.summary"
+          },
+          "highlights": {
+            "$ref": "steps[2].result.highlights"
           }
         },
-        "comment": "The generated notes already exist in steps[2] - the summary and highlights are passed by $ref instead of being retyped. The recipient comes from the task description; nothing else is invented. Variant A sends no attachments and produces no next steps.",
+        "comment": "The email is rendered from the 'meeting_summary_a' template before it is sent. The generated notes already exist in steps[2] - the summary and highlights are passed by $ref instead of being retyped. Variant A produces no next steps.",
         "result_score": 0.95
       }
     },
@@ -1776,7 +1774,7 @@
       "id": "order-cert-missing-nonblock-001",
       "description": "Order product-3 (prd-3) - the knowledge base holds no certificate record for it.",
       "sessionId": "019b6e75-cm02-cm02-cm02-cm0200000001",
-      "Blueprint": {
+      "blueprint": {
         "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
         "title": "Order and Compliance",
         "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
@@ -1981,7 +1979,7 @@
       "id": "order-cert-missing-nonblock-002",
       "description": "The supervisor answered which certificate prd-3 should get.",
       "sessionId": "019b6e75-cm02-cm02-cm02-cm0200000002",
-      "Blueprint": {
+      "blueprint": {
         "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
         "title": "Order and Compliance",
         "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
@@ -2192,7 +2190,7 @@
       "id": "order-pay-nonblock-001",
       "description": "Create a purchase order for product-1 (prd-1), then prepare its payment.",
       "sessionId": "019b6e75-op01-op01-op01-op0100000001",
-      "Blueprint": {
+      "blueprint": {
         "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
         "title": "Order and Compliance",
         "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
@@ -2432,7 +2430,7 @@
       "id": "order-pay-nonblock-002",
       "description": "The user approved the charge for purchase order po-2001.",
       "sessionId": "019b6e75-op02-op02-op02-op0200000002",
-      "Blueprint": {
+      "blueprint": {
         "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
         "title": "Order and Compliance",
         "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
@@ -2694,7 +2692,7 @@
       "id": "order-pay-nonblock-003",
       "description": "The payment for purchase order po-2001 is prepared and needs the user's approval.",
       "sessionId": "019b6e75-op03-op03-op03-op0300000002",
-      "Blueprint": {
+      "blueprint": {
         "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
         "title": "Order and Compliance",
         "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",

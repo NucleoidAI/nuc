@@ -32,12 +32,6 @@
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
     },
     {
-      "id": "019f9d00-0000-4000-8000-000000000006",
-      "serverId": "gdrive",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
-    },
-    {
       "id": "019f9d00-0000-4000-8000-000000000007",
       "serverId": "gdrive",
       "teamId": null,
@@ -108,12 +102,6 @@
       "serverId": "servicenow",
       "teamId": null,
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-    },
-    {
-      "id": "019f9d00-0000-4000-8000-000000000019",
-      "serverId": "servicenow",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
     },
     {
       "id": "019f9d00-0000-4000-8000-000000000020",
@@ -188,12 +176,6 @@
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
     },
     {
-      "id": "019f9d00-0000-4000-8000-000000000032",
-      "serverId": "slack",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
-    },
-    {
       "id": "019f9d00-0000-4000-8000-000000000033",
       "serverId": "slack",
       "teamId": null,
@@ -264,12 +246,6 @@
       "serverId": "discord",
       "teamId": null,
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-    },
-    {
-      "id": "019f9d00-0000-4000-8000-000000000045",
-      "serverId": "discord",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
     },
     {
       "id": "019f9d00-0000-4000-8000-000000000046",
@@ -344,12 +320,6 @@
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
     },
     {
-      "id": "019f9d00-0000-4000-8000-000000000058",
-      "serverId": "jira",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
-    },
-    {
       "id": "019f9d00-0000-4000-8000-000000000059",
       "serverId": "jira",
       "teamId": null,
@@ -420,12 +390,6 @@
       "serverId": "github",
       "teamId": null,
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-    },
-    {
-      "id": "019f9d00-0000-4000-8000-000000000071",
-      "serverId": "github",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
     },
     {
       "id": "019f9d00-0000-4000-8000-000000000072",
@@ -500,12 +464,6 @@
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
     },
     {
-      "id": "019f9d00-0000-4000-8000-000000000084",
-      "serverId": "grey",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
-    },
-    {
       "id": "019f9d00-0000-4000-8000-000000000085",
       "serverId": "grey",
       "teamId": null,
@@ -576,12 +534,6 @@
       "serverId": "telco",
       "teamId": null,
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-    },
-    {
-      "id": "019f9d00-0000-4000-8000-000000000097",
-      "serverId": "telco",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
     },
     {
       "id": "019f9d00-0000-4000-8000-000000000098",
@@ -656,12 +608,6 @@
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
     },
     {
-      "id": "019f9d00-0000-4000-8000-000000000110",
-      "serverId": "order",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
-    },
-    {
       "id": "019f9d00-0000-4000-8000-000000000111",
       "serverId": "order",
       "teamId": null,
@@ -732,12 +678,6 @@
       "serverId": "activedirectory",
       "teamId": null,
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-    },
-    {
-      "id": "019f9d00-0000-4000-8000-000000000123",
-      "serverId": "activedirectory",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
     },
     {
       "id": "019f9d00-0000-4000-8000-000000000124",
@@ -812,12 +752,6 @@
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
     },
     {
-      "id": "019f9d00-0000-4000-8000-000000000136",
-      "serverId": "sap",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
-    },
-    {
       "id": "019f9d00-0000-4000-8000-000000000137",
       "serverId": "sap",
       "teamId": null,
@@ -888,12 +822,6 @@
       "serverId": "salesforce",
       "teamId": null,
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-    },
-    {
-      "id": "019f9d00-0000-4000-8000-000000000149",
-      "serverId": "salesforce",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
     },
     {
       "id": "019f9d00-0000-4000-8000-000000000150",
@@ -968,12 +896,6 @@
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
     },
     {
-      "id": "019f9d00-0000-4000-8000-000000000162",
-      "serverId": "aws",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
-    },
-    {
       "id": "019f9d00-0000-4000-8000-000000000163",
       "serverId": "aws",
       "teamId": null,
@@ -1044,12 +966,6 @@
       "serverId": "hubspot",
       "teamId": null,
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-    },
-    {
-      "id": "019f9d00-0000-4000-8000-000000000175",
-      "serverId": "hubspot",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
     },
     {
       "id": "019f9d00-0000-4000-8000-000000000176",
@@ -1124,12 +1040,6 @@
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
     },
     {
-      "id": "019f9d00-0000-4000-8000-000000000188",
-      "serverId": "oracle",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
-    },
-    {
       "id": "019f9d00-0000-4000-8000-000000000189",
       "serverId": "oracle",
       "teamId": null,
@@ -1200,12 +1110,6 @@
       "serverId": "microsoft",
       "teamId": null,
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-    },
-    {
-      "id": "019f9d00-0000-4000-8000-000000000201",
-      "serverId": "microsoft",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
     },
     {
       "id": "019f9d00-0000-4000-8000-000000000202",
@@ -1280,12 +1184,6 @@
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
     },
     {
-      "id": "019f9d00-0000-4000-8000-000000000214",
-      "serverId": "atlassian",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
-    },
-    {
       "id": "019f9d00-0000-4000-8000-000000000215",
       "serverId": "atlassian",
       "teamId": null,
@@ -1356,12 +1254,6 @@
       "serverId": "project_notifier",
       "teamId": null,
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-    },
-    {
-      "id": "019f9d00-0000-4000-8000-000000000227",
-      "serverId": "project_notifier",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
     },
     {
       "id": "019f9d00-0000-4000-8000-000000000228",
@@ -1436,12 +1328,6 @@
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
     },
     {
-      "id": "019f9d00-0000-4000-8000-000000000240",
-      "serverId": "zendesk",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
-    },
-    {
       "id": "019f9d00-0000-4000-8000-000000000241",
       "serverId": "zendesk",
       "teamId": null,
@@ -1512,12 +1398,6 @@
       "serverId": "docusign",
       "teamId": null,
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-    },
-    {
-      "id": "019f9d00-0000-4000-8000-000000000253",
-      "serverId": "docusign",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
     },
     {
       "id": "019f9d00-0000-4000-8000-000000000254",
@@ -1592,12 +1472,6 @@
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
     },
     {
-      "id": "019f9d00-0000-4000-8000-000000000266",
-      "serverId": "netsuite",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
-    },
-    {
       "id": "019f9d00-0000-4000-8000-000000000267",
       "serverId": "netsuite",
       "teamId": null,
@@ -1668,12 +1542,6 @@
       "serverId": "stripe",
       "teamId": null,
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-    },
-    {
-      "id": "019f9d00-0000-4000-8000-000000000279",
-      "serverId": "stripe",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
     },
     {
       "id": "019f9d00-0000-4000-8000-000000000280",
@@ -1748,12 +1616,6 @@
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
     },
     {
-      "id": "019f9d00-0000-4000-8000-000000000292",
-      "serverId": "snowflake",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
-    },
-    {
       "id": "019f9d00-0000-4000-8000-000000000293",
       "serverId": "snowflake",
       "teamId": null,
@@ -1824,12 +1686,6 @@
       "serverId": "twilio",
       "teamId": null,
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-    },
-    {
-      "id": "019f9d00-0000-4000-8000-000000000305",
-      "serverId": "twilio",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
     },
     {
       "id": "019f9d00-0000-4000-8000-000000000306",
@@ -1904,12 +1760,6 @@
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
     },
     {
-      "id": "a44b5e6a-35a0-5bf1-9811-30ab46f96a68",
-      "serverId": "fedex",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
-    },
-    {
       "id": "744c652b-6d0a-5cb6-8633-18c9965b1e1f",
       "serverId": "fedex",
       "teamId": null,
@@ -1962,12 +1812,6 @@
       "serverId": "as400",
       "teamId": null,
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-    },
-    {
-      "id": "08a21d96-67e4-5319-9220-3ac3d79906d6",
-      "serverId": "as400",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
     },
     {
       "id": "6de2ea5e-aa34-5666-96fb-916cc94cdb44",
@@ -2028,12 +1872,6 @@
       "serverId": "s3",
       "teamId": null,
       "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
-    },
-    {
-      "id": "2a10e78c-fe0f-5e53-b6b4-3e15db5108e8",
-      "serverId": "s3",
-      "teamId": null,
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e"
     },
     {
       "id": "74c32bc9-b9e7-5c78-909d-a880d8c5581a",

@@ -23,17 +23,6 @@
       "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59",
       "sessionId": "b9901597-8625-43d9-a925-ed5e0ad7b1e4"
     },
-    {
-      "id": "a1b2c3d4-0002-4000-8000-000000000002",
-      "description": "Resolve customer complaint about slow connection speed on account #8823",
-      "status": "FAILED",
-      "result": null,
-      "comment": "Failed to retrieve inventory data for the given BBK.",
-      "agentId": "e082e1fa-6ffc-4a20-9c01-e9e1acd2fe8e",
-      "blueprintId": null,
-      "sessionId": null,
-      "createdAt": "2026-05-11T11:30:00Z"
-    },
 
     {
       "id": "b2c3d4e5-0001-4000-8000-000000000001",

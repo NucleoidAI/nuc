@@ -52,6 +52,7 @@ export function buildAttachments(input: unknown): {
 type MeetingSummaryData = {
   meetingName?: string;
   meetingDate?: string;
+  attendees?: string[];
   summary?: string;
   highlights?: MeetingHighlight[];
   /** Variant B only - variant A has no next steps. */
@@ -68,6 +69,24 @@ function escapeHtml(value: string): string {
 
 function sectionHeader(title: string): string {
   return `<h2 style="margin:0 0 14px;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#1e293b;padding-left:10px;border-left:3px solid #1e293b;">${title}</h2>`;
+}
+
+function renderAttendeesSection(attendees?: string[]): string {
+  const names = attendees?.map((name) => name?.trim()).filter(Boolean);
+  if (!names?.length) return "";
+  const chips = names
+    .map(
+      (name) =>
+        `<span style="display:inline-block;margin:0 6px 6px 0;padding:4px 10px;border-radius:999px;background:#f1f5f9;border:1px solid #e2e8f0;color:#334155;font-size:13px;line-height:1.4;">${escapeHtml(name)}</span>`,
+    )
+    .join("");
+  return `
+    <tr>
+      <td style="padding:24px 32px 0;">
+        ${sectionHeader("Katılımcılar")}
+        <div>${chips}</div>
+      </td>
+    </tr>`;
 }
 
 function renderSummarySection(summary?: string): string {
@@ -234,6 +253,7 @@ export function renderMeetingSummaryA(data: MeetingSummaryData): {
     subject,
     "",
     data.summary ?? "",
+    textBlock("Katılımcılar", data.attendees),
     textHighlightsBlock(data.highlights),
   ]
     .filter(Boolean)
@@ -245,6 +265,7 @@ export function renderMeetingSummaryA(data: MeetingSummaryData): {
     eyebrow: "Toplantı Özeti",
     accent,
     sections: `
+          ${renderAttendeesSection(data.attendees)}
           ${renderSummarySection(data.summary)}
           ${renderHighlightsSection(data.highlights, accent)}`,
   });
@@ -268,6 +289,7 @@ export function renderMeetingSummaryB(data: MeetingSummaryData): {
     subject,
     "",
     data.summary ?? "",
+    textBlock("Katılımcılar", data.attendees),
     textHighlightsBlock(data.highlights),
     textBlock("Sonraki Adımlar", data.next_steps),
   ]
@@ -280,6 +302,7 @@ export function renderMeetingSummaryB(data: MeetingSummaryData): {
     eyebrow: "Toplantı Özeti - Konuşmacı Bazlı",
     accent,
     sections: `
+          ${renderAttendeesSection(data.attendees)}
           ${renderSummarySection(data.summary)}
           ${renderHighlightsSection(data.highlights, accent)}
           ${renderNextStepsSection(data.next_steps)}`,

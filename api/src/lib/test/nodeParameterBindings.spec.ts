@@ -26,7 +26,7 @@ describe("blueprint parameter generation", () => {
       next_step: {
         action: "TEST:run",
         parameters: {},
-        comment: "Executing blueprint node with configured input values.",
+        comment: "Executing TEST:run with configured input values.",
       },
       result_score: undefined,
     });
@@ -78,7 +78,7 @@ describe("blueprint parameter generation", () => {
             { action: "TEST:run", inputSchema },
             { action: "TEST:other", inputSchema },
           ],
-          mcps: [{ action: "TEST:run", inputSchema }],
+          mcp_tools: [{ action: "TEST:run", inputSchema }],
         },
       },
     ];
@@ -89,7 +89,7 @@ describe("blueprint parameter generation", () => {
         { action: "TEST:run", inputSchema: { properties: {}, required: [] } },
         { action: "TEST:other", inputSchema },
       ],
-      mcps: [
+      mcp_tools: [
         { action: "TEST:run", inputSchema: { properties: {}, required: [] } },
       ],
     });

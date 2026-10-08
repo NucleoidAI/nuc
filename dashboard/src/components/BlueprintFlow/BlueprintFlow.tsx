@@ -13,6 +13,11 @@ import {
   APPROVAL_BORDER_SOLID,
   blueprintFlowPlugin,
 } from "./BlueprintFlowPlugin";
+import {
+  type ApiField,
+  isApiNodeType,
+  toInputProperty,
+} from "../ApiNode/apiNodes";
 
 import { Flow, FlowMiniMap } from "@canmingir/link/platform/components";
 
@@ -100,6 +105,25 @@ export default function BlueprintFlow({
 
     const result: Record<string, NodeFields> = {};
     for (const node of Object.values(graphData.nodes)) {
+      if (isApiNodeType(node.nodeType)) {
+        const fields = (node.raw?.properties?.fields ?? []) as ApiField[];
+        const names = fields.map((field) => field.name).filter(Boolean);
+        if (!names.length) continue;
+        const apiFields = fields.filter((field) => field.name);
+        result[node.id] =
+          node.nodeType === "START"
+            ? { inputs: [], outputs: names, apiFields }
+            : {
+                inputs: names,
+                outputs: [],
+                inputProperties: Object.fromEntries(
+                  fields.map((field) => [field.name, toInputProperty(field)])
+                ),
+                apiFields,
+              };
+        continue;
+      }
+
       if (node.nodeType !== "NORMAL" || !node.action) continue;
       const integration = allIntegrations.find((i) => i.action === node.action);
       if (!integration) continue;
@@ -150,11 +174,13 @@ export default function BlueprintFlow({
 
   const hasForceNode = useMemo(
     () =>
+      liteMode ||
       Object.values(graphData?.nodes ?? {}).some(
         (node) =>
+          node.nodeType === "END" ||
           (node.raw?.properties as { force?: boolean } | undefined)?.force
       ),
-    [graphData]
+    [graphData, liteMode]
   );
 
   const impliedConnections = useMemo(() => {
@@ -192,7 +218,7 @@ export default function BlueprintFlow({
       const isForce = Boolean(
         (node.raw?.properties as { force?: boolean } | undefined)?.force
       );
-      if (isForce) continue;
+      if (isForce || liteMode) continue;
 
       const targetFields = nodeFields[node.id];
       if (!targetFields?.inputs.length) continue;
@@ -216,7 +242,7 @@ export default function BlueprintFlow({
     }
 
     return result;
-  }, [showConnections, graphData, nodeFields, boundFieldsByNode]);
+  }, [showConnections, graphData, nodeFields, boundFieldsByNode, liteMode]);
 
   const labelForImpliedConnection = useCallback(
     (b: { sourceNodeId: string; field: string }) =>

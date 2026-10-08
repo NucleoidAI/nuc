@@ -9,12 +9,14 @@ async function create({
   blueprintId,
   sessionId,
   inheritedSteps,
+  request,
 }: {
   agentId: string;
   description: string;
   blueprintId?: string;
   sessionId?: string;
   inheritedSteps?: object[];
+  request?: { nodeId: string; body: Record<string, unknown> };
 }) {
   const task = await Task.create({
     agentId,
@@ -24,6 +26,18 @@ async function create({
     sessionId,
     inheritedSteps: inheritedSteps?.length ? inheritedSteps : null,
   });
+
+  if (request) {
+    await Step.create({
+      taskId: task.id,
+      action: "PLATFORM:api_request",
+      parameters: request.body,
+      result: JSON.stringify(request.body),
+      comment: "Received API request.",
+      status: "COMPLETED",
+      nodeId: request.nodeId,
+    });
+  }
 
   await event.publish("TASK_CREATED", {
     taskId: task.id,
@@ -51,6 +65,57 @@ async function update({
 
   if (status === "COMPLETED") {
     await event.publish("TASK_COMPLETED", { taskId, result, comment });
+  } else {
+    await event.publish("TASK_FAILED", { taskId, comment });
+  }
+}
+
+const waiters = new Map<string, Set<() => void>>();
+
+let listening: Promise<unknown> | undefined;
+
+async function waitFor({
+  taskId,
+  timeoutMs,
+}: {
+  taskId: string;
+  timeoutMs: number;
+}) {
+  listening ??= Promise.all(
+    ["TASK_COMPLETED", "TASK_FAILED"].map((type) =>
+      event.subscribe<{ taskId: string }>(type, ({ taskId }) => {
+        waiters.get(taskId)?.forEach((notify) => notify());
+      }),
+    ),
+  ).catch((error) => {
+    listening = undefined;
+    throw error;
+  });
+
+  await listening;
+
+  let notify!: () => void;
+  const settled = new Promise<void>((resolve) => (notify = resolve));
+  const timer = setTimeout(notify, timeoutMs);
+
+  const taskWaiters = waiters.get(taskId) ?? new Set<() => void>();
+  taskWaiters.add(notify);
+  waiters.set(taskId, taskWaiters);
+
+  try {
+    const task = await Task.findByPk(taskId);
+    if (task && task.status !== "IN_PROGRESS") return task.toJSON();
+
+    await settled;
+
+    const settledTask = await Task.findByPk(taskId);
+    return settledTask && settledTask.status !== "IN_PROGRESS"
+      ? settledTask.toJSON()
+      : null;
+  } finally {
+    clearTimeout(timer);
+    taskWaiters.delete(notify);
+    if (!taskWaiters.size) waiters.delete(taskId);
   }
 }
 
@@ -58,6 +123,10 @@ async function get({ taskId }: { taskId: string }) {
   const taskInstance = await Task.findOne({ where: { id: taskId } });
   if (!taskInstance) throw new Error(`Task not found: ${taskId}`);
   return taskInstance.toJSON();
+}
+
+async function count({ blueprintId }: { blueprintId: string }) {
+  return Task.count({ where: { blueprintId } });
 }
 
 async function getWithSteps({ taskId }: { taskId: string }) {
@@ -116,6 +185,9 @@ async function list({
         ]
       : [],
     where,
+    ...(includeSteps && {
+      order: [[{ model: Step, as: "steps" }, "createdAt", "ASC"]],
+    }),
   });
 
   return taskInstances.map((task) => task.toJSON());
@@ -233,7 +305,9 @@ async function listSteps({ taskId }: { taskId: string }) {
 export default {
   create,
   get,
+  count,
   update,
+  waitFor,
   list,
   getStep,
   addStep,

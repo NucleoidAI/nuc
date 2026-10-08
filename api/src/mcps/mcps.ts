@@ -49,6 +49,7 @@ const MCPs = [
   {
     id: "1d49fadb-93e3-43cc-88e4-f3bfc2ea4f0e",
     action: "SLACK:search",
+    mock: true,
     label: "Slack",
     provider: "SLACK",
     description: "Search for messages in Slack",
@@ -73,6 +74,7 @@ const MCPs = [
   {
     id: "9e35c8d5-df44-44d9-8f9e-b4f4f3b1043d",
     action: "DISCORD:search",
+    mock: true,
     label: "Discord",
     provider: "DISCORD",
     description: "Search for messages in Discord",
@@ -97,6 +99,7 @@ const MCPs = [
   {
     id: "a0e40e76-1b2a-4a13-947f-939a9ad354b4",
     action: "JIRA:search",
+    mock: true,
     label: "Jira",
     provider: "JIRA",
     description: "Search for issues in JIRA",
@@ -121,6 +124,7 @@ const MCPs = [
   {
     id: "fa1eec4e-35c0-4e0c-8b1b-36c0a4ea95ee",
     action: "GITHUB:search",
+    mock: true,
     label: "GitHub",
     provider: "GITHUB",
     description: "Search for repositories on GitHub",
@@ -268,7 +272,7 @@ const MCPs = [
     label: "Telco EWS",
     provider: "TELCO",
     description:
-      "Send an email through Exchange Web Services using NTLM authentication. Supports plain text, HTML, predefined meeting templates, and attachments.",
+      "Send an email through Exchange Web Services using NTLM authentication. Sends ready-made subject, text and HTML content with optional attachments; use TELCO:prepare_email to render a template first.",
     direction: "OUTGOING",
     icon: "mdi:microsoft-outlook",
     lib: "mcp",
@@ -277,34 +281,21 @@ const MCPs = [
       properties: {
         to: {
           type: "string",
-          description: "The email address of the recipient.",
+          description:
+            "The recipient email address. Several recipients can be separated with ',' or ';', or given as a list of addresses or of objects with an 'email' field (e.g. meeting participants); entries without an email are skipped.",
         },
         subject: {
           type: "string",
-          description:
-            "The subject of the email. Not needed when 'template' is set.",
-          nullable: true,
+          description: "The subject of the email.",
         },
         text: {
           type: "string",
-          description:
-            "The plain-text body. Not needed when 'template' or 'html' is set.",
+          description: "The plain-text body. Not needed when 'html' is set.",
           nullable: true,
         },
         html: {
           type: "string",
-          description: "The HTML body. Not needed when 'template' is set.",
-          nullable: true,
-        },
-        template: {
-          type: "string",
-          description:
-            "Predefined template name: 'meeting_summary_a' or 'meeting_summary_b'.",
-          nullable: true,
-        },
-        data: {
-          type: "object",
-          description: "Structured data used by the selected template.",
+          description: "The HTML body. Not needed when 'text' is set.",
           nullable: true,
         },
         attachments: {
@@ -324,7 +315,79 @@ const MCPs = [
           nullable: true,
         },
       },
-      required: ["to"],
+      required: ["to", "subject"],
+    },
+  },
+  {
+    id: "ca540721-8224-4636-bb7b-d83b7e66500e",
+    action: "TELCO:prepare_email",
+    label: "Telco",
+    provider: "TELCO",
+    description:
+      "Render a predefined meeting email template and return the email's subject, plain-text body and HTML body, ready to be passed to TELCO:send_email_ews. Does not send anything.",
+    direction: "OUTGOING",
+    icon: "mdi:email-edit",
+    lib: "mcp",
+    inputSchema: {
+      type: "object",
+      properties: {
+        template: {
+          type: "string",
+          description:
+            "Predefined template name: 'meeting_summary_a' or 'meeting_summary_b'.",
+        },
+        meetingName: {
+          type: "string",
+          description: "The meeting name, used in the subject and the title.",
+          nullable: true,
+        },
+        meetingDate: {
+          type: "string",
+          description: "The meeting date, shown under the title and in the subject.",
+          nullable: true,
+        },
+        attendees: {
+          type: "array",
+          items: { type: "string" },
+          description: "Full names of the attendees, listed as the participants.",
+          nullable: true,
+        },
+        summary: {
+          type: "string",
+          description: "The overall meeting summary.",
+          nullable: true,
+        },
+        highlights: {
+          type: "array",
+          description: "The meeting's highlights grouped by topic.",
+          items: {
+            type: "object",
+            properties: {
+              topic: { type: "string" },
+              highlights: { type: "array", items: { type: "string" } },
+            },
+            required: ["topic", "highlights"],
+          },
+          nullable: true,
+        },
+        next_steps: {
+          type: "array",
+          items: { type: "string" },
+          description:
+            "Next steps the meeting left behind. Rendered by 'meeting_summary_b' only.",
+          nullable: true,
+        },
+      },
+      required: ["template"],
+    },
+    outputSchema: {
+      type: "object",
+      properties: {
+        subject: { type: "string", description: "The rendered subject." },
+        text: { type: "string", description: "The rendered plain-text body." },
+        html: { type: "string", description: "The rendered HTML body." },
+      },
+      required: ["subject", "text", "html"],
     },
   },
   {
@@ -840,6 +903,7 @@ const MCPs = [
   {
     id: "019f8b01-0000-4000-8000-000000000001",
     action: "SAP:search",
+    mock: true,
     label: "SAP",
     provider: "SAP",
     description:
@@ -869,6 +933,7 @@ const MCPs = [
   {
     id: "019f8b01-0000-4000-8000-000000000002",
     action: "SALESFORCE:search",
+    mock: true,
     label: "SalesForce",
     provider: "SALESFORCE",
     description:
@@ -898,6 +963,7 @@ const MCPs = [
   {
     id: "019f8b01-0000-4000-8000-000000000003",
     action: "SERVICENOW:search",
+    mock: true,
     label: "ServiceNow",
     provider: "SERVICENOW",
     description:
@@ -928,6 +994,7 @@ const MCPs = [
   {
     id: "019f8b01-0000-4000-8000-000000000004",
     action: "AWS:search",
+    mock: true,
     label: "AWS",
     provider: "AWS",
     description:
@@ -957,6 +1024,7 @@ const MCPs = [
   {
     id: "019f8b01-0000-4000-8000-000000000005",
     action: "HUBSPOT:search",
+    mock: true,
     label: "HubSpot",
     provider: "HUBSPOT",
     description: "Search for records (contacts, companies, deals) in HubSpot",
@@ -985,6 +1053,7 @@ const MCPs = [
   {
     id: "019f8b01-0000-4000-8000-000000000006",
     action: "ORACLE:search",
+    mock: true,
     label: "Oracle",
     provider: "ORACLE",
     description: "Search for records in Oracle Cloud applications",
@@ -1013,6 +1082,7 @@ const MCPs = [
   {
     id: "019f8b01-0000-4000-8000-000000000007",
     action: "MICROSOFT:search",
+    mock: true,
     label: "Microsoft",
     provider: "MICROSOFT",
     description:
@@ -1042,6 +1112,7 @@ const MCPs = [
   {
     id: "069cde56-d094-4205-9d80-45b68fe7d2ea",
     action: "MICROSOFT:send_email",
+    mock: true,
     label: "Microsoft",
     provider: "MICROSOFT",
     description:
@@ -1090,6 +1161,7 @@ const MCPs = [
   {
     id: "47e3ceae-2a41-40de-9c0f-0e34dfb897bb",
     action: "MICROSOFT:get_email_details",
+    mock: true,
     label: "Microsoft",
     provider: "MICROSOFT",
     description:
@@ -1133,6 +1205,7 @@ const MCPs = [
   {
     id: "af42f446-85a7-4375-8f91-a6b0b8cecba1",
     action: "MICROSOFT:create_calendar_event",
+    mock: true,
     label: "Microsoft",
     provider: "MICROSOFT",
     description: "Create a new event on the user's Outlook calendar.",
@@ -1182,6 +1255,7 @@ const MCPs = [
   {
     id: "713c0893-6220-493e-87f8-b2cd2d81d058",
     action: "MICROSOFT:get_calendar_events",
+    mock: true,
     label: "Microsoft",
     provider: "MICROSOFT",
     description:
@@ -1219,6 +1293,7 @@ const MCPs = [
   {
     id: "a420d417-13af-4aaa-b37f-eb72fc365335",
     action: "MICROSOFT:update_calendar_event",
+    mock: true,
     label: "Microsoft",
     provider: "MICROSOFT",
     description:
@@ -1255,6 +1330,7 @@ const MCPs = [
   {
     id: "69721577-2cba-4e84-b0f7-51b6d7be8cb0",
     action: "MICROSOFT:cancel_calendar_event",
+    mock: true,
     label: "Microsoft",
     provider: "MICROSOFT",
     description: "Cancel an existing calendar event and notify attendees.",
@@ -1281,6 +1357,7 @@ const MCPs = [
   {
     id: "0a550194-99b9-469d-a20b-7eb6d9bdaf85",
     action: "MICROSOFT:create_teams_meeting",
+    mock: true,
     label: "Microsoft",
     provider: "MICROSOFT",
     description:
@@ -1324,6 +1401,7 @@ const MCPs = [
   {
     id: "00987828-eca3-4884-9e79-0b936b4dd6b6",
     action: "MICROSOFT:send_teams_message",
+    mock: true,
     label: "Microsoft",
     provider: "MICROSOFT",
     description: "Send a message to a Microsoft Teams channel or chat.",
@@ -1358,6 +1436,7 @@ const MCPs = [
   {
     id: "71b8481f-dec9-4206-9e1a-8c46f9a3bbf9",
     action: "MICROSOFT:get_teams_channel_messages",
+    mock: true,
     label: "Microsoft",
     provider: "MICROSOFT",
     description: "Get recent messages posted in a Teams channel.",
@@ -1395,6 +1474,7 @@ const MCPs = [
   {
     id: "d659c62a-678f-4727-be4a-52c332c9d9a1",
     action: "MICROSOFT:create_teams_channel",
+    mock: true,
     label: "Microsoft",
     provider: "MICROSOFT",
     description:
@@ -1430,6 +1510,7 @@ const MCPs = [
   {
     id: "580a381f-4b1d-41eb-a9e6-c3d24c0b6aad",
     action: "MICROSOFT:upload_onedrive_file",
+    mock: true,
     label: "Microsoft",
     provider: "MICROSOFT",
     description: "Upload a file to the user's OneDrive at a given folder path.",
@@ -1473,6 +1554,7 @@ const MCPs = [
   {
     id: "b682b953-dd7a-4ae3-bbe7-79badaeefe36",
     action: "MICROSOFT:download_onedrive_file",
+    mock: true,
     label: "Microsoft",
     provider: "MICROSOFT",
     description: "Download a file from the user's OneDrive by file ID.",
@@ -1511,6 +1593,7 @@ const MCPs = [
   {
     id: "856661d6-048f-470b-a580-72bbacecb3b6",
     action: "MICROSOFT:share_onedrive_file",
+    mock: true,
     label: "Microsoft",
     provider: "MICROSOFT",
     description:
@@ -1553,6 +1636,7 @@ const MCPs = [
   {
     id: "f5172228-ba21-44e0-8dab-8aa4b282ff2f",
     action: "MICROSOFT:list_onedrive_files",
+    mock: true,
     label: "Microsoft",
     provider: "MICROSOFT",
     description: "List files and folders in a given OneDrive folder path.",
@@ -1587,6 +1671,7 @@ const MCPs = [
   {
     id: "9643f55f-151e-4af2-85a2-af19b8abb88e",
     action: "MICROSOFT:create_sharepoint_list_item",
+    mock: true,
     label: "Microsoft",
     provider: "MICROSOFT",
     description: "Create a new item in a SharePoint list.",
@@ -1625,6 +1710,7 @@ const MCPs = [
   {
     id: "d82539a5-788b-4e56-80df-633f705f4cdc",
     action: "MICROSOFT:get_sharepoint_list_items",
+    mock: true,
     label: "Microsoft",
     provider: "MICROSOFT",
     description: "Get items from a SharePoint list, optionally filtered.",
@@ -1666,6 +1752,7 @@ const MCPs = [
   {
     id: "d0c40d97-ba35-492a-926e-b7e898041169",
     action: "MICROSOFT:upload_sharepoint_document",
+    mock: true,
     label: "Microsoft",
     provider: "MICROSOFT",
     description: "Upload a document to a SharePoint document library.",
@@ -1708,6 +1795,7 @@ const MCPs = [
   {
     id: "62b27862-f39c-4700-9065-6212b653013a",
     action: "MICROSOFT:create_sharepoint_site",
+    mock: true,
     label: "Microsoft",
     provider: "MICROSOFT",
     description: "Create a new SharePoint team site.",
@@ -1747,6 +1835,7 @@ const MCPs = [
   {
     id: "b84432f5-fbd7-4932-b305-3536b3edf199",
     action: "MICROSOFT:get_user_profile",
+    mock: true,
     label: "Microsoft",
     provider: "MICROSOFT",
     description:
@@ -1790,6 +1879,7 @@ const MCPs = [
   {
     id: "32811f6a-617c-41b5-a17e-ff29d3688f68",
     action: "MICROSOFT:create_planner_task",
+    mock: true,
     label: "Microsoft",
     provider: "MICROSOFT",
     description: "Create a new task in a Microsoft Planner plan.",
@@ -1834,6 +1924,7 @@ const MCPs = [
   {
     id: "b0b12d2f-f822-436e-b8be-0405c1e4db85",
     action: "MICROSOFT:update_planner_task_status",
+    mock: true,
     label: "Microsoft",
     provider: "MICROSOFT",
     description:
@@ -1865,6 +1956,7 @@ const MCPs = [
   {
     id: "8f97472e-4209-4915-b551-87e9bbb1bd18",
     action: "MICROSOFT:get_onedrive_storage_usage",
+    mock: true,
     label: "Microsoft",
     provider: "MICROSOFT",
     description:
@@ -1895,6 +1987,7 @@ const MCPs = [
   {
     id: "019f8b01-0000-4000-8000-000000000008",
     action: "ATLASSIAN:search",
+    mock: true,
     label: "Atlassian",
     provider: "ATLASSIAN",
     description: "Search across Atlassian products (Jira, Confluence)",
@@ -1923,6 +2016,7 @@ const MCPs = [
   {
     id: "d4k0j5i6-1j2h-0i9k-6l5m-4h3i2j1k0l9g",
     action: "PROJECT_NOTIFIER:notify_project_open",
+    mock: true,
     label: "Project Notifier",
     provider: "PROJECT_NOTIFIER",
     description:
@@ -1955,6 +2049,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000001",
     action: "ZENDESK:create_ticket",
+    mock: true,
     label: "Zendesk",
     provider: "ZENDESK",
     description:
@@ -2009,6 +2104,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000002",
     action: "ZENDESK:update_ticket_status",
+    mock: true,
     label: "Zendesk",
     provider: "ZENDESK",
     description:
@@ -2040,6 +2136,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000003",
     action: "ZENDESK:get_customer_tickets",
+    mock: true,
     label: "Zendesk",
     provider: "ZENDESK",
     description: "Get all tickets associated with a customer's email address.",
@@ -2072,6 +2169,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000004",
     action: "ZENDESK:add_ticket_comment",
+    mock: true,
     label: "Zendesk",
     provider: "ZENDESK",
     description: "Add a public or internal comment to an existing ticket.",
@@ -2101,6 +2199,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000005",
     action: "ZENDESK:assign_ticket",
+    mock: true,
     label: "Zendesk",
     provider: "ZENDESK",
     description: "Assign a ticket to a specific agent or group.",
@@ -2130,6 +2229,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000006",
     action: "ZENDESK:merge_tickets",
+    mock: true,
     label: "Zendesk",
     provider: "ZENDESK",
     description: "Merge one or more duplicate tickets into a primary ticket.",
@@ -2157,6 +2257,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000007",
     action: "ZENDESK:get_ticket_details",
+    mock: true,
     label: "Zendesk",
     provider: "ZENDESK",
     description: "Get full details of a single ticket by its ID.",
@@ -2199,6 +2300,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000008",
     action: "ZENDESK:create_macro",
+    mock: true,
     label: "Zendesk",
     provider: "ZENDESK",
     description:
@@ -2228,6 +2330,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000009",
     action: "ZENDESK:search_knowledge_base",
+    mock: true,
     label: "Zendesk",
     provider: "ZENDESK",
     description:
@@ -2261,6 +2364,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000010",
     action: "ZENDESK:create_kb_article",
+    mock: true,
     label: "Zendesk",
     provider: "ZENDESK",
     description: "Create a new article in the Zendesk help center.",
@@ -2304,6 +2408,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000011",
     action: "ZENDESK:get_customer_satisfaction_score",
+    mock: true,
     label: "Zendesk",
     provider: "ZENDESK",
     description:
@@ -2346,6 +2451,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000012",
     action: "ZENDESK:escalate_ticket",
+    mock: true,
     label: "Zendesk",
     provider: "ZENDESK",
     description:
@@ -2376,6 +2482,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000013",
     action: "ZENDESK:close_ticket",
+    mock: true,
     label: "Zendesk",
     provider: "ZENDESK",
     description: "Close a resolved ticket, optionally with a closing comment.",
@@ -2401,6 +2508,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000014",
     action: "ZENDESK:get_agent_workload",
+    mock: true,
     label: "Zendesk",
     provider: "ZENDESK",
     description:
@@ -2440,6 +2548,7 @@ const MCPs = [
   {
     id: "e2b3c4d5-2000-4000-8000-000000000015",
     action: "ZENDESK:create_customer",
+    mock: true,
     label: "Zendesk",
     provider: "ZENDESK",
     description: "Create a new customer (end-user) record in Zendesk.",
@@ -2479,6 +2588,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000001",
     action: "DOCUSIGN:create_envelope",
+    mock: true,
     label: "Docusign",
     provider: "DOCUSIGN",
     description:
@@ -2531,6 +2641,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000002",
     action: "DOCUSIGN:get_envelope_status",
+    mock: true,
     label: "Docusign",
     provider: "DOCUSIGN",
     description:
@@ -2569,6 +2680,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000003",
     action: "DOCUSIGN:void_envelope",
+    mock: true,
     label: "Docusign",
     provider: "DOCUSIGN",
     description:
@@ -2594,6 +2706,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000004",
     action: "DOCUSIGN:list_envelope_recipients",
+    mock: true,
     label: "Docusign",
     provider: "DOCUSIGN",
     description:
@@ -2627,6 +2740,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000005",
     action: "DOCUSIGN:resend_envelope",
+    mock: true,
     label: "Docusign",
     provider: "DOCUSIGN",
     description:
@@ -2648,6 +2762,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000006",
     action: "DOCUSIGN:download_signed_document",
+    mock: true,
     label: "Docusign",
     provider: "DOCUSIGN",
     description:
@@ -2683,6 +2798,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000007",
     action: "DOCUSIGN:create_template",
+    mock: true,
     label: "Docusign",
     provider: "DOCUSIGN",
     description:
@@ -2718,6 +2834,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000008",
     action: "DOCUSIGN:get_template",
+    mock: true,
     label: "Docusign",
     provider: "DOCUSIGN",
     description: "Get the details and roles of a saved envelope template.",
@@ -2758,6 +2875,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000009",
     action: "DOCUSIGN:add_signer_to_envelope",
+    mock: true,
     label: "Docusign",
     provider: "DOCUSIGN",
     description:
@@ -2793,6 +2911,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000010",
     action: "DOCUSIGN:get_envelope_audit_trail",
+    mock: true,
     label: "Docusign",
     provider: "DOCUSIGN",
     description:
@@ -2826,6 +2945,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000011",
     action: "DOCUSIGN:create_bulk_send",
+    mock: true,
     label: "Docusign",
     provider: "DOCUSIGN",
     description:
@@ -2864,6 +2984,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000012",
     action: "DOCUSIGN:get_bulk_send_status",
+    mock: true,
     label: "Docusign",
     provider: "DOCUSIGN",
     description: "Get the completion status of a bulk send batch.",
@@ -2902,6 +3023,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000013",
     action: "DOCUSIGN:correct_envelope",
+    mock: true,
     label: "Docusign",
     provider: "DOCUSIGN",
     description:
@@ -2933,6 +3055,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000014",
     action: "DOCUSIGN:delete_envelope_draft",
+    mock: true,
     label: "Docusign",
     provider: "DOCUSIGN",
     description:
@@ -2954,6 +3077,7 @@ const MCPs = [
   {
     id: "e3c4d5e6-3000-4000-8000-000000000015",
     action: "DOCUSIGN:get_envelope_documents",
+    mock: true,
     label: "Docusign",
     provider: "DOCUSIGN",
     description: "List all documents attached to an envelope.",
@@ -2986,6 +3110,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000001",
     action: "NETSUITE:create_sales_order",
+    mock: true,
     label: "Netsuite",
     provider: "NETSUITE",
     description:
@@ -3033,6 +3158,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000002",
     action: "NETSUITE:get_inventory_level",
+    mock: true,
     label: "Netsuite",
     provider: "NETSUITE",
     description: "Get current inventory level for an item across locations.",
@@ -3076,6 +3202,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000003",
     action: "NETSUITE:create_invoice",
+    mock: true,
     label: "Netsuite",
     provider: "NETSUITE",
     description: "Create an invoice in NetSuite from an existing sales order.",
@@ -3119,6 +3246,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000004",
     action: "NETSUITE:create_purchase_order",
+    mock: true,
     label: "Netsuite",
     provider: "NETSUITE",
     description: "Create a purchase order for a vendor in NetSuite.",
@@ -3161,6 +3289,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000005",
     action: "NETSUITE:get_customer_balance",
+    mock: true,
     label: "Netsuite",
     provider: "NETSUITE",
     description:
@@ -3200,6 +3329,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000006",
     action: "NETSUITE:create_customer_record",
+    mock: true,
     label: "Netsuite",
     provider: "NETSUITE",
     description: "Create a new customer record in NetSuite.",
@@ -3239,6 +3369,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000007",
     action: "NETSUITE:get_item_details",
+    mock: true,
     label: "Netsuite",
     provider: "NETSUITE",
     description:
@@ -3282,6 +3413,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000008",
     action: "NETSUITE:create_vendor_bill",
+    mock: true,
     label: "Netsuite",
     provider: "NETSUITE",
     description: "Create a vendor bill against a purchase order.",
@@ -3320,6 +3452,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000009",
     action: "NETSUITE:get_vendor_bill_status",
+    mock: true,
     label: "Netsuite",
     provider: "NETSUITE",
     description: "Get the approval and payment status of a vendor bill.",
@@ -3354,6 +3487,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000010",
     action: "NETSUITE:run_financial_report",
+    mock: true,
     label: "Netsuite",
     provider: "NETSUITE",
     description:
@@ -3394,6 +3528,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000011",
     action: "NETSUITE:create_journal_entry",
+    mock: true,
     label: "Netsuite",
     provider: "NETSUITE",
     description: "Create a manual journal entry across GL accounts.",
@@ -3432,6 +3567,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000012",
     action: "NETSUITE:get_journal_entry",
+    mock: true,
     label: "Netsuite",
     provider: "NETSUITE",
     description: "Get the details of a posted journal entry.",
@@ -3470,6 +3606,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000013",
     action: "NETSUITE:update_sales_order",
+    mock: true,
     label: "Netsuite",
     provider: "NETSUITE",
     description: "Update line items or quantities on an existing sales order.",
@@ -3500,6 +3637,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000014",
     action: "NETSUITE:get_sales_order_status",
+    mock: true,
     label: "Netsuite",
     provider: "NETSUITE",
     description: "Get the fulfillment and billing status of a sales order.",
@@ -3534,6 +3672,7 @@ const MCPs = [
   {
     id: "e4d5e6f7-4000-4000-8000-000000000015",
     action: "NETSUITE:create_credit_memo",
+    mock: true,
     label: "Netsuite",
     provider: "NETSUITE",
     description:
@@ -3608,6 +3747,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000002",
     action: "STRIPE:create_charge",
+    mock: true,
     label: "Stripe",
     provider: "STRIPE",
     description:
@@ -3661,6 +3801,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000003",
     action: "STRIPE:get_payment_status",
+    mock: true,
     label: "Stripe",
     provider: "STRIPE",
     description: "Get the status of a payment or charge by its ID.",
@@ -3699,6 +3840,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000004",
     action: "STRIPE:create_subscription",
+    mock: true,
     label: "Stripe",
     provider: "STRIPE",
     description:
@@ -3738,6 +3880,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000005",
     action: "STRIPE:cancel_subscription",
+    mock: true,
     label: "Stripe",
     provider: "STRIPE",
     description:
@@ -3765,6 +3908,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000006",
     action: "STRIPE:get_subscription_status",
+    mock: true,
     label: "Stripe",
     provider: "STRIPE",
     description:
@@ -3845,6 +3989,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000008",
     action: "STRIPE:get_refund_status",
+    mock: true,
     label: "Stripe",
     provider: "STRIPE",
     description: "Get the status of a previously issued refund.",
@@ -3879,6 +4024,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000009",
     action: "STRIPE:create_invoice",
+    mock: true,
     label: "Stripe",
     provider: "STRIPE",
     description:
@@ -3923,6 +4069,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000010",
     action: "STRIPE:get_invoice_status",
+    mock: true,
     label: "Stripe",
     provider: "STRIPE",
     description: "Get the payment status of an invoice.",
@@ -3957,6 +4104,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000011",
     action: "STRIPE:attach_payment_method",
+    mock: true,
     label: "Stripe",
     provider: "STRIPE",
     description: "Attach a payment method (card, bank account) to a customer.",
@@ -3981,6 +4129,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000012",
     action: "STRIPE:list_customer_payment_methods",
+    mock: true,
     label: "Stripe",
     provider: "STRIPE",
     description: "List all payment methods saved on a customer's account.",
@@ -4013,6 +4162,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000013",
     action: "STRIPE:create_payout",
+    mock: true,
     label: "Stripe",
     provider: "STRIPE",
     description:
@@ -4052,6 +4202,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000014",
     action: "STRIPE:get_balance",
+    mock: true,
     label: "Stripe",
     provider: "STRIPE",
     description:
@@ -4082,6 +4233,7 @@ const MCPs = [
   {
     id: "e5f6a7b8-5000-4000-8000-000000000015",
     action: "STRIPE:create_coupon",
+    mock: true,
     label: "Stripe",
     provider: "STRIPE",
     description:
@@ -5455,6 +5607,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000001",
     action: "SNOWFLAKE:run_query",
+    mock: true,
     label: "Snowflake",
     provider: "SNOWFLAKE",
     description:
@@ -5501,6 +5654,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000002",
     action: "SNOWFLAKE:get_table_schema",
+    mock: true,
     label: "Snowflake",
     provider: "SNOWFLAKE",
     description: "Get the column schema for a table in Snowflake.",
@@ -5552,6 +5706,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000003",
     action: "SNOWFLAKE:list_tables",
+    mock: true,
     label: "Snowflake",
     provider: "SNOWFLAKE",
     description: "List all tables within a database schema.",
@@ -5588,6 +5743,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000004",
     action: "SNOWFLAKE:create_table",
+    mock: true,
     label: "Snowflake",
     provider: "SNOWFLAKE",
     description: "Create a new table with a given column definition.",
@@ -5623,6 +5779,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000005",
     action: "SNOWFLAKE:load_data_from_stage",
+    mock: true,
     label: "Snowflake",
     provider: "SNOWFLAKE",
     description:
@@ -5662,6 +5819,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000006",
     action: "SNOWFLAKE:get_warehouse_status",
+    mock: true,
     label: "Snowflake",
     provider: "SNOWFLAKE",
     description:
@@ -5701,6 +5859,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000007",
     action: "SNOWFLAKE:resume_warehouse",
+    mock: true,
     label: "Snowflake",
     provider: "SNOWFLAKE",
     description: "Resume a suspended warehouse so it can run queries.",
@@ -5721,6 +5880,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000008",
     action: "SNOWFLAKE:suspend_warehouse",
+    mock: true,
     label: "Snowflake",
     provider: "SNOWFLAKE",
     description: "Suspend a running warehouse to stop compute billing.",
@@ -5741,6 +5901,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000009",
     action: "SNOWFLAKE:get_query_history",
+    mock: true,
     label: "Snowflake",
     provider: "SNOWFLAKE",
     description: "Get recent query execution history for a warehouse or user.",
@@ -5784,6 +5945,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000010",
     action: "SNOWFLAKE:cancel_query",
+    mock: true,
     label: "Snowflake",
     provider: "SNOWFLAKE",
     description: "Cancel a currently running query by its query ID.",
@@ -5804,6 +5966,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000011",
     action: "SNOWFLAKE:grant_role_access",
+    mock: true,
     label: "Snowflake",
     provider: "SNOWFLAKE",
     description: "Grant a role access privileges on a database object.",
@@ -5832,6 +5995,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000012",
     action: "SNOWFLAKE:create_view",
+    mock: true,
     label: "Snowflake",
     provider: "SNOWFLAKE",
     description: "Create a view from a SQL SELECT statement.",
@@ -5856,6 +6020,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000013",
     action: "SNOWFLAKE:get_view_definition",
+    mock: true,
     label: "Snowflake",
     provider: "SNOWFLAKE",
     description: "Get the SQL definition of an existing view.",
@@ -5890,6 +6055,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000014",
     action: "SNOWFLAKE:clone_table",
+    mock: true,
     label: "Snowflake",
     provider: "SNOWFLAKE",
     description: "Zero-copy clone a table into a new table name.",
@@ -5914,6 +6080,7 @@ const MCPs = [
   {
     id: "e6a7b8c9-6000-4000-8000-000000000015",
     action: "SNOWFLAKE:get_storage_usage",
+    mock: true,
     label: "Snowflake",
     provider: "SNOWFLAKE",
     description: "Get storage usage in bytes for a database or the account.",
@@ -5945,6 +6112,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000001",
     action: "SAP:create_purchase_requisition",
+    mock: true,
     label: "SAP",
     provider: "SAP",
     description:
@@ -6002,6 +6170,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000002",
     action: "SAP:approve_requisition",
+    mock: true,
     label: "SAP",
     provider: "SAP",
     description: "Approve a pending purchase requisition by its ID.",
@@ -6027,6 +6196,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000003",
     action: "SAP:get_supplier_info",
+    mock: true,
     label: "SAP",
     provider: "SAP",
     description:
@@ -6070,6 +6240,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000004",
     action: "SAP:create_purchase_order",
+    mock: true,
     label: "SAP",
     provider: "SAP",
     description:
@@ -6105,6 +6276,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000005",
     action: "SAP:get_purchase_order_status",
+    mock: true,
     label: "SAP",
     provider: "SAP",
     description: "Get the fulfillment status of a purchase order.",
@@ -6139,6 +6311,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000006",
     action: "SAP:onboard_supplier",
+    mock: true,
     label: "SAP",
     provider: "SAP",
     description: "Start the onboarding workflow for a new supplier.",
@@ -6177,6 +6350,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000007",
     action: "SAP:get_supplier_risk_score",
+    mock: true,
     label: "SAP",
     provider: "SAP",
     description: "Get the current risk score and flags for a supplier.",
@@ -6211,6 +6385,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000008",
     action: "SAP:create_rfq",
+    mock: true,
     label: "SAP",
     provider: "SAP",
     description:
@@ -6253,6 +6428,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000009",
     action: "SAP:get_rfq_responses",
+    mock: true,
     label: "SAP",
     provider: "SAP",
     description: "Get all supplier bid responses submitted for an RFQ.",
@@ -6285,6 +6461,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000010",
     action: "SAP:award_rfq",
+    mock: true,
     label: "SAP",
     provider: "SAP",
     description: "Award an RFQ to the winning supplier bid.",
@@ -6309,6 +6486,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000011",
     action: "SAP:create_contract",
+    mock: true,
     label: "SAP",
     provider: "SAP",
     description: "Create a supplier contract in Ariba Contract Management.",
@@ -6347,6 +6525,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000012",
     action: "SAP:get_contract_status",
+    mock: true,
     label: "SAP",
     provider: "SAP",
     description:
@@ -6386,6 +6565,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000013",
     action: "SAP:submit_invoice",
+    mock: true,
     label: "SAP",
     provider: "SAP",
     description:
@@ -6421,6 +6601,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000014",
     action: "SAP:get_invoice_reconciliation_status",
+    mock: true,
     label: "SAP",
     provider: "SAP",
     description:
@@ -6456,6 +6637,7 @@ const MCPs = [
   {
     id: "e7b8c9d0-7000-4000-8000-000000000015",
     action: "SAP:reject_requisition",
+    mock: true,
     label: "SAP",
     provider: "SAP",
     description: "Reject a pending purchase requisition with a reason.",
@@ -6480,6 +6662,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000001",
     action: "TWILIO:send_sms",
+    mock: true,
     label: "Twilio",
     provider: "TWILIO",
     description: "Send an SMS message to a phone number via Twilio.",
@@ -6524,6 +6707,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000002",
     action: "TWILIO:make_call",
+    mock: true,
     label: "Twilio",
     provider: "TWILIO",
     description: "Initiate an outbound voice call via Twilio.",
@@ -6567,6 +6751,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000003",
     action: "TWILIO:get_message_status",
+    mock: true,
     label: "Twilio",
     provider: "TWILIO",
     description: "Get the delivery status of a previously sent SMS message.",
@@ -6604,6 +6789,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000004",
     action: "TWILIO:get_call_status",
+    mock: true,
     label: "Twilio",
     provider: "TWILIO",
     description: "Get the status and duration of a previously placed call.",
@@ -6642,6 +6828,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000005",
     action: "TWILIO:send_whatsapp_message",
+    mock: true,
     label: "Twilio",
     provider: "TWILIO",
     description:
@@ -6681,6 +6868,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000006",
     action: "TWILIO:create_conference_call",
+    mock: true,
     label: "Twilio",
     provider: "TWILIO",
     description: "Create a conference call and dial in a list of participants.",
@@ -6714,6 +6902,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000007",
     action: "TWILIO:lookup_phone_number",
+    mock: true,
     label: "Twilio",
     provider: "TWILIO",
     description:
@@ -6753,6 +6942,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000008",
     action: "TWILIO:send_verification_code",
+    mock: true,
     label: "Twilio",
     provider: "TWILIO",
     description:
@@ -6794,6 +6984,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000009",
     action: "TWILIO:verify_code",
+    mock: true,
     label: "Twilio",
     provider: "TWILIO",
     description:
@@ -6829,6 +7020,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000010",
     action: "TWILIO:purchase_phone_number",
+    mock: true,
     label: "Twilio",
     provider: "TWILIO",
     description:
@@ -6870,6 +7062,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000011",
     action: "TWILIO:release_phone_number",
+    mock: true,
     label: "Twilio",
     provider: "TWILIO",
     description:
@@ -6891,6 +7084,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000012",
     action: "TWILIO:get_call_recording",
+    mock: true,
     label: "Twilio",
     provider: "TWILIO",
     description:
@@ -6926,6 +7120,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000013",
     action: "TWILIO:send_bulk_sms",
+    mock: true,
     label: "Twilio",
     provider: "TWILIO",
     description: "Send the same SMS message to a list of recipients.",
@@ -6967,6 +7162,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000014",
     action: "TWILIO:create_messaging_service",
+    mock: true,
     label: "Twilio",
     provider: "TWILIO",
     description:
@@ -6998,6 +7194,7 @@ const MCPs = [
   {
     id: "e8c9d0e1-8000-4000-8000-000000000015",
     action: "TWILIO:get_usage_report",
+    mock: true,
     label: "Twilio",
     provider: "TWILIO",
     description:
@@ -7044,6 +7241,7 @@ const MCPs = [
   {
     id: "2e18b55e-e3d7-4053-9f47-e7c6fa2a468a",
     action: "AWS:stop_ec2_instance",
+    mock: true,
     label: "AWS",
     provider: "AWS",
     description: "Stop a running EC2 instance by its instance ID.",
@@ -7078,6 +7276,7 @@ const MCPs = [
   {
     id: "7fb4de79-b2b8-4206-b02f-69afc5574116",
     action: "AWS:get_ec2_instance_status",
+    mock: true,
     label: "AWS",
     provider: "AWS",
     description:
@@ -7117,6 +7316,7 @@ const MCPs = [
   {
     id: "95e752bc-dc90-42a3-9394-b2c92139bc6b",
     action: "AWS:create_s3_bucket",
+    mock: true,
     label: "AWS",
     provider: "AWS",
     description: "Create a new S3 bucket in a given region.",
@@ -7156,6 +7356,7 @@ const MCPs = [
   {
     id: "4be2995c-6e1c-42c7-8436-f2d92a796a58",
     action: "AWS:upload_s3_object",
+    mock: true,
     label: "AWS",
     provider: "AWS",
     description: "Upload an object to an S3 bucket at a given key.",
@@ -7202,6 +7403,7 @@ const MCPs = [
   {
     id: "5270af4c-b150-4d73-a471-17ab5ae5f9c6",
     action: "AWS:get_s3_object",
+    mock: true,
     label: "AWS",
     provider: "AWS",
     description: "Retrieve an object's metadata and content from an S3 bucket.",
@@ -7244,6 +7446,7 @@ const MCPs = [
   {
     id: "6be0f6ce-1d51-404a-8feb-77d48c2cb8a8",
     action: "AWS:delete_s3_object",
+    mock: true,
     label: "AWS",
     provider: "AWS",
     description: "Delete an object from an S3 bucket.",
@@ -7268,6 +7471,7 @@ const MCPs = [
   {
     id: "ae010ade-f04e-4012-85d6-0e65612b1540",
     action: "AWS:invoke_lambda_function",
+    mock: true,
     label: "AWS",
     provider: "AWS",
     description: "Invoke a Lambda function synchronously with a JSON payload.",
@@ -7305,6 +7509,7 @@ const MCPs = [
   {
     id: "d85aa595-91a2-4e5f-8dcf-abeb3c4c3c73",
     action: "AWS:get_lambda_function_logs",
+    mock: true,
     label: "AWS",
     provider: "AWS",
     description:
@@ -7343,6 +7548,7 @@ const MCPs = [
   {
     id: "b9842ff1-7f7b-4dd1-a294-0dc9b70711ee",
     action: "AWS:create_iam_user",
+    mock: true,
     label: "AWS",
     provider: "AWS",
     description: "Create a new IAM user in the AWS account.",
@@ -7377,6 +7583,7 @@ const MCPs = [
   {
     id: "d2c8478d-3778-446d-8769-891bc628a9d0",
     action: "AWS:attach_iam_policy",
+    mock: true,
     label: "AWS",
     provider: "AWS",
     description: "Attach a managed IAM policy to a user, group, or role.",
@@ -7401,6 +7608,7 @@ const MCPs = [
   {
     id: "c09cdb7c-c68f-4ea8-bac0-c1cb60a7af6f",
     action: "AWS:get_billing_summary",
+    mock: true,
     label: "AWS",
     provider: "AWS",
     description:
@@ -7437,6 +7645,7 @@ const MCPs = [
   {
     id: "77335a06-d204-4a77-9957-1c61fe26f4cb",
     action: "AWS:create_rds_instance",
+    mock: true,
     label: "AWS",
     provider: "AWS",
     description: "Create a new RDS database instance.",
@@ -7479,6 +7688,7 @@ const MCPs = [
   {
     id: "97d1cd2f-319e-450b-a5f5-70ac8e08ca67",
     action: "AWS:get_rds_instance_status",
+    mock: true,
     label: "AWS",
     provider: "AWS",
     description: "Get the availability status of an RDS instance.",
@@ -7513,6 +7723,7 @@ const MCPs = [
   {
     id: "8d9008d7-cc11-473f-bbaa-9cfade9acff0",
     action: "AWS:create_cloudwatch_alarm",
+    mock: true,
     label: "AWS",
     provider: "AWS",
     description:
@@ -7556,6 +7767,7 @@ const MCPs = [
   {
     id: "4c7abf64-4bd8-4931-9489-a6030d93aea0",
     action: "AWS:get_cloudwatch_metrics",
+    mock: true,
     label: "AWS",
     provider: "AWS",
     description: "Get recent datapoints for a CloudWatch metric.",
@@ -7597,6 +7809,7 @@ const MCPs = [
   {
     id: "3b8ae30d-1ac3-41d2-8378-721580212e29",
     action: "ORACLE:create_purchase_order",
+    mock: true,
     label: "Oracle",
     provider: "ORACLE",
     description: "Create a purchase order in Oracle Cloud Procurement.",
@@ -7639,6 +7852,7 @@ const MCPs = [
   {
     id: "7fdaff02-a33a-4532-bc24-23ac122f23eb",
     action: "ORACLE:get_purchase_order_status",
+    mock: true,
     label: "Oracle",
     provider: "ORACLE",
     description: "Get the current status of a purchase order.",
@@ -7673,6 +7887,7 @@ const MCPs = [
   {
     id: "c86aeaf7-9216-4be9-a9eb-73c1db8284ec",
     action: "ORACLE:create_employee_record",
+    mock: true,
     label: "Oracle",
     provider: "ORACLE",
     description: "Create a new employee record in Oracle HCM Cloud.",
@@ -7712,6 +7927,7 @@ const MCPs = [
   {
     id: "a994c11f-05d9-4fb4-a6bf-a06277ae59ff",
     action: "ORACLE:get_employee_record",
+    mock: true,
     label: "Oracle",
     provider: "ORACLE",
     description: "Get HR record details for an employee by employee ID.",
@@ -7750,6 +7966,7 @@ const MCPs = [
   {
     id: "e083a88d-ff85-4237-b593-fde914e00786",
     action: "ORACLE:run_payroll_process",
+    mock: true,
     label: "Oracle",
     provider: "ORACLE",
     description: "Trigger a payroll processing run for a given pay period.",
@@ -7784,6 +8001,7 @@ const MCPs = [
   {
     id: "2c68a776-8012-489f-a5aa-2ef37e9c3fb5",
     action: "ORACLE:get_gl_journal_entries",
+    mock: true,
     label: "Oracle",
     provider: "ORACLE",
     description:
@@ -7817,6 +8035,7 @@ const MCPs = [
   {
     id: "115a7a51-f6fc-4fbd-89dc-3f8cfa4ac733",
     action: "ORACLE:create_gl_journal_entry",
+    mock: true,
     label: "Oracle",
     provider: "ORACLE",
     description: "Create a manual general ledger journal entry.",
@@ -7855,6 +8074,7 @@ const MCPs = [
   {
     id: "54c4a18f-4798-46a6-a0e2-dd25327a9210",
     action: "ORACLE:get_ar_invoice_status",
+    mock: true,
     label: "Oracle",
     provider: "ORACLE",
     description: "Get the payment status of an accounts receivable invoice.",
@@ -7889,6 +8109,7 @@ const MCPs = [
   {
     id: "d223c8ee-53bf-4d96-bc04-0fbeadfd130c",
     action: "ORACLE:create_ar_invoice",
+    mock: true,
     label: "Oracle",
     provider: "ORACLE",
     description: "Create a new accounts receivable invoice for a customer.",
@@ -7923,6 +8144,7 @@ const MCPs = [
   {
     id: "b397167b-4cbc-4a8c-bbdf-0718df9dcd92",
     action: "ORACLE:create_ap_invoice",
+    mock: true,
     label: "Oracle",
     provider: "ORACLE",
     description: "Create a new accounts payable invoice for a vendor.",
@@ -7957,6 +8179,7 @@ const MCPs = [
   {
     id: "e46bdd85-d62a-44df-821b-63aace286c2b",
     action: "ORACLE:get_ap_invoice_status",
+    mock: true,
     label: "Oracle",
     provider: "ORACLE",
     description:
@@ -7992,6 +8215,7 @@ const MCPs = [
   {
     id: "0e6a34f1-0065-49aa-8894-9dd45b5ed8d6",
     action: "ORACLE:create_sales_order",
+    mock: true,
     label: "Oracle",
     provider: "ORACLE",
     description: "Create a sales order in Oracle Cloud SCM.",
@@ -8030,6 +8254,7 @@ const MCPs = [
   {
     id: "064b0daa-5615-47b6-8715-9f9de98dc616",
     action: "ORACLE:get_inventory_balance",
+    mock: true,
     label: "Oracle",
     provider: "ORACLE",
     description: "Get on-hand inventory balance for an item at a warehouse.",
@@ -8069,6 +8294,7 @@ const MCPs = [
   {
     id: "5683c6e6-f687-403f-8ef7-dcd54d8bcc01",
     action: "ORACLE:create_expense_report",
+    mock: true,
     label: "Oracle",
     provider: "ORACLE",
     description: "Create a new expense report for an employee.",
@@ -8103,6 +8329,7 @@ const MCPs = [
   {
     id: "67c2cab9-6370-45e1-b672-efef48339b56",
     action: "ORACLE:approve_expense_report",
+    mock: true,
     label: "Oracle",
     provider: "ORACLE",
     description: "Approve a submitted expense report.",
@@ -8123,6 +8350,7 @@ const MCPs = [
   {
     id: "ec0730e3-8b1d-4a0a-8f3e-333a69d06f35",
     action: "ORACLE:get_financial_period_status",
+    mock: true,
     label: "Oracle",
     provider: "ORACLE",
     description: "Get whether a financial accounting period is open or closed.",
@@ -8157,6 +8385,7 @@ const MCPs = [
   {
     id: "aaafe618-55dc-4119-b888-3afb84c0f3e5",
     action: "HUBSPOT:create_contact",
+    mock: true,
     label: "HubSpot",
     provider: "HUBSPOT",
     description: "Create a new contact record in HubSpot.",
@@ -8197,6 +8426,7 @@ const MCPs = [
   {
     id: "6b105cf2-54e6-43d5-bd89-099536bf59d2",
     action: "HUBSPOT:update_contact",
+    mock: true,
     label: "HubSpot",
     provider: "HUBSPOT",
     description: "Update properties on an existing contact record.",
@@ -8221,6 +8451,7 @@ const MCPs = [
   {
     id: "834e92a9-179f-4bee-965e-5eb4afa1b278",
     action: "HUBSPOT:get_contact_details",
+    mock: true,
     label: "HubSpot",
     provider: "HUBSPOT",
     description: "Get full property details for a contact by ID.",
@@ -8259,6 +8490,7 @@ const MCPs = [
   {
     id: "a531aadc-f989-463e-886f-7276f3f0ba1f",
     action: "HUBSPOT:create_company",
+    mock: true,
     label: "HubSpot",
     provider: "HUBSPOT",
     description: "Create a new company record in HubSpot.",
@@ -8294,6 +8526,7 @@ const MCPs = [
   {
     id: "0f4f560b-24b1-4719-8cd2-62ef806347ff",
     action: "HUBSPOT:create_deal",
+    mock: true,
     label: "HubSpot",
     provider: "HUBSPOT",
     description: "Create a new deal in a sales pipeline.",
@@ -8334,6 +8567,7 @@ const MCPs = [
   {
     id: "bbd4cdfe-1f71-49b1-8e5a-89336c25dbc5",
     action: "HUBSPOT:update_deal_stage",
+    mock: true,
     label: "HubSpot",
     provider: "HUBSPOT",
     description: "Move a deal to a new pipeline stage.",
@@ -8358,6 +8592,7 @@ const MCPs = [
   {
     id: "3e341d27-620c-48a7-9695-67911f83c006",
     action: "HUBSPOT:get_deal_details",
+    mock: true,
     label: "HubSpot",
     provider: "HUBSPOT",
     description: "Get details of a deal including amount and stage.",
@@ -8396,6 +8631,7 @@ const MCPs = [
   {
     id: "22d1c794-4a7d-44d0-a02e-f18ff5c9293e",
     action: "HUBSPOT:create_task",
+    mock: true,
     label: "HubSpot",
     provider: "HUBSPOT",
     description: "Create a follow-up task associated with a contact or deal.",
@@ -8436,6 +8672,7 @@ const MCPs = [
   {
     id: "2cbd6486-f7e5-4127-b821-ce91c3123271",
     action: "HUBSPOT:log_email_activity",
+    mock: true,
     label: "HubSpot",
     provider: "HUBSPOT",
     description:
@@ -8467,6 +8704,7 @@ const MCPs = [
   {
     id: "6d9abdf2-c11e-4b97-b1df-4d1b012bb587",
     action: "HUBSPOT:create_marketing_email",
+    mock: true,
     label: "HubSpot",
     provider: "HUBSPOT",
     description: "Create a new marketing email in HubSpot's email tool.",
@@ -8501,6 +8739,7 @@ const MCPs = [
   {
     id: "c39e60e0-fc8c-4f1e-afdc-570349048be9",
     action: "HUBSPOT:get_email_campaign_stats",
+    mock: true,
     label: "HubSpot",
     provider: "HUBSPOT",
     description:
@@ -8540,6 +8779,7 @@ const MCPs = [
   {
     id: "24a27fa8-7b5b-4926-b862-6db086974caa",
     action: "HUBSPOT:create_form",
+    mock: true,
     label: "HubSpot",
     provider: "HUBSPOT",
     description: "Create a new lead capture form.",
@@ -8570,6 +8810,7 @@ const MCPs = [
   {
     id: "57b6d9f5-c326-4282-af4e-d26274e49962",
     action: "HUBSPOT:get_form_submissions",
+    mock: true,
     label: "HubSpot",
     provider: "HUBSPOT",
     description: "Get recent submissions for a given form.",
@@ -8602,6 +8843,7 @@ const MCPs = [
   {
     id: "0b9f8e8d-7227-44a5-b42d-253a1511b365",
     action: "HUBSPOT:enroll_contact_in_workflow",
+    mock: true,
     label: "HubSpot",
     provider: "HUBSPOT",
     description:
@@ -8627,6 +8869,7 @@ const MCPs = [
   {
     id: "5238aafb-9a81-404d-bdf6-90054cb110b9",
     action: "HUBSPOT:create_ticket",
+    mock: true,
     label: "HubSpot",
     provider: "HUBSPOT",
     description: "Create a support ticket in HubSpot's Service Hub.",
@@ -8662,6 +8905,7 @@ const MCPs = [
   {
     id: "949b12af-965d-4fd7-a18f-ca1528d8fa80",
     action: "HUBSPOT:get_pipeline_summary",
+    mock: true,
     label: "HubSpot",
     provider: "HUBSPOT",
     description: "Get a summary of open deal value grouped by pipeline stage.",
@@ -8695,6 +8939,7 @@ const MCPs = [
   {
     id: "58ba208b-2438-48e8-99b8-8a7655116d87",
     action: "SALESFORCE:create_lead",
+    mock: true,
     label: "SalesForce",
     provider: "SALESFORCE",
     description: "Create a new lead record in Salesforce.",
@@ -8734,6 +8979,7 @@ const MCPs = [
   {
     id: "f8bb9460-65da-4637-8e92-efd8a9aabc1f",
     action: "SALESFORCE:convert_lead",
+    mock: true,
     label: "SalesForce",
     provider: "SALESFORCE",
     description:
@@ -8773,6 +9019,7 @@ const MCPs = [
   {
     id: "67160372-c720-46c4-a0b3-775064d5d83d",
     action: "SALESFORCE:create_account",
+    mock: true,
     label: "SalesForce",
     provider: "SALESFORCE",
     description: "Create a new account (company) record.",
@@ -8803,6 +9050,7 @@ const MCPs = [
   {
     id: "af692126-a39c-4f84-b3db-d0d9d1e4ac57",
     action: "SALESFORCE:create_contact",
+    mock: true,
     label: "SalesForce",
     provider: "SALESFORCE",
     description: "Create a new contact record associated with an account.",
@@ -8843,6 +9091,7 @@ const MCPs = [
   {
     id: "8ba807ba-f711-4da8-b9fd-d7e2179183ee",
     action: "SALESFORCE:create_case",
+    mock: true,
     label: "SalesForce",
     provider: "SALESFORCE",
     description: "Create a new support case for a customer.",
@@ -8878,6 +9127,7 @@ const MCPs = [
   {
     id: "68ac14f5-de20-4f32-b032-3fdff9322717",
     action: "SALESFORCE:update_case_status",
+    mock: true,
     label: "SalesForce",
     provider: "SALESFORCE",
     description: "Update the status of an existing support case.",
@@ -8902,6 +9152,7 @@ const MCPs = [
   {
     id: "555ce9a4-b1e2-438b-92a6-69cae8b4298e",
     action: "SALESFORCE:get_case_details",
+    mock: true,
     label: "SalesForce",
     provider: "SALESFORCE",
     description: "Get full details of a support case.",
@@ -8940,6 +9191,7 @@ const MCPs = [
   {
     id: "ac62e546-7274-440b-b105-aed19fbfefd5",
     action: "SALESFORCE:create_campaign",
+    mock: true,
     label: "SalesForce",
     provider: "SALESFORCE",
     description: "Create a new marketing campaign record.",
@@ -8970,6 +9222,7 @@ const MCPs = [
   {
     id: "11894e59-3966-450d-ac2d-3e65ee574a82",
     action: "SALESFORCE:add_lead_to_campaign",
+    mock: true,
     label: "SalesForce",
     provider: "SALESFORCE",
     description: "Add a lead as a member of a campaign.",
@@ -8994,6 +9247,7 @@ const MCPs = [
   {
     id: "21f46206-dc5d-443c-9c96-e2620bcf9e84",
     action: "SALESFORCE:create_task",
+    mock: true,
     label: "SalesForce",
     provider: "SALESFORCE",
     description: "Create a follow-up task associated with a record.",
@@ -9034,6 +9288,7 @@ const MCPs = [
   {
     id: "da2e4509-3cf7-425e-af80-f663adf245a2",
     action: "SALESFORCE:log_activity",
+    mock: true,
     label: "SalesForce",
     provider: "SALESFORCE",
     description: "Log a call or meeting activity on a record's timeline.",
@@ -9064,6 +9319,7 @@ const MCPs = [
   {
     id: "2a85d2cb-bf70-43fe-9297-be64971bd4c3",
     action: "SALESFORCE:run_report",
+    mock: true,
     label: "SalesForce",
     provider: "SALESFORCE",
     description: "Run a saved Salesforce report and return summary results.",
@@ -9098,6 +9354,7 @@ const MCPs = [
   {
     id: "fdf01a03-6a2b-4f87-8857-67fd24d6f51d",
     action: "SALESFORCE:get_forecast_summary",
+    mock: true,
     label: "SalesForce",
     provider: "SALESFORCE",
     description: "Get the current sales forecast summary for a period.",
@@ -9128,6 +9385,7 @@ const MCPs = [
   {
     id: "4cae696d-0228-4c08-bd19-7643fbf340a8",
     action: "SALESFORCE:create_quote",
+    mock: true,
     label: "SalesForce",
     provider: "SALESFORCE",
     description: "Create a price quote associated with an opportunity.",
@@ -9163,6 +9421,7 @@ const MCPs = [
   {
     id: "4dd4ac37-87b6-479f-b765-8b7107bc1597",
     action: "SERVICENOW:update_incident_status",
+    mock: true,
     label: "ServiceNow",
     provider: "SERVICENOW",
     description: "Update the state of an existing incident.",
@@ -9188,6 +9447,7 @@ const MCPs = [
   {
     id: "9f720004-01b1-49c4-9973-c6ea17ce9a5d",
     action: "SERVICENOW:get_incident_details",
+    mock: true,
     label: "ServiceNow",
     provider: "SERVICENOW",
     description: "Get full details of an incident by its incident number.",
@@ -9226,6 +9486,7 @@ const MCPs = [
   {
     id: "1ffc814f-67f4-4eeb-a9ed-04716b3c73b2",
     action: "SERVICENOW:create_change_request",
+    mock: true,
     label: "ServiceNow",
     provider: "SERVICENOW",
     description:
@@ -9261,6 +9522,7 @@ const MCPs = [
   {
     id: "9bfa0246-f417-462c-8fe1-66f50528ec17",
     action: "SERVICENOW:approve_change_request",
+    mock: true,
     label: "ServiceNow",
     provider: "SERVICENOW",
     description: "Approve a pending change request by its change number.",
@@ -9281,6 +9543,7 @@ const MCPs = [
   {
     id: "ff0cad2d-90d7-4032-8955-7159eb270f9c",
     action: "SERVICENOW:create_problem_record",
+    mock: true,
     label: "ServiceNow",
     provider: "SERVICENOW",
     description: "Create a problem record for root-cause investigation.",
@@ -9311,6 +9574,7 @@ const MCPs = [
   {
     id: "dc31af0c-87d4-49b4-a9ba-415da718ab70",
     action: "SERVICENOW:link_problem_to_incident",
+    mock: true,
     label: "ServiceNow",
     provider: "SERVICENOW",
     description: "Link an existing problem record to a related incident.",
@@ -9335,6 +9599,7 @@ const MCPs = [
   {
     id: "c286c661-be8d-4b8d-afa2-1e56a7f31f09",
     action: "SERVICENOW:create_catalog_request",
+    mock: true,
     label: "ServiceNow",
     provider: "SERVICENOW",
     description:
@@ -9370,6 +9635,7 @@ const MCPs = [
   {
     id: "8abfa539-094c-4f29-9778-885b769ab8b5",
     action: "SERVICENOW:get_catalog_request_status",
+    mock: true,
     label: "ServiceNow",
     provider: "SERVICENOW",
     description: "Get the fulfillment status of a service catalog request.",
@@ -9404,6 +9670,7 @@ const MCPs = [
   {
     id: "8c970c64-47fd-49f1-8e97-2097d1547195",
     action: "SERVICENOW:create_knowledge_article",
+    mock: true,
     label: "ServiceNow",
     provider: "SERVICENOW",
     description: "Create a new knowledge base article.",
@@ -9438,6 +9705,7 @@ const MCPs = [
   {
     id: "dc3c023e-c98d-4e10-950b-0fbfabb18d7b",
     action: "SERVICENOW:search_cmdb_ci",
+    mock: true,
     label: "ServiceNow",
     provider: "SERVICENOW",
     description:
@@ -9471,6 +9739,7 @@ const MCPs = [
   {
     id: "2cb46043-4bd1-43e9-af86-a5a727349e76",
     action: "SERVICENOW:update_cmdb_ci",
+    mock: true,
     label: "ServiceNow",
     provider: "SERVICENOW",
     description: "Update attributes on a configuration item in the CMDB.",
@@ -9495,6 +9764,7 @@ const MCPs = [
   {
     id: "539d3524-f650-408b-8b63-f0839f6a3422",
     action: "SERVICENOW:create_service_request",
+    mock: true,
     label: "ServiceNow",
     provider: "SERVICENOW",
     description: "Create a general IT service request not tied to the catalog.",
@@ -9529,6 +9799,7 @@ const MCPs = [
   {
     id: "52d20d03-5dc4-4c3d-a659-493e41053185",
     action: "SERVICENOW:get_sla_breach_report",
+    mock: true,
     label: "ServiceNow",
     provider: "SERVICENOW",
     description:
@@ -9563,6 +9834,7 @@ const MCPs = [
   {
     id: "785f3c37-9825-4bd3-a06e-d64c1648eb98",
     action: "SERVICENOW:assign_incident",
+    mock: true,
     label: "ServiceNow",
     provider: "SERVICENOW",
     description: "Assign an incident to a specific agent or assignment group.",
@@ -9593,6 +9865,7 @@ const MCPs = [
   {
     id: "2c4a422a-da00-489e-b324-b27299731fa1",
     action: "ATLASSIAN:create_jira_issue",
+    mock: true,
     label: "Atlassian",
     provider: "ATLASSIAN",
     description:
@@ -9649,6 +9922,7 @@ const MCPs = [
   {
     id: "92b06cce-e5f1-4f6c-ac56-15aa2fc56039",
     action: "ATLASSIAN:get_jira_issue",
+    mock: true,
     label: "Atlassian",
     provider: "ATLASSIAN",
     description: "Get the full details of a Jira issue by its issue key.",
@@ -9691,6 +9965,7 @@ const MCPs = [
   {
     id: "91c8f3a2-3f35-49e4-a376-fa7835078ea1",
     action: "ATLASSIAN:update_jira_issue",
+    mock: true,
     label: "Atlassian",
     provider: "ATLASSIAN",
     description:
@@ -9728,6 +10003,7 @@ const MCPs = [
   {
     id: "984ed1bd-f6c9-4ab2-bd5a-4e1d5cd4dd83",
     action: "ATLASSIAN:transition_jira_issue",
+    mock: true,
     label: "Atlassian",
     provider: "ATLASSIAN",
     description:
@@ -9759,6 +10035,7 @@ const MCPs = [
   {
     id: "2aa58751-52b6-4920-bb35-7e560acd73f9",
     action: "ATLASSIAN:assign_jira_issue",
+    mock: true,
     label: "Atlassian",
     provider: "ATLASSIAN",
     description: "Assign a Jira issue to a specific user.",
@@ -9784,6 +10061,7 @@ const MCPs = [
   {
     id: "5b1d2a2f-e153-4acf-9f3e-b42c09d46597",
     action: "ATLASSIAN:add_jira_comment",
+    mock: true,
     label: "Atlassian",
     provider: "ATLASSIAN",
     description: "Add a comment to an existing Jira issue.",
@@ -9818,6 +10096,7 @@ const MCPs = [
   {
     id: "fd85a848-b67c-4cba-84ea-9d727fd041fa",
     action: "ATLASSIAN:search_jira_issues",
+    mock: true,
     label: "Atlassian",
     provider: "ATLASSIAN",
     description: "Search Jira issues using a JQL query.",
@@ -9856,6 +10135,7 @@ const MCPs = [
   {
     id: "9c8c7c76-1c59-41f4-9be7-de1b115acad6",
     action: "ATLASSIAN:link_jira_issues",
+    mock: true,
     label: "Atlassian",
     provider: "ATLASSIAN",
     description:
@@ -9887,6 +10167,7 @@ const MCPs = [
   {
     id: "680d4c0c-d87f-4db9-9b4e-d5ff33d31f98",
     action: "ATLASSIAN:create_jira_sprint",
+    mock: true,
     label: "Atlassian",
     provider: "ATLASSIAN",
     description: "Create a new sprint on a Jira board.",
@@ -9931,6 +10212,7 @@ const MCPs = [
   {
     id: "2def1557-c359-4465-a838-80625b51bac8",
     action: "ATLASSIAN:create_confluence_page",
+    mock: true,
     label: "Atlassian",
     provider: "ATLASSIAN",
     description: "Create a new page in a Confluence space.",
@@ -9978,6 +10260,7 @@ const MCPs = [
   {
     id: "05ea7c44-6bf0-4394-8e58-f4010dae234d",
     action: "ATLASSIAN:update_confluence_page",
+    mock: true,
     label: "Atlassian",
     provider: "ATLASSIAN",
     description: "Update the title or body of an existing Confluence page.",
@@ -10008,6 +10291,7 @@ const MCPs = [
   {
     id: "310dc352-9030-4d72-a25a-2124aa391832",
     action: "ATLASSIAN:search_confluence_pages",
+    mock: true,
     label: "Atlassian",
     provider: "ATLASSIAN",
     description: "Search Confluence pages by text, optionally within a space.",
@@ -10104,11 +10388,6 @@ const MCPs = [
           type: "string",
           description:
             "Absolute path to the directory containing .wav files. The .txt transcripts are written into this same directory.",
-        },
-        force: {
-          type: "boolean",
-          description:
-            "Re-transcribe even when a .txt transcript already exists, overwriting it. Defaults to false.",
         },
         includeSpeakerTranscripts: {
           type: "boolean",
@@ -10622,6 +10901,60 @@ const MCPs = [
         content: {
           description:
             "The same input shape (string or object), with IDs replaced by participant names.",
+        },
+        error: {
+          type: "string",
+        },
+      },
+    },
+  },
+  {
+    id: "019fa200-0000-4000-8000-000000000008",
+    action: "TELCO:translate",
+    label: "Telco",
+    provider: "TELCO",
+    description:
+      "Translate text from a source language into a target language using a local LLM. Returns the translated text only.",
+    direction: "OUTGOING",
+    lib: "mcp",
+    icon: "mdi:translate",
+    inputSchema: {
+      type: "object",
+      properties: {
+        content: {
+          type: "string",
+          description: "The text to translate.",
+        },
+        target_lang: {
+          type: "string",
+          description:
+            "The language to translate into, as a name or code (e.g. 'English', 'en', 'tr').",
+        },
+        source_lang: {
+          type: "string",
+          description:
+            "The language of the content, as a name or code. Omit to auto-detect.",
+          nullable: true,
+        },
+      },
+      required: ["content", "target_lang"],
+    },
+    outputSchema: {
+      type: "object",
+      properties: {
+        translation: {
+          type: "string",
+          description: "The translated text.",
+        },
+        source_lang: {
+          type: "string",
+          description:
+            "The source language as given in the input, or null when it was auto-detected.",
+          nullable: true,
+        },
+        target_lang: {
+          type: "string",
+          description: "The target language as given in the input.",
         },
         error: {
           type: "string",

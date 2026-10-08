@@ -1,3 +1,4 @@
+import ApiNodeDrawer from "../../components/ApiNode/ApiNodeDrawer";
 import BlueprintFlow from "../../components/BlueprintFlow/BlueprintFlow";
 import BlueprintFlowSkeleton from "../../components/Skeletons/BlueprintFlowSkeleton";
 import NodeEditorWidget from "../NodeEditorWidget/NodeEditorWidget";
@@ -25,6 +26,11 @@ import {
   calculateDiffStats,
   calculateNodeChanges,
 } from "../../components/BlueprintFlow/DiffPanel/diffHelper";
+import {
+  isApiNodeType,
+  withApiNodes,
+  withoutApiNodes,
+} from "../../components/ApiNode/apiNodes";
 
 interface AIResponse {
   flow: FlowDefinition;
@@ -37,6 +43,7 @@ interface Blueprint {
   agentId: string;
   blocking?: boolean;
   executionMode?: "NORMAL" | "LITE";
+  api?: boolean;
   skill?: string;
 }
 
@@ -69,6 +76,18 @@ function graphToNodes(graphData: DefinitionGraph) {
           targetAgentId: node.raw?.properties?.targetAgentId,
           targetBlueprintId:
             node.raw?.properties?.targetBlueprintId || undefined,
+        }),
+        ...(isApiNodeType(node.nodeType) && {
+          fields: node.raw?.properties?.fields ?? [],
+        }),
+        ...(node.nodeType === "START" && {
+          strict: Boolean(node.raw?.properties?.strict),
+          ...(node.raw?.properties?.timeout !== undefined && {
+            timeout: node.raw.properties.timeout,
+          }),
+        }),
+        ...(node.nodeType === "END" && {
+          parameters: node.raw?.properties?.parameters ?? {},
         }),
       },
       createdAt: node.createdAt,
@@ -117,6 +136,7 @@ function BlueprintFlowWidget({
   blocking: blockingProp,
   onBlockingChange: onBlockingChangeProp,
   liteMode = false,
+  api,
   showConnections: showConnectionsProp,
   onDescriptionChange,
   onDescriptionLoadingChange,
@@ -150,6 +170,7 @@ function BlueprintFlowWidget({
   blocking?: boolean;
   onBlockingChange?: (value: boolean) => void;
   liteMode?: boolean;
+  api?: boolean;
   showConnections?: boolean;
   onSave?: () => void;
 }) {
@@ -490,6 +511,21 @@ function BlueprintFlowWidget({
   );
 
   useEffect(() => {
+    if (readOnly || api === undefined || !graphData) return;
+
+    const hasApiNodes = Object.values(graphData.nodes).some(
+      (node) => node.nodeType === "START"
+    );
+    if (api === hasApiNodes) return;
+
+    const nodes = graphToNodes(graphData);
+    setGraphData(
+      buildDefinitionGraph(api ? withApiNodes(nodes) : withoutApiNodes(nodes))
+    );
+    setHasLocalChanges(true);
+  }, [api, graphData, readOnly]);
+
+  useEffect(() => {
     if (graphData && mcps?.content?.mcps) {
       const validationResult = validateFlow(graphData, mcps.content.mcps);
       setValidationErrors(validationResult.errors);
@@ -590,7 +626,38 @@ function BlueprintFlowWidget({
     setDrawerOpen(true);
   };
 
+  const [apiNodeId, setApiNodeId] = useState<string | null>(null);
+
+  const handleApiNodeSave = (properties: Record<string, unknown>) => {
+    setGraphData((prev) => {
+      const node = prev?.nodes[apiNodeId];
+      if (!node) return prev;
+      const label = (properties.label as string) || node.label;
+      return {
+        ...prev,
+        nodes: {
+          ...prev.nodes,
+          [node.id]: {
+            ...node,
+            label,
+            raw: {
+              ...node.raw,
+              properties: { ...node.raw?.properties, ...properties, label },
+            },
+          },
+        },
+      };
+    });
+    setHasLocalChanges(true);
+    setApiNodeId(null);
+  };
+
   const handleEditNodeClick = (node) => {
+    if (isApiNodeType(node.nodeType)) {
+      setApiNodeId(node.id);
+      return;
+    }
+
     setEditMode(true);
     setEditingNodeId(node.id);
     const nodeLabel = node?.label || node?.properties?.label || "";
@@ -1513,7 +1580,7 @@ function BlueprintFlowWidget({
       if (!prev) return prev;
       const currentNodes = { ...prev.nodes };
       const deletedNode = currentNodes[node.id];
-      if (!deletedNode) return prev;
+      if (!deletedNode || isApiNodeType(deletedNode.nodeType)) return prev;
 
       const isDeletedCondition = isBranchNodeType(deletedNode.nodeType);
       const trueChildren: string[] = isDeletedCondition
@@ -1740,7 +1807,12 @@ function BlueprintFlowWidget({
       const targetNode = prev.nodes[targetNodeId];
       if (!targetNode) return prev;
 
-      if (!targetNode.raw?.properties?.force) return prev;
+      if (
+        !liteMode &&
+        !targetNode.raw?.properties?.force &&
+        targetNode.nodeType !== "END"
+      )
+        return prev;
 
       const ancestors = getAncestorNodes(prev, targetNodeId);
       if (!ancestors.some((n) => n.id === sourceNodeId)) return prev;
@@ -1811,7 +1883,8 @@ function BlueprintFlowWidget({
     if (readOnly) return;
     setGraphData((prev) => {
       const node = prev?.nodes[nodeId];
-      if (!node || node.nodeType !== "NORMAL") return prev;
+      if (!node || (node.nodeType !== "NORMAL" && node.nodeType !== "END"))
+        return prev;
       const parameters = { ...node.raw?.properties?.parameters };
       if (value === undefined) delete parameters[field];
       else parameters[field] = value;
@@ -1837,6 +1910,8 @@ function BlueprintFlowWidget({
       if (!prev) return prev;
       const targetNode = prev.nodes[node.id];
       if (!targetNode) return prev;
+
+      if (isApiNodeType(targetNode.nodeType)) return prev;
 
       const wasForced = Boolean(targetNode.raw?.properties?.force);
 
@@ -1911,7 +1986,8 @@ function BlueprintFlowWidget({
         blocking,
         generated?.skill || localSkill || blueprintNodes?.skill || undefined,
         undefined,
-        liteMode ? "LITE" : "NORMAL"
+        liteMode ? "LITE" : "NORMAL",
+        api
       );
 
       lastSavedRef.current = {
@@ -2025,6 +2101,14 @@ function BlueprintFlowWidget({
           selectedNodeId={selectedNodeId}
         />
       )}
+
+      <ApiNodeDrawer
+        open={Boolean(apiNodeId && graphData?.nodes?.[apiNodeId])}
+        node={apiNodeId ? graphData?.nodes?.[apiNodeId] : undefined}
+        blueprintId={blueprintNodes?.id || blueprint?.id}
+        onClose={() => setApiNodeId(null)}
+        onSave={handleApiNodeSave}
+      />
 
       <NodeEditorWidget
         graphData={graphData}

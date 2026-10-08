@@ -114,7 +114,7 @@ export default function NodeConnectionOverlay({
   const bindings: ParameterBinding[] = useMemo(() => {
     const result: ParameterBinding[] = [];
     for (const node of Object.values(graphData.nodes)) {
-      if (node.nodeType !== "NORMAL") continue;
+      if (node.nodeType !== "NORMAL" && node.nodeType !== "END") continue;
       const params = (
         node.raw?.properties as
           | { parameters?: Record<string, unknown> }

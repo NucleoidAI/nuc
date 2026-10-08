@@ -5,6 +5,8 @@ import {
   TEAM_ID,
 } from "./fixtures/ids";
 import {
+  MEETING_TOPIC,
+  PARTICIPANTS,
   meetingRequest,
   meetingTranscripts,
   meetingWavFiles,
@@ -58,6 +60,12 @@ describe("Meeting Agent", () => {
     mcp.tool("TELCO:judge_summary").expectsNoCalls();
     mcp.tool("TELCO:prepare_meeting_attachments").expectsNoCalls();
 
+    mcp.tool("TELCO:prepare_email").returns({
+      subject: `${MEETING_TOPIC} - Toplantı Özeti`,
+      text: "Toplantı Özeti",
+      html: "<p>Toplantı Özeti</p>",
+    });
+
     mcp
       .tool("TELCO:send_email_ews")
       .returns({ success: true, transport: "ews-ntlm" });
@@ -86,6 +94,16 @@ describe("Meeting Agent", () => {
     expect(mcp.tool("TELCO:summarize_meeting").lastCall).toMatchObject({
       transcript: transcripts.full_meeting_transcript,
     });
-    expect(mcp.tool("TELCO:send_email_ews").calls.length).toBeGreaterThan(0);
+    expect(mcp.tool("TELCO:prepare_email").lastCall).toMatchObject({
+      template: "meeting_summary_a",
+      meetingName: MEETING_TOPIC,
+      attendees: PARTICIPANTS.map(({ name }) => name),
+    });
+    expect(mcp.tool("TELCO:send_email_ews").lastCall).toMatchObject({
+      to: PARTICIPANTS,
+      subject: `${MEETING_TOPIC} - Toplantı Özeti`,
+      html: "<p>Toplantı Özeti</p>",
+      attachments: [],
+    });
   }, 900_000);
 });

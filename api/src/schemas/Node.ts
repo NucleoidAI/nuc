@@ -1,3 +1,4 @@
+import { ApiFieldsSchema, ApiTimeout } from "./ApiField";
 import { z } from "zod";
 
 const ConditionNode = z.object({
@@ -84,12 +85,41 @@ const ApprovalNode = z.object({
   }),
 });
 
+const StartNode = z.object({
+  id: z.string(),
+  type: z.literal("START"),
+  next: z.array(z.string().nullable()).nullable(),
+  properties: z.object({
+    label: z.string(),
+    icon: z.string(),
+    description: z.string().optional(),
+    fields: ApiFieldsSchema,
+    strict: z.boolean().optional(),
+    timeout: ApiTimeout.optional(),
+  }),
+});
+
+const EndNode = z.object({
+  id: z.string(),
+  type: z.literal("END"),
+  next: z.array(z.string().nullable()).nullable().optional(),
+  properties: z.object({
+    label: z.string(),
+    icon: z.string(),
+    description: z.string().optional(),
+    fields: ApiFieldsSchema,
+    parameters: z.record(z.string(), z.unknown()).optional(),
+  }),
+});
+
 const Node = z.discriminatedUnion("type", [
   ConditionNode,
   NormalNode,
   SwitchNode,
   HandoffNode,
   ApprovalNode,
+  StartNode,
+  EndNode,
 ]);
 
 export default Node;

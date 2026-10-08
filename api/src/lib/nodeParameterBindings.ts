@@ -61,7 +61,34 @@ export function getBoundNodeStep({
     next_step: {
       action,
       parameters: {},
-      comment: "Executing blueprint node with configured input values.",
+      comment: `Executing ${action} with configured input values.`,
+    },
+    result_score: undefined,
+  };
+}
+
+export function getLiteNodeStep({
+  node,
+  inputSchema,
+}: {
+  node?: Node;
+  inputSchema?: InputSchema;
+}) {
+  const action = node?.properties?.action;
+  if (!action) return undefined;
+
+  const decidesInAction = node.type === "CONDITION" || node.type === "SWITCH";
+  const takesNoInput =
+    inputSchema !== undefined &&
+    !Object.keys(inputSchema.properties ?? {}).length;
+
+  if (!decidesInAction && !takesNoInput) return undefined;
+
+  return {
+    next_step: {
+      action,
+      parameters: {},
+      comment: `Executing ${action} without generated parameters.`,
     },
     result_score: undefined,
   };
@@ -82,7 +109,7 @@ export function getParameterGenerationContext({
   return context.map((message) => {
     if (!isRecord(message.content)) return message;
     const content = { ...message.content };
-    for (const key of ["actions", "mcps"]) {
+    for (const key of ["actions", "mcp_tools"]) {
       const definitions = content[key];
       if (!Array.isArray(definitions)) continue;
       content[key] = definitions.map((definition) => {
@@ -112,6 +139,29 @@ export function getParameterGenerationContext({
           },
         };
       });
+    }
+    return { ...message, content };
+  });
+}
+
+export function getForcedActionContext({
+  context,
+  action,
+}: {
+  context: ContextMessage[];
+  action?: string;
+}): ContextMessage[] {
+  if (!action) return context;
+
+  return context.map((message) => {
+    if (!isRecord(message.content)) return message;
+    const content = { ...message.content };
+    for (const key of ["actions", "mcp_tools"]) {
+      const definitions = content[key];
+      if (!Array.isArray(definitions)) continue;
+      content[key] = definitions.filter(
+        (definition) => isRecord(definition) && definition.action === action
+      );
     }
     return { ...message, content };
   });

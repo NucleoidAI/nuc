@@ -50,7 +50,8 @@ export function BlueprintFlowMiniPreview({
   }) => {
     const isApproval =
       node?.type === "APPROVAL" ||
-      node?.properties?.action === "PLATFORM:two_factor";
+      node?.type === "DECISION" ||
+      node?.type === "SWITCH";
     if (!isApproval) return {};
     return {
       bg: APPROVAL_BG_TO,

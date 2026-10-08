@@ -40,7 +40,7 @@ const vitePatched = patch(viteRel, (s) => {
     (_m, indent) =>
       `${indent}config.server = {\n` +
       `${indent}  ...config.server,\n` +
-      `${indent}  allowedHosts: [".ngrok-free.app", ".ngrok.app", ".ngrok.io"],\n` +
+      `${indent}  allowedHosts: [".ngrok-free.app", ".ngrok.app", ".ngrok.io", ".ngrok-free.dev"],\n` +
       `${indent}};\n` +
       (autoLoginProjectId
         ? `${indent}config.plugins = [\n` +

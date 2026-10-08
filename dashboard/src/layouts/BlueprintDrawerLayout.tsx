@@ -116,6 +116,18 @@ const BlueprintDrawerLayout = ({
     { requestedAt: null }
   );
 
+  const [highlightRequest] = useEvent<{ nodeId: string | null }>(
+    "BLUEPRINT_HIGHLIGHT_NODE",
+    { nodeId: null }
+  );
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (highlightRequest?.nodeId) {
+      setSelectedNodeId(highlightRequest.nodeId);
+    }
+  }, [highlightRequest]);
+
   useEffect(() => {
     publish("BLUEPRINT_CONTEXT", { context: drawerOpen ? context : null });
   }, [drawerOpen, context]);
@@ -175,6 +187,7 @@ const BlueprintDrawerLayout = ({
     setDescription(selectedItem?.description);
     setSkill(selectedItem?.skill);
     setContext(selectedItem?.context ?? null);
+    setSelectedNodeId(null);
   }, [selectedItem]);
 
   useEffect(() => {
@@ -210,6 +223,7 @@ const BlueprintDrawerLayout = ({
         usedNodeIds={usedNodeIds}
         lastUsedNodeId={lastUsedNodeId}
         failedNodeId={failedNodeId}
+        selectedNodeId={selectedNodeId}
         agentId={agentId}
         teamId={teamId}
         blocking={blocking}

@@ -18,6 +18,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Run Semgrep
-        run: semgrep scan --config auto --error .
+        env:
+          BASELINE_COMMIT: >-
+            ${{ github.event.pull_request.base.sha || github.event.before ||
+            'HEAD^' }}
+        run: >-
+          semgrep scan --config auto --error --baseline-commit
+          "$BASELINE_COMMIT" .

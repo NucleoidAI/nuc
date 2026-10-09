@@ -191,6 +191,7 @@ router.get("/:projectId", (req, res) => {
     return res.sendStatus(403);
   }
 
+  res.setHeader("Content-Type", "text/plain");
   return res.status(200).send(String(challenge ?? ""));
 });
 

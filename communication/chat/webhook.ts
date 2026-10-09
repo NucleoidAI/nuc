@@ -1,6 +1,7 @@
 import express from "express";
 import jwt from "jsonwebtoken";
 import { createSession } from "../api/createSession";
+import { getAgent } from "../api/getAgent";
 import { getBlueprint } from "../api/getBlueprint";
 import { sendMessageToSession } from "../api/sendMessageSession";
 import sessionResult from "./sessionResult";
@@ -46,12 +47,16 @@ router.post("/:projectId/:blueprintId", async (req, res) => {
     const { projectId, blueprintId } = req.params;
     const variables = req.body;
 
-    console.log("variables", variables);
-
     const token = createServiceToken(projectId);
 
     const blueprint = await getBlueprint(token, blueprintId);
     const { agentId } = blueprint;
+
+    const agent = await getAgent(token, agentId);
+
+    if (agent?.teamId !== projectId) {
+      return res.status(404).json({ error: "Blueprint not found" });
+    }
 
     const session = await createSession(token, agentId, blueprintId, variables);
 

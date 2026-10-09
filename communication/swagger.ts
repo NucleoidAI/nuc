@@ -32,22 +32,19 @@ type SwaggerState = {
   token: string;
   agentId: string;
   blueprint: Record<string, BlueprintGraph>;
-  drafts: Record<string, Draft>;
+  drafts: Map<string, Draft>;
 };
 
 const swaggerPort = Number(process.env.SWAGGER_PORT || DEFAULT_SWAGGER_PORT);
 const swaggerBaseUrl = `http://localhost:${swaggerPort}`;
 const jsonBodyParser = express.json();
 
-const UNSAFE_OBJECT_KEYS = new Set(["__proto__", "constructor", "prototype"]);
-const isUnsafeObjectKey = (key: string) => UNSAFE_OBJECT_KEYS.has(key);
-
 const state: SwaggerState = {
   paths: {},
   token: "",
   agentId: "",
   blueprint: {},
-  drafts: {},
+  drafts: new Map(),
 };
 
 const allowAllFrames: RequestHandler = (_req, res, next) => {
@@ -95,7 +92,7 @@ const resetSwaggerState = () => {
   state.token = "";
   state.agentId = "";
   state.blueprint = {};
-  state.drafts = {};
+  state.drafts = new Map();
 };
 
 const getBlueprintNodes = () =>
@@ -179,19 +176,13 @@ const createSwaggerApiRouter = () => {
     })
     .get((req, res) => {
       const { agentId } = req.params;
-      if (isUnsafeObjectKey(agentId)) {
-        return res.status(400).json({ error: "Invalid agentId" });
-      }
-      res.json({ ok: true, draft: state.drafts[agentId] || null });
+      res.json({ ok: true, draft: state.drafts.get(agentId) || null });
     })
     .put(jsonBodyParser, (req, res) => {
       const { agentId } = req.params;
-      if (isUnsafeObjectKey(agentId)) {
-        return res.status(400).json({ error: "Invalid agentId" });
-      }
       const { api = [], types = [], flowGraphs = {} } = req.body || {};
 
-      state.drafts[agentId] = { api, types, flowGraphs };
+      state.drafts.set(agentId, { api, types, flowGraphs });
       res.json({ ok: true });
     });
 

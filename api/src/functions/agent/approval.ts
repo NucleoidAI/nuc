@@ -1,8 +1,8 @@
 import type { ContextMessage } from "./context";
-import type { LLMMeta } from "../../lib/llmLog";
+import type { LLMMeta } from "@canmingir/link-express/llm";
 import Agent from "../../models/Agent";
 import dataset from "../../dataset";
-import { generate } from "../../lib/llm";
+import { generate } from "@canmingir/link-express/llm";
 import platform from "@canmingir/link-express";
 import session from "../session";
 import taskFn from "../task";

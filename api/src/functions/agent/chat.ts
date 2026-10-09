@@ -3,7 +3,7 @@ import { findStep, replyToApproval } from "./approval";
 import agentData from "../agentData";
 import blueprintFn from "../blueprint";
 import dataset from "../../dataset";
-import { generate } from "../../lib/llm";
+import { generate } from "@canmingir/link-express/llm";
 import message from "../message";
 import platform from "@canmingir/link-express";
 import session from "../session";

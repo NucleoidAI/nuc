@@ -1,8 +1,8 @@
 import { type ChatHistory, handoffTargets, knowledge } from "./context";
-import type { LLMMeta } from "../../lib/llmLog";
+import type { LLMMeta } from "@canmingir/link-express/llm";
 import blueprintFn from "../blueprint";
 import dataset from "../../dataset";
-import { generate } from "../../lib/llm";
+import { generate } from "@canmingir/link-express/llm";
 import { normalizeFlow } from "./flow";
 
 type BlueprintChatDecision = "KNOWLEDGE" | "BLUEPRINT";
@@ -202,24 +202,6 @@ async function blueprintName({
   });
 }
 
-async function toPseudo({
-  content,
-  meta,
-}: {
-  content: string;
-  meta?: LLMMeta;
-}) {
-  const response = await generate({
-    dataset: dataset.train.pseudocode,
-    context: [],
-    content,
-    json_format: "{ pseudocode: <PSEUDO> }",
-    meta,
-  });
-
-  return response.pseudocode as string;
-}
-
 async function blueprintDescription({
   nodes,
   meta,
@@ -258,5 +240,4 @@ export {
   blueprintDescription,
   blueprintName,
   blueprintSkill,
-  toPseudo,
 };

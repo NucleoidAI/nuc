@@ -121,10 +121,6 @@ const Blueprint = {
     ),
     content: z.string(),
   }),
-  pseudocode: z.object({
-    instructions: z.string(),
-    agentId: z.string().uuid(),
-  }),
   delete: z.object({
     agentId: z.string().uuid(),
   }),

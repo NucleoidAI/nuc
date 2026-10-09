@@ -1,8 +1,8 @@
 import { choice, noul, score } from "@typesafe-ai/sdk";
 import type { EntryType, Questions } from "@typesafe-ai/sdk";
 
-import { inferSource } from "./llm";
-import type { LLMMeta } from "./llmLog";
+import { inferSource } from "@canmingir/link-express/llm";
+import type { LLMMeta } from "@canmingir/link-express/llm";
 import type { DecisionAdapter, DecisionAnswers } from "./types";
 
 type ProviderKey = "TYPESAFE" | "CLOUDFLARE" | "OPENROUTER" | "LAYA";

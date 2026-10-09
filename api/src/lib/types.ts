@@ -1,18 +1,5 @@
 import type { EntryType, Questions, SystemOneResult } from "@typesafe-ai/sdk";
-import { LLMMeta } from "./llmLog";
-
-type GenerateParams = {
-  model?: string;
-  messages: { role: "user" | "assistant" | "system"; content: string }[];
-  responseFormat?: string;
-  temperature?: number;
-  max_tokens?: number;
-  meta?: LLMMeta;
-};
-
-type LLMAdapter = {
-  generate(params: GenerateParams): Promise<Record<string, unknown>>;
-};
+import type { LLMMeta } from "@canmingir/link-express/llm";
 
 type DecisionParams<Q extends Questions> = {
   model?: string;
@@ -30,8 +17,6 @@ type DecisionAdapter = {
 };
 
 export type {
-  GenerateParams,
-  LLMAdapter,
   DecisionParams,
   DecisionAnswers,
   DecisionAdapter,

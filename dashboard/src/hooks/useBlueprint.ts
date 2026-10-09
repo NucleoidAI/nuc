@@ -244,7 +244,7 @@ function useBlueprint() {
       return "";
     }
 
-    const response = await http.post("/blueprints/pseudocode", {
+    const response = await http.post("/pseudocode", {
       instructions,
       agentId,
     });

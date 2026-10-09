@@ -1,26 +1,29 @@
 import { appendFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, join, relative, resolve } from "node:path";
+import { findBrowser, writePdf } from "./pdf";
 import { renderReport } from "./render";
 import { loadReport, SEVERITIES } from "./sarif";
 
+const PROJECT_NAME = "TT AI Platform";
 const QUERY_SUITE = "javascript-security-extended";
 const QUERY_PACK = `codeql/javascript-queries:codeql-suites/${QUERY_SUITE}.qls`;
 const DEFAULT_OUT_DIR = "security-report";
 const STEP_TIMEOUT_MS = 30 * 60 * 1000;
 const FAILURE_TAIL_LINES = 20;
 
-const USAGE = `Usage: bun run security:report [--sarif <file>] [--out <dir>]
+const USAGE = `Usage: bun run security:report [--sarif <file>] [--out <dir>] [--no-pdf]
 
   (no options)     Run a CodeQL security scan of the repository and build the report
   --sarif <file>   Build the report from an existing SARIF file instead of scanning
   --out <dir>      Output directory, relative to the repository root (default: ${DEFAULT_OUT_DIR})
+  --no-pdf         Skip the PDF export (it needs Chrome, Chromium, Edge or Brave; set CHROME_PATH to pick one)
 `;
 
-type Options = { sarif: string | null; out: string };
+type Options = { sarif: string | null; out: string; pdf: boolean };
 
 function parseOptions(argv: string[]): Options {
-  const options: Options = { sarif: null, out: DEFAULT_OUT_DIR };
+  const options: Options = { sarif: null, out: DEFAULT_OUT_DIR, pdf: true };
   const rest = [...argv];
 
   while (rest.length > 0) {
@@ -29,6 +32,11 @@ function parseOptions(argv: string[]): Options {
     if (flag === "--help" || flag === "-h") {
       console.log(USAGE);
       process.exit(0);
+    }
+
+    if (flag === "--no-pdf") {
+      options.pdf = false;
+      continue;
     }
 
     const value = rest.shift();
@@ -143,21 +151,21 @@ async function main(): Promise<void> {
 
   const sarifPath = options.sarif ? resolve(options.sarif) : await scan({ root, outDir });
   const report = loadReport(sarifPath);
-  const html = renderReport({
-    report,
-    sourceRoot: root,
-    meta: {
-      project: basename(root),
-      generatedAt: new Date(),
-      branch: gitValue({ args: ["branch", "--show-current"], cwd: root }),
-      commit: gitValue({ args: ["rev-parse", "--short", "HEAD"], cwd: root }),
-      suite: QUERY_SUITE,
-      sarifPath,
-    },
-  });
+  const meta = {
+    project: PROJECT_NAME,
+    generatedAt: new Date(),
+    branch: gitValue({ args: ["branch", "--show-current"], cwd: root }),
+    commit: gitValue({ args: ["rev-parse", "--short", "HEAD"], cwd: root }),
+    suite: QUERY_SUITE,
+    sarifPath,
+  };
   const reportPath = join(outDir, "report.html");
 
-  writeFileSync(reportPath, html);
+  writeFileSync(reportPath, renderReport({ report, sourceRoot: root, meta }));
+
+  const pdfPath = options.pdf
+    ? await exportPdf({ html: renderReport({ report, sourceRoot: root, meta, variant: "print" }), outDir })
+    : null;
 
   const breakdown = SEVERITIES.map(
     (severity) => `${severity} ${report.findings.filter((finding) => finding.severity === severity).length}`
@@ -165,6 +173,24 @@ async function main(): Promise<void> {
 
   console.log(`✓ ${report.findings.length} findings (${breakdown})`);
   console.log(`  Report: ${reportPath}`);
+
+  if (pdfPath) console.log(`  PDF:    ${pdfPath}`);
+}
+
+async function exportPdf({ html, outDir }: { html: string; outDir: string }): Promise<string | null> {
+  const browser = findBrowser();
+
+  if (!browser) {
+    console.warn("! Skipping PDF: no Chrome, Chromium, Edge or Brave found. Set CHROME_PATH or pass --no-pdf.");
+    return null;
+  }
+
+  console.log("→ Exporting PDF");
+
+  const pdfPath = join(outDir, "report.pdf");
+  await writePdf({ browser, html, outDir, pdfPath });
+
+  return pdfPath;
 }
 
 try {

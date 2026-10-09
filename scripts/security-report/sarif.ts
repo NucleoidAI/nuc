@@ -253,8 +253,13 @@ function flowOf(codeFlow: SarifCodeFlow | undefined): CodeLocation[] {
   });
 
   return steps.filter(
-    (step, index) => index === 0 || locationKey(step) !== locationKey(steps[index - 1])
+    (step, index) =>
+      index === 0 || index === steps.length - 1 || lineKey(step) !== lineKey(steps[index - 1])
   );
+}
+
+function lineKey(location: CodeLocation): string {
+  return `${location.file}:${location.region.startLine}`;
 }
 
 function locationKey(location: CodeLocation): string {

@@ -39,6 +39,9 @@ const swaggerPort = Number(process.env.SWAGGER_PORT || DEFAULT_SWAGGER_PORT);
 const swaggerBaseUrl = `http://localhost:${swaggerPort}`;
 const jsonBodyParser = express.json();
 
+const UNSAFE_OBJECT_KEYS = new Set(["__proto__", "constructor", "prototype"]);
+const isUnsafeObjectKey = (key: string) => UNSAFE_OBJECT_KEYS.has(key);
+
 const state: SwaggerState = {
   paths: {},
   token: "",
@@ -176,10 +179,16 @@ const createSwaggerApiRouter = () => {
     })
     .get((req, res) => {
       const { agentId } = req.params;
+      if (isUnsafeObjectKey(agentId)) {
+        return res.status(400).json({ error: "Invalid agentId" });
+      }
       res.json({ ok: true, draft: state.drafts[agentId] || null });
     })
     .put(jsonBodyParser, (req, res) => {
       const { agentId } = req.params;
+      if (isUnsafeObjectKey(agentId)) {
+        return res.status(400).json({ error: "Invalid agentId" });
+      }
       const { api = [], types = [], flowGraphs = {} } = req.body || {};
 
       state.drafts[agentId] = { api, types, flowGraphs };

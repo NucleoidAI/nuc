@@ -14,6 +14,7 @@
     "dev:main": "link-server",
     "dev:tunnel": "bash scripts/tunnel.sh",
     "generate-asr-version": "bun scripts/generate-asr-version.ts",
+    "security:report": "bun scripts/security-report/index.ts",
     "dev": "dotenv -e .env.local -- concurrently -n \"events,api,dashboard,communication\" \"bun run dev:events\" \"bun run dev:api\" \"bun run dev:dashboard\" \"bun run dev:communication\"",
     "install:dashboard": "cd ./dashboard && bun install",
     "install:communication": "cd ./communication && bun install",

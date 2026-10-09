@@ -1,6 +1,8 @@
 import fs from "fs";
 import path from "path";
 
+const MAX_READ_BYTES = 1_048_576;
+
 async function run({
   parameters: { filePath, operation = "read" },
 }: {
@@ -44,13 +46,42 @@ async function run({
 
     case "read":
     default: {
-      if (!fs.existsSync(filePath)) return { error: "File does not exist" };
-      const stat = fs.statSync(filePath);
-      if (!stat.isFile()) return { error: "Path is not a file" };
-      // Limit to 1MB to prevent memory issues
-      if (stat.size > 1_048_576) return { error: "File too large (>1MB)" };
-      const content = fs.readFileSync(filePath, "utf-8");
-      return { content };
+      let fd: number;
+      try {
+        fd = fs.openSync(
+          filePath,
+          fs.constants.O_RDONLY | fs.constants.O_NONBLOCK
+        );
+      } catch (error: any) {
+        if (error?.code === "ENOENT") return { error: "File does not exist" };
+        throw error;
+      }
+
+      try {
+        const stat = fs.fstatSync(fd);
+        if (!stat.isFile()) return { error: "Path is not a file" };
+        // Limit to 1MB to prevent memory issues
+        if (stat.size > MAX_READ_BYTES) return { error: "File too large (>1MB)" };
+
+        const buffer = Buffer.alloc(MAX_READ_BYTES + 1);
+        let bytesRead = 0;
+        while (bytesRead < buffer.length) {
+          const read = fs.readSync(
+            fd,
+            buffer,
+            bytesRead,
+            buffer.length - bytesRead,
+            bytesRead
+          );
+          if (read === 0) break;
+          bytesRead += read;
+        }
+        if (bytesRead > MAX_READ_BYTES) return { error: "File too large (>1MB)" };
+
+        return { content: buffer.toString("utf-8", 0, bytesRead) };
+      } finally {
+        fs.closeSync(fd);
+      }
     }
   }
 }

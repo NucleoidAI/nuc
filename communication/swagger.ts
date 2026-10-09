@@ -32,7 +32,7 @@ type SwaggerState = {
   token: string;
   agentId: string;
   blueprint: Record<string, BlueprintGraph>;
-  drafts: Record<string, Draft>;
+  drafts: Map<string, Draft>;
 };
 
 const swaggerPort = Number(process.env.SWAGGER_PORT || DEFAULT_SWAGGER_PORT);
@@ -44,7 +44,7 @@ const state: SwaggerState = {
   token: "",
   agentId: "",
   blueprint: {},
-  drafts: {},
+  drafts: new Map(),
 };
 
 const allowAllFrames: RequestHandler = (_req, res, next) => {
@@ -92,7 +92,7 @@ const resetSwaggerState = () => {
   state.token = "";
   state.agentId = "";
   state.blueprint = {};
-  state.drafts = {};
+  state.drafts = new Map();
 };
 
 const getBlueprintNodes = () =>
@@ -176,13 +176,13 @@ const createSwaggerApiRouter = () => {
     })
     .get((req, res) => {
       const { agentId } = req.params;
-      res.json({ ok: true, draft: state.drafts[agentId] || null });
+      res.json({ ok: true, draft: state.drafts.get(agentId) || null });
     })
     .put(jsonBodyParser, (req, res) => {
       const { agentId } = req.params;
       const { api = [], types = [], flowGraphs = {} } = req.body || {};
 
-      state.drafts[agentId] = { api, types, flowGraphs };
+      state.drafts.set(agentId, { api, types, flowGraphs });
       res.json({ ok: true });
     });
 

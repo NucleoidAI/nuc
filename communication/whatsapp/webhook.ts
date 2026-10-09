@@ -191,7 +191,7 @@ router.get("/:projectId", (req, res) => {
     return res.sendStatus(403);
   }
 
-  return res.status(200).send(String(challenge ?? ""));
+  return res.status(200).type("text/plain").send(String(challenge ?? ""));
 });
 
 router.delete("/:projectId/conversations/:waId", (req, res) => {

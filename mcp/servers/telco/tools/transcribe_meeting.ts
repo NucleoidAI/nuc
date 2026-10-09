@@ -2,6 +2,7 @@ import { SpeakerTranscript, Tool, TranscribeMeetingInput } from "./types";
 import { toolError, toolResult } from "./meeting_result";
 
 import fs from "fs";
+import { randomUUID } from "crypto";
 import logger from "../../../logger/logger.js";
 import path from "path";
 
@@ -80,10 +81,24 @@ async function transcribeFile(
   throw new Error(`ASR job ${jobId} timed out after ${POLL_TIMEOUT_MS}ms`);
 }
 
+async function replaceFile(target: string, content: string): Promise<void> {
+  const temp = path.join(
+    path.dirname(target),
+    `.${path.basename(target)}.${randomUUID()}.tmp`,
+  );
+  await fs.promises.writeFile(temp, content, { encoding: "utf8", flag: "wx" });
+  try {
+    await fs.promises.rename(temp, target);
+  } catch (err) {
+    await fs.promises.rm(temp, { force: true });
+    throw err;
+  }
+}
+
 export const transcribeMeetingTool: Tool<TranscribeMeetingInput> = {
   name: "TELCO:transcribe_meeting",
   description:
-    "Transcribe WAV audio files in a directory with the self-hosted ASR service, write each transcript as a .txt file next to the audio, and return the individual and combined transcripts. Speaker recordings can be skipped when only the mixed meeting transcript is needed. Existing .txt files in the directory are reused, so re-running on the same meeting does not transcribe a second time.",
+    "Transcribe WAV audio files in a directory with the self-hosted ASR service, write each transcript as a .txt file next to the audio (replacing any existing one), and return the individual and combined transcripts. Speaker recordings can be skipped when only the mixed meeting transcript is needed.",
   inputSchema: {
     type: "object",
     properties: {
@@ -183,23 +198,15 @@ export const transcribeMeetingTool: Tool<TranscribeMeetingInput> = {
 
         let transcription: string;
 
-        if (fs.existsSync(transcriptPath)) {
-          logger.info(
-            { tool: "TELCO:transcribe_meeting", transcriptPath },
-            "Reusing cached transcript",
-          );
-          transcription = await fs.promises.readFile(transcriptPath, "utf8");
-        } else {
-          try {
-            transcription = await transcribeFile(filePath, baseUrl);
-          } catch (err: unknown) {
-            const message = err instanceof Error ? err.message : String(err);
-            return toolResult({
-              error: `Failed on file ${file}: ${message}`,
-            });
-          }
-          await fs.promises.writeFile(transcriptPath, transcription, "utf8");
+        try {
+          transcription = await transcribeFile(filePath, baseUrl);
+        } catch (err: unknown) {
+          const message = err instanceof Error ? err.message : String(err);
+          return toolResult({
+            error: `Failed on file ${file}: ${message}`,
+          });
         }
+        await replaceFile(transcriptPath, transcription);
 
         if (stem.toLowerCase() === MIX_FILE_STEM) {
           mixTranscript = transcription;

@@ -47,8 +47,6 @@ router.post("/:projectId/:blueprintId", async (req, res) => {
     const { projectId, blueprintId } = req.params;
     const variables = req.body;
 
-    console.log("variables", variables);
-
     const token = createServiceToken(projectId);
 
     const blueprint = await getBlueprint(token, blueprintId);

@@ -10,6 +10,7 @@ import sessionFn from "../functions/session";
 
 const router = express.Router();
 
+// TODO: Move rate limiting into link-express so public routes get it by default
 router.use(
   rateLimit({
     windowMs: 60 * 1000,

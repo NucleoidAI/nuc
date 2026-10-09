@@ -24,7 +24,8 @@ import {
   getParameterGenerationContext,
   mergeNodeParameters,
 } from "../../../lib/nodeParameterBindings";
-import type { LLMMeta } from "../../../lib/llmLog";
+import type { LLMMeta } from "@canmingir/link-express/llm";
+import * as pseudocode from "@canmingir/link-express/pseudocode";
 import Agent from "../../../models/Agent";
 import MCPs from "../../../mcps/mcps";
 import actions from "../../../actions";
@@ -242,13 +243,6 @@ type Prepared = Extract<
   { ok: true }
 >;
 
-function pseudocodeOr(node: any, fallback: unknown) {
-  return (
-    (node.properties?.pseudocodeEnabled && node.properties?.pseudocode) ||
-    fallback
-  );
-}
-
 function platformParameters({
   action,
   parameters,
@@ -286,7 +280,7 @@ function platformParameters({
         cases: switchCases(node, nodes),
         defaultCase: node.properties?.defaultCase,
         instructions:
-          pseudocodeOr(node, node.properties?.instructions) ||
+          pseudocode.or(node, node.properties?.instructions) ||
           parameters.instructions,
       };
 
@@ -296,7 +290,7 @@ function platformParameters({
       return {
         ...parameters,
         condition:
-          pseudocodeOr(node, node.properties?.instructions?.trim()) ||
+          pseudocode.or(node, node.properties?.instructions?.trim()) ||
           parameters.condition,
         true: conditionBranch(node.true, nodes),
         false: conditionBranch(node.false, nodes),

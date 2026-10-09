@@ -1,12 +1,5 @@
 import LLMLog from "../models/LLMLog";
-
-interface LLMMeta {
-  source?: string | null;
-  agentId?: string | null;
-  sessionId?: string | null;
-  taskId?: string | null;
-  teamId?: string | null;
-}
+import type { LLMMeta } from "@canmingir/link-express/llm";
 
 function logLLM({
   provider,
@@ -59,4 +52,3 @@ function logLLM({
 }
 
 export { logLLM };
-export type { LLMMeta };

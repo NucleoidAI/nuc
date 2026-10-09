@@ -536,6 +536,8 @@ function BlueprintFlowWidget({
     }
   }, [graphData, mcps, showValidationErrors]);
 
+  const pseudocodeSourceRef = useRef<string | null>(null);
+
   const generateNodePseudocode = async (instructions: string) => {
     const effectiveAgentId =
       agentId || blueprintNodes?.agentId || blueprint?.agentId;
@@ -546,8 +548,10 @@ function BlueprintFlowWidget({
       setNodePseudocode(
         await generatePseudocode(instructions, effectiveAgentId)
       );
+      pseudocodeSourceRef.current = instructions.trim();
     } catch {
       setNodePseudocode("");
+      pseudocodeSourceRef.current = null;
     } finally {
       setPseudocodeLoading(false);
     }
@@ -558,6 +562,7 @@ function BlueprintFlowWidget({
 
     if (!enabled) {
       setNodePseudocode("");
+      pseudocodeSourceRef.current = null;
       return;
     }
 
@@ -577,8 +582,11 @@ function BlueprintFlowWidget({
 
     if (!newNodeInstructions.trim()) {
       setNodePseudocode("");
+      pseudocodeSourceRef.current = null;
       return;
     }
+
+    if (pseudocodeSourceRef.current === newNodeInstructions.trim()) return;
 
     pseudocodeDebounceRef.current = setTimeout(() => {
       generateNodePseudocode(newNodeInstructions);
@@ -616,6 +624,7 @@ function BlueprintFlowWidget({
     setNewNodeForce(false);
     setNewNodeParameters({});
     setNodePseudocode("");
+    pseudocodeSourceRef.current = null;
     setNewNodePseudocodeEnabled(true);
     setNewNodeType("NORMAL");
     setNewNodeCaseLabel("");
@@ -676,7 +685,13 @@ function BlueprintFlowWidget({
     setNewNodeParameters({ ...node?.raw?.properties?.parameters });
     setNewNodeType(nodeType);
     setNodePseudocode(node?.raw?.properties?.pseudocode || "");
-    setNewNodePseudocodeEnabled(true);
+    pseudocodeSourceRef.current = node?.raw?.properties?.pseudocode?.trim()
+      ? nodeInstructions.trim()
+      : null;
+    setNewNodePseudocodeEnabled(
+      node?.raw?.properties?.pseudocodeEnabled === true ||
+        !nodeInstructions.trim()
+    );
 
     if (isSwitchNodeType(nodeType)) {
       setSwitchCases(
@@ -2038,6 +2053,7 @@ function BlueprintFlowWidget({
     setNewNodeInstructions("");
     setNewNodeQuestion("");
     setNodePseudocode("");
+    pseudocodeSourceRef.current = null;
     setNewNodePseudocodeEnabled(true);
     setNewNodeType("NORMAL");
     setNewNodeCaseLabel("");

@@ -19,7 +19,7 @@ import {
   selectNextAction,
 } from "../judgments";
 import dataset from "../../../dataset";
-import { generate } from "../../../lib/llm";
+import { generate } from "@canmingir/link-express/llm";
 import { isForcedNode } from "../../../lib/blueprintNodes";
 
 const MIN_INPUTS_AVAILABLE = 0.5;

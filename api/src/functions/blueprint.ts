@@ -4,6 +4,7 @@ import BlueprintMessage from "../models/BlueprintMessage";
 import { NotFoundError } from "@canmingir/link-express/error";
 import agentFn from "./agent";
 import { applyApiNodes } from "../lib/apiNodes";
+import * as pseudocode from "@canmingir/link-express/pseudocode";
 
 type NodeType = {
   id: string;
@@ -60,57 +61,6 @@ function stripDetails<T extends { nodes?: unknown }>(blueprint: T) {
     : rest;
 }
 
-function sanitizePseudocode(nodes?: NodeType[]) {
-  if (!nodes?.length) {
-    return nodes;
-  }
-
-  return nodes.map((node) => {
-    const properties = node.properties;
-
-    if (!properties) {
-      return node;
-    }
-
-    const enabled =
-      properties.pseudocodeEnabled === true &&
-      Boolean(properties.instructions?.trim());
-
-    const dropped = enabled
-      ? properties.pseudocode?.trim()
-        ? null
-        : ["pseudocode"]
-      : ["pseudocode", "pseudocodeEnabled"];
-
-    if (!dropped) {
-      return node;
-    }
-
-    return {
-      ...node,
-      properties: Object.fromEntries(
-        Object.entries(properties).filter(([key]) => !dropped.includes(key)),
-      ),
-    } as NodeType;
-  });
-}
-
-async function generatePseudocode({
-  instructions,
-  agentId,
-}: {
-  instructions: string;
-  agentId: string;
-}) {
-  const content = instructions?.trim();
-
-  if (!content) {
-    return "";
-  }
-
-  return agentFn.toPseudo({ content, meta: { agentId } });
-}
-
 async function getWithNodes(id: string) {
   if (!id) {
     throw new Error("ID is required");
@@ -153,7 +103,7 @@ async function upsert(
   const existingBlueprint = await BluePrint.findByPk(id);
 
   const isApi = api ?? existingBlueprint?.api ?? false;
-  const apiNodes = applyApiNodes(sanitizePseudocode(nodes) ?? [], isApi);
+  const apiNodes = applyApiNodes(pseudocode.sanitize(nodes) ?? [], isApi);
   const sanitizedNodes = nodes || isApi ? apiNodes : null;
 
   if (existingBlueprint) {
@@ -331,5 +281,4 @@ export default {
   patch,
   generateDescription,
   generateSkill,
-  generatePseudocode,
 };

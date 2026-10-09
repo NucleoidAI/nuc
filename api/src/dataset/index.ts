@@ -13,7 +13,6 @@ import chat from "./train/chat.json";
 import humanInLoop from "./train/human-in-loop.json";
 import knowledgeScore from "./train/knowledge-score.json";
 import policy from "./policy.json";
-import pseudocode from "./train/pseudocode.json";
 import switchCase from "./train/switch.json";
 import forceTaskDiamondBlocking from "./train/force-task-diamond-blocking.json";
 import forceTaskDiamondNonBlocking from "./train/force-task-diamond-non-blocking.json";
@@ -37,12 +36,6 @@ export default {
       role: "system" as const,
       content: JSON.stringify({
         train: humanInLoop.data,
-      }),
-    },
-    pseudocode: {
-      role: "system" as const,
-      content: JSON.stringify({
-        train: pseudocode.data,
       }),
     },
     taskDiamondBlocking: {

@@ -1,6 +1,6 @@
 import type { EntryType, Question, Questions } from "@typesafe-ai/sdk";
 import { ask, choice, noul } from "../../lib/decision";
-import type { LLMMeta } from "../../lib/llmLog";
+import type { LLMMeta } from "@canmingir/link-express/llm";
 import platform from "@canmingir/link-express";
 
 const NONE = "none";

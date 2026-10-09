@@ -13,9 +13,9 @@ import {
   prepareParameters,
 } from "./common";
 import type { ContextMessage } from "../context";
-import type { LLMMeta } from "../../../lib/llmLog";
+import type { LLMMeta } from "@canmingir/link-express/llm";
 import dataset from "../../../dataset";
-import { generate } from "../../../lib/llm";
+import { generate } from "@canmingir/link-express/llm";
 import { isForcedNode } from "../../../lib/blueprintNodes";
 
 async function scoring({

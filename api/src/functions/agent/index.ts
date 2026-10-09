@@ -7,7 +7,6 @@ import {
   blueprintDescription,
   blueprintName,
   blueprintSkill,
-  toPseudo,
 } from "./blueprint";
 import { approve, waitingApproval } from "./approval";
 import { chat, evaluateSupervisionAnswer, teamChat } from "./chat";
@@ -28,7 +27,6 @@ export default {
   blueprintChatSufficiency,
   blueprintChatKnowledge,
   evaluateSupervisionAnswer,
-  toPseudo,
   blueprintDescription,
   blueprintSkill,
 };

@@ -698,7 +698,6 @@ const NodeWrapper = styled("div", {
       "&:hover": {
         transform:
           "perspective(1500px) rotateX(0deg) rotateY(-10deg) rotateZ(0deg)",
-        filter: "brightness(1.070)",
         boxShadow: steppedShadow,
       },
     };
@@ -1038,9 +1037,6 @@ function FlowNodeRenderer({
     node.nodeType === "APPROVAL" ||
     node.nodeType === "SWITCH" ||
     node.connectorType === "decision";
-  // Decision/switch cards render at a square, compact size — truncate the
-  // description so the icon, label and action still fit without growing
-  // the card beyond its normal footprint.
   const infoNode = isDecisionNode
     ? { ...node, description: truncateDescription(node.description) }
     : node;

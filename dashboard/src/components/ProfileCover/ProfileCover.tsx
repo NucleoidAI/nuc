@@ -40,6 +40,24 @@ function ProfileCover({ name, iconUrl, coverUrl, loading }) {
                 alignItems: "center",
                 justifyContent: "center",
                 overflow: "hidden",
+                transformStyle: "preserve-3d",
+                transform:
+                  "perspective(1500px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)",
+                boxShadow: `
+                3px 3px 0 #716f6f,
+                20px 10px 40px rgba(0, 0, 0, 0.5)
+              `,
+                transition:
+                  "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, filter 0.25s ease",
+                "&:hover": {
+                  transform:
+                    "perspective(1500px) rotateX(0deg) rotateY(-10deg) rotateZ(0deg)",
+                  filter: "brightness(1.070)",
+                  boxShadow: `
+                  3px 3px 0 #716f6f,
+                  20px 10px 40px rgba(0, 0, 0, 0.5)
+                  `,
+                },
               }}
             >
               <Iconify
@@ -53,7 +71,7 @@ function ProfileCover({ name, iconUrl, coverUrl, loading }) {
             <ListItemText
               sx={{
                 mt: { xs: 0.5, md: 7 },
-                ml: { xs: 3, md: 1 },
+                ml: { xs: 3, md: 2.5 },
                 textAlign: { xs: "center", md: "unset" },
               }}
               primary={name}

@@ -19,7 +19,7 @@ async function run({
     return { error: "MISSING_AGENT_ID" };
   }
 
-  const knowledge = await knowledgeFn.list({ agentId });
+  const knowledge = await knowledgeFn.listForLLM({ agentId });
 
   return { agentId, knowledge };
 }

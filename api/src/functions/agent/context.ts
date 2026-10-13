@@ -18,7 +18,7 @@ type ChatHistory = {
 }[];
 
 async function knowledge({ agentId }: { agentId: string }) {
-  const knowledgeList = await knowledgeFn.list({ agentId });
+  const knowledgeList = await knowledgeFn.listForLLM({ agentId });
 
   return knowledgeList
     .map(({ type, question, answer, text, content }) => ({

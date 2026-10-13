@@ -253,7 +253,7 @@ const MCPs = [
         template: {
           type: "string",
           description:
-            "Name of a predefined email template to render instead of manually composing text/html. Available: 'meeting_summary_a' (summary and highlights from the full transcript only), 'meeting_summary_b' (the same plus next steps, speaker attributed).",
+            "Only for meeting summary emails. Name of a predefined email template to render instead of manually composing text/html. Must be one of: 'meeting_summary_a' (summary and highlights from the full transcript only), 'meeting_summary_b' (the same plus next steps, speaker attributed). Omit it for every other email and write 'subject' and 'text' yourself.",
           nullable: true,
         },
         data: {

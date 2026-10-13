@@ -347,9 +347,9 @@ export const sendEmailTool: Tool<any> = {
       },
       template: {
         type: "string",
-        description: `Name of a predefined email template to render instead of manually composing text/html. Available: ${Object.keys(
+        description: `Only for meeting summary emails. Name of a predefined email template to render instead of manually composing text/html. Must be one of: ${Object.keys(
           TEMPLATES,
-        ).join(", ")}`,
+        ).join(", ")}. Omit it for every other email and write 'subject' and 'text' yourself.`,
       },
       data: {
         type: "object",
@@ -409,7 +409,12 @@ export const sendEmailTool: Tool<any> = {
 
     if (args.template) {
       const render = TEMPLATES[args.template];
-      if (!render) {
+      if (!render && (args.text || args.html)) {
+        logger.warn(
+          { tool: "GREY:send_email", template: args.template },
+          "Unknown template ignored, sending the composed body instead",
+        );
+      } else if (!render) {
         const errorMessage = `Unknown template "${args.template}". Available templates: ${Object.keys(
           TEMPLATES,
         ).join(", ")}`;
@@ -425,10 +430,12 @@ export const sendEmailTool: Tool<any> = {
         };
       }
 
-      const rendered = render(args.data ?? {});
-      subject = rendered.subject;
-      text = rendered.text;
-      html = rendered.html;
+      if (render) {
+        const rendered = render(args.data ?? {});
+        subject = rendered.subject;
+        text = rendered.text;
+        html = rendered.html;
+      }
     }
 
     try {

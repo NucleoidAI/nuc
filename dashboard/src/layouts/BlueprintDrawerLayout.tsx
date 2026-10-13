@@ -43,37 +43,131 @@ type LogicRule = {
 const defaultLogicRules: LogicRule[] = [
   {
     id: "rule-1",
-    name: "Compliance Certificate Follow-up Flow Decision Model (DCM) for Missing Certificates Triggering Vendor Contact",
+    name: "Order Type Definition",
     description:
-      "Use this rule when a product is missing its compliance certificate and the vendor must be contacted directly to obtain it. Flow: get product vendor, email vendor requesting the certificate, notify the user that the vendor was contacted, then complete. It exits after notifying the user; the certificate itself arrives out of band once the vendor responds.",
-    code: `items = Product.filter(certificate=None)
-
-for product in items:
-    vendor = product.vendor
-    email_vendor(vendor, "Please send the compliance certificate")
-    notify_user(f"Contacted {vendor.name} for {product.name}")`,
+      "There is an Order type, which has a status as a string and items as a list.",
+    code: `class Order(status: str, items: list):
+    this.status = status
+    this.items = items`,
   },
   {
     id: "rule-2",
-    name: "Escalate Stale Tasks",
+    name: "Item Type Definition",
     description:
-      "Use this rule to escalate tasks that have been pending for more than 48 hours without a status update, so the assigned supervisor is notified before the SLA is breached.",
-    code: `tasks = Task.filter(status="PENDING")
-
-for task in tasks:
-    if task.hours_since_update() > 48:
-        notify_supervisor(task, "SLA at risk")`,
+      "There is an Item type, which has a name as a string, a price as a number, and a quantity as a number.",
+    code: `class Item(name: str, price: int, quantity: int):
+    this.name = name
+    this.price = price
+    this.quantity = quantity`,
   },
   {
     id: "rule-3",
-    name: "Auto-tag Incoming Requests",
+    name: "Item Total Calculation",
+    description: "Any item's total is its price times its quantity.",
+    code: `$Item.total = $Item.price * $Item.quantity`,
+  },
+  {
+    id: "rule-4",
+    name: "Invalid Item Price Validation",
     description:
-      "Use this rule to automatically tag new incoming requests based on keywords in their title, so they are routed to the right queue without manual triage.",
-    code: `requests = Request.filter(tags=None)
-
-for request in requests:
-    tag = classify(request.title)
-    request.tags = [tag]`,
+      'If any item\'s price is less than 0, then throw "INVALID_PRICE".',
+    code: `if $Item.price < 0:
+    throw "INVALID_PRICE"`,
+  },
+  {
+    id: "rule-5",
+    name: "Invalid Item Quantity Validation",
+    description:
+      'If any item\'s quantity is less than or equal to 0, then throw "INVALID_QUANTITY".',
+    code: `if $Item.quantity <= 0:
+    throw "INVALID_QUANTITY"`,
+  },
+  {
+    id: "rule-6",
+    name: "Order Subtotal Calculation",
+    description: "Any order's subtotal is the sum of the totals of its items.",
+    code: `$Order.subtotal = $Order.items.reduce(
+    (total, item) => total + item.total,
+    0
+)`,
+  },
+  {
+    id: "rule-7",
+    name: "Order Tax Calculation",
+    description: "Any order's tax is 8% of its subtotal.",
+    code: `$Order.tax = $Order.subtotal * 0.08`,
+  },
+  {
+    id: "rule-8",
+    name: "Order Discount Default",
+    description: "Any order's discount is initially 0.",
+    code: `$Order.discount = 0`,
+  },
+  {
+    id: "rule-9",
+    name: "Bulk Order Discount",
+    description:
+      "If any order's subtotal is greater than or equal to 1000, then its discount is 10% of its subtotal.",
+    code: `if $Order.subtotal >= 1000:
+    $Order.discount = $Order.subtotal * 0.10`,
+  },
+  {
+    id: "rule-10",
+    name: "No Discount Below Threshold",
+    description:
+      "If any order's subtotal is less than 1000, then its discount is 0.",
+    code: `if $Order.subtotal < 1000:
+    $Order.discount = 0`,
+  },
+  {
+    id: "rule-11",
+    name: "Order Total Calculation",
+    description: "Any order's total is its subtotal plus tax minus discount.",
+    code: `$Order.total = $Order.subtotal + $Order.tax - $Order.discount`,
+  },
+  {
+    id: "rule-12",
+    name: "Order Item Count Calculation",
+    description:
+      "Any order's item count is the sum of the quantities of its items.",
+    code: `$Order.itemCount = $Order.items.reduce(
+    (count, item) => count + item.quantity,
+    0
+)`,
+  },
+  {
+    id: "rule-13",
+    name: "Order Audit Flag",
+    description:
+      "If any order's total is greater than 1000, then the order requires an audit, otherwise the order does not require an audit.",
+    code: `if $Order.total > 1000:
+    $Order.audited = true
+else:
+    $Order.audited = false`,
+  },
+  {
+    id: "rule-14",
+    name: "Invalid Order Total Validation",
+    description:
+      'If any order\'s total is less than 0, then throw "INVALID_ORDER_TOTAL".',
+    code: `if $Order.total < 0:
+    throw "INVALID_ORDER_TOTAL"`,
+  },
+  {
+    id: "rule-15",
+    name: "Order Item Limit Validation",
+    description:
+      'If any order\'s item count is greater than 100, then throw "ORDER_LIMIT_EXCEEDED".',
+    code: `if $Order.itemCount > 100:
+    throw "ORDER_LIMIT_EXCEEDED"`,
+  },
+  {
+    id: "rule-16",
+    name: "Cannot Ship Empty Order Validation",
+    description:
+      'If any order is shipped and has no items, then throw "CANNOT_SHIP_EMPTY_ORDER".',
+    code: `if $Order.status == "SHIPPED" and $Order.itemCount == 0:
+    throw "CANNOT_SHIP_EMPTY_ORDER"`,
   },
 ];
 
@@ -534,7 +628,9 @@ const BlueprintDrawerLayout = ({
             open={logicEditorOpen}
             onClose={() => setLogicEditorOpen(false)}
           >
-            <DialogContent sx={{ p: 0, display: "flex", height: "100%" }}>
+            <DialogContent
+              sx={{ p: 0, display: "flex", flex: 1, minHeight: 0 }}
+            >
               <Box
                 sx={{
                   width: 350,
@@ -545,6 +641,7 @@ const BlueprintDrawerLayout = ({
                   borderRadius: "4px 0 0 4px",
                   bgcolor: (theme) =>
                     theme.palette.mode === "dark" ? "grey.900" : "grey.50",
+                  minHeight: 0,
                 }}
               >
                 <Box
@@ -573,7 +670,7 @@ const BlueprintDrawerLayout = ({
                   </Tooltip>
                 </Box>
 
-                <List sx={{ flex: 1 }} dense>
+                <List sx={{ flex: 1, minHeight: 0, overflowY: "auto" }} dense>
                   {logicRules.map((rule) => (
                     <Box
                       onClick={() => setSelectedLogicRuleId(rule.id)}
@@ -613,11 +710,13 @@ const BlueprintDrawerLayout = ({
                   display: "flex",
                   flexDirection: "column",
                   minWidth: 0,
+                  minHeight: 0,
                 }}
               >
                 <Box
                   sx={{
                     position: "relative",
+                    flexShrink: 0,
                   }}
                 >
                   <LogicView

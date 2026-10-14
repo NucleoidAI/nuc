@@ -24,6 +24,29 @@ import { isForcedNode } from "../../../lib/blueprintNodes";
 
 const MIN_INPUTS_AVAILABLE = 0.5;
 const SUPERVISOR_ACTION = "PLATFORM:ask_supervisor";
+const NODE_FILLED_FIELDS: Record<string, { type: string; fields: string[] }> = {
+  "PLATFORM:decision": {
+    type: "CONDITION",
+    fields: ["condition", "true", "false"],
+  },
+  "PLATFORM:switch": {
+    type: "SWITCH",
+    fields: ["cases", "defaultCase", "instructions"],
+  },
+  "PLATFORM:handoff": {
+    type: "HANDOFF",
+    fields: ["targetAgentId", "targetBlueprintId", "context"],
+  },
+};
+
+function nodeFilledFields(action: string, node: any) {
+  const filled = NODE_FILLED_FIELDS[action];
+
+  return [
+    ...Object.keys(node?.properties?.parameters ?? {}),
+    ...(filled && node?.type === filled.type ? filled.fields : []),
+  ];
+}
 
 function decisionStateOf(state: TaskState) {
   const { taskData, currentNode, currentTask, inheritedSteps, variables } =
@@ -148,7 +171,7 @@ async function plan({
       : judgeParameters({
           action: selection.action,
           definition: definitionOf(selection.action) as Definition | undefined,
-          skipFields: Object.keys(matchedNode?.properties?.parameters ?? {}),
+          skipFields: nodeFilledFields(selection.action, matchedNode),
           state: decisionState,
           steps: state.steps,
           inheritedSteps: (state.inheritedSteps ?? []) as Step[],

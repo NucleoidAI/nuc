@@ -1,6 +1,5 @@
-import { generate } from "@canmingir/link-express/llm";
+import { ask, choice } from "../lib/decision";
 import type { LLMMeta } from "@canmingir/link-express/llm";
-import dataset from "../dataset";
 
 type Case = { nodeId: string; label?: string; description?: string };
 
@@ -34,6 +33,42 @@ export function selectCase(
   );
 }
 
+type Pick = {
+  context: string;
+  instructions?: string;
+  options: Case[];
+  meta?: LLMMeta;
+};
+
+async function pick({ context, instructions, options, meta }: Pick) {
+  const { selected_case } = await ask({
+    state: { instructions: instructions ?? null, executed_steps: context },
+    questions: {
+      selected_case: choice(
+        {
+          select: "selected_case",
+          instructions: "`instructions`",
+          evidence: "`executed_steps`",
+        },
+        Object.fromEntries(
+          options.map(({ nodeId, label, description }) => [
+            nodeId,
+            { label: label ?? null, description: description ?? null },
+          ]),
+        ),
+      ),
+    },
+    meta: { ...meta, source: "action.switch" },
+  });
+
+  console.debug(
+    `[decision] switch selected ${selected_case.choice}:`,
+    JSON.stringify(selected_case.probabilities),
+  );
+
+  return selected_case.choice;
+}
+
 async function run({
   context,
   parameters,
@@ -55,11 +90,10 @@ async function run({
     throw new Error("SWITCH_NODE_HAS_NO_CASES");
   }
 
-  const { nodeId, reason } = await generate({
-    dataset: dataset.train.switch,
-    context: context ? [{ role: "system" as const, content: context }] : [],
-    content: { context, instructions, cases: options },
-    json_format: "{ nodeId: <NODE_ID>, reason: <REASON> }",
+  const nodeId = await pick({
+    context,
+    instructions,
+    options,
     meta,
   });
 
@@ -68,7 +102,6 @@ async function run({
   return {
     nodeId: selected.nodeId,
     label: selected.label,
-    reason: typeof reason === "string" ? reason : undefined,
   };
 }
 

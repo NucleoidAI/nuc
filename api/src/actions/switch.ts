@@ -1,4 +1,7 @@
 import { ask, choice } from "../lib/decision";
+import config from "../../config";
+import dataset from "../dataset";
+import { generate } from "@canmingir/link-express/llm";
 import type { LLMMeta } from "@canmingir/link-express/llm";
 
 type Case = { nodeId: string; label?: string; description?: string };
@@ -90,18 +93,30 @@ async function run({
     throw new Error("SWITCH_NODE_HAS_NO_CASES");
   }
 
-  const nodeId = await pick({
-    context,
-    instructions,
-    options,
-    meta,
-  });
+  let nodeId: unknown;
+  let reason: string | undefined;
+
+  if (config.decision?.enabled) {
+    nodeId = await pick({ context, instructions, options, meta });
+  } else {
+    const response = await generate({
+      dataset: dataset.train.switch,
+      context: context ? [{ role: "system" as const, content: context }] : [],
+      content: { context, instructions, cases: options },
+      json_format: "{ nodeId: <NODE_ID>, reason: <REASON> }",
+      meta,
+    });
+
+    nodeId = response.nodeId;
+    reason = typeof response.reason === "string" ? response.reason : undefined;
+  }
 
   const selected = selectCase(options, nodeId, defaultCase);
 
   return {
     nodeId: selected.nodeId,
     label: selected.label,
+    ...(reason && { reason }),
   };
 }
 

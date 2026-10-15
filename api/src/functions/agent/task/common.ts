@@ -479,7 +479,7 @@ async function conclude({
   }
 
   if (action === "PLATFORM:complete") {
-    return complete(state, comment);
+    return complete(state, selection.comment || prepared.comment);
   }
 
   if (action === "PLATFORM:handoff") {

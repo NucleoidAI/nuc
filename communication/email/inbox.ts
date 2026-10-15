@@ -345,7 +345,14 @@ async function loadMailboxes(): Promise<Mailbox[]> {
 }
 
 async function setup(): Promise<void> {
-  const { pollIntervalMs } = emailConfig();
+  const { enabled, pollIntervalMs } = emailConfig();
+
+  if (!enabled) {
+    console.log(
+      "📭 Email channel polling disabled (set EMAIL_ENABLED=true to enable)",
+    );
+    return;
+  }
 
   const poll = async (): Promise<void> => {
     try {
@@ -361,9 +368,7 @@ async function setup(): Promise<void> {
           .map((id) => disconnect({ id })),
       );
 
-      await Promise.all(
-        mailboxes.map((mailbox) => pollMailbox({ mailbox })),
-      );
+      await Promise.all(mailboxes.map((mailbox) => pollMailbox({ mailbox })));
     } catch (error: unknown) {
       console.error("Email mailbox refresh failed", error);
     } finally {
@@ -371,7 +376,9 @@ async function setup(): Promise<void> {
     }
   };
 
-  console.log(`📬 Email channel polling configured mailboxes every ${pollIntervalMs}ms`);
+  console.log(
+    `📬 Email channel polling configured mailboxes every ${pollIntervalMs}ms`,
+  );
 
   await poll();
 }

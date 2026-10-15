@@ -189,28 +189,45 @@ async function askJev<const Q extends Questions>(
     questions,
   };
 
-  const dir = process.env.JEV_DUMP_DIR;
-  if (dir) {
+  const startedAt = Date.now();
+  const dump = (outcome: { response: unknown } | { error: string }) => {
+    const dir = process.env.JEV_DUMP_DIR;
+    if (!dir) return;
     try {
       mkdirSync(dir, { recursive: true });
       writeFileSync(
         path.join(
           dir,
-          `${Date.now()}-${source}-${Object.keys(questions).join("_")}.json`,
+          `${startedAt}-${source}-${Object.keys(questions).join("_")}.json`,
         ),
-        JSON.stringify(request, null, 2),
+        JSON.stringify(
+          {
+            runId: meta.taskId ?? meta.sessionId ?? null,
+            meta,
+            source,
+            startedAt,
+            durationMs: Date.now() - startedAt,
+            ...request,
+            ...outcome,
+          },
+          null,
+          2,
+        ),
       );
     } catch (error) {
       console.error(`[jev] dump failed: ${String(error)}`);
     }
-  }
+  };
 
   try {
-    return await ask({
+    const response = await ask({
       ...request,
       meta: { ...meta, source: `agent.${source}` },
     });
+    dump({ response });
+    return response;
   } catch (error) {
+    dump({ error: String(error) });
     console.error(
       `[jev] ${source} failed (${JSON.stringify(request).length} bytes):`,
       error,

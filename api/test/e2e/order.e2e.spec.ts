@@ -73,18 +73,18 @@ describe("Order Agent", () => {
 
   it("completes an order when the product is certified", async () => {
     mcp.tool("ORDER:find_product").returns({
-      product: { id: "prd-1", name: "product-1", vendor_id: "vnd-1" },
+      product: { id: "TLP-4200", name: "Thermal Label Printer", vendor_id: "VND-2101" },
     });
 
     mcp
       .tool("ORDER:assign_certificate")
-      .expects({ product_id: "prd-1", certificate: "FFC" })
-      .returns({ product_id: "prd-1", certificate: "FFC", assigned: true });
+      .expects({ product_id: "TLP-4200", certificate: "FFC" })
+      .returns({ product_id: "TLP-4200", certificate: "FFC", assigned: true });
 
     mcp
       .tool("ORDER:create_po")
-      .expects({ product_id: "prd-1" })
-      .returns({ purchase_order: purchaseOrder("po-2001", "prd-1") });
+      .expects({ product_id: "TLP-4200" })
+      .returns({ purchase_order: purchaseOrder("po-2001", "TLP-4200") });
 
     stubPaymentAndShipment("pi_e2e_2001", "794000000001");
 
@@ -98,7 +98,7 @@ describe("Order Agent", () => {
       sessionId: SESSION.happyPath,
       content: JSON.stringify({
         intent: "create_order",
-        product: "product-1",
+        product: "Thermal Label Printer",
         quantity: 5,
         city: "Atlanta",
       }),
@@ -116,7 +116,7 @@ describe("Order Agent", () => {
     expect(completedTask.taskId).toBe(created.taskId);
 
     expect(mcp.tool("ORDER:create_po").lastCall).toMatchObject({
-      product_id: "prd-1",
+      product_id: "TLP-4200",
     });
 
     expect(mcp.tool("STRIPE:create_payment_intent").calls).toHaveLength(1);
@@ -126,18 +126,18 @@ describe("Order Agent", () => {
 
   it("completes an order after the supervisor provides the missing certificate knowledge", async () => {
     mcp.tool("ORDER:find_product").returns({
-      product: { id: "prd-4", name: "product-4", vendor_id: "vnd-1" },
+      product: { id: "DSC-760", name: "Duplex Document Scanner", vendor_id: "VND-2101" },
     });
 
     mcp
       .tool("ORDER:assign_certificate")
-      .expects({ product_id: "prd-4", certificate: "CE" })
-      .returns({ product_id: "prd-4", certificate: "CE", assigned: true });
+      .expects({ product_id: "DSC-760", certificate: "CE" })
+      .returns({ product_id: "DSC-760", certificate: "CE", assigned: true });
 
     mcp
       .tool("ORDER:create_po")
-      .expects({ product_id: "prd-4" })
-      .returns({ purchase_order: purchaseOrder("po-2002", "prd-4") });
+      .expects({ product_id: "DSC-760" })
+      .returns({ purchase_order: purchaseOrder("po-2002", "DSC-760") });
 
     stubPaymentAndShipment("pi_e2e_2002", "794000000002");
 
@@ -152,7 +152,7 @@ describe("Order Agent", () => {
       sessionId: SESSION.supervisedKnowledge,
       content: JSON.stringify({
         intent: "create_order",
-        product: "product-4",
+        product: "Duplex Document Scanner",
         quantity: 5,
         city: "Atlanta",
       }),
@@ -171,7 +171,7 @@ describe("Order Agent", () => {
       .send({
         type: "DATA",
         agentId: ORDER_AGENT_ID,
-        text: '{"product_id": "prd-4", "product_name": "product-4", "certificate": "CE"}',
+        text: '{"product_id": "DSC-760", "product_name": "Duplex Document Scanner", "certificate": "CE"}',
       })
       .expect(201);
 
@@ -182,7 +182,7 @@ describe("Order Agent", () => {
       question: raised.question,
       type: "KNOWLEDGE",
       answer:
-        '{"product_id": "prd-4", "product_name": "product-4", "certificate": "CE"}',
+        '{"product_id": "DSC-760", "product_name": "Duplex Document Scanner", "certificate": "CE"}',
     });
 
     await event.waitFor("SUPERVISING_ANSWERED");
@@ -196,7 +196,7 @@ describe("Order Agent", () => {
       knowledge.body
         .map((entry: { text: string | null }) => entry.text)
         .join("\n"),
-    ).toContain("prd-4");
+    ).toContain("DSC-760");
 
     await approvePayment(SESSION.supervisedKnowledge, created.taskId);
 
@@ -204,7 +204,7 @@ describe("Order Agent", () => {
     expect(completedTask.taskId).toBe(created.taskId);
 
     expect(mcp.tool("ORDER:assign_certificate").lastCall).toMatchObject({
-      product_id: "prd-4",
+      product_id: "DSC-760",
       certificate: "CE",
     });
 
@@ -214,23 +214,23 @@ describe("Order Agent", () => {
 
   it("hands the order over to the compliance manager agent when the supervisor adds a handoff", async () => {
     mcp.tool("ORDER:find_product").returns({
-      product: { id: "prd-3", name: "product-3", vendor_id: "vnd-3" },
+      product: { id: "NSW-4800", name: "48-Port PoE Network Switch", vendor_id: "VND-2103" },
     });
 
     mcp
       .tool("ORDER:get_product_vendor")
-      .expects({ product_id: "prd-3" })
+      .expects({ product_id: "NSW-4800" })
       .returns({
         vendor: {
-          id: "vnd-3",
-          name: "Vendor Gamma",
-          email: "gamma@vendor.com",
+          id: "VND-2103",
+          name: "Cobalt Networks Corp.",
+          email: "orders@cobaltnetworks.com",
         },
       });
 
     mcp
       .tool("GREY:send_email")
-      .expects({ to: expect.stringContaining("gamma@vendor.com") })
+      .expects({ to: expect.stringContaining("orders@cobaltnetworks.com") })
       .returns({ success: true, messageId: "<e2e-3@greycollar.test>" });
 
     mcp.tool("ORDER:assign_certificate").expectsNoCalls();
@@ -245,7 +245,7 @@ describe("Order Agent", () => {
         sessionId: SESSION.supervisedBlueprint,
         content: JSON.stringify({
           intent: "create_order",
-          product: "product-3",
+          product: "48-Port PoE Network Switch",
           quantity: 5,
           city: "Atlanta",
         }),
@@ -318,7 +318,7 @@ describe("Order Agent", () => {
       expect(completedHandoffTask.taskId).toBe(handedOff.taskId);
 
       expect(mcp.tool("GREY:send_email").lastCall).toMatchObject({
-        to: expect.stringContaining("gamma@vendor.com"),
+        to: expect.stringContaining("orders@cobaltnetworks.com"),
       });
     } finally {
       await supertest(app)

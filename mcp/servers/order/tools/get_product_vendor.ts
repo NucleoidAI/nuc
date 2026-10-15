@@ -12,7 +12,7 @@ export const getProductVendorTool: Tool<GetProductVendorInput> = {
     properties: {
       product_id: {
         type: "string",
-        description: "The product ID to look up the vendor for (e.g. prd-1).",
+        description: "The product ID to look up the vendor for (e.g. TLP-4200).",
       },
     },
     required: ["product_id"],

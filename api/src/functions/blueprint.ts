@@ -27,7 +27,12 @@ type NodeType = {
   [key: string]: unknown;
 };
 
-const COSMETIC_PROPERTIES = ["label", "description", "pseudocodeEnabled"];
+const COSMETIC_PROPERTIES = [
+  "label",
+  "icon",
+  "description",
+  "pseudocodeEnabled",
+];
 
 function withoutCosmetics<T extends { properties?: object }>(nodes: T[]): T[] {
   return nodes.map((node) => {

@@ -64,17 +64,17 @@
       "history": [
         {
           "role": "system",
-          "content": "{\"supervising\":{\"id\":\"sup-001\",\"question\":\"Product prd-3 has no compliance certificate in the knowledge base. The blueprint requires a certificate to proceed with purchase order creation. Should I add a certificate to the knowledge base, hand off to compliance, or pause until certified?\",\"status\":\"PENDING\",\"taskId\":\"task-001\",\"blueprintId\":\"bp-001\"}}"
+          "content": "{\"supervising\":{\"id\":\"sup-001\",\"question\":\"Product NSW-4800 has no compliance certificate in the knowledge base. The blueprint requires a certificate to proceed with purchase order creation. Should I add a certificate to the knowledge base, hand off to compliance, or pause until certified?\",\"status\":\"PENDING\",\"taskId\":\"task-001\",\"blueprintId\":\"bp-001\"}}"
         }
       ],
-      "content": "Add the CE certificate for product prd-3 to the knowledge base.",
+      "content": "Add the CE certificate for product NSW-4800 to the knowledge base.",
       "decision": "KNOWLEDGE"
     },
     {
       "history": [
         {
           "role": "system",
-          "content": "{\"supervising\":{\"id\":\"sup-001\",\"question\":\"Product prd-3 has no compliance certificate in the knowledge base. The blueprint requires a certificate to proceed with purchase order creation. Should I add a certificate to the knowledge base, hand off to compliance, or pause until certified?\",\"status\":\"PENDING\",\"taskId\":\"task-001\",\"blueprintId\":\"bp-001\"}}"
+          "content": "{\"supervising\":{\"id\":\"sup-001\",\"question\":\"Product NSW-4800 has no compliance certificate in the knowledge base. The blueprint requires a certificate to proceed with purchase order creation. Should I add a certificate to the knowledge base, hand off to compliance, or pause until certified?\",\"status\":\"PENDING\",\"taskId\":\"task-001\",\"blueprintId\":\"bp-001\"}}"
         }
       ],
       "content": "Hand off to the compliance manager agent when no certificate is found.",
@@ -84,7 +84,7 @@
       "history": [
         {
           "role": "system",
-          "content": "{\"supervising\":{\"id\":\"sup-001\",\"question\":\"Product prd-3 has no compliance certificate in the knowledge base. The blueprint requires a certificate to proceed with purchase order creation. Should I add a certificate to the knowledge base, hand off to compliance, or pause until certified?\",\"status\":\"PENDING\",\"taskId\":\"task-001\",\"blueprintId\":\"bp-001\"}}"
+          "content": "{\"supervising\":{\"id\":\"sup-001\",\"question\":\"Product NSW-4800 has no compliance certificate in the knowledge base. The blueprint requires a certificate to proceed with purchase order creation. Should I add a certificate to the knowledge base, hand off to compliance, or pause until certified?\",\"status\":\"PENDING\",\"taskId\":\"task-001\",\"blueprintId\":\"bp-001\"}}"
         }
       ],
       "content": "Modify the blueprint so it always checks compliance before creating a purchase order.",

@@ -117,8 +117,8 @@
           "action": "PLATFORM:user_interaction",
           "status": "COMPLETED",
           "parameters": { "question": "Which product would you like to order?" },
-          "result": "product-1",
-          "comment": "User selected product-1"
+          "result": "Thermal Label Printer",
+          "comment": "User selected Thermal Label Printer"
         },
         {
           "action": "ORDER:find_product",
@@ -126,7 +126,7 @@
           "parameters": {
             "name": { "$ref": "steps[0].result" }
           },
-          "result": "{\"id\": \"prd-1\", \"name\": \"product-1\"}",
+          "result": "{\"id\": \"TLP-4200\", \"name\": \"Thermal Label Printer\"}",
           "comment": "Reusing the product name the user already gave (steps[0].result) via $ref instead of retyping it"
         }
       ],

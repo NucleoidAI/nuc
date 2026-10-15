@@ -375,7 +375,7 @@ router.patch("/:supervisingId/demo", async (req, res) => {
     response = {
       id: "b1c2d3e4-f5a6-4b1c-9001-200000000009",
       type: "DATA",
-      text: '{"product_id": "prd-4", "product_name": "product-4", "certificate": "CE"}',
+      text: '{"product_id": "DSC-760", "product_name": "Duplex Document Scanner", "certificate": "CE"}',
       status: "COMPLETED",
       createdAt: "2025-06-26T06:00:00.000Z",
     };

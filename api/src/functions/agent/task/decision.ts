@@ -110,9 +110,9 @@ async function selectAction({
     };
   }
 
-  const { action } = selection;
+  const { action, confidence } = selection;
 
-  return { action, resultScore: probabilities[action], probabilities };
+  return { action, resultScore: confidence, probabilities };
 }
 
 function decisionComment(decided: Params) {
@@ -292,7 +292,6 @@ async function decisionTask({ taskId }: { taskId: string }) {
 
       selection = {
         action: SUPERVISOR_ACTION,
-        resultScore: selection.probabilities?.[SUPERVISOR_ACTION],
         probabilities: selection.probabilities,
       };
 

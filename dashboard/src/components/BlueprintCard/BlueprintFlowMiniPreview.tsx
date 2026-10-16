@@ -26,9 +26,7 @@ function withStartNode(nodes: RawNode[]): RawNode[] {
     (n.false || []).forEach((id) => referenced.add(id));
   });
 
-  const rootIds = nodes
-    .filter((n) => !referenced.has(n.id))
-    .map((n) => n.id);
+  const rootIds = nodes.filter((n) => !referenced.has(n.id)).map((n) => n.id);
   if (!rootIds.length || rootIds.some((id) => id === START_NODE_ID))
     return nodes;
 

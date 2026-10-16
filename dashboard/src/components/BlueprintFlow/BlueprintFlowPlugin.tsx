@@ -23,10 +23,10 @@ const DECISION_BG_TO = "#2E3136";
 const SWITCH_BORDER_COLOR = DECISION_BORDER_COLOR;
 const SWITCH_BG_FROM = DECISION_BG_FROM;
 const SWITCH_BG_TO = DECISION_BG_TO;
-export const APPROVAL_BORDER_COLOR = DECISION_BORDER_COLOR;
-export const APPROVAL_BORDER_SOLID = "#616161";
-export const APPROVAL_BG_FROM = DECISION_BG_FROM;
-export const APPROVAL_BG_TO = DECISION_BG_TO;
+export const APPROVAL_BORDER_COLOR = `linear-gradient(135deg, #4A6273, #3E5567)`;
+export const APPROVAL_BORDER_SOLID = "#4A6273";
+export const APPROVAL_BG_FROM = "#3E5567";
+export const APPROVAL_BG_TO = "#1B2A33";
 
 const AddButtonWrapper = styled("div")(({ theme }) => ({
   position: "absolute",
@@ -617,15 +617,25 @@ const ForceBadge = styled("div")(({ theme }) => ({
 }));
 
 const NodeWrapper = styled("div", {
-  shouldForwardProp: (prop) => prop !== "isApproval" && prop !== "isDecision",
-})<{ isApproval?: boolean; isDecision?: boolean }>(
-  ({ isApproval, isDecision }) => {
-    const stepColor = isDecision
-      ? "#4a4a4a"
-      : isApproval
-      ? "#6b5709"
-      : "#174f77";
-    const steppedShadow = `
+  shouldForwardProp: (prop) =>
+    prop !== "isApproval" &&
+    prop !== "isDecision" &&
+    prop !== "isEndpoint" &&
+    prop !== "isEndpointStart",
+})<{
+  isApproval?: boolean;
+  isDecision?: boolean;
+  isEndpoint?: boolean;
+  isEndpointStart?: boolean;
+}>(({ isApproval, isDecision, isEndpoint, isEndpointStart }) => {
+  const stepColor = isApproval
+    ? "#174f77"
+    : isDecision
+    ? "#4a4a4a"
+    : isEndpoint
+    ? "#4a4a4a"
+    : "#174f77";
+  const steppedShadow = `
     1px 1px 0 ${stepColor},
     2px 2px 0 ${stepColor},
     3px 3px 0 ${stepColor},
@@ -636,27 +646,36 @@ const NodeWrapper = styled("div", {
     10px 10px 20px rgba(0, 0, 0, 0.4),
     20px 20px 40px rgba(0, 0, 0, 0.5)
   `;
+  const borderRadius = isEndpoint
+    ? isEndpointStart
+      ? "40px 0 0 40px"
+      : "0 40px 40px 0"
+    : "16px";
 
-    return {
-      position: "relative",
-      width: "100%",
-      height: "100%",
-      borderRadius: "16px",
-      transformStyle: "preserve-3d",
+  return {
+    position: "relative",
+    width: "100%",
+    height: "100%",
+    borderRadius,
+    transformStyle: "preserve-3d",
+    transform: "perspective(1500px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)",
+    boxShadow: steppedShadow,
+    transition:
+      "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, filter 0.25s ease",
+    "&:hover": {
       transform:
-        "perspective(1500px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)",
+        "perspective(1500px) rotateX(0deg) rotateY(-10deg) rotateZ(0deg)",
+      filter: "brightness(1.070)",
       boxShadow: steppedShadow,
-      transition:
-        "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, filter 0.25s ease",
-      "&:hover": {
-        transform:
-          "perspective(1500px) rotateX(0deg) rotateY(-10deg) rotateZ(0deg)",
-        filter: "brightness(1.070)",
-        boxShadow: steppedShadow,
-      },
-    };
-  }
-);
+    },
+  };
+});
+
+const DECISION_ENDPOINT_LAYOUT_VARIANT:
+  | "stacked-center"
+  | "two-column-under-icon"
+  | "split-icon-panel"
+  | undefined = "split-icon-panel";
 
 export const blueprintFlowPlugin = {
   id: "blueprintChart",
@@ -666,26 +685,51 @@ export const blueprintFlowPlugin = {
     const isApproval = node?.nodeType === "APPROVAL";
     const isSwitch = node?.nodeType === "SWITCH";
     const isDecision = isApproval || node?.connectorType === "decision";
+    const isComplete = node?.action === "PLATFORM:complete";
+    const isEndpoint = node?.nodeType === "START" || isComplete;
+    const layoutVariant =
+      isDecision || isSwitch || isEndpoint
+        ? DECISION_ENDPOINT_LAYOUT_VARIANT
+        : undefined;
 
-    const bgFrom = isDecision
+    const bgFrom = isApproval
+      ? undefined
+      : isDecision
       ? DECISION_BG_FROM
       : isSwitch
       ? SWITCH_BG_FROM
+      : isEndpoint
+      ? DECISION_BG_FROM
       : undefined;
-    const bgTo = isDecision
+    const bgTo = isApproval
+      ? undefined
+      : isDecision
       ? DECISION_BG_TO
       : isSwitch
       ? SWITCH_BG_TO
+      : isEndpoint
+      ? DECISION_BG_TO
       : undefined;
-    const borderColor = isDecision
+    const borderColor = isApproval
+      ? "linear-gradient(135deg, #c684ff33, #078dee4d)"
+      : isDecision
       ? DECISION_BORDER_COLOR
       : isSwitch
       ? SWITCH_BORDER_COLOR
+      : isEndpoint
+      ? DECISION_BORDER_COLOR
       : "linear-gradient(135deg, #c684ff33, #078dee4d)";
-    const borderRadius = 16;
+    const borderRadius =
+      node?.nodeType === "START"
+        ? "40px 0 0 40px"
+        : isComplete
+        ? "0 40px 40px 0"
+        : 16;
     const shadowLevel = 1;
-    const minWidth = isDecision || isSwitch ? 315 : 420;
-    const maxWidth = isDecision || isSwitch ? 315 : 420;
+    const minWidth =
+      (isDecision && !isApproval) || isSwitch || isEndpoint ? 315 : 420;
+    const maxWidth =
+      (isDecision && !isApproval) || isSwitch || isEndpoint ? 315 : 420;
     const minHeight = 210;
     const maxHeight = 210;
     const shape = 16;
@@ -704,6 +748,7 @@ export const blueprintFlowPlugin = {
       maxHeight,
       shape,
       borderRadius,
+      layoutVariant,
       gap: styleTokens.gap ?? 6,
       levelGap: styleTokens.levelGap ?? 15,
       startGap,
@@ -961,13 +1006,13 @@ function FlowNodeRenderer({
     node.nodeType === "APPROVAL" ||
     node.nodeType === "SWITCH" ||
     node.connectorType === "decision";
-  // Decision/switch cards render at a square, compact size — truncate the
-  // description so the icon, label and action still fit without growing
-  // the card beyond its normal footprint.
+  const isEndpointNode =
+    node.nodeType === "START" || node.action === "PLATFORM:complete";
   const infoNode = isDecisionNode
     ? { ...node, description: truncateDescription(node.description) }
     : node;
-  const isReadOnly = !onAdd && !onEdit && !onSwapBranch && !onDelete;
+  const isReadOnly =
+    isEndpointNode || (!onAdd && !onEdit && !onSwapBranch && !onDelete);
   const [contextMenu, setContextMenu] = useState<{
     mouseX: number;
     mouseY: number;
@@ -1018,6 +1063,8 @@ function FlowNodeRenderer({
     <NodeWrapper
       isApproval={node.nodeType === "APPROVAL"}
       isDecision={isDecisionNode}
+      isEndpoint={isEndpointNode}
+      isEndpointStart={node.nodeType === "START"}
       title={isForceNode ? "Force node: action is guaranteed" : undefined}
       onContextMenu={handleContextMenu}
       onMouseDownCapture={handleMouseDownCapture}

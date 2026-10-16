@@ -14,6 +14,7 @@ import { validateFlow } from "../../components/BlueprintFlow/Validation/validati
 import {
   DefinitionGraph,
   FlowDefinition,
+  addStartNode,
   buildByNodeRef,
   buildDefinitionGraph,
   getAncestorNodes,
@@ -235,7 +236,7 @@ function BlueprintFlowWidget({
       return acc;
     }, {});
 
-    return enriched;
+    return addStartNode(enriched);
   }, [
     graphData,
     nodeChanges,

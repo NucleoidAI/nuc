@@ -720,11 +720,8 @@ const NodeWrapper = styled("div", {
   };
 });
 
-const DECISION_ENDPOINT_LAYOUT_VARIANT:
-  | "stacked-center"
-  | "two-column-under-icon"
-  | "split-icon-panel"
-  | undefined = "split-icon-panel";
+const DECISION_ENDPOINT_LAYOUT_VARIANT: "split-icon-panel" | undefined =
+  "split-icon-panel";
 
 export const blueprintFlowPlugin = {
   id: "blueprintChart",

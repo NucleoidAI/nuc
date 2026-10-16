@@ -211,6 +211,42 @@ export function isRefValue(value: unknown): value is { $ref: string } {
   );
 }
 
+const START_NODE_ID = "__start__";
+
+function buildSyntheticNode(
+  id: string,
+  nodeType: "START",
+  label: string,
+  extra?: { icon?: string; description?: string; action?: string }
+): DefinitionGraphNode {
+  return {
+    id,
+    label,
+    nodeType,
+    raw: { id, type: nodeType },
+    connectorType: "default",
+    ...extra,
+  };
+}
+
+export function addStartNode(graph: DefinitionGraph): DefinitionGraph {
+  const rootIds = graph.roots.filter((id) => graph.nodes[id]);
+  if (rootIds.length === 0) return graph;
+
+  const nodes: DefinitionGraph["nodes"] = { ...graph.nodes };
+
+  nodes[START_NODE_ID] = {
+    ...buildSyntheticNode(START_NODE_ID, "START", "Start", {
+      icon: "mdi:play",
+      description: "Defines the starting point of the Blueprint",
+      action: "PLATFORM:start_node",
+    }),
+    next: rootIds.length === 1 ? rootIds[0] : rootIds,
+  };
+
+  return { nodes, roots: [START_NODE_ID] };
+}
+
 export function parseByNodeRef(
   value: unknown
 ): { sourceNodeId: string; sourceField: string } | null {

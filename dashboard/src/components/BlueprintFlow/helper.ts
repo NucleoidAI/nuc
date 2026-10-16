@@ -233,6 +233,11 @@ export function addStartNode(graph: DefinitionGraph): DefinitionGraph {
   const rootIds = graph.roots.filter((id) => graph.nodes[id]);
   if (rootIds.length === 0) return graph;
 
+  const hasApiRequestNode = rootIds.some(
+    (id) => graph.nodes[id]?.nodeType === "START"
+  );
+  if (hasApiRequestNode) return graph;
+
   const nodes: DefinitionGraph["nodes"] = { ...graph.nodes };
 
   nodes[START_NODE_ID] = {

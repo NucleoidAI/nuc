@@ -1,5 +1,5 @@
-import { generate } from "../lib/llm";
-import type { LLMMeta } from "../lib/llmLog";
+import { generate } from "@canmingir/link-express/llm";
+import type { LLMMeta } from "@canmingir/link-express/llm";
 import dataset from "../dataset";
 
 async function run({

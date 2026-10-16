@@ -95,28 +95,6 @@
       "knowledgeScore": null,
       "createdAt": "2026-05-10T09:05:00Z"
     },
-    {
-      "id": "b1c2d3e4-0005-4000-8000-000000000005",
-      "action": "TELCO:get_bbk_by_address",
-      "parameters": { "address": "Hauptstrasse 5, 80331 Munich" },
-      "result": "{\"bbk\": \"DEU-80331-00219\"}",
-      "comment": "Retrieved BBK number.",
-      "status": "COMPLETED",
-      "taskId": "a1b2c3d4-0002-4000-8000-000000000002",
-      "knowledgeScore": null,
-      "createdAt": "2026-05-11T11:31:00Z"
-    },
-    {
-      "id": "b1c2d3e4-0006-4000-8000-000000000006",
-      "action": "TELCO:get_inventory",
-      "parameters": { "bbk": "DEU-80331-00219" },
-      "result": "Connection timeout after 3 retries.",
-      "comment": "Inventory service unreachable.",
-      "status": "FAILED",
-      "taskId": "a1b2c3d4-0002-4000-8000-000000000002",
-      "knowledgeScore": null,
-      "createdAt": "2026-05-11T11:32:00Z"
-    },
 
     {
       "id": "c2c3d4e5-0001-4000-8000-000000000001",

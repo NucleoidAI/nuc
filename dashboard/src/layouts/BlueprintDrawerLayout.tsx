@@ -1,22 +1,81 @@
+import AddIcon from "@mui/icons-material/Add";
 import BlueprintChatTitle from "../components/BlueprintChat/BlueprintChatTitle";
 import type { BlueprintContext as BlueprintContextData } from "../hooks/useBlueprint";
 import BlueprintFlowWidget from "../widgets/BlueprintFlowWidget/BlueprintFlowWidget";
 import BlueprintKnowledge from "../components/BlueprintKnowledge/BlueprintKnowledge";
 import BlueprintSkill from "../components/BlueprintSkill/BlueprintSkill";
+import CloseIcon from "@mui/icons-material/Close";
+import { CodeEditor } from "../widgets/CodeEditor";
 import { DrawerLayout } from "@canmingir/link/layouts";
 import { FlowDefinition } from "../components/BlueprintFlow/helper";
 import HorizontalSplitIcon from "@mui/icons-material/HorizontalSplit";
+import LogicView from "../components/LogicView/LogicView";
+import PsychologyIcon from "@mui/icons-material/Psychology";
 import SettingsDialog from "../components/SettingsDialog/SettingsDialog";
 import SettingsIcon from "@mui/icons-material/Settings";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import SupervisingChat from "../components/SupervisingChat";
 import useBlueprint from "../hooks/useBlueprint";
 import useSupervisings from "../hooks/useSupervisings";
-
-import { Box, Fab, Grid, SvgIcon, Tooltip } from "@mui/material";
+import {
+  Box,
+  Dialog,
+  DialogContent,
+  Fab,
+  Grid,
+  IconButton,
+  List,
+  SvgIcon,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { publish, useEvent } from "@nucleoidai/react-event";
 import { storage, useStorage } from "@nucleoidjs/webstorage";
+
+type LogicRule = {
+  id: string;
+  name: string;
+  description: string;
+  code: string;
+};
+
+const defaultLogicRules: LogicRule[] = [
+  {
+    id: "rule-1",
+    name: "Compliance Certificate Follow-up Flow Decision Model (DCM) for Missing Certificates Triggering Vendor Contact",
+    description:
+      "Use this rule when a product is missing its compliance certificate and the vendor must be contacted directly to obtain it. Flow: get product vendor, email vendor requesting the certificate, notify the user that the vendor was contacted, then complete. It exits after notifying the user; the certificate itself arrives out of band once the vendor responds.",
+    code: `items = Product.filter(certificate=None)
+
+for product in items:
+    vendor = product.vendor
+    email_vendor(vendor, "Please send the compliance certificate")
+    notify_user(f"Contacted {vendor.name} for {product.name}")`,
+  },
+  {
+    id: "rule-2",
+    name: "Escalate Stale Tasks",
+    description:
+      "Use this rule to escalate tasks that have been pending for more than 48 hours without a status update, so the assigned supervisor is notified before the SLA is breached.",
+    code: `tasks = Task.filter(status="PENDING")
+
+for task in tasks:
+    if task.hours_since_update() > 48:
+        notify_supervisor(task, "SLA at risk")`,
+  },
+  {
+    id: "rule-3",
+    name: "Auto-tag Incoming Requests",
+    description:
+      "Use this rule to automatically tag new incoming requests based on keywords in their title, so they are routed to the right queue without manual triage.",
+    code: `requests = Request.filter(tags=None)
+
+for request in requests:
+    tag = classify(request.title)
+    request.tags = [tag]`,
+  },
+];
 
 const BlueprintDrawerLayout = ({
   drawerOpen,
@@ -42,6 +101,7 @@ const BlueprintDrawerLayout = ({
     agentId: string;
     skill?: string;
     executionMode?: "NORMAL" | "LITE";
+    api?: boolean;
     context?: BlueprintContextData | null;
   };
   handleAiResponse?: (response: {
@@ -91,6 +151,7 @@ const BlueprintDrawerLayout = ({
   const [liteMode, setLiteMode] = useState<boolean>(
     selectedItem?.executionMode === "LITE"
   );
+  const [api, setApi] = useState<boolean>(Boolean(selectedItem?.api));
   const [showConnections] = useStorage(
     "greycollar",
     "blueprintdrawerlayout",
@@ -101,6 +162,22 @@ const BlueprintDrawerLayout = ({
     !!supervise
   );
   const [editBlueprintOpen, setEditBlueprintOpen] = useState(false);
+
+  const [logicEditorOpen, setLogicEditorOpen] = useState(false);
+  const [logicRules, setLogicRules] = useState<LogicRule[]>(defaultLogicRules);
+  const [selectedLogicRuleId, setSelectedLogicRuleId] = useState(
+    defaultLogicRules[0].id
+  );
+  const selectedLogicRule =
+    logicRules.find((rule) => rule.id === selectedLogicRuleId) ?? logicRules[0];
+
+  const handleLogicCodeChange = (value: string) => {
+    setLogicRules((prev) =>
+      prev.map((rule) =>
+        rule.id === selectedLogicRuleId ? { ...rule, code: value } : rule
+      )
+    );
+  };
 
   const setShowConnections = (value: boolean) => {
     storage.set(
@@ -115,6 +192,18 @@ const BlueprintDrawerLayout = ({
     "SUPERVISOR_CHAT_REOPEN",
     { requestedAt: null }
   );
+
+  const [highlightRequest] = useEvent<{ nodeId: string | null }>(
+    "BLUEPRINT_HIGHLIGHT_NODE",
+    { nodeId: null }
+  );
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (highlightRequest?.nodeId) {
+      setSelectedNodeId(highlightRequest.nodeId);
+    }
+  }, [highlightRequest]);
 
   useEffect(() => {
     publish("BLUEPRINT_CONTEXT", { context: drawerOpen ? context : null });
@@ -175,10 +264,12 @@ const BlueprintDrawerLayout = ({
     setDescription(selectedItem?.description);
     setSkill(selectedItem?.skill);
     setContext(selectedItem?.context ?? null);
+    setSelectedNodeId(null);
   }, [selectedItem]);
 
   useEffect(() => {
     setLiteMode(selectedItem?.executionMode === "LITE");
+    setApi(Boolean(selectedItem?.api));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedItem?.id]);
 
@@ -210,11 +301,13 @@ const BlueprintDrawerLayout = ({
         usedNodeIds={usedNodeIds}
         lastUsedNodeId={lastUsedNodeId}
         failedNodeId={failedNodeId}
+        selectedNodeId={selectedNodeId}
         agentId={agentId}
         teamId={teamId}
         blocking={blocking}
         onBlockingChange={handleBlockingChange}
         liteMode={liteMode}
+        api={api}
         showConnections={showConnections}
         onSkillChange={setSkill}
         onSkillLoadingChange={setSkillLoading}
@@ -258,6 +351,21 @@ const BlueprintDrawerLayout = ({
           />
         )}
       </Box>
+
+      <Tooltip title="Add Logic" placement="left">
+        <Fab
+          color="primary"
+          onClick={() => setLogicEditorOpen((prev) => !prev)}
+          sx={{
+            position: "absolute",
+            bottom: 24,
+            right: 216,
+            zIndex: 10,
+          }}
+        >
+          <PsychologyIcon />
+        </Fab>
+      </Tooltip>
 
       <Tooltip
         title={showKnowledge ? "Collapse Knowledge" : "Expand Knowledge"}
@@ -350,6 +458,9 @@ const BlueprintDrawerLayout = ({
         setBlocking={handleBlockingChange}
         liteMode={liteMode}
         setLiteMode={handleLiteModeChange}
+        api={api}
+        setApi={setApi}
+        blueprintId={selectedItem?.id}
       />
     </Box>
   );
@@ -412,6 +523,137 @@ const BlueprintDrawerLayout = ({
             agentId={agentId || selectedItem?.agentId}
             blueprintId={selectedItem?.id}
           />
+        )}
+
+        {logicEditorOpen && (
+          <Dialog
+            type="medium"
+            sx={{
+              zIndex: (theme) => theme.zIndex.modal + 2,
+            }}
+            open={logicEditorOpen}
+            onClose={() => setLogicEditorOpen(false)}
+          >
+            <DialogContent sx={{ p: 0, display: "flex", height: "100%" }}>
+              <Box
+                sx={{
+                  width: 350,
+                  display: "flex",
+                  flexDirection: "column",
+                  borderRight: 1,
+                  borderColor: "divider",
+                  borderRadius: "4px 0 0 4px",
+                  bgcolor: (theme) =>
+                    theme.palette.mode === "dark" ? "grey.900" : "grey.50",
+                }}
+              >
+                <Box
+                  sx={{
+                    px: 2,
+                    py: 1.5,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    borderBottom: 1,
+                    borderColor: "divider",
+                  }}
+                >
+                  <Box sx={{ width: 28 }} />
+                  <Typography
+                    variant="subtitle2"
+                    fontWeight={600}
+                    sx={{ textAlign: "center", flex: 1 }}
+                  >
+                    Logics
+                  </Typography>
+                  <Tooltip title="New session">
+                    <IconButton size="small">
+                      <AddIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+
+                <List sx={{ flex: 1 }} dense>
+                  {logicRules.map((rule) => (
+                    <Box
+                      onClick={() => setSelectedLogicRuleId(rule.id)}
+                      key={rule.id}
+                      sx={{
+                        height: 56,
+                        display: "flex",
+                        alignItems: "center",
+                        cursor: "default",
+                        m: 0.5,
+                        p: 1,
+                        background: (theme) =>
+                          rule.id === selectedLogicRuleId
+                            ? theme.palette.action.selected
+                            : theme.palette.action.hover,
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          display: "-webkit-box",
+                          WebkitBoxOrient: "vertical",
+                          WebkitLineClamp: 2,
+                          overflow: "hidden",
+                        }}
+                        variant="body2"
+                      >
+                        {rule.name}
+                      </Typography>
+                    </Box>
+                  ))}
+                </List>
+              </Box>
+
+              <Box
+                sx={{
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  minWidth: 0,
+                }}
+              >
+                <Box
+                  sx={{
+                    position: "relative",
+                  }}
+                >
+                  <LogicView
+                    title="LOGIC.md"
+                    content={selectedLogicRule?.description}
+                    height="auto"
+                    rounded={false}
+                  />
+                  <IconButton
+                    size="small"
+                    onClick={() => setLogicEditorOpen(false)}
+                    sx={{
+                      position: "absolute",
+                      top: 8,
+                      right: 16,
+                      color: "common.white",
+                    }}
+                  >
+                    <CloseIcon fontSize="small" />
+                  </IconButton>
+                </Box>
+
+                <Box sx={{ flex: 1, minHeight: 0 }}>
+                  <CodeEditor
+                    value={selectedLogicRule?.code ?? ""}
+                    onChange={handleLogicCodeChange}
+                    language="python"
+                    path={`logic/${selectedLogicRule?.id}/main.py`}
+                    themeMode="dark"
+                    backgroundColor="#000000"
+                    height="100%"
+                  />
+                </Box>
+              </Box>
+            </DialogContent>
+          </Dialog>
         )}
       </Box>
     </DrawerLayout>

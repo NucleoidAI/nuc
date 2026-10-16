@@ -11,14 +11,17 @@ function serverIdOf(action: string) {
   return action.split(":")[0].toLowerCase();
 }
 
-async function list(scope: Scope = {}) {
+async function tools(
+  scope: Scope = {},
+  { includeMock = true }: { includeMock?: boolean } = {}
+) {
   if (!MCPs || MCPs.length === 0) {
     throw new NotFoundError();
   }
 
   const { teamId, agentId } = scope;
 
-  let catalog = MCPs;
+  let catalog = includeMock ? MCPs : MCPs.filter((provider) => !provider.mock);
 
   if (teamId || agentId) {
     const assigned = await mcpServer.listAssignedServerIds({
@@ -26,12 +29,12 @@ async function list(scope: Scope = {}) {
       agentId,
     });
 
-    catalog = MCPs.filter((provider) =>
+    catalog = catalog.filter((provider) =>
       assigned.has(serverIdOf(provider.action))
     );
   }
 
-  const mcps = catalog.map((provider) => ({
+  return catalog.map((provider) => ({
     id: provider.id,
     provider: provider.provider,
     label: provider.label,
@@ -53,6 +56,10 @@ async function list(scope: Scope = {}) {
         }
       : null,
   }));
+}
+
+async function list(scope: Scope = {}) {
+  const mcps = await tools(scope);
 
   return {
     role: "system",
@@ -63,4 +70,4 @@ async function list(scope: Scope = {}) {
   };
 }
 
-export default { list };
+export default { list, tools };

@@ -3,6 +3,8 @@ import BluePrint, { BlueprintContext } from "../models/Blueprint";
 import BlueprintMessage from "../models/BlueprintMessage";
 import { NotFoundError } from "@canmingir/link-express/error";
 import agentFn from "./agent";
+import { applyApiNodes } from "../lib/apiNodes";
+import * as pseudocode from "@canmingir/link-express/pseudocode";
 
 type NodeType = {
   id: string;
@@ -22,6 +24,7 @@ type NodeType = {
   next?: string[] | null;
   true?: string[] | null;
   false?: string[] | null;
+  [key: string]: unknown;
 };
 
 const COSMETIC_PROPERTIES = ["label", "description", "pseudocodeEnabled"];
@@ -47,65 +50,15 @@ function withoutCosmetics<T extends { properties?: object }>(nodes: T[]): T[] {
 }
 
 function stripDetails<T extends { nodes?: unknown }>(blueprint: T) {
-  const { description, skill, ...rest } = blueprint as T & {
+  const { description, skill, context, ...rest } = blueprint as T & {
     description?: unknown;
     skill?: unknown;
+    context?: unknown;
   };
 
   return Array.isArray(blueprint?.nodes)
     ? { ...rest, nodes: withoutCosmetics(blueprint.nodes) }
     : rest;
-}
-
-function sanitizePseudocode(nodes?: NodeType[]) {
-  if (!nodes?.length) {
-    return nodes;
-  }
-
-  return nodes.map((node) => {
-    const properties = node.properties;
-
-    if (!properties) {
-      return node;
-    }
-
-    const enabled =
-      properties.pseudocodeEnabled === true &&
-      Boolean(properties.instructions?.trim());
-
-    const dropped = enabled
-      ? properties.pseudocode?.trim()
-        ? null
-        : ["pseudocode"]
-      : ["pseudocode", "pseudocodeEnabled"];
-
-    if (!dropped) {
-      return node;
-    }
-
-    return {
-      ...node,
-      properties: Object.fromEntries(
-        Object.entries(properties).filter(([key]) => !dropped.includes(key)),
-      ),
-    } as NodeType;
-  });
-}
-
-async function generatePseudocode({
-  instructions,
-  agentId,
-}: {
-  instructions: string;
-  agentId: string;
-}) {
-  const content = instructions?.trim();
-
-  if (!content) {
-    return "";
-  }
-
-  return agentFn.toPseudo({ content, meta: { agentId } });
 }
 
 async function getWithNodes(id: string) {
@@ -143,21 +96,25 @@ async function upsert(
   skill?: string,
   context?: BlueprintContext,
   executionMode?: "NORMAL" | "LITE",
+  api?: boolean,
 ) {
   let Blueprint;
 
-  const sanitizedNodes = sanitizePseudocode(nodes);
-
   const existingBlueprint = await BluePrint.findByPk(id);
+
+  const isApi = api ?? existingBlueprint?.api ?? false;
+  const apiNodes = applyApiNodes(pseudocode.sanitize(nodes) ?? [], isApi);
+  const sanitizedNodes = nodes || isApi ? apiNodes : null;
 
   if (existingBlueprint) {
     await existingBlueprint.update({
       title,
       description,
       agentId,
-      nodes: sanitizedNodes || null,
+      nodes: sanitizedNodes,
       ...(blocking !== undefined && { blocking }),
       ...(executionMode !== undefined && { executionMode }),
+      ...(api !== undefined && { api }),
       ...(skill !== undefined && { skill }),
       ...(context !== undefined && { context }),
     });
@@ -169,9 +126,10 @@ async function upsert(
       title,
       description,
       agentId,
-      nodes: sanitizedNodes || null,
+      nodes: sanitizedNodes,
       ...(blocking !== undefined && { blocking }),
       ...(executionMode !== undefined && { executionMode }),
+      ...(api !== undefined && { api }),
       ...(skill !== undefined && { skill }),
       ...(context !== undefined && { context }),
     });
@@ -266,6 +224,7 @@ async function patch({
   blocking,
   executionMode,
   skill,
+  api,
 }: {
   blueprintId: string;
   title?: string;
@@ -273,6 +232,7 @@ async function patch({
   blocking?: boolean;
   executionMode?: "NORMAL" | "LITE";
   skill?: string;
+  api?: boolean;
 }) {
   const Blueprint = await BluePrint.findByPk(blueprintId);
 
@@ -286,6 +246,10 @@ async function patch({
     ...(blocking !== undefined && { blocking }),
     ...(executionMode !== undefined && { executionMode }),
     ...(skill !== undefined && { skill }),
+    ...(api !== undefined && {
+      api,
+      nodes: applyApiNodes(Blueprint.nodes ?? [], api),
+    }),
   });
 
   return Blueprint.toJSON();
@@ -317,5 +281,4 @@ export default {
   patch,
   generateDescription,
   generateSkill,
-  generatePseudocode,
 };

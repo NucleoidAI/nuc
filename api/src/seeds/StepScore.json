@@ -56,32 +56,6 @@
       "createdAt": "2026-05-10T09:05:00Z"
     },
     {
-      "id": "c1d2e3f4-0005-4000-8000-000000000005",
-      "taskId": "a1b2c3d4-0002-4000-8000-000000000002",
-      "stepId": "b1c2d3e4-0005-4000-8000-000000000005",
-      "parameters": { "address": "Hauptstrasse 5, 80331 Munich" },
-      "output": "{\"bbk\": \"DEU-80331-00219\"}",
-      "hallucinationScore": 0.02,
-      "superviseScore": 0.94,
-      "resultScore": 0.97,
-      "knowledgeScore": 0.9,
-      "status": "COMPLETED",
-      "createdAt": "2026-05-11T11:31:00Z"
-    },
-    {
-      "id": "c1d2e3f4-0006-4000-8000-000000000006",
-      "taskId": "a1b2c3d4-0002-4000-8000-000000000002",
-      "stepId": "b1c2d3e4-0006-4000-8000-000000000006",
-      "parameters": { "bbk": "DEU-80331-00219" },
-      "output": "Connection timeout after 3 retries.",
-      "hallucinationScore": null,
-      "superviseScore": null,
-      "resultScore": 0.0,
-      "knowledgeScore": null,
-      "status": "FAILED",
-      "createdAt": "2026-05-11T11:32:00Z"
-    },
-    {
       "id": "c1d2e3f4-1001-4000-8000-000000000001",
       "taskId": "17816283-412c-4db3-abe7-be24ed494b21",
       "stepId": "0c129e3a-012b-4d0f-849a-e111341ce437",

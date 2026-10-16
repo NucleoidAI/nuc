@@ -2,7 +2,7 @@ import Joi from "joi";
 
 const Session = {
   schema: Joi.object({
-    type: Joi.string().valid("CHAT", "EMAIL").optional(),
+    type: Joi.string().valid("CHAT", "EMAIL", "API").optional(),
     agentId: Joi.string().uuid().optional(),
   }),
   emailDecision: Joi.object({

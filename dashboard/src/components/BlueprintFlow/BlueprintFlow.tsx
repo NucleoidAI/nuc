@@ -13,11 +13,23 @@ import {
   APPROVAL_BORDER_SOLID,
   blueprintFlowPlugin,
 } from "./BlueprintFlowPlugin";
+import {
+  type ApiField,
+  isApiNodeType,
+  toInputProperty,
+} from "../ApiNode/apiNodes";
 
 import { Flow, FlowMiniMap } from "@canmingir/link/platform/components";
 
 import NodeConnectionOverlay, { type DragState } from "./NodeConnectionOverlay";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+type FlowHandle = {
+  getZoom: () => number;
+  getOffset: () => { x: number; y: number };
+  getContainerEl: () => HTMLElement | null;
+  setCenter: (x: number, y: number, options?: { zoom?: number }) => void;
+};
 
 export default function BlueprintFlow({
   graphData,
@@ -49,16 +61,69 @@ export default function BlueprintFlow({
   onOverrideParameter,
   onToggleForceNode,
   liteMode = false,
+  selectedNodeId,
 }: BlueprintFlowProps) {
   const flowContainerRef = useRef<HTMLDivElement>(null);
+  const flowRef = useRef<FlowHandle>(null);
   const [dragging, setDragging] = useState<DragState | null>(null);
   const allIntegrations = useAllIntegrations();
+
+  useEffect(() => {
+    if (!selectedNodeId) return;
+
+    const frame = requestAnimationFrame(() => {
+      const handle = flowRef.current;
+      const containerEl = handle?.getContainerEl();
+      if (!handle || !containerEl) return;
+
+      const nodeEl = containerEl.querySelector(
+        `[data-node-id="${selectedNodeId}"]`
+      );
+      if (!nodeEl) return;
+
+      const nodeRect = nodeEl.getBoundingClientRect();
+      const containerRect = containerEl.getBoundingClientRect();
+      const zoom = handle.getZoom();
+      const offset = handle.getOffset();
+
+      const originX = containerRect.left + containerRect.width / 2;
+      const originY = containerRect.top + containerRect.height / 2;
+      const nodeCenterX = nodeRect.left + nodeRect.width / 2;
+      const nodeCenterY = nodeRect.top + nodeRect.height / 2;
+
+      const contentX = (nodeCenterX - originX - offset.x) / zoom;
+      const contentY = (nodeCenterY - originY - offset.y) / zoom;
+
+      handle.setCenter(contentX, contentY, { zoom });
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [selectedNodeId, enrichedGraphData]);
 
   const nodeFields: Record<string, NodeFields> = useMemo(() => {
     if (!showConnections || !graphData?.nodes) return {};
 
     const result: Record<string, NodeFields> = {};
     for (const node of Object.values(graphData.nodes)) {
+      if (isApiNodeType(node.nodeType)) {
+        const fields = (node.raw?.properties?.fields ?? []) as ApiField[];
+        const names = fields.map((field) => field.name).filter(Boolean);
+        if (!names.length) continue;
+        const apiFields = fields.filter((field) => field.name);
+        result[node.id] =
+          node.nodeType === "START"
+            ? { inputs: [], outputs: names, apiFields }
+            : {
+                inputs: names,
+                outputs: [],
+                inputProperties: Object.fromEntries(
+                  fields.map((field) => [field.name, toInputProperty(field)])
+                ),
+                apiFields,
+              };
+        continue;
+      }
+
       if (node.nodeType !== "NORMAL" || !node.action) continue;
       const integration = allIntegrations.find((i) => i.action === node.action);
       if (!integration) continue;
@@ -109,11 +174,13 @@ export default function BlueprintFlow({
 
   const hasForceNode = useMemo(
     () =>
+      liteMode ||
       Object.values(graphData?.nodes ?? {}).some(
         (node) =>
+          node.nodeType === "END" ||
           (node.raw?.properties as { force?: boolean } | undefined)?.force
       ),
-    [graphData]
+    [graphData, liteMode]
   );
 
   const impliedConnections = useMemo(() => {
@@ -151,7 +218,7 @@ export default function BlueprintFlow({
       const isForce = Boolean(
         (node.raw?.properties as { force?: boolean } | undefined)?.force
       );
-      if (isForce) continue;
+      if (isForce || liteMode) continue;
 
       const targetFields = nodeFields[node.id];
       if (!targetFields?.inputs.length) continue;
@@ -175,7 +242,7 @@ export default function BlueprintFlow({
     }
 
     return result;
-  }, [showConnections, graphData, nodeFields, boundFieldsByNode]);
+  }, [showConnections, graphData, nodeFields, boundFieldsByNode, liteMode]);
 
   const labelForImpliedConnection = useCallback(
     (b: { sourceNodeId: string; field: string }) =>
@@ -223,6 +290,7 @@ export default function BlueprintFlow({
         )}
 
       <Flow
+        ref={flowRef}
         data={enrichedGraphData}
         plugin={blueprintFlowPlugin}
         editable={!readOnly}

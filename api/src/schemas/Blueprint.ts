@@ -1,3 +1,4 @@
+import { ApiFieldsSchema, ApiTimeout } from "./ApiField";
 import { z } from "zod";
 
 const Blueprint = {
@@ -7,6 +8,7 @@ const Blueprint = {
     agentId: z.string().uuid(),
     blocking: z.boolean().optional(),
     executionMode: z.enum(["NORMAL", "LITE"]).optional(),
+    api: z.boolean().optional(),
     skill: z.string().optional(),
     context: z
       .object({
@@ -62,6 +64,9 @@ const Blueprint = {
               targetAgentId: z.string().optional(),
               targetBlueprintId: z.string().optional(),
               force: z.boolean().optional(),
+              fields: ApiFieldsSchema.optional(),
+              strict: z.boolean().optional(),
+              timeout: ApiTimeout.optional(),
               cases: z
                 .array(
                   z.object({
@@ -91,6 +96,11 @@ const Blueprint = {
       )
       .optional(),
   }),
+  patch: z.object({
+    blocking: z.boolean().optional(),
+    executionMode: z.enum(["NORMAL", "LITE"]).optional(),
+    api: z.boolean().optional(),
+  }),
   create: z.object({
     history: z
       .array(
@@ -110,10 +120,6 @@ const Blueprint = {
       }),
     ),
     content: z.string(),
-  }),
-  pseudocode: z.object({
-    instructions: z.string(),
-    agentId: z.string().uuid(),
   }),
   delete: z.object({
     agentId: z.string().uuid(),

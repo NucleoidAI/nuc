@@ -1,4 +1,3 @@
-import Blueprint from "./train/blueprint.json";
 import approval from "./train/approval.json";
 import approvalQuestion from "./train/approval-question.json";
 import decision from "./train/decision.json";
@@ -8,14 +7,12 @@ import blueprintChatSufficiency from "./train/blueprint-chat-sufficiency.json";
 import blueprintChatEvaluation from "./train/blueprint-chat-evaluation.json";
 import blueprintChatKnowledge from "./train/blueprint-chat-knowledge.json";
 import blueprintDescription from "./train/blueprint-description.json";
-import blueprintDiamond from "./train/blueprint-diamond.json";
 import blueprintName from "./train/blueprint-name.json";
 import blueprintSkill from "./train/blueprint-skill.json";
 import chat from "./train/chat.json";
 import humanInLoop from "./train/human-in-loop.json";
 import knowledgeScore from "./train/knowledge-score.json";
 import policy from "./policy.json";
-import pseudocode from "./train/pseudocode.json";
 import switchCase from "./train/switch.json";
 import forceTaskDiamondBlocking from "./train/force-task-diamond-blocking.json";
 import forceTaskDiamondNonBlocking from "./train/force-task-diamond-non-blocking.json";
@@ -29,12 +26,6 @@ export default {
     content: JSON.stringify({ policy: policy.data }),
   },
   train: {
-    Blueprint: {
-      role: "system" as const,
-      content: JSON.stringify({
-        train: Blueprint.data,
-      }),
-    },
     chat: {
       role: "system" as const,
       content: JSON.stringify({
@@ -45,12 +36,6 @@ export default {
       role: "system" as const,
       content: JSON.stringify({
         train: humanInLoop.data,
-      }),
-    },
-    pseudocode: {
-      role: "system" as const,
-      content: JSON.stringify({
-        train: pseudocode.data,
       }),
     },
     taskDiamondBlocking: {
@@ -129,12 +114,6 @@ export default {
       role: "system" as const,
       content: JSON.stringify({
         train: blueprintSkill.data,
-      }),
-    },
-    blueprintDiamond: {
-      role: "system" as const,
-      content: JSON.stringify({
-        train: blueprintDiamond.data,
       }),
     },
     knowledgeScore: {

@@ -10,14 +10,28 @@ if (!url || !root) {
 
 const edits = [];
 
+function openForPatch(path) {
+  try {
+    return fs.openSync(path, "r+");
+  } catch (error) {
+    if (error?.code === "ENOENT") return null;
+    throw error;
+  }
+}
+
 function patch(rel, fn) {
-  const path = `${root}/${rel}`;
-  if (!fs.existsSync(path)) return false;
-  const before = fs.readFileSync(path, "utf8");
-  const after = fn(before);
-  if (after === before) return false;
-  fs.writeFileSync(path, after);
-  return true;
+  const fd = openForPatch(`${root}/${rel}`);
+  if (fd === null) return false;
+  try {
+    const before = fs.readFileSync(fd, "utf8");
+    const after = fn(before);
+    if (after === before) return false;
+    fs.ftruncateSync(fd, 0);
+    fs.writeSync(fd, after, 0);
+    return true;
+  } finally {
+    fs.closeSync(fd);
+  }
 }
 
 if (
@@ -40,7 +54,7 @@ const vitePatched = patch(viteRel, (s) => {
     (_m, indent) =>
       `${indent}config.server = {\n` +
       `${indent}  ...config.server,\n` +
-      `${indent}  allowedHosts: [".ngrok-free.app", ".ngrok.app", ".ngrok.io"],\n` +
+      `${indent}  allowedHosts: [".ngrok-free.app", ".ngrok.app", ".ngrok.io", ".ngrok-free.dev"],\n` +
       `${indent}};\n` +
       (autoLoginProjectId
         ? `${indent}config.plugins = [\n` +

@@ -2,6 +2,7 @@ import "express";
 
 import agentFn from "./functions/agent";
 import agents from "./routes/agents";
+import blueprintApi from "./routes/blueprintApi";
 import blueprintChat from "./routes/blueprintChat";
 import blueprints from "./routes/blueprints";
 import channels from "./routes/channels";
@@ -9,6 +10,7 @@ import engines from "./routes/engines";
 import { event } from "@canmingir/link-express/event/client";
 import knowledge from "./routes/knowledge";
 import llmLogs from "./routes/llmLogs";
+import { logLLM } from "./lib/llmLog";
 import mcpProviders from "./routes/mcpProviders";
 import mcpServers from "./routes/mcpServers";
 import mcps from "./routes/mcps";
@@ -25,6 +27,7 @@ import supervisings from "./routes/supervisings";
 import taskFn from "./functions/task";
 import tasks from "./routes/tasks";
 import teamDetails from "./routes/teamDetails";
+import { setLogger as setLLMLogger } from "@canmingir/link-express/llm";
 import { telemetryMiddleware } from "./instrumentation";
 
 declare module "express-serve-static-core" {
@@ -43,7 +46,11 @@ function createApp() {
 
   app.use(telemetryMiddleware());
 
+  setLLMLogger(logLLM);
+
   platform.publicRouter.use("/sessions", sessionApprovals);
+  // TODO: Authenticate blueprint API calls before exposing them beyond development
+  platform.publicRouter.use("/execute", blueprintApi);
 
   app.use(authorization.authorize("ADMIN"));
 

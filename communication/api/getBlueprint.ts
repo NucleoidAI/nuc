@@ -1,7 +1,7 @@
 import http from "../http";
 
 const getBlueprint = async (accessToken: string, blueprintId: string) => {
-  const { data } = await http.get(`/blueprints/${blueprintId}`, {
+  const { data } = await http.get(`/blueprints/${encodeURIComponent(blueprintId)}`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },

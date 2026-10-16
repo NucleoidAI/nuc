@@ -89,4 +89,15 @@ function resolveParameterRefs<T>(value: T, source: Record<string, unknown>): T {
   return value;
 }
 
-export { resolveParameterRefs, getByPath };
+function refPathOf(value: unknown): string | undefined {
+  const refNode =
+    typeof value === "string"
+      ? parseRefString(value)
+      : isRefNode(value)
+      ? value
+      : undefined;
+
+  return refNode?.[REF_KEY];
+}
+
+export { resolveParameterRefs, getByPath, refPathOf };

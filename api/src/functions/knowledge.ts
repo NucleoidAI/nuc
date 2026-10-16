@@ -3,8 +3,6 @@ import AgentKnowledge from "../models/AgentKnowledge";
 import Knowledge from "../models/Knowledge";
 import { NotFoundError } from "@canmingir/link-express/error";
 import { Op } from "sequelize";
-import Step from "../models/Step";
-import Task from "../models/Task";
 import { event } from "@canmingir/link-express/event/client";
 import scrapper from "../actions/scrapper";
 
@@ -112,12 +110,10 @@ async function list({
   agentId,
   teamId,
   type,
-  options = { includeSteps: false },
 }: {
   teamId?: string;
   agentId?: string;
   type?: string;
-  options?: { includeSteps?: boolean; includeTask?: boolean };
 }) {
   const typeWhere = {} as {
     type?: string;
@@ -158,22 +154,6 @@ async function list({
           [Op.or]: knowledgeWhere,
         },
       },
-      ...(options.includeTask
-        ? [
-            {
-              model: Task,
-              required: false,
-              include: options.includeSteps
-                ? [
-                    {
-                      model: Step,
-                      as: "steps",
-                    },
-                  ]
-                : [],
-            },
-          ]
-        : []),
     ],
   });
 
@@ -185,15 +165,6 @@ async function list({
       teamId: AgentKnowledge.teamId ? AgentKnowledge.teamId : null,
       blueprintId: knowledgeData.blueprintId || null,
       organizationId: knowledgeData.organizationId || null,
-      Task: knowledgeData.Task && {
-        ...knowledgeData.Task,
-        steps:
-          knowledgeData.Task.steps &&
-          knowledgeData.Task.steps.map((step) => ({
-            ...step,
-            result: step.result && step.result.toString(),
-          })),
-      },
     }));
 
   // await event.publish("KNOWLEDGES_LOADED", knowledgesInstances);

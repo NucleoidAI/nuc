@@ -5,7 +5,7 @@ import type {
   Questions,
 } from "@typesafe-ai/sdk";
 import { ask, choice, noul } from "../../lib/decision";
-import fewShots from "../../dataset/few_shots";
+import fewShots from "../../dataset/train/decision/index";
 import type { LLMMeta } from "@canmingir/link-express/llm";
 import { mkdirSync, writeFileSync } from "fs";
 import path from "path";

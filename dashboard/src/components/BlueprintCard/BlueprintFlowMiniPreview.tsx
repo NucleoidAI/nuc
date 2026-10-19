@@ -2,11 +2,6 @@ import type { RawNode } from "../BlueprintFlow/miniTypes";
 import useBlueprint from "../../hooks/useBlueprint";
 import { useMemo } from "react";
 
-import {
-  APPROVAL_BG_FROM,
-  APPROVAL_BG_TO,
-  APPROVAL_BORDER_SOLID,
-} from "../BlueprintFlow/BlueprintFlowPlugin";
 import { Box, Skeleton, Typography } from "@mui/material";
 import {
   FlowSvgContent,
@@ -83,15 +78,15 @@ export function BlueprintFlowMiniPreview({
     properties?: { action?: string };
   }) => {
     const isDarkGradient =
-      node?.type === "DECISION" ||
+      node?.type === "CONDITION" ||
       node?.type === "SWITCH" ||
       node?.type === "START" ||
       node?.type === "END" ||
       node?.properties?.action === "PLATFORM:complete";
     if (!isDarkGradient) return {};
     return {
-      gradient: { from: APPROVAL_BG_FROM, to: APPROVAL_BG_TO },
-      borderColor: APPROVAL_BORDER_SOLID,
+      gradient: { from: "#4A4F54", to: "#2E3136" },
+      borderColor: "#616161",
     };
   };
 

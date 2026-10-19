@@ -1,4 +1,3 @@
-import { FORCE_COLOR } from "./BlueprintFlowPlugin.helpers";
 import { styled } from "@mui/material/styles";
 
 type ActionButtonPosition = "add" | "edit" | "delete";
@@ -49,8 +48,8 @@ export const ForceIndicatorWrapper = styled("div", {
   height: "24px",
   borderRadius: "50%",
   backgroundColor: theme.palette?.background?.paper || "#fff",
-  color: FORCE_COLOR,
-  border: `1px solid ${FORCE_COLOR}`,
+  color: "#b8860b",
+  border: `1px solid ${"#b8860b"}`,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -448,9 +447,9 @@ export const ForceBadge = styled("div")(({ theme }) => ({
   letterSpacing: "0.08em",
   textTransform: "uppercase",
   whiteSpace: "nowrap",
-  color: FORCE_COLOR,
+  color: "#b8860b",
   background: theme.palette.background.paper,
-  border: `1px solid ${FORCE_COLOR}`,
+  border: `1px solid ${"#b8860b"}`,
   boxShadow: "0 1px 4px rgba(0, 0, 0, 0.18)",
   pointerEvents: "none",
   zIndex: 6,

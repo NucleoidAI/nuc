@@ -1,21 +1,5 @@
 import type { ApiField } from "../ApiNode/apiNodes";
 
-export const FORCE_COLOR = "#b8860b";
-export const DECISION_BORDER_COLOR =
-  "linear-gradient(135deg, #4A4F54, #2E3136)";
-export const DECISION_BG_FROM = "#4A4F54";
-export const DECISION_BG_TO = "#2E3136";
-export const SWITCH_BORDER_COLOR = DECISION_BORDER_COLOR;
-export const SWITCH_BG_FROM = DECISION_BG_FROM;
-export const SWITCH_BG_TO = DECISION_BG_TO;
-export const APPROVAL_BORDER_COLOR = DECISION_BORDER_COLOR;
-export const APPROVAL_BORDER_SOLID = "#616161";
-export const APPROVAL_BG_FROM = DECISION_BG_FROM;
-export const APPROVAL_BG_TO = DECISION_BG_TO;
-export const API_BORDER_COLOR = DECISION_BORDER_COLOR;
-export const API_BG_FROM = DECISION_BG_FROM;
-export const API_BG_TO = DECISION_BG_TO;
-
 export function isApiNode(node?: { nodeType?: string }) {
   return node?.nodeType === "START" || node?.nodeType === "END";
 }
@@ -36,9 +20,6 @@ export type NodeTypeStyleConfig = {
   useDecisionLayout: boolean;
 };
 
-export const DEFAULT_BORDER_COLOR =
-  "linear-gradient(135deg, #c684ff33, #078dee4d)";
-
 export const NODE_TYPE_STYLE_CONFIG: Record<NodeCategory, NodeTypeStyleConfig> =
   {
     APPROVAL: {
@@ -49,37 +30,37 @@ export const NODE_TYPE_STYLE_CONFIG: Record<NodeCategory, NodeTypeStyleConfig> =
       useDecisionLayout: true,
     },
     DECISION: {
-      bgFrom: DECISION_BG_FROM,
-      bgTo: DECISION_BG_TO,
-      borderColor: DECISION_BORDER_COLOR,
+      bgFrom: "#4A4F54",
+      bgTo: "#2E3136",
+      borderColor: "linear-gradient(135deg, #4A4F54, #2E3136)",
       isCompact: true,
       useDecisionLayout: true,
     },
     SWITCH: {
-      bgFrom: SWITCH_BG_FROM,
-      bgTo: SWITCH_BG_TO,
-      borderColor: SWITCH_BORDER_COLOR,
+      bgFrom: "#4A4F54",
+      bgTo: "#2E3136",
+      borderColor: "linear-gradient(135deg, #4A4F54, #2E3136)",
       isCompact: true,
       useDecisionLayout: true,
     },
     REQUEST_RESPONSE: {
-      bgFrom: API_BG_FROM,
-      bgTo: API_BG_TO,
-      borderColor: API_BORDER_COLOR,
+      bgFrom: "#4A4F54",
+      bgTo: "#2E3136",
+      borderColor: "linear-gradient(135deg, #4A4F54, #2E3136)",
       isCompact: true,
       useDecisionLayout: true,
     },
     COMPLETE: {
-      bgFrom: DECISION_BG_FROM,
-      bgTo: DECISION_BG_TO,
-      borderColor: DECISION_BORDER_COLOR,
+      bgFrom: "#4A4F54",
+      bgTo: "#2E3136",
+      borderColor: "linear-gradient(135deg, #4A4F54, #2E3136)",
       isCompact: true,
       useDecisionLayout: true,
     },
     DEFAULT: {
       bgFrom: undefined,
       bgTo: undefined,
-      borderColor: DEFAULT_BORDER_COLOR,
+      borderColor: "linear-gradient(135deg, #c684ff33, #078dee4d)",
       isCompact: false,
       useDecisionLayout: false,
     },

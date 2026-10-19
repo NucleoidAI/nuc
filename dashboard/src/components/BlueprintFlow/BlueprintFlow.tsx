@@ -6,13 +6,9 @@ import type { NodeFields } from "./BlueprintFlowPlugin";
 import SuccessSnackbar from "./Validation/SuccessSnackbar";
 import ValidationButtons from "./Validation/ValidationButtons";
 import ValidationErrorView from "./Validation/ValidationErrorView";
+import { blueprintFlowPlugin } from "./BlueprintFlowPlugin";
 import { definitionGraphToRawNodes } from "./miniTypes";
 import useAllIntegrations from "../../hooks/useAllIntegrations";
-import {
-  APPROVAL_BG_TO,
-  APPROVAL_BORDER_SOLID,
-  blueprintFlowPlugin,
-} from "./BlueprintFlowPlugin";
 import {
   type ApiField,
   isApiNodeType,
@@ -257,18 +253,22 @@ export default function BlueprintFlow({
     [graphData]
   );
 
-  const miniMapStyle = useCallback(
-    (node: { nodeType?: string; properties?: { action?: string } }) => {
-      const isApproval =
-        node?.nodeType === "APPROVAL" || node?.nodeType === "DECISION";
-      if (!isApproval) return {};
-      return {
-        bg: APPROVAL_BG_TO,
-        borderColor: APPROVAL_BORDER_SOLID,
-      };
-    },
-    []
-  );
+  const miniMapStyle = (node: {
+    type?: string;
+    properties?: { action?: string };
+  }) => {
+    const isDarkGradient =
+      node?.type === "CONDITION" ||
+      node?.type === "SWITCH" ||
+      node?.type === "START" ||
+      node?.type === "END" ||
+      node?.properties?.action === "PLATFORM:complete";
+    if (!isDarkGradient) return {};
+    return {
+      gradient: { from: "#4A4F54", to: "#2E3136" },
+      borderColor: "#616161",
+    };
+  };
 
   return (
     <Box

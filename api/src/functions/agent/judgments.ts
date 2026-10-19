@@ -5,7 +5,7 @@ import type {
   Questions,
 } from "@typesafe-ai/sdk";
 import { ask, choice, noul } from "../../lib/decision";
-import fewShots from "../../dataset/decision";
+import fewShots from "../../dataset/few_shots";
 import type { LLMMeta } from "@canmingir/link-express/llm";
 import { mkdirSync, writeFileSync } from "fs";
 import path from "path";
@@ -182,14 +182,16 @@ function withFewShots(list: object[]): { few_shots: JsonValue[] } | {} {
   return list.length ? { few_shots: list as JsonValue[] } : {};
 }
 
-function parameterFewShots(action: string, name: string) {
-  return fewShots.parameters.filter(
+function parameterDiamondFewShots(action: string, name: string) {
+  return fewShots.parameterDiamond.filter(
     (fewShot) => fewShot.action === action && fewShot.parameter.name === name,
   );
 }
 
-function inputsFewShots(action: string) {
-  return fewShots.inputs.filter((fewShot) => fewShot.action === action);
+function inputsAvailableFewShots(action: string) {
+  return fewShots.inputsAvailable.filter(
+    (fewShot) => fewShot.action === action,
+  );
 }
 
 function topChoices(probabilities: Record<string, number>) {
@@ -256,7 +258,7 @@ async function askJev<const Q extends Questions>(
   }
 }
 
-async function selectNextAction({
+async function actionDiamond({
   state,
   options,
   meta,
@@ -265,7 +267,7 @@ async function selectNextAction({
   options: Definition[];
   meta: LLMMeta;
 }) {
-  const { next_action } = await askJev("selectNextAction", {
+  const { next_action } = await askJev("actionDiamond", {
     state,
     questions: {
       next_action: choice(
@@ -282,7 +284,7 @@ async function selectNextAction({
             "`inherited_context_steps`",
             "`conversation`",
           ],
-          ...withFewShots(fewShots.actions),
+          ...withFewShots(fewShots.actionDiamond),
         },
         Object.fromEntries(
           options.map(({ action, label, description, inputSchema }) => [
@@ -354,12 +356,12 @@ async function extractKnowledge({
   if (!options.size) return undefined;
 
   try {
-    const { value } = await askJev("extractKnowledge", {
+    const { knowledge_value: value } = await askJev("extractKnowledge", {
       state: { text },
       questions: {
-        value: choice(
+        knowledge_value: choice(
           {
-            select: "parameter_value",
+            select: "knowledge_value",
             action: action ?? null,
             parameter,
             source: "`text`",
@@ -419,7 +421,7 @@ function bestCandidate(
   return byPath.get(path);
 }
 
-async function judgeParameters({
+async function parameterDiamond({
   action,
   definition,
   skipFields,
@@ -469,8 +471,7 @@ async function judgeParameters({
   const shared: Record<string, Question> = {};
   const batches: Record<string, Question>[] = [];
 
-  fields.forEach(([field, schema], index) => {
-    const id = `field_${index}`;
+  fields.forEach(([field, schema]) => {
     const parameter: Parameter = {
       name: field,
       type: schema.type ?? null,
@@ -479,12 +480,13 @@ async function judgeParameters({
     };
 
     if (schema.enum?.length) {
+      const id = `value_${field}`;
       shared[id] = choice(
         {
           select: "parameter_value",
           action,
           parameter,
-          ...withFewShots(parameterFewShots(action, field)),
+          ...withFewShots(parameterDiamondFewShots(action, field)),
         },
         {
           ...Object.fromEntries(
@@ -498,12 +500,13 @@ async function judgeParameters({
     }
 
     if (schema.type === "boolean") {
+      const id = `value_${field}`;
       shared[id] = noul(
         {
           decide: "parameter_is_true",
           action,
           parameter,
-          ...withFewShots(parameterFewShots(action, field)),
+          ...withFewShots(parameterDiamondFewShots(action, field)),
         },
         { true: { value: true }, false: { value: false } },
       );
@@ -525,6 +528,7 @@ async function judgeParameters({
       return true;
     });
 
+    const id = `source_${field}`;
     batches.push({
       [id]: choice(
         {
@@ -536,7 +540,7 @@ async function judgeParameters({
             "`steps`",
             "`inherited_context_steps`",
           ],
-          ...withFewShots(parameterFewShots(action, field)),
+          ...withFewShots(parameterDiamondFewShots(action, field)),
         },
         {
           none: { source: null },
@@ -576,7 +580,7 @@ async function judgeParameters({
           "`inherited_context_steps`",
           "`conversation`",
         ],
-        ...withFewShots(inputsFewShots(action)),
+        ...withFewShots(inputsAvailableFewShots(action)),
       },
       { true: { inputs: "available" }, false: { inputs: "missing" } },
     );
@@ -593,7 +597,7 @@ async function judgeParameters({
       for (let batch = queue.shift(); batch; batch = queue.shift()) {
         Object.assign(
           answers,
-          await askJev("judgeParameters", {
+          await askJev("parameterDiamond", {
             state,
             questions: batch,
             meta,
@@ -676,4 +680,4 @@ async function judgeParameters({
 }
 
 export type { Definition };
-export { extractKnowledge, judgeParameters, selectNextAction };
+export { actionDiamond, extractKnowledge, parameterDiamond };

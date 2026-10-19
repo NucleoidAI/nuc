@@ -13,11 +13,7 @@ import {
   parameterContext,
   prepareParameters,
 } from "./common";
-import {
-  type Definition,
-  judgeParameters,
-  selectNextAction,
-} from "../judgments";
+import { type Definition, actionDiamond, parameterDiamond } from "../judgments";
 import dataset from "../../../dataset";
 import { generate } from "@canmingir/link-express/llm";
 import { isForcedNode } from "../../../lib/blueprintNodes";
@@ -93,7 +89,7 @@ async function selectAction({
 
   if (bound) return bound;
 
-  const selection = await selectNextAction({
+  const selection = await actionDiamond({
     state: decisionState,
     options,
     meta,
@@ -207,7 +203,7 @@ async function plan({
   const judgment =
     selection.bound || escalatedFrom || !definition
       ? undefined
-      : await judgeParameters({
+      : await parameterDiamond({
           action: selection.action,
           definition,
           skipFields: nodeFilledFields(selection.action, matchedNode),

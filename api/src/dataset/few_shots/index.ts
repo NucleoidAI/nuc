@@ -1,6 +1,6 @@
-import actions from "./action.json";
-import inputs from "./inputs.json";
-import parameters from "./parameter.json";
+import actionDiamond from "./action_diamond.json";
+import inputsAvailable from "./inputs_available.json";
+import parameterDiamond from "./parameter_diamond.json";
 
 type Escalation = {
   action: string;
@@ -17,7 +17,7 @@ type Step = {
   escalated_from?: Escalation;
 };
 
-type ActionFewShot = {
+type ActionDiamondFewShot = {
   id: string;
   description: string;
   blueprint: object;
@@ -27,14 +27,14 @@ type ActionFewShot = {
   steps: Step[];
 };
 
-type InputsFewShot = {
+type InputsAvailableFewShot = {
   action: string;
   state: object;
   required_parameters: object[];
   inputs_available: number;
 };
 
-type ParameterFewShot = {
+type ParameterDiamondFewShot = {
   action: string;
   parameter: {
     name: string;
@@ -47,10 +47,17 @@ type ParameterFewShot = {
   answer: string | number;
 };
 
-export type { ActionFewShot, InputsFewShot, ParameterFewShot };
+export type {
+  ActionDiamondFewShot,
+  InputsAvailableFewShot,
+  ParameterDiamondFewShot,
+};
 
 export default {
-  actions: (actions as { data: unknown[] }).data as ActionFewShot[],
-  inputs: (inputs as { data: unknown[] }).data as InputsFewShot[],
-  parameters: (parameters as { data: unknown[] }).data as ParameterFewShot[],
+  actionDiamond: (actionDiamond as { data: unknown[] })
+    .data as ActionDiamondFewShot[],
+  parameterDiamond: (parameterDiamond as { data: unknown[] })
+    .data as ParameterDiamondFewShot[],
+  inputsAvailable: (inputsAvailable as { data: unknown[] })
+    .data as InputsAvailableFewShot[],
 };

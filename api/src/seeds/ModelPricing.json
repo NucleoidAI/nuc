@@ -40,6 +40,22 @@
       "inputPricePerMillion": 1.0,
       "outputPricePerMillion": 5.0,
       "createdAt": "2026-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "3a8060d4-041f-4450-9999-cd765ab1baed",
+      "provider": "openrouter",
+      "model": "perplexity/pplx-decider-flash-v1.2",
+      "inputPricePerMillion": 0.01,
+      "outputPricePerMillion": 0,
+      "createdAt": "2026-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "8c2e4f1b-7d3a-4b9e-a6c5-2f0d9e8b1a74",
+      "provider": "openrouter",
+      "model": "perplexity/pplx-decider-v1.2",
+      "inputPricePerMillion": 0.02,
+      "outputPricePerMillion": 0,
+      "createdAt": "2026-01-01T00:00:00.000Z"
     }
   ]
 }

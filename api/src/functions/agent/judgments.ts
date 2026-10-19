@@ -1,5 +1,11 @@
-import type { EntryType, Question, Questions } from "@typesafe-ai/sdk";
+import type {
+  EntryType,
+  JsonValue,
+  Question,
+  Questions,
+} from "@typesafe-ai/sdk";
 import { ask, choice, noul } from "../../lib/decision";
+import fewShots from "../../dataset/decision";
 import type { LLMMeta } from "@canmingir/link-express/llm";
 import { mkdirSync, writeFileSync } from "fs";
 import path from "path";
@@ -172,6 +178,20 @@ function collectCandidates({
     .slice(-200);
 }
 
+function withFewShots(list: object[]): { few_shots: JsonValue[] } | {} {
+  return list.length ? { few_shots: list as JsonValue[] } : {};
+}
+
+function parameterFewShots(action: string, name: string) {
+  return fewShots.parameters.filter(
+    (fewShot) => fewShot.action === action && fewShot.parameter.name === name,
+  );
+}
+
+function inputsFewShots(action: string) {
+  return fewShots.inputs.filter((fewShot) => fewShot.action === action);
+}
+
 function topChoices(probabilities: Record<string, number>) {
   return Object.entries(probabilities)
     .sort(([, a], [, b]) => b - a)
@@ -262,6 +282,7 @@ async function selectNextAction({
             "`inherited_context_steps`",
             "`conversation`",
           ],
+          ...withFewShots(fewShots.actions),
         },
         Object.fromEntries(
           options.map(({ action, label, description, inputSchema }) => [
@@ -459,7 +480,12 @@ async function judgeParameters({
 
     if (schema.enum?.length) {
       shared[id] = choice(
-        { select: "parameter_value", action, parameter },
+        {
+          select: "parameter_value",
+          action,
+          parameter,
+          ...withFewShots(parameterFewShots(action, field)),
+        },
         {
           ...Object.fromEntries(
             schema.enum.map((value) => [String(value), { value }]),
@@ -473,7 +499,12 @@ async function judgeParameters({
 
     if (schema.type === "boolean") {
       shared[id] = noul(
-        { decide: "parameter_is_true", action, parameter },
+        {
+          decide: "parameter_is_true",
+          action,
+          parameter,
+          ...withFewShots(parameterFewShots(action, field)),
+        },
         { true: { value: true }, false: { value: false } },
       );
       plan[id] = { field, kind: "boolean", parameter };
@@ -505,6 +536,7 @@ async function judgeParameters({
             "`steps`",
             "`inherited_context_steps`",
           ],
+          ...withFewShots(parameterFewShots(action, field)),
         },
         {
           none: { source: null },
@@ -544,6 +576,7 @@ async function judgeParameters({
           "`inherited_context_steps`",
           "`conversation`",
         ],
+        ...withFewShots(inputsFewShots(action)),
       },
       { true: { inputs: "available" }, false: { inputs: "missing" } },
     );

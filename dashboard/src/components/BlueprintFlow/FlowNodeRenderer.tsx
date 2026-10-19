@@ -32,6 +32,9 @@ import {
 } from "./BlueprintFlowPlugin.helpers";
 import React, { useState } from "react";
 
+export { DECISION_ENDPOINT_LAYOUT_VARIANT };
+export type { FlowGraphNode };
+
 type FlowGraphNode = import("./helper").DefinitionGraphNode & {
   changeType?: string;
   hasError?: boolean;
@@ -447,6 +450,3 @@ export default function FlowNodeRenderer({
     </NodeWrapper>
   );
 }
-
-export { DECISION_ENDPOINT_LAYOUT_VARIANT };
-export type { FlowGraphNode };

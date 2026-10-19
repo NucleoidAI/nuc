@@ -1,17 +1,9 @@
 import FlowNodeRenderer from "./FlowNodeRenderer";
 import {
-  API_BG_FROM,
-  API_BG_TO,
-  API_BORDER_COLOR,
-  DECISION_BG_FROM,
-  DECISION_BG_TO,
-  DECISION_BORDER_COLOR,
+  NODE_TYPE_STYLE_CONFIG,
   type NodeFields,
-  SWITCH_BG_FROM,
-  SWITCH_BG_TO,
-  SWITCH_BORDER_COLOR,
-  isApiNode,
   maxConnectionsPanelPixelHeight,
+  resolveNodeCategory,
 } from "./BlueprintFlowPlugin.helpers";
 
 export * from "./BlueprintFlowPlugin.helpers";
@@ -27,51 +19,14 @@ export const blueprintFlowPlugin = {
 
   style: ({ node, style }) => {
     const styleTokens = style || {};
-    const isApproval = node?.nodeType === "APPROVAL";
-    const isSwitch = node?.nodeType === "SWITCH";
-    const isApi = isApiNode(node);
-    const isDecision = isApproval || node?.connectorType === "decision";
     const isComplete = node?.action === "PLATFORM:complete";
-    const isEndpoint =
-      node?.nodeType === "START" || node?.nodeType === "END" || isComplete;
-    const layoutVariant =
-      isDecision || isSwitch || isEndpoint
-        ? DECISION_ENDPOINT_LAYOUT_VARIANT
-        : undefined;
+    const category = resolveNodeCategory(node);
+    const { bgFrom, bgTo, borderColor, isCompact, useDecisionLayout } =
+      NODE_TYPE_STYLE_CONFIG[category];
+    const layoutVariant = useDecisionLayout
+      ? DECISION_ENDPOINT_LAYOUT_VARIANT
+      : undefined;
 
-    const bgFrom = isApproval
-      ? undefined
-      : isDecision
-      ? DECISION_BG_FROM
-      : isSwitch
-      ? SWITCH_BG_FROM
-      : isApi
-      ? API_BG_FROM
-      : isEndpoint
-      ? DECISION_BG_FROM
-      : undefined;
-    const bgTo = isApproval
-      ? undefined
-      : isDecision
-      ? DECISION_BG_TO
-      : isSwitch
-      ? SWITCH_BG_TO
-      : isApi
-      ? API_BG_TO
-      : isEndpoint
-      ? DECISION_BG_TO
-      : undefined;
-    const borderColor = isApproval
-      ? "linear-gradient(135deg, #c684ff33, #078dee4d)"
-      : isDecision
-      ? DECISION_BORDER_COLOR
-      : isSwitch
-      ? SWITCH_BORDER_COLOR
-      : isApi
-      ? API_BORDER_COLOR
-      : isEndpoint
-      ? DECISION_BORDER_COLOR
-      : "linear-gradient(135deg, #c684ff33, #078dee4d)";
     const borderRadius =
       node?.nodeType === "START"
         ? "40px 0 0 40px"
@@ -79,10 +34,8 @@ export const blueprintFlowPlugin = {
         ? "0 40px 40px 0"
         : 16;
     const shadowLevel = 1;
-    const minWidth =
-      (isDecision && !isApproval) || isSwitch || isEndpoint ? 315 : 420;
-    const maxWidth =
-      (isDecision && !isApproval) || isSwitch || isEndpoint ? 315 : 420;
+    const minWidth = isCompact ? 315 : 420;
+    const maxWidth = isCompact ? 315 : 420;
     const minHeight = 210;
     const maxHeight = 210;
     const shape = 16;

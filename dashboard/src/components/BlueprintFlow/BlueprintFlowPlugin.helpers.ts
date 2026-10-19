@@ -20,6 +20,92 @@ export function isApiNode(node?: { nodeType?: string }) {
   return node?.nodeType === "START" || node?.nodeType === "END";
 }
 
+export type NodeCategory =
+  | "APPROVAL"
+  | "DECISION"
+  | "SWITCH"
+  | "REQUEST_RESPONSE"
+  | "COMPLETE"
+  | "DEFAULT";
+
+export type NodeTypeStyleConfig = {
+  bgFrom?: string;
+  bgTo?: string;
+  borderColor: string;
+  isCompact: boolean;
+  useDecisionLayout: boolean;
+};
+
+export const DEFAULT_BORDER_COLOR =
+  "linear-gradient(135deg, #c684ff33, #078dee4d)";
+
+export const NODE_TYPE_STYLE_CONFIG: Record<NodeCategory, NodeTypeStyleConfig> =
+  {
+    APPROVAL: {
+      bgFrom: undefined,
+      bgTo: undefined,
+      borderColor: "linear-gradient(135deg, #c684ff33, #078dee4d)",
+      isCompact: false,
+      useDecisionLayout: true,
+    },
+    DECISION: {
+      bgFrom: DECISION_BG_FROM,
+      bgTo: DECISION_BG_TO,
+      borderColor: DECISION_BORDER_COLOR,
+      isCompact: true,
+      useDecisionLayout: true,
+    },
+    SWITCH: {
+      bgFrom: SWITCH_BG_FROM,
+      bgTo: SWITCH_BG_TO,
+      borderColor: SWITCH_BORDER_COLOR,
+      isCompact: true,
+      useDecisionLayout: true,
+    },
+    REQUEST_RESPONSE: {
+      bgFrom: API_BG_FROM,
+      bgTo: API_BG_TO,
+      borderColor: API_BORDER_COLOR,
+      isCompact: true,
+      useDecisionLayout: true,
+    },
+    COMPLETE: {
+      bgFrom: DECISION_BG_FROM,
+      bgTo: DECISION_BG_TO,
+      borderColor: DECISION_BORDER_COLOR,
+      isCompact: true,
+      useDecisionLayout: true,
+    },
+    DEFAULT: {
+      bgFrom: undefined,
+      bgTo: undefined,
+      borderColor: DEFAULT_BORDER_COLOR,
+      isCompact: false,
+      useDecisionLayout: false,
+    },
+  };
+
+export function resolveNodeCategory(node?: {
+  nodeType?: string;
+  connectorType?: string;
+  action?: string;
+}): NodeCategory {
+  const isApproval = node?.nodeType === "APPROVAL";
+  const isSwitch = node?.nodeType === "SWITCH";
+  const isApi = isApiNode(node);
+  const isDecision = isApproval || node?.connectorType === "decision";
+  const isComplete = node?.action === "PLATFORM:complete";
+  const isEndpoint =
+    node?.nodeType === "START" || node?.nodeType === "END" || isComplete;
+
+  if (isApproval) return "APPROVAL";
+  if (isDecision) return "DECISION";
+  if (isSwitch) return "SWITCH";
+  if (isApi) return "REQUEST_RESPONSE";
+  if (isEndpoint) return "COMPLETE";
+  return "DEFAULT";
+}
+
 export type NodeFields = {
   inputs: string[];
   outputs: string[];

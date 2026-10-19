@@ -199,9 +199,13 @@ export default function FlowNodeRenderer({
     node.nodeType === "END" ||
     node.action === "PLATFORM:complete";
   const isCompleteNode = node.action === "PLATFORM:complete";
-  const infoNode = isDecisionNode
-    ? { ...node, description: truncateDescription(node.description) }
-    : node;
+  const infoNode = {
+    ...node,
+    type: node.nodeType,
+    description: isDecisionNode
+      ? truncateDescription(node.description)
+      : node.description,
+  };
   const isReadOnly =
     isCompleteNode || (!onAdd && !onEdit && !onSwapBranch && !onDelete);
   const [contextMenu, setContextMenu] = useState<{

@@ -1,6 +1,8 @@
 import actionDiamond from "./action_diamond.json";
 import inputsAvailable from "./inputs_available.json";
 import parameterDiamond from "./parameter_diamond.json";
+import supervisingChatDecision from "./supervising_chat_decision.json";
+import supervisingChatSufficiency from "./supervising_chat_sufficiency.json";
 
 type Escalation = {
   action: string;
@@ -47,10 +49,22 @@ type ParameterDiamondFewShot = {
   answer: string | number;
 };
 
+type SupervisingChatDecisionFewShot = {
+  state: object;
+  decision: "KNOWLEDGE" | "BLUEPRINT";
+};
+
+type SupervisingChatSufficiencyFewShot = {
+  state: object;
+  sufficient: number;
+};
+
 export type {
   ActionDiamondFewShot,
   InputsAvailableFewShot,
   ParameterDiamondFewShot,
+  SupervisingChatDecisionFewShot,
+  SupervisingChatSufficiencyFewShot,
 };
 
 export default {
@@ -60,4 +74,9 @@ export default {
     .data as ParameterDiamondFewShot[],
   inputsAvailable: (inputsAvailable as { data: unknown[] })
     .data as InputsAvailableFewShot[],
+  supervisingChatDecision: (supervisingChatDecision as { data: unknown[] })
+    .data as SupervisingChatDecisionFewShot[],
+  supervisingChatSufficiency: (
+    supervisingChatSufficiency as { data: unknown[] }
+  ).data as SupervisingChatSufficiencyFewShot[],
 };

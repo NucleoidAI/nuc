@@ -15,6 +15,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import SupervisingChat from "../components/SupervisingChat";
 import useBlueprint from "../hooks/useBlueprint";
+import useBlueprintLogic from "../hooks/useBlueprintLogic";
 import useSupervisings from "../hooks/useSupervisings";
 import {
   Box,
@@ -31,197 +32,6 @@ import {
 import React, { useEffect, useState } from "react";
 import { publish, useEvent } from "@nucleoidai/react-event";
 import { storage, useStorage } from "@nucleoidjs/webstorage";
-
-type LogicRule = {
-  id: string;
-  name: string;
-  description: string;
-  code: string;
-};
-
-const defaultLogicRules: LogicRule[] = [
-  {
-    id: "rule-1",
-    name: "Order Type Definition",
-    description:
-      "Defines the Order type that every order in the flow is built from. Its status is tracked as a string so the order's current stage is always known, and its items are tracked as a list so any number of line items can be attached, from a single item up to the full order.",
-    code: `def create_order(status: str, items: list):
-    order = Order()
-    order.status = status
-    order.items = items
-
-    return order`,
-  },
-  {
-    id: "rule-2",
-    name: "Item Type Definition",
-    description:
-      "Defines the Item type that each line item in an order is built from. Its name is tracked as a string for identification, its price as a number per unit, and its quantity as a number of units ordered — all three are required for the item to be priced and counted correctly later in the flow.",
-    code: `def create_item(name: str, price: int, quantity: int):
-    item = Item()
-    item.name = name
-    item.price = price
-    item.quantity = quantity
-
-    return item`,
-  },
-  {
-    id: "rule-3",
-    name: "Item Total Calculation",
-    description:
-      "Computes the total cost of a single line item, used as the building block for the order's subtotal. The total is always the item's price multiplied by its quantity, and is recalculated whenever either value changes.",
-    code: `def calculate_item_total(item: object):
-    item.total = item.price * item.quantity
-
-    return item.total`,
-  },
-  {
-    id: "rule-4",
-    name: "Invalid Item Price Validation",
-    description:
-      'Guards against items entering the flow with a negative price, which would otherwise corrupt every downstream total. Whenever an item\'s price is less than 0, the flow refuses to continue and throws "INVALID_PRICE".',
-    code: `def validate_item_price(item: object):
-    if item.price < 0:
-        throw "INVALID_PRICE"
-
-    return item`,
-  },
-  {
-    id: "rule-5",
-    name: "Invalid Item Quantity Validation",
-    description:
-      'Guards against items entering the flow with a quantity that makes no sense to order. Whenever an item\'s quantity is less than or equal to 0, the flow refuses to continue and throws "INVALID_QUANTITY".',
-    code: `def validate_item_quantity(item: object):
-    if item.quantity <= 0:
-        throw "INVALID_QUANTITY"
-
-    return item`,
-  },
-  {
-    id: "rule-6",
-    name: "Order Subtotal Calculation",
-    description:
-      "Computes the order's subtotal before tax and discount are applied. The subtotal is the sum of every line item's total, so it is only accurate once each item's own total has already been calculated.",
-    code: `def calculate_order_subtotal(order: object):
-    order.subtotal = order.items.reduce(
-        (total, item) => total + item.total,
-        0
-    )
-
-    return order.subtotal`,
-  },
-  {
-    id: "rule-7",
-    name: "Order Tax Calculation",
-    description:
-      "Computes the tax owed on an order, applied as a flat 8% of its subtotal. The subtotal must already be calculated for this value to be correct.",
-    code: `def calculate_order_tax(order: object):
-    order.tax = order.subtotal * 0.08
-
-    return order.tax`,
-  },
-  {
-    id: "rule-8",
-    name: "Order Discount Default",
-    description:
-      "Sets the starting point for every order's discount before any bulk-order rules run. The discount defaults to 0, so an order only ends up with a discount if a later rule explicitly grants one.",
-    code: `def reset_order_discount(order: object):
-    order.discount = 0
-
-    return order.discount`,
-  },
-  {
-    id: "rule-9",
-    name: "Bulk Order Discount",
-    description:
-      "Rewards large orders with a bulk discount. Whenever an order's subtotal is greater than or equal to 1000, its discount is set to 10% of that subtotal, overriding the default of 0.",
-    code: `def apply_bulk_discount(order: object):
-    if order.subtotal >= 1000:
-        order.discount = order.subtotal * 0.10
-
-    return order.discount`,
-  },
-  {
-    id: "rule-10",
-    name: "No Discount Below Threshold",
-    description:
-      "Makes explicit that orders below the bulk threshold get no discount. Whenever an order's subtotal is less than 1000, its discount is set to 0, so the bulk discount rule never leaves a stale value in place when an order falls under the limit.",
-    code: `def clear_order_discount(order: object):
-    if order.subtotal < 1000:
-        order.discount = 0
-
-    return order.discount`,
-  },
-  {
-    id: "rule-11",
-    name: "Order Total Calculation",
-    description:
-      "Computes the final amount owed for an order. The total is the subtotal plus tax minus discount, and depends on all three of those values already being calculated.",
-    code: `def calculate_order_total(order: object):
-    order.total = order.subtotal + order.tax - order.discount
-
-    return order.total`,
-  },
-  {
-    id: "rule-12",
-    name: "Order Item Count Calculation",
-    description:
-      "Computes how many units are in an order in total, used later to flag orders that exceed the item limit. The item count is the sum of the quantities of every item on the order, not the number of distinct line items.",
-    code: `def calculate_order_item_count(order: object):
-    order.item_count = order.items.reduce(
-        (count, item) => count + item.quantity,
-        0
-    )
-
-    return order.item_count`,
-  },
-  {
-    id: "rule-13",
-    name: "Order Audit Flag",
-    description:
-      "Flags high-value orders for manual review. Whenever an order's total is greater than 1000, the order is marked as requiring an audit; otherwise it is explicitly marked as not requiring one, so the flag always reflects the order's current total rather than a leftover value.",
-    code: `def flag_order_for_audit(order: object):
-    if order.total > 1000:
-        order.audited = true
-    else:
-        order.audited = false
-
-    return order.audited`,
-  },
-  {
-    id: "rule-14",
-    name: "Invalid Order Total Validation",
-    description:
-      'Catches orders that have ended up with a negative total, which should never happen but would otherwise pass through undetected. Whenever an order\'s total is less than 0, the flow refuses to continue and throws "INVALID_ORDER_TOTAL".',
-    code: `def validate_order_total(order: object):
-    if order.total < 0:
-        throw "INVALID_ORDER_TOTAL"
-
-    return order`,
-  },
-  {
-    id: "rule-15",
-    name: "Order Item Limit Validation",
-    description:
-      'Enforces a cap on how many units a single order can contain. Whenever an order\'s item count is greater than 100, the flow refuses to continue and throws "ORDER_LIMIT_EXCEEDED", and depends on the item count already being calculated.',
-    code: `def validate_order_item_limit(order: object):
-    if order.item_count > 100:
-        throw "ORDER_LIMIT_EXCEEDED"
-
-    return order`,
-  },
-  {
-    id: "rule-16",
-    name: "Cannot Ship Empty Order Validation",
-    description:
-      'Prevents an order from being marked as shipped when it has nothing in it. Whenever an order\'s status is "SHIPPED" and its item count is 0, the flow refuses to continue and throws "CANNOT_SHIP_EMPTY_ORDER".',
-    code: `def validate_shippable_order(order: object):
-    if order.status == "SHIPPED" and order.item_count == 0:
-        throw "CANNOT_SHIP_EMPTY_ORDER"
-
-    return order`,
-  },
-];
 
 const BlueprintDrawerLayout = ({
   drawerOpen,
@@ -310,12 +120,32 @@ const BlueprintDrawerLayout = ({
   const [editBlueprintOpen, setEditBlueprintOpen] = useState(false);
 
   const [logicEditorOpen, setLogicEditorOpen] = useState(false);
-  const [logicRules, setLogicRules] = useState<LogicRule[]>(defaultLogicRules);
-  const [selectedLogicRuleId, setSelectedLogicRuleId] = useState(
-    defaultLogicRules[0].id
+  const { getBlueprintLogicRules } = useBlueprintLogic();
+  const { logicRules: fetchedLogicRules } = getBlueprintLogicRules(
+    selectedItem?.id
   );
-  const selectedLogicRule =
-    logicRules.find((rule) => rule.id === selectedLogicRuleId) ?? logicRules[0];
+  const [logicRules, setLogicRules] = useState<
+    {
+      id: string;
+      blueprintId: string;
+      name: string;
+      description: string | null;
+      code: string;
+      createdAt: string;
+    }[]
+  >([]);
+  const [selectedLogicRuleId, setSelectedLogicRuleId] = useState<string | null>(
+    null
+  );
+  const selectedLogicRule = logicRules.find(
+    (rule) => rule.id === selectedLogicRuleId
+  );
+
+  useEffect(() => {
+    const rules = fetchedLogicRules ?? [];
+    setLogicRules(rules);
+    setSelectedLogicRuleId(rules[0]?.id ?? null);
+  }, [fetchedLogicRules]);
 
   const handleLogicCodeChange = (value: string) => {
     setLogicRules((prev) =>

@@ -1,4 +1,3 @@
-import approval from "./train/approval.json";
 import approvalQuestion from "./train/approval-question.json";
 import blueprintChat from "./train/blueprint-chat.json";
 import blueprintChatSufficiency from "./train/blueprint-chat-sufficiency.json";
@@ -76,12 +75,6 @@ export default {
       role: "system" as const,
       content: JSON.stringify({
         train: blueprintSkill.data,
-      }),
-    },
-    approval: {
-      role: "system" as const,
-      content: JSON.stringify({
-        train: approval.data,
       }),
     },
     approvalQuestion: {

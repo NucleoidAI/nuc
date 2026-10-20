@@ -1,4 +1,5 @@
 import actionDiamond from "./action_diamond.json";
+import customerApproval from "./customer_approval.json";
 import inputsAvailable from "./inputs_available.json";
 import parameterDiamond from "./parameter_diamond.json";
 import supervisingChatDecision from "./supervising_chat_decision.json";
@@ -49,6 +50,11 @@ type ParameterDiamondFewShot = {
   answer: string | number;
 };
 
+type CustomerApprovalFewShot = {
+  state: object;
+  decision: "APPROVED" | "REJECTED" | "UNCLEAR";
+};
+
 type SupervisingChatDecisionFewShot = {
   state: object;
   decision: "KNOWLEDGE" | "BLUEPRINT";
@@ -61,6 +67,7 @@ type SupervisingChatSufficiencyFewShot = {
 
 export type {
   ActionDiamondFewShot,
+  CustomerApprovalFewShot,
   InputsAvailableFewShot,
   ParameterDiamondFewShot,
   SupervisingChatDecisionFewShot,
@@ -74,6 +81,8 @@ export default {
     .data as ParameterDiamondFewShot[],
   inputsAvailable: (inputsAvailable as { data: unknown[] })
     .data as InputsAvailableFewShot[],
+  customerApproval: (customerApproval as { data: unknown[] })
+    .data as CustomerApprovalFewShot[],
   supervisingChatDecision: (supervisingChatDecision as { data: unknown[] })
     .data as SupervisingChatDecisionFewShot[],
   supervisingChatSufficiency: (

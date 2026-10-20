@@ -10,6 +10,7 @@ import engines from "./routes/engines";
 import { event } from "@canmingir/link-express/event/client";
 import knowledge from "./routes/knowledge";
 import llmLogs from "./routes/llmLogs";
+import logicRules from "./routes/logicRules";
 import { logLLM } from "./lib/llmLog";
 import mcpProviders from "./routes/mcpProviders";
 import mcpServers from "./routes/mcpServers";
@@ -57,6 +58,7 @@ function createApp() {
   app.use("/projects", projects);
   app.use("/teams/details", teamDetails);
   app.use("/knowledge", knowledge);
+  app.use("/logic-rules", logicRules);
   app.use("/messages", messages);
   app.use("/sessions", sessions);
   app.use("/supervisings", supervisings);

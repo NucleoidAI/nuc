@@ -5,17 +5,17 @@ import BlueprintFlowWidget from "../widgets/BlueprintFlowWidget/BlueprintFlowWid
 import BlueprintKnowledge from "../components/BlueprintKnowledge/BlueprintKnowledge";
 import BlueprintSkill from "../components/BlueprintSkill/BlueprintSkill";
 import CloseIcon from "@mui/icons-material/Close";
-import { CodeEditor } from "../widgets/CodeEditor";
 import { DrawerLayout } from "@canmingir/link/layouts";
 import { FlowDefinition } from "../components/BlueprintFlow/helper";
 import HorizontalSplitIcon from "@mui/icons-material/HorizontalSplit";
-import LogicView from "../components/LogicView/LogicView";
+import { LowCodeEditor } from "@canmingir/link/platform/components";
 import PsychologyIcon from "@mui/icons-material/Psychology";
 import SettingsDialog from "../components/SettingsDialog/SettingsDialog";
 import SettingsIcon from "@mui/icons-material/Settings";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import SupervisingChat from "../components/SupervisingChat";
 import useBlueprint from "../hooks/useBlueprint";
+import useBlueprintLogic from "../hooks/useBlueprintLogic";
 import useSupervisings from "../hooks/useSupervisings";
 import {
   Box,
@@ -32,144 +32,6 @@ import {
 import React, { useEffect, useState } from "react";
 import { publish, useEvent } from "@nucleoidai/react-event";
 import { storage, useStorage } from "@nucleoidjs/webstorage";
-
-type LogicRule = {
-  id: string;
-  name: string;
-  description: string;
-  code: string;
-};
-
-const defaultLogicRules: LogicRule[] = [
-  {
-    id: "rule-1",
-    name: "Order Type Definition",
-    description:
-      "There is an Order type, which has a status as a string and items as a list.",
-    code: `class Order(status: str, items: list):
-    this.status = status
-    this.items = items`,
-  },
-  {
-    id: "rule-2",
-    name: "Item Type Definition",
-    description:
-      "There is an Item type, which has a name as a string, a price as a number, and a quantity as a number.",
-    code: `class Item(name: str, price: int, quantity: int):
-    this.name = name
-    this.price = price
-    this.quantity = quantity`,
-  },
-  {
-    id: "rule-3",
-    name: "Item Total Calculation",
-    description: "Any item's total is its price times its quantity.",
-    code: `$Item.total = $Item.price * $Item.quantity`,
-  },
-  {
-    id: "rule-4",
-    name: "Invalid Item Price Validation",
-    description:
-      'If any item\'s price is less than 0, then throw "INVALID_PRICE".',
-    code: `if $Item.price < 0:
-    throw "INVALID_PRICE"`,
-  },
-  {
-    id: "rule-5",
-    name: "Invalid Item Quantity Validation",
-    description:
-      'If any item\'s quantity is less than or equal to 0, then throw "INVALID_QUANTITY".',
-    code: `if $Item.quantity <= 0:
-    throw "INVALID_QUANTITY"`,
-  },
-  {
-    id: "rule-6",
-    name: "Order Subtotal Calculation",
-    description: "Any order's subtotal is the sum of the totals of its items.",
-    code: `$Order.subtotal = $Order.items.reduce(
-    (total, item) => total + item.total,
-    0
-)`,
-  },
-  {
-    id: "rule-7",
-    name: "Order Tax Calculation",
-    description: "Any order's tax is 8% of its subtotal.",
-    code: `$Order.tax = $Order.subtotal * 0.08`,
-  },
-  {
-    id: "rule-8",
-    name: "Order Discount Default",
-    description: "Any order's discount is initially 0.",
-    code: `$Order.discount = 0`,
-  },
-  {
-    id: "rule-9",
-    name: "Bulk Order Discount",
-    description:
-      "If any order's subtotal is greater than or equal to 1000, then its discount is 10% of its subtotal.",
-    code: `if $Order.subtotal >= 1000:
-    $Order.discount = $Order.subtotal * 0.10`,
-  },
-  {
-    id: "rule-10",
-    name: "No Discount Below Threshold",
-    description:
-      "If any order's subtotal is less than 1000, then its discount is 0.",
-    code: `if $Order.subtotal < 1000:
-    $Order.discount = 0`,
-  },
-  {
-    id: "rule-11",
-    name: "Order Total Calculation",
-    description: "Any order's total is its subtotal plus tax minus discount.",
-    code: `$Order.total = $Order.subtotal + $Order.tax - $Order.discount`,
-  },
-  {
-    id: "rule-12",
-    name: "Order Item Count Calculation",
-    description:
-      "Any order's item count is the sum of the quantities of its items.",
-    code: `$Order.itemCount = $Order.items.reduce(
-    (count, item) => count + item.quantity,
-    0
-)`,
-  },
-  {
-    id: "rule-13",
-    name: "Order Audit Flag",
-    description:
-      "If any order's total is greater than 1000, then the order requires an audit, otherwise the order does not require an audit.",
-    code: `if $Order.total > 1000:
-    $Order.audited = true
-else:
-    $Order.audited = false`,
-  },
-  {
-    id: "rule-14",
-    name: "Invalid Order Total Validation",
-    description:
-      'If any order\'s total is less than 0, then throw "INVALID_ORDER_TOTAL".',
-    code: `if $Order.total < 0:
-    throw "INVALID_ORDER_TOTAL"`,
-  },
-  {
-    id: "rule-15",
-    name: "Order Item Limit Validation",
-    description:
-      'If any order\'s item count is greater than 100, then throw "ORDER_LIMIT_EXCEEDED".',
-    code: `if $Order.itemCount > 100:
-    throw "ORDER_LIMIT_EXCEEDED"`,
-  },
-  {
-    id: "rule-16",
-    name: "Cannot Ship Empty Order Validation",
-    description:
-      'If any order is shipped and has no items, then throw "CANNOT_SHIP_EMPTY_ORDER".',
-    code: `if $Order.status == "SHIPPED" and $Order.itemCount == 0:
-    throw "CANNOT_SHIP_EMPTY_ORDER"`,
-  },
-];
 
 const BlueprintDrawerLayout = ({
   drawerOpen,
@@ -258,12 +120,32 @@ const BlueprintDrawerLayout = ({
   const [editBlueprintOpen, setEditBlueprintOpen] = useState(false);
 
   const [logicEditorOpen, setLogicEditorOpen] = useState(false);
-  const [logicRules, setLogicRules] = useState<LogicRule[]>(defaultLogicRules);
-  const [selectedLogicRuleId, setSelectedLogicRuleId] = useState(
-    defaultLogicRules[0].id
+  const { getBlueprintLogicRules } = useBlueprintLogic();
+  const { logicRules: fetchedLogicRules } = getBlueprintLogicRules(
+    selectedItem?.id
   );
-  const selectedLogicRule =
-    logicRules.find((rule) => rule.id === selectedLogicRuleId) ?? logicRules[0];
+  const [logicRules, setLogicRules] = useState<
+    {
+      id: string;
+      blueprintId: string;
+      name: string;
+      description: string | null;
+      code: string;
+      createdAt: string;
+    }[]
+  >([]);
+  const [selectedLogicRuleId, setSelectedLogicRuleId] = useState<string | null>(
+    null
+  );
+  const selectedLogicRule = logicRules.find(
+    (rule) => rule.id === selectedLogicRuleId
+  );
+
+  useEffect(() => {
+    const rules = fetchedLogicRules ?? [];
+    setLogicRules(rules);
+    setSelectedLogicRuleId(rules[0]?.id ?? null);
+  }, [fetchedLogicRules]);
 
   const handleLogicCodeChange = (value: string) => {
     setLogicRules((prev) =>
@@ -661,7 +543,7 @@ const BlueprintDrawerLayout = ({
                     fontWeight={600}
                     sx={{ textAlign: "center", flex: 1 }}
                   >
-                    Logics
+                    Logic
                   </Typography>
                   <Tooltip title="New session">
                     <IconButton size="small">
@@ -706,50 +588,39 @@ const BlueprintDrawerLayout = ({
 
               <Box
                 sx={{
+                  position: "relative",
                   flex: 1,
                   display: "flex",
                   flexDirection: "column",
                   minWidth: 0,
                   minHeight: 0,
+                  bgcolor: "#000000",
                 }}
               >
-                <Box
+                <IconButton
+                  size="small"
+                  onClick={() => setLogicEditorOpen(false)}
                   sx={{
-                    position: "relative",
-                    flexShrink: 0,
+                    position: "absolute",
+                    top: 8,
+                    right: 16,
+                    zIndex: 1,
+                    color: "common.white",
                   }}
                 >
-                  <LogicView
-                    title="LOGIC.md"
-                    content={selectedLogicRule?.description}
-                    height="auto"
-                    rounded={false}
-                  />
-                  <IconButton
-                    size="small"
-                    onClick={() => setLogicEditorOpen(false)}
-                    sx={{
-                      position: "absolute",
-                      top: 8,
-                      right: 16,
-                      color: "common.white",
-                    }}
-                  >
-                    <CloseIcon fontSize="small" />
-                  </IconButton>
-                </Box>
+                  <CloseIcon fontSize="small" />
+                </IconButton>
 
-                <Box sx={{ flex: 1, minHeight: 0 }}>
-                  <CodeEditor
-                    value={selectedLogicRule?.code ?? ""}
-                    onChange={handleLogicCodeChange}
-                    language="python"
-                    path={`logic/${selectedLogicRule?.id}/main.py`}
-                    themeMode="dark"
-                    backgroundColor="#000000"
-                    height="100%"
-                  />
-                </Box>
+                <LowCodeEditor
+                  value={selectedLogicRule?.code ?? ""}
+                  onChange={handleLogicCodeChange}
+                  language="python"
+                  editorHeight="100%"
+                  showRunButton={false}
+                  panelTitle="LOGIC.md"
+                  panelContent={selectedLogicRule?.description}
+                  showPanel
+                />
               </Box>
             </DialogContent>
           </Dialog>

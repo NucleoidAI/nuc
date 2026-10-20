@@ -146,6 +146,14 @@
       "createdAt": "2025-06-26T06:00:00.000Z"
     },
     {
+      "id": "ce754ad8-e949-4713-bcbb-851d939824d0",
+      "type": "LOGIC",
+      "text": "Defines the Order type that every order in the flow is built from. Its status is tracked as a string so the order's current stage is always known, and its items are tracked as a list so any number of line items can be attached, from a single item up to the full order.\ndef create_order(status: str, items: list):\n    order = Order()\n    order.status = status\n    order.items = items\n\n    return order",
+      "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
+      "status": "COMPLETED",
+      "createdAt": "2025-06-26T06:00:00.000Z"
+    },
+    {
       "id": "019f6a16-0000-4000-8000-000000000001",
       "type": "TEXT",
       "text": "The manager's email address is halilcengel@greycollar.ai. Onboarding notifications should be sent to this address.",
@@ -211,7 +219,7 @@
     {
       "id": "90b67781-305b-48fe-a735-b8df9c66a7f7",
       "type": "LOGIC",
-      "text": "There is an Item type, which has a name as a string, a price as a number, and a quantity as a number\nclass Item(name: str, price: int, quantity: int):\n    this.name = name\n    this.price = price\n    this.quantity = quantity",
+      "text": "Defines the Item type that each line item in an order is built from. Its name is tracked as a string for identification, its price as a number per unit, and its quantity as a number of units ordered — all three are required for the item to be priced and counted correctly later in the flow.\ndef create_item(name: str, price: int, quantity: int):\n    item = Item()\n    item.name = name\n    item.price = price\n    item.quantity = quantity\n\n    return item",
       "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
       "status": "COMPLETED",
       "createdAt": "2026-10-12T00:00:00.000Z"
@@ -219,7 +227,7 @@
     {
       "id": "fa6b2d7e-67d2-4350-8cc0-de361edcf3f0",
       "type": "LOGIC",
-      "text": "Any item's total is its price times its quantity\n$Item.total = $Item.price * $Item.quantity",
+      "text": "Computes the total cost of a single line item, used as the building block for the order's subtotal. The total is always the item's price multiplied by its quantity, and is recalculated whenever either value changes.\ndef calculate_item_total(item: object):\n    item.total = item.price * item.quantity\n\n    return item.total",
       "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
       "status": "COMPLETED",
       "createdAt": "2026-10-12T00:00:00.000Z"
@@ -227,7 +235,7 @@
     {
       "id": "76c8a06f-40a8-4655-a8bf-5fa27facc75c",
       "type": "LOGIC",
-      "text": "If any item's price is less than 0, then throw \"INVALID_PRICE\"\nif $Item.price < 0:\n    throw \"INVALID_PRICE\"",
+      "text": "Guards against items entering the flow with a negative price, which would otherwise corrupt every downstream total. Whenever an item's price is less than 0, the flow refuses to continue and throws \"INVALID_PRICE\".\ndef validate_item_price(item: object):\n    if item.price < 0:\n        throw \"INVALID_PRICE\"\n\n    return item",
       "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
       "status": "COMPLETED",
       "createdAt": "2026-10-12T00:00:00.000Z"
@@ -235,7 +243,7 @@
     {
       "id": "4830f682-be70-4f4e-b952-76a3d56d30d4",
       "type": "LOGIC",
-      "text": "If any item's quantity is less than or equal to 0, then throw \"INVALID_QUANTITY\"\nif $Item.quantity <= 0:\n    throw \"INVALID_QUANTITY\"",
+      "text": "Guards against items entering the flow with a quantity that makes no sense to order. Whenever an item's quantity is less than or equal to 0, the flow refuses to continue and throws \"INVALID_QUANTITY\".\ndef validate_item_quantity(item: object):\n    if item.quantity <= 0:\n        throw \"INVALID_QUANTITY\"\n\n    return item",
       "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
       "status": "COMPLETED",
       "createdAt": "2026-10-12T00:00:00.000Z"
@@ -243,7 +251,7 @@
     {
       "id": "80a7e8cb-e5f5-44f7-bbf6-45bfc5a2eb03",
       "type": "LOGIC",
-      "text": "Any order's subtotal is the sum of the totals of its items\n$Order.subtotal = $Order.items.reduce(\n    (total, item) => total + item.total,\n    0\n)",
+      "text": "Computes the order's subtotal before tax and discount are applied. The subtotal is the sum of every line item's total, so it is only accurate once each item's own total has already been calculated.\ndef calculate_order_subtotal(order: object):\n    order.subtotal = order.items.reduce(\n        (total, item) => total + item.total,\n        0\n    )\n\n    return order.subtotal",
       "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
       "status": "COMPLETED",
       "createdAt": "2026-10-12T00:00:00.000Z"
@@ -251,7 +259,7 @@
     {
       "id": "74162de3-e57b-4e68-b1d9-d3b0f33b08b1",
       "type": "LOGIC",
-      "text": "Any order's tax is 8% of its subtotal\n$Order.tax = $Order.subtotal * 0.08",
+      "text": "Computes the tax owed on an order, applied as a flat 8% of its subtotal. The subtotal must already be calculated for this value to be correct.\ndef calculate_order_tax(order: object):\n    order.tax = order.subtotal * 0.08\n\n    return order.tax",
       "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
       "status": "COMPLETED",
       "createdAt": "2026-10-12T00:00:00.000Z"
@@ -259,7 +267,7 @@
     {
       "id": "3429555d-92b8-45c1-a5de-6fc6d0a71ad2",
       "type": "LOGIC",
-      "text": "Any order's discount is initially 0\n$Order.discount = 0",
+      "text": "Sets the starting point for every order's discount before any bulk-order rules run. The discount defaults to 0, so an order only ends up with a discount if a later rule explicitly grants one.\ndef reset_order_discount(order: object):\n    order.discount = 0\n\n    return order.discount",
       "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
       "status": "COMPLETED",
       "createdAt": "2026-10-12T00:00:00.000Z"
@@ -267,7 +275,7 @@
     {
       "id": "5ddd6a71-2f5b-4158-9cde-ff72902625e5",
       "type": "LOGIC",
-      "text": "If any order's subtotal is greater than or equal to 1000, then its discount is 10% of its subtotal\nif $Order.subtotal >= 1000:\n    $Order.discount = $Order.subtotal * 0.10",
+      "text": "Rewards large orders with a bulk discount. Whenever an order's subtotal is greater than or equal to 1000, its discount is set to 10% of that subtotal, overriding the default of 0.\ndef apply_bulk_discount(order: object):\n    if order.subtotal >= 1000:\n        order.discount = order.subtotal * 0.10\n\n    return order.discount",
       "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
       "status": "COMPLETED",
       "createdAt": "2026-10-12T00:00:00.000Z"
@@ -275,7 +283,7 @@
     {
       "id": "e30a20bf-1b92-45f2-bae1-67ab3272597a",
       "type": "LOGIC",
-      "text": "If any order's subtotal is less than 1000, then its discount is 0\nif $Order.subtotal < 1000:\n    $Order.discount = 0",
+      "text": "Makes explicit that orders below the bulk threshold get no discount. Whenever an order's subtotal is less than 1000, its discount is set to 0, so the bulk discount rule never leaves a stale value in place when an order falls under the limit.\ndef clear_order_discount(order: object):\n    if order.subtotal < 1000:\n        order.discount = 0\n\n    return order.discount",
       "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
       "status": "COMPLETED",
       "createdAt": "2026-10-12T00:00:00.000Z"
@@ -283,7 +291,7 @@
     {
       "id": "a2296d30-a875-4c96-858c-256f285b784e",
       "type": "LOGIC",
-      "text": "Any order's total is its subtotal plus tax minus discount\n$Order.total = $Order.subtotal + $Order.tax - $Order.discount",
+      "text": "Computes the final amount owed for an order. The total is the subtotal plus tax minus discount, and depends on all three of those values already being calculated.\ndef calculate_order_total(order: object):\n    order.total = order.subtotal + order.tax - order.discount\n\n    return order.total",
       "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
       "status": "COMPLETED",
       "createdAt": "2026-10-12T00:00:00.000Z"
@@ -291,7 +299,7 @@
     {
       "id": "b157f577-b1d5-48e5-b9fd-6b7099371d38",
       "type": "LOGIC",
-      "text": "Any order's item count is the sum of the quantities of its items\n$Order.itemCount = $Order.items.reduce(\n    (count, item) => count + item.quantity,\n    0\n)",
+      "text": "Computes how many units are in an order in total, used later to flag orders that exceed the item limit. The item count is the sum of the quantities of every item on the order, not the number of distinct line items.\ndef calculate_order_item_count(order: object):\n    order.item_count = order.items.reduce(\n        (count, item) => count + item.quantity,\n        0\n    )\n\n    return order.item_count",
       "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
       "status": "COMPLETED",
       "createdAt": "2026-10-12T00:00:00.000Z"
@@ -299,7 +307,7 @@
     {
       "id": "91911489-5fff-4c2d-b1ec-3ef5a566b07b",
       "type": "LOGIC",
-      "text": "If any order's total is greater than 1000, then the order requires an audit, otherwise the order does not require an audit\nif $Order.total > 1000:\n    $Order.audited = true\nelse:\n    $Order.audited = false",
+      "text": "Flags high-value orders for manual review. Whenever an order's total is greater than 1000, the order is marked as requiring an audit; otherwise it is explicitly marked as not requiring one, so the flag always reflects the order's current total rather than a leftover value.\ndef flag_order_for_audit(order: object):\n    if order.total > 1000:\n        order.audited = true\n    else:\n        order.audited = false\n\n    return order.audited",
       "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
       "status": "COMPLETED",
       "createdAt": "2026-10-12T00:00:00.000Z"
@@ -307,7 +315,7 @@
     {
       "id": "fa68e725-5942-4c97-9855-bc7044199766",
       "type": "LOGIC",
-      "text": "If any order's total is less than 0, then throw \"INVALID_ORDER_TOTAL\"\nif $Order.total < 0:\n    throw \"INVALID_ORDER_TOTAL\"",
+      "text": "Catches orders that have ended up with a negative total, which should never happen but would otherwise pass through undetected. Whenever an order's total is less than 0, the flow refuses to continue and throws \"INVALID_ORDER_TOTAL\".\ndef validate_order_total(order: object):\n    if order.total < 0:\n        throw \"INVALID_ORDER_TOTAL\"\n\n    return order",
       "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
       "status": "COMPLETED",
       "createdAt": "2026-10-12T00:00:00.000Z"
@@ -315,7 +323,7 @@
     {
       "id": "ba79e23b-2164-45f7-9166-dee4679013b6",
       "type": "LOGIC",
-      "text": "If any order's item count is greater than 100, then throw \"ORDER_LIMIT_EXCEEDED\"\nif $Order.itemCount > 100:\n    throw \"ORDER_LIMIT_EXCEEDED\"",
+      "text": "Enforces a cap on how many units a single order can contain. Whenever an order's item count is greater than 100, the flow refuses to continue and throws \"ORDER_LIMIT_EXCEEDED\", and depends on the item count already being calculated.\ndef validate_order_item_limit(order: object):\n    if order.item_count > 100:\n        throw \"ORDER_LIMIT_EXCEEDED\"\n\n    return order",
       "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
       "status": "COMPLETED",
       "createdAt": "2026-10-12T00:00:00.000Z"
@@ -323,7 +331,7 @@
     {
       "id": "a69e6990-4715-49bf-b991-f9b4ee17f901",
       "type": "LOGIC",
-      "text": "If any order is shipped and has no items, then throw \"CANNOT_SHIP_EMPTY_ORDER\"\nif $Order.status == \"SHIPPED\" and $Order.itemCount == 0:\n    throw \"CANNOT_SHIP_EMPTY_ORDER\"",
+      "text": "Prevents an order from being marked as shipped when it has nothing in it. Whenever an order's status is \"SHIPPED\" and its item count is 0, the flow refuses to continue and throws \"CANNOT_SHIP_EMPTY_ORDER\".\ndef validate_shippable_order(order: object):\n    if order.status == \"SHIPPED\" and order.item_count == 0:\n        throw \"CANNOT_SHIP_EMPTY_ORDER\"\n\n    return order",
       "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
       "status": "COMPLETED",
       "createdAt": "2026-10-12T00:00:00.000Z"

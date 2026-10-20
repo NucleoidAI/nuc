@@ -1,6 +1,5 @@
 import CloseIcon from "@mui/icons-material/Close";
 import CodeBlock from "../CodeBlock/CodeBlock";
-import { CodeEditor } from "../../widgets/CodeEditor";
 import { Label } from "@canmingir/link/platform/components";
 import LogicView from "../LogicView/LogicView";
 
@@ -23,6 +22,7 @@ import {
 } from "@mui/material";
 import {
   Iconify,
+  LowCodeEditor,
   Scrollbar,
   TableHeadCustom,
   TableSelectedAction,
@@ -478,6 +478,7 @@ function KnowledgeTable({
                 flexDirection: "column",
                 minWidth: 0,
                 minHeight: 0,
+                bgcolor: "#000000",
               }}
             >
               {selectedLogic &&
@@ -486,29 +487,17 @@ function KnowledgeTable({
                     selectedLogic.text
                   );
                   return (
-                    <>
-                      <Box sx={{ position: "relative", flexShrink: 0 }}>
-                        <LogicView
-                          title="LOGIC.md"
-                          content={description}
-                          height="auto"
-                          rounded={false}
-                        />
-                      </Box>
-
-                      <Box sx={{ flex: 1, minHeight: 0 }}>
-                        <CodeEditor
-                          value={code}
-                          onChange={() => {}}
-                          readOnly
-                          language="python"
-                          path={`logic/${selectedLogic.id}/main.py`}
-                          themeMode="dark"
-                          backgroundColor="#000000"
-                          height="100%"
-                        />
-                      </Box>
-                    </>
+                    <LowCodeEditor
+                      value={code}
+                      onChange={() => {}}
+                      readOnly
+                      language="python"
+                      editorHeight="100%"
+                      showRunButton={false}
+                      panelTitle="LOGIC.md"
+                      panelContent={description}
+                      showPanel
+                    />
                   );
                 })()}
             </Box>

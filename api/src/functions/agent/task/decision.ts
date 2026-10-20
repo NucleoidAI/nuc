@@ -18,8 +18,6 @@ import dataset from "../../../dataset";
 import { generate } from "@canmingir/link-express/llm";
 import { isForcedNode } from "../../../lib/blueprintNodes";
 
-const MIN_INPUTS_AVAILABLE = 0.5;
-const SUPERVISOR_ACTION = "PLATFORM:ask_supervisor";
 const NODE_FILLED_FIELDS: Record<string, { type: string; fields: string[] }> = {
   "PLATFORM:decision": {
     type: "CONDITION",
@@ -266,19 +264,19 @@ async function decisionTask({ taskId }: { taskId: string }) {
 
   if (
     inputsAvailable !== undefined &&
-    inputsAvailable < MIN_INPUTS_AVAILABLE &&
-    selection.action !== SUPERVISOR_ACTION
+    inputsAvailable < 0.5 &&
+    selection.action !== "PLATFORM:ask_supervisor"
   ) {
     const canEscalate = options.some(
-      ({ action }) => action === SUPERVISOR_ACTION,
+      ({ action }) => action === "PLATFORM:ask_supervisor",
     );
 
     console.debug(
       `[jev] inputs for ${
         selection.action
-      } available with ${inputsAvailable} < ${MIN_INPUTS_AVAILABLE}; ${
+      } available with ${inputsAvailable} < 0.5; ${
         canEscalate
-          ? `escalating to ${SUPERVISOR_ACTION}`
+          ? `escalating to PLATFORM:ask_supervisor`
           : "supervisor not available, keeping selection"
       }`,
     );
@@ -287,7 +285,7 @@ async function decisionTask({ taskId }: { taskId: string }) {
       const escalatedFrom = { action: selection.action, inputs: "missing" };
 
       selection = {
-        action: SUPERVISOR_ACTION,
+        action: "PLATFORM:ask_supervisor",
         probabilities: selection.probabilities,
       };
 

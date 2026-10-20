@@ -108,6 +108,18 @@ function collectCandidates({
     if (typeof parsed === "object" && parsed !== null) {
       if (depth >= 4 || "$ref" in parsed) return;
 
+      if (depth > 0 || /\.result$/.test(path)) {
+        const text = JSON.stringify(parsed);
+        const kind = Array.isArray(parsed) ? "array" : "object";
+        out.push({
+          path,
+          value: text.slice(0, 160),
+          key: `${kind}:${text}`,
+          kind,
+          text,
+        });
+      }
+
       const children = Array.isArray(parsed)
         ? parsed.slice(0, 5).map((item, index) => [`[${index}]`, item])
         : Object.entries(parsed)
@@ -514,18 +526,15 @@ async function parameterDiamond({
       return;
     }
 
-    if (schema.type === "object" || schema.type === "array") {
-      if (parameter.required) generate.push(field);
-      return;
-    }
-
     const accepted = candidates.filter(({ kind, value }) => {
+      if (schema.type === "object" || schema.type === "array")
+        return kind === schema.type;
       if (schema.type === "integer")
         return kind === "number" && Number.isInteger(Number(value));
       if (schema.type === "number") return kind === "number";
       if (schema.type === "string")
         return kind === "string" || kind === "number";
-      return true;
+      return kind !== "object" && kind !== "array";
     });
 
     const id = `source_${field}`;

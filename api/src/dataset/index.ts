@@ -2,7 +2,6 @@ import approval from "./train/approval.json";
 import approvalQuestion from "./train/approval-question.json";
 import blueprintChat from "./train/blueprint-chat.json";
 import blueprintChatSufficiency from "./train/blueprint-chat-sufficiency.json";
-import blueprintChatEvaluation from "./train/blueprint-chat-evaluation.json";
 import blueprintChatKnowledge from "./train/blueprint-chat-knowledge.json";
 import blueprintDescription from "./train/blueprint-description.json";
 import blueprintName from "./train/blueprint-name.json";
@@ -53,12 +52,6 @@ export default {
       role: "system" as const,
       content: JSON.stringify({
         train: blueprintChatSufficiency.data,
-      }),
-    },
-    blueprintChatEvaluation: {
-      role: "system" as const,
-      content: JSON.stringify({
-        train: blueprintChatEvaluation.data,
       }),
     },
     blueprintChatKnowledge: {

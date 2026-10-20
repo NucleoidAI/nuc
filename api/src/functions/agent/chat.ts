@@ -228,38 +228,4 @@ async function teamChat({
   });
 }
 
-async function evaluateSupervisionAnswer({
-  agentId,
-  content,
-}: {
-  agentId: string;
-  content: {
-    question: string;
-    answer: string;
-  };
-}) {
-  const knowledge_base = await knowledge({ agentId });
-
-  return generate({
-    dataset: dataset.train.blueprintChatEvaluation,
-    context: [
-      { role: "system", content: { knowledge_base } },
-      {
-        role: "system",
-        content: {
-          supervision_context: {
-            original_question: content.question,
-            proposed_answer: content.answer,
-          },
-        },
-      },
-    ],
-    content: `${content.question}\n\nAnswer: ${content.answer}`,
-    json_format: `{
-      "is_answer_known": <true|false>,
-    }`,
-    meta: { agentId, source: "agent.evaluateSupervisionAnswer" },
-  });
-}
-
-export { chat, evaluateSupervisionAnswer, teamChat };
+export { chat, teamChat };

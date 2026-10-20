@@ -2,7 +2,6 @@ import Agent from "../models/Agent";
 import Conversation from "../models/Conversation";
 import Joi from "joi";
 import Supervising from "../models/Supervising";
-import agentFn from "../functions/agent";
 import express from "express";
 import { event } from "@canmingir/link-express/event/client";
 import schemas from "../schemas";
@@ -417,71 +416,6 @@ router.patch("/:supervisingId/demo/submit", async (req, res) => {
   });
 
   res.status(200).json(updatedSupervising);
-});
-
-router.post("/:supervisingId/evaluate", async (req, res) => {
-  const { supervisingId } = req.params;
-  const teamId = req.session.projectId;
-
-  const { answer, blueprintId } = Joi.attempt(
-    req.body,
-    Joi.object({
-      answer: Joi.string().required(),
-      blueprintId: Joi.string().guid().optional(),
-    }),
-  );
-
-  const supervisingInstance = await Supervising.findByPk(supervisingId);
-
-  if (!supervisingInstance) {
-    return res.status(404).json({ error: "Supervising not found" });
-  }
-
-  const agent = await Agent.findByPk(supervisingInstance.agentId);
-
-  if (!agent) {
-    return res.status(404).json({ error: "Agent not found" });
-  }
-
-  if (agent.teamId !== teamId) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-
-  const evaluation = await agentFn.evaluateSupervisionAnswer({
-    agentId: agent.id,
-    content: {
-      question: supervisingInstance.question,
-      answer,
-    },
-  });
-
-  if (evaluation.is_answer_known) {
-    const updatedSupervising = await supervising.update({
-      teamId,
-      supervisingId,
-      agentId: agent.id,
-      question: supervisingInstance.question,
-      answer,
-      status: "ANSWERED",
-      taskId: supervisingInstance.taskId,
-      blueprintId,
-    });
-
-    return res.status(200).json({
-      action: "answer_approved",
-      supervising: updatedSupervising,
-      evaluation: {
-        ...evaluation,
-      },
-    });
-  } else {
-    return res.status(200).json({
-      action: "needs_improvement",
-      evaluation: {
-        ...evaluation,
-      },
-    });
-  }
 });
 
 export default router;

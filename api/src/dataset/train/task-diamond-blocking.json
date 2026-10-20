@@ -1,0 +1,3728 @@
+{
+  "data": [
+    {
+      "id": "0cbfbecd-5e0d-4924-b5fd-6de262285936",
+      "description": "Check product availability, if not exist, create order.",
+      "blueprint": {
+        "id": "ba6f7911-e232-469d-9060-2881852f6e59",
+        "title": "Product Order",
+        "description": "Check product availability, if not exist, create order.",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:check_product_count",
+              "icon": "mdi:check"
+            },
+            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+            "false": ["5be22de7-9673-448d-a1b5-dc23a8789b5c"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:create_order",
+              "icon": "mdi:cart-plus"
+            },
+            "next": "5be22de7-9673-448d-a1b5-dc23a8789b5c",
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "5be22de7-9673-448d-a1b5-dc23a8789b5c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "5be22de7-9673-448d-a1b5-dc23a8789b5c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:reduce_product_count",
+              "icon": "mdi:minus"
+            },
+            "next": "f5987e15-d014-4e45-bc3b-7b1f53c4472b",
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "2a69ce9c-32e9-49c9-ad7c-b631d890359b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "icon": "mdi:email"
+            },
+            "next": "2a69ce9c-32e9-49c9-ad7c-b631d890359b",
+            "createdAt": "2025-06-19T06:03:00Z"
+          },
+          {
+            "id": "f5987e15-d014-4e45-bc3b-7b1f53c4472b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "66f2e2e0-dd81-4a1c-9474-089558b43084",
+          "type": "TEXT",
+          "text": "Battery product id is btr-123",
+          "status": "COMPLETED",
+          "createdAt": "1970-01-20T22:08:14.337Z"
+        },
+        {
+          "id": "94e582fd-9190-4fb8-936a-327424ac6c77",
+          "type": "TEXT",
+          "text": "If Battery is not available, order 10 Battery",
+          "status": "COMPLETED",
+          "createdAt": "1970-01-20T22:08:14.337Z"
+        },
+        {
+          "id": "18a6dc62-9c58-49db-ae61-eef9042102b2",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com.",
+          "status": "COMPLETED",
+          "createdAt": "1970-01-20T22:08:14.337Z"
+        }
+      ],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
+      "steps": [
+        {
+          "taskId": "0a0e5ada-078a-4057-9420-0a2dcf52e972",
+          "action": "GREY:check_product_count",
+          "status": "COMPLETED",
+          "parameters": {
+            "productId": "btr-123"
+          },
+          "comment": "Checking product count"
+        },
+        {
+          "taskId": "0a0e5ada-078a-4057-9420-0a2dcf52e972",
+          "action": "PLATFORM:decision",
+          "status": "COMPLETED",
+          "comment": "Making decision",
+          "parameters": {
+            "condition": "product_count <= 0",
+            "true": [
+              {
+                "taskId": "0a0e5ada-078a-4057-9420-0a2dcf52e972",
+                "action": "GREY:create_order",
+                "status": "COMPLETED",
+                "parameters": {
+                  "productId": {
+                    "$ref": "steps[0].parameters.productId"
+                  },
+                  "quantity": 10
+                },
+                "comment": "Reusing the productId already given to check_product_count (steps[0]) via $ref instead of retyping it"
+              },
+              {
+                "taskId": "0a0e5ada-078a-4057-9420-0a2dcf52e972",
+                "action": "PLATFORM:message_user",
+                "status": "COMPLETED",
+                "parameters": {
+                  "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
+                  "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+                  "message": "Order created."
+                },
+                "comment": "Notifying user about product order creation"
+              },
+              {
+                "taskId": "a45600c8c-0749-4628-b16e-6f55f907595e",
+                "action": "GREY:send_email",
+                "status": "COMPLETED",
+                "parameters": {
+                  "subject": "Product Order",
+                  "text": "Product order created",
+                  "to": "halilibrahimcengel7@gmail.com"
+                },
+                "comment": "Sending email"
+              },
+              {
+                "taskId": "0a0e5ada-078a-4057-9420-0a2dcf52e972",
+                "action": "PLATFORM:complete",
+                "status": "COMPLETED",
+                "parameters": {},
+                "comment": "Completing task"
+              }
+            ],
+            "false": [
+              {
+                "taskId": "0a0e5ada-078a-4057-9420-0a2dcf52e972",
+                "action": "GREY:reduce_product_count",
+                "status": "COMPLETED",
+                "parameters": {
+                  "productId": {
+                    "$ref": "steps[0].parameters.productId"
+                  },
+                  "quantity": 1
+                },
+                "comment": "Reusing the productId already given to check_product_count (steps[0]) via $ref instead of retyping it"
+              },
+              {
+                "taskId": "0a0e5ada-078a-4057-9420-0a2dcf52e972",
+                "action": "PLATFORM:complete",
+                "status": "COMPLETED",
+                "parameters": {},
+                "comment": "Completing task"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "2efhdhff-7g2f-6b46-d7hf-8fg484407b58",
+      "description": "Setup internet subscription at user's address.",
+      "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
+      "blueprint": {
+        "id": "ca7g8022-f343-570e-a171-3992963g7f70",
+        "title": "Basic Internet Subscription Setup",
+        "description": "Offer internet packages based on the user's residential address and provide available internet packages for the selected address.",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "019b9433-3de3-7545-a40a-854419ae8be1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "icon": "mdi:map-marker"
+            },
+            "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_bbk_by_address",
+              "icon": "mdi:map-marker"
+            },
+            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_inventory",
+              "icon": "mdi:server"
+            },
+            "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209c-2e5a-777f-a04a-11960363fb25",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+            "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_product_by_speed",
+              "icon": "mdi:speedometer"
+            },
+            "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019c8a58-10e3-713f-9484-78d04923040f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "icon": "mdi:cursor-pointer"
+            },
+            "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_allocation",
+              "icon": "mdi:link"
+            },
+            "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell"
+            },
+            "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:configuration",
+              "icon": "mdi:settings"
+            },
+            "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-5878-73fb-8411-55916778d9a4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_connection",
+              "icon": "mdi:ethernet"
+            },
+            "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
+      "steps": [
+        {
+          "taskId": "c99hh389-e6h4-66fe-b1h0-g1g867804668",
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "What is your address?"
+          },
+          "comment": "User provided address"
+        },
+        {
+          "taskId": "c99hh389-e6h4-66fe-b1h0-g1g867804668",
+          "action": "TELCO:get_bbk_by_address",
+          "status": "COMPLETED",
+          "parameters": {
+            "address": "Atatürk Caddesi No:45, Ankara"
+          },
+          "result": "{\"error\":\"ADDRESS_NOT_FOUND\"}",
+          "comment": "Address not found in database"
+        },
+        {
+          "taskId": "c99hh389-e6h4-66fe-b1h0-g1g867804668",
+          "action": "PLATFORM:ask_supervisor",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Address not found in database. What should I do?",
+            "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
+            "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+          },
+          "comment": "Asking supervisor for next step"
+        },
+        {
+          "taskId": "c99hh389-e6h4-66fe-b1h0-g1g867804668",
+          "action": "PLATFORM:message_user",
+          "status": "COMPLETED",
+          "parameters": {
+            "sessionId": "019b6e75-8a07-72f2-8adf-82cd88f6b7cc",
+            "message": "Sorry, we couldn't find your address. Please call 444 1 444 for help."
+          },
+          "comment": "Notifying user to call support center"
+        },
+        {
+          "taskId": "c99hh389-e6h4-66fe-b1h0-g1g867804668",
+          "action": "PLATFORM:complete",
+          "status": "COMPLETED",
+          "comment": "Doing supervisor's instructions and complete the task"
+        }
+      ]
+    },
+    {
+      "id": "5hkjgmih-8h4g-7d57-e9jh-0igf495519d60",
+      "description": "Setup internet subscription for a US residential address with full notification flow.",
+      "sessionId": "029c8g97-0c29-94h4-0cfg-04ef00h8d9ee",
+      "blueprint": {
+        "id": "ca7g8022-f343-570e-a171-3992963g7f70",
+        "title": "Basic Internet Subscription Setup",
+        "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "019b9433-3de3-7545-a40a-854419ae8be1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "icon": "mdi:map-marker"
+            },
+            "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_bbk_by_address",
+              "icon": "mdi:map-marker"
+            },
+            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_inventory",
+              "icon": "mdi:server"
+            },
+            "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209c-2e5a-777f-a04a-11960363fb25",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+            "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_product_by_speed",
+              "icon": "mdi:speedometer"
+            },
+            "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019c8a58-10e3-713f-9484-78d04923040f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "icon": "mdi:cursor-pointer"
+            },
+            "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_allocation",
+              "icon": "mdi:link"
+            },
+            "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell"
+            },
+            "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:configuration",
+              "icon": "mdi:settings"
+            },
+            "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-5878-73fb-8411-55916778d9a4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_connection",
+              "icon": "mdi:ethernet"
+            },
+            "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
+      "steps": [
+        {
+          "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "What is your address?"
+          },
+          "result": "2555 Wentwood Ct, Cumming, GA 30041",
+          "comment": "User provided US residential address"
+        },
+        {
+          "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+          "action": "TELCO:get_bbk_by_address",
+          "status": "COMPLETED",
+          "parameters": {
+            "address": "2555 Wentwood Ct, Cumming, GA 30041"
+          },
+          "comment": "BBK number 990 retrieved successfully"
+        },
+        {
+          "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+          "action": "TELCO:get_inventory",
+          "status": "COMPLETED",
+          "parameters": {
+            "bbk": "990"
+          },
+          "comment": "Inventory is available for BBK 990"
+        },
+        {
+          "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+          "action": "PLATFORM:decision",
+          "status": "COMPLETED",
+          "comment": "Inventory available, proceeding with product selection",
+          "parameters": {
+            "condition": "inventory.Available == TRUE",
+            "true": [
+              {
+                "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+                "action": "TELCO:get_product_by_speed",
+                "status": "COMPLETED",
+                "parameters": {
+                  "speed_limit": "16mbps"
+                },
+                "comment": "Retrieved available internet packages for 16mbps"
+              },
+              {
+                "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+                "action": "PLATFORM:user_interaction",
+                "status": "COMPLETED",
+                "parameters": {
+                  "question": "2 Options: 16 Mbps (12 months), 16 Mbps (6 months). Select one."
+                },
+                "comment": "User selected 16 Mbps (12 months)"
+              },
+              {
+                "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+                "action": "TELCO:port_allocation",
+                "status": "COMPLETED",
+                "parameters": {
+                  "device_serial_number": "1234567890",
+                  "bbk_no": "990",
+                  "speed_limit": "16mbps",
+                  "speed_profile": "51200/8192"
+                },
+                "comment": "Port 4 allocated successfully for BBK 990"
+              },
+              {
+                "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+                "action": "PLATFORM:message_user",
+                "status": "COMPLETED",
+                "parameters": {
+                  "sessionId": "029c8g97-0c29-94h4-0cfg-04ef00h8d9ee",
+                  "message": "A port has been assigned."
+                },
+                "comment": "Notified user about port allocation completion"
+              },
+              {
+                "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+                "action": "TELCO:configuration",
+                "status": "COMPLETED",
+                "parameters": {
+                  "device_serial_number": "1234567890",
+                  "port_no": "4",
+                  "hgw_serial_no": "HGW001",
+                  "device_tid": "HUA_06TTIM_TEST1",
+                  "device_card_no": "1",
+                  "speed_limit": "16mbps",
+                  "speed_profile": "51200/8192"
+                },
+                "comment": "Port configured successfully for device 1234567890"
+              },
+              {
+                "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+                "action": "TELCO:port_connection",
+                "status": "COMPLETED",
+                "parameters": {
+                  "assignment_id": "TH990"
+                },
+                "comment": "Port connected successfully to the residence"
+              },
+              {
+                "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+                "action": "PLATFORM:complete",
+                "status": "COMPLETED",
+                "comment": "Internet subscription has been successfully completed."
+              }
+            ],
+            "false": [
+              {
+                "taskId": "e00jj490-g8j6-88hg-d3j2-i3i089026880",
+                "action": "PLATFORM:complete",
+                "status": "COMPLETED",
+                "parameters": {},
+                "comment": "Completing task - inventory not available"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "hnd-0001-0001-0001-0001-000000000001",
+      "description": "Customer needs billing support after order is created.",
+      "sessionId": "session-hnd-0001",
+      "blueprint": {
+        "id": "bp-hnd-0001-0001-0001-0001-000000000001",
+        "title": "Order and Billing Handoff",
+        "description": "Create the order, then hand off to the billing agent for payment processing.",
+        "agentId": "agent-sales-001",
+        "nodes": [
+          {
+            "id": "node-hnd-001",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:create_order",
+              "icon": "mdi:cart-plus"
+            },
+            "next": ["node-hnd-002"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "node-hnd-002",
+            "type": "HANDOFF",
+            "properties": {
+              "label": "Hand off to Billing Agent",
+              "icon": "mdi:account-arrow-right",
+              "targetAgentId": "agent-billing-001",
+              "targetBlueprintId": "bp-billing-payment-001"
+            }
+          }
+        ]
+      },
+      "knowledge": [],
+      "tools": [
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:send_email"
+      ],
+      "steps": [
+        {
+          "taskId": "task-hnd-001",
+          "action": "GREY:create_order",
+          "status": "COMPLETED",
+          "parameters": {
+            "productId": "TLP-4200",
+            "quantity": 1
+          },
+          "result": "{\"orderId\": \"ORD-2026-0099\", \"status\": \"CREATED\"}",
+          "comment": "Order created successfully"
+        },
+        {
+          "taskId": "task-hnd-001",
+          "action": "PLATFORM:handoff",
+          "status": "COMPLETED",
+          "parameters": {
+            "targetAgentId": "agent-billing-001",
+            "targetBlueprintId": "bp-billing-payment-001",
+            "context": "Order ORD-2026-0099 has been created for product TLP-4200. Customer needs to complete payment. Please process the payment for this order."
+          },
+          "comment": "Handing off to billing agent for payment processing"
+        }
+      ]
+    },
+    {
+      "id": "order-cert-block-001",
+      "description": "Create a purchase order for Thermal Label Printer (TLP-4200).",
+      "sessionId": "019b6e75-oc01-oc01-oc01-oc0100000001",
+      "blueprint": {
+        "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
+        "title": "Order and Compliance",
+        "description": "Find product, assign compliance certificate, create purchase order, and send email.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "ffe7081c-f922-4e30-9ac8-0fdf094913b2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "label": "Select a Product",
+              "icon": "mdi:account-question"
+            },
+            "next": ["3b2bd895-1df4-4cb6-827c-35874f43615f"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "label": "Find Product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:knowledge_lookup",
+              "label": "Knowledge Lookup",
+              "icon": "mdi:book-search"
+            },
+            "next": ["4c4fb94a-6995-470e-805c-16de1f6b4a9e"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "4c4fb94a-6995-470e-805c-16de1f6b4a9e",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "label": "Is Certificate Found?",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
+            "false": ["1f1f4d1c-0c3e-40b8-9432-75433bd673e4"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "label": "Assign Certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "1f1f4d1c-0c3e-40b8-9432-75433bd673e4",
+            "type": "HANDOFF",
+            "properties": {
+              "action": "PLATFORM:handoff",
+              "label": "Handoff - No Certificate",
+              "icon": "mdi:account-arrow-right"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "label": "Create Purchase Order",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "label": "Send Email",
+              "icon": "mdi:email"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "kn-cert-001",
+          "type": "TEXT",
+          "text": "TLP-4200 has FFC compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-cert-002",
+          "type": "TEXT",
+          "text": "BCS-310 has CE compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-cert-003",
+          "type": "TEXT",
+          "text": "NSW-4800 and DSC-760 have no compliance certificate assigned",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-cert-004",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        }
+      ],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection",
+        "ORDER:find_product",
+        "PLATFORM:knowledge_lookup",
+        "ORDER:assign_certificate",
+        "ORDER:create_po"
+      ],
+      "steps": [
+        {
+          "taskId": "task-oc-001",
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Which product would you like to order?"
+          },
+          "result": "Thermal Label Printer",
+          "comment": "User selected Thermal Label Printer"
+        },
+        {
+          "taskId": "task-oc-001",
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "name": {
+              "$ref": "steps[0].result"
+            }
+          },
+          "result": "{\"id\": \"TLP-4200\", \"name\": \"Thermal Label Printer\"}",
+          "comment": "Reusing the product name the user already gave (steps[0].result) via $ref instead of retyping it"
+        },
+        {
+          "taskId": "task-oc-001",
+          "action": "PLATFORM:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": {
+              "$ref": "steps[1].result.id"
+            }
+          },
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"TLP-4200\\\", \\\"product_name\\\": \\\"Thermal Label Printer\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"BCS-310\\\", \\\"product_name\\\": \\\"Wireless Barcode Scanner\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base holds a certificate record for TLP-4200 (FFC) among its entries"
+        },
+        {
+          "taskId": "task-oc-001",
+          "action": "PLATFORM:decision",
+          "status": "COMPLETED",
+          "comment": "Certificate found for TLP-4200, proceeding with order creation",
+          "parameters": {
+            "condition": "knowledge_base_has_certificate_record_for_product == TRUE",
+            "true": [
+              {
+                "taskId": "task-oc-001",
+                "action": "ORDER:assign_certificate",
+                "status": "COMPLETED",
+                "parameters": {
+                  "product_id": {
+                    "$ref": "steps[1].result.id"
+                  },
+                  "certificate": "FFC"
+                },
+                "result": "{\"product_id\": \"TLP-4200\", \"certificate\": \"FFC\", \"assigned\": true}",
+                "comment": "Reusing product_id (steps[1].result.id) via $ref; the certificate value is read out of the knowledge entry text, which $ref cannot address"
+              },
+              {
+                "taskId": "task-oc-001",
+                "action": "ORDER:create_po",
+                "status": "COMPLETED",
+                "parameters": {
+                  "product_id": {
+                    "$ref": "steps[1].result.id"
+                  },
+                  "city": "Atlanta",
+                  "quantity": 1
+                },
+                "result": "{\"order_id\": \"po-2001\", \"product_id\": \"TLP-4200\", \"city\": \"Atlanta\", \"quantity\": 1}",
+                "comment": "Reusing product_id (steps[1].result.id) via $ref instead of retyping it"
+              },
+              {
+                "taskId": "task-oc-001",
+                "action": "GREY:send_email",
+                "status": "COMPLETED",
+                "parameters": {
+                  "to": "halilibrahimcengel7@gmail.com",
+                  "subject": "Purchase Order Created",
+                  "text": "Purchase order po-2001 has been created for product TLP-4200 with FFC certificate."
+                },
+                "comment": "Email sent to manager about completed purchase order"
+              },
+              {
+                "taskId": "task-oc-001",
+                "action": "PLATFORM:complete",
+                "status": "COMPLETED",
+                "comment": "Order and compliance process completed successfully"
+              }
+            ],
+            "false": [
+              {
+                "taskId": "task-oc-001",
+                "action": "PLATFORM:handoff",
+                "status": "COMPLETED",
+                "parameters": {
+                  "targetAgentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+                  "targetBlueprintId": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
+                  "context": "Product TLP-4200 has no compliance certificate. Cannot proceed with order without certification."
+                },
+                "comment": "Handing off to compliance agent for certificate assignment"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "order-cert-block-002",
+      "description": "Create a purchase order for 48-Port PoE Network Switch (NSW-4800) — no certificate in knowledge, agent asks supervisor who adds a decision node to the blueprint, agent then follows updated blueprint and handoffs to compliance agent.",
+      "sessionId": "019b6e75-oc02-oc02-oc02-oc0200000002",
+      "blueprint": {
+        "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
+        "title": "Order and Compliance",
+        "description": "Find product, assign compliance certificate, create purchase order, and send email.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "ffe7081c-f922-4e30-9ac8-0fdf094913b2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "label": "Select a Product",
+              "icon": "mdi:account-question"
+            },
+            "next": ["3b2bd895-1df4-4cb6-827c-35874f43615f"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "label": "Find Product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:knowledge_lookup",
+              "label": "Knowledge Lookup",
+              "icon": "mdi:book-search"
+            },
+            "next": ["4c4fb94a-6995-470e-805c-16de1f6b4a9e"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "4c4fb94a-6995-470e-805c-16de1f6b4a9e",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "label": "Is Certificate Found?",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
+            "false": ["1f1f4d1c-0c3e-40b8-9432-75433bd673e4"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "label": "Assign Certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "1f1f4d1c-0c3e-40b8-9432-75433bd673e4",
+            "type": "HANDOFF",
+            "properties": {
+              "action": "PLATFORM:handoff",
+              "label": "Handoff - No Certificate",
+              "icon": "mdi:account-arrow-right"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "label": "Create Purchase Order",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "label": "Send Email",
+              "icon": "mdi:email"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "kn-cert-001",
+          "type": "TEXT",
+          "text": "TLP-4200 has FFC compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-cert-002",
+          "type": "TEXT",
+          "text": "BCS-310 has CE compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-cert-003",
+          "type": "TEXT",
+          "text": "NSW-4800 and DSC-760 have no compliance certificate assigned",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-cert-004",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        }
+      ],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection",
+        "ORDER:find_product",
+        "PLATFORM:knowledge_lookup",
+        "ORDER:assign_certificate",
+        "ORDER:create_po"
+      ],
+      "steps": [
+        {
+          "taskId": "task-oc-002",
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Which product would you like to order?"
+          },
+          "result": "48-Port PoE Network Switch",
+          "comment": "User selected 48-Port PoE Network Switch"
+        },
+        {
+          "taskId": "task-oc-002",
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "name": "48-Port PoE Network Switch"
+          },
+          "result": "{\"id\": \"NSW-4800\", \"name\": \"48-Port PoE Network Switch\"}",
+          "comment": "Found 48-Port PoE Network Switch with ID NSW-4800"
+        },
+        {
+          "taskId": "task-oc-002",
+          "action": "PLATFORM:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "NSW-4800"
+          },
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"TLP-4200\\\", \\\"product_name\\\": \\\"Thermal Label Printer\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"BCS-310\\\", \\\"product_name\\\": \\\"Wireless Barcode Scanner\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base only holds certificate records for TLP-4200, BCS-310 - there is no entry for NSW-4800, so its certificate is unknown"
+        },
+        {
+          "taskId": "task-oc-002",
+          "action": "PLATFORM:ask_supervisor",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Product NSW-4800 has no compliance certificate in the knowledge base and the blueprint has no path defined for this case. How should I proceed?",
+            "sessionId": "019b6e75-oc02-oc02-oc02-oc0200000002",
+            "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
+          },
+          "comment": "Supervisor added a decision node to the blueprint: if certificate found proceed with order, otherwise handoff to compliance agent"
+        },
+        {
+          "taskId": "task-oc-002",
+          "action": "PLATFORM:decision",
+          "status": "COMPLETED",
+          "comment": "Decision node added by supervisor to blueprint — no certificate found for NSW-4800, taking false branch",
+          "parameters": {
+            "condition": "knowledge_base_has_certificate_record_for_product == TRUE",
+            "true": [
+              {
+                "taskId": "task-oc-002",
+                "action": "ORDER:assign_certificate",
+                "status": "SKIPPED",
+                "comment": "True branch not taken — NSW-4800 has no certificate"
+              }
+            ],
+            "false": [
+              {
+                "taskId": "task-oc-002",
+                "action": "PLATFORM:handoff",
+                "status": "COMPLETED",
+                "parameters": {
+                  "targetAgentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+                  "targetBlueprintId": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
+                  "context": "Product NSW-4800 has no compliance certificate. Cannot proceed with purchase order without certification. Please assign the appropriate certificate."
+                },
+                "comment": "Handing off to compliance agent per supervisor's blueprint update"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "order-cert-block-003",
+      "description": "Create a purchase order for 48-Port PoE Network Switch (NSW-4800) — no certificate in knowledge initially. Blueprint has no handoff node. Agent asks supervisor; supervisor adds certificate to knowledge base only (blueprint NOT changed). Agent resumes, re-checks certificate with updated knowledge, finds it, and completes the order.",
+      "sessionId": "019b6e75-oc03-oc03-oc03-oc0300000003",
+      "blueprint": {
+        "id": "89407d96-27ec-42a0-97d1-cf42066dea2e",
+        "title": "Order and Compliance (No Handoff)",
+        "description": "Find product, check and assign compliance certificate, create purchase order, and send email.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "n0-a1b2-0000",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "label": "Select a Product",
+              "icon": "mdi:account-question"
+            },
+            "next": ["n1-a1b2-1111"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "n1-a1b2-1111",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "label": "Find Product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["n2-a1b2-2222"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "n2-a1b2-2222",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:knowledge_lookup",
+              "label": "Knowledge Lookup",
+              "icon": "mdi:book-search"
+            },
+            "next": ["n4-a1b2-4444"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "n4-a1b2-4444",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "label": "Assign Certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["n5-a1b2-5555"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "n5-a1b2-5555",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "label": "Create Purchase Order",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["n6-a1b2-6666"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "n6-a1b2-6666",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "label": "Send Email",
+              "icon": "mdi:email"
+            },
+            "next": ["n8-a1b2-8888"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "n8-a1b2-8888",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "label": "Complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "kn-c3-001",
+          "type": "TEXT",
+          "text": "TLP-4200 has FFC compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-c3-002",
+          "type": "TEXT",
+          "text": "BCS-310 has CE compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-c3-003",
+          "type": "TEXT",
+          "text": "NSW-4800 and DSC-760 have no compliance certificate assigned",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-c3-004",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-c3-005",
+          "type": "TEXT",
+          "text": "NSW-4800 has CE compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-29T08:00:00Z"
+        }
+      ],
+      "tools": [
+        "GREY:send_email",
+        "ORDER:find_product",
+        "PLATFORM:knowledge_lookup",
+        "ORDER:assign_certificate",
+        "ORDER:create_po"
+      ],
+      "steps": [
+        {
+          "taskId": "task-oc-003",
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Which product would you like to order?"
+          },
+          "result": "48-Port PoE Network Switch",
+          "comment": "User selected 48-Port PoE Network Switch"
+        },
+        {
+          "taskId": "task-oc-003",
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "name": "48-Port PoE Network Switch"
+          },
+          "result": "{\"id\": \"NSW-4800\", \"name\": \"48-Port PoE Network Switch\"}",
+          "comment": "Found 48-Port PoE Network Switch with ID NSW-4800"
+        },
+        {
+          "taskId": "task-oc-003",
+          "action": "PLATFORM:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "NSW-4800"
+          },
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"TLP-4200\\\", \\\"product_name\\\": \\\"Thermal Label Printer\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"BCS-310\\\", \\\"product_name\\\": \\\"Wireless Barcode Scanner\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base only holds certificate records for TLP-4200, BCS-310 - there is no entry for NSW-4800, so its certificate is unknown"
+        },
+        {
+          "taskId": "task-oc-003",
+          "action": "PLATFORM:ask_supervisor",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Product NSW-4800 has no compliance certificate in the knowledge base. How should I proceed?",
+            "sessionId": "019b6e75-oc03-oc03-oc03-oc0300000003",
+            "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
+          },
+          "comment": "Supervisor added 'NSW-4800 has CE compliance certificate' to the knowledge base. Blueprint was NOT changed."
+        },
+        {
+          "taskId": "task-oc-003",
+          "action": "PLATFORM:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "NSW-4800"
+          },
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"TLP-4200\\\", \\\"product_name\\\": \\\"Thermal Label Printer\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"BCS-310\\\", \\\"product_name\\\": \\\"Wireless Barcode Scanner\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"ca2d3aaf-6ecc-4b71-abe6-3be6285793cd\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"NSW-4800\\\", \\\"product_name\\\": \\\"48-Port PoE Network Switch\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base holds a certificate record for NSW-4800 (CE) among its entries"
+        },
+        {
+          "taskId": "task-oc-003",
+          "action": "ORDER:assign_certificate",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "NSW-4800",
+            "certificate": "CE"
+          },
+          "result": "{\"product_id\": \"NSW-4800\", \"certificate\": \"CE\", \"assigned\": true}",
+          "comment": "Assigned CE certificate to NSW-4800"
+        },
+        {
+          "taskId": "task-oc-003",
+          "action": "ORDER:create_po",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "NSW-4800",
+            "city": "Atlanta",
+            "quantity": 1
+          },
+          "result": "{\"order_id\": \"po-2003\", \"product_id\": \"NSW-4800\", \"city\": \"Atlanta\", \"quantity\": 1}",
+          "comment": "Purchase order po-2003 created for NSW-4800"
+        },
+        {
+          "taskId": "task-oc-003",
+          "action": "GREY:send_email",
+          "status": "COMPLETED",
+          "parameters": {
+            "to": "halilibrahimcengel7@gmail.com",
+            "subject": "Purchase Order Created",
+            "text": "Purchase order po-2003 has been created for product NSW-4800 with CE certificate."
+          },
+          "comment": "Email sent to manager"
+        },
+        {
+          "taskId": "task-oc-003",
+          "action": "PLATFORM:complete",
+          "status": "COMPLETED",
+          "comment": "Order and compliance process completed — supervisor knowledge update resolved the blocking condition"
+        }
+      ]
+    },
+    {
+      "id": "compliance-handoff-001",
+      "description": "Product NSW-4800 has no compliance certificate in the knowledge base. Order cannot proceed without certification. Please assign the appropriate certificate or coordinate with vendor GlobalParts Ltd (compliance@globalparts.com) to obtain it.",
+      "sessionId": "019b6e75-oc02-oc02-oc02-oc0200000002",
+      "blueprint": {
+        "id": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
+        "title": "Compliance Certificate Request",
+        "description": "Find the vendor of a product missing a compliance certificate and send them an email requesting the certificate, then notify the user.",
+        "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+        "nodes": [
+          {
+            "id": "81b62178-c7e0-4af1-9eb9-a559a0a9290e",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:get_product_vendor",
+              "label": "Get Product Vendor",
+              "icon": "mdi:domain"
+            },
+            "next": ["8f01126f-97b1-4b47-8c3c-b09de10879f9"],
+            "createdAt": "2025-06-29T08:00:00Z"
+          },
+          {
+            "id": "8f01126f-97b1-4b47-8c3c-b09de10879f9",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "label": "Email Vendor",
+              "icon": "mdi:email"
+            },
+            "next": ["5ce77c06-8c90-45f7-9981-efbc07b7aec0"],
+            "createdAt": "2025-06-29T08:00:00Z"
+          },
+          {
+            "id": "5ce77c06-8c90-45f7-9981-efbc07b7aec0",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "label": "Notify User",
+              "icon": "mdi:bell"
+            },
+            "next": ["707f211a-fe38-479c-bab4-0b2cd957464c"],
+            "createdAt": "2025-06-29T08:00:00Z"
+          },
+          {
+            "id": "707f211a-fe38-479c-bab4-0b2cd957464c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "label": "Complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-29T08:00:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "kn-cert-001",
+          "type": "TEXT",
+          "text": "TLP-4200 has FFC compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-cert-002",
+          "type": "TEXT",
+          "text": "BCS-310 has CE compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-cert-003",
+          "type": "TEXT",
+          "text": "NSW-4800 and DSC-760 have no compliance certificate assigned",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        }
+      ],
+      "tools": [
+        "ORDER:find_product",
+        "PLATFORM:knowledge_lookup",
+        "ORDER:get_product_vendor",
+        "ORDER:create_po",
+        "GREY:send_email"
+      ],
+      "inherited_context_steps": [
+        {
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Which product would you like to order?"
+          },
+          "result": "48-Port PoE Network Switch",
+          "comment": "User selected 48-Port PoE Network Switch"
+        },
+        {
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "name": "48-Port PoE Network Switch"
+          },
+          "result": "{\"id\": \"NSW-4800\", \"name\": \"48-Port PoE Network Switch\"}",
+          "comment": "Found NSW-4800"
+        },
+        {
+          "action": "PLATFORM:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "NSW-4800"
+          },
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"TLP-4200\\\", \\\"product_name\\\": \\\"Thermal Label Printer\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"BCS-310\\\", \\\"product_name\\\": \\\"Wireless Barcode Scanner\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base only holds certificate records for TLP-4200, BCS-310 - there is no entry for NSW-4800, so its certificate is unknown"
+        },
+        {
+          "action": "PLATFORM:ask_supervisor",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Product NSW-4800 has no compliance certificate in the knowledge base. Should I manually assign a certificate or proceed with a handoff to the compliance agent to contact vendor GlobalParts Ltd (compliance@globalparts.com)?",
+            "sessionId": "019b6e75-oc02-oc02-oc02-oc0200000002",
+            "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
+          },
+          "comment": "Supervisor instructed handoff to compliance agent for vendor coordination"
+        },
+        {
+          "action": "PLATFORM:handoff",
+          "status": "COMPLETED",
+          "parameters": {
+            "targetAgentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+            "targetBlueprintId": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
+            "context": "Product NSW-4800 has no compliance certificate in the knowledge base. Order cannot proceed without certification. Please assign the appropriate certificate or coordinate with vendor GlobalParts Ltd (compliance@globalparts.com) to obtain it."
+          },
+          "comment": "Handing off to compliance agent as per supervisor's instruction"
+        }
+      ],
+      "steps": [
+        {
+          "taskId": "task-compliance-001",
+          "action": "ORDER:get_product_vendor",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "NSW-4800"
+          },
+          "result": "{\"vendor\": {\"id\": \"VND-2103\", \"name\": \"GlobalParts Ltd\", \"email\": \"compliance@globalparts.com\"}}",
+          "comment": "Starting my own blueprint from step 1 — the inherited context shows what the previous agent did, I do not need to re-ask the supervisor. My blueprint begins with getting the product vendor."
+        },
+        {
+          "taskId": "task-compliance-001",
+          "action": "GREY:send_email",
+          "status": "COMPLETED",
+          "parameters": {
+            "to": "compliance@globalparts.com",
+            "subject": "Compliance Certificate Required for 48-Port PoE Network Switch",
+            "text": "Dear GlobalParts Ltd, product NSW-4800 is missing a compliance certificate required for purchase order processing. Please provide the necessary certificate at your earliest convenience."
+          },
+          "comment": "Blueprint step 2: emailed vendor requesting compliance certificate"
+        },
+        {
+          "taskId": "task-compliance-001",
+          "action": "PLATFORM:message_user",
+          "status": "COMPLETED",
+          "parameters": {
+            "sessionId": "019b6e75-oc02-oc02-oc02-oc0200000002",
+            "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+            "message": "The vendor (GlobalParts Ltd) has been contacted at compliance@globalparts.com to provide the compliance certificate for 48-Port PoE Network Switch. The purchase order will proceed once the certificate is received."
+          },
+          "comment": "Blueprint step 3: notified user that vendor was contacted"
+        },
+        {
+          "taskId": "task-compliance-001",
+          "action": "PLATFORM:complete",
+          "status": "COMPLETED",
+          "comment": "Blueprint step 4: compliance certificate request completed"
+        }
+      ]
+    },
+    {
+      "id": "order-cert-block-004",
+      "description": "Create a purchase order for Duplex Document Scanner (DSC-760). Knowledge base explicitly states DSC-760 has no compliance certificate assigned.",
+      "sessionId": "019b6e75-oc04-oc04-oc04-oc0400000004",
+      "blueprint": {
+        "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
+        "title": "Order and Compliance",
+        "description": "Find product, assign compliance certificate, create purchase order, and send email.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "ffe7081c-f922-4e30-9ac8-0fdf094913b2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "label": "Select a Product",
+              "icon": "mdi:account-question"
+            },
+            "next": ["3b2bd895-1df4-4cb6-827c-35874f43615f"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "label": "Find Product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:knowledge_lookup",
+              "label": "Knowledge Lookup",
+              "icon": "mdi:book-search"
+            },
+            "next": ["4c4fb94a-6995-470e-805c-16de1f6b4a9e"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "4c4fb94a-6995-470e-805c-16de1f6b4a9e",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "label": "Is Certificate Found?",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
+            "false": ["1f1f4d1c-0c3e-40b8-9432-75433bd673e4"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "label": "Assign Certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "1f1f4d1c-0c3e-40b8-9432-75433bd673e4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:ask_supervisor",
+              "label": "Ask Supervisor",
+              "icon": "mdi:account-question"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "label": "Create Purchase Order",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "label": "Send Email",
+              "icon": "mdi:email"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "kn-c4-001",
+          "type": "TEXT",
+          "text": "TLP-4200 has FFC compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-c4-002",
+          "type": "TEXT",
+          "text": "BCS-310 has CE compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-c4-003",
+          "type": "TEXT",
+          "text": "NSW-4800 and DSC-760 have no compliance certificate assigned",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-c4-004",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        }
+      ],
+      "tools": [
+        "ORDER:find_product",
+        "PLATFORM:knowledge_lookup",
+        "ORDER:assign_certificate",
+        "ORDER:create_po",
+        "GREY:send_email"
+      ],
+      "steps": [
+        {
+          "taskId": "task-oc-004",
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Which product would you like to order?"
+          },
+          "result": "Duplex Document Scanner",
+          "comment": "User selected Duplex Document Scanner"
+        },
+        {
+          "taskId": "task-oc-004",
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "name": "Duplex Document Scanner"
+          },
+          "result": "{\"id\": \"DSC-760\", \"name\": \"Duplex Document Scanner\"}",
+          "comment": "Found Duplex Document Scanner with ID DSC-760"
+        },
+        {
+          "taskId": "task-oc-004",
+          "action": "PLATFORM:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "DSC-760"
+          },
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"TLP-4200\\\", \\\"product_name\\\": \\\"Thermal Label Printer\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"BCS-310\\\", \\\"product_name\\\": \\\"Wireless Barcode Scanner\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base only holds certificate records for TLP-4200, BCS-310 - there is no entry for DSC-760, so its certificate is unknown"
+        },
+        {
+          "taskId": "task-oc-004",
+          "action": "PLATFORM:decision",
+          "status": "COMPLETED",
+          "comment": "No certificate found for DSC-760 — taking the false branch as defined in blueprint",
+          "parameters": {
+            "condition": "knowledge_base_has_certificate_record_for_product == TRUE",
+            "true": [
+              {
+                "taskId": "task-oc-004",
+                "action": "ORDER:assign_certificate",
+                "status": "SKIPPED",
+                "comment": "True branch not taken — DSC-760 has no certificate in knowledge base"
+              }
+            ],
+            "false": [
+              {
+                "taskId": "task-oc-004",
+                "action": "PLATFORM:ask_supervisor",
+                "status": "COMPLETED",
+                "parameters": {
+                  "question": "Product DSC-760 has no compliance certificate in the knowledge base. How should I proceed?",
+                  "sessionId": "019b6e75-oc04-oc04-oc04-oc0400000004",
+                  "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
+                },
+                "comment": "Blueprint false branch: asking supervisor because knowledge base has no certificate for DSC-760. I will not assume CE or any other certificate from other products."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "telco-port-fail-001",
+      "description": "Setup internet subscription for user address. Port allocation fails with NOT_AVAILABLE_PORT error — agent asks supervisor, supervisor instructs to notify user and complete.",
+      "sessionId": "6a7ef8e1-71c2-4d23-b76c-73f4a8f4a8e6",
+      "blueprint": {
+        "id": "ca7g8022-f343-570e-a171-3992963g7f70",
+        "title": "Basic Internet Subscription Setup",
+        "description": "Offer internet packages based on the user's residential address and set up the selected offer.",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "nodes": [
+          {
+            "id": "019b9433-3de3-7545-a40a-854419ae8be1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "icon": "mdi:map-marker"
+            },
+            "next": ["76ccda2d-f11f-408c-8087-66c377600d0b"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_bbk_by_address",
+              "icon": "mdi:map-marker"
+            },
+            "next": ["51dca395-1d90-4a28-9bbc-233de9c1a207"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_inventory",
+              "icon": "mdi:server"
+            },
+            "next": ["019b209c-2e5a-777f-a04a-11960363fb25"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209c-2e5a-777f-a04a-11960363fb25",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"],
+            "false": ["019b20a6-1aa6-7510-b222-66535e50dfb3"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:get_product_by_speed",
+              "icon": "mdi:speedometer"
+            },
+            "next": ["019c8a58-10e3-713f-9484-78d04923040f"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019c8a58-10e3-713f-9484-78d04923040f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:user_interaction",
+              "icon": "mdi:cursor-pointer"
+            },
+            "next": ["019b3302-7846-75c2-9ab7-897c18b8ccee"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_allocation",
+              "icon": "mdi:link"
+            },
+            "next": ["019b3305-7846-75c2-9ab7-897c18b8cce1"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "icon": "mdi:bell"
+            },
+            "next": ["019b209e-3122-75ce-9ba6-674b6184f68d"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:configuration",
+              "icon": "mdi:settings"
+            },
+            "next": ["019b32f6-5878-73fb-8411-55916778d9a4"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-5878-73fb-8411-55916778d9a4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "TELCO:port_connection",
+              "icon": "mdi:ethernet"
+            },
+            "next": ["019b32f6-bd02-734e-bd3a-aec89d79609c"],
+            "createdAt": "2025-06-19T06:02:00Z"
+          },
+          {
+            "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-19T06:02:00Z"
+          }
+        ]
+      },
+      "knowledge": [],
+      "tools": [
+        "DISCORD:search",
+        "GDRIVE:search",
+        "GITHUB:search",
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "GREY:reduce_product_count",
+        "GREY:send_email",
+        "JIRA:search",
+        "PROJECT_NOTIFIER:notify_project_open",
+        "SLACK:search",
+        "TELCO:configuration",
+        "TELCO:get_address",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:get_product_by_speed",
+        "TELCO:port_allocation",
+        "TELCO:port_connection"
+      ],
+      "steps": [
+        {
+          "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "What is your address?"
+          },
+          "result": "Bağcılar Mahallesi Hürriyet Caddesi No:12, İstanbul",
+          "comment": "User provided address"
+        },
+        {
+          "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
+          "action": "TELCO:get_bbk_by_address",
+          "status": "COMPLETED",
+          "parameters": {
+            "address": "Bağcılar Mahallesi Hürriyet Caddesi No:12, İstanbul"
+          },
+          "result": "{\"bbk\": \"988\"}",
+          "comment": "BBK number 988 retrieved successfully"
+        },
+        {
+          "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
+          "action": "TELCO:get_inventory",
+          "status": "COMPLETED",
+          "parameters": {
+            "bbk": "988"
+          },
+          "result": "{\"available\": true}",
+          "comment": "Inventory is available for BBK 988"
+        },
+        {
+          "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
+          "action": "PLATFORM:decision",
+          "status": "COMPLETED",
+          "comment": "Inventory available, proceeding with product selection",
+          "parameters": {
+            "condition": "inventory.Available == TRUE",
+            "true": [
+              {
+                "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
+                "action": "TELCO:get_product_by_speed",
+                "status": "COMPLETED",
+                "parameters": {
+                  "speed_limit": "8mbps"
+                },
+                "comment": "Retrieved available internet packages for 8mbps"
+              },
+              {
+                "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
+                "action": "PLATFORM:user_interaction",
+                "status": "COMPLETED",
+                "parameters": {
+                  "question": "2 Options: 8 Mbps (12 months), 8 Mbps (6 months). Select one."
+                },
+                "result": "8 Mbps (12 months)",
+                "comment": "User selected 8 Mbps (12 months)"
+              },
+              {
+                "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
+                "action": "TELCO:port_allocation",
+                "status": "FAILED",
+                "parameters": {
+                  "device_serial_number": "HWTC495AE59E",
+                  "bbk_no": "988",
+                  "speed_limit": "8mbps",
+                  "speed_profile": "8192/1024"
+                },
+                "result": "{\"error\":\"NOT_AVAILABLE_PORT\"}",
+                "comment": "Port allocation failed — no available port for BBK 988"
+              },
+              {
+                "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
+                "action": "PLATFORM:ask_supervisor",
+                "status": "COMPLETED",
+                "parameters": {
+                  "question": "Port allocation failed with NOT_AVAILABLE_PORT for BBK 988. There are no available ports at this location. How should I proceed?",
+                  "sessionId": "6a7ef8e1-71c2-4d23-b76c-73f4a8f4a8e6",
+                  "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+                },
+                "comment": "Supervisor instructed to notify user that no ports are available at this address and complete the task"
+              },
+              {
+                "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
+                "action": "PLATFORM:message_user",
+                "status": "COMPLETED",
+                "parameters": {
+                  "sessionId": "6a7ef8e1-71c2-4d23-b76c-73f4a8f4a8e6",
+                  "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+                  "message": "Unfortunately, there are no available ports at your address at this time. Please contact our support team at 444 1 444 for further assistance."
+                },
+                "comment": "User notified that port allocation is not possible at their location"
+              },
+              {
+                "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
+                "action": "PLATFORM:complete",
+                "status": "COMPLETED",
+                "parameters": {},
+                "comment": "Completing task per supervisor's instruction — no available port at this address"
+              }
+            ],
+            "false": [
+              {
+                "taskId": "142a1332-caee-4a13-abae-92cf9b1a093f",
+                "action": "PLATFORM:complete",
+                "status": "COMPLETED",
+                "parameters": {},
+                "comment": "Completing task - inventory not available"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "3af941c6-424f-410d-9444-6c7c23b476c2",
+      "description": "Check product availability and create an order for it if needed.",
+      "knowledge": [
+        {
+          "type": "TEXT",
+          "text": "Battery product id is btr-123."
+        }
+      ],
+      "tools": [
+        "GREY:check_product_count",
+        "GREY:create_order",
+        "PLATFORM:complete"
+      ],
+      "steps": [
+        {
+          "action": "GREY:check_product_count",
+          "status": "COMPLETED",
+          "parameters": {
+            "productId": "btr-123"
+          },
+          "result": "0",
+          "comment": "Checking product count"
+        }
+      ],
+      "next_step": {
+        "action": "GREY:create_order",
+        "parameters": {
+          "productId": {
+            "$ref": "steps[0].parameters.productId"
+          },
+          "quantity": 10
+        },
+        "comment": "The productId was already given in steps[0].parameters when checking availability - reuse it via $ref instead of retyping it",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "57194259-25cb-47ea-89a2-c6d7afd08309",
+      "description": "Look up infrastructure inventory by address and allocate a port for the customer.",
+      "knowledge": [],
+      "tools": [
+        "PLATFORM:user_interaction",
+        "TELCO:get_bbk_by_address",
+        "TELCO:get_inventory",
+        "TELCO:port_allocation",
+        "PLATFORM:complete"
+      ],
+      "steps": [
+        {
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "What is your address?"
+          },
+          "result": "2555 Wentwood Ct, Cumming, GA 30041",
+          "comment": "User provided address"
+        },
+        {
+          "action": "TELCO:get_bbk_by_address",
+          "status": "COMPLETED",
+          "parameters": {
+            "address": {
+              "$ref": "steps[0].result"
+            }
+          },
+          "result": "{\"bbk_no\":\"990\"}",
+          "comment": "Reusing the address the user already gave (steps[0].result) via $ref instead of retyping it"
+        },
+        {
+          "action": "TELCO:get_inventory",
+          "status": "COMPLETED",
+          "parameters": {
+            "bbk_no": {
+              "$ref": "steps[1].result.bbk_no"
+            }
+          },
+          "result": "{\"infrastructure_type\":\"FIBER\",\"topology\":\"PON\",\"upstream_device_name\":\"OLT-12\",\"upstream_device_card_no\":\"3\",\"upstream_device_port_no\":\"7\",\"device_serial_number\":\"SN-778812\",\"port_available\":\"true\",\"hgw_serial_no\":\"HGW-4471\"}",
+          "comment": "Reusing the bbk_no get_bbk_by_address already resolved (steps[1].result.bbk_no) via $ref instead of retyping it"
+        }
+      ],
+      "next_step": {
+        "action": "TELCO:port_allocation",
+        "parameters": {
+          "device_serial_number": {
+            "$ref": "steps[2].result.device_serial_number"
+          },
+          "bbk_no": {
+            "$ref": "steps[1].result.bbk_no"
+          },
+          "speed_limit": "100mbps"
+        },
+        "comment": "device_serial_number came from get_inventory (steps[2].result) and bbk_no from get_bbk_by_address (steps[1].result) - reuse both via $ref instead of retyping them",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "dec2dda5-54b0-479a-8dc2-5a3477b29a38",
+      "description": "Allocate a port for the customer's device and connect it.",
+      "knowledge": [],
+      "tools": [
+        "TELCO:port_allocation",
+        "TELCO:port_connection",
+        "PLATFORM:complete"
+      ],
+      "steps": [
+        {
+          "action": "TELCO:port_allocation",
+          "status": "COMPLETED",
+          "parameters": {
+            "device_serial_number": "SN-778812",
+            "bbk_no": "990",
+            "speed_limit": "100mbps"
+          },
+          "result": "{\"assignment_id\":\"AGN-99213\",\"bbk_no\":\"990\",\"customer_no\":\"CUS-5521\",\"port_no\":\"12\",\"status\":\"ALLOCATED\",\"assignment_date\":\"2026-08-01\",\"speed_limit\":\"100mbps\",\"device_serial_number\":\"SN-778812\"}",
+          "comment": "Port allocated for device SN-778812"
+        }
+      ],
+      "next_step": {
+        "action": "TELCO:port_connection",
+        "parameters": {
+          "assignment_id": {
+            "$ref": "steps[0].result.assignment_id"
+          }
+        },
+        "comment": "port_allocation already returned assignment_id (steps[0].result) - reuse it via $ref instead of retyping it",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "4a6f9e13-4198-4a9f-8a6e-81f43a9b40f3",
+      "description": "Find a product by name and look up its vendor information.",
+      "knowledge": [],
+      "tools": [
+        "PLATFORM:user_interaction",
+        "ORDER:find_product",
+        "ORDER:get_product_vendor",
+        "PLATFORM:complete"
+      ],
+      "steps": [
+        {
+          "action": "PLATFORM:user_interaction",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Which product would you like to order?"
+          },
+          "result": "Thermal Label Printer",
+          "comment": "User selected Thermal Label Printer"
+        },
+        {
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "name": {
+              "$ref": "steps[0].result"
+            }
+          },
+          "result": "{\"id\": \"TLP-4200\", \"name\": \"Thermal Label Printer\"}",
+          "comment": "Reusing the product name the user already gave (steps[0].result) via $ref instead of retyping it"
+        }
+      ],
+      "next_step": {
+        "action": "ORDER:get_product_vendor",
+        "parameters": {
+          "product_id": {
+            "$ref": "steps[1].result.id"
+          }
+        },
+        "comment": "find_product already resolved the product id (steps[1].result.id) - reuse it via $ref instead of retyping it",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "order-cert-missing-block-001",
+      "description": "Order 48-Port PoE Network Switch (NSW-4800) - the knowledge base holds no certificate record for it.",
+      "sessionId": "019b6e75-cm01-cm01-cm01-cm0100000001",
+      "blueprint": {
+        "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
+        "title": "Order and Compliance",
+        "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "label": "Find Product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:knowledge_lookup",
+              "label": "Check Certificate",
+              "icon": "mdi:book-search"
+            },
+            "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "label": "Assign Certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "label": "Create Purchase Order",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:create_payment_intent",
+              "label": "Create Payment",
+              "icon": "mdi:credit-card-outline"
+            },
+            "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
+            "type": "APPROVAL",
+            "properties": {
+              "action": "PLATFORM:customer_approval",
+              "description": "Ask the customer to approve the payment before the card is charged, then wait for the decision from the session or the approval endpoint",
+              "label": "Payment Approval",
+              "icon": "mdi:account-check",
+              "instructions": "Ask the customer to approve the payment before the card is charged. Write the question from the live data: name the purchase order number, the product and the amount in major units with its currency."
+            },
+            "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
+            "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:confirm_payment_intent",
+              "label": "Confirm Payment",
+              "icon": "mdi:check-decagram"
+            },
+            "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "738b438a-757d-4653-8bc2-b921b130503c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "FEDEX:create_shipment",
+              "label": "Create Shipment",
+              "icon": "mdi:truck-delivery-outline"
+            },
+            "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "label": "Send Email",
+              "icon": "mdi:email"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "7447fdbc-a273-40d5-a822-843d98865292",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:cancel_payment_intent",
+              "label": "Cancel Payment",
+              "icon": "mdi:credit-card-off-outline"
+            },
+            "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "label": "Notify Cancellation",
+              "icon": "mdi:bell-off"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "label": "Complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "kn-cert-001",
+          "type": "TEXT",
+          "text": "TLP-4200 has FFC compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-cert-002",
+          "type": "TEXT",
+          "text": "BCS-310 has CE compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        }
+      ],
+      "tools": [
+        "ORDER:find_product",
+        "PLATFORM:knowledge_lookup",
+        "PLATFORM:ask_supervisor",
+        "ORDER:assign_certificate",
+        "ORDER:create_po",
+        "STRIPE:create_payment_intent",
+        "GREY:send_email"
+      ],
+      "steps": [
+        {
+          "taskId": "task-cert-block",
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "name": "48-Port PoE Network Switch"
+          },
+          "result": "{\"product\": {\"id\": \"NSW-4800\", \"name\": \"48-Port PoE Network Switch\", \"vendor_id\": \"VND-2103\", \"unit_price\": 45000, \"currency\": \"usd\", \"weight_kg\": 7.5}}",
+          "comment": "Product resolved from the order request"
+        },
+        {
+          "taskId": "task-cert-block",
+          "action": "PLATFORM:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": {
+              "$ref": "steps[0].result.product.id"
+            }
+          },
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"TLP-4200\\\", \\\"product_name\\\": \\\"Thermal Label Printer\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"BCS-310\\\", \\\"product_name\\\": \\\"Wireless Barcode Scanner\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base only holds certificate records for TLP-4200 and BCS-310 - there is no entry for NSW-4800, so its certificate is unknown"
+        }
+      ],
+      "next_step": {
+        "action": "PLATFORM:ask_supervisor",
+        "parameters": {
+          "question": "48-Port PoE Network Switch (NSW-4800) has no compliance certificate in the knowledge base. Which certificate should I assign to it, or should I stop the order?"
+        },
+        "comment": "The knowledge lookup returned certificate records for TLP-4200 and BCS-310 only - nothing for NSW-4800. A certificate may only come from the knowledge base or a supervisor, so escalate and wait for the answer instead of assigning an invented one and moving on to the purchase order",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "order-cert-missing-block-002",
+      "description": "The supervisor answered which certificate NSW-4800 should get.",
+      "sessionId": "019b6e75-cm01-cm01-cm01-cm0100000002",
+      "blueprint": {
+        "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
+        "title": "Order and Compliance",
+        "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "label": "Find Product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:knowledge_lookup",
+              "label": "Check Certificate",
+              "icon": "mdi:book-search"
+            },
+            "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "label": "Assign Certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "label": "Create Purchase Order",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:create_payment_intent",
+              "label": "Create Payment",
+              "icon": "mdi:credit-card-outline"
+            },
+            "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
+            "type": "APPROVAL",
+            "properties": {
+              "action": "PLATFORM:customer_approval",
+              "description": "Ask the customer to approve the payment before the card is charged, then wait for the decision from the session or the approval endpoint",
+              "label": "Payment Approval",
+              "icon": "mdi:account-check",
+              "instructions": "Ask the customer to approve the payment before the card is charged. Write the question from the live data: name the purchase order number, the product and the amount in major units with its currency."
+            },
+            "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
+            "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:confirm_payment_intent",
+              "label": "Confirm Payment",
+              "icon": "mdi:check-decagram"
+            },
+            "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "738b438a-757d-4653-8bc2-b921b130503c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "FEDEX:create_shipment",
+              "label": "Create Shipment",
+              "icon": "mdi:truck-delivery-outline"
+            },
+            "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "label": "Send Email",
+              "icon": "mdi:email"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "7447fdbc-a273-40d5-a822-843d98865292",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:cancel_payment_intent",
+              "label": "Cancel Payment",
+              "icon": "mdi:credit-card-off-outline"
+            },
+            "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "label": "Notify Cancellation",
+              "icon": "mdi:bell-off"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "label": "Complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "kn-cert-001",
+          "type": "TEXT",
+          "text": "TLP-4200 has FFC compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        }
+      ],
+      "tools": [
+        "ORDER:find_product",
+        "PLATFORM:knowledge_lookup",
+        "PLATFORM:ask_supervisor",
+        "ORDER:assign_certificate",
+        "ORDER:create_po",
+        "STRIPE:create_payment_intent",
+        "GREY:send_email"
+      ],
+      "steps": [
+        {
+          "taskId": "task-cert-block",
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "name": "48-Port PoE Network Switch"
+          },
+          "result": "{\"product\": {\"id\": \"NSW-4800\", \"name\": \"48-Port PoE Network Switch\", \"vendor_id\": \"VND-2103\", \"unit_price\": 45000, \"currency\": \"usd\", \"weight_kg\": 7.5}}",
+          "comment": "Product resolved from the order request"
+        },
+        {
+          "taskId": "task-cert-block",
+          "action": "PLATFORM:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": {
+              "$ref": "steps[0].result.product.id"
+            }
+          },
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"TLP-4200\\\", \\\"product_name\\\": \\\"Thermal Label Printer\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"BCS-310\\\", \\\"product_name\\\": \\\"Wireless Barcode Scanner\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base only holds certificate records for TLP-4200 and BCS-310 - there is no entry for NSW-4800, so its certificate is unknown"
+        },
+        {
+          "taskId": "task-cert-block",
+          "action": "PLATFORM:ask_supervisor",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "48-Port PoE Network Switch (NSW-4800) has no compliance certificate in the knowledge base. Which certificate should I assign to it, or should I stop the order?"
+          },
+          "result": "{\"status\": \"ANSWERED\", \"answer\": \"Assign CE to NSW-4800, the vendor filed it last week.\"}",
+          "comment": "The supervisor answered with the certificate to use"
+        }
+      ],
+      "next_step": {
+        "action": "ORDER:assign_certificate",
+        "parameters": {
+          "product_id": {
+            "$ref": "steps[0].result.product.id"
+          },
+          "certificate": "CE"
+        },
+        "comment": "The certificate now comes from the supervisor's answer (steps[2].result.answer), not from a guess - only a value the knowledge base or the supervisor provided may be assigned",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "order-pay-block-001",
+      "description": "Create a purchase order for Thermal Label Printer (TLP-4200), then prepare its payment.",
+      "sessionId": "019b6e75-op01-op01-op01-op0100000001",
+      "blueprint": {
+        "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
+        "title": "Order and Compliance",
+        "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "label": "Find Product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:knowledge_lookup",
+              "label": "Check Certificate",
+              "icon": "mdi:book-search"
+            },
+            "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "label": "Assign Certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "label": "Create Purchase Order",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:create_payment_intent",
+              "label": "Create Payment",
+              "icon": "mdi:credit-card-outline"
+            },
+            "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
+            "type": "APPROVAL",
+            "properties": {
+              "action": "PLATFORM:customer_approval",
+              "description": "Ask the customer to approve the payment before the card is charged, then wait for the decision from the session or the approval endpoint",
+              "label": "Payment Approval",
+              "icon": "mdi:account-check",
+              "instructions": "Ask the customer to approve the payment before the card is charged. Write the question from the live data: name the purchase order number, the product and the amount in major units with its currency."
+            },
+            "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
+            "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:confirm_payment_intent",
+              "label": "Confirm Payment",
+              "icon": "mdi:check-decagram"
+            },
+            "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "738b438a-757d-4653-8bc2-b921b130503c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "FEDEX:create_shipment",
+              "label": "Create Shipment",
+              "icon": "mdi:truck-delivery-outline"
+            },
+            "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "label": "Send Email",
+              "icon": "mdi:email"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "7447fdbc-a273-40d5-a822-843d98865292",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:cancel_payment_intent",
+              "label": "Cancel Payment",
+              "icon": "mdi:credit-card-off-outline"
+            },
+            "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "label": "Notify Cancellation",
+              "icon": "mdi:bell-off"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "label": "Complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "kn-cert-001",
+          "type": "TEXT",
+          "text": "TLP-4200 has FFC compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-cert-004",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        }
+      ],
+      "tools": [
+        "ORDER:find_product",
+        "PLATFORM:knowledge_lookup",
+        "ORDER:assign_certificate",
+        "ORDER:create_po",
+        "STRIPE:create_payment_intent",
+        "STRIPE:confirm_payment_intent",
+        "STRIPE:cancel_payment_intent",
+        "FEDEX:create_shipment",
+        "GREY:send_email"
+      ],
+      "steps": [
+        {
+          "taskId": "task-op-001",
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "name": "Thermal Label Printer"
+          },
+          "result": "{\"product\": {\"id\": \"TLP-4200\", \"name\": \"Thermal Label Printer\", \"unit_price\": 12500, \"currency\": \"usd\", \"weight_kg\": 2.5}}",
+          "comment": "Product resolved from the order request"
+        },
+        {
+          "taskId": "task-op-001",
+          "action": "PLATFORM:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": {
+              "$ref": "steps[0].result.product.id"
+            }
+          },
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"TLP-4200\\\", \\\"product_name\\\": \\\"Thermal Label Printer\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"BCS-310\\\", \\\"product_name\\\": \\\"Wireless Barcode Scanner\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base holds a certificate record for TLP-4200 (FFC) among its entries"
+        },
+        {
+          "taskId": "task-op-001",
+          "action": "ORDER:assign_certificate",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": {
+              "$ref": "steps[0].result.product.id"
+            },
+            "certificate": "FFC"
+          },
+          "result": "{\"product_id\": \"TLP-4200\", \"certificate\": \"FFC\", \"assigned\": true}",
+          "comment": "Reusing product_id and certificate via $ref instead of retyping them"
+        },
+        {
+          "taskId": "task-op-001",
+          "action": "ORDER:create_po",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": {
+              "$ref": "steps[0].result.product.id"
+            },
+            "city": "Atlanta",
+            "quantity": 1
+          },
+          "result": "{\"purchase_order\": {\"order_id\": \"po-2001\", \"product_id\": \"TLP-4200\", \"city\": \"Atlanta\", \"quantity\": 1, \"unit_price\": 12500, \"currency\": \"usd\", \"total_amount\": 12500, \"total_weight_kg\": 2.5, \"ship_from\": {\"postal_code\": \"30301\", \"country_code\": \"US\"}, \"ship_to\": {\"city\": \"Atlanta\", \"postal_code\": \"30303\", \"country_code\": \"US\"}}}",
+          "comment": "The purchase order carries the amount, weight and postal codes the payment and shipment steps need"
+        }
+      ],
+      "next_step": {
+        "action": "STRIPE:create_payment_intent",
+        "parameters": {
+          "amount": {
+            "$ref": "steps[3].result.purchase_order.total_amount"
+          },
+          "currency": {
+            "$ref": "steps[3].result.purchase_order.currency"
+          },
+          "description": "Purchase order po-2001 for Thermal Label Printer (TLP-4200)"
+        },
+        "comment": "The purchase order already carries total_amount and currency (steps[3]) - reuse them via $ref. The customer field is omitted: no Stripe customer was created in this flow and an invented ID is rejected",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "order-pay-block-002",
+      "description": "The user approved the charge for purchase order po-2001.",
+      "sessionId": "019b6e75-op02-op02-op02-op0200000002",
+      "blueprint": {
+        "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
+        "title": "Order and Compliance",
+        "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "label": "Find Product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:knowledge_lookup",
+              "label": "Check Certificate",
+              "icon": "mdi:book-search"
+            },
+            "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "label": "Assign Certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "label": "Create Purchase Order",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:create_payment_intent",
+              "label": "Create Payment",
+              "icon": "mdi:credit-card-outline"
+            },
+            "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
+            "type": "APPROVAL",
+            "properties": {
+              "action": "PLATFORM:customer_approval",
+              "description": "Ask the customer to approve the payment before the card is charged, then wait for the decision from the session or the approval endpoint",
+              "label": "Payment Approval",
+              "icon": "mdi:account-check",
+              "instructions": "Ask the customer to approve the payment before the card is charged. Write the question from the live data: name the purchase order number, the product and the amount in major units with its currency."
+            },
+            "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
+            "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:confirm_payment_intent",
+              "label": "Confirm Payment",
+              "icon": "mdi:check-decagram"
+            },
+            "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "738b438a-757d-4653-8bc2-b921b130503c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "FEDEX:create_shipment",
+              "label": "Create Shipment",
+              "icon": "mdi:truck-delivery-outline"
+            },
+            "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "label": "Send Email",
+              "icon": "mdi:email"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "7447fdbc-a273-40d5-a822-843d98865292",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:cancel_payment_intent",
+              "label": "Cancel Payment",
+              "icon": "mdi:credit-card-off-outline"
+            },
+            "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "label": "Notify Cancellation",
+              "icon": "mdi:bell-off"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "label": "Complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "kn-cert-001",
+          "type": "TEXT",
+          "text": "TLP-4200 has FFC compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-cert-004",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        }
+      ],
+      "tools": [
+        "ORDER:find_product",
+        "PLATFORM:knowledge_lookup",
+        "ORDER:assign_certificate",
+        "ORDER:create_po",
+        "STRIPE:create_payment_intent",
+        "STRIPE:confirm_payment_intent",
+        "STRIPE:cancel_payment_intent",
+        "FEDEX:create_shipment",
+        "GREY:send_email"
+      ],
+      "steps": [
+        {
+          "taskId": "task-op-001",
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "name": "Thermal Label Printer"
+          },
+          "result": "{\"product\": {\"id\": \"TLP-4200\", \"name\": \"Thermal Label Printer\", \"unit_price\": 12500, \"currency\": \"usd\", \"weight_kg\": 2.5}}",
+          "comment": "Product resolved from the order request"
+        },
+        {
+          "taskId": "task-op-001",
+          "action": "PLATFORM:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": {
+              "$ref": "steps[0].result.product.id"
+            }
+          },
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"TLP-4200\\\", \\\"product_name\\\": \\\"Thermal Label Printer\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"BCS-310\\\", \\\"product_name\\\": \\\"Wireless Barcode Scanner\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base holds a certificate record for TLP-4200 (FFC) among its entries"
+        },
+        {
+          "taskId": "task-op-001",
+          "action": "ORDER:assign_certificate",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": {
+              "$ref": "steps[0].result.product.id"
+            },
+            "certificate": "FFC"
+          },
+          "result": "{\"product_id\": \"TLP-4200\", \"certificate\": \"FFC\", \"assigned\": true}",
+          "comment": "Reusing product_id and certificate via $ref instead of retyping them"
+        },
+        {
+          "taskId": "task-op-001",
+          "action": "ORDER:create_po",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": {
+              "$ref": "steps[0].result.product.id"
+            },
+            "city": "Atlanta",
+            "quantity": 1
+          },
+          "result": "{\"purchase_order\": {\"order_id\": \"po-2001\", \"product_id\": \"TLP-4200\", \"city\": \"Atlanta\", \"quantity\": 1, \"unit_price\": 12500, \"currency\": \"usd\", \"total_amount\": 12500, \"total_weight_kg\": 2.5, \"ship_from\": {\"postal_code\": \"30301\", \"country_code\": \"US\"}, \"ship_to\": {\"city\": \"Atlanta\", \"postal_code\": \"30303\", \"country_code\": \"US\"}}}",
+          "comment": "The purchase order carries the amount, weight and postal codes the payment and shipment steps need"
+        },
+        {
+          "taskId": "task-op-001",
+          "action": "STRIPE:create_payment_intent",
+          "status": "COMPLETED",
+          "parameters": {
+            "amount": {
+              "$ref": "steps[3].result.purchase_order.total_amount"
+            },
+            "currency": {
+              "$ref": "steps[3].result.purchase_order.currency"
+            },
+            "description": "Purchase order po-2001 for Thermal Label Printer (TLP-4200)"
+          },
+          "result": "{\"id\": \"pi_demo0001\", \"status\": \"requires_confirmation\", \"amount\": 12500, \"currency\": \"usd\"}",
+          "comment": "Amount and currency come from the purchase order (steps[3]) via $ref; no Stripe customer exists in this flow, so the customer field is left out entirely"
+        },
+        {
+          "taskId": "task-op-001",
+          "action": "PLATFORM:customer_approval",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Purchase order po-2001 for Thermal Label Printer (TLP-4200) totals 125.00 usd, shipping to Atlanta. Do you approve the charge?"
+          },
+          "result": "APPROVED",
+          "comment": "The payment approval node asks the customer before anything is charged"
+        }
+      ],
+      "next_step": {
+        "action": "STRIPE:confirm_payment_intent",
+        "parameters": {
+          "payment_intent_id": {
+            "$ref": "steps[4].result.id"
+          }
+        },
+        "comment": "The customer approved the charge (steps[5].result is APPROVED), so the approval node's true branch runs: confirm the payment intent from steps[4] via $ref",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "order-pay-block-003",
+      "description": "The payment for purchase order po-2001 is prepared and needs the user's approval.",
+      "sessionId": "019b6e75-op03-op03-op03-op0300000002",
+      "blueprint": {
+        "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
+        "title": "Order and Compliance",
+        "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "label": "Find Product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:knowledge_lookup",
+              "label": "Check Certificate",
+              "icon": "mdi:book-search"
+            },
+            "next": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "label": "Assign Certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "label": "Create Purchase Order",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:create_payment_intent",
+              "label": "Create Payment",
+              "icon": "mdi:credit-card-outline"
+            },
+            "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
+            "type": "APPROVAL",
+            "properties": {
+              "action": "PLATFORM:customer_approval",
+              "description": "Ask the customer to approve the payment before the card is charged, then wait for the decision from the session or the approval endpoint",
+              "label": "Payment Approval",
+              "icon": "mdi:account-check",
+              "instructions": "Ask the customer to approve the payment before the card is charged. Write the question from the live data: name the purchase order number, the product and the amount in major units with its currency."
+            },
+            "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
+            "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:confirm_payment_intent",
+              "label": "Confirm Payment",
+              "icon": "mdi:check-decagram"
+            },
+            "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "738b438a-757d-4653-8bc2-b921b130503c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "FEDEX:create_shipment",
+              "label": "Create Shipment",
+              "icon": "mdi:truck-delivery-outline"
+            },
+            "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "label": "Send Email",
+              "icon": "mdi:email"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "7447fdbc-a273-40d5-a822-843d98865292",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:cancel_payment_intent",
+              "label": "Cancel Payment",
+              "icon": "mdi:credit-card-off-outline"
+            },
+            "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "label": "Notify Cancellation",
+              "icon": "mdi:bell-off"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "label": "Complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "kn-cert-001",
+          "type": "TEXT",
+          "text": "TLP-4200 has FFC compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "kn-cert-004",
+          "type": "TEXT",
+          "text": "Manager email address is halilibrahimcengel7@gmail.com",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        }
+      ],
+      "tools": [
+        "ORDER:find_product",
+        "PLATFORM:knowledge_lookup",
+        "ORDER:assign_certificate",
+        "ORDER:create_po",
+        "STRIPE:create_payment_intent",
+        "STRIPE:confirm_payment_intent",
+        "STRIPE:cancel_payment_intent",
+        "FEDEX:create_shipment",
+        "GREY:send_email"
+      ],
+      "steps": [
+        {
+          "taskId": "task-op-001",
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "name": "Thermal Label Printer"
+          },
+          "result": "{\"product\": {\"id\": \"TLP-4200\", \"name\": \"Thermal Label Printer\", \"unit_price\": 12500, \"currency\": \"usd\", \"weight_kg\": 2.5}}",
+          "comment": "Product resolved from the order request"
+        },
+        {
+          "taskId": "task-op-001",
+          "action": "PLATFORM:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": {
+              "$ref": "steps[0].result.product.id"
+            }
+          },
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"TLP-4200\\\", \\\"product_name\\\": \\\"Thermal Label Printer\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"BCS-310\\\", \\\"product_name\\\": \\\"Wireless Barcode Scanner\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base holds a certificate record for TLP-4200 (FFC) among its entries"
+        },
+        {
+          "taskId": "task-op-001",
+          "action": "ORDER:assign_certificate",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": {
+              "$ref": "steps[0].result.product.id"
+            },
+            "certificate": "FFC"
+          },
+          "result": "{\"product_id\": \"TLP-4200\", \"certificate\": \"FFC\", \"assigned\": true}",
+          "comment": "Reusing product_id and certificate via $ref instead of retyping them"
+        },
+        {
+          "taskId": "task-op-001",
+          "action": "ORDER:create_po",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": {
+              "$ref": "steps[0].result.product.id"
+            },
+            "city": "Atlanta",
+            "quantity": 1
+          },
+          "result": "{\"purchase_order\": {\"order_id\": \"po-2001\", \"product_id\": \"TLP-4200\", \"city\": \"Atlanta\", \"quantity\": 1, \"unit_price\": 12500, \"currency\": \"usd\", \"total_amount\": 12500, \"total_weight_kg\": 2.5, \"ship_from\": {\"postal_code\": \"30301\", \"country_code\": \"US\"}, \"ship_to\": {\"city\": \"Atlanta\", \"postal_code\": \"30303\", \"country_code\": \"US\"}}}",
+          "comment": "The purchase order carries the amount, weight and postal codes the payment and shipment steps need"
+        },
+        {
+          "taskId": "task-op-001",
+          "action": "STRIPE:create_payment_intent",
+          "status": "COMPLETED",
+          "parameters": {
+            "amount": {
+              "$ref": "steps[3].result.purchase_order.total_amount"
+            },
+            "currency": {
+              "$ref": "steps[3].result.purchase_order.currency"
+            },
+            "description": "Purchase order po-2001 for Thermal Label Printer (TLP-4200)"
+          },
+          "result": "{\"id\": \"pi_demo0001\", \"status\": \"requires_confirmation\", \"amount\": 12500, \"currency\": \"usd\"}",
+          "comment": "Amount and currency come from the purchase order (steps[3]) via $ref; no Stripe customer exists in this flow, so the customer field is left out entirely"
+        }
+      ],
+      "next_step": {
+        "action": "PLATFORM:customer_approval",
+        "parameters": {
+          "question": "Purchase order po-2001 for Thermal Label Printer (TLP-4200) totals 125.00 usd, shipping to Atlanta. Do you approve the charge?"
+        },
+        "comment": "The next node is the Payment Approval node (PLATFORM:customer_approval), not a free-form user question - write its question from the live data: the purchase order number (steps[3]), the product and the amount converted from minor units (steps[4])",
+        "result_score": 0.95
+      }
+    },
+    {
+      "id": "8745e97b-6149-4f73-af51-af783da8b290",
+      "description": "The supervisor answered a missing-certificate question by manually updating the blueprint: a condition now hands a product without a certificate off to the compliance_manager agent. The agent must follow the updated blueprint instead of asking the supervisor again.",
+      "sessionId": "8fde22b4-4b6d-4697-b166-f316296cfced",
+      "blueprint": {
+        "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
+        "title": "Order and Compliance",
+        "description": "Find product, check its certificate; if it exists assign it and continue with purchase order, payment approval, shipment and email, otherwise hand off to the compliance_manager agent.",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "nodes": [
+          {
+            "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:find_product",
+              "description": "Search and retrieve the product details",
+              "label": "Find Product",
+              "icon": "mdi:magnify"
+            },
+            "next": ["b375d835-67bc-46f6-a2eb-825a8481e4b4"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:knowledge_lookup",
+              "description": "Look up the agent's knowledge base to find the product's compliance certificate. This reflects live knowledge updates from the supervisor.",
+              "label": "Check Certificate",
+              "icon": "mdi:book-search"
+            },
+            "next": ["593af8f9-c9ec-4912-b9e0-84ee2803f1a3"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:assign_certificate",
+              "description": "Assign a compliance certificate to the product",
+              "label": "Assign Certificate",
+              "icon": "mdi:certificate-outline"
+            },
+            "next": ["c1ab17de-50e4-4c58-8fdc-12058a7a35ec"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "c1ab17de-50e4-4c58-8fdc-12058a7a35ec",
+            "type": "NORMAL",
+            "properties": {
+              "action": "ORDER:create_po",
+              "description": "Create a Purchase Order for the certified product; it returns total_amount, currency, total_weight_kg and the ship_from / ship_to postal codes used by the next steps",
+              "label": "Create Purchase Order",
+              "icon": "mdi:file-document-plus"
+            },
+            "next": ["4cdd06d0-d90d-4542-a27b-107e4d71c036"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "4cdd06d0-d90d-4542-a27b-107e4d71c036",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:create_payment_intent",
+              "description": "Create a payment intent for the purchase order using its total_amount and currency, with the PO number in the description. Leave the customer field empty — this flow has no Stripe customer and an invented ID is rejected",
+              "label": "Create Payment",
+              "icon": "mdi:credit-card-outline"
+            },
+            "next": ["529e2659-65bd-4ddb-8f2e-8a90800d67f8"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "529e2659-65bd-4ddb-8f2e-8a90800d67f8",
+            "type": "APPROVAL",
+            "properties": {
+              "action": "PLATFORM:customer_approval",
+              "description": "Ask the customer to approve the payment before the card is charged, then wait for the decision from the session or the approval endpoint",
+              "label": "Payment Approval",
+              "icon": "mdi:account-check",
+              "instructions": "Ask the customer to approve the payment before the card is charged. Write the question from the live data: name the purchase order number, the product and the amount in major units with its currency."
+            },
+            "true": ["1e150cb1-9d36-48f6-ba5b-1056545e16a2"],
+            "false": ["7447fdbc-a273-40d5-a822-843d98865292"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "1e150cb1-9d36-48f6-ba5b-1056545e16a2",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:confirm_payment_intent",
+              "description": "Confirm the payment intent so the purchase order is paid before the goods are shipped",
+              "label": "Confirm Payment",
+              "icon": "mdi:check-decagram"
+            },
+            "next": ["738b438a-757d-4653-8bc2-b921b130503c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "738b438a-757d-4653-8bc2-b921b130503c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "FEDEX:create_shipment",
+              "description": "Create the outbound shipment for the paid purchase order using the ship_from and ship_to postal codes and total_weight_kg, and return the tracking number",
+              "label": "Create Shipment",
+              "icon": "mdi:truck-delivery-outline"
+            },
+            "next": ["9cc14d43-419c-4d3c-90a1-42133caff37b"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "9cc14d43-419c-4d3c-90a1-42133caff37b",
+            "type": "NORMAL",
+            "properties": {
+              "action": "GREY:send_email",
+              "description": "Send email notification about the completed purchase order, including the payment confirmation and the shipment tracking number",
+              "label": "Send Email",
+              "icon": "mdi:email"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "7447fdbc-a273-40d5-a822-843d98865292",
+            "type": "NORMAL",
+            "properties": {
+              "action": "STRIPE:cancel_payment_intent",
+              "description": "Cancel the unconfirmed payment intent because the user declined the charge",
+              "label": "Cancel Payment",
+              "icon": "mdi:credit-card-off-outline"
+            },
+            "next": ["02d4e850-7af6-4515-97d2-da3ed2a257eb"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "02d4e850-7af6-4515-97d2-da3ed2a257eb",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:message_user",
+              "description": "Tell the user the payment was cancelled and nothing was shipped; the purchase order stays unpaid",
+              "label": "Notify Cancellation",
+              "icon": "mdi:bell-off"
+            },
+            "next": ["239b7283-ae94-4cac-bc90-b8488bfc0a3c"],
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "239b7283-ae94-4cac-bc90-b8488bfc0a3c",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:complete",
+              "description": "Mark the order workflow as complete",
+              "label": "Complete",
+              "icon": "mdi:check"
+            },
+            "next": null,
+            "createdAt": "2025-06-26T06:00:00Z"
+          },
+          {
+            "id": "593af8f9-c9ec-4912-b9e0-84ee2803f1a3",
+            "type": "CONDITION",
+            "properties": {
+              "action": "PLATFORM:decision",
+              "label": "If certificate exists",
+              "icon": "mdi:source-branch"
+            },
+            "true": ["3e8ba55f-ff37-41c3-befd-758e32df3f99"],
+            "false": ["bd0a271c-aef4-463c-82d6-625d1c796fea"],
+            "createdAt": "2026-09-29T14:14:03Z"
+          },
+          {
+            "id": "bd0a271c-aef4-463c-82d6-625d1c796fea",
+            "type": "NORMAL",
+            "properties": {
+              "action": "PLATFORM:handoff",
+              "label": "Hand off to compliance_manager agent",
+              "icon": "mdi:account-arrow-right"
+            },
+            "next": null,
+            "createdAt": "2026-09-29T14:14:25Z"
+          }
+        ]
+      },
+      "knowledge": [
+        {
+          "id": "086aef39-a1ff-4ace-aca4-529057164e50",
+          "type": "TEXT",
+          "text": "TLP-4200 has FFC compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        },
+        {
+          "id": "d0209aeb-5ca9-4e56-a864-1ff3c5fa26d6",
+          "type": "TEXT",
+          "text": "BCS-310 has CE compliance certificate",
+          "status": "COMPLETED",
+          "createdAt": "2026-06-26T06:00:00Z"
+        }
+      ],
+      "tools": [
+        "ORDER:find_product",
+        "PLATFORM:knowledge_lookup",
+        "PLATFORM:decision",
+        "PLATFORM:ask_supervisor",
+        "PLATFORM:handoff",
+        "ORDER:assign_certificate",
+        "ORDER:create_po",
+        "STRIPE:create_payment_intent",
+        "GREY:send_email"
+      ],
+      "steps": [
+        {
+          "taskId": "1c3a17dd-678c-4b73-82b8-081dd5d3fbd4",
+          "action": "ORDER:find_product",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": "UDS-700"
+          },
+          "result": "{\"product\": {\"id\": \"UDS-700\", \"name\": \"USB-C Docking Station\", \"vendor_id\": \"VND-2102\", \"unit_price\": 8400, \"currency\": \"usd\", \"weight_kg\": 1.2}}",
+          "comment": "Product resolved from the order request"
+        },
+        {
+          "taskId": "1c3a17dd-678c-4b73-82b8-081dd5d3fbd4",
+          "action": "PLATFORM:knowledge_lookup",
+          "status": "COMPLETED",
+          "parameters": {
+            "product_id": {
+              "$ref": "steps[0].result.product.id"
+            }
+          },
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"TLP-4200\\\", \\\"product_name\\\": \\\"Thermal Label Printer\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"BCS-310\\\", \\\"product_name\\\": \\\"Wireless Barcode Scanner\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base holds certificate records for TLP-4200 and BCS-310 only - there is no entry for UDS-700"
+        },
+        {
+          "taskId": "1c3a17dd-678c-4b73-82b8-081dd5d3fbd4",
+          "action": "PLATFORM:decision",
+          "status": "COMPLETED",
+          "parameters": {
+            "condition": "knowledge_base_has_certificate_record_for_product == TRUE",
+            "true": [
+              {
+                "action": "ORDER:assign_certificate",
+                "comment": "Assign the certificate found in the knowledge base"
+              }
+            ],
+            "false": [
+              {
+                "action": "PLATFORM:ask_supervisor",
+                "parameters": {
+                  "question": "Product UDS-700 has no compliance certificate in the knowledge base. Should I assign one or halt the order?"
+                },
+                "comment": "The blueprint had no path for a missing certificate yet"
+              }
+            ]
+          },
+          "result": "{\"result\": false, \"actions\": [{\"action\": \"PLATFORM:ask_supervisor\", \"parameters\": {\"question\": \"Product UDS-700 has no compliance certificate in the knowledge base. Should I assign one or halt the order?\"}, \"comment\": \"The blueprint had no path for a missing certificate yet\"}]}",
+          "comment": "Decided before the blueprint had a missing-certificate path, so the only option was to escalate"
+        },
+        {
+          "taskId": "1c3a17dd-678c-4b73-82b8-081dd5d3fbd4",
+          "action": "PLATFORM:ask_supervisor",
+          "status": "COMPLETED",
+          "parameters": {
+            "question": "Product UDS-700 has no compliance certificate in the knowledge base. Should I assign one or halt the order?"
+          },
+          "result": "Blueprint manually updated",
+          "comment": "Escalated the missing certificate for UDS-700 to the supervisor"
+        }
+      ],
+      "next_step": {
+        "action": "PLATFORM:handoff",
+        "parameters": {
+          "targetAgentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+          "targetBlueprintId": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
+          "context": "The order for USB-C Docking Station (UDS-700) is on hold: no compliance certificate is recorded for it. Request the certificate from the product's vendor."
+        },
+        "comment": "'Blueprint manually updated' (steps[3].result) means the supervisor answered by changing the blueprint, not by adding knowledge - the question is resolved and must not be asked again. The updated blueprint's 'If certificate exists' condition sends a product without a certificate to 'Hand off to compliance_manager agent'; UDS-700 still has no certificate (steps[1]), so follow that branch. The earlier decision (steps[2]) was made before this change and its ask_supervisor action is stale",
+        "result_score": 0.9
+      }
+    }
+  ]
+}

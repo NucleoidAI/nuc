@@ -7,6 +7,7 @@ const DEFAULT_POLL_INTERVAL_MS = 30000;
 const DEFAULT_SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
 type EmailConfig = {
+  enabled: boolean;
   projectId: string;
   pollIntervalMs: number;
   sessionTtlMs: number;
@@ -36,6 +37,7 @@ function readPositiveNumber({
 
 function emailConfig(): EmailConfig {
   return {
+    enabled: process.env.EMAIL_ENABLED === "true",
     projectId: process.env.EMAIL_PROJECT_ID ?? "",
     pollIntervalMs: readPositiveNumber({
       value: process.env.EMAIL_POLL_INTERVAL_MS,

@@ -245,15 +245,17 @@ function AgentLayout({
         setSwaggerOpen={setSwaggerOpen}
       />
 
-      {blueprintDrawerOpen && selectedBlueprint && (
-        <BlueprintDrawerLayout
-          drawerOpen={blueprintDrawerOpen}
-          handleDrawerClose={handleCloseBlueprintDrawer}
-          selectedItem={selectedBlueprint}
-          agentId={agent.id}
-          teamId={agent.teamId}
-        />
-      )}
+      {blueprintDrawerOpen &&
+        selectedBlueprint &&
+        selectedBlueprint.id === selectedBlueprintId && (
+          <BlueprintDrawerLayout
+            drawerOpen={blueprintDrawerOpen}
+            handleDrawerClose={handleCloseBlueprintDrawer}
+            selectedItem={selectedBlueprint}
+            agentId={agent.id}
+            teamId={agent.teamId}
+          />
+        )}
     </>
   );
 }

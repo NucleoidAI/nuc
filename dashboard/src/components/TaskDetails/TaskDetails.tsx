@@ -2,7 +2,7 @@ import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import FlowDialog from "../FlowDialog/FlowDialog";
 import { Iconify } from "@canmingir/link/platform/components";
 import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
-import SupervisingTask from "../SupervisingTask/SupervisingTask";
+import StepComment from "./StepComment";
 import TaskFlowStepDialog from "../FlowDialog/TaskFlowStepDialog";
 import TaskIcon from "@mui/icons-material/Task";
 import TaskResultDialog from "../TaskResultDialog/TaskResultDialog";
@@ -34,7 +34,6 @@ type TaskStep = {
 const TaskDetails = ({
   task,
   steps,
-  agentId,
   getSteps,
   isExpanded = false,
   onToggleExpand,
@@ -48,14 +47,12 @@ const TaskDetails = ({
     id: string;
   };
   steps: TaskStep[];
-  agentId: string;
   getSteps: (taskId: string) => void;
   isExpanded?: boolean;
   onToggleExpand?: () => void;
 }) => {
   const [openFlow, setOpenFlow] = useState<boolean>(false);
   const [taskResult, setTaskResult] = useState<boolean>(false);
-  const [supervisingTask, setSupervisingTask] = useState<boolean>(false);
   const stepsEndRef = useRef<HTMLDivElement>(null);
   const prevStepsLengthRef = useRef(steps?.length ?? 0);
 
@@ -148,21 +145,6 @@ const TaskDetails = ({
           </Fab>
         </Tooltip>
 
-        <Tooltip title="Supervising">
-          <Fab
-            color="default"
-            sx={{
-              backgroundColor: (theme) => theme.palette.success.main,
-              "&:hover": {
-                backgroundColor: (theme) => theme.palette.success.dark,
-              },
-            }}
-            onClick={() => setSupervisingTask(true)}
-          >
-            <Iconify icon="solar:users-group-rounded-bold" />
-          </Fab>
-        </Tooltip>
-
         {task.status !== "IN_PROGRESS" && (
           <Tooltip title="Task Details">
             <Fab color="default" onClick={() => setTaskResult(true)}>
@@ -210,7 +192,7 @@ const TaskDetails = ({
               {steps &&
                 steps.map((step, i) => (
                   <TableRow key={i} hover>
-                    <TableCell sx={{ maxWidth: 320 }}>
+                    <TableCell sx={{ width: "100%", maxWidth: 0 }}>
                       <Typography
                         variant="body2"
                         sx={{
@@ -220,18 +202,21 @@ const TaskDetails = ({
                           textOverflow: "ellipsis",
                         }}
                       >
-                        {step.comment}
+                        <StepComment
+                          comment={step.comment}
+                          parameters={step.parameters}
+                        />
                       </Typography>
                     </TableCell>
 
-                    <TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
                       {new Date(step.createdAt).toDateString() ===
                       new Date().toDateString()
                         ? new Date(step.createdAt).toLocaleTimeString()
                         : new Date(step.createdAt).toLocaleDateString()}
                     </TableCell>
 
-                    <TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
                       <Chip
                         size="small"
                         label={statusMap[step.status]?.label}
@@ -264,13 +249,6 @@ const TaskDetails = ({
         </Box>
         <div ref={stepsEndRef} />
       </Box>
-
-      <SupervisingTask
-        taskId={task.id}
-        open={supervisingTask}
-        setOpen={setSupervisingTask}
-        agentId={agentId}
-      />
 
       <TaskResultDialog open={taskResult} setOpen={setTaskResult} task={task} />
 

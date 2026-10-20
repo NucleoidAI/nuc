@@ -691,11 +691,11 @@ const MCPs = [
       properties: {
         product_id: {
           type: "string",
-          description: "The product ID to search for (e.g. prd-1).",
+          description: "The product ID to search for (e.g. TLP-4200).",
         },
         name: {
           type: "string",
-          description: "The product name to search for (e.g. product-1).",
+          description: "The product name to search for (e.g. Thermal Label Printer).",
         },
       },
       required: [],
@@ -755,7 +755,7 @@ const MCPs = [
       properties: {
         product_id: {
           type: "string",
-          description: "The product ID to look up the vendor for (e.g. prd-1).",
+          description: "The product ID to look up the vendor for (e.g. TLP-4200).",
         },
       },
       required: ["product_id"],

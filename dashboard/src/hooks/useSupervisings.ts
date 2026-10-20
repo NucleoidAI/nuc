@@ -45,22 +45,6 @@ function useSupervisings() {
     return response?.data;
   };
 
-  const evaluateSupervising = async (
-    supervisingId: string,
-    answer: string,
-    blueprintId?: string
-  ) => {
-    const response = await http.post(
-      `/supervisings/${supervisingId}/evaluate`,
-      {
-        answer,
-        blueprintId,
-      }
-    );
-
-    return response?.data;
-  };
-
   const resolveSupervising = async (supervisingId: string, answer: string) => {
     const response = await http.patch(`/supervisings/${supervisingId}/demo`, {
       answer,
@@ -168,7 +152,6 @@ function useSupervisings() {
   return {
     createSupervising,
     updateSupervising,
-    evaluateSupervising,
     resolveSupervising,
     submitSupervising,
     blueprintChat,

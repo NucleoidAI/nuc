@@ -9,6 +9,7 @@
       "type": "object",
       "properties": {
         "message": {
+          "generated": true,
           "type": "string",
           "description": "The message to be sent to the LLM."
         }
@@ -43,6 +44,7 @@
       "type": "object",
       "properties": {
         "condition": {
+          "generated": true,
           "type": "string",
           "description": "The condition to be checked."
         },
@@ -68,6 +70,7 @@
       "type": "object",
       "properties": {
         "instructions": {
+          "generated": true,
           "type": "string",
           "description": "How to pick the branch."
         },
@@ -106,6 +109,7 @@
       "type": "object",
       "properties": {
         "question": {
+          "generated": true,
           "type": "string",
           "description": "The question to ask the user."
         }
@@ -132,6 +136,7 @@
       "type": "object",
       "properties": {
         "question": {
+          "generated": true,
           "type": "string",
           "description": "The approval request shown to the customer."
         }
@@ -170,6 +175,7 @@
           "description": "Trusted recipient email address or phone number."
         },
         "question": {
+          "generated": true,
           "type": "string",
           "description": "Approval request shown to the user."
         }
@@ -213,6 +219,7 @@
           "description": "The ID of the target agent's blueprint (optional)."
         },
         "context": {
+          "generated": true,
           "type": "string",
           "description": "A summary of the current task context to pass to the target agent."
         }
@@ -230,6 +237,7 @@
       "type": "object",
       "properties": {
         "question": {
+          "generated": true,
           "type": "string",
           "description": "The question to ask the supervisor."
         }
@@ -527,6 +535,7 @@
       "type": "object",
       "properties": {
         "message": {
+          "generated": true,
           "type": "string",
           "description": "The message to send to the user."
         }

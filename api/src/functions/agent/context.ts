@@ -107,7 +107,9 @@ async function taskContext({
 }) {
   const [knowledge_base, blueprint, mcp_tools] = await Promise.all([
     knowledge({ agentId }),
-    blueprintId ? await blueprintFn.get({ blueprintId }) : null,
+    blueprintId
+      ? blueprintFn.get({ blueprintId, includeDetails: false })
+      : null,
     mcpFn.tools({ agentId, teamId }, { includeMock: false }),
   ]);
 

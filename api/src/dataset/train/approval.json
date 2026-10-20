@@ -1,12 +1,12 @@
 {
   "data": [
     {
-      "question": "Purchase order po-2001 for product-1 totals 125.00 USD. Do you approve the charge?",
+      "question": "Purchase order po-2001 for Thermal Label Printer totals 125.00 USD. Do you approve the charge?",
       "content": "yes, go ahead",
       "decision": "APPROVED"
     },
     {
-      "question": "Purchase order po-2001 for product-1 totals 125.00 USD. Do you approve the charge?",
+      "question": "Purchase order po-2001 for Thermal Label Printer totals 125.00 USD. Do you approve the charge?",
       "content": "no, cancel it",
       "decision": "REJECTED"
     },

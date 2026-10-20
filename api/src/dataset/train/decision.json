@@ -21,12 +21,12 @@
       "result": false
     },
     {
-      "context": "{\"steps\":[{\"action\":\"PLATFORM:knowledge_lookup\",\"status\":\"COMPLETED\",\"parameters\":{\"product_id\":\"prd-1\"},\"result\":\"{\\\"product_id\\\":\\\"prd-1\\\",\\\"certificate\\\":\\\"FFC\\\",\\\"has_certificate\\\":true}\"}]}",
+      "context": "{\"steps\":[{\"action\":\"PLATFORM:knowledge_lookup\",\"status\":\"COMPLETED\",\"parameters\":{\"product_id\":\"TLP-4200\"},\"result\":\"{\\\"product_id\\\":\\\"TLP-4200\\\",\\\"certificate\\\":\\\"FFC\\\",\\\"has_certificate\\\":true}\"}]}",
       "condition": "certificate.has_certificate == TRUE",
       "result": true
     },
     {
-      "context": "{\"steps\":[{\"action\":\"PLATFORM:knowledge_lookup\",\"status\":\"COMPLETED\",\"parameters\":{\"product_id\":\"prd-3\"},\"result\":\"{\\\"product_id\\\":\\\"prd-3\\\",\\\"certificate\\\":null,\\\"has_certificate\\\":false}\"}]}",
+      "context": "{\"steps\":[{\"action\":\"PLATFORM:knowledge_lookup\",\"status\":\"COMPLETED\",\"parameters\":{\"product_id\":\"NSW-4800\"},\"result\":\"{\\\"product_id\\\":\\\"NSW-4800\\\",\\\"certificate\\\":null,\\\"has_certificate\\\":false}\"}]}",
       "condition": "certificate.has_certificate == TRUE",
       "result": false
     },
@@ -71,12 +71,12 @@
       "result": false
     },
     {
-      "context": "{\"steps\":[{\"action\":\"ORDER:find_product\",\"status\":\"COMPLETED\",\"result\":\"{\\\"id\\\":\\\"prd-5\\\",\\\"name\\\":\\\"product-5\\\",\\\"status\\\":\\\"DISCONTINUED\\\"}\"}]}",
+      "context": "{\"steps\":[{\"action\":\"ORDER:find_product\",\"status\":\"COMPLETED\",\"result\":\"{\\\"id\\\":\\\"RFR-150\\\",\\\"name\\\":\\\"Handheld RFID Reader\\\",\\\"status\\\":\\\"DISCONTINUED\\\"}\"}]}",
       "condition": "product.status == 'DISCONTINUED'",
       "result": true
     },
     {
-      "context": "{\"steps\":[{\"action\":\"ORDER:find_product\",\"status\":\"COMPLETED\",\"result\":\"{\\\"id\\\":\\\"prd-2\\\",\\\"name\\\":\\\"product-2\\\",\\\"status\\\":\\\"ACTIVE\\\"}\"}]}",
+      "context": "{\"steps\":[{\"action\":\"ORDER:find_product\",\"status\":\"COMPLETED\",\"result\":\"{\\\"id\\\":\\\"BCS-310\\\",\\\"name\\\":\\\"Wireless Barcode Scanner\\\",\\\"status\\\":\\\"ACTIVE\\\"}\"}]}",
       "condition": "product.status == 'DISCONTINUED'",
       "result": false
     },
@@ -101,17 +101,17 @@
       "result": false
     },
     {
-      "context": "{\"steps\": [{\"action\": \"STRIPE:create_payment_intent\", \"status\": \"COMPLETED\", \"result\": \"{\\\"id\\\":\\\"pi_demo0001\\\",\\\"status\\\":\\\"requires_confirmation\\\",\\\"amount\\\":12500,\\\"currency\\\":\\\"usd\\\"}\"}, {\"action\": \"PLATFORM:user_interaction\", \"status\": \"COMPLETED\", \"parameters\": {\"question\": \"Purchase order po-2001 for product-1 totals 125.00 usd. Confirm the charge? (yes/no)\"}, \"result\": \"yes\"}]}",
+      "context": "{\"steps\": [{\"action\": \"STRIPE:create_payment_intent\", \"status\": \"COMPLETED\", \"result\": \"{\\\"id\\\":\\\"pi_demo0001\\\",\\\"status\\\":\\\"requires_confirmation\\\",\\\"amount\\\":12500,\\\"currency\\\":\\\"usd\\\"}\"}, {\"action\": \"PLATFORM:user_interaction\", \"status\": \"COMPLETED\", \"parameters\": {\"question\": \"Purchase order po-2001 for Thermal Label Printer totals 125.00 usd. Confirm the charge? (yes/no)\"}, \"result\": \"yes\"}]}",
       "condition": "user_approval == TRUE",
       "result": true
     },
     {
-      "context": "{\"steps\": [{\"action\": \"STRIPE:create_payment_intent\", \"status\": \"COMPLETED\", \"result\": \"{\\\"id\\\":\\\"pi_demo0001\\\",\\\"status\\\":\\\"requires_confirmation\\\",\\\"amount\\\":12500,\\\"currency\\\":\\\"usd\\\"}\"}, {\"action\": \"PLATFORM:user_interaction\", \"status\": \"COMPLETED\", \"parameters\": {\"question\": \"Purchase order po-2001 for product-1 totals 125.00 usd. Confirm the charge? (yes/no)\"}, \"result\": \"no, cancel it\"}]}",
+      "context": "{\"steps\": [{\"action\": \"STRIPE:create_payment_intent\", \"status\": \"COMPLETED\", \"result\": \"{\\\"id\\\":\\\"pi_demo0001\\\",\\\"status\\\":\\\"requires_confirmation\\\",\\\"amount\\\":12500,\\\"currency\\\":\\\"usd\\\"}\"}, {\"action\": \"PLATFORM:user_interaction\", \"status\": \"COMPLETED\", \"parameters\": {\"question\": \"Purchase order po-2001 for Thermal Label Printer totals 125.00 usd. Confirm the charge? (yes/no)\"}, \"result\": \"no, cancel it\"}]}",
       "condition": "user_approval == TRUE",
       "result": false
     },
     {
-      "context": "{\"steps\": [{\"action\": \"STRIPE:create_payment_intent\", \"status\": \"COMPLETED\", \"result\": \"{\\\"id\\\":\\\"pi_demo0001\\\",\\\"status\\\":\\\"requires_confirmation\\\",\\\"amount\\\":12500,\\\"currency\\\":\\\"usd\\\"}\"}, {\"action\": \"PLATFORM:user_interaction\", \"status\": \"COMPLETED\", \"parameters\": {\"question\": \"Purchase order po-2001 for product-1 totals 125.00 usd. Confirm the charge? (yes/no)\"}, \"result\": \"go ahead and charge it\"}]}",
+      "context": "{\"steps\": [{\"action\": \"STRIPE:create_payment_intent\", \"status\": \"COMPLETED\", \"result\": \"{\\\"id\\\":\\\"pi_demo0001\\\",\\\"status\\\":\\\"requires_confirmation\\\",\\\"amount\\\":12500,\\\"currency\\\":\\\"usd\\\"}\"}, {\"action\": \"PLATFORM:user_interaction\", \"status\": \"COMPLETED\", \"parameters\": {\"question\": \"Purchase order po-2001 for Thermal Label Printer totals 125.00 usd. Confirm the charge? (yes/no)\"}, \"result\": \"go ahead and charge it\"}]}",
       "condition": "user_approval == TRUE",
       "result": true
     }

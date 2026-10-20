@@ -301,7 +301,7 @@ describe("Blueprint API in LITE mode", () => {
   it("runs every node in graph order without calling the LLM", async () => {
     mcp
       .tool("ORDER:find_product")
-      .returns({ product_id: "prd-1", name: "product-1" });
+      .returns({ product_id: "TLP-4200", name: "Thermal Label Printer" });
 
     const blueprint = await createBlueprint({
       api: true,
@@ -318,15 +318,15 @@ describe("Blueprint API in LITE mode", () => {
 
     const response = await supertest(app)
       .post(`/execute/${blueprint.id}`)
-      .send({ name: "product-1", plan: "FREE" })
+      .send({ name: "Thermal Label Printer", plan: "FREE" })
       .expect(200);
 
     const taskId = response.headers["x-task-id"];
 
-    expect(response.body).toEqual({ product: "prd-1" });
+    expect(response.body).toEqual({ product: "TLP-4200" });
     expect(mcp.tool("ORDER:find_product").lastCall).toEqual({
-      product_id: "product-1",
-      name: "product-1",
+      product_id: "Thermal Label Printer",
+      name: "Thermal Label Printer",
     });
     expect(await llmCalls(taskId)).toBe(0);
   }, 60_000);

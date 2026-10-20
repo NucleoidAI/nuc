@@ -1,56 +1,56 @@
 {
   "vendors": [
     {
-      "id": "vnd-1",
-      "name": "Vendor Alpha",
-      "email": "alpha@vendor.com",
+      "id": "VND-2101",
+      "name": "Apex Peripherals Inc.",
+      "email": "orders@apexperipherals.com",
       "postal_code": "30301",
       "country_code": "US"
     },
     {
-      "id": "vnd-2",
-      "name": "Vendor Beta",
-      "email": "beta@vendor.com",
+      "id": "VND-2102",
+      "name": "Brightline Devices LLC",
+      "email": "orders@brightlinedevices.com",
       "postal_code": "60601",
       "country_code": "US"
     },
     {
-      "id": "vnd-3",
-      "name": "Vendor Gamma",
-      "email": "gamma@vendor.com",
+      "id": "VND-2103",
+      "name": "Cobalt Networks Corp.",
+      "email": "orders@cobaltnetworks.com",
       "postal_code": "94105",
       "country_code": "US"
     }
   ],
   "products": [
     {
-      "id": "prd-1",
-      "name": "product-1",
-      "vendor_id": "vnd-1",
+      "id": "TLP-4200",
+      "name": "Thermal Label Printer",
+      "vendor_id": "VND-2101",
       "unit_price": 12500,
       "currency": "usd",
       "weight_kg": 2.5
     },
     {
-      "id": "prd-2",
-      "name": "product-2",
-      "vendor_id": "vnd-2",
+      "id": "BCS-310",
+      "name": "Wireless Barcode Scanner",
+      "vendor_id": "VND-2102",
       "unit_price": 8900,
       "currency": "usd",
       "weight_kg": 1.2
     },
     {
-      "id": "prd-3",
-      "name": "product-3",
-      "vendor_id": "vnd-3",
+      "id": "NSW-4800",
+      "name": "48-Port PoE Network Switch",
+      "vendor_id": "VND-2103",
       "unit_price": 45000,
       "currency": "usd",
       "weight_kg": 7.5
     },
     {
-      "id": "prd-4",
-      "name": "product-4",
-      "vendor_id": "vnd-1",
+      "id": "DSC-760",
+      "name": "Duplex Document Scanner",
+      "vendor_id": "VND-2101",
       "unit_price": 19900,
       "currency": "usd",
       "weight_kg": 3
@@ -68,7 +68,7 @@
   "purchase_orders": [
     {
       "order_id": "po-1001",
-      "product_id": "prd-1",
+      "product_id": "TLP-4200",
       "city": "Atlanta",
       "quantity": 5,
       "unit_price": 12500,
@@ -84,7 +84,7 @@
     },
     {
       "order_id": "po-1002",
-      "product_id": "prd-2",
+      "product_id": "BCS-310",
       "city": "Chicago",
       "quantity": 10,
       "unit_price": 8900,
@@ -100,7 +100,7 @@
     },
     {
       "order_id": "po-1003",
-      "product_id": "prd-3",
+      "product_id": "NSW-4800",
       "city": "New York",
       "quantity": 2,
       "unit_price": 45000,

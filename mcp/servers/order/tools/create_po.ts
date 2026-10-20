@@ -3,10 +3,12 @@ import { CreatePOInput, Tool } from "./types";
 import { findAll, findOne, insert } from "../db/index.js";
 import logger from "../../../logger/logger.js";
 
+const TAX_RATE = 0.19;
+
 export const createPOTool: Tool<CreatePOInput> = {
   name: "ORDER:create_po",
   description:
-    "Create a Purchase Order (PO) for a product. Requires the product to exist and a valid city. Returns the purchase order with its total amount in minor currency units, total weight in kilograms and the ship-from / ship-to postal codes.",
+    "Create a Purchase Order (PO) for a product. Requires the product to exist and a valid city. Returns the purchase order with its net amount, tax amount and tax-inclusive total amount in minor currency units, total weight in kilograms and the ship-from / ship-to postal codes.",
   inputSchema: {
     type: "object",
     properties: {
@@ -87,6 +89,8 @@ export const createPOTool: Tool<CreatePOInput> = {
       const orderId = `po-${1000 + existingOrders.length + 1}`;
 
       const unitPrice = (product as any).unit_price;
+      const netAmount = unitPrice * args.quantity;
+      const taxAmount = Math.round(netAmount * TAX_RATE);
       const newOrder = {
         order_id: orderId,
         product_id: args.product_id,
@@ -94,7 +98,10 @@ export const createPOTool: Tool<CreatePOInput> = {
         quantity: args.quantity,
         unit_price: unitPrice,
         currency: (product as any).currency,
-        total_amount: unitPrice * args.quantity,
+        net_amount: netAmount,
+        tax_rate: TAX_RATE,
+        tax_amount: taxAmount,
+        total_amount: netAmount + taxAmount,
         total_weight_kg:
           Math.round((product as any).weight_kg * args.quantity * 1000) / 1000,
         ship_from: {

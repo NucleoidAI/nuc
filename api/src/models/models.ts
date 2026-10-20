@@ -245,6 +245,15 @@ async function init() {
     foreignKey: "blueprintId",
   });
 
+  // Blueprint <-> LogicRule
+  models.Blueprint.hasMany(models.LogicRule, {
+    foreignKey: "blueprintId",
+    as: "logicRules",
+  });
+  models.LogicRule.belongsTo(models.Blueprint, {
+    foreignKey: "blueprintId",
+  });
+
   // Hooks
   models.Project.addHook("beforeDestroy", async (project: any) => {
     await models.Agent.destroy({ where: { teamId: project.id } });

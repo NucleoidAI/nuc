@@ -200,6 +200,10 @@ function AddItemDialog({
       item.text = data.inputValue;
     } else if (currentType === "DATA") {
       item.text = data.inputValue;
+    } else if (currentType === "LOGIC") {
+      item.text = data.inputValue;
+    } else if (currentType === "BLUEPRINT") {
+      item.text = data.inputValue;
     } else if (currentType === "QA") {
       item.question = data.question;
       item.answer = data.answer;

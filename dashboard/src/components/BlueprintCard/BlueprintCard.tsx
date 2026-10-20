@@ -1,4 +1,3 @@
-import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import { BlueprintFlowMiniPreview } from "./BlueprintFlowMiniPreview";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -23,7 +22,6 @@ import {
 const BlueprintCard = ({
   item,
   handleDrawerOpen,
-  handleFlowDialogOpen,
   removeBlueprint,
   agentId,
 }) => {
@@ -155,14 +153,6 @@ const BlueprintCard = ({
         >
           <Fab
             color="default"
-            data-cy="flow-icon"
-            onClick={() => handleFlowDialogOpen(item)}
-          >
-            <AccountTreeIcon />
-          </Fab>
-
-          <Fab
-            color="default"
             data-cy="edit-icon"
             onClick={() => handleDrawerOpen(item)}
           >
@@ -180,7 +170,7 @@ const BlueprintCard = ({
           cursor: "pointer",
           opacity: 0.6,
         }}
-        onClick={() => handleFlowDialogOpen(item)}
+        onClick={() => handleDrawerOpen(item)}
       >
         <BlueprintFlowMiniPreview blueprintId={item.id} />
       </Box>
@@ -191,17 +181,6 @@ const BlueprintCard = ({
         arrow="left-top"
         sx={{ width: 140 }}
       >
-        <MenuItem
-          data-cy="Blueprint-menu-view"
-          onClick={() => {
-            popover.onClose();
-            handleFlowDialogOpen(item);
-          }}
-        >
-          <AccountTreeIcon />
-          Flow
-        </MenuItem>
-
         <MenuItem
           data-cy="Blueprint-menu-edit"
           onClick={() => {

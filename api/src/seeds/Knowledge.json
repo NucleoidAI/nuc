@@ -146,14 +146,6 @@
       "createdAt": "2025-06-26T06:00:00.000Z"
     },
     {
-      "id": "ce754ad8-e949-4713-bcbb-851d939824d0",
-      "type": "LOGIC",
-      "text": "Defines the Order type that every order in the flow is built from. Its status is tracked as a string so the order's current stage is always known, and its items are tracked as a list so any number of line items can be attached, from a single item up to the full order.\ndef create_order(status: str, items: list):\n    order = Order()\n    order.status = status\n    order.items = items\n\n    return order",
-      "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
-      "status": "COMPLETED",
-      "createdAt": "2025-06-26T06:00:00.000Z"
-    },
-    {
       "id": "019f6a16-0000-4000-8000-000000000001",
       "type": "TEXT",
       "text": "The manager's email address is halilcengel@greycollar.ai. Onboarding notifications should be sent to this address.",

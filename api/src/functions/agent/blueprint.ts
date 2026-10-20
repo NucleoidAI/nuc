@@ -3,7 +3,6 @@ import { ask, choice, noul } from "../../lib/decision";
 import { type ChatHistory, handoffTargets, knowledge } from "./context";
 import type { LLMMeta } from "@canmingir/link-express/llm";
 import blueprintFn from "../blueprint";
-import config from "../../../config";
 import dataset from "../../dataset";
 import fewShots from "../../dataset/train/decision/index";
 import { generate } from "@canmingir/link-express/llm";
@@ -130,47 +129,35 @@ async function blueprintChatDecision({
   content: string;
   meta?: LLMMeta;
 }) {
-  if (config.decision?.enabled) {
-    const { decision } = await ask({
-      state: chatDecisionState(history, content) as EntryType,
-      questions: {
-        decision: choice(
-          {
-            select: "update_target",
-            supervisor_reply: "`user_message`",
-            context: CHAT_CONTEXT,
-            few_shots: fewShots.supervisingChatDecision as JsonValue[],
+  const { decision } = await ask({
+    state: chatDecisionState(history, content) as EntryType,
+    questions: {
+      decision: choice(
+        {
+          select: "update_target",
+          supervisor_reply: "`user_message`",
+          context: CHAT_CONTEXT,
+          few_shots: fewShots.supervisingChatDecision as JsonValue[],
+        },
+        {
+          KNOWLEDGE: {
+            target: "knowledge_base",
           },
-          {
-            KNOWLEDGE: {
-              target: "knowledge_base",
-            },
-            BLUEPRINT: {
-              target: "blueprint",
-            },
+          BLUEPRINT: {
+            target: "blueprint",
           },
-        ),
-      },
-      meta: { ...meta, source: "agent.blueprintChatDecision" },
-    });
-
-    console.debug(
-      `[decision] blueprint chat decision ${decision.choice}:`,
-      JSON.stringify(decision.probabilities),
-    );
-
-    return { decision: decision.choice as BlueprintChatDecision };
-  }
-
-  const response = await generate({
-    dataset: dataset.train.blueprintChatDecision,
-    context: history,
-    content,
-    json_format: '{ decision: <"KNOWLEDGE"|"BLUEPRINT"> }',
-    meta,
+        },
+      ),
+    },
+    meta: { ...meta, source: "agent.blueprintChatDecision" },
   });
 
-  return response as { decision: BlueprintChatDecision };
+  console.debug(
+    `[decision] blueprint chat decision ${decision.choice}:`,
+    JSON.stringify(decision.probabilities),
+  );
+
+  return { decision: decision.choice as BlueprintChatDecision };
 }
 
 async function blueprintChatSufficiency({
@@ -184,55 +171,43 @@ async function blueprintChatSufficiency({
   decision: BlueprintChatDecision;
   meta?: LLMMeta;
 }) {
-  if (config.decision?.enabled) {
-    const { sufficient } = await ask({
-      state: { ...chatDecisionState(history, content), decision } as EntryType,
-      questions: {
-        sufficient: noul(
-          {
-            decide: "reply_is_sufficient",
-            update_target: "`decision`",
-            supervisor_reply: "`user_message`",
-            context: CHAT_CONTEXT,
-            few_shots: fewShots.supervisingChatSufficiency as JsonValue[],
-          },
-          {
-            true: { reply: "clear and specific enough to apply" },
-            false: { reply: "vague or missing details" },
-          },
-        ),
-      },
-      meta: { ...meta, source: "agent.blueprintChatSufficiency" },
-    });
+  const { sufficient } = await ask({
+    state: { ...chatDecisionState(history, content), decision } as EntryType,
+    questions: {
+      sufficient: noul(
+        {
+          decide: "reply_is_sufficient",
+          update_target: "`decision`",
+          supervisor_reply: "`user_message`",
+          context: CHAT_CONTEXT,
+          few_shots: fewShots.supervisingChatSufficiency as JsonValue[],
+        },
+        {
+          true: { reply: "clear and specific enough to apply" },
+          false: { reply: "vague or missing details" },
+        },
+      ),
+    },
+    meta: { ...meta, source: "agent.blueprintChatSufficiency" },
+  });
 
-    console.debug(
-      `[decision] blueprint chat ${decision} sufficient with ${sufficient.noul}`,
-    );
+  console.debug(
+    `[decision] blueprint chat ${decision} sufficient with ${sufficient.noul}`,
+  );
 
-    if (sufficient.noul >= 0.5) {
-      return { sufficient: true, answer: SUFFICIENT_ANSWERS[decision] };
-    }
-
-    const { answer } = await generate({
-      dataset: dataset.train.blueprintChatSufficiency,
-      context: [system({ decision, sufficient: false }), ...(history ?? [])],
-      content,
-      json_format: "{ answer: <FOLLOW_UP_QUESTION> }",
-      meta,
-    });
-
-    return { sufficient: false, answer: answer as string | undefined };
+  if (sufficient.noul >= 0.5) {
+    return { sufficient: true, answer: SUFFICIENT_ANSWERS[decision] };
   }
 
-  const response = await generate({
+  const { answer } = await generate({
     dataset: dataset.train.blueprintChatSufficiency,
-    context: [system({ decision }), ...(history ?? [])],
+    context: [system({ decision, sufficient: false }), ...(history ?? [])],
     content,
-    json_format: "{ sufficient: <true|false>, answer: <ANSWER> }",
+    json_format: "{ answer: <FOLLOW_UP_QUESTION> }",
     meta,
   });
 
-  return response as { sufficient: boolean; answer?: string };
+  return { sufficient: false, answer: answer as string | undefined };
 }
 
 async function blueprintChatKnowledge({

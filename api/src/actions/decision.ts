@@ -1,7 +1,4 @@
 import { ask, noul } from "../lib/decision";
-import config from "../../config";
-import dataset from "../dataset";
-import { generate } from "@canmingir/link-express/llm";
 import type { LLMMeta } from "@canmingir/link-express/llm";
 
 const TRUE_THRESHOLD = 0.5;
@@ -52,21 +49,7 @@ async function run({
 }) {
   const { condition, true: trueActions, false: falseActions } = parameters;
 
-  let isTrue: boolean;
-
-  if (config.decision?.enabled) {
-    isTrue = await evaluate({ context, condition, meta });
-  } else {
-    const { result } = await generate({
-      dataset: dataset.train.decision,
-      context: context ? [{ role: "system" as const, content: context }] : [],
-      content: { context, condition },
-      json_format: "{ result: <true|false> }",
-      meta,
-    });
-
-    isTrue = result === true || result === "true";
-  }
+  const isTrue = await evaluate({ context, condition, meta });
 
   return {
     result: isTrue,

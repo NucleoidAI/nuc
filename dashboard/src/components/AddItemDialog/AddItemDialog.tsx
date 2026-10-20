@@ -405,7 +405,8 @@ function AddItemDialog({
         >
           {types
             .filter(
-              (type) => type !== "BLUEPRINT" || selectedOptionType === "blueprint"
+              (type) =>
+                type !== "BLUEPRINT" || selectedOptionType === "blueprint"
             )
             .map((type) => (
               <MenuItem

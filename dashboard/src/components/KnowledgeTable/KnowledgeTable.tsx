@@ -1,7 +1,6 @@
 import CloseIcon from "@mui/icons-material/Close";
 import CodeBlock from "../CodeBlock/CodeBlock";
 import { Label } from "@canmingir/link/platform/components";
-import LogicView from "../LogicView/LogicView";
 
 import {
   Box,

@@ -144,13 +144,9 @@ async function blueprintChatDecision({
           {
             KNOWLEDGE: {
               target: "knowledge_base",
-              description:
-                "a fact, value, policy or data item the agent should know",
             },
             BLUEPRINT: {
               target: "blueprint",
-              description:
-                "a change to the workflow: steps, order, conditions, triggers or actions",
             },
           },
         ),

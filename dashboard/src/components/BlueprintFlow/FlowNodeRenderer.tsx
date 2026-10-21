@@ -345,13 +345,15 @@ export default function FlowNodeRenderer({
                 <Iconify icon="mdi:delete-outline" width={16} height={16} />
               </ActionButtonWrapper>
             )}
-            <ActionButtonWrapper
-              position="edit"
-              onClick={handleEditClick}
-              title="Edit node"
-            >
-              <Iconify icon="mdi:pencil" width={16} height={16} />
-            </ActionButtonWrapper>
+            {onEdit && (
+              <ActionButtonWrapper
+                position="edit"
+                onClick={handleEditClick}
+                title="Edit node"
+              >
+                <Iconify icon="mdi:pencil" width={16} height={16} />
+              </ActionButtonWrapper>
+            )}
             {isForceNode && (
               <ForceIndicatorWrapper title="Force node: action is guaranteed">
                 <Iconify icon="mdi:lightning-bolt" width={16} height={16} />
@@ -396,17 +398,19 @@ export default function FlowNodeRenderer({
               <ListItemText>Add child node</ListItemText>
             </MenuItem>
           )}
-          <MenuItem
-            onClick={(e) => {
-              handleEditClick(e);
-              handleClose();
-            }}
-          >
-            <ListItemIcon>
-              <Iconify icon="mdi:pencil" width={18} height={18} />
-            </ListItemIcon>
-            <ListItemText>Edit node</ListItemText>
-          </MenuItem>
+          {onEdit && (
+            <MenuItem
+              onClick={(e) => {
+                handleEditClick(e);
+                handleClose();
+              }}
+            >
+              <ListItemIcon>
+                <Iconify icon="mdi:pencil" width={18} height={18} />
+              </ListItemIcon>
+              <ListItemText>Edit node</ListItemText>
+            </MenuItem>
+          )}
           {onToggleForce && !isLocked && (
             <MenuItem
               onClick={(e) => {

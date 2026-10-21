@@ -1,10 +1,8 @@
-import config from "../../config";
-
 describe("Agents page", () => {
   beforeEach(() => {
     cy.fixture("agents-page/teams.json").then((teams) => {
-      cy.wrap(teams[1].id).as("teamId");
-      cy.platformSetup(teams[1].id, "agents-page/team.json", config);
+      cy.wrap(teams[0].id).as("teamId");
+      cy.platformSetup(teams[0].id, "agents-page/team.json");
       cy.viewport(1280, 720);
     });
 
@@ -12,7 +10,9 @@ describe("Agents page", () => {
 
     cy.fixture("agents-page/create/agents.get.json").as("newAgents");
     cy.fixture("agents-page/create/agent.post.json").as("createdAgent");
-    cy.fixture("agents-page/edit/agents.get.json").as("agentsWithEditedAgent");
+    cy.fixture("agents-page/edit/agents.get.json").as(
+      "agentsWithEditedAgent"
+    );
     cy.fixture("agents-page/edit/agent.put.json").as("editedAgent");
 
     cy.fixture("agents-page/delete/agents.get.json").as(

@@ -1,10 +1,8 @@
-import config from "../../config";
-
 describe("Organization chart", () => {
   beforeEach(() => {
     cy.fixture("organizations/team.json").then((teams) => {
       cy.wrap(teams.id).as("teamId");
-      cy.platformSetup(teams.id, "organizations/team.json", config);
+      cy.platformSetup(teams.id, "organizations/team.json");
       cy.viewport(1280, 720);
     });
     cy.fixture("organizations/team.json").as("project");
@@ -21,23 +19,23 @@ describe("Organization chart", () => {
       }
     );
 
-    cy.fixture("agents-page/create/agents.team.get.json").as("newAgents");
-    cy.fixture("agents-page/create/agent.team.post.json").as("createdAgent");
+    cy.fixture("teamChart/create/agent.get.json").as("newAgents");
+    cy.fixture("teamChart/create/agent.post.json").as("createdAgent");
 
     cy.intercept("GET", "/api/blueprints", {
-      fixture: "blueprints/blueprints.get.json",
+      fixture: "agent-page/blueprints/blueprints.json",
     });
 
-    cy.fixture("agents-page/agent.json").as("agent");
+    cy.fixture("teamChart/agents.json").as("agent");
   });
   it("adds new agent", function () {
     cy.visit("/");
 
-    cy.setAgentIntercept();
-
-    cy.intercept("GET", "/api/engines", {
-      fixture: "agents-page/engines.json",
+    cy.intercept("GET", `/api/agents`, {
+      fixture: `/teamChart/agents.json`,
     });
+
+    cy.setAgentIntercept();
 
     cy.getBySel("organization-button").click();
 
@@ -59,9 +57,21 @@ describe("Organization chart", () => {
   it("opens blueprint drawer", function () {
     cy.visit("/team");
 
+    cy.intercept("GET", `/api/agents`, {
+      fixture: `/teamChart/agents.json`,
+    });
+
     cy.setAgentIntercept();
 
     cy.getBySel("team-chart").should("be.visible");
+
+    cy.fixture("agent-page/blueprints/blueprints.json").then((blueprints) => {
+      cy.intercept(
+        "GET",
+        `/api/blueprints/ba6f7911-e232-469d-9060-2881852f6e59`,
+        blueprints[0]
+      );
+    });
 
     cy.getBySel("blueprint-button").click();
   });
@@ -69,12 +79,101 @@ describe("Organization chart", () => {
   it("opens agent page", function () {
     cy.visit("/team");
 
+    cy.intercept("GET", `/api/agents`, {
+      fixture: `/teamChart/agents.json`,
+    });
+
     cy.setAgentIntercept();
 
     cy.getBySel("team-chart").should("be.visible");
 
     cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
 
-    cy.getBySel("agent-page-button").click();
+    cy.getBySel("agent-page-button").should("be.visible");
+    cy.getBySel("agent-page-button").eq(0).click();
+
+  });
+
+  it("opens knowledge base page", function () {
+    cy.visit("/team");
+
+    cy.intercept("GET", `/api/agents`, {
+      fixture: `/teamChart/agents.json`,
+    });
+
+    cy.setAgentIntercept();
+
+    cy.getBySel("team-chart").should("be.visible");
+
+    cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
+
+    cy.intercept("GET", `/api/knowledge?agentId=00db1bd4-4829-40f2-8b99-d2e42342157e`, {
+      fixture: "agent-page/knowledges/knowledges.json",
+    });
+
+    cy.getBySel("knowledge-base-button").should("be.visible");
+    cy.getBySel("knowledge-base-button").eq(0).click();
+  });
+
+  it("opens blueprints page", function () {
+    cy.visit("/team");
+
+    cy.intercept("GET", `/api/agents`, {
+      fixture: `/teamChart/agents.json`,
+    });
+
+    cy.setAgentIntercept();
+
+    cy.getBySel("team-chart").should("be.visible");
+
+    cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
+
+    cy.intercept("GET", `/api/blueprints`, {
+      fixture: "agent-page/blueprints/blueprints.json",
+    });
+
+    cy.intercept("GET", `/api/blueprints/ba6f7911-e232-469d-9060-2881852f6e59`, {
+      fixture: "agent-page/blueprints/blueprints.json",
+    });
+
+     cy.fixture("agent-page/blueprints/blueprints.json").then((blueprints) => {
+      cy.intercept(
+        "GET",
+        `/api/blueprints/ba6f7911-e232-469d-9060-2881852f6e59`,
+        blueprints[0]
+      );
+    });
+
+    cy.intercept("GET", `/api/agents/00db1bd4-4829-40f2-8b99-d2e42342157e/blueprints`, {
+      fixture: "agent-page/blueprints/blueprints.json",
+    });
+
+    cy.getBySel("blueprints-button").should("be.visible");
+    cy.getBySel("blueprints-button").eq(0).click();
+  });
+
+  it("opens tasks page", function () {
+    cy.visit("/team");
+
+    cy.intercept("GET", `/api/agents`, {
+      fixture: `/teamChart/agents.json`,
+    });
+
+    cy.setAgentIntercept();
+
+    cy.getBySel("team-chart").should("be.visible");
+
+    cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
+
+    cy.intercept("GET", `/api/tasks?agentId=00db1bd4-4829-40f2-8b99-d2e42342157e`, {
+      fixture: "agent-page/tasks/tasks.json",
+    });
+
+     cy.intercept("GET", `/api/tasks/aaaaaaa1-aaaa-4aaa-8aaa-aaaaaaaaaaa1/steps`, {
+      fixture: "agent-page/tasks/task.steps.json",
+    });
+
+    cy.getBySel("tasks-button").should("be.visible");
+    cy.getBySel("tasks-button").eq(0).click();
   });
 });

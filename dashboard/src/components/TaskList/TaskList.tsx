@@ -73,6 +73,7 @@ const TaskList = ({
             }}
           >
             <ListItemButton
+              data-cy="task-list-item"
               selected={isSelected}
               onClick={() => onTaskSelect(task)}
               sx={{

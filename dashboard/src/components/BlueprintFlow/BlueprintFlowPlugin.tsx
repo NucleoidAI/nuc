@@ -1165,13 +1165,18 @@ function FlowNodeRenderer({
           <>
             {!isLocked && (
               <DeleteButtonWrapper
+                data-cy="node-delete-button"
                 onClick={handleDeleteClick}
                 title="Delete node"
               >
                 <Iconify icon="mdi:delete-outline" width={16} height={16} />
               </DeleteButtonWrapper>
             )}
-            <EditButtonWrapper onClick={handleEditClick} title="Edit node">
+            <EditButtonWrapper
+              data-cy="node-edit-button"
+              onClick={handleEditClick}
+              title="Edit node"
+            >
               <Iconify icon="mdi:pencil" width={16} height={16} />
             </EditButtonWrapper>
             {isForceNode && (
@@ -1180,7 +1185,11 @@ function FlowNodeRenderer({
               </ForceIndicatorWrapper>
             )}
             {canAddChild && (
-              <AddButtonWrapper onClick={handleAddClick} title="Add child node">
+              <AddButtonWrapper
+                data-cy="node-add-button"
+                onClick={handleAddClick}
+                title="Add child node"
+              >
                 <Iconify icon="mdi:plus" width={16} height={16} />
               </AddButtonWrapper>
             )}

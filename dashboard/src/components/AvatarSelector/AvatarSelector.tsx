@@ -80,6 +80,7 @@ export default function AvatarSelector({
           >
             {ICON_NAMES.map((iconName) => (
               <IconButton
+                data-cy="avatar-select"
                 key={iconName}
                 onClick={() => handleIconClick(iconName)}
                 sx={{

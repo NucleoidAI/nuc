@@ -88,6 +88,7 @@ const TaskTree = ({ open, setOpen, treeData }) => {
       }}
     >
       <Stack
+        data-cy="task-flow-dialog"
         direction="row"
         alignItems="center"
         justifyContent="space-between"

@@ -171,6 +171,7 @@ export const teamChartPlugin = {
           leftContent={renderInitialAvatar()}
           title={
             <Chip
+              data-cy="agent-page-button"
               onClick={handleCardClick}
               label={title || node?.name}
               icon={<Iconify icon="mingcute:location-fill" width={18} />}
@@ -196,6 +197,7 @@ export const teamChartPlugin = {
             onAgentOpen && (
               <>
                 <Button
+                  data-cy="knowledge-base-button"
                   size="small"
                   variant="outlined"
                   color="inherit"
@@ -208,6 +210,7 @@ export const teamChartPlugin = {
                   <Iconify icon="carbon:ibm-watson-knowledge-studio" />
                 </Button>
                 <Button
+                  data-cy="blueprints-button"
                   size="small"
                   variant="outlined"
                   color="inherit"
@@ -220,6 +223,7 @@ export const teamChartPlugin = {
                   <Iconify icon="healthicons:crisis-response-center-person-outline" />
                 </Button>
                 <Button
+                  data-cy="tasks-button"
                   size="small"
                   variant="outlined"
                   color="inherit"
@@ -263,6 +267,7 @@ export const teamChartPlugin = {
           footer={
             onBlueprintOpen && (
               <Button
+                data-cy="blueprint-button"
                 size="small"
                 variant="outlined"
                 color="inherit"
@@ -349,6 +354,7 @@ export const teamChartPlugin = {
               <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                 {isTeam && onTeamAddAgent ? (
                   <Button
+                    data-cy="add-agent-button"
                     size="small"
                     variant="outlined"
                     color="inherit"

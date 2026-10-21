@@ -138,6 +138,7 @@ const TaskDetails = ({
       <Stack direction="row" spacing={1}>
         <Tooltip title="Task Flow">
           <Fab
+            data-cy="task-flow-button"
             color="default"
             onClick={() => {
               setOpenFlow(true);
@@ -173,7 +174,12 @@ const TaskDetails = ({
 
         {onToggleExpand && (
           <Tooltip title={isExpanded ? "Minimize" : "Expand"}>
-            <Fab color="default" onClick={onToggleExpand} sx={{ ml: "auto" }}>
+            <Fab
+              data-cy="task-details-toggle-expand"
+              color="default"
+              onClick={onToggleExpand}
+              sx={{ ml: "auto" }}
+            >
               <Iconify
                 icon={isExpanded ? "boxicons:minimize" : "boxicons:maximize"}
               />

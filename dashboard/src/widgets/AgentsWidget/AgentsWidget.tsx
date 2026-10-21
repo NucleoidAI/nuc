@@ -69,7 +69,7 @@ function AgentsWidget({ teamId }) {
                 <AgentsSkeleton key={index} />
               </Grid>
             ))
-          : agents.map((agent) => (
+          : agents?.map((agent) => (
               <AgentCard
                 key={agent.id}
                 agent={agent}

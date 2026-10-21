@@ -273,6 +273,7 @@ export default function BlueprintFlow({
   return (
     <Box
       ref={flowContainerRef}
+      data-cy="blueprint-flow-canvas"
       sx={{
         width: "100%",
         height: "100%",

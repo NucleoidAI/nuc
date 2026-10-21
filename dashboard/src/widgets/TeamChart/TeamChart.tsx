@@ -11,7 +11,6 @@ import { teamChartPlugin } from "./TeamChartPlugin";
 import useAgents from "../../hooks/useAgents";
 import useBlueprint from "../../hooks/useBlueprint";
 import { useLocation } from "react-router-dom";
-import useOrganizations from "../../hooks/useOrganizations";
 import useTeam from "../../hooks/useTeams";
 
 import {
@@ -34,35 +33,27 @@ function TeamChart() {
 
   const projectId = storage.get("link", "projectid");
   const { getTeamById } = useTeam();
-  const { team } = getTeamById(projectId);
-  const organizationId = team?.organizationId;
+  const { team, loading: teamLoading } = getTeamById(projectId);
 
-  const { organization, loading } =
-    useOrganizations().getOrganizationById(organizationId);
+  const { getTeamAgents, createAgent } = useAgents();
+  const { agents, loading: agentsLoading } = getTeamAgents();
 
   const { getBlueprint } = useBlueprint();
   const { Blueprint: allBlueprintsRaw } = getBlueprint();
 
-  const { createAgent } = useAgents();
+  const initialLoading = (teamLoading && !team) || (agentsLoading && !agents);
 
-  const orgArray = Array.isArray(organization)
-    ? organization
-    : organization
-    ? [organization]
-    : [];
-
-  const filteredOrganizations = orgArray.filter(
-    (org) => org.agents && org.agents.length > 0 && org.id === projectId
+  const teamAgents = (agents || []).filter(
+    (agent) => agent.teamId === projectId
   );
 
-  const allAgentIds = filteredOrganizations.flatMap((org) =>
-    (org.agents || []).map((agent) => agent.id)
-  );
+  const allAgentIds = teamAgents.map((agent) => agent.id);
 
-  const teamTree = useMemo(
-    () => toTeamTree(filteredOrganizations, allBlueprintsRaw || []),
-    [filteredOrganizations, allBlueprintsRaw]
-  );
+  const teamTree = useMemo(() => {
+    const teams = team ? [{ ...team, agents: teamAgents }] : [];
+
+    return toTeamTree(teams, allBlueprintsRaw || []);
+  }, [team, teamAgents, allBlueprintsRaw]);
 
   const data = teamTree ? treeToLinked(teamTree) : { nodes: {}, roots: [] };
 
@@ -118,7 +109,7 @@ function TeamChart() {
     setSelectedAgentTab("profile");
   };
 
-  if (loading) {
+  if (initialLoading) {
     return (
       <Stack alignItems="center" justifyContent="center" sx={{ height: 200 }}>
         <CircularProgress />
@@ -162,7 +153,10 @@ function TeamChart() {
         </IconButton>
       )}
 
-      <Box sx={{ width: "100%", height: "100vh", overflow: "hidden" }}>
+      <Box
+        data-cy="team-chart"
+        sx={{ width: "100%", height: "100vh", overflow: "hidden" }}
+      >
         <Flow
           data={data}
           style={style}

@@ -29,6 +29,7 @@ const ChannelBlueprintSelection = ({
         const checked = selectedRights.includes(Blueprint.id);
         return (
           <Card
+            data-cy={`channel-blueprint-option-${Blueprint.id}`}
             key={Blueprint.id}
             onClick={() => {
               onRightsChange([Blueprint.id]);

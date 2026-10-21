@@ -4,10 +4,8 @@ declare namespace Cypress {
     createAgentViaDialog(
       agent: {
         name: string;
-        character: string;
-        role: string;
-        title: string;
-        avatar: string;
+        description: string;
+        icon: string;
       },
       newAgentsFixture: string
     ): Chainable<void>;
@@ -16,10 +14,8 @@ declare namespace Cypress {
       agent: {
         id: string;
         name: string;
-        character: string;
-        role: string;
-        title: string;
-        avatar: string;
+        description: string;
+        icon: string;
       },
       newAgents: string
     ): Chainable<void>;
@@ -30,8 +26,7 @@ declare namespace Cypress {
 
     verifyAgentCard(
       agent: {
-        character: string;
-        role: string;
+        description: string;
         name: string;
         AIEngine: {
           vendor: string;
@@ -57,22 +52,24 @@ declare namespace Cypress {
 
     storageSet(key: string, value: string): Chainable<void>;
 
-    platformSetup(
-      itemId: string,
-      itemFixturePath: string,
-      config: { name: string }
-    ): Chainable<void>;
+    platformSetup(itemId: string, itemFixturePath: string): Chainable<void>;
 
     checkRoute(route: string): Chainable<void>;
+
+    knowledgeBaseIntercept(): Chainable<void>;
   }
 }
 
 Cypress.Commands.add("createAgentViaDialog", (agent, newAgentsFixture) => {
-  const { name, character, title, role, avatar } = agent;
+  const { name, description } = agent;
 
-  cy.getBySel("agent-wizard-name-input").click();
-
+  cy.getBySel("name").clear();
   cy.getBySel("name").type(name, {
+    force: true,
+  });
+
+  cy.getBySel("description").clear();
+  cy.getBySel("description").type(description, {
     force: true,
   });
 
@@ -80,21 +77,7 @@ Cypress.Commands.add("createAgentViaDialog", (agent, newAgentsFixture) => {
 
   cy.getBySel("avatar-selection").should("be.visible");
 
-  cy.selectIconFromPicker(avatar);
-
-  cy.getBySel("agent-next-button").click();
-
-  cy.getBySel("agent-wizard-title-input").type(title);
-
-  cy.getBySel("agent-wizard-role-input").type(role);
-
-  cy.getBySel("agent-next-button").click();
-
-  cy.get('[data-cy="character"]').type(character, {
-    force: true,
-  });
-
-  cy.getBySel("agent-next-button").click();
+  cy.getBySel("avatar-select").first().click();
 
   cy.getBySel("ai-marketplace-item").eq(1).click();
 
@@ -104,17 +87,25 @@ Cypress.Commands.add("createAgentViaDialog", (agent, newAgentsFixture) => {
     cy.intercept("GET", "/api/agents", newAgentsFixture);
   });
 
-  cy.getBySel("agent-finish-button").click();
+  cy.getBySel("agent-next-button").click();
 
-  cy.waitEvent("AGENT_ADDED");
+  cy.getBySel("agent-next-button").click();
+
+  cy.getBySel("agent-next-button").click();
+
+  cy.getBySel("agent-finish-button").click();
 });
 
 Cypress.Commands.add("editAgentViaDialog", (agent, newAgents) => {
-  const { id, name, character, role, title, avatar } = agent;
+  const { id, name, description } = agent;
 
   cy.getBySel("name").clear();
-
   cy.getBySel("name").type(name, {
+    force: true,
+  });
+
+  cy.getBySel("description").clear();
+  cy.getBySel("description").type(description, {
     force: true,
   });
 
@@ -122,25 +113,7 @@ Cypress.Commands.add("editAgentViaDialog", (agent, newAgents) => {
 
   cy.getBySel("avatar-selection").should("be.visible");
 
-  cy.selectIconFromPicker(avatar);
-
-  cy.getBySel("agent-next-button").click();
-
-  cy.getBySel("agent-wizard-title-input").clear();
-  cy.getBySel("agent-wizard-title-input").type(title);
-
-  cy.getBySel("agent-wizard-role-input").clear();
-  cy.getBySel("agent-wizard-role-input").type(role);
-
-  cy.getBySel("agent-next-button").click();
-
-  cy.getBySel("character").clear();
-
-  cy.get('[data-cy="character"]').type(character, {
-    force: true,
-  });
-
-  cy.getBySel("agent-next-button").click();
+  cy.getBySel("avatar-select").first().click();
 
   cy.getBySel("ai-marketplace-item").eq(1).click();
 
@@ -150,6 +123,12 @@ Cypress.Commands.add("editAgentViaDialog", (agent, newAgents) => {
     cy.intercept("GET", "/api/agents", newAgents);
   });
 
+  cy.getBySel("agent-next-button").click();
+
+  cy.getBySel("agent-next-button").click();
+
+  cy.getBySel("agent-next-button").click();
+
   cy.getBySel("agent-finish-button").click();
 
   cy.waitEvent("AGENT_UPDATED");
@@ -157,19 +136,28 @@ Cypress.Commands.add("editAgentViaDialog", (agent, newAgents) => {
 
 Cypress.Commands.add("setAgentIntercept", () => {
   cy.storageGet("link.projectid").then(() => {
-    cy.intercept("GET", `/api/projects`, {
-      fixture: `agents-page/team.json`,
-    });
-    cy.intercept("GET", `/api/agents`, {
-      fixture: `agents-page/agents.json`,
+
+    cy.intercept("GET", `/api/organizations`, {
+      fixture: `organizations/organization.json`,
     });
 
     cy.intercept("GET", `/api/engines`, {
       fixture: `agents-page/engines.json`,
     });
 
-    cy.intercept("GET", `/api/organizations`, {
-      fixture: `organizations/organization.json`,
+    cy.intercept("GET", `/api/oauth/user`, {
+      fixture: `agents-page/user.json`,
+    });
+
+    cy.intercept("GET", `/api/projects/add6dfa4-45ba-4da2-bc5c-5a529610b52f`, {
+      fixture: `agents-page/team.json`,
+    });
+
+    cy.intercept("GET", `/api/projects`, {
+      fixture: `agents-page/teams.json`,
+    });
+    cy.intercept("GET", `/api/agents`, {
+      fixture: `agents.json`,
     });
   });
 });
@@ -201,17 +189,12 @@ Cypress.Commands.add("chatPageIntercept", () => {
 });
 
 Cypress.Commands.add("verifyAgentCard", (agent, index) => {
-  const { character, role, name } = agent;
+  const { description, name } = agent;
 
-  cy.getBySel("agent-card-character-area")
+  cy.getBySel("agent-card-description-area")
     .eq(index)
-    .then((characterArea) => {
-      expect(characterArea).to.have.text(character);
-    });
-  cy.getBySel("agent-card-role-area")
-    .eq(index)
-    .then((roleAre) => {
-      expect(roleAre).to.have.text(role);
+    .then((descriptionArea) => {
+      expect(descriptionArea).to.have.text(description);
     });
 
   cy.getBySel("agent-card-name")
@@ -272,6 +255,14 @@ Cypress.Commands.add("useKeyboard", (key) => {
       });
       break;
   }
+});
+
+Cypress.Commands.add("knowledgeBaseIntercept", () => {
+  cy.visit(`/agents`);
+  cy.getBySel("agent-card-more-vert").eq(0).first().click();
+  cy.getBySel("agent-card-menu-view").click();
+  cy.getBySel("tab-knowledge-base").should("be.visible");
+  cy.getBySel("tab-knowledge-base").click();
 });
 
 Cypress.Commands.add("waitEvent", (eventName, timeout = 20000) => {

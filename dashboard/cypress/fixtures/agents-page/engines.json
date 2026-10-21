@@ -1,0 +1,29 @@
+[
+    {
+        "id": "816642c9-8a97-41d6-88fc-0f369e26646c",
+        "vendor": "GreyCollar",
+        "avatar": "https://cdn.nucleoid.com/greycollar/media/icon.png",
+        "type": "Private Cloud",
+        "price": 0,
+        "model": "GreyAgent",
+        "createdAt": "2026-10-14T06:21:24.405Z"
+    },
+    {
+        "id": "ab4afc13-2c78-4fde-82d2-a7d343de9fac",
+        "vendor": "OpenAI",
+        "avatar": "https://cdn.nucleoid.com/greycollar/media/icon.png",
+        "type": "Cloud",
+        "price": 1.2,
+        "model": "GPT-4",
+        "createdAt": "2026-10-14T06:21:24.405Z"
+    },
+    {
+        "id": "b224f8bb-ec00-4c6c-aea6-761c310c00f5",
+        "vendor": "Claude",
+        "avatar": "https://cdn.nucleoid.com/greycollar/media/icon.png",
+        "type": "Cloud",
+        "price": 0.6,
+        "model": "Opus",
+        "createdAt": "2026-10-14T06:21:24.405Z"
+    }
+]

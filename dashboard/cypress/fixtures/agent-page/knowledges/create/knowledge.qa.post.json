@@ -1,0 +1,12 @@
+{
+  "id": "33333333-3333-4333-8333-333333333333",
+  "type": "QA",
+  "url": null,
+  "text": null,
+  "question": "How are you?",
+  "answer": "Okay?",
+  "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+  "teamId": null,
+  "status": "IN_PROGRESS",
+  "createdAt": "2026-10-14T06:21:24.405Z"
+}

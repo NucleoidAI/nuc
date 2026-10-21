@@ -1,0 +1,8 @@
+[
+  {
+    "id": "fffffff1-ffff-4fff-8fff-fffffffffff1",
+    "mcpProviderId": "eeeeeee1-eeee-4eee-8eee-eeeeeeeeeee1",
+    "description": "GitHub MCP server for repository operations.",
+    "icon": "mdi:github"
+  }
+]

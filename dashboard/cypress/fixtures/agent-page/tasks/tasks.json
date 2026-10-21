@@ -1,0 +1,12 @@
+[
+  {
+    "id": "aaaaaaa1-aaaa-4aaa-8aaa-aaaaaaaaaaa1",
+    "description": "Summarize weekly meeting transcripts",
+    "status": "COMPLETED",
+    "commandId": "aaaaaaa2-aaaa-4aaa-8aaa-aaaaaaaaaaa2",
+    "comment": "Task completed successfully.",
+    "result": "Summary generated and emailed.",
+    "createdAt": "2026-10-14T06:21:24.405Z",
+    "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+  }
+]

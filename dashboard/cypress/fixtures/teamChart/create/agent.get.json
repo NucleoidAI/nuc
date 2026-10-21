@@ -1,0 +1,50 @@
+[
+    {
+        "id": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "name": "subscription_agent",
+        "description": "A agent optimized for subscription tasks, workflow assistance, and context-aware support within the system.",
+        "icon": "iconoir:internet",
+        "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+        "AIEngine": {
+            "id": "816642c9-8a97-41d6-88fc-0f369e26646c",
+            "vendor": "GreyCollar",
+            "avatar": "https://cdn.nucleoid.com/greycollar/media/icon.png",
+            "type": "Private Cloud",
+            "price": 0,
+            "model": "GreyAgent",
+            "createdAt": "2026-10-14T06:21:24.405Z"
+        }
+    },
+    {
+        "id": "ab2d404b-3358-45eb-a468-338485924fea",
+        "name": "meeting_agent",
+        "description": "An agent that retrieves meeting transcripts, extracts personalized summaries and action items, and delivers them via email.",
+        "icon": "mdi:account-voice",
+        "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+        "AIEngine": {
+            "id": "816642c9-8a97-41d6-88fc-0f369e26646c",
+            "vendor": "GreyCollar",
+            "avatar": "https://cdn.nucleoid.com/greycollar/media/icon.png",
+            "type": "Private Cloud",
+            "price": 0,
+            "model": "GreyAgent",
+            "createdAt": "2026-10-14T06:21:24.405Z"
+        }
+    },
+    {
+        "id": "c38523e7-2e22-44e5-aa0d-f92c7d240315",
+        "name": "translator_agent",
+        "description": "A translation agent that translates text into the requested language.",
+        "icon": "ph:coffee-bean-duotone",
+        "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+        "AIEngine": {
+            "id": "816642c9-8a97-41d6-88fc-0f369e26646c",
+            "vendor": "GreyCollar",
+            "avatar": "https://cdn.nucleoid.com/greycollar/media/icon.png",
+            "type": "Private Cloud",
+            "price": 0,
+            "model": "GreyAgent",
+            "createdAt": "2026-10-14T06:21:24.405Z"
+        }
+    }
+]

@@ -1,0 +1,8 @@
+{
+    "id": "1001",
+    "identityProvider": "DEMO",
+    "name": "admin",
+    "displayName": "Demo Admin",
+    "avatarUrl": "https://api.dicebear.com/7.x/bottts/svg?seed=1001",
+    "email": "admin@demo.local"
+}

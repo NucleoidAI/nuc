@@ -1,11 +1,21 @@
 describe("Blueprint Flow", () => {
   beforeEach(() => {
-    cy.fixture("organizations/team.json").then((teams) => {
-      cy.wrap(teams.id).as("teamId");
-      cy.platformSetup(teams.id, "organizations/team.json");
+    cy.fixture("organizations/team.json").then((team) => {
+      cy.platformSetup(team.id, "organizations/team.json");
       cy.viewport(1280, 720);
     });
-    cy.fixture("organizations/team.json").as("project");
+
+    cy.fixture("agent-page/blueprints/blueprints.json").then((blueprints) => {
+      cy.wrap(blueprints[0]).as("blueprint");
+
+      cy.intercept(
+        "GET",
+        `/api/blueprints/ba6f7911-e232-469d-9060-2881852f6e59`,
+        blueprints[0]
+      );
+    });
+
+    cy.setAgentIntercept();
 
     cy.intercept("GET", `/api/projects/add6dfa4-45ba-4da2-bc5c-5a529610b52f`, {
       fixture: "organizations/team.json",
@@ -19,66 +29,12 @@ describe("Blueprint Flow", () => {
       }
     );
 
-    cy.fixture("teamChart/create/agent.get.json").as("newAgents");
-    cy.fixture("teamChart/create/agent.post.json").as("createdAgent");
+    cy.intercept("GET", `/api/agents`, {
+      fixture: "teamChart/agents.json",
+    });
 
     cy.intercept("GET", "/api/blueprints", {
       fixture: "agent-page/blueprints/blueprints.json",
-    });
-
-    cy.fixture("teamChart/agents.json").as("agent");
-  });
-  it("opens blueprint drawer", function () {
-    cy.visit("/team");
-
-    cy.intercept("GET", `/api/agents`, {
-      fixture: `/teamChart/agents.json`,
-    });
-
-    cy.setAgentIntercept();
-
-    cy.getBySel("team-chart").should("be.visible");
-
-    cy.fixture("agent-page/blueprints/blueprints.json").then((blueprints) => {
-      cy.intercept(
-        "GET",
-        `/api/blueprints/ba6f7911-e232-469d-9060-2881852f6e59`,
-        blueprints[0]
-      );
-    });
-
-    cy.intercept("GET", `/api/mcps`, { fixture: "agent-page/mcps.json" });
-
-    cy.intercept("GET", `/api/mcps/actions`, {
-      fixture: "agent-page/actions.json",
-    });
-
-    cy.intercept(
-      "PATCH",
-      `/api/blueprints/ba6f7911-e232-469d-9060-2881852f6e59`,
-      { fixture: "agent-page/blueprints/blueprint.patch.json" }
-    );
-
-    cy.getBySel("blueprint-button").click();
-  });
-
-  const openBlueprintFlow = () => {
-    cy.visit("/team");
-
-    cy.intercept("GET", `/api/agents`, {
-      fixture: `/teamChart/agents.json`,
-    });
-
-    cy.setAgentIntercept();
-
-    cy.getBySel("team-chart").should("be.visible");
-
-    cy.fixture("agent-page/blueprints/blueprints.json").then((blueprints) => {
-      cy.intercept(
-        "GET",
-        `/api/blueprints/ba6f7911-e232-469d-9060-2881852f6e59`,
-        blueprints[0]
-      );
     });
 
     cy.intercept(
@@ -97,11 +53,21 @@ describe("Blueprint Flow", () => {
       statusCode: 200,
       body: { description: "", skill: "" },
     });
+  });
+
+  const openBlueprintFlow = () => {
+    cy.visit("/team");
+
+    cy.getBySel("team-chart").should("be.visible");
 
     cy.getBySel("blueprint-button").click();
 
     cy.getBySel("blueprint-flow-canvas").should("be.visible");
   };
+
+  it("opens blueprint drawer", function () {
+    openBlueprintFlow();
+  });
 
   it("adds a node to the flow", function () {
     openBlueprintFlow();
@@ -116,7 +82,7 @@ describe("Blueprint Flow", () => {
     cy.getBySel("node-label-input").type("New Normal Node");
 
     cy.get("#node-type-select").click();
-    cy.get("li").contains("Normal").click();
+    cy.contains("li", "Normal").click();
 
     cy.getBySel("integration-option")
       .filter('[data-action="PLATFORM:llm"]')
@@ -157,10 +123,6 @@ describe("Blueprint Flow", () => {
   });
 
   it("saves the flow after editing a node", function () {
-    cy.fixture("agent-page/blueprints/blueprints.json").then((blueprints) => {
-      cy.wrap(blueprints[0]).as("blueprint");
-    });
-
     openBlueprintFlow();
 
     cy.getBySel("node-edit-button").first().click();
@@ -168,12 +130,11 @@ describe("Blueprint Flow", () => {
     cy.getBySel("node-label-input").clear();
     cy.getBySel("node-label-input").type("Updated Label For Save");
 
-
     cy.getBySel("node-editor-submit-button").click();
 
     cy.getBySel("save-flow-button").should("be.visible");
 
-      cy.intercept(
+    cy.intercept(
       "PUT",
       "/api/blueprints/ba6f7911-e232-469d-9060-2881852f6e59",
       {
@@ -195,7 +156,6 @@ describe("Blueprint Flow", () => {
     cy.getBySel("node-label-input").clear();
     cy.getBySel("node-label-input").type("Diff Preview Label");
 
-    cy.intercept("POST", "/api/blueprints/generate")
     cy.getBySel("node-editor-submit-button").click();
 
     cy.getBySel("view-json-diff-button").should("be.visible");

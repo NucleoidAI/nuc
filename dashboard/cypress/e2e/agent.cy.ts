@@ -1,7 +1,6 @@
 describe("Agent page", () => {
   beforeEach(() => {
     cy.fixture("agents-page/teams.json").then((teams) => {
-      cy.wrap(teams[1].id).as("teamId");
       cy.platformSetup(teams[0].id, "agents-page/teams.json");
       cy.viewport(1280, 720);
     });
@@ -13,12 +12,12 @@ describe("Agent page", () => {
   });
 
   it("visits agents list and opens the agent drawer", function () {
-    cy.visit("/agents");
     cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
+    cy.visit("/agents");
 
     cy.getBySel("agent-card").should("have.length", 2);
 
-    cy.getBySel("agent-card-more-vert").eq(0).first().click();
+    cy.getBySel("agent-card-more-vert").first().click();
 
     cy.getBySel("agent-card-menu-view").click();
 
@@ -29,7 +28,7 @@ describe("Agent page", () => {
   it("opens the edit menu from the agent card", function () {
     cy.visit("/agents");
 
-    cy.getBySel("agent-card-more-vert").eq(0).first().click();
+    cy.getBySel("agent-card-more-vert").first().click();
 
     cy.getBySel("agent-card-menu-edit").click();
 
@@ -39,7 +38,7 @@ describe("Agent page", () => {
   it("opens the delete confirmation from the agent card", function () {
     cy.visit("/agents");
 
-    cy.getBySel("agent-card-more-vert").eq(0).first().click();
+    cy.getBySel("agent-card-more-vert").first().click();
 
     cy.getBySel("agent-card-menu-delete").click();
 
@@ -75,7 +74,7 @@ describe("Agent page", () => {
 
     cy.waitEvent("KNOWLEDGE_CREATED");
 
-    cy.waitEvent("KNOWLEDGE_LOADED");
+    cy.getBySel("delete-knowledge-button").should("have.length", 4);
   });
 
   it("adds a Text knowledge item", function () {
@@ -107,7 +106,7 @@ describe("Agent page", () => {
 
     cy.waitEvent("KNOWLEDGE_CREATED");
 
-    cy.waitEvent("KNOWLEDGE_LOADED");
+    cy.getBySel("delete-knowledge-button").should("have.length", 4);
   });
 
   it("adds a QA knowledge item", function () {
@@ -141,7 +140,7 @@ describe("Agent page", () => {
 
     cy.waitEvent("KNOWLEDGE_CREATED");
 
-    cy.waitEvent("KNOWLEDGE_LOADED");
+    cy.getBySel("delete-knowledge-button").should("have.length", 4);
   });
 
   it("adds a Data knowledge item", function () {
@@ -175,7 +174,7 @@ describe("Agent page", () => {
 
     cy.waitEvent("KNOWLEDGE_CREATED");
 
-    cy.waitEvent("KNOWLEDGE_LOADED");
+    cy.getBySel("delete-knowledge-button").should("have.length", 4);
   });
 
   it("deletes a URL knowledge item", function () {
@@ -208,7 +207,7 @@ describe("Agent page", () => {
 
     cy.waitEvent("KNOWLEDGE_DELETED");
 
-    cy.waitEvent("KNOWLEDGE_LOADED");
+    cy.getBySel("delete-knowledge-button").should("not.exist");
   });
 
   it("deletes a Text knowledge item", function () {
@@ -241,7 +240,7 @@ describe("Agent page", () => {
 
     cy.waitEvent("KNOWLEDGE_DELETED");
 
-    cy.waitEvent("KNOWLEDGE_LOADED");
+    cy.getBySel("delete-knowledge-button").should("not.exist");
   });
 
   it("deletes a QA knowledge item", function () {
@@ -274,7 +273,7 @@ describe("Agent page", () => {
 
     cy.waitEvent("KNOWLEDGE_DELETED");
 
-    cy.waitEvent("KNOWLEDGE_LOADED");
+    cy.getBySel("delete-knowledge-button").should("not.exist");
   });
 
   it("deletes a Data knowledge item", function () {
@@ -307,7 +306,7 @@ describe("Agent page", () => {
 
     cy.waitEvent("KNOWLEDGE_DELETED");
 
-    cy.waitEvent("KNOWLEDGE_LOADED");
+    cy.getBySel("delete-knowledge-button").should("not.exist");
   });
 
   it("opens a blueprint flow from the blueprints tab", function () {
@@ -325,7 +324,7 @@ describe("Agent page", () => {
     });
 
     cy.visit(`/agents`);
-    cy.getBySel("agent-card-more-vert").eq(0).first().click();
+    cy.getBySel("agent-card-more-vert").first().click();
     cy.getBySel("agent-card-menu-view").click();
     cy.getBySel("tab-blueprints").should("be.visible");
     cy.getBySel("tab-blueprints").click();
@@ -348,6 +347,8 @@ describe("Agent page", () => {
 
     cy.getBySel("edit-icon").should("be.visible");
     cy.getBySel("edit-icon").first().click();
+
+    cy.getBySel("blueprint-flow-canvas").should("be.visible");
   });
 
   it("opens the resolve supervise flow from the supervisings tab", function () {
@@ -357,7 +358,7 @@ describe("Agent page", () => {
     });
 
     cy.visit(`/agents`);
-    cy.getBySel("agent-card-more-vert").eq(0).first().click();
+    cy.getBySel("agent-card-more-vert").first().click();
     cy.getBySel("agent-card-menu-view").click();
     cy.getBySel("tab-supervisings").should("be.visible");
     cy.getBySel("tab-supervisings").click();
@@ -381,7 +382,7 @@ describe("Agent page", () => {
     );
 
     cy.visit(`/agents`);
-    cy.getBySel("agent-card-more-vert").eq(0).first().click();
+    cy.getBySel("agent-card-more-vert").first().click();
     cy.getBySel("agent-card-menu-view").click();
     cy.getBySel("tab-tasks").should("be.visible");
     cy.getBySel("tab-tasks").click();
@@ -405,18 +406,26 @@ describe("Agent page", () => {
     );
 
     cy.visit(`/agents`);
-    cy.getBySel("agent-card-more-vert").eq(0).first().click();
+    cy.getBySel("agent-card-more-vert").first().click();
     cy.getBySel("agent-card-menu-view").click();
     cy.getBySel("tab-tasks").should("be.visible");
     cy.getBySel("tab-tasks").click();
 
     cy.getBySel("task-list-item").first().click();
 
-    cy.getBySel("task-details-toggle-expand").click();
+    cy.getBySel("task-details-toggle-expand")
+      .should("have.attr", "aria-label", "Expand")
+      .click();
 
-    cy.wait(2000);
+    cy.getBySel("task-details-toggle-expand")
+      .should("have.attr", "aria-label", "Minimize")
+      .click();
 
-    cy.getBySel("task-details-toggle-expand").click();
+    cy.getBySel("task-details-toggle-expand").should(
+      "have.attr",
+      "aria-label",
+      "Expand"
+    );
   });
 
   it("adds a channel from the channels tab", function () {
@@ -429,7 +438,7 @@ describe("Agent page", () => {
     });
 
     cy.visit(`/agents`);
-    cy.getBySel("agent-card-more-vert").eq(0).first().click();
+    cy.getBySel("agent-card-more-vert").first().click();
     cy.getBySel("agent-card-menu-view").click();
     cy.getBySel("tab-channels").should("be.visible");
     cy.getBySel("tab-channels").click();
@@ -446,13 +455,17 @@ describe("Agent page", () => {
 
     cy.intercept("POST", `/api/channels`, {
       fixture: "agent-page/channels/channels.json",
-    });
+    }).as("createChannel");
 
     cy.intercept("GET", `/api/channels`, {
       fixture: "agent-page/channels/channels.json",
     });
 
     cy.getBySel("channel-wizard-connect-button").click();
+
+    cy.wait("@createChannel");
+
+    cy.getBySel("channel-wizard-connect-button").should("not.exist");
   });
 
   it("lists MCP servers from the mcps tab", function () {
@@ -468,7 +481,7 @@ describe("Agent page", () => {
     });
 
     cy.visit(`/agents`);
-    cy.getBySel("agent-card-more-vert").eq(0).first().click();
+    cy.getBySel("agent-card-more-vert").first().click();
     cy.getBySel("agent-card-menu-view").click();
     cy.getBySel("tab-mcps").should("be.visible");
     cy.getBySel("tab-mcps").click();

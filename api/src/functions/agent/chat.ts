@@ -84,7 +84,6 @@ async function answerOrEscalate({
   if (answer_known.noul >= 0.5) {
     const { answer } = await generate({
       policy: dataset.llm.policy,
-      dataset: dataset.llm.chat,
       context,
       content,
       json_format: "{ answer: <ANSWER_IN_NLP>}",

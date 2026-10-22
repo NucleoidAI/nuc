@@ -5,7 +5,6 @@ import blueprintChatKnowledge from "./blueprint-chat-knowledge.json";
 import blueprintDescription from "./blueprint-description.json";
 import blueprintName from "./blueprint-name.json";
 import blueprintSkill from "./blueprint-skill.json";
-import chat from "./chat.json";
 import policy from "./policy.json";
 import forceTaskDiamondBlocking from "./force-task-diamond-blocking.json";
 import forceTaskDiamondNonBlocking from "./force-task-diamond-non-blocking.json";
@@ -15,12 +14,6 @@ export default {
   policy: {
     role: "system" as const,
     content: JSON.stringify({ policy: policy.data }),
-  },
-  chat: {
-    role: "system" as const,
-    content: JSON.stringify({
-      train: chat.data,
-    }),
   },
   forceTaskDiamondBlocking: {
     role: "system" as const,

@@ -5,7 +5,7 @@ import type {
   Questions,
 } from "@typesafe-ai/sdk";
 import { ask, choice, noul } from "../../lib/decision";
-import fewShots from "../../dataset/train/decision/index";
+import dataset from "../../dataset";
 import type { LLMMeta } from "@canmingir/link-express/llm";
 import { mkdirSync, writeFileSync } from "fs";
 import path from "path";
@@ -195,13 +195,13 @@ function withFewShots(list: object[]): { few_shots: JsonValue[] } | {} {
 }
 
 function parameterDiamondFewShots(action: string, name: string) {
-  return fewShots.parameterDiamond.filter(
+  return dataset.decision.parameterDiamond.filter(
     (fewShot) => fewShot.action === action && fewShot.parameter.name === name,
   );
 }
 
 function inputsAvailableFewShots(action: string) {
-  return fewShots.inputsAvailable.filter(
+  return dataset.decision.inputsAvailable.filter(
     (fewShot) => fewShot.action === action,
   );
 }
@@ -296,7 +296,7 @@ async function actionDiamond({
             "`inherited_context_steps`",
             "`conversation`",
           ],
-          ...withFewShots(fewShots.actionDiamond),
+          ...withFewShots(dataset.decision.actionDiamond),
         },
         Object.fromEntries(
           options.map(({ action, label, description, inputSchema }) => [

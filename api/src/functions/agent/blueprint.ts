@@ -4,7 +4,6 @@ import { type ChatHistory, handoffTargets, knowledge } from "./context";
 import type { LLMMeta } from "@canmingir/link-express/llm";
 import blueprintFn from "../blueprint";
 import dataset from "../../dataset";
-import fewShots from "../../dataset/train/decision/index";
 import { generate } from "@canmingir/link-express/llm";
 import { normalizeFlow } from "./flow";
 
@@ -137,7 +136,7 @@ async function blueprintChatDecision({
           select: "update_target",
           supervisor_reply: "`user_message`",
           context: CHAT_CONTEXT,
-          few_shots: fewShots.supervisingChatDecision as JsonValue[],
+          few_shots: dataset.decision.supervisingChatDecision as JsonValue[],
         },
         {
           KNOWLEDGE: {
@@ -180,7 +179,7 @@ async function blueprintChatSufficiency({
           update_target: "`decision`",
           supervisor_reply: "`user_message`",
           context: CHAT_CONTEXT,
-          few_shots: fewShots.supervisingChatSufficiency as JsonValue[],
+          few_shots: dataset.decision.supervisingChatSufficiency as JsonValue[],
         },
         {
           true: { reply: "clear and specific enough to apply" },
@@ -200,7 +199,7 @@ async function blueprintChatSufficiency({
   }
 
   const { answer } = await generate({
-    dataset: dataset.train.blueprintChatSufficiency,
+    dataset: dataset.llm.blueprintChatSufficiency,
     context: [system({ decision, sufficient: false }), ...(history ?? [])],
     content,
     json_format: "{ answer: <FOLLOW_UP_QUESTION> }",
@@ -218,7 +217,7 @@ async function blueprintChatKnowledge({
   meta?: LLMMeta;
 }) {
   const response = await generate({
-    dataset: dataset.train.blueprintChatKnowledge,
+    dataset: dataset.llm.blueprintChatKnowledge,
     content,
     json_format: "{ knowledge: <EXTRACTED_KNOWLEDGE> }",
     meta,
@@ -253,7 +252,7 @@ async function Blueprint({
   ];
 
   const response = await generate({
-    dataset: dataset.train.blueprintChat,
+    dataset: dataset.llm.blueprintChat,
     context,
     content,
     json_format: "{ response: <RESPONSE>, flow: [<FLOW>] }",
@@ -277,7 +276,7 @@ async function blueprintName({
   agentId: string;
 }) {
   return generate({
-    dataset: dataset.train.blueprintName,
+    dataset: dataset.llm.blueprintName,
     context: history,
     content,
     json_format: "{ title: <TITLE>, description: <DESCRIPTION> }",
@@ -293,7 +292,7 @@ async function blueprintDescription({
   meta?: LLMMeta;
 }) {
   const response = await generate({
-    dataset: dataset.train.blueprintDescription,
+    dataset: dataset.llm.blueprintDescription,
     context: [{ role: "system", content: { nodes } }],
     content: nodes,
     json_format: "{ description: <DESCRIPTION> }",
@@ -305,7 +304,7 @@ async function blueprintDescription({
 
 async function blueprintSkill({ nodes }: { nodes: object[] }) {
   const response = await generate({
-    dataset: dataset.train.blueprintSkill,
+    dataset: dataset.llm.blueprintSkill,
     context: [{ role: "system", content: { nodes } }],
     content: nodes,
     json_format: "{ skill: <SKILL> }",

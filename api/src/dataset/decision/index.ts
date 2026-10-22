@@ -1,9 +1,9 @@
-import actionDiamond from "./action_diamond.json";
-import customerApproval from "./customer_approval.json";
-import inputsAvailable from "./inputs_available.json";
-import parameterDiamond from "./parameter_diamond.json";
-import supervisingChatDecision from "./supervising_chat_decision.json";
-import supervisingChatSufficiency from "./supervising_chat_sufficiency.json";
+import actionDiamond from "./action-diamond.json";
+import customerApproval from "./customer-approval.json";
+import inputsAvailable from "./inputs-available.json";
+import parameterDiamond from "./parameter-diamond.json";
+import supervisingChatDecision from "./supervising-chat-decision.json";
+import supervisingChatSufficiency from "./supervising-chat-sufficiency.json";
 
 type Escalation = {
   action: string;

@@ -1,6 +1,7 @@
 import APITab from "../widgets/APITab/APITab";
 import AgentDevToolWidget from "../widgets/AgentDevToolWidget";
 import AgentMCP from "../widgets/AgentMCP/AgentMCP";
+import BlueprintDrawerLayout from "./BlueprintDrawerLayout";
 import BlueprintsWidget from "../widgets/BlueprintsWidget/BlueprintsWidget";
 import Channel from "../widgets/Channel/Channel";
 import { Iconify } from "@canmingir/link/platform/components";
@@ -13,6 +14,7 @@ import SwaggerDialog from "../components/SwaggerDialog/SwaggerDialog";
 import TasksWidget from "../widgets/TasksWidget/TasksWidget";
 import config from "../../config";
 import { getAgentGradients } from "../utils/gradient";
+import useBlueprint from "../hooks/useBlueprint";
 import { useEvent } from "@nucleoidai/react-event";
 
 import { Box, Skeleton, useTheme } from "@mui/material";
@@ -116,6 +118,24 @@ function AgentLayout({
 
   const [swaggerEvent] = useEvent("SWAGGER_DIALOG_OPEN", { open: false });
 
+  const [blueprintDrawerOpen, setBlueprintDrawerOpen] = useState(false);
+  const [selectedBlueprintId, setSelectedBlueprintId] = useState(null);
+  const { getBlueprintWithId } = useBlueprint();
+  const { blueprint: selectedBlueprint } = getBlueprintWithId(
+    selectedBlueprintId,
+    [selectedBlueprintId]
+  );
+
+  const handleOpenBlueprint = (blueprintId: string) => {
+    setSelectedBlueprintId(blueprintId);
+    setBlueprintDrawerOpen(true);
+  };
+
+  const handleCloseBlueprintDrawer = () => {
+    setBlueprintDrawerOpen(false);
+    setSelectedBlueprintId(null);
+  };
+
   useEffect(() => {
     if (swaggerEvent?.open) setSwaggerOpen(true);
   }, [swaggerEvent]);
@@ -197,7 +217,11 @@ function AgentLayout({
         <Box sx={{ flex: 1, minHeight: 0 }}>
           {currentTab === "profile" && <Profile agentId={agent.id} />}
           {currentTab === "knowledge-base" && (
-            <Knowledge teamId={agent.teamId} agentId={agent.id} />
+            <Knowledge
+              teamId={agent.teamId}
+              agentId={agent.id}
+              onBlueprintClick={handleOpenBlueprint}
+            />
           )}
           {currentTab === "blueprints" && (
             <BlueprintsWidget teamId={agent.teamId} agentId={agent.id} />
@@ -220,6 +244,18 @@ function AgentLayout({
         swaggerOpen={swaggerOpen}
         setSwaggerOpen={setSwaggerOpen}
       />
+
+      {blueprintDrawerOpen &&
+        selectedBlueprint &&
+        selectedBlueprint.id === selectedBlueprintId && (
+          <BlueprintDrawerLayout
+            drawerOpen={blueprintDrawerOpen}
+            handleDrawerClose={handleCloseBlueprintDrawer}
+            selectedItem={selectedBlueprint}
+            agentId={agent.id}
+            teamId={agent.teamId}
+          />
+        )}
     </>
   );
 }

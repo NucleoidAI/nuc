@@ -1,5 +1,7 @@
+import { ask, noul } from "../../lib/decision";
 import { conversations, knowledge } from "./context";
 import { findStep, replyToApproval } from "./approval";
+import type { EntryType } from "@typesafe-ai/sdk";
 import agentData from "../agentData";
 import blueprintFn from "../blueprint";
 import dataset from "../../dataset";
@@ -51,21 +53,41 @@ async function answerOrEscalate({
     ...history,
   ];
 
-  const { evaluation } = await generate({
-    dataset: dataset.train.chat,
-    context,
-    content,
-    json_format: "{ evaluation: { is_answer_known: <true|false> } }",
+  const dialogue = history.filter(({ role }) => role !== "system");
+
+  const { answer_known } = await ask({
+    state: JSON.parse(
+      JSON.stringify({
+        knowledge_base,
+        ...(dialogue.length && { conversation: dialogue }),
+        customer_message: content,
+      }),
+    ) as EntryType,
+    questions: {
+      answer_known: noul(
+        {
+          decide: "answer_is_known",
+          question: "`customer_message`",
+          evidence: ["`knowledge_base`", "`conversation`"],
+        },
+        {
+          true: { knowledge_base: "contains_the_answer" },
+          false: { knowledge_base: "does_not_contain_the_answer" },
+        },
+      ),
+    },
     meta: { agentId, sessionId, source: "agent.chat.evaluation" },
   });
 
-  if (evaluation?.is_answer_known) {
+  console.debug(`[decision] chat answer known with ${answer_known.noul}`);
+
+  if (answer_known.noul >= 0.5) {
     const { answer } = await generate({
       policy: dataset.policy,
       dataset: dataset.train.chat,
       context,
       content,
-      json_format: "{ answer: <ANSWER_IN_NLP>, confidence: <0-1> }",
+      json_format: "{ answer: <ANSWER_IN_NLP>}",
       meta: { agentId, sessionId, source: "agent.chat.answer" },
     });
 
@@ -192,7 +214,7 @@ async function teamChat({
     context,
     content: hasCall
       ? `${next.resource}.${next.function}(${JSON.stringify(
-          next.parameters
+          next.parameters,
         )})=${JSON.stringify(data)} ${content}`
       : content,
     json_format: "{ response: <RESPONSE> }",
@@ -206,38 +228,4 @@ async function teamChat({
   });
 }
 
-async function evaluateSupervisionAnswer({
-  agentId,
-  content,
-}: {
-  agentId: string;
-  content: {
-    question: string;
-    answer: string;
-  };
-}) {
-  const knowledge_base = await knowledge({ agentId });
-
-  return generate({
-    dataset: dataset.train.blueprintChatEvaluation,
-    context: [
-      { role: "system", content: { knowledge_base } },
-      {
-        role: "system",
-        content: {
-          supervision_context: {
-            original_question: content.question,
-            proposed_answer: content.answer,
-          },
-        },
-      },
-    ],
-    content: `${content.question}\n\nAnswer: ${content.answer}`,
-    json_format: `{
-      "is_answer_known": <true|false>,
-    }`,
-    meta: { agentId, source: "agent.evaluateSupervisionAnswer" },
-  });
-}
-
-export { chat, evaluateSupervisionAnswer, teamChat };
+export { chat, teamChat };

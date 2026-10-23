@@ -251,7 +251,6 @@ function TasksWidget({
                   <TaskDetails
                     task={selectedTask}
                     steps={steps}
-                    agentId={agentId}
                     getSteps={getSteps}
                   />
                 </DialogContent>
@@ -277,7 +276,6 @@ function TasksWidget({
                   <TaskDetails
                     task={selectedTask}
                     steps={steps}
-                    agentId={agentId}
                     getSteps={getSteps}
                     isExpanded={detailsExpanded}
                     onToggleExpand={() => setDetailsExpanded((prev) => !prev)}

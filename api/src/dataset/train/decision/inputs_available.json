@@ -1,0 +1,3907 @@
+{
+  "data": [
+    {
+      "action": "ORDER:assign_certificate",
+      "state": {
+        "steps": [
+          {
+            "action": "ORDER:find_product",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "session_variables.item.material"
+              },
+              "name": {
+                "$ref": "session_variables.item.description"
+              }
+            },
+            "result": {
+              "product": {
+                "id": "TLP-4200",
+                "name": "Thermal Label Printer",
+                "vendor_id": "VND-2101",
+                "unit_price": 12500,
+                "currency": "usd",
+                "weight_kg": 2.5
+              }
+            }
+          },
+          {
+            "action": "PLATFORM:knowledge_lookup",
+            "status": "COMPLETED",
+            "parameters": {},
+            "result": {
+              "knowledge": [
+                {
+                  "id": "be4f83d1-0e56-4989-873c-051b83e6b843",
+                  "type": "TEXT",
+                  "text": "The order management manager's email address is halilcengel@greycollar.ai.",
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "fe903f32-6794-47ab-90e5-4bb7babb556b",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "TLP-4200",
+                    "product_name": "Thermal Label Printer",
+                    "certificate": "FFC"
+                  },
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "cd7df4f2-514f-48df-8f71-1ece01b94deb",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "BCS-310",
+                    "product_name": "Wireless Barcode Scanner",
+                    "certificate": "CE"
+                  },
+                  "status": "COMPLETED"
+                }
+              ]
+            }
+          }
+        ],
+        "knowledge_base": [
+          {
+            "type": "TEXT",
+            "text": "The order management manager's email address is halilcengel@greycollar.ai."
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "TLP-4200",
+              "product_name": "Thermal Label Printer",
+              "certificate": "FFC"
+            }
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "BCS-310",
+              "product_name": "Wireless Barcode Scanner",
+              "certificate": "CE"
+            }
+          }
+        ],
+        "session_variables": {
+          "event": "SALES_ORDER_CREATED",
+          "orderNumber": "0000004713",
+          "orderType": "OR",
+          "orderTypeText": "Standard Order",
+          "customer": "1000017",
+          "customerName": "Atlas Manufacturing Inc.",
+          "customerCity": "Atlanta",
+          "customerCountry": "US",
+          "poNumber": "",
+          "currency": "USD",
+          "netValue": 125,
+          "taxValue": 23.75,
+          "totalValue": 148.75,
+          "requestedDeliveryDate": "2026-10-26",
+          "incoterms": "CIF",
+          "paymentTerms": "NT30",
+          "status": "Open",
+          "creditStatus": "Approved",
+          "salesOrg": "1710",
+          "item": {
+            "item": "10",
+            "material": "TLP-4200",
+            "description": "Thermal Label Printer",
+            "quantity": 1,
+            "uom": "PC",
+            "unitPrice": 125,
+            "netValue": 125,
+            "plant": "1010",
+            "vendor": "Apex Peripherals Inc."
+          },
+          "approvalRequestUrl": "http://localhost:5206/api/approvals",
+          "noteUrl": "http://localhost:5206/api/sales-orders/0000004713/notes"
+        },
+        "conversation": [
+          {
+            "role": "user",
+            "content": {
+              "event": "SALES_ORDER_CREATED",
+              "orderNumber": "0000004713",
+              "orderType": "OR",
+              "orderTypeText": "Standard Order",
+              "customer": "1000017",
+              "customerName": "Atlas Manufacturing Inc.",
+              "customerCity": "Atlanta",
+              "customerCountry": "US",
+              "poNumber": "",
+              "currency": "USD",
+              "netValue": 125,
+              "taxValue": 23.75,
+              "totalValue": 148.75,
+              "requestedDeliveryDate": "2026-10-26",
+              "incoterms": "CIF",
+              "paymentTerms": "NT30",
+              "status": "Open",
+              "creditStatus": "Approved",
+              "salesOrg": "1710",
+              "item": {
+                "item": "10",
+                "material": "TLP-4200",
+                "description": "Thermal Label Printer",
+                "quantity": 1,
+                "uom": "PC",
+                "unitPrice": 125,
+                "netValue": 125,
+                "plant": "1010",
+                "vendor": "Apex Peripherals Inc."
+              },
+              "approvalRequestUrl": "http://localhost:5206/api/approvals",
+              "noteUrl": "http://localhost:5206/api/sales-orders/0000004713/notes"
+            }
+          }
+        ]
+      },
+      "required_parameters": [
+        {
+          "name": "product_id",
+          "type": "string",
+          "description": "The product ID to assign the certificate to."
+        },
+        {
+          "name": "certificate",
+          "type": "string",
+          "description": "The certificate type to assign (e.g. FFC, CE)."
+        }
+      ],
+      "inputs_available": 1
+    },
+    {
+      "action": "ORDER:create_po",
+      "state": {
+        "steps": [
+          {
+            "action": "ORDER:find_product",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "session_variables.item.material"
+              },
+              "name": {
+                "$ref": "session_variables.item.description"
+              }
+            },
+            "result": {
+              "product": {
+                "id": "TLP-4200",
+                "name": "Thermal Label Printer",
+                "vendor_id": "VND-2101",
+                "unit_price": 12500,
+                "currency": "usd",
+                "weight_kg": 2.5
+              }
+            }
+          },
+          {
+            "action": "PLATFORM:knowledge_lookup",
+            "status": "COMPLETED",
+            "parameters": {},
+            "result": {
+              "knowledge": [
+                {
+                  "id": "be4f83d1-0e56-4989-873c-051b83e6b843",
+                  "type": "TEXT",
+                  "text": "The order management manager's email address is halilcengel@greycollar.ai.",
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "fe903f32-6794-47ab-90e5-4bb7babb556b",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "TLP-4200",
+                    "product_name": "Thermal Label Printer",
+                    "certificate": "FFC"
+                  },
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "cd7df4f2-514f-48df-8f71-1ece01b94deb",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "BCS-310",
+                    "product_name": "Wireless Barcode Scanner",
+                    "certificate": "CE"
+                  },
+                  "status": "COMPLETED"
+                }
+              ]
+            }
+          },
+          {
+            "action": "ORDER:assign_certificate",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "steps[0].result.product.id"
+              },
+              "certificate": {
+                "$ref": "steps[1].result.knowledge[1].text.certificate"
+              }
+            },
+            "result": {
+              "product_id": "TLP-4200",
+              "certificate": "FFC",
+              "assigned": true
+            }
+          }
+        ],
+        "knowledge_base": [
+          {
+            "type": "TEXT",
+            "text": "The order management manager's email address is halilcengel@greycollar.ai."
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "TLP-4200",
+              "product_name": "Thermal Label Printer",
+              "certificate": "FFC"
+            }
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "BCS-310",
+              "product_name": "Wireless Barcode Scanner",
+              "certificate": "CE"
+            }
+          }
+        ],
+        "session_variables": {
+          "event": "SALES_ORDER_CREATED",
+          "orderNumber": "0000004713",
+          "orderType": "OR",
+          "orderTypeText": "Standard Order",
+          "customer": "1000017",
+          "customerName": "Atlas Manufacturing Inc.",
+          "customerCity": "Atlanta",
+          "customerCountry": "US",
+          "poNumber": "",
+          "currency": "USD",
+          "netValue": 125,
+          "taxValue": 23.75,
+          "totalValue": 148.75,
+          "requestedDeliveryDate": "2026-10-26",
+          "incoterms": "CIF",
+          "paymentTerms": "NT30",
+          "status": "Open",
+          "creditStatus": "Approved",
+          "salesOrg": "1710",
+          "item": {
+            "item": "10",
+            "material": "TLP-4200",
+            "description": "Thermal Label Printer",
+            "quantity": 1,
+            "uom": "PC",
+            "unitPrice": 125,
+            "netValue": 125,
+            "plant": "1010",
+            "vendor": "Apex Peripherals Inc."
+          },
+          "approvalRequestUrl": "http://localhost:5206/api/approvals",
+          "noteUrl": "http://localhost:5206/api/sales-orders/0000004713/notes"
+        },
+        "conversation": [
+          {
+            "role": "user",
+            "content": {
+              "event": "SALES_ORDER_CREATED",
+              "orderNumber": "0000004713",
+              "orderType": "OR",
+              "orderTypeText": "Standard Order",
+              "customer": "1000017",
+              "customerName": "Atlas Manufacturing Inc.",
+              "customerCity": "Atlanta",
+              "customerCountry": "US",
+              "poNumber": "",
+              "currency": "USD",
+              "netValue": 125,
+              "taxValue": 23.75,
+              "totalValue": 148.75,
+              "requestedDeliveryDate": "2026-10-26",
+              "incoterms": "CIF",
+              "paymentTerms": "NT30",
+              "status": "Open",
+              "creditStatus": "Approved",
+              "salesOrg": "1710",
+              "item": {
+                "item": "10",
+                "material": "TLP-4200",
+                "description": "Thermal Label Printer",
+                "quantity": 1,
+                "uom": "PC",
+                "unitPrice": 125,
+                "netValue": 125,
+                "plant": "1010",
+                "vendor": "Apex Peripherals Inc."
+              },
+              "approvalRequestUrl": "http://localhost:5206/api/approvals",
+              "noteUrl": "http://localhost:5206/api/sales-orders/0000004713/notes"
+            }
+          }
+        ]
+      },
+      "required_parameters": [
+        {
+          "name": "product_id",
+          "type": "string",
+          "description": "The ID of the product to create the PO for."
+        },
+        {
+          "name": "city",
+          "type": "string",
+          "description": "The city where the order will be delivered."
+        },
+        {
+          "name": "quantity",
+          "type": "number",
+          "description": "The quantity of the product to order."
+        }
+      ],
+      "inputs_available": 1
+    },
+    {
+      "action": "STRIPE:create_payment_intent",
+      "state": {
+        "steps": [
+          {
+            "action": "ORDER:find_product",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "session_variables.item.material"
+              },
+              "name": {
+                "$ref": "session_variables.item.description"
+              }
+            },
+            "result": {
+              "product": {
+                "id": "TLP-4200",
+                "name": "Thermal Label Printer",
+                "vendor_id": "VND-2101",
+                "unit_price": 12500,
+                "currency": "usd",
+                "weight_kg": 2.5
+              }
+            }
+          },
+          {
+            "action": "PLATFORM:knowledge_lookup",
+            "status": "COMPLETED",
+            "parameters": {},
+            "result": {
+              "knowledge": [
+                {
+                  "id": "be4f83d1-0e56-4989-873c-051b83e6b843",
+                  "type": "TEXT",
+                  "text": "The order management manager's email address is halilcengel@greycollar.ai.",
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "fe903f32-6794-47ab-90e5-4bb7babb556b",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "TLP-4200",
+                    "product_name": "Thermal Label Printer",
+                    "certificate": "FFC"
+                  },
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "cd7df4f2-514f-48df-8f71-1ece01b94deb",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "BCS-310",
+                    "product_name": "Wireless Barcode Scanner",
+                    "certificate": "CE"
+                  },
+                  "status": "COMPLETED"
+                }
+              ]
+            }
+          },
+          {
+            "action": "ORDER:assign_certificate",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "steps[0].result.product.id"
+              },
+              "certificate": {
+                "$ref": "steps[1].result.knowledge[1].text.certificate"
+              }
+            },
+            "result": {
+              "product_id": "TLP-4200",
+              "certificate": "FFC",
+              "assigned": true
+            }
+          },
+          {
+            "action": "ORDER:create_po",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "steps[0].result.product.id"
+              },
+              "city": {
+                "$ref": "session_variables.customerCity"
+              },
+              "quantity": {
+                "$ref": "session_variables.item.quantity"
+              }
+            },
+            "result": {
+              "purchase_order": {
+                "order_id": "po-1004",
+                "product_id": "TLP-4200",
+                "city": "Atlanta",
+                "quantity": 1,
+                "unit_price": 12500,
+                "currency": "usd",
+                "net_amount": 12500,
+                "tax_rate": 0.19,
+                "tax_amount": 2375,
+                "total_amount": 14875,
+                "total_weight_kg": 2.5,
+                "ship_from": {
+                  "postal_code": "30301",
+                  "country_code": "US"
+                },
+                "ship_to": {
+                  "city": "Atlanta",
+                  "postal_code": "30303",
+                  "country_code": "US"
+                }
+              }
+            }
+          }
+        ],
+        "knowledge_base": [
+          {
+            "type": "TEXT",
+            "text": "The order management manager's email address is halilcengel@greycollar.ai."
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "TLP-4200",
+              "product_name": "Thermal Label Printer",
+              "certificate": "FFC"
+            }
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "BCS-310",
+              "product_name": "Wireless Barcode Scanner",
+              "certificate": "CE"
+            }
+          }
+        ],
+        "session_variables": {
+          "event": "SALES_ORDER_CREATED",
+          "orderNumber": "0000004713",
+          "orderType": "OR",
+          "orderTypeText": "Standard Order",
+          "customer": "1000017",
+          "customerName": "Atlas Manufacturing Inc.",
+          "customerCity": "Atlanta",
+          "customerCountry": "US",
+          "poNumber": "",
+          "currency": "USD",
+          "netValue": 125,
+          "taxValue": 23.75,
+          "totalValue": 148.75,
+          "requestedDeliveryDate": "2026-10-26",
+          "incoterms": "CIF",
+          "paymentTerms": "NT30",
+          "status": "Open",
+          "creditStatus": "Approved",
+          "salesOrg": "1710",
+          "item": {
+            "item": "10",
+            "material": "TLP-4200",
+            "description": "Thermal Label Printer",
+            "quantity": 1,
+            "uom": "PC",
+            "unitPrice": 125,
+            "netValue": 125,
+            "plant": "1010",
+            "vendor": "Apex Peripherals Inc."
+          },
+          "approvalRequestUrl": "http://localhost:5206/api/approvals",
+          "noteUrl": "http://localhost:5206/api/sales-orders/0000004713/notes"
+        },
+        "conversation": [
+          {
+            "role": "user",
+            "content": {
+              "event": "SALES_ORDER_CREATED",
+              "orderNumber": "0000004713",
+              "orderType": "OR",
+              "orderTypeText": "Standard Order",
+              "customer": "1000017",
+              "customerName": "Atlas Manufacturing Inc.",
+              "customerCity": "Atlanta",
+              "customerCountry": "US",
+              "poNumber": "",
+              "currency": "USD",
+              "netValue": 125,
+              "taxValue": 23.75,
+              "totalValue": 148.75,
+              "requestedDeliveryDate": "2026-10-26",
+              "incoterms": "CIF",
+              "paymentTerms": "NT30",
+              "status": "Open",
+              "creditStatus": "Approved",
+              "salesOrg": "1710",
+              "item": {
+                "item": "10",
+                "material": "TLP-4200",
+                "description": "Thermal Label Printer",
+                "quantity": 1,
+                "uom": "PC",
+                "unitPrice": 125,
+                "netValue": 125,
+                "plant": "1010",
+                "vendor": "Apex Peripherals Inc."
+              },
+              "approvalRequestUrl": "http://localhost:5206/api/approvals",
+              "noteUrl": "http://localhost:5206/api/sales-orders/0000004713/notes"
+            }
+          }
+        ]
+      },
+      "required_parameters": [
+        {
+          "name": "amount",
+          "type": "integer",
+          "description": "Positive amount in minor currency units (e.g. 1000 = USD 10.00)."
+        },
+        {
+          "name": "currency",
+          "type": "string",
+          "description": "Three-letter ISO currency code (e.g. usd)."
+        }
+      ],
+      "inputs_available": 1
+    },
+    {
+      "action": "STRIPE:confirm_payment_intent",
+      "state": {
+        "steps": [
+          {
+            "action": "ORDER:find_product",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "session_variables.item.material"
+              },
+              "name": {
+                "$ref": "session_variables.item.description"
+              }
+            },
+            "result": {
+              "product": {
+                "id": "TLP-4200",
+                "name": "Thermal Label Printer",
+                "vendor_id": "VND-2101",
+                "unit_price": 12500,
+                "currency": "usd",
+                "weight_kg": 2.5
+              }
+            }
+          },
+          {
+            "action": "PLATFORM:knowledge_lookup",
+            "status": "COMPLETED",
+            "parameters": {},
+            "result": {
+              "knowledge": [
+                {
+                  "id": "be4f83d1-0e56-4989-873c-051b83e6b843",
+                  "type": "TEXT",
+                  "text": "The order management manager's email address is halilcengel@greycollar.ai.",
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "fe903f32-6794-47ab-90e5-4bb7babb556b",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "TLP-4200",
+                    "product_name": "Thermal Label Printer",
+                    "certificate": "FFC"
+                  },
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "cd7df4f2-514f-48df-8f71-1ece01b94deb",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "BCS-310",
+                    "product_name": "Wireless Barcode Scanner",
+                    "certificate": "CE"
+                  },
+                  "status": "COMPLETED"
+                }
+              ]
+            }
+          },
+          {
+            "action": "ORDER:assign_certificate",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "steps[0].result.product.id"
+              },
+              "certificate": {
+                "$ref": "steps[1].result.knowledge[1].text.certificate"
+              }
+            },
+            "result": {
+              "product_id": "TLP-4200",
+              "certificate": "FFC",
+              "assigned": true
+            }
+          },
+          {
+            "action": "ORDER:create_po",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "steps[0].result.product.id"
+              },
+              "city": {
+                "$ref": "session_variables.customerCity"
+              },
+              "quantity": {
+                "$ref": "session_variables.item.quantity"
+              }
+            },
+            "result": {
+              "purchase_order": {
+                "order_id": "po-1004",
+                "product_id": "TLP-4200",
+                "city": "Atlanta",
+                "quantity": 1,
+                "unit_price": 12500,
+                "currency": "usd",
+                "net_amount": 12500,
+                "tax_rate": 0.19,
+                "tax_amount": 2375,
+                "total_amount": 14875,
+                "total_weight_kg": 2.5,
+                "ship_from": {
+                  "postal_code": "30301",
+                  "country_code": "US"
+                },
+                "ship_to": {
+                  "city": "Atlanta",
+                  "postal_code": "30303",
+                  "country_code": "US"
+                }
+              }
+            }
+          },
+          {
+            "action": "STRIPE:create_payment_intent",
+            "status": "COMPLETED",
+            "parameters": {
+              "amount": {
+                "$ref": "steps[3].result.purchase_order.total_amount"
+              },
+              "currency": {
+                "$ref": "steps[3].result.purchase_order.currency"
+              },
+              "description": {
+                "$ref": "steps[3].result.purchase_order.order_id"
+              },
+              "confirm": false
+            },
+            "result": {
+              "id": "pi_fe502544df5f4eef9516",
+              "amount": 14875,
+              "currency": "usd",
+              "description": "po-1004",
+              "status": "requires_confirmation",
+              "amount_received": 0
+            }
+          },
+          {
+            "action": "PLATFORM:customer_approval",
+            "status": "COMPLETED",
+            "parameters": {
+              "question": "Purchase order po-1004 for Thermal Label Printer comes to 148.75 USD. The payment is prepared but nothing has been charged yet. Do you approve it?"
+            },
+            "result": "APPROVED"
+          }
+        ],
+        "knowledge_base": [
+          {
+            "type": "TEXT",
+            "text": "The order management manager's email address is halilcengel@greycollar.ai."
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "TLP-4200",
+              "product_name": "Thermal Label Printer",
+              "certificate": "FFC"
+            }
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "BCS-310",
+              "product_name": "Wireless Barcode Scanner",
+              "certificate": "CE"
+            }
+          }
+        ],
+        "session_variables": {
+          "event": "SALES_ORDER_CREATED",
+          "orderNumber": "0000004713",
+          "orderType": "OR",
+          "orderTypeText": "Standard Order",
+          "customer": "1000017",
+          "customerName": "Atlas Manufacturing Inc.",
+          "customerCity": "Atlanta",
+          "customerCountry": "US",
+          "poNumber": "",
+          "currency": "USD",
+          "netValue": 125,
+          "taxValue": 23.75,
+          "totalValue": 148.75,
+          "requestedDeliveryDate": "2026-10-26",
+          "incoterms": "CIF",
+          "paymentTerms": "NT30",
+          "status": "Open",
+          "creditStatus": "Approved",
+          "salesOrg": "1710",
+          "item": {
+            "item": "10",
+            "material": "TLP-4200",
+            "description": "Thermal Label Printer",
+            "quantity": 1,
+            "uom": "PC",
+            "unitPrice": 125,
+            "netValue": 125,
+            "plant": "1010",
+            "vendor": "Apex Peripherals Inc."
+          },
+          "approvalRequestUrl": "http://localhost:5206/api/approvals",
+          "noteUrl": "http://localhost:5206/api/sales-orders/0000004713/notes"
+        },
+        "conversation": [
+          {
+            "role": "user",
+            "content": {
+              "event": "SALES_ORDER_CREATED",
+              "orderNumber": "0000004713",
+              "orderType": "OR",
+              "orderTypeText": "Standard Order",
+              "customer": "1000017",
+              "customerName": "Atlas Manufacturing Inc.",
+              "customerCity": "Atlanta",
+              "customerCountry": "US",
+              "poNumber": "",
+              "currency": "USD",
+              "netValue": 125,
+              "taxValue": 23.75,
+              "totalValue": 148.75,
+              "requestedDeliveryDate": "2026-10-26",
+              "incoterms": "CIF",
+              "paymentTerms": "NT30",
+              "status": "Open",
+              "creditStatus": "Approved",
+              "salesOrg": "1710",
+              "item": {
+                "item": "10",
+                "material": "TLP-4200",
+                "description": "Thermal Label Printer",
+                "quantity": 1,
+                "uom": "PC",
+                "unitPrice": 125,
+                "netValue": 125,
+                "plant": "1010",
+                "vendor": "Apex Peripherals Inc."
+              },
+              "approvalRequestUrl": "http://localhost:5206/api/approvals",
+              "noteUrl": "http://localhost:5206/api/sales-orders/0000004713/notes"
+            }
+          },
+          {
+            "role": "assistant",
+            "content": "Purchase order po-1004 for Thermal Label Printer comes to 148.75 USD. The payment is prepared but nothing has been charged yet. Do you approve it?"
+          },
+          {
+            "role": "user",
+            "content": {
+              "decision": "APPROVED",
+              "comment": "APPROVED: sales order 0000004713 for 148.75 USD was approved by DEMO_USER"
+            }
+          }
+        ]
+      },
+      "required_parameters": [
+        {
+          "name": "payment_intent_id",
+          "type": "string",
+          "description": "The payment intent ID to confirm."
+        }
+      ],
+      "inputs_available": 1
+    },
+    {
+      "action": "FEDEX:create_shipment",
+      "state": {
+        "steps": [
+          {
+            "action": "ORDER:find_product",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "session_variables.item.material"
+              },
+              "name": {
+                "$ref": "session_variables.item.description"
+              }
+            },
+            "result": {
+              "product": {
+                "id": "TLP-4200",
+                "name": "Thermal Label Printer",
+                "vendor_id": "VND-2101",
+                "unit_price": 12500,
+                "currency": "usd",
+                "weight_kg": 2.5
+              }
+            }
+          },
+          {
+            "action": "PLATFORM:knowledge_lookup",
+            "status": "COMPLETED",
+            "parameters": {},
+            "result": {
+              "knowledge": [
+                {
+                  "id": "be4f83d1-0e56-4989-873c-051b83e6b843",
+                  "type": "TEXT",
+                  "text": "The order management manager's email address is halilcengel@greycollar.ai.",
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "fe903f32-6794-47ab-90e5-4bb7babb556b",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "TLP-4200",
+                    "product_name": "Thermal Label Printer",
+                    "certificate": "FFC"
+                  },
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "cd7df4f2-514f-48df-8f71-1ece01b94deb",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "BCS-310",
+                    "product_name": "Wireless Barcode Scanner",
+                    "certificate": "CE"
+                  },
+                  "status": "COMPLETED"
+                }
+              ]
+            }
+          },
+          {
+            "action": "ORDER:assign_certificate",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "steps[0].result.product.id"
+              },
+              "certificate": {
+                "$ref": "steps[1].result.knowledge[1].text.certificate"
+              }
+            },
+            "result": {
+              "product_id": "TLP-4200",
+              "certificate": "FFC",
+              "assigned": true
+            }
+          },
+          {
+            "action": "ORDER:create_po",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "steps[0].result.product.id"
+              },
+              "city": {
+                "$ref": "session_variables.customerCity"
+              },
+              "quantity": {
+                "$ref": "session_variables.item.quantity"
+              }
+            },
+            "result": {
+              "purchase_order": {
+                "order_id": "po-1004",
+                "product_id": "TLP-4200",
+                "city": "Atlanta",
+                "quantity": 1,
+                "unit_price": 12500,
+                "currency": "usd",
+                "net_amount": 12500,
+                "tax_rate": 0.19,
+                "tax_amount": 2375,
+                "total_amount": 14875,
+                "total_weight_kg": 2.5,
+                "ship_from": {
+                  "postal_code": "30301",
+                  "country_code": "US"
+                },
+                "ship_to": {
+                  "city": "Atlanta",
+                  "postal_code": "30303",
+                  "country_code": "US"
+                }
+              }
+            }
+          },
+          {
+            "action": "STRIPE:create_payment_intent",
+            "status": "COMPLETED",
+            "parameters": {
+              "amount": {
+                "$ref": "steps[3].result.purchase_order.total_amount"
+              },
+              "currency": {
+                "$ref": "steps[3].result.purchase_order.currency"
+              },
+              "description": {
+                "$ref": "steps[3].result.purchase_order.order_id"
+              },
+              "confirm": false
+            },
+            "result": {
+              "id": "pi_fe502544df5f4eef9516",
+              "amount": 14875,
+              "currency": "usd",
+              "description": "po-1004",
+              "status": "requires_confirmation",
+              "amount_received": 0
+            }
+          },
+          {
+            "action": "PLATFORM:customer_approval",
+            "status": "COMPLETED",
+            "parameters": {
+              "question": "Purchase order po-1004 for Thermal Label Printer comes to 148.75 USD. The payment is prepared but nothing has been charged yet. Do you approve it?"
+            },
+            "result": "APPROVED"
+          },
+          {
+            "action": "STRIPE:confirm_payment_intent",
+            "status": "COMPLETED",
+            "parameters": {
+              "payment_intent_id": {
+                "$ref": "steps[4].result.id"
+              }
+            },
+            "result": {
+              "id": "pi_fe502544df5f4eef9516",
+              "amount": 14875,
+              "currency": "usd",
+              "description": "po-1004",
+              "status": "succeeded",
+              "amount_received": 14875
+            }
+          }
+        ],
+        "knowledge_base": [
+          {
+            "type": "TEXT",
+            "text": "The order management manager's email address is halilcengel@greycollar.ai."
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "TLP-4200",
+              "product_name": "Thermal Label Printer",
+              "certificate": "FFC"
+            }
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "BCS-310",
+              "product_name": "Wireless Barcode Scanner",
+              "certificate": "CE"
+            }
+          }
+        ],
+        "session_variables": {
+          "event": "SALES_ORDER_CREATED",
+          "orderNumber": "0000004713",
+          "orderType": "OR",
+          "orderTypeText": "Standard Order",
+          "customer": "1000017",
+          "customerName": "Atlas Manufacturing Inc.",
+          "customerCity": "Atlanta",
+          "customerCountry": "US",
+          "poNumber": "",
+          "currency": "USD",
+          "netValue": 125,
+          "taxValue": 23.75,
+          "totalValue": 148.75,
+          "requestedDeliveryDate": "2026-10-26",
+          "incoterms": "CIF",
+          "paymentTerms": "NT30",
+          "status": "Open",
+          "creditStatus": "Approved",
+          "salesOrg": "1710",
+          "item": {
+            "item": "10",
+            "material": "TLP-4200",
+            "description": "Thermal Label Printer",
+            "quantity": 1,
+            "uom": "PC",
+            "unitPrice": 125,
+            "netValue": 125,
+            "plant": "1010",
+            "vendor": "Apex Peripherals Inc."
+          },
+          "approvalRequestUrl": "http://localhost:5206/api/approvals",
+          "noteUrl": "http://localhost:5206/api/sales-orders/0000004713/notes"
+        },
+        "conversation": [
+          {
+            "role": "user",
+            "content": {
+              "event": "SALES_ORDER_CREATED",
+              "orderNumber": "0000004713",
+              "orderType": "OR",
+              "orderTypeText": "Standard Order",
+              "customer": "1000017",
+              "customerName": "Atlas Manufacturing Inc.",
+              "customerCity": "Atlanta",
+              "customerCountry": "US",
+              "poNumber": "",
+              "currency": "USD",
+              "netValue": 125,
+              "taxValue": 23.75,
+              "totalValue": 148.75,
+              "requestedDeliveryDate": "2026-10-26",
+              "incoterms": "CIF",
+              "paymentTerms": "NT30",
+              "status": "Open",
+              "creditStatus": "Approved",
+              "salesOrg": "1710",
+              "item": {
+                "item": "10",
+                "material": "TLP-4200",
+                "description": "Thermal Label Printer",
+                "quantity": 1,
+                "uom": "PC",
+                "unitPrice": 125,
+                "netValue": 125,
+                "plant": "1010",
+                "vendor": "Apex Peripherals Inc."
+              },
+              "approvalRequestUrl": "http://localhost:5206/api/approvals",
+              "noteUrl": "http://localhost:5206/api/sales-orders/0000004713/notes"
+            }
+          },
+          {
+            "role": "assistant",
+            "content": "Purchase order po-1004 for Thermal Label Printer comes to 148.75 USD. The payment is prepared but nothing has been charged yet. Do you approve it?"
+          },
+          {
+            "role": "user",
+            "content": {
+              "decision": "APPROVED",
+              "comment": "APPROVED: sales order 0000004713 for 148.75 USD was approved by DEMO_USER"
+            }
+          }
+        ]
+      },
+      "required_parameters": [
+        {
+          "name": "sender_postal_code",
+          "type": "string",
+          "description": "Origin postal code."
+        },
+        {
+          "name": "sender_country_code",
+          "type": "string",
+          "description": "Origin two-letter country code."
+        },
+        {
+          "name": "recipient_postal_code",
+          "type": "string",
+          "description": "Destination postal code."
+        },
+        {
+          "name": "recipient_country_code",
+          "type": "string",
+          "description": "Destination two-letter country code."
+        },
+        {
+          "name": "weight",
+          "type": "number",
+          "description": "Package weight."
+        }
+      ],
+      "inputs_available": 1
+    },
+    {
+      "action": "GREY:send_email",
+      "state": {
+        "steps": [
+          {
+            "action": "ORDER:find_product",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "session_variables.item.material"
+              },
+              "name": {
+                "$ref": "session_variables.item.description"
+              }
+            },
+            "result": {
+              "product": {
+                "id": "TLP-4200",
+                "name": "Thermal Label Printer",
+                "vendor_id": "VND-2101",
+                "unit_price": 12500,
+                "currency": "usd",
+                "weight_kg": 2.5
+              }
+            }
+          },
+          {
+            "action": "PLATFORM:knowledge_lookup",
+            "status": "COMPLETED",
+            "parameters": {},
+            "result": {
+              "knowledge": [
+                {
+                  "id": "be4f83d1-0e56-4989-873c-051b83e6b843",
+                  "type": "TEXT",
+                  "text": "The order management manager's email address is halilcengel@greycollar.ai.",
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "fe903f32-6794-47ab-90e5-4bb7babb556b",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "TLP-4200",
+                    "product_name": "Thermal Label Printer",
+                    "certificate": "FFC"
+                  },
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "cd7df4f2-514f-48df-8f71-1ece01b94deb",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "BCS-310",
+                    "product_name": "Wireless Barcode Scanner",
+                    "certificate": "CE"
+                  },
+                  "status": "COMPLETED"
+                }
+              ]
+            }
+          },
+          {
+            "action": "ORDER:assign_certificate",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "steps[0].result.product.id"
+              },
+              "certificate": {
+                "$ref": "steps[1].result.knowledge[1].text.certificate"
+              }
+            },
+            "result": {
+              "product_id": "TLP-4200",
+              "certificate": "FFC",
+              "assigned": true
+            }
+          },
+          {
+            "action": "ORDER:create_po",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "steps[0].result.product.id"
+              },
+              "city": {
+                "$ref": "session_variables.customerCity"
+              },
+              "quantity": {
+                "$ref": "session_variables.item.quantity"
+              }
+            },
+            "result": {
+              "purchase_order": {
+                "order_id": "po-1004",
+                "product_id": "TLP-4200",
+                "city": "Atlanta",
+                "quantity": 1,
+                "unit_price": 12500,
+                "currency": "usd",
+                "net_amount": 12500,
+                "tax_rate": 0.19,
+                "tax_amount": 2375,
+                "total_amount": 14875,
+                "total_weight_kg": 2.5,
+                "ship_from": {
+                  "postal_code": "30301",
+                  "country_code": "US"
+                },
+                "ship_to": {
+                  "city": "Atlanta",
+                  "postal_code": "30303",
+                  "country_code": "US"
+                }
+              }
+            }
+          },
+          {
+            "action": "STRIPE:create_payment_intent",
+            "status": "COMPLETED",
+            "parameters": {
+              "amount": {
+                "$ref": "steps[3].result.purchase_order.total_amount"
+              },
+              "currency": {
+                "$ref": "steps[3].result.purchase_order.currency"
+              },
+              "description": {
+                "$ref": "steps[3].result.purchase_order.order_id"
+              },
+              "confirm": false
+            },
+            "result": {
+              "id": "pi_fe502544df5f4eef9516",
+              "amount": 14875,
+              "currency": "usd",
+              "description": "po-1004",
+              "status": "requires_confirmation",
+              "amount_received": 0
+            }
+          },
+          {
+            "action": "PLATFORM:customer_approval",
+            "status": "COMPLETED",
+            "parameters": {
+              "question": "Purchase order po-1004 for Thermal Label Printer comes to 148.75 USD. The payment is prepared but nothing has been charged yet. Do you approve it?"
+            },
+            "result": "APPROVED"
+          },
+          {
+            "action": "STRIPE:confirm_payment_intent",
+            "status": "COMPLETED",
+            "parameters": {
+              "payment_intent_id": {
+                "$ref": "steps[4].result.id"
+              }
+            },
+            "result": {
+              "id": "pi_fe502544df5f4eef9516",
+              "amount": 14875,
+              "currency": "usd",
+              "description": "po-1004",
+              "status": "succeeded",
+              "amount_received": 14875
+            }
+          },
+          {
+            "action": "FEDEX:create_shipment",
+            "status": "COMPLETED",
+            "parameters": {
+              "sender_postal_code": {
+                "$ref": "steps[3].result.purchase_order.ship_from.postal_code"
+              },
+              "sender_country_code": {
+                "$ref": "steps[3].result.purchase_order.ship_from.country_code"
+              },
+              "recipient_postal_code": {
+                "$ref": "steps[3].result.purchase_order.ship_to.postal_code"
+              },
+              "recipient_country_code": {
+                "$ref": "steps[3].result.purchase_order.ship_to.country_code"
+              },
+              "recipient_name": {
+                "$ref": "session_variables.customerName"
+              },
+              "weight": {
+                "$ref": "steps[3].result.purchase_order.total_weight_kg"
+              },
+              "weight_units": "KG"
+            },
+            "result": {
+              "transactionId": "4a08ba14-c495-4e07-9129-134343194334",
+              "output": {
+                "transactionShipments": [
+                  {
+                    "masterTrackingNumber": "244359066922973",
+                    "serviceType": "FEDEX_GROUND",
+                    "pieceResponses": [
+                      {
+                        "trackingNumber": "244359066922973"
+                      }
+                    ],
+                    "shipment": {
+                      "trackingNumber": "244359066922973",
+                      "serviceType": "FEDEX_GROUND",
+                      "shipper": {
+                        "address": {
+                          "postalCode": "30301",
+                          "countryCode": "US"
+                        }
+                      },
+                      "recipient": {
+                        "contact": {
+                          "personName": "Atlas Manufacturing Inc."
+                        },
+                        "address": {
+                          "postalCode": "30303",
+                          "countryCode": "US"
+                        }
+                      },
+                      "weight": 2.5,
+                      "totalNetCharge": 14.25,
+                      "currency": "USD",
+                      "status": "OC",
+                      "statusDescription": "Shipment information sent to FedEx",
+                      "scanEvents": [
+                        {
+                          "date": "2026-10-19T10:49:09.390Z",
+                          "eventType": "OC",
+                          "eventDescription": "Shipment information sent to FedEx"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "knowledge_base": [
+          {
+            "type": "TEXT",
+            "text": "The order management manager's email address is halilcengel@greycollar.ai."
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "TLP-4200",
+              "product_name": "Thermal Label Printer",
+              "certificate": "FFC"
+            }
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "BCS-310",
+              "product_name": "Wireless Barcode Scanner",
+              "certificate": "CE"
+            }
+          }
+        ],
+        "session_variables": {
+          "event": "SALES_ORDER_CREATED",
+          "orderNumber": "0000004713",
+          "orderType": "OR",
+          "orderTypeText": "Standard Order",
+          "customer": "1000017",
+          "customerName": "Atlas Manufacturing Inc.",
+          "customerCity": "Atlanta",
+          "customerCountry": "US",
+          "poNumber": "",
+          "currency": "USD",
+          "netValue": 125,
+          "taxValue": 23.75,
+          "totalValue": 148.75,
+          "requestedDeliveryDate": "2026-10-26",
+          "incoterms": "CIF",
+          "paymentTerms": "NT30",
+          "status": "Open",
+          "creditStatus": "Approved",
+          "salesOrg": "1710",
+          "item": {
+            "item": "10",
+            "material": "TLP-4200",
+            "description": "Thermal Label Printer",
+            "quantity": 1,
+            "uom": "PC",
+            "unitPrice": 125,
+            "netValue": 125,
+            "plant": "1010",
+            "vendor": "Apex Peripherals Inc."
+          },
+          "approvalRequestUrl": "http://localhost:5206/api/approvals",
+          "noteUrl": "http://localhost:5206/api/sales-orders/0000004713/notes"
+        },
+        "conversation": [
+          {
+            "role": "user",
+            "content": {
+              "event": "SALES_ORDER_CREATED",
+              "orderNumber": "0000004713",
+              "orderType": "OR",
+              "orderTypeText": "Standard Order",
+              "customer": "1000017",
+              "customerName": "Atlas Manufacturing Inc.",
+              "customerCity": "Atlanta",
+              "customerCountry": "US",
+              "poNumber": "",
+              "currency": "USD",
+              "netValue": 125,
+              "taxValue": 23.75,
+              "totalValue": 148.75,
+              "requestedDeliveryDate": "2026-10-26",
+              "incoterms": "CIF",
+              "paymentTerms": "NT30",
+              "status": "Open",
+              "creditStatus": "Approved",
+              "salesOrg": "1710",
+              "item": {
+                "item": "10",
+                "material": "TLP-4200",
+                "description": "Thermal Label Printer",
+                "quantity": 1,
+                "uom": "PC",
+                "unitPrice": 125,
+                "netValue": 125,
+                "plant": "1010",
+                "vendor": "Apex Peripherals Inc."
+              },
+              "approvalRequestUrl": "http://localhost:5206/api/approvals",
+              "noteUrl": "http://localhost:5206/api/sales-orders/0000004713/notes"
+            }
+          },
+          {
+            "role": "assistant",
+            "content": "Purchase order po-1004 for Thermal Label Printer comes to 148.75 USD. The payment is prepared but nothing has been charged yet. Do you approve it?"
+          },
+          {
+            "role": "user",
+            "content": {
+              "decision": "APPROVED",
+              "comment": "APPROVED: sales order 0000004713 for 148.75 USD was approved by DEMO_USER"
+            }
+          }
+        ]
+      },
+      "required_parameters": [
+        {
+          "name": "to",
+          "type": "string",
+          "description": "The email address of the recipient."
+        }
+      ],
+      "inputs_available": 0.92
+    },
+    {
+      "action": "ORDER:assign_certificate",
+      "state": {
+        "steps": [
+          {
+            "action": "ORDER:find_product",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "session_variables.item.material"
+              },
+              "name": {
+                "$ref": "session_variables.item.description"
+              }
+            },
+            "result": {
+              "product": {
+                "id": "NSW-4800",
+                "name": "48-Port PoE Network Switch",
+                "vendor_id": "VND-2103",
+                "unit_price": 45000,
+                "currency": "usd",
+                "weight_kg": 7.5
+              }
+            }
+          },
+          {
+            "action": "PLATFORM:knowledge_lookup",
+            "status": "COMPLETED",
+            "parameters": {},
+            "result": {
+              "knowledge": [
+                {
+                  "id": "be4f83d1-0e56-4989-873c-051b83e6b843",
+                  "type": "TEXT",
+                  "text": "The order management manager's email address is halilcengel@greycollar.ai.",
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "fe903f32-6794-47ab-90e5-4bb7babb556b",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "TLP-4200",
+                    "product_name": "Thermal Label Printer",
+                    "certificate": "FFC"
+                  },
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "cd7df4f2-514f-48df-8f71-1ece01b94deb",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "BCS-310",
+                    "product_name": "Wireless Barcode Scanner",
+                    "certificate": "CE"
+                  },
+                  "status": "COMPLETED"
+                }
+              ]
+            }
+          }
+        ],
+        "knowledge_base": [
+          {
+            "type": "TEXT",
+            "text": "The order management manager's email address is halilcengel@greycollar.ai."
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "TLP-4200",
+              "product_name": "Thermal Label Printer",
+              "certificate": "FFC"
+            }
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "BCS-310",
+              "product_name": "Wireless Barcode Scanner",
+              "certificate": "CE"
+            }
+          }
+        ],
+        "session_variables": {
+          "event": "SALES_ORDER_CREATED",
+          "orderNumber": "0000004714",
+          "orderType": "OR",
+          "orderTypeText": "Standard Order",
+          "customer": "1000017",
+          "customerName": "Atlas Manufacturing Inc.",
+          "customerCity": "Atlanta",
+          "customerCountry": "US",
+          "poNumber": "",
+          "currency": "USD",
+          "netValue": 450,
+          "taxValue": 85.5,
+          "totalValue": 535.5,
+          "requestedDeliveryDate": "2026-10-26",
+          "incoterms": "CIF",
+          "paymentTerms": "NT30",
+          "status": "Open",
+          "creditStatus": "Approved",
+          "salesOrg": "1710",
+          "item": {
+            "item": "10",
+            "material": "NSW-4800",
+            "description": "48-Port PoE Network Switch",
+            "quantity": 1,
+            "uom": "PC",
+            "unitPrice": 450,
+            "netValue": 450,
+            "plant": "1020",
+            "vendor": "Cobalt Networks Corp."
+          },
+          "approvalRequestUrl": "http://localhost:5206/api/approvals",
+          "noteUrl": "http://localhost:5206/api/sales-orders/0000004714/notes"
+        },
+        "conversation": [
+          {
+            "role": "user",
+            "content": {
+              "event": "SALES_ORDER_CREATED",
+              "orderNumber": "0000004714",
+              "orderType": "OR",
+              "orderTypeText": "Standard Order",
+              "customer": "1000017",
+              "customerName": "Atlas Manufacturing Inc.",
+              "customerCity": "Atlanta",
+              "customerCountry": "US",
+              "poNumber": "",
+              "currency": "USD",
+              "netValue": 450,
+              "taxValue": 85.5,
+              "totalValue": 535.5,
+              "requestedDeliveryDate": "2026-10-26",
+              "incoterms": "CIF",
+              "paymentTerms": "NT30",
+              "status": "Open",
+              "creditStatus": "Approved",
+              "salesOrg": "1710",
+              "item": {
+                "item": "10",
+                "material": "NSW-4800",
+                "description": "48-Port PoE Network Switch",
+                "quantity": 1,
+                "uom": "PC",
+                "unitPrice": 450,
+                "netValue": 450,
+                "plant": "1020",
+                "vendor": "Cobalt Networks Corp."
+              },
+              "approvalRequestUrl": "http://localhost:5206/api/approvals",
+              "noteUrl": "http://localhost:5206/api/sales-orders/0000004714/notes"
+            }
+          }
+        ]
+      },
+      "required_parameters": [
+        {
+          "name": "product_id",
+          "type": "string",
+          "description": "The product ID to assign the certificate to."
+        },
+        {
+          "name": "certificate",
+          "type": "string",
+          "description": "The certificate type to assign (e.g. FFC, CE)."
+        }
+      ],
+      "inputs_available": 0.03
+    },
+    {
+      "action": "ORDER:assign_certificate",
+      "state": {
+        "steps": [
+          {
+            "action": "ORDER:find_product",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "session_variables.item.material"
+              },
+              "name": {
+                "$ref": "session_variables.item.description"
+              }
+            },
+            "result": {
+              "product": {
+                "id": "NSW-4800",
+                "name": "48-Port PoE Network Switch",
+                "vendor_id": "VND-2103",
+                "unit_price": 45000,
+                "currency": "usd",
+                "weight_kg": 7.5
+              }
+            }
+          },
+          {
+            "action": "PLATFORM:knowledge_lookup",
+            "status": "COMPLETED",
+            "parameters": {},
+            "result": {
+              "knowledge": [
+                {
+                  "id": "be4f83d1-0e56-4989-873c-051b83e6b843",
+                  "type": "TEXT",
+                  "text": "The order management manager's email address is halilcengel@greycollar.ai.",
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "fe903f32-6794-47ab-90e5-4bb7babb556b",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "TLP-4200",
+                    "product_name": "Thermal Label Printer",
+                    "certificate": "FFC"
+                  },
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "cd7df4f2-514f-48df-8f71-1ece01b94deb",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "BCS-310",
+                    "product_name": "Wireless Barcode Scanner",
+                    "certificate": "CE"
+                  },
+                  "status": "COMPLETED"
+                }
+              ]
+            }
+          },
+          {
+            "action": "PLATFORM:ask_supervisor",
+            "status": "COMPLETED",
+            "parameters": {
+              "question": "The product NSW-4800 (48-Port PoE Network Switch) requires a compliance certificate to proceed with order creation. No certificate was found in the knowledge base. Please confirm whether this product should be certified, and if so, which certificate type (e.g., FFC, CE) should be assigned."
+            },
+            "result": "I'll add the CE certificate for product NSW-4800 to the knowledge base."
+          }
+        ],
+        "knowledge_base": [
+          {
+            "type": "TEXT",
+            "text": "The order management manager's email address is halilcengel@greycollar.ai."
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "TLP-4200",
+              "product_name": "Thermal Label Printer",
+              "certificate": "FFC"
+            }
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "BCS-310",
+              "product_name": "Wireless Barcode Scanner",
+              "certificate": "CE"
+            }
+          },
+          {
+            "type": "TEXT",
+            "text": "Product NSW-4800 has compliance certificate CE."
+          }
+        ],
+        "session_variables": {
+          "event": "SALES_ORDER_CREATED",
+          "orderNumber": "0000004714",
+          "orderType": "OR",
+          "orderTypeText": "Standard Order",
+          "customer": "1000017",
+          "customerName": "Atlas Manufacturing Inc.",
+          "customerCity": "Atlanta",
+          "customerCountry": "US",
+          "poNumber": "",
+          "currency": "USD",
+          "netValue": 450,
+          "taxValue": 85.5,
+          "totalValue": 535.5,
+          "requestedDeliveryDate": "2026-10-26",
+          "incoterms": "CIF",
+          "paymentTerms": "NT30",
+          "status": "Open",
+          "creditStatus": "Approved",
+          "salesOrg": "1710",
+          "item": {
+            "item": "10",
+            "material": "NSW-4800",
+            "description": "48-Port PoE Network Switch",
+            "quantity": 1,
+            "uom": "PC",
+            "unitPrice": 450,
+            "netValue": 450,
+            "plant": "1020",
+            "vendor": "Cobalt Networks Corp."
+          },
+          "approvalRequestUrl": "http://localhost:5206/api/approvals",
+          "noteUrl": "http://localhost:5206/api/sales-orders/0000004714/notes"
+        },
+        "conversation": [
+          {
+            "role": "user",
+            "content": {
+              "event": "SALES_ORDER_CREATED",
+              "orderNumber": "0000004714",
+              "orderType": "OR",
+              "orderTypeText": "Standard Order",
+              "customer": "1000017",
+              "customerName": "Atlas Manufacturing Inc.",
+              "customerCity": "Atlanta",
+              "customerCountry": "US",
+              "poNumber": "",
+              "currency": "USD",
+              "netValue": 450,
+              "taxValue": 85.5,
+              "totalValue": 535.5,
+              "requestedDeliveryDate": "2026-10-26",
+              "incoterms": "CIF",
+              "paymentTerms": "NT30",
+              "status": "Open",
+              "creditStatus": "Approved",
+              "salesOrg": "1710",
+              "item": {
+                "item": "10",
+                "material": "NSW-4800",
+                "description": "48-Port PoE Network Switch",
+                "quantity": 1,
+                "uom": "PC",
+                "unitPrice": 450,
+                "netValue": 450,
+                "plant": "1020",
+                "vendor": "Cobalt Networks Corp."
+              },
+              "approvalRequestUrl": "http://localhost:5206/api/approvals",
+              "noteUrl": "http://localhost:5206/api/sales-orders/0000004714/notes"
+            }
+          },
+          {
+            "role": "assistant",
+            "content": "I need to ask my supervisor for more information."
+          }
+        ]
+      },
+      "required_parameters": [
+        {
+          "name": "product_id",
+          "type": "string",
+          "description": "The product ID to assign the certificate to."
+        },
+        {
+          "name": "certificate",
+          "type": "string",
+          "description": "The certificate type to assign (e.g. FFC, CE)."
+        }
+      ],
+      "inputs_available": 1
+    },
+    {
+      "action": "ORDER:create_po",
+      "state": {
+        "steps": [
+          {
+            "action": "ORDER:find_product",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "session_variables.item.material"
+              },
+              "name": {
+                "$ref": "session_variables.item.description"
+              }
+            },
+            "result": {
+              "product": {
+                "id": "NSW-4800",
+                "name": "48-Port PoE Network Switch",
+                "vendor_id": "VND-2103",
+                "unit_price": 45000,
+                "currency": "usd",
+                "weight_kg": 7.5
+              }
+            }
+          },
+          {
+            "action": "PLATFORM:knowledge_lookup",
+            "status": "COMPLETED",
+            "parameters": {},
+            "result": {
+              "knowledge": [
+                {
+                  "id": "be4f83d1-0e56-4989-873c-051b83e6b843",
+                  "type": "TEXT",
+                  "text": "The order management manager's email address is halilcengel@greycollar.ai.",
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "fe903f32-6794-47ab-90e5-4bb7babb556b",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "TLP-4200",
+                    "product_name": "Thermal Label Printer",
+                    "certificate": "FFC"
+                  },
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "cd7df4f2-514f-48df-8f71-1ece01b94deb",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "BCS-310",
+                    "product_name": "Wireless Barcode Scanner",
+                    "certificate": "CE"
+                  },
+                  "status": "COMPLETED"
+                }
+              ]
+            }
+          },
+          {
+            "action": "PLATFORM:ask_supervisor",
+            "status": "COMPLETED",
+            "parameters": {
+              "question": "The product NSW-4800 (48-Port PoE Network Switch) requires a compliance certificate to proceed with order creation. No certificate was found in the knowledge base. Please confirm whether this product should be certified, and if so, which certificate type (e.g., FFC, CE) should be assigned."
+            },
+            "result": "I'll add the CE certificate for product NSW-4800 to the knowledge base."
+          },
+          {
+            "action": "ORDER:assign_certificate",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "steps[0].result.product.id"
+              },
+              "certificate": "CE"
+            },
+            "result": {
+              "product_id": "NSW-4800",
+              "certificate": "CE",
+              "assigned": true
+            }
+          }
+        ],
+        "knowledge_base": [
+          {
+            "type": "TEXT",
+            "text": "The order management manager's email address is halilcengel@greycollar.ai."
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "TLP-4200",
+              "product_name": "Thermal Label Printer",
+              "certificate": "FFC"
+            }
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "BCS-310",
+              "product_name": "Wireless Barcode Scanner",
+              "certificate": "CE"
+            }
+          },
+          {
+            "type": "TEXT",
+            "text": "Product NSW-4800 has compliance certificate CE."
+          }
+        ],
+        "session_variables": {
+          "event": "SALES_ORDER_CREATED",
+          "orderNumber": "0000004714",
+          "orderType": "OR",
+          "orderTypeText": "Standard Order",
+          "customer": "1000017",
+          "customerName": "Atlas Manufacturing Inc.",
+          "customerCity": "Atlanta",
+          "customerCountry": "US",
+          "poNumber": "",
+          "currency": "USD",
+          "netValue": 450,
+          "taxValue": 85.5,
+          "totalValue": 535.5,
+          "requestedDeliveryDate": "2026-10-26",
+          "incoterms": "CIF",
+          "paymentTerms": "NT30",
+          "status": "Open",
+          "creditStatus": "Approved",
+          "salesOrg": "1710",
+          "item": {
+            "item": "10",
+            "material": "NSW-4800",
+            "description": "48-Port PoE Network Switch",
+            "quantity": 1,
+            "uom": "PC",
+            "unitPrice": 450,
+            "netValue": 450,
+            "plant": "1020",
+            "vendor": "Cobalt Networks Corp."
+          },
+          "approvalRequestUrl": "http://localhost:5206/api/approvals",
+          "noteUrl": "http://localhost:5206/api/sales-orders/0000004714/notes"
+        },
+        "conversation": [
+          {
+            "role": "user",
+            "content": {
+              "event": "SALES_ORDER_CREATED",
+              "orderNumber": "0000004714",
+              "orderType": "OR",
+              "orderTypeText": "Standard Order",
+              "customer": "1000017",
+              "customerName": "Atlas Manufacturing Inc.",
+              "customerCity": "Atlanta",
+              "customerCountry": "US",
+              "poNumber": "",
+              "currency": "USD",
+              "netValue": 450,
+              "taxValue": 85.5,
+              "totalValue": 535.5,
+              "requestedDeliveryDate": "2026-10-26",
+              "incoterms": "CIF",
+              "paymentTerms": "NT30",
+              "status": "Open",
+              "creditStatus": "Approved",
+              "salesOrg": "1710",
+              "item": {
+                "item": "10",
+                "material": "NSW-4800",
+                "description": "48-Port PoE Network Switch",
+                "quantity": 1,
+                "uom": "PC",
+                "unitPrice": 450,
+                "netValue": 450,
+                "plant": "1020",
+                "vendor": "Cobalt Networks Corp."
+              },
+              "approvalRequestUrl": "http://localhost:5206/api/approvals",
+              "noteUrl": "http://localhost:5206/api/sales-orders/0000004714/notes"
+            }
+          },
+          {
+            "role": "assistant",
+            "content": "I need to ask my supervisor for more information."
+          }
+        ]
+      },
+      "required_parameters": [
+        {
+          "name": "product_id",
+          "type": "string",
+          "description": "The ID of the product to create the PO for."
+        },
+        {
+          "name": "city",
+          "type": "string",
+          "description": "The city where the order will be delivered."
+        },
+        {
+          "name": "quantity",
+          "type": "number",
+          "description": "The quantity of the product to order."
+        }
+      ],
+      "inputs_available": 1
+    },
+    {
+      "action": "STRIPE:create_payment_intent",
+      "state": {
+        "steps": [
+          {
+            "action": "ORDER:find_product",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "session_variables.item.material"
+              },
+              "name": {
+                "$ref": "session_variables.item.description"
+              }
+            },
+            "result": {
+              "product": {
+                "id": "NSW-4800",
+                "name": "48-Port PoE Network Switch",
+                "vendor_id": "VND-2103",
+                "unit_price": 45000,
+                "currency": "usd",
+                "weight_kg": 7.5
+              }
+            }
+          },
+          {
+            "action": "PLATFORM:knowledge_lookup",
+            "status": "COMPLETED",
+            "parameters": {},
+            "result": {
+              "knowledge": [
+                {
+                  "id": "be4f83d1-0e56-4989-873c-051b83e6b843",
+                  "type": "TEXT",
+                  "text": "The order management manager's email address is halilcengel@greycollar.ai.",
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "fe903f32-6794-47ab-90e5-4bb7babb556b",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "TLP-4200",
+                    "product_name": "Thermal Label Printer",
+                    "certificate": "FFC"
+                  },
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "cd7df4f2-514f-48df-8f71-1ece01b94deb",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "BCS-310",
+                    "product_name": "Wireless Barcode Scanner",
+                    "certificate": "CE"
+                  },
+                  "status": "COMPLETED"
+                }
+              ]
+            }
+          },
+          {
+            "action": "PLATFORM:ask_supervisor",
+            "status": "COMPLETED",
+            "parameters": {
+              "question": "The product NSW-4800 (48-Port PoE Network Switch) requires a compliance certificate to proceed with order creation. No certificate was found in the knowledge base. Please confirm whether this product should be certified, and if so, which certificate type (e.g., FFC, CE) should be assigned."
+            },
+            "result": "I'll add the CE certificate for product NSW-4800 to the knowledge base."
+          },
+          {
+            "action": "ORDER:assign_certificate",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "steps[0].result.product.id"
+              },
+              "certificate": "CE"
+            },
+            "result": {
+              "product_id": "NSW-4800",
+              "certificate": "CE",
+              "assigned": true
+            }
+          },
+          {
+            "action": "ORDER:create_po",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "steps[0].result.product.id"
+              },
+              "city": {
+                "$ref": "session_variables.customerCity"
+              },
+              "quantity": {
+                "$ref": "session_variables.item.quantity"
+              }
+            },
+            "result": {
+              "purchase_order": {
+                "order_id": "po-1005",
+                "product_id": "NSW-4800",
+                "city": "Atlanta",
+                "quantity": 1,
+                "unit_price": 45000,
+                "currency": "usd",
+                "net_amount": 45000,
+                "tax_rate": 0.19,
+                "tax_amount": 8550,
+                "total_amount": 53550,
+                "total_weight_kg": 7.5,
+                "ship_from": {
+                  "postal_code": "94105",
+                  "country_code": "US"
+                },
+                "ship_to": {
+                  "city": "Atlanta",
+                  "postal_code": "30303",
+                  "country_code": "US"
+                }
+              }
+            }
+          }
+        ],
+        "knowledge_base": [
+          {
+            "type": "TEXT",
+            "text": "The order management manager's email address is halilcengel@greycollar.ai."
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "TLP-4200",
+              "product_name": "Thermal Label Printer",
+              "certificate": "FFC"
+            }
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "BCS-310",
+              "product_name": "Wireless Barcode Scanner",
+              "certificate": "CE"
+            }
+          },
+          {
+            "type": "TEXT",
+            "text": "Product NSW-4800 has compliance certificate CE."
+          }
+        ],
+        "session_variables": {
+          "event": "SALES_ORDER_CREATED",
+          "orderNumber": "0000004714",
+          "orderType": "OR",
+          "orderTypeText": "Standard Order",
+          "customer": "1000017",
+          "customerName": "Atlas Manufacturing Inc.",
+          "customerCity": "Atlanta",
+          "customerCountry": "US",
+          "poNumber": "",
+          "currency": "USD",
+          "netValue": 450,
+          "taxValue": 85.5,
+          "totalValue": 535.5,
+          "requestedDeliveryDate": "2026-10-26",
+          "incoterms": "CIF",
+          "paymentTerms": "NT30",
+          "status": "Open",
+          "creditStatus": "Approved",
+          "salesOrg": "1710",
+          "item": {
+            "item": "10",
+            "material": "NSW-4800",
+            "description": "48-Port PoE Network Switch",
+            "quantity": 1,
+            "uom": "PC",
+            "unitPrice": 450,
+            "netValue": 450,
+            "plant": "1020",
+            "vendor": "Cobalt Networks Corp."
+          },
+          "approvalRequestUrl": "http://localhost:5206/api/approvals",
+          "noteUrl": "http://localhost:5206/api/sales-orders/0000004714/notes"
+        },
+        "conversation": [
+          {
+            "role": "user",
+            "content": {
+              "event": "SALES_ORDER_CREATED",
+              "orderNumber": "0000004714",
+              "orderType": "OR",
+              "orderTypeText": "Standard Order",
+              "customer": "1000017",
+              "customerName": "Atlas Manufacturing Inc.",
+              "customerCity": "Atlanta",
+              "customerCountry": "US",
+              "poNumber": "",
+              "currency": "USD",
+              "netValue": 450,
+              "taxValue": 85.5,
+              "totalValue": 535.5,
+              "requestedDeliveryDate": "2026-10-26",
+              "incoterms": "CIF",
+              "paymentTerms": "NT30",
+              "status": "Open",
+              "creditStatus": "Approved",
+              "salesOrg": "1710",
+              "item": {
+                "item": "10",
+                "material": "NSW-4800",
+                "description": "48-Port PoE Network Switch",
+                "quantity": 1,
+                "uom": "PC",
+                "unitPrice": 450,
+                "netValue": 450,
+                "plant": "1020",
+                "vendor": "Cobalt Networks Corp."
+              },
+              "approvalRequestUrl": "http://localhost:5206/api/approvals",
+              "noteUrl": "http://localhost:5206/api/sales-orders/0000004714/notes"
+            }
+          },
+          {
+            "role": "assistant",
+            "content": "I need to ask my supervisor for more information."
+          }
+        ]
+      },
+      "required_parameters": [
+        {
+          "name": "amount",
+          "type": "integer",
+          "description": "Positive amount in minor currency units (e.g. 1000 = USD 10.00)."
+        },
+        {
+          "name": "currency",
+          "type": "string",
+          "description": "Three-letter ISO currency code (e.g. usd)."
+        }
+      ],
+      "inputs_available": 0.99
+    },
+    {
+      "action": "STRIPE:confirm_payment_intent",
+      "state": {
+        "steps": [
+          {
+            "action": "ORDER:find_product",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "session_variables.item.material"
+              },
+              "name": {
+                "$ref": "session_variables.item.description"
+              }
+            },
+            "result": {
+              "product": {
+                "id": "NSW-4800",
+                "name": "48-Port PoE Network Switch",
+                "vendor_id": "VND-2103",
+                "unit_price": 45000,
+                "currency": "usd",
+                "weight_kg": 7.5
+              }
+            }
+          },
+          {
+            "action": "PLATFORM:knowledge_lookup",
+            "status": "COMPLETED",
+            "parameters": {},
+            "result": {
+              "knowledge": [
+                {
+                  "id": "be4f83d1-0e56-4989-873c-051b83e6b843",
+                  "type": "TEXT",
+                  "text": "The order management manager's email address is halilcengel@greycollar.ai.",
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "fe903f32-6794-47ab-90e5-4bb7babb556b",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "TLP-4200",
+                    "product_name": "Thermal Label Printer",
+                    "certificate": "FFC"
+                  },
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "cd7df4f2-514f-48df-8f71-1ece01b94deb",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "BCS-310",
+                    "product_name": "Wireless Barcode Scanner",
+                    "certificate": "CE"
+                  },
+                  "status": "COMPLETED"
+                }
+              ]
+            }
+          },
+          {
+            "action": "PLATFORM:ask_supervisor",
+            "status": "COMPLETED",
+            "parameters": {
+              "question": "The product NSW-4800 (48-Port PoE Network Switch) requires a compliance certificate to proceed with order creation. No certificate was found in the knowledge base. Please confirm whether this product should be certified, and if so, which certificate type (e.g., FFC, CE) should be assigned."
+            },
+            "result": "I'll add the CE certificate for product NSW-4800 to the knowledge base."
+          },
+          {
+            "action": "ORDER:assign_certificate",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "steps[0].result.product.id"
+              },
+              "certificate": "CE"
+            },
+            "result": {
+              "product_id": "NSW-4800",
+              "certificate": "CE",
+              "assigned": true
+            }
+          },
+          {
+            "action": "ORDER:create_po",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "steps[0].result.product.id"
+              },
+              "city": {
+                "$ref": "session_variables.customerCity"
+              },
+              "quantity": {
+                "$ref": "session_variables.item.quantity"
+              }
+            },
+            "result": {
+              "purchase_order": {
+                "order_id": "po-1005",
+                "product_id": "NSW-4800",
+                "city": "Atlanta",
+                "quantity": 1,
+                "unit_price": 45000,
+                "currency": "usd",
+                "net_amount": 45000,
+                "tax_rate": 0.19,
+                "tax_amount": 8550,
+                "total_amount": 53550,
+                "total_weight_kg": 7.5,
+                "ship_from": {
+                  "postal_code": "94105",
+                  "country_code": "US"
+                },
+                "ship_to": {
+                  "city": "Atlanta",
+                  "postal_code": "30303",
+                  "country_code": "US"
+                }
+              }
+            }
+          },
+          {
+            "action": "STRIPE:create_payment_intent",
+            "status": "COMPLETED",
+            "parameters": {
+              "amount": {
+                "$ref": "steps[4].result.purchase_order.total_amount"
+              },
+              "currency": {
+                "$ref": "steps[4].result.purchase_order.currency"
+              },
+              "description": {
+                "$ref": "steps[4].result.purchase_order.order_id"
+              },
+              "confirm": false
+            },
+            "result": {
+              "id": "pi_19bb66954db8423b8969",
+              "amount": 53550,
+              "currency": "usd",
+              "description": "po-1005",
+              "status": "requires_confirmation",
+              "amount_received": 0
+            }
+          },
+          {
+            "action": "PLATFORM:customer_approval",
+            "status": "COMPLETED",
+            "parameters": {
+              "question": "Purchase order po-1005 for 48-Port PoE Network Switch comes to 535.50 USD. The payment is prepared but nothing has been charged yet. Do you approve it?"
+            },
+            "result": "APPROVED"
+          }
+        ],
+        "knowledge_base": [
+          {
+            "type": "TEXT",
+            "text": "The order management manager's email address is halilcengel@greycollar.ai."
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "TLP-4200",
+              "product_name": "Thermal Label Printer",
+              "certificate": "FFC"
+            }
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "BCS-310",
+              "product_name": "Wireless Barcode Scanner",
+              "certificate": "CE"
+            }
+          },
+          {
+            "type": "TEXT",
+            "text": "Product NSW-4800 has compliance certificate CE."
+          }
+        ],
+        "session_variables": {
+          "event": "SALES_ORDER_CREATED",
+          "orderNumber": "0000004714",
+          "orderType": "OR",
+          "orderTypeText": "Standard Order",
+          "customer": "1000017",
+          "customerName": "Atlas Manufacturing Inc.",
+          "customerCity": "Atlanta",
+          "customerCountry": "US",
+          "poNumber": "",
+          "currency": "USD",
+          "netValue": 450,
+          "taxValue": 85.5,
+          "totalValue": 535.5,
+          "requestedDeliveryDate": "2026-10-26",
+          "incoterms": "CIF",
+          "paymentTerms": "NT30",
+          "status": "Open",
+          "creditStatus": "Approved",
+          "salesOrg": "1710",
+          "item": {
+            "item": "10",
+            "material": "NSW-4800",
+            "description": "48-Port PoE Network Switch",
+            "quantity": 1,
+            "uom": "PC",
+            "unitPrice": 450,
+            "netValue": 450,
+            "plant": "1020",
+            "vendor": "Cobalt Networks Corp."
+          },
+          "approvalRequestUrl": "http://localhost:5206/api/approvals",
+          "noteUrl": "http://localhost:5206/api/sales-orders/0000004714/notes"
+        },
+        "conversation": [
+          {
+            "role": "user",
+            "content": {
+              "event": "SALES_ORDER_CREATED",
+              "orderNumber": "0000004714",
+              "orderType": "OR",
+              "orderTypeText": "Standard Order",
+              "customer": "1000017",
+              "customerName": "Atlas Manufacturing Inc.",
+              "customerCity": "Atlanta",
+              "customerCountry": "US",
+              "poNumber": "",
+              "currency": "USD",
+              "netValue": 450,
+              "taxValue": 85.5,
+              "totalValue": 535.5,
+              "requestedDeliveryDate": "2026-10-26",
+              "incoterms": "CIF",
+              "paymentTerms": "NT30",
+              "status": "Open",
+              "creditStatus": "Approved",
+              "salesOrg": "1710",
+              "item": {
+                "item": "10",
+                "material": "NSW-4800",
+                "description": "48-Port PoE Network Switch",
+                "quantity": 1,
+                "uom": "PC",
+                "unitPrice": 450,
+                "netValue": 450,
+                "plant": "1020",
+                "vendor": "Cobalt Networks Corp."
+              },
+              "approvalRequestUrl": "http://localhost:5206/api/approvals",
+              "noteUrl": "http://localhost:5206/api/sales-orders/0000004714/notes"
+            }
+          },
+          {
+            "role": "assistant",
+            "content": "I need to ask my supervisor for more information."
+          },
+          {
+            "role": "assistant",
+            "content": "Purchase order po-1005 for 48-Port PoE Network Switch comes to 535.50 USD. The payment is prepared but nothing has been charged yet. Do you approve it?"
+          },
+          {
+            "role": "user",
+            "content": {
+              "decision": "APPROVED",
+              "comment": "APPROVED: sales order 0000004714 for 535.50 USD was approved by DEMO_USER"
+            }
+          }
+        ]
+      },
+      "required_parameters": [
+        {
+          "name": "payment_intent_id",
+          "type": "string",
+          "description": "The payment intent ID to confirm."
+        }
+      ],
+      "inputs_available": 1
+    },
+    {
+      "action": "FEDEX:create_shipment",
+      "state": {
+        "steps": [
+          {
+            "action": "ORDER:find_product",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "session_variables.item.material"
+              },
+              "name": {
+                "$ref": "session_variables.item.description"
+              }
+            },
+            "result": {
+              "product": {
+                "id": "NSW-4800",
+                "name": "48-Port PoE Network Switch",
+                "vendor_id": "VND-2103",
+                "unit_price": 45000,
+                "currency": "usd",
+                "weight_kg": 7.5
+              }
+            }
+          },
+          {
+            "action": "PLATFORM:knowledge_lookup",
+            "status": "COMPLETED",
+            "parameters": {},
+            "result": {
+              "knowledge": [
+                {
+                  "id": "be4f83d1-0e56-4989-873c-051b83e6b843",
+                  "type": "TEXT",
+                  "text": "The order management manager's email address is halilcengel@greycollar.ai.",
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "fe903f32-6794-47ab-90e5-4bb7babb556b",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "TLP-4200",
+                    "product_name": "Thermal Label Printer",
+                    "certificate": "FFC"
+                  },
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "cd7df4f2-514f-48df-8f71-1ece01b94deb",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "BCS-310",
+                    "product_name": "Wireless Barcode Scanner",
+                    "certificate": "CE"
+                  },
+                  "status": "COMPLETED"
+                }
+              ]
+            }
+          },
+          {
+            "action": "PLATFORM:ask_supervisor",
+            "status": "COMPLETED",
+            "parameters": {
+              "question": "The product NSW-4800 (48-Port PoE Network Switch) requires a compliance certificate to proceed with order creation. No certificate was found in the knowledge base. Please confirm whether this product should be certified, and if so, which certificate type (e.g., FFC, CE) should be assigned."
+            },
+            "result": "I'll add the CE certificate for product NSW-4800 to the knowledge base."
+          },
+          {
+            "action": "ORDER:assign_certificate",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "steps[0].result.product.id"
+              },
+              "certificate": "CE"
+            },
+            "result": {
+              "product_id": "NSW-4800",
+              "certificate": "CE",
+              "assigned": true
+            }
+          },
+          {
+            "action": "ORDER:create_po",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "steps[0].result.product.id"
+              },
+              "city": {
+                "$ref": "session_variables.customerCity"
+              },
+              "quantity": {
+                "$ref": "session_variables.item.quantity"
+              }
+            },
+            "result": {
+              "purchase_order": {
+                "order_id": "po-1005",
+                "product_id": "NSW-4800",
+                "city": "Atlanta",
+                "quantity": 1,
+                "unit_price": 45000,
+                "currency": "usd",
+                "net_amount": 45000,
+                "tax_rate": 0.19,
+                "tax_amount": 8550,
+                "total_amount": 53550,
+                "total_weight_kg": 7.5,
+                "ship_from": {
+                  "postal_code": "94105",
+                  "country_code": "US"
+                },
+                "ship_to": {
+                  "city": "Atlanta",
+                  "postal_code": "30303",
+                  "country_code": "US"
+                }
+              }
+            }
+          },
+          {
+            "action": "STRIPE:create_payment_intent",
+            "status": "COMPLETED",
+            "parameters": {
+              "amount": {
+                "$ref": "steps[4].result.purchase_order.total_amount"
+              },
+              "currency": {
+                "$ref": "steps[4].result.purchase_order.currency"
+              },
+              "description": {
+                "$ref": "steps[4].result.purchase_order.order_id"
+              },
+              "confirm": false
+            },
+            "result": {
+              "id": "pi_19bb66954db8423b8969",
+              "amount": 53550,
+              "currency": "usd",
+              "description": "po-1005",
+              "status": "requires_confirmation",
+              "amount_received": 0
+            }
+          },
+          {
+            "action": "PLATFORM:customer_approval",
+            "status": "COMPLETED",
+            "parameters": {
+              "question": "Purchase order po-1005 for 48-Port PoE Network Switch comes to 535.50 USD. The payment is prepared but nothing has been charged yet. Do you approve it?"
+            },
+            "result": "APPROVED"
+          },
+          {
+            "action": "STRIPE:confirm_payment_intent",
+            "status": "COMPLETED",
+            "parameters": {
+              "payment_intent_id": {
+                "$ref": "steps[5].result.id"
+              }
+            },
+            "result": {
+              "id": "pi_19bb66954db8423b8969",
+              "amount": 53550,
+              "currency": "usd",
+              "description": "po-1005",
+              "status": "succeeded",
+              "amount_received": 53550
+            }
+          }
+        ],
+        "knowledge_base": [
+          {
+            "type": "TEXT",
+            "text": "The order management manager's email address is halilcengel@greycollar.ai."
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "TLP-4200",
+              "product_name": "Thermal Label Printer",
+              "certificate": "FFC"
+            }
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "BCS-310",
+              "product_name": "Wireless Barcode Scanner",
+              "certificate": "CE"
+            }
+          },
+          {
+            "type": "TEXT",
+            "text": "Product NSW-4800 has compliance certificate CE."
+          }
+        ],
+        "session_variables": {
+          "event": "SALES_ORDER_CREATED",
+          "orderNumber": "0000004714",
+          "orderType": "OR",
+          "orderTypeText": "Standard Order",
+          "customer": "1000017",
+          "customerName": "Atlas Manufacturing Inc.",
+          "customerCity": "Atlanta",
+          "customerCountry": "US",
+          "poNumber": "",
+          "currency": "USD",
+          "netValue": 450,
+          "taxValue": 85.5,
+          "totalValue": 535.5,
+          "requestedDeliveryDate": "2026-10-26",
+          "incoterms": "CIF",
+          "paymentTerms": "NT30",
+          "status": "Open",
+          "creditStatus": "Approved",
+          "salesOrg": "1710",
+          "item": {
+            "item": "10",
+            "material": "NSW-4800",
+            "description": "48-Port PoE Network Switch",
+            "quantity": 1,
+            "uom": "PC",
+            "unitPrice": 450,
+            "netValue": 450,
+            "plant": "1020",
+            "vendor": "Cobalt Networks Corp."
+          },
+          "approvalRequestUrl": "http://localhost:5206/api/approvals",
+          "noteUrl": "http://localhost:5206/api/sales-orders/0000004714/notes"
+        },
+        "conversation": [
+          {
+            "role": "user",
+            "content": {
+              "event": "SALES_ORDER_CREATED",
+              "orderNumber": "0000004714",
+              "orderType": "OR",
+              "orderTypeText": "Standard Order",
+              "customer": "1000017",
+              "customerName": "Atlas Manufacturing Inc.",
+              "customerCity": "Atlanta",
+              "customerCountry": "US",
+              "poNumber": "",
+              "currency": "USD",
+              "netValue": 450,
+              "taxValue": 85.5,
+              "totalValue": 535.5,
+              "requestedDeliveryDate": "2026-10-26",
+              "incoterms": "CIF",
+              "paymentTerms": "NT30",
+              "status": "Open",
+              "creditStatus": "Approved",
+              "salesOrg": "1710",
+              "item": {
+                "item": "10",
+                "material": "NSW-4800",
+                "description": "48-Port PoE Network Switch",
+                "quantity": 1,
+                "uom": "PC",
+                "unitPrice": 450,
+                "netValue": 450,
+                "plant": "1020",
+                "vendor": "Cobalt Networks Corp."
+              },
+              "approvalRequestUrl": "http://localhost:5206/api/approvals",
+              "noteUrl": "http://localhost:5206/api/sales-orders/0000004714/notes"
+            }
+          },
+          {
+            "role": "assistant",
+            "content": "I need to ask my supervisor for more information."
+          },
+          {
+            "role": "assistant",
+            "content": "Purchase order po-1005 for 48-Port PoE Network Switch comes to 535.50 USD. The payment is prepared but nothing has been charged yet. Do you approve it?"
+          },
+          {
+            "role": "user",
+            "content": {
+              "decision": "APPROVED",
+              "comment": "APPROVED: sales order 0000004714 for 535.50 USD was approved by DEMO_USER"
+            }
+          }
+        ]
+      },
+      "required_parameters": [
+        {
+          "name": "sender_postal_code",
+          "type": "string",
+          "description": "Origin postal code."
+        },
+        {
+          "name": "sender_country_code",
+          "type": "string",
+          "description": "Origin two-letter country code."
+        },
+        {
+          "name": "recipient_postal_code",
+          "type": "string",
+          "description": "Destination postal code."
+        },
+        {
+          "name": "recipient_country_code",
+          "type": "string",
+          "description": "Destination two-letter country code."
+        },
+        {
+          "name": "weight",
+          "type": "number",
+          "description": "Package weight."
+        }
+      ],
+      "inputs_available": 1
+    },
+    {
+      "action": "GREY:send_email",
+      "state": {
+        "steps": [
+          {
+            "action": "ORDER:find_product",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "session_variables.item.material"
+              },
+              "name": {
+                "$ref": "session_variables.item.description"
+              }
+            },
+            "result": {
+              "product": {
+                "id": "NSW-4800",
+                "name": "48-Port PoE Network Switch",
+                "vendor_id": "VND-2103",
+                "unit_price": 45000,
+                "currency": "usd",
+                "weight_kg": 7.5
+              }
+            }
+          },
+          {
+            "action": "PLATFORM:knowledge_lookup",
+            "status": "COMPLETED",
+            "parameters": {},
+            "result": {
+              "knowledge": [
+                {
+                  "id": "be4f83d1-0e56-4989-873c-051b83e6b843",
+                  "type": "TEXT",
+                  "text": "The order management manager's email address is halilcengel@greycollar.ai.",
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "fe903f32-6794-47ab-90e5-4bb7babb556b",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "TLP-4200",
+                    "product_name": "Thermal Label Printer",
+                    "certificate": "FFC"
+                  },
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "cd7df4f2-514f-48df-8f71-1ece01b94deb",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "BCS-310",
+                    "product_name": "Wireless Barcode Scanner",
+                    "certificate": "CE"
+                  },
+                  "status": "COMPLETED"
+                }
+              ]
+            }
+          },
+          {
+            "action": "PLATFORM:ask_supervisor",
+            "status": "COMPLETED",
+            "parameters": {
+              "question": "The product NSW-4800 (48-Port PoE Network Switch) requires a compliance certificate to proceed with order creation. No certificate was found in the knowledge base. Please confirm whether this product should be certified, and if so, which certificate type (e.g., FFC, CE) should be assigned."
+            },
+            "result": "I'll add the CE certificate for product NSW-4800 to the knowledge base."
+          },
+          {
+            "action": "ORDER:assign_certificate",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "steps[0].result.product.id"
+              },
+              "certificate": "CE"
+            },
+            "result": {
+              "product_id": "NSW-4800",
+              "certificate": "CE",
+              "assigned": true
+            }
+          },
+          {
+            "action": "ORDER:create_po",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "steps[0].result.product.id"
+              },
+              "city": {
+                "$ref": "session_variables.customerCity"
+              },
+              "quantity": {
+                "$ref": "session_variables.item.quantity"
+              }
+            },
+            "result": {
+              "purchase_order": {
+                "order_id": "po-1005",
+                "product_id": "NSW-4800",
+                "city": "Atlanta",
+                "quantity": 1,
+                "unit_price": 45000,
+                "currency": "usd",
+                "net_amount": 45000,
+                "tax_rate": 0.19,
+                "tax_amount": 8550,
+                "total_amount": 53550,
+                "total_weight_kg": 7.5,
+                "ship_from": {
+                  "postal_code": "94105",
+                  "country_code": "US"
+                },
+                "ship_to": {
+                  "city": "Atlanta",
+                  "postal_code": "30303",
+                  "country_code": "US"
+                }
+              }
+            }
+          },
+          {
+            "action": "STRIPE:create_payment_intent",
+            "status": "COMPLETED",
+            "parameters": {
+              "amount": {
+                "$ref": "steps[4].result.purchase_order.total_amount"
+              },
+              "currency": {
+                "$ref": "steps[4].result.purchase_order.currency"
+              },
+              "description": {
+                "$ref": "steps[4].result.purchase_order.order_id"
+              },
+              "confirm": false
+            },
+            "result": {
+              "id": "pi_19bb66954db8423b8969",
+              "amount": 53550,
+              "currency": "usd",
+              "description": "po-1005",
+              "status": "requires_confirmation",
+              "amount_received": 0
+            }
+          },
+          {
+            "action": "PLATFORM:customer_approval",
+            "status": "COMPLETED",
+            "parameters": {
+              "question": "Purchase order po-1005 for 48-Port PoE Network Switch comes to 535.50 USD. The payment is prepared but nothing has been charged yet. Do you approve it?"
+            },
+            "result": "APPROVED"
+          },
+          {
+            "action": "STRIPE:confirm_payment_intent",
+            "status": "COMPLETED",
+            "parameters": {
+              "payment_intent_id": {
+                "$ref": "steps[5].result.id"
+              }
+            },
+            "result": {
+              "id": "pi_19bb66954db8423b8969",
+              "amount": 53550,
+              "currency": "usd",
+              "description": "po-1005",
+              "status": "succeeded",
+              "amount_received": 53550
+            }
+          },
+          {
+            "action": "FEDEX:create_shipment",
+            "status": "COMPLETED",
+            "parameters": {
+              "sender_postal_code": {
+                "$ref": "steps[4].result.purchase_order.ship_from.postal_code"
+              },
+              "sender_country_code": {
+                "$ref": "steps[4].result.purchase_order.ship_from.country_code"
+              },
+              "recipient_postal_code": {
+                "$ref": "steps[4].result.purchase_order.ship_to.postal_code"
+              },
+              "recipient_country_code": {
+                "$ref": "steps[4].result.purchase_order.ship_to.country_code"
+              },
+              "recipient_name": {
+                "$ref": "session_variables.customerName"
+              },
+              "weight": {
+                "$ref": "steps[4].result.purchase_order.total_weight_kg"
+              },
+              "weight_units": "KG"
+            },
+            "result": {
+              "transactionId": "2203f928-c41d-46a4-9ed2-b3e907151a66",
+              "output": {
+                "transactionShipments": [
+                  {
+                    "masterTrackingNumber": "243683749158873",
+                    "serviceType": "FEDEX_GROUND",
+                    "pieceResponses": [
+                      {
+                        "trackingNumber": "243683749158873"
+                      }
+                    ],
+                    "shipment": {
+                      "trackingNumber": "243683749158873",
+                      "serviceType": "FEDEX_GROUND",
+                      "shipper": {
+                        "address": {
+                          "postalCode": "94105",
+                          "countryCode": "US"
+                        }
+                      },
+                      "recipient": {
+                        "contact": {
+                          "personName": "Atlas Manufacturing Inc."
+                        },
+                        "address": {
+                          "postalCode": "30303",
+                          "countryCode": "US"
+                        }
+                      },
+                      "weight": 7.5,
+                      "totalNetCharge": 26.75,
+                      "currency": "USD",
+                      "status": "OC",
+                      "statusDescription": "Shipment information sent to FedEx",
+                      "scanEvents": [
+                        {
+                          "date": "2026-10-19T10:51:22.991Z",
+                          "eventType": "OC",
+                          "eventDescription": "Shipment information sent to FedEx"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "knowledge_base": [
+          {
+            "type": "TEXT",
+            "text": "The order management manager's email address is halilcengel@greycollar.ai."
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "TLP-4200",
+              "product_name": "Thermal Label Printer",
+              "certificate": "FFC"
+            }
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "BCS-310",
+              "product_name": "Wireless Barcode Scanner",
+              "certificate": "CE"
+            }
+          },
+          {
+            "type": "TEXT",
+            "text": "Product NSW-4800 has compliance certificate CE."
+          }
+        ],
+        "session_variables": {
+          "event": "SALES_ORDER_CREATED",
+          "orderNumber": "0000004714",
+          "orderType": "OR",
+          "orderTypeText": "Standard Order",
+          "customer": "1000017",
+          "customerName": "Atlas Manufacturing Inc.",
+          "customerCity": "Atlanta",
+          "customerCountry": "US",
+          "poNumber": "",
+          "currency": "USD",
+          "netValue": 450,
+          "taxValue": 85.5,
+          "totalValue": 535.5,
+          "requestedDeliveryDate": "2026-10-26",
+          "incoterms": "CIF",
+          "paymentTerms": "NT30",
+          "status": "Open",
+          "creditStatus": "Approved",
+          "salesOrg": "1710",
+          "item": {
+            "item": "10",
+            "material": "NSW-4800",
+            "description": "48-Port PoE Network Switch",
+            "quantity": 1,
+            "uom": "PC",
+            "unitPrice": 450,
+            "netValue": 450,
+            "plant": "1020",
+            "vendor": "Cobalt Networks Corp."
+          },
+          "approvalRequestUrl": "http://localhost:5206/api/approvals",
+          "noteUrl": "http://localhost:5206/api/sales-orders/0000004714/notes"
+        },
+        "conversation": [
+          {
+            "role": "user",
+            "content": {
+              "event": "SALES_ORDER_CREATED",
+              "orderNumber": "0000004714",
+              "orderType": "OR",
+              "orderTypeText": "Standard Order",
+              "customer": "1000017",
+              "customerName": "Atlas Manufacturing Inc.",
+              "customerCity": "Atlanta",
+              "customerCountry": "US",
+              "poNumber": "",
+              "currency": "USD",
+              "netValue": 450,
+              "taxValue": 85.5,
+              "totalValue": 535.5,
+              "requestedDeliveryDate": "2026-10-26",
+              "incoterms": "CIF",
+              "paymentTerms": "NT30",
+              "status": "Open",
+              "creditStatus": "Approved",
+              "salesOrg": "1710",
+              "item": {
+                "item": "10",
+                "material": "NSW-4800",
+                "description": "48-Port PoE Network Switch",
+                "quantity": 1,
+                "uom": "PC",
+                "unitPrice": 450,
+                "netValue": 450,
+                "plant": "1020",
+                "vendor": "Cobalt Networks Corp."
+              },
+              "approvalRequestUrl": "http://localhost:5206/api/approvals",
+              "noteUrl": "http://localhost:5206/api/sales-orders/0000004714/notes"
+            }
+          },
+          {
+            "role": "assistant",
+            "content": "I need to ask my supervisor for more information."
+          },
+          {
+            "role": "assistant",
+            "content": "Purchase order po-1005 for 48-Port PoE Network Switch comes to 535.50 USD. The payment is prepared but nothing has been charged yet. Do you approve it?"
+          },
+          {
+            "role": "user",
+            "content": {
+              "decision": "APPROVED",
+              "comment": "APPROVED: sales order 0000004714 for 535.50 USD was approved by DEMO_USER"
+            }
+          }
+        ]
+      },
+      "required_parameters": [
+        {
+          "name": "to",
+          "type": "string",
+          "description": "The email address of the recipient."
+        }
+      ],
+      "inputs_available": 0.86
+    },
+    {
+      "action": "ORDER:assign_certificate",
+      "state": {
+        "steps": [
+          {
+            "action": "ORDER:find_product",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "session_variables.item.material"
+              },
+              "name": {
+                "$ref": "session_variables.item.description"
+              }
+            },
+            "result": {
+              "product": {
+                "id": "DSC-760",
+                "name": "Duplex Document Scanner",
+                "vendor_id": "VND-2101",
+                "unit_price": 19900,
+                "currency": "usd",
+                "weight_kg": 3
+              }
+            }
+          },
+          {
+            "action": "PLATFORM:knowledge_lookup",
+            "status": "COMPLETED",
+            "parameters": {},
+            "result": {
+              "knowledge": [
+                {
+                  "id": "be4f83d1-0e56-4989-873c-051b83e6b843",
+                  "type": "TEXT",
+                  "text": "The order management manager's email address is halilcengel@greycollar.ai.",
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "fe903f32-6794-47ab-90e5-4bb7babb556b",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "TLP-4200",
+                    "product_name": "Thermal Label Printer",
+                    "certificate": "FFC"
+                  },
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "cd7df4f2-514f-48df-8f71-1ece01b94deb",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "BCS-310",
+                    "product_name": "Wireless Barcode Scanner",
+                    "certificate": "CE"
+                  },
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "8e76fd52-e2b3-4a14-a867-de65cfe61420",
+                  "type": "TEXT",
+                  "text": "Product NSW-4800 has compliance certificate CE.",
+                  "status": "COMPLETED"
+                }
+              ]
+            }
+          }
+        ],
+        "knowledge_base": [
+          {
+            "type": "TEXT",
+            "text": "The order management manager's email address is halilcengel@greycollar.ai."
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "TLP-4200",
+              "product_name": "Thermal Label Printer",
+              "certificate": "FFC"
+            }
+          },
+          {
+            "type": "DATA",
+            "text": {
+              "product_id": "BCS-310",
+              "product_name": "Wireless Barcode Scanner",
+              "certificate": "CE"
+            }
+          },
+          {
+            "type": "TEXT",
+            "text": "Product NSW-4800 has compliance certificate CE."
+          }
+        ],
+        "session_variables": {
+          "event": "SALES_ORDER_CREATED",
+          "orderNumber": "0000004715",
+          "orderType": "OR",
+          "orderTypeText": "Standard Order",
+          "customer": "1000017",
+          "customerName": "Atlas Manufacturing Inc.",
+          "customerCity": "Atlanta",
+          "customerCountry": "US",
+          "poNumber": "",
+          "currency": "USD",
+          "netValue": 199,
+          "taxValue": 37.81,
+          "totalValue": 236.81,
+          "requestedDeliveryDate": "2026-10-26",
+          "incoterms": "CIF",
+          "paymentTerms": "NT30",
+          "status": "Open",
+          "creditStatus": "Approved",
+          "salesOrg": "1710",
+          "item": {
+            "item": "10",
+            "material": "DSC-760",
+            "description": "Duplex Document Scanner",
+            "quantity": 1,
+            "uom": "PC",
+            "unitPrice": 199,
+            "netValue": 199,
+            "plant": "1020",
+            "vendor": "Apex Peripherals Inc."
+          },
+          "approvalRequestUrl": "http://localhost:5206/api/approvals",
+          "noteUrl": "http://localhost:5206/api/sales-orders/0000004715/notes"
+        },
+        "conversation": [
+          {
+            "role": "user",
+            "content": {
+              "event": "SALES_ORDER_CREATED",
+              "orderNumber": "0000004715",
+              "orderType": "OR",
+              "orderTypeText": "Standard Order",
+              "customer": "1000017",
+              "customerName": "Atlas Manufacturing Inc.",
+              "customerCity": "Atlanta",
+              "customerCountry": "US",
+              "poNumber": "",
+              "currency": "USD",
+              "netValue": 199,
+              "taxValue": 37.81,
+              "totalValue": 236.81,
+              "requestedDeliveryDate": "2026-10-26",
+              "incoterms": "CIF",
+              "paymentTerms": "NT30",
+              "status": "Open",
+              "creditStatus": "Approved",
+              "salesOrg": "1710",
+              "item": {
+                "item": "10",
+                "material": "DSC-760",
+                "description": "Duplex Document Scanner",
+                "quantity": 1,
+                "uom": "PC",
+                "unitPrice": 199,
+                "netValue": 199,
+                "plant": "1020",
+                "vendor": "Apex Peripherals Inc."
+              },
+              "approvalRequestUrl": "http://localhost:5206/api/approvals",
+              "noteUrl": "http://localhost:5206/api/sales-orders/0000004715/notes"
+            }
+          }
+        ]
+      },
+      "required_parameters": [
+        {
+          "name": "product_id",
+          "type": "string",
+          "description": "The product ID to assign the certificate to."
+        },
+        {
+          "name": "certificate",
+          "type": "string",
+          "description": "The certificate type to assign (e.g. FFC, CE)."
+        }
+      ],
+      "inputs_available": 0.05
+    },
+    {
+      "action": "ORDER:get_product_vendor",
+      "state": {
+        "steps": [],
+        "inherited_context_steps": [
+          {
+            "action": "ORDER:find_product",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "session_variables.item.material"
+              },
+              "name": {
+                "$ref": "session_variables.item.description"
+              }
+            },
+            "result": {
+              "product": {
+                "id": "DSC-760",
+                "name": "Duplex Document Scanner",
+                "vendor_id": "VND-2101",
+                "unit_price": 19900,
+                "currency": "usd",
+                "weight_kg": 3
+              }
+            }
+          },
+          {
+            "action": "PLATFORM:knowledge_lookup",
+            "status": "COMPLETED",
+            "parameters": {},
+            "result": {
+              "knowledge": [
+                {
+                  "id": "be4f83d1-0e56-4989-873c-051b83e6b843",
+                  "type": "TEXT",
+                  "text": "The order management manager's email address is halilcengel@greycollar.ai.",
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "fe903f32-6794-47ab-90e5-4bb7babb556b",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "TLP-4200",
+                    "product_name": "Thermal Label Printer",
+                    "certificate": "FFC"
+                  },
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "cd7df4f2-514f-48df-8f71-1ece01b94deb",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "BCS-310",
+                    "product_name": "Wireless Barcode Scanner",
+                    "certificate": "CE"
+                  },
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "8e76fd52-e2b3-4a14-a867-de65cfe61420",
+                  "type": "TEXT",
+                  "text": "Product NSW-4800 has compliance certificate CE.",
+                  "status": "COMPLETED"
+                }
+              ]
+            }
+          },
+          {
+            "action": "PLATFORM:ask_supervisor",
+            "status": "COMPLETED",
+            "parameters": {
+              "question": "The product DSC-760 (Duplex Document Scanner) does not have a known compliance certificate in the knowledge base. The order cannot proceed without certification. Please confirm whether to proceed with this order despite the missing certificate, or cancel it."
+            },
+            "result": "Blueprint manually updated"
+          },
+          {
+            "action": "PLATFORM:decision",
+            "status": "COMPLETED",
+            "parameters": {
+              "condition": "if certificate:\n    pass",
+              "true": [
+                {
+                  "nodeId": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
+                  "action": "ORDER:assign_certificate",
+                  "label": "Assign Certificate",
+                  "description": "Assign a compliance certificate to the product"
+                }
+              ],
+              "false": [
+                {
+                  "nodeId": "561fa5c0-955a-4751-96ef-707ab8b478cc",
+                  "action": "PLATFORM:handoff",
+                  "label": "Handoff",
+                  "description": "Transfer this task to another agent's blueprint."
+                }
+              ]
+            },
+            "result": {
+              "result": false,
+              "actions": [
+                {
+                  "nodeId": "561fa5c0-955a-4751-96ef-707ab8b478cc",
+                  "action": "PLATFORM:handoff",
+                  "label": "Handoff",
+                  "description": "Transfer this task to another agent's blueprint."
+                }
+              ]
+            }
+          }
+        ],
+        "knowledge_base": [
+          {
+            "type": "TEXT",
+            "text": "Product NSW-4800 has compliance certificate CE."
+          }
+        ],
+        "session_variables": {
+          "event": "SALES_ORDER_CREATED",
+          "orderNumber": "0000004715",
+          "orderType": "OR",
+          "orderTypeText": "Standard Order",
+          "customer": "1000017",
+          "customerName": "Atlas Manufacturing Inc.",
+          "customerCity": "Atlanta",
+          "customerCountry": "US",
+          "poNumber": "",
+          "currency": "USD",
+          "netValue": 199,
+          "taxValue": 37.81,
+          "totalValue": 236.81,
+          "requestedDeliveryDate": "2026-10-26",
+          "incoterms": "CIF",
+          "paymentTerms": "NT30",
+          "status": "Open",
+          "creditStatus": "Approved",
+          "salesOrg": "1710",
+          "item": {
+            "item": "10",
+            "material": "DSC-760",
+            "description": "Duplex Document Scanner",
+            "quantity": 1,
+            "uom": "PC",
+            "unitPrice": 199,
+            "netValue": 199,
+            "plant": "1020",
+            "vendor": "Apex Peripherals Inc."
+          },
+          "approvalRequestUrl": "http://localhost:5206/api/approvals",
+          "noteUrl": "http://localhost:5206/api/sales-orders/0000004715/notes"
+        },
+        "conversation": [
+          {
+            "role": "user",
+            "content": {
+              "event": "SALES_ORDER_CREATED",
+              "orderNumber": "0000004715",
+              "orderType": "OR",
+              "orderTypeText": "Standard Order",
+              "customer": "1000017",
+              "customerName": "Atlas Manufacturing Inc.",
+              "customerCity": "Atlanta",
+              "customerCountry": "US",
+              "poNumber": "",
+              "currency": "USD",
+              "netValue": 199,
+              "taxValue": 37.81,
+              "totalValue": 236.81,
+              "requestedDeliveryDate": "2026-10-26",
+              "incoterms": "CIF",
+              "paymentTerms": "NT30",
+              "status": "Open",
+              "creditStatus": "Approved",
+              "salesOrg": "1710",
+              "item": {
+                "item": "10",
+                "material": "DSC-760",
+                "description": "Duplex Document Scanner",
+                "quantity": 1,
+                "uom": "PC",
+                "unitPrice": 199,
+                "netValue": 199,
+                "plant": "1020",
+                "vendor": "Apex Peripherals Inc."
+              },
+              "approvalRequestUrl": "http://localhost:5206/api/approvals",
+              "noteUrl": "http://localhost:5206/api/sales-orders/0000004715/notes"
+            }
+          },
+          {
+            "role": "assistant",
+            "content": "I need to ask my supervisor for more information."
+          }
+        ]
+      },
+      "required_parameters": [
+        {
+          "name": "product_id",
+          "type": "string",
+          "description": "The product ID to look up the vendor for (e.g. TLP-4200)."
+        }
+      ],
+      "inputs_available": 0.99
+    },
+    {
+      "action": "GREY:send_email",
+      "state": {
+        "steps": [
+          {
+            "action": "ORDER:get_product_vendor",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "session_variables.item.material"
+              }
+            },
+            "result": {
+              "vendor": {
+                "id": "VND-2101",
+                "name": "Apex Peripherals Inc.",
+                "email": "orders@apexperipherals.com",
+                "postal_code": "30301",
+                "country_code": "US"
+              }
+            }
+          }
+        ],
+        "inherited_context_steps": [
+          {
+            "action": "ORDER:find_product",
+            "status": "COMPLETED",
+            "parameters": {
+              "product_id": {
+                "$ref": "session_variables.item.material"
+              },
+              "name": {
+                "$ref": "session_variables.item.description"
+              }
+            },
+            "result": {
+              "product": {
+                "id": "DSC-760",
+                "name": "Duplex Document Scanner",
+                "vendor_id": "VND-2101",
+                "unit_price": 19900,
+                "currency": "usd",
+                "weight_kg": 3
+              }
+            }
+          },
+          {
+            "action": "PLATFORM:knowledge_lookup",
+            "status": "COMPLETED",
+            "parameters": {},
+            "result": {
+              "knowledge": [
+                {
+                  "id": "be4f83d1-0e56-4989-873c-051b83e6b843",
+                  "type": "TEXT",
+                  "text": "The order management manager's email address is halilcengel@greycollar.ai.",
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "fe903f32-6794-47ab-90e5-4bb7babb556b",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "TLP-4200",
+                    "product_name": "Thermal Label Printer",
+                    "certificate": "FFC"
+                  },
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "cd7df4f2-514f-48df-8f71-1ece01b94deb",
+                  "type": "DATA",
+                  "text": {
+                    "product_id": "BCS-310",
+                    "product_name": "Wireless Barcode Scanner",
+                    "certificate": "CE"
+                  },
+                  "status": "COMPLETED"
+                },
+                {
+                  "id": "8e76fd52-e2b3-4a14-a867-de65cfe61420",
+                  "type": "TEXT",
+                  "text": "Product NSW-4800 has compliance certificate CE.",
+                  "status": "COMPLETED"
+                }
+              ]
+            }
+          },
+          {
+            "action": "PLATFORM:ask_supervisor",
+            "status": "COMPLETED",
+            "parameters": {
+              "question": "The product DSC-760 (Duplex Document Scanner) does not have a known compliance certificate in the knowledge base. The order cannot proceed without certification. Please confirm whether to proceed with this order despite the missing certificate, or cancel it."
+            },
+            "result": "Blueprint manually updated"
+          },
+          {
+            "action": "PLATFORM:decision",
+            "status": "COMPLETED",
+            "parameters": {
+              "condition": "if certificate:\n    pass",
+              "true": [
+                {
+                  "nodeId": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
+                  "action": "ORDER:assign_certificate",
+                  "label": "Assign Certificate",
+                  "description": "Assign a compliance certificate to the product"
+                }
+              ],
+              "false": [
+                {
+                  "nodeId": "561fa5c0-955a-4751-96ef-707ab8b478cc",
+                  "action": "PLATFORM:handoff",
+                  "label": "Handoff",
+                  "description": "Transfer this task to another agent's blueprint."
+                }
+              ]
+            },
+            "result": {
+              "result": false,
+              "actions": [
+                {
+                  "nodeId": "561fa5c0-955a-4751-96ef-707ab8b478cc",
+                  "action": "PLATFORM:handoff",
+                  "label": "Handoff",
+                  "description": "Transfer this task to another agent's blueprint."
+                }
+              ]
+            }
+          }
+        ],
+        "knowledge_base": [
+          {
+            "type": "TEXT",
+            "text": "Product NSW-4800 has compliance certificate CE."
+          }
+        ],
+        "session_variables": {
+          "event": "SALES_ORDER_CREATED",
+          "orderNumber": "0000004715",
+          "orderType": "OR",
+          "orderTypeText": "Standard Order",
+          "customer": "1000017",
+          "customerName": "Atlas Manufacturing Inc.",
+          "customerCity": "Atlanta",
+          "customerCountry": "US",
+          "poNumber": "",
+          "currency": "USD",
+          "netValue": 199,
+          "taxValue": 37.81,
+          "totalValue": 236.81,
+          "requestedDeliveryDate": "2026-10-26",
+          "incoterms": "CIF",
+          "paymentTerms": "NT30",
+          "status": "Open",
+          "creditStatus": "Approved",
+          "salesOrg": "1710",
+          "item": {
+            "item": "10",
+            "material": "DSC-760",
+            "description": "Duplex Document Scanner",
+            "quantity": 1,
+            "uom": "PC",
+            "unitPrice": 199,
+            "netValue": 199,
+            "plant": "1020",
+            "vendor": "Apex Peripherals Inc."
+          },
+          "approvalRequestUrl": "http://localhost:5206/api/approvals",
+          "noteUrl": "http://localhost:5206/api/sales-orders/0000004715/notes"
+        },
+        "conversation": [
+          {
+            "role": "user",
+            "content": {
+              "event": "SALES_ORDER_CREATED",
+              "orderNumber": "0000004715",
+              "orderType": "OR",
+              "orderTypeText": "Standard Order",
+              "customer": "1000017",
+              "customerName": "Atlas Manufacturing Inc.",
+              "customerCity": "Atlanta",
+              "customerCountry": "US",
+              "poNumber": "",
+              "currency": "USD",
+              "netValue": 199,
+              "taxValue": 37.81,
+              "totalValue": 236.81,
+              "requestedDeliveryDate": "2026-10-26",
+              "incoterms": "CIF",
+              "paymentTerms": "NT30",
+              "status": "Open",
+              "creditStatus": "Approved",
+              "salesOrg": "1710",
+              "item": {
+                "item": "10",
+                "material": "DSC-760",
+                "description": "Duplex Document Scanner",
+                "quantity": 1,
+                "uom": "PC",
+                "unitPrice": 199,
+                "netValue": 199,
+                "plant": "1020",
+                "vendor": "Apex Peripherals Inc."
+              },
+              "approvalRequestUrl": "http://localhost:5206/api/approvals",
+              "noteUrl": "http://localhost:5206/api/sales-orders/0000004715/notes"
+            }
+          },
+          {
+            "role": "assistant",
+            "content": "I need to ask my supervisor for more information."
+          }
+        ]
+      },
+      "required_parameters": [
+        {
+          "name": "to",
+          "type": "string",
+          "description": "The email address of the recipient."
+        }
+      ],
+      "inputs_available": 1
+    }
+  ]
+}

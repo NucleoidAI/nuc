@@ -1,21 +1,21 @@
 {
   "data": [
-    { "user_prompt": "product-3 certificate is CE", "has_enough_context": true },
+    { "user_prompt": "48-Port PoE Network Switch certificate is CE", "has_enough_context": true },
     {
-      "user_prompt": "product-1 has FFC certification",
+      "user_prompt": "Thermal Label Printer has FFC certification",
       "has_enough_context": true
     },
-    { "user_prompt": "assign CE to product-4", "has_enough_context": true },
+    { "user_prompt": "assign CE to Duplex Document Scanner", "has_enough_context": true },
     {
-      "user_prompt": "product-4 certificate should be FFC",
-      "has_enough_context": true
-    },
-    {
-      "user_prompt": "product-2 certification needs to be updated to FFC",
+      "user_prompt": "Duplex Document Scanner certificate should be FFC",
       "has_enough_context": true
     },
     {
-      "user_prompt": "product-3 does not have any certificate",
+      "user_prompt": "Wireless Barcode Scanner certification needs to be updated to FFC",
+      "has_enough_context": true
+    },
+    {
+      "user_prompt": "48-Port PoE Network Switch does not have any certificate",
       "has_enough_context": true
     },
     {
@@ -23,13 +23,13 @@
       "has_enough_context": true
     },
     {
-      "user_prompt": "product-1 FCC cert is no longer valid, replace with CE",
+      "user_prompt": "Thermal Label Printer FCC cert is no longer valid, replace with CE",
       "has_enough_context": true
     },
     { "user_prompt": "yes", "has_enough_context": false },
     { "user_prompt": "ok", "has_enough_context": false },
     { "user_prompt": "what about the products?", "has_enough_context": false },
-    { "user_prompt": "I need to check product-2", "has_enough_context": false },
+    { "user_prompt": "I need to check Wireless Barcode Scanner", "has_enough_context": false },
     { "user_prompt": "can you look into it?", "has_enough_context": false },
     { "user_prompt": "not sure", "has_enough_context": false },
     { "user_prompt": "handle it", "has_enough_context": false },

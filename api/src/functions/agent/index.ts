@@ -9,7 +9,7 @@ import {
   blueprintSkill,
 } from "./blueprint";
 import { approve, waitingApproval } from "./approval";
-import { chat, evaluateSupervisionAnswer, teamChat } from "./chat";
+import { chat, teamChat } from "./chat";
 import step from "./step";
 import task from "./task";
 
@@ -26,7 +26,6 @@ export default {
   blueprintChatDecision,
   blueprintChatSufficiency,
   blueprintChatKnowledge,
-  evaluateSupervisionAnswer,
   blueprintDescription,
   blueprintSkill,
 };

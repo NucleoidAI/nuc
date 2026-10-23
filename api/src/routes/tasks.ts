@@ -2,7 +2,6 @@ import Agent from "../models/Agent";
 import Joi from "joi";
 import Task from "../models/Task";
 import express from "express";
-import knowledge from "../functions/knowledge";
 import task from "../functions/task";
 
 const router = express.Router();
@@ -126,41 +125,6 @@ router.patch("/:taskId/steps/:stepId", async (req, res) => {
 
   await task.updateStepComment({ stepId, comment: comment ?? null });
   return res.status(200).end();
-});
-
-router.post("/:taskId/supervising", async (req, res) => {
-  const { taskId } = req.params;
-  const { text, addToKnowledgeBase, agentId } = Joi.attempt(
-    req.body,
-    Joi.object({
-      text: Joi.string().required(),
-      agentId: Joi.string()
-        .guid({ version: ["uuidv4"] })
-        .required(),
-      addToKnowledgeBase: Joi.boolean().required(),
-    }),
-  );
-
-  await task.addStep({
-    taskId,
-    action: "SUPERVISED",
-    comment: "Supervising: " + text,
-    parameters: {
-      message: text,
-    },
-  });
-
-  if (addToKnowledgeBase) {
-    await knowledge.create({
-      agentId,
-      knowledge: {
-        type: "TASK",
-        taskId,
-      },
-    });
-  }
-
-  return res.status(201).end();
 });
 
 export default router;

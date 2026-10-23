@@ -31,9 +31,6 @@ const config = {
   dynamodb: {
     region: "us-east-1",
   },
-  decision: {
-    enabled: false,
-  },
   event: {
     type: "inMemory" as const,
     host: "localhost",

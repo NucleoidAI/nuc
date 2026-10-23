@@ -1,6 +1,6 @@
 import React from "react";
 
-const CodeBlock = ({ children }) => {
+const CodeBlock = ({ children, style = {} }) => {
   return (
     <code
       style={{
@@ -11,6 +11,7 @@ const CodeBlock = ({ children }) => {
         display: "block",
         marginTop: "16px",
         fontSize: "14px",
+        ...style,
       }}
     >
       {children}

@@ -385,6 +385,18 @@ async function respond(state: TaskState, node: any) {
   });
 }
 
+function handoffTarget(parameters: Params, node: any): Params {
+  if (node?.type !== "HANDOFF") return parameters;
+
+  const { targetAgentId, targetBlueprintId } = node.properties ?? {};
+
+  return {
+    ...parameters,
+    ...(targetAgentId && { targetAgentId }),
+    ...(targetBlueprintId && { targetBlueprintId }),
+  };
+}
+
 async function handoff(state: TaskState, parameters: Params, comment?: string) {
   const { taskId, agentId, sessionId, description, blueprintId, steps } = state;
   const { targetAgentId, targetBlueprintId, context } = parameters as {
@@ -467,11 +479,15 @@ async function conclude({
   }
 
   if (action === "PLATFORM:complete") {
-    return complete(state, comment);
+    return complete(state, selection.comment || prepared.comment);
   }
 
   if (action === "PLATFORM:handoff") {
-    return handoff(state, resolvedParameters, comment);
+    return handoff(
+      state,
+      handoffTarget(resolvedParameters, matchedNode),
+      comment,
+    );
   }
 
   return taskFn.addStep({

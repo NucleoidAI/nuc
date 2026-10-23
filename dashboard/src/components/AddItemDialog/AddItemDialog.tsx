@@ -103,23 +103,30 @@ function AddItemDialog({
 
     setSelectedOptionId(nextSelectedOptionId);
 
+    let nextSelectedOptionType = "";
+
     if (
       organizations?.some(
         (organization) => organization.id === nextSelectedOptionId
       )
     ) {
-      setSelectedOptionType("organization");
+      nextSelectedOptionType = "organization";
     } else if (teamById?.id === nextSelectedOptionId) {
-      setSelectedOptionType("team");
+      nextSelectedOptionType = "team";
     } else if (agents?.some((agent) => agent.id === nextSelectedOptionId)) {
-      setSelectedOptionType("agent");
+      nextSelectedOptionType = "agent";
     } else if (
       blueprints?.some((item) => item.id === nextSelectedOptionId) ||
       blueprint?.id === nextSelectedOptionId
     ) {
-      setSelectedOptionType("blueprint");
-    } else {
-      setSelectedOptionType("");
+      nextSelectedOptionType = "blueprint";
+    }
+
+    setSelectedOptionType(nextSelectedOptionType);
+
+    if (currentType === "BLUEPRINT" && nextSelectedOptionType !== "blueprint") {
+      setCurrentType("URL");
+      reset();
     }
   };
 
@@ -199,6 +206,10 @@ function AddItemDialog({
     } else if (currentType === "TEXT") {
       item.text = data.inputValue;
     } else if (currentType === "DATA") {
+      item.text = data.inputValue;
+    } else if (currentType === "LOGIC") {
+      item.text = data.inputValue;
+    } else if (currentType === "BLUEPRINT") {
       item.text = data.inputValue;
     } else if (currentType === "QA") {
       item.question = data.question;
@@ -392,11 +403,20 @@ function AddItemDialog({
             sx: { zIndex: (theme) => theme.zIndex.modal + 4 },
           }}
         >
-          {types.map((type) => (
-            <MenuItem data-cy={`add-type-menu-${type}`} key={type} value={type}>
-              {type}
-            </MenuItem>
-          ))}
+          {types
+            .filter(
+              (type) =>
+                type !== "BLUEPRINT" || selectedOptionType === "blueprint"
+            )
+            .map((type) => (
+              <MenuItem
+                data-cy={`add-type-menu-${type}`}
+                key={type}
+                value={type}
+              >
+                {type}
+              </MenuItem>
+            ))}
         </Select>
 
         <FormProvider methods={methods} onSubmit={onSubmit}>

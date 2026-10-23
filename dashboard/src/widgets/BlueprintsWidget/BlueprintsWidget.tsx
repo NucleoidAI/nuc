@@ -1,7 +1,6 @@
 import AddIcon from "@mui/icons-material/Add";
 import BlueprintCard from "../../components/BlueprintCard/BlueprintCard";
 import BlueprintDrawerLayout from "../../layouts/BlueprintDrawerLayout";
-import BlueprintFlowDialog from "../../components/BlueprintFlow/BlueprintFlowDialog";
 import BlueprintSkeleton from "../../components/Skeletons/BlueprintSkeleton";
 import useBlueprint from "../../hooks/useBlueprint";
 import { useEvent } from "@nucleoidai/react-event";
@@ -42,7 +41,6 @@ function BlueprintsWidget({
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [flowDialogOpen, setFlowDialogOpen] = useState(false);
   const [aiResponse, setAiResponse] = useState(null);
 
   const handleDrawerOpen = (item) => {
@@ -54,16 +52,6 @@ function BlueprintsWidget({
     setDrawerOpen(false);
     setSelectedItem(null);
     setAiResponse(null);
-  };
-
-  const handleFlowDialogOpen = (item) => {
-    setSelectedItem(item);
-    setFlowDialogOpen(true);
-  };
-
-  const handleFlowDialogClose = () => {
-    setFlowDialogOpen(false);
-    setSelectedItem(null);
   };
 
   return (
@@ -88,7 +76,6 @@ function BlueprintsWidget({
                 key={item.id}
                 item={item}
                 handleDrawerOpen={handleDrawerOpen}
-                handleFlowDialogOpen={handleFlowDialogOpen}
                 removeBlueprint={removeBlueprint}
                 agentId={item.agentId}
               />
@@ -119,16 +106,6 @@ function BlueprintsWidget({
           aiResponse={aiResponse}
           agentId={agentId}
           teamId={teamId}
-        />
-      )}
-
-      {flowDialogOpen && (
-        <BlueprintFlowDialog
-          flowDialogOpen={flowDialogOpen}
-          handleFlowDialogClose={handleFlowDialogClose}
-          selectedItem={selectedItem}
-          aiResponse={aiResponse}
-          setAiResponse={setAiResponse}
         />
       )}
 

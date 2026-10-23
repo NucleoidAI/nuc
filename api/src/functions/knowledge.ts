@@ -6,6 +6,8 @@ import { Op } from "sequelize";
 import { event } from "@canmingir/link-express/event/client";
 import scrapper from "../actions/scrapper";
 
+const LLM_EXCLUDED_TYPES = ["LOGIC", "BLUEPRINT"];
+
 async function create({
   teamId,
   agentId,
@@ -110,17 +112,21 @@ async function list({
   agentId,
   teamId,
   type,
+  excludeTypes,
 }: {
   teamId?: string;
   agentId?: string;
   type?: string;
+  excludeTypes?: string[];
 }) {
   const typeWhere = {} as {
-    type?: string;
+    type?: string | { [Op.notIn]: string[] };
   };
 
   if (type) {
     typeWhere.type = type;
+  } else if (excludeTypes?.length) {
+    typeWhere.type = { [Op.notIn]: excludeTypes };
   }
 
   const knowledgeWhere: {
@@ -172,6 +178,16 @@ async function list({
   return knowledgesInstances;
 }
 
+async function listForLLM({
+  agentId,
+  teamId,
+}: {
+  agentId?: string;
+  teamId?: string;
+}) {
+  return list({ agentId, teamId, excludeTypes: LLM_EXCLUDED_TYPES });
+}
+
 async function get({
   knowledgeId,
   includeAgent = false,
@@ -212,4 +228,4 @@ async function get({
   return knowledgeItem.toJSON();
 }
 
-export default { create, list, get };
+export default { create, list, listForLLM, get };

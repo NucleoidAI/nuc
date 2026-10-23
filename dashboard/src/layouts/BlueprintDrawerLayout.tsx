@@ -5,17 +5,17 @@ import BlueprintFlowWidget from "../widgets/BlueprintFlowWidget/BlueprintFlowWid
 import BlueprintKnowledge from "../components/BlueprintKnowledge/BlueprintKnowledge";
 import BlueprintSkill from "../components/BlueprintSkill/BlueprintSkill";
 import CloseIcon from "@mui/icons-material/Close";
-import { CodeEditor } from "../widgets/CodeEditor";
 import { DrawerLayout } from "@canmingir/link/layouts";
 import { FlowDefinition } from "../components/BlueprintFlow/helper";
 import HorizontalSplitIcon from "@mui/icons-material/HorizontalSplit";
-import LogicView from "../components/LogicView/LogicView";
+import { LowCodeEditor } from "@canmingir/link/platform/components";
 import PsychologyIcon from "@mui/icons-material/Psychology";
 import SettingsDialog from "../components/SettingsDialog/SettingsDialog";
 import SettingsIcon from "@mui/icons-material/Settings";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import SupervisingChat from "../components/SupervisingChat";
 import useBlueprint from "../hooks/useBlueprint";
+import useBlueprintLogic from "../hooks/useBlueprintLogic";
 import useSupervisings from "../hooks/useSupervisings";
 import {
   Box,
@@ -32,50 +32,6 @@ import {
 import React, { useEffect, useState } from "react";
 import { publish, useEvent } from "@nucleoidai/react-event";
 import { storage, useStorage } from "@nucleoidjs/webstorage";
-
-type LogicRule = {
-  id: string;
-  name: string;
-  description: string;
-  code: string;
-};
-
-const defaultLogicRules: LogicRule[] = [
-  {
-    id: "rule-1",
-    name: "Compliance Certificate Follow-up Flow Decision Model (DCM) for Missing Certificates Triggering Vendor Contact",
-    description:
-      "Use this rule when a product is missing its compliance certificate and the vendor must be contacted directly to obtain it. Flow: get product vendor, email vendor requesting the certificate, notify the user that the vendor was contacted, then complete. It exits after notifying the user; the certificate itself arrives out of band once the vendor responds.",
-    code: `items = Product.filter(certificate=None)
-
-for product in items:
-    vendor = product.vendor
-    email_vendor(vendor, "Please send the compliance certificate")
-    notify_user(f"Contacted {vendor.name} for {product.name}")`,
-  },
-  {
-    id: "rule-2",
-    name: "Escalate Stale Tasks",
-    description:
-      "Use this rule to escalate tasks that have been pending for more than 48 hours without a status update, so the assigned supervisor is notified before the SLA is breached.",
-    code: `tasks = Task.filter(status="PENDING")
-
-for task in tasks:
-    if task.hours_since_update() > 48:
-        notify_supervisor(task, "SLA at risk")`,
-  },
-  {
-    id: "rule-3",
-    name: "Auto-tag Incoming Requests",
-    description:
-      "Use this rule to automatically tag new incoming requests based on keywords in their title, so they are routed to the right queue without manual triage.",
-    code: `requests = Request.filter(tags=None)
-
-for request in requests:
-    tag = classify(request.title)
-    request.tags = [tag]`,
-  },
-];
 
 const BlueprintDrawerLayout = ({
   drawerOpen,
@@ -164,12 +120,32 @@ const BlueprintDrawerLayout = ({
   const [editBlueprintOpen, setEditBlueprintOpen] = useState(false);
 
   const [logicEditorOpen, setLogicEditorOpen] = useState(false);
-  const [logicRules, setLogicRules] = useState<LogicRule[]>(defaultLogicRules);
-  const [selectedLogicRuleId, setSelectedLogicRuleId] = useState(
-    defaultLogicRules[0].id
+  const { getBlueprintLogicRules } = useBlueprintLogic();
+  const { logicRules: fetchedLogicRules } = getBlueprintLogicRules(
+    selectedItem?.id
   );
-  const selectedLogicRule =
-    logicRules.find((rule) => rule.id === selectedLogicRuleId) ?? logicRules[0];
+  const [logicRules, setLogicRules] = useState<
+    {
+      id: string;
+      blueprintId: string;
+      name: string;
+      description: string | null;
+      code: string;
+      createdAt: string;
+    }[]
+  >([]);
+  const [selectedLogicRuleId, setSelectedLogicRuleId] = useState<string | null>(
+    null
+  );
+  const selectedLogicRule = logicRules.find(
+    (rule) => rule.id === selectedLogicRuleId
+  );
+
+  useEffect(() => {
+    const rules = fetchedLogicRules ?? [];
+    setLogicRules(rules);
+    setSelectedLogicRuleId(rules[0]?.id ?? null);
+  }, [fetchedLogicRules]);
 
   const handleLogicCodeChange = (value: string) => {
     setLogicRules((prev) =>
@@ -535,7 +511,9 @@ const BlueprintDrawerLayout = ({
             open={logicEditorOpen}
             onClose={() => setLogicEditorOpen(false)}
           >
-            <DialogContent sx={{ p: 0, display: "flex", height: "100%" }}>
+            <DialogContent
+              sx={{ p: 0, display: "flex", flex: 1, minHeight: 0 }}
+            >
               <Box
                 sx={{
                   width: 350,
@@ -546,6 +524,7 @@ const BlueprintDrawerLayout = ({
                   borderRadius: "4px 0 0 4px",
                   bgcolor: (theme) =>
                     theme.palette.mode === "dark" ? "grey.900" : "grey.50",
+                  minHeight: 0,
                 }}
               >
                 <Box
@@ -565,7 +544,7 @@ const BlueprintDrawerLayout = ({
                     fontWeight={600}
                     sx={{ textAlign: "center", flex: 1 }}
                   >
-                    Logics
+                    Logic
                   </Typography>
                   <Tooltip title="New session">
                     <IconButton size="small">
@@ -574,7 +553,7 @@ const BlueprintDrawerLayout = ({
                   </Tooltip>
                 </Box>
 
-                <List sx={{ flex: 1 }} dense>
+                <List sx={{ flex: 1, minHeight: 0, overflowY: "auto" }} dense>
                   {logicRules.map((rule) => (
                     <Box
                       onClick={() => setSelectedLogicRuleId(rule.id)}
@@ -610,48 +589,39 @@ const BlueprintDrawerLayout = ({
 
               <Box
                 sx={{
+                  position: "relative",
                   flex: 1,
                   display: "flex",
                   flexDirection: "column",
                   minWidth: 0,
+                  minHeight: 0,
+                  bgcolor: "#000000",
                 }}
               >
-                <Box
+                <IconButton
+                  size="small"
+                  onClick={() => setLogicEditorOpen(false)}
                   sx={{
-                    position: "relative",
+                    position: "absolute",
+                    top: 8,
+                    right: 16,
+                    zIndex: 1,
+                    color: "common.white",
                   }}
                 >
-                  <LogicView
-                    title="LOGIC.md"
-                    content={selectedLogicRule?.description}
-                    height="auto"
-                    rounded={false}
-                  />
-                  <IconButton
-                    size="small"
-                    onClick={() => setLogicEditorOpen(false)}
-                    sx={{
-                      position: "absolute",
-                      top: 8,
-                      right: 16,
-                      color: "common.white",
-                    }}
-                  >
-                    <CloseIcon fontSize="small" />
-                  </IconButton>
-                </Box>
+                  <CloseIcon fontSize="small" />
+                </IconButton>
 
-                <Box sx={{ flex: 1, minHeight: 0 }}>
-                  <CodeEditor
-                    value={selectedLogicRule?.code ?? ""}
-                    onChange={handleLogicCodeChange}
-                    language="python"
-                    path={`logic/${selectedLogicRule?.id}/main.py`}
-                    themeMode="dark"
-                    backgroundColor="#000000"
-                    height="100%"
-                  />
-                </Box>
+                <LowCodeEditor
+                  value={selectedLogicRule?.code ?? ""}
+                  onChange={handleLogicCodeChange}
+                  language="python"
+                  editorHeight="100%"
+                  showRunButton={false}
+                  panelTitle="LOGIC.md"
+                  panelContent={selectedLogicRule?.description}
+                  showPanel
+                />
               </Box>
             </DialogContent>
           </Dialog>

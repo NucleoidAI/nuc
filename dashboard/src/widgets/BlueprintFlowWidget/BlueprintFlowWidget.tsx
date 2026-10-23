@@ -3,7 +3,7 @@ import BlueprintFlow from "../../components/BlueprintFlow/BlueprintFlow";
 import BlueprintFlowSkeleton from "../../components/Skeletons/BlueprintFlowSkeleton";
 import NodeEditorWidget from "../NodeEditorWidget/NodeEditorWidget";
 import type { ParameterBinding } from "../../components/BlueprintFlow/NodeConnectionOverlay";
-import SampleNode from "../../components/BlueprintFlow/Samples/SampleNode";
+import StartNode from "../../components/BlueprintFlow/StartNode/StartNode";
 import type { SwitchCase } from "../../components/BlueprintFlow/helper";
 import { publish } from "@nucleoidai/react-event";
 import useAllIntegrations from "../../hooks/useAllIntegrations";
@@ -15,6 +15,7 @@ import { validateFlow } from "../../components/BlueprintFlow/Validation/validati
 import {
   DefinitionGraph,
   FlowDefinition,
+  addStartNode,
   buildByNodeRef,
   buildDefinitionGraph,
   getAncestorNodes,
@@ -260,7 +261,7 @@ function BlueprintFlowWidget({
       return acc;
     }, {});
 
-    return enriched;
+    return addStartNode(enriched);
   }, [
     graphData,
     nodeChanges,
@@ -2080,7 +2081,7 @@ function BlueprintFlowWidget({
       ) : isEmptyState ? (
         <>
           {!showSampleFlow && (
-            <SampleNode handleStarterNodeClick={handleStarterNodeClick} />
+            <StartNode handleStarterNodeClick={handleStarterNodeClick} />
           )}
         </>
       ) : !graphData && hasRealFlowData ? null : (

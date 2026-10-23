@@ -84,24 +84,6 @@ function useTasks(agentId: string, initialFetchState: DependencyArray = []) {
     publish("STEP_COMMENT_UPDATED", { stepId, comment });
   };
 
-  const createTaskSupervising = async (
-    id: string,
-    text: string,
-    addToKnowledgeBase: boolean
-  ) => {
-    try {
-      const response = await http.post(`/tasks/${id}/supervising`, {
-        agentId,
-        text,
-        addToKnowledgeBase,
-      });
-
-      return response?.data;
-    } catch (error) {
-      return null;
-    }
-  };
-
   return {
     tasks: result.tasks,
     loading: result.loading,
@@ -111,7 +93,6 @@ function useTasks(agentId: string, initialFetchState: DependencyArray = []) {
     stepsLoading,
     getSteps,
     createTask,
-    createTaskSupervising,
     updateStepComment,
   };
 }

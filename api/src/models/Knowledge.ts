@@ -21,9 +21,16 @@ class Knowledge extends Model {
   declare id: string;
 
   @AllowNull(false)
-  @IsIn([["URL", "TEXT", "QA", "TASK", "DATA"]])
+  @IsIn([["URL", "TEXT", "QA", "TASK", "DATA", "LOGIC", "BLUEPRINT"]])
   @Column(DataType.STRING)
-  declare type: "URL" | "TEXT" | "QA" | "TASK" | "DATA";
+  declare type:
+    | "URL"
+    | "TEXT"
+    | "QA"
+    | "TASK"
+    | "DATA"
+    | "LOGIC"
+    | "BLUEPRINT";
 
   @AllowNull(true)
   @Column(DataType.TEXT)

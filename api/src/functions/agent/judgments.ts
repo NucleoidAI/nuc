@@ -1,43 +1,66 @@
-import type { EntryType, Question, Questions } from "@typesafe-ai/sdk";
+import type {
+  EntryType,
+  JsonValue,
+  Question,
+  Questions,
+} from "@typesafe-ai/sdk";
 import { ask, choice, noul } from "../../lib/decision";
+import fewShots from "../../dataset/train/decision/index";
 import type { LLMMeta } from "@canmingir/link-express/llm";
-import platform from "@canmingir/link-express";
+import { mkdirSync, writeFileSync } from "fs";
+import path from "path";
 
-const NONE = "none";
-const INPUTS_AVAILABLE = "inputs_available";
 const PLATFORM_FIELDS = new Set([
   "sessionId",
   "agentId",
   "taskId",
   "blueprintId",
 ]);
-const MAX_CANDIDATES = 200;
-const MAX_LEAVES_PER_SOURCE = 40;
-const MAX_DEPTH = 4;
-const MAX_ARRAY_ITEMS = 5;
-const MAX_VALUE_LENGTH = 160;
-const REF_MIN_PROBABILITY = 0.5;
-const BOOLEAN_TRUE_THRESHOLD = 0.7;
-const BOOLEAN_FALSE_THRESHOLD = 0.3;
+
+const NOISE_KEYS = new Set([
+  "createdAt",
+  "updatedAt",
+  "created",
+  "livemode",
+  "object",
+  "agentId",
+  "teamId",
+  "organizationId",
+  "sessionId",
+  "taskId",
+  "blueprintId",
+]);
+
+const TEXT_ONLY_ACTIONS = new Set(["PLATFORM:knowledge_lookup"]);
 
 type Definition = {
   action: string;
   label?: string;
   description?: string;
   inputSchema?: {
-    properties?: Record<string, SchemaProperty>;
+    properties?: Record<
+      string,
+      {
+        type?: string;
+        description?: string;
+        enum?: unknown[];
+        generated?: boolean;
+      }
+    >;
     required?: string[];
   };
 };
 
-type SchemaProperty = {
-  type?: string;
-  description?: string;
-  enum?: unknown[];
+type Parameter = {
+  name: string;
+  type: string | null;
+  description: string | null;
+  required: boolean;
 };
 
 type StepLike = {
   action?: string;
+  status?: string;
   parameters?: unknown;
   result?: unknown;
 };
@@ -45,54 +68,18 @@ type StepLike = {
 type Candidate = {
   path: string;
   value: string;
+  key: string;
+  kind: string;
+  text: string;
+  prose?: boolean;
   action?: string;
 };
 
-function json(value: unknown): EntryType {
-  return JSON.parse(JSON.stringify(value ?? null));
-}
+type Answer =
+  | { type: "choice"; choice: string; probabilities: Record<string, number> }
+  | { type: "noul"; noul: number };
 
-function parseMaybeJson(value: unknown) {
-  if (typeof value !== "string") return value;
-
-  const trimmed = value.trim();
-  if (!trimmed.startsWith("{") && !trimmed.startsWith("[")) return value;
-
-  try {
-    return JSON.parse(trimmed);
-  } catch {
-    return value;
-  }
-}
-
-function leaves(value: unknown, path: string, depth: number, out: Candidate[]) {
-  if (out.length >= MAX_LEAVES_PER_SOURCE || value == null) return;
-
-  const parsed = parseMaybeJson(value);
-
-  if (Array.isArray(parsed)) {
-    if (depth >= MAX_DEPTH) return;
-    parsed
-      .slice(0, MAX_ARRAY_ITEMS)
-      .forEach((item, index) =>
-        leaves(item, `${path}[${index}]`, depth + 1, out),
-      );
-    return;
-  }
-
-  if (typeof parsed === "object") {
-    if (depth >= MAX_DEPTH) return;
-    for (const [key, item] of Object.entries(parsed as object)) {
-      if (/[.[\]]/.test(key)) continue;
-      leaves(item, `${path}.${key}`, depth + 1, out);
-    }
-    return;
-  }
-
-  out.push({ path, value: String(parsed).slice(0, MAX_VALUE_LENGTH) });
-}
-
-function refCandidates({
+function collectCandidates({
   steps,
   inheritedSteps,
   variables,
@@ -101,128 +88,189 @@ function refCandidates({
   inheritedSteps: StepLike[];
   variables: Record<string, unknown>;
 }) {
+  const walk = (
+    value: unknown,
+    path: string,
+    depth: number,
+    out: Candidate[],
+  ) => {
+    if (out.length >= 40 || value == null || value === "") return;
+
+    let parsed = value;
+    if (typeof value === "string" && /^\s*[{[]/.test(value)) {
+      try {
+        parsed = JSON.parse(value);
+      } catch {
+        parsed = value;
+      }
+    }
+
+    if (typeof parsed === "object" && parsed !== null) {
+      if (depth >= 4 || "$ref" in parsed) return;
+
+      if (depth > 0 || /\.result$/.test(path)) {
+        const text = JSON.stringify(parsed);
+        const kind = Array.isArray(parsed) ? "array" : "object";
+        out.push({
+          path,
+          value: text.slice(0, 160),
+          key: `${kind}:${text}`,
+          kind,
+          text,
+        });
+      }
+
+      const children = Array.isArray(parsed)
+        ? parsed.slice(0, 5).map((item, index) => [`[${index}]`, item])
+        : Object.entries(parsed)
+            .filter(([key]) => !/[.[\]]/.test(key) && !NOISE_KEYS.has(key))
+            .map(([key, item]) => [`.${key}`, item]);
+
+      for (const [suffix, item] of children) {
+        walk(item, `${path}${suffix}`, depth + 1, out);
+      }
+      return;
+    }
+
+    const text = String(parsed);
+    out.push({
+      path,
+      value: text.slice(0, 160),
+      key: `${typeof parsed}:${text}`,
+      kind: typeof parsed,
+      text,
+    });
+  };
+
   const candidates: Candidate[] = [];
+  walk(variables, "session_variables", 0, candidates);
 
-  leaves(variables, "session_variables", 0, candidates);
-
-  const collect = (source: StepLike[], prefix: string) =>
+  for (const [prefix, source] of [
+    ["inherited_steps", inheritedSteps],
+    ["steps", steps],
+  ] as const) {
     source.forEach((step, index) => {
+      if (step.status === "FAILED") return;
+
+      const textOnly = TEXT_ONLY_ACTIONS.has(step.action ?? "");
+
       for (const field of ["result", "parameters"] as const) {
         const found: Candidate[] = [];
-        leaves(step[field], `${prefix}[${index}].${field}`, 0, found);
-        candidates.push(
-          ...found.map((candidate) => ({ ...candidate, action: step.action })),
-        );
+        walk(step[field], `${prefix}[${index}].${field}`, 0, found);
+
+        for (const candidate of found) {
+          if (textOnly && !/\.text(\.|$)/.test(candidate.path)) continue;
+
+          candidates.push({
+            ...candidate,
+            action: step.action,
+            prose:
+              textOnly &&
+              candidate.kind === "string" &&
+              /\.text$/.test(candidate.path),
+          });
+        }
       }
     });
-
-  collect(steps, "steps");
-  collect(inheritedSteps, "inherited_steps");
-
-  return candidates.slice(0, MAX_CANDIDATES);
-}
-
-const LOG_LIST_LIMIT = 2;
-const LOG_FULL_KEYS = new Set(["blueprint"]);
-
-function previewList(value: unknown): unknown {
-  if (Array.isArray(value)) {
-    const shown = value.slice(0, LOG_LIST_LIMIT).map(previewList);
-
-    return value.length > LOG_LIST_LIMIT
-      ? [...shown, `... ${value.length - LOG_LIST_LIMIT} more`]
-      : shown;
   }
 
-  if (value && typeof value === "object") {
-    return Object.fromEntries(
-      Object.entries(value).map(([key, item]) => [
-        key,
-        LOG_FULL_KEYS.has(key) ? item : previewList(item),
-      ]),
-    );
-  }
+  const isParameter = (path: string) =>
+    /^(inherited_steps|steps)\[\d+\]\.parameters\./.test(path);
+  const seen = new Set(
+    candidates.filter(({ path }) => !isParameter(path)).map(({ key }) => key),
+  );
 
-  return value;
+  return candidates
+    .filter(({ path, key }) => {
+      if (!isParameter(path)) return true;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(-200);
 }
 
-function previewQuestions(questions: Questions) {
-  return Object.fromEntries(
-    Object.entries(questions).map(([id, question]) => {
-      if (question.type !== "choice") return [id, question];
+function withFewShots(list: object[]): { few_shots: JsonValue[] } | {} {
+  return list.length ? { few_shots: list as JsonValue[] } : {};
+}
 
-      const entries = Object.entries(question.criteria);
-
-      return [
-        id,
-        {
-          ...question,
-          criteria: Object.fromEntries(entries.slice(0, LOG_LIST_LIMIT)),
-          ...(entries.length > LOG_LIST_LIMIT && {
-            omitted_criteria: entries.length - LOG_LIST_LIMIT,
-          }),
-        },
-      ];
-    }),
+function parameterDiamondFewShots(action: string, name: string) {
+  return fewShots.parameterDiamond.filter(
+    (fewShot) => fewShot.action === action && fewShot.parameter.name === name,
   );
 }
 
-function previewAnswers(answers: Record<string, unknown>) {
-  return Object.fromEntries(
-    Object.entries(answers).map(([id, answer]) => {
-      const { probabilities } = (answer ?? {}) as {
-        probabilities?: Record<string, number>;
-      };
-
-      if (!probabilities) return [id, answer];
-
-      return [
-        id,
-        {
-          ...(answer as object),
-          probabilities: Object.fromEntries(
-            Object.entries(probabilities)
-              .filter(([, probability]) => probability > 0)
-              .sort(([, a], [, b]) => b - a),
-          ),
-        },
-      ];
-    }),
+function inputsAvailableFewShots(action: string) {
+  return fewShots.inputsAvailable.filter(
+    (fewShot) => fewShot.action === action,
   );
+}
+
+function topChoices(probabilities: Record<string, number>) {
+  return Object.entries(probabilities)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 4)
+    .map(([key, probability]) => `${key} ${probability.toFixed(2)}`)
+    .join(", ");
 }
 
 async function askJev<const Q extends Questions>(
   source: string,
   { state, questions, meta }: { state: object; questions: Q; meta: LLMMeta },
 ) {
-  const request = { state: json(state), questions };
+  const request = {
+    state: JSON.parse(JSON.stringify(state)) as EntryType,
+    questions,
+  };
 
-  console.debug(
-    `[jev] ${source} request:`,
-    JSON.stringify(
-      {
-        state: previewList(request.state),
-        questions: previewQuestions(questions),
-      },
-      null,
-      2,
-    ),
-  );
+  const startedAt = Date.now();
+  const dump = (outcome: { response: unknown } | { error: string }) => {
+    const dir = process.env.JEV_DUMP_DIR;
+    if (!dir) return;
+    try {
+      mkdirSync(dir, { recursive: true });
+      writeFileSync(
+        path.join(
+          dir,
+          `${startedAt}-${source}-${Object.keys(questions).join("_")}.json`,
+        ),
+        JSON.stringify(
+          {
+            runId: meta.taskId ?? meta.sessionId ?? null,
+            meta,
+            source,
+            startedAt,
+            durationMs: Date.now() - startedAt,
+            ...request,
+            ...outcome,
+          },
+          null,
+          2,
+        ),
+      );
+    } catch (error) {
+      console.error(`[jev] dump failed: ${String(error)}`);
+    }
+  };
 
-  const answers = await ask({
-    ...request,
-    meta: { ...meta, source: `agent.${source}` },
-  });
-
-  console.debug(
-    `[jev] ${source} answers:`,
-    JSON.stringify(previewAnswers(answers), null, 2),
-  );
-
-  return answers;
+  try {
+    const response = await ask({
+      ...request,
+      meta: { ...meta, source: `agent.${source}` },
+    });
+    dump({ response });
+    return response;
+  } catch (error) {
+    dump({ error: String(error) });
+    console.error(
+      `[jev] ${source} failed (${JSON.stringify(request).length} bytes):`,
+      error,
+    );
+    throw error;
+  }
 }
 
-async function selectNextAction({
+async function actionDiamond({
   state,
   options,
   meta,
@@ -231,7 +279,7 @@ async function selectNextAction({
   options: Definition[];
   meta: LLMMeta;
 }) {
-  const { next_action } = await askJev("selectNextAction", {
+  const { next_action } = await askJev("actionDiamond", {
     state,
     questions: {
       next_action: choice(
@@ -248,6 +296,7 @@ async function selectNextAction({
             "`inherited_context_steps`",
             "`conversation`",
           ],
+          ...withFewShots(fewShots.actionDiamond),
         },
         Object.fromEntries(
           options.map(({ action, label, description, inputSchema }) => [
@@ -264,14 +313,127 @@ async function selectNextAction({
     meta,
   });
 
+  const probabilities = next_action.probabilities as Record<string, number>;
+
+  console.debug(
+    `[jev] selected ${
+      next_action.choice
+    } confidence=${next_action.confidence.toFixed(4)}  | ${topChoices(
+      probabilities,
+    )}`,
+  );
+
   return {
     action: next_action.choice,
     confidence: next_action.confidence,
-    probabilities: next_action.probabilities as Record<string, number>,
+    probabilities,
   };
 }
 
-async function judgeParameters({
+async function extractKnowledge({
+  text,
+  parameter,
+  action,
+  meta,
+}: {
+  text: string;
+  parameter: Parameter;
+  action?: string;
+  meta: LLMMeta;
+}): Promise<{ value: string | number; probability: number } | undefined> {
+  const numeric = parameter.type === "number" || parameter.type === "integer";
+  const words = text.split(/\s+/).filter(Boolean);
+  const options = new Map<string, string | number>();
+
+  for (let size = 1; size <= 5; size++) {
+    for (
+      let start = 0;
+      start + size <= words.length && options.size < 250;
+      start++
+    ) {
+      const span = words
+        .slice(start, start + size)
+        .join(" ")
+        .replace(/^[\s"'`“”‘’([{<,;:.!?]+|[\s"'`“”‘’)\]}>,;:.!?]+$/g, "");
+      if (!span) continue;
+
+      const value = numeric ? Number(span.replace(/,/g, "")) : span;
+      if (typeof value === "number" && !Number.isFinite(value)) continue;
+      if (parameter.type === "integer" && !Number.isInteger(value)) continue;
+
+      options.set(span, value);
+    }
+  }
+
+  if (!options.size) return undefined;
+
+  try {
+    const { knowledge_value: value } = await askJev("extractKnowledge", {
+      state: { text },
+      questions: {
+        knowledge_value: choice(
+          {
+            select: "knowledge_value",
+            action: action ?? null,
+            parameter,
+            source: "`text`",
+            rule: "pick the exact span of `text` that is the value of the parameter",
+          },
+          {
+            none: { value: null, meaning: "`text` does not contain it" },
+            ...Object.fromEntries(
+              [...options].map(([span, value]) => [span, { value }]),
+            ),
+          },
+        ),
+      },
+      meta,
+    });
+
+    const probabilities = value.probabilities as Record<string, number>;
+    const probability = probabilities[value.choice] ?? 0;
+
+    console.debug(
+      `[jev] extract ${action ?? ""} ${parameter.name}  ${topChoices(
+        probabilities,
+      )}`,
+    );
+
+    if (value.choice === "none" || probability < 0.5) return undefined;
+
+    return { value: options.get(value.choice)!, probability };
+  } catch {
+    return undefined;
+  }
+}
+
+function bestCandidate(
+  answer: Answer | undefined,
+  byPath: Map<string, Candidate>,
+) {
+  if (answer?.type !== "choice") return undefined;
+
+  const top = byPath.get(answer.choice);
+  if (top?.prose) return top;
+
+  const ranked = Object.entries(answer.probabilities)
+    .filter(([path]) => byPath.has(path))
+    .sort(([, a], [, b]) => b - a);
+
+  const totals = new Map<string, number>();
+  for (const [path, probability] of ranked) {
+    const { key } = byPath.get(path)!;
+    totals.set(key, (totals.get(key) ?? 0) + probability);
+  }
+
+  const [key, total = 0] = [...totals].sort(([, a], [, b]) => b - a)[0] ?? [];
+  if (total < 0.5) return undefined;
+
+  const [path] = ranked.find(([path]) => byPath.get(path)!.key === key)!;
+  return byPath.get(path);
+}
+
+async function parameterDiamond({
   action,
   definition,
   skipFields,
@@ -289,83 +451,129 @@ async function judgeParameters({
   inheritedSteps: StepLike[];
   variables: Record<string, unknown>;
   meta: LLMMeta;
-}): Promise<{ filled: Record<string, unknown>; inputsAvailable?: number }> {
+}): Promise<{
+  filled: Record<string, unknown>;
+  generate: string[];
+  inputsAvailable?: number;
+}> {
   const properties = definition?.inputSchema?.properties ?? {};
   const required = new Set(definition?.inputSchema?.required ?? []);
-  const candidates = refCandidates({ steps, inheritedSteps, variables });
-
-  const fields = Object.entries(properties).filter(
-    ([field]) => !PLATFORM_FIELDS.has(field) && !skipFields.includes(field),
+  const candidates = collectCandidates({ steps, inheritedSteps, variables });
+  const byPath = new Map(
+    candidates.map((candidate) => [candidate.path, candidate]),
   );
 
-  const questions: Record<string, Question> = {};
+  const owned = Object.entries(properties).filter(
+    ([field]) => !PLATFORM_FIELDS.has(field) && !skipFields.includes(field),
+  );
+  const fields = owned.filter(([, schema]) => !schema.generated);
+  const generate = owned
+    .filter(([, schema]) => schema.generated)
+    .map(([field]) => field);
+
   const plan: Record<
     string,
-    { field: string; kind: "enum" | "boolean" | "ref"; values?: unknown[] }
+    {
+      field: string;
+      kind: "enum" | "boolean" | "ref";
+      parameter: Parameter;
+      values?: unknown[];
+    }
   > = {};
+  const shared: Record<string, Question> = {};
+  const batches: Record<string, Question>[] = [];
 
-  fields.forEach(([field, schema], index) => {
-    const parameter = {
+  fields.forEach(([field, schema]) => {
+    const parameter: Parameter = {
       name: field,
       type: schema.type ?? null,
       description: schema.description ?? null,
       required: required.has(field),
     };
-    const id = `field_${index}`;
 
-    if (Array.isArray(schema.enum) && schema.enum.length) {
-      questions[id] = choice(
-        { select: "parameter_value", action, parameter },
+    if (schema.enum?.length) {
+      const id = `value_${field}`;
+      shared[id] = choice(
+        {
+          select: "parameter_value",
+          action,
+          parameter,
+          ...withFewShots(parameterDiamondFewShots(action, field)),
+        },
         {
           ...Object.fromEntries(
             schema.enum.map((value) => [String(value), { value }]),
           ),
-          ...(!required.has(field) && { [NONE]: { value: null } }),
+          ...(!parameter.required && { none: { value: null } }),
         },
       );
-      plan[id] = { field, kind: "enum", values: schema.enum };
+      plan[id] = { field, kind: "enum", parameter, values: schema.enum };
       return;
     }
 
     if (schema.type === "boolean") {
-      questions[id] = noul(
-        { decide: "parameter_is_true", action, parameter },
+      const id = `value_${field}`;
+      shared[id] = noul(
+        {
+          decide: "parameter_is_true",
+          action,
+          parameter,
+          ...withFewShots(parameterDiamondFewShots(action, field)),
+        },
         { true: { value: true }, false: { value: false } },
       );
-      plan[id] = { field, kind: "boolean" };
+      plan[id] = { field, kind: "boolean", parameter };
       return;
     }
 
-    if (!candidates.length) return;
+    const accepted = candidates.filter(({ kind, value }) => {
+      if (schema.type === "object" || schema.type === "array")
+        return kind === schema.type;
+      if (schema.type === "integer")
+        return kind === "number" && Number.isInteger(Number(value));
+      if (schema.type === "number") return kind === "number";
+      if (schema.type === "string")
+        return kind === "string" || kind === "number";
+      return kind !== "object" && kind !== "array";
+    });
 
-    questions[id] = choice(
-      {
-        select: "parameter_source",
-        action,
-        parameter,
-        sources: [
-          "`session_variables`",
-          "`steps`",
-          "`inherited_context_steps`",
-        ],
-      },
-      {
-        [NONE]: { source: null },
-        ...Object.fromEntries(
-          candidates.map(({ path, value, action: from }) => [
-            path,
-            { value, from_action: from ?? null },
-          ]),
-        ),
-      },
-    );
-    plan[id] = { field, kind: "ref" };
+    const id = `source_${field}`;
+    batches.push({
+      [id]: choice(
+        {
+          select: "parameter_source",
+          action,
+          parameter,
+          sources: [
+            "`session_variables`",
+            "`steps`",
+            "`inherited_context_steps`",
+          ],
+          ...withFewShots(parameterDiamondFewShots(action, field)),
+        },
+        {
+          none: { source: null },
+          generate: {
+            source: "compose",
+            value:
+              "new value written from `conversation`, `knowledge_base` and `steps`",
+          },
+          ...Object.fromEntries(
+            accepted.map(({ path, value, action: from }) => [
+              path,
+              { value, from_action: from ?? null },
+            ]),
+          ),
+        },
+      ),
+    });
+    plan[id] = { field, kind: "ref", parameter };
   });
 
   const requiredFields = fields.filter(([field]) => required.has(field));
 
   if (requiredFields.length) {
-    questions[INPUTS_AVAILABLE] = noul(
+    shared.inputs_available = noul(
       {
         decide: "inputs_available",
         action,
@@ -381,64 +589,104 @@ async function judgeParameters({
           "`inherited_context_steps`",
           "`conversation`",
         ],
+        ...withFewShots(inputsAvailableFewShots(action)),
       },
       { true: { inputs: "available" }, false: { inputs: "missing" } },
     );
   }
 
-  if (!Object.keys(questions).length) return { filled: {} };
+  if (Object.keys(shared).length) batches.unshift(shared);
+  if (!batches.length) return { filled: {}, generate };
 
-  try {
-    const answers = await askJev("judgeParameters", {
-      state,
-      questions,
-      meta,
-    });
+  const answers: Record<string, Answer | undefined> = {};
+  const queue = [...batches];
 
-    const filled: Record<string, unknown> = {};
-    const inputs = answers[INPUTS_AVAILABLE];
-    const inputsAvailable = inputs?.type === "noul" ? inputs.noul : undefined;
-
-    for (const [id, { field, kind, values }] of Object.entries(plan)) {
-      const answer = answers[id];
-
-      if (kind === "boolean" && answer?.type === "noul") {
-        if (answer.noul >= BOOLEAN_TRUE_THRESHOLD) filled[field] = true;
-        else if (answer.noul <= BOOLEAN_FALSE_THRESHOLD) filled[field] = false;
+  await Promise.all(
+    Array.from({ length: Math.min(4, queue.length) }, async () => {
+      for (let batch = queue.shift(); batch; batch = queue.shift()) {
+        Object.assign(
+          answers,
+          await askJev("parameterDiamond", {
+            state,
+            questions: batch,
+            meta,
+          }).catch(() => ({})),
+        );
       }
+    }),
+  );
 
-      if (
-        kind === "enum" &&
-        answer?.type === "choice" &&
-        answer.choice !== NONE
-      ) {
+  const filled: Record<string, unknown> = {};
+  const extractions: Promise<void>[] = [];
+  const inputs = answers.inputs_available;
+  const inputsAvailable = inputs?.type === "noul" ? inputs.noul : undefined;
+
+  for (const [id, { field, kind, parameter, values }] of Object.entries(plan)) {
+    const answer = answers[id];
+
+    console.debug(
+      `[jev] ${action}.${field}  ${
+        answer?.type === "noul"
+          ? `noul ${answer.noul.toFixed(2)}`
+          : answer?.type === "choice"
+          ? topChoices(answer.probabilities)
+          : "no answer"
+      }`,
+    );
+
+    if (kind === "boolean") {
+      if (answer?.type === "noul" && answer.noul >= 0.7) filled[field] = true;
+      else if (answer?.type === "noul" && answer.noul <= 0.3)
+        filled[field] = false;
+      else generate.push(field);
+    }
+
+    if (kind === "enum") {
+      if (answer?.type !== "choice") generate.push(field);
+      else if (answer.choice !== "none") {
         filled[field] =
           values?.find((value) => String(value) === answer.choice) ??
           answer.choice;
       }
-
-      if (
-        kind === "ref" &&
-        answer?.type === "choice" &&
-        answer.choice !== NONE &&
-        answer.probabilities[answer.choice] >= REF_MIN_PROBABILITY
-      ) {
-        filled[field] = { $ref: answer.choice };
-      }
     }
 
-    console.debug(
-      `[jev] judgeParameters filled ${action}:`,
-      JSON.stringify(filled, null, 2),
-    );
+    if (kind === "ref") {
+      const candidate = bestCandidate(answer, byPath);
 
-    return { filled, inputsAvailable };
-  } catch (error) {
-    platform.logger.error(error);
-
-    return { filled: {} };
+      if (candidate?.prose) {
+        extractions.push(
+          extractKnowledge({
+            text: candidate.text,
+            parameter,
+            action,
+            meta,
+          }).then((extracted) => {
+            if (extracted) filled[field] = extracted.value;
+            else generate.push(field);
+          }),
+        );
+      } else if (candidate) {
+        filled[field] = { $ref: candidate.path };
+      } else if (
+        answer?.type !== "choice" ||
+        answer.choice !== "none" ||
+        parameter.required
+      ) {
+        generate.push(field);
+      }
+    }
   }
+
+  await Promise.all(extractions);
+
+  console.debug(`[jev] params ${action}`, {
+    filled,
+    generate,
+    inputsAvailable,
+  });
+
+  return { filled, generate, inputsAvailable };
 }
 
 export type { Definition };
-export { judgeParameters, selectNextAction };
+export { actionDiamond, extractKnowledge, parameterDiamond };

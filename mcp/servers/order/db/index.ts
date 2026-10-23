@@ -34,6 +34,9 @@ interface Database {
     quantity: number;
     unit_price: number;
     currency: string;
+    net_amount?: number;
+    tax_rate?: number;
+    tax_amount?: number;
     total_amount: number;
     total_weight_kg: number;
     ship_from: { postal_code: string; country_code: string };

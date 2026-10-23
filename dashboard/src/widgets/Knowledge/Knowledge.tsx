@@ -20,11 +20,13 @@ function Knowledge({
   teamId,
   blueprintId,
   onItemAdded,
+  onBlueprintClick,
 }: {
   agentId?: string;
   teamId?: string;
   blueprintId?: string;
   onItemAdded?: () => void;
+  onBlueprintClick?: (blueprintId: string) => void;
 }) {
   const {
     getAgentKnowledges,
@@ -48,7 +50,7 @@ function Knowledge({
 
   const { organizations, loading: organizationLoading } = getOrganizations();
   const { blueprint } = getBlueprintWithId(blueprintId);
-  const { Blueprint } = getBlueprint();
+  const { Blueprint } = getBlueprint([], agentId);
 
   const { getAgents } = useAgent();
   const { agents } = getAgents();
@@ -57,15 +59,21 @@ function Knowledge({
 
   const isLoading = useLoading(isKnowledgeLoading);
 
-  const ALL_KNOWLEDGE_TYPES = ["ALL", "URL", "TEXT", "QA", "DATA"].sort(
-    (a, b) => {
-      if (a === "ALL") return -1;
-      if (b === "ALL") return 1;
-      if (a === "URL") return -1;
-      if (b === "URL") return 1;
-      return 0;
-    }
-  );
+  const ALL_KNOWLEDGE_TYPES = [
+    "ALL",
+    "URL",
+    "TEXT",
+    "QA",
+    "DATA",
+    "LOGIC",
+    "BLUEPRINT",
+  ].sort((a, b) => {
+    if (a === "ALL") return -1;
+    if (b === "ALL") return 1;
+    if (a === "URL") return -1;
+    if (b === "URL") return 1;
+    return 0;
+  });
 
   const ADD_ITEM_TYPES = ALL_KNOWLEDGE_TYPES.filter((type) => type !== "ALL");
 
@@ -76,12 +84,20 @@ function Knowledge({
   const [selectedItem, setSelectedItem] = useState([]);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
-  const source = agentId ? knowledges : teamKnowledges;
+  const source = (agentId ? knowledges : teamKnowledges) || [];
 
   const filteredKnowledges =
     selectedType === "ALL"
-      ? source
+      ? [...source].sort((a, b) => {
+          if (a?.type === "BLUEPRINT" && b?.type !== "BLUEPRINT") return -1;
+          if (a?.type !== "BLUEPRINT" && b?.type === "BLUEPRINT") return 1;
+          return 0;
+        })
       : source.filter((k) => k?.type === selectedType);
+
+  const blueprintsById = Object.fromEntries(
+    (Blueprint || []).map((item) => [item.id, item.title])
+  );
 
   const doesOrganizationMatchTeamCoach = (organization, currentTeam) => {
     if (!currentTeam) {
@@ -181,6 +197,8 @@ function Knowledge({
               selectedType={selectedType}
               knowledges={filteredKnowledges}
               handleDeleteClick={handleDeleteClick}
+              blueprintsById={blueprintsById}
+              onBlueprintClick={onBlueprintClick}
             />
           </Box>
         ) : (

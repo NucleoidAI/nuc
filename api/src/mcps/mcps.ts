@@ -253,7 +253,7 @@ const MCPs = [
         template: {
           type: "string",
           description:
-            "Name of a predefined email template to render instead of manually composing text/html. Available: 'meeting_summary_a' (summary and highlights from the full transcript only), 'meeting_summary_b' (the same plus next steps, speaker attributed).",
+            "Only for meeting summary emails. Name of a predefined email template to render instead of manually composing text/html. Must be one of: 'meeting_summary_a' (summary and highlights from the full transcript only), 'meeting_summary_b' (the same plus next steps, speaker attributed). Omit it for every other email and write 'subject' and 'text' yourself.",
           nullable: true,
         },
         data: {
@@ -691,11 +691,11 @@ const MCPs = [
       properties: {
         product_id: {
           type: "string",
-          description: "The product ID to search for (e.g. prd-1).",
+          description: "The product ID to search for (e.g. TLP-4200).",
         },
         name: {
           type: "string",
-          description: "The product name to search for (e.g. product-1).",
+          description: "The product name to search for (e.g. Thermal Label Printer).",
         },
       },
       required: [],
@@ -755,7 +755,7 @@ const MCPs = [
       properties: {
         product_id: {
           type: "string",
-          description: "The product ID to look up the vendor for (e.g. prd-1).",
+          description: "The product ID to look up the vendor for (e.g. TLP-4200).",
         },
       },
       required: ["product_id"],

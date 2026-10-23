@@ -61,12 +61,12 @@
       "knowledge": "Data is stored in the EU region by default."
     },
     {
-      "content": "Add CE certificate for product prd-3.",
-      "knowledge": "Product prd-3 has compliance certificate CE."
+      "content": "Add CE certificate for product NSW-4800.",
+      "knowledge": "Product NSW-4800 has compliance certificate CE."
     },
     {
-      "content": "Product prd-5 is certified under ISO-9001 standard.",
-      "knowledge": "Product prd-5 is certified under ISO-9001 standard."
+      "content": "Product RFR-150 is certified under ISO-9001 standard.",
+      "knowledge": "Product RFR-150 is certified under ISO-9001 standard."
     },
     {
       "content": "Customer cust-42 prefers bank transfer as payment method.",

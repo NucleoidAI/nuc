@@ -1,7 +1,10 @@
+import type { EntryType, JsonValue } from "@typesafe-ai/sdk";
+import { ask, choice } from "../../lib/decision";
 import type { ContextMessage } from "./context";
 import type { LLMMeta } from "@canmingir/link-express/llm";
 import Agent from "../../models/Agent";
 import dataset from "../../dataset";
+import fewShots from "../../dataset/train/decision/index";
 import { generate } from "@canmingir/link-express/llm";
 import platform from "@canmingir/link-express";
 import session from "../session";
@@ -64,15 +67,34 @@ async function approvalDecision({
   content: string;
   meta?: LLMMeta;
 }) {
-  const { decision } = await generate({
-    dataset: dataset.train.approval,
-    context: [],
-    content: { question, content },
-    json_format: "{ decision: <APPROVED|REJECTED|UNCLEAR> }",
-    meta,
+  const { decision } = await ask({
+    state: JSON.parse(
+      JSON.stringify({ question, customer_reply: content }),
+    ) as EntryType,
+    questions: {
+      decision: choice(
+        {
+          select: "customer_decision",
+          question: "`question`",
+          reply: "`customer_reply`",
+          few_shots: fewShots.customerApproval as JsonValue[],
+        },
+        {
+          APPROVED: { customer: "approves" },
+          REJECTED: { customer: "rejects" },
+          UNCLEAR: { customer: "asks_something_else_or_has_not_decided" },
+        },
+      ),
+    },
+    meta: { ...meta, source: "agent.approvalDecision" },
   });
 
-  return String(decision ?? "").toUpperCase();
+  console.debug(
+    `[decision] approval decision ${decision.choice}:`,
+    JSON.stringify(decision.probabilities),
+  );
+
+  return decision.choice;
 }
 
 async function replyToApproval({

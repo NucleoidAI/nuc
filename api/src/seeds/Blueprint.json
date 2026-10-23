@@ -188,8 +188,8 @@
             "action": "ORDER:find_product",
             "description": "Search and retrieve the product details",
             "label": "Find Product",
-            "instructions": "Find the product the customer asked for. If no product matches, stop with PRODUCT_NOT_FOUND.",
-            "pseudocode": "product = Product.find(p => p.name == request.productName)\n\nif not product:\n    throw \"PRODUCT_NOT_FOUND\"",
+            "instructions": "Find the ordered product by its ID: the order's material number (item.material) is the product ID. If no product matches, stop with PRODUCT_NOT_FOUND.",
+            "pseudocode": "product = Product.find(p => p.id == request.item.material)\n\nif not product:\n    throw \"PRODUCT_NOT_FOUND\"",
             "pseudocodeEnabled": true,
             "icon": "mdi:magnify"
           },
@@ -366,11 +366,11 @@
         "knowledge": [
           {
             "type": "DATA",
-            "text": "{\"product_id\": \"prd-1\", \"product_name\": \"product-1\", \"certificate\": \"FFC\"}"
+            "text": "{\"product_id\": \"TLP-4200\", \"product_name\": \"Thermal Label Printer\", \"certificate\": \"FFC\"}"
           },
           {
             "type": "DATA",
-            "text": "{\"product_id\": \"prd-2\", \"product_name\": \"product-2\", \"certificate\": \"CE\"}"
+            "text": "{\"product_id\": \"BCS-310\", \"product_name\": \"Wireless Barcode Scanner\", \"certificate\": \"CE\"}"
           }
         ],
         "referenceBlueprint": null,

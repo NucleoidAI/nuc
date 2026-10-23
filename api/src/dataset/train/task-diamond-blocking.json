@@ -729,7 +729,7 @@
           "action": "GREY:create_order",
           "status": "COMPLETED",
           "parameters": {
-            "productId": "prd-001",
+            "productId": "TLP-4200",
             "quantity": 1
           },
           "result": "{\"orderId\": \"ORD-2026-0099\", \"status\": \"CREATED\"}",
@@ -742,7 +742,7 @@
           "parameters": {
             "targetAgentId": "agent-billing-001",
             "targetBlueprintId": "bp-billing-payment-001",
-            "context": "Order ORD-2026-0099 has been created for product prd-001. Customer needs to complete payment. Please process the payment for this order."
+            "context": "Order ORD-2026-0099 has been created for product TLP-4200. Customer needs to complete payment. Please process the payment for this order."
           },
           "comment": "Handing off to billing agent for payment processing"
         }
@@ -750,7 +750,7 @@
     },
     {
       "id": "order-cert-block-001",
-      "description": "Create a purchase order for product-1 (prd-1).",
+      "description": "Create a purchase order for Thermal Label Printer (TLP-4200).",
       "sessionId": "019b6e75-oc01-oc01-oc01-oc0100000001",
       "blueprint": {
         "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
@@ -853,21 +853,21 @@
         {
           "id": "kn-cert-001",
           "type": "TEXT",
-          "text": "prd-1 has FFC compliance certificate",
+          "text": "TLP-4200 has FFC compliance certificate",
           "status": "COMPLETED",
           "createdAt": "2026-06-26T06:00:00Z"
         },
         {
           "id": "kn-cert-002",
           "type": "TEXT",
-          "text": "prd-2 has CE compliance certificate",
+          "text": "BCS-310 has CE compliance certificate",
           "status": "COMPLETED",
           "createdAt": "2026-06-26T06:00:00Z"
         },
         {
           "id": "kn-cert-003",
           "type": "TEXT",
-          "text": "prd-3 and prd-4 have no compliance certificate assigned",
+          "text": "NSW-4800 and DSC-760 have no compliance certificate assigned",
           "status": "COMPLETED",
           "createdAt": "2026-06-26T06:00:00Z"
         },
@@ -910,8 +910,8 @@
           "parameters": {
             "question": "Which product would you like to order?"
           },
-          "result": "product-1",
-          "comment": "User selected product-1"
+          "result": "Thermal Label Printer",
+          "comment": "User selected Thermal Label Printer"
         },
         {
           "taskId": "task-oc-001",
@@ -922,7 +922,7 @@
               "$ref": "steps[0].result"
             }
           },
-          "result": "{\"id\": \"prd-1\", \"name\": \"product-1\"}",
+          "result": "{\"id\": \"TLP-4200\", \"name\": \"Thermal Label Printer\"}",
           "comment": "Reusing the product name the user already gave (steps[0].result) via $ref instead of retyping it"
         },
         {
@@ -934,14 +934,14 @@
               "$ref": "steps[1].result.id"
             }
           },
-          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-1\\\", \\\"product_name\\\": \\\"product-1\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-2\\\", \\\"product_name\\\": \\\"product-2\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
-          "comment": "The knowledge base holds a certificate record for prd-1 (FFC) among its entries"
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"TLP-4200\\\", \\\"product_name\\\": \\\"Thermal Label Printer\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"BCS-310\\\", \\\"product_name\\\": \\\"Wireless Barcode Scanner\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base holds a certificate record for TLP-4200 (FFC) among its entries"
         },
         {
           "taskId": "task-oc-001",
           "action": "PLATFORM:decision",
           "status": "COMPLETED",
-          "comment": "Certificate found for prd-1, proceeding with order creation",
+          "comment": "Certificate found for TLP-4200, proceeding with order creation",
           "parameters": {
             "condition": "knowledge_base_has_certificate_record_for_product == TRUE",
             "true": [
@@ -955,7 +955,7 @@
                   },
                   "certificate": "FFC"
                 },
-                "result": "{\"product_id\": \"prd-1\", \"certificate\": \"FFC\", \"assigned\": true}",
+                "result": "{\"product_id\": \"TLP-4200\", \"certificate\": \"FFC\", \"assigned\": true}",
                 "comment": "Reusing product_id (steps[1].result.id) via $ref; the certificate value is read out of the knowledge entry text, which $ref cannot address"
               },
               {
@@ -969,7 +969,7 @@
                   "city": "Atlanta",
                   "quantity": 1
                 },
-                "result": "{\"order_id\": \"po-2001\", \"product_id\": \"prd-1\", \"city\": \"Atlanta\", \"quantity\": 1}",
+                "result": "{\"order_id\": \"po-2001\", \"product_id\": \"TLP-4200\", \"city\": \"Atlanta\", \"quantity\": 1}",
                 "comment": "Reusing product_id (steps[1].result.id) via $ref instead of retyping it"
               },
               {
@@ -979,7 +979,7 @@
                 "parameters": {
                   "to": "halilibrahimcengel7@gmail.com",
                   "subject": "Purchase Order Created",
-                  "text": "Purchase order po-2001 has been created for product prd-1 with FFC certificate."
+                  "text": "Purchase order po-2001 has been created for product TLP-4200 with FFC certificate."
                 },
                 "comment": "Email sent to manager about completed purchase order"
               },
@@ -998,7 +998,7 @@
                 "parameters": {
                   "targetAgentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
                   "targetBlueprintId": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
-                  "context": "Product prd-1 has no compliance certificate. Cannot proceed with order without certification."
+                  "context": "Product TLP-4200 has no compliance certificate. Cannot proceed with order without certification."
                 },
                 "comment": "Handing off to compliance agent for certificate assignment"
               }
@@ -1009,7 +1009,7 @@
     },
     {
       "id": "order-cert-block-002",
-      "description": "Create a purchase order for product-3 (prd-3) — no certificate in knowledge, agent asks supervisor who adds a decision node to the blueprint, agent then follows updated blueprint and handoffs to compliance agent.",
+      "description": "Create a purchase order for 48-Port PoE Network Switch (NSW-4800) — no certificate in knowledge, agent asks supervisor who adds a decision node to the blueprint, agent then follows updated blueprint and handoffs to compliance agent.",
       "sessionId": "019b6e75-oc02-oc02-oc02-oc0200000002",
       "blueprint": {
         "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
@@ -1112,21 +1112,21 @@
         {
           "id": "kn-cert-001",
           "type": "TEXT",
-          "text": "prd-1 has FFC compliance certificate",
+          "text": "TLP-4200 has FFC compliance certificate",
           "status": "COMPLETED",
           "createdAt": "2026-06-26T06:00:00Z"
         },
         {
           "id": "kn-cert-002",
           "type": "TEXT",
-          "text": "prd-2 has CE compliance certificate",
+          "text": "BCS-310 has CE compliance certificate",
           "status": "COMPLETED",
           "createdAt": "2026-06-26T06:00:00Z"
         },
         {
           "id": "kn-cert-003",
           "type": "TEXT",
-          "text": "prd-3 and prd-4 have no compliance certificate assigned",
+          "text": "NSW-4800 and DSC-760 have no compliance certificate assigned",
           "status": "COMPLETED",
           "createdAt": "2026-06-26T06:00:00Z"
         },
@@ -1169,35 +1169,35 @@
           "parameters": {
             "question": "Which product would you like to order?"
           },
-          "result": "product-3",
-          "comment": "User selected product-3"
+          "result": "48-Port PoE Network Switch",
+          "comment": "User selected 48-Port PoE Network Switch"
         },
         {
           "taskId": "task-oc-002",
           "action": "ORDER:find_product",
           "status": "COMPLETED",
           "parameters": {
-            "name": "product-3"
+            "name": "48-Port PoE Network Switch"
           },
-          "result": "{\"id\": \"prd-3\", \"name\": \"product-3\"}",
-          "comment": "Found product-3 with ID prd-3"
+          "result": "{\"id\": \"NSW-4800\", \"name\": \"48-Port PoE Network Switch\"}",
+          "comment": "Found 48-Port PoE Network Switch with ID NSW-4800"
         },
         {
           "taskId": "task-oc-002",
           "action": "PLATFORM:knowledge_lookup",
           "status": "COMPLETED",
           "parameters": {
-            "product_id": "prd-3"
+            "product_id": "NSW-4800"
           },
-          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-1\\\", \\\"product_name\\\": \\\"product-1\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-2\\\", \\\"product_name\\\": \\\"product-2\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
-          "comment": "The knowledge base only holds certificate records for prd-1, prd-2 - there is no entry for prd-3, so its certificate is unknown"
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"TLP-4200\\\", \\\"product_name\\\": \\\"Thermal Label Printer\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"BCS-310\\\", \\\"product_name\\\": \\\"Wireless Barcode Scanner\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base only holds certificate records for TLP-4200, BCS-310 - there is no entry for NSW-4800, so its certificate is unknown"
         },
         {
           "taskId": "task-oc-002",
           "action": "PLATFORM:ask_supervisor",
           "status": "COMPLETED",
           "parameters": {
-            "question": "Product prd-3 has no compliance certificate in the knowledge base and the blueprint has no path defined for this case. How should I proceed?",
+            "question": "Product NSW-4800 has no compliance certificate in the knowledge base and the blueprint has no path defined for this case. How should I proceed?",
             "sessionId": "019b6e75-oc02-oc02-oc02-oc0200000002",
             "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
           },
@@ -1207,7 +1207,7 @@
           "taskId": "task-oc-002",
           "action": "PLATFORM:decision",
           "status": "COMPLETED",
-          "comment": "Decision node added by supervisor to blueprint — no certificate found for prd-3, taking false branch",
+          "comment": "Decision node added by supervisor to blueprint — no certificate found for NSW-4800, taking false branch",
           "parameters": {
             "condition": "knowledge_base_has_certificate_record_for_product == TRUE",
             "true": [
@@ -1215,7 +1215,7 @@
                 "taskId": "task-oc-002",
                 "action": "ORDER:assign_certificate",
                 "status": "SKIPPED",
-                "comment": "True branch not taken — prd-3 has no certificate"
+                "comment": "True branch not taken — NSW-4800 has no certificate"
               }
             ],
             "false": [
@@ -1226,7 +1226,7 @@
                 "parameters": {
                   "targetAgentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
                   "targetBlueprintId": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
-                  "context": "Product prd-3 has no compliance certificate. Cannot proceed with purchase order without certification. Please assign the appropriate certificate."
+                  "context": "Product NSW-4800 has no compliance certificate. Cannot proceed with purchase order without certification. Please assign the appropriate certificate."
                 },
                 "comment": "Handing off to compliance agent per supervisor's blueprint update"
               }
@@ -1237,7 +1237,7 @@
     },
     {
       "id": "order-cert-block-003",
-      "description": "Create a purchase order for product-3 (prd-3) — no certificate in knowledge initially. Blueprint has no handoff node. Agent asks supervisor; supervisor adds certificate to knowledge base only (blueprint NOT changed). Agent resumes, re-checks certificate with updated knowledge, finds it, and completes the order.",
+      "description": "Create a purchase order for 48-Port PoE Network Switch (NSW-4800) — no certificate in knowledge initially. Blueprint has no handoff node. Agent asks supervisor; supervisor adds certificate to knowledge base only (blueprint NOT changed). Agent resumes, re-checks certificate with updated knowledge, finds it, and completes the order.",
       "sessionId": "019b6e75-oc03-oc03-oc03-oc0300000003",
       "blueprint": {
         "id": "89407d96-27ec-42a0-97d1-cf42066dea2e",
@@ -1328,21 +1328,21 @@
         {
           "id": "kn-c3-001",
           "type": "TEXT",
-          "text": "prd-1 has FFC compliance certificate",
+          "text": "TLP-4200 has FFC compliance certificate",
           "status": "COMPLETED",
           "createdAt": "2026-06-26T06:00:00Z"
         },
         {
           "id": "kn-c3-002",
           "type": "TEXT",
-          "text": "prd-2 has CE compliance certificate",
+          "text": "BCS-310 has CE compliance certificate",
           "status": "COMPLETED",
           "createdAt": "2026-06-26T06:00:00Z"
         },
         {
           "id": "kn-c3-003",
           "type": "TEXT",
-          "text": "prd-3 and prd-4 have no compliance certificate assigned",
+          "text": "NSW-4800 and DSC-760 have no compliance certificate assigned",
           "status": "COMPLETED",
           "createdAt": "2026-06-26T06:00:00Z"
         },
@@ -1356,7 +1356,7 @@
         {
           "id": "kn-c3-005",
           "type": "TEXT",
-          "text": "prd-3 has CE compliance certificate",
+          "text": "NSW-4800 has CE compliance certificate",
           "status": "COMPLETED",
           "createdAt": "2026-06-29T08:00:00Z"
         }
@@ -1376,72 +1376,72 @@
           "parameters": {
             "question": "Which product would you like to order?"
           },
-          "result": "product-3",
-          "comment": "User selected product-3"
+          "result": "48-Port PoE Network Switch",
+          "comment": "User selected 48-Port PoE Network Switch"
         },
         {
           "taskId": "task-oc-003",
           "action": "ORDER:find_product",
           "status": "COMPLETED",
           "parameters": {
-            "name": "product-3"
+            "name": "48-Port PoE Network Switch"
           },
-          "result": "{\"id\": \"prd-3\", \"name\": \"product-3\"}",
-          "comment": "Found product-3 with ID prd-3"
+          "result": "{\"id\": \"NSW-4800\", \"name\": \"48-Port PoE Network Switch\"}",
+          "comment": "Found 48-Port PoE Network Switch with ID NSW-4800"
         },
         {
           "taskId": "task-oc-003",
           "action": "PLATFORM:knowledge_lookup",
           "status": "COMPLETED",
           "parameters": {
-            "product_id": "prd-3"
+            "product_id": "NSW-4800"
           },
-          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-1\\\", \\\"product_name\\\": \\\"product-1\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-2\\\", \\\"product_name\\\": \\\"product-2\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
-          "comment": "The knowledge base only holds certificate records for prd-1, prd-2 - there is no entry for prd-3, so its certificate is unknown"
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"TLP-4200\\\", \\\"product_name\\\": \\\"Thermal Label Printer\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"BCS-310\\\", \\\"product_name\\\": \\\"Wireless Barcode Scanner\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base only holds certificate records for TLP-4200, BCS-310 - there is no entry for NSW-4800, so its certificate is unknown"
         },
         {
           "taskId": "task-oc-003",
           "action": "PLATFORM:ask_supervisor",
           "status": "COMPLETED",
           "parameters": {
-            "question": "Product prd-3 has no compliance certificate in the knowledge base. How should I proceed?",
+            "question": "Product NSW-4800 has no compliance certificate in the knowledge base. How should I proceed?",
             "sessionId": "019b6e75-oc03-oc03-oc03-oc0300000003",
             "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
           },
-          "comment": "Supervisor added 'prd-3 has CE compliance certificate' to the knowledge base. Blueprint was NOT changed."
+          "comment": "Supervisor added 'NSW-4800 has CE compliance certificate' to the knowledge base. Blueprint was NOT changed."
         },
         {
           "taskId": "task-oc-003",
           "action": "PLATFORM:knowledge_lookup",
           "status": "COMPLETED",
           "parameters": {
-            "product_id": "prd-3"
+            "product_id": "NSW-4800"
           },
-          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-1\\\", \\\"product_name\\\": \\\"product-1\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-2\\\", \\\"product_name\\\": \\\"product-2\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"ca2d3aaf-6ecc-4b71-abe6-3be6285793cd\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-3\\\", \\\"product_name\\\": \\\"product-3\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
-          "comment": "The knowledge base holds a certificate record for prd-3 (CE) among its entries"
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"TLP-4200\\\", \\\"product_name\\\": \\\"Thermal Label Printer\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"BCS-310\\\", \\\"product_name\\\": \\\"Wireless Barcode Scanner\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"ca2d3aaf-6ecc-4b71-abe6-3be6285793cd\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"NSW-4800\\\", \\\"product_name\\\": \\\"48-Port PoE Network Switch\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base holds a certificate record for NSW-4800 (CE) among its entries"
         },
         {
           "taskId": "task-oc-003",
           "action": "ORDER:assign_certificate",
           "status": "COMPLETED",
           "parameters": {
-            "product_id": "prd-3",
+            "product_id": "NSW-4800",
             "certificate": "CE"
           },
-          "result": "{\"product_id\": \"prd-3\", \"certificate\": \"CE\", \"assigned\": true}",
-          "comment": "Assigned CE certificate to prd-3"
+          "result": "{\"product_id\": \"NSW-4800\", \"certificate\": \"CE\", \"assigned\": true}",
+          "comment": "Assigned CE certificate to NSW-4800"
         },
         {
           "taskId": "task-oc-003",
           "action": "ORDER:create_po",
           "status": "COMPLETED",
           "parameters": {
-            "product_id": "prd-3",
+            "product_id": "NSW-4800",
             "city": "Atlanta",
             "quantity": 1
           },
-          "result": "{\"order_id\": \"po-2003\", \"product_id\": \"prd-3\", \"city\": \"Atlanta\", \"quantity\": 1}",
-          "comment": "Purchase order po-2003 created for prd-3"
+          "result": "{\"order_id\": \"po-2003\", \"product_id\": \"NSW-4800\", \"city\": \"Atlanta\", \"quantity\": 1}",
+          "comment": "Purchase order po-2003 created for NSW-4800"
         },
         {
           "taskId": "task-oc-003",
@@ -1450,7 +1450,7 @@
           "parameters": {
             "to": "halilibrahimcengel7@gmail.com",
             "subject": "Purchase Order Created",
-            "text": "Purchase order po-2003 has been created for product prd-3 with CE certificate."
+            "text": "Purchase order po-2003 has been created for product NSW-4800 with CE certificate."
           },
           "comment": "Email sent to manager"
         },
@@ -1464,7 +1464,7 @@
     },
     {
       "id": "compliance-handoff-001",
-      "description": "Product prd-3 has no compliance certificate in the knowledge base. Order cannot proceed without certification. Please assign the appropriate certificate or coordinate with vendor GlobalParts Ltd (compliance@globalparts.com) to obtain it.",
+      "description": "Product NSW-4800 has no compliance certificate in the knowledge base. Order cannot proceed without certification. Please assign the appropriate certificate or coordinate with vendor GlobalParts Ltd (compliance@globalparts.com) to obtain it.",
       "sessionId": "019b6e75-oc02-oc02-oc02-oc0200000002",
       "blueprint": {
         "id": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
@@ -1522,21 +1522,21 @@
         {
           "id": "kn-cert-001",
           "type": "TEXT",
-          "text": "prd-1 has FFC compliance certificate",
+          "text": "TLP-4200 has FFC compliance certificate",
           "status": "COMPLETED",
           "createdAt": "2026-06-26T06:00:00Z"
         },
         {
           "id": "kn-cert-002",
           "type": "TEXT",
-          "text": "prd-2 has CE compliance certificate",
+          "text": "BCS-310 has CE compliance certificate",
           "status": "COMPLETED",
           "createdAt": "2026-06-26T06:00:00Z"
         },
         {
           "id": "kn-cert-003",
           "type": "TEXT",
-          "text": "prd-3 and prd-4 have no compliance certificate assigned",
+          "text": "NSW-4800 and DSC-760 have no compliance certificate assigned",
           "status": "COMPLETED",
           "createdAt": "2026-06-26T06:00:00Z"
         }
@@ -1555,32 +1555,32 @@
           "parameters": {
             "question": "Which product would you like to order?"
           },
-          "result": "product-3",
-          "comment": "User selected product-3"
+          "result": "48-Port PoE Network Switch",
+          "comment": "User selected 48-Port PoE Network Switch"
         },
         {
           "action": "ORDER:find_product",
           "status": "COMPLETED",
           "parameters": {
-            "name": "product-3"
+            "name": "48-Port PoE Network Switch"
           },
-          "result": "{\"id\": \"prd-3\", \"name\": \"product-3\"}",
-          "comment": "Found prd-3"
+          "result": "{\"id\": \"NSW-4800\", \"name\": \"48-Port PoE Network Switch\"}",
+          "comment": "Found NSW-4800"
         },
         {
           "action": "PLATFORM:knowledge_lookup",
           "status": "COMPLETED",
           "parameters": {
-            "product_id": "prd-3"
+            "product_id": "NSW-4800"
           },
-          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-1\\\", \\\"product_name\\\": \\\"product-1\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-2\\\", \\\"product_name\\\": \\\"product-2\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
-          "comment": "The knowledge base only holds certificate records for prd-1, prd-2 - there is no entry for prd-3, so its certificate is unknown"
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"TLP-4200\\\", \\\"product_name\\\": \\\"Thermal Label Printer\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"BCS-310\\\", \\\"product_name\\\": \\\"Wireless Barcode Scanner\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base only holds certificate records for TLP-4200, BCS-310 - there is no entry for NSW-4800, so its certificate is unknown"
         },
         {
           "action": "PLATFORM:ask_supervisor",
           "status": "COMPLETED",
           "parameters": {
-            "question": "Product prd-3 has no compliance certificate in the knowledge base. Should I manually assign a certificate or proceed with a handoff to the compliance agent to contact vendor GlobalParts Ltd (compliance@globalparts.com)?",
+            "question": "Product NSW-4800 has no compliance certificate in the knowledge base. Should I manually assign a certificate or proceed with a handoff to the compliance agent to contact vendor GlobalParts Ltd (compliance@globalparts.com)?",
             "sessionId": "019b6e75-oc02-oc02-oc02-oc0200000002",
             "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
           },
@@ -1592,7 +1592,7 @@
           "parameters": {
             "targetAgentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
             "targetBlueprintId": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
-            "context": "Product prd-3 has no compliance certificate in the knowledge base. Order cannot proceed without certification. Please assign the appropriate certificate or coordinate with vendor GlobalParts Ltd (compliance@globalparts.com) to obtain it."
+            "context": "Product NSW-4800 has no compliance certificate in the knowledge base. Order cannot proceed without certification. Please assign the appropriate certificate or coordinate with vendor GlobalParts Ltd (compliance@globalparts.com) to obtain it."
           },
           "comment": "Handing off to compliance agent as per supervisor's instruction"
         }
@@ -1603,9 +1603,9 @@
           "action": "ORDER:get_product_vendor",
           "status": "COMPLETED",
           "parameters": {
-            "product_id": "prd-3"
+            "product_id": "NSW-4800"
           },
-          "result": "{\"vendor\": {\"id\": \"vnd-3\", \"name\": \"GlobalParts Ltd\", \"email\": \"compliance@globalparts.com\"}}",
+          "result": "{\"vendor\": {\"id\": \"VND-2103\", \"name\": \"GlobalParts Ltd\", \"email\": \"compliance@globalparts.com\"}}",
           "comment": "Starting my own blueprint from step 1 — the inherited context shows what the previous agent did, I do not need to re-ask the supervisor. My blueprint begins with getting the product vendor."
         },
         {
@@ -1614,8 +1614,8 @@
           "status": "COMPLETED",
           "parameters": {
             "to": "compliance@globalparts.com",
-            "subject": "Compliance Certificate Required for product-3",
-            "text": "Dear GlobalParts Ltd, product prd-3 is missing a compliance certificate required for purchase order processing. Please provide the necessary certificate at your earliest convenience."
+            "subject": "Compliance Certificate Required for 48-Port PoE Network Switch",
+            "text": "Dear GlobalParts Ltd, product NSW-4800 is missing a compliance certificate required for purchase order processing. Please provide the necessary certificate at your earliest convenience."
           },
           "comment": "Blueprint step 2: emailed vendor requesting compliance certificate"
         },
@@ -1626,7 +1626,7 @@
           "parameters": {
             "sessionId": "019b6e75-oc02-oc02-oc02-oc0200000002",
             "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
-            "message": "The vendor (GlobalParts Ltd) has been contacted at compliance@globalparts.com to provide the compliance certificate for product-3. The purchase order will proceed once the certificate is received."
+            "message": "The vendor (GlobalParts Ltd) has been contacted at compliance@globalparts.com to provide the compliance certificate for 48-Port PoE Network Switch. The purchase order will proceed once the certificate is received."
           },
           "comment": "Blueprint step 3: notified user that vendor was contacted"
         },
@@ -1640,7 +1640,7 @@
     },
     {
       "id": "order-cert-block-004",
-      "description": "Create a purchase order for product-4 (prd-4). Knowledge base explicitly states prd-4 has no compliance certificate assigned.",
+      "description": "Create a purchase order for Duplex Document Scanner (DSC-760). Knowledge base explicitly states DSC-760 has no compliance certificate assigned.",
       "sessionId": "019b6e75-oc04-oc04-oc04-oc0400000004",
       "blueprint": {
         "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
@@ -1743,21 +1743,21 @@
         {
           "id": "kn-c4-001",
           "type": "TEXT",
-          "text": "prd-1 has FFC compliance certificate",
+          "text": "TLP-4200 has FFC compliance certificate",
           "status": "COMPLETED",
           "createdAt": "2026-06-26T06:00:00Z"
         },
         {
           "id": "kn-c4-002",
           "type": "TEXT",
-          "text": "prd-2 has CE compliance certificate",
+          "text": "BCS-310 has CE compliance certificate",
           "status": "COMPLETED",
           "createdAt": "2026-06-26T06:00:00Z"
         },
         {
           "id": "kn-c4-003",
           "type": "TEXT",
-          "text": "prd-3 and prd-4 have no compliance certificate assigned",
+          "text": "NSW-4800 and DSC-760 have no compliance certificate assigned",
           "status": "COMPLETED",
           "createdAt": "2026-06-26T06:00:00Z"
         },
@@ -1784,34 +1784,34 @@
           "parameters": {
             "question": "Which product would you like to order?"
           },
-          "result": "product-4",
-          "comment": "User selected product-4"
+          "result": "Duplex Document Scanner",
+          "comment": "User selected Duplex Document Scanner"
         },
         {
           "taskId": "task-oc-004",
           "action": "ORDER:find_product",
           "status": "COMPLETED",
           "parameters": {
-            "name": "product-4"
+            "name": "Duplex Document Scanner"
           },
-          "result": "{\"id\": \"prd-4\", \"name\": \"product-4\"}",
-          "comment": "Found product-4 with ID prd-4"
+          "result": "{\"id\": \"DSC-760\", \"name\": \"Duplex Document Scanner\"}",
+          "comment": "Found Duplex Document Scanner with ID DSC-760"
         },
         {
           "taskId": "task-oc-004",
           "action": "PLATFORM:knowledge_lookup",
           "status": "COMPLETED",
           "parameters": {
-            "product_id": "prd-4"
+            "product_id": "DSC-760"
           },
-          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-1\\\", \\\"product_name\\\": \\\"product-1\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-2\\\", \\\"product_name\\\": \\\"product-2\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
-          "comment": "The knowledge base only holds certificate records for prd-1, prd-2 - there is no entry for prd-4, so its certificate is unknown"
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"TLP-4200\\\", \\\"product_name\\\": \\\"Thermal Label Printer\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"BCS-310\\\", \\\"product_name\\\": \\\"Wireless Barcode Scanner\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base only holds certificate records for TLP-4200, BCS-310 - there is no entry for DSC-760, so its certificate is unknown"
         },
         {
           "taskId": "task-oc-004",
           "action": "PLATFORM:decision",
           "status": "COMPLETED",
-          "comment": "No certificate found for prd-4 — taking the false branch as defined in blueprint",
+          "comment": "No certificate found for DSC-760 — taking the false branch as defined in blueprint",
           "parameters": {
             "condition": "knowledge_base_has_certificate_record_for_product == TRUE",
             "true": [
@@ -1819,7 +1819,7 @@
                 "taskId": "task-oc-004",
                 "action": "ORDER:assign_certificate",
                 "status": "SKIPPED",
-                "comment": "True branch not taken — prd-4 has no certificate in knowledge base"
+                "comment": "True branch not taken — DSC-760 has no certificate in knowledge base"
               }
             ],
             "false": [
@@ -1828,11 +1828,11 @@
                 "action": "PLATFORM:ask_supervisor",
                 "status": "COMPLETED",
                 "parameters": {
-                  "question": "Product prd-4 has no compliance certificate in the knowledge base. How should I proceed?",
+                  "question": "Product DSC-760 has no compliance certificate in the knowledge base. How should I proceed?",
                   "sessionId": "019b6e75-oc04-oc04-oc04-oc0400000004",
                   "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
                 },
-                "comment": "Blueprint false branch: asking supervisor because knowledge base has no certificate for prd-4. I will not assume CE or any other certificate from other products."
+                "comment": "Blueprint false branch: asking supervisor because knowledge base has no certificate for DSC-760. I will not assume CE or any other certificate from other products."
               }
             ]
           }
@@ -2252,8 +2252,8 @@
           "parameters": {
             "question": "Which product would you like to order?"
           },
-          "result": "product-1",
-          "comment": "User selected product-1"
+          "result": "Thermal Label Printer",
+          "comment": "User selected Thermal Label Printer"
         },
         {
           "action": "ORDER:find_product",
@@ -2263,7 +2263,7 @@
               "$ref": "steps[0].result"
             }
           },
-          "result": "{\"id\": \"prd-1\", \"name\": \"product-1\"}",
+          "result": "{\"id\": \"TLP-4200\", \"name\": \"Thermal Label Printer\"}",
           "comment": "Reusing the product name the user already gave (steps[0].result) via $ref instead of retyping it"
         }
       ],
@@ -2280,7 +2280,7 @@
     },
     {
       "id": "order-cert-missing-block-001",
-      "description": "Order product-3 (prd-3) - the knowledge base holds no certificate record for it.",
+      "description": "Order 48-Port PoE Network Switch (NSW-4800) - the knowledge base holds no certificate record for it.",
       "sessionId": "019b6e75-cm01-cm01-cm01-cm0100000001",
       "blueprint": {
         "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
@@ -2429,14 +2429,14 @@
         {
           "id": "kn-cert-001",
           "type": "TEXT",
-          "text": "prd-1 has FFC compliance certificate",
+          "text": "TLP-4200 has FFC compliance certificate",
           "status": "COMPLETED",
           "createdAt": "2026-06-26T06:00:00Z"
         },
         {
           "id": "kn-cert-002",
           "type": "TEXT",
-          "text": "prd-2 has CE compliance certificate",
+          "text": "BCS-310 has CE compliance certificate",
           "status": "COMPLETED",
           "createdAt": "2026-06-26T06:00:00Z"
         }
@@ -2456,9 +2456,9 @@
           "action": "ORDER:find_product",
           "status": "COMPLETED",
           "parameters": {
-            "name": "product-3"
+            "name": "48-Port PoE Network Switch"
           },
-          "result": "{\"product\": {\"id\": \"prd-3\", \"name\": \"product-3\", \"vendor_id\": \"vnd-3\", \"unit_price\": 45000, \"currency\": \"usd\", \"weight_kg\": 7.5}}",
+          "result": "{\"product\": {\"id\": \"NSW-4800\", \"name\": \"48-Port PoE Network Switch\", \"vendor_id\": \"VND-2103\", \"unit_price\": 45000, \"currency\": \"usd\", \"weight_kg\": 7.5}}",
           "comment": "Product resolved from the order request"
         },
         {
@@ -2470,22 +2470,22 @@
               "$ref": "steps[0].result.product.id"
             }
           },
-          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-1\\\", \\\"product_name\\\": \\\"product-1\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-2\\\", \\\"product_name\\\": \\\"product-2\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
-          "comment": "The knowledge base only holds certificate records for prd-1 and prd-2 - there is no entry for prd-3, so its certificate is unknown"
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"TLP-4200\\\", \\\"product_name\\\": \\\"Thermal Label Printer\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"BCS-310\\\", \\\"product_name\\\": \\\"Wireless Barcode Scanner\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base only holds certificate records for TLP-4200 and BCS-310 - there is no entry for NSW-4800, so its certificate is unknown"
         }
       ],
       "next_step": {
         "action": "PLATFORM:ask_supervisor",
         "parameters": {
-          "question": "product-3 (prd-3) has no compliance certificate in the knowledge base. Which certificate should I assign to it, or should I stop the order?"
+          "question": "48-Port PoE Network Switch (NSW-4800) has no compliance certificate in the knowledge base. Which certificate should I assign to it, or should I stop the order?"
         },
-        "comment": "The knowledge lookup returned certificate records for prd-1 and prd-2 only - nothing for prd-3. A certificate may only come from the knowledge base or a supervisor, so escalate and wait for the answer instead of assigning an invented one and moving on to the purchase order",
+        "comment": "The knowledge lookup returned certificate records for TLP-4200 and BCS-310 only - nothing for NSW-4800. A certificate may only come from the knowledge base or a supervisor, so escalate and wait for the answer instead of assigning an invented one and moving on to the purchase order",
         "result_score": 0.95
       }
     },
     {
       "id": "order-cert-missing-block-002",
-      "description": "The supervisor answered which certificate prd-3 should get.",
+      "description": "The supervisor answered which certificate NSW-4800 should get.",
       "sessionId": "019b6e75-cm01-cm01-cm01-cm0100000002",
       "blueprint": {
         "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
@@ -2634,7 +2634,7 @@
         {
           "id": "kn-cert-001",
           "type": "TEXT",
-          "text": "prd-1 has FFC compliance certificate",
+          "text": "TLP-4200 has FFC compliance certificate",
           "status": "COMPLETED",
           "createdAt": "2026-06-26T06:00:00Z"
         }
@@ -2654,9 +2654,9 @@
           "action": "ORDER:find_product",
           "status": "COMPLETED",
           "parameters": {
-            "name": "product-3"
+            "name": "48-Port PoE Network Switch"
           },
-          "result": "{\"product\": {\"id\": \"prd-3\", \"name\": \"product-3\", \"vendor_id\": \"vnd-3\", \"unit_price\": 45000, \"currency\": \"usd\", \"weight_kg\": 7.5}}",
+          "result": "{\"product\": {\"id\": \"NSW-4800\", \"name\": \"48-Port PoE Network Switch\", \"vendor_id\": \"VND-2103\", \"unit_price\": 45000, \"currency\": \"usd\", \"weight_kg\": 7.5}}",
           "comment": "Product resolved from the order request"
         },
         {
@@ -2668,17 +2668,17 @@
               "$ref": "steps[0].result.product.id"
             }
           },
-          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-1\\\", \\\"product_name\\\": \\\"product-1\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-2\\\", \\\"product_name\\\": \\\"product-2\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
-          "comment": "The knowledge base only holds certificate records for prd-1 and prd-2 - there is no entry for prd-3, so its certificate is unknown"
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"TLP-4200\\\", \\\"product_name\\\": \\\"Thermal Label Printer\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"BCS-310\\\", \\\"product_name\\\": \\\"Wireless Barcode Scanner\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base only holds certificate records for TLP-4200 and BCS-310 - there is no entry for NSW-4800, so its certificate is unknown"
         },
         {
           "taskId": "task-cert-block",
           "action": "PLATFORM:ask_supervisor",
           "status": "COMPLETED",
           "parameters": {
-            "question": "product-3 (prd-3) has no compliance certificate in the knowledge base. Which certificate should I assign to it, or should I stop the order?"
+            "question": "48-Port PoE Network Switch (NSW-4800) has no compliance certificate in the knowledge base. Which certificate should I assign to it, or should I stop the order?"
           },
-          "result": "{\"status\": \"ANSWERED\", \"answer\": \"Assign CE to prd-3, the vendor filed it last week.\"}",
+          "result": "{\"status\": \"ANSWERED\", \"answer\": \"Assign CE to NSW-4800, the vendor filed it last week.\"}",
           "comment": "The supervisor answered with the certificate to use"
         }
       ],
@@ -2696,7 +2696,7 @@
     },
     {
       "id": "order-pay-block-001",
-      "description": "Create a purchase order for product-1 (prd-1), then prepare its payment.",
+      "description": "Create a purchase order for Thermal Label Printer (TLP-4200), then prepare its payment.",
       "sessionId": "019b6e75-op01-op01-op01-op0100000001",
       "blueprint": {
         "id": "85a763a3-30cc-409f-881f-828e17c44c9e",
@@ -2845,7 +2845,7 @@
         {
           "id": "kn-cert-001",
           "type": "TEXT",
-          "text": "prd-1 has FFC compliance certificate",
+          "text": "TLP-4200 has FFC compliance certificate",
           "status": "COMPLETED",
           "createdAt": "2026-06-26T06:00:00Z"
         },
@@ -2874,9 +2874,9 @@
           "action": "ORDER:find_product",
           "status": "COMPLETED",
           "parameters": {
-            "name": "product-1"
+            "name": "Thermal Label Printer"
           },
-          "result": "{\"product\": {\"id\": \"prd-1\", \"name\": \"product-1\", \"unit_price\": 12500, \"currency\": \"usd\", \"weight_kg\": 2.5}}",
+          "result": "{\"product\": {\"id\": \"TLP-4200\", \"name\": \"Thermal Label Printer\", \"unit_price\": 12500, \"currency\": \"usd\", \"weight_kg\": 2.5}}",
           "comment": "Product resolved from the order request"
         },
         {
@@ -2888,8 +2888,8 @@
               "$ref": "steps[0].result.product.id"
             }
           },
-          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-1\\\", \\\"product_name\\\": \\\"product-1\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-2\\\", \\\"product_name\\\": \\\"product-2\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
-          "comment": "The knowledge base holds a certificate record for prd-1 (FFC) among its entries"
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"TLP-4200\\\", \\\"product_name\\\": \\\"Thermal Label Printer\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"BCS-310\\\", \\\"product_name\\\": \\\"Wireless Barcode Scanner\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base holds a certificate record for TLP-4200 (FFC) among its entries"
         },
         {
           "taskId": "task-op-001",
@@ -2901,7 +2901,7 @@
             },
             "certificate": "FFC"
           },
-          "result": "{\"product_id\": \"prd-1\", \"certificate\": \"FFC\", \"assigned\": true}",
+          "result": "{\"product_id\": \"TLP-4200\", \"certificate\": \"FFC\", \"assigned\": true}",
           "comment": "Reusing product_id and certificate via $ref instead of retyping them"
         },
         {
@@ -2915,7 +2915,7 @@
             "city": "Atlanta",
             "quantity": 1
           },
-          "result": "{\"purchase_order\": {\"order_id\": \"po-2001\", \"product_id\": \"prd-1\", \"city\": \"Atlanta\", \"quantity\": 1, \"unit_price\": 12500, \"currency\": \"usd\", \"total_amount\": 12500, \"total_weight_kg\": 2.5, \"ship_from\": {\"postal_code\": \"30301\", \"country_code\": \"US\"}, \"ship_to\": {\"city\": \"Atlanta\", \"postal_code\": \"30303\", \"country_code\": \"US\"}}}",
+          "result": "{\"purchase_order\": {\"order_id\": \"po-2001\", \"product_id\": \"TLP-4200\", \"city\": \"Atlanta\", \"quantity\": 1, \"unit_price\": 12500, \"currency\": \"usd\", \"total_amount\": 12500, \"total_weight_kg\": 2.5, \"ship_from\": {\"postal_code\": \"30301\", \"country_code\": \"US\"}, \"ship_to\": {\"city\": \"Atlanta\", \"postal_code\": \"30303\", \"country_code\": \"US\"}}}",
           "comment": "The purchase order carries the amount, weight and postal codes the payment and shipment steps need"
         }
       ],
@@ -2928,7 +2928,7 @@
           "currency": {
             "$ref": "steps[3].result.purchase_order.currency"
           },
-          "description": "Purchase order po-2001 for product-1 (prd-1)"
+          "description": "Purchase order po-2001 for Thermal Label Printer (TLP-4200)"
         },
         "comment": "The purchase order already carries total_amount and currency (steps[3]) - reuse them via $ref. The customer field is omitted: no Stripe customer was created in this flow and an invented ID is rejected",
         "result_score": 0.95
@@ -3085,7 +3085,7 @@
         {
           "id": "kn-cert-001",
           "type": "TEXT",
-          "text": "prd-1 has FFC compliance certificate",
+          "text": "TLP-4200 has FFC compliance certificate",
           "status": "COMPLETED",
           "createdAt": "2026-06-26T06:00:00Z"
         },
@@ -3114,9 +3114,9 @@
           "action": "ORDER:find_product",
           "status": "COMPLETED",
           "parameters": {
-            "name": "product-1"
+            "name": "Thermal Label Printer"
           },
-          "result": "{\"product\": {\"id\": \"prd-1\", \"name\": \"product-1\", \"unit_price\": 12500, \"currency\": \"usd\", \"weight_kg\": 2.5}}",
+          "result": "{\"product\": {\"id\": \"TLP-4200\", \"name\": \"Thermal Label Printer\", \"unit_price\": 12500, \"currency\": \"usd\", \"weight_kg\": 2.5}}",
           "comment": "Product resolved from the order request"
         },
         {
@@ -3128,8 +3128,8 @@
               "$ref": "steps[0].result.product.id"
             }
           },
-          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-1\\\", \\\"product_name\\\": \\\"product-1\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-2\\\", \\\"product_name\\\": \\\"product-2\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
-          "comment": "The knowledge base holds a certificate record for prd-1 (FFC) among its entries"
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"TLP-4200\\\", \\\"product_name\\\": \\\"Thermal Label Printer\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"BCS-310\\\", \\\"product_name\\\": \\\"Wireless Barcode Scanner\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base holds a certificate record for TLP-4200 (FFC) among its entries"
         },
         {
           "taskId": "task-op-001",
@@ -3141,7 +3141,7 @@
             },
             "certificate": "FFC"
           },
-          "result": "{\"product_id\": \"prd-1\", \"certificate\": \"FFC\", \"assigned\": true}",
+          "result": "{\"product_id\": \"TLP-4200\", \"certificate\": \"FFC\", \"assigned\": true}",
           "comment": "Reusing product_id and certificate via $ref instead of retyping them"
         },
         {
@@ -3155,7 +3155,7 @@
             "city": "Atlanta",
             "quantity": 1
           },
-          "result": "{\"purchase_order\": {\"order_id\": \"po-2001\", \"product_id\": \"prd-1\", \"city\": \"Atlanta\", \"quantity\": 1, \"unit_price\": 12500, \"currency\": \"usd\", \"total_amount\": 12500, \"total_weight_kg\": 2.5, \"ship_from\": {\"postal_code\": \"30301\", \"country_code\": \"US\"}, \"ship_to\": {\"city\": \"Atlanta\", \"postal_code\": \"30303\", \"country_code\": \"US\"}}}",
+          "result": "{\"purchase_order\": {\"order_id\": \"po-2001\", \"product_id\": \"TLP-4200\", \"city\": \"Atlanta\", \"quantity\": 1, \"unit_price\": 12500, \"currency\": \"usd\", \"total_amount\": 12500, \"total_weight_kg\": 2.5, \"ship_from\": {\"postal_code\": \"30301\", \"country_code\": \"US\"}, \"ship_to\": {\"city\": \"Atlanta\", \"postal_code\": \"30303\", \"country_code\": \"US\"}}}",
           "comment": "The purchase order carries the amount, weight and postal codes the payment and shipment steps need"
         },
         {
@@ -3169,7 +3169,7 @@
             "currency": {
               "$ref": "steps[3].result.purchase_order.currency"
             },
-            "description": "Purchase order po-2001 for product-1 (prd-1)"
+            "description": "Purchase order po-2001 for Thermal Label Printer (TLP-4200)"
           },
           "result": "{\"id\": \"pi_demo0001\", \"status\": \"requires_confirmation\", \"amount\": 12500, \"currency\": \"usd\"}",
           "comment": "Amount and currency come from the purchase order (steps[3]) via $ref; no Stripe customer exists in this flow, so the customer field is left out entirely"
@@ -3179,7 +3179,7 @@
           "action": "PLATFORM:customer_approval",
           "status": "COMPLETED",
           "parameters": {
-            "question": "Purchase order po-2001 for product-1 (prd-1) totals 125.00 usd, shipping to Atlanta. Do you approve the charge?"
+            "question": "Purchase order po-2001 for Thermal Label Printer (TLP-4200) totals 125.00 usd, shipping to Atlanta. Do you approve the charge?"
           },
           "result": "APPROVED",
           "comment": "The payment approval node asks the customer before anything is charged"
@@ -3347,7 +3347,7 @@
         {
           "id": "kn-cert-001",
           "type": "TEXT",
-          "text": "prd-1 has FFC compliance certificate",
+          "text": "TLP-4200 has FFC compliance certificate",
           "status": "COMPLETED",
           "createdAt": "2026-06-26T06:00:00Z"
         },
@@ -3376,9 +3376,9 @@
           "action": "ORDER:find_product",
           "status": "COMPLETED",
           "parameters": {
-            "name": "product-1"
+            "name": "Thermal Label Printer"
           },
-          "result": "{\"product\": {\"id\": \"prd-1\", \"name\": \"product-1\", \"unit_price\": 12500, \"currency\": \"usd\", \"weight_kg\": 2.5}}",
+          "result": "{\"product\": {\"id\": \"TLP-4200\", \"name\": \"Thermal Label Printer\", \"unit_price\": 12500, \"currency\": \"usd\", \"weight_kg\": 2.5}}",
           "comment": "Product resolved from the order request"
         },
         {
@@ -3390,8 +3390,8 @@
               "$ref": "steps[0].result.product.id"
             }
           },
-          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-1\\\", \\\"product_name\\\": \\\"product-1\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-2\\\", \\\"product_name\\\": \\\"product-2\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
-          "comment": "The knowledge base holds a certificate record for prd-1 (FFC) among its entries"
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"TLP-4200\\\", \\\"product_name\\\": \\\"Thermal Label Printer\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"BCS-310\\\", \\\"product_name\\\": \\\"Wireless Barcode Scanner\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base holds a certificate record for TLP-4200 (FFC) among its entries"
         },
         {
           "taskId": "task-op-001",
@@ -3403,7 +3403,7 @@
             },
             "certificate": "FFC"
           },
-          "result": "{\"product_id\": \"prd-1\", \"certificate\": \"FFC\", \"assigned\": true}",
+          "result": "{\"product_id\": \"TLP-4200\", \"certificate\": \"FFC\", \"assigned\": true}",
           "comment": "Reusing product_id and certificate via $ref instead of retyping them"
         },
         {
@@ -3417,7 +3417,7 @@
             "city": "Atlanta",
             "quantity": 1
           },
-          "result": "{\"purchase_order\": {\"order_id\": \"po-2001\", \"product_id\": \"prd-1\", \"city\": \"Atlanta\", \"quantity\": 1, \"unit_price\": 12500, \"currency\": \"usd\", \"total_amount\": 12500, \"total_weight_kg\": 2.5, \"ship_from\": {\"postal_code\": \"30301\", \"country_code\": \"US\"}, \"ship_to\": {\"city\": \"Atlanta\", \"postal_code\": \"30303\", \"country_code\": \"US\"}}}",
+          "result": "{\"purchase_order\": {\"order_id\": \"po-2001\", \"product_id\": \"TLP-4200\", \"city\": \"Atlanta\", \"quantity\": 1, \"unit_price\": 12500, \"currency\": \"usd\", \"total_amount\": 12500, \"total_weight_kg\": 2.5, \"ship_from\": {\"postal_code\": \"30301\", \"country_code\": \"US\"}, \"ship_to\": {\"city\": \"Atlanta\", \"postal_code\": \"30303\", \"country_code\": \"US\"}}}",
           "comment": "The purchase order carries the amount, weight and postal codes the payment and shipment steps need"
         },
         {
@@ -3431,7 +3431,7 @@
             "currency": {
               "$ref": "steps[3].result.purchase_order.currency"
             },
-            "description": "Purchase order po-2001 for product-1 (prd-1)"
+            "description": "Purchase order po-2001 for Thermal Label Printer (TLP-4200)"
           },
           "result": "{\"id\": \"pi_demo0001\", \"status\": \"requires_confirmation\", \"amount\": 12500, \"currency\": \"usd\"}",
           "comment": "Amount and currency come from the purchase order (steps[3]) via $ref; no Stripe customer exists in this flow, so the customer field is left out entirely"
@@ -3440,7 +3440,7 @@
       "next_step": {
         "action": "PLATFORM:customer_approval",
         "parameters": {
-          "question": "Purchase order po-2001 for product-1 (prd-1) totals 125.00 usd, shipping to Atlanta. Do you approve the charge?"
+          "question": "Purchase order po-2001 for Thermal Label Printer (TLP-4200) totals 125.00 usd, shipping to Atlanta. Do you approve the charge?"
         },
         "comment": "The next node is the Payment Approval node (PLATFORM:customer_approval), not a free-form user question - write its question from the live data: the purchase order number (steps[3]), the product and the amount converted from minor units (steps[4])",
         "result_score": 0.95
@@ -3631,14 +3631,14 @@
         {
           "id": "086aef39-a1ff-4ace-aca4-529057164e50",
           "type": "TEXT",
-          "text": "prd-1 has FFC compliance certificate",
+          "text": "TLP-4200 has FFC compliance certificate",
           "status": "COMPLETED",
           "createdAt": "2026-06-26T06:00:00Z"
         },
         {
           "id": "d0209aeb-5ca9-4e56-a864-1ff3c5fa26d6",
           "type": "TEXT",
-          "text": "prd-2 has CE compliance certificate",
+          "text": "BCS-310 has CE compliance certificate",
           "status": "COMPLETED",
           "createdAt": "2026-06-26T06:00:00Z"
         }
@@ -3660,9 +3660,9 @@
           "action": "ORDER:find_product",
           "status": "COMPLETED",
           "parameters": {
-            "product_id": "prd-7"
+            "product_id": "UDS-700"
           },
-          "result": "{\"product\": {\"id\": \"prd-7\", \"name\": \"product-7\", \"vendor_id\": \"vnd-2\", \"unit_price\": 8400, \"currency\": \"usd\", \"weight_kg\": 1.2}}",
+          "result": "{\"product\": {\"id\": \"UDS-700\", \"name\": \"USB-C Docking Station\", \"vendor_id\": \"VND-2102\", \"unit_price\": 8400, \"currency\": \"usd\", \"weight_kg\": 1.2}}",
           "comment": "Product resolved from the order request"
         },
         {
@@ -3674,8 +3674,8 @@
               "$ref": "steps[0].result.product.id"
             }
           },
-          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-1\\\", \\\"product_name\\\": \\\"product-1\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"prd-2\\\", \\\"product_name\\\": \\\"product-2\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
-          "comment": "The knowledge base holds certificate records for prd-1 and prd-2 only - there is no entry for prd-7"
+          "result": "{\"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"knowledge\": [{\"id\": \"fe903f32-6794-47ab-90e5-4bb7babb556b\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"TLP-4200\\\", \\\"product_name\\\": \\\"Thermal Label Printer\\\", \\\"certificate\\\": \\\"FFC\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}, {\"id\": \"cd7df4f2-514f-48df-8f71-1ece01b94deb\", \"type\": \"DATA\", \"text\": \"{\\\"product_id\\\": \\\"BCS-310\\\", \\\"product_name\\\": \\\"Wireless Barcode Scanner\\\", \\\"certificate\\\": \\\"CE\\\"}\", \"status\": \"COMPLETED\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\"}]}",
+          "comment": "The knowledge base holds certificate records for TLP-4200 and BCS-310 only - there is no entry for UDS-700"
         },
         {
           "taskId": "1c3a17dd-678c-4b73-82b8-081dd5d3fbd4",
@@ -3693,13 +3693,13 @@
               {
                 "action": "PLATFORM:ask_supervisor",
                 "parameters": {
-                  "question": "Product prd-7 has no compliance certificate in the knowledge base. Should I assign one or halt the order?"
+                  "question": "Product UDS-700 has no compliance certificate in the knowledge base. Should I assign one or halt the order?"
                 },
                 "comment": "The blueprint had no path for a missing certificate yet"
               }
             ]
           },
-          "result": "{\"result\": false, \"actions\": [{\"action\": \"PLATFORM:ask_supervisor\", \"parameters\": {\"question\": \"Product prd-7 has no compliance certificate in the knowledge base. Should I assign one or halt the order?\"}, \"comment\": \"The blueprint had no path for a missing certificate yet\"}]}",
+          "result": "{\"result\": false, \"actions\": [{\"action\": \"PLATFORM:ask_supervisor\", \"parameters\": {\"question\": \"Product UDS-700 has no compliance certificate in the knowledge base. Should I assign one or halt the order?\"}, \"comment\": \"The blueprint had no path for a missing certificate yet\"}]}",
           "comment": "Decided before the blueprint had a missing-certificate path, so the only option was to escalate"
         },
         {
@@ -3707,10 +3707,10 @@
           "action": "PLATFORM:ask_supervisor",
           "status": "COMPLETED",
           "parameters": {
-            "question": "Product prd-7 has no compliance certificate in the knowledge base. Should I assign one or halt the order?"
+            "question": "Product UDS-700 has no compliance certificate in the knowledge base. Should I assign one or halt the order?"
           },
           "result": "Blueprint manually updated",
-          "comment": "Escalated the missing certificate for prd-7 to the supervisor"
+          "comment": "Escalated the missing certificate for UDS-700 to the supervisor"
         }
       ],
       "next_step": {
@@ -3718,9 +3718,9 @@
         "parameters": {
           "targetAgentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
           "targetBlueprintId": "98cdf921-c608-46ff-ad35-83c994ef8cc7",
-          "context": "The order for product-7 (prd-7) is on hold: no compliance certificate is recorded for it. Request the certificate from the product's vendor."
+          "context": "The order for USB-C Docking Station (UDS-700) is on hold: no compliance certificate is recorded for it. Request the certificate from the product's vendor."
         },
-        "comment": "'Blueprint manually updated' (steps[3].result) means the supervisor answered by changing the blueprint, not by adding knowledge - the question is resolved and must not be asked again. The updated blueprint's 'If certificate exists' condition sends a product without a certificate to 'Hand off to compliance_manager agent'; prd-7 still has no certificate (steps[1]), so follow that branch. The earlier decision (steps[2]) was made before this change and its ask_supervisor action is stale",
+        "comment": "'Blueprint manually updated' (steps[3].result) means the supervisor answered by changing the blueprint, not by adding knowledge - the question is resolved and must not be asked again. The updated blueprint's 'If certificate exists' condition sends a product without a certificate to 'Hand off to compliance_manager agent'; UDS-700 still has no certificate (steps[1]), so follow that branch. The earlier decision (steps[2]) was made before this change and its ask_supervisor action is stale",
         "result_score": 0.9
       }
     }

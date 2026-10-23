@@ -136,7 +136,8 @@ async function blueprintChatDecision({
           select: "update_target",
           supervisor_reply: "`user_message`",
           context: CHAT_CONTEXT,
-          few_shots: dataset.decision.supervisingChatDecision as JsonValue[],
+          few_shots: dataset.decision
+            .supervisingChatDecision as unknown as JsonValue[],
         },
         {
           KNOWLEDGE: {
@@ -179,7 +180,8 @@ async function blueprintChatSufficiency({
           update_target: "`decision`",
           supervisor_reply: "`user_message`",
           context: CHAT_CONTEXT,
-          few_shots: dataset.decision.supervisingChatSufficiency as JsonValue[],
+          few_shots: dataset.decision
+            .supervisingChatSufficiency as unknown as JsonValue[],
         },
         {
           true: { reply: "clear and specific enough to apply" },

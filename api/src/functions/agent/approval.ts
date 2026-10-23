@@ -76,7 +76,8 @@ async function approvalDecision({
           select: "customer_decision",
           question: "`question`",
           reply: "`customer_reply`",
-          few_shots: dataset.decision.customerApproval as JsonValue[],
+          few_shots: dataset.decision
+            .customerApproval as unknown as JsonValue[],
         },
         {
           APPROVED: { customer: "approves" },

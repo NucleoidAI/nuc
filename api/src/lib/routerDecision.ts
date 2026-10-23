@@ -3,11 +3,22 @@ import type { Questions } from "@typesafe-ai/sdk";
 import { logLLM } from "./llmLog";
 import type { DecisionAdapter, DecisionAnswers, DecisionParams } from "./types";
 
-const API_KEYS: Record<string, string[]> = {
-  typesafe: ["TYPESAFE_API_KEY"],
-  openrouter: ["OPENROUTER_DECISION_API_KEY", "OPENROUTER_API_KEY"],
-  cloudflare: ["CLOUDFLARE_AUTH_TOKEN"],
-};
+function credentialFor(provider?: string): string | undefined {
+  const env = process.env;
+
+  switch (provider) {
+    case "typesafe":
+      return env.TYPESAFE_API_KEY;
+    case "openrouter":
+      return env.OPENROUTER_DECISION_API_KEY || env.OPENROUTER_API_KEY;
+    case "cloudflare":
+      return env.CLOUDFLARE_ACCOUNT_ID && env.CLOUDFLARE_AUTH_TOKEN
+        ? `${env.CLOUDFLARE_ACCOUNT_ID}:${env.CLOUDFLARE_AUTH_TOKEN}`
+        : undefined;
+    default:
+      return undefined;
+  }
+}
 
 type RouterResponse<Q extends Questions> = {
   answers?: DecisionAnswers<Q>;
@@ -35,9 +46,7 @@ async function ask<const Q extends Questions>({
     );
   }
 
-  const key = (provider ? API_KEYS[provider] ?? [] : [])
-    .map((name) => process.env[name]?.trim())
-    .find((value) => value);
+  const key = credentialFor(provider);
 
   const startedAt = Date.now();
 

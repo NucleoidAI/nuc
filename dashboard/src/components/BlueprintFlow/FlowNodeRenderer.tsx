@@ -337,6 +337,7 @@ export default function FlowNodeRenderer({
           <>
             {!isLocked && (
               <ActionButtonWrapper
+                data-cy="node-delete-button"
                 position="delete"
                 hoverColor="error"
                 onClick={handleDeleteClick}
@@ -347,6 +348,7 @@ export default function FlowNodeRenderer({
             )}
             {onEdit && (
               <ActionButtonWrapper
+                data-cy="node-edit-button"
                 position="edit"
                 onClick={handleEditClick}
                 title="Edit node"
@@ -361,6 +363,7 @@ export default function FlowNodeRenderer({
             )}
             {canAddChild && (
               <ActionButtonWrapper
+                data-cy="node-add-button"
                 position="add"
                 onClick={handleAddClick}
                 title="Add child node"

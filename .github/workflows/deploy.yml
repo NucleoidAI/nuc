@@ -70,6 +70,8 @@ on:
         required: false
       DOCKER_USERNAME:
         required: false
+      HF_TOKEN:
+        required: false
 
 jobs:
   build-and-push:
@@ -152,6 +154,8 @@ jobs:
 
       - name: Build
         if: ${{ inputs.run_build }}
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: ${{ inputs.build_command }}
 
       - name: Log in to Docker Hub

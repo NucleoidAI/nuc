@@ -1,9 +1,4 @@
-import actionDiamond from "./action-diamond.json";
-import customerApproval from "./customer-approval.json";
-import inputsAvailable from "./inputs-available.json";
-import parameterDiamond from "./parameter-diamond.json";
-import supervisingChatDecision from "./supervising-chat-decision.json";
-import supervisingChatSufficiency from "./supervising-chat-sufficiency.json";
+import { type Source, load } from "../storage";
 
 type Escalation = {
   action: string;
@@ -75,17 +70,22 @@ export type {
 };
 
 export default {
-  actionDiamond: (actionDiamond as { data: unknown[] })
-    .data as ActionDiamondFewShot[],
-  parameterDiamond: (parameterDiamond as { data: unknown[] })
-    .data as ParameterDiamondFewShot[],
-  inputsAvailable: (inputsAvailable as { data: unknown[] })
-    .data as InputsAvailableFewShot[],
-  customerApproval: (customerApproval as { data: unknown[] })
-    .data as CustomerApprovalFewShot[],
-  supervisingChatDecision: (supervisingChatDecision as { data: unknown[] })
-    .data as SupervisingChatDecisionFewShot[],
-  supervisingChatSufficiency: (
-    supervisingChatSufficiency as { data: unknown[] }
-  ).data as SupervisingChatSufficiencyFewShot[],
+  actionDiamond: load(
+    "decision-action-diamond",
+  ) as Source<ActionDiamondFewShot>,
+  parameterDiamond: load(
+    "decision-parameter-diamond",
+  ) as Source<ParameterDiamondFewShot>,
+  inputsAvailable: load(
+    "decision-inputs-available",
+  ) as Source<InputsAvailableFewShot>,
+  customerApproval: load(
+    "decision-customer-approval",
+  ) as Source<CustomerApprovalFewShot>,
+  supervisingChatDecision: load(
+    "decision-supervising-chat-decision",
+  ) as Source<SupervisingChatDecisionFewShot>,
+  supervisingChatSufficiency: load(
+    "decision-supervising-chat-sufficiency",
+  ) as Source<SupervisingChatSufficiencyFewShot>,
 };

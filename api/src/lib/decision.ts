@@ -43,7 +43,15 @@ const { provider, model: configuredModel } = parseProviderModel(
 
 let adapterPromise: Promise<DecisionAdapter> | null = null;
 
-function getAdapter(): Promise<DecisionAdapter> {
+function usesRouter(questions: Questions): boolean {
+  return JSON.stringify(questions).includes('"$dataset":');
+}
+
+function getAdapter(questions: Questions): Promise<DecisionAdapter> {
+  if (usesRouter(questions)) {
+    return import("./routerDecision").then((mod) => mod.default);
+  }
+
   if (!adapterPromise) {
     adapterPromise = PROVIDER_LOADERS[provider]().then((mod) => mod.default);
   }
@@ -63,9 +71,10 @@ async function ask<const Q extends Questions>({
 }): Promise<DecisionAnswers<Q>> {
   const resolvedSource = meta?.source ? undefined : inferSource(ask);
 
-  const adapter = await getAdapter();
+  const adapter = await getAdapter(questions);
 
   return await adapter.ask({
+    provider: provider.toLowerCase(),
     model: model ?? configuredModel,
     state,
     questions,

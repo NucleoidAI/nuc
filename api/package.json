@@ -6,6 +6,8 @@
   "scripts": {
     "prepare": "exit 0",
     "dev": "bun --watch server.ts",
+    "dataset": "bun scripts/dataset.ts",
+    "prebuild": "bun scripts/dataset.ts",
     "build": "node build.prod.js",
     "lint": "eslint . --ext .ts",
     "test": "bun test.ts",

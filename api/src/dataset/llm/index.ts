@@ -1,78 +1,68 @@
-import approvalQuestion from "./approval-question.json";
-import blueprintChat from "./blueprint-chat.json";
-import blueprintChatSufficiency from "./blueprint-chat-sufficiency.json";
-import blueprintChatKnowledge from "./blueprint-chat-knowledge.json";
-import blueprintDescription from "./blueprint-description.json";
-import blueprintName from "./blueprint-name.json";
-import blueprintSkill from "./blueprint-skill.json";
-import policy from "./policy.json";
-import forceTaskDiamondBlocking from "./force-task-diamond-blocking.json";
-import forceTaskDiamondNonBlocking from "./force-task-diamond-non-blocking.json";
-import teamChat from "./team-chat.json";
+import { load } from "../storage";
 
 export default {
   policy: {
     role: "system" as const,
-    content: JSON.stringify({ policy: policy.data }),
+    content: JSON.stringify({ policy: load("llm-policy") }),
   },
   forceTaskDiamondBlocking: {
     role: "system" as const,
     content: JSON.stringify({
-      train: forceTaskDiamondBlocking,
+      train: { data: load("llm-force-task-diamond-blocking") },
     }),
   },
   forceTaskDiamondNonBlocking: {
     role: "system" as const,
     content: JSON.stringify({
-      train: forceTaskDiamondNonBlocking,
+      train: { data: load("llm-force-task-diamond-non-blocking") },
     }),
   },
   teamChat: {
     role: "system" as const,
     content: JSON.stringify({
-      train: teamChat.data,
+      train: load("llm-team-chat"),
     }),
   },
   blueprintChat: {
     role: "system" as const,
     content: JSON.stringify({
-      train: blueprintChat.data,
+      train: load("llm-blueprint-chat"),
     }),
   },
   blueprintChatSufficiency: {
     role: "system" as const,
     content: JSON.stringify({
-      train: blueprintChatSufficiency.data,
+      train: load("llm-blueprint-chat-sufficiency"),
     }),
   },
   blueprintChatKnowledge: {
     role: "system" as const,
     content: JSON.stringify({
-      train: blueprintChatKnowledge.data,
+      train: load("llm-blueprint-chat-knowledge"),
     }),
   },
   blueprintName: {
     role: "system" as const,
     content: JSON.stringify({
-      train: blueprintName.data,
+      train: load("llm-blueprint-name"),
     }),
   },
   blueprintDescription: {
     role: "system" as const,
     content: JSON.stringify({
-      train: blueprintDescription.data,
+      train: load("llm-blueprint-description"),
     }),
   },
   blueprintSkill: {
     role: "system" as const,
     content: JSON.stringify({
-      train: blueprintSkill.data,
+      train: load("llm-blueprint-skill"),
     }),
   },
   approvalQuestion: {
     role: "system" as const,
     content: JSON.stringify({
-      train: approvalQuestion.data,
+      train: load("llm-approval-question"),
     }),
   },
 };

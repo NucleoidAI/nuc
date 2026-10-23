@@ -1,4 +1,4 @@
-import { type Source, load } from "../storage";
+import { type Source, load } from "@canmingir/link-express/dataset";
 
 type Escalation = {
   action: string;

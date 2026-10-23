@@ -2,9 +2,33 @@ import fs from "fs";
 import os from "os";
 import path from "path";
 
-import { DATASETS, file } from "../src/dataset/storage";
+import { file } from "@canmingir/link-express/dataset";
 
 const ORGANIZATION = "greycollar";
+const DATASET_SRC = path.join(__dirname, "..", "src", "dataset");
+
+function sources(dir: string): string[] {
+  return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) return sources(full);
+    return entry.name.endsWith(".ts") ? [full] : [];
+  });
+}
+
+function datasets(): string[] {
+  const names = new Set<string>();
+
+  for (const source of sources(DATASET_SRC)) {
+    const contents = fs.readFileSync(source, "utf8");
+    for (const [, name] of contents.matchAll(
+      /\bload\(\s*["']([\w-]+)["']\s*,?\s*\)/g,
+    )) {
+      names.add(name);
+    }
+  }
+
+  return [...names].sort();
+}
 
 function token(): string | undefined {
   if (process.env.HF_TOKEN) {
@@ -20,7 +44,7 @@ function token(): string | undefined {
     : undefined;
 }
 
-async function download(name: (typeof DATASETS)[number], auth: string) {
+async function download(name: string, auth: string) {
   const url = `https://huggingface.co/datasets/${ORGANIZATION}/${name}/resolve/main/data/train.jsonl`;
   const response = await fetch(url, {
     headers: { Authorization: `Bearer ${auth}` },
@@ -35,7 +59,7 @@ async function download(name: (typeof DATASETS)[number], auth: string) {
     .filter((line) => line.trim())
     .map((line) => JSON.parse(line));
 
-  const location = file(name);
+  const location = file(name, DATASET_SRC);
   const temp = `${location}.${process.pid}.tmp`;
 
   fs.mkdirSync(path.dirname(location), { recursive: true });
@@ -57,7 +81,7 @@ async function main() {
   }
 
   const results = await Promise.allSettled(
-    DATASETS.map((name) => download(name, auth)),
+    datasets().map((name) => download(name, auth)),
   );
   const failed = results.filter(
     (result): result is PromiseRejectedResult => result.status === "rejected",

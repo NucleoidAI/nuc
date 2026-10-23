@@ -6,7 +6,7 @@ import type {
 } from "@typesafe-ai/sdk";
 import { ask, choice, noul } from "../../lib/decision";
 import dataset from "../../dataset";
-import { type Source, isRef, select } from "../../dataset/storage";
+import { type Source, isRef, select } from "@canmingir/link-express/dataset";
 import type { LLMMeta } from "@canmingir/link-express/llm";
 import { mkdirSync, writeFileSync } from "fs";
 import path from "path";

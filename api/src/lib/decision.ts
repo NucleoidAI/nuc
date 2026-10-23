@@ -1,6 +1,7 @@
 import { choice, noul, score } from "@typesafe-ai/sdk";
 import type { EntryType, Questions } from "@typesafe-ai/sdk";
 
+import { hasRef } from "@canmingir/link-express/dataset";
 import { inferSource } from "@canmingir/link-express/llm";
 import type { LLMMeta } from "@canmingir/link-express/llm";
 import type { DecisionAdapter, DecisionAnswers } from "./types";
@@ -43,12 +44,8 @@ const { provider, model: configuredModel } = parseProviderModel(
 
 let adapterPromise: Promise<DecisionAdapter> | null = null;
 
-function usesRouter(questions: Questions): boolean {
-  return JSON.stringify(questions).includes('"$dataset":');
-}
-
 function getAdapter(questions: Questions): Promise<DecisionAdapter> {
-  if (usesRouter(questions)) {
+  if (hasRef(questions)) {
     return import("./routerDecision").then((mod) => mod.default);
   }
 

@@ -1,4 +1,4 @@
-import { load } from "../storage";
+import { load } from "@canmingir/link-express/dataset";
 
 export default {
   policy: {

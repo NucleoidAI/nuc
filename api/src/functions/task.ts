@@ -1,6 +1,8 @@
 import Agent from "../models/Agent";
 import Step from "../models/Step";
+import Supervising from "../models/Supervising";
 import Task from "../models/Task";
+import { Op, col, fn } from "sequelize";
 import { event } from "@canmingir/link-express/event/client";
 
 async function create({
@@ -85,8 +87,8 @@ async function waitFor({
     ["TASK_COMPLETED", "TASK_FAILED"].map((type) =>
       event.subscribe<{ taskId: string }>(type, ({ taskId }) => {
         waiters.get(taskId)?.forEach((notify) => notify());
-      }),
-    ),
+      })
+    )
   ).catch((error) => {
     listening = undefined;
     throw error;
@@ -129,32 +131,28 @@ async function count({ blueprintId }: { blueprintId: string }) {
   return Task.count({ where: { blueprintId } });
 }
 
-async function getWithSteps({ taskId }: { taskId: string }) {
-  const taskInstance = await Task.findOne({
-    where: { id: taskId },
-    include: [Step],
-  });
-
-  return taskInstance.toJSON();
-}
-
 async function list({
   teamId,
   agentId,
   status,
   sessionId,
   includeSteps,
+  from,
+  to,
 }: {
   teamId: string;
   agentId?: string;
   status?: "IN_PROGRESS" | "COMPLETED" | "FAILED";
   sessionId?: string;
   includeSteps?: boolean;
+  from?: string;
+  to?: string;
 }) {
   const where: {
     agentId?: string;
     status?: "IN_PROGRESS" | "COMPLETED" | "FAILED";
     sessionId?: string;
+    createdAt?: { [Op.between]: [string, string] };
   } = {};
 
   if (agentId) {
@@ -169,21 +167,27 @@ async function list({
     where.sessionId = sessionId;
   }
 
+  if (from && to) {
+    where.createdAt = { [Op.between]: [from, to] };
+  }
+
   const taskInstances = await Task.findAll({
-    include: includeSteps
-      ? [
-          {
-            model: Agent,
-            attributes: [],
-            where: { teamId },
-            required: true,
-          },
-          {
-            model: Step,
-            as: "steps",
-          },
-        ]
-      : [],
+    include: [
+      {
+        model: Agent,
+        attributes: [],
+        where: { teamId },
+        required: true,
+      },
+      ...(includeSteps
+        ? [
+            {
+              model: Step,
+              as: "steps",
+            },
+          ]
+        : []),
+    ],
     where,
     ...(includeSteps && {
       order: [[{ model: Step, as: "steps" }, "createdAt", "ASC"]],
@@ -191,6 +195,77 @@ async function list({
   });
 
   return taskInstances.map((task) => task.toJSON());
+}
+
+async function listWithEffectiveStatus({
+  teamId,
+  agentId,
+  from,
+  to,
+}: {
+  teamId: string;
+  agentId?: string;
+  from?: string;
+  to?: string;
+}) {
+  const tasks = await list({ teamId, agentId, from, to });
+  const taskIds = tasks.map((task) => task.id);
+
+  const awaitingSupervisings = taskIds.length
+    ? await Supervising.findAll({
+        where: { status: "IN_PROGRESS", taskId: { [Op.in]: taskIds } },
+        attributes: ["taskId"],
+      })
+    : [];
+
+  const awaitingTaskIds = new Set(
+    awaitingSupervisings.map((supervising) => supervising.taskId)
+  );
+
+  return tasks.map((task) => ({
+    ...task,
+    effectiveStatus:
+      task.status === "IN_PROGRESS" && awaitingTaskIds.has(task.id)
+        ? "AWAITING"
+        : task.status,
+  }));
+}
+
+async function dailyTrend({
+  teamId,
+  agentId,
+  from,
+  to,
+}: {
+  teamId: string;
+  agentId?: string;
+  from: string;
+  to: string;
+}) {
+  const rows = await Task.findAll({
+    attributes: [
+      [fn("strftime", "%Y-%m-%d", col("Task.created_at")), "day"],
+      "status",
+      [fn("COUNT", col("Task.id")), "count"],
+    ],
+    include: [
+      {
+        model: Agent,
+        attributes: [],
+        where: agentId ? { id: agentId, teamId } : { teamId },
+        required: true,
+      },
+    ],
+    where: { createdAt: { [Op.between]: [from, to] } },
+    group: ["day", "status"],
+    raw: true,
+  });
+
+  return rows as unknown as Array<{
+    day: string;
+    status: "IN_PROGRESS" | "COMPLETED" | "FAILED";
+    count: number;
+  }>;
 }
 
 async function addStep({
@@ -260,7 +335,7 @@ async function updateStep({
       result,
       status,
     },
-    { where: { id: stepId } },
+    { where: { id: stepId } }
   );
 
   if (status !== "IN_PROGRESS") {
@@ -296,10 +371,14 @@ async function listSteps({ taskId }: { taskId: string }) {
 
   return steps
     .map((step) => step.toJSON())
-    .map(({ knowledgeScore: _ks, ...step }) => ({
-      ...step,
-      result: step.result ? step.result.toString() : null,
-    }));
+    .map((step) => {
+      const rest = { ...step };
+      delete rest.knowledgeScore;
+      return {
+        ...rest,
+        result: rest.result ? rest.result.toString() : null,
+      };
+    });
 }
 
 export default {
@@ -309,6 +388,8 @@ export default {
   update,
   waitFor,
   list,
+  listWithEffectiveStatus,
+  dailyTrend,
   getStep,
   addStep,
   updateStep,

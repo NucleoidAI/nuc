@@ -21,7 +21,7 @@ router.post("/", async (req, res) => {
       blueprintId: Joi.string()
         .guid({ version: ["uuidv4"] })
         .optional(),
-    }),
+    })
   );
 
   const agent = await Agent.findByPk(agentId);
@@ -44,18 +44,43 @@ router.post("/", async (req, res) => {
   return res.status(200).json(taskInstance);
 });
 
-router.get("/", async (req, res) => {
+router.get("/stats/daily", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { agentId } = Joi.attempt(
+  const { agentId, from, to } = Joi.attempt(
     req.query,
     Joi.object({
       agentId: Joi.string()
         .guid({ version: ["uuidv4"] })
-        .required(),
-    }),
+        .optional(),
+      from: Joi.string().isoDate().required(),
+      to: Joi.string().isoDate().required(),
+    })
   );
 
-  const tasks = await task.list({ agentId, teamId });
+  const trend = await task.dailyTrend({ teamId, agentId, from, to });
+
+  return res.status(200).json(trend);
+});
+
+router.get("/", async (req, res) => {
+  const { projectId: teamId } = req.session;
+  const { agentId, from, to } = Joi.attempt(
+    req.query,
+    Joi.object({
+      agentId: Joi.string()
+        .guid({ version: ["uuidv4"] })
+        .optional(),
+      from: Joi.string().isoDate().optional(),
+      to: Joi.string().isoDate().optional(),
+    })
+  );
+
+  const tasks = await task.listWithEffectiveStatus({
+    teamId,
+    agentId,
+    from,
+    to,
+  });
 
   return res.status(200).json(tasks);
 });
@@ -120,10 +145,10 @@ router.patch("/:taskId/steps/:stepId", async (req, res) => {
     req.body,
     Joi.object({
       comment: Joi.string().max(100).allow(null, "").optional(),
-    }),
+    })
   );
 
-  await task.updateStepComment({ stepId, comment: comment ?? null });
+  await task.updateStepComment({ taskId, stepId, comment: comment ?? null });
   return res.status(200).end();
 });
 

@@ -1,6 +1,8 @@
+import Agent from "../models/Agent";
 import AgentKnowledge from "../models/AgentKnowledge";
 import Knowledge from "../models/Knowledge";
 import Supervising from "../models/Supervising";
+import { Op, col, fn } from "sequelize";
 import { event } from "@canmingir/link-express/event/client";
 
 async function create({
@@ -64,11 +66,11 @@ async function update({
 }) {
   await Supervising.update(
     { status, answer },
-    { where: { id: supervisingId } },
+    { where: { id: supervisingId } }
   );
 
   const updatedSupervising = await Supervising.findByPk(supervisingId);
-  const { sessionId, conversationId } = updatedSupervising;
+  const { sessionId } = updatedSupervising;
 
   if (type === "KNOWLEDGE") {
     const knowledgeInstance = await Knowledge.create({
@@ -86,8 +88,11 @@ async function update({
         teamId,
         blueprintId,
       });
-    } catch (err: any) {
-      if (err.name !== "SequelizeUniqueConstraintError") {
+    } catch (err: unknown) {
+      if (
+        !(err instanceof Error) ||
+        err.name !== "SequelizeUniqueConstraintError"
+      ) {
         throw err;
       }
     }
@@ -109,4 +114,36 @@ async function update({
   return updatedSupervising;
 }
 
-export default { create, update };
+async function dailyCounts({
+  teamId,
+  agentId,
+  from,
+  to,
+}: {
+  teamId: string;
+  agentId?: string;
+  from: string;
+  to: string;
+}) {
+  const rows = await Supervising.findAll({
+    attributes: [
+      [fn("strftime", "%Y-%m-%d", col("Supervising.created_at")), "day"],
+      [fn("COUNT", col("Supervising.id")), "count"],
+    ],
+    include: [
+      {
+        model: Agent,
+        attributes: [],
+        where: agentId ? { id: agentId, teamId } : { teamId },
+        required: true,
+      },
+    ],
+    where: { createdAt: { [Op.between]: [from, to] } },
+    group: ["day"],
+    raw: true,
+  });
+
+  return rows as unknown as Array<{ day: string; count: number }>;
+}
+
+export default { create, update, dailyCounts };

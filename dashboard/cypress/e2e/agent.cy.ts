@@ -363,11 +363,11 @@ describe("Agent page", () => {
     cy.getBySel("tab-supervisings").should("be.visible");
     cy.getBySel("tab-supervisings").click();
 
-    // cy.getBySel("supervise-card").should("be.visible");
+    cy.getBySel("supervise-card").should("be.visible");
 
-    // cy.getBySel("resolve-supervise-button").click();
+    cy.getBySel("resolve-supervise-button").click();
 
-    // cy.getBySel("blueprint-drawer-layout").should("be.visible");
+    cy.getBySel("blueprint-drawer-layout").should("be.visible");
   });
 
   it("selects a task and opens its task flow", function () {

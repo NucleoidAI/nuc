@@ -71,7 +71,7 @@ on:
       DOCKER_USERNAME:
         required: false
       HF_TOKEN:
-        required: false
+        required: true
 
 jobs:
   build-and-push:

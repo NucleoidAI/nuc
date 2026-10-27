@@ -62,3 +62,20 @@ export function fTime(date, format) {
     ? dayjs(date).format(format ?? formatStr.time)
     : "Invalid time value";
 }
+
+export function fElapsed(date) {
+  if (!date || !dayjs(date).isValid()) {
+    return "-";
+  }
+
+  const minutes = Math.max(0, dayjs().diff(dayjs(date), "minute"));
+
+  if (minutes < 60) {
+    return `${minutes}m`;
+  }
+
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+
+  return `${hours}h ${remainingMinutes}m`;
+}

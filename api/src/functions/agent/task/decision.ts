@@ -150,8 +150,8 @@ async function generateParameters({
 
   const { next_step } = (await generate({
     dataset: state.isBlocking
-      ? dataset.train.forceTaskDiamondBlocking
-      : dataset.train.forceTaskDiamondNonBlocking,
+      ? dataset.llm.forceTaskDiamondBlocking
+      : dataset.llm.forceTaskDiamondNonBlocking,
     context: parameterContext({ state, node }),
     content: {
       ...state.currentTask,

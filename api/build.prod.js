@@ -8,6 +8,24 @@ const fs = require("fs");
 
 const ROOT = __dirname;
 const OUT = path.join(ROOT, "dist");
+const DATASET_SRC = path.join(ROOT, "src", "dataset") + path.sep;
+
+const missingDatasets = new Set();
+
+function readDataset(name) {
+  const [group, ...rest] = name.split("-");
+  const file = path.join(DATASET_SRC, group, `${rest.join("-")}.json`);
+  if (fs.existsSync(file)) {
+    return JSON.parse(fs.readFileSync(file, "utf8")).data;
+  }
+  if (process.env.CI) {
+    throw new Error(
+      `Dataset "${name}" is missing at ${file}. Run "bun run dataset" in api with HF_TOKEN set.`,
+    );
+  }
+  missingDatasets.add(name);
+  return undefined;
+}
 
 const OBFUSCATOR_OPTIONS = {
   compact: true,
@@ -78,6 +96,15 @@ const jsonInlinePlugin = {
           return `const ${varName} = ${jsonContent};`;
         },
       );
+      if (args.path.startsWith(DATASET_SRC)) {
+        contents = contents.replace(
+          /\bload\(\s*["']([\w-]+)["']\s*,?\s*\)/g,
+          (match, name) => {
+            const data = readDataset(name);
+            return data === undefined ? match : JSON.stringify(data);
+          },
+        );
+      }
       return { contents, loader: "ts" };
     });
   },
@@ -138,6 +165,12 @@ async function main() {
       },
     },
   });
+
+  if (missingDatasets.size) {
+    console.warn(
+      `\n      ${missingDatasets.size} datasets not found locally; this build reads them through PLATFORM_ROUTER_URL.`,
+    );
+  }
 
   console.log("\n[3/4] Copying non-TS assets...");
   const srcDirsForAssets = ["src"].map((d) => path.join(ROOT, d));

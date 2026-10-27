@@ -5,7 +5,8 @@ import type {
   Questions,
 } from "@typesafe-ai/sdk";
 import { ask, choice, noul } from "../../lib/decision";
-import fewShots from "../../dataset/train/decision/index";
+import dataset from "../../dataset";
+import { type Source, isRef, select } from "@canmingir/link-express/dataset";
 import type { LLMMeta } from "@canmingir/link-express/llm";
 import { mkdirSync, writeFileSync } from "fs";
 import path from "path";
@@ -190,20 +191,23 @@ function collectCandidates({
     .slice(-200);
 }
 
-function withFewShots(list: object[]): { few_shots: JsonValue[] } | {} {
-  return list.length ? { few_shots: list as JsonValue[] } : {};
+function withFewShots(source: Source<object>): { few_shots: JsonValue[] } | {} {
+  if (isRef(source)) {
+    return { few_shots: source as unknown as JsonValue[] };
+  }
+
+  return source.length ? { few_shots: source as JsonValue[] } : {};
 }
 
 function parameterDiamondFewShots(action: string, name: string) {
-  return fewShots.parameterDiamond.filter(
-    (fewShot) => fewShot.action === action && fewShot.parameter.name === name,
-  );
+  return select(dataset.decision.parameterDiamond, {
+    action,
+    "parameter.name": name,
+  });
 }
 
 function inputsAvailableFewShots(action: string) {
-  return fewShots.inputsAvailable.filter(
-    (fewShot) => fewShot.action === action,
-  );
+  return select(dataset.decision.inputsAvailable, { action });
 }
 
 function topChoices(probabilities: Record<string, number>) {
@@ -296,7 +300,7 @@ async function actionDiamond({
             "`inherited_context_steps`",
             "`conversation`",
           ],
-          ...withFewShots(fewShots.actionDiamond),
+          ...withFewShots(dataset.decision.actionDiamond),
         },
         Object.fromEntries(
           options.map(({ action, label, description, inputSchema }) => [

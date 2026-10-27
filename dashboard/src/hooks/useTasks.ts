@@ -97,4 +97,50 @@ function useTasks(agentId: string, initialFetchState: DependencyArray = []) {
   };
 }
 
+export type EffectiveTaskStatus =
+  | "IN_PROGRESS"
+  | "COMPLETED"
+  | "FAILED"
+  | "AWAITING";
+
+export interface TeamTask {
+  id: string;
+  description: string;
+  result: string | null;
+  comment: string | null;
+  createdAt: string;
+  status: "IN_PROGRESS" | "COMPLETED" | "FAILED";
+  effectiveStatus: EffectiveTaskStatus;
+  agentId: string;
+  blueprintId: string | null;
+  sessionId: string | null;
+}
+
+export function useTeamTasks(range?: { from: string; to: string }) {
+  const { Api } = useApi();
+
+  const [taskStatus] = useEvent("TASK_STATUS_CHANGED", null);
+  const [taskCreated] = useEvent("TASK_CREATED", null);
+  const [teamSelected] = useEvent("PROJECT_SELECTED", { projectId: null });
+
+  const query = new URLSearchParams();
+  if (range) {
+    query.set("from", range.from);
+    query.set("to", range.to);
+  }
+  const queryString = query.toString();
+
+  const { data, loading, error, fetch } = Api(
+    () => http.get(`/tasks${queryString ? `?${queryString}` : ""}`),
+    [range?.from, range?.to, taskStatus, taskCreated, teamSelected]
+  );
+
+  return {
+    tasks: (data as TeamTask[]) ?? [],
+    loading,
+    error,
+    fetch,
+  };
+}
+
 export default useTasks;

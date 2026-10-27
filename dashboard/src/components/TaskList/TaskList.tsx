@@ -61,6 +61,7 @@ const TaskList = ({
       {tasks.map((task) => {
         const isSelected = selectedTask?.id === task.id;
         const isInProgress = task.status === "IN_PROGRESS";
+        const isFailed = task.status === "FAILED";
 
         return (
           <ListItem
@@ -138,13 +139,23 @@ const TaskList = ({
                   >
                     <Chip
                       size="small"
-                      label={isInProgress ? "In Progress" : "Completed"}
+                      label={
+                        isInProgress
+                          ? "In Progress"
+                          : isFailed
+                          ? "Failed"
+                          : "Completed"
+                      }
                       sx={{
                         mt: 0.5,
                         height: 20,
                         fontSize: 11,
                         fontWeight: 800,
-                        bgcolor: isInProgress ? "primary.main" : "success.main",
+                        bgcolor: isInProgress
+                          ? "primary.main"
+                          : isFailed
+                          ? "error.main"
+                          : "success.main",
                         color: "common.white",
                         "& .MuiChip-label": { px: 1 },
                         "&:hover": {

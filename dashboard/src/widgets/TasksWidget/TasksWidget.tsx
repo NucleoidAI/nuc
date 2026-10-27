@@ -41,7 +41,7 @@ function TasksWidget({
   const isLoading = useLoading(loading);
 
   const [selectedStatus, setSelectedStatus] = useState<
-    "All" | "COMPLETED" | "IN_PROGRESS"
+    "All" | "COMPLETED" | "IN_PROGRESS" | "FAILED"
   >("All");
   const [query, setQuery] = useState<string>("");
   const [detailsExpanded, setDetailsExpanded] = useState<boolean>(false);
@@ -147,7 +147,7 @@ function TasksWidget({
                 alignItems={{ xs: "stretch", sm: "center" }}
               >
                 <StatusToolbar
-                  statuses={["All", "COMPLETED", "IN_PROGRESS"]}
+                  statuses={["All", "COMPLETED", "IN_PROGRESS", "FAILED"]}
                   selectedStatus={selectedStatus}
                   handleChange={(e) => setSelectedStatus(e.target.value)}
                 />

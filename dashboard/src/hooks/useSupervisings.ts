@@ -149,6 +149,32 @@ function useSupervisings() {
     []
   );
 
+  const getTeamSupervisingByStatus = useCallback(
+    (status?: string, range?: { from: string; to: string }) => {
+      const params = new URLSearchParams();
+      if (status) params.set("status", status);
+      if (range) {
+        params.set("from", range.from);
+        params.set("to", range.to);
+      }
+      const query = params.toString();
+
+      const { data, loading, error, fetch } = Api(
+        () => http.get(`/supervisings${query ? `?${query}` : ""}`),
+        [status, range?.from, range?.to, supervisingAnswered]
+      );
+
+      return {
+        supervisings: data,
+        loading,
+        error,
+        fetch,
+      };
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
   return {
     createSupervising,
     updateSupervising,
@@ -158,6 +184,7 @@ function useSupervisings() {
     approveBlueprintChat,
     getAgentSupervisingByStatus,
     getAgentSupervising,
+    getTeamSupervisingByStatus,
   };
 }
 

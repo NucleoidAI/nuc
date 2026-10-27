@@ -3,23 +3,6 @@ import type { Questions } from "@typesafe-ai/sdk";
 import { logLLM } from "./llmLog";
 import type { DecisionAdapter, DecisionAnswers, DecisionParams } from "./types";
 
-function credentialFor(provider?: string): string | undefined {
-  const env = process.env;
-
-  switch (provider) {
-    case "typesafe":
-      return env.TYPESAFE_API_KEY;
-    case "openrouter":
-      return env.OPENROUTER_DECISION_API_KEY || env.OPENROUTER_API_KEY;
-    case "cloudflare":
-      return env.CLOUDFLARE_ACCOUNT_ID && env.CLOUDFLARE_AUTH_TOKEN
-        ? `${env.CLOUDFLARE_ACCOUNT_ID}:${env.CLOUDFLARE_AUTH_TOKEN}`
-        : undefined;
-    default:
-      return undefined;
-  }
-}
-
 type RouterResponse<Q extends Questions> = {
   answers?: DecisionAnswers<Q>;
   model?: string | null;
@@ -39,14 +22,13 @@ async function ask<const Q extends Questions>({
   meta,
 }: DecisionParams<Q>): Promise<DecisionAnswers<Q>> {
   const url = process.env.PLATFORM_ROUTER_URL;
+  const token = process.env.PLATFORM_ROUTER_TOKEN;
 
-  if (!url) {
+  if (!url || !token) {
     throw new Error(
-      "Dataset few-shots are served by the router. Set PLATFORM_ROUTER_URL.",
+      "Dataset few-shots are served by the router. Set PLATFORM_ROUTER_URL and PLATFORM_ROUTER_TOKEN.",
     );
   }
-
-  const key = credentialFor(provider);
 
   const startedAt = Date.now();
 
@@ -54,7 +36,7 @@ async function ask<const Q extends Questions>({
     const response = await fetch(`${url.replace(/\/+$/, "")}/decide`, {
       method: "POST",
       headers: {
-        ...(key && { Authorization: `Bearer ${key}` }),
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({

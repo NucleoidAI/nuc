@@ -1,14 +1,21 @@
-import { useChart } from "@canmingir/link/platform/components";
-import { Box, Card, Stack, Typography } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import Chart from "react-apexcharts";
 
-function AgentDonutCard({ breakdown }: { breakdown: {id: string;
-  name: string;
-  total: number;
-  completed: number;
-  failed: number;
-  inProgress: number;} }) {
+import { useChart } from "@canmingir/link/platform/components";
+import { useTheme } from "@mui/material/styles";
+import { Box, Card, Stack, Typography } from "@mui/material";
+
+function AgentDonutCard({
+  breakdown,
+}: {
+  breakdown: {
+    id: string;
+    name: string;
+    total: number;
+    completed: number;
+    failed: number;
+    inProgress: number;
+  };
+}) {
   const theme = useTheme();
 
   const { total, completed, failed, inProgress } = breakdown;

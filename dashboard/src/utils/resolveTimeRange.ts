@@ -14,7 +14,7 @@ const RANGE_TO_DAYS: Record<string, number> = {
 export function resolveTimeRange(
   rangeLabel: string,
   custom?: { from: string; to: string }
-){
+) {
   if (rangeLabel === "Custom" && custom?.from && custom?.to) {
     return {
       from: dayjs(custom.from).startOf("day").toISOString(),

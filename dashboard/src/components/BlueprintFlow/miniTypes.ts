@@ -13,6 +13,7 @@ export interface RawNode {
   next?: string[];
   true?: string[];
   false?: string[];
+  [key: string]: unknown;
 }
 
 export function definitionGraphToRawNodes(graph: DefinitionGraph): RawNode[] {

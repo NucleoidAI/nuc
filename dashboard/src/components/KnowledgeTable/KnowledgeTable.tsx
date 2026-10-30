@@ -1,7 +1,14 @@
+import { Label } from "@canmingir/link/platform/components";
 import CloseIcon from "@mui/icons-material/Close";
 import CodeBlock from "../CodeBlock/CodeBlock";
-import { Label } from "@canmingir/link/platform/components";
 
+import {
+  Iconify,
+  LowCodeEditor,
+  Scrollbar,
+  TableHeadCustom,
+  TableSelectedAction,
+} from "@canmingir/link/platform/components";
 import {
   Box,
   Card,
@@ -19,14 +26,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import {
-  Iconify,
-  LowCodeEditor,
-  Scrollbar,
-  TableHeadCustom,
-  TableSelectedAction,
-} from "@canmingir/link/platform/components";
-import React, { useState } from "react";
+import { useState } from "react";
 
 function KnowledgeTable({
   table,
@@ -37,8 +37,7 @@ function KnowledgeTable({
   blueprintsById = {},
   onBlueprintClick = undefined,
 }) {
-  const handleBlueprintChipClick = (event, blueprintId) => {
-    event.stopPropagation();
+  const handleBlueprintChipClick = (blueprintId) => {
     onBlueprintClick?.(blueprintId);
   };
   const getTableHead = (selectedType) => {
@@ -183,9 +182,7 @@ function KnowledgeTable({
         {renderContentCell(row)}
         {row.type !== "BLUEPRINT" && row.blueprintId && (
           <Label
-            onClick={(event) =>
-              handleBlueprintChipClick(event, row.blueprintId)
-            }
+            onClick={() => handleBlueprintChipClick(row.blueprintId)}
             sx={{ flexShrink: 0, cursor: "pointer" }}
           >
             {blueprintsById[row.blueprintId] || "Blueprint"}
@@ -212,7 +209,17 @@ function KnowledgeTable({
   return (
     <Card sx={{ borderRadius: 0.5 }}>
       <TableContainer sx={{ position: "relative", overflow: "unset" }}>
-        <TableSelectedAction dense={table.dense} />
+        <TableSelectedAction
+          dense={table.dense}
+          rowCount={knowledges.length}
+          numSelected={table.selected.length}
+          onSelectAllRows={(checked) =>
+            table.onSelectAllRows(
+              checked,
+              knowledges.map((k) => k.id)
+            )
+          }
+        />
         <Scrollbar>
           <Table>
             <TableHeadCustom
@@ -237,11 +244,7 @@ function KnowledgeTable({
                             row.type === "LOGIC"
                               ? () => handleOpenLogicEditor(row)
                               : row.type === "BLUEPRINT"
-                              ? (event) =>
-                                  handleBlueprintChipClick(
-                                    event,
-                                    row.blueprintId
-                                  )
+                              ? () => handleBlueprintChipClick(row.blueprintId)
                               : undefined
                           }
                           sx={
@@ -263,8 +266,8 @@ function KnowledgeTable({
                     {selectedType === "BLUEPRINT" && (
                       <>
                         <TableCell
-                          onClick={(event) =>
-                            handleBlueprintChipClick(event, row.blueprintId)
+                          onClick={() =>
+                            handleBlueprintChipClick(row.blueprintId)
                           }
                           sx={{ cursor: "pointer" }}
                         >

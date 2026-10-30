@@ -1,20 +1,34 @@
 import { DEFAULT_INTEGRATION } from "./APITab";
 
+export type SchemaNode = {
+  id?: string;
+  name?: string;
+  type: string;
+  properties?: SchemaNode[];
+};
+
+export type SchemaEditorHandle = { schemaOutput: () => SchemaNode };
+
+export type CustomType = { name: string; schema?: SchemaNode };
+
+export type Param = {
+  id: string;
+  name?: string;
+  type?: string;
+  in?: string;
+  required?: boolean;
+  description?: string;
+  [key: string]: unknown;
+};
+
 export type Endpoint = {
   path: string;
   method: string;
   summary?: string;
   description?: string;
-  params?: Array<{
-    id?: string;
-    in: string;
-    type: string;
-    required: boolean;
-    name?: string;
-    description?: string;
-  }>;
-  request?: { schema?: unknown[] };
-  response?: { schema?: unknown[] };
+  params?: Param[];
+  request?: { schema?: Partial<SchemaNode> };
+  response?: { schema?: Partial<SchemaNode> };
   action?: string;
 };
 

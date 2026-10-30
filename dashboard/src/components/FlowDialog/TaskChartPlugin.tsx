@@ -11,7 +11,8 @@ import {
 export const taskChartPlugin = {
   id: "taskChart",
 
-  style: ({ style }) => {
+  style: (args) => {
+    const { style } = args;
     const styleTokens = style || {};
 
     const isHorizontal = styleTokens.direction === "horizontal";
@@ -27,7 +28,8 @@ export const taskChartPlugin = {
     };
   },
 
-  node: ({ node, nodeStyle }) => {
+  node: (args) => {
+    const { node, nodeStyle } = args;
     const {
       showConnections,
       onNodeClick,

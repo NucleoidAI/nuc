@@ -1,10 +1,15 @@
-import LinkLoadingButton from "../LinkLoadingButton";
-import type { Resolver } from "react-hook-form";
-import type { SelectChangeEvent } from "@mui/material/Select";
-import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
-import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import type { SelectChangeEvent } from "@mui/material/Select";
+import type { FieldValues, Resolver, UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import LinkLoadingButton from "../LinkLoadingButton";
+import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
 
+import {
+  FormProvider,
+  Iconify, Label,
+  RHFTextField,
+} from "@canmingir/link/platform/components";
 import {
   Box,
   Dialog,
@@ -14,12 +19,7 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import {
-  FormProvider,
-  RHFTextField,
-} from "@canmingir/link/platform/components";
-import { Iconify, Label } from "@canmingir/link/platform/components";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import * as Yup from "yup";
 
@@ -419,7 +419,10 @@ function AddItemDialog({
             ))}
         </Select>
 
-        <FormProvider methods={methods} onSubmit={onSubmit}>
+        <FormProvider
+          methods={methods as unknown as UseFormReturn<FieldValues>}
+          onSubmit={onSubmit}
+        >
           {currentType !== "QA" && (
             <RHFTextField
               name="inputValue"

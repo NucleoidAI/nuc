@@ -1,24 +1,24 @@
-import { BlueprintFlowProps } from "./BlueprintFlow.types";
 import { Box } from "@mui/material";
-import DiffButton from "./DiffPanel/DiffButton";
-import JSONDiffPanel from "./DiffPanel/JSONDiffPanel";
-import type { NodeFields } from "./BlueprintFlowPlugin";
-import SuccessSnackbar from "./Validation/SuccessSnackbar";
-import ValidationButtons from "./Validation/ValidationButtons";
-import ValidationErrorView from "./Validation/ValidationErrorView";
-import { blueprintFlowPlugin } from "./BlueprintFlowPlugin";
-import { definitionGraphToRawNodes } from "./miniTypes";
 import useAllIntegrations from "../../hooks/useAllIntegrations";
 import {
   type ApiField,
   isApiNodeType,
   toInputProperty,
 } from "../ApiNode/apiNodes";
+import { BlueprintFlowProps } from "./BlueprintFlow.types";
+import type { NodeFields } from "./BlueprintFlowPlugin";
+import { blueprintFlowPlugin } from "./BlueprintFlowPlugin";
+import DiffButton from "./DiffPanel/DiffButton";
+import JSONDiffPanel from "./DiffPanel/JSONDiffPanel";
+import { definitionGraphToRawNodes } from "./miniTypes";
+import SuccessSnackbar from "./Validation/SuccessSnackbar";
+import ValidationButtons from "./Validation/ValidationButtons";
+import ValidationErrorView from "./Validation/ValidationErrorView";
 
 import { Flow, FlowMiniMap } from "@canmingir/link/platform/components";
 
-import NodeConnectionOverlay, { type DragState } from "./NodeConnectionOverlay";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import NodeConnectionOverlay, { type DragState } from "./NodeConnectionOverlay";
 
 type FlowHandle = {
   getZoom: () => number;
@@ -290,7 +290,7 @@ export default function BlueprintFlow({
         )}
 
       <Flow
-        ref={flowRef}
+        ref={flowRef as React.MutableRefObject<never>}
         data={enrichedGraphData}
         plugin={blueprintFlowPlugin}
         editable={!readOnly}

@@ -1,17 +1,12 @@
-import EditIcon from "@mui/icons-material/Edit";
-import React from "react";
-import { getAgentGradients } from "../../utils/gradient";
-import slackIcon from "@iconify-icons/logos/slack-icon";
-import whatsappIcon from "@iconify-icons/logos/whatsapp-icon";
-
-import { Box, Button, Chip, Stack, Typography } from "@mui/material";
-import { Fab, alpha } from "@mui/material";
 import {
   HeaderCard,
   Iconify,
   MediaAvatarCard,
   SideStripeCard,
 } from "@canmingir/link/platform/components";
+import EditIcon from "@mui/icons-material/Edit";
+import { Box, Button, Chip, Fab, Stack, Typography, alpha } from "@mui/material";
+import { getAgentGradients } from "../../utils/gradient";
 
 const threeDStyle = {
   transformStyle: "preserve-3d",
@@ -50,7 +45,8 @@ const threeDStyle = {
 export const teamChartPlugin = {
   id: "teamChart",
 
-  style: ({ style }) => {
+  style: (args) => {
+    const { style } = args;
     const nodeStyle = style || {};
 
     return {
@@ -69,7 +65,8 @@ export const teamChartPlugin = {
     };
   },
 
-  edge: ({ child }) => {
+  edge: (args) => {
+    const { child } = args;
     const isStackedChild =
       typeof child?.stackIndex === "number" && child.stackIndex > 0;
 
@@ -81,7 +78,8 @@ export const teamChartPlugin = {
     };
   },
 
-  node: ({ node, title, nodeStyle }) => {
+  node: (args) => {
+    const { node, title, nodeStyle } = args;
     const nodeSx = nodeStyle.nodeSx || {};
     const width = nodeStyle.nodeWidth ?? 350;
     const height = nodeStyle.nodeHeight ?? 125;
@@ -109,7 +107,7 @@ export const teamChartPlugin = {
               width: "100%",
             }}
           >
-            {[slackIcon, whatsappIcon].map((icon, index) => (
+            {["logos:slack-icon", "logos:whatsapp-icon"].map((icon, index) => (
               <Fab
                 key={index}
                 color="default"

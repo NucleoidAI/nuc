@@ -182,11 +182,13 @@ async function taskCount({
 async function supervisingCount({
   teamId,
   agentId,
+  status,
   from,
   to,
 }: {
   teamId: string;
   agentId?: string;
+  status?: "IN_PROGRESS" | "ANSWERED";
   from: string;
   to: string;
 }) {
@@ -199,7 +201,10 @@ async function supervisingCount({
         required: true,
       },
     ],
-    where: { createdAt: { [Op.between]: [from, to] } },
+    where: {
+      createdAt: { [Op.between]: [from, to] },
+      ...(status && { status }),
+    },
   });
 }
 

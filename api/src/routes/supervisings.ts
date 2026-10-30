@@ -91,6 +91,59 @@ router.get("/", async (req, res) => {
   res.status(200).json(supervisings);
 });
 
+const listQuerySchema = Joi.object({
+  status: Joi.string().valid("ANSWERED", "IN_PROGRESS").optional(),
+  from: Joi.string().isoDate().optional(),
+  to: Joi.string().isoDate().optional(),
+});
+
+router.get("/agents", async (req, res) => {
+  const teamId = req.session.projectId;
+  const { status, from, to } = Joi.attempt(req.query, listQuerySchema);
+
+  const supervisings = await supervising.listWithAgents({
+    teamId,
+    status,
+    from,
+    to,
+  });
+
+  return res.status(200).json(supervisings);
+});
+
+router.get("/agents/:agentId", async (req, res) => {
+  const teamId = req.session.projectId;
+  const { agentId } = Joi.attempt(
+    req.params,
+    Joi.object({
+      agentId: Joi.string()
+        .guid({ version: ["uuidv4"] })
+        .required(),
+    })
+  );
+  const { status, from, to } = Joi.attempt(req.query, listQuerySchema);
+
+  const agent = await Agent.findByPk(agentId);
+
+  if (!agent) {
+    return res.status(404).end();
+  }
+
+  if (agent.teamId !== teamId) {
+    return res.status(401).end();
+  }
+
+  const supervisings = await supervising.listWithAgents({
+    teamId,
+    agentId,
+    status,
+    from,
+    to,
+  });
+
+  return res.status(200).json(supervisings);
+});
+
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   const teamId = req.session.projectId;

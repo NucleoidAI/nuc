@@ -1,6 +1,8 @@
+import Agent from "../models/Agent";
 import AgentKnowledge from "../models/AgentKnowledge";
 import Knowledge from "../models/Knowledge";
 import Supervising from "../models/Supervising";
+import { Op } from "sequelize";
 import { event } from "@canmingir/link-express/event/client";
 
 async function create({
@@ -112,4 +114,51 @@ async function update({
   return updatedSupervising;
 }
 
-export default { create, update };
+async function listWithAgents({
+  teamId,
+  agentId,
+  status,
+  from,
+  to,
+}: {
+  teamId: string;
+  agentId?: string;
+  status?: "IN_PROGRESS" | "ANSWERED";
+  from?: string;
+  to?: string;
+}) {
+  const where: {
+    agentId?: string;
+    status?: "IN_PROGRESS" | "ANSWERED";
+    createdAt?: { [Op.between]: [string, string] };
+  } = {};
+
+  if (agentId) {
+    where.agentId = agentId;
+  }
+
+  if (status) {
+    where.status = status;
+  }
+
+  if (from && to) {
+    where.createdAt = { [Op.between]: [from, to] };
+  }
+
+  const supervisings = await Supervising.findAll({
+    include: [
+      {
+        model: Agent,
+        attributes: ["id", "name"],
+        where: { teamId },
+        required: true,
+      },
+    ],
+    where,
+    order: [["createdAt", "DESC"]],
+  });
+
+  return supervisings.map((supervising) => supervising.toJSON());
+}
+
+export default { create, update, listWithAgents };

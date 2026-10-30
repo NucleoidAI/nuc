@@ -95,11 +95,17 @@ router.get("/tasks/count", async (req, res) => {
 
 router.get("/supervisings/count", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { agentId, from, to } = Joi.attempt(req.query, rangeSchema);
+  const { agentId, status, from, to } = Joi.attempt(
+    req.query,
+    rangeSchema.keys({
+      status: Joi.string().valid("IN_PROGRESS", "ANSWERED").optional(),
+    })
+  );
 
   const count = await statisticsFn.supervisingCount({
     teamId,
     agentId,
+    status,
     from,
     to,
   });

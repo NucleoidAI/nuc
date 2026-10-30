@@ -2,6 +2,7 @@ import Joi from "joi";
 import Statistics from "../models/Statistics";
 import express from "express";
 import platform from "@canmingir/link-express";
+import schemas from "../schemas";
 import statisticsFn from "../functions/statistics";
 import { v4 as uuid } from "uuid";
 const router = express.Router();
@@ -34,22 +35,12 @@ router.get("/", async (req, res) => {
   res.status(200).json(statistics);
 });
 
-const rangeSchema = Joi.object({
-  agentId: Joi.string()
-    .guid({ version: ["uuidv4"] })
-    .optional(),
-  from: Joi.string().isoDate().required(),
-  to: Joi.string().isoDate().required(),
-});
-
-const periodSchema = Joi.object({
-  from: Joi.string().isoDate().required(),
-  to: Joi.string().isoDate().required(),
-});
-
 router.get("/tasks/daily", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { agentId, from, to } = Joi.attempt(req.query, rangeSchema);
+  const { agentId, from, to } = Joi.attempt(
+    req.query,
+    schemas.Statistics.range
+  );
 
   const trend = await statisticsFn.taskDailyTrend({
     teamId,
@@ -63,7 +54,10 @@ router.get("/tasks/daily", async (req, res) => {
 
 router.get("/supervisings/daily", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { agentId, from, to } = Joi.attempt(req.query, rangeSchema);
+  const { agentId, from, to } = Joi.attempt(
+    req.query,
+    schemas.Statistics.range
+  );
 
   const trend = await statisticsFn.supervisingDailyRate({
     teamId,
@@ -77,7 +71,7 @@ router.get("/supervisings/daily", async (req, res) => {
 
 router.get("/tasks/agents", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { from, to } = Joi.attempt(req.query, periodSchema);
+  const { from, to } = Joi.attempt(req.query, schemas.Statistics.period);
 
   const distribution = await statisticsFn.taskByAgent({ teamId, from, to });
 
@@ -86,7 +80,10 @@ router.get("/tasks/agents", async (req, res) => {
 
 router.get("/tasks/count", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { agentId, from, to } = Joi.attempt(req.query, rangeSchema);
+  const { agentId, from, to } = Joi.attempt(
+    req.query,
+    schemas.Statistics.range
+  );
 
   const count = await statisticsFn.taskCount({ teamId, agentId, from, to });
 
@@ -97,9 +94,7 @@ router.get("/supervisings/count", async (req, res) => {
   const { projectId: teamId } = req.session;
   const { agentId, status, from, to } = Joi.attempt(
     req.query,
-    rangeSchema.keys({
-      status: Joi.string().valid("IN_PROGRESS", "ANSWERED").optional(),
-    })
+    schemas.Statistics.supervisingCount
   );
 
   const count = await statisticsFn.supervisingCount({

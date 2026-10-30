@@ -46,14 +46,7 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
   const teamId = req.session.projectId;
-  const { status, from, to } = Joi.attempt(
-    req.query,
-    Joi.object({
-      status: Joi.string().valid("ANSWERED", "IN_PROGRESS").optional(),
-      from: Joi.string().isoDate().optional(),
-      to: Joi.string().isoDate().optional(),
-    })
-  );
+  const { status, from, to } = Joi.attempt(req.query, schemas.Supervising.list);
 
   const whereClause: WhereOptions = {};
   if (status) {
@@ -91,15 +84,9 @@ router.get("/", async (req, res) => {
   res.status(200).json(supervisings);
 });
 
-const listQuerySchema = Joi.object({
-  status: Joi.string().valid("ANSWERED", "IN_PROGRESS").optional(),
-  from: Joi.string().isoDate().optional(),
-  to: Joi.string().isoDate().optional(),
-});
-
 router.get("/agents", async (req, res) => {
   const teamId = req.session.projectId;
-  const { status, from, to } = Joi.attempt(req.query, listQuerySchema);
+  const { status, from, to } = Joi.attempt(req.query, schemas.Supervising.list);
 
   const supervisings = await supervising.listWithAgents({
     teamId,
@@ -113,15 +100,8 @@ router.get("/agents", async (req, res) => {
 
 router.get("/agents/:agentId", async (req, res) => {
   const teamId = req.session.projectId;
-  const { agentId } = Joi.attempt(
-    req.params,
-    Joi.object({
-      agentId: Joi.string()
-        .guid({ version: ["uuidv4"] })
-        .required(),
-    })
-  );
-  const { status, from, to } = Joi.attempt(req.query, listQuerySchema);
+  const { agentId } = Joi.attempt(req.params, schemas.Supervising.agentParams);
+  const { status, from, to } = Joi.attempt(req.query, schemas.Supervising.list);
 
   const agent = await Agent.findByPk(agentId);
 
@@ -148,7 +128,7 @@ router.get("/:id", async (req, res) => {
   const { id } = req.params;
   const teamId = req.session.projectId;
 
-  const validatedId = Joi.attempt(id, Joi.string().guid().required());
+  const validatedId = Joi.attempt(id, schemas.Supervising.id);
 
   const supervising = await Supervising.findOne({
     where: { id: validatedId },

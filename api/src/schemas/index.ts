@@ -8,6 +8,7 @@ import MCPServer from "./MCPServer";
 import Message from "./Message";
 import Project from "./Project";
 import Session from "./Session";
+import Statistics from "./Statistics";
 import StepScore from "./StepScore";
 import Supervising from "./Supervising";
 import Team from "./Team";
@@ -26,4 +27,5 @@ export default {
   MCPServer,
   Channel,
   StepScore,
+  Statistics,
 };

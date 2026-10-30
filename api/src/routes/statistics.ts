@@ -42,6 +42,11 @@ const rangeSchema = Joi.object({
   to: Joi.string().isoDate().required(),
 });
 
+const periodSchema = Joi.object({
+  from: Joi.string().isoDate().required(),
+  to: Joi.string().isoDate().required(),
+});
+
 router.get("/tasks/daily", async (req, res) => {
   const { projectId: teamId } = req.session;
   const { agentId, from, to } = Joi.attempt(req.query, rangeSchema);
@@ -72,17 +77,34 @@ router.get("/supervisings/daily", async (req, res) => {
 
 router.get("/tasks/agents", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { from, to } = Joi.attempt(
-    req.query,
-    Joi.object({
-      from: Joi.string().isoDate().required(),
-      to: Joi.string().isoDate().required(),
-    })
-  );
+  const { from, to } = Joi.attempt(req.query, periodSchema);
 
   const distribution = await statisticsFn.taskByAgent({ teamId, from, to });
 
   return res.status(200).json(distribution);
+});
+
+router.get("/tasks/count", async (req, res) => {
+  const { projectId: teamId } = req.session;
+  const { agentId, from, to } = Joi.attempt(req.query, rangeSchema);
+
+  const count = await statisticsFn.taskCount({ teamId, agentId, from, to });
+
+  return res.status(200).json({ count });
+});
+
+router.get("/supervisings/count", async (req, res) => {
+  const { projectId: teamId } = req.session;
+  const { agentId, from, to } = Joi.attempt(req.query, rangeSchema);
+
+  const count = await statisticsFn.supervisingCount({
+    teamId,
+    agentId,
+    from,
+    to,
+  });
+
+  return res.status(200).json({ count });
 });
 
 export default router;

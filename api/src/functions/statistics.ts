@@ -155,9 +155,59 @@ async function taskByAgent({
   };
 }
 
+async function taskCount({
+  teamId,
+  agentId,
+  from,
+  to,
+}: {
+  teamId: string;
+  agentId?: string;
+  from: string;
+  to: string;
+}) {
+  return Task.count({
+    include: [
+      {
+        model: Agent,
+        attributes: [],
+        where: agentId ? { id: agentId, teamId } : { teamId },
+        required: true,
+      },
+    ],
+    where: { createdAt: { [Op.between]: [from, to] } },
+  });
+}
+
+async function supervisingCount({
+  teamId,
+  agentId,
+  from,
+  to,
+}: {
+  teamId: string;
+  agentId?: string;
+  from: string;
+  to: string;
+}) {
+  return Supervising.count({
+    include: [
+      {
+        model: Agent,
+        attributes: [],
+        where: agentId ? { id: agentId, teamId } : { teamId },
+        required: true,
+      },
+    ],
+    where: { createdAt: { [Op.between]: [from, to] } },
+  });
+}
+
 export default {
   taskDailyTrend,
   supervisingDailyCounts,
   supervisingDailyRate,
   taskByAgent,
+  taskCount,
+  supervisingCount,
 };

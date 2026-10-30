@@ -111,4 +111,53 @@ async function supervisingDailyRate({
     });
 }
 
-export default { taskDailyTrend, supervisingDailyCounts, supervisingDailyRate };
+async function taskByAgent({
+  teamId,
+  from,
+  to,
+}: {
+  teamId: string;
+  from: string;
+  to: string;
+}) {
+  const agents = await Agent.findAll({
+    where: { teamId },
+    attributes: ["id", "name"],
+    order: [["name", "ASC"]],
+    raw: true,
+  });
+
+  const rows = await Task.findAll({
+    attributes: ["agentId", [fn("COUNT", col("id")), "count"]],
+    where: {
+      agentId: { [Op.in]: agents.map((agent) => agent.id) },
+      createdAt: { [Op.between]: [from, to] },
+    },
+    group: ["agent_id"],
+    raw: true,
+  });
+
+  const countByAgent = new Map(
+    (rows as unknown as Array<{ agentId: string; count: number }>).map(
+      (row) => [row.agentId, Number(row.count)]
+    )
+  );
+
+  const perAgent = agents.map((agent) => ({
+    agentId: agent.id,
+    name: agent.name,
+    count: countByAgent.get(agent.id) ?? 0,
+  }));
+
+  return {
+    total: perAgent.reduce((sum, agent) => sum + agent.count, 0),
+    agents: perAgent,
+  };
+}
+
+export default {
+  taskDailyTrend,
+  supervisingDailyCounts,
+  supervisingDailyRate,
+  taskByAgent,
+};

@@ -70,4 +70,19 @@ router.get("/supervisings/daily", async (req, res) => {
   return res.status(200).json(trend);
 });
 
+router.get("/tasks/agents", async (req, res) => {
+  const { projectId: teamId } = req.session;
+  const { from, to } = Joi.attempt(
+    req.query,
+    Joi.object({
+      from: Joi.string().isoDate().required(),
+      to: Joi.string().isoDate().required(),
+    })
+  );
+
+  const distribution = await statisticsFn.taskByAgent({ teamId, from, to });
+
+  return res.status(200).json(distribution);
+});
+
 export default router;

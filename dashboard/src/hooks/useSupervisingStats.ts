@@ -18,7 +18,7 @@ function useSupervisingStats() {
     if (params.agentId) query.set("agentId", params.agentId);
 
     const { data, loading, error, fetch } = Api(
-      () => http.get(`/supervisings/stats/daily?${query.toString()}`),
+      () => http.get(`/statistics/supervisings/daily?${query.toString()}`),
       [params.agentId, params.from, params.to]
     );
 

@@ -2,7 +2,7 @@ import Agent from "../models/Agent";
 import Step from "../models/Step";
 import Supervising from "../models/Supervising";
 import Task from "../models/Task";
-import { Op, col, fn } from "sequelize";
+import { Op } from "sequelize";
 import { event } from "@canmingir/link-express/event/client";
 
 async function create({
@@ -231,43 +231,6 @@ async function listWithEffectiveStatus({
   }));
 }
 
-async function dailyTrend({
-  teamId,
-  agentId,
-  from,
-  to,
-}: {
-  teamId: string;
-  agentId?: string;
-  from: string;
-  to: string;
-}) {
-  const rows = await Task.findAll({
-    attributes: [
-      [fn("strftime", "%Y-%m-%d", col("Task.created_at")), "day"],
-      "status",
-      [fn("COUNT", col("Task.id")), "count"],
-    ],
-    include: [
-      {
-        model: Agent,
-        attributes: [],
-        where: agentId ? { id: agentId, teamId } : { teamId },
-        required: true,
-      },
-    ],
-    where: { createdAt: { [Op.between]: [from, to] } },
-    group: ["day", "status"],
-    raw: true,
-  });
-
-  return rows as unknown as Array<{
-    day: string;
-    status: "IN_PROGRESS" | "COMPLETED" | "FAILED";
-    count: number;
-  }>;
-}
-
 async function addStep({
   taskId,
   action,
@@ -389,7 +352,6 @@ export default {
   waitFor,
   list,
   listWithEffectiveStatus,
-  dailyTrend,
   getStep,
   addStep,
   updateStep,

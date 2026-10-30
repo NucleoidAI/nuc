@@ -44,24 +44,6 @@ router.post("/", async (req, res) => {
   return res.status(200).json(taskInstance);
 });
 
-router.get("/stats/daily", async (req, res) => {
-  const { projectId: teamId } = req.session;
-  const { agentId, from, to } = Joi.attempt(
-    req.query,
-    Joi.object({
-      agentId: Joi.string()
-        .guid({ version: ["uuidv4"] })
-        .optional(),
-      from: Joi.string().isoDate().required(),
-      to: Joi.string().isoDate().required(),
-    })
-  );
-
-  const trend = await task.dailyTrend({ teamId, agentId, from, to });
-
-  return res.status(200).json(trend);
-});
-
 router.get("/", async (req, res) => {
   const { projectId: teamId } = req.session;
   const { agentId, from, to } = Joi.attempt(

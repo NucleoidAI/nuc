@@ -19,7 +19,7 @@ function useTaskStats() {
     if (params.agentId) query.set("agentId", params.agentId);
 
     const { data, loading, error, fetch } = Api(
-      () => http.get(`/tasks/stats/daily?${query.toString()}`),
+      () => http.get(`/statistics/tasks/daily?${query.toString()}`),
       [params.agentId, params.from, params.to]
     );
 

@@ -1,6 +1,8 @@
+import Joi from "joi";
 import Statistics from "../models/Statistics";
 import express from "express";
 import platform from "@canmingir/link-express";
+import statisticsFn from "../functions/statistics";
 import { v4 as uuid } from "uuid";
 const router = express.Router();
 
@@ -30,6 +32,42 @@ router.get("/", async (req, res) => {
   }
 
   res.status(200).json(statistics);
+});
+
+const rangeSchema = Joi.object({
+  agentId: Joi.string()
+    .guid({ version: ["uuidv4"] })
+    .optional(),
+  from: Joi.string().isoDate().required(),
+  to: Joi.string().isoDate().required(),
+});
+
+router.get("/tasks/daily", async (req, res) => {
+  const { projectId: teamId } = req.session;
+  const { agentId, from, to } = Joi.attempt(req.query, rangeSchema);
+
+  const trend = await statisticsFn.taskDailyTrend({
+    teamId,
+    agentId,
+    from,
+    to,
+  });
+
+  return res.status(200).json(trend);
+});
+
+router.get("/supervisings/daily", async (req, res) => {
+  const { projectId: teamId } = req.session;
+  const { agentId, from, to } = Joi.attempt(req.query, rangeSchema);
+
+  const trend = await statisticsFn.supervisingDailyRate({
+    teamId,
+    agentId,
+    from,
+    to,
+  });
+
+  return res.status(200).json(trend);
 });
 
 export default router;

@@ -3,56 +3,12 @@ import Conversation from "../models/Conversation";
 import Joi from "joi";
 import Supervising from "../models/Supervising";
 import express from "express";
-import task from "../functions/task";
 import { Op, WhereOptions } from "sequelize";
 import { event } from "@canmingir/link-express/event/client";
 import schemas from "../schemas";
 import supervising from "../functions/supervising";
 
 const router = express.Router();
-
-router.get("/stats/daily", async (req, res) => {
-  const teamId = req.session.projectId;
-  const { agentId, from, to } = Joi.attempt(
-    req.query,
-    Joi.object({
-      agentId: Joi.string()
-        .guid({ version: ["uuidv4"] })
-        .optional(),
-      from: Joi.string().isoDate().required(),
-      to: Joi.string().isoDate().required(),
-    })
-  );
-
-  const [supervisingCounts, taskCounts] = await Promise.all([
-    supervising.dailyCounts({ teamId, agentId, from, to }),
-    task.dailyTrend({ teamId, agentId, from, to }),
-  ]);
-
-  const tasksByDay = new Map<string, number>();
-  for (const row of taskCounts) {
-    tasksByDay.set(row.day, (tasksByDay.get(row.day) ?? 0) + row.count);
-  }
-
-  const supervisingsByDay = new Map(
-    supervisingCounts.map((row) => [row.day, row.count])
-  );
-
-  const days = new Set([...tasksByDay.keys(), ...supervisingsByDay.keys()]);
-
-  const trend = Array.from(days)
-    .sort()
-    .map((day) => {
-      const taskCount = tasksByDay.get(day) ?? 0;
-      const supervisingCount = supervisingsByDay.get(day) ?? 0;
-      return {
-        day,
-        rate: taskCount ? (supervisingCount / taskCount) * 100 : 0,
-      };
-    });
-
-  res.status(200).json(trend);
-});
 
 router.post("/", async (req, res) => {
   const teamId = req.session.projectId;

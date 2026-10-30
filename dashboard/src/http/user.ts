@@ -1,6 +1,6 @@
-import { storage } from "@nucleoidjs/webstorage";
 import axios from "axios";
 import config from "../../config";
+import { storage } from "@nucleoidjs/webstorage";
 
 declare module "axios" {
   interface AxiosInstance {

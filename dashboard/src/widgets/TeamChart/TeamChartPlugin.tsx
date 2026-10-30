@@ -1,12 +1,21 @@
+import EditIcon from "@mui/icons-material/Edit";
+import { getAgentGradients } from "../../utils/gradient";
+
+import {
+  Box,
+  Button,
+  Chip,
+  Fab,
+  Stack,
+  Typography,
+  alpha,
+} from "@mui/material";
 import {
   HeaderCard,
   Iconify,
   MediaAvatarCard,
   SideStripeCard,
 } from "@canmingir/link/platform/components";
-import EditIcon from "@mui/icons-material/Edit";
-import { Box, Button, Chip, Fab, Stack, Typography, alpha } from "@mui/material";
-import { getAgentGradients } from "../../utils/gradient";
 
 const threeDStyle = {
   transformStyle: "preserve-3d",

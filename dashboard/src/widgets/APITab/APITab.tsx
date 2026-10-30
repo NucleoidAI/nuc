@@ -9,16 +9,16 @@ import useBlueprint from "../../hooks/useBlueprint";
 import { v4 as uuidv4 } from "uuid";
 
 import {
-  DefinitionGraph,
-  buildDefinitionGraph,
-} from "../../components/BlueprintFlow/helper";
-import {
   CustomType,
   Endpoint,
   NodeEditorState,
   Param,
   SchemaEditorHandle,
 } from "./types";
+import {
+  DefinitionGraph,
+  buildDefinitionGraph,
+} from "../../components/BlueprintFlow/helper";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { publish, useEvent } from "@nucleoidai/react-event";
 

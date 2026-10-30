@@ -1,15 +1,9 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import type { SelectChangeEvent } from "@mui/material/Select";
-import type { FieldValues, Resolver, UseFormReturn } from "react-hook-form";
-import { useForm } from "react-hook-form";
 import LinkLoadingButton from "../LinkLoadingButton";
+import type { SelectChangeEvent } from "@mui/material/Select";
 import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
-import {
-  FormProvider,
-  Iconify, Label,
-  RHFTextField,
-} from "@canmingir/link/platform/components";
 import {
   Box,
   Dialog,
@@ -19,6 +13,13 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
+import type { FieldValues, Resolver, UseFormReturn } from "react-hook-form";
+import {
+  FormProvider,
+  Iconify,
+  Label,
+  RHFTextField,
+} from "@canmingir/link/platform/components";
 import { useEffect, useState } from "react";
 
 import * as Yup from "yup";

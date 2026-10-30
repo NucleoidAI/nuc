@@ -1,4 +1,3 @@
-import { CustomType, Endpoint, Param, SchemaEditorHandle } from "../types";
 import React from "react";
 import { publish } from "@nucleoidai/react-event";
 
@@ -11,6 +10,7 @@ import {
   APITypes,
 } from "@canmingir/link/platform/components";
 import { Box, Divider } from "@mui/material";
+import { CustomType, Endpoint, Param, SchemaEditorHandle } from "../types";
 
 type DialogState = {
   type: "method" | "resource" | null;

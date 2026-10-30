@@ -1,14 +1,8 @@
-import { Label } from "@canmingir/link/platform/components";
 import CloseIcon from "@mui/icons-material/Close";
 import CodeBlock from "../CodeBlock/CodeBlock";
+import { Label } from "@canmingir/link/platform/components";
+import { useState } from "react";
 
-import {
-  Iconify,
-  LowCodeEditor,
-  Scrollbar,
-  TableHeadCustom,
-  TableSelectedAction,
-} from "@canmingir/link/platform/components";
 import {
   Box,
   Card,
@@ -26,7 +20,13 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import {
+  Iconify,
+  LowCodeEditor,
+  Scrollbar,
+  TableHeadCustom,
+  TableSelectedAction,
+} from "@canmingir/link/platform/components";
 
 function KnowledgeTable({
   table,

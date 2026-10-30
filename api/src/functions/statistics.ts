@@ -179,6 +179,46 @@ async function taskCount({
   });
 }
 
+async function taskStatusCounts({
+  teamId,
+  agentId,
+  from,
+  to,
+}: {
+  teamId: string;
+  agentId?: string;
+  from: string;
+  to: string;
+}) {
+  const rows = await Task.findAll({
+    attributes: ["status", [fn("COUNT", col("Task.id")), "count"]],
+    include: [
+      {
+        model: Agent,
+        attributes: [],
+        where: agentId ? { id: agentId, teamId } : { teamId },
+        required: true,
+      },
+    ],
+    where: { createdAt: { [Op.between]: [from, to] } },
+    group: ["status"],
+    raw: true,
+  });
+
+  const counts = { IN_PROGRESS: 0, COMPLETED: 0, FAILED: 0 };
+  for (const row of rows as unknown as Array<{
+    status: keyof typeof counts;
+    count: number;
+  }>) {
+    counts[row.status] = Number(row.count);
+  }
+
+  return {
+    total: counts.IN_PROGRESS + counts.COMPLETED + counts.FAILED,
+    ...counts,
+  };
+}
+
 async function supervisingCount({
   teamId,
   agentId,
@@ -213,6 +253,7 @@ export default {
   supervisingDailyCounts,
   supervisingDailyRate,
   taskByAgent,
+  taskStatusCounts,
   taskCount,
   supervisingCount,
 };

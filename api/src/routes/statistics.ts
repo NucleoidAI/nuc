@@ -90,6 +90,23 @@ router.get("/tasks/count", async (req, res) => {
   return res.status(200).json({ count });
 });
 
+router.get("/tasks/status", async (req, res) => {
+  const { projectId: teamId } = req.session;
+  const { agentId, from, to } = Joi.attempt(
+    req.query,
+    schemas.Statistics.range
+  );
+
+  const counts = await statisticsFn.taskStatusCounts({
+    teamId,
+    agentId,
+    from,
+    to,
+  });
+
+  return res.status(200).json(counts);
+});
+
 router.get("/supervisings/count", async (req, res) => {
   const { projectId: teamId } = req.session;
   const { agentId, status, from, to } = Joi.attempt(

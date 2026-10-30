@@ -1,8 +1,9 @@
 import Agent from "../models/Agent";
+import LLMLog from "../models/LLMLog";
 import Step from "../models/Step";
 import Supervising from "../models/Supervising";
 import Task from "../models/Task";
-import { Op } from "sequelize";
+import { Op, col, fn } from "sequelize";
 import { event } from "@canmingir/link-express/event/client";
 
 async function create({
@@ -197,6 +198,92 @@ async function list({
   return taskInstances.map((task) => task.toJSON());
 }
 
+async function listWithAgents({
+  teamId,
+  agentId,
+  status,
+  from,
+  to,
+}: {
+  teamId: string;
+  agentId?: string;
+  status?: "IN_PROGRESS" | "COMPLETED" | "FAILED";
+  from?: string;
+  to?: string;
+}) {
+  const where: {
+    agentId?: string;
+    status?: "IN_PROGRESS" | "COMPLETED" | "FAILED";
+    createdAt?: { [Op.between]: [string, string] };
+  } = {};
+
+  if (agentId) {
+    where.agentId = agentId;
+  }
+
+  if (status) {
+    where.status = status;
+  }
+
+  if (from && to) {
+    where.createdAt = { [Op.between]: [from, to] };
+  }
+
+  const taskInstances = await Task.findAll({
+    attributes: ["id", "description", "status", "comment", "createdAt"],
+    include: [
+      {
+        model: Agent,
+        attributes: ["id", "name"],
+        where: { teamId },
+        required: true,
+      },
+    ],
+    where,
+    order: [["createdAt", "DESC"]],
+  });
+
+  const taskIds = taskInstances.map((task) => task.id);
+
+  const usageRows = taskIds.length
+    ? await LLMLog.findAll({
+        attributes: [
+          "taskId",
+          [fn("SUM", col("duration_ms")), "durationMs"],
+          [fn("SUM", col("input_tokens")), "inputTokens"],
+          [fn("SUM", col("output_tokens")), "outputTokens"],
+          [fn("SUM", col("total_tokens")), "totalTokens"],
+        ],
+        where: { taskId: { [Op.in]: taskIds } },
+        group: ["task_id"],
+        raw: true,
+      })
+    : [];
+
+  const usageByTask = new Map(
+    (
+      usageRows as unknown as Array<{
+        taskId: string;
+        durationMs: number | null;
+        inputTokens: number | null;
+        outputTokens: number | null;
+        totalTokens: number | null;
+      }>
+    ).map((row) => [row.taskId, row])
+  );
+
+  return taskInstances.map((task) => {
+    const usage = usageByTask.get(task.id);
+    return {
+      ...task.toJSON(),
+      durationMs: Number(usage?.durationMs ?? 0),
+      inputTokens: Number(usage?.inputTokens ?? 0),
+      outputTokens: Number(usage?.outputTokens ?? 0),
+      totalTokens: Number(usage?.totalTokens ?? 0),
+    };
+  });
+}
+
 async function listWithEffectiveStatus({
   teamId,
   agentId,
@@ -351,6 +438,7 @@ export default {
   update,
   waitFor,
   list,
+  listWithAgents,
   listWithEffectiveStatus,
   getStep,
   addStep,

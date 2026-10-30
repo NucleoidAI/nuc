@@ -2,6 +2,7 @@ import Agent from "../models/Agent";
 import Joi from "joi";
 import Task from "../models/Task";
 import express from "express";
+import schemas from "../schemas";
 import task from "../functions/task";
 
 const router = express.Router();
@@ -60,6 +61,41 @@ router.get("/", async (req, res) => {
   const tasks = await task.listWithEffectiveStatus({
     teamId,
     agentId,
+    from,
+    to,
+  });
+
+  return res.status(200).json(tasks);
+});
+
+router.get("/agents", async (req, res) => {
+  const { projectId: teamId } = req.session;
+  const { status, from, to } = Joi.attempt(req.query, schemas.Task.list);
+
+  const tasks = await task.listWithAgents({ teamId, status, from, to });
+
+  return res.status(200).json(tasks);
+});
+
+router.get("/agents/:agentId", async (req, res) => {
+  const { projectId: teamId } = req.session;
+  const { agentId } = Joi.attempt(req.params, schemas.Task.agentParams);
+  const { status, from, to } = Joi.attempt(req.query, schemas.Task.list);
+
+  const agent = await Agent.findByPk(agentId);
+
+  if (!agent) {
+    return res.status(404).end();
+  }
+
+  if (agent.teamId !== teamId) {
+    return res.status(401).end();
+  }
+
+  const tasks = await task.listWithAgents({
+    teamId,
+    agentId,
+    status,
     from,
     to,
   });

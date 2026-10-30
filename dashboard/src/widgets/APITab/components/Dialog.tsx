@@ -1,4 +1,3 @@
-import { Endpoint } from "../types";
 import React from "react";
 import { publish } from "@nucleoidai/react-event";
 
@@ -11,6 +10,7 @@ import {
   APITypes,
 } from "@canmingir/link/platform/components";
 import { Box, Divider } from "@mui/material";
+import { CustomType, Endpoint, Param, SchemaEditorHandle } from "../types";
 
 type DialogState = {
   type: "method" | "resource" | null;
@@ -30,19 +30,15 @@ type DialogProps = {
   basePath: string;
   methodRef: React.MutableRefObject<string>;
   pathRef: React.MutableRefObject<string>;
-  paramsRef: React.MutableRefObject<unknown>;
-  requestSchemaRef: React.MutableRefObject<
-    { schemaOutput?: () => unknown } | undefined
-  >;
-  responseSchemaRef: React.MutableRefObject<
-    { schemaOutput?: () => unknown } | undefined
-  >;
-  typesRef: React.MutableRefObject<Record<string, unknown>>;
-  types: Array<{ name: string; schema: unknown; isTypeScript?: boolean }>;
+  paramsRef: React.MutableRefObject<Param[]>;
+  requestSchemaRef: React.Ref<SchemaEditorHandle>;
+  responseSchemaRef: React.Ref<SchemaEditorHandle>;
+  typesRef: React.Ref<SchemaEditorHandle>;
+  types: CustomType[];
   selectedEndpoint: Endpoint | undefined;
   dialogKey: number;
   allowedMethods: string[];
-  addParams: React.MutableRefObject<unknown>;
+  addParams: React.MutableRefObject<(() => void) | null>;
 };
 
 const Dialog = ({
@@ -122,8 +118,8 @@ const Dialog = ({
               path: basePath,
               method: methodRef.current,
               params: paramsRef.current,
-              request: selectedEndpoint?.request || { schema: [] },
-              response: selectedEndpoint?.response || { schema: [] },
+              request: selectedEndpoint?.request || {},
+              response: selectedEndpoint?.response || {},
             }}
             requestSchemaRef={requestSchemaRef}
             responseSchemaRef={responseSchemaRef}

@@ -52,7 +52,7 @@ const TaskTree = ({ open, setOpen, treeData }) => {
 
   const flowStyle = useMemo(
     () => ({
-      direction: "horizontal",
+      direction: "horizontal" as const,
       showConnections: true,
       onNodeClick: setSelectedStep,
       boundInputsByNode,

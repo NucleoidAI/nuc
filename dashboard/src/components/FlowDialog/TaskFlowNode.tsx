@@ -117,7 +117,7 @@ const TaskFlowNode = ({
                     onMouseLeave: () => onFieldHover?.(null),
                   }
                 : {}),
-            },
+            } as Record<string, string>,
           }))}
           outputs={outputs.map((field) => ({
             name: field.name,
@@ -130,7 +130,7 @@ const TaskFlowNode = ({
                     onMouseLeave: () => onFieldHover?.(null),
                   }
                 : {}),
-            },
+            } as Record<string, string>,
           }))}
           sx={{
             top: 203,
@@ -141,6 +141,7 @@ const TaskFlowNode = ({
 
       <InfoNode
         node={{
+          id: nodeId,
           label: action,
           action: rawAction || action,
           description: description || "No details recorded for this step.",

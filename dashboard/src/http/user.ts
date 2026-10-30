@@ -44,14 +44,11 @@ instance.getUserDetails = async () => {
   }
 
   const { project } = config;
-  const { github, google } = project;
+  const { github } = project;
 
   let userUrl;
   let provider;
-  if (google) {
-    userUrl = google.userUrl;
-    provider = "google";
-  } else if (github) {
+  if (github) {
     userUrl = github.userUrl;
     provider = "github";
   }

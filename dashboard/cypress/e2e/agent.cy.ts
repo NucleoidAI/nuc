@@ -51,7 +51,7 @@ describe("Agent page", () => {
       fixture: "agent-page/knowledges/knowledges.empty.json",
     });
 
-    cy.knowledgeBaseIntercept();
+    cy.knowledgeBaseView();
 
     cy.getBySel("add-knowledge-button").click();
 
@@ -83,7 +83,7 @@ describe("Agent page", () => {
       fixture: "agent-page/knowledges/knowledges.empty.json",
     });
 
-    cy.knowledgeBaseIntercept();
+    cy.knowledgeBaseView();
 
     cy.getBySel("add-knowledge-button").click();
 
@@ -115,7 +115,7 @@ describe("Agent page", () => {
       fixture: "agent-page/knowledges/knowledges.empty.json",
     });
 
-    cy.knowledgeBaseIntercept();
+    cy.knowledgeBaseView();
 
     cy.getBySel("add-knowledge-button").click();
 
@@ -149,7 +149,7 @@ describe("Agent page", () => {
       fixture: "agent-page/knowledges/knowledges.empty.json",
     });
 
-    cy.knowledgeBaseIntercept();
+    cy.knowledgeBaseView();
 
     cy.getBySel("add-knowledge-button").click();
 
@@ -183,7 +183,7 @@ describe("Agent page", () => {
       fixture: "agent-page/knowledges/knowledges.json",
     });
 
-    cy.knowledgeBaseIntercept();
+    cy.knowledgeBaseView();
 
     cy.getBySel("type-select").click();
 
@@ -216,7 +216,7 @@ describe("Agent page", () => {
       fixture: "agent-page/knowledges/knowledges.json",
     });
 
-    cy.knowledgeBaseIntercept();
+    cy.knowledgeBaseView();
 
     cy.getBySel("type-select").click();
 
@@ -249,7 +249,7 @@ describe("Agent page", () => {
       fixture: "agent-page/knowledges/knowledges.json",
     });
 
-    cy.knowledgeBaseIntercept();
+    cy.knowledgeBaseView();
 
     cy.getBySel("type-select").click();
 
@@ -282,7 +282,7 @@ describe("Agent page", () => {
       fixture: "agent-page/knowledges/knowledges.json",
     });
 
-    cy.knowledgeBaseIntercept();
+    cy.knowledgeBaseView();
 
     cy.getBySel("type-select").click();
 

@@ -46,7 +46,7 @@ declare namespace Cypress {
 
     getBySel(selector: string): Chainable<JQuery<HTMLElement>>;
 
-    knowledgeBaseIntercept(): Chainable<void>;
+    knowledgeBaseView(): Chainable<void>;
   }
 }
 
@@ -231,7 +231,7 @@ Cypress.Commands.add("useKeyboard", (key) => {
   }
 });
 
-Cypress.Commands.add("knowledgeBaseIntercept", () => {
+Cypress.Commands.add("knowledgeBaseView", () => {
   cy.visit(`/agents`);
   cy.getBySel("agent-card-more-vert").first().click();
   cy.getBySel("agent-card-menu-view").click();

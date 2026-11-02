@@ -137,4 +137,13 @@ router.get("/tokens", async (req, res) => {
   return res.status(200).json(usage);
 });
 
+router.get("/agents", async (req, res) => {
+  const { projectId: teamId } = req.session;
+  const { from, to } = Joi.attempt(req.query, schemas.Statistics.period);
+
+  const overview = await statisticsFn.agentOverview({ teamId, from, to });
+
+  return res.status(200).json(overview);
+});
+
 export default router;

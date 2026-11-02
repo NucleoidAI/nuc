@@ -317,6 +317,118 @@ async function supervisingCount({
   });
 }
 
+async function agentOverview({
+  teamId,
+  from,
+  to,
+}: {
+  teamId: string;
+  from: string;
+  to: string;
+}) {
+  const agents = await Agent.findAll({
+    where: { teamId },
+    attributes: ["id", "name"],
+    order: [["name", "ASC"]],
+    raw: true,
+  });
+  const agentIds = agents.map((agent) => agent.id);
+  const range = { [Op.between]: [from, to] };
+
+  const [statusRows, awaitingRows, tokenRows] = await Promise.all([
+    Task.findAll({
+      attributes: ["agentId", "status", [fn("COUNT", col("id")), "count"]],
+      where: { agentId: { [Op.in]: agentIds }, createdAt: range },
+      group: ["agent_id", "status"],
+      raw: true,
+    }),
+    Task.findAll({
+      attributes: [
+        "agentId",
+        [fn("COUNT", fn("DISTINCT", col("Task.id"))), "count"],
+      ],
+      include: [
+        {
+          model: Supervising,
+          attributes: [],
+          where: { status: "IN_PROGRESS" },
+          required: true,
+        },
+      ],
+      where: {
+        agentId: { [Op.in]: agentIds },
+        status: "IN_PROGRESS",
+        createdAt: range,
+      },
+      group: ["Task.agent_id"],
+      raw: true,
+    }),
+    LLMLog.findAll({
+      attributes: ["agentId", [fn("SUM", col("total_tokens")), "totalTokens"]],
+      where: { agentId: { [Op.in]: agentIds }, createdAt: range },
+      group: ["agent_id"],
+      raw: true,
+    }),
+  ]);
+
+  const statusByAgent = new Map<
+    string,
+    { IN_PROGRESS: number; COMPLETED: number; FAILED: number }
+  >();
+  for (const row of statusRows as unknown as Array<{
+    agentId: string;
+    status: "IN_PROGRESS" | "COMPLETED" | "FAILED";
+    count: number;
+  }>) {
+    const counts = statusByAgent.get(row.agentId) ?? {
+      IN_PROGRESS: 0,
+      COMPLETED: 0,
+      FAILED: 0,
+    };
+    statusByAgent.set(row.agentId, {
+      ...counts,
+      [row.status]: Number(row.count),
+    });
+  }
+
+  const awaitingByAgent = new Map(
+    (awaitingRows as unknown as Array<{ agentId: string; count: number }>).map(
+      (row) => [row.agentId, Number(row.count)]
+    )
+  );
+
+  const tokensByAgent = new Map(
+    (
+      tokenRows as unknown as Array<{
+        agentId: string;
+        totalTokens: number | null;
+      }>
+    ).map((row) => [row.agentId, Number(row.totalTokens ?? 0)])
+  );
+
+  return agents.map((agent) => {
+    const counts = statusByAgent.get(agent.id) ?? {
+      IN_PROGRESS: 0,
+      COMPLETED: 0,
+      FAILED: 0,
+    };
+    const awaiting = awaitingByAgent.get(agent.id) ?? 0;
+    const total = counts.IN_PROGRESS + counts.COMPLETED + counts.FAILED;
+
+    return {
+      agentId: agent.id,
+      name: agent.name,
+      total,
+      COMPLETED: counts.COMPLETED,
+      IN_PROGRESS: counts.IN_PROGRESS - awaiting,
+      AWAITING: awaiting,
+      FAILED: counts.FAILED,
+      failureRate: total ? (counts.FAILED / total) * 100 : 0,
+      totalTokens: tokensByAgent.get(agent.id) ?? 0,
+    };
+  });
+}
+
 export default {
   taskDailyTrend,
   supervisingDailyCounts,
@@ -326,4 +438,5 @@ export default {
   taskCount,
   supervisingCount,
   tokenUsage,
+  agentOverview,
 };

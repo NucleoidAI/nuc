@@ -4,7 +4,7 @@ import { useChart } from "@canmingir/link/platform/components";
 import { useTheme } from "@mui/material/styles";
 import { Box, Card, Stack, Typography } from "@mui/material";
 
-function AgentDonutCard({
+function TaskDonutCard({
   breakdown,
 }: {
   breakdown: {
@@ -151,4 +151,4 @@ function AgentDonutCard({
   );
 }
 
-export default AgentDonutCard;
+export default TaskDonutCard;

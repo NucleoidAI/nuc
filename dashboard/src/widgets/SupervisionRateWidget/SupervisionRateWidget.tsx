@@ -14,7 +14,7 @@ const PALETTE_KEYS = [
 
 const MAX_ROWS_PER_COLUMN = 5;
 
-function SupervisionSummaryCard({
+function SupervisionRateWidget({
   totalRequests,
   totalTasks,
   waiting,
@@ -198,4 +198,4 @@ function SupervisionSummaryCard({
   );
 }
 
-export default SupervisionSummaryCard;
+export default SupervisionRateWidget;

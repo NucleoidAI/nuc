@@ -85,16 +85,18 @@ function TasksWidget({
   }, [tasks, selectedStatus, query]);
 
   useEffect(() => {
-    if (supervisionRaised && taskId && tasks) {
+    if (taskId && tasks) {
       const task = tasks.find((t) => t.id === taskId);
       if (task) {
         setSelectedTask(task);
+        return;
       }
-    } else if (!selectedTask?.id && filteredTasks.length) {
+    }
+    if (!selectedTask?.id && filteredTasks.length) {
       setSelectedTask(filteredTasks[0]);
     }
     // eslint-disable-next-line
-  }, [filteredTasks.length, supervisionRaised, taskId, tasks]);
+  }, [filteredTasks.length, taskId, tasks]);
 
   useEffect(() => {
     if (!agentId) return;

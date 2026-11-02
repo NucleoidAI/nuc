@@ -5,7 +5,14 @@ import { Box, Button, Dialog, DialogContent } from "@mui/material";
 import React, { useCallback, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const AgentDrawer = ({ open, onClose, agent, initialTab, allAgentIds }) => {
+const AgentDrawer = ({
+  open,
+  onClose,
+  agent,
+  initialTab,
+  initialTaskId = null,
+  allAgentIds,
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [chatOpen, setChatOpen] = useState(false);
@@ -68,6 +75,7 @@ const AgentDrawer = ({ open, onClose, agent, initialTab, allAgentIds }) => {
           agent={agent}
           loading={false}
           initialTab={initialTab}
+          initialTaskId={initialTaskId}
           allAgentIds={allAgentIds}
           onChatOpenChange={setChatOpen}
         />

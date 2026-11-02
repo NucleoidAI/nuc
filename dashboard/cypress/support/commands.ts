@@ -46,16 +46,6 @@ declare namespace Cypress {
 
     getBySel(selector: string): Chainable<JQuery<HTMLElement>>;
 
-    selectIconFromPicker(icon: string): Chainable<void>;
-
-    storageGet(key: string): Chainable<string | null>;
-
-    storageSet(key: string, value: string): Chainable<void>;
-
-    platformSetup(itemId: string, itemFixturePath: string): Chainable<void>;
-
-    checkRoute(route: string): Chainable<void>;
-
     knowledgeBaseIntercept(): Chainable<void>;
   }
 }

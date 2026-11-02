@@ -125,4 +125,16 @@ router.get("/supervisings/count", async (req, res) => {
   return res.status(200).json({ count });
 });
 
+router.get("/tokens", async (req, res) => {
+  const { projectId: teamId } = req.session;
+  const { agentId, from, to } = Joi.attempt(
+    req.query,
+    schemas.Statistics.range
+  );
+
+  const usage = await statisticsFn.tokenUsage({ teamId, agentId, from, to });
+
+  return res.status(200).json(usage);
+});
+
 export default router;

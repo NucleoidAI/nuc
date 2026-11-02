@@ -1,4 +1,5 @@
 import Agent from "../models/Agent";
+import LLMLog from "../models/LLMLog";
 import Supervising from "../models/Supervising";
 import Task from "../models/Task";
 import { Op, col, fn } from "sequelize";
@@ -190,20 +191,37 @@ async function taskStatusCounts({
   from: string;
   to: string;
 }) {
-  const rows = await Task.findAll({
-    attributes: ["status", [fn("COUNT", col("Task.id")), "count"]],
-    include: [
-      {
-        model: Agent,
-        attributes: [],
-        where: agentId ? { id: agentId, teamId } : { teamId },
-        required: true,
-      },
-    ],
-    where: { createdAt: { [Op.between]: [from, to] } },
-    group: ["status"],
-    raw: true,
-  });
+  const agentInclude = {
+    model: Agent,
+    attributes: [],
+    where: agentId ? { id: agentId, teamId } : { teamId },
+    required: true,
+  };
+  const range = { [Op.between]: [from, to] };
+
+  const [rows, awaiting] = await Promise.all([
+    Task.findAll({
+      attributes: ["status", [fn("COUNT", col("Task.id")), "count"]],
+      include: [agentInclude],
+      where: { createdAt: range },
+      group: ["status"],
+      raw: true,
+    }),
+    Task.count({
+      distinct: true,
+      col: "id",
+      include: [
+        agentInclude,
+        {
+          model: Supervising,
+          attributes: [],
+          where: { status: "IN_PROGRESS" },
+          required: true,
+        },
+      ],
+      where: { createdAt: range, status: "IN_PROGRESS" },
+    }),
+  ]);
 
   const counts = { IN_PROGRESS: 0, COMPLETED: 0, FAILED: 0 };
   for (const row of rows as unknown as Array<{
@@ -215,7 +233,58 @@ async function taskStatusCounts({
 
   return {
     total: counts.IN_PROGRESS + counts.COMPLETED + counts.FAILED,
-    ...counts,
+    COMPLETED: counts.COMPLETED,
+    IN_PROGRESS: counts.IN_PROGRESS - awaiting,
+    AWAITING: awaiting,
+    FAILED: counts.FAILED,
+  };
+}
+
+async function tokenUsage({
+  teamId,
+  agentId,
+  from,
+  to,
+}: {
+  teamId: string;
+  agentId?: string;
+  from: string;
+  to: string;
+}) {
+  const agents = await Agent.findAll({
+    where: agentId ? { id: agentId, teamId } : { teamId },
+    attributes: ["id"],
+    raw: true,
+  });
+  const agentIds = agents.map((agent) => agent.id);
+
+  const ownership = agentId
+    ? { agentId: { [Op.in]: agentIds } }
+    : {
+        [Op.or]: [{ teamId }, { agentId: { [Op.in]: agentIds } }],
+      };
+
+  const [usage] = (await LLMLog.findAll({
+    attributes: [
+      [fn("SUM", col("input_tokens")), "inputTokens"],
+      [fn("SUM", col("output_tokens")), "outputTokens"],
+      [fn("SUM", col("total_tokens")), "totalTokens"],
+      [fn("COUNT", col("id")), "calls"],
+    ],
+    where: { ...ownership, createdAt: { [Op.between]: [from, to] } },
+    raw: true,
+  })) as unknown as Array<{
+    inputTokens: number | null;
+    outputTokens: number | null;
+    totalTokens: number | null;
+    calls: number | null;
+  }>;
+
+  return {
+    inputTokens: Number(usage?.inputTokens ?? 0),
+    outputTokens: Number(usage?.outputTokens ?? 0),
+    totalTokens: Number(usage?.totalTokens ?? 0),
+    calls: Number(usage?.calls ?? 0),
   };
 }
 
@@ -256,4 +325,5 @@ export default {
   taskStatusCounts,
   taskCount,
   supervisingCount,
+  tokenUsage,
 };

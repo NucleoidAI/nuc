@@ -202,6 +202,7 @@ const JSONDiffPanel: React.FC<JSONDiffPanelProps> = ({
       }}
     >
       <Box
+        data-cy="json-diff-panel"
         sx={{
           display: "flex",
           flexDirection: "column",

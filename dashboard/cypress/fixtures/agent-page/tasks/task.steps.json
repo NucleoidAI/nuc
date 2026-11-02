@@ -1,0 +1,18 @@
+[
+  {
+    "id": "bbbbbbb1-bbbb-4bbb-8bbb-bbbbbbbbbbb1",
+    "comment": "Fetched meeting transcript",
+    "createdAt": "2026-10-14T06:21:24.405Z",
+    "status": "COMPLETED",
+    "action": "PLATFORM:fetch_transcript",
+    "result": "Transcript fetched successfully."
+  },
+  {
+    "id": "bbbbbbb2-bbbb-4bbb-8bbb-bbbbbbbbbbb2",
+    "comment": "Generated summary",
+    "createdAt": "2026-10-14T06:22:24.405Z",
+    "status": "COMPLETED",
+    "action": "PLATFORM:generate_summary",
+    "result": "Summary generated and emailed."
+  }
+]

@@ -12,6 +12,7 @@ const DiffButton = ({
 }) => {
   return (
     <Button
+      data-cy="view-json-diff-button"
       variant="outlined"
       onClick={onShowDiff}
       sx={{

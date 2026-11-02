@@ -1,0 +1,198 @@
+[
+{
+  "id": "ba6f7911-e232-469d-9060-2881852f6e59",
+  "title": "Basic Internet Subscription Setup",
+  "description": "Checks port availability at the user's residential address. Presents compatible internet speed packages for user selection. Allocates a port and creates the subscription order. Notifies the user and completes port configuration and physical connection",
+  "skill": "**Internet Subscription — Availability-Gated, Silent Setup**\n\nUse this Blueprint when a new subscription requires inventory validation before proceeding and no user notification is needed after port allocation.\n\nFlow: Retrieve BBK → Check inventory → [No inventory: end] → List speed products → User selects package → Allocate port → Configure port → Connect port to residence.\n\nExits silently after port connection. Exits early if inventory is unavailable.",
+  "context": {
+    "agent": {
+      "name": "subscription_agent",
+      "description": "A agent optimized for subscription tasks, workflow assistance, and context-aware support within the system."
+    },
+    "knowledge": [
+      {
+        "text": "Our office is located at 225 Wood St, London",
+        "type": "TEXT"
+      },
+      {
+        "type": "URL"
+      },
+      {
+        "text": "BBK Number is 3 digits",
+        "type": "TEXT"
+      },
+      {
+        "text": "Our call center number is 444 1 444",
+        "type": "TEXT"
+      },
+      {
+        "text": "Business hours are 9am to 5pm, Monday to Friday.",
+        "type": "TEXT"
+      }
+    ],
+    "capturedAt": "2025-06-19T06:02:00Z",
+    "supervising": null,
+    "userRequest": "I want to buy new internet subscription",
+    "referenceBlueprint": null
+  },
+  "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+  "blocking": true,
+  "executionMode": "NORMAL",
+  "api": false,
+  "nodes": [
+    {
+      "id": "76ccda2d-f11f-408c-8087-66c377600d0b",
+      "next": [
+        "51dca395-1d90-4a28-9bbc-233de9c1a207"
+      ],
+      "type": "NORMAL",
+      "createdAt": "2025-06-19T06:02:00Z",
+      "properties": {
+        "icon": "mdi:map-marker",
+        "label": "Get BBK No by Address",
+        "action": "TELCO:get_bbk_by_address",
+        "description": "Resolves the BBK number for a given residential address. Identifies the corresponding network access point"
+      }
+    },
+    {
+      "id": "51dca395-1d90-4a28-9bbc-233de9c1a207",
+      "next": [
+        "019b209c-2e5a-777f-a04a-11960363fb25"
+      ],
+      "type": "NORMAL",
+      "createdAt": "2025-06-19T06:02:00Z",
+      "properties": {
+        "icon": "mdi:server",
+        "label": "Get Inventory",
+        "action": "TELCO:get_inventory",
+        "description": "Queries available port inventory at the resolved BBK location. Returns availability status to gate the next workflow step"
+      }
+    },
+    {
+      "id": "019b209c-2e5a-777f-a04a-11960363fb25",
+      "true": [
+        "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2"
+      ],
+      "type": "CONDITION",
+      "false": [
+        "019b20a6-1aa6-7510-b222-66535e50dfb3"
+      ],
+      "createdAt": "2025-06-19T06:02:00Z",
+      "properties": {
+        "icon": "mdi:source-branch",
+        "label": "Check if product is available",
+        "action": "PLATFORM:decision",
+        "description": "Evaluates inventory availability status. Routes to product selection if available, terminates early if not"
+      }
+    },
+    {
+      "id": "019b20a6-1aa6-7510-b222-66535e50dfb3",
+      "next": null,
+      "type": "NORMAL",
+      "createdAt": "2025-06-19T06:02:00Z",
+      "properties": {
+        "icon": "mdi:check",
+        "label": "Complete",
+        "action": "PLATFORM:complete",
+        "description": "Ends the workflow when no port inventory is available at the user's address"
+      }
+    },
+    {
+      "id": "024cf548-ebfe-4f0f-910f-e1e43a8b8ea2",
+      "next": [
+        "019c8a58-10e3-713f-9484-78d04923040f"
+      ],
+      "type": "NORMAL",
+      "createdAt": "2025-06-19T06:02:00Z",
+      "properties": {
+        "icon": "mdi:speedometer",
+        "label": "Get Product by Speed",
+        "action": "TELCO:get_product_by_speed",
+        "description": "Fetches the internet product catalog filtered by compatible speed tiers. Prepares available options to present to the user"
+      }
+    },
+    {
+      "id": "019c8a58-10e3-713f-9484-78d04923040f",
+      "next": [
+        "019b3302-7846-75c2-9ab7-897c18b8ccee"
+      ],
+      "type": "NORMAL",
+      "createdAt": "2025-06-19T06:02:00Z",
+      "properties": {
+        "icon": "mdi:user",
+        "label": "User selected product",
+        "action": "PLATFORM:user_interaction",
+        "description": "Presents available product options to the user. Pauses the workflow until the user makes a selection"
+      }
+    },
+    {
+      "id": "019b3302-7846-75c2-9ab7-897c18b8ccee",
+      "next": [
+        "019b3305-7846-75c2-9ab7-897c18b8cce1"
+      ],
+      "type": "NORMAL",
+      "createdAt": "2025-06-19T06:02:00Z",
+      "properties": {
+        "icon": "mdi:link",
+        "label": "Assign Port",
+        "action": "TELCO:port_allocation",
+        "description": "Reserves a network port for the user's selected product. Ties the port reservation to the user's address"
+      }
+    },
+    {
+      "id": "019b3305-7846-75c2-9ab7-897c18b8cce1",
+      "next": [
+        "019b209e-3122-75ce-9ba6-674b6184f68d"
+      ],
+      "type": "NORMAL",
+      "createdAt": "2025-06-19T06:02:00Z",
+      "properties": {
+        "icon": "mdi:bell",
+        "label": "Notify Port Allocation",
+        "action": "PLATFORM:message_user",
+        "description": "Sends a confirmation notification to the user. Confirms that port allocation has been completed successfully"
+      }
+    },
+    {
+      "id": "019b209e-3122-75ce-9ba6-674b6184f68d",
+      "next": [
+        "019b32f6-5878-73fb-8411-55916778d9a4"
+      ],
+      "type": "NORMAL",
+      "createdAt": "2025-06-19T06:02:00Z",
+      "properties": {
+        "icon": "mdi:settings",
+        "label": "Configure Port",
+        "action": "TELCO:configuration",
+        "description": "Applies network configuration parameters to the allocated port. Makes the port service-ready for physical connection"
+      }
+    },
+    {
+      "id": "019b32f6-5878-73fb-8411-55916778d9a4",
+      "next": [
+        "019b32f6-bd02-734e-bd3a-aec89d79609c"
+      ],
+      "type": "NORMAL",
+      "createdAt": "2025-06-19T06:02:00Z",
+      "properties": {
+        "icon": "mdi:ethernet",
+        "label": "Connect Port",
+        "action": "TELCO:port_connection",
+        "description": "Establishes the physical network connection to the user's premises. Activates the service at the residential address"
+      }
+    },
+    {
+      "id": "019b32f6-bd02-734e-bd3a-aec89d79609c",
+      "next": null,
+      "type": "NORMAL",
+      "createdAt": "2025-06-19T06:02:00Z",
+      "properties": {
+        "icon": "mdi:check",
+        "label": "Complete",
+        "action": "PLATFORM:complete",
+        "description": "Marks the entire subscription setup workflow as successfully completed"
+      }
+    }
+  ]
+}
+]

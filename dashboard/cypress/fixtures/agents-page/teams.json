@@ -1,0 +1,50 @@
+[
+    {
+        "id": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+        "name": "Telco Customer Service Team",
+        "icon": ":maki:communications-tower:",
+        "description": null,
+        "type": null,
+        "coach": "Elijah",
+        "organization": {
+            "id": "dfb990bb-81dd-4584-82ce-050eb8f6a12f",
+            "name": "Telco Corp."
+        }
+    },
+    {
+        "id": "e6d4744d-a11b-4c75-acad-e24a02903729",
+        "name": "Good Galactic Customer Service Team",
+        "icon": ":fa6-brands:galactic-republic:",
+        "description": null,
+        "type": null,
+        "coach": "Emily",
+        "organization": {
+            "id": "1c063446-7e78-432a-a273-34f481d0f0c3",
+            "name": "Good Galactic Corp."
+        }
+    },
+    {
+        "id": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+        "name": "Order & Compliance Team",
+        "icon": ":ph:briefcase-duotone:",
+        "description": null,
+        "type": null,
+        "coach": "Sophia",
+        "organization": {
+            "id": "dfb990bb-81dd-4584-82ce-050eb8f6a12f",
+            "name": "Telco Corp."
+        }
+    },
+    {
+        "id": "b1f3c7a2-5d48-4c91-9e07-2a6db8f41c35",
+        "name": "IT Operations Team",
+        "icon": ":ph:gear-six-duotone:",
+        "description": null,
+        "type": null,
+        "coach": "Noah",
+        "organization": {
+            "id": "dfb990bb-81dd-4584-82ce-050eb8f6a12f",
+            "name": "Telco Corp."
+        }
+    }
+]

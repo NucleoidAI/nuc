@@ -1,0 +1,623 @@
+{
+    "role": "system",
+    "content": {
+        "actions": [
+            {
+                "action": "PLATFORM:llm",
+                "label": "Platform",
+                "lib": "llm",
+                "description": "Send a message to the Language Model for AI processing",
+                "icon": "mdi:brain",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "message": {
+                            "type": "string",
+                            "description": "The message to be sent to the LLM."
+                        }
+                    },
+                    "required": [
+                        "message"
+                    ]
+                }
+            },
+            {
+                "action": "PLATFORM:scrape_website",
+                "label": "Platform",
+                "lib": "scrapper",
+                "description": "Extract data from a website URL",
+                "icon": "mdi:web",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "url": {
+                            "type": "string",
+                            "description": "The URL of the website to scrape."
+                        }
+                    },
+                    "required": [
+                        "url"
+                    ]
+                }
+            },
+            {
+                "action": "PLATFORM:decision",
+                "label": "Platform",
+                "lib": "decision",
+                "description": "A decision node that branches the flow based on conditions",
+                "icon": "mdi:source-branch",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "condition": {
+                            "type": "string",
+                            "description": "The condition to be checked."
+                        },
+                        "true": {
+                            "type": "array",
+                            "description": "The actions to be executed if the condition is true."
+                        },
+                        "false": {
+                            "type": "array",
+                            "description": "The actions to be executed if the condition is false."
+                        }
+                    },
+                    "required": [
+                        "condition",
+                        "true",
+                        "false"
+                    ]
+                }
+            },
+            {
+                "action": "PLATFORM:switch",
+                "label": "Platform",
+                "lib": "switch",
+                "description": "A switch node that picks one of several branches based on the instructions and the task context",
+                "icon": "mdi:call-split",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "instructions": {
+                            "type": "string",
+                            "description": "How to pick the branch."
+                        },
+                        "cases": {
+                            "type": "array",
+                            "description": "The branches to choose from, each with a nodeId and a label."
+                        }
+                    },
+                    "required": [
+                        "cases"
+                    ]
+                },
+                "outputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "nodeId": {
+                            "type": "string",
+                            "description": "The id of the selected branch."
+                        },
+                        "label": {
+                            "type": "string",
+                            "description": "The label of the selected branch."
+                        },
+                        "reason": {
+                            "type": "string",
+                            "description": "Why that branch was selected."
+                        }
+                    }
+                }
+            },
+            {
+                "action": "PLATFORM:user_interaction",
+                "label": "Platform",
+                "lib": "interaction",
+                "description": "Interact with the user and get their response",
+                "icon": "mdi:account-question",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "question": {
+                            "type": "string",
+                            "description": "The question to ask the user."
+                        }
+                    },
+                    "required": [
+                        "question"
+                    ]
+                },
+                "outputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "answer": {
+                            "type": "string",
+                            "description": "User's answer to the question."
+                        }
+                    }
+                }
+            },
+            {
+                "action": "PLATFORM:customer_approval",
+                "label": "Platform",
+                "lib": "customer_approval",
+                "description": "Ask the customer to approve or reject, then wait until a decision arrives from the session or the approval endpoint",
+                "icon": "mdi:account-check",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "question": {
+                            "type": "string",
+                            "description": "The approval request shown to the customer."
+                        }
+                    },
+                    "required": [
+                        "question"
+                    ]
+                },
+                "outputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "decision": {
+                            "type": "string",
+                            "description": "APPROVED or REJECTED."
+                        }
+                    }
+                }
+            },
+            {
+                "action": "PLATFORM:two_factor",
+                "label": "Platform",
+                "lib": "two_factor",
+                "description": "2FA: pause the blueprint for user verification. Email sends single-use Approve / Reject links through GREY SMTP; WhatsApp requires an external API approval.",
+                "icon": "mdi:shield-key",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "channel": {
+                            "type": "string",
+                            "enum": [
+                                "email",
+                                "whatsapp"
+                            ],
+                            "description": "Verification channel: email or whatsapp."
+                        },
+                        "recipient": {
+                            "type": "string",
+                            "description": "Trusted recipient email address or phone number."
+                        },
+                        "question": {
+                            "type": "string",
+                            "description": "Approval request shown to the user."
+                        }
+                    },
+                    "required": [
+                        "channel",
+                        "recipient",
+                        "question"
+                    ]
+                },
+                "outputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "decision": {
+                            "type": "string",
+                            "description": "APPROVED after verification; rejection stops the task."
+                        }
+                    }
+                }
+            },
+            {
+                "action": "PLATFORM:complete",
+                "label": "Platform",
+                "description": "Mark the workflow as complete",
+                "icon": "mdi:check"
+            },
+            {
+                "action": "PLATFORM:handoff",
+                "label": "Platform",
+                "description": "Transfer this task to another agent's blueprint and continue in the same session",
+                "icon": "mdi:account-arrow-right",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "targetAgentId": {
+                            "type": "string",
+                            "description": "The ID of the target agent to hand off to."
+                        },
+                        "targetBlueprintId": {
+                            "type": "string",
+                            "description": "The ID of the target agent's blueprint (optional)."
+                        },
+                        "context": {
+                            "type": "string",
+                            "description": "A summary of the current task context to pass to the target agent."
+                        }
+                    },
+                    "required": [
+                        "targetAgentId",
+                        "context"
+                    ]
+                }
+            },
+            {
+                "action": "PLATFORM:ask_supervisor",
+                "label": "Platform",
+                "lib": "ask_supervisor",
+                "description": "Ask a supervisor for guidance or approval",
+                "icon": "mdi:account-supervisor",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "question": {
+                            "type": "string",
+                            "description": "The question to ask the supervisor."
+                        }
+                    },
+                    "required": [
+                        "question"
+                    ]
+                }
+            },
+            {
+                "action": "PLATFORM:asr",
+                "label": "Platform",
+                "lib": "asr",
+                "description": "Transcribe an audio file using ASR. Returns the transcription in VTT format directly.",
+                "icon": "mdi:microphone-message",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "inputPath": {
+                            "type": "string",
+                            "description": "Absolute path to the audio file to transcribe."
+                        }
+                    },
+                    "required": [
+                        "inputPath"
+                    ]
+                },
+                "outputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "success": {
+                            "type": "boolean"
+                        },
+                        "transcription": {
+                            "type": "string",
+                            "description": "The transcription in VTT format."
+                        },
+                        "error": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            {
+                "action": "PLATFORM:file_inspector",
+                "label": "Platform",
+                "lib": "file_inspector",
+                "description": "Inspect files or directories using an absolute path. Supports checking existence, reading content, getting metadata, or listing directory entries.",
+                "icon": "mdi:file-search",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "filePath": {
+                            "type": "string",
+                            "description": "The absolute path to the file or directory."
+                        },
+                        "operation": {
+                            "type": "string",
+                            "enum": [
+                                "exists",
+                                "read",
+                                "stat",
+                                "list"
+                            ],
+                            "description": "Operation to perform: 'exists' checks if the path exists, 'read' returns file content, 'stat' returns file metadata, 'list' lists directory contents."
+                        }
+                    },
+                    "required": [
+                        "filePath"
+                    ]
+                },
+                "outputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "exists": {
+                            "type": "boolean"
+                        },
+                        "content": {
+                            "type": "string"
+                        },
+                        "isFile": {
+                            "type": "boolean"
+                        },
+                        "isDirectory": {
+                            "type": "boolean"
+                        },
+                        "size": {
+                            "type": "number"
+                        },
+                        "created": {
+                            "type": "string"
+                        },
+                        "modified": {
+                            "type": "string"
+                        },
+                        "entries": {
+                            "type": "array"
+                        },
+                        "error": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            {
+                "action": "PLATFORM:create_vm",
+                "label": "Platform",
+                "lib": "create_vm",
+                "description": "Create a virtual machine (EC2 instance) on AWS. If no AMI is given, the latest Amazon Linux 2023 image is used.",
+                "icon": "mdi:server-plus",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "description": "Name tag for the instance."
+                        },
+                        "instanceType": {
+                            "type": "string",
+                            "description": "EC2 instance type (e.g. 't3.micro', 't3.small'). Defaults to 't3.micro'."
+                        },
+                        "amiId": {
+                            "type": "string",
+                            "description": "AMI ID to launch from. Defaults to the latest Amazon Linux 2023 AMI."
+                        },
+                        "keyName": {
+                            "type": "string",
+                            "description": "Name of an existing EC2 key pair for SSH access (optional)."
+                        },
+                        "subnetId": {
+                            "type": "string",
+                            "description": "Subnet ID to launch into (optional)."
+                        },
+                        "securityGroupIds": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "description": "Security group IDs to attach (optional)."
+                        },
+                        "region": {
+                            "type": "string",
+                            "description": "AWS region. Defaults to the AWS_REGION environment variable."
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ]
+                },
+                "outputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "success": {
+                            "type": "boolean"
+                        },
+                        "instanceId": {
+                            "type": "string"
+                        },
+                        "imageId": {
+                            "type": "string"
+                        },
+                        "instanceType": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "description": "Instance state right after launch (usually 'pending')."
+                        },
+                        "privateIp": {
+                            "type": "string"
+                        },
+                        "publicIp": {
+                            "type": "string"
+                        },
+                        "availabilityZone": {
+                            "type": "string"
+                        },
+                        "error": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            {
+                "action": "PLATFORM:terminate_vm",
+                "label": "Platform",
+                "lib": "terminate_vm",
+                "description": "Terminate a virtual machine (EC2 instance) on AWS by instance ID. Termination is permanent and cannot be undone.",
+                "icon": "mdi:server-remove",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "instanceId": {
+                            "type": "string",
+                            "description": "The ID of the EC2 instance to terminate (e.g. 'i-0abc123def456...')."
+                        },
+                        "region": {
+                            "type": "string",
+                            "description": "AWS region the instance is in. Defaults to the AWS_REGION environment variable."
+                        }
+                    },
+                    "required": [
+                        "instanceId"
+                    ]
+                },
+                "outputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "success": {
+                            "type": "boolean"
+                        },
+                        "instanceId": {
+                            "type": "string"
+                        },
+                        "previousState": {
+                            "type": "string",
+                            "description": "Instance state before termination (e.g. 'running')."
+                        },
+                        "currentState": {
+                            "type": "string",
+                            "description": "Instance state after the request (usually 'shutting-down')."
+                        },
+                        "error": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            {
+                "action": "PLATFORM:evaluate_metrics",
+                "label": "Platform",
+                "lib": "evaluate_metrics",
+                "description": "Deterministically evaluate an OTLP resourceMetrics payload against metric reference ranges. Pass the incoming OTLP payload as 'metrics' and the reference ranges (e.g. from agent knowledge) as 'reference_ranges'. Each data point is matched to its reference by metric name and attributes, then checked against min/max bounds or an expected value. Returns the out-of-range metrics as violations.",
+                "icon": "mdi:chart-bell-curve",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "metrics": {
+                            "type": [
+                                "object",
+                                "string"
+                            ],
+                            "description": "OTLP resourceMetrics payload from the incoming message, either as a JSON object with a 'resourceMetrics' array or as a JSON string."
+                        },
+                        "reference_ranges": {
+                            "type": [
+                                "array",
+                                "object",
+                                "string"
+                            ],
+                            "description": "Reference ranges to evaluate against, e.g. from agent knowledge. A list of objects with 'metric' and optional 'attributes', 'min', 'max', 'expected', 'unit'. A single range object or a JSON string is also accepted."
+                        }
+                    },
+                    "required": [
+                        "metrics",
+                        "reference_ranges"
+                    ]
+                },
+                "outputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "host": {
+                            "type": "string",
+                            "description": "host.name from the resource attributes."
+                        },
+                        "checked": {
+                            "type": "number",
+                            "description": "Number of data points evaluated against a reference."
+                        },
+                        "hasViolations": {
+                            "type": "boolean",
+                            "description": "True when at least one metric is outside its reference range."
+                        },
+                        "violations": {
+                            "type": "array",
+                            "description": "Out-of-range metrics with observed value, allowed range and timestamp.",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "metric": {
+                                        "type": "string"
+                                    },
+                                    "attributes": {
+                                        "type": "object"
+                                    },
+                                    "value": {
+                                        "type": "number"
+                                    },
+                                    "min": {
+                                        "type": [
+                                            "number",
+                                            "null"
+                                        ]
+                                    },
+                                    "max": {
+                                        "type": [
+                                            "number",
+                                            "null"
+                                        ]
+                                    },
+                                    "expected": {
+                                        "type": "number"
+                                    },
+                                    "unit": {
+                                        "type": "string"
+                                    },
+                                    "timeUnixNano": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        },
+                        "error": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            {
+                "action": "PLATFORM:message_user",
+                "label": "Platform",
+                "lib": "message_user",
+                "description": "Send a message to the user",
+                "icon": "mdi:message-text",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "message": {
+                            "type": "string",
+                            "description": "The message to send to the user."
+                        }
+                    },
+                    "required": [
+                        "message"
+                    ]
+                }
+            },
+            {
+                "action": "PLATFORM:knowledge_lookup",
+                "label": "Platform",
+                "lib": "knowledge_lookup",
+                "description": "Look up all knowledge entries for this agent. Returns every knowledge item including TEXT, QA, and DATA types. Always use this before making decisions that depend on facts that may have been updated by a supervisor, such as product certificates or policies.",
+                "icon": "mdi:book-search",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {},
+                    "required": []
+                },
+                "outputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "agentId": {
+                            "type": "string",
+                            "description": "The agent the knowledge belongs to."
+                        },
+                        "knowledge": {
+                            "type": "array",
+                            "description": "Every knowledge entry the agent has.",
+                            "items": {
+                                "type": "object"
+                            }
+                        },
+                        "error": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        ]
+    }
+}

@@ -207,6 +207,7 @@ const Channel = () => {
         }}
       >
         <Fab
+          data-cy="add-channel-button"
           variant="button"
           color="default"
           onClick={() => setDialogOpen(true)}

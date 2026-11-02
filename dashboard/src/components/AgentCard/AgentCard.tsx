@@ -84,6 +84,7 @@ export default function AgentCard({
         }}
       >
         <IconButton
+          data-cy="agent-card-more-vert"
           onClick={popover.onOpen}
           sx={{
             position: "absolute",

@@ -1,118 +1,57 @@
-import config from "../../config";
-
 describe("Agent page", () => {
   beforeEach(() => {
     cy.fixture("agents-page/teams.json").then((teams) => {
-      cy.wrap(teams[1].id).as("teamId");
-      cy.platformSetup(teams[1].id, "agents-page/teams.json", config);
+      cy.platformSetup(teams[0].id, "agents-page/teams.json");
       cy.viewport(1280, 720);
     });
 
     cy.fixture("agents-page/agents.json").as("agents");
-
     cy.fixture("agents-page/agent.json").as("agent");
 
-    cy.fixture("knowledges/knowledges.json").as("knowledges");
-
-    cy.fixture("knowledges/delete/knowledges.get.json").as("knowledgesDelete");
-
-    cy.fixture("knowledges/create/knowledges.post.json").as("knowledgesPost");
-
-    cy.fixture("knowledges/create/knowledges.qa.post.json").as("knowledgesQA");
-
-    cy.fixture("knowledges/create/knowledges.text.post.json").as(
-      "knowledgesText"
-    );
-
-    cy.fixture("knowledges/create/knowledges.url.post.json").as(
-      "knowledgesUrl"
-    );
-
-    cy.fixture("knowledges/delete/knowledges.qa.delete.json").as(
-      "knowledgesQADelete"
-    );
-
-    cy.fixture("knowledges/delete/knowledges.text.delete.json").as(
-      "knowledgesTextDelete"
-    );
-
-    cy.fixture("knowledges/delete/knowledges.url.delete.json").as(
-      "knowledgesUrlDelete"
-    );
-
-    cy.fixture("knowledges/edit/knowledges.qa.json").as("knowledgesQAEdit");
-
-    cy.fixture("knowledges/edit/knowledges.text.json").as("knowledgesTextEdit");
-
-    cy.fixture("knowledges/edit/knowledges.edit.json").as("knowledgesEdit");
-
-    cy.fixture("supervising/supervisings.json").as("supervising");
-
-    cy.fixture("supervising/supervising.patch.json").as("supervisingPatch");
-
-    cy.fixture("supervising/supervising.status.json").as("supervisingStatus");
-
-    cy.fixture("supervising/supervising.status.answered.json").as(
-      "supervisingStatusAnswered"
-    );
-
-    cy.fixture("supervising/supervising.patch.get.json").as(
-      "supervisingPatchGet"
-    );
-
-    cy.intercept(
-      "GET",
-      `/api/knowledge?agentId=00db1bd4-4829-40f2-8b99-d2e42342157e`,
-      {
-        fixture: "knowledges/knowledges.json",
-      }
-    );
+    cy.setAgentIntercept();
   });
 
-  it("visit agent page", function () {
+  it("visits agents list and opens the agent drawer", function () {
+    cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
     cy.visit("/agents");
 
-    cy.setAgentIntercept();
-    cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
-    cy.getBySel("agent-card-more-vert").eq(0).first().click();
+    cy.getBySel("agent-card").should("have.length", 2);
+
+    cy.getBySel("agent-card-more-vert").first().click();
+
     cy.getBySel("agent-card-menu-view").click();
-    cy.checkRoute(`/agents/${this.agent.id}`);
+
+    cy.getBySel("tab-profile").should("be.visible");
+    cy.getBySel("tab-knowledge-base").should("be.visible");
   });
 
-  it("edit agent page profile", function () {
-    cy.visit(`/agents/${this.agent.id}`);
+  it("opens the edit menu from the agent card", function () {
+    cy.visit("/agents");
 
-    cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
+    cy.getBySel("agent-card-more-vert").first().click();
 
-    cy.getBySel("edit-icon").click();
+    cy.getBySel("agent-card-menu-edit").click();
 
-    cy.getBySel("role").type("Developer");
-    cy.getBySel("character").type("Funny");
-
-    cy.intercept("PUT", `/api/agents/${this.agent.id}`, this.agent);
-
-    cy.getBySel("edit-icon").click();
-    cy.getBySel("edit-icon").click();
-
-    cy.getBySel("role").type("Customer Service Representative");
-    cy.getBySel("character").type("Friendly, helpful, and a team player");
-
-    cy.getBySel("edit-icon").click();
-
-    cy.checkRoute(`/agents/${this.agent.id}`);
+    cy.getBySel("name").should("be.visible");
   });
 
-  it("add url in knowledge base", function () {
-    cy.visit(`/agents/${this.agent.id}`);
+  it("opens the delete confirmation from the agent card", function () {
+    cy.visit("/agents");
 
+    cy.getBySel("agent-card-more-vert").first().click();
+
+    cy.getBySel("agent-card-menu-delete").click();
+
+    cy.getBySel("confirm").should("be.visible");
+  });
+
+  it("adds a URL knowledge item", function () {
     cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
-    cy.intercept(
-      "GET",
-      `/api/knowledge?agentId=${this.agent.id}`,
-      this.knowledges
-    );
+    cy.intercept("GET", `/api/knowledge?agentId=${this.agent.id}`, {
+      fixture: "agent-page/knowledges/knowledges.empty.json",
+    });
 
-    cy.get('[data-cy="tab-knowledge-base"]').click();
+    cy.knowledgeBaseView();
 
     cy.getBySel("add-knowledge-button").click();
 
@@ -122,31 +61,29 @@ describe("Agent page", () => {
 
     cy.getBySel("finish").should("be.disabled");
 
-    cy.getBySel("add-item-input").type("Hello");
-    cy.get('input[name="inputValue"]').clear();
-
     cy.getBySel("add-item-input").type("https://www.google.com");
 
-    cy.intercept("POST", `/api/knowledge`, this.knowledgesUrl);
-    cy.intercept(
-      "GET",
-      `/api/knowledge?agentId=${this.agent.id}`,
-      this.knowledgesPost
-    );
+    cy.intercept("POST", `/api/knowledge`, {
+      fixture: "agent-page/knowledges/create/knowledge.url.post.json",
+    });
+    cy.intercept("GET", `/api/knowledge?agentId=${this.agent.id}`, {
+      fixture: "agent-page/knowledges/knowledges.json",
+    });
 
     cy.getBySel("finish").click();
 
     cy.waitEvent("KNOWLEDGE_CREATED");
 
-    cy.waitEvent("KNOWLEDGE_LOADED");
+    cy.getBySel("delete-knowledge-button").should("have.length", 4);
   });
 
-  it("add text in knowledge base", function () {
-    cy.visit(`/agents/${this.agent.id}`);
-
+  it("adds a Text knowledge item", function () {
     cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
+    cy.intercept("GET", `/api/knowledge?agentId=${this.agent.id}`, {
+      fixture: "agent-page/knowledges/knowledges.empty.json",
+    });
 
-    cy.get('[data-cy="tab-knowledge-base"]').click();
+    cy.knowledgeBaseView();
 
     cy.getBySel("add-knowledge-button").click();
 
@@ -158,32 +95,27 @@ describe("Agent page", () => {
 
     cy.getBySel("add-item-input").type("My first text");
 
-    cy.intercept("POST", `/api/knowledge`, this.knowledgesText);
-
-    cy.getBySel("add-item-input").type("My first text");
-
-    cy.intercept("POST", `/api/knowledge`, this.knowledgesText);
-    cy.intercept(
-      "GET",
-      `/api/knowledge?agentId=${this.agent.id}`,
-      this.knowledgesPost
-    );
+    cy.intercept("POST", `/api/knowledge`, {
+      fixture: "agent-page/knowledges/create/knowledge.text.post.json",
+    });
+    cy.intercept("GET", `/api/knowledge?agentId=${this.agent.id}`, {
+      fixture: "agent-page/knowledges/knowledges.json",
+    });
 
     cy.getBySel("finish").click();
 
     cy.waitEvent("KNOWLEDGE_CREATED");
 
-    cy.checkRoute(`/agents/${this.agent.id}`);
-
-    cy.waitEvent("KNOWLEDGE_LOADED");
+    cy.getBySel("delete-knowledge-button").should("have.length", 4);
   });
 
-  it("add qa in knowledge base", function () {
-    cy.visit(`/agents/${this.agent.id}`);
-
+  it("adds a QA knowledge item", function () {
     cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
+    cy.intercept("GET", `/api/knowledge?agentId=${this.agent.id}`, {
+      fixture: "agent-page/knowledges/knowledges.empty.json",
+    });
 
-    cy.get('[data-cy="tab-knowledge-base"]').click();
+    cy.knowledgeBaseView();
 
     cy.getBySel("add-knowledge-button").click();
 
@@ -197,52 +129,77 @@ describe("Agent page", () => {
 
     cy.getBySel("add-item-answer").type("Okay?");
 
-    cy.intercept("POST", `/api/knowledge`, this.knowledgesQA);
-    cy.intercept(
-      "GET",
-      `/api/knowledge?agentId=${this.agent.id}`,
-      this.knowledgesPost
-    );
+    cy.intercept("POST", `/api/knowledge`, {
+      fixture: "agent-page/knowledges/create/knowledge.qa.post.json",
+    });
+    cy.intercept("GET", `/api/knowledge?agentId=${this.agent.id}`, {
+      fixture: "agent-page/knowledges/knowledges.json",
+    });
 
     cy.getBySel("finish").click();
 
     cy.waitEvent("KNOWLEDGE_CREATED");
 
-    cy.checkRoute(`/agents/${this.agent.id}`);
-
-    cy.waitEvent("KNOWLEDGE_LOADED");
+    cy.getBySel("delete-knowledge-button").should("have.length", 4);
   });
 
-  it("delete url in knowledge base", function () {
-    cy.visit(`/agents/${this.agent.id}`);
-
+  it("adds a Data knowledge item", function () {
     cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
+    cy.intercept("GET", `/api/knowledge?agentId=${this.agent.id}`, {
+      fixture: "agent-page/knowledges/knowledges.empty.json",
+    });
 
-    cy.intercept(
-      "GET",
-      `/api/knowledge?agentId=${this.agent.id}`,
-      this.knowledgesDelete
-    );
+    cy.knowledgeBaseView();
 
-    cy.get('[data-cy="tab-knowledge-base"]').click();
+    cy.getBySel("add-knowledge-button").click();
+
+    cy.getBySel("add-item-select").click();
+
+    cy.getBySel("add-type-menu-DATA").click();
+
+    cy.getBySel("finish").should("be.disabled");
+
+    cy.getBySel("add-item-input").type('{"key":"value"}', {
+      parseSpecialCharSequences: false,
+    });
+
+    cy.intercept("POST", `/api/knowledge`, {
+      fixture: "agent-page/knowledges/create/knowledge.data.post.json",
+    });
+    cy.intercept("GET", `/api/knowledge?agentId=${this.agent.id}`, {
+      fixture: "agent-page/knowledges/knowledges.json",
+    });
+
+    cy.getBySel("finish").click();
+
+    cy.waitEvent("KNOWLEDGE_CREATED");
+
+    cy.getBySel("delete-knowledge-button").should("have.length", 4);
+  });
+
+  it("deletes a URL knowledge item", function () {
+    cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
+    cy.intercept("GET", `/api/knowledge?agentId=${this.agent.id}`, {
+      fixture: "agent-page/knowledges/knowledges.json",
+    });
+
+    cy.knowledgeBaseView();
 
     cy.getBySel("type-select").click();
 
     cy.getBySel("type-menu-URL").click();
 
-    cy.getBySel("delete-knowledge-button").eq(1).click();
+    cy.getBySel("delete-knowledge-button").eq(0).click();
 
     cy.intercept(
       "DELETE",
-      `/api/knowledge/${this.knowledgesUrlDelete.id}`,
-      this.knowledgesUrlDelete
+      `/api/knowledge/11111111-1111-4111-8111-111111111111`,
+      { fixture: "agent-page/knowledges/delete/knowledge.url.delete.json" }
     );
 
-    cy.intercept(
-      "GET",
-      `/api/knowledge?agentId=${this.agent.id}`,
-      this.knowledges
-    );
+    cy.intercept("GET", `/api/knowledge?agentId=${this.agent.id}`, {
+      fixture: "agent-page/knowledges/knowledges.empty.json",
+    });
 
     cy.getBySel("confirmation-delete").should("be.visible");
 
@@ -250,41 +207,32 @@ describe("Agent page", () => {
 
     cy.waitEvent("KNOWLEDGE_DELETED");
 
-    cy.checkRoute(`/agents/${this.agent.id}`);
-
-    cy.waitEvent("KNOWLEDGE_LOADED");
+    cy.getBySel("delete-knowledge-button").should("not.exist");
   });
 
-  it("delete text in knowledge base", function () {
-    cy.visit(`/agents/${this.agent.id}`);
-
+  it("deletes a Text knowledge item", function () {
     cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
+    cy.intercept("GET", `/api/knowledge?agentId=${this.agent.id}`, {
+      fixture: "agent-page/knowledges/knowledges.json",
+    });
 
-    cy.intercept(
-      "GET",
-      `/api/knowledge?agentId=${this.agent.id}`,
-      this.knowledgesDelete
-    );
-
-    cy.get('[data-cy="tab-knowledge-base"]').click();
+    cy.knowledgeBaseView();
 
     cy.getBySel("type-select").click();
 
     cy.getBySel("type-menu-TEXT").click();
 
-    cy.getBySel("delete-knowledge-button").eq(1).click();
+    cy.getBySel("delete-knowledge-button").eq(0).click();
 
     cy.intercept(
       "DELETE",
-      `/api/knowledge/${this.knowledgesTextDelete.id}`,
-      this.knowledgesTextDelete
+      `/api/knowledge/22222222-2222-4222-8222-222222222222`,
+      { fixture: "agent-page/knowledges/delete/knowledge.text.delete.json" }
     );
 
-    cy.intercept(
-      "GET",
-      `/api/knowledge?agentId=${this.agent.id}`,
-      this.knowledges
-    );
+    cy.intercept("GET", `/api/knowledge?agentId=${this.agent.id}`, {
+      fixture: "agent-page/knowledges/knowledges.empty.json",
+    });
 
     cy.getBySel("confirmation-delete").should("be.visible");
 
@@ -292,41 +240,32 @@ describe("Agent page", () => {
 
     cy.waitEvent("KNOWLEDGE_DELETED");
 
-    cy.checkRoute(`/agents/${this.agent.id}`);
-
-    cy.waitEvent("KNOWLEDGE_LOADED");
+    cy.getBySel("delete-knowledge-button").should("not.exist");
   });
 
-  it("delete qa in knowledge base", function () {
-    cy.visit(`/agents/${this.agent.id}`);
-
+  it("deletes a QA knowledge item", function () {
     cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
+    cy.intercept("GET", `/api/knowledge?agentId=${this.agent.id}`, {
+      fixture: "agent-page/knowledges/knowledges.json",
+    });
 
-    cy.intercept(
-      "GET",
-      `/api/knowledge?agentId=${this.agent.id}`,
-      this.knowledgesDelete
-    );
-
-    cy.get('[data-cy="tab-knowledge-base"]').click();
+    cy.knowledgeBaseView();
 
     cy.getBySel("type-select").click();
 
     cy.getBySel("type-menu-QA").click();
 
-    cy.getBySel("delete-knowledge-button").eq(1).click();
+    cy.getBySel("delete-knowledge-button").eq(0).click();
 
     cy.intercept(
       "DELETE",
-      `/api/knowledge/${this.knowledgesQADelete.id}`,
-      this.knowledgesQADelete
+      `/api/knowledge/33333333-3333-4333-8333-333333333333`,
+      { fixture: "agent-page/knowledges/delete/knowledge.qa.delete.json" }
     );
 
-    cy.intercept(
-      "GET",
-      `/api/knowledge?agentId=${this.agent.id}`,
-      this.knowledges
-    );
+    cy.intercept("GET", `/api/knowledge?agentId=${this.agent.id}`, {
+      fixture: "agent-page/knowledges/knowledges.empty.json",
+    });
 
     cy.getBySel("confirmation-delete").should("be.visible");
 
@@ -334,139 +273,219 @@ describe("Agent page", () => {
 
     cy.waitEvent("KNOWLEDGE_DELETED");
 
-    cy.checkRoute(`/agents/${this.agent.id}`);
-
-    cy.waitEvent("KNOWLEDGE_LOADED");
+    cy.getBySel("delete-knowledge-button").should("not.exist");
   });
 
-  it("answers supervising", function () {
-    cy.visit(`/agents/${this.agent.id}`);
-
-    cy.intercept(
-      "GET",
-      `/api/agents/${this.agent.id}/supervisings`,
-      this.supervising
-    );
+  it("deletes a Data knowledge item", function () {
     cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
+    cy.intercept("GET", `/api/knowledge?agentId=${this.agent.id}`, {
+      fixture: "agent-page/knowledges/knowledges.json",
+    });
 
-    cy.get('[data-cy="tab-supervisings"]').click();
-
-    cy.getBySel("type-select").should("exist");
+    cy.knowledgeBaseView();
 
     cy.getBySel("type-select").click();
 
-    cy.getBySel("type-menu-IN_PROGRESS").click();
+    cy.getBySel("type-menu-DATA").click();
+
+    cy.getBySel("delete-knowledge-button").eq(0).click();
 
     cy.intercept(
-      "GET",
-      `/api/agents/${this.agent.id}/supervisings?status=IN_PROGRESS`,
-      this.supervisingStatus
+      "DELETE",
+      `/api/knowledge/44444444-4444-4444-8444-444444444444`,
+      { fixture: "agent-page/knowledges/delete/knowledge.data.delete.json" }
     );
 
-    cy.getBySel("answer-supervise").should("exist");
+    cy.intercept("GET", `/api/knowledge?agentId=${this.agent.id}`, {
+      fixture: "agent-page/knowledges/knowledges.empty.json",
+    });
 
-    cy.getBySel("answer-supervise").eq(0).type("We are 7/24 coffee shop");
+    cy.getBySel("confirmation-delete").should("be.visible");
+
+    cy.getBySel("confirmation-delete").click();
+
+    cy.waitEvent("KNOWLEDGE_DELETED");
+
+    cy.getBySel("delete-knowledge-button").should("not.exist");
+  });
+
+  it("opens a blueprint flow from the blueprints tab", function () {
+    cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
+    cy.intercept("GET", `/api/agents/${this.agent.id}/blueprints`, {
+      fixture: "agent-page/blueprints/blueprints.json",
+    });
+
+    cy.fixture("agent-page/blueprints/blueprints.json").then((blueprints) => {
+      cy.intercept(
+        "GET",
+        `/api/blueprints/ba6f7911-e232-469d-9060-2881852f6e59`,
+        blueprints[0]
+      );
+    });
+
+    cy.visit(`/agents`);
+    cy.getBySel("agent-card-more-vert").first().click();
+    cy.getBySel("agent-card-menu-view").click();
+    cy.getBySel("tab-blueprints").should("be.visible");
+    cy.getBySel("tab-blueprints").click();
 
     cy.intercept(
       "PATCH",
-      `/api/supervisings/${this.supervisingPatch.id}`,
-      this.supervisingPatch
+      `/api/blueprints/ba6f7911-e232-469d-9060-2881852f6e59`,
+      { fixture: "agent-page/blueprints/blueprint.patch.json" }
     );
 
-    cy.intercept(
-      "GET",
-      `/api/agents/${this.agent.id}/supervisings`,
-      this.supervisingPatchGet
-    );
+    cy.intercept("GET", `/api/blueprints`, {
+      fixture: "agent-page/blueprints/blueprints.json",
+    });
 
-    cy.getBySel("send-answer").eq(0).click();
+    cy.intercept("GET", `/api/mcps`, { fixture: "agent-page/mcps.json" });
 
-    cy.getBySel("type-select").click();
+    cy.intercept("GET", `/api/mcps/actions`, {
+      fixture: "agent-page/actions.json",
+    });
 
-    cy.getBySel("type-menu-All").click();
+    cy.getBySel("edit-icon").should("be.visible");
+    cy.getBySel("edit-icon").first().click();
 
-    cy.intercept(
-      "GET",
-      `/api/agents/${this.agent.id}/supervisings?status=ANSWERED`,
-      this.supervisingStatusAnswered
-    );
-
-    cy.getBySel("supervise-card").should("have.length", 1);
+    cy.getBySel("blueprint-flow-canvas").should("be.visible");
   });
 
-  it("goes task page", function () {
-    cy.visit(`/agents/${this.agent.id}`);
-
+  it("opens the resolve supervise flow from the supervisings tab", function () {
     cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
-
-    cy.intercept("GET", `/api/tasks`, {
-      fixture: "tasks/task.single.json",
+    cy.intercept("GET", `/api/agents/${this.agent.id}/supervisings`, {
+      fixture: "agent-page/supervisings/supervisings.json",
     });
 
-    cy.get('[data-cy="tab-tasks"]').click();
+    cy.visit(`/agents`);
+    cy.getBySel("agent-card-more-vert").first().click();
+    cy.getBySel("agent-card-menu-view").click();
+    cy.getBySel("tab-supervisings").should("be.visible");
+    cy.getBySel("tab-supervisings").click();
+
+    cy.getBySel("supervise-card").should("be.visible");
+
+    cy.getBySel("resolve-supervise-button").click();
+
+    cy.getBySel("blueprint-drawer-layout").should("be.visible");
   });
 
-  it("add task", function () {
-    cy.visit(`/agents/${this.agent.id}`);
-
+  it("selects a task and opens its task flow", function () {
     cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
-
     cy.intercept("GET", `/api/tasks?agentId=${this.agent.id}`, {
-      fixture: "tasks/task.single.json",
+      fixture: "agent-page/tasks/tasks.json",
     });
-
-    cy.get('[data-cy="tab-tasks"]').click();
-
-    cy.getBySel("add-task-button").click();
-
-    cy.getBySel("add-task-description").type(
-      "Order napoli coffee bean from our provider"
+    cy.intercept(
+      "GET",
+      `/api/tasks/aaaaaaa1-aaaa-4aaa-8aaa-aaaaaaaaaaa1/steps`,
+      { fixture: "agent-page/tasks/task.steps.json" }
     );
 
-    cy.intercept("POST", `/api/tasks`, {
-      fixture: "tasks/task.single.json",
-    });
+    cy.visit(`/agents`);
+    cy.getBySel("agent-card-more-vert").first().click();
+    cy.getBySel("agent-card-menu-view").click();
+    cy.getBySel("tab-tasks").should("be.visible");
+    cy.getBySel("tab-tasks").click();
 
-    cy.intercept("GET", `/api/tasks?agentId=${this.agent.id}`, {
-      fixture: "tasks/task.json",
-    });
+    cy.getBySel("task-list-item").first().click();
 
-    cy.getBySel("finish").click();
+    cy.getBySel("task-flow-button").click();
 
-    cy.getBySel("tasks-card")
-      .eq(1)
-      .should("contain.text", "Order napoli coffee bean from our provider");
+    cy.getBySel("task-flow-dialog").should("be.visible");
   });
 
-  it("shows task progresses", function () {
-    cy.visit(`/agents/${this.agent.id}`);
-
+  it("expands and minimizes the task details panel", function () {
     cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
-
     cy.intercept("GET", `/api/tasks?agentId=${this.agent.id}`, {
-      fixture: "tasks/task.single.json",
+      fixture: "agent-page/tasks/tasks.json",
+    });
+    cy.intercept(
+      "GET",
+      `/api/tasks/aaaaaaa1-aaaa-4aaa-8aaa-aaaaaaaaaaa1/steps`,
+      { fixture: "agent-page/tasks/task.steps.json" }
+    );
+
+    cy.visit(`/agents`);
+    cy.getBySel("agent-card-more-vert").first().click();
+    cy.getBySel("agent-card-menu-view").click();
+    cy.getBySel("tab-tasks").should("be.visible");
+    cy.getBySel("tab-tasks").click();
+
+    cy.getBySel("task-list-item").first().click();
+
+    cy.getBySel("task-details-toggle-expand")
+      .should("have.attr", "aria-label", "Expand")
+      .click();
+
+    cy.getBySel("task-details-toggle-expand")
+      .should("have.attr", "aria-label", "Minimize")
+      .click();
+
+    cy.getBySel("task-details-toggle-expand").should(
+      "have.attr",
+      "aria-label",
+      "Expand"
+    );
+  });
+
+  it("adds a channel from the channels tab", function () {
+    cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
+    cy.intercept("GET", `/api/channels`, {
+      fixture: "agent-page/channels/channels.empty.json",
+    });
+    cy.intercept("GET", `/api/blueprints`, {
+      fixture: "agent-page/blueprints/blueprints.json",
     });
 
-    cy.get('[data-cy="tab-tasks"]').click();
+    cy.visit(`/agents`);
+    cy.getBySel("agent-card-more-vert").first().click();
+    cy.getBySel("agent-card-menu-view").click();
+    cy.getBySel("tab-channels").should("be.visible");
+    cy.getBySel("tab-channels").click();
 
-    cy.intercept(
-      "GET",
-      `http://localhost:3000/api/tasks/8c88d077-99f1-482a-8575-879187b11ec9/progresses`,
-      {
-        fixture: "tasks/progress.json",
-      }
-    );
+    cy.getBySel("add-channel-button").click();
 
-    cy.intercept(
-      "GET",
-      `http://localhost:3000/api/tasks/8c88d077-99f1-482a-8575-879187b11ec9/steps`,
-      {
-        fixture: "tasks/progress.json",
-      }
-    );
+    cy.getBySel("open-add-channel-menu-button").click();
 
-    cy.getBySel("progress-button").click();
+    cy.getBySel("add-channel-option-slack").click();
 
-    cy.getBySel("progress-card").should("be.visible");
+    cy.getBySel(
+      "channel-blueprint-option-tbp-ba6f7911-e232-469d-9060-2881852f6e59"
+    ).click();
+
+    cy.intercept("POST", `/api/channels`, {
+      fixture: "agent-page/channels/channels.json",
+    }).as("createChannel");
+
+    cy.intercept("GET", `/api/channels`, {
+      fixture: "agent-page/channels/channels.json",
+    });
+
+    cy.getBySel("channel-wizard-connect-button").click();
+
+    cy.wait("@createChannel");
+
+    cy.getBySel("channel-wizard-connect-button").should("not.exist");
+  });
+
+  it("lists MCP servers from the mcps tab", function () {
+    cy.intercept("GET", `/api/agents/${this.agent.id}`, this.agent);
+    cy.intercept("GET", `/api/mcp-providers`, {
+      fixture: "agent-page/mcp/mcp-providers.json",
+    });
+    cy.intercept("GET", `/api/mcp-servers`, {
+      fixture: "agent-page/mcp/mcp-servers.empty.json",
+    });
+    cy.intercept("GET", `/api/agents/${this.agent.id}/mcp-servers`, {
+      fixture: "agent-page/mcp/mcp-servers.json",
+    });
+
+    cy.visit(`/agents`);
+    cy.getBySel("agent-card-more-vert").first().click();
+    cy.getBySel("agent-card-menu-view").click();
+    cy.getBySel("tab-mcps").should("be.visible");
+    cy.getBySel("tab-mcps").click();
+
+    cy.getBySel("mcp-server-card").should("have.length", 1);
   });
 });

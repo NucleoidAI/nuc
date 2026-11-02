@@ -6,6 +6,8 @@
   "scripts": {
     "prepare": "exit 0",
     "dev": "bun --watch server.ts",
+    "dataset": "bun scripts/dataset.ts",
+    "prebuild": "bun scripts/dataset.ts",
     "build": "node build.prod.js",
     "lint": "eslint . --ext .ts",
     "test": "bun test.ts",
@@ -13,7 +15,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-ec2": "^3.1085.0",
-    "@canmingir/link-express": "^1.7.32",
+    "@canmingir/link-express": "^1.7.40",
     "@opentelemetry/api": "^1.9.0",
     "@opentelemetry/exporter-prometheus": "^0.206.0",
     "@opentelemetry/host-metrics": "^0.36.2",

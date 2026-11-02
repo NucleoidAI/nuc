@@ -14,9 +14,7 @@ import {
   isApiNodeType,
   toInputProperty,
 } from "../ApiNode/apiNodes";
-
 import { Flow, FlowMiniMap } from "@canmingir/link/platform/components";
-
 import NodeConnectionOverlay, { type DragState } from "./NodeConnectionOverlay";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -291,7 +289,7 @@ export default function BlueprintFlow({
         )}
 
       <Flow
-        ref={flowRef}
+        ref={flowRef as React.MutableRefObject<never>}
         data={enrichedGraphData}
         plugin={blueprintFlowPlugin}
         editable={!readOnly}

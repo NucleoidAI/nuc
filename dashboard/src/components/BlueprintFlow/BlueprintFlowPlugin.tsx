@@ -17,7 +17,8 @@ const DECISION_ENDPOINT_LAYOUT_VARIANT: "split-icon-panel" | undefined =
 export const blueprintFlowPlugin = {
   id: "blueprintChart",
 
-  style: ({ node, style }) => {
+  style: (args) => {
+    const { node, style } = args;
     const styleTokens = style || {};
     const isComplete = node?.action === "PLATFORM:complete";
     const category = resolveNodeCategory(node);
@@ -68,7 +69,8 @@ export const blueprintFlowPlugin = {
     };
   },
 
-  edge: ({ node, child }) => {
+  edge: (args) => {
+    const { node, child } = args;
     if (node?.nodeType === "SWITCH" && child) {
       const label = (node?.cases || []).find(
         (switchCase) => switchCase.nodeId === child.id

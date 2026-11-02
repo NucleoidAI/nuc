@@ -20,6 +20,7 @@ jobs:
       PLATFORM_LLM: ${{ inputs.platform_llm || vars.E2E_PLATFORM_LLM || 'openrouter/qwen3-next-80b-a3b-instruct' }}
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
 
     steps:
       - name: Checkout code
@@ -34,6 +35,7 @@ jobs:
           bun run install:api
           bun run install:communication
           bun run install:mcp
+          cd api && bun run dataset
 
       - name: Check LLM credentials
         run: |

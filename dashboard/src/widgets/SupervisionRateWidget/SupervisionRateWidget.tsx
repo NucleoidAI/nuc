@@ -1,6 +1,8 @@
 import Chart from "react-apexcharts";
 import { useChart } from "@canmingir/link/platform/components";
-
+import { useMemo } from "react";
+import useSupervisingStats from "../../hooks/useSupervisingStats";
+import useTaskStats from "../../hooks/useTaskStats";
 import { Box, Card, Divider, Stack, Typography } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
 
@@ -15,18 +17,40 @@ const PALETTE_KEYS = [
 const MAX_ROWS_PER_COLUMN = 5;
 
 function SupervisionRateWidget({
-  totalRequests,
-  totalTasks,
-  waiting,
-  agentShares,
+  range,
+  agentOptions,
+  agentCounts,
 }: {
-  totalRequests: number;
-  totalTasks: number;
-  waiting: number;
-  agentShares: { agent: string; requests: number }[];
+  range: { from: string; to: string };
+  agentOptions: string[];
+  agentCounts: Map<string, number>;
 }) {
   const theme = useTheme();
 
+  const { getCount: getSupervisingCount } = useSupervisingStats();
+  const { getTaskCount } = useTaskStats();
+
+  const { count: waitingCount } = getSupervisingCount({
+    status: "IN_PROGRESS",
+    from: range.from,
+    to: range.to,
+  });
+
+  const { count: totalTasks } = getTaskCount({
+    from: range.from,
+    to: range.to,
+  });
+
+  const agentShares = useMemo(
+    () =>
+      agentOptions.map((agent) => ({
+        agent,
+        requests: agentCounts.get(agent) ?? 0,
+      })),
+    [agentOptions, agentCounts]
+  );
+
+  const totalRequests = waitingCount;
   const supervisionRate = totalTasks ? (totalRequests / totalTasks) * 100 : 0;
 
   const colors = agentShares.map((_, index) => {
@@ -187,7 +211,7 @@ function SupervisionRateWidget({
             color="primary.main"
             sx={{ fontWeight: 700 }}
           >
-            {waiting}
+            {waitingCount}
           </Typography>
           <Typography variant="body2" color="text.secondary">
             waiting

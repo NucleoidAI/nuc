@@ -1,7 +1,7 @@
 import Page from "../components/Page/Page";
 import SupervisionRateSeries from "../widgets/SupervisionRateSeries/SupervisionRateSeries";
 import SupervisionRateWidget from "../widgets/SupervisionRateWidget/SupervisionRateWidget";
-import SupervisionTable from "../components/SupervisionTable/SupervisionTable";
+import SupervisionTable from "../widgets/SupervisionTable/SupervisionTable";
 import TimeRangePicker from "../components/TimeRangePicker/TimeRangePicker";
 import { resolveTimeRange } from "../utils/resolveTimeRange";
 import { Box, Stack } from "@mui/material";

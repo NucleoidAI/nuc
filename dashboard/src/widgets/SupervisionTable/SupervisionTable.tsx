@@ -1,4 +1,4 @@
-import AgentDrawer from "../AgentDrawer/AgentDrawer";
+import AgentDrawer from "../../components/AgentDrawer/AgentDrawer";
 import { Iconify } from "@canmingir/link/platform/components";
 import { fElapsed } from "../../utils/formatTime";
 import useAgents from "../../hooks/useAgents";

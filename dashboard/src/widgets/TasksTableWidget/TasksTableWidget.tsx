@@ -2,9 +2,8 @@ import AgentDrawer from "../../components/AgentDrawer/AgentDrawer";
 import { Iconify } from "@canmingir/link/platform/components";
 import { fDateTime } from "../../utils/formatTime";
 import useAgents from "../../hooks/useAgents";
-import useLLMLogs from "../../hooks/useLLMLogs";
 import useTaskStats from "../../hooks/useTaskStats";
-import { useTeamTasks } from "../../hooks/useTasks";
+import useTasks from "../../hooks/useTasks";
 
 import {
   Box,
@@ -74,60 +73,35 @@ function TasksTableWidget({ range }: { range: { from: string; to: string } }) {
 
   const { getTeamAgents } = useAgents();
   const { agents } = getTeamAgents();
-  const { getUsageByTeam } = useLLMLogs();
   const { getStatusCounts } = useTaskStats();
-  const { tasks } = useTeamTasks(range);
-  const { usage } = getUsageByTeam(range);
+  const { getTasksWithAgents } = useTasks(
+    agentFilter === "ALL" ? "" : agentFilter
+  );
+  const { tasks } = getTasksWithAgents({ from: range.from, to: range.to });
   const { counts: statusCounts } = getStatusCounts({
     agentId: agentFilter === "ALL" ? undefined : agentFilter,
     from: range.from,
     to: range.to,
   });
 
-  const agentNameById = useMemo(() => {
-    const map = new Map<string, string>();
-    (agents ?? []).forEach((agent) => map.set(agent.id, agent.name));
-    return map;
-  }, [agents]);
-
-  const usageByTaskId = useMemo(() => {
-    const map = new Map<string, { tokens: number; durationMs: number }>();
-    usage.forEach((item) => {
-      const durationMs = item.logs.reduce(
-        (sum, log) => sum + (log.durationMs ?? 0),
-        0
-      );
-      map.set(item.task.id, {
-        tokens: item.totals.totalTokens,
-        durationMs,
-      });
-    });
-    return map;
-  }, [usage]);
-
   const taskRows = useMemo(() => {
-    return tasks.map((task) => {
-      const taskUsage = usageByTaskId.get(task.id);
-      return {
-        id: task.id,
-        description: task.description,
-        agent: agentNameById.get(task.agentId) ?? task.agentId,
-        agentId: task.agentId,
-        status: task.effectiveStatus,
-        startedAt: fDateTime(task.createdAt, "DD MMM, HH:mm") ?? "",
-        duration: taskUsage
-          ? `${(taskUsage.durationMs / 1000).toFixed(1)}s`
-          : "-",
-        tokens: taskUsage?.tokens ?? 0,
-      };
-    });
-  }, [tasks, agentNameById, usageByTaskId]);
+    return tasks.map((task) => ({
+      id: task.id,
+      description: task.description,
+      agent: task.Agent.name,
+      agentId: task.Agent.id,
+      status: task.effectiveStatus,
+      startedAt: fDateTime(task.createdAt, "DD MMM, HH:mm") ?? "",
+      duration: `${(task.durationMs / 1000).toFixed(1)}s`,
+      tokens: task.totalTokens,
+    }));
+  }, [tasks]);
 
   const filteredTasks = useMemo(() => {
-    return taskRows
-      .filter((task) => statusFilter === "ALL" || task.status === statusFilter)
-      .filter((task) => agentFilter === "ALL" || task.agentId === agentFilter);
-  }, [taskRows, statusFilter, agentFilter]);
+    return taskRows.filter(
+      (task) => statusFilter === "ALL" || task.status === statusFilter
+    );
+  }, [taskRows, statusFilter]);
 
   const goToTask = (agentId: string, taskId: string) => {
     const agent = (agents ?? []).find((a) => a.id === agentId);

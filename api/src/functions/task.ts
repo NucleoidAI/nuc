@@ -272,10 +272,25 @@ async function listWithAgents({
     ).map((row) => [row.taskId, row])
   );
 
+  const awaitingSupervisings = taskIds.length
+    ? await Supervising.findAll({
+        where: { status: "IN_PROGRESS", taskId: { [Op.in]: taskIds } },
+        attributes: ["taskId"],
+      })
+    : [];
+
+  const awaitingTaskIds = new Set(
+    awaitingSupervisings.map((supervising) => supervising.taskId)
+  );
+
   return taskInstances.map((task) => {
     const usage = usageByTask.get(task.id);
     return {
       ...task.toJSON(),
+      effectiveStatus:
+        task.status === "IN_PROGRESS" && awaitingTaskIds.has(task.id)
+          ? "AWAITING"
+          : task.status,
       durationMs: Number(usage?.durationMs ?? 0),
       inputTokens: Number(usage?.inputTokens ?? 0),
       outputTokens: Number(usage?.outputTokens ?? 0),

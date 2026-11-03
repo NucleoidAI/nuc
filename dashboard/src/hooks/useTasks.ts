@@ -7,6 +7,8 @@ import { publish, useEvent } from "@nucleoidai/react-event";
 
 type DependencyArray = object[];
 
+type EffectiveTaskStatus = "IN_PROGRESS" | "COMPLETED" | "FAILED" | "AWAITING";
+
 function useTasks(agentId: string, initialFetchState: DependencyArray = []) {
   const { Api } = useApi();
 
@@ -84,6 +86,47 @@ function useTasks(agentId: string, initialFetchState: DependencyArray = []) {
     publish("STEP_COMMENT_UPDATED", { stepId, comment });
   };
 
+  const getTasksWithAgents = (
+    params: {
+      status?: "IN_PROGRESS" | "COMPLETED" | "FAILED";
+      from?: string;
+      to?: string;
+    } = {}
+  ) => {
+    const query = new URLSearchParams();
+    if (params.status) query.set("status", params.status);
+    if (params.from) query.set("from", params.from);
+    if (params.to) query.set("to", params.to);
+    const queryString = query.toString();
+
+    const path = agentId ? `/tasks/agents/${agentId}` : "/tasks/agents";
+
+    const { data, loading, error, fetch } = Api(
+      () => http.get(`${path}${queryString ? `?${queryString}` : ""}`),
+      [agentId, params.status, params.from, params.to, taskStatus, taskCreated]
+    );
+
+    return {
+      tasks:
+        (data as {
+          id: string;
+          description: string;
+          status: "IN_PROGRESS" | "COMPLETED" | "FAILED";
+          effectiveStatus: EffectiveTaskStatus;
+          comment: string | null;
+          createdAt: string;
+          Agent: { id: string; name: string };
+          durationMs: number;
+          inputTokens: number;
+          outputTokens: number;
+          totalTokens: number;
+        }[]) ?? [],
+      loading,
+      error,
+      fetch,
+    };
+  };
+
   return {
     tasks: result.tasks,
     loading: result.loading,
@@ -94,52 +137,7 @@ function useTasks(agentId: string, initialFetchState: DependencyArray = []) {
     getSteps,
     createTask,
     updateStepComment,
-  };
-}
-
-export type EffectiveTaskStatus =
-  | "IN_PROGRESS"
-  | "COMPLETED"
-  | "FAILED"
-  | "AWAITING";
-
-export interface TeamTask {
-  id: string;
-  description: string;
-  result: string | null;
-  comment: string | null;
-  createdAt: string;
-  status: "IN_PROGRESS" | "COMPLETED" | "FAILED";
-  effectiveStatus: EffectiveTaskStatus;
-  agentId: string;
-  blueprintId: string | null;
-  sessionId: string | null;
-}
-
-export function useTeamTasks(range?: { from: string; to: string }) {
-  const { Api } = useApi();
-
-  const [taskStatus] = useEvent("TASK_STATUS_CHANGED", null);
-  const [taskCreated] = useEvent("TASK_CREATED", null);
-  const [teamSelected] = useEvent("PROJECT_SELECTED", { projectId: null });
-
-  const query = new URLSearchParams();
-  if (range) {
-    query.set("from", range.from);
-    query.set("to", range.to);
-  }
-  const queryString = query.toString();
-
-  const { data, loading, error, fetch } = Api(
-    () => http.get(`/tasks${queryString ? `?${queryString}` : ""}`),
-    [range?.from, range?.to, taskStatus, taskCreated, teamSelected]
-  );
-
-  return {
-    tasks: (data as TeamTask[]) ?? [],
-    loading,
-    error,
-    fetch,
+    getTasksWithAgents,
   };
 }
 

@@ -165,6 +165,7 @@ export default function ApiFieldsPanel({
         const required = field?.required !== false;
         const dot = (
           <Dot
+            className="anim-hover-scale"
             variant={side}
             bound={Boolean(handle.bound)}
             interactive={handle.interactive !== false}

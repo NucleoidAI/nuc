@@ -98,6 +98,7 @@ const TaskFlowNode = ({
 
   const card = (
     <NodeWrapper
+      className="anim-hover-tilt"
       onClick={onClick}
       sx={onClick ? { cursor: "pointer" } : undefined}
     >

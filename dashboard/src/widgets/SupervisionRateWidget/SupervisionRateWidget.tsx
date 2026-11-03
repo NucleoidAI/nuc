@@ -1,7 +1,6 @@
 import Chart from "react-apexcharts";
 import { useChart } from "@canmingir/link/platform/components";
 import { useMemo } from "react";
-import useSupervisingStats from "../../hooks/useSupervisingStats";
 import useTaskStats from "../../hooks/useTaskStats";
 import { Box, Card, Divider, Stack, Typography } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
@@ -18,36 +17,33 @@ const MAX_ROWS_PER_COLUMN = 5;
 
 function SupervisionRateWidget({
   range,
-  agentOptions,
-  agentCounts,
 }: {
   range: { from: string; to: string };
-  agentOptions: string[];
-  agentCounts: Map<string, number>;
 }) {
   const theme = useTheme();
 
-  const { getCount: getSupervisingCount } = useSupervisingStats();
-  const { getTaskCount } = useTaskStats();
+  const { getStatusCounts, getAgentDistribution } = useTaskStats();
 
-  const { count: waitingCount } = getSupervisingCount({
-    status: "IN_PROGRESS",
+  const { counts: statusCounts } = getStatusCounts({
     from: range.from,
     to: range.to,
   });
 
-  const { count: totalTasks } = getTaskCount({
+  const { distribution } = getAgentDistribution({
     from: range.from,
     to: range.to,
   });
+
+  const totalTasks = statusCounts.total;
+  const waitingCount = statusCounts.AWAITING;
 
   const agentShares = useMemo(
     () =>
-      agentOptions.map((agent) => ({
-        agent,
-        requests: agentCounts.get(agent) ?? 0,
+      distribution.agents.map((agent) => ({
+        agent: agent.name,
+        requests: agent.count,
       })),
-    [agentOptions, agentCounts]
+    [distribution]
   );
 
   const totalRequests = waitingCount;

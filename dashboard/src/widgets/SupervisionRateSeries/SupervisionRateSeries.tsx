@@ -1,4 +1,5 @@
 import Chart from "react-apexcharts";
+import useAgents from "../../hooks/useAgents";
 import { useChart } from "@canmingir/link/platform/components";
 import useSupervisingStats from "../../hooks/useSupervisingStats";
 import { useTheme } from "@mui/material/styles";
@@ -7,20 +8,21 @@ import { Box, Card, MenuItem, Select, Stack, Typography } from "@mui/material";
 import { useMemo, useState } from "react";
 
 const SupervisionRateSeries = ({
-  agents,
-  agentOptions,
   range,
-  setSelectedAgent,
 }: {
-  agents: { id: string; name: string }[];
-  agentOptions: string[];
   range: { from: string; to: string };
-  setSelectedAgent: (agent: { id: string; name: string }) => void;
 }) => {
   const theme = useTheme();
   const [trendScope, setTrendScope] = useState<string>("Team");
 
+  const { getTeamAgents } = useAgents();
+  const { agents } = getTeamAgents();
   const { getDailyRate } = useSupervisingStats();
+
+  const agentOptions = useMemo(
+    () => (agents ?? []).map((agent) => agent.name),
+    [agents]
+  );
 
   const trendScopeOptions = useMemo(
     () => ["Team", ...agentOptions],
@@ -87,14 +89,7 @@ const SupervisionRateSeries = ({
           size="small"
           value={trendScope}
           onChange={(e) => {
-            const value = e.target.value;
-            setTrendScope(value);
-            if (value !== "Team") {
-              const agent = (agents ?? []).find((a) => a.name === value);
-              if (agent) {
-                setSelectedAgent(agent);
-              }
-            }
+            setTrendScope(e.target.value);
           }}
           sx={{ minWidth: 160 }}
           startAdornment={

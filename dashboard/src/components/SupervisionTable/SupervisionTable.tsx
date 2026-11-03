@@ -1,5 +1,8 @@
+import AgentDrawer from "../AgentDrawer/AgentDrawer";
 import { Iconify } from "@canmingir/link/platform/components";
-import React from "react";
+import { fElapsed } from "../../utils/formatTime";
+import useAgents from "../../hooks/useAgents";
+import useSupervisings from "../../hooks/useSupervisings";
 
 import {
   Box,
@@ -15,30 +18,60 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { useMemo, useState } from "react";
 
 const SupervisionTable = ({
-  agentFilter,
-  setAgentFilter,
-  agentOptions,
-  agentCounts,
-  setScope,
-  filteredPending,
-  goToSupervising,
+  range,
 }: {
-  agentFilter: string;
-  setAgentFilter: (value: string) => void;
-  agentOptions: string[];
-  agentCounts: Map<string, number>;
-  setScope: (value: "TEAM" | "AGENT") => void;
-  filteredPending: {
-    id: string;
-    waiting: number;
-    agent: string;
-    task: string;
-    agentId: string;
-  }[];
-  goToSupervising: (agentId: string) => void;
+  range: { from: string; to: string };
 }) => {
+  const { getTeamAgents } = useAgents();
+  const { agents } = getTeamAgents();
+  const { getTeamSupervisingWithAgents } = useSupervisings();
+
+  const [scope, setScope] = useState<"TEAM" | "AGENT">("TEAM");
+  const [agentFilter, setAgentFilter] = useState<string>("");
+  const [selectedAgent, setSelectedAgent] = useState(null);
+  const [agentDrawerOpen, setAgentDrawerOpen] = useState(false);
+
+  const { supervisings } = getTeamSupervisingWithAgents("IN_PROGRESS", range);
+
+  const pending = useMemo(() => {
+    return supervisings.map((item) => ({
+      id: item.id,
+      task: item.question,
+      agent: item.Agent,
+      waiting: fElapsed(item.createdAt),
+      step: "",
+    }));
+  }, [supervisings]);
+
+  const agentCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    pending.forEach((item) => {
+      counts.set(item.agent.name, (counts.get(item.agent.name) ?? 0) + 1);
+    });
+    return counts;
+  }, [pending]);
+
+  const agentOptions = useMemo(
+    () => Array.from(agentCounts.keys()),
+    [agentCounts]
+  );
+
+  const filteredPending = useMemo(
+    () =>
+      scope === "TEAM" || !agentFilter
+        ? pending
+        : pending.filter((item) => item.agent.name === agentFilter),
+    [pending, scope, agentFilter]
+  );
+
+  const goToSupervising = (agent: { id: string; name: string }) => {
+    setSelectedAgent(agent);
+    setAgentDrawerOpen(true);
+  };
+
   return (
     <Card
       sx={{
@@ -120,7 +153,7 @@ const SupervisionTable = ({
                 <TableRow
                   key={item.id}
                   hover
-                  onClick={() => goToSupervising(item.agentId)}
+                  onClick={() => goToSupervising(item.agent)}
                   sx={{ cursor: "pointer" }}
                 >
                   <TableCell sx={{ whiteSpace: "nowrap" }}>
@@ -128,7 +161,7 @@ const SupervisionTable = ({
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                      {item.agent}
+                      {item.agent.name}
                     </Typography>
                   </TableCell>
                   <TableCell sx={{ maxWidth: 480 }}>
@@ -157,6 +190,19 @@ const SupervisionTable = ({
           </TableBody>
         </Table>
       </Box>
+
+      {agentDrawerOpen && (
+        <AgentDrawer
+          open={agentDrawerOpen}
+          onClose={() => {
+            setAgentDrawerOpen(false);
+            setSelectedAgent(null);
+          }}
+          agent={selectedAgent}
+          initialTab="supervisings"
+          allAgentIds={(agents ?? []).map((a) => a.id)}
+        />
+      )}
     </Card>
   );
 };

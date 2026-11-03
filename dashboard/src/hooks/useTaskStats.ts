@@ -19,6 +19,11 @@ type AgentTaskOverview = {
   totalTokens: number;
 };
 
+type AgentTaskDistribution = {
+  total: number;
+  agents: Array<{ agentId: string; name: string; count: number }>;
+};
+
 type TaskStatusCounts = {
   total: number;
   COMPLETED: number;
@@ -68,6 +73,22 @@ function useTaskStats() {
 
     return {
       overview: (data as AgentTaskOverview[]) ?? [],
+      loading,
+      error,
+      fetch,
+    };
+  };
+
+  const getAgentDistribution = (params: { from: string; to: string }) => {
+    const query = new URLSearchParams({ from: params.from, to: params.to });
+
+    const { data, loading, error, fetch } = Api(
+      () => http.get(`/statistics/tasks/agents?${query.toString()}`),
+      [params.from, params.to]
+    );
+
+    return {
+      distribution: (data as AgentTaskDistribution) ?? { total: 0, agents: [] },
       loading,
       error,
       fetch,
@@ -151,6 +172,7 @@ function useTaskStats() {
   return {
     getDailyTrend,
     getAgentOverview,
+    getAgentDistribution,
     getStatusCounts,
     getTaskCount,
     getTokenUsage,

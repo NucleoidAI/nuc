@@ -1,5 +1,6 @@
 import Chart from "react-apexcharts";
 import dayjs from "dayjs";
+import useAgents from "../../hooks/useAgents";
 import { useChart } from "@canmingir/link/platform/components";
 import { useMemo } from "react";
 import useTaskStats from "../../hooks/useTaskStats";
@@ -8,17 +9,17 @@ import { useTheme } from "@mui/material/styles";
 import { Card, MenuItem, Select, Stack, Typography } from "@mui/material";
 
 function TaskSeriesWidget({
-  agents,
   range,
   selectedAgentId,
   onSelectAgent,
 }: {
-  agents: { id: string; name: string }[];
   range: { from: string; to: string };
   selectedAgentId: string;
   onSelectAgent: (agentId: string) => void;
 }) {
   const theme = useTheme();
+  const { getTeamAgents } = useAgents();
+  const { agents } = getTeamAgents();
   const { getDailyTrend } = useTaskStats();
 
   const { trend: taskTrend } = getDailyTrend({
@@ -103,7 +104,7 @@ function TaskSeriesWidget({
           sx={{ minWidth: 180 }}
         >
           <MenuItem value="team">Team</MenuItem>
-          {agents.map((agent) => (
+          {(agents ?? []).map((agent) => (
             <MenuItem key={agent.id} value={agent.id}>
               {agent.name}
             </MenuItem>

@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-ec2": "^3.1085.0",
-    "@canmingir/link": "^1.2.91",
+    "@canmingir/link": "^1.2.92",
     "concurrently": "^9.1.2"
   },
   "devDependencies": {

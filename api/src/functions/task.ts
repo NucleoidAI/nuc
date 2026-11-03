@@ -2,6 +2,7 @@ import Agent from "../models/Agent";
 import Step from "../models/Step";
 import Task from "../models/Task";
 import { event } from "@canmingir/link-express/event/client";
+import llmLog from "./llmLog";
 
 async function create({
   agentId,
@@ -10,6 +11,7 @@ async function create({
   sessionId,
   inheritedSteps,
   request,
+  debug = false,
 }: {
   agentId: string;
   description: string;
@@ -17,6 +19,7 @@ async function create({
   sessionId?: string;
   inheritedSteps?: object[];
   request?: { nodeId: string; body: Record<string, unknown> };
+  debug?: boolean;
 }) {
   const task = await Task.create({
     agentId,
@@ -25,6 +28,7 @@ async function create({
     blueprintId,
     sessionId,
     inheritedSteps: inheritedSteps?.length ? inheritedSteps : null,
+    debug,
   });
 
   if (request) {
@@ -45,6 +49,7 @@ async function create({
     description,
     blueprintId,
     sessionId,
+    debug,
   });
 
   return task;
@@ -126,7 +131,7 @@ async function get({ taskId }: { taskId: string }) {
 }
 
 async function count({ blueprintId }: { blueprintId: string }) {
-  return Task.count({ where: { blueprintId } });
+  return Task.count({ where: { blueprintId, debug: false } });
 }
 
 async function getWithSteps({ taskId }: { taskId: string }) {
@@ -302,6 +307,23 @@ async function listSteps({ taskId }: { taskId: string }) {
     }));
 }
 
+async function logs({ taskId }: { taskId: string }) {
+  const [taskData, steps, llm] = await Promise.all([
+    get({ taskId }),
+    listSteps({ taskId }),
+    llmLog.listByTask({ taskId }),
+  ]);
+
+  const entries = [
+    ...steps.map((step) => ({ type: "STEP" as const, ...step })),
+    ...llm.logs.map((log) => ({ type: "LLM" as const, ...log })),
+  ].sort(
+    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+  );
+
+  return { task: taskData, totals: llm.totals, entries };
+}
+
 export default {
   create,
   get,
@@ -314,4 +336,5 @@ export default {
   updateStep,
   updateStepComment,
   listSteps,
+  logs,
 };

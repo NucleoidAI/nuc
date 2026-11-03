@@ -59,6 +59,11 @@ class Task extends Model {
   @Column(DataType.JSON)
   declare inheritedSteps: object[] | null;
 
+  @AllowNull(false)
+  @Default(false)
+  @Column(DataType.BOOLEAN)
+  declare debug: boolean;
+
   declare Agent?: any;
 
   declare Blueprint?: any;

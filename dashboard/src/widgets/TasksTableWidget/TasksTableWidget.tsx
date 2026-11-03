@@ -116,6 +116,10 @@ function TasksTableWidget({ range }: { range: { from: string; to: string } }) {
     1,
     Math.ceil(filteredTasks.length / TASKS_PER_PAGE)
   );
+  if (tasksPage > tasksPageCount) {
+    setTasksPage(tasksPageCount);
+  }
+
   const pagedTasks = filteredTasks.slice(
     (tasksPage - 1) * TASKS_PER_PAGE,
     tasksPage * TASKS_PER_PAGE

@@ -8,7 +8,6 @@ import { fElapsed } from "../../utils/formatTime";
 import { resolveTimeRange } from "../../utils/resolveTimeRange";
 import useAgents from "../../hooks/useAgents";
 import useSupervisings from "../../hooks/useSupervisings";
-import useTaskStats from "../../hooks/useTaskStats";
 
 import { useMemo, useState } from "react";
 
@@ -16,12 +15,11 @@ function OperationWidget() {
   const { getTeamAgents } = useAgents();
   const { agents } = getTeamAgents();
   const { getTeamSupervisingByStatus } = useSupervisings();
-  const { getDailyTrend } = useTaskStats();
   const [scope, setScope] = useState<"TEAM" | "AGENT">("TEAM");
   const [agentFilter, setAgentFilter] = useState<string>("");
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [agentDrawerOpen, setAgentDrawerOpen] = useState(false);
-  const [dateRange, setDateRange] = useState<string>("Last 7 days");
+  const [dateRange, setDateRange] = useState<string>("Last 30 days");
   const [customFrom, setCustomFrom] = useState<string>("");
   const [customTo, setCustomTo] = useState<string>("");
 
@@ -89,25 +87,6 @@ function OperationWidget() {
     [pending, scope, agentFilter]
   );
 
-  const { trend: taskTrend } = getDailyTrend({
-    from: range.from,
-    to: range.to,
-  });
-
-  const totalTasks = useMemo(
-    () => taskTrend.reduce((sum, row) => sum + row.count, 0),
-    [taskTrend]
-  );
-
-  const agentShares = useMemo(
-    () =>
-      agentOptions.map((agent) => ({
-        agent,
-        requests: agentCounts.get(agent) ?? 0,
-      })),
-    [agentOptions, agentCounts]
-  );
-
   return (
     <Stack spacing={2}>
       <TimeRangePicker
@@ -120,10 +99,9 @@ function OperationWidget() {
       />
 
       <SupervisionRateWidget
-        totalRequests={pending.length}
-        totalTasks={totalTasks}
-        waiting={pending.length}
-        agentShares={agentShares}
+        range={range}
+        agentOptions={agentOptions}
+        agentCounts={agentCounts}
       />
 
       <SupervisionRateSeries

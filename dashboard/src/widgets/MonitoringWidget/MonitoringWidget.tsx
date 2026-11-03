@@ -12,7 +12,7 @@ function MonitoringWidget() {
   const { getTeamAgents } = useAgents();
   const { agents } = getTeamAgents();
 
-  const [range, setRange] = useState<string>("Last 7 days");
+  const [range, setRange] = useState<string>("Last 30 days");
   const [customFrom, setCustomFrom] = useState<string>("");
   const [customTo, setCustomTo] = useState<string>("");
   const [selectedAgentId, setSelectedAgentId] = useState<string>("team");

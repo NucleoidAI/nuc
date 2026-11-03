@@ -7,7 +7,7 @@ import { resolveTimeRange } from "../../utils/resolveTimeRange";
 import { useMemo, useState } from "react";
 
 function ReportsWidget() {
-  const [range, setRange] = useState<string>("Last 7 days");
+  const [range, setRange] = useState<string>("Last 30 days");
   const [customFrom, setCustomFrom] = useState<string>("");
   const [customTo, setCustomTo] = useState<string>("");
 

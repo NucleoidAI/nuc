@@ -3,6 +3,7 @@ import { Iconify } from "@canmingir/link/platform/components";
 import { fDateTime } from "../../utils/formatTime";
 import useAgents from "../../hooks/useAgents";
 import useLLMLogs from "../../hooks/useLLMLogs";
+import useTaskStats from "../../hooks/useTaskStats";
 import { useTeamTasks } from "../../hooks/useTasks";
 
 import {
@@ -74,8 +75,14 @@ function TasksTableWidget({ range }: { range: { from: string; to: string } }) {
   const { getTeamAgents } = useAgents();
   const { agents } = getTeamAgents();
   const { getUsageByTeam } = useLLMLogs();
+  const { getStatusCounts } = useTaskStats();
   const { tasks } = useTeamTasks(range);
   const { usage } = getUsageByTeam(range);
+  const { counts: statusCounts } = getStatusCounts({
+    agentId: agentFilter === "ALL" ? undefined : agentFilter,
+    from: range.from,
+    to: range.to,
+  });
 
   const agentNameById = useMemo(() => {
     const map = new Map<string, string>();
@@ -116,19 +123,6 @@ function TasksTableWidget({ range }: { range: { from: string; to: string } }) {
     });
   }, [tasks, agentNameById, usageByTaskId]);
 
-  const statusCounts = useMemo(() => {
-    const counts: Record<TaskStatus, number> = {
-      COMPLETED: 0,
-      IN_PROGRESS: 0,
-      AWAITING: 0,
-      FAILED: 0,
-    };
-    taskRows.forEach((task) => {
-      counts[task.status] += 1;
-    });
-    return counts;
-  }, [taskRows]);
-
   const filteredTasks = useMemo(() => {
     return taskRows
       .filter((task) => statusFilter === "ALL" || task.status === statusFilter)
@@ -154,7 +148,7 @@ function TasksTableWidget({ range }: { range: { from: string; to: string } }) {
   );
 
   const statusFilters: Array<{ key: "ALL" | TaskStatus; label: string }> = [
-    { key: "ALL", label: `All ${taskRows.length}` },
+    { key: "ALL", label: `All ${statusCounts.total}` },
     { key: "COMPLETED", label: `Completed ${statusCounts.COMPLETED}` },
     { key: "IN_PROGRESS", label: `In progress ${statusCounts.IN_PROGRESS}` },
     {

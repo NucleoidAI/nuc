@@ -10,23 +10,22 @@ function TaskDonutWidget({
   range: { from: string; to: string };
   selectedAgentId: string;
 }) {
-  const { getAgentOverview } = useTaskStats();
+  const { getAgentOverview, getStatusCounts } = useTaskStats();
 
   const { overview } = getAgentOverview({ from: range.from, to: range.to });
+  const { counts } = getStatusCounts({ from: range.from, to: range.to });
 
-  const teamBreakdown = useMemo(() => {
-    const totals = overview.reduce(
-      (acc, agent) => {
-        acc.total += agent.total;
-        acc.completed += agent.COMPLETED;
-        acc.failed += agent.FAILED;
-        acc.inProgress += agent.IN_PROGRESS + agent.AWAITING;
-        return acc;
-      },
-      { total: 0, completed: 0, failed: 0, inProgress: 0 }
-    );
-    return { id: "team", name: "Team", ...totals };
-  }, [overview]);
+  const teamBreakdown = useMemo(
+    () => ({
+      id: "team",
+      name: "Team",
+      total: counts.total,
+      completed: counts.COMPLETED,
+      failed: counts.FAILED,
+      inProgress: counts.IN_PROGRESS + counts.AWAITING,
+    }),
+    [counts]
+  );
 
   const selectedAgentBreakdown = useMemo(() => {
     if (selectedAgentId === "team") return null;

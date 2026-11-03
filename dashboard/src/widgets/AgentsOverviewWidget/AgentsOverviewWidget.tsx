@@ -48,31 +48,25 @@ function AgentsOverviewWidget({
 }: {
   range: { from: string; to: string };
 }) {
-  const { getAgentOverview } = useTaskStats();
+  const { getAgentOverview, getTokenUsage } = useTaskStats();
   const [agentsPage, setAgentsPage] = useState(1);
 
   const { overview } = getAgentOverview({ from: range.from, to: range.to });
+  const { usage } = getTokenUsage({ from: range.from, to: range.to });
 
   const totals = useMemo(() => {
-    return overview.reduce(
+    const statusTotals = overview.reduce(
       (acc, agent) => ({
         total: acc.total + agent.total,
         completed: acc.completed + agent.COMPLETED,
         inProgress: acc.inProgress + agent.IN_PROGRESS,
         awaiting: acc.awaiting + agent.AWAITING,
         failed: acc.failed + agent.FAILED,
-        tokens: acc.tokens + agent.totalTokens,
       }),
-      {
-        total: 0,
-        completed: 0,
-        inProgress: 0,
-        awaiting: 0,
-        failed: 0,
-        tokens: 0,
-      }
+      { total: 0, completed: 0, inProgress: 0, awaiting: 0, failed: 0 }
     );
-  }, [overview]);
+    return { ...statusTotals, tokens: usage.totalTokens };
+  }, [overview, usage]);
 
   const agentsPageCount = Math.max(
     1,

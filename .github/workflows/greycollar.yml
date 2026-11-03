@@ -37,3 +37,4 @@ jobs:
     secrets:
       DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
       DOCKER_USERNAME: canmingir
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}

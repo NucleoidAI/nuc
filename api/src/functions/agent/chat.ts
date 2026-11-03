@@ -83,8 +83,7 @@ async function answerOrEscalate({
 
   if (answer_known.noul >= 0.5) {
     const { answer } = await generate({
-      policy: dataset.policy,
-      dataset: dataset.train.chat,
+      policy: dataset.llm.policy,
       context,
       content,
       json_format: "{ answer: <ANSWER_IN_NLP>}",
@@ -190,7 +189,7 @@ async function teamChat({
   const meta = { teamId, source: "agent.teamChat" };
 
   const next = await generate({
-    dataset: dataset.train.teamChat,
+    dataset: dataset.llm.teamChat,
     context,
     content,
     json_format:

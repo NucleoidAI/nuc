@@ -1,11 +1,15 @@
 import EditIcon from "@mui/icons-material/Edit";
-import React from "react";
 import { getAgentGradients } from "../../utils/gradient";
-import slackIcon from "@iconify-icons/logos/slack-icon";
-import whatsappIcon from "@iconify-icons/logos/whatsapp-icon";
 
-import { Box, Button, Chip, Stack, Typography } from "@mui/material";
-import { Fab, alpha } from "@mui/material";
+import {
+  Box,
+  Button,
+  Chip,
+  Fab,
+  Stack,
+  Typography,
+  alpha,
+} from "@mui/material";
 import {
   HeaderCard,
   Iconify,
@@ -50,7 +54,8 @@ const threeDStyle = {
 export const teamChartPlugin = {
   id: "teamChart",
 
-  style: ({ style }) => {
+  style: (args) => {
+    const { style } = args;
     const nodeStyle = style || {};
 
     return {
@@ -69,7 +74,8 @@ export const teamChartPlugin = {
     };
   },
 
-  edge: ({ child }) => {
+  edge: (args) => {
+    const { child } = args;
     const isStackedChild =
       typeof child?.stackIndex === "number" && child.stackIndex > 0;
 
@@ -81,7 +87,8 @@ export const teamChartPlugin = {
     };
   },
 
-  node: ({ node, title, nodeStyle }) => {
+  node: (args) => {
+    const { node, title, nodeStyle } = args;
     const nodeSx = nodeStyle.nodeSx || {};
     const width = nodeStyle.nodeWidth ?? 350;
     const height = nodeStyle.nodeHeight ?? 125;
@@ -109,7 +116,7 @@ export const teamChartPlugin = {
               width: "100%",
             }}
           >
-            {[slackIcon, whatsappIcon].map((icon, index) => (
+            {["logos:slack-icon", "logos:whatsapp-icon"].map((icon, index) => (
               <Fab
                 key={index}
                 color="default"
@@ -171,6 +178,7 @@ export const teamChartPlugin = {
           leftContent={renderInitialAvatar()}
           title={
             <Chip
+              data-cy="agent-page-button"
               onClick={handleCardClick}
               label={title || node?.name}
               icon={<Iconify icon="mingcute:location-fill" width={18} />}
@@ -196,6 +204,7 @@ export const teamChartPlugin = {
             onAgentOpen && (
               <>
                 <Button
+                  data-cy="knowledge-base-button"
                   size="small"
                   variant="outlined"
                   color="inherit"
@@ -208,6 +217,7 @@ export const teamChartPlugin = {
                   <Iconify icon="carbon:ibm-watson-knowledge-studio" />
                 </Button>
                 <Button
+                  data-cy="blueprints-button"
                   size="small"
                   variant="outlined"
                   color="inherit"
@@ -220,6 +230,7 @@ export const teamChartPlugin = {
                   <Iconify icon="healthicons:crisis-response-center-person-outline" />
                 </Button>
                 <Button
+                  data-cy="tasks-button"
                   size="small"
                   variant="outlined"
                   color="inherit"
@@ -263,6 +274,7 @@ export const teamChartPlugin = {
           footer={
             onBlueprintOpen && (
               <Button
+                data-cy="blueprint-button"
                 size="small"
                 variant="outlined"
                 color="inherit"
@@ -349,6 +361,7 @@ export const teamChartPlugin = {
               <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                 {isTeam && onTeamAddAgent ? (
                   <Button
+                    data-cy="add-agent-button"
                     size="small"
                     variant="outlined"
                     color="inherit"

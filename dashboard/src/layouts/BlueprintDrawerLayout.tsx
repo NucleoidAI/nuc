@@ -457,6 +457,7 @@ const BlueprintDrawerLayout = ({
       }}
     >
       <Box
+        data-cy="blueprint-drawer-layout"
         sx={{
           flex: 1,
           display: "flex",

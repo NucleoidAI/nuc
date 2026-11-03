@@ -1,18 +1,34 @@
 [
     {
-        "id": "72ef5b08-b4a9-42b7-bb0a-22d40e56798b",
-        "name": "Alex",
-        "avatar": "/avatars/alex.png",
-        "character": "Professional, friendly, and a problem solver",
-        "role": "Account Expert",
-        "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729"
+        "id": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "name": "subscription_agent",
+        "description": "A agent optimized for subscription tasks, workflow assistance, and context-aware support within the system.",
+        "icon": "iconoir:internet",
+        "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+        "AIEngine": {
+            "id": "816642c9-8a97-41d6-88fc-0f369e26646c",
+            "vendor": "GreyCollar",
+            "avatar": "https://cdn.nucleoid.com/greycollar/media/icon.png",
+            "type": "Private Cloud",
+            "price": 0,
+            "model": "GreyAgent",
+            "createdAt": "2026-10-14T06:21:24.405Z"
+        }
     },
     {
-        "id": "ef906c5d-cafe-4518-9edc-b80c605df58e",
-        "name": "Taylor",
-        "avatar": "/avatars/taylor.png",
-        "character": "Friendly, helpful, and a team player",
-        "role": "Customer Service Representative",
-        "teamId": "e6d4744d-a11b-4c75-acad-e24a02903729"
+        "id": "ab2d404b-3358-45eb-a468-338485924fea",
+        "name": "meeting_agent",
+        "description": "An agent that retrieves meeting transcripts, extracts personalized summaries and action items, and delivers them via email.",
+        "icon": "mdi:account-voice",
+        "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+        "AIEngine": {
+            "id": "816642c9-8a97-41d6-88fc-0f369e26646c",
+            "vendor": "GreyCollar",
+            "avatar": "https://cdn.nucleoid.com/greycollar/media/icon.png",
+            "type": "Private Cloud",
+            "price": 0,
+            "model": "GreyAgent",
+            "createdAt": "2026-10-14T06:21:24.405Z"
+        }
     }
 ]

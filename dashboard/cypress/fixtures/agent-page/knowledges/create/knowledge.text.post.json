@@ -1,0 +1,12 @@
+{
+  "id": "22222222-2222-4222-8222-222222222222",
+  "type": "TEXT",
+  "url": null,
+  "text": "My first text",
+  "question": null,
+  "answer": null,
+  "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+  "teamId": null,
+  "status": "IN_PROGRESS",
+  "createdAt": "2026-10-14T06:21:24.405Z"
+}

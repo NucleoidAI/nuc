@@ -52,7 +52,7 @@ const TaskTree = ({ open, setOpen, treeData }) => {
 
   const flowStyle = useMemo(
     () => ({
-      direction: "horizontal",
+      direction: "horizontal" as const,
       showConnections: true,
       onNodeClick: setSelectedStep,
       boundInputsByNode,
@@ -88,6 +88,7 @@ const TaskTree = ({ open, setOpen, treeData }) => {
       }}
     >
       <Stack
+        data-cy="task-flow-dialog"
         direction="row"
         alignItems="center"
         justifyContent="space-between"

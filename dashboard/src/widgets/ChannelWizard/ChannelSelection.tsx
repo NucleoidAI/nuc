@@ -145,6 +145,7 @@ const ChannelSelection = ({
         );
       })}
       <Button
+        data-cy="open-add-channel-menu-button"
         startIcon={<AddIcon />}
         variant="outlined"
         onClick={handleAddChannelClick}
@@ -163,6 +164,7 @@ const ChannelSelection = ({
       >
         {(availableChannels || []).map((c) => (
           <MenuItem
+            data-cy={`add-channel-option-${c.id}`}
             sx={{
               width: 180,
             }}

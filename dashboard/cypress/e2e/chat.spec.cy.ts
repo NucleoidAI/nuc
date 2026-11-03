@@ -1,10 +1,8 @@
-import config from "../../config";
-
 describe("Chat widget", () => {
   beforeEach(() => {
     cy.fixture("chat-page/teams.json").then((teams) => {
       cy.wrap(teams[0].id).as("teamId");
-      cy.platformSetup(teams[0].id, "chat-page/teams.json", config);
+      cy.platformSetup(teams[0].id, "chat-page/teams.json");
       cy.viewport(1280, 720);
     });
 

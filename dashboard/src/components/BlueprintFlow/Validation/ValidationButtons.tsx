@@ -52,6 +52,7 @@ const ValidationButtons = ({
         </Button>
       )}
       <LinkLoadingButton
+        data-cy="save-flow-button"
         onClick={handleSaveFlow}
         loading={isSubmitting}
         disabled={validationErrors.length > 0}

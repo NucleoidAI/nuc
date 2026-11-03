@@ -251,6 +251,7 @@ const NodeEditorDrawer = ({
         onChange={(e) => setNewNodeLabel(e.target.value)}
         autoComplete="off"
         inputProps={{
+          "data-cy": "node-label-input",
           autoComplete: "off",
           autoCorrect: "off",
           spellCheck: false,
@@ -657,6 +658,8 @@ const NodeEditorDrawer = ({
                     .map((integration) => (
                       <Card
                         key={integration.id}
+                        data-cy="integration-option"
+                        data-action={integration.action}
                         variant="outlined"
                         sx={{
                           cursor: "pointer",
@@ -823,6 +826,7 @@ const NodeEditorDrawer = ({
 
   const submitButton = (
     <Button
+      data-cy="node-editor-submit-button"
       size="large"
       variant="contained"
       fullWidth

@@ -1,0 +1,12 @@
+[
+  {
+    "id": "ccccccc1-cccc-4ccc-8ccc-ccccccccccc1",
+    "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+    "question": "Should I proceed with the refund?",
+    "answer": null,
+    "status": "IN_PROGRESS",
+    "blueprintId": null,
+    "taskId": null,
+    "createdAt": "2026-10-14T06:21:24.405Z"
+  }
+]

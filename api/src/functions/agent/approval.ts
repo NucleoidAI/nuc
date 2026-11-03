@@ -4,7 +4,6 @@ import type { ContextMessage } from "./context";
 import type { LLMMeta } from "@canmingir/link-express/llm";
 import Agent from "../../models/Agent";
 import dataset from "../../dataset";
-import fewShots from "../../dataset/train/decision/index";
 import { generate } from "@canmingir/link-express/llm";
 import platform from "@canmingir/link-express";
 import session from "../session";
@@ -41,7 +40,7 @@ async function approvalQuestion({
 
   try {
     const { question } = await generate({
-      dataset: dataset.train.approvalQuestion,
+      dataset: dataset.llm.approvalQuestion,
       context,
       content: { instructions, label, task: content },
       json_format: "{ question: <QUESTION> }",
@@ -77,7 +76,8 @@ async function approvalDecision({
           select: "customer_decision",
           question: "`question`",
           reply: "`customer_reply`",
-          few_shots: fewShots.customerApproval as JsonValue[],
+          few_shots: dataset.decision
+            .customerApproval as unknown as JsonValue[],
         },
         {
           APPROVED: { customer: "approves" },

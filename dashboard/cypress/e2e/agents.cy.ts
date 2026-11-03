@@ -1,10 +1,8 @@
-import config from "../../config";
-
 describe("Agents page", () => {
   beforeEach(() => {
     cy.fixture("agents-page/teams.json").then((teams) => {
-      cy.wrap(teams[1].id).as("teamId");
-      cy.platformSetup(teams[1].id, "agents-page/team.json", config);
+      cy.wrap(teams[0].id).as("teamId");
+      cy.platformSetup(teams[0].id, "agents-page/team.json");
       cy.viewport(1280, 720);
     });
 
@@ -21,9 +19,9 @@ describe("Agents page", () => {
   });
 
   it("add a new agent", function () {
-    cy.visit("/agents");
-
     cy.setAgentIntercept();
+
+    cy.visit("/agents");
 
     cy.getBySel("add-new-button").click();
 
@@ -41,11 +39,11 @@ describe("Agents page", () => {
   });
 
   it("edits a agent", function () {
-    cy.visit("/agents");
-
     cy.setAgentIntercept();
 
-    cy.getBySel("agent-card-more-vert").eq(1).first().click();
+    cy.visit("/agents");
+
+    cy.getBySel("agent-card-more-vert").eq(1).click();
 
     cy.getBySel("agent-card-menu-edit").click();
 
@@ -53,40 +51,33 @@ describe("Agents page", () => {
 
     cy.waitEvent("AGENT_UPDATED");
 
-    //eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000); //TODO remove this when refactor hooks
-
     this.agentsWithEditedAgent.forEach((agent, index) => {
       cy.verifyAgentCard(agent, index);
     });
   });
 
   it("deletes a agent", function () {
-    cy.visit("/agents");
-
     cy.setAgentIntercept();
 
+    cy.visit("/agents");
+
+    cy.getBySel("agent-card-more-vert").first().click();
+
+    cy.getBySel("agent-card-menu-delete").click();
+
     cy.fixture("agents-page/delete/agents.delete.json").then((agent) => {
-      cy.intercept("DELETE", `/api/agents/` + agent.id, {
+      cy.intercept("DELETE", `/api/agents/${agent.id}`, {
         fixture: "agents-page/delete/agents.delete.json",
       }).as("deleteAgent");
-    });
-
-    cy.fixture("agents-page/delete/agents.get.json").then((agent) => {
-      cy.intercept("GET", `/api/agents/${agent.id}`, {
-        fixture: "agents-page/delete/agents.get.json",
-      }).as("getAgents");
     });
 
     cy.intercept("GET", `/api/agents`, {
       fixture: "agents-page/delete/agents.get.json",
     }).as("getAgents");
 
-    cy.getBySel("agent-card-more-vert").eq(0).first().click();
-
-    cy.getBySel("agent-card-menu-delete").click();
-
     cy.getBySel("confirm").click();
+
+    cy.wait("@deleteAgent");
 
     cy.waitEvent("AGENT_DELETED");
 
@@ -100,20 +91,20 @@ describe("Agents page", () => {
   });
 
   it("visits the agent page", function () {
-    cy.visit("/agents");
-
     cy.setAgentIntercept();
 
-    cy.fixture("agents-page/agents.json").then((agent) => {
-      cy.intercept("GET", `/api/agents/${agent[0].id}`, {
-        fixture: "agents-page/agent.json",
-      }).as("getAgent");
-    });
+    cy.intercept("GET", `/api/agents/${this.agents[0].id}`, {
+      fixture: "agents-page/agent.json",
+    }).as("getAgent");
 
-    cy.getBySel("agent-card-more-vert").eq(0).first().click();
+    cy.visit("/agents");
+
+    cy.getBySel("agent-card-more-vert").first().click();
 
     cy.getBySel("agent-card-menu-view").click();
 
-    cy.checkRoute(`/agents/${this.agents[0].id}`);
+    cy.wait("@getAgent");
+
+    cy.getBySel("tab-profile").should("have.attr", "aria-selected", "true");
   });
 });

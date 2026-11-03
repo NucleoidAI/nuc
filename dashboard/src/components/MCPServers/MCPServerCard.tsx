@@ -19,6 +19,7 @@ const MCPServerCard = ({
 }) => {
   return (
     <Card
+      data-cy="mcp-server-card"
       sx={{
         height: "170px",
         width: "100%",

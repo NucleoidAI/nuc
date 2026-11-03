@@ -293,6 +293,7 @@ const ChannelWizard = ({
         <DialogActions>
           <Button onClick={handleDialogClose}>Cancel</Button>
           <Button
+            data-cy="channel-wizard-connect-button"
             onClick={handleConnect}
             disabled={
               isChannelAlreadyConnected ||

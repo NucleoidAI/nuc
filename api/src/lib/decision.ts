@@ -1,6 +1,7 @@
 import { choice, noul, score } from "@typesafe-ai/sdk";
 import type { EntryType, Questions } from "@typesafe-ai/sdk";
 
+import { hasRef } from "@canmingir/link-express/dataset";
 import { inferSource } from "@canmingir/link-express/llm";
 import type { LLMMeta } from "@canmingir/link-express/llm";
 import type { DecisionAdapter, DecisionAnswers } from "./types";
@@ -43,7 +44,11 @@ const { provider, model: configuredModel } = parseProviderModel(
 
 let adapterPromise: Promise<DecisionAdapter> | null = null;
 
-function getAdapter(): Promise<DecisionAdapter> {
+function getAdapter(questions: Questions): Promise<DecisionAdapter> {
+  if (hasRef(questions)) {
+    return import("./routerDecision").then((mod) => mod.default);
+  }
+
   if (!adapterPromise) {
     adapterPromise = PROVIDER_LOADERS[provider]().then((mod) => mod.default);
   }
@@ -63,9 +68,10 @@ async function ask<const Q extends Questions>({
 }): Promise<DecisionAnswers<Q>> {
   const resolvedSource = meta?.source ? undefined : inferSource(ask);
 
-  const adapter = await getAdapter();
+  const adapter = await getAdapter(questions);
 
   return await adapter.ask({
+    provider: provider.toLowerCase(),
     model: model ?? configuredModel,
     state,
     questions,

@@ -16,6 +16,7 @@ asr_output.json
 greycollar_server_setup_v8
 .tunnel-backup
 api/messages/*
+api/src/dataset/*/*.json
 asr-versions/*
 scripts/rule-swipe/*
 # e2e: staged copy of the built api

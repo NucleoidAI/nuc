@@ -9,10 +9,16 @@ import useBlueprint from "../../hooks/useBlueprint";
 import { v4 as uuidv4 } from "uuid";
 
 import {
+  CustomType,
+  Endpoint,
+  NodeEditorState,
+  Param,
+  SchemaEditorHandle,
+} from "./types";
+import {
   DefinitionGraph,
   buildDefinitionGraph,
 } from "../../components/BlueprintFlow/helper";
-import { Endpoint, NodeEditorState } from "./types";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { publish, useEvent } from "@nucleoidai/react-event";
 
@@ -128,9 +134,7 @@ function APITab({ agentId }: { agentId: string }) {
   const { generatePseudocode } = useBlueprint();
   const [api, setApi] = useState<Endpoint[]>([]);
 
-  const [types, setTypes] = useState<
-    Array<{ name: string; schema: unknown; isTypeScript?: boolean }>
-  >([]);
+  const [types, setTypes] = useState<CustomType[]>([]);
   const [dialog, setDialog] = useState<{
     type: "method" | "resource" | null;
     action: "add" | "edit" | null;
@@ -153,11 +157,11 @@ function APITab({ agentId }: { agentId: string }) {
 
   const methodRef = useRef("GET");
   const pathRef = useRef("/");
-  const paramsRef = useRef([]);
-  const addParams = useRef(null);
-  const requestSchemaRef = useRef<{ schemaOutput?: () => unknown }>();
-  const responseSchemaRef = useRef<{ schemaOutput?: () => unknown }>();
-  const typesRef = useRef({});
+  const paramsRef = useRef<Param[]>([]);
+  const addParams = useRef<(() => void) | null>(null);
+  const requestSchemaRef = useRef<SchemaEditorHandle>(null);
+  const responseSchemaRef = useRef<SchemaEditorHandle>(null);
+  const typesRef = useRef<SchemaEditorHandle>(null);
 
   const [selected] = useEvent("SELECTED_API_CHANGED", {
     path: "/",
@@ -267,8 +271,8 @@ function APITab({ agentId }: { agentId: string }) {
           ? {
               ...t,
               name: typeRename.newTypeName,
-              schema: {
-                ...(t.schema as object),
+              schema: t.schema && {
+                ...t.schema,
                 name: typeRename.newTypeName,
               },
             }
@@ -413,13 +417,11 @@ function APITab({ agentId }: { agentId: string }) {
           ...next[idx],
           request: {
             ...(next[idx].request || {}),
-            schema:
-              (requestSchemaRef.current?.schemaOutput?.() as unknown[]) || [],
+            schema: requestSchemaRef.current?.schemaOutput?.(),
           },
           response: {
             ...(next[idx].response || {}),
-            schema:
-              (responseSchemaRef.current?.schemaOutput?.() as unknown[]) || [],
+            schema: responseSchemaRef.current?.schemaOutput?.(),
           },
           params: paramsRef.current,
         };
@@ -443,14 +445,10 @@ function APITab({ agentId }: { agentId: string }) {
           {
             path,
             method,
-            request:
-              (requestSchemaRef.current?.schemaOutput?.() as {
-                schema?: unknown[];
-              }) || {},
-            response:
-              (responseSchemaRef.current?.schemaOutput?.() as {
-                schema?: unknown[];
-              }) || {},
+            request: { schema: requestSchemaRef.current?.schemaOutput?.() },
+            response: {
+              schema: responseSchemaRef.current?.schemaOutput?.(),
+            },
             params: paramsRef.current,
             summary: `${method} ${path}`,
             description: `API endpoint for ${path}`,

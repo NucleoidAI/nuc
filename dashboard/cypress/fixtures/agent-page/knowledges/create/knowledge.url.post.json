@@ -1,0 +1,12 @@
+{
+  "id": "11111111-1111-4111-8111-111111111111",
+  "type": "URL",
+  "url": "https://www.google.com",
+  "text": null,
+  "question": null,
+  "answer": null,
+  "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+  "teamId": null,
+  "status": "IN_PROGRESS",
+  "createdAt": "2026-10-14T06:21:24.405Z"
+}

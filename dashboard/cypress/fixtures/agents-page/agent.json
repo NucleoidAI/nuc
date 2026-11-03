@@ -1,0 +1,16 @@
+{
+    "id": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+    "name": "subscription_agent",
+    "description": "A agent optimized for subscription tasks, workflow assistance, and context-aware support within the system.",
+    "icon": "iconoir:internet",
+    "teamId": "add6dfa4-45ba-4da2-bc5c-5a529610b52f",
+    "AIEngine": {
+        "id": "816642c9-8a97-41d6-88fc-0f369e26646c",
+        "vendor": "GreyCollar",
+        "avatar": "https://cdn.nucleoid.com/greycollar/media/icon.png",
+        "type": "Private Cloud",
+        "price": 0,
+        "model": "GreyAgent",
+        "createdAt": "2026-10-14T06:21:24.405Z"
+    }
+}

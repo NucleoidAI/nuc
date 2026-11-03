@@ -198,6 +198,7 @@ const SupervisingCard = ({
 
             <Tooltip title="Resolve Supervise">
               <Fab
+                data-cy="resolve-supervise-button"
                 sx={{ alignSelf: "center" }}
                 color="inherit"
                 onClick={() => setDrawerOpen(true)}

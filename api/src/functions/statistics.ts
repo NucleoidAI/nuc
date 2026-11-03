@@ -2,7 +2,7 @@ import Agent from "../models/Agent";
 import LLMLog from "../models/LLMLog";
 import Supervising from "../models/Supervising";
 import Task from "../models/Task";
-import { Op, col, fn } from "sequelize";
+import { Op, cast, col, fn } from "sequelize";
 
 async function taskDailyTrend({
   teamId,
@@ -15,9 +15,11 @@ async function taskDailyTrend({
   from: string;
   to: string;
 }) {
+  const day = cast(fn("DATE", col("Task.created_at")), "TEXT");
+
   const rows = await Task.findAll({
     attributes: [
-      [fn("strftime", "%Y-%m-%d", col("Task.created_at")), "day"],
+      [day, "day"],
       "status",
       [fn("COUNT", col("Task.id")), "count"],
     ],
@@ -30,15 +32,17 @@ async function taskDailyTrend({
       },
     ],
     where: { createdAt: { [Op.between]: [from, to] } },
-    group: ["day", "status"],
+    group: [day, "status"],
     raw: true,
   });
 
-  return rows as unknown as Array<{
-    day: string;
-    status: "IN_PROGRESS" | "COMPLETED" | "FAILED";
-    count: number;
-  }>;
+  return (
+    rows as unknown as Array<{
+      day: string;
+      status: "IN_PROGRESS" | "COMPLETED" | "FAILED";
+      count: number | string;
+    }>
+  ).map((row) => ({ ...row, count: Number(row.count) }));
 }
 
 async function supervisingDailyCounts({
@@ -52,9 +56,11 @@ async function supervisingDailyCounts({
   from: string;
   to: string;
 }) {
+  const day = cast(fn("DATE", col("Supervising.created_at")), "TEXT");
+
   const rows = await Supervising.findAll({
     attributes: [
-      [fn("strftime", "%Y-%m-%d", col("Supervising.created_at")), "day"],
+      [day, "day"],
       [fn("COUNT", col("Supervising.id")), "count"],
     ],
     include: [
@@ -66,11 +72,13 @@ async function supervisingDailyCounts({
       },
     ],
     where: { createdAt: { [Op.between]: [from, to] } },
-    group: ["day"],
+    group: [day],
     raw: true,
   });
 
-  return rows as unknown as Array<{ day: string; count: number }>;
+  return (
+    rows as unknown as Array<{ day: string; count: number | string }>
+  ).map((row) => ({ day: row.day, count: Number(row.count) }));
 }
 
 async function supervisingDailyRate({
@@ -95,7 +103,7 @@ async function supervisingDailyRate({
   }
 
   const supervisingsByDay = new Map(
-    supervisingCounts.map((row) => [row.day, row.count])
+    supervisingCounts.map((row) => [row.day, row.count]),
   );
 
   const days = new Set([...tasksByDay.keys(), ...supervisingsByDay.keys()]);
@@ -140,8 +148,8 @@ async function taskByAgent({
 
   const countByAgent = new Map(
     (rows as unknown as Array<{ agentId: string; count: number }>).map(
-      (row) => [row.agentId, Number(row.count)]
-    )
+      (row) => [row.agentId, Number(row.count)],
+    ),
   );
 
   const perAgent = agents.map((agent) => ({
@@ -393,8 +401,8 @@ async function agentOverview({
 
   const awaitingByAgent = new Map(
     (awaitingRows as unknown as Array<{ agentId: string; count: number }>).map(
-      (row) => [row.agentId, Number(row.count)]
-    )
+      (row) => [row.agentId, Number(row.count)],
+    ),
   );
 
   const tokensByAgent = new Map(
@@ -403,7 +411,7 @@ async function agentOverview({
         agentId: string;
         totalTokens: number | null;
       }>
-    ).map((row) => [row.agentId, Number(row.totalTokens ?? 0)])
+    ).map((row) => [row.agentId, Number(row.totalTokens ?? 0)]),
   );
 
   return agents.map((agent) => {

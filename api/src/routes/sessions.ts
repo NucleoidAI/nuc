@@ -10,13 +10,14 @@ const router = express.Router();
 router.post("/", async (req, res) => {
   const { projectId: teamId } = req.session;
 
-  const { type, agentId, blueprintId, variables } = Joi.attempt(
+  const { type, agentId, blueprintId, variables, debug } = Joi.attempt(
     req.body,
     Joi.object({
       type: Joi.string().valid("CHAT", "EMAIL").required(),
       agentId: Joi.string().uuid().required(),
       blueprintId: Joi.string().uuid().optional(),
       variables: Joi.object().optional(),
+      debug: Joi.boolean().optional(),
     })
   );
 
@@ -31,6 +32,7 @@ router.post("/", async (req, res) => {
     agentId,
     blueprintId,
     variables,
+    debug,
   });
 
   return res.status(200).json(sessionInstance);

@@ -27,7 +27,7 @@ async function startBlueprintTask({
 }) {
   const [blueprint, taskCount] = await Promise.all([
     blueprintFn.get({ blueprintId }),
-    taskFn.count({ blueprintId }),
+    taskFn.count({ blueprintId, debug }),
   ]);
 
   return taskFn.create({
@@ -234,4 +234,4 @@ async function teamChat({
   });
 }
 
-export { chat, startBlueprintTask, teamChat };
+export { chat, teamChat };

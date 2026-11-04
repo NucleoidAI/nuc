@@ -29,6 +29,7 @@ function AddNewButton({ type, addNew, onClickFunction }) {
     <>
       <Card
         data-cy="add-new-button"
+        className="anim-hover-tilt"
         onClick={onClickFunction}
         sx={{
           ...styles.default,

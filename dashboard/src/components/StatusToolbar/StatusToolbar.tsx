@@ -36,6 +36,7 @@ function StatusToolbar({ handleChange, selectedStatus, statuses }) {
               if (option === "ANSWERED") displayOption = "Answered";
               if (option === "COMPLETED") displayOption = "Completed";
               if (option === "IN_PROGRESS") displayOption = "In Progress";
+              if (option === "FAILED") displayOption = "Failed";
 
               return (
                 <MenuItem

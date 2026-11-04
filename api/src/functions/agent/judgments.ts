@@ -6,7 +6,7 @@ import type {
 } from "@typesafe-ai/sdk";
 import { ask, choice, noul } from "../../lib/decision";
 import dataset from "../../dataset";
-import { type Source, isRef, select } from "@canmingir/link-express/dataset";
+import { type Source, isRef } from "@canmingir/link-express/dataset";
 import type { LLMMeta } from "@canmingir/link-express/llm";
 import { mkdirSync, writeFileSync } from "fs";
 import path from "path";
@@ -197,17 +197,6 @@ function withFewShots(source: Source<object>): { few_shots: JsonValue[] } | {} {
   }
 
   return source.length ? { few_shots: source as JsonValue[] } : {};
-}
-
-function parameterDiamondFewShots(action: string, name: string) {
-  return select(dataset.decision.parameterDiamond, {
-    action,
-    "parameter.name": name,
-  });
-}
-
-function inputsAvailableFewShots(action: string) {
-  return select(dataset.decision.inputsAvailable, { action });
 }
 
 function topChoices(probabilities: Record<string, number>) {
@@ -502,7 +491,7 @@ async function parameterDiamond({
           select: "parameter_value",
           action,
           parameter,
-          ...withFewShots(parameterDiamondFewShots(action, field)),
+          ...withFewShots(dataset.decision.parameterDiamond),
         },
         {
           ...Object.fromEntries(
@@ -522,7 +511,7 @@ async function parameterDiamond({
           decide: "parameter_is_true",
           action,
           parameter,
-          ...withFewShots(parameterDiamondFewShots(action, field)),
+          ...withFewShots(dataset.decision.parameterDiamond),
         },
         { true: { value: true }, false: { value: false } },
       );
@@ -553,7 +542,7 @@ async function parameterDiamond({
             "`steps`",
             "`inherited_context_steps`",
           ],
-          ...withFewShots(parameterDiamondFewShots(action, field)),
+          ...withFewShots(dataset.decision.parameterDiamond),
         },
         {
           none: { source: null },
@@ -593,7 +582,7 @@ async function parameterDiamond({
           "`inherited_context_steps`",
           "`conversation`",
         ],
-        ...withFewShots(inputsAvailableFewShots(action)),
+        ...withFewShots(dataset.decision.inputsAvailable),
       },
       { true: { inputs: "available" }, false: { inputs: "missing" } },
     );

@@ -1,6 +1,8 @@
+import Agent from "../models/Agent";
 import AgentKnowledge from "../models/AgentKnowledge";
 import Knowledge from "../models/Knowledge";
 import Supervising from "../models/Supervising";
+import { Op } from "sequelize";
 import { event } from "@canmingir/link-express/event/client";
 
 async function create({
@@ -64,11 +66,11 @@ async function update({
 }) {
   await Supervising.update(
     { status, answer },
-    { where: { id: supervisingId } },
+    { where: { id: supervisingId } }
   );
 
   const updatedSupervising = await Supervising.findByPk(supervisingId);
-  const { sessionId, conversationId } = updatedSupervising;
+  const { sessionId } = updatedSupervising;
 
   if (type === "KNOWLEDGE") {
     const knowledgeInstance = await Knowledge.create({
@@ -86,8 +88,11 @@ async function update({
         teamId,
         blueprintId,
       });
-    } catch (err: any) {
-      if (err.name !== "SequelizeUniqueConstraintError") {
+    } catch (err: unknown) {
+      if (
+        !(err instanceof Error) ||
+        err.name !== "SequelizeUniqueConstraintError"
+      ) {
         throw err;
       }
     }
@@ -109,4 +114,51 @@ async function update({
   return updatedSupervising;
 }
 
-export default { create, update };
+async function listWithAgents({
+  teamId,
+  agentId,
+  status,
+  from,
+  to,
+}: {
+  teamId: string;
+  agentId?: string;
+  status?: "IN_PROGRESS" | "ANSWERED";
+  from?: string;
+  to?: string;
+}) {
+  const where: {
+    agentId?: string;
+    status?: "IN_PROGRESS" | "ANSWERED";
+    createdAt?: { [Op.between]: [string, string] };
+  } = {};
+
+  if (agentId) {
+    where.agentId = agentId;
+  }
+
+  if (status) {
+    where.status = status;
+  }
+
+  if (from && to) {
+    where.createdAt = { [Op.between]: [from, to] };
+  }
+
+  const supervisings = await Supervising.findAll({
+    include: [
+      {
+        model: Agent,
+        attributes: ["id", "name"],
+        where: { teamId },
+        required: true,
+      },
+    ],
+    where,
+    order: [["createdAt", "DESC"]],
+  });
+
+  return supervisings.map((supervising) => supervising.toJSON());
+}
+
+export default { create, update, listWithAgents };

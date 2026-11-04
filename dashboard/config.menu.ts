@@ -36,9 +36,19 @@ const menuConfig = {
           path: "/cost",
         },
         {
+          title: "Operation",
+          icon: "ic:outline-manage-accounts",
+          path: "/operation",
+        },
+        {
           title: "Monitoring",
           icon: "ic:outline-dashboard",
           path: "/monitoring",
+        },
+        {
+          title: "Reporting",
+          icon: "iconoir:reports",
+          path: "/reports",
         },
         {
           title: "Documentation",

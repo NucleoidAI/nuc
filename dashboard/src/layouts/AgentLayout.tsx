@@ -73,6 +73,7 @@ function AgentLayout({
   agent,
   loading,
   initialTab,
+  initialTaskId,
   allAgentIds,
   onChatOpenChange,
 }: {
@@ -84,6 +85,7 @@ function AgentLayout({
   };
   loading: boolean;
   initialTab?: string;
+  initialTaskId?: string;
   allAgentIds?: string[];
   onChatOpenChange?: (open: boolean) => void;
 }) {
@@ -227,7 +229,9 @@ function AgentLayout({
             <BlueprintsWidget teamId={agent.teamId} agentId={agent.id} />
           )}
           {currentTab === "supervisings" && <Supervising agentId={agent.id} />}
-          {currentTab === "tasks" && <TasksWidget agentId={agent.id} />}
+          {currentTab === "tasks" && (
+            <TasksWidget agentId={agent.id} taskId={initialTaskId} />
+          )}
           {currentTab === "mcps" && <AgentMCP agent={agent} />}
           {currentTab === "channels" && <Channel />}
           {currentTab === "api" && !beta && <APITab agentId={agent.id} />}

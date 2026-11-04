@@ -260,6 +260,7 @@ export default function FlowNodeRenderer({
 
   return (
     <NodeWrapper
+      className="anim-hover-tilt"
       isApproval={node.nodeType === "APPROVAL"}
       isDecision={isDecisionNode}
       isEndpoint={isEndpointNode}
@@ -337,6 +338,7 @@ export default function FlowNodeRenderer({
           <>
             {!isLocked && (
               <ActionButtonWrapper
+                className="anim-hover-shadow"
                 data-cy="node-delete-button"
                 position="delete"
                 hoverColor="error"
@@ -348,6 +350,7 @@ export default function FlowNodeRenderer({
             )}
             {onEdit && (
               <ActionButtonWrapper
+                className="anim-hover-shadow"
                 data-cy="node-edit-button"
                 position="edit"
                 onClick={handleEditClick}
@@ -363,6 +366,7 @@ export default function FlowNodeRenderer({
             )}
             {canAddChild && (
               <ActionButtonWrapper
+                className="anim-hover-shadow"
                 data-cy="node-add-button"
                 position="add"
                 onClick={handleAddClick}

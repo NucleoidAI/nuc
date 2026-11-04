@@ -12,7 +12,7 @@
     "dev:api": "cd ./api && bun run dev",
     "dev:dashboard": "cd ./dashboard && bun run dev",
     "dev:main": "link-server",
-    "dev:tunnel": "bash scripts/tunnel.sh",
+    "dev:tunnel": "concurrently -n \"dev,tunnel\" \"bun run dev\" \"link-tunnel\"",
     "generate-asr-version": "bun scripts/generate-asr-version.ts",
     "security:report": "bun scripts/security-report/index.ts",
     "dev": "dotenv -e .env.local -- concurrently -n \"events,api,dashboard,communication\" \"bun run dev:events\" \"bun run dev:api\" \"bun run dev:dashboard\" \"bun run dev:communication\"",
@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-ec2": "^3.1085.0",
-    "@canmingir/link": "^1.2.91",
+    "@canmingir/link": "^1.2.93",
     "concurrently": "^9.1.2"
   },
   "devDependencies": {

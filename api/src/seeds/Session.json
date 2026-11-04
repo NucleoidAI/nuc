@@ -53,6 +53,36 @@
             "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
             "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
             "debug": true
+        },
+        {
+            "id": "67bbbeb7-79fc-4ddf-a59d-ee4b4cc94b78",
+            "type": "CHAT",
+            "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361"
+        },
+        {
+            "id": "76ee34ed-7538-4f3e-88f5-fd8b8753182b",
+            "type": "CHAT",
+            "agentId": "c38523e7-2e22-44e5-aa0d-f92c7d240315"
+        },
+        {
+            "id": "596f844a-a3e6-4763-a8c3-07f5bd2e8361",
+            "type": "CHAT",
+            "agentId": "7a222222-9696-498f-9aaf-b4cf5b2ca043"
+        },
+        {
+            "id": "91a74117-f029-43b4-b9ae-57b6611db75a",
+            "type": "CHAT",
+            "agentId": "3c8f1d5e-7b2a-4e91-a6d4-58c0f9b3e712"
+        },
+        {
+            "id": "1fe38f52-93ae-44a3-aa43-a561de318cdc",
+            "type": "CHAT",
+            "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+        },
+        {
+            "id": "7a992eec-5154-4ebd-9bfd-f85ed9572ae3",
+            "type": "CHAT",
+            "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
         }
     ]
 }

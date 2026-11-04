@@ -7,12 +7,19 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { agentId } = Joi.attempt(
+  const { agentId, from, to } = Joi.attempt(
     req.query,
     Joi.object({
-      agentId: Joi.string().uuid().required(),
+      agentId: Joi.string().uuid().optional(),
+      from: Joi.string().isoDate().optional(),
+      to: Joi.string().isoDate().optional(),
     })
   );
+
+  if (!agentId) {
+    const usage = await llmLog.listByTeam({ teamId, from, to });
+    return res.status(200).json(usage);
+  }
 
   const agent = await Agent.findByPk(agentId);
 

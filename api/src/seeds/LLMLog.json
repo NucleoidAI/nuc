@@ -1,6 +1,1356 @@
 {
-  "sequence": 19,
+  "sequence": 28,
   "seed": [
+    {
+      "id": "54129113-82cc-49de-adec-2e0b95daee43",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Process purchase order for Industrial Barcode Scanner (BCS-450)"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 800,
+      "outputTokens": 150,
+      "totalTokens": 950,
+      "cost": null,
+      "durationMs": 800,
+      "error": null,
+      "source": "agent",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": null,
+      "taskId": "42c677b4-a9f8-4d69-83f4-9943a2f20dd6",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-27T08:00:00.000Z"
+    },
+    {
+      "id": "0691fc73-ff1f-416c-adca-39feeb48d5ec",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Create purchase order for 40x Ergonomic Office Chair (ECH-310)"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 931,
+      "outputTokens": 247,
+      "totalTokens": 1178,
+      "cost": null,
+      "durationMs": 1011,
+      "error": null,
+      "source": "agent",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": null,
+      "taskId": "413d3d7d-225a-427a-9213-dfa108c81d55",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-26T09:17:00.000Z"
+    },
+    {
+      "id": "1a3ef3a9-8592-4381-911a-c8bcbf2ac22b",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Create purchase order for 40x Ergonomic Office Chair (ECH-310)"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 988,
+      "outputTokens": 278,
+      "totalTokens": 1266,
+      "cost": null,
+      "durationMs": 1100,
+      "error": null,
+      "source": "agent",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": null,
+      "taskId": "413d3d7d-225a-427a-9213-dfa108c81d55",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-26T09:17:00.000Z"
+    },
+    {
+      "id": "dd8c4ccc-0c3c-4078-82be-adb9e41faa0a",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Reconcile inbound order totals against warehouse manifest"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 1062,
+      "outputTokens": 344,
+      "totalTokens": 1406,
+      "cost": null,
+      "durationMs": 1222,
+      "error": null,
+      "source": "agent",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": null,
+      "taskId": "db0120d9-14bd-425b-a00c-6469e511a649",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-25T10:34:00.000Z"
+    },
+    {
+      "id": "be8b6387-545f-4205-872f-dd8632d4c576",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Update fulfillment status for order #48177"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 1193,
+      "outputTokens": 441,
+      "totalTokens": 1634,
+      "cost": null,
+      "durationMs": 1433,
+      "error": null,
+      "source": "agent",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": null,
+      "taskId": "0617ee71-5b6e-4395-8934-f3c68c5734ec",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-24T11:51:00.000Z"
+    },
+    {
+      "id": "5fe7fd60-f65b-44a8-b7df-b0f566bcbf95",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Update fulfillment status for order #48177"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 1250,
+      "outputTokens": 472,
+      "totalTokens": 1722,
+      "cost": null,
+      "durationMs": 1522,
+      "error": null,
+      "source": "agent",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": null,
+      "taskId": "0617ee71-5b6e-4395-8934-f3c68c5734ec",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-24T11:51:00.000Z"
+    },
+    {
+      "id": "ca9a9f48-a55d-4529-8c4c-3b52017eba78",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Generate packing slip and assign carrier for order #48190"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 1324,
+      "outputTokens": 538,
+      "totalTokens": 1862,
+      "cost": null,
+      "durationMs": 1644,
+      "error": null,
+      "source": "agent",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": null,
+      "taskId": "3b5b3b98-a41d-4ce3-abff-3f640ed65b30",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-23T12:08:00.000Z"
+    },
+    {
+      "id": "c9364de8-e74b-45c6-9b6a-92b3ad42cac6",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Validate supplier quote against catalog pricing"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 1455,
+      "outputTokens": 635,
+      "totalTokens": 2090,
+      "cost": null,
+      "durationMs": 1855,
+      "error": null,
+      "source": "agent",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": null,
+      "taskId": "54778d4e-1983-4f00-9e86-a152253c84db",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-22T13:25:00.000Z"
+    },
+    {
+      "id": "e5a781d3-c8ec-4f89-ba75-4cd2f46dbd40",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Validate supplier quote against catalog pricing"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 1512,
+      "outputTokens": 666,
+      "totalTokens": 2178,
+      "cost": null,
+      "durationMs": 1944,
+      "error": null,
+      "source": "agent",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": null,
+      "taskId": "54778d4e-1983-4f00-9e86-a152253c84db",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-22T13:25:00.000Z"
+    },
+    {
+      "id": "c9172f5b-7121-4a14-87b2-438be390b890",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Process return request and issue refund authorization"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 1586,
+      "outputTokens": 732,
+      "totalTokens": 2318,
+      "cost": null,
+      "durationMs": 2066,
+      "error": null,
+      "source": "agent",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": null,
+      "taskId": "e53012c4-2512-46af-8fd8-585c06a8f050",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-21T08:42:00.000Z"
+    },
+    {
+      "id": "b7324d1c-afba-4f2a-90de-4d2bb0859b21",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Match purchase order line items to delivery receipt"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 1717,
+      "outputTokens": 829,
+      "totalTokens": 2546,
+      "cost": null,
+      "durationMs": 2277,
+      "error": null,
+      "source": "agent",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": null,
+      "taskId": "0fde84a4-693b-4d77-a624-d36d6244a7e7",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-20T09:59:00.000Z"
+    },
+    {
+      "id": "86160d85-e58b-4158-99b1-b28a62c337a4",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Match purchase order line items to delivery receipt"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 1774,
+      "outputTokens": 860,
+      "totalTokens": 2634,
+      "cost": null,
+      "durationMs": 2366,
+      "error": null,
+      "source": "agent",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": null,
+      "taskId": "0fde84a4-693b-4d77-a624-d36d6244a7e7",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-20T09:59:00.000Z"
+    },
+    {
+      "id": "a0814b7b-1a31-418a-924b-e288555fa877",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Update inventory levels after order confirmation"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 1848,
+      "outputTokens": 926,
+      "totalTokens": 2774,
+      "cost": null,
+      "durationMs": 2488,
+      "error": null,
+      "source": "agent",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": null,
+      "taskId": "d23a3265-e067-425c-bb64-3bf530c2c25c",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-19T10:16:00.000Z"
+    },
+    {
+      "id": "ed930cb3-5897-4461-9b35-b444d78b0832",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Create purchase order for Thermal Label Printer (TLP-220)"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 1979,
+      "outputTokens": 1023,
+      "totalTokens": 3002,
+      "cost": null,
+      "durationMs": 2699,
+      "error": null,
+      "source": "agent",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": null,
+      "taskId": "26670d63-8d0d-430c-be15-7ebaeb246d7e",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-27T11:33:00.000Z"
+    },
+    {
+      "id": "fc6ad5f4-0835-4fa7-bf34-915e74b18b6b",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Create purchase order for Thermal Label Printer (TLP-220)"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 2036,
+      "outputTokens": 154,
+      "totalTokens": 2190,
+      "cost": null,
+      "durationMs": 2788,
+      "error": null,
+      "source": "agent",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": null,
+      "taskId": "26670d63-8d0d-430c-be15-7ebaeb246d7e",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-27T11:33:00.000Z"
+    },
+    {
+      "id": "79fb4de3-dd10-43dd-9320-a450c715701b",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Reorder stock for Industrial Barcode Scanner below threshold"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 2110,
+      "outputTokens": 220,
+      "totalTokens": 2330,
+      "cost": null,
+      "durationMs": 2910,
+      "error": null,
+      "source": "agent",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": null,
+      "taskId": "79c6f81b-1451-4de1-ab2b-1f80a3477a1c",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-26T12:50:00.000Z"
+    },
+    {
+      "id": "fa9f2189-7475-4686-9755-a72106706e9d",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Cancel duplicate order submission #48201"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 2241,
+      "outputTokens": 317,
+      "totalTokens": 2558,
+      "cost": null,
+      "durationMs": 3121,
+      "error": null,
+      "source": "agent",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": null,
+      "taskId": "48088746-220f-450f-94ff-05ffd2d67373",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-25T13:07:00.000Z"
+    },
+    {
+      "id": "36a7bbd6-940e-4074-a633-5845a1310073",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Cancel duplicate order submission #48201"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 2298,
+      "outputTokens": 348,
+      "totalTokens": 2646,
+      "cost": null,
+      "durationMs": 3210,
+      "error": null,
+      "source": "agent",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": null,
+      "taskId": "48088746-220f-450f-94ff-05ffd2d67373",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-25T13:07:00.000Z"
+    },
+    {
+      "id": "9673a832-71fd-442d-8550-13dee801593b",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Process purchase order for Industrial Barcode Scanner (BCS-450)"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 2372,
+      "outputTokens": 414,
+      "totalTokens": 2786,
+      "cost": null,
+      "durationMs": 3332,
+      "error": "Step validation failed",
+      "source": "agent",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": null,
+      "taskId": "63d8c8bd-3b76-46fc-926b-703838846929",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-24T08:24:00.000Z"
+    },
+    {
+      "id": "79f1b68b-760d-4158-985c-af6e1b4f59f2",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Create purchase order for 40x Ergonomic Office Chair (ECH-310)"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 2503,
+      "outputTokens": 511,
+      "totalTokens": 3014,
+      "cost": null,
+      "durationMs": 3543,
+      "error": null,
+      "source": "agent",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": null,
+      "taskId": "0ecef3d1-19e8-4160-9716-4750826c4bb2",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-23T09:41:00.000Z"
+    },
+    {
+      "id": "310529aa-c83d-4680-bcb5-ce8748e18f3f",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Create purchase order for 40x Ergonomic Office Chair (ECH-310)"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 2560,
+      "outputTokens": 542,
+      "totalTokens": 3102,
+      "cost": null,
+      "durationMs": 3632,
+      "error": "Step validation failed",
+      "source": "agent",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": null,
+      "taskId": "0ecef3d1-19e8-4160-9716-4750826c4bb2",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-23T09:41:00.000Z"
+    },
+    {
+      "id": "4aa7e881-b0fc-4fcf-b0e2-af93db5ef38e",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Reconcile inbound order totals against warehouse manifest"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 2634,
+      "outputTokens": 608,
+      "totalTokens": 3242,
+      "cost": null,
+      "durationMs": 3754,
+      "error": "Step validation failed",
+      "source": "agent",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": null,
+      "taskId": "95ebac19-690f-4532-a1e0-e9fa7c48bc08",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-22T10:58:00.000Z"
+    },
+    {
+      "id": "2dab4e64-afbe-4cc0-8853-1106ae37da64",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Update fulfillment status for order #48177"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 2765,
+      "outputTokens": 705,
+      "totalTokens": 3470,
+      "cost": null,
+      "durationMs": 3965,
+      "error": null,
+      "source": "agent",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": null,
+      "taskId": "d52d6038-9cb0-4473-a289-10aa35a080a6",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-21T11:15:00.000Z"
+    },
+    {
+      "id": "6aacb343-8892-4ef8-a9c5-9e34e9266d21",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Generate packing slip and assign carrier for order #48190"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 2896,
+      "outputTokens": 802,
+      "totalTokens": 3698,
+      "cost": null,
+      "durationMs": 4176,
+      "error": null,
+      "source": "agent",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": null,
+      "taskId": "c487bfc9-ebc7-497a-9b25-5981d685489d",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-20T12:32:00.000Z"
+    },
+    {
+      "id": "554fe0b0-01c8-471e-af0e-4d330e1d954d",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Validate supplier quote against catalog pricing"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 827,
+      "outputTokens": 899,
+      "totalTokens": 1726,
+      "cost": null,
+      "durationMs": 4387,
+      "error": null,
+      "source": "agent",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": null,
+      "taskId": "d77090ef-95aa-46fc-b773-c6ad41ced3f7",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-19T13:49:00.000Z"
+    },
+    {
+      "id": "42672bc9-5cc1-4a25-8059-23374fa46d16",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Validate supplier compliance documents for Q4 shipment batch"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 800,
+      "outputTokens": 150,
+      "totalTokens": 950,
+      "cost": null,
+      "durationMs": 800,
+      "error": null,
+      "source": "agent",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "sessionId": null,
+      "taskId": "d60c6b69-c4fc-4bfd-b8f3-22079d5787c0",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-27T08:00:00.000Z"
+    },
+    {
+      "id": "cc543eeb-48c7-411f-abda-d76fd3e49eb6",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Check export regulation status for order #48213"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 931,
+      "outputTokens": 247,
+      "totalTokens": 1178,
+      "cost": null,
+      "durationMs": 1011,
+      "error": null,
+      "source": "agent",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "sessionId": null,
+      "taskId": "ccb16af2-38b8-4ed3-a7c5-b1d41b09cf6a",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-26T09:17:00.000Z"
+    },
+    {
+      "id": "74943c02-e220-4f02-a9d1-6e6b8528bcd6",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Check export regulation status for order #48213"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 988,
+      "outputTokens": 278,
+      "totalTokens": 1266,
+      "cost": null,
+      "durationMs": 1100,
+      "error": null,
+      "source": "agent",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "sessionId": null,
+      "taskId": "ccb16af2-38b8-4ed3-a7c5-b1d41b09cf6a",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-26T09:17:00.000Z"
+    },
+    {
+      "id": "3177aa28-c0ab-4865-8f33-7e63db985368",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Generate compliance certificate for safety equipment order"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 1062,
+      "outputTokens": 344,
+      "totalTokens": 1406,
+      "cost": null,
+      "durationMs": 1222,
+      "error": null,
+      "source": "agent",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "sessionId": null,
+      "taskId": "799c129f-5a7d-4f54-ba94-14d62fa17b5e",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-25T10:34:00.000Z"
+    },
+    {
+      "id": "f71bb389-00a6-4064-845a-d66e478877ef",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Verify product safety certification for import order"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 1193,
+      "outputTokens": 441,
+      "totalTokens": 1634,
+      "cost": null,
+      "durationMs": 1433,
+      "error": null,
+      "source": "agent",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "sessionId": null,
+      "taskId": "9895df0c-0a29-48a4-8354-4d1dbbff6498",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-24T11:51:00.000Z"
+    },
+    {
+      "id": "9fe6f924-9cf4-4500-b7a1-90c3121d31e5",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Verify product safety certification for import order"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 1250,
+      "outputTokens": 472,
+      "totalTokens": 1722,
+      "cost": null,
+      "durationMs": 1522,
+      "error": null,
+      "source": "agent",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "sessionId": null,
+      "taskId": "9895df0c-0a29-48a4-8354-4d1dbbff6498",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-24T11:51:00.000Z"
+    },
+    {
+      "id": "8e08289b-ceb0-43e1-b028-c166782bfae9",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Review hazardous materials declaration for shipment"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 1324,
+      "outputTokens": 538,
+      "totalTokens": 1862,
+      "cost": null,
+      "durationMs": 1644,
+      "error": null,
+      "source": "agent",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "sessionId": null,
+      "taskId": "fcc32920-4cb2-4574-b0a9-1dd7c7429b86",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-23T12:08:00.000Z"
+    },
+    {
+      "id": "475ce4d6-53c6-4688-83cd-af5002b2439c",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Audit compliance documentation for quarterly report"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 1455,
+      "outputTokens": 635,
+      "totalTokens": 2090,
+      "cost": null,
+      "durationMs": 1855,
+      "error": null,
+      "source": "agent",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "sessionId": null,
+      "taskId": "13a31396-52fa-4405-8a01-a61eb60d749d",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-22T13:25:00.000Z"
+    },
+    {
+      "id": "a3cd290c-2070-4a75-9995-9daff438880c",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Audit compliance documentation for quarterly report"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 1512,
+      "outputTokens": 666,
+      "totalTokens": 2178,
+      "cost": null,
+      "durationMs": 1944,
+      "error": null,
+      "source": "agent",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "sessionId": null,
+      "taskId": "13a31396-52fa-4405-8a01-a61eb60d749d",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-22T13:25:00.000Z"
+    },
+    {
+      "id": "b27b845f-8912-4095-afd2-49932cb95da8",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Verify country-of-origin labeling requirements"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 1586,
+      "outputTokens": 732,
+      "totalTokens": 2318,
+      "cost": null,
+      "durationMs": 2066,
+      "error": null,
+      "source": "agent",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "sessionId": null,
+      "taskId": "cacf7d28-b7f8-4482-9f1c-887cf448bfbb",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-21T08:42:00.000Z"
+    },
+    {
+      "id": "bd20f5d1-5317-45c2-97d6-270c4b4e36b7",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Cross-check denied party list for new supplier"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 1717,
+      "outputTokens": 829,
+      "totalTokens": 2546,
+      "cost": null,
+      "durationMs": 2277,
+      "error": null,
+      "source": "agent",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "sessionId": null,
+      "taskId": "298c515f-14d2-46e7-9ffb-49bd32cf1134",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-20T09:59:00.000Z"
+    },
+    {
+      "id": "21db7b6f-9c93-4ce8-a67f-0689b0961ca3",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Cross-check denied party list for new supplier"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 1774,
+      "outputTokens": 860,
+      "totalTokens": 2634,
+      "cost": null,
+      "durationMs": 2366,
+      "error": null,
+      "source": "agent",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "sessionId": null,
+      "taskId": "298c515f-14d2-46e7-9ffb-49bd32cf1134",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-20T09:59:00.000Z"
+    },
+    {
+      "id": "d1dfd385-c9b8-4ef8-876a-62a9295c21e1",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Renew expiring compliance certificate for DSC-760"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 1848,
+      "outputTokens": 926,
+      "totalTokens": 2774,
+      "cost": null,
+      "durationMs": 2488,
+      "error": null,
+      "source": "agent",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "sessionId": null,
+      "taskId": "d1956c2e-402f-4bd4-96fb-31ed8515e10a",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-19T10:16:00.000Z"
+    },
+    {
+      "id": "0bb831ba-c59f-43da-b48d-d4254f6baddb",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Escalate ambiguous regulation match for legal review"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 1979,
+      "outputTokens": 1023,
+      "totalTokens": 3002,
+      "cost": null,
+      "durationMs": 2699,
+      "error": null,
+      "source": "agent",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "sessionId": null,
+      "taskId": "4e038722-0c68-444e-874d-477daa5308cf",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-27T11:33:00.000Z"
+    },
+    {
+      "id": "6820c3c0-1c01-4a2e-83f2-f379114b4790",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Escalate ambiguous regulation match for legal review"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 2036,
+      "outputTokens": 154,
+      "totalTokens": 2190,
+      "cost": null,
+      "durationMs": 2788,
+      "error": null,
+      "source": "agent",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "sessionId": null,
+      "taskId": "4e038722-0c68-444e-874d-477daa5308cf",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-27T11:33:00.000Z"
+    },
+    {
+      "id": "c14cbbc6-02e2-49f8-bb90-d25d5a1a2d16",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Validate supplier compliance documents for Q4 shipment batch"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 2110,
+      "outputTokens": 220,
+      "totalTokens": 2330,
+      "cost": null,
+      "durationMs": 2910,
+      "error": null,
+      "source": "agent",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "sessionId": null,
+      "taskId": "e1dc32e8-1e7f-4f40-aafb-3d278940b114",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-26T12:50:00.000Z"
+    },
+    {
+      "id": "d00ea01a-c323-4950-9c0e-a6e4edb856c3",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Check export regulation status for order #48213"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 2241,
+      "outputTokens": 317,
+      "totalTokens": 2558,
+      "cost": null,
+      "durationMs": 3121,
+      "error": null,
+      "source": "agent",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "sessionId": null,
+      "taskId": "9e28aecf-7cf8-4caa-90d4-ac04b134943d",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-25T13:07:00.000Z"
+    },
+    {
+      "id": "7a3f2bcc-b244-41cc-b943-9bffbec80122",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Check export regulation status for order #48213"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 2298,
+      "outputTokens": 348,
+      "totalTokens": 2646,
+      "cost": null,
+      "durationMs": 3210,
+      "error": null,
+      "source": "agent",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "sessionId": null,
+      "taskId": "9e28aecf-7cf8-4caa-90d4-ac04b134943d",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-25T13:07:00.000Z"
+    },
+    {
+      "id": "2ecf1db0-45ff-4238-8c4f-137c30723804",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Generate compliance certificate for safety equipment order"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 2372,
+      "outputTokens": 414,
+      "totalTokens": 2786,
+      "cost": null,
+      "durationMs": 3332,
+      "error": "Step validation failed",
+      "source": "agent",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "sessionId": null,
+      "taskId": "f7bc814d-a90d-4dcd-9f40-27324cfdca35",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-24T08:24:00.000Z"
+    },
+    {
+      "id": "6779d2f6-d5e5-4238-b5e2-c94003ddb70f",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Verify product safety certification for import order"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 2503,
+      "outputTokens": 511,
+      "totalTokens": 3014,
+      "cost": null,
+      "durationMs": 3543,
+      "error": null,
+      "source": "agent",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "sessionId": null,
+      "taskId": "34d0e873-cdd1-407f-b278-3fc34119accf",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-23T09:41:00.000Z"
+    },
+    {
+      "id": "1ed646e7-1d88-4467-b9e4-4654e9a61c2d",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Verify product safety certification for import order"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 2560,
+      "outputTokens": 542,
+      "totalTokens": 3102,
+      "cost": null,
+      "durationMs": 3632,
+      "error": "Step validation failed",
+      "source": "agent",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "sessionId": null,
+      "taskId": "34d0e873-cdd1-407f-b278-3fc34119accf",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-23T09:41:00.000Z"
+    },
+    {
+      "id": "0245df1c-c23a-47d0-b373-f588bfcd3898",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Review hazardous materials declaration for shipment"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 2634,
+      "outputTokens": 608,
+      "totalTokens": 3242,
+      "cost": null,
+      "durationMs": 3754,
+      "error": "Step validation failed",
+      "source": "agent",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "sessionId": null,
+      "taskId": "54669c9c-5ce0-441e-9e34-e70016babbaf",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-22T10:58:00.000Z"
+    },
+    {
+      "id": "8f598a33-61a4-4bc0-9bb2-ec7f442cb023",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Audit compliance documentation for quarterly report"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 2765,
+      "outputTokens": 705,
+      "totalTokens": 3470,
+      "cost": null,
+      "durationMs": 3965,
+      "error": null,
+      "source": "agent",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "sessionId": null,
+      "taskId": "a5f8cabb-a04e-404c-8a0b-3dae9b1947e4",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-21T11:15:00.000Z"
+    },
+    {
+      "id": "49e285bb-3b86-4a4a-b0e2-a6fe8a81be46",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Verify country-of-origin labeling requirements"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 2896,
+      "outputTokens": 802,
+      "totalTokens": 3698,
+      "cost": null,
+      "durationMs": 4176,
+      "error": null,
+      "source": "agent",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "sessionId": null,
+      "taskId": "08da3584-f865-4605-b908-15ddd915146d",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-20T12:32:00.000Z"
+    },
+    {
+      "id": "b6ddc8ee-8d09-4a98-a0d6-95294daf1b2d",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Cross-check denied party list for new supplier"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "ok"
+      },
+      "inputTokens": 827,
+      "outputTokens": 899,
+      "totalTokens": 1726,
+      "cost": null,
+      "durationMs": 4387,
+      "error": null,
+      "source": "agent",
+      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
+      "sessionId": null,
+      "taskId": "253bfb84-70ec-45e6-bc94-99db2709a61a",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-10-19T13:49:00.000Z"
+    },
     {
       "id": "e5f6a7b8-0101-4000-8000-000000000101",
       "provider": "anthropic",

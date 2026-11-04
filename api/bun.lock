@@ -6,7 +6,7 @@
       "name": "api.greycollar.ai",
       "dependencies": {
         "@aws-sdk/client-ec2": "^3.1085.0",
-        "@canmingir/link-express": "^1.7.40",
+        "@canmingir/link-express": "^1.7.41",
         "@opentelemetry/api": "^1.9.0",
         "@opentelemetry/exporter-prometheus": "^0.206.0",
         "@opentelemetry/host-metrics": "^0.36.2",
@@ -179,7 +179,7 @@
 
     "@bcoe/v8-coverage": ["@bcoe/v8-coverage@0.2.3", "", {}, "sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw=="],
 
-    "@canmingir/link-express": ["@canmingir/link-express@1.7.40", "", { "dependencies": { "@anthropic-ai/sdk": "^0.35.0", "@aws-sdk/client-bedrock-runtime": "^3.1148.0", "@aws-sdk/client-dynamodb": "^3.614.0", "@aws-sdk/lib-dynamodb": "^3.614.0", "@elastic/ecs-pino-format": "^1.5.0", "aws-jwt-verify": "^5.1.1", "axios": "^1.7.2", "cors": "^2.8.5", "dotenv": "^16.4.5", "express": "^4.19.2", "express-async-errors": "^3.1.1", "helmet": "^7.1.0", "joi": "^17.13.3", "joi-to-swagger": "^6.2.0", "jsonwebtoken": "^9.0.2", "kafkajs": "^2.2.4", "lodash": "^4.17.21", "morgan": "^1.10.0", "openai": "^4.79.4", "pg": "^8.12.0", "pino": "^10.1.0", "pino-elasticsearch": "^8.1.0", "prom-client": "^15.1.3", "sequelize": "^6.37.7", "sequelize-typescript": "^2.1.6", "socket.io": "^4.8.1", "socket.io-client": "^4.8.1", "swagger-jsdoc": "^6.2.8", "uuid": "^10.0.0" }, "bin": { "event-listener": "bin/event-listener.ts" } }, "sha512-WVfYyFFI78J5k2P2Hx8SL86Ag+8RZ0KJYzgxSxzziecXAjN2UyUA1yl00Iwso6JtW3pFKelWW/u9Gx9wdlAnTw=="],
+    "@canmingir/link-express": ["@canmingir/link-express@1.7.41", "", { "dependencies": { "@anthropic-ai/sdk": "^0.35.0", "@aws-sdk/client-bedrock-runtime": "^3.1148.0", "@aws-sdk/client-dynamodb": "^3.614.0", "@aws-sdk/lib-dynamodb": "^3.614.0", "@elastic/ecs-pino-format": "^1.5.0", "aws-jwt-verify": "^5.1.1", "axios": "^1.7.2", "cors": "^2.8.5", "dotenv": "^16.4.5", "express": "^4.19.2", "express-async-errors": "^3.1.1", "helmet": "^7.1.0", "joi": "^17.13.3", "joi-to-swagger": "^6.2.0", "jsonwebtoken": "^9.0.2", "kafkajs": "^2.2.4", "lodash": "^4.17.21", "morgan": "^1.10.0", "openai": "^4.79.4", "pg": "^8.12.0", "pino": "^10.1.0", "pino-elasticsearch": "^8.1.0", "prom-client": "^15.1.3", "sequelize": "^6.37.7", "sequelize-typescript": "^2.1.6", "socket.io": "^4.8.1", "socket.io-client": "^4.8.1", "swagger-jsdoc": "^6.2.8", "uuid": "^10.0.0" }, "bin": { "event-listener": "bin/event-listener.ts" } }, "sha512-lNi2O3kFjKdn29+BKM5n5hnf1ei6XXIDS7CVTkV+7TIe+tNg0iaPxj/LNUs/wiAczuP3Z9IJlXfWh19UUzyUvQ=="],
 
     "@elastic/ecs-helpers": ["@elastic/ecs-helpers@2.1.1", "", {}, "sha512-ItoNazMnYdlUCmkBYTXc3SG6PF7UlVTbvMdHPvXkfTMPdwGv2G1Xtp5CjDHaGHGOZSwaDrW4RSCXvA/lMSU+rg=="],
 

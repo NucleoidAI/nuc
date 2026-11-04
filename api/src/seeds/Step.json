@@ -48,11 +48,12 @@
       "knowledgeScore": 0.92,
       "createdAt": "2026-05-25T12:40:11.085Z"
     },
-
     {
       "id": "b1c2d3e4-0001-4000-8000-000000000001",
       "action": "TELCO:get_bbk_by_address",
-      "parameters": { "address": "Musterstrasse 12, 10115 Berlin" },
+      "parameters": {
+        "address": "Musterstrasse 12, 10115 Berlin"
+      },
       "result": "{\"bbk\": \"DEU-10115-00482\"}",
       "comment": "Retrieved BBK number for the given address.",
       "status": "COMPLETED",
@@ -63,7 +64,9 @@
     {
       "id": "b1c2d3e4-0002-4000-8000-000000000002",
       "action": "TELCO:get_inventory",
-      "parameters": { "bbk": "DEU-10115-00482" },
+      "parameters": {
+        "bbk": "DEU-10115-00482"
+      },
       "result": "{\"available\": true, \"slots\": 4}",
       "comment": "Inventory check passed, 4 slots available.",
       "status": "COMPLETED",
@@ -74,7 +77,9 @@
     {
       "id": "b1c2d3e4-0003-4000-8000-000000000003",
       "action": "TELCO:get_product_by_speed",
-      "parameters": { "bbk": "DEU-10115-00482" },
+      "parameters": {
+        "bbk": "DEU-10115-00482"
+      },
       "result": "[{\"id\": \"P100\", \"speed\": 100}, {\"id\": \"P250\", \"speed\": 250}]",
       "comment": "Fetched available products.",
       "status": "COMPLETED",
@@ -95,7 +100,6 @@
       "knowledgeScore": null,
       "createdAt": "2026-05-10T09:05:00Z"
     },
-
     {
       "id": "c2c3d4e5-0001-4000-8000-000000000001",
       "action": "PLATFORM:user_interaction",
@@ -115,7 +119,9 @@
     {
       "id": "c2c3d4e5-0002-4000-8000-000000000002",
       "action": "ORDER:find_product",
-      "parameters": { "productId": "DSC-760" },
+      "parameters": {
+        "productId": "DSC-760"
+      },
       "result": "{\"id\":\"DSC-760\",\"name\":\"Duplex Document Scanner\",\"vendor\":\"GlobalParts Ltd\",\"vendorEmail\":\"compliance@globalparts.com\",\"category\":\"industrial\"}",
       "comment": "Found product details for DSC-760 Duplex Document Scanner",
       "status": "COMPLETED",
@@ -147,7 +153,7 @@
         "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
       },
       "result": "{\"id\":\"e5f6a7b8-9012-4000-8000-000000000001\",\"status\":\"IN_PROGRESS\",\"createdAt\":\"2026-07-01T09:35:00.000Z\",\"question\":\"Duplex Document Scanner does not have a compliance certificate on record. Should I proceed with assigning a temporary certificate or escalate to the compliance manager?\",\"agentId\":\"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\",\"blueprintId\":\"85a763a3-30cc-409f-881f-828e17c44c9e\",\"taskId\":\"b2c3d4e5-0001-4000-8000-000000000001\"}",
-      "comment": "Escalating to supervisor — no certificate found for DSC-760, cannot proceed",
+      "comment": "Escalating to supervisor \u2014 no certificate found for DSC-760, cannot proceed",
       "status": "SUPERVISED_NEEDED",
       "taskId": "b2c3d4e5-0001-4000-8000-000000000001",
       "knowledgeScore": null,
@@ -195,6 +201,1139 @@
       "nodeId": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
       "knowledgeScore": null,
       "createdAt": "2026-11-03T10:12:11.400Z"
+    },
+    {
+      "id": "ea0b95b0-81f6-4632-87c4-b257de8d11a7",
+      "action": "TELCO:get_bbk_by_address",
+      "parameters": {
+        "taskId": "ac8c5193-92d0-4e9f-af55-f0504b97dd5b",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed TELCO:get_bbk_by_address for task.",
+      "status": "COMPLETED",
+      "taskId": "ac8c5193-92d0-4e9f-af55-f0504b97dd5b",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-21T09:12:30.000Z"
+    },
+    {
+      "id": "ba6e5cfb-9a78-4acf-bd58-330c655e415b",
+      "action": "TELCO:get_inventory",
+      "parameters": {
+        "taskId": "ac8c5193-92d0-4e9f-af55-f0504b97dd5b",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed TELCO:get_inventory for task.",
+      "status": "COMPLETED",
+      "taskId": "ac8c5193-92d0-4e9f-af55-f0504b97dd5b",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-21T09:13:30.000Z"
+    },
+    {
+      "id": "7f3f6712-fb98-4400-8152-f511c3a1e352",
+      "action": "PLATFORM:knowledge_lookup",
+      "parameters": {
+        "taskId": "666ec475-7eb2-4d16-b52b-d7498726d54e",
+        "agentId": "c38523e7-2e22-44e5-aa0d-f92c7d240315"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PLATFORM:knowledge_lookup for task.",
+      "status": "COMPLETED",
+      "taskId": "666ec475-7eb2-4d16-b52b-d7498726d54e",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-22T10:05:30.000Z"
+    },
+    {
+      "id": "5d353cf9-7566-4a3e-ae05-5988ab6e1813",
+      "action": "TRANSLATE:run_translation",
+      "parameters": {
+        "taskId": "666ec475-7eb2-4d16-b52b-d7498726d54e",
+        "agentId": "c38523e7-2e22-44e5-aa0d-f92c7d240315"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed TRANSLATE:run_translation for task.",
+      "status": "COMPLETED",
+      "taskId": "666ec475-7eb2-4d16-b52b-d7498726d54e",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-22T10:06:30.000Z"
+    },
+    {
+      "id": "86ef7d1a-7c2a-4f6c-99fe-511cc31ee7e9",
+      "action": "PLATFORM:get_transcript",
+      "parameters": {
+        "taskId": "84ce6d70-45b5-4b4c-89e6-d29f7eef02a6",
+        "agentId": "ab2d404b-3358-45eb-a468-338485924fea"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PLATFORM:get_transcript for task.",
+      "status": "COMPLETED",
+      "taskId": "84ce6d70-45b5-4b4c-89e6-d29f7eef02a6",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-23T08:40:30.000Z"
+    },
+    {
+      "id": "a6bb8b50-a75d-43a1-95a5-8b87c9deed97",
+      "action": "PLATFORM:summarize_text",
+      "parameters": {
+        "taskId": "84ce6d70-45b5-4b4c-89e6-d29f7eef02a6",
+        "agentId": "ab2d404b-3358-45eb-a468-338485924fea"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PLATFORM:summarize_text for task.",
+      "status": "COMPLETED",
+      "taskId": "84ce6d70-45b5-4b4c-89e6-d29f7eef02a6",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-23T08:41:30.000Z"
+    },
+    {
+      "id": "bf499e8f-4580-4ab8-bf5c-da5c9b92316f",
+      "action": "PLATFORM:get_transcript",
+      "parameters": {
+        "taskId": "6678b350-cd8d-4327-a29a-faa7107a6ffd",
+        "agentId": "ab2d404b-3358-45eb-a468-338485924fea"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PLATFORM:get_transcript for task.",
+      "status": "COMPLETED",
+      "taskId": "6678b350-cd8d-4327-a29a-faa7107a6ffd",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T06:00:30.000Z"
+    },
+    {
+      "id": "d0c05c31-8cf1-4ed8-865a-eeb6fb2997a5",
+      "action": "PLATFORM:summarize_text",
+      "parameters": {
+        "taskId": "6678b350-cd8d-4327-a29a-faa7107a6ffd",
+        "agentId": "ab2d404b-3358-45eb-a468-338485924fea"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PLATFORM:summarize_text for task.",
+      "status": "COMPLETED",
+      "taskId": "6678b350-cd8d-4327-a29a-faa7107a6ffd",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T06:01:30.000Z"
+    },
+    {
+      "id": "063fbd78-90f3-4353-a291-94ad497e489c",
+      "action": "PLATFORM:ask_supervisor",
+      "parameters": {
+        "question": "The leadership sync recording is 90 minutes with overlapping speakers. Should I summarize the full recording or only the agenda-marked segments?",
+        "taskId": "6678b350-cd8d-4327-a29a-faa7107a6ffd",
+        "agentId": "ab2d404b-3358-45eb-a468-338485924fea",
+        "blueprintId": "019fa100-0000-4000-8000-000000000001"
+      },
+      "result": "{\"id\": \"b3793423-8fbd-414b-8592-7f2ee16da700\", \"status\": \"IN_PROGRESS\", \"createdAt\": \"2026-10-27T06:02:30.000Z\", \"question\": \"The leadership sync recording is 90 minutes with overlapping speakers. Should I summarize the full recording or only the agenda-marked segments?\", \"agentId\": \"ab2d404b-3358-45eb-a468-338485924fea\", \"taskId\": \"6678b350-cd8d-4327-a29a-faa7107a6ffd\"}",
+      "comment": "Escalating to supervisor for review.",
+      "status": "SUPERVISED_NEEDED",
+      "taskId": "6678b350-cd8d-4327-a29a-faa7107a6ffd",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T06:02:30.000Z"
+    },
+    {
+      "id": "9acfd418-1d7c-4e2a-8b12-afee2dd28be9",
+      "action": "PLATFORM:knowledge_lookup",
+      "parameters": {
+        "taskId": "c4774b88-ae29-462e-925e-cf333c481d45",
+        "agentId": "c38523e7-2e22-44e5-aa0d-f92c7d240315"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PLATFORM:knowledge_lookup for task.",
+      "status": "COMPLETED",
+      "taskId": "c4774b88-ae29-462e-925e-cf333c481d45",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-24T13:15:30.000Z"
+    },
+    {
+      "id": "ab20de01-2b41-4213-a1c2-121c1f0e5d5a",
+      "action": "TRANSLATE:run_translation",
+      "parameters": {
+        "taskId": "c4774b88-ae29-462e-925e-cf333c481d45",
+        "agentId": "c38523e7-2e22-44e5-aa0d-f92c7d240315"
+      },
+      "result": "null",
+      "comment": "Step failed during execution.",
+      "status": "FAILED",
+      "taskId": "c4774b88-ae29-462e-925e-cf333c481d45",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-24T13:16:30.000Z"
+    },
+    {
+      "id": "68ba1973-1224-4646-9d4d-d42467946572",
+      "action": "TELCO:get_bbk_by_address",
+      "parameters": {
+        "taskId": "5501410f-3208-4fd6-afc0-1be5a773ca45",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed TELCO:get_bbk_by_address for task.",
+      "status": "COMPLETED",
+      "taskId": "5501410f-3208-4fd6-afc0-1be5a773ca45",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-26T15:50:30.000Z"
+    },
+    {
+      "id": "5aa884bc-d1cf-4e82-90cc-0cdc7446791e",
+      "action": "TELCO:get_inventory",
+      "parameters": {
+        "taskId": "5501410f-3208-4fd6-afc0-1be5a773ca45",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed TELCO:get_inventory for task.",
+      "status": "COMPLETED",
+      "taskId": "5501410f-3208-4fd6-afc0-1be5a773ca45",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-26T15:51:30.000Z"
+    },
+    {
+      "id": "ce5f520d-7cef-4b11-877c-3f2816e2fab2",
+      "action": "PLATFORM:ask_supervisor",
+      "parameters": {
+        "question": "Address in Hamburg returned two matching BBK numbers. Should I use the most recent registration or ask the customer to confirm the unit number?",
+        "taskId": "5501410f-3208-4fd6-afc0-1be5a773ca45",
+        "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
+        "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59"
+      },
+      "result": "{\"id\": \"412d2695-0494-4b37-bd9b-4e66330b55a3\", \"status\": \"IN_PROGRESS\", \"createdAt\": \"2026-10-26T15:52:30.000Z\", \"question\": \"Address in Hamburg returned two matching BBK numbers. Should I use the most recent registration or ask the customer to confirm the unit number?\", \"agentId\": \"00db1bd4-4829-40f2-8b99-d2e42342157e\", \"taskId\": \"5501410f-3208-4fd6-afc0-1be5a773ca45\"}",
+      "comment": "Escalating to supervisor for review.",
+      "status": "SUPERVISED_NEEDED",
+      "taskId": "5501410f-3208-4fd6-afc0-1be5a773ca45",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-26T15:52:30.000Z"
+    },
+    {
+      "id": "6a70100d-722b-4d1f-8590-c188338d1663",
+      "action": "PLATFORM:knowledge_lookup",
+      "parameters": {
+        "taskId": "49768578-096f-4786-9475-ab10bf983217",
+        "agentId": "c38523e7-2e22-44e5-aa0d-f92c7d240315"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PLATFORM:knowledge_lookup for task.",
+      "status": "COMPLETED",
+      "taskId": "49768578-096f-4786-9475-ab10bf983217",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T07:15:30.000Z"
+    },
+    {
+      "id": "0003eaca-bb25-4f2c-9bfe-383791fb8fd1",
+      "action": "TRANSLATE:run_translation",
+      "parameters": {
+        "taskId": "49768578-096f-4786-9475-ab10bf983217",
+        "agentId": "c38523e7-2e22-44e5-aa0d-f92c7d240315"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed TRANSLATE:run_translation for task.",
+      "status": "COMPLETED",
+      "taskId": "49768578-096f-4786-9475-ab10bf983217",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T07:16:30.000Z"
+    },
+    {
+      "id": "eda03b7f-e317-4894-b127-8924c8b3c550",
+      "action": "PLATFORM:ask_supervisor",
+      "parameters": {
+        "question": "The legal disclaimer contains a term with no direct Japanese legal equivalent. Should I use a transliteration or a descriptive paraphrase?",
+        "taskId": "49768578-096f-4786-9475-ab10bf983217",
+        "agentId": "c38523e7-2e22-44e5-aa0d-f92c7d240315"
+      },
+      "result": "{\"id\": \"490ed772-a3e4-490a-a83e-67af2b7f6b7c\", \"status\": \"IN_PROGRESS\", \"createdAt\": \"2026-10-27T07:17:30.000Z\", \"question\": \"The legal disclaimer contains a term with no direct Japanese legal equivalent. Should I use a transliteration or a descriptive paraphrase?\", \"agentId\": \"c38523e7-2e22-44e5-aa0d-f92c7d240315\", \"taskId\": \"49768578-096f-4786-9475-ab10bf983217\"}",
+      "comment": "Escalating to supervisor for review.",
+      "status": "SUPERVISED_NEEDED",
+      "taskId": "49768578-096f-4786-9475-ab10bf983217",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T07:17:30.000Z"
+    },
+    {
+      "id": "bcd0c2f3-92a0-4876-85db-26c0b5b950fd",
+      "action": "PLATFORM:knowledge_lookup",
+      "parameters": {
+        "taskId": "6e10f905-ee4e-45a8-b0a6-7a0d65b3e653",
+        "agentId": "7a222222-9696-498f-9aaf-b4cf5b2ca043"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PLATFORM:knowledge_lookup for task.",
+      "status": "COMPLETED",
+      "taskId": "6e10f905-ee4e-45a8-b0a6-7a0d65b3e653",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-20T09:00:30.000Z"
+    },
+    {
+      "id": "b02b0f69-37cb-4a50-8a34-26825041dda0",
+      "action": "PLATFORM:user_interaction",
+      "parameters": {
+        "taskId": "6e10f905-ee4e-45a8-b0a6-7a0d65b3e653",
+        "agentId": "7a222222-9696-498f-9aaf-b4cf5b2ca043"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PLATFORM:user_interaction for task.",
+      "status": "COMPLETED",
+      "taskId": "6e10f905-ee4e-45a8-b0a6-7a0d65b3e653",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-20T09:01:30.000Z"
+    },
+    {
+      "id": "69968b7e-9f8b-450b-b67b-f1b4be0bd450",
+      "action": "PLATFORM:knowledge_lookup",
+      "parameters": {
+        "taskId": "5dde9275-ba1a-44fd-8ef1-5016314db14a",
+        "agentId": "7a222222-9696-498f-9aaf-b4cf5b2ca043"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PLATFORM:knowledge_lookup for task.",
+      "status": "COMPLETED",
+      "taskId": "5dde9275-ba1a-44fd-8ef1-5016314db14a",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-22T11:30:30.000Z"
+    },
+    {
+      "id": "26554ce2-8b6b-4431-b240-a7e0d2d0b0bc",
+      "action": "PLATFORM:user_interaction",
+      "parameters": {
+        "taskId": "5dde9275-ba1a-44fd-8ef1-5016314db14a",
+        "agentId": "7a222222-9696-498f-9aaf-b4cf5b2ca043"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PLATFORM:user_interaction for task.",
+      "status": "COMPLETED",
+      "taskId": "5dde9275-ba1a-44fd-8ef1-5016314db14a",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-22T11:31:30.000Z"
+    },
+    {
+      "id": "e8ae9f6f-91e0-48e5-a673-6fd151e097f3",
+      "action": "PLATFORM:knowledge_lookup",
+      "parameters": {
+        "taskId": "bfe92973-f0c5-4585-9148-3bf73e3bf4c2",
+        "agentId": "7a222222-9696-498f-9aaf-b4cf5b2ca043"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PLATFORM:knowledge_lookup for task.",
+      "status": "COMPLETED",
+      "taskId": "bfe92973-f0c5-4585-9148-3bf73e3bf4c2",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-24T14:00:30.000Z"
+    },
+    {
+      "id": "3b720a4a-39b9-4cbe-84ee-cdb1db799920",
+      "action": "PLATFORM:user_interaction",
+      "parameters": {
+        "taskId": "bfe92973-f0c5-4585-9148-3bf73e3bf4c2",
+        "agentId": "7a222222-9696-498f-9aaf-b4cf5b2ca043"
+      },
+      "result": "null",
+      "comment": "Step failed during execution.",
+      "status": "FAILED",
+      "taskId": "bfe92973-f0c5-4585-9148-3bf73e3bf4c2",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-24T14:01:30.000Z"
+    },
+    {
+      "id": "101c3356-954f-48dd-b369-b3f1862affaf",
+      "action": "AUTH:send_reset_link",
+      "parameters": {
+        "taskId": "d9a6ff77-27e5-44cf-b708-d0c2a692c30a",
+        "agentId": "7a222222-9696-498f-9aaf-b4cf5b2ca043"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed AUTH:send_reset_link for task.",
+      "status": "COMPLETED",
+      "taskId": "d9a6ff77-27e5-44cf-b708-d0c2a692c30a",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-25T16:20:30.000Z"
+    },
+    {
+      "id": "1884ab43-e7fb-4f97-9f66-0613c249f8b4",
+      "action": "PLATFORM:user_interaction",
+      "parameters": {
+        "taskId": "d9a6ff77-27e5-44cf-b708-d0c2a692c30a",
+        "agentId": "7a222222-9696-498f-9aaf-b4cf5b2ca043"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PLATFORM:user_interaction for task.",
+      "status": "COMPLETED",
+      "taskId": "d9a6ff77-27e5-44cf-b708-d0c2a692c30a",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-25T16:21:30.000Z"
+    },
+    {
+      "id": "94bac7b2-6a36-4ba3-915c-5aeb86529ce4",
+      "action": "PLATFORM:knowledge_lookup",
+      "parameters": {
+        "taskId": "1a1720b2-7d1a-4df3-b168-5eeb3f2faf7b",
+        "agentId": "7a222222-9696-498f-9aaf-b4cf5b2ca043"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PLATFORM:knowledge_lookup for task.",
+      "status": "COMPLETED",
+      "taskId": "1a1720b2-7d1a-4df3-b168-5eeb3f2faf7b",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T08:10:30.000Z"
+    },
+    {
+      "id": "6a67b5be-05fc-4b83-9a88-41480787480e",
+      "action": "BILLING:check_refund_window",
+      "parameters": {
+        "taskId": "1a1720b2-7d1a-4df3-b168-5eeb3f2faf7b",
+        "agentId": "7a222222-9696-498f-9aaf-b4cf5b2ca043"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed BILLING:check_refund_window for task.",
+      "status": "COMPLETED",
+      "taskId": "1a1720b2-7d1a-4df3-b168-5eeb3f2faf7b",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T08:11:30.000Z"
+    },
+    {
+      "id": "da701242-913c-4a1e-906e-ab7ec39e4127",
+      "action": "PLATFORM:ask_supervisor",
+      "parameters": {
+        "question": "Customer is requesting a refund outside the standard 30-day window due to a reported outage. Should I approve an exception or escalate to billing?",
+        "taskId": "1a1720b2-7d1a-4df3-b168-5eeb3f2faf7b",
+        "agentId": "7a222222-9696-498f-9aaf-b4cf5b2ca043"
+      },
+      "result": "{\"id\": \"6e6e67dd-19bf-46ba-b880-d7076bd25fc3\", \"status\": \"IN_PROGRESS\", \"createdAt\": \"2026-10-27T08:12:30.000Z\", \"question\": \"Customer is requesting a refund outside the standard 30-day window due to a reported outage. Should I approve an exception or escalate to billing?\", \"agentId\": \"7a222222-9696-498f-9aaf-b4cf5b2ca043\", \"taskId\": \"1a1720b2-7d1a-4df3-b168-5eeb3f2faf7b\"}",
+      "comment": "Escalating to supervisor for review.",
+      "status": "SUPERVISED_NEEDED",
+      "taskId": "1a1720b2-7d1a-4df3-b168-5eeb3f2faf7b",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T08:12:30.000Z"
+    },
+    {
+      "id": "df89d29c-0c7d-41bb-befe-20943fd7cd6c",
+      "action": "PLATFORM:knowledge_lookup",
+      "parameters": {
+        "taskId": "ef15034d-8496-4977-bfee-77bbd788c839",
+        "agentId": "7a222222-9696-498f-9aaf-b4cf5b2ca043"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PLATFORM:knowledge_lookup for task.",
+      "status": "COMPLETED",
+      "taskId": "ef15034d-8496-4977-bfee-77bbd788c839",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T01:45:30.000Z"
+    },
+    {
+      "id": "f08f6ea0-a8fd-4ab9-b729-709f6f7660ae",
+      "action": "AUTH:enable_2fa",
+      "parameters": {
+        "taskId": "ef15034d-8496-4977-bfee-77bbd788c839",
+        "agentId": "7a222222-9696-498f-9aaf-b4cf5b2ca043"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed AUTH:enable_2fa for task.",
+      "status": "COMPLETED",
+      "taskId": "ef15034d-8496-4977-bfee-77bbd788c839",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T01:46:30.000Z"
+    },
+    {
+      "id": "68c0d2de-d937-43c0-8953-db638e41f352",
+      "action": "PLATFORM:query_data",
+      "parameters": {
+        "taskId": "d0ea7832-d149-4ebc-9616-01521ca0fa9d",
+        "agentId": "72ef5b08-b4a9-42b7-bb0a-22d40e56798b"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PLATFORM:query_data for task.",
+      "status": "COMPLETED",
+      "taskId": "d0ea7832-d149-4ebc-9616-01521ca0fa9d",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-20T10:00:30.000Z"
+    },
+    {
+      "id": "9582f0da-6b33-4020-8808-ecc74c64d9a3",
+      "action": "PLATFORM:generate_report",
+      "parameters": {
+        "taskId": "d0ea7832-d149-4ebc-9616-01521ca0fa9d",
+        "agentId": "72ef5b08-b4a9-42b7-bb0a-22d40e56798b"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PLATFORM:generate_report for task.",
+      "status": "COMPLETED",
+      "taskId": "d0ea7832-d149-4ebc-9616-01521ca0fa9d",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-20T10:01:30.000Z"
+    },
+    {
+      "id": "0d122fdf-db63-4ef1-81cb-68462a3fe08f",
+      "action": "IT:check_vpn_status",
+      "parameters": {
+        "taskId": "0554fb6a-a88b-4dc6-ac8c-fe6009640e15",
+        "agentId": "3c8f1d5e-7b2a-4e91-a6d4-58c0f9b3e712"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed IT:check_vpn_status for task.",
+      "status": "COMPLETED",
+      "taskId": "0554fb6a-a88b-4dc6-ac8c-fe6009640e15",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-21T13:00:30.000Z"
+    },
+    {
+      "id": "c7d0c6ce-e1ca-4221-9306-05b008d5abaf",
+      "action": "IT:reconfigure_client",
+      "parameters": {
+        "taskId": "0554fb6a-a88b-4dc6-ac8c-fe6009640e15",
+        "agentId": "3c8f1d5e-7b2a-4e91-a6d4-58c0f9b3e712"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed IT:reconfigure_client for task.",
+      "status": "COMPLETED",
+      "taskId": "0554fb6a-a88b-4dc6-ac8c-fe6009640e15",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-21T13:01:30.000Z"
+    },
+    {
+      "id": "302391ac-0904-4807-90cd-5bd16af8ac54",
+      "action": "AD:create_account",
+      "parameters": {
+        "taskId": "d90c3935-5c20-4c8a-b9e2-5b80d01332ce",
+        "agentId": "019f6a11-0000-4000-8000-000000000001"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed AD:create_account for task.",
+      "status": "COMPLETED",
+      "taskId": "d90c3935-5c20-4c8a-b9e2-5b80d01332ce",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-22T09:30:30.000Z"
+    },
+    {
+      "id": "59858b35-d153-465c-a304-f7e7118154f8",
+      "action": "AD:assign_groups",
+      "parameters": {
+        "taskId": "d90c3935-5c20-4c8a-b9e2-5b80d01332ce",
+        "agentId": "019f6a11-0000-4000-8000-000000000001"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed AD:assign_groups for task.",
+      "status": "COMPLETED",
+      "taskId": "d90c3935-5c20-4c8a-b9e2-5b80d01332ce",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-22T09:31:30.000Z"
+    },
+    {
+      "id": "fbdb43b3-53f8-44fd-a36a-459d4830501d",
+      "action": "IT:check_printer_status",
+      "parameters": {
+        "taskId": "4974b156-9027-4faa-950c-ec0a20b34479",
+        "agentId": "3c8f1d5e-7b2a-4e91-a6d4-58c0f9b3e712"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed IT:check_printer_status for task.",
+      "status": "COMPLETED",
+      "taskId": "4974b156-9027-4faa-950c-ec0a20b34479",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-24T15:40:30.000Z"
+    },
+    {
+      "id": "b6ec76bd-2eeb-426e-bc62-e73c4826abd9",
+      "action": "IT:push_driver_config",
+      "parameters": {
+        "taskId": "4974b156-9027-4faa-950c-ec0a20b34479",
+        "agentId": "3c8f1d5e-7b2a-4e91-a6d4-58c0f9b3e712"
+      },
+      "result": "null",
+      "comment": "Step failed during execution.",
+      "status": "FAILED",
+      "taskId": "4974b156-9027-4faa-950c-ec0a20b34479",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-24T15:41:30.000Z"
+    },
+    {
+      "id": "7a7d5de3-d5f5-4dc5-bad3-ce90c5202cd4",
+      "action": "PLATFORM:query_data",
+      "parameters": {
+        "taskId": "7f371b1d-13b5-4784-975c-544ac56163b5",
+        "agentId": "72ef5b08-b4a9-42b7-bb0a-22d40e56798b"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PLATFORM:query_data for task.",
+      "status": "COMPLETED",
+      "taskId": "7f371b1d-13b5-4784-975c-544ac56163b5",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-26T11:00:30.000Z"
+    },
+    {
+      "id": "a0faa8b9-54d8-41b9-b6f1-b243a2a4be25",
+      "action": "PLATFORM:generate_report",
+      "parameters": {
+        "taskId": "7f371b1d-13b5-4784-975c-544ac56163b5",
+        "agentId": "72ef5b08-b4a9-42b7-bb0a-22d40e56798b"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PLATFORM:generate_report for task.",
+      "status": "COMPLETED",
+      "taskId": "7f371b1d-13b5-4784-975c-544ac56163b5",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-26T11:01:30.000Z"
+    },
+    {
+      "id": "67551b9c-c662-4926-b97b-8108201fb65e",
+      "action": "PLATFORM:ask_supervisor",
+      "parameters": {
+        "question": "Two ticket categories were merged mid-quarter, skewing the response-time comparison. Should I report combined totals or split the historical data at the merge date?",
+        "taskId": "7f371b1d-13b5-4784-975c-544ac56163b5",
+        "agentId": "72ef5b08-b4a9-42b7-bb0a-22d40e56798b"
+      },
+      "result": "{\"id\": \"31e72bc5-32a7-4aab-bb9b-7c81f943c3e0\", \"status\": \"IN_PROGRESS\", \"createdAt\": \"2026-10-26T11:02:30.000Z\", \"question\": \"Two ticket categories were merged mid-quarter, skewing the response-time comparison. Should I report combined totals or split the historical data at the merge date?\", \"agentId\": \"72ef5b08-b4a9-42b7-bb0a-22d40e56798b\", \"taskId\": \"7f371b1d-13b5-4784-975c-544ac56163b5\"}",
+      "comment": "Escalating to supervisor for review.",
+      "status": "SUPERVISED_NEEDED",
+      "taskId": "7f371b1d-13b5-4784-975c-544ac56163b5",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-26T11:02:30.000Z"
+    },
+    {
+      "id": "9089b99a-896d-4f07-8294-275eff14874f",
+      "action": "AD:create_account",
+      "parameters": {
+        "taskId": "2f989abf-84b1-4894-8811-335831999f77",
+        "agentId": "019f6a11-0000-4000-8000-000000000001"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed AD:create_account for task.",
+      "status": "COMPLETED",
+      "taskId": "2f989abf-84b1-4894-8811-335831999f77",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T02:15:30.000Z"
+    },
+    {
+      "id": "946484f3-4741-4a1e-bc16-a22517b37880",
+      "action": "AD:assign_groups",
+      "parameters": {
+        "taskId": "2f989abf-84b1-4894-8811-335831999f77",
+        "agentId": "019f6a11-0000-4000-8000-000000000001"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed AD:assign_groups for task.",
+      "status": "COMPLETED",
+      "taskId": "2f989abf-84b1-4894-8811-335831999f77",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T02:16:30.000Z"
+    },
+    {
+      "id": "ca26db7b-471b-4767-8dce-d3a5130d0aac",
+      "action": "IT:check_vpn_status",
+      "parameters": {
+        "taskId": "031f9c74-cd22-4f96-ad49-65102b8f1e85",
+        "agentId": "3c8f1d5e-7b2a-4e91-a6d4-58c0f9b3e712"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed IT:check_vpn_status for task.",
+      "status": "COMPLETED",
+      "taskId": "031f9c74-cd22-4f96-ad49-65102b8f1e85",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T06:30:30.000Z"
+    },
+    {
+      "id": "ebb31aa9-5f34-401b-afeb-c24d0c8eda13",
+      "action": "IT:renew_certificate",
+      "parameters": {
+        "taskId": "031f9c74-cd22-4f96-ad49-65102b8f1e85",
+        "agentId": "3c8f1d5e-7b2a-4e91-a6d4-58c0f9b3e712"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed IT:renew_certificate for task.",
+      "status": "COMPLETED",
+      "taskId": "031f9c74-cd22-4f96-ad49-65102b8f1e85",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T06:31:30.000Z"
+    },
+    {
+      "id": "9153ec6d-35ec-46d1-8339-21dcc22e6ab3",
+      "action": "PLATFORM:ask_supervisor",
+      "parameters": {
+        "question": "Employee's VPN certificate expired during leave and the renewal request needs manager approval before reissue. Should I proceed with reissue or wait for approval?",
+        "taskId": "031f9c74-cd22-4f96-ad49-65102b8f1e85",
+        "agentId": "3c8f1d5e-7b2a-4e91-a6d4-58c0f9b3e712"
+      },
+      "result": "{\"id\": \"19c33f9c-ea17-4617-a10c-cb891a244f09\", \"status\": \"IN_PROGRESS\", \"createdAt\": \"2026-10-27T06:32:30.000Z\", \"question\": \"Employee's VPN certificate expired during leave and the renewal request needs manager approval before reissue. Should I proceed with reissue or wait for approval?\", \"agentId\": \"3c8f1d5e-7b2a-4e91-a6d4-58c0f9b3e712\", \"taskId\": \"031f9c74-cd22-4f96-ad49-65102b8f1e85\"}",
+      "comment": "Escalating to supervisor for review.",
+      "status": "SUPERVISED_NEEDED",
+      "taskId": "031f9c74-cd22-4f96-ad49-65102b8f1e85",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T06:32:30.000Z"
+    },
+    {
+      "id": "0cd2bbee-2beb-4be3-be2f-4555552e7c8e",
+      "action": "AD:create_account",
+      "parameters": {
+        "taskId": "9eaaad79-44c6-441d-b1bf-316bbb4b2265",
+        "agentId": "019f6a11-0000-4000-8000-000000000001"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed AD:create_account for task.",
+      "status": "COMPLETED",
+      "taskId": "9eaaad79-44c6-441d-b1bf-316bbb4b2265",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T06:45:30.000Z"
+    },
+    {
+      "id": "38b88409-eebd-45e7-a397-6ccf2819d573",
+      "action": "AD:assign_groups",
+      "parameters": {
+        "taskId": "9eaaad79-44c6-441d-b1bf-316bbb4b2265",
+        "agentId": "019f6a11-0000-4000-8000-000000000001"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed AD:assign_groups for task.",
+      "status": "COMPLETED",
+      "taskId": "9eaaad79-44c6-441d-b1bf-316bbb4b2265",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T06:46:30.000Z"
+    },
+    {
+      "id": "b318f21a-748f-46ad-bae0-df974ff5c956",
+      "action": "PLATFORM:ask_supervisor",
+      "parameters": {
+        "question": "Contractor's access request includes a group membership outside the standard contractor template. Should I grant the extra group or provision with the default template only?",
+        "taskId": "9eaaad79-44c6-441d-b1bf-316bbb4b2265",
+        "agentId": "019f6a11-0000-4000-8000-000000000001"
+      },
+      "result": "{\"id\": \"54639605-0b69-441c-813b-92518cb678ba\", \"status\": \"IN_PROGRESS\", \"createdAt\": \"2026-10-27T06:47:30.000Z\", \"question\": \"Contractor's access request includes a group membership outside the standard contractor template. Should I grant the extra group or provision with the default template only?\", \"agentId\": \"019f6a11-0000-4000-8000-000000000001\", \"taskId\": \"9eaaad79-44c6-441d-b1bf-316bbb4b2265\"}",
+      "comment": "Escalating to supervisor for review.",
+      "status": "SUPERVISED_NEEDED",
+      "taskId": "9eaaad79-44c6-441d-b1bf-316bbb4b2265",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T06:47:30.000Z"
+    },
+    {
+      "id": "15a6411a-b267-44bf-adb6-32784d630dae",
+      "action": "ORDER:find_product",
+      "parameters": {
+        "taskId": "62ae662b-3c1f-4c9d-a910-ccd1fc0a5f82",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed ORDER:find_product for task.",
+      "status": "COMPLETED",
+      "taskId": "62ae662b-3c1f-4c9d-a910-ccd1fc0a5f82",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-20T08:00:30.000Z"
+    },
+    {
+      "id": "1eb47b02-0691-4111-9442-5b0ab0874b77",
+      "action": "ORDER:create_po",
+      "parameters": {
+        "taskId": "62ae662b-3c1f-4c9d-a910-ccd1fc0a5f82",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed ORDER:create_po for task.",
+      "status": "COMPLETED",
+      "taskId": "62ae662b-3c1f-4c9d-a910-ccd1fc0a5f82",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-20T08:01:30.000Z"
+    },
+    {
+      "id": "7814dd03-e993-46d8-bded-cc3e0973e2fd",
+      "action": "COMPLIANCE:fetch_documents",
+      "parameters": {
+        "taskId": "cf1ca44c-3de2-4677-b783-b859dfd89c2a",
+        "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed COMPLIANCE:fetch_documents for task.",
+      "status": "COMPLETED",
+      "taskId": "cf1ca44c-3de2-4677-b783-b859dfd89c2a",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-21T08:30:30.000Z"
+    },
+    {
+      "id": "b7532710-2681-424c-89a2-a746f9d993f6",
+      "action": "COMPLIANCE:validate_documents",
+      "parameters": {
+        "taskId": "cf1ca44c-3de2-4677-b783-b859dfd89c2a",
+        "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed COMPLIANCE:validate_documents for task.",
+      "status": "COMPLETED",
+      "taskId": "cf1ca44c-3de2-4677-b783-b859dfd89c2a",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-21T08:31:30.000Z"
+    },
+    {
+      "id": "2a57ea43-5fff-4b30-b1b5-3c0fe6e6748e",
+      "action": "ORDER:find_product",
+      "parameters": {
+        "taskId": "255b24c8-a6d4-4bb7-90b0-3c5a4289d26c",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed ORDER:find_product for task.",
+      "status": "COMPLETED",
+      "taskId": "255b24c8-a6d4-4bb7-90b0-3c5a4289d26c",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-23T09:17:30.000Z"
+    },
+    {
+      "id": "f2e02de0-bae1-4fa8-b314-ec06a78cd00f",
+      "action": "ORDER:create_po",
+      "parameters": {
+        "taskId": "255b24c8-a6d4-4bb7-90b0-3c5a4289d26c",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed ORDER:create_po for task.",
+      "status": "COMPLETED",
+      "taskId": "255b24c8-a6d4-4bb7-90b0-3c5a4289d26c",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-23T09:18:30.000Z"
+    },
+    {
+      "id": "ae77e58d-0e2f-4f23-815d-4aed7b1809f8",
+      "action": "COMPLIANCE:check_export_regulation",
+      "parameters": {
+        "taskId": "3bcaed8d-7510-4932-8fd2-cceb58357489",
+        "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed COMPLIANCE:check_export_regulation for task.",
+      "status": "COMPLETED",
+      "taskId": "3bcaed8d-7510-4932-8fd2-cceb58357489",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-25T10:34:30.000Z"
+    },
+    {
+      "id": "0e700d07-2223-44bb-81e7-c9e756b88b20",
+      "action": "COMPLIANCE:lookup_destination",
+      "parameters": {
+        "taskId": "3bcaed8d-7510-4932-8fd2-cceb58357489",
+        "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361"
+      },
+      "result": "null",
+      "comment": "Step failed during execution.",
+      "status": "FAILED",
+      "taskId": "3bcaed8d-7510-4932-8fd2-cceb58357489",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-25T10:35:30.000Z"
+    },
+    {
+      "id": "6c98c4e1-2dce-43f0-ad41-05188e3b0aa4",
+      "action": "ORDER:find_order",
+      "parameters": {
+        "taskId": "a0cb118b-9484-4f8b-a325-99e9ed2645ec",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed ORDER:find_order for task.",
+      "status": "COMPLETED",
+      "taskId": "a0cb118b-9484-4f8b-a325-99e9ed2645ec",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-26T11:51:30.000Z"
+    },
+    {
+      "id": "472d0529-a48c-43b8-9029-4550cb5bbda7",
+      "action": "ORDER:update_status",
+      "parameters": {
+        "taskId": "a0cb118b-9484-4f8b-a325-99e9ed2645ec",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed ORDER:update_status for task.",
+      "status": "COMPLETED",
+      "taskId": "a0cb118b-9484-4f8b-a325-99e9ed2645ec",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-26T11:52:30.000Z"
+    },
+    {
+      "id": "1a4ec99c-865e-4074-ab43-8d84fb6ec025",
+      "action": "COMPLIANCE:fetch_documents",
+      "parameters": {
+        "taskId": "f754a466-27b5-4a6f-8a6b-05fb7ca664fb",
+        "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed COMPLIANCE:fetch_documents for task.",
+      "status": "COMPLETED",
+      "taskId": "f754a466-27b5-4a6f-8a6b-05fb7ca664fb",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T05:25:30.000Z"
+    },
+    {
+      "id": "e080bde5-34ac-4c23-8c0e-1f991ce452a3",
+      "action": "COMPLIANCE:cross_check_records",
+      "parameters": {
+        "taskId": "f754a466-27b5-4a6f-8a6b-05fb7ca664fb",
+        "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361"
+      },
+      "result": "{\"status\": \"needs_review\"}",
+      "comment": "Executed COMPLIANCE:cross_check_records for task.",
+      "status": "COMPLETED",
+      "taskId": "f754a466-27b5-4a6f-8a6b-05fb7ca664fb",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T05:26:30.000Z"
+    },
+    {
+      "id": "5a2dc5a9-1ec1-4be0-8d91-d855ea1cdf3b",
+      "action": "PROFILE:find_user",
+      "parameters": {
+        "taskId": "c042436d-c6fd-4b95-9ae6-67d7ef0d97af",
+        "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PROFILE:find_user for task.",
+      "status": "COMPLETED",
+      "taskId": "c042436d-c6fd-4b95-9ae6-67d7ef0d97af",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-20T14:00:30.000Z"
+    },
+    {
+      "id": "6600e5c6-d3ec-47fe-a89c-d455a9c9519c",
+      "action": "PROFILE:update_fields",
+      "parameters": {
+        "taskId": "c042436d-c6fd-4b95-9ae6-67d7ef0d97af",
+        "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PROFILE:update_fields for task.",
+      "status": "COMPLETED",
+      "taskId": "c042436d-c6fd-4b95-9ae6-67d7ef0d97af",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-20T14:01:30.000Z"
+    },
+    {
+      "id": "a5d74b91-2575-4b8a-a7cc-0df876d4a2ee",
+      "action": "CHEM:fetch_file",
+      "parameters": {
+        "taskId": "31032d2b-8a8a-4df2-a10a-ff8b638c667a",
+        "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed CHEM:fetch_file for task.",
+      "status": "COMPLETED",
+      "taskId": "31032d2b-8a8a-4df2-a10a-ff8b638c667a",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-21T15:20:30.000Z"
+    },
+    {
+      "id": "1d432a73-2acc-405a-a143-36fddcc5c3d8",
+      "action": "CHEM:convert_molfile",
+      "parameters": {
+        "taskId": "31032d2b-8a8a-4df2-a10a-ff8b638c667a",
+        "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed CHEM:convert_molfile for task.",
+      "status": "COMPLETED",
+      "taskId": "31032d2b-8a8a-4df2-a10a-ff8b638c667a",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-21T15:21:30.000Z"
+    },
+    {
+      "id": "ee5a138e-5e18-49cc-91ae-e1235705ef12",
+      "action": "PROFILE:find_user",
+      "parameters": {
+        "taskId": "464a0ac9-84b3-4c45-a1d2-6e0612debff4",
+        "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PROFILE:find_user for task.",
+      "status": "COMPLETED",
+      "taskId": "464a0ac9-84b3-4c45-a1d2-6e0612debff4",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-23T16:10:30.000Z"
+    },
+    {
+      "id": "aa3c8d43-e15e-4f5f-8626-8baf7556ae36",
+      "action": "PROFILE:update_fields",
+      "parameters": {
+        "taskId": "464a0ac9-84b3-4c45-a1d2-6e0612debff4",
+        "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PROFILE:update_fields for task.",
+      "status": "COMPLETED",
+      "taskId": "464a0ac9-84b3-4c45-a1d2-6e0612debff4",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-23T16:11:30.000Z"
+    },
+    {
+      "id": "d683ddbe-0fe0-47a2-97ad-352be2779229",
+      "action": "CHEM:fetch_file",
+      "parameters": {
+        "taskId": "2e2a466d-162f-49f1-9c87-98dd82290463",
+        "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed CHEM:fetch_file for task.",
+      "status": "COMPLETED",
+      "taskId": "2e2a466d-162f-49f1-9c87-98dd82290463",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-25T09:05:30.000Z"
+    },
+    {
+      "id": "a61a1efc-5a00-44d2-9331-2a7fd6b97956",
+      "action": "CHEM:convert_molfile",
+      "parameters": {
+        "taskId": "2e2a466d-162f-49f1-9c87-98dd82290463",
+        "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+      },
+      "result": "null",
+      "comment": "Step failed during execution.",
+      "status": "FAILED",
+      "taskId": "2e2a466d-162f-49f1-9c87-98dd82290463",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-25T09:06:30.000Z"
+    },
+    {
+      "id": "e120c849-66b6-484e-ba78-03adb5eecf73",
+      "action": "CHEM:fetch_file",
+      "parameters": {
+        "taskId": "e046b9d7-e21d-47ac-b374-13e27bf81543",
+        "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed CHEM:fetch_file for task.",
+      "status": "COMPLETED",
+      "taskId": "e046b9d7-e21d-47ac-b374-13e27bf81543",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T03:40:30.000Z"
+    },
+    {
+      "id": "b6357302-b3a6-4af4-adf1-3539733b0253",
+      "action": "CHEM:store_to_s3",
+      "parameters": {
+        "taskId": "e046b9d7-e21d-47ac-b374-13e27bf81543",
+        "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed CHEM:store_to_s3 for task.",
+      "status": "COMPLETED",
+      "taskId": "e046b9d7-e21d-47ac-b374-13e27bf81543",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T03:41:30.000Z"
+    },
+    {
+      "id": "c415b134-c655-4043-86f5-329c15da33a9",
+      "action": "PLATFORM:ask_supervisor",
+      "parameters": {
+        "question": "Batch #214 contains a file with a naming collision against an existing S3 object. Should I overwrite the existing file or store it with a versioned suffix?",
+        "taskId": "e046b9d7-e21d-47ac-b374-13e27bf81543",
+        "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5"
+      },
+      "result": "{\"id\": \"12572d92-8541-4253-954c-99d77bc27e43\", \"status\": \"IN_PROGRESS\", \"createdAt\": \"2026-10-27T03:42:30.000Z\", \"question\": \"Batch #214 contains a file with a naming collision against an existing S3 object. Should I overwrite the existing file or store it with a versioned suffix?\", \"agentId\": \"d8e2b410-9c67-4a53-bf28-16d094c7a3e5\", \"taskId\": \"e046b9d7-e21d-47ac-b374-13e27bf81543\"}",
+      "comment": "Escalating to supervisor for review.",
+      "status": "SUPERVISED_NEEDED",
+      "taskId": "e046b9d7-e21d-47ac-b374-13e27bf81543",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T03:42:30.000Z"
+    },
+    {
+      "id": "1a834d36-1a8f-4798-86c5-130fb11399c7",
+      "action": "PROFILE:find_user",
+      "parameters": {
+        "taskId": "7b0343b2-04f6-43e5-8592-dbad6bb87da4",
+        "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PROFILE:find_user for task.",
+      "status": "COMPLETED",
+      "taskId": "7b0343b2-04f6-43e5-8592-dbad6bb87da4",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T04:00:30.000Z"
+    },
+    {
+      "id": "b83e810a-306b-40e8-b995-86b963741294",
+      "action": "PROFILE:update_fields",
+      "parameters": {
+        "taskId": "7b0343b2-04f6-43e5-8592-dbad6bb87da4",
+        "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PROFILE:update_fields for task.",
+      "status": "COMPLETED",
+      "taskId": "7b0343b2-04f6-43e5-8592-dbad6bb87da4",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T04:01:30.000Z"
+    },
+    {
+      "id": "2d914e1a-aa58-42a2-92e7-77c1ddfb1d79",
+      "action": "PROFILE:find_user",
+      "parameters": {
+        "taskId": "09f78243-bc7b-489f-985c-57afbb8e93b2",
+        "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PROFILE:find_user for task.",
+      "status": "COMPLETED",
+      "taskId": "09f78243-bc7b-489f-985c-57afbb8e93b2",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T07:00:30.000Z"
+    },
+    {
+      "id": "1306e6d7-c2c5-4d66-847b-f275b08d40be",
+      "action": "PROFILE:update_fields",
+      "parameters": {
+        "taskId": "09f78243-bc7b-489f-985c-57afbb8e93b2",
+        "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed PROFILE:update_fields for task.",
+      "status": "COMPLETED",
+      "taskId": "09f78243-bc7b-489f-985c-57afbb8e93b2",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T07:01:30.000Z"
+    },
+    {
+      "id": "ba37a519-974d-41ea-93b6-64aeefcf4230",
+      "action": "PLATFORM:ask_supervisor",
+      "parameters": {
+        "question": "Employee's new email alias conflicts with an existing mailbox from a previous employee. Should I append a numeric suffix or ask IT to free the alias?",
+        "taskId": "09f78243-bc7b-489f-985c-57afbb8e93b2",
+        "agentId": "c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64"
+      },
+      "result": "{\"id\": \"0eb47451-c450-4665-82b8-dca15f3032fa\", \"status\": \"IN_PROGRESS\", \"createdAt\": \"2026-10-27T07:02:30.000Z\", \"question\": \"Employee's new email alias conflicts with an existing mailbox from a previous employee. Should I append a numeric suffix or ask IT to free the alias?\", \"agentId\": \"c4a91e7d-6b35-4f82-8d10-7e3c5a9b2f64\", \"taskId\": \"09f78243-bc7b-489f-985c-57afbb8e93b2\"}",
+      "comment": "Escalating to supervisor for review.",
+      "status": "SUPERVISED_NEEDED",
+      "taskId": "09f78243-bc7b-489f-985c-57afbb8e93b2",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T07:02:30.000Z"
+    },
+    {
+      "id": "d8b46be1-5f66-4033-82f6-c00f23ab6ef6",
+      "action": "ORDER:find_product",
+      "parameters": {
+        "taskId": "a851af8b-9730-4b56-8946-1cd154ebae56",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed ORDER:find_product for task.",
+      "status": "COMPLETED",
+      "taskId": "a851af8b-9730-4b56-8946-1cd154ebae56",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T06:50:30.000Z"
+    },
+    {
+      "id": "fa1b8e50-c17a-4ea7-80cf-8309808e8458",
+      "action": "ORDER:create_po",
+      "parameters": {
+        "taskId": "a851af8b-9730-4b56-8946-1cd154ebae56",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487"
+      },
+      "result": "{\"status\": \"ok\"}",
+      "comment": "Executed ORDER:create_po for task.",
+      "status": "COMPLETED",
+      "taskId": "a851af8b-9730-4b56-8946-1cd154ebae56",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T06:51:30.000Z"
+    },
+    {
+      "id": "78218a6a-3739-4498-b8fc-de105d2aaa0d",
+      "action": "PLATFORM:ask_supervisor",
+      "parameters": {
+        "question": "Thermal Label Printer order quantity (120 units) exceeds the standard reorder threshold. Should I proceed with the full quantity or split into two purchase orders?",
+        "taskId": "a851af8b-9730-4b56-8946-1cd154ebae56",
+        "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+        "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e"
+      },
+      "result": "{\"id\": \"2820c722-147d-4bb3-93fd-0c5797e378a1\", \"status\": \"IN_PROGRESS\", \"createdAt\": \"2026-10-27T06:52:30.000Z\", \"question\": \"Thermal Label Printer order quantity (120 units) exceeds the standard reorder threshold. Should I proceed with the full quantity or split into two purchase orders?\", \"agentId\": \"9f156dc6-bf9b-4541-8d0c-6764cb0d6487\", \"taskId\": \"a851af8b-9730-4b56-8946-1cd154ebae56\"}",
+      "comment": "Escalating to supervisor for review.",
+      "status": "SUPERVISED_NEEDED",
+      "taskId": "a851af8b-9730-4b56-8946-1cd154ebae56",
+      "knowledgeScore": null,
+      "createdAt": "2026-10-27T06:52:30.000Z"
     }
   ]
 }

@@ -1,3 +1,4 @@
+import Agent from "../models/Agent";
 import LLMLog from "../models/LLMLog";
 import ModelPricing from "../models/ModelPricing";
 import Task from "../models/Task";
@@ -21,7 +22,7 @@ type CostSource = "provider" | "pricing" | null;
 
 function resolveCost(
   log: LLMLog,
-  pricingMap: Map<string, ModelPricing>,
+  pricingMap: Map<string, ModelPricing>
 ): { cost: number | null; costSource: CostSource } {
   if (log.cost != null) {
     return { cost: log.cost, costSource: "provider" };
@@ -44,10 +45,7 @@ async function pricingMapOf() {
   const pricings = await ModelPricing.findAll();
 
   return new Map(
-    pricings.map((pricing) => [
-      `${pricing.provider}:${pricing.model}`,
-      pricing,
-    ]),
+    pricings.map((pricing) => [`${pricing.provider}:${pricing.model}`, pricing])
   );
 }
 
@@ -57,7 +55,7 @@ function totalsOf(
     outputTokens: number | null;
     totalTokens: number | null;
     cost: number | null;
-  }[],
+  }[]
 ) {
   return logs.reduce<{
     inputTokens: number;
@@ -79,41 +77,11 @@ function totalsOf(
       totalTokens: 0,
       cost: 0,
       calls: 0,
-    },
+    }
   );
 }
 
-async function listByTask({ taskId }: { taskId: string }) {
-  const [logs, pricingMap] = await Promise.all([
-    LLMLog.findAll({
-      where: { taskId },
-      order: [["createdAt", "ASC"]],
-    }),
-    pricingMapOf(),
-  ]);
-
-  const taskLogs = logs.map((log) => ({
-    ...log.toJSON(),
-    ...resolveCost(log, pricingMap),
-  }));
-
-  return { totals: totalsOf(taskLogs), logs: taskLogs };
-}
-
-async function listByAgent({
-  agentId,
-  taskLimit = 50,
-}: {
-  agentId: string;
-  taskLimit?: number;
-}) {
-  const tasks = await Task.findAll({
-    where: { agentId },
-    attributes: ["id", "description", "status", "debug", "createdAt"],
-    order: [["createdAt", "DESC"]],
-    limit: taskLimit,
-  });
-
+async function buildUsage(tasks: Task[]) {
   const taskIds = tasks.map((task) => task.id);
 
   const [logs, pricingMap] = await Promise.all([
@@ -148,4 +116,82 @@ async function listByAgent({
   });
 }
 
-export default { listByAgent, listByTask };
+async function listByTask({ taskId }: { taskId: string }) {
+  const [logs, pricingMap] = await Promise.all([
+    LLMLog.findAll({
+      where: { taskId },
+      order: [["createdAt", "ASC"]],
+    }),
+    pricingMapOf(),
+  ]);
+
+  const taskLogs = logs.map((log) => ({
+    ...log.toJSON(),
+    ...resolveCost(log, pricingMap),
+  }));
+
+  return { totals: totalsOf(taskLogs), logs: taskLogs };
+}
+
+async function listByAgent({
+  agentId,
+  taskLimit = 50,
+}: {
+  agentId: string;
+  taskLimit?: number;
+}) {
+  const tasks = await Task.findAll({
+    where: { agentId },
+    attributes: [
+      "id",
+      "description",
+      "status",
+      "comment",
+      "debug",
+      "createdAt",
+    ],
+    order: [["createdAt", "DESC"]],
+    limit: taskLimit,
+  });
+
+  return buildUsage(tasks);
+}
+
+async function listByTeam({
+  teamId,
+  taskLimit = 200,
+  from,
+  to,
+}: {
+  teamId: string;
+  taskLimit?: number;
+  from?: string;
+  to?: string;
+}) {
+  const tasks = await Task.findAll({
+    where: from && to ? { createdAt: { [Op.between]: [from, to] } } : {},
+    attributes: [
+      "id",
+      "description",
+      "status",
+      "comment",
+      "debug",
+      "createdAt",
+      "agentId",
+    ],
+    include: [
+      {
+        model: Agent,
+        attributes: ["id", "name"],
+        where: { teamId },
+        required: true,
+      },
+    ],
+    order: [["createdAt", "DESC"]],
+    limit: taskLimit,
+  });
+
+  return buildUsage(tasks);
+}
+
+export default { listByAgent, listByTask, listByTeam };

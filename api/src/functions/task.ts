@@ -1,7 +1,9 @@
 import Agent from "../models/Agent";
 import LLMLog from "../models/LLMLog";
 import Step from "../models/Step";
+import Supervising from "../models/Supervising";
 import Task from "../models/Task";
+import { Op, col, fn } from "sequelize";
 import { event } from "@canmingir/link-express/event/client";
 import llmLog from "./llmLog";
 import { Op, col, fn } from "sequelize";
@@ -92,8 +94,8 @@ async function waitFor({
     ["TASK_COMPLETED", "TASK_FAILED"].map((type) =>
       event.subscribe<{ taskId: string }>(type, ({ taskId }) => {
         waiters.get(taskId)?.forEach((notify) => notify());
-      }),
-    ),
+      })
+    )
   ).catch((error) => {
     listening = undefined;
     throw error;
@@ -142,32 +144,28 @@ async function count({
   return Task.count({ where: { blueprintId, debug } });
 }
 
-async function getWithSteps({ taskId }: { taskId: string }) {
-  const taskInstance = await Task.findOne({
-    where: { id: taskId },
-    include: [Step],
-  });
-
-  return taskInstance.toJSON();
-}
-
 async function list({
   teamId,
   agentId,
   status,
   sessionId,
   includeSteps,
+  from,
+  to,
 }: {
   teamId: string;
   agentId?: string;
   status?: "IN_PROGRESS" | "COMPLETED" | "FAILED";
   sessionId?: string;
   includeSteps?: boolean;
+  from?: string;
+  to?: string;
 }) {
   const where: {
     agentId?: string;
     status?: "IN_PROGRESS" | "COMPLETED" | "FAILED";
     sessionId?: string;
+    createdAt?: { [Op.between]: [string, string] };
   } = {};
 
   if (agentId) {
@@ -182,21 +180,27 @@ async function list({
     where.sessionId = sessionId;
   }
 
+  if (from && to) {
+    where.createdAt = { [Op.between]: [from, to] };
+  }
+
   const taskInstances = await Task.findAll({
-    include: includeSteps
-      ? [
-          {
-            model: Agent,
-            attributes: [],
-            where: { teamId },
-            required: true,
-          },
-          {
-            model: Step,
-            as: "steps",
-          },
-        ]
-      : [],
+    include: [
+      {
+        model: Agent,
+        attributes: [],
+        where: { teamId },
+        required: true,
+      },
+      ...(includeSteps
+        ? [
+            {
+              model: Step,
+              as: "steps",
+            },
+          ]
+        : []),
+    ],
     where,
     ...(includeSteps && {
       order: [[{ model: Step, as: "steps" }, "createdAt", "ASC"]],
@@ -204,6 +208,141 @@ async function list({
   });
 
   return taskInstances.map((task) => task.toJSON());
+}
+
+async function listWithAgents({
+  teamId,
+  agentId,
+  status,
+  from,
+  to,
+}: {
+  teamId: string;
+  agentId?: string;
+  status?: "IN_PROGRESS" | "COMPLETED" | "FAILED";
+  from?: string;
+  to?: string;
+}) {
+  const where: {
+    agentId?: string;
+    status?: "IN_PROGRESS" | "COMPLETED" | "FAILED";
+    createdAt?: { [Op.between]: [string, string] };
+  } = {};
+
+  if (agentId) {
+    where.agentId = agentId;
+  }
+
+  if (status) {
+    where.status = status;
+  }
+
+  if (from && to) {
+    where.createdAt = { [Op.between]: [from, to] };
+  }
+
+  const taskInstances = await Task.findAll({
+    attributes: ["id", "description", "status", "comment", "createdAt"],
+    include: [
+      {
+        model: Agent,
+        attributes: ["id", "name"],
+        where: { teamId },
+        required: true,
+      },
+    ],
+    where,
+    order: [["createdAt", "DESC"]],
+  });
+
+  const taskIds = taskInstances.map((task) => task.id);
+
+  const usageRows = taskIds.length
+    ? await LLMLog.findAll({
+        attributes: [
+          "taskId",
+          [fn("SUM", col("duration_ms")), "durationMs"],
+          [fn("SUM", col("input_tokens")), "inputTokens"],
+          [fn("SUM", col("output_tokens")), "outputTokens"],
+          [fn("SUM", col("total_tokens")), "totalTokens"],
+        ],
+        where: { taskId: { [Op.in]: taskIds } },
+        group: ["task_id"],
+        raw: true,
+      })
+    : [];
+
+  const usageByTask = new Map(
+    (
+      usageRows as unknown as Array<{
+        taskId: string;
+        durationMs: number | null;
+        inputTokens: number | null;
+        outputTokens: number | null;
+        totalTokens: number | null;
+      }>
+    ).map((row) => [row.taskId, row])
+  );
+
+  const awaitingSupervisings = taskIds.length
+    ? await Supervising.findAll({
+        where: { status: "IN_PROGRESS", taskId: { [Op.in]: taskIds } },
+        attributes: ["taskId"],
+      })
+    : [];
+
+  const awaitingTaskIds = new Set(
+    awaitingSupervisings.map((supervising) => supervising.taskId)
+  );
+
+  return taskInstances.map((task) => {
+    const usage = usageByTask.get(task.id);
+    return {
+      ...task.toJSON(),
+      effectiveStatus:
+        task.status === "IN_PROGRESS" && awaitingTaskIds.has(task.id)
+          ? "AWAITING"
+          : task.status,
+      durationMs: Number(usage?.durationMs ?? 0),
+      inputTokens: Number(usage?.inputTokens ?? 0),
+      outputTokens: Number(usage?.outputTokens ?? 0),
+      totalTokens: Number(usage?.totalTokens ?? 0),
+    };
+  });
+}
+
+async function listWithEffectiveStatus({
+  teamId,
+  agentId,
+  from,
+  to,
+}: {
+  teamId: string;
+  agentId?: string;
+  from?: string;
+  to?: string;
+}) {
+  const tasks = await list({ teamId, agentId, from, to });
+  const taskIds = tasks.map((task) => task.id);
+
+  const awaitingSupervisings = taskIds.length
+    ? await Supervising.findAll({
+        where: { status: "IN_PROGRESS", taskId: { [Op.in]: taskIds } },
+        attributes: ["taskId"],
+      })
+    : [];
+
+  const awaitingTaskIds = new Set(
+    awaitingSupervisings.map((supervising) => supervising.taskId)
+  );
+
+  return tasks.map((task) => ({
+    ...task,
+    effectiveStatus:
+      task.status === "IN_PROGRESS" && awaitingTaskIds.has(task.id)
+        ? "AWAITING"
+        : task.status,
+  }));
 }
 
 async function addStep({
@@ -273,7 +412,7 @@ async function updateStep({
       result,
       status,
     },
-    { where: { id: stepId } },
+    { where: { id: stepId } }
   );
 
   if (status !== "IN_PROGRESS") {
@@ -309,10 +448,14 @@ async function listSteps({ taskId }: { taskId: string }) {
 
   return steps
     .map((step) => step.toJSON())
-    .map(({ knowledgeScore: _ks, ...step }) => ({
-      ...step,
-      result: step.result ? step.result.toString() : null,
-    }));
+    .map((step) => {
+      const rest = { ...step };
+      delete rest.knowledgeScore;
+      return {
+        ...rest,
+        result: rest.result ? rest.result.toString() : null,
+      };
+    });
 }
 
 async function logs({ taskId }: { taskId: string }) {
@@ -406,6 +549,8 @@ export default {
   update,
   waitFor,
   list,
+  listWithAgents,
+  listWithEffectiveStatus,
   getStep,
   addStep,
   updateStep,

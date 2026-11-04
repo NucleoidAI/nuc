@@ -8,8 +8,10 @@ import MCPServer from "./MCPServer";
 import Message from "./Message";
 import Project from "./Project";
 import Session from "./Session";
+import Statistics from "./Statistics";
 import StepScore from "./StepScore";
 import Supervising from "./Supervising";
+import Task from "./Task";
 import Team from "./Team";
 
 export default {
@@ -20,10 +22,12 @@ export default {
   Message,
   Session,
   Supervising,
+  Task,
   Command,
   Blueprint,
   MCPProvider,
   MCPServer,
   Channel,
   StepScore,
+  Statistics,
 };

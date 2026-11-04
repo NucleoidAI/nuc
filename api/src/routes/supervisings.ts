@@ -3,9 +3,9 @@ import Conversation from "../models/Conversation";
 import Joi from "joi";
 import Supervising from "../models/Supervising";
 import express from "express";
+import { Op, WhereOptions } from "sequelize";
 import { event } from "@canmingir/link-express/event/client";
 import schemas from "../schemas";
-import session from "../functions/session";
 import supervising from "../functions/supervising";
 
 const router = express.Router();
@@ -15,7 +15,7 @@ router.post("/", async (req, res) => {
 
   const { sessionId, conversationId, agentId } = Joi.attempt(
     req.body,
-    schemas.Supervising.create,
+    schemas.Supervising.create
   );
 
   const agent = await Agent.findByPk(agentId);
@@ -46,11 +46,14 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
   const teamId = req.session.projectId;
-  const { status } = req.query;
+  const { status, from, to } = Joi.attempt(req.query, schemas.Supervising.list);
 
-  const whereClause: any = {};
+  const whereClause: WhereOptions = {};
   if (status) {
     whereClause.status = status;
+  }
+  if (from && to) {
+    whereClause.createdAt = { [Op.between]: [from, to] };
   }
 
   const supervisings = await Supervising.findAll({
@@ -81,11 +84,51 @@ router.get("/", async (req, res) => {
   res.status(200).json(supervisings);
 });
 
+router.get("/agents", async (req, res) => {
+  const teamId = req.session.projectId;
+  const { status, from, to } = Joi.attempt(req.query, schemas.Supervising.list);
+
+  const supervisings = await supervising.listWithAgents({
+    teamId,
+    status,
+    from,
+    to,
+  });
+
+  return res.status(200).json(supervisings);
+});
+
+router.get("/agents/:agentId", async (req, res) => {
+  const teamId = req.session.projectId;
+  const { agentId } = Joi.attempt(req.params, schemas.Supervising.agentParams);
+  const { status, from, to } = Joi.attempt(req.query, schemas.Supervising.list);
+
+  const agent = await Agent.findByPk(agentId);
+
+  if (!agent) {
+    return res.status(404).end();
+  }
+
+  if (agent.teamId !== teamId) {
+    return res.status(401).end();
+  }
+
+  const supervisings = await supervising.listWithAgents({
+    teamId,
+    agentId,
+    status,
+    from,
+    to,
+  });
+
+  return res.status(200).json(supervisings);
+});
+
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   const teamId = req.session.projectId;
 
-  const validatedId = Joi.attempt(id, Joi.string().guid().required());
+  const validatedId = Joi.attempt(id, schemas.Supervising.id);
 
   const supervising = await Supervising.findOne({
     where: { id: validatedId },
@@ -109,7 +152,7 @@ router.get("/:id", async (req, res) => {
   const { dataValues } = supervising;
 
   if (dataValues.Agent) {
-    // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { Agent, ...rest } = dataValues;
     res.status(200).json(rest);
     event.publish("SUPERVISING_LOADED", rest);
@@ -155,7 +198,7 @@ router.patch("/:supervisingId", async (req, res) => {
 });
 
 router.patch("/:supervisingId/demo", async (req, res) => {
-  const { answer, status } = Joi.attempt(req.body, schemas.Supervising.patch);
+  const { answer } = Joi.attempt(req.body, schemas.Supervising.patch);
 
   let response;
 

@@ -41,7 +41,7 @@ function TasksWidget({
   const isLoading = useLoading(loading);
 
   const [selectedStatus, setSelectedStatus] = useState<
-    "All" | "COMPLETED" | "IN_PROGRESS"
+    "All" | "COMPLETED" | "IN_PROGRESS" | "FAILED"
   >("All");
   const [query, setQuery] = useState<string>("");
   const [detailsExpanded, setDetailsExpanded] = useState<boolean>(false);
@@ -85,16 +85,18 @@ function TasksWidget({
   }, [tasks, selectedStatus, query]);
 
   useEffect(() => {
-    if (supervisionRaised && taskId && tasks) {
+    if (taskId && tasks) {
       const task = tasks.find((t) => t.id === taskId);
       if (task) {
         setSelectedTask(task);
+        return;
       }
-    } else if (!selectedTask?.id && filteredTasks.length) {
+    }
+    if (!selectedTask?.id && filteredTasks.length) {
       setSelectedTask(filteredTasks[0]);
     }
     // eslint-disable-next-line
-  }, [filteredTasks.length, supervisionRaised, taskId, tasks]);
+  }, [filteredTasks.length, taskId, tasks]);
 
   useEffect(() => {
     if (!agentId) return;
@@ -147,7 +149,7 @@ function TasksWidget({
                 alignItems={{ xs: "stretch", sm: "center" }}
               >
                 <StatusToolbar
-                  statuses={["All", "COMPLETED", "IN_PROGRESS"]}
+                  statuses={["All", "COMPLETED", "IN_PROGRESS", "FAILED"]}
                   selectedStatus={selectedStatus}
                   handleChange={(e) => setSelectedStatus(e.target.value)}
                 />

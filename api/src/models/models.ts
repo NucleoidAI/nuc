@@ -191,6 +191,14 @@ async function init() {
     foreignKey: "blueprintId",
   });
 
+  // Supervising <-> Task
+  models.Supervising.belongsTo(models.Task, {
+    foreignKey: "taskId",
+  });
+  models.Task.hasMany(models.Supervising, {
+    foreignKey: "taskId",
+  });
+
   // Conversation <-> Session
   models.Conversation.belongsTo(models.Session, {
     foreignKey: "sessionId",
@@ -255,19 +263,23 @@ async function init() {
   });
 
   // Hooks
-  models.Project.addHook("beforeDestroy", async (project: any) => {
-    await models.Agent.destroy({ where: { teamId: project.id } });
-    await models.AgentKnowledge.destroy({ where: { teamId: project.id } });
-    await models.TeamDetails.destroy({ where: { id: project.id } });
+  models.Project.addHook("beforeDestroy", async (project) => {
+    const projectId = project.getDataValue("id");
+
+    await models.Agent.destroy({ where: { teamId: projectId } });
+    await models.AgentKnowledge.destroy({ where: { teamId: projectId } });
+    await models.TeamDetails.destroy({ where: { id: projectId } });
   });
 
-  models.Agent.addHook("beforeDestroy", async (agent: any) => {
-    await models.Supervising.destroy({ where: { agentId: agent.id } });
+  models.Agent.addHook("beforeDestroy", async (agent) => {
+    const agentId = agent.getDataValue("id");
+
+    await models.Supervising.destroy({ where: { agentId } });
     await models.AgentKnowledge.destroy({
-      where: { agentId: agent.id },
+      where: { agentId },
     });
-    await models.MCPServerAssignment.destroy({ where: { agentId: agent.id } });
-    await models.MCPServerEnv.destroy({ where: { agentId: agent.id } });
+    await models.MCPServerAssignment.destroy({ where: { agentId } });
+    await models.MCPServerEnv.destroy({ where: { agentId } });
   });
 
   models.MCPServer.addHook("beforeDestroy", async (server) => {
@@ -277,11 +289,11 @@ async function init() {
     await models.MCPServerAssignment.destroy({ where: { serverId } });
   });
 
-  models.TeamMessage.addHook("beforeCreate", async (message: any) => {
-    if (message.role === "USER") {
-      message.status = "READ";
-    } else if (message.role === "ASSISTANT") {
-      message.status = null;
+  models.TeamMessage.addHook("beforeCreate", async (message) => {
+    if (message.getDataValue("role") === "USER") {
+      message.setDataValue("status", "READ");
+    } else if (message.getDataValue("role") === "ASSISTANT") {
+      message.setDataValue("status", null);
     }
   });
 }

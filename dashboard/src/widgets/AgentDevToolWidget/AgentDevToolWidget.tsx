@@ -1,6 +1,7 @@
 import type { BlueprintContext } from "../../hooks/useBlueprint";
 import BlueprintContextDetails from "../../components/BlueprintContextDetails/BlueprintContextDetails";
 import BlueprintExecutions from "../../components/BlueprintExecutions";
+import ChatTimeline from "./ChatTimeline";
 import { DrawerLayout } from "@canmingir/link/layouts";
 import type { Theme } from "@mui/material/styles";
 import http from "@canmingir/link/platform/http";
@@ -8,18 +9,20 @@ import useAgent from "../../hooks/useAgent";
 import useBlueprint from "../../hooks/useBlueprint";
 import useChatSessions from "../../hooks/useChatSessions";
 import useSession from "../../hooks/useSession";
+import useSessionSteps from "./useSessionSteps";
+import ApiCallPanel, { type ApiCall, type ApiStep } from "./ApiCallPanel";
 import { Box, Portal, ThemeProvider, Typography } from "@mui/material";
 import { DevTool, SidebarChat } from "@canmingir/link/platform/components";
 import {
   type DevToolBlueprint,
-  asJsonBlock,
-  executeFailure,
   inputFieldsOf,
   submitError,
   variablesTemplateOf,
 } from "./blueprintInputs";
 import { publish, useEvent } from "@nucleoidai/react-event";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+const STEP_POLL_INTERVAL = 1000;
 
 interface AgentDevToolWidgetProps {
   readOnly?: boolean;
@@ -42,6 +45,15 @@ const AgentDevToolWidget = ({
   const [contextOpen, setContextOpen] = useState(false);
   const [selectedBlueprint, setSelectedBlueprint] = useState("");
   const [messages, setMessages] = useState([]);
+  const [apiCall, setApiCall] = useState<ApiCall | null>(null);
+  const runRef = useRef(0);
+
+  useEffect(
+    () => () => {
+      runRef.current += 1;
+    },
+    []
+  );
 
   const [blueprintContext] = useEvent<{ context: BlueprintContext | null }>(
     "BLUEPRINT_CONTEXT",
@@ -132,6 +144,8 @@ const AgentDevToolWidget = ({
     (blueprintId: string) => {
       if (!blueprintId) return;
       setSelectedBlueprint(blueprintId);
+      runRef.current += 1;
+      setApiCall(null);
       setMessages([]);
       createSession(blueprintId);
     },
@@ -171,28 +185,98 @@ const AgentDevToolWidget = ({
     async (values: Record<string, unknown>) => {
       if (!selected) return "Select a blueprint first";
 
-      setMessages((prev) => [
-        ...prev,
-        { role: "USER", content: asJsonBlock(values) },
-      ]);
+      const run = ++runRef.current;
+      const blueprintId = selected.id;
+      const active = () => run === runRef.current;
+      const patch = (next: Partial<ApiCall>) => {
+        if (active()) setApiCall((prev) => prev && { ...prev, ...next });
+      };
+
+      setApiCall({ request: values, steps: [], done: false });
+
+      const executions = async () => {
+        const { data } = await http.get<
+          { id: string; debug: boolean; description: string }[]
+        >(`/blueprints/${blueprintId}/executions`);
+        return data;
+      };
+
+      const known = new Set(
+        (await executions().catch(() => [])).map(({ id }) => id)
+      );
+
+      let taskId: string | undefined;
+      let finished = false;
+
+      const loadSteps = async (id: string) => {
+        const { data } = await http.get<ApiStep[]>(`/tasks/${id}/steps`);
+        patch({ steps: data });
+      };
+
+      const tick = async () => {
+        if (!taskId) {
+          const found = (await executions()).find(
+            ({ id, debug }) => debug && !known.has(id)
+          );
+          taskId = found?.id;
+          if (found) patch({ taskName: found.description });
+        }
+        if (taskId) await loadSteps(taskId);
+      };
+
+      const poll = async () => {
+        while (!finished && active()) {
+          await tick().catch(() => undefined);
+          await new Promise((resolve) =>
+            setTimeout(resolve, STEP_POLL_INTERVAL)
+          );
+        }
+      };
+
+      poll();
+
+      let fieldErrors: ReturnType<typeof submitError> | undefined;
 
       try {
-        const { data } = await http.post(
-          `/execute/${selected.id}?debug=true`,
+        const response = await http.post(
+          `/execute/${blueprintId}?debug=true`,
           values
         );
-        setMessages((prev) => [
-          ...prev,
-          { role: "AI", content: asJsonBlock(data) },
-        ]);
+        taskId = response.headers?.["x-task-id"] ?? taskId;
+        patch({ response: response.data });
       } catch (error) {
-        const failure = executeFailure(error);
-        if (failure) {
-          setMessages((prev) => [...prev, { role: "AI", content: failure }]);
-          return;
-        }
-        return submitError(error);
+        const response = (
+          error as {
+            response?: {
+              status: number;
+              data?: { taskId?: string };
+              headers?: Record<string, string>;
+            };
+          }
+        )?.response;
+        taskId =
+          response?.headers?.["x-task-id"] ?? response?.data?.taskId ?? taskId;
+        patch({
+          failed: true,
+          response:
+            response?.data ??
+            (error instanceof Error ? error.message : "Request failed"),
+        });
+        if (response?.status === 400) fieldErrors = submitError(error);
       }
+
+      finished = true;
+
+      if (taskId) {
+        await loadSteps(taskId).catch(() => undefined);
+        await http
+          .get<{ description: string }>(`/tasks/${taskId}`)
+          .then(({ data }) => patch({ taskName: data.description }))
+          .catch(() => undefined);
+      }
+      patch({ done: true });
+
+      return fieldErrors;
     },
     [selected]
   );
@@ -212,8 +296,20 @@ const AgentDevToolWidget = ({
     [sendVariables]
   );
 
+  const sessionSteps = useSessionSteps({
+    agentId,
+    sessionId,
+    enabled: open && Boolean(selected) && !selected?.api,
+  });
+
+  const playgroundTitle =
+    (selected?.api ? apiCall?.taskName : sessionSteps.taskName) ?? "Playground";
+
   const handleNewUserMessage = async (content: string) => {
-    setMessages((prevMessages) => [...prevMessages, { role: "USER", content }]);
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { role: "USER", content, createdAt: new Date().toISOString() },
+    ]);
     sendMessage(content);
   };
 
@@ -293,7 +389,7 @@ const AgentDevToolWidget = ({
             })}
           >
             <SidebarChat
-              title="Chat"
+              title={playgroundTitle}
               open={chatOpen}
               handleToggle={chatToggle}
               history={messages}
@@ -319,6 +415,17 @@ const AgentDevToolWidget = ({
                 selected && !selected.api ? handleSubmitJson : undefined
               }
               presetRequired
+              panel={
+                selected?.api ? (
+                  <ApiCallPanel call={apiCall} />
+                ) : (
+                  <ChatTimeline
+                    messages={messages}
+                    steps={sessionSteps.steps}
+                    running={sessionSteps.running}
+                  />
+                )
+              }
               inputModes={selected?.api ? ["form"] : ["chat", "json"]}
             />
           </ThemeProvider>

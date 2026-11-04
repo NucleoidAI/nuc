@@ -51,8 +51,11 @@ function useSession(agentId, { debug = false }: { debug?: boolean } = {}) {
       });
 
       socket.on("ai_message", ({ content }) => {
-        setConversations((prev) => [...prev, { role: "AI", content }]);
-        publish("AI_RESPONDED", { content });
+        setConversations((prev) => [
+          ...prev,
+          { role: "AI", content, createdAt: new Date().toISOString() },
+        ]);
+        publish("AI_RESPONDED", { content, createdAt: Date.now() });
       });
 
       socket.on("error_message", ({ message }) => {
@@ -79,7 +82,10 @@ function useSession(agentId, { debug = false }: { debug?: boolean } = {}) {
         setError(response.error);
       } else {
         publish("CONVERSATION_SENT", response.data);
-        setConversations((prev) => [...prev, { role: "USER", content }]);
+        setConversations((prev) => [
+          ...prev,
+          { role: "USER", content, createdAt: new Date().toISOString() },
+        ]);
       }
       setLoading(false);
     });
@@ -99,7 +105,9 @@ function useSession(agentId, { debug = false }: { debug?: boolean } = {}) {
               reject(new Error(response?.error || "Failed to send JSON"));
               return;
             }
-            setConversations([{ role: "USER", content }]);
+            setConversations([
+              { role: "USER", content, createdAt: new Date().toISOString() },
+            ]);
             publish("CONVERSATION_SENT", { createdAt: Date.now() });
             resolve();
           }
@@ -157,8 +165,11 @@ function useSession(agentId, { debug = false }: { debug?: boolean } = {}) {
       });
 
       newSocket.on("ai_message", ({ content }) => {
-        setConversations((prev) => [...prev, { role: "AI", content }]);
-        publish("AI_RESPONDED", { content });
+        setConversations((prev) => [
+          ...prev,
+          { role: "AI", content, createdAt: new Date().toISOString() },
+        ]);
+        publish("AI_RESPONDED", { content, createdAt: Date.now() });
       });
 
       newSocket.on("error_message", ({ message }) => {

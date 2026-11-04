@@ -75,29 +75,6 @@ function issuesToErrors(issues: Issue[]): ChatInputErrors | string {
   return Object.keys(errors).length ? errors : general.join("; ");
 }
 
-type ExecuteResponse = {
-  status?: number;
-  data?: { error?: string; message?: string; taskId?: string };
-};
-
-function asJsonBlock(value: unknown) {
-  return `\`\`\`json\n${JSON.stringify(value, null, 2)}\n\`\`\``;
-}
-
-function executeFailure(error: unknown): string | null {
-  const response = (error as { response?: ExecuteResponse })?.response;
-
-  if (response?.status === 422) {
-    return `Task failed: ${response.data?.message ?? "no details"}`;
-  }
-
-  if (response?.status === 504) {
-    return "Timed out waiting for the result. The task keeps running; check its logs.";
-  }
-
-  return null;
-}
-
 function submitError(error: unknown): ChatInputErrors | string {
   const response = (
     error as {
@@ -118,10 +95,4 @@ function submitError(error: unknown): ChatInputErrors | string {
 }
 
 export type { DevToolBlueprint };
-export {
-  asJsonBlock,
-  executeFailure,
-  inputFieldsOf,
-  submitError,
-  variablesTemplateOf,
-};
+export { inputFieldsOf, submitError, variablesTemplateOf };

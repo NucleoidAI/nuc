@@ -48,7 +48,7 @@ const STATUS = {
   FAILED: { label: "Failed", color: "error" },
 } as const;
 
-const POLL_INTERVAL = 3000;
+const POLL_INTERVAL = 2000;
 const COLUMNS = "112px 56px minmax(140px, 240px) minmax(0, 1fr)";
 const MONO = '"JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace';
 

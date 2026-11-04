@@ -1,0 +1,56 @@
+{
+  "reviews": {
+    "coding-guidelines~lang:const-over-let~i1~vztrgu": {
+      "id": "coding-guidelines~lang:const-over-let~i1~vztrgu",
+      "doc": "coding-guidelines",
+      "docName": "coding-guidelines.md",
+      "ruleId": "lang/const-over-let",
+      "section": "1. Language baseline",
+      "severity": "error",
+      "kind": "incorrect",
+      "ordinal": 1,
+      "kindTotal": 3,
+      "line": 85,
+      "verdict": "ok",
+      "comment": "",
+      "tags": [],
+      "code": "var provider = process.env.PLATFORM_LLM || \"local\";",
+      "updatedAt": "2026-10-30T13:44:49.535Z"
+    },
+    "coding-guidelines~lang:const-over-let~i2~1k03slm": {
+      "id": "coding-guidelines~lang:const-over-let~i2~1k03slm",
+      "doc": "coding-guidelines",
+      "docName": "coding-guidelines.md",
+      "ruleId": "lang/const-over-let",
+      "section": "1. Language baseline",
+      "severity": "error",
+      "kind": "incorrect",
+      "ordinal": 2,
+      "kindTotal": 3,
+      "line": 91,
+      "verdict": "ok",
+      "comment": "",
+      "tags": [],
+      "code": "let body = { agentId, type: learnType } as {\n  agentId: string;\n  type: string;\n  url?: string;\n};\n\nbody.url = learningInfo;",
+      "updatedAt": "2026-10-30T13:45:03.348Z"
+    },
+    "coding-guidelines~lang:const-over-let~i3~1ugkadk": {
+      "id": "coding-guidelines~lang:const-over-let~i3~1ugkadk",
+      "doc": "coding-guidelines",
+      "docName": "coding-guidelines.md",
+      "ruleId": "lang/const-over-let",
+      "section": "1. Language baseline",
+      "severity": "error",
+      "kind": "incorrect",
+      "ordinal": 3,
+      "kindTotal": 3,
+      "line": 105,
+      "verdict": "ok",
+      "comment": "",
+      "tags": [],
+      "code": "let steps = await taskFn.listSteps({ taskId });\nlet sorted = [...steps].sort((a, b) => a.order - b.order);\n\nreturn sorted;",
+      "updatedAt": "2026-10-30T13:45:20.163Z"
+    }
+  },
+  "uploads": {}
+}

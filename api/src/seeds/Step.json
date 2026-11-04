@@ -152,6 +152,49 @@
       "taskId": "b2c3d4e5-0001-4000-8000-000000000001",
       "knowledgeScore": null,
       "createdAt": "2026-07-01T09:35:00.000Z"
+    },
+    {
+      "id": "c2c3d4e5-0101-4000-8000-000000000101",
+      "action": "ORDER:find_product",
+      "parameters": {
+        "productId": "ILP-220"
+      },
+      "result": "{\"id\": \"ILP-220\", \"name\": \"Industrial Label Printer\", \"vendor\": \"Northwind Devices\", \"vendorEmail\": \"compliance@northwind.example\", \"category\": \"industrial\"}",
+      "comment": "Found product details for ILP-220 Industrial Label Printer",
+      "status": "COMPLETED",
+      "taskId": "b2c3d4e5-0002-4000-8000-000000000002",
+      "nodeId": "3b2bd895-1df4-4cb6-827c-35874f43615f",
+      "knowledgeScore": null,
+      "createdAt": "2026-11-03T10:12:02.100Z"
+    },
+    {
+      "id": "c2c3d4e5-0102-4000-8000-000000000102",
+      "action": "PLATFORM:knowledge_lookup",
+      "parameters": {
+        "query": "compliance certificate for ILP-220"
+      },
+      "result": "{\"knowledge\": \"ILP-220 is covered by CERT-ILP-220 (CE), valid until 2026-09-30.\", \"certificate\": \"CERT-ILP-220\", \"validUntil\": \"2026-09-30\"}",
+      "comment": "Knowledge base lists CERT-ILP-220 for ILP-220, valid until 2026-09-30",
+      "status": "COMPLETED",
+      "taskId": "b2c3d4e5-0002-4000-8000-000000000002",
+      "nodeId": "b375d835-67bc-46f6-a2eb-825a8481e4b4",
+      "knowledgeScore": null,
+      "createdAt": "2026-11-03T10:12:06.800Z"
+    },
+    {
+      "id": "c2c3d4e5-0103-4000-8000-000000000103",
+      "action": "ORDER:assign_certificate",
+      "parameters": {
+        "productId": "ILP-220",
+        "certificate": "CERT-ILP-220"
+      },
+      "result": "{\"error\": \"CERTIFICATE_EXPIRED\", \"message\": \"CERT-ILP-220 expired on 2026-09-30\"}",
+      "comment": "Certificate CERT-ILP-220 is expired and cannot be assigned",
+      "status": "FAILED",
+      "taskId": "b2c3d4e5-0002-4000-8000-000000000002",
+      "nodeId": "3e8ba55f-ff37-41c3-befd-758e32df3f99",
+      "knowledgeScore": null,
+      "createdAt": "2026-11-03T10:12:11.400Z"
     }
   ]
 }

@@ -1,3 +1,4 @@
+import AgentDevToolWidget from "../AgentDevToolWidget";
 import AgentDrawer from "../../components/AgentDrawer/AgentDrawer";
 import AgentWizard from "../AgentWizard/AgentWizard";
 import BlueprintDrawerLayout from "../../layouts/BlueprintDrawerLayout";
@@ -5,6 +6,7 @@ import { Flow } from "@canmingir/link/platform/components";
 import { Iconify } from "@canmingir/link/platform/components";
 import { TeamChartRenderer } from "./TeamChartRenderer";
 import TeamSkeleton from "../../components/Skeletons/TeamSkeleton";
+import config from "../../../config";
 import { publish } from "@nucleoidai/react-event";
 import { storage } from "@nucleoidjs/webstorage";
 import { teamChartPlugin } from "./TeamChartPlugin";
@@ -187,8 +189,16 @@ function TeamChart() {
           drawerOpen={drawerOpen}
           handleDrawerClose={handleDrawerClose}
           selectedItem={selectedItem}
+          agentId={selectedItem?.agentId}
           setAiResponse={setAiResponse}
           aiResponse={aiResponse}
+        />
+      )}
+
+      {drawerOpen && !agentDrawer && (
+        <AgentDevToolWidget
+          agentId={selectedItem?.agentId}
+          beta={config.beta}
         />
       )}
 

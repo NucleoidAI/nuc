@@ -93,7 +93,7 @@ const MCPServerDrawer = ({
       anchor="right"
       open={open}
       onClose={onClose}
-      sx={{ zIndex: (theme) => theme.zIndex.modal + 1 }}
+      sx={{ zIndex: (theme) => theme.zIndex.modal + 3 }}
       slotProps={{ paper: { sx: { width: { xs: "100%", sm: 520 }, p: 2 } } }}
     >
       <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>

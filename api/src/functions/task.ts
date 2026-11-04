@@ -1,8 +1,10 @@
 import Agent from "../models/Agent";
+import LLMLog from "../models/LLMLog";
 import Step from "../models/Step";
 import Task from "../models/Task";
 import { event } from "@canmingir/link-express/event/client";
 import llmLog from "./llmLog";
+import { Op, col, fn } from "sequelize";
 
 async function create({
   agentId,
@@ -321,7 +323,70 @@ async function logs({ taskId }: { taskId: string }) {
     (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
   );
 
-  return { task: taskData, totals: llm.totals, entries };
+  const number = taskData.blueprintId
+    ? await Task.count({
+        where: {
+          blueprintId: taskData.blueprintId,
+          createdAt: { [Op.lte]: taskData.createdAt },
+        },
+      })
+    : null;
+
+  return { task: taskData, number, totals: llm.totals, entries };
+}
+
+async function lastActivityByTask(taskIds: string[]) {
+  const rows = (
+    await Promise.all(
+      [Step, LLMLog].map((model) =>
+        (model as typeof Step).findAll({
+          attributes: ["taskId", [fn("MAX", col("created_at")), "lastAt"]],
+          where: { taskId: taskIds },
+          group: ["taskId"],
+          raw: true,
+        }),
+      ),
+    )
+  ).flat() as unknown as { taskId: string; lastAt: string | Date }[];
+
+  return rows.reduce<Map<string, number>>((latest, { taskId, lastAt }) => {
+    const time = new Date(lastAt).getTime();
+    if (time > (latest.get(taskId) ?? 0)) latest.set(taskId, time);
+    return latest;
+  }, new Map());
+}
+
+async function executions({ blueprintId }: { blueprintId: string }) {
+  const tasks = await Task.findAll({
+    where: { blueprintId },
+    attributes: ["id", "description", "status", "debug", "createdAt"],
+    order: [["createdAt", "ASC"]],
+  });
+
+  const lastActivity = tasks.length
+    ? await lastActivityByTask(tasks.map(({ id }) => id))
+    : new Map<string, number>();
+
+  return tasks
+    .map((taskInstance, index) => {
+      const { id, description, status, debug, createdAt } =
+        taskInstance.toJSON();
+      const startedAt = new Date(createdAt).getTime();
+      const finishedAt =
+        status === "IN_PROGRESS" ? null : lastActivity.get(id) ?? null;
+
+      return {
+        id,
+        number: index + 1,
+        description,
+        status,
+        debug,
+        createdAt,
+        durationMs:
+          finishedAt === null ? null : Math.max(finishedAt - startedAt, 0),
+      };
+    })
+    .reverse();
 }
 
 export default {
@@ -337,4 +402,5 @@ export default {
   updateStepComment,
   listSteps,
   logs,
+  executions,
 };

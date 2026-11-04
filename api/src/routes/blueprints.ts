@@ -1,3 +1,4 @@
+import Agent from "../models/Agent";
 import { AuthenticationError } from "@canmingir/link-express/error";
 import Blueprint from "../models/Blueprint";
 import BlueprintSchema from "../schemas/Blueprint";
@@ -5,6 +6,8 @@ import agentData from "../functions/agentData";
 import bluePrint from "../functions/blueprint";
 import { event } from "@canmingir/link-express/event/client";
 import express from "express";
+import Joi from "joi";
+import task from "../functions/task";
 
 const router = express.Router();
 
@@ -30,6 +33,34 @@ router.get("/:id", async (req, res) => {
   const blueprintWithNodes = await bluePrint.getWithNodes(id);
 
   res.status(200).json(blueprintWithNodes);
+});
+
+router.get("/:blueprintId/executions", async (req, res) => {
+  const { projectId: teamId } = req.session;
+  const { blueprintId } = Joi.attempt(
+    req.params,
+    Joi.object({
+      blueprintId: Joi.string().guid().required(),
+    }),
+  );
+
+  const blueprint = await Blueprint.findByPk(blueprintId, {
+    attributes: ["id", "agentId"],
+  });
+
+  if (!blueprint) {
+    return res.status(404).end();
+  }
+
+  const agent = await Agent.findByPk(blueprint.agentId, {
+    attributes: ["teamId"],
+  });
+
+  if (agent?.teamId !== teamId) {
+    return res.status(401).end();
+  }
+
+  return res.status(200).json(await task.executions({ blueprintId }));
 });
 
 router.post("/generate", async (req, res) => {

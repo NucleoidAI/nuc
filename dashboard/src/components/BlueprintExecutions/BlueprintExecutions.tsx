@@ -11,7 +11,6 @@ import {
   InputAdornment,
   Stack,
   TextField,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -63,8 +62,6 @@ function formatDuration(durationMs: number | null) {
   const minutes = Math.floor(seconds / 60);
   return `${minutes}m ${Math.round(seconds % 60)}s`;
 }
-
-const executionName = ({ number }: Execution) => `EXE-${number}`;
 
 const StatusBadge = ({ status }: { status: Execution["status"] }) => {
   const { label, color } = STATUS[status];
@@ -164,16 +161,28 @@ const ExecutionRow = ({
     })}
   >
     <Iconify
-      icon="solar:test-tube-minimalistic-linear"
-      sx={{ width: 20, height: 20, color: "text.secondary", flexShrink: 0 }}
+      icon={
+        execution.debug
+          ? "solar:bug-bold"
+          : "solar:checklist-minimalistic-linear"
+      }
+      sx={{
+        width: 20,
+        height: 20,
+        color: execution.debug ? "warning.main" : "text.secondary",
+        flexShrink: 0,
+      }}
     />
     <Box sx={{ flex: 1, minWidth: 0 }}>
       <Stack direction="row" alignItems="center" spacing={1}>
-        <Tooltip title={execution.description} placement="top-start">
-          <Typography variant="subtitle2" noWrap>
-            {executionName(execution)}
-          </Typography>
-        </Tooltip>
+        <Typography
+          variant="subtitle2"
+          noWrap
+          title={execution.description}
+          sx={{ minWidth: 0 }}
+        >
+          {execution.description}
+        </Typography>
         <ModeBadge debug={execution.debug} />
       </Stack>
       <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 0.5 }}>
@@ -266,11 +275,9 @@ const BlueprintExecutions = ({
       if (filter === "LIVE" && execution.debug) return false;
       if (!query) return true;
 
-      return [
-        executionName(execution),
-        execution.description,
-        STATUS[execution.status].label,
-      ].some((value) => value.toLowerCase().includes(query));
+      return [execution.description, STATUS[execution.status].label].some(
+        (value) => value.toLowerCase().includes(query)
+      );
     });
   }, [executions, filter, search]);
 

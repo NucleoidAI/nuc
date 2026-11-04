@@ -314,29 +314,25 @@ const TaskLogsDrawer = ({
         <Stack direction="row" alignItems="center" spacing={1.25}>
           <Iconify
             icon={
-              logs?.task.debug
-                ? "solar:test-tube-minimalistic-linear"
-                : "solar:document-text-linear"
+              logs?.task.debug ? "solar:bug-bold" : "solar:document-text-linear"
             }
-            sx={{ width: 20, height: 20 }}
+            sx={{
+              width: 20,
+              height: 20,
+              color: logs?.task.debug ? "warning.main" : "text.primary",
+            }}
           />
           <Typography variant="h6" sx={{ fontSize: 17 }}>
             {logs?.task.debug ? "Debug logs" : "Logs"}
           </Typography>
-          {logs?.number && (
-            <Box
-              component="span"
-              sx={(theme) => ({
-                px: 0.75,
-                fontFamily: MONO,
-                fontSize: 11,
-                lineHeight: "20px",
-                borderRadius: 1,
-                border: `1px solid ${theme.palette.divider}`,
-              })}
+          {logs?.task.description && (
+            <Typography
+              noWrap
+              title={logs.task.description}
+              sx={{ fontSize: 13, color: "text.secondary", minWidth: 0 }}
             >
-              EXE-{logs.number}
-            </Box>
+              {logs.task.description}
+            </Typography>
           )}
           {status && (
             <Box

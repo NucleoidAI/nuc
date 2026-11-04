@@ -1,3 +1,4 @@
+import ApiSessionView from "./ApiSessionView";
 import type { BlueprintContext } from "../../hooks/useBlueprint";
 import BlueprintContextDetails from "../../components/BlueprintContextDetails/BlueprintContextDetails";
 import BlueprintExecutions from "../../components/BlueprintExecutions";
@@ -5,6 +6,7 @@ import ChatTimeline from "./ChatTimeline";
 import { DrawerLayout } from "@canmingir/link/layouts";
 import type { Theme } from "@mui/material/styles";
 import http from "@canmingir/link/platform/http";
+import { loadApiCall } from "./apiSession";
 import useAgent from "../../hooks/useAgent";
 import useBlueprint from "../../hooks/useBlueprint";
 import useChatSessions from "../../hooks/useChatSessions";
@@ -163,6 +165,22 @@ const AgentDevToolWidget = ({
       selectedSessionId: string,
       cachedMessages?: { id?: string; content: string; role: string }[]
     ) => {
+      const stored = storedSessions.find(
+        (session) => session.sessionId === selectedSessionId
+      ) as { type?: string } | undefined;
+
+      if (stored?.type === "API" && agentId) {
+        runRef.current += 1;
+        const call = await loadApiCall(agentId, selectedSessionId).catch(
+          () => null
+        );
+        if (call) {
+          if (call.blueprintId) setSelectedBlueprint(call.blueprintId);
+          setApiCall(call);
+        }
+        return;
+      }
+
       if (cachedMessages?.length) {
         setMessages(cachedMessages);
       }
@@ -173,7 +191,7 @@ const AgentDevToolWidget = ({
         getSession(selectedSessionId);
       }
     },
-    [switchSession, getSession]
+    [storedSessions, agentId, switchSession, getSession]
   );
 
   const handleNewSession = useCallback(() => {
@@ -331,6 +349,11 @@ const AgentDevToolWidget = ({
         clearAllSessions={clearAll}
         onSessionSelect={handleSessionSelect}
         onNewSession={handleNewSession}
+        renderSession={(session) =>
+          (session as { type?: string }).type === "API" && agentId ? (
+            <ApiSessionView agentId={agentId} sessionId={session.sessionId} />
+          ) : undefined
+        }
         beta={beta}
         topActions={[
           ...(canReopenSupervise
@@ -368,8 +391,8 @@ const AgentDevToolWidget = ({
           ...(debugBlueprintId
             ? [
                 {
-                  icon: "solar:bug-bold",
-                  label: "Debug",
+                  icon: "solar:history-bold",
+                  label: "Executions",
                   tooltip: "Blueprint executions",
                   onClick: () => setExecutionsOpen(true),
                 },

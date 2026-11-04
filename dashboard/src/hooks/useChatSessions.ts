@@ -13,6 +13,7 @@ export type StoredSession = {
   lastUpdated: number;
   agentIcon?: string;
   agentName?: string;
+  type?: string;
 };
 
 type BackendConversation = {
@@ -25,6 +26,7 @@ type BackendConversation = {
 type BackendSession = {
   id: string;
   agentId: string;
+  type?: string;
   conversations: BackendConversation[];
 };
 
@@ -55,6 +57,7 @@ const upsertSession = (
     lastUpdated: Date.now(),
     agentIcon: existing?.agentIcon || agentIcon,
     agentName: existing?.agentName || agentName,
+    type: existing?.type,
   };
   if (idx >= 0) {
     sessions[idx] = entry;
@@ -75,6 +78,7 @@ const toStoredSession = (
   return {
     sessionId: session.id,
     agentId: session.agentId,
+    type: session.type,
     messages: session.conversations.map((c) => ({
       id: c.id,
       content: c.content ?? "",

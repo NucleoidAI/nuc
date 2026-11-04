@@ -9,12 +9,14 @@ async function create({
   agentId,
   blueprintId,
   variables,
+  debug = false,
 }: {
   id?: string;
   type: string;
   agentId: string;
   blueprintId?: string;
   variables?: Record<string, unknown>;
+  debug?: boolean;
 }) {
   const sessionId = id ?? uuid();
 
@@ -24,6 +26,7 @@ async function create({
     agentId,
     ...(blueprintId && { blueprintId }),
     ...(variables && { variables }),
+    debug,
   });
 
   await event.publish("SESSION_INITIATED", {

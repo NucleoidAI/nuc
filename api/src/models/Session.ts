@@ -3,6 +3,7 @@ import {
   Column,
   Model,
   DataType,
+  Default,
   PrimaryKey,
   AllowNull,
   IsIn,
@@ -34,6 +35,11 @@ class Session extends Model {
   @AllowNull(true)
   @Column(DataType.JSON)
   declare variables: Record<string, unknown> | null;
+
+  @AllowNull(false)
+  @Default(false)
+  @Column(DataType.BOOLEAN)
+  declare debug: boolean;
 
   declare agent?: any;
 

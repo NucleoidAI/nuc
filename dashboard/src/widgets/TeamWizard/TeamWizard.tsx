@@ -621,6 +621,7 @@ function TeamWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
                 <Card
                   data-cy="existing-organization"
                   key={organization.id}
+                  className="anim-hover-tilt"
                   onClick={() => handleOrganizationSelect(organization)}
                   variant="outlined"
                   sx={cardSx}

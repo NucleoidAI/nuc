@@ -403,6 +403,7 @@ function AgentStep({
             <Card
               data-cy="sample-agent"
               key={index}
+              className="anim-hover-tilt"
               onClick={() => onTemplateSelect(sample)}
               variant="outlined"
               sx={cardSx}

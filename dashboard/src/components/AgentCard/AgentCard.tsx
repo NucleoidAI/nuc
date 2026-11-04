@@ -44,6 +44,7 @@ export default function AgentCard({
   return (
     <>
       <Card
+        className="anim-hover-tilt"
         sx={{
           width: "255px",
           position: "relative",

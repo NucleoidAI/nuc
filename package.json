@@ -7,7 +7,7 @@
   "private": "true",
   "scripts": {
     "predev": "rm -rf dashboard/node_modules/.vite && cd ./mcp && bun run db:reset",
-    "dev:events": "bunx @canmingir/link-express@1.7.40 start",
+    "dev:events": "bunx @canmingir/link-express@1.7.19 start",
     "debug:mcp": "cd ./mcp && bun run debug",
     "dev:api": "cd ./api && bun run dev",
     "dev:dashboard": "cd ./dashboard && bun run dev",
@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-ec2": "^3.1085.0",
-    "@canmingir/link": "^1.2.92",
+    "@canmingir/link": "^1.2.93",
     "concurrently": "^9.1.2"
   },
   "devDependencies": {

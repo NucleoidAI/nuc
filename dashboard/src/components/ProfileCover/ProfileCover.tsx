@@ -28,6 +28,7 @@ function ProfileCover({ name, iconUrl, coverUrl, loading }) {
         ) : (
           <>
             <Box
+              className="anim-hover-tilt"
               sx={{
                 mx: { md: "auto" },
                 ml: { xs: "50%", md: "auto" },

@@ -132,8 +132,14 @@ async function get({ taskId }: { taskId: string }) {
   return taskInstance.toJSON();
 }
 
-async function count({ blueprintId }: { blueprintId: string }) {
-  return Task.count({ where: { blueprintId, debug: false } });
+async function count({
+  blueprintId,
+  debug = false,
+}: {
+  blueprintId: string;
+  debug?: boolean;
+}) {
+  return Task.count({ where: { blueprintId, debug } });
 }
 
 async function getWithSteps({ taskId }: { taskId: string }) {
@@ -327,6 +333,7 @@ async function logs({ taskId }: { taskId: string }) {
     ? await Task.count({
         where: {
           blueprintId: taskData.blueprintId,
+          debug: taskData.debug,
           createdAt: { [Op.lte]: taskData.createdAt },
         },
       })
@@ -367,17 +374,20 @@ async function executions({ blueprintId }: { blueprintId: string }) {
     ? await lastActivityByTask(tasks.map(({ id }) => id))
     : new Map<string, number>();
 
+  const counters = { live: 0, debug: 0 };
+
   return tasks
-    .map((taskInstance, index) => {
+    .map((taskInstance) => {
       const { id, description, status, debug, createdAt } =
         taskInstance.toJSON();
+      const number = ++counters[debug ? "debug" : "live"];
       const startedAt = new Date(createdAt).getTime();
       const finishedAt =
         status === "IN_PROGRESS" ? null : lastActivity.get(id) ?? null;
 
       return {
         id,
-        number: index + 1,
+        number,
         description,
         status,
         debug,

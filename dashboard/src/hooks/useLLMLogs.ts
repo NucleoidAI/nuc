@@ -22,6 +22,7 @@ export type TaskUsage = {
     description: string;
     status: string;
     createdAt: string;
+    debug?: boolean;
   };
   totals: {
     inputTokens: number;

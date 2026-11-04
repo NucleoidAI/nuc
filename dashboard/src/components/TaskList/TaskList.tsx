@@ -1,3 +1,4 @@
+import DebugBadge from "../DebugBadge";
 import { Iconify } from "@canmingir/link/platform/components";
 import React from "react";
 import TaskIcon from "@mui/icons-material/Task";
@@ -23,6 +24,7 @@ const TaskList = ({
     description: string;
     status: string;
     createdAt: string;
+    debug?: boolean;
   }[];
   selectedTask: { id: string };
   onTaskSelect: (task: {
@@ -30,6 +32,7 @@ const TaskList = ({
     description: string;
     status: string;
     createdAt: string;
+    debug?: boolean;
   }) => void;
 }) => {
   if (!tasks || tasks.length === 0) {
@@ -61,6 +64,7 @@ const TaskList = ({
       {tasks.map((task) => {
         const isSelected = selectedTask?.id === task.id;
         const isInProgress = task.status === "IN_PROGRESS";
+        const isDebug = Boolean(task.debug);
 
         return (
           <ListItem
@@ -79,6 +83,11 @@ const TaskList = ({
               sx={{
                 p: 1,
                 position: "relative",
+                ...(isDebug && {
+                  bgcolor: (theme) => alpha(theme.palette.warning.main, 0.04),
+                  boxShadow: (theme) =>
+                    `inset 3px 0 0 ${alpha(theme.palette.warning.main, 0.7)}`,
+                }),
                 "&:hover": {
                   bgcolor: isSelected
                     ? (theme) => alpha(theme.palette.primary.main, 0.08)
@@ -105,14 +114,25 @@ const TaskList = ({
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    bgcolor: isInProgress
-                      ? alpha("#1976d2", 0.1)
-                      : alpha("#2e7d32", 0.1),
-                    color: isInProgress ? "primary.main" : "success.main",
+                    bgcolor: (theme) =>
+                      isDebug
+                        ? alpha(theme.palette.warning.main, 0.12)
+                        : isInProgress
+                        ? alpha("#1976d2", 0.1)
+                        : alpha("#2e7d32", 0.1),
+                    color: isDebug
+                      ? "warning.main"
+                      : isInProgress
+                      ? "primary.main"
+                      : "success.main",
                     flexShrink: 0,
                   }}
                 >
-                  <TaskIcon />
+                  {isDebug ? (
+                    <Iconify icon="solar:bug-bold" width={16} />
+                  ) : (
+                    <TaskIcon />
+                  )}
                 </Box>
 
                 <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -155,6 +175,8 @@ const TaskList = ({
                         },
                       }}
                     />
+
+                    {isDebug && <DebugBadge sx={{ mt: 0.5 }} />}
 
                     <Typography
                       variant="caption"

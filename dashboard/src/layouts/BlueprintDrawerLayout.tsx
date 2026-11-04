@@ -186,7 +186,14 @@ const BlueprintDrawerLayout = ({
   }, [drawerOpen, context]);
 
   useEffect(() => {
+    publish("BLUEPRINT_DEBUG", {
+      blueprintId: drawerOpen ? selectedItem?.id ?? null : null,
+    });
+  }, [drawerOpen, selectedItem?.id]);
+
+  useEffect(() => {
     return () => {
+      publish("BLUEPRINT_DEBUG", { blueprintId: null });
       publish("BLUEPRINT_CONTEXT", { context: null });
       publish("SUPERVISOR_CHAT", { canReopen: false });
     };

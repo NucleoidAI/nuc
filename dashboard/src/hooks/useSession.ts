@@ -13,7 +13,7 @@ function getLastSessionId(agentId: string): string | null {
   return match?.sessionId ?? null;
 }
 
-function useSession(agentId) {
+function useSession(agentId, { debug = false }: { debug?: boolean } = {}) {
   const savedSessionId = agentId ? getLastSessionId(agentId) : null;
 
   const [conversations, setConversations] = useState([]);
@@ -36,6 +36,7 @@ function useSession(agentId) {
         query: {
           agentId,
           ...(existingSessionId ? { sessionId: existingSessionId } : {}),
+          ...(debug ? { debug: "true" } : {}),
         },
       });
 
@@ -84,6 +85,29 @@ function useSession(agentId) {
     });
   }, []);
 
+  const sendVariables = useCallback(
+    (variables: Record<string, unknown>) =>
+      new Promise<void>((resolve, reject) => {
+        const content = JSON.stringify(variables);
+        setLoading(true);
+        socketRef.current.emit(
+          "variables_message",
+          { variables },
+          (response) => {
+            setLoading(false);
+            if (response?.status !== "success") {
+              reject(new Error(response?.error || "Failed to send JSON"));
+              return;
+            }
+            setConversations([{ role: "USER", content }]);
+            publish("CONVERSATION_SENT", { createdAt: Date.now() });
+            resolve();
+          }
+        );
+      }),
+    []
+  );
+
   const switchSession = useCallback((targetSessionId: string) => {
     return new Promise<void>((resolve, reject) => {
       socketRef.current.emit(
@@ -117,7 +141,11 @@ function useSession(agentId) {
       const newSocket = io(host, {
         path,
         auth: { token },
-        query: { agentId, ...(blueprintId ? { blueprintId } : {}) },
+        query: {
+          agentId,
+          ...(blueprintId ? { blueprintId } : {}),
+          ...(debug ? { debug: "true" } : {}),
+        },
       });
 
       newSocket.on("connect", () => {
@@ -140,7 +168,7 @@ function useSession(agentId) {
 
       socketRef.current = newSocket;
     },
-    [agentId, host, path, token]
+    [agentId, host, path, token, debug]
   );
 
   const getSession = useCallback(async (id) => {
@@ -163,6 +191,7 @@ function useSession(agentId) {
     error,
     conversations,
     sendMessage,
+    sendVariables,
     switchSession,
     createSession,
     clearError,

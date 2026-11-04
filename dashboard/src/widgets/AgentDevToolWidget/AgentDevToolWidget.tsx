@@ -1,15 +1,25 @@
 import type { BlueprintContext } from "../../hooks/useBlueprint";
 import BlueprintContextDetails from "../../components/BlueprintContextDetails/BlueprintContextDetails";
+import BlueprintExecutions from "../../components/BlueprintExecutions";
 import { DrawerLayout } from "@canmingir/link/layouts";
 import type { Theme } from "@mui/material/styles";
+import http from "@canmingir/link/platform/http";
 import useAgent from "../../hooks/useAgent";
 import useBlueprint from "../../hooks/useBlueprint";
 import useChatSessions from "../../hooks/useChatSessions";
 import useSession from "../../hooks/useSession";
 import { Box, Portal, ThemeProvider, Typography } from "@mui/material";
 import { DevTool, SidebarChat } from "@canmingir/link/platform/components";
+import {
+  type DevToolBlueprint,
+  asJsonBlock,
+  executeFailure,
+  inputFieldsOf,
+  submitError,
+  variablesTemplateOf,
+} from "./blueprintInputs";
 import { publish, useEvent } from "@nucleoidai/react-event";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 interface AgentDevToolWidgetProps {
   readOnly?: boolean;
@@ -39,6 +49,13 @@ const AgentDevToolWidget = ({
   );
   const context = blueprintContext?.context ?? null;
 
+  const [blueprintDebug] = useEvent<{ blueprintId: string | null }>(
+    "BLUEPRINT_DEBUG",
+    { blueprintId: null }
+  );
+  const debugBlueprintId = blueprintDebug?.blueprintId ?? null;
+  const [executionsOpen, setExecutionsOpen] = useState(false);
+
   const [superviseChat] = useEvent<{ canReopen: boolean }>("SUPERVISOR_CHAT", {
     canReopen: false,
   });
@@ -51,10 +68,23 @@ const AgentDevToolWidget = ({
     switchSession,
     createSession,
     getSession,
-  } = useSession(agentId);
+    sendVariables,
+  } = useSession(agentId, { debug: true });
 
   const { getBlueprint } = useBlueprint();
-  const { Blueprint } = getBlueprint();
+  const { Blueprint } = getBlueprint([], agentId);
+
+  const selected = useMemo(() => {
+    const blueprints: DevToolBlueprint[] = Blueprint
+      ? Array.isArray(Blueprint)
+        ? Blueprint
+        : [Blueprint]
+      : [];
+    return blueprints.find(({ id }) => id === selectedBlueprint);
+  }, [Blueprint, selectedBlueprint]);
+
+  const inputFields = useMemo(() => inputFieldsOf(selected), [selected]);
+  const jsonTemplate = useMemo(() => variablesTemplateOf(selected), [selected]);
 
   const { getAgent } = useAgent();
   const { agent } = getAgent(agentId);
@@ -90,18 +120,29 @@ const AgentDevToolWidget = ({
     if (!context) setContextOpen(false);
   }, [context]);
 
+  useEffect(() => {
+    if (!debugBlueprintId) setExecutionsOpen(false);
+  }, [debugBlueprintId]);
+
   const handleToggle = useCallback(() => {
     setOpen((prev) => !prev);
   }, []);
 
   const handleBlueprintChange = useCallback(
     (blueprintId: string) => {
+      if (!blueprintId) return;
       setSelectedBlueprint(blueprintId);
       setMessages([]);
-      createSession(blueprintId || undefined);
+      createSession(blueprintId);
     },
     [createSession]
   );
+
+  useEffect(() => {
+    if (!Array.isArray(Blueprint) || selected) return;
+    const [first] = Blueprint as DevToolBlueprint[];
+    if (first) handleBlueprintChange(first.id);
+  }, [Blueprint, selected, handleBlueprintChange]);
 
   const handleSessionSelect = useCallback(
     async (
@@ -123,8 +164,53 @@ const AgentDevToolWidget = ({
 
   const handleNewSession = useCallback(() => {
     setMessages([]);
-    createSession();
-  }, [createSession]);
+    createSession(selectedBlueprint || undefined);
+  }, [createSession, selectedBlueprint]);
+
+  const handleSubmitForm = useCallback(
+    async (values: Record<string, unknown>) => {
+      if (!selected) return "Select a blueprint first";
+
+      setMessages((prev) => [
+        ...prev,
+        { role: "USER", content: asJsonBlock(values) },
+      ]);
+
+      try {
+        const { data } = await http.post(
+          `/execute/${selected.id}?debug=true`,
+          values
+        );
+        setMessages((prev) => [
+          ...prev,
+          { role: "AI", content: asJsonBlock(data) },
+        ]);
+      } catch (error) {
+        const failure = executeFailure(error);
+        if (failure) {
+          setMessages((prev) => [...prev, { role: "AI", content: failure }]);
+          return;
+        }
+        return submitError(error);
+      }
+    },
+    [selected]
+  );
+
+  const handleSubmitJson = useCallback(
+    async (value: unknown) => {
+      if (!value || typeof value !== "object" || Array.isArray(value)) {
+        return "Variables must be a JSON object";
+      }
+
+      try {
+        await sendVariables(value as Record<string, unknown>);
+      } catch (error) {
+        return error instanceof Error ? error.message : "Failed to send JSON";
+      }
+    },
+    [sendVariables]
+  );
 
   const handleNewUserMessage = async (content: string) => {
     setMessages((prevMessages) => [...prevMessages, { role: "USER", content }]);
@@ -183,6 +269,16 @@ const AgentDevToolWidget = ({
                 },
               ]
             : []),
+          ...(debugBlueprintId
+            ? [
+                {
+                  icon: "solar:bug-bold",
+                  label: "Debug",
+                  tooltip: "Blueprint executions",
+                  onClick: () => setExecutionsOpen(true),
+                },
+              ]
+            : []),
         ]}
       >
         {({ open: chatOpen, handleToggle: chatToggle, onNewSession }) => (
@@ -216,6 +312,14 @@ const AgentDevToolWidget = ({
               selectedPreset={selectedBlueprint}
               onPresetChange={handleBlueprintChange}
               onNewSession={onNewSession}
+              inputFields={inputFields}
+              onSubmitForm={selected?.api ? handleSubmitForm : undefined}
+              jsonTemplate={jsonTemplate}
+              onSubmitJson={
+                selected && !selected.api ? handleSubmitJson : undefined
+              }
+              presetRequired
+              inputModes={selected?.api ? ["form"] : ["chat", "json"]}
             />
           </ThemeProvider>
         )}
@@ -244,6 +348,27 @@ const AgentDevToolWidget = ({
             onOutputClick={handleOutputClick}
           />
         </Box>
+      </DrawerLayout>
+      <DrawerLayout
+        anchor="right"
+        mode="narrow"
+        open={Boolean(debugBlueprintId) && executionsOpen}
+        onClose={() => setExecutionsOpen(false)}
+        sx={{ zIndex: (theme) => theme.zIndex.modal + 4 }}
+        slotProps={{
+          paper: {
+            sx: { width: 420, pt: 2, display: "flex", flexDirection: "column" },
+          },
+        }}
+        title={
+          <Box sx={{ px: 2, pr: 6 }}>
+            <Typography variant="h6">Executions</Typography>
+          </Box>
+        }
+      >
+        {debugBlueprintId && (
+          <BlueprintExecutions blueprintId={debugBlueprintId} />
+        )}
       </DrawerLayout>
     </Portal>
   );

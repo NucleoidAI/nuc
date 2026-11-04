@@ -64,6 +64,9 @@ const setup = async (io: Server) => {
       const requestedBlueprintId = socket.handshake.query.blueprintId as
         | string
         | undefined;
+      const debug = socket.handshake.query.debug === "true";
+      const newSession = () =>
+        createSession(token, agentId, requestedBlueprintId, undefined, debug);
       let session: Session;
 
       if (requestedSessionId) {
@@ -72,13 +75,13 @@ const setup = async (io: Server) => {
           if (existing) {
             session = { id: requestedSessionId, agentId };
           } else {
-            session = await createSession(token, agentId, requestedBlueprintId);
+            session = await newSession();
           }
         } catch {
-          session = await createSession(token, agentId, requestedBlueprintId);
+          session = await newSession();
         }
       } else {
-        session = await createSession(token, agentId, requestedBlueprintId);
+        session = await newSession();
       }
 
       const agent: Agent = await getAgent(token, agentId);

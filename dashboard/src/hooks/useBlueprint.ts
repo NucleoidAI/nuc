@@ -105,6 +105,24 @@ function useBlueprint() {
     };
   };
 
+  const getBlueprintExecutions = (
+    blueprintId: string,
+    fetchState: DependencyArray = []
+  ) => {
+    const { data, loading, error, fetch } = Api(
+      () =>
+        blueprintId ? http.get(`/blueprints/${blueprintId}/executions`) : null,
+      [blueprintId, ...fetchState]
+    );
+
+    return {
+      executions: data,
+      loading,
+      error,
+      fetch,
+    };
+  };
+
   const getBlueprintWithId = (id: string, fetchState: DependencyArray = []) => {
     const { data, loading, error, fetch } = Api(
       () => (id ? http.get(`/blueprints/${id}`) : null),
@@ -268,6 +286,7 @@ function useBlueprint() {
     getBlueprint,
     getBlueprintsByAgent,
     getBlueprintWithNode,
+    getBlueprintExecutions,
     createBlueprint,
     upsertBlueprint,
     patchBlueprint,

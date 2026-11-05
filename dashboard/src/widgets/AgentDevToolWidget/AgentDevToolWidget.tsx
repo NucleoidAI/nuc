@@ -1,7 +1,7 @@
 import ApiSessionView from "./ApiSessionView";
 import type { BlueprintContext } from "../../hooks/useBlueprint";
 import BlueprintContextDetails from "../../components/BlueprintContextDetails/BlueprintContextDetails";
-import BlueprintExecutions from "../../components/BlueprintExecutions";
+import BlueprintExecutions from "../BlueprintExecutions";
 import ChatTimeline from "./ChatTimeline";
 import { DrawerLayout } from "@canmingir/link/layouts";
 import type { Theme } from "@mui/material/styles";

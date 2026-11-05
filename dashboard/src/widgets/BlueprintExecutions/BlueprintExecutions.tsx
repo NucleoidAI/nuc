@@ -2,7 +2,8 @@ import { Iconify } from "@canmingir/link/platform/components";
 import TaskLogsDrawer from "../TaskLogs";
 import { alpha } from "@mui/material/styles";
 import dayjs from "dayjs";
-import http from "@canmingir/link/platform/http";
+import useBlueprint from "../../hooks/useBlueprint";
+import { useTheme } from "@mui/material/styles";
 
 import {
   Box,
@@ -15,7 +16,7 @@ import {
 } from "@mui/material";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-export type Execution = {
+type Execution = {
   id: string;
   number: number;
   description: string;
@@ -105,13 +106,15 @@ const ModeBadge = ({ debug }: { debug: boolean }) => (
       fontSize: "0.68rem",
       fontWeight: 600,
       lineHeight: "18px",
-      border: `1px solid ${
-        debug ? theme.palette.divider : alpha(theme.palette.secondary.main, 0.3)
-      }`,
-      color: debug ? "text.secondary" : theme.palette.secondary.light,
-      bgcolor: debug
-        ? "transparent"
-        : alpha(theme.palette.secondary.main, 0.12),
+      border: `1px solid ${alpha(
+        debug ? theme.palette.warning.main : theme.palette.success.main,
+        0.3
+      )}`,
+      color: debug ? theme.palette.warning.light : theme.palette.success.light,
+      bgcolor: alpha(
+        debug ? theme.palette.warning.main : theme.palette.success.main,
+        0.12
+      ),
     })}
   >
     {debug ? "Debug" : "Live"}
@@ -179,11 +182,13 @@ const ExecutionRow = ({
           variant="subtitle2"
           noWrap
           title={execution.description}
-          sx={{ minWidth: 0 }}
+          sx={{ flex: 1, minWidth: 0 }}
         >
           {execution.description}
         </Typography>
-        <ModeBadge debug={execution.debug} />
+        <Box sx={{ flexShrink: 0 }}>
+          <ModeBadge debug={execution.debug} />
+        </Box>
       </Stack>
       <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 0.5 }}>
         <StatusBadge status={execution.status} />
@@ -229,35 +234,31 @@ const BlueprintExecutions = ({
   blueprintId: string;
   onSelect?: (execution: Execution) => void;
 }) => {
-  const [executions, setExecutions] = useState<Execution[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<Filter>("ALL");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
 
-  const load = useCallback(async () => {
-    try {
-      const { data } = await http.get<Execution[]>(
-        `/blueprints/${blueprintId}/executions`
-      );
-      setExecutions(data);
-      setError(null);
-    } catch {
-      setError("Failed to load executions");
-    } finally {
-      setLoading(false);
-    }
-  }, [blueprintId]);
+  const theme = useTheme();
+  const { getBlueprintExecutions } = useBlueprint();
+
+  const {
+    executions: fetchedExecutions,
+    loading,
+    error: fetchError,
+    fetch: load,
+  } = getBlueprintExecutions(blueprintId);
+
+  const executions: Execution[] = useMemo(
+    () => fetchedExecutions ?? [],
+    [fetchedExecutions]
+  );
+  const error = fetchError ? "Failed to load executions" : null;
 
   useEffect(() => {
-    setLoading(true);
-    setExecutions([]);
     setSelectedId(null);
     setOpenId(null);
-    load();
-  }, [load]);
+  }, [blueprintId]);
 
   const running = executions.some(({ status }) => status === "IN_PROGRESS");
 
@@ -299,29 +300,51 @@ const BlueprintExecutions = ({
           placeholder="Search executions"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Iconify
-                  icon="eva:search-fill"
-                  sx={{ width: 18, height: 18, color: "text.disabled" }}
-                />
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Iconify
+                    icon="eva:search-fill"
+                    sx={{ width: 18, height: 18, color: "text.disabled" }}
+                  />
+                </InputAdornment>
+              ),
+            },
           }}
         />
         <Stack direction="row" spacing={0.75} sx={{ mt: 1.25 }}>
-          {FILTERS.map(({ value, label }) => (
-            <Chip
-              key={value}
-              label={label}
-              size="small"
-              clickable
-              variant={filter === value ? "filled" : "outlined"}
-              color={filter === value ? "primary" : "default"}
-              onClick={() => setFilter(value)}
-            />
-          ))}
+          {FILTERS.map(({ value, label }) => {
+            const active = filter === value;
+
+            return (
+              <Chip
+                key={value}
+                label={label}
+                size="small"
+                onClick={() => setFilter(value)}
+                sx={{
+                  fontWeight: 600,
+                  color: active
+                    ? theme.palette.primary.main
+                    : theme.palette.text.secondary,
+                  bgcolor: active
+                    ? alpha(theme.palette.primary.main, 0.12)
+                    : "transparent",
+                  border: `1px solid ${
+                    active
+                      ? alpha(theme.palette.primary.main, 0.24)
+                      : theme.palette.divider
+                  }`,
+                  "&:hover": {
+                    bgcolor: active
+                      ? alpha(theme.palette.primary.main, 0.16)
+                      : theme.palette.action.hover,
+                  },
+                }}
+              />
+            );
+          })}
         </Stack>
       </Box>
 

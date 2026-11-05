@@ -174,7 +174,11 @@ function toLines({ task, entries }: TaskLogs): LogLine[] {
 }
 
 function formatTime(time: string) {
-  return dayjs(time).format("HH:mm:ss.SSS");
+  return dayjs(time).format("HH:mm:ss");
+}
+
+function formatTimeFull(time: string) {
+  return dayjs(time).format("D MMM YYYY, HH:mm:ss.SSS");
 }
 
 function durationOf(lines: LogLine[], running: boolean) {
@@ -206,4 +210,4 @@ function toText(lines: LogLine[]) {
     .join("\n");
 }
 
-export { durationOf, formatTime, toLines, toText };
+export { durationOf, formatTime, formatTimeFull, toLines, toText };

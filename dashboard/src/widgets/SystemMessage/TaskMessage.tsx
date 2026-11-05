@@ -18,7 +18,8 @@ import {
 import { Iconify, Label } from "@canmingir/link/platform/components";
 
 function TaskMessage({ id, handleClick, onDateFetched }) {
-  const { task, loading } = useTask(id);
+  const { getTask } = useTask(id);
+  const { task, loading } = getTask();
 
   const { getAgent } = useAgent();
 

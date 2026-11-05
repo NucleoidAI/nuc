@@ -1,14 +1,13 @@
+import { DrawerLayout } from "@canmingir/link/layouts";
 import { Iconify } from "@canmingir/link/platform/components";
 import { alpha } from "@mui/material/styles";
-import http from "@canmingir/link/platform/http";
-
+import useTask from "../../hooks/useTask";
+import { useTheme } from "@mui/material/styles";
 import {
   Box,
   Button,
   Chip,
   CircularProgress,
-  Drawer,
-  IconButton,
   InputAdornment,
   Stack,
   TextField,
@@ -20,16 +19,18 @@ import {
   type TaskLogs,
   durationOf,
   formatTime,
+  formatTimeFull,
   toLines,
   toText,
 } from "./logLines";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-type Filter = "ALL" | "INFO" | "WARN" | "ERROR";
+type Filter = "ALL" | "INFO" | "DONE" | "WARN" | "ERROR";
 
 const FILTERS: { value: Filter; label: string }[] = [
   { value: "ALL", label: "All" },
   { value: "INFO", label: "Info" },
+  { value: "DONE", label: "Done" },
   { value: "WARN", label: "Warning" },
   { value: "ERROR", label: "Error" },
 ];
@@ -49,13 +50,14 @@ const STATUS = {
 } as const;
 
 const POLL_INTERVAL = 2000;
-const COLUMNS = "112px 56px minmax(140px, 240px) minmax(0, 1fr)";
+const COLUMNS = {
+  xs: "1fr",
+  sm: "88px 72px minmax(140px, 240px) minmax(0, 1fr)",
+};
 const MONO = '"JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace';
 
 const matchesFilter = (level: LogLevel, filter: Filter) =>
-  filter === "ALL" ||
-  (filter === "INFO" && (level === "INFO" || level === "DONE")) ||
-  level === filter;
+  filter === "ALL" || level === filter;
 
 const LogRow = ({
   line,
@@ -90,6 +92,7 @@ const LogRow = ({
         sx={(theme) => ({
           display: "grid",
           gridTemplateColumns: COLUMNS,
+          rowGap: 1,
           columnGap: 2,
           px: 2,
           py: 0.75,
@@ -101,12 +104,36 @@ const LogRow = ({
             : undefined,
         })}
       >
-        <Box sx={{ fontFamily: MONO, color: "text.disabled" }}>
-          {formatTime(line.time)}
-        </Box>
-        <Box sx={{ fontFamily: MONO, fontWeight: 600, color: `${color}.main` }}>
-          {line.level}
-        </Box>
+        <Stack
+          direction="row"
+          alignItems="center"
+          spacing={1}
+          sx={{ minWidth: 0 }}
+        >
+          <Box
+            title={formatTimeFull(line.time)}
+            sx={{ fontFamily: MONO, color: "text.disabled", flexShrink: 0 }}
+          >
+            {formatTime(line.time)}
+          </Box>
+        </Stack>
+        <Chip
+          label={line.level}
+          size="small"
+          sx={(theme) => ({
+            display: { xs: "none", sm: "inline-flex" },
+            height: 20,
+            fontSize: 11,
+            fontWeight: 600,
+            fontFamily: MONO,
+            color: theme.palette[color].main,
+            bgcolor: alpha(theme.palette[color].main, 0.12),
+            "& .MuiChip-label": { px: 0.75 },
+            "&:hover": {
+              bgcolor: alpha(theme.palette[color].main, 0.12),
+            },
+          })}
+        />
         <Box
           sx={{
             color: "text.primary",
@@ -139,8 +166,8 @@ const LogRow = ({
             <Iconify
               icon={
                 open
-                  ? "eva:arrow-ios-downward-fill"
-                  : "eva:arrow-ios-forward-fill"
+                  ? "eva:arrow-ios-upward-fill"
+                  : "eva:arrow-ios-downward-fill"
               }
               sx={{ width: 14, height: 14, mt: 0.25, color: "text.disabled" }}
             />
@@ -160,12 +187,13 @@ const LogRow = ({
         >
           <Box
             sx={(theme) => ({
-              gridColumn: "3 / 5",
+              gridColumn: { xs: "1 / 2", sm: "3 / 5" },
               display: "grid",
               gridTemplateColumns: "72px minmax(0, 1fr)",
               rowGap: 0.75,
               columnGap: 1.5,
-              p: 1.25,
+              p: 1,
+              m: 1,
               borderRadius: 1,
               bgcolor: alpha(theme.palette.background.default, 0.6),
               border: `1px solid ${alpha(theme.palette.divider, 0.6)}`,
@@ -211,31 +239,23 @@ const TaskLogsDrawer = ({
   taskId: string | null;
   onClose: () => void;
 }) => {
-  const [logs, setLogs] = useState<TaskLogs | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<Filter>("ALL");
   const [toggled, setToggled] = useState<Record<string, boolean>>({});
 
-  const load = useCallback(async () => {
-    if (!taskId) return;
-    try {
-      const { data } = await http.get<TaskLogs>(`/tasks/${taskId}/logs`);
-      setLogs(data);
-      setError(null);
-    } catch {
-      setError("Failed to load logs");
-    }
-  }, [taskId]);
+  const theme = useTheme();
+  const { getTaskLogs } = useTask(taskId ?? "");
+
+  const { logs: fetchedLogs, error: fetchError, fetch: load } = getTaskLogs();
+
+  const logs = fetchedLogs as TaskLogs | null;
+  const error = fetchError ? "Failed to load logs" : null;
 
   useEffect(() => {
-    setLogs(null);
-    setError(null);
     setSearch("");
     setFilter("ALL");
     setToggled({});
-    load();
-  }, [load]);
+  }, [taskId]);
 
   const running = logs?.task.status === "IN_PROGRESS";
 
@@ -285,21 +305,16 @@ const TaskLogsDrawer = ({
   const status = logs ? STATUS[logs.task.status] : null;
 
   return (
-    <Drawer
-      anchor="right"
+    <DrawerLayout
       open={Boolean(taskId)}
       onClose={onClose}
+      mode="wide"
       sx={{ zIndex: (theme) => theme.zIndex.modal + 5 }}
-      slotProps={{
-        paper: {
-          sx: {
-            width: { xs: "100%", md: "min(1040px, 86vw)" },
-            display: "flex",
-            flexDirection: "column",
-            bgcolor: "background.paper",
-            backgroundImage: "none",
-          },
-        },
+      contentSx={{
+        p: 0,
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       <Box
@@ -311,7 +326,12 @@ const TaskLogsDrawer = ({
           borderColor: "divider",
         }}
       >
-        <Stack direction="row" alignItems="center" spacing={1.25}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          spacing={1.25}
+          sx={{ pr: 5 }}
+        >
           <Iconify
             icon={
               logs?.task.debug ? "solar:bug-bold" : "solar:document-text-linear"
@@ -363,9 +383,6 @@ const TaskLogsDrawer = ({
             </Box>
           )}
           <Box sx={{ flex: 1 }} />
-          <IconButton size="small" onClick={onClose} aria-label="Close logs">
-            <Iconify icon="eva:close-fill" sx={{ width: 20, height: 20 }} />
-          </IconButton>
         </Stack>
 
         <Stack
@@ -409,24 +426,44 @@ const TaskLogsDrawer = ({
             }}
           />
           <Stack direction="row" spacing={0.5}>
-            {FILTERS.map(({ value, label }) => (
-              <Chip
-                key={value}
-                label={label}
-                size="small"
-                clickable
-                variant={filter === value ? "filled" : "outlined"}
-                color={filter === value ? "primary" : "default"}
-                onClick={() => setFilter(value)}
-              />
-            ))}
+            {FILTERS.map(({ value, label }) => {
+              const active = filter === value;
+
+              return (
+                <Chip
+                  key={value}
+                  label={label}
+                  size="small"
+                  sx={{
+                    fontWeight: 600,
+                    color: active
+                      ? theme.palette.primary.main
+                      : theme.palette.text.secondary,
+                    bgcolor: active
+                      ? alpha(theme.palette.primary.main, 0.12)
+                      : "transparent",
+                    border: `1px solid ${
+                      active
+                        ? alpha(theme.palette.primary.main, 0.24)
+                        : theme.palette.divider
+                    }`,
+                    "&:hover": {
+                      bgcolor: active
+                        ? alpha(theme.palette.primary.main, 0.16)
+                        : theme.palette.action.hover,
+                    },
+                  }}
+                  onClick={() => setFilter(value)}
+                />
+              );
+            })}
           </Stack>
         </Stack>
       </Box>
 
       <Box
         sx={(theme) => ({
-          display: "grid",
+          display: { xs: "none", sm: "grid" },
           gridTemplateColumns: COLUMNS,
           columnGap: 2,
           px: 2,
@@ -436,6 +473,9 @@ const TaskLogsDrawer = ({
           color: "text.secondary",
           borderBottom: `1px solid ${theme.palette.divider}`,
           bgcolor: alpha(theme.palette.background.default, 0.5),
+          position: "sticky",
+          top: 0,
+          zIndex: 1,
         })}
       >
         <span>Time</span>
@@ -518,7 +558,7 @@ const TaskLogsDrawer = ({
           Download logs
         </Button>
       </Stack>
-    </Drawer>
+    </DrawerLayout>
   );
 };
 

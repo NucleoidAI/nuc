@@ -20,12 +20,24 @@ function useTask(id: string) {
     };
   };
 
-  const result = getTask();
+  const getTaskLogs = (fetchState: DependencyArray = []) => {
+    const { data, loading, error, fetch } = Api(
+      () =>
+        id ? http.get(`/tasks/${id}/logs`) : Promise.resolve({ data: null }),
+      [id, ...fetchState]
+    );
+
+    return {
+      logs: data,
+      loading,
+      error,
+      fetch,
+    };
+  };
 
   return {
-    loading: result.loading,
-    error: result.error,
-    task: result.task,
+    getTask,
+    getTaskLogs,
   };
 }
 

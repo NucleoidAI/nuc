@@ -5,7 +5,7 @@ import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
 import StepComment from "./StepComment";
 import TaskFlowStepDialog from "../FlowDialog/TaskFlowStepDialog";
 import TaskIcon from "@mui/icons-material/Task";
-import TaskLogsDrawer from "../TaskLogs";
+import TaskLogsDrawer from "../../widgets/TaskLogs";
 import TaskResultDialog from "../TaskResultDialog/TaskResultDialog";
 
 import {

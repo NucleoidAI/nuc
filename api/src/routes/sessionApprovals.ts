@@ -4,21 +4,10 @@ import { completeTwoFactor } from "../functions/twoFactor";
 import Joi from "joi";
 import agentFn from "../functions/agent";
 import express from "express";
-import rateLimit from "express-rate-limit";
 import schemas from "../schemas";
 import sessionFn from "../functions/session";
 
 const router = express.Router();
-
-// TODO: Move rate limiting into link-express so public routes get it by default
-router.use(
-  rateLimit({
-    windowMs: 60 * 1000,
-    limit: 60,
-    standardHeaders: "draft-8",
-    legacyHeaders: false,
-  })
-);
 
 function isAuthorized(req: express.Request) {
   const token = process.env.TEST_TOKEN;

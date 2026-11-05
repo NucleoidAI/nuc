@@ -49,6 +49,14 @@ platform.init(config).then(async () => {
 
   await models.init();
 
+  const { default: mcpServer } = await import("./src/functions/mcpServer");
+  const mcpEnv = await mcpServer.applyProcessEnv();
+
+  mcpEnv.applied.forEach((entry) => logger.info(`MCP env override: ${entry}`));
+  mcpEnv.skipped.forEach((entry) =>
+    logger.warn(`MCP env override skipped, unknown server: ${entry}`)
+  );
+
   if (config.metrics.enabled) {
     event.startPushgateway({
       url: config.metrics.url,

@@ -345,7 +345,84 @@ async function resolveEnv({
   return mergeByScope({ entries, teamId, agentId });
 }
 
+const PROCESS_ENV_PATTERN = /^MCP_([A-Za-z0-9-]+)__([A-Za-z0-9_]+)$/;
+
+function parseProcessEnv(env: NodeJS.ProcessEnv) {
+  return Object.entries(env).flatMap(([name, value]) => {
+    const match = PROCESS_ENV_PATTERN.exec(name);
+
+    if (!match || !value) {
+      return [];
+    }
+
+    return [{ serverId: match[1].toLowerCase(), key: match[2], value }];
+  });
+}
+
+async function targetScopes({
+  serverId,
+  teamId,
+  agentId,
+  assignServers,
+}: { serverId: string; assignServers: boolean } & Scope): Promise<Scope[]> {
+  if (agentId || teamId) {
+    if (assignServers) {
+      await assign({ serverId, teamId, agentId });
+    }
+
+    return [agentId ? { agentId } : { teamId }];
+  }
+
+  const [assignments, entries] = await Promise.all([
+    MCPServerAssignment.findAll({ where: { serverId, agentId: null } }),
+    MCPServerEnv.findAll({ where: { serverId, agentId: null } }),
+  ]);
+
+  const teamIds = new Set(
+    [...assignments, ...entries]
+      .map((instance) => instance.teamId)
+      .filter((id): id is string => Boolean(id))
+  );
+
+  return [...teamIds].map((id) => ({ teamId: id }));
+}
+
+async function applyProcessEnv(env: NodeJS.ProcessEnv = process.env) {
+  const pairs = parseProcessEnv(env);
+  const teamId = env.MCP_TEAM_ID || null;
+  const agentId = env.MCP_AGENT_ID || null;
+  const assignServers = env.MCP_ASSIGN_SERVERS === "true";
+
+  const applied: string[] = [];
+  const skipped: string[] = [];
+
+  for (const { serverId, key, value } of pairs) {
+    const serverInstance = await MCPServer.findByPk(serverId);
+
+    if (!serverInstance) {
+      skipped.push(`${serverId}.${key}`);
+      continue;
+    }
+
+    const scopes = await targetScopes({
+      serverId,
+      teamId,
+      agentId,
+      assignServers,
+    });
+
+    for (const scope of scopes) {
+      await setEnv({ serverId, key, value, ...scope });
+    }
+
+    applied.push(`${serverId}.${key} → ${scopes.length} scope(s)`);
+  }
+
+  return { applied, skipped };
+}
+
 export default {
+  applyProcessEnv,
   assertAssigned,
   assertScopeBelongsToTeam,
   assign,

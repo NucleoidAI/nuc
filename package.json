@@ -8,6 +8,7 @@
   "scripts": {
     "predev": "rm -rf dashboard/node_modules/.vite && cd ./mcp && bun run db:reset",
     "dev:events": "bunx @canmingir/link-express@1.7.41 start",
+    "dev:events": "bunx @canmingir/link-express@1.7.41 start",
     "debug:mcp": "cd ./mcp && bun run debug",
     "dev:api": "cd ./api && bun run dev",
     "dev:dashboard": "cd ./dashboard && bun run dev",

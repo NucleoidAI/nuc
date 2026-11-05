@@ -6,7 +6,6 @@ import Task from "../models/Task";
 import { Op, col, fn } from "sequelize";
 import { event } from "@canmingir/link-express/event/client";
 import llmLog from "./llmLog";
-import { Op, col, fn } from "sequelize";
 
 async function create({
   agentId,
@@ -94,8 +93,8 @@ async function waitFor({
     ["TASK_COMPLETED", "TASK_FAILED"].map((type) =>
       event.subscribe<{ taskId: string }>(type, ({ taskId }) => {
         waiters.get(taskId)?.forEach((notify) => notify());
-      })
-    )
+      }),
+    ),
   ).catch((error) => {
     listening = undefined;
     throw error;
@@ -281,7 +280,7 @@ async function listWithAgents({
         outputTokens: number | null;
         totalTokens: number | null;
       }>
-    ).map((row) => [row.taskId, row])
+    ).map((row) => [row.taskId, row]),
   );
 
   const awaitingSupervisings = taskIds.length
@@ -292,7 +291,7 @@ async function listWithAgents({
     : [];
 
   const awaitingTaskIds = new Set(
-    awaitingSupervisings.map((supervising) => supervising.taskId)
+    awaitingSupervisings.map((supervising) => supervising.taskId),
   );
 
   return taskInstances.map((task) => {
@@ -333,7 +332,7 @@ async function listWithEffectiveStatus({
     : [];
 
   const awaitingTaskIds = new Set(
-    awaitingSupervisings.map((supervising) => supervising.taskId)
+    awaitingSupervisings.map((supervising) => supervising.taskId),
   );
 
   return tasks.map((task) => ({
@@ -412,7 +411,7 @@ async function updateStep({
       result,
       status,
     },
-    { where: { id: stepId } }
+    { where: { id: stepId } },
   );
 
   if (status !== "IN_PROGRESS") {

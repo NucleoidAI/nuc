@@ -21,7 +21,7 @@ const DebugBadge = ({ sx }: { sx?: SxProps<Theme> }) => (
         whiteSpace: "nowrap",
         color: theme.palette.warning.main,
         bgcolor: alpha(theme.palette.warning.main, 0.12),
-        border: `1px dashed ${alpha(theme.palette.warning.main, 0.5)}`,
+        border: `1px solid ${alpha(theme.palette.warning.main, 0.5)}`,
       }),
       ...(Array.isArray(sx) ? sx : [sx]),
     ]}

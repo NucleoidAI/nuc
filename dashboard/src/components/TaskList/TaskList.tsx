@@ -182,6 +182,8 @@ const TaskList = ({
                         "&:hover": {
                           bgcolor: isInProgress
                             ? "primary.main"
+                            : isFailed
+                            ? "error.main"
                             : "success.main",
                         },
                       }}

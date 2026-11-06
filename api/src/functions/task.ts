@@ -5,6 +5,7 @@ import Supervising from "../models/Supervising";
 import Task from "../models/Task";
 import { Op, col, fn } from "sequelize";
 import { event } from "@canmingir/link-express/event/client";
+import llmLog from "./llmLog";
 
 async function create({
   agentId,
@@ -13,6 +14,7 @@ async function create({
   sessionId,
   inheritedSteps,
   request,
+  debug = false,
 }: {
   agentId: string;
   description: string;
@@ -20,6 +22,7 @@ async function create({
   sessionId?: string;
   inheritedSteps?: object[];
   request?: { nodeId: string; body: Record<string, unknown> };
+  debug?: boolean;
 }) {
   const task = await Task.create({
     agentId,
@@ -28,6 +31,7 @@ async function create({
     blueprintId,
     sessionId,
     inheritedSteps: inheritedSteps?.length ? inheritedSteps : null,
+    debug,
   });
 
   if (request) {
@@ -48,6 +52,7 @@ async function create({
     description,
     blueprintId,
     sessionId,
+    debug,
   });
 
   return task;
@@ -88,8 +93,8 @@ async function waitFor({
     ["TASK_COMPLETED", "TASK_FAILED"].map((type) =>
       event.subscribe<{ taskId: string }>(type, ({ taskId }) => {
         waiters.get(taskId)?.forEach((notify) => notify());
-      })
-    )
+      }),
+    ),
   ).catch((error) => {
     listening = undefined;
     throw error;
@@ -128,8 +133,14 @@ async function get({ taskId }: { taskId: string }) {
   return taskInstance.toJSON();
 }
 
-async function count({ blueprintId }: { blueprintId: string }) {
-  return Task.count({ where: { blueprintId } });
+async function count({
+  blueprintId,
+  debug = false,
+}: {
+  blueprintId: string;
+  debug?: boolean;
+}) {
+  return Task.count({ where: { blueprintId, debug } });
 }
 
 async function list({
@@ -269,7 +280,7 @@ async function listWithAgents({
         outputTokens: number | null;
         totalTokens: number | null;
       }>
-    ).map((row) => [row.taskId, row])
+    ).map((row) => [row.taskId, row]),
   );
 
   const awaitingSupervisings = taskIds.length
@@ -280,7 +291,7 @@ async function listWithAgents({
     : [];
 
   const awaitingTaskIds = new Set(
-    awaitingSupervisings.map((supervising) => supervising.taskId)
+    awaitingSupervisings.map((supervising) => supervising.taskId),
   );
 
   return taskInstances.map((task) => {
@@ -321,7 +332,7 @@ async function listWithEffectiveStatus({
     : [];
 
   const awaitingTaskIds = new Set(
-    awaitingSupervisings.map((supervising) => supervising.taskId)
+    awaitingSupervisings.map((supervising) => supervising.taskId),
   );
 
   return tasks.map((task) => ({
@@ -400,7 +411,7 @@ async function updateStep({
       result,
       status,
     },
-    { where: { id: stepId } }
+    { where: { id: stepId } },
   );
 
   if (status !== "IN_PROGRESS") {
@@ -446,6 +457,90 @@ async function listSteps({ taskId }: { taskId: string }) {
     });
 }
 
+async function logs({ taskId }: { taskId: string }) {
+  const [taskData, steps, llm] = await Promise.all([
+    get({ taskId }),
+    listSteps({ taskId }),
+    llmLog.listByTask({ taskId }),
+  ]);
+
+  const entries = [
+    ...steps.map((step) => ({ type: "STEP" as const, ...step })),
+    ...llm.logs.map((log) => ({ type: "LLM" as const, ...log })),
+  ].sort(
+    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+  );
+
+  const number = taskData.blueprintId
+    ? await Task.count({
+        where: {
+          blueprintId: taskData.blueprintId,
+          debug: taskData.debug,
+          createdAt: { [Op.lte]: taskData.createdAt },
+        },
+      })
+    : null;
+
+  return { task: taskData, number, totals: llm.totals, entries };
+}
+
+async function lastActivityByTask(taskIds: string[]) {
+  const rows = (
+    await Promise.all(
+      [Step, LLMLog].map((model) =>
+        (model as typeof Step).findAll({
+          attributes: ["taskId", [fn("MAX", col("created_at")), "lastAt"]],
+          where: { taskId: taskIds },
+          group: ["taskId"],
+          raw: true,
+        }),
+      ),
+    )
+  ).flat() as unknown as { taskId: string; lastAt: string | Date }[];
+
+  return rows.reduce<Map<string, number>>((latest, { taskId, lastAt }) => {
+    const time = new Date(lastAt).getTime();
+    if (time > (latest.get(taskId) ?? 0)) latest.set(taskId, time);
+    return latest;
+  }, new Map());
+}
+
+async function executions({ blueprintId }: { blueprintId: string }) {
+  const tasks = await Task.findAll({
+    where: { blueprintId },
+    attributes: ["id", "description", "status", "debug", "createdAt"],
+    order: [["createdAt", "ASC"]],
+  });
+
+  const lastActivity = tasks.length
+    ? await lastActivityByTask(tasks.map(({ id }) => id))
+    : new Map<string, number>();
+
+  const counters = { live: 0, debug: 0 };
+
+  return tasks
+    .map((taskInstance) => {
+      const { id, description, status, debug, createdAt } =
+        taskInstance.toJSON();
+      const number = ++counters[debug ? "debug" : "live"];
+      const startedAt = new Date(createdAt).getTime();
+      const finishedAt =
+        status === "IN_PROGRESS" ? null : lastActivity.get(id) ?? null;
+
+      return {
+        id,
+        number,
+        description,
+        status,
+        debug,
+        createdAt,
+        durationMs:
+          finishedAt === null ? null : Math.max(finishedAt - startedAt, 0),
+      };
+    })
+    .reverse();
+}
+
 export default {
   create,
   get,
@@ -460,4 +555,6 @@ export default {
   updateStep,
   updateStepComment,
   listSteps,
+  logs,
+  executions,
 };

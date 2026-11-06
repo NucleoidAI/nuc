@@ -41,10 +41,50 @@ function resolveCost(
   return { cost, costSource: "pricing" };
 }
 
+async function pricingMapOf() {
+  const pricings = await ModelPricing.findAll();
+
+  return new Map(
+    pricings.map((pricing) => [`${pricing.provider}:${pricing.model}`, pricing])
+  );
+}
+
+function totalsOf(
+  logs: {
+    inputTokens: number | null;
+    outputTokens: number | null;
+    totalTokens: number | null;
+    cost: number | null;
+  }[]
+) {
+  return logs.reduce<{
+    inputTokens: number;
+    outputTokens: number;
+    totalTokens: number;
+    cost: number;
+    calls: number;
+  }>(
+    (acc, log) => ({
+      inputTokens: acc.inputTokens + (log.inputTokens ?? 0),
+      outputTokens: acc.outputTokens + (log.outputTokens ?? 0),
+      totalTokens: acc.totalTokens + (log.totalTokens ?? 0),
+      cost: acc.cost + (log.cost ?? 0),
+      calls: acc.calls + 1,
+    }),
+    {
+      inputTokens: 0,
+      outputTokens: 0,
+      totalTokens: 0,
+      cost: 0,
+      calls: 0,
+    }
+  );
+}
+
 async function buildUsage(tasks: Task[]) {
   const taskIds = tasks.map((task) => task.id);
 
-  const [logs, pricings] = await Promise.all([
+  const [logs, pricingMap] = await Promise.all([
     taskIds.length
       ? LLMLog.findAll({
           where: { taskId: { [Op.in]: taskIds } },
@@ -52,12 +92,8 @@ async function buildUsage(tasks: Task[]) {
           order: [["createdAt", "ASC"]],
         })
       : Promise.resolve([] as LLMLog[]),
-    ModelPricing.findAll(),
+    pricingMapOf(),
   ]);
-
-  const pricingMap = new Map(
-    pricings.map((pricing) => [`${pricing.provider}:${pricing.model}`, pricing])
-  );
 
   const logsByTask = new Map<string, LLMLog[]>();
   for (const log of logs) {
@@ -72,29 +108,29 @@ async function buildUsage(tasks: Task[]) {
       return { ...log.toJSON(), cost, costSource };
     });
 
-    const totals = taskLogs.reduce(
-      (acc, log) => ({
-        inputTokens: acc.inputTokens + (log.inputTokens ?? 0),
-        outputTokens: acc.outputTokens + (log.outputTokens ?? 0),
-        totalTokens: acc.totalTokens + (log.totalTokens ?? 0),
-        cost: acc.cost + (log.cost ?? 0),
-        calls: acc.calls + 1,
-      }),
-      {
-        inputTokens: 0,
-        outputTokens: 0,
-        totalTokens: 0,
-        cost: 0,
-        calls: 0,
-      }
-    );
-
     return {
       task: task.toJSON(),
-      totals,
+      totals: totalsOf(taskLogs),
       logs: taskLogs,
     };
   });
+}
+
+async function listByTask({ taskId }: { taskId: string }) {
+  const [logs, pricingMap] = await Promise.all([
+    LLMLog.findAll({
+      where: { taskId },
+      order: [["createdAt", "ASC"]],
+    }),
+    pricingMapOf(),
+  ]);
+
+  const taskLogs = logs.map((log) => ({
+    ...log.toJSON(),
+    ...resolveCost(log, pricingMap),
+  }));
+
+  return { totals: totalsOf(taskLogs), logs: taskLogs };
 }
 
 async function listByAgent({
@@ -106,7 +142,14 @@ async function listByAgent({
 }) {
   const tasks = await Task.findAll({
     where: { agentId },
-    attributes: ["id", "description", "status", "comment", "createdAt"],
+    attributes: [
+      "id",
+      "description",
+      "status",
+      "comment",
+      "debug",
+      "createdAt",
+    ],
     order: [["createdAt", "DESC"]],
     limit: taskLimit,
   });
@@ -132,6 +175,7 @@ async function listByTeam({
       "description",
       "status",
       "comment",
+      "debug",
       "createdAt",
       "agentId",
     ],
@@ -150,4 +194,4 @@ async function listByTeam({
   return buildUsage(tasks);
 }
 
-export default { listByAgent, listByTeam };
+export default { listByAgent, listByTask, listByTeam };

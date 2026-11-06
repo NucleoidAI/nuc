@@ -71,7 +71,7 @@ function useBlueprint() {
 
     const { data, loading, error, fetch } = Api(
       () => http.get(url),
-      [...eventDependencies, ...fetchState]
+      [...eventDependencies, agentId, ...fetchState]
     );
 
     if (data) {
@@ -99,6 +99,24 @@ function useBlueprint() {
 
     return {
       Blueprint: data,
+      loading,
+      error,
+      fetch,
+    };
+  };
+
+  const getBlueprintExecutions = (
+    blueprintId: string,
+    fetchState: DependencyArray = []
+  ) => {
+    const { data, loading, error, fetch } = Api(
+      () =>
+        blueprintId ? http.get(`/blueprints/${blueprintId}/executions`) : null,
+      [blueprintId, ...fetchState]
+    );
+
+    return {
+      executions: data,
       loading,
       error,
       fetch,
@@ -268,6 +286,7 @@ function useBlueprint() {
     getBlueprint,
     getBlueprintsByAgent,
     getBlueprintWithNode,
+    getBlueprintExecutions,
     createBlueprint,
     upsertBlueprint,
     patchBlueprint,

@@ -13,7 +13,7 @@ function getLastSessionId(agentId: string): string | null {
   return match?.sessionId ?? null;
 }
 
-function useSession(agentId) {
+function useSession(agentId, { debug = false }: { debug?: boolean } = {}) {
   const savedSessionId = agentId ? getLastSessionId(agentId) : null;
 
   const [conversations, setConversations] = useState([]);
@@ -36,6 +36,7 @@ function useSession(agentId) {
         query: {
           agentId,
           ...(existingSessionId ? { sessionId: existingSessionId } : {}),
+          ...(debug ? { debug: "true" } : {}),
         },
       });
 
@@ -50,8 +51,11 @@ function useSession(agentId) {
       });
 
       socket.on("ai_message", ({ content }) => {
-        setConversations((prev) => [...prev, { role: "AI", content }]);
-        publish("AI_RESPONDED", { content });
+        setConversations((prev) => [
+          ...prev,
+          { role: "AI", content, createdAt: new Date().toISOString() },
+        ]);
+        publish("AI_RESPONDED", { content, createdAt: Date.now() });
       });
 
       socket.on("error_message", ({ message }) => {
@@ -78,11 +82,39 @@ function useSession(agentId) {
         setError(response.error);
       } else {
         publish("CONVERSATION_SENT", response.data);
-        setConversations((prev) => [...prev, { role: "USER", content }]);
+        setConversations((prev) => [
+          ...prev,
+          { role: "USER", content, createdAt: new Date().toISOString() },
+        ]);
       }
       setLoading(false);
     });
   }, []);
+
+  const sendVariables = useCallback(
+    (variables: Record<string, unknown>) =>
+      new Promise<void>((resolve, reject) => {
+        const content = JSON.stringify(variables);
+        setLoading(true);
+        socketRef.current.emit(
+          "variables_message",
+          { variables },
+          (response) => {
+            setLoading(false);
+            if (response?.status !== "success") {
+              reject(new Error(response?.error || "Failed to send JSON"));
+              return;
+            }
+            setConversations([
+              { role: "USER", content, createdAt: new Date().toISOString() },
+            ]);
+            publish("CONVERSATION_SENT", { createdAt: Date.now() });
+            resolve();
+          }
+        );
+      }),
+    []
+  );
 
   const switchSession = useCallback((targetSessionId: string) => {
     return new Promise<void>((resolve, reject) => {
@@ -117,7 +149,11 @@ function useSession(agentId) {
       const newSocket = io(host, {
         path,
         auth: { token },
-        query: { agentId, ...(blueprintId ? { blueprintId } : {}) },
+        query: {
+          agentId,
+          ...(blueprintId ? { blueprintId } : {}),
+          ...(debug ? { debug: "true" } : {}),
+        },
       });
 
       newSocket.on("connect", () => {
@@ -129,8 +165,11 @@ function useSession(agentId) {
       });
 
       newSocket.on("ai_message", ({ content }) => {
-        setConversations((prev) => [...prev, { role: "AI", content }]);
-        publish("AI_RESPONDED", { content });
+        setConversations((prev) => [
+          ...prev,
+          { role: "AI", content, createdAt: new Date().toISOString() },
+        ]);
+        publish("AI_RESPONDED", { content, createdAt: Date.now() });
       });
 
       newSocket.on("error_message", ({ message }) => {
@@ -140,7 +179,7 @@ function useSession(agentId) {
 
       socketRef.current = newSocket;
     },
-    [agentId, host, path, token]
+    [agentId, host, path, token, debug]
   );
 
   const getSession = useCallback(async (id) => {
@@ -163,6 +202,7 @@ function useSession(agentId) {
     error,
     conversations,
     sendMessage,
+    sendVariables,
     switchSession,
     createSession,
     clearError,

@@ -157,6 +157,39 @@ router.get("/:taskId/steps", async (req, res) => {
   return res.status(200).json(steps);
 });
 
+router.get("/:taskId/logs", async (req, res) => {
+  const { projectId: teamId } = req.session;
+  const { taskId } = Joi.attempt(
+    req.params,
+    Joi.object({
+      taskId: Joi.string()
+        .guid({ version: ["uuidv4"] })
+        .required(),
+    }),
+  );
+
+  const taskInstance = await Task.findOne({
+    where: { id: taskId },
+    include: [
+      {
+        model: Agent,
+        attributes: ["teamId"],
+        required: true,
+      },
+    ],
+  });
+
+  if (!taskInstance) {
+    return res.status(404).end();
+  }
+
+  if (taskInstance.Agent.teamId !== teamId) {
+    return res.status(401).end();
+  }
+
+  return res.status(200).json(await task.logs({ taskId }));
+});
+
 router.patch("/:taskId/steps/:stepId", async (req, res) => {
   const { taskId, stepId } = req.params;
   const { comment } = Joi.attempt(

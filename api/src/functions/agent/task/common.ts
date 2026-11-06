@@ -70,6 +70,7 @@ type TaskState = {
   blueprintId?: string;
   description: string;
   inheritedSteps?: Step[] | null;
+  debug: boolean;
   steps: Step[];
   currentTask: CurrentTask;
   isBlocking: boolean;
@@ -398,7 +399,8 @@ function handoffTarget(parameters: Params, node: any): Params {
 }
 
 async function handoff(state: TaskState, parameters: Params, comment?: string) {
-  const { taskId, agentId, sessionId, description, blueprintId, steps } = state;
+  const { taskId, agentId, sessionId, description, blueprintId, steps, debug } =
+    state;
   const { targetAgentId, targetBlueprintId, context } = parameters as {
     targetAgentId: string;
     targetBlueprintId?: string;
@@ -442,6 +444,7 @@ async function handoff(state: TaskState, parameters: Params, comment?: string) {
         comment,
       }),
     ),
+    debug,
   });
 
   const result = `Handed off to agent ${targetAgentId}`;
@@ -518,11 +521,13 @@ async function load({
     blueprintId,
     status,
     inheritedSteps,
+    debug,
   } = await taskFn.get({ taskId });
 
   if (status !== "IN_PROGRESS") return { result: undefined };
 
   const steps = await taskFn.listSteps({ taskId });
+
   const currentTask: CurrentTask = {
     blueprintId,
     steps: steps.map((step, index) => ({ index, ...step })),
@@ -594,6 +599,7 @@ async function load({
     blueprintId,
     description,
     inheritedSteps,
+    debug,
     steps,
     currentTask,
     isBlocking,

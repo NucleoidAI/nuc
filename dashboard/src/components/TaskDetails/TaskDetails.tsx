@@ -5,6 +5,7 @@ import SourcedAvatar from "../SourcedAvatar/SourcedAvatar";
 import StepComment from "./StepComment";
 import TaskFlowStepDialog from "../FlowDialog/TaskFlowStepDialog";
 import TaskIcon from "@mui/icons-material/Task";
+import TaskLogsDrawer from "../../widgets/TaskLogs";
 import TaskResultDialog from "../TaskResultDialog/TaskResultDialog";
 
 import {
@@ -19,6 +20,7 @@ import {
   TableRow,
   Tooltip,
   Typography,
+  alpha,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -45,6 +47,7 @@ const TaskDetails = ({
     result: string | object | object[];
     description: string;
     id: string;
+    debug?: boolean;
   };
   steps: TaskStep[];
   getSteps: (taskId: string) => void;
@@ -53,6 +56,7 @@ const TaskDetails = ({
 }) => {
   const [openFlow, setOpenFlow] = useState<boolean>(false);
   const [taskResult, setTaskResult] = useState<boolean>(false);
+  const [logsOpen, setLogsOpen] = useState<boolean>(false);
   const stepsEndRef = useRef<HTMLDivElement>(null);
   const prevStepsLengthRef = useRef(steps?.length ?? 0);
 
@@ -101,11 +105,29 @@ const TaskDetails = ({
     },
   };
 
+  const isDebug = Boolean(task.debug);
+
   return (
     <Stack spacing={2}>
       <Stack direction="row" spacing={2} alignItems="flex-start">
-        <SourcedAvatar sx={{ width: 44, height: 44, bgcolor: "primary.main" }}>
-          <TaskIcon />
+        <SourcedAvatar
+          sx={{
+            width: 44,
+            height: 44,
+            bgcolor: isDebug ? "transparent" : "primary.main",
+            ...(isDebug && {
+              color: "warning.main",
+              border: "1px dashed",
+              borderColor: "warning.main",
+              bgcolor: (theme) => alpha(theme.palette.warning.main, 0.12),
+            }),
+          }}
+        >
+          {isDebug ? (
+            <Iconify icon="solar:bug-bold" width={24} />
+          ) : (
+            <TaskIcon />
+          )}
         </SourcedAvatar>
 
         <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -154,6 +176,16 @@ const TaskDetails = ({
           </Tooltip>
         )}
 
+        <Tooltip title="Logs">
+          <Fab
+            data-cy="task-logs-button"
+            color="default"
+            onClick={() => setLogsOpen(true)}
+          >
+            <Iconify icon="solar:document-text-linear" />
+          </Fab>
+        </Tooltip>
+
         {onToggleExpand && (
           <Tooltip title={isExpanded ? "Minimize" : "Expand"}>
             <Fab
@@ -169,6 +201,11 @@ const TaskDetails = ({
           </Tooltip>
         )}
       </Stack>
+
+      <TaskLogsDrawer
+        taskId={logsOpen ? task.id : null}
+        onClose={() => setLogsOpen(false)}
+      />
 
       <Box
         sx={{

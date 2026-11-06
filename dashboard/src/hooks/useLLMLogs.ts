@@ -25,6 +25,7 @@ export type TaskUsage = {
     status: string;
     comment: string | null;
     createdAt: string;
+    debug?: boolean;
     agentId?: string;
     Agent?: { id: string; name: string };
   };

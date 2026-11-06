@@ -48,6 +48,13 @@
             "agentId": "019f6a11-0000-4000-8000-000000000001"
         },
         {
+            "id": "d4e5f6a7-0001-4000-8000-000000000001",
+            "type": "CHAT",
+            "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+            "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
+            "debug": true
+        },
+        {
             "id": "67bbbeb7-79fc-4ddf-a59d-ee4b4cc94b78",
             "type": "CHAT",
             "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361"

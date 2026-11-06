@@ -1,3 +1,4 @@
+import DebugBadge from "../../components/DebugBadge";
 import { Iconify } from "@canmingir/link/platform/components";
 import ModelPricingDialog from "./ModelPricingDialog";
 import useAgents from "../../hooks/useAgents";
@@ -143,9 +144,12 @@ function TaskUsageAccordion({ usage }: { usage: TaskUsage }) {
           sx={{ width: "100%", pr: 1 }}
         >
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Typography variant="body2" sx={{ fontWeight: 600 }}>
-              {task.description}
-            </Typography>
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                {task.description}
+              </Typography>
+              {task.debug && <DebugBadge />}
+            </Stack>
             <Typography variant="caption" color="text.secondary">
               {new Date(task.createdAt).toLocaleString()}
             </Typography>

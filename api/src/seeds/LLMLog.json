@@ -1350,6 +1350,127 @@
       "taskId": "253bfb84-70ec-45e6-bc94-99db2709a61a",
       "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
       "createdAt": "2026-10-19T13:49:00.000Z"
+    },
+    {
+      "id": "e5f6a7b8-0101-4000-8000-000000000101",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are order_management, an agent executing the 'Order and Compliance' blueprint. Pick the next node and its parameters."
+        },
+        {
+          "role": "user",
+          "content": "Request: order ILP-220 with compliance certificate. Completed steps: none."
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "{\"nodeId\": \"3b2bd895-1df4-4cb6-827c-35874f43615f\", \"action\": \"ORDER:find_product\", \"parameters\": {\"productId\": \"ILP-220\"}}"
+      },
+      "inputTokens": 1824,
+      "outputTokens": 96,
+      "totalTokens": 1920,
+      "cost": null,
+      "durationMs": 1420,
+      "error": null,
+      "source": "action.decision",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": "d4e5f6a7-0001-4000-8000-000000000001",
+      "taskId": "b2c3d4e5-0002-4000-8000-000000000002",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-11-03T10:12:00.400Z"
+    },
+    {
+      "id": "e5f6a7b8-0102-4000-8000-000000000102",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are order_management, an agent executing the 'Order and Compliance' blueprint. Pick the next node and its parameters."
+        },
+        {
+          "role": "user",
+          "content": "Completed steps: ORDER:find_product -> {\"id\": \"ILP-220\", \"name\": \"Industrial Label Printer\", \"vendor\": \"Northwind Devices\", \"vendorEmail\": \"compliance@northwind.example\", \"category\": \"industrial\"}"
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "{\"nodeId\": \"b375d835-67bc-46f6-a2eb-825a8481e4b4\", \"action\": \"PLATFORM:knowledge_lookup\", \"parameters\": {\"query\": \"compliance certificate for ILP-220\"}}"
+      },
+      "inputTokens": 2210,
+      "outputTokens": 88,
+      "totalTokens": 2298,
+      "cost": null,
+      "durationMs": 1310,
+      "error": null,
+      "source": "action.decision",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": "d4e5f6a7-0001-4000-8000-000000000001",
+      "taskId": "b2c3d4e5-0002-4000-8000-000000000002",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-11-03T10:12:03.900Z"
+    },
+    {
+      "id": "e5f6a7b8-0103-4000-8000-000000000103",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are order_management, an agent executing the 'Order and Compliance' blueprint. Pick the next node and its parameters."
+        },
+        {
+          "role": "user",
+          "content": "Completed steps: ORDER:find_product, PLATFORM:knowledge_lookup -> CERT-ILP-220 valid until 2026-09-30."
+        }
+      ],
+      "response": {
+        "role": "assistant",
+        "content": "{\"nodeId\": \"3e8ba55f-ff37-41c3-befd-758e32df3f99\", \"action\": \"ORDER:assign_certificate\", \"parameters\": {\"productId\": \"ILP-220\", \"certificate\": \"CERT-ILP-220\"}}"
+      },
+      "inputTokens": 2655,
+      "outputTokens": 102,
+      "totalTokens": 2757,
+      "cost": null,
+      "durationMs": 1580,
+      "error": null,
+      "source": "action.decision",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": "d4e5f6a7-0001-4000-8000-000000000001",
+      "taskId": "b2c3d4e5-0002-4000-8000-000000000002",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-11-03T10:12:08.600Z"
+    },
+    {
+      "id": "e5f6a7b8-0104-4000-8000-000000000104",
+      "provider": "bedrock",
+      "model": "meta.llama3-3-70b-instruct-v1:0",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are order_management, an agent executing the 'Order and Compliance' blueprint. Pick the next node and its parameters."
+        },
+        {
+          "role": "user",
+          "content": "Step ORDER:assign_certificate failed with CERTIFICATE_EXPIRED. Decide how to continue."
+        }
+      ],
+      "response": null,
+      "inputTokens": 2890,
+      "outputTokens": null,
+      "totalTokens": null,
+      "cost": null,
+      "durationMs": 2240,
+      "error": "Malformed tool call JSON: Expected property name or '}' at position 41",
+      "source": "action.decision",
+      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
+      "sessionId": "d4e5f6a7-0001-4000-8000-000000000001",
+      "taskId": "b2c3d4e5-0002-4000-8000-000000000002",
+      "teamId": "a829d2d6-8e52-41cd-ac10-0c92b21debcf",
+      "createdAt": "2026-11-03T10:12:12.300Z"
     }
   ]
 }

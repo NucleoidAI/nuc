@@ -38,6 +38,8 @@ router.post("/:blueprintId", async (req, res) => {
     timeout = DEFAULT_API_TIMEOUT_SECONDS,
   } = start.properties ?? {};
 
+  const debug = req.query.debug === "true";
+
   const request = apiSchema.validate(fields, req.body ?? {}, { strict });
 
   if (!request.success) {
@@ -50,9 +52,10 @@ router.post("/:blueprintId", async (req, res) => {
     type: "API",
     agentId: blueprint.agentId,
     blueprintId,
+    debug,
   });
 
-  const executedTasks = await taskFn.count({ blueprintId });
+  const executedTasks = await taskFn.count({ blueprintId, debug });
 
   const task = await taskFn.create({
     agentId: blueprint.agentId,
@@ -60,6 +63,7 @@ router.post("/:blueprintId", async (req, res) => {
     blueprintId,
     sessionId: session.id,
     request: { nodeId: start.id, body: request.data },
+    debug,
   });
 
   const finished = await taskFn.waitFor({

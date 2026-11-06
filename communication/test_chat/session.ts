@@ -64,6 +64,9 @@ const setup = async (io: Server) => {
       const requestedBlueprintId = socket.handshake.query.blueprintId as
         | string
         | undefined;
+      const debug = socket.handshake.query.debug === "true";
+      const newSession = () =>
+        createSession(token, agentId, requestedBlueprintId, undefined, debug);
       let session: Session;
 
       if (requestedSessionId) {
@@ -72,13 +75,13 @@ const setup = async (io: Server) => {
           if (existing) {
             session = { id: requestedSessionId, agentId };
           } else {
-            session = await createSession(token, agentId, requestedBlueprintId);
+            session = await newSession();
           }
         } catch {
-          session = await createSession(token, agentId, requestedBlueprintId);
+          session = await newSession();
         }
       } else {
-        session = await createSession(token, agentId, requestedBlueprintId);
+        session = await newSession();
       }
 
       const agent: Agent = await getAgent(token, agentId);
@@ -129,6 +132,45 @@ const setup = async (io: Server) => {
           }
         },
       );
+
+      socket.on("variables_message", async ({ variables }, callback) => {
+        try {
+          if (
+            !variables ||
+            typeof variables !== "object" ||
+            Array.isArray(variables)
+          ) {
+            throw new Error("Variables must be a JSON object");
+          }
+
+          const created = await createSession(
+            token,
+            agentId,
+            requestedBlueprintId,
+            variables,
+            debug,
+          );
+
+          delete sockets[activeSessionId];
+          activeSessionId = created.id;
+          sockets[activeSessionId] = socket.id;
+          socket.emit("session_started", { sessionId: activeSessionId });
+
+          await sendMessageToSession(
+            activeSessionId,
+            token,
+            JSON.stringify(variables),
+          );
+
+          if (typeof callback === "function")
+            callback({ status: "success", sessionId: activeSessionId });
+        } catch (error) {
+          const errorMessage =
+            error instanceof Error ? error.message : "An error occurred";
+          if (typeof callback === "function")
+            callback({ status: "error", error: errorMessage });
+        }
+      });
 
       socket.on("customer_message", async ({ content }, callback) => {
         try {

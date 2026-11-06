@@ -16,21 +16,27 @@ async function startBlueprintTask({
   agentId,
   sessionId,
   blueprintId,
+  debug,
+  request,
 }: {
   agentId: string;
   sessionId: string;
   blueprintId: string;
+  debug: boolean;
+  request?: { nodeId: string; body: Record<string, unknown> };
 }) {
   const [blueprint, taskCount] = await Promise.all([
     blueprintFn.get({ blueprintId }),
-    taskFn.count({ blueprintId }),
+    taskFn.count({ blueprintId, debug }),
   ]);
 
-  await taskFn.create({
+  return taskFn.create({
     agentId,
     description: `${blueprint.title} #${taskCount + 1}`,
     blueprintId,
     sessionId,
+    debug,
+    request,
   });
 }
 
@@ -166,6 +172,7 @@ async function chat({
       agentId,
       sessionId,
       blueprintId: sessionInstance.blueprintId,
+      debug: sessionInstance.debug,
     });
   }
 

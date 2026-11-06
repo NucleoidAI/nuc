@@ -5,13 +5,7 @@ import { useEffect, useState } from "react";
 
 const POLL_INTERVAL = 1500;
 
-const ApiSessionView = ({
-  agentId,
-  sessionId,
-}: {
-  agentId: string;
-  sessionId: string;
-}) => {
+const ApiSessionView = ({ taskId }: { taskId: string }) => {
   const [call, setCall] = useState<ApiCall | null>(null);
 
   useEffect(() => {
@@ -20,7 +14,7 @@ const ApiSessionView = ({
 
     const load = async () => {
       try {
-        const next = await loadApiCall(agentId, sessionId);
+        const next = await loadApiCall(taskId);
         if (stopped) return;
         if (next) setCall(next);
         if (!next || !next.done) timer = setTimeout(load, POLL_INTERVAL);
@@ -36,7 +30,7 @@ const ApiSessionView = ({
       stopped = true;
       clearTimeout(timer);
     };
-  }, [agentId, sessionId]);
+  }, [taskId]);
 
   return <ApiCallPanel call={call} />;
 };

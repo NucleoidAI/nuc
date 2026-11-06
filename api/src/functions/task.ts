@@ -13,6 +13,7 @@ async function create({
   blueprintId,
   sessionId,
   inheritedSteps,
+  variables,
   request,
   debug = false,
 }: {
@@ -21,6 +22,7 @@ async function create({
   blueprintId?: string;
   sessionId?: string;
   inheritedSteps?: object[];
+  variables?: Record<string, unknown>;
   request?: { nodeId: string; body: Record<string, unknown> };
   debug?: boolean;
 }) {
@@ -31,6 +33,7 @@ async function create({
     blueprintId,
     sessionId,
     inheritedSteps: inheritedSteps?.length ? inheritedSteps : null,
+    variables: variables && Object.keys(variables).length ? variables : null,
     debug,
   });
 

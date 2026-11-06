@@ -3,6 +3,8 @@ import { ask, choice } from "../../lib/decision";
 import type { ContextMessage } from "./context";
 import type { LLMMeta } from "@canmingir/link-express/llm";
 import Agent from "../../models/Agent";
+import Step from "../../models/Step";
+import Task from "../../models/Task";
 import dataset from "../../dataset";
 import { generate } from "@canmingir/link-express/llm";
 import platform from "@canmingir/link-express";
@@ -145,17 +147,41 @@ async function replyToApproval({
   });
 }
 
-async function waitingApproval({ sessionId }: { sessionId: string }) {
+type ApprovalTarget = { sessionId: string } | { taskId: string };
+
+async function waitingTaskApproval({ taskId }: { taskId: string }) {
+  const taskInstance = await Task.findByPk(taskId);
+
+  if (!taskInstance || taskInstance.status !== "IN_PROGRESS") {
+    return null;
+  }
+
+  const step = await Step.findOne({
+    where: { taskId, status: "WAITING_FOR_APPROVAL" },
+    order: [["createdAt", "ASC"]],
+  });
+
+  return step
+    ? { agentId: taskInstance.agentId, taskId, step: step.toJSON() }
+    : null;
+}
+
+async function waitingApproval(target: ApprovalTarget) {
+  if ("taskId" in target) {
+    return waitingTaskApproval(target);
+  }
+
+  const { sessionId } = target;
   const sessionInstance = await session.get({ sessionId });
 
   if (!sessionInstance) {
-    throw new Error("Session not found");
+    return null;
   }
 
   const agentInstance = await Agent.findByPk(sessionInstance.agentId);
 
   if (!agentInstance) {
-    throw new Error("Agent not found");
+    return null;
   }
 
   const tasks = await taskFn.list({
@@ -178,18 +204,17 @@ async function waitingApproval({ sessionId }: { sessionId: string }) {
 }
 
 async function approve({
-  sessionId,
   decision,
   comment,
-}: {
-  sessionId: string;
+  ...target
+}: ApprovalTarget & {
   decision: "APPROVED" | "REJECTED";
   comment?: string;
 }) {
-  const waiting = await waitingApproval({ sessionId });
+  const waiting = await waitingApproval(target);
 
   if (!waiting) {
-    throw new Error("No step is waiting for approval in this session");
+    throw new Error("No step is waiting for approval");
   }
 
   if (waiting.step.action === "PLATFORM:two_factor") {

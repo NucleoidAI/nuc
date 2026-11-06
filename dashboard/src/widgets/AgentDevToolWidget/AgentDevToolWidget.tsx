@@ -172,11 +172,9 @@ const AgentDevToolWidget = ({
         (session) => session.sessionId === selectedSessionId
       ) as { type?: string } | undefined;
 
-      if (stored?.type === "API" && agentId) {
+      if (stored?.type === "API") {
         runRef.current += 1;
-        const call = await loadApiCall(agentId, selectedSessionId).catch(
-          () => null
-        );
+        const call = await loadApiCall(selectedSessionId).catch(() => null);
         if (call) {
           if (call.blueprintId) setSelectedBlueprint(call.blueprintId);
           setApiCall(call);
@@ -194,7 +192,7 @@ const AgentDevToolWidget = ({
         getSession(selectedSessionId);
       }
     },
-    [storedSessions, agentId, switchSession, getSession, setApiCall]
+    [storedSessions, switchSession, getSession, setApiCall]
   );
 
   const handleNewSession = useCallback(() => {
@@ -261,8 +259,8 @@ const AgentDevToolWidget = ({
         onSessionSelect={handleSessionSelect}
         onNewSession={handleNewSession}
         renderSession={(session) =>
-          (session as { type?: string }).type === "API" && agentId ? (
-            <ApiSessionView agentId={agentId} sessionId={session.sessionId} />
+          (session as { type?: string }).type === "API" ? (
+            <ApiSessionView taskId={session.sessionId} />
           ) : undefined
         }
         beta={beta}

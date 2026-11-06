@@ -2,9 +2,8 @@ import type { ApiCall } from "./ApiCallPanel";
 import type { TimelineStep } from "./StepTimeline";
 import http from "@canmingir/link/platform/http";
 
-type SessionTask = {
+type ApiTask = {
   id: string;
-  sessionId: string | null;
   blueprintId: string | null;
   description: string;
   status: "IN_PROGRESS" | "COMPLETED" | "FAILED";
@@ -27,25 +26,14 @@ function parse(value: string | null) {
 }
 
 async function loadApiCall(
-  agentId: string,
-  sessionId: string
+  taskId: string
 ): Promise<(ApiCall & { blueprintId: string | null }) | null> {
-  const { data: tasks } = await http.get<SessionTask[]>(
-    `/tasks?agentId=${agentId}`
-  );
-
-  const task = tasks
-    .filter((item) => item.sessionId === sessionId)
-    .sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    )[0];
+  const [{ data: task }, { data: steps }] = await Promise.all([
+    http.get<ApiTask>(`/tasks/${taskId}`),
+    http.get<StepWithParameters[]>(`/tasks/${taskId}/steps`),
+  ]);
 
   if (!task) return null;
-
-  const { data: steps } = await http.get<StepWithParameters[]>(
-    `/tasks/${task.id}/steps`
-  );
 
   const request = steps.find(({ action }) => action === API_REQUEST)
     ?.parameters as Record<string, unknown> | undefined;

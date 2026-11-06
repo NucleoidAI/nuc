@@ -1,10 +1,10 @@
 import express from "express";
 import jwt from "jsonwebtoken";
-import { createSession } from "../api/createSession";
 import { getAgent } from "../api/getAgent";
 import { getBlueprint } from "../api/getBlueprint";
-import { sendMessageToSession } from "../api/sendMessageSession";
-import sessionResult from "./sessionResult";
+import { getTask } from "../api/getTask";
+import { startTask } from "../api/startTask";
+import taskResult from "./taskResult";
 
 const router = express.Router();
 
@@ -58,30 +58,34 @@ router.post("/:projectId/:blueprintId", async (req, res) => {
       return res.status(404).json({ error: "Blueprint not found" });
     }
 
-    const session = await createSession(token, agentId, blueprintId, variables);
+    const task = await startTask(token, agentId, blueprintId, variables);
 
     if (req.query.wait !== "true") {
-      await sendMessageToSession(session.id, token, JSON.stringify(variables));
-      return res.status(201).json({ sessionId: session.id });
+      return res.status(201).json({ taskId: task.id });
     }
 
-    const watcher = sessionResult.watch(
-      session.id,
+    const watcher = taskResult.watch(
+      task.id,
       waitSeconds(req.query.timeout) * 1000,
     );
 
-    try {
-      await sendMessageToSession(session.id, token, JSON.stringify(variables));
-    } catch (error) {
-      watcher.cancel();
-      throw error;
+    const current = await getTask(token, task.id).catch(() => null);
+
+    if (current?.status === "COMPLETED") {
+      watcher.settle({
+        status: "COMPLETED",
+        result: current.result,
+        comment: current.comment,
+      });
+    } else if (current?.status === "FAILED") {
+      watcher.settle({ status: "FAILED", comment: current.comment });
     }
 
     const outcome = await watcher.result;
 
     return res
       .status(statusCodes[outcome.status])
-      .json({ sessionId: session.id, ...outcome });
+      .json({ taskId: task.id, ...outcome });
   } catch (error: any) {
     return res.status(500).json({ error: error?.message });
   }

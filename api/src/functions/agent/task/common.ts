@@ -435,6 +435,7 @@ async function handoff(state: TaskState, parameters: Params, comment?: string) {
     description: context,
     blueprintId: targetBlueprintId,
     sessionId,
+    ...(!sessionId && { variables: state.variables }),
     inheritedSteps: steps.map(
       ({ action, status, parameters, result, comment }) => ({
         action,
@@ -521,6 +522,7 @@ async function load({
     blueprintId,
     status,
     inheritedSteps,
+    variables: taskVariables,
     debug,
   } = await taskFn.get({ taskId });
 
@@ -545,7 +547,7 @@ async function load({
   const [agentInstance, blueprint, variables] = await Promise.all([
     agentId ? agentData.get({ agentId }) : null,
     blueprintId ? blueprintFn.get({ blueprintId }) : null,
-    sessionId ? sessionVariables({ sessionId }) : {},
+    taskVariables ?? (sessionId ? sessionVariables({ sessionId }) : {}),
   ]);
 
   const isBlocking = blueprint?.blocking !== false;

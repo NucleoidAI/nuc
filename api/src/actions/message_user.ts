@@ -4,19 +4,21 @@ async function run({
   parameters,
 }: {
   parameters: {
-    sessionId: string;
+    sessionId?: string;
     agentId: string;
     message: string;
   };
 }) {
   const { sessionId, agentId, message } = parameters;
 
-  await session.addConversation({
-    sessionId,
-    agentId,
-    role: "ASSISTANT",
-    content: message,
-  });
+  if (sessionId) {
+    await session.addConversation({
+      sessionId,
+      agentId,
+      role: "ASSISTANT",
+      content: message,
+    });
+  }
 
   return message;
 }

@@ -219,7 +219,7 @@ describe("Blueprint API", () => {
     });
   }, 60_000);
 
-  it("fills session and agent for platform actions without exposing them as inputs", async () => {
+  it("runs platform actions without a session and without exposing sessionId as an input", async () => {
     const actions = await supertest(app).get("/mcps/actions").expect(200);
     const exposesSessionId = JSON.stringify(actions.body).includes(
       '"sessionId"'
@@ -252,16 +252,20 @@ describe("Blueprint API", () => {
       .send({ name: "Ada", plan: "FREE" })
       .expect(200);
 
-    const sessionId = response.headers["x-session-id"];
-    const conversations = await supertest(app)
-      .get(`/sessions/${sessionId}`)
-      .expect(200);
+    expect(response.headers["x-session-id"]).toBeUndefined();
 
-    expect(
-      conversations.body.map(
-        (conversation: { content: string }) => conversation.content
-      )
-    ).toContain("Ada");
+    const taskId = response.headers["x-task-id"];
+    const { default: Task } = await import("../../src/models/Task");
+    const { default: Step } = await import("../../src/models/Step");
+
+    const task = await Task.findByPk(taskId);
+    const notify = await Step.findOne({
+      where: { taskId, action: "PLATFORM:message_user" },
+    });
+
+    expect(task?.sessionId).toBeNull();
+    expect(notify?.status).toBe("COMPLETED");
+    expect(notify?.result?.toString()).toContain("Ada");
   }, 60_000);
 
   it("returns 404 for blueprints without the API feature", async () => {
@@ -443,4 +447,52 @@ describe("Blueprint API in LITE mode", () => {
     );
     expect(await llmCalls(response.body.taskId)).toBe(0);
   }, 60_000);
+});
+
+describe("Sessionless tasks", () => {
+  it("starts a blueprint task without a session and feeds its variables to the nodes", async () => {
+    const blueprint = await createBlueprint({
+      executionMode: "LITE",
+      nodes: [
+        {
+          id: "notify",
+          type: "NORMAL",
+          next: null,
+          properties: {
+            label: "Notify",
+            icon: "mdi:message-text",
+            action: "PLATFORM:message_user",
+            force: true,
+            parameters: { message: { $ref: "session_variables.customer" } },
+          },
+        },
+      ],
+    });
+
+    const { body: task } = await supertest(app)
+      .post("/tasks")
+      .send({
+        agentId: ORDER_AGENT_ID,
+        blueprintId: blueprint.id,
+        variables: { customer: "Ada" },
+      })
+      .expect(200);
+
+    const { default: taskFn } = await import("../../src/functions/task");
+    await taskFn.waitFor({ taskId: task.id, timeoutMs: 10_000 });
+
+    const stored = await taskFn.get({ taskId: task.id });
+
+    expect(stored.sessionId).toBeNull();
+    expect(stored.variables).toEqual({ customer: "Ada" });
+    expect(stored.description).toBe("API blueprint #1");
+
+    const { default: Step } = await import("../../src/models/Step");
+    const notify = await Step.findOne({
+      where: { taskId: task.id, action: "PLATFORM:message_user" },
+    });
+
+    expect(notify?.status).toBe("COMPLETED");
+    expect(notify?.result?.toString()).toContain("Ada");
+  }, 30_000);
 });

@@ -1,29 +1,52 @@
 import Agent from "../models/Agent";
 import Joi from "joi";
 import Task from "../models/Task";
+import blueprintFn from "../functions/blueprint";
 import express from "express";
 import schemas from "../schemas";
 import task from "../functions/task";
 
 const router = express.Router();
 
+async function blueprintTaskDescription({
+  blueprintId,
+  debug,
+}: {
+  blueprintId: string;
+  debug: boolean;
+}) {
+  const [blueprint, count] = await Promise.all([
+    blueprintFn.get({ blueprintId }),
+    task.count({ blueprintId, debug }),
+  ]);
+
+  return `${blueprint.title} #${count + 1}`;
+}
+
 router.post("/", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { agentId, description, sessionId, blueprintId } = Joi.attempt(
-    req.body,
-    Joi.object({
-      agentId: Joi.string()
-        .guid({ version: ["uuidv4"] })
-        .required(),
-      description: Joi.string().required(),
-      sessionId: Joi.string()
-        .guid({ version: ["uuidv4"] })
-        .optional(),
-      blueprintId: Joi.string()
-        .guid({ version: ["uuidv4"] })
-        .optional(),
-    })
-  );
+  const { agentId, description, sessionId, blueprintId, variables, debug } =
+    Joi.attempt(
+      req.body,
+      Joi.object({
+        agentId: Joi.string()
+          .guid({ version: ["uuidv4"] })
+          .required(),
+        description: Joi.string().when("blueprintId", {
+          is: Joi.exist(),
+          then: Joi.optional(),
+          otherwise: Joi.required(),
+        }),
+        sessionId: Joi.string()
+          .guid({ version: ["uuidv4"] })
+          .optional(),
+        blueprintId: Joi.string()
+          .guid({ version: ["uuidv4"] })
+          .optional(),
+        variables: Joi.object().optional(),
+        debug: Joi.boolean().optional(),
+      })
+    );
 
   const agent = await Agent.findByPk(agentId);
 
@@ -37,9 +60,13 @@ router.post("/", async (req, res) => {
 
   const taskInstance = await task.create({
     agentId,
-    description,
+    description:
+      description ??
+      (await blueprintTaskDescription({ blueprintId, debug: Boolean(debug) })),
     sessionId,
     blueprintId,
+    variables,
+    debug,
   });
 
   return res.status(200).json(taskInstance);

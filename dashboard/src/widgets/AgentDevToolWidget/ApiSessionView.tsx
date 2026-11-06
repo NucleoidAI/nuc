@@ -19,10 +19,14 @@ const ApiSessionView = ({
     let timer: ReturnType<typeof setTimeout> | undefined;
 
     const load = async () => {
-      const next = await loadApiCall(agentId, sessionId).catch(() => null);
-      if (stopped) return;
-      setCall(next);
-      if (next && !next.done) timer = setTimeout(load, POLL_INTERVAL);
+      try {
+        const next = await loadApiCall(agentId, sessionId);
+        if (stopped) return;
+        if (next) setCall(next);
+        if (!next || !next.done) timer = setTimeout(load, POLL_INTERVAL);
+      } catch {
+        if (!stopped) timer = setTimeout(load, POLL_INTERVAL);
+      }
     };
 
     setCall(null);

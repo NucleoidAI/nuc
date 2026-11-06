@@ -1,4 +1,4 @@
-import type { TimelineStep } from "./StepTimeline";
+import type { TimelineStep } from "../widgets/AgentDevToolWidget/StepTimeline";
 import http from "@canmingir/link/platform/http";
 import { useEffect, useState } from "react";
 

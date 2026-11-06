@@ -71,7 +71,7 @@ function useBlueprint() {
 
     const { data, loading, error, fetch } = Api(
       () => http.get(url),
-      [...eventDependencies, ...fetchState]
+      [...eventDependencies, agentId, ...fetchState]
     );
 
     if (data) {

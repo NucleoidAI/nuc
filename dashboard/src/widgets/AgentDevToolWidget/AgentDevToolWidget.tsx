@@ -1,3 +1,4 @@
+import ApiCallPanel from "./ApiCallPanel";
 import ApiSessionView from "./ApiSessionView";
 import type { BlueprintContext } from "../../hooks/useBlueprint";
 import BlueprintContextDetails from "../../components/BlueprintContextDetails/BlueprintContextDetails";
@@ -5,26 +6,22 @@ import BlueprintExecutions from "../BlueprintExecutions";
 import ChatTimeline from "./ChatTimeline";
 import { DrawerLayout } from "@canmingir/link/layouts";
 import type { Theme } from "@mui/material/styles";
-import http from "@canmingir/link/platform/http";
 import { loadApiCall } from "./apiSession";
 import useAgent from "../../hooks/useAgent";
 import useBlueprint from "../../hooks/useBlueprint";
+import useBlueprintExecution from "../../hooks/useBlueprintExecution";
 import useChatSessions from "../../hooks/useChatSessions";
 import useSession from "../../hooks/useSession";
-import useSessionSteps from "./useSessionSteps";
-import ApiCallPanel, { type ApiCall, type ApiStep } from "./ApiCallPanel";
+import useSessionSteps from "../../hooks/useSessionSteps";
 import { Box, Portal, ThemeProvider, Typography } from "@mui/material";
 import { DevTool, SidebarChat } from "@canmingir/link/platform/components";
 import {
   type DevToolBlueprint,
   inputFieldsOf,
-  submitError,
   variablesTemplateOf,
 } from "./blueprintInputs";
 import { publish, useEvent } from "@nucleoidai/react-event";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-
-const STEP_POLL_INTERVAL = 1000;
 
 interface AgentDevToolWidgetProps {
   readOnly?: boolean;
@@ -47,8 +44,14 @@ const AgentDevToolWidget = ({
   const [contextOpen, setContextOpen] = useState(false);
   const [selectedBlueprint, setSelectedBlueprint] = useState("");
   const [messages, setMessages] = useState([]);
-  const [apiCall, setApiCall] = useState<ApiCall | null>(null);
   const runRef = useRef(0);
+
+  const {
+    apiCall,
+    setApiCall,
+    execute: executeBlueprint,
+    reset: resetApiCall,
+  } = useBlueprintExecution();
 
   useEffect(
     () => () => {
@@ -147,11 +150,11 @@ const AgentDevToolWidget = ({
       if (!blueprintId) return;
       setSelectedBlueprint(blueprintId);
       runRef.current += 1;
-      setApiCall(null);
+      resetApiCall();
       setMessages([]);
       createSession(blueprintId);
     },
-    [createSession]
+    [createSession, resetApiCall]
   );
 
   useEffect(() => {
@@ -191,7 +194,7 @@ const AgentDevToolWidget = ({
         getSession(selectedSessionId);
       }
     },
-    [storedSessions, agentId, switchSession, getSession]
+    [storedSessions, agentId, switchSession, getSession, setApiCall]
   );
 
   const handleNewSession = useCallback(() => {
@@ -202,101 +205,9 @@ const AgentDevToolWidget = ({
   const handleSubmitForm = useCallback(
     async (values: Record<string, unknown>) => {
       if (!selected) return "Select a blueprint first";
-
-      const run = ++runRef.current;
-      const blueprintId = selected.id;
-      const active = () => run === runRef.current;
-      const patch = (next: Partial<ApiCall>) => {
-        if (active()) setApiCall((prev) => prev && { ...prev, ...next });
-      };
-
-      setApiCall({ request: values, steps: [], done: false });
-
-      const executions = async () => {
-        const { data } = await http.get<
-          { id: string; debug: boolean; description: string }[]
-        >(`/blueprints/${blueprintId}/executions`);
-        return data;
-      };
-
-      const known = new Set(
-        (await executions().catch(() => [])).map(({ id }) => id)
-      );
-
-      let taskId: string | undefined;
-      let finished = false;
-
-      const loadSteps = async (id: string) => {
-        const { data } = await http.get<ApiStep[]>(`/tasks/${id}/steps`);
-        patch({ steps: data });
-      };
-
-      const tick = async () => {
-        if (!taskId) {
-          const found = (await executions()).find(
-            ({ id, debug }) => debug && !known.has(id)
-          );
-          taskId = found?.id;
-          if (found) patch({ taskName: found.description });
-        }
-        if (taskId) await loadSteps(taskId);
-      };
-
-      const poll = async () => {
-        while (!finished && active()) {
-          await tick().catch(() => undefined);
-          await new Promise((resolve) =>
-            setTimeout(resolve, STEP_POLL_INTERVAL)
-          );
-        }
-      };
-
-      poll();
-
-      let fieldErrors: ReturnType<typeof submitError> | undefined;
-
-      try {
-        const response = await http.post(
-          `/execute/${blueprintId}?debug=true`,
-          values
-        );
-        taskId = response.headers?.["x-task-id"] ?? taskId;
-        patch({ response: response.data });
-      } catch (error) {
-        const response = (
-          error as {
-            response?: {
-              status: number;
-              data?: { taskId?: string };
-              headers?: Record<string, string>;
-            };
-          }
-        )?.response;
-        taskId =
-          response?.headers?.["x-task-id"] ?? response?.data?.taskId ?? taskId;
-        patch({
-          failed: true,
-          response:
-            response?.data ??
-            (error instanceof Error ? error.message : "Request failed"),
-        });
-        if (response?.status === 400) fieldErrors = submitError(error);
-      }
-
-      finished = true;
-
-      if (taskId) {
-        await loadSteps(taskId).catch(() => undefined);
-        await http
-          .get<{ description: string }>(`/tasks/${taskId}`)
-          .then(({ data }) => patch({ taskName: data.description }))
-          .catch(() => undefined);
-      }
-      patch({ done: true });
-
-      return fieldErrors;
+      return executeBlueprint(selected.id, values);
     },
-    [selected]
+    [selected, executeBlueprint]
   );
 
   const handleSubmitJson = useCallback(

@@ -23,7 +23,11 @@ async function create({
   sessionId?: string;
   inheritedSteps?: object[];
   variables?: Record<string, unknown>;
-  request?: { nodeId: string; body: Record<string, unknown> };
+  request?: {
+    nodeId: string;
+    body: Record<string, unknown>;
+    comment?: string;
+  };
   debug?: boolean;
 }) {
   const task = await Task.create({
@@ -43,7 +47,7 @@ async function create({
       action: "PLATFORM:api_request",
       parameters: request.body,
       result: JSON.stringify(request.body),
-      comment: "Received API request.",
+      comment: request.comment ?? "Received API request.",
       status: "COMPLETED",
       nodeId: request.nodeId,
     });

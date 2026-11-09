@@ -1,3 +1,4 @@
+import type { BlueprintMode } from "../ApiNode/apiNodes";
 import CloseIcon from "@mui/icons-material/Close";
 import { LinkSwipe } from "@canmingir/link/platform/components";
 import TuneIcon from "@mui/icons-material/Tune";
@@ -11,9 +12,16 @@ import {
   IconButton,
   Tab,
   Tabs,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
   useTheme,
 } from "@mui/material";
+
+const MODE_HINTS: Record<Exclude<BlueprintMode, "API">, string> = {
+  CHAT: "Runs in a conversation without input or response nodes.",
+  JSON: "Starts from a JSON payload checked against the Input schema. Fields are available as session_variables.",
+};
 
 const SettingsDialog = ({
   showSettings,
@@ -24,8 +32,8 @@ const SettingsDialog = ({
   setBlocking,
   liteMode,
   setLiteMode,
-  api = false,
-  setApi,
+  mode = "CHAT",
+  setMode,
   blueprintId,
 }: {
   showSettings: boolean;
@@ -36,8 +44,8 @@ const SettingsDialog = ({
   setBlocking: (value: boolean) => void;
   liteMode: boolean;
   setLiteMode: (value: boolean) => void;
-  api?: boolean;
-  setApi?: (value: boolean) => void;
+  mode?: BlueprintMode;
+  setMode?: (value: BlueprintMode) => void;
   blueprintId?: string;
 }) => {
   const theme = useTheme();
@@ -152,48 +160,47 @@ const SettingsDialog = ({
                   : "Force nodes show a badge while the flow has unsaved changes."}
               </Typography>
 
-              {setApi && (
+              {setMode && (
                 <>
                   <Typography variant="subtitle2" gutterBottom sx={{ mt: 4 }}>
-                    API
+                    Input Mode
                   </Typography>
                   <Typography
                     variant="body2"
                     color="text.secondary"
                     sx={{ mb: 2 }}
                   >
-                    Expose this blueprint as an HTTP endpoint with request and
-                    response nodes.
+                    Defines how the blueprint receives its input.
                   </Typography>
-                  <LinkSwipe
-                    checked={api}
-                    onChange={setApi}
-                    theme={theme}
+                  <ToggleButtonGroup
+                    exclusive
+                    size="small"
                     color="primary"
-                    variant="solid"
-                    showThumbIcon={false}
-                    offLabel="Off"
-                    onLabel="On"
-                    ariaLabel="API"
-                    width={70}
-                    height={30}
-                    thumbSize={20}
-                  />
+                    value={mode}
+                    onChange={(_, value: BlueprintMode | null) =>
+                      value && setMode(value)
+                    }
+                    aria-label="Input mode"
+                  >
+                    <ToggleButton value="CHAT">Chat</ToggleButton>
+                    <ToggleButton value="JSON">JSON</ToggleButton>
+                    <ToggleButton value="API">API</ToggleButton>
+                  </ToggleButtonGroup>
                   <Typography
                     variant="caption"
                     color="text.secondary"
                     sx={{
                       mt: 1.5,
                       display: "block",
-                      ...(api && {
+                      ...(mode === "API" && {
                         fontFamily: "monospace",
                         wordBreak: "break-all",
                       }),
                     }}
                   >
-                    {api
+                    {mode === "API"
                       ? `POST ${config.api}/execute/${blueprintId}`
-                      : "Turning this on adds Request and Response nodes to the flow. Turning it off removes them."}
+                      : MODE_HINTS[mode]}
                   </Typography>
                 </>
               )}

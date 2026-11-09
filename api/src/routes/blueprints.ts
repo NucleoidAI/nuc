@@ -94,7 +94,7 @@ router.put("/:blueprintId", async (req, res) => {
     executionMode,
     skill,
     context,
-    api,
+    mode,
   } = BlueprintSchema.upsert.parse(req.body);
 
   if (agentId) {
@@ -122,7 +122,7 @@ router.put("/:blueprintId", async (req, res) => {
     skill,
     context,
     executionMode,
-    api,
+    mode,
   );
 
   await event.publish("BLUEPRINT_CREATED", {
@@ -134,7 +134,7 @@ router.put("/:blueprintId", async (req, res) => {
 
 router.patch("/:blueprintId", async (req, res) => {
   const { blueprintId } = req.params;
-  const { blocking, executionMode, api } = BlueprintSchema.patch.parse(
+  const { blocking, executionMode, mode } = BlueprintSchema.patch.parse(
     req.body,
   );
 
@@ -142,7 +142,7 @@ router.patch("/:blueprintId", async (req, res) => {
     blueprintId,
     blocking,
     executionMode,
-    api,
+    mode,
   });
 
   res.status(200).json(result);

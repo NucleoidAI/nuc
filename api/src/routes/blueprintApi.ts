@@ -27,7 +27,7 @@ router.post("/:blueprintId", async (req, res) => {
   const blueprint = await Blueprint.findByPk(blueprintId);
   const start = startNodeOf(blueprint?.nodes);
 
-  if (!blueprint?.api || !start) {
+  if (blueprint?.mode !== "API" || !start) {
     throw new NotFoundError();
   }
 

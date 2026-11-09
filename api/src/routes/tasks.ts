@@ -1,24 +1,23 @@
 import Agent from "../models/Agent";
 import Joi from "joi";
 import Task from "../models/Task";
+import apiSchema from "../lib/apiSchema";
 import blueprintFn from "../functions/blueprint";
 import express from "express";
+import { jsonRequestOf, startNodeOf } from "../lib/apiNodes";
 import schemas from "../schemas";
 import task from "../functions/task";
 
 const router = express.Router();
 
 async function blueprintTaskDescription({
-  blueprintId,
+  blueprint,
   debug,
 }: {
-  blueprintId: string;
+  blueprint: { id: string; title: string };
   debug: boolean;
 }) {
-  const [blueprint, count] = await Promise.all([
-    blueprintFn.get({ blueprintId }),
-    task.count({ blueprintId, debug }),
-  ]);
+  const count = await task.count({ blueprintId: blueprint.id, debug });
 
   return `${blueprint.title} #${count + 1}`;
 }
@@ -58,14 +57,36 @@ router.post("/", async (req, res) => {
     return res.status(401).end();
   }
 
+  const blueprint = blueprintId
+    ? await blueprintFn.get({ blueprintId, includeDetails: false })
+    : null;
+
+  const request = sessionId ? undefined : jsonRequestOf(blueprint, variables);
+
+  if (request) {
+    const start = startNodeOf(blueprint.nodes);
+    const input = apiSchema.validate(
+      start.properties?.fields ?? [],
+      request.body,
+      { strict: Boolean(start.properties?.strict) }
+    );
+
+    if (!input.success) {
+      return res
+        .status(400)
+        .json({ error: "INVALID_REQUEST", issues: input.issues });
+    }
+  }
+
   const taskInstance = await task.create({
     agentId,
     description:
       description ??
-      (await blueprintTaskDescription({ blueprintId, debug: Boolean(debug) })),
+      (await blueprintTaskDescription({ blueprint, debug: Boolean(debug) })),
     sessionId,
     blueprintId,
     variables,
+    request,
     debug,
   });
 

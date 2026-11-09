@@ -55,7 +55,7 @@ async function createBlueprint(body: Record<string, unknown>) {
 describe("Blueprint API", () => {
   it("adds wired START/END nodes when enabled and removes them when disabled", async () => {
     const blueprint = await createBlueprint({
-      api: true,
+      mode: "API",
       nodes: [
         {
           id: "only",
@@ -66,7 +66,7 @@ describe("Blueprint API", () => {
       ],
     });
 
-    expect(blueprint.api).toBe(true);
+    expect(blueprint.mode).toBe("API");
     expect(
       blueprint.nodes.map((node: { id: string; next: string[] | null }) => [
         node.id,
@@ -80,10 +80,10 @@ describe("Blueprint API", () => {
 
     const { body: disabled } = await supertest(app)
       .patch(`/blueprints/${blueprint.id}`)
-      .send({ api: false })
+      .send({ mode: "CHAT" })
       .expect(200);
 
-    expect(disabled.api).toBe(false);
+    expect(disabled.mode).toBe("CHAT");
     expect(disabled.nodes).toEqual([
       expect.objectContaining({ id: "only", next: null }),
     ]);
@@ -91,7 +91,7 @@ describe("Blueprint API", () => {
 
   it("runs the flow and responds with values bound from the request", async () => {
     const blueprint = await createBlueprint({
-      api: true,
+      mode: "API",
       nodes: [startNode({ fields: requestFields, strict: true }), greetingEnd],
     });
 
@@ -122,7 +122,7 @@ describe("Blueprint API", () => {
 
   it("rejects missing, invalid and unknown fields in strict mode", async () => {
     const blueprint = await createBlueprint({
-      api: true,
+      mode: "API",
       nodes: [startNode({ fields: requestFields, strict: true }), greetingEnd],
     });
 
@@ -146,7 +146,7 @@ describe("Blueprint API", () => {
 
   it("drops unknown fields when not strict", async () => {
     const blueprint = await createBlueprint({
-      api: true,
+      mode: "API",
       nodes: [
         startNode({ fields: requestFields, strict: false }),
         endNode({
@@ -166,7 +166,7 @@ describe("Blueprint API", () => {
 
   it("fails the task when the response does not match its schema", async () => {
     const blueprint = await createBlueprint({
-      api: true,
+      mode: "API",
       nodes: [
         startNode({ fields: requestFields }),
         endNode({
@@ -189,7 +189,7 @@ describe("Blueprint API", () => {
 
   it("returns 504 when the task outlives the configured timeout", async () => {
     const blueprint = await createBlueprint({
-      api: true,
+      mode: "API",
       nodes: [
         startNode({ fields: requestFields, timeout: 1 }, ["approve"]),
         {
@@ -228,7 +228,7 @@ describe("Blueprint API", () => {
     expect(exposesSessionId).toBe(false);
 
     const blueprint = await createBlueprint({
-      api: true,
+      mode: "API",
       nodes: [
         startNode({ fields: requestFields }, ["notify"]),
         {
@@ -308,7 +308,7 @@ describe("Blueprint API in LITE mode", () => {
       .returns({ product_id: "TLP-4200", name: "Thermal Label Printer" });
 
     const blueprint = await createBlueprint({
-      api: true,
+      mode: "API",
       executionMode: "LITE",
       nodes: [
         startNode({ fields: requestFields }, ["find"]),
@@ -380,7 +380,7 @@ describe("Blueprint API in LITE mode", () => {
     mcp.tool("ORDER:find_product").fails({ error: "catalog unavailable" });
 
     const blueprint = await createBlueprint({
-      api: true,
+      mode: "API",
       executionMode: "LITE",
       blocking: false,
       nodes: [
@@ -421,7 +421,7 @@ describe("Blueprint API in LITE mode", () => {
     mcp.tool("ORDER:find_product").fails({ error: "catalog unavailable" });
 
     const blueprint = await createBlueprint({
-      api: true,
+      mode: "API",
       executionMode: "LITE",
       blocking: true,
       nodes: [
@@ -494,5 +494,144 @@ describe("Sessionless tasks", () => {
 
     expect(notify?.status).toBe("COMPLETED");
     expect(notify?.result?.toString()).toContain("Ada");
+  }, 30_000);
+});
+
+describe("JSON mode", () => {
+  const JSON_START = "json-start";
+
+  const messageNode = (
+    id: string,
+    message: unknown,
+    next: string[] | null
+  ) => ({
+    id,
+    type: "NORMAL",
+    next,
+    properties: {
+      label: id,
+      icon: "mdi:message-text",
+      action: "PLATFORM:message_user",
+      force: true,
+      parameters: { message },
+    },
+  });
+
+  async function createJsonBlueprint() {
+    const blueprint = await createBlueprint({
+      mode: "JSON",
+      executionMode: "LITE",
+      nodes: [
+        messageNode("byVariable", { $ref: "session_variables.customer" }, [
+          "byNode",
+        ]),
+        messageNode(
+          "byNode",
+          { $ref: `byNode.${JSON_START}.result.customer` },
+          null
+        ),
+      ],
+    });
+
+    const start = blueprint.nodes.find(
+      (node: { type: string }) => node.type === "START"
+    );
+
+    return supertest(app)
+      .put(`/blueprints/${blueprint.id}`)
+      .send({
+        title: blueprint.title,
+        description: blueprint.description,
+        agentId: ORDER_AGENT_ID,
+        nodes: [
+          {
+            ...start,
+            properties: {
+              ...start.properties,
+              fields: [
+                { name: "customer", type: "string", minLength: 2 },
+                { name: "note", type: "string", required: false },
+              ],
+            },
+          },
+          ...blueprint.nodes.filter(
+            (node: { type: string }) => node.type !== "START"
+          ),
+        ],
+      })
+      .expect(200)
+      .then(({ body }) => body);
+  }
+
+  it("adds a start node without an end node", async () => {
+    const blueprint = await createJsonBlueprint();
+
+    expect(blueprint.mode).toBe("JSON");
+    expect(
+      blueprint.nodes.map((node: { id: string; type: string }) => [
+        node.id,
+        node.type,
+      ])
+    ).toEqual([
+      [JSON_START, "START"],
+      ["byVariable", "NORMAL"],
+      ["byNode", "NORMAL"],
+    ]);
+  });
+
+  it("rejects variables that do not match the start schema", async () => {
+    const blueprint = await createJsonBlueprint();
+
+    const { body } = await supertest(app)
+      .post("/tasks")
+      .send({
+        agentId: ORDER_AGENT_ID,
+        blueprintId: blueprint.id,
+        variables: { customer: "A" },
+      })
+      .expect(400);
+
+    expect(body.error).toBe("INVALID_REQUEST");
+    expect(body.issues[0].path).toBe("customer");
+  });
+
+  it("records the input and exposes it as session variables and start node results", async () => {
+    const blueprint = await createJsonBlueprint();
+
+    const { body: task } = await supertest(app)
+      .post("/tasks")
+      .send({
+        agentId: ORDER_AGENT_ID,
+        blueprintId: blueprint.id,
+        variables: { customer: "Ada", extra: true },
+      })
+      .expect(200);
+
+    const { default: taskFn } = await import("../../src/functions/task");
+    await taskFn.waitFor({ taskId: task.id, timeoutMs: 10_000 });
+
+    const stored = await taskFn.get({ taskId: task.id });
+    expect(stored.status).toBe("COMPLETED");
+    expect(stored.variables).toEqual({ customer: "Ada", extra: true });
+
+    const { default: Step } = await import("../../src/models/Step");
+    const steps = await Step.findAll({
+      where: { taskId: task.id },
+      order: [["createdAt", "ASC"]],
+    });
+
+    expect(steps[0].nodeId).toBe(JSON_START);
+    expect(steps[0].comment).toBe("Received JSON input.");
+
+    const messages = steps.filter(
+      (step) => step.action === "PLATFORM:message_user"
+    );
+    expect(messages.map((step) => step.nodeId)).toEqual([
+      "byVariable",
+      "byNode",
+    ]);
+    messages.forEach((step) =>
+      expect(step.result?.toString()).toContain("Ada")
+    );
   }, 30_000);
 });

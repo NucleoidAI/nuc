@@ -1,19 +1,16 @@
+import {
+  type ApiField,
+  type BlueprintMode,
+  sampleBody,
+} from "../../components/ApiNode/apiNodes";
 import type {
   ChatInputErrors,
   ChatInputField,
 } from "@canmingir/link/platform/components";
 
-type ApiField = {
-  name: string;
-  type: ChatInputField["type"];
-  required?: boolean;
-  description?: string;
-  values?: string[];
-};
-
 type DevToolBlueprint = {
   id: string;
-  api?: boolean;
+  mode?: BlueprintMode;
   nodes?: { type: string; properties?: { fields?: ApiField[] } }[] | null;
 };
 
@@ -21,12 +18,21 @@ type Issue = { path?: string; message: string };
 
 const SESSION_VARIABLE = /session_variables\.([A-Za-z_$][\w$]*)/g;
 
+function modeOf(blueprint?: DevToolBlueprint): BlueprintMode {
+  return blueprint?.mode ?? "CHAT";
+}
+
+function startFieldsOf(blueprint?: DevToolBlueprint): ApiField[] {
+  return (
+    blueprint?.nodes?.find((node) => node.type === "START")?.properties
+      ?.fields ?? []
+  );
+}
+
 function inputFieldsOf(blueprint?: DevToolBlueprint): ChatInputField[] {
-  if (!blueprint?.api) return [];
+  if (modeOf(blueprint) === "CHAT") return [];
 
-  const start = blueprint.nodes?.find((node) => node.type === "START");
-
-  return (start?.properties?.fields ?? []).map(
+  return startFieldsOf(blueprint).map(
     ({ name, type, required, description, values }) => ({
       name,
       type,
@@ -38,7 +44,13 @@ function inputFieldsOf(blueprint?: DevToolBlueprint): ChatInputField[] {
 }
 
 function variablesTemplateOf(blueprint?: DevToolBlueprint): string | undefined {
-  if (!blueprint || blueprint.api) return undefined;
+  if (!blueprint || modeOf(blueprint) === "API") return undefined;
+
+  const fields = startFieldsOf(blueprint);
+
+  if (modeOf(blueprint) === "JSON" && fields.length) {
+    return JSON.stringify(sampleBody(fields), null, 2);
+  }
 
   const keys = new Set(
     Array.from(
@@ -94,5 +106,13 @@ function submitError(error: unknown): ChatInputErrors | string {
   return error instanceof Error ? error.message : "Failed to start the task";
 }
 
+function errorText(errors: ChatInputErrors | string): string {
+  return typeof errors === "string"
+    ? errors
+    : Object.entries(errors)
+        .map(([field, message]) => `${field}: ${message}`)
+        .join("; ");
+}
+
 export type { DevToolBlueprint };
-export { inputFieldsOf, submitError, variablesTemplateOf };
+export { errorText, inputFieldsOf, modeOf, submitError, variablesTemplateOf };

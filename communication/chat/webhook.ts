@@ -87,6 +87,10 @@ router.post("/:projectId/:blueprintId", async (req, res) => {
       .status(statusCodes[outcome.status])
       .json({ taskId: task.id, ...outcome });
   } catch (error: any) {
+    if (error?.response?.status === 400) {
+      return res.status(400).json(error.response.data);
+    }
+
     return res.status(500).json({ error: error?.message });
   }
 });

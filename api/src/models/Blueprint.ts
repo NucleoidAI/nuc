@@ -8,6 +8,7 @@ import {
   Table,
 } from "@canmingir/link-express/sequelize";
 
+import type { BlueprintMode } from "../lib/apiNodes";
 import Node from "../schemas/Node";
 
 export type BlueprintContext = {
@@ -69,10 +70,10 @@ class Blueprint extends Model {
   @Column(DataType.STRING)
   declare executionMode: "NORMAL" | "LITE";
 
-  @Default(false)
+  @Default("CHAT")
   @AllowNull(false)
-  @Column(DataType.BOOLEAN)
-  declare api: boolean;
+  @Column(DataType.STRING)
+  declare mode: BlueprintMode;
 
   @AllowNull(true)
   @Column({

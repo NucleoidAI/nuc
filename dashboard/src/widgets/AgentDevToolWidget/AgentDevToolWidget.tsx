@@ -17,7 +17,9 @@ import { Box, Portal, ThemeProvider, Typography } from "@mui/material";
 import { DevTool, SidebarChat } from "@canmingir/link/platform/components";
 import {
   type DevToolBlueprint,
+  errorText,
   inputFieldsOf,
+  modeOf,
   variablesTemplateOf,
 } from "./blueprintInputs";
 import { publish, useEvent } from "@nucleoidai/react-event";
@@ -50,6 +52,7 @@ const AgentDevToolWidget = ({
     apiCall,
     setApiCall,
     execute: executeBlueprint,
+    start: startTask,
     reset: resetApiCall,
   } = useBlueprintExecution();
 
@@ -99,6 +102,9 @@ const AgentDevToolWidget = ({
       : [];
     return blueprints.find(({ id }) => id === selectedBlueprint);
   }, [Blueprint, selectedBlueprint]);
+
+  const mode = modeOf(selected);
+  const runsAsTask = Boolean(selected) && mode !== "CHAT";
 
   const inputFields = useMemo(() => inputFieldsOf(selected), [selected]);
   const jsonTemplate = useMemo(() => variablesTemplateOf(selected), [selected]);
@@ -203,9 +209,13 @@ const AgentDevToolWidget = ({
   const handleSubmitForm = useCallback(
     async (values: Record<string, unknown>) => {
       if (!selected) return "Select a blueprint first";
+      if (selected.mode === "JSON") {
+        if (!agentId) return "Select an agent first";
+        return startTask(agentId, selected.id, values);
+      }
       return executeBlueprint(selected.id, values);
     },
-    [selected, executeBlueprint]
+    [selected, agentId, executeBlueprint, startTask]
   );
 
   const handleSubmitJson = useCallback(
@@ -214,23 +224,33 @@ const AgentDevToolWidget = ({
         return "Variables must be a JSON object";
       }
 
+      if (selected?.mode === "JSON") {
+        if (!agentId) return "Select an agent first";
+        const errors = await startTask(
+          agentId,
+          selected.id,
+          value as Record<string, unknown>
+        );
+        return errors ? errorText(errors) : undefined;
+      }
+
       try {
         await sendVariables(value as Record<string, unknown>);
       } catch (error) {
         return error instanceof Error ? error.message : "Failed to send JSON";
       }
     },
-    [sendVariables]
+    [selected, agentId, startTask, sendVariables]
   );
 
   const sessionSteps = useSessionSteps({
     agentId,
     sessionId,
-    enabled: open && Boolean(selected) && !selected?.api,
+    enabled: open && Boolean(selected) && !runsAsTask,
   });
 
   const playgroundTitle =
-    (selected?.api ? apiCall?.taskName : sessionSteps.taskName) ?? "Playground";
+    (runsAsTask ? apiCall?.taskName : sessionSteps.taskName) ?? "Playground";
 
   const handleNewUserMessage = async (content: string) => {
     setMessages((prevMessages) => [
@@ -341,14 +361,14 @@ const AgentDevToolWidget = ({
               onPresetChange={handleBlueprintChange}
               onNewSession={onNewSession}
               inputFields={inputFields}
-              onSubmitForm={selected?.api ? handleSubmitForm : undefined}
+              onSubmitForm={runsAsTask ? handleSubmitForm : undefined}
               jsonTemplate={jsonTemplate}
               onSubmitJson={
-                selected && !selected.api ? handleSubmitJson : undefined
+                selected && mode !== "API" ? handleSubmitJson : undefined
               }
               presetRequired
               panel={
-                selected?.api ? (
+                runsAsTask ? (
                   <ApiCallPanel call={apiCall} />
                 ) : (
                   <ChatTimeline
@@ -358,7 +378,15 @@ const AgentDevToolWidget = ({
                   />
                 )
               }
-              inputModes={selected?.api ? ["form"] : ["chat", "json"]}
+              inputModes={
+                mode === "API"
+                  ? ["form"]
+                  : mode === "JSON"
+                  ? inputFields.length
+                    ? ["json", "form"]
+                    : ["json"]
+                  : ["chat", "json"]
+              }
             />
           </ThemeProvider>
         )}

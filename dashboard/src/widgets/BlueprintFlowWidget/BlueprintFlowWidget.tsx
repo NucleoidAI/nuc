@@ -13,6 +13,12 @@ import { v4 as uuid } from "uuid";
 import { validateFlow } from "../../components/BlueprintFlow/Validation/validation";
 
 import {
+  type BlueprintMode,
+  applyModeNodes,
+  isApiNodeType,
+  modeOfNodes,
+} from "../../components/ApiNode/apiNodes";
+import {
   DefinitionGraph,
   FlowDefinition,
   addStartNode,
@@ -27,11 +33,6 @@ import {
   calculateDiffStats,
   calculateNodeChanges,
 } from "../../components/BlueprintFlow/DiffPanel/diffHelper";
-import {
-  isApiNodeType,
-  withApiNodes,
-  withoutApiNodes,
-} from "../../components/ApiNode/apiNodes";
 
 interface AIResponse {
   flow: FlowDefinition;
@@ -44,7 +45,7 @@ interface Blueprint {
   agentId: string;
   blocking?: boolean;
   executionMode?: "NORMAL" | "LITE";
-  api?: boolean;
+  mode?: BlueprintMode;
   skill?: string;
 }
 
@@ -137,7 +138,7 @@ function BlueprintFlowWidget({
   blocking: blockingProp,
   onBlockingChange: onBlockingChangeProp,
   liteMode = false,
-  api,
+  mode,
   showConnections: showConnectionsProp,
   onDescriptionChange,
   onDescriptionLoadingChange,
@@ -171,7 +172,7 @@ function BlueprintFlowWidget({
   blocking?: boolean;
   onBlockingChange?: (value: boolean) => void;
   liteMode?: boolean;
-  api?: boolean;
+  mode?: BlueprintMode;
   showConnections?: boolean;
   onSave?: () => void;
 }) {
@@ -512,19 +513,15 @@ function BlueprintFlowWidget({
   );
 
   useEffect(() => {
-    if (readOnly || api === undefined || !graphData) return;
+    if (readOnly || mode === undefined || !graphData) return;
 
-    const hasApiNodes = Object.values(graphData.nodes).some(
-      (node) => node.nodeType === "START"
-    );
-    if (api === hasApiNodes) return;
+    if (modeOfNodes(Object.values(graphData.nodes)) === mode) return;
 
-    const nodes = graphToNodes(graphData);
     setGraphData(
-      buildDefinitionGraph(api ? withApiNodes(nodes) : withoutApiNodes(nodes))
+      buildDefinitionGraph(applyModeNodes(graphToNodes(graphData), mode))
     );
     setHasLocalChanges(true);
-  }, [api, graphData, readOnly]);
+  }, [mode, graphData, readOnly]);
 
   useEffect(() => {
     if (graphData && mcps?.content?.mcps) {
@@ -2003,7 +2000,7 @@ function BlueprintFlowWidget({
         generated?.skill || localSkill || blueprintNodes?.skill || undefined,
         undefined,
         liteMode ? "LITE" : "NORMAL",
-        api
+        mode
       );
 
       lastSavedRef.current = {
@@ -2123,6 +2120,7 @@ function BlueprintFlowWidget({
         open={Boolean(apiNodeId && graphData?.nodes?.[apiNodeId])}
         node={apiNodeId ? graphData?.nodes?.[apiNodeId] : undefined}
         blueprintId={blueprintNodes?.id || blueprint?.id}
+        json={mode === "JSON"}
         onClose={() => setApiNodeId(null)}
         onSave={handleApiNodeSave}
       />

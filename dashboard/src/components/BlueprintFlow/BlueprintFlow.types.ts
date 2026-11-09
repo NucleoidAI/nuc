@@ -24,6 +24,7 @@ export interface BlueprintFlowProps {
   onFlowChange: (graph: DefinitionGraph) => void;
   onAddNodeClick: (node: { id: string }) => void;
   onEditNodeClick: (node: { id: string }) => void;
+  onPinNodeClick?: (node: { id: string }) => void;
   onSwapBranchClick: (node: { id: string }) => void;
   onDeleteNodeClick: (node: { id: string }) => void;
   onSave: () => void;

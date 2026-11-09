@@ -201,7 +201,7 @@ export default function FlowNodeRenderer({
     node.nodeType === "APPROVAL" ||
     node.nodeType === "SWITCH" ||
     node.connectorType === "decision";
-  const canPin = node.nodeType === "NORMAL";
+  const canPin = node.nodeType === "NORMAL" || Boolean(node.isPinned);
   const isEndpointNode =
     node.nodeType === "START" ||
     node.nodeType === "END" ||
@@ -319,22 +319,22 @@ export default function FlowNodeRenderer({
       />
       {hasError ? (
         <>
-          <StatusLabel variant="error" />
+          <StatusLabel variant="error" ispinned={isPinned} />
           <StatusBadge variant="error" />
         </>
       ) : isFailed ? (
         <>
-          <StatusLabel variant="failed" />
+          <StatusLabel variant="failed" ispinned={isPinned} />
           <StatusBadge variant="failed" />
         </>
       ) : isLastUsed ? (
         <>
-          <StatusLabel variant="supervise" />
+          <StatusLabel variant="supervise" ispinned={isPinned} />
           <StatusBadge variant="supervise" />
         </>
       ) : isUsed ? (
         <>
-          <StatusLabel variant="used" />
+          <StatusLabel variant="used" ispinned={isPinned} />
           <StatusBadge variant="used" />
         </>
       ) : (

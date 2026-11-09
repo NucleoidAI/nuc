@@ -445,15 +445,17 @@ export const StatusBadge = styled("div")<{ variant: StatusVariant }>(
   }
 );
 
-export const StatusLabel = styled("div")<{ variant: StatusVariant }>(
-  ({ variant, theme }) => {
+export const StatusLabel = styled("div", {
+  shouldForwardProp: (prop) => prop !== "ispinned",
+})<{ variant: StatusVariant; ispinned?: boolean }>(
+  ({ variant, theme, ispinned }) => {
     const isDark = theme.palette.mode === "dark";
     const config = STATUS_CONFIG[variant];
 
     return {
       position: "absolute",
       top: "-10px",
-      left: "-10px",
+      left: ispinned ? "70px" : "-10px",
       padding: "4px 10px",
       borderRadius: "12px",
       backgroundColor: isDark ? config.bgDark : config.bgLight,

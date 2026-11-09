@@ -9,6 +9,7 @@ import {
   findNodeAhead,
   forceAllNodes,
   isForcedNode,
+  isPinnedNode,
   resolveCurrentNode,
   switchCases,
 } from "../../../lib/blueprintNodes";
@@ -491,6 +492,21 @@ async function conclude({
       handoffTarget(resolvedParameters, matchedNode),
       comment,
     );
+  }
+
+  if (state.debug && isPinnedNode(matchedNode)) {
+    return taskFn.addPinnedStep({
+      taskId: state.taskId,
+      action,
+      parameters: platformParameters({
+        action,
+        parameters,
+        node: matchedNode,
+        state,
+      }),
+      comment: "Pinned node: execution skipped for this test run.",
+      nodeId: matchedNode.id,
+    });
   }
 
   return taskFn.addStep({

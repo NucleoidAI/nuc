@@ -382,6 +382,35 @@ async function addStep({
   return step.toJSON();
 }
 
+async function addPinnedStep({
+  taskId,
+  action,
+  parameters,
+  comment,
+  nodeId,
+}: {
+  taskId: string;
+  action: string;
+  parameters: object;
+  comment: string;
+  nodeId: string;
+}) {
+  const step = await Step.create({
+    taskId,
+    action,
+    parameters,
+    comment,
+    status: "COMPLETED",
+    result: "Pinned: execution skipped.",
+    knowledgeScore: null,
+    nodeId,
+  });
+
+  await event.publish("STEP_COMPLETED", { taskId });
+
+  return step.toJSON();
+}
+
 async function getStep({ stepId }: { stepId: string }) {
   const step = await Step.findOne({ where: { id: stepId } });
   if (!step) throw new Error(`Step not found: ${stepId}`);
@@ -552,6 +581,7 @@ export default {
   listWithEffectiveStatus,
   getStep,
   addStep,
+  addPinnedStep,
   updateStep,
   updateStepComment,
   listSteps,

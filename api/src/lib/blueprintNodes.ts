@@ -83,6 +83,10 @@ export function isForcedNode(node: any) {
   return node?.properties?.force === true;
 }
 
+export function isPinnedNode(node: any) {
+  return node?.properties?.pinned === true;
+}
+
 export function forceAllNodes<T extends { properties?: object }>(nodes: T[]) {
   return nodes.map((node) => ({
     ...node,

@@ -61,6 +61,16 @@ router.post("/", async (req, res) => {
     ? await blueprintFn.get({ blueprintId, includeDetails: false })
     : null;
 
+  if (blueprint) {
+    const owner = await Agent.findByPk(blueprint.agentId, {
+      attributes: ["teamId"],
+    });
+
+    if (owner?.teamId !== teamId) {
+      return res.status(401).end();
+    }
+  }
+
   const request = sessionId ? undefined : jsonRequestOf(blueprint, variables);
 
   if (request) {

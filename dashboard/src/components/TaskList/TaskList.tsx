@@ -23,6 +23,7 @@ const TaskList = ({
     id: string;
     description: string;
     status: string;
+    effectiveStatus?: string;
     createdAt: string;
     debug?: boolean;
   }[];
@@ -31,6 +32,7 @@ const TaskList = ({
     id: string;
     description: string;
     status: string;
+    effectiveStatus?: string;
     createdAt: string;
     debug?: boolean;
   }) => void;
@@ -65,6 +67,7 @@ const TaskList = ({
         const isSelected = selectedTask?.id === task.id;
         const isInProgress = task.status === "IN_PROGRESS";
         const isFailed = task.status === "FAILED";
+        const isPinned = task.effectiveStatus === "PINNED";
         const isDebug = Boolean(task.debug);
 
         return (
@@ -161,7 +164,9 @@ const TaskList = ({
                     <Chip
                       size="small"
                       label={
-                        isInProgress
+                        isPinned
+                          ? "Pinned"
+                          : isInProgress
                           ? "In Progress"
                           : isFailed
                           ? "Failed"
@@ -172,7 +177,9 @@ const TaskList = ({
                         height: 20,
                         fontSize: 11,
                         fontWeight: 800,
-                        bgcolor: isInProgress
+                        bgcolor: isPinned
+                          ? "secondary.main"
+                          : isInProgress
                           ? "primary.main"
                           : isFailed
                           ? "error.main"
@@ -180,7 +187,9 @@ const TaskList = ({
                         color: "common.white",
                         "& .MuiChip-label": { px: 1 },
                         "&:hover": {
-                          bgcolor: isInProgress
+                          bgcolor: isPinned
+                            ? "secondary.main"
+                            : isInProgress
                             ? "primary.main"
                             : isFailed
                             ? "error.main"

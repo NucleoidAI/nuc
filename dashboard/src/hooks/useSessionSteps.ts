@@ -16,9 +16,11 @@ type SessionSteps = {
   steps: TimelineStep[];
   taskName: string | null;
   running: boolean;
+  resumeStep: (step: TimelineStep) => Promise<void>;
+  resumingStepId: string | null;
 };
 
-const EMPTY: SessionSteps = { steps: [], taskName: null, running: false };
+const EMPTY_STEPS: TimelineStep[] = [];
 
 function useSessionSteps({
   agentId,
@@ -28,11 +30,17 @@ function useSessionSteps({
   agentId?: string;
   sessionId?: string | null;
   enabled: boolean;
-}) {
-  const [state, setState] = useState<SessionSteps>(EMPTY);
+}): SessionSteps {
+  const [steps, setSteps] = useState<TimelineStep[]>(EMPTY_STEPS);
+  const [taskName, setTaskName] = useState<string | null>(null);
+  const [running, setRunning] = useState(false);
+  const [resumingStepId, setResumingStepId] = useState<string | null>(null);
 
   useEffect(() => {
-    setState(EMPTY);
+    setSteps(EMPTY_STEPS);
+    setTaskName(null);
+    setRunning(false);
+    setResumingStepId(null);
   }, [sessionId]);
 
   useEffect(() => {
@@ -53,21 +61,21 @@ function useSessionSteps({
 
       if (!tasks.length) return;
 
-      const steps = await Promise.all(
+      const stepsByTask = await Promise.all(
         tasks.map(({ id }) =>
           http
             .get<TimelineStep[]>(`/tasks/${id}/steps`)
-            .then((response) => response.data)
+            .then((response) =>
+              response.data.map((step) => ({ ...step, taskId: id }))
+            )
         )
       );
 
       if (stopped) return;
 
-      setState({
-        steps: steps.flat(),
-        taskName: tasks[tasks.length - 1].description,
-        running: tasks.some(({ status }) => status === "IN_PROGRESS"),
-      });
+      setSteps(stepsByTask.flat());
+      setTaskName(tasks[tasks.length - 1].description);
+      setRunning(tasks.some(({ status }) => status === "IN_PROGRESS"));
     };
 
     const loop = async () => {
@@ -84,7 +92,18 @@ function useSessionSteps({
     };
   }, [enabled, agentId, sessionId]);
 
-  return state;
+  const resumeStep = async (step: TimelineStep) => {
+    if (!step.taskId) return;
+
+    setResumingStepId(step.id);
+    try {
+      await http.post(`/tasks/${step.taskId}/steps/${step.id}/resume`);
+    } finally {
+      setResumingStepId(null);
+    }
+  };
+
+  return { steps, taskName, running, resumeStep, resumingStepId };
 }
 
 export default useSessionSteps;

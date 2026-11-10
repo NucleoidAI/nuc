@@ -1,6 +1,6 @@
 import { styled } from "@mui/material/styles";
 
-type ActionButtonPosition = "add" | "edit" | "delete";
+type ActionButtonPosition = "add" | "edit" | "delete" | "pin";
 
 const ACTION_BUTTON_POSITION: Record<
   ActionButtonPosition,
@@ -9,34 +9,61 @@ const ACTION_BUTTON_POSITION: Record<
   add: { top: "8px", right: "0px" },
   edit: { top: "8px", right: "40px" },
   delete: { bottom: "8px", right: "8px" },
+  pin: { top: "8px", right: "68px" },
 };
 
 export const ActionButtonWrapper = styled("div", {
-  shouldForwardProp: (prop) => prop !== "position" && prop !== "hoverColor",
+  shouldForwardProp: (prop) =>
+    prop !== "position" && prop !== "hoverColor" && prop !== "active",
 })<{
   position: ActionButtonPosition;
   hoverColor?: "primary" | "error";
-}>(({ theme, position, hoverColor = "primary" }) => ({
+  active?: boolean;
+}>(({ theme, position, hoverColor = "primary", active }) => ({
   position: "absolute",
   ...ACTION_BUTTON_POSITION[position],
   transform: position === "add" ? "translateX(-50%) scale(1)" : undefined,
   width: "24px",
   height: "24px",
   borderRadius: "50%",
-  backgroundColor: theme.palette?.background.paper,
-  color: "#555",
-  border: "1px solid rgba(0, 0, 0, 0.1)",
+  backgroundColor: active ? "#7c3aed" : theme.palette?.background.paper,
+  color: active ? "#ffffff" : "#555",
+  border: active ? "1px solid #7c3aed" : "1px solid rgba(0, 0, 0, 0.1)",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   cursor: "pointer",
-  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+  boxShadow: active
+    ? "0 2px 8px rgba(124, 58, 237, 0.4)"
+    : "0 2px 6px rgba(0,0,0,0.1)",
   zIndex: 10,
   "--anim-hover-shadow-base": "0 2px 6px rgba(0,0,0,0.1)",
   "&:hover": {
-    boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
-    color: theme.palette?.[hoverColor].main,
+    boxShadow: active
+      ? "0 4px 10px rgba(124, 58, 237, 0.5)"
+      : "0 4px 8px rgba(0,0,0,0.2)",
+    color: active ? "#ffffff" : theme.palette?.[hoverColor].main,
   },
+}));
+
+export const PinnedBadge = styled("div")(({ theme }) => ({
+  position: "absolute",
+  top: "-10px",
+  left: "-10px",
+  padding: "4px 10px",
+  borderRadius: "12px",
+  backgroundColor: "#7c3aed",
+  color: "#ffffff",
+  fontSize: "11px",
+  fontWeight: 600,
+  textTransform: "uppercase",
+  letterSpacing: "0.5px",
+  boxShadow: `
+    0 2px 6px rgba(124, 58, 237, 0.3),
+    0 0 0 2px ${theme.palette.background.paper}
+  `,
+  zIndex: 16,
+  whiteSpace: "nowrap",
 }));
 
 export const ForceIndicatorWrapper = styled("div", {
@@ -44,7 +71,7 @@ export const ForceIndicatorWrapper = styled("div", {
 })<{ readonly?: boolean }>(({ theme, readonly }) => ({
   position: "absolute",
   top: "8px",
-  right: readonly ? "8px" : "72px",
+  right: readonly ? "8px" : "96px",
   width: "24px",
   height: "24px",
   borderRadius: "50%",
@@ -59,6 +86,7 @@ export const ForceIndicatorWrapper = styled("div", {
 }));
 
 type HighlightVariant =
+  | "pinned"
   | "selected"
   | "failed"
   | "lastUsed"
@@ -106,6 +134,15 @@ const HIGHLIGHT_COLOR: Record<
   HighlightVariant,
   (isDark: boolean) => HighlightColor
 > = {
+  pinned: () => ({
+    border: "#7c3aed",
+    glow: "124, 58, 237",
+    bg: "124, 58, 237",
+    borderWidth: "3px",
+    bgOpacityStart: "0.12",
+    bgOpacityEnd: "0.04",
+    boxShadow: STRONG_BOX_SHADOW,
+  }),
   selected: () => ({
     border: "#abaaa8",
     glow: "33, 150, 243",
@@ -187,6 +224,7 @@ function resolveHighlightVariant({
   islastused,
   isfailed,
   isselected,
+  ispinned,
 }: {
   changetype?: string;
   haserror?: string;
@@ -194,7 +232,9 @@ function resolveHighlightVariant({
   islastused?: string;
   isfailed?: string;
   isselected?: string;
+  ispinned?: string;
 }): HighlightVariant | undefined {
+  if (ispinned === "true") return "pinned";
   if (isselected === "true") return "selected";
   if (isfailed === "true") return "failed";
   if (islastused === "true") return "lastUsed";
@@ -217,6 +257,7 @@ export const HighlightOverlay = styled("div")<{
   islastused?: string;
   isfailed?: string;
   isselected?: string;
+  ispinned?: string;
 }>((props) => {
   const { theme } = props;
   const isDark = theme.palette.mode === "dark";
@@ -299,8 +340,10 @@ export const ChangeBadge = styled("div")<{ changetype?: string }>(
   }
 );
 
-export const ChangeLabel = styled("div")<{ changetype?: string }>(
-  ({ changetype, theme }) => {
+export const ChangeLabel = styled("div", {
+  shouldForwardProp: (prop) => prop !== "ispinned",
+})<{ changetype?: string; ispinned?: boolean }>(
+  ({ changetype, theme, ispinned }) => {
     const isDark = theme.palette.mode === "dark";
 
     const colors = {
@@ -327,7 +370,7 @@ export const ChangeLabel = styled("div")<{ changetype?: string }>(
     return {
       position: "absolute",
       top: "-10px",
-      left: "-10px",
+      left: ispinned ? "70px" : "-10px",
       padding: "4px 10px",
       borderRadius: "12px",
       backgroundColor: config.bg,
@@ -402,15 +445,17 @@ export const StatusBadge = styled("div")<{ variant: StatusVariant }>(
   }
 );
 
-export const StatusLabel = styled("div")<{ variant: StatusVariant }>(
-  ({ variant, theme }) => {
+export const StatusLabel = styled("div", {
+  shouldForwardProp: (prop) => prop !== "ispinned",
+})<{ variant: StatusVariant; ispinned?: boolean }>(
+  ({ variant, theme, ispinned }) => {
     const isDark = theme.palette.mode === "dark";
     const config = STATUS_CONFIG[variant];
 
     return {
       position: "absolute",
       top: "-10px",
-      left: "-10px",
+      left: ispinned ? "70px" : "-10px",
       padding: "4px 10px",
       borderRadius: "12px",
       backgroundColor: isDark ? config.bgDark : config.bgLight,

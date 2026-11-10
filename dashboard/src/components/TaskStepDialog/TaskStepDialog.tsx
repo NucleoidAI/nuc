@@ -111,6 +111,8 @@ const TaskStepDialog = ({
                 ? "Supervised Needed"
                 : status === "FAILED"
                 ? "Failed"
+                : status === "PINNED"
+                ? "Pinned"
                 : "-"
             }
           />

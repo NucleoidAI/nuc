@@ -9,6 +9,7 @@ import {
   ForceIndicatorWrapper,
   HighlightOverlay,
   NodeWrapper,
+  PinnedBadge,
   StatusBadge,
   StatusLabel,
 } from "./BlueprintFlowPlugin.styles";
@@ -42,6 +43,7 @@ type FlowGraphNode = import("./helper").DefinitionGraphNode & {
   isLastUsed?: boolean;
   isFailed?: boolean;
   isSelected?: boolean;
+  isPinned?: boolean;
   [key: string]: unknown;
 };
 
@@ -151,6 +153,7 @@ export default function FlowNodeRenderer({
   nodeStyle?: {
     onAdd?: (node: FlowGraphNode) => void;
     onEdit?: (node: FlowGraphNode) => void;
+    onPin?: (node: FlowGraphNode) => void;
     onSwapBranch?: (node: FlowGraphNode) => void;
     onDelete?: (node: FlowGraphNode) => void;
     showConnections?: boolean;
@@ -175,6 +178,7 @@ export default function FlowNodeRenderer({
   const {
     onAdd,
     onEdit,
+    onPin,
     onSwapBranch,
     onDelete,
     showConnections,
@@ -197,6 +201,7 @@ export default function FlowNodeRenderer({
     node.nodeType === "APPROVAL" ||
     node.nodeType === "SWITCH" ||
     node.connectorType === "decision";
+  const canPin = node.nodeType === "NORMAL" || Boolean(node.isPinned);
   const isEndpointNode =
     node.nodeType === "START" ||
     node.nodeType === "END" ||
@@ -222,6 +227,7 @@ export default function FlowNodeRenderer({
   const isLastUsed = node.isLastUsed;
   const isFailed = node.isFailed;
   const isSelected = node.isSelected;
+  const isPinned = node.isPinned;
 
   const handleContextMenu = (e: React.MouseEvent) => {
     if (isReadOnly) return;
@@ -258,6 +264,11 @@ export default function FlowNodeRenderer({
     onToggleForce?.(node);
   };
 
+  const handlePinClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onPin?.(node);
+  };
+
   return (
     <NodeWrapper
       className="anim-hover-tilt"
@@ -269,6 +280,7 @@ export default function FlowNodeRenderer({
       onContextMenu={handleContextMenu}
       onMouseDownCapture={handleMouseDownCapture}
     >
+      {isPinned && <PinnedBadge>Pinned</PinnedBadge>}
       {isForceNode && isReadOnly && (
         <ForceIndicatorWrapper
           readonly
@@ -303,32 +315,33 @@ export default function FlowNodeRenderer({
         islastused={isLastUsed ? "true" : "false"}
         isfailed={isFailed ? "true" : "false"}
         isselected={isSelected ? "true" : "false"}
+        ispinned={isPinned ? "true" : "false"}
       />
       {hasError ? (
         <>
-          <StatusLabel variant="error" />
+          <StatusLabel variant="error" ispinned={isPinned} />
           <StatusBadge variant="error" />
         </>
       ) : isFailed ? (
         <>
-          <StatusLabel variant="failed" />
+          <StatusLabel variant="failed" ispinned={isPinned} />
           <StatusBadge variant="failed" />
         </>
       ) : isLastUsed ? (
         <>
-          <StatusLabel variant="supervise" />
+          <StatusLabel variant="supervise" ispinned={isPinned} />
           <StatusBadge variant="supervise" />
         </>
       ) : isUsed ? (
         <>
-          <StatusLabel variant="used" />
+          <StatusLabel variant="used" ispinned={isPinned} />
           <StatusBadge variant="used" />
         </>
       ) : (
         changeType &&
         changeType !== "unchanged" && (
           <>
-            <ChangeLabel changetype={changeType} />
+            <ChangeLabel changetype={changeType} ispinned={isPinned} />
             <ChangeBadge changetype={changeType} />
           </>
         )
@@ -373,6 +386,18 @@ export default function FlowNodeRenderer({
                 title="Add child node"
               >
                 <Iconify icon="mdi:plus" width={16} height={16} />
+              </ActionButtonWrapper>
+            )}
+            {onPin && canPin && (
+              <ActionButtonWrapper
+                className="anim-hover-shadow"
+                data-cy="node-pin-button"
+                position="pin"
+                active={isPinned}
+                onClick={handlePinClick}
+                title={isPinned ? "Unpin node" : "Pin node"}
+              >
+                <Iconify icon="mdi:pin" width={16} height={16} />
               </ActionButtonWrapper>
             )}
           </>

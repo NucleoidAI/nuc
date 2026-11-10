@@ -434,10 +434,14 @@ async function resumePinnedStep({
 
   const comment = "Resumed: dispatching the real request.";
 
-  await Step.update(
+  const [updated] = await Step.update(
     { status: "IN_PROGRESS", comment },
-    { where: { id: stepId } },
+    { where: { id: stepId, status: "PINNED" } },
   );
+
+  if (updated === 0) {
+    throw new Error(`Pinned step not found: ${stepId}`);
+  }
 
   await event.publish("STEP_ADDED", {
     stepId: step.id,

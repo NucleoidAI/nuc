@@ -1,8 +1,9 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { alpha, keyframes } from "@mui/material/styles";
 
 export type TimelineStep = {
   id: string;
+  taskId?: string;
   action: string;
   status: string;
   comment: string | null;
@@ -11,11 +12,13 @@ export type TimelineStep = {
 
 const MONO = '"JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace';
 
-const STEP_COLORS: Record<string, "success" | "error" | "info"> = {
-  COMPLETED: "success",
-  FAILED: "error",
-  IN_PROGRESS: "info",
-};
+const STEP_COLORS: Record<string, "success" | "error" | "info" | "secondary"> =
+  {
+    COMPLETED: "success",
+    FAILED: "error",
+    IN_PROGRESS: "info",
+    PINNED: "secondary",
+  };
 
 const enter = keyframes`
   from { opacity: 0; transform: translateY(4px); }
@@ -27,9 +30,20 @@ const pulse = keyframes`
   50% { opacity: 0.35; }
 `;
 
-const StepRow = ({ step, last }: { step: TimelineStep; last: boolean }) => {
+const StepRow = ({
+  step,
+  last,
+  onResume,
+  resuming,
+}: {
+  step: TimelineStep;
+  last: boolean;
+  onResume?: (step: TimelineStep) => void;
+  resuming?: boolean;
+}) => {
   const color = STEP_COLORS[step.status] ?? "warning";
   const running = step.status === "IN_PROGRESS";
+  const isPinned = step.status === "PINNED";
 
   return (
     <Stack
@@ -86,12 +100,32 @@ const StepRow = ({ step, last }: { step: TimelineStep; last: boolean }) => {
             {step.comment}
           </Typography>
         )}
+        {isPinned && onResume && (
+          <Button
+            size="small"
+            variant="outlined"
+            color="secondary"
+            disabled={resuming}
+            onClick={() => onResume(step)}
+            sx={{ mt: 0.75, fontSize: 11, py: 0.25, px: 1, minWidth: 0 }}
+          >
+            {resuming ? "Resuming…" : "Resume"}
+          </Button>
+        )}
       </Box>
     </Stack>
   );
 };
 
-const StepTimeline = ({ steps }: { steps: TimelineStep[] }) => (
+const StepTimeline = ({
+  steps,
+  onResume,
+  resumingStepId,
+}: {
+  steps: TimelineStep[];
+  onResume?: (step: TimelineStep) => void;
+  resumingStepId?: string | null;
+}) => (
   <Box
     sx={(theme) => ({
       p: 1.25,
@@ -101,7 +135,13 @@ const StepTimeline = ({ steps }: { steps: TimelineStep[] }) => (
     })}
   >
     {steps.map((step, index) => (
-      <StepRow key={step.id} step={step} last={index === steps.length - 1} />
+      <StepRow
+        key={step.id}
+        step={step}
+        last={index === steps.length - 1}
+        onResume={onResume}
+        resuming={resumingStepId === step.id}
+      />
     ))}
   </Box>
 );

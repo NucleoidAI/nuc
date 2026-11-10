@@ -59,10 +59,14 @@ const ChatTimeline = ({
   messages,
   steps,
   running,
+  onResume,
+  resumingStepId,
 }: {
   messages: TimelineMessage[];
   steps: TimelineStep[];
   running: boolean;
+  onResume?: (step: TimelineStep) => void;
+  resumingStepId?: string | null;
 }) => {
   const endRef = useRef<HTMLDivElement>(null);
   const items = useMemo(() => buildItems(messages, steps), [messages, steps]);
@@ -76,7 +80,12 @@ const ChatTimeline = ({
     <Stack spacing={1.5}>
       {items.map((item) =>
         item.kind === "steps" ? (
-          <StepTimeline key={item.key} steps={item.steps} />
+          <StepTimeline
+            key={item.key}
+            steps={item.steps}
+            onResume={onResume}
+            resumingStepId={resumingStepId}
+          />
         ) : item.message.role === "USER" ? (
           <HumanMessage
             key={item.key}

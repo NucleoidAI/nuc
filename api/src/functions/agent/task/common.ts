@@ -504,7 +504,7 @@ async function conclude({
         node: matchedNode,
         state,
       }),
-      comment: "Pinned node: execution skipped for this test run.",
+      comment: "Pinned node: run stopped here for this test run.",
       nodeId: matchedNode.id,
     });
   }
@@ -549,7 +549,12 @@ async function load({
     steps: steps.map((step, index) => ({ index, ...step })),
   };
 
-  if (steps.some((step) => step.status === "WAITING_FOR_APPROVAL")) {
+  if (
+    steps.some(
+      (step) =>
+        step.status === "WAITING_FOR_APPROVAL" || step.status === "PINNED",
+    )
+  ) {
     return { result: undefined };
   }
 

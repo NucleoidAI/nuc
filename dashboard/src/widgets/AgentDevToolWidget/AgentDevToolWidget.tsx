@@ -54,6 +54,8 @@ const AgentDevToolWidget = ({
     execute: executeBlueprint,
     start: startTask,
     reset: resetApiCall,
+    resumeStep: resumeApiCallStep,
+    resumingStepId: resumingApiCallStepId,
   } = useBlueprintExecution();
 
   useEffect(
@@ -369,7 +371,11 @@ const AgentDevToolWidget = ({
               presetRequired
               panel={
                 runsAsTask ? (
-                  <ApiCallPanel call={apiCall} />
+                  <ApiCallPanel
+                    call={apiCall}
+                    onResume={resumeApiCallStep}
+                    resumingStepId={resumingApiCallStepId}
+                  />
                 ) : (
                   <ChatTimeline
                     messages={messages}

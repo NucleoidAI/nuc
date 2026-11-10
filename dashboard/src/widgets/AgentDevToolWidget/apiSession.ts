@@ -45,7 +45,7 @@ async function loadApiCall(
     blueprintId: task.blueprintId,
     taskName: task.description,
     request: request ?? {},
-    steps,
+    steps: steps.map((step) => ({ ...step, taskId })),
     done,
     failed,
     response: !done

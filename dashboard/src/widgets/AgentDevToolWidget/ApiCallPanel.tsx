@@ -82,7 +82,15 @@ const Waiting = () => (
   </Stack>
 );
 
-const ApiCallPanel = ({ call }: { call: ApiCall | null }) => {
+const ApiCallPanel = ({
+  call,
+  onResume,
+  resumingStepId,
+}: {
+  call: ApiCall | null;
+  onResume?: (step: ApiStep) => void;
+  resumingStepId?: string | null;
+}) => {
   if (!call) return null;
 
   const pending = !call.done;
@@ -118,7 +126,11 @@ const ApiCallPanel = ({ call }: { call: ApiCall | null }) => {
           Steps
         </Label>
         {call.steps.length ? (
-          <StepTimeline steps={call.steps} />
+          <StepTimeline
+            steps={call.steps}
+            onResume={onResume}
+            resumingStepId={resumingStepId}
+          />
         ) : pending ? (
           <Waiting />
         ) : (

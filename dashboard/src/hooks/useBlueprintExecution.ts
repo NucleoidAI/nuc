@@ -11,6 +11,7 @@ const STEP_POLL_INTERVAL = 1000;
 
 function useBlueprintExecution() {
   const [apiCall, setApiCall] = useState<ApiCall | null>(null);
+  const [resumingStepId, setResumingStepId] = useState<string | null>(null);
   const runRef = useRef(0);
 
   const reset = useCallback(() => {
@@ -33,7 +34,7 @@ function useBlueprintExecution() {
 
       const loadSteps = async (id: string) => {
         const { data } = await http.get<ApiStep[]>(`/tasks/${id}/steps`);
-        patch({ steps: data });
+        patch({ steps: data.map((step) => ({ ...step, taskId: id })) });
       };
 
       const poll = async (id: string) => {
@@ -143,7 +144,27 @@ function useBlueprintExecution() {
     []
   );
 
-  return { apiCall, setApiCall, execute, start, reset, runRef };
+  const resumeStep = useCallback(async (step: ApiStep) => {
+    if (!step.taskId) return;
+
+    setResumingStepId(step.id);
+    try {
+      await http.post(`/tasks/${step.taskId}/steps/${step.id}/resume`);
+    } finally {
+      setResumingStepId(null);
+    }
+  }, []);
+
+  return {
+    apiCall,
+    setApiCall,
+    execute,
+    start,
+    reset,
+    runRef,
+    resumeStep,
+    resumingStepId,
+  };
 }
 
 export default useBlueprintExecution;

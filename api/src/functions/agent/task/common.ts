@@ -9,6 +9,7 @@ import {
   findNodeAhead,
   forceAllNodes,
   isForcedNode,
+  isPinnedNode,
   resolveCurrentNode,
   switchCases,
 } from "../../../lib/blueprintNodes";
@@ -499,6 +500,21 @@ async function conclude({
     );
   }
 
+  if (state.debug && isPinnedNode(matchedNode)) {
+    return taskFn.addPinnedStep({
+      taskId: state.taskId,
+      action,
+      parameters: platformParameters({
+        action,
+        parameters,
+        node: matchedNode,
+        state,
+      }),
+      comment: "Pinned node: run stopped here for this test run.",
+      nodeId: matchedNode.id,
+    });
+  }
+
   return taskFn.addStep({
     taskId: state.taskId,
     action,
@@ -540,7 +556,12 @@ async function load({
     steps: steps.map((step, index) => ({ index, ...step })),
   };
 
-  if (steps.some((step) => step.status === "WAITING_FOR_APPROVAL")) {
+  if (
+    steps.some(
+      (step) =>
+        step.status === "WAITING_FOR_APPROVAL" || step.status === "PINNED",
+    )
+  ) {
     return { result: undefined };
   }
 

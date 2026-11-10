@@ -331,21 +331,32 @@ async function listWithEffectiveStatus({
   const tasks = await list({ teamId, agentId, from, to });
   const taskIds = tasks.map((task) => task.id);
 
-  const awaitingSupervisings = taskIds.length
-    ? await Supervising.findAll({
-        where: { status: "IN_PROGRESS", taskId: { [Op.in]: taskIds } },
-        attributes: ["taskId"],
-      })
-    : [];
+  const [awaitingSupervisings, pinnedSteps] = taskIds.length
+    ? await Promise.all([
+        Supervising.findAll({
+          where: { status: "IN_PROGRESS", taskId: { [Op.in]: taskIds } },
+          attributes: ["taskId"],
+        }),
+        Step.findAll({
+          where: { status: "PINNED", taskId: { [Op.in]: taskIds } },
+          attributes: ["taskId"],
+        }),
+      ])
+    : [[], []];
 
   const awaitingTaskIds = new Set(
     awaitingSupervisings.map((supervising) => supervising.taskId),
   );
+  const pinnedTaskIds = new Set(pinnedSteps.map((step) => step.taskId));
 
   return tasks.map((task) => ({
     ...task,
     effectiveStatus:
-      task.status === "IN_PROGRESS" && awaitingTaskIds.has(task.id)
+      task.status !== "IN_PROGRESS"
+        ? task.status
+        : pinnedTaskIds.has(task.id)
+        ? "PINNED"
+        : awaitingTaskIds.has(task.id)
         ? "AWAITING"
         : task.status,
   }));
@@ -387,6 +398,67 @@ async function addStep({
   });
 
   return step.toJSON();
+}
+
+async function addPinnedStep({
+  taskId,
+  action,
+  parameters,
+  comment,
+  nodeId,
+}: {
+  taskId: string;
+  action: string;
+  parameters: object;
+  comment: string;
+  nodeId: string;
+}) {
+  const step = await Step.create({
+    taskId,
+    action,
+    parameters,
+    comment,
+    status: "PINNED",
+    knowledgeScore: null,
+    nodeId,
+  });
+
+  return step.toJSON();
+}
+
+async function resumePinnedStep({
+  taskId,
+  stepId,
+}: {
+  taskId: string;
+  stepId: string;
+}) {
+  const step = await Step.findOne({ where: { id: stepId, taskId } });
+
+  if (!step || step.status !== "PINNED") {
+    throw new Error(`Pinned step not found: ${stepId}`);
+  }
+
+  const comment = "Resumed: dispatching the real request.";
+
+  const [updated] = await Step.update(
+    { status: "IN_PROGRESS", comment },
+    { where: { id: stepId, status: "PINNED" } },
+  );
+
+  if (updated === 0) {
+    throw new Error(`Pinned step not found: ${stepId}`);
+  }
+
+  await event.publish("STEP_ADDED", {
+    stepId: step.id,
+    taskId,
+    action: step.action,
+    parameters: step.parameters,
+    comment,
+  });
+
+  return { ...step.toJSON(), status: "IN_PROGRESS", comment };
 }
 
 async function getStep({ stepId }: { stepId: string }) {
@@ -559,6 +631,8 @@ export default {
   listWithEffectiveStatus,
   getStep,
   addStep,
+  addPinnedStep,
+  resumePinnedStep,
   updateStep,
   updateStepComment,
   listSteps,

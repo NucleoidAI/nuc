@@ -47,6 +47,7 @@ class Step extends Model {
       "WAITING_FOR_USER",
       "WAITING_FOR_APPROVAL",
       "LOW_CONFIDENCE",
+      "PINNED",
     ],
   ])
   @Column(DataType.STRING)
@@ -57,7 +58,8 @@ class Step extends Model {
     | "FAILED"
     | "WAITING_FOR_USER"
     | "WAITING_FOR_APPROVAL"
-    | "LOW_CONFIDENCE";
+    | "LOW_CONFIDENCE"
+    | "PINNED";
 
   @AllowNull(false)
   @Column(DataType.UUID)

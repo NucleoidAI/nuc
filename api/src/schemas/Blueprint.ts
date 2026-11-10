@@ -65,6 +65,7 @@ const Blueprint = {
               targetAgentId: z.string().optional(),
               targetBlueprintId: z.string().optional(),
               force: z.boolean().optional(),
+              pinned: z.boolean().optional(),
               fields: ApiFieldsSchema.optional(),
               strict: z.boolean().optional(),
               timeout: ApiTimeout.optional(),

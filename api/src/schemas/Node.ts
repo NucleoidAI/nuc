@@ -13,6 +13,7 @@ const ConditionNode = z.object({
     pseudocode: z.string().optional(),
     pseudocodeEnabled: z.boolean().optional(),
     force: z.boolean().optional(),
+    pinned: z.boolean().optional(),
   }),
 });
 
@@ -27,6 +28,7 @@ const NormalNode = z.object({
     pseudocode: z.string().optional(),
     pseudocodeEnabled: z.boolean().optional(),
     force: z.boolean().optional(),
+    pinned: z.boolean().optional(),
     parameters: z.record(z.string(), z.unknown()).optional(),
   }),
 });
@@ -42,6 +44,7 @@ const SwitchNode = z.object({
     pseudocode: z.string().optional(),
     pseudocodeEnabled: z.boolean().optional(),
     force: z.boolean().optional(),
+    pinned: z.boolean().optional(),
     cases: z
       .array(
         z.object({
@@ -66,6 +69,7 @@ const HandoffNode = z.object({
     pseudocode: z.string().optional(),
     pseudocodeEnabled: z.boolean().optional(),
     force: z.boolean().optional(),
+    pinned: z.boolean().optional(),
   }),
 });
 
@@ -82,6 +86,7 @@ const ApprovalNode = z.object({
     pseudocode: z.string().optional(),
     pseudocodeEnabled: z.boolean().optional(),
     force: z.boolean().optional(),
+    pinned: z.boolean().optional(),
   }),
 });
 

@@ -251,4 +251,37 @@ router.patch("/:taskId/steps/:stepId", async (req, res) => {
   return res.status(200).end();
 });
 
+router.post("/:taskId/steps/:stepId/resume", async (req, res) => {
+  const { projectId: teamId } = req.session;
+  const { taskId, stepId } = req.params;
+
+  const taskInstance = await Task.findOne({
+    where: { id: taskId },
+    include: [
+      {
+        model: Agent,
+        attributes: ["teamId"],
+        required: true,
+      },
+    ],
+  });
+
+  if (!taskInstance) {
+    return res.status(404).end();
+  }
+
+  if (taskInstance.Agent.teamId !== teamId) {
+    return res.status(401).end();
+  }
+
+  try {
+    const step = await task.resumePinnedStep({ taskId, stepId });
+    return res.status(200).json(step);
+  } catch (err) {
+    return res.status(400).json({
+      message: err instanceof Error ? err.message : "Failed to resume step",
+    });
+  }
+});
+
 export default router;

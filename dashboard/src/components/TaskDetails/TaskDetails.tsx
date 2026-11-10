@@ -103,6 +103,10 @@ const TaskDetails = ({
       label: "Supervision Raised",
       color: "info.main",
     },
+    PINNED: {
+      label: "Pinned",
+      color: "secondary.main",
+    },
   };
 
   const isDebug = Boolean(task.debug);

@@ -375,6 +375,8 @@ const AgentDevToolWidget = ({
                     messages={messages}
                     steps={sessionSteps.steps}
                     running={sessionSteps.running}
+                    onResume={sessionSteps.resumeStep}
+                    resumingStepId={sessionSteps.resumingStepId}
                   />
                 )
               }

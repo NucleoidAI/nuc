@@ -133,7 +133,7 @@ export const getActionIcon = (action?: string) => {
 
 type StatusConfig = {
   label: string;
-  color: "primary" | "success" | "error" | "warning" | "info";
+  color: "primary" | "success" | "error" | "warning" | "info" | "secondary";
 };
 
 const STATUS_MAP: Record<string, StatusConfig> = {
@@ -146,6 +146,7 @@ const STATUS_MAP: Record<string, StatusConfig> = {
   WAITING_FOR_APPROVAL: { label: "Waiting for approval", color: "warning" },
   SUPERVISED_NEEDED: { label: "Supervision Raised", color: "info" },
   LOW_CONFIDENCE: { label: "Low Confidence", color: "warning" },
+  PINNED: { label: "Pinned", color: "secondary" },
 };
 
 export const getStatusConfig = (status?: string): StatusConfig => {

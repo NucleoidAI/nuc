@@ -7,7 +7,12 @@ import { publish, useEvent } from "@nucleoidai/react-event";
 
 type DependencyArray = object[];
 
-type EffectiveTaskStatus = "IN_PROGRESS" | "COMPLETED" | "FAILED" | "AWAITING";
+type EffectiveTaskStatus =
+  | "IN_PROGRESS"
+  | "COMPLETED"
+  | "FAILED"
+  | "AWAITING"
+  | "PINNED";
 
 function useTasks(agentId: string, initialFetchState: DependencyArray = []) {
   const { Api } = useApi();

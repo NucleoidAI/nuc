@@ -63,6 +63,9 @@ function graphToNodes(graphData: DefinitionGraph) {
         action: node.action || node.raw?.properties?.action,
         description: node.description || node.raw?.properties?.description,
         ...(node.raw?.properties?.force && { force: true }),
+        ...(node.raw?.properties?.pinned && {
+          pinned: true,
+        }),
         ...(node.nodeType === "NORMAL" &&
           node.raw?.properties?.parameters &&
           Object.keys(node.raw.properties.parameters).length > 0 && {
@@ -248,6 +251,7 @@ function BlueprintFlowWidget({
       const isLastUsed = lastUsedNodeId === nodeId;
       const isFailed = failedNodeId === nodeId;
       const isSelected = selectedNodeId === nodeId;
+      const isPinned = Boolean(node.raw?.properties?.pinned);
 
       acc[nodeId] = {
         ...node,
@@ -257,6 +261,7 @@ function BlueprintFlowWidget({
         isLastUsed,
         isFailed,
         isSelected,
+        isPinned,
       };
 
       return acc;
@@ -657,6 +662,31 @@ function BlueprintFlowWidget({
     });
     setHasLocalChanges(true);
     setApiNodeId(null);
+  };
+
+  const handlePinNodeClick = (node: { id: string }) => {
+    setGraphData((prev) => {
+      if (!prev) return prev;
+      const targetNode = prev.nodes[node.id];
+      if (!targetNode) return prev;
+
+      const wasPinned = Boolean(targetNode.raw?.properties?.pinned);
+
+      const currentNodes = { ...prev.nodes };
+      currentNodes[node.id] = {
+        ...targetNode,
+        raw: {
+          ...targetNode.raw,
+          properties: {
+            ...targetNode.raw?.properties,
+            pinned: !wasPinned,
+          },
+        },
+      };
+
+      return { ...prev, nodes: currentNodes };
+    });
+    setHasLocalChanges(true);
   };
 
   const handleEditNodeClick = (node) => {
@@ -2097,6 +2127,7 @@ function BlueprintFlowWidget({
           onFlowChange={handleFlowChange}
           onAddNodeClick={handleAddNodeClick}
           onEditNodeClick={handleEditNodeClick}
+          onPinNodeClick={handlePinNodeClick}
           onSwapBranchClick={handleSwapBranch}
           onDeleteNodeClick={handleDeleteNode}
           onSave={handleSaveFlow}

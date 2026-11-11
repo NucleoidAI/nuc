@@ -1,17 +1,17 @@
-<h1 align="center">GreyCollar</h1>
+<h1 align="center">nuc</h1>
 <p align="center">
   <b>Supervised AI Agent</b>
 </p>
 
 <p align="center">
   <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/Apache-2.0-yellow?style=for-the-badge&logo=apache" alt="License" /></a>
-  <a href="https://www.npmjs.com/package/greycollar"><img src="https://img.shields.io/badge/NPM-red?style=for-the-badge&logo=npm" alt="NPM" /></a>
+  <a href="https://www.npmjs.com/package/nuc"><img src="https://img.shields.io/badge/NPM-red?style=for-the-badge&logo=npm" alt="NPM" /></a>
   <a href="https://discord.gg/wNmcnkDnkM"><img src="https://img.shields.io/badge/Discord-lightgrey?style=for-the-badge&logo=discord" alt="Discord" /></a>
 </p>
 
-![GreyCollar Banner](https://github.com/user-attachments/assets/064fdd2f-b1de-4fca-9cd6-1dbf1e55e470)
+![nuc Banner](https://github.com/user-attachments/assets/064fdd2f-b1de-4fca-9cd6-1dbf1e55e470)
 
-GreyCollar AI is a supervised AI agent platform for human–AI collaboration. The platform provides an environment to continuously learn from human supervisors, so they can adapt to real-world workloads.
+nuc AI is a supervised AI agent platform for human–AI collaboration. The platform provides an environment to continuously learn from human supervisors, so they can adapt to real-world workloads.
 
 Each AI agent works within defined blueprints and uses a knowledge base to complete tasks. When uncertain, they escalate to human supervisors—enabling **"Hallucination Control"** to prevent mistakes.
 
@@ -24,12 +24,12 @@ Human-in-the-Loop (HITL) is a collaborative approach where AI agents work alongs
 - **Safe & Responsible AI** – Human oversight ensures ethical alignment, reduces bias, and mitigates unintended or harmful outputs.
 - **Operational Efficiency** – AI handles routine, repetitive work at scale, freeing human supervisors to focus on higher-value, strategic decisions.
 
-[GreyCollar Demo](https://github.com/user-attachments/assets/c1194674-5850-434d-a085-7fa3714f3746)
+[nuc Demo](https://github.com/user-attachments/assets/c1194674-5850-434d-a085-7fa3714f3746)
 
 ## Get Started
 
 ```
-git clone https://github.com/greycollar/greycollar.git
+git clone https://github.com/nuc/nuc.git
 npm install
 
 // Add env variables
@@ -45,11 +45,11 @@ npm start
 
 This will start three applications simultaneously: Dashboard, API Server and Proxy Server. Once started, the dashboard should be accessible in your browser at http://localhost:3000
 
-Learn more at [https://greycollar.ai/docs](https://greycollar.ai/docs)
+Learn more at [https://nuc.ai/docs](https://nuc.ai/docs)
 
 ## ⚡n8n Integration
 
-GreyCollar can be part of your favorite flow tools like n8n, enabling you to embed supervised AI directly into automated workflows.
+nuc can be part of your favorite flow tools like n8n, enabling you to embed supervised AI directly into automated workflows.
 
 ![n8n Integration](https://github.com/user-attachments/assets/ddddd7ee-e8e5-4ebf-b316-41c23075c711)
 
@@ -64,7 +64,7 @@ GreyCollar can be part of your favorite flow tools like n8n, enabling you to emb
       LangChain, or LlamaIndex might be a better fit if your application has a static flow—where AI doesn't need to make dynamic decisions—like in ChatBots, RAG etc. That said, if your business rules are well-defined and deterministic, there’s no shame in coding them directly!
       <br/>
       <br/>
-      However, if you need continuous learning combined with autonomous decision-making—in other words, true AI Agent—GreyCollar may suit you well. Choosing the right tool for the job is key.
+      However, if you need continuous learning combined with autonomous decision-making—in other words, true AI Agent—nuc may suit you well. Choosing the right tool for the job is key.
       <br/>
       <br/>
       <p align="right">
@@ -79,7 +79,7 @@ GreyCollar can be part of your favorite flow tools like n8n, enabling you to emb
 
 ## Features
 
-![GreyCollar](https://github.com/user-attachments/assets/cedf7872-e4b8-46fe-a2b5-306fb7cb12b5)
+![nuc](https://github.com/user-attachments/assets/cedf7872-e4b8-46fe-a2b5-306fb7cb12b5)
 
 - [Agent (AI)](#agent-ai): AI assistants that handle tasks based on assigned blueprints and knowledge.
 - [Supervising (Human)](#supervising-human): Humans who guide AI with feedback, questions, or extra info.
@@ -91,7 +91,7 @@ GreyCollar can be part of your favorite flow tools like n8n, enabling you to emb
 
 ## Agent (AI)
 
-![Agent Page](https://cdn.nucleoid.com/greycollar/media/5afbf454-97dc-45a9-bc4d-14fb69d6b1f9.png)
+![Agent Page](https://cdn.nucleoid.com/nuc/media/5afbf454-97dc-45a9-bc4d-14fb69d6b1f9.png)
 
 Agents are AI assistants that help you with your tasks based on blueprints and knowledge. They are designed to:
 
@@ -101,7 +101,7 @@ Agents are AI assistants that help you with your tasks based on blueprints and k
 
 ## Supervising (Human)
 
-![Supervising](https://cdn.nucleoid.com/greycollar/media/c09ef87d-7453-4a49-9b31-c56a0aaaa03f.png)
+![Supervising](https://cdn.nucleoid.com/nuc/media/c09ef87d-7453-4a49-9b31-c56a0aaaa03f.png)
 
 Supervising by human is raised when the AI is not able to complete the task or needs human input. The supervisor can provide feedback, ask questions, or give additional information to help the AI complete the task.
 
@@ -109,7 +109,7 @@ Supervising by human is raised when the AI is not able to complete the task or n
 
 ## Knowledge
 
-![Knowledge Base](https://cdn.nucleoid.com/greycollar/media/e10ddf80-499f-45da-9182-7284fcc21bf0.png)
+![Knowledge Base](https://cdn.nucleoid.com/nuc/media/e10ddf80-499f-45da-9182-7284fcc21bf0.png)
 
 Knowledge is the information that the AI uses when working on blueprints. It can be in the form of documents, FAQs, or any other.
 
@@ -117,7 +117,7 @@ Knowledge is the information that the AI uses when working on blueprints. It can
 
 ## Blueprint and Task
 
-![Blueprint](https://cdn.nucleoid.com/greycollar/media/d12714f4-e584-4020-92cb-62a25664e14d.png)
+![Blueprint](https://cdn.nucleoid.com/nuc/media/d12714f4-e584-4020-92cb-62a25664e14d.png)
 
 Blueprint is a blueprint of the tasks that the AI will perform based on knowledge. It defines what the AI can do and how it can help you.
 
@@ -125,7 +125,7 @@ Blueprint is a blueprint of the tasks that the AI will perform based on knowledg
 
 ## Team
 
-![Team](https://cdn.nucleoid.com/greycollar/media/8046f722-d9c0-487f-89b2-a4e3aafc1874.png)
+![Team](https://cdn.nucleoid.com/nuc/media/8046f722-d9c0-487f-89b2-a4e3aafc1874.png)
 
 Team is a logical grouping of AI agents. Mainly this grouping provides 2 major benefits:
 
@@ -134,7 +134,7 @@ Team is a logical grouping of AI agents. Mainly this grouping provides 2 major b
 
 ## Communication
 
-![Communication](https://cdn.nucleoid.com/greycollar/media/1f23108d-5f9d-4b20-8064-3679ee43289b.png)
+![Communication](https://cdn.nucleoid.com/nuc/media/1f23108d-5f9d-4b20-8064-3679ee43289b.png)
 
 Communication is the primary way to interact with AI agents. It can occur through various channels, such as chat, email, or voice, depending on the context and user preferences. These communication channels are linked to specific blueprints that AI agents are capable of handling, ensuring interactions are efficient and task-relevant. Multiple channels can be used simultaneously, allowing for flexibility in how users engage with AI agents.
 
@@ -142,7 +142,7 @@ Communication is the primary way to interact with AI agents. It can occur throug
 
 ## Integration
 
-![Integration](https://cdn.nucleoid.com/greycollar/media/4a1ef3f7-172a-49ea-a782-ac170d335640.png)
+![Integration](https://cdn.nucleoid.com/nuc/media/4a1ef3f7-172a-49ea-a782-ac170d335640.png)
 
 All integrations are based on MCP that allows you to connect to any third-party service. The integration can be used for bidirectional communication:
 
@@ -151,13 +151,13 @@ All integrations are based on MCP that allows you to connect to any third-party 
 
 ## Event-Driven Agentic AI Platform
 
-GreyCollar is an **Event-Driven AI Agent Platform** designed for dynamic and adaptive AI workflows and autonomous decision-making. While frameworks like LangChain and LlamaIndex are specialized in creating static flows, but it is significantly more challenging to have flexible AI agent compared to event-drive architecture.
+nuc is an **Event-Driven AI Agent Platform** designed for dynamic and adaptive AI workflows and autonomous decision-making. While frameworks like LangChain and LlamaIndex are specialized in creating static flows, but it is significantly more challenging to have flexible AI agent compared to event-drive architecture.
 
 Key Advantages:
 
 **⚡ Dynamic Workflows:**
 
-- Instead of a rigid sequence of actions, GreyCollar agents react to events in real-time. These events could be anything: a new email, a sensor reading, a user interaction, or even the output of another AI agent.
+- Instead of a rigid sequence of actions, nuc agents react to events in real-time. These events could be anything: a new email, a sensor reading, a user interaction, or even the output of another AI agent.
 - This allows for highly adaptable and context-aware behavior. The agent's next action is determined by the current situation, not a pre-programmed path.
 
 **🧠 Autonomous Decision-Making:**

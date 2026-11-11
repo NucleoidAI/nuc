@@ -90,7 +90,7 @@
     "prettier": "^2.8.8",
     "prop-types": "^15.8.1",
     "start-server-and-test": "^2.0.1",
-    "storybook": "^8.4.7",
+    "storybook": "^8.6.19",
     "vite": "^4.5.5",
     "vite-plugin-svgr": "^3.2.0"
   },

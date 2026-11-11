@@ -18,7 +18,7 @@ export function matchesToken(token: string, hash: string) {
 }
 export function approvalLinks(
   base: string | undefined,
-  sessionId: string,
+  taskId: string,
   stepId: string,
   token: string,
 ) {
@@ -27,8 +27,8 @@ export function approvalLinks(
       "TWO_FACTOR_PUBLIC_URL is required for email approval links",
     );
   const url = new URL(
-    `${base.replace(/\/$/, "")}/sessions/${encodeURIComponent(
-      sessionId,
+    `${base.replace(/\/$/, "")}/tasks/${encodeURIComponent(
+      taskId,
     )}/two-factor/email`,
   );
   if (

@@ -4,7 +4,7 @@ async function run({
   parameters,
 }: {
   parameters: {
-    sessionId: string;
+    sessionId?: string;
     agentId: string;
     answer: string;
     question: string;
@@ -12,12 +12,14 @@ async function run({
 }) {
   const { sessionId, agentId, answer, question } = parameters;
 
-  await session.addConversation({
-    sessionId,
-    agentId,
-    role: "ASSISTANT",
-    content: answer || question,
-  });
+  if (sessionId) {
+    await session.addConversation({
+      sessionId,
+      agentId,
+      role: "ASSISTANT",
+      content: answer || question,
+    });
+  }
 
   return answer || question;
 }

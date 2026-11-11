@@ -14,7 +14,9 @@ import {
   switchCases,
 } from "../../../lib/blueprintNodes";
 import {
+  type BlueprintMode,
   endNodeOf,
+  jsonRequestOf,
   omitMissingRequestRefs,
   startNodeOf,
 } from "../../../lib/apiNodes";
@@ -76,6 +78,7 @@ type TaskState = {
   currentTask: CurrentTask;
   isBlocking: boolean;
   isLite: boolean;
+  mode: BlueprintMode;
   nodes: any[];
   currentNode?: any;
   startNode?: any;
@@ -219,6 +222,7 @@ async function prepareParameters({
       }),
       start: state.startNode,
       steps: state.steps,
+      variables: state.mode === "JSON" ? state.variables : undefined,
     });
 
     try {
@@ -436,6 +440,8 @@ async function handoff(state: TaskState, parameters: Params, comment?: string) {
     description: context,
     blueprintId: targetBlueprintId,
     sessionId,
+    ...(!sessionId && { variables: state.variables }),
+    request: jsonRequestOf(targetBlueprint, state.variables),
     inheritedSteps: steps.map(
       ({ action, status, parameters, result, comment }) => ({
         action,
@@ -537,6 +543,7 @@ async function load({
     blueprintId,
     status,
     inheritedSteps,
+    variables: taskVariables,
     debug,
   } = await taskFn.get({ taskId });
 
@@ -566,7 +573,7 @@ async function load({
   const [agentInstance, blueprint, variables] = await Promise.all([
     agentId ? agentData.get({ agentId }) : null,
     blueprintId ? blueprintFn.get({ blueprintId }) : null,
-    sessionId ? sessionVariables({ sessionId }) : {},
+    taskVariables ?? (sessionId ? sessionVariables({ sessionId }) : {}),
   ]);
 
   const isBlocking = blueprint?.blocking !== false;
@@ -625,6 +632,7 @@ async function load({
     currentTask,
     isBlocking,
     isLite,
+    mode: blueprint?.mode ?? "CHAT",
     nodes,
     currentNode,
     startNode: startNodeOf(nodes),

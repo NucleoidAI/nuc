@@ -13,7 +13,7 @@ async function create({
   agentId,
   taskId,
 }: {
-  sessionId: string;
+  sessionId?: string;
   conversationId?: string;
   question: string;
   agentId: string;

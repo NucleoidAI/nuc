@@ -1,29 +1,51 @@
 import Agent from "../models/Agent";
 import Joi from "joi";
 import Task from "../models/Task";
+import apiSchema from "../lib/apiSchema";
+import blueprintFn from "../functions/blueprint";
 import express from "express";
+import { jsonRequestOf, startNodeOf } from "../lib/apiNodes";
 import schemas from "../schemas";
 import task from "../functions/task";
 
 const router = express.Router();
 
+async function blueprintTaskDescription({
+  blueprint,
+  debug,
+}: {
+  blueprint: { id: string; title: string };
+  debug: boolean;
+}) {
+  const count = await task.count({ blueprintId: blueprint.id, debug });
+
+  return `${blueprint.title} #${count + 1}`;
+}
+
 router.post("/", async (req, res) => {
   const { projectId: teamId } = req.session;
-  const { agentId, description, sessionId, blueprintId } = Joi.attempt(
-    req.body,
-    Joi.object({
-      agentId: Joi.string()
-        .guid({ version: ["uuidv4"] })
-        .required(),
-      description: Joi.string().required(),
-      sessionId: Joi.string()
-        .guid({ version: ["uuidv4"] })
-        .optional(),
-      blueprintId: Joi.string()
-        .guid({ version: ["uuidv4"] })
-        .optional(),
-    })
-  );
+  const { agentId, description, sessionId, blueprintId, variables, debug } =
+    Joi.attempt(
+      req.body,
+      Joi.object({
+        agentId: Joi.string()
+          .guid({ version: ["uuidv4"] })
+          .required(),
+        description: Joi.string().when("blueprintId", {
+          is: Joi.exist(),
+          then: Joi.optional(),
+          otherwise: Joi.required(),
+        }),
+        sessionId: Joi.string()
+          .guid({ version: ["uuidv4"] })
+          .optional(),
+        blueprintId: Joi.string()
+          .guid({ version: ["uuidv4"] })
+          .optional(),
+        variables: Joi.object().optional(),
+        debug: Joi.boolean().optional(),
+      })
+    );
 
   const agent = await Agent.findByPk(agentId);
 
@@ -35,11 +57,47 @@ router.post("/", async (req, res) => {
     return res.status(401).end();
   }
 
+  const blueprint = blueprintId
+    ? await blueprintFn.get({ blueprintId, includeDetails: false })
+    : null;
+
+  if (blueprint) {
+    const owner = await Agent.findByPk(blueprint.agentId, {
+      attributes: ["teamId"],
+    });
+
+    if (owner?.teamId !== teamId) {
+      return res.status(401).end();
+    }
+  }
+
+  const request = sessionId ? undefined : jsonRequestOf(blueprint, variables);
+
+  if (request) {
+    const start = startNodeOf(blueprint.nodes);
+    const input = apiSchema.validate(
+      start.properties?.fields ?? [],
+      request.body,
+      { strict: Boolean(start.properties?.strict) }
+    );
+
+    if (!input.success) {
+      return res
+        .status(400)
+        .json({ error: "INVALID_REQUEST", issues: input.issues });
+    }
+  }
+
   const taskInstance = await task.create({
     agentId,
-    description,
+    description:
+      description ??
+      (await blueprintTaskDescription({ blueprint, debug: Boolean(debug) })),
     sessionId,
     blueprintId,
+    variables,
+    request,
+    debug,
   });
 
   return res.status(200).json(taskInstance);

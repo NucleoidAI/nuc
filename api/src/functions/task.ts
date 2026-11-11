@@ -13,6 +13,7 @@ async function create({
   blueprintId,
   sessionId,
   inheritedSteps,
+  variables,
   request,
   debug = false,
 }: {
@@ -21,7 +22,12 @@ async function create({
   blueprintId?: string;
   sessionId?: string;
   inheritedSteps?: object[];
-  request?: { nodeId: string; body: Record<string, unknown> };
+  variables?: Record<string, unknown>;
+  request?: {
+    nodeId: string;
+    body: Record<string, unknown>;
+    comment?: string;
+  };
   debug?: boolean;
 }) {
   const task = await Task.create({
@@ -31,6 +37,7 @@ async function create({
     blueprintId,
     sessionId,
     inheritedSteps: inheritedSteps?.length ? inheritedSteps : null,
+    variables: variables && Object.keys(variables).length ? variables : null,
     debug,
   });
 
@@ -40,7 +47,7 @@ async function create({
       action: "PLATFORM:api_request",
       parameters: request.body,
       result: JSON.stringify(request.body),
-      comment: "Received API request.",
+      comment: request.comment ?? "Received API request.",
       status: "COMPLETED",
       nodeId: request.nodeId,
     });

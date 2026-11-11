@@ -20,7 +20,7 @@ import modelPricings from "./routes/modelPricings";
 import organizations from "./routes/organizations";
 import platform from "@canmingir/link-express";
 import projects from "./routes/projects";
-import sessionApprovals from "./routes/sessionApprovals";
+import sessionApprovals, { taskApprovals } from "./routes/sessionApprovals";
 import sessions from "./routes/sessions";
 import statistics from "./routes/statistics";
 import stepScores from "./routes/stepScores";
@@ -50,6 +50,7 @@ function createApp() {
   setLLMLogger(logLLM);
 
   platform.publicRouter.use("/sessions", sessionApprovals);
+  platform.publicRouter.use("/tasks", taskApprovals);
   // TODO: Authenticate blueprint API calls before exposing them beyond development
   platform.publicRouter.use("/execute", blueprintApi);
 

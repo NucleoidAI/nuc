@@ -30,6 +30,27 @@ type BackendSession = {
   conversations: BackendConversation[];
 };
 
+type BackendApiCall = {
+  id: string;
+  agentId: string;
+  description: string;
+  createdAt: string;
+};
+
+const apiCallToStoredSession = (
+  task: BackendApiCall,
+  agentIcon?: string,
+  agentName?: string
+): StoredSession => ({
+  sessionId: task.id,
+  agentId: task.agentId,
+  type: "API",
+  messages: [{ id: task.id, content: task.description, role: "ASSISTANT" }],
+  lastUpdated: new Date(task.createdAt).getTime(),
+  agentIcon,
+  agentName,
+});
+
 export const readSessions = (): StoredSession[] => {
   const raw = storage.get(SESSIONS_STORAGE_KEY);
   return Array.isArray(raw) ? raw : [];
@@ -104,13 +125,26 @@ export default function useChatSessions(
 
   const fetchSessions = useCallback(() => {
     if (!agentId) return;
-    http
-      .get(`/agents/${agentId}/sessions`)
-      .then((response) => {
-        const sessions = (response?.data || []).map((session: BackendSession) =>
-          toStoredSession(session, agentIcon, agentName)
+    Promise.all([
+      http.get(`/agents/${agentId}/sessions`),
+      http
+        .get(`/agents/${agentId}/api-calls`)
+        .catch(() => ({ data: [] as BackendApiCall[] })),
+    ])
+      .then(([sessionsResponse, apiCallsResponse]) => {
+        const sessions = (sessionsResponse?.data || []).map(
+          (session: BackendSession) =>
+            toStoredSession(session, agentIcon, agentName)
         );
-        setFetchedSessions(sessions);
+        const apiCalls = (apiCallsResponse?.data || []).map(
+          (task: BackendApiCall) =>
+            apiCallToStoredSession(task, agentIcon, agentName)
+        );
+        setFetchedSessions(
+          [...sessions, ...apiCalls]
+            .sort((a, b) => b.lastUpdated - a.lastUpdated)
+            .slice(0, MAX_SESSIONS)
+        );
       })
       .catch(() => {
         // keep whatever was previously loaded

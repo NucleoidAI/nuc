@@ -50,6 +50,11 @@ type FlowGraphNode = import("./helper").DefinitionGraphNode & {
 const DECISION_ENDPOINT_LAYOUT_VARIANT: "split-icon-panel" | undefined =
   "split-icon-panel";
 
+const ENDPOINT_ACTIONS: Record<string, string> = {
+  START: "PLATFORM:api_request",
+  END: "PLATFORM:api_response",
+};
+
 function NodeHandles({
   node,
   fields,
@@ -126,7 +131,7 @@ function NodeHandles({
     return (
       <ApiFieldsPanel
         side={isRequest ? "out" : "in"}
-        title={isRequest ? "Request" : "Response"}
+        title={isRequest ? node.label || "Request" : "Response"}
         fields={fields.apiFields}
         handles={isRequest ? outputs : inputs}
         renderLabel={(name) => renderLabel(name, isRequest ? "out" : "in")}
@@ -210,6 +215,7 @@ export default function FlowNodeRenderer({
   const infoNode = {
     ...node,
     type: node.nodeType,
+    action: node.action ?? ENDPOINT_ACTIONS[node.nodeType],
     description: isDecisionNode
       ? truncateDescription(node.description)
       : node.description,

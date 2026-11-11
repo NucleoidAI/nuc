@@ -3,6 +3,7 @@ import BlueprintChatTitle from "../components/BlueprintChat/BlueprintChatTitle";
 import type { BlueprintContext as BlueprintContextData } from "../hooks/useBlueprint";
 import BlueprintFlowWidget from "../widgets/BlueprintFlowWidget/BlueprintFlowWidget";
 import BlueprintKnowledge from "../components/BlueprintKnowledge/BlueprintKnowledge";
+import type { BlueprintMode } from "../components/ApiNode/apiNodes";
 import BlueprintSkill from "../components/BlueprintSkill/BlueprintSkill";
 import CloseIcon from "@mui/icons-material/Close";
 import { DrawerLayout } from "@canmingir/link/layouts";
@@ -57,7 +58,7 @@ const BlueprintDrawerLayout = ({
     agentId: string;
     skill?: string;
     executionMode?: "NORMAL" | "LITE";
-    api?: boolean;
+    mode?: BlueprintMode;
     context?: BlueprintContextData | null;
   };
   handleAiResponse?: (response: {
@@ -107,7 +108,7 @@ const BlueprintDrawerLayout = ({
   const [liteMode, setLiteMode] = useState<boolean>(
     selectedItem?.executionMode === "LITE"
   );
-  const [api, setApi] = useState<boolean>(Boolean(selectedItem?.api));
+  const [mode, setMode] = useState<BlueprintMode>(selectedItem?.mode ?? "CHAT");
   const [showConnections] = useStorage(
     "greycollar",
     "blueprintdrawerlayout",
@@ -252,7 +253,7 @@ const BlueprintDrawerLayout = ({
 
   useEffect(() => {
     setLiteMode(selectedItem?.executionMode === "LITE");
-    setApi(Boolean(selectedItem?.api));
+    setMode(selectedItem?.mode ?? "CHAT");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedItem?.id]);
 
@@ -290,7 +291,7 @@ const BlueprintDrawerLayout = ({
         blocking={blocking}
         onBlockingChange={handleBlockingChange}
         liteMode={liteMode}
-        api={api}
+        mode={mode}
         showConnections={showConnections}
         onSkillChange={setSkill}
         onSkillLoadingChange={setSkillLoading}
@@ -441,8 +442,8 @@ const BlueprintDrawerLayout = ({
         setBlocking={handleBlockingChange}
         liteMode={liteMode}
         setLiteMode={handleLiteModeChange}
-        api={api}
-        setApi={setApi}
+        mode={mode}
+        setMode={setMode}
         blueprintId={selectedItem?.id}
       />
     </Box>

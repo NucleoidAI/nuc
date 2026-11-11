@@ -179,8 +179,252 @@
       "title": "Order and Compliance",
       "description": "Find product, assign compliance certificate, create purchase order, take the payment once the user approves it, create the shipment, and send email.",
       "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
-      "skill": "**Product Order \u2014 Certificate-Backed Purchase**\n\nUse this Blueprint when a product order must have a compliance certificate assigned before a purchase order can be created.\n\nThe order request arrives with the product already chosen \u2014 it comes in from the requesting system, so do not ask which product to order.\n\nFlow: Find product \u2192 Check certificate via knowledge lookup \u2192 Assign certificate \u2192 Create purchase order \u2192 Create payment \u2192 Customer approval for the charge \u2192 [Rejected: cancel the payment, notify, end] \u2192 Confirm payment \u2192 Create shipment \u2192 Send email.\n\nThe payment intent is created unconfirmed, so nothing is charged until the user approves it. The approval is a single Customer Approval node that asks the question and then waits: the decision arrives either as the customer's reply in the session or through the session approval endpoint. Only an approved payment is confirmed, shipped and emailed; a rejected one is cancelled and the purchase order stays unpaid.\n\nExits after emailing confirmation of the completed purchase order, or early with a cancellation notice if the user declines the charge.",
+      "mode": "JSON",
+      "skill": "**Product Order \u2014 Certificate-Backed Purchase**\n\nUse this Blueprint when a product order must have a compliance certificate assigned before a purchase order can be created.\n\nThe order request arrives with the product already chosen \u2014 it comes in from the requesting system, so do not ask which product to order.\n\nFlow: Find product \u2192 Check certificate via knowledge lookup \u2192 Assign certificate \u2192 Create purchase order \u2192 Create payment \u2192 Customer approval for the charge \u2192 [Rejected: cancel the payment, notify, end] \u2192 Confirm payment \u2192 Create shipment \u2192 Send email.\n\nThe payment intent is created unconfirmed, so nothing is charged until the user approves it. The approval is a single Customer Approval node that asks the question and then waits: the decision arrives through the task approval endpoint. Only an approved payment is confirmed, shipped and emailed; a rejected one is cancelled and the purchase order stays unpaid.\n\nExits after emailing confirmation of the completed purchase order, or early with a cancellation notice if the user declines the charge.",
       "nodes": [
+        {
+          "id": "json-start",
+          "type": "START",
+          "properties": {
+            "label": "Sales Order",
+            "icon": "mdi:code-json",
+            "description": "Sales order created in SAP, delivered through the communication webhook",
+            "fields": [
+              {
+                "name": "event",
+                "type": "enum",
+                "values": ["SALES_ORDER_CREATED"]
+              },
+              {
+                "name": "orderNumber",
+                "type": "string",
+                "minLength": 1,
+                "description": "SAP sales order number"
+              },
+              {
+                "name": "orderType",
+                "type": "string",
+                "required": false
+              },
+              {
+                "name": "orderTypeText",
+                "type": "string",
+                "required": false
+              },
+              {
+                "name": "customer",
+                "type": "string",
+                "minLength": 1,
+                "description": "SAP customer number"
+              },
+              {
+                "name": "customerName",
+                "type": "string",
+                "required": false
+              },
+              {
+                "name": "customerCity",
+                "type": "string",
+                "required": false
+              },
+              {
+                "name": "customerCountry",
+                "type": "string",
+                "required": false
+              },
+              {
+                "name": "poNumber",
+                "type": "string",
+                "required": false
+              },
+              {
+                "name": "currency",
+                "type": "string"
+              },
+              {
+                "name": "netValue",
+                "type": "number",
+                "required": false
+              },
+              {
+                "name": "taxValue",
+                "type": "number",
+                "required": false
+              },
+              {
+                "name": "totalValue",
+                "type": "number"
+              },
+              {
+                "name": "requestedDeliveryDate",
+                "type": "string",
+                "required": false
+              },
+              {
+                "name": "incoterms",
+                "type": "string",
+                "required": false
+              },
+              {
+                "name": "paymentTerms",
+                "type": "string",
+                "required": false
+              },
+              {
+                "name": "status",
+                "type": "string",
+                "required": false
+              },
+              {
+                "name": "creditStatus",
+                "type": "string",
+                "required": false
+              },
+              {
+                "name": "salesOrg",
+                "type": "string",
+                "required": false
+              },
+              {
+                "name": "item",
+                "type": "object",
+                "fields": [
+                  {
+                    "name": "item",
+                    "type": "string",
+                    "description": "Line item number",
+                    "required": false
+                  },
+                  {
+                    "name": "material",
+                    "type": "string",
+                    "description": "Material number, used as the product ID"
+                  },
+                  {
+                    "name": "description",
+                    "type": "string",
+                    "required": false
+                  },
+                  {
+                    "name": "quantity",
+                    "type": "number",
+                    "min": 0
+                  },
+                  {
+                    "name": "uom",
+                    "type": "string",
+                    "description": "Unit of measure",
+                    "required": false
+                  },
+                  {
+                    "name": "unitPrice",
+                    "type": "number",
+                    "required": false
+                  },
+                  {
+                    "name": "netValue",
+                    "type": "number",
+                    "required": false
+                  },
+                  {
+                    "name": "plant",
+                    "type": "string",
+                    "required": false
+                  },
+                  {
+                    "name": "vendor",
+                    "type": "string",
+                    "required": false
+                  }
+                ],
+                "description": "Sent when the order has a single line",
+                "required": false
+              },
+              {
+                "name": "itemCount",
+                "type": "number",
+                "integer": true,
+                "required": false
+              },
+              {
+                "name": "items",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "fields": [
+                    {
+                      "name": "item",
+                      "type": "string",
+                      "description": "Line item number",
+                      "required": false
+                    },
+                    {
+                      "name": "material",
+                      "type": "string",
+                      "description": "Material number, used as the product ID"
+                    },
+                    {
+                      "name": "description",
+                      "type": "string",
+                      "required": false
+                    },
+                    {
+                      "name": "quantity",
+                      "type": "number",
+                      "min": 0
+                    },
+                    {
+                      "name": "uom",
+                      "type": "string",
+                      "description": "Unit of measure",
+                      "required": false
+                    },
+                    {
+                      "name": "unitPrice",
+                      "type": "number",
+                      "required": false
+                    },
+                    {
+                      "name": "netValue",
+                      "type": "number",
+                      "required": false
+                    },
+                    {
+                      "name": "plant",
+                      "type": "string",
+                      "required": false
+                    },
+                    {
+                      "name": "vendor",
+                      "type": "string",
+                      "required": false
+                    }
+                  ]
+                },
+                "description": "Sent instead of item when the order has several lines",
+                "required": false
+              },
+              {
+                "name": "approvalRequestUrl",
+                "type": "string",
+                "required": false
+              },
+              {
+                "name": "noteUrl",
+                "type": "string",
+                "required": false
+              },
+              {
+                "name": "createdAt",
+                "type": "string",
+                "required": false
+              }
+            ],
+            "strict": false
+          },
+          "next": ["3b2bd895-1df4-4cb6-827c-35874f43615f"],
+          "createdAt": "2025-06-26T06:00:00Z"
+        },
         {
           "id": "3b2bd895-1df4-4cb6-827c-35874f43615f",
           "type": "NORMAL",
@@ -259,7 +503,7 @@
           "properties": {
             "action": "PLATFORM:customer_approval",
             "force": true,
-            "description": "Ask the customer to approve the payment before the card is charged, then wait for the decision from the session or the approval endpoint",
+            "description": "Ask the customer to approve the payment before the card is charged, then wait for the decision from the approval endpoint",
             "label": "Payment Approval",
             "pseudocode": "approval = Approval()\napproval.question = \"Do you approve the payment of \" + order.total_amount + \" \" + order.currency + \" for \" + product.name + \" on purchase order \" + order.number + \"?\"",
             "pseudocodeEnabled": true,
@@ -459,7 +703,7 @@
       "agentId": "ab2d404b-3358-45eb-a468-338485924fea",
       "blocking": false,
       "force": true,
-      "api": true,
+      "mode": "API",
       "skill": "**Meeting Recording - Summary Variant A (transcript only)**\n\nUse this Blueprint for the lightweight arm of the summarizer A/B test: only the mixed meeting recording is transcribed, and the summary is written from that full transcript without transcribing each participant's own recording.\n\nFlow: Request (directoryPath, meetingId, topic, status, participants, recording, attendees) -> Convert PCM to WAV -> Transcribe only meeting-audio.wav (includeSpeakerTranscripts: false) -> Summarize the full transcript, read by reference from the transcription result (summary + highlights) -> Prepare the email from the 'meeting_summary_a' template -> Send the prepared email to the participants' email addresses -> Respond with the summary and highlights.\n\nThe meeting directory comes from the API request and is passed by reference to the conversion and transcription steps. Produces a summary and highlights only - no next steps, no speaker transcription, no speaker attribution, no LLM judgement, no attachments and no separate manager email. The response carries the summarize step's result by reference, never retyped or regenerated.",
       "nodes": [
         {
@@ -1387,7 +1631,7 @@
       "description": "Translates the text in the API request into the requested target language with the local translation model and returns the translation in the response.",
       "agentId": "c38523e7-2e22-44e5-aa0d-f92c7d240315",
       "executionMode": "LITE",
-      "api": true,
+      "mode": "API",
       "skill": "**Text Translation — Local LLM**\n\nUse this Blueprint when a piece of text needs to be translated into another language.\n\nFlow: Request (content, target_lang, optional source_lang) → Translate the text with the local LLM → Respond with the translation.\n\nThe text to translate goes into content unchanged, the requested language into target_lang, and the language of the text into source_lang only when the request states it; otherwise it is left out so the model detects it. The response carries the translate step's result by reference, never retyped or regenerated.",
       "nodes": [
         {

@@ -18,7 +18,6 @@ async function run({
   if (!recipient?.trim() || !question?.trim())
     throw new Error("2FA requires recipient and question");
   const currentTask = await task.get({ taskId: meta.taskId });
-  if (!currentTask.sessionId) throw new Error("2FA requires a session");
 
   if (channel === "email") {
     if (!/^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/.test(recipient))
@@ -26,7 +25,7 @@ async function run({
     const token = createToken();
     const links = approvalLinks(
       process.env.TWO_FACTOR_PUBLIC_URL,
-      currentTask.sessionId,
+      currentTask.id,
       meta.stepId,
       token,
     );
@@ -53,15 +52,17 @@ async function run({
       await client.close();
     }
   }
-  await session.addConversation({
-    sessionId: currentTask.sessionId,
-    agentId: currentTask.agentId,
-    role: "ASSISTANT",
-    content:
-      channel === "email"
-        ? `${question} Use the Approve or Reject link sent to your email.`
-        : `${question} Waiting for ${channel} verification.`,
-  });
+  if (currentTask.sessionId) {
+    await session.addConversation({
+      sessionId: currentTask.sessionId,
+      agentId: currentTask.agentId,
+      role: "ASSISTANT",
+      content:
+        channel === "email"
+          ? `${question} Use the Approve or Reject link sent to your email.`
+          : `${question} Waiting for ${channel} verification.`,
+    });
+  }
   return { channel, recipient, question, status: "WAITING_FOR_APPROVAL" };
 }
 export default { run };

@@ -9,8 +9,6 @@
   <a href="https://discord.gg/wNmcnkDnkM"><img src="https://img.shields.io/badge/Discord-lightgrey?style=for-the-badge&logo=discord" alt="Discord" /></a>
 </p>
 
-![nuc Banner](https://github.com/user-attachments/assets/064fdd2f-b1de-4fca-9cd6-1dbf1e55e470)
-
 nuc AI is a supervised AI agent platform for human–AI collaboration. The platform provides an environment to continuously learn from human supervisors, so they can adapt to real-world workloads.
 
 Each AI agent works within defined blueprints and uses a knowledge base to complete tasks. When uncertain, they escalate to human supervisors—enabling **"Hallucination Control"** to prevent mistakes.
@@ -23,8 +21,6 @@ Human-in-the-Loop (HITL) is a collaborative approach where AI agents work alongs
 - **Continuous Learning** – AI adapts to new tasks and domains by integrating ongoing human input, improving with every interaction.
 - **Safe & Responsible AI** – Human oversight ensures ethical alignment, reduces bias, and mitigates unintended or harmful outputs.
 - **Operational Efficiency** – AI handles routine, repetitive work at scale, freeing human supervisors to focus on higher-value, strategic decisions.
-
-[nuc Demo](https://github.com/user-attachments/assets/c1194674-5850-434d-a085-7fa3714f3746)
 
 ## Get Started
 
@@ -50,8 +46,6 @@ Learn more at [https://nuc.ai/docs](https://nuc.ai/docs)
 ## ⚡n8n Integration
 
 nuc can be part of your favorite flow tools like n8n, enabling you to embed supervised AI directly into automated workflows.
-
-![n8n Integration](https://github.com/user-attachments/assets/ddddd7ee-e8e5-4ebf-b316-41c23075c711)
 
 <br/>
 <table>

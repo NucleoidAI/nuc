@@ -156,12 +156,7 @@ const BlueprintDrawerLayout = ({
   };
 
   const setShowConnections = (value: boolean) => {
-    storage.set(
-      "nuc",
-      "blueprintdrawerlayout",
-      "showconnections",
-      value
-    );
+    storage.set("nuc", "blueprintdrawerlayout", "showconnections", value);
   };
 
   const [reopenRequest] = useEvent<{ requestedAt: number | null }>(

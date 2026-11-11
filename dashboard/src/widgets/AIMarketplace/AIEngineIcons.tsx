@@ -118,13 +118,7 @@ export function BardIcon({ width, height }: { width: number; height: number }) {
   );
 }
 
-export function NucIcon({
-  width,
-  height,
-}: {
-  width: number;
-  height: number;
-}) {
+export function NucIcon({ width, height }: { width: number; height: number }) {
   return (
     <img
       src="https://cdn.nucleoid.com/greycollar/media/icon.png"

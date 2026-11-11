@@ -157,7 +157,7 @@
     "action": "PLATFORM:two_factor",
     "label": "Platform",
     "lib": "two_factor",
-    "description": "2FA: pause the blueprint for user verification. Email sends single-use Approve / Reject links through GREY SMTP; WhatsApp requires an external API approval.",
+    "description": "2FA: pause the blueprint for user verification. WhatsApp requires an external API approval.",
     "icon": "mdi:shield-key",
     "inputSchema": {
       "type": "object",
@@ -165,10 +165,9 @@
         "channel": {
           "type": "string",
           "enum": [
-            "email",
             "whatsapp"
           ],
-          "description": "Verification channel: email or whatsapp."
+          "description": "Verification channel: whatsapp."
         },
         "recipient": {
           "type": "string",

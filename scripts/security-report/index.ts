@@ -5,7 +5,7 @@ import { findBrowser, writePdf } from "./pdf";
 import { renderReport } from "./render";
 import { loadReport, SEVERITIES } from "./sarif";
 
-const PROJECT_NAME = "TT AI Platform";
+const PROJECT_NAME = "nuc";
 const QUERY_SUITE = "javascript-security-extended";
 const QUERY_PACK = `codeql/javascript-queries:codeql-suites/${QUERY_SUITE}.qls`;
 const DEFAULT_OUT_DIR = "security-report";

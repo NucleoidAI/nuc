@@ -2,62 +2,6 @@
   "sequence": 12,
   "seed": [
     {
-      "id": "a1b2c3d4-0001-4000-8000-000000000001",
-      "description": "Set up internet subscription for customer at Musterstrasse 12, 10115 Berlin",
-      "status": "COMPLETED",
-      "result": "Subscription successfully created. Port allocated and configured.",
-      "comment": "All steps completed successfully.",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "sessionId": "b9901597-8625-43d9-a925-ed5e0ad7b1e4",
-      "createdAt": "2026-05-10T09:00:00Z"
-    },
-    {
-      "id": "17816283-412c-4db3-abe7-be24ed494b21",
-      "description": "Setup internet subscription at user's address.",
-      "result": null,
-      "comment": null,
-      "createdAt": "2026-05-25T11:26:37.024Z",
-      "status": "IN_PROGRESS",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "sessionId": "b9901597-8625-43d9-a925-ed5e0ad7b1e4"
-    },
-    {
-      "id": "b2c3d4e5-0001-4000-8000-000000000001",
-      "description": "Process purchase order for Duplex Document Scanner with compliance certificate assignment",
-      "status": "IN_PROGRESS",
-      "result": null,
-      "comment": null,
-      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
-      "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
-      "sessionId": "c3d4e5f6-1234-4000-8000-000000000001",
-      "createdAt": "2026-07-01T09:30:00Z"
-    },
-    {
-      "id": "b2c3d4e5-0002-4000-8000-000000000002",
-      "description": "Process purchase order for Industrial Label Printer (ILP-220) with compliance certificate assignment",
-      "status": "FAILED",
-      "result": null,
-      "comment": "Assign Certificate failed: certificate CERT-ILP-220 expired on 2026-09-30.",
-      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
-      "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
-      "sessionId": "d4e5f6a7-0001-4000-8000-000000000001",
-      "debug": true,
-      "createdAt": "2026-11-03T10:12:00Z"
-    },
-    {
-      "id": "ac8c5193-92d0-4e9f-af55-f0504b97dd5b",
-      "description": "Set up internet subscription for customer at Hauptstrasse 44, 80331 Munich",
-      "status": "COMPLETED",
-      "result": "Subscription successfully created.",
-      "comment": "All steps completed successfully.",
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "sessionId": "b9901597-8625-43d9-a925-ed5e0ad7b1e4",
-      "createdAt": "2026-10-21T09:12:00Z"
-    },
-    {
       "id": "666ec475-7eb2-4d16-b52b-d7498726d54e",
       "description": "Translate onboarding handbook into Spanish",
       "status": "COMPLETED",
@@ -69,28 +13,6 @@
       "createdAt": "2026-10-22T10:05:00Z"
     },
     {
-      "id": "84ce6d70-45b5-4b4c-89e6-d29f7eef02a6",
-      "description": "Summarize weekly standup meeting and email action items",
-      "status": "COMPLETED",
-      "result": "Summary emailed to attendees.",
-      "comment": "All steps completed successfully.",
-      "agentId": "ab2d404b-3358-45eb-a468-338485924fea",
-      "blueprintId": "019fa100-0000-4000-8000-000000000001",
-      "sessionId": "e2e00004-0000-4000-8000-000000000004",
-      "createdAt": "2026-10-23T08:40:00Z"
-    },
-    {
-      "id": "6678b350-cd8d-4327-a29a-faa7107a6ffd",
-      "description": "Summarize leadership sync meeting and email action items",
-      "status": "IN_PROGRESS",
-      "result": null,
-      "comment": null,
-      "agentId": "ab2d404b-3358-45eb-a468-338485924fea",
-      "blueprintId": "019fa100-0000-4000-8000-000000000001",
-      "sessionId": "e2e00004-0000-4000-8000-000000000004",
-      "createdAt": "2026-10-26T14:00:00Z"
-    },
-    {
       "id": "c4774b88-ae29-462e-925e-cf333c481d45",
       "description": "Translate product release notes into German",
       "status": "FAILED",
@@ -100,17 +22,6 @@
       "blueprintId": null,
       "sessionId": "76ee34ed-7538-4f3e-88f5-fd8b8753182b",
       "createdAt": "2026-10-24T13:15:00Z"
-    },
-    {
-      "id": "5501410f-3208-4fd6-afc0-1be5a773ca45",
-      "description": "Setup internet subscription at user's address in Hamburg",
-      "status": "IN_PROGRESS",
-      "result": null,
-      "comment": null,
-      "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
-      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "sessionId": "b9901597-8625-43d9-a925-ed5e0ad7b1e4",
-      "createdAt": "2026-10-26T15:50:00Z"
     },
     {
       "id": "49768578-096f-4786-9475-ab10bf983217",
@@ -278,83 +189,6 @@
       "createdAt": "2026-10-27T06:45:00Z"
     },
     {
-      "id": "62ae662b-3c1f-4c9d-a910-ccd1fc0a5f82",
-      "description": "Process purchase order for Industrial Barcode Scanner (BCS-450)",
-      "status": "COMPLETED",
-      "result": "Completed successfully.",
-      "comment": "All steps completed successfully.",
-      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
-      "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
-      "sessionId": "e2e00001-0000-4000-8000-000000000001",
-      "createdAt": "2026-10-20T08:00:00Z"
-    },
-    {
-      "id": "cf1ca44c-3de2-4677-b783-b859dfd89c2a",
-      "description": "Validate supplier compliance documents for Q4 shipment batch",
-      "status": "COMPLETED",
-      "result": "Completed successfully.",
-      "comment": "All steps completed successfully.",
-      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
-      "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
-      "sessionId": "67bbbeb7-79fc-4ddf-a59d-ee4b4cc94b78",
-      "createdAt": "2026-10-21T08:30:00Z"
-    },
-    {
-      "id": "255b24c8-a6d4-4bb7-90b0-3c5a4289d26c",
-      "description": "Create purchase order for 40x Ergonomic Office Chair (ECH-310)",
-      "status": "COMPLETED",
-      "result": "Completed successfully.",
-      "comment": "All steps completed successfully.",
-      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
-      "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
-      "sessionId": "e2e00002-0000-4000-8000-000000000002",
-      "createdAt": "2026-10-23T09:17:00Z"
-    },
-    {
-      "id": "3bcaed8d-7510-4932-8fd2-cceb58357489",
-      "description": "Check export regulation status for order #48213",
-      "status": "FAILED",
-      "result": null,
-      "comment": "Stopped: ambiguous destination country match.",
-      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
-      "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
-      "sessionId": "67bbbeb7-79fc-4ddf-a59d-ee4b4cc94b78",
-      "createdAt": "2026-10-25T10:34:00Z"
-    },
-    {
-      "id": "a0cb118b-9484-4f8b-a325-99e9ed2645ec",
-      "description": "Update fulfillment status for order #48177",
-      "status": "COMPLETED",
-      "result": "Completed successfully.",
-      "comment": "All steps completed successfully.",
-      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
-      "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
-      "sessionId": "e2e00003-0000-4000-8000-000000000003",
-      "createdAt": "2026-10-26T11:51:00Z"
-    },
-    {
-      "id": "f754a466-27b5-4a6f-8a6b-05fb7ca664fb",
-      "description": "Audit compliance documentation for quarterly report",
-      "status": "IN_PROGRESS",
-      "result": null,
-      "comment": null,
-      "agentId": "0780b66b-9e22-4e52-9ade-858fc81a5361",
-      "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
-      "sessionId": "67bbbeb7-79fc-4ddf-a59d-ee4b4cc94b78",
-      "createdAt": "2026-10-27T05:25:00Z"
-    },
-    {
-      "id": "a851af8b-9730-4b56-8946-1cd154ebae56",
-      "description": "Process purchase order for Thermal Label Printer (TLP-220)",
-      "status": "IN_PROGRESS",
-      "result": null,
-      "comment": null,
-      "agentId": "9f156dc6-bf9b-4541-8d0c-6764cb0d6487",
-      "blueprintId": "85a763a3-30cc-409f-881f-828e17c44c9e",
-      "sessionId": "e2e00001-0000-4000-8000-000000000001",
-      "createdAt": "2026-10-27T06:50:00Z"
-    },
-    {
       "id": "c042436d-c6fd-4b95-9ae6-67d7ef0d97af",
       "description": "Update user profile department and title after reorg",
       "status": "COMPLETED",
@@ -366,17 +200,6 @@
       "createdAt": "2026-10-20T14:00:00Z"
     },
     {
-      "id": "31032d2b-8a8a-4df2-a10a-ff8b638c667a",
-      "description": "Convert uploaded molfile to SDF for intake batch #212",
-      "status": "COMPLETED",
-      "result": "File converted and stored in S3.",
-      "comment": "All steps completed successfully.",
-      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5",
-      "blueprintId": null,
-      "sessionId": "7a992eec-5154-4ebd-9bfd-f85ed9572ae3",
-      "createdAt": "2026-10-21T15:20:00Z"
-    },
-    {
       "id": "464a0ac9-84b3-4c45-a1d2-6e0612debff4",
       "description": "Update employee phone number and email in directory",
       "status": "COMPLETED",
@@ -386,28 +209,6 @@
       "blueprintId": null,
       "sessionId": "1fe38f52-93ae-44a3-aa43-a561de318cdc",
       "createdAt": "2026-10-23T16:10:00Z"
-    },
-    {
-      "id": "2e2a466d-162f-49f1-9c87-98dd82290463",
-      "description": "Convert uploaded molfile to SDF for intake batch #213",
-      "status": "FAILED",
-      "result": null,
-      "comment": "Stopped: malformed molfile structure.",
-      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5",
-      "blueprintId": null,
-      "sessionId": "7a992eec-5154-4ebd-9bfd-f85ed9572ae3",
-      "createdAt": "2026-10-25T09:05:00Z"
-    },
-    {
-      "id": "e046b9d7-e21d-47ac-b374-13e27bf81543",
-      "description": "Store uploaded intake files for batch #214 in S3",
-      "status": "IN_PROGRESS",
-      "result": null,
-      "comment": null,
-      "agentId": "d8e2b410-9c67-4a53-bf28-16d094c7a3e5",
-      "blueprintId": null,
-      "sessionId": "7a992eec-5154-4ebd-9bfd-f85ed9572ae3",
-      "createdAt": "2026-10-27T03:40:00Z"
     },
     {
       "id": "7b0343b2-04f6-43e5-8592-dbad6bb87da4",

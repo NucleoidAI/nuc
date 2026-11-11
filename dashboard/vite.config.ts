@@ -13,10 +13,6 @@ export default async () => {
         changeOrigin: true,
         ws: true,
       },
-      "/swagger": {
-        target: "http://localhost:3004",
-        changeOrigin: true,
-      },
     },
   };
   return defineConfig(config);

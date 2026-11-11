@@ -3,7 +3,7 @@ import { storage } from "@nucleoidjs/webstorage";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-const SESSIONS_STORAGE_KEY = "greycollar.sidebarchatsessions";
+const SESSIONS_STORAGE_KEY = "nuc.sidebarchatsessions";
 const MAX_SESSIONS = 5;
 
 export type StoredSession = {

@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "dashboard.greycollar.ai",
+      "name": "nuc-dashboard",
       "dependencies": {
         "@canmingir/link": "^1.2.95",
         "@cypress/vite-dev-server": "^5.1.1",

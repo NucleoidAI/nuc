@@ -109,7 +109,7 @@ const BlueprintDrawerLayout = ({
   );
   const [api, setApi] = useState<boolean>(Boolean(selectedItem?.api));
   const [showConnections] = useStorage(
-    "greycollar",
+    "nuc",
     "blueprintdrawerlayout",
     "showconnections",
     false
@@ -157,7 +157,7 @@ const BlueprintDrawerLayout = ({
 
   const setShowConnections = (value: boolean) => {
     storage.set(
-      "greycollar",
+      "nuc",
       "blueprintdrawerlayout",
       "showconnections",
       value

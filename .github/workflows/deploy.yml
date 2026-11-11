@@ -6,7 +6,7 @@ on:
       service_name:
         required: true
         type: string
-        description: "Service name (e.g., greycollar, communication, prometheus, grafana)"
+        description: "Service name (e.g., nuc, prometheus, grafana)"
       environment:
         required: true
         type: string

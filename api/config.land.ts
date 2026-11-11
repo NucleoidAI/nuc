@@ -1,6 +1,6 @@
 const config = {
   project: {
-    name: "greycollar-api",
+    name: "nuc-api",
     version: "0.0.1",
     label: "Team",
     oauth: {
@@ -36,7 +36,7 @@ const config = {
       node: "http://docker.greycollar.ai:9200",
       esVersion: 8,
       flushBytes: 50000,
-      index: "greycollar-logs",
+      index: "nuc-logs",
       consistency: "one",
     },
   },
@@ -51,15 +51,15 @@ const config = {
     interval: 15000,
     url: "https://pushgateway.land.greycollar.ai",
     pushGateway: {
-      jobName: "greycollar-database",
+      jobName: "nuc-database",
       instance: "default",
     },
     pushGateWayOpenTelemetry: {
-      jobName: "greycollar-opentelemetry",
+      jobName: "nuc-opentelemetry",
       instance: "default",
     },
     pushGatewayNodeEvents: {
-      jobName: "greycollar-api",
+      jobName: "nuc-api",
       instance: "node-events",
     },
   },

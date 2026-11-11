@@ -80,7 +80,6 @@ nuc can be part of your favorite flow tools like n8n, enabling you to embed supe
 - [Knowledge](#knowledge): The info AI uses—documents, FAQs, or other sources.
 - [Blueprint and Task](#blueprint-and-task): Defines what tasks the AI performs and how.
 - [Team](#team): A group of AI agents for managing knowledge and leadership.
-- [Communication](#communication): How you interact with AI—via chat, email, Slack, WhatsApp, etc.
 - [Integration](#integration): Connects to third-party tools via Model Context Protocol (MCP).
 
 ## Agent (AI)
@@ -115,7 +114,7 @@ Knowledge is the information that the AI uses when working on blueprints. It can
 
 Blueprint is a blueprint of the tasks that the AI will perform based on knowledge. It defines what the AI can do and how it can help you.
 
-> Tasks are the actions that the AI performs for a given blueprint with knowledge. Once the task is initiated through communication, the AI will execute the task and provide feedback to the supervisor.
+> Tasks are the actions that the AI performs for a given blueprint with knowledge. Once the task is initiated, the AI will execute the task and provide feedback to the supervisor.
 
 ## Team
 
@@ -126,22 +125,14 @@ Team is a logical grouping of AI agents. Mainly this grouping provides 2 major b
 - **Knowledge Management**: Knowledge can be shared between AI agents within the team, while each agent can also maintain their own individual knowledge. In agentic AI, effective knowledge management is crucial to eliminate hallucinations, ensuring that each AI agent has sufficient knowledge to complete tasks without being misled by irrelevant or unnecessary information. a
 - **Team Lead**: The team lead is the person responsible for handing off the task to the AI agents.
 
-## Communication
-
-![Communication](https://cdn.nucleoid.com/nuc/media/1f23108d-5f9d-4b20-8064-3679ee43289b.png)
-
-Communication is the primary way to interact with AI agents. It can occur through various channels, such as chat, email, or voice, depending on the context and user preferences. These communication channels are linked to specific blueprints that AI agents are capable of handling, ensuring interactions are efficient and task-relevant. Multiple channels can be used simultaneously, allowing for flexibility in how users engage with AI agents.
-
-> In short, communication opens up AI agents to the outside world, enabling them to perform tasks.
-
 ## Integration
 
 ![Integration](https://cdn.nucleoid.com/nuc/media/4a1ef3f7-172a-49ea-a782-ac170d335640.png)
 
 All integrations are based on MCP that allows you to connect to any third-party service. The integration can be used for bidirectional communication:
 
-- Incoming: Pulling data such as reading from Google Drive or checking Google Calendar 
-- Outgoing: Sending data such as writing to Google Drive or posting to a Slack channel
+- Incoming: Pulling data such as searching records in Salesforce or Jira
+- Outgoing: Sending data such as creating a contact in HubSpot or a purchase requisition in SAP
 
 ## Event-Driven Agentic AI Platform
 

@@ -15,7 +15,7 @@ const BlueprintWelcomeMessage = () => {
     >
       <img
         src="https://cdn.nucleoid.com/greycollar/media/icon.png"
-        alt="GreyCollar logo"
+        alt="nuc logo"
         style={{ width: "50px", height: "50px" }}
       />
     </Box>

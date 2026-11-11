@@ -801,19 +801,6 @@ check.
 Incorrect:
 
 ```ts
-export const getProductByIdTool: Tool<any> = {
-  name: "GREY:get_product_by_id",
-  handler: async (args: any) => {
-    const response = await fetch(`${API_BASE_URL}/products/${args.productId}`);
-  },
-};
-```
-
-The `mcp/` tool shape, repeated 29 times across the servers.
-
-Incorrect:
-
-```ts
 await event.subscribe("TASK_CREATED", async (payload: any) => {
   await agentFn.task({ taskId: payload.taskId });
 });
@@ -825,19 +812,6 @@ Incorrect:
 function resolveParameterRefs(parameters: any, context: any): any {
   return parameters;
 }
-```
-
-Correct:
-
-```ts
-type GetProductByIdArgs = { productId: string };
-
-export const getProductByIdTool: Tool<GetProductByIdArgs> = {
-  name: "GREY:get_product_by_id",
-  handler: async ({ productId }) => {
-    const response = await fetch(`${API_BASE_URL}/products/${productId}`);
-  },
-};
 ```
 
 Correct:
@@ -1545,14 +1519,12 @@ in React, and on its own terminal condition anywhere else.
 Incorrect:
 
 ```ts
-const pollForNewSupervising = async (client, channelId, user, message) => {
-  let previousSupervisings = (await storage.get("supervisingInfo")) || [];
-
+const pollForNewSupervising = async (user) => {
   setInterval(async () => {
     const newSupervisings = await fetchNewSupervisingInfo(user);
 
     for (const entry of newSupervisings) {
-      await client.chat.postMessage({ channel: channelId, text: entry.question });
+      publish("SUPERVISING_RECEIVED", entry);
     }
   }, POLL_INTERVAL_MS);
 };
@@ -1571,12 +1543,12 @@ useEffect(() => {
 Correct:
 
 ```ts
-function pollForNewSupervising({ client, channelId, user }: PollInput) {
+function pollForNewSupervising({ user }: PollInput) {
   const interval = setInterval(async () => {
     const entries = await fetchNewSupervisingInfo(user);
 
     for (const entry of entries) {
-      await client.chat.postMessage({ channel: channelId, text: entry.question });
+      publish("SUPERVISING_RECEIVED", entry);
     }
   }, POLL_INTERVAL_MS);
 
@@ -1585,7 +1557,7 @@ function pollForNewSupervising({ client, channelId, user }: PollInput) {
 ```
 
 Returning the stopper makes the caller responsible for the lifetime, which is
-what lets one channel's polling be torn down without restarting the process.
+what lets one poller be torn down without restarting the process.
 
 Correct:
 
@@ -2148,8 +2120,6 @@ const [favorites, setFavorites] = useState<Set<string>>(() => {
   }
 });
 ```
-
-The guarded read `server-dashboard/src/App.tsx` already uses.
 
 Correct:
 
@@ -2825,34 +2795,8 @@ fields — see
 
 **Severity: `error`**
 
-A sibling package or server does not import another's internals; shared code
-moves to a shared location.
-
-Incorrect:
-
-```ts
-import { Tool } from "../../gdrive/tools/types";
-
-export const getProductByIdTool: Tool<GetProductByIdArgs> = {
-  name: "GREY:get_product_by_id",
-};
-```
-
-The `grey` server depending on the `gdrive` server, in 12 files.
-
-Incorrect:
-
-```ts
-export interface Tool<T> {
-  name: string;
-  description: string;
-  inputSchema: object;
-  handler: (args: T) => Promise<ToolResult>;
-}
-```
-
-declared independently in five `servers/*/tools/types.ts` files, so a change to
-the tool contract means five edits and a guess about the sixth.
+A sibling package does not import another's internals; shared code moves to a
+shared location.
 
 Incorrect:
 
@@ -2860,31 +2804,16 @@ Incorrect:
 import { formatKey } from "../../../dashboard/src/utils/formatters";
 ```
 
-Correct:
-
-```ts
-export interface Tool<T> {
-  name: string;
-  description: string;
-  inputSchema: object;
-  handler: (args: T) => Promise<ToolResult>;
-}
-```
-
-in `mcp/lib/tool.ts`, imported by every server:
-
-```ts
-import { Tool } from "../../lib/tool";
-```
+An `api` module reaching into the dashboard's source tree.
 
 Correct:
 
 ```ts
-import { runCli } from "../../lib/cli";
+import { formatKey } from "../lib/formatters";
 ```
 
-`mcp/servers/gdrive/index.ts` already reaches for shared code the right way —
-`mcp/lib/` exists, and it is where `Tool<T>` belongs too.
+The helper lives in the consuming package's own `lib/`, or in a shared package
+both sides depend on.
 
 ---
 
@@ -3246,8 +3175,7 @@ Incorrect:
 }
 ```
 
-`communication/package.json` — a `.eslintrc.json` sits beside it with nothing to
-run it.
+`mcp/package.json` — a `.eslintrc.json` sits beside it with nothing to run it.
 
 Incorrect:
 
@@ -3263,9 +3191,8 @@ Correct:
 ```json
 "lint:api": "cd ./api && bun run lint",
 "lint:dashboard": "cd ./dashboard && bun run lint",
-"lint:communication": "cd ./communication && bun run lint",
 "lint:mcp": "cd ./mcp && bun run lint",
-"lint": "bun run lint:api && bun run lint:dashboard && bun run lint:communication && bun run lint:mcp",
+"lint": "bun run lint:api && bun run lint:dashboard && bun run lint:mcp",
 "typecheck:api": "cd ./api && bun run typecheck",
 "typecheck:dashboard": "cd ./dashboard && bun run typecheck",
 "typecheck": "bun run typecheck:api && bun run typecheck:dashboard"

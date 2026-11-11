@@ -4,7 +4,6 @@ import { completeTwoFactor } from "../functions/twoFactor";
 import Joi from "joi";
 import agentFn from "../functions/agent";
 import express from "express";
-import schemas from "../schemas";
 import sessionFn from "../functions/session";
 
 const router = express.Router();
@@ -143,8 +142,6 @@ router.post("/:sessionId/two-factor", async (req, res) => {
   )
     return res.status(404).end();
   try {
-    if (JSON.parse(waiting.step.result).channel === "email")
-      return res.status(409).json({ error: "Use the email approval link" });
     const decision = ["APPROVED", "approved"].includes(value.decision)
       ? "APPROVED"
       : "REJECTED";
@@ -155,60 +152,5 @@ router.post("/:sessionId/two-factor", async (req, res) => {
     });
   }
 });
-
-router.get("/:sessionId/two-factor/email", (req, res) => {
-  res.set({
-    "Cache-Control": "no-store",
-    "Referrer-Policy": "no-referrer",
-    "Content-Security-Policy":
-      "default-src 'none'; form-action 'self'; frame-ancestors 'none'",
-  });
-  const { error, value } = schemas.Session.emailDecision.validate(req.query);
-  if (error) return res.status(400).send("Invalid approval link.");
-  const label = value.decision === "APPROVED" ? "Approve" : "Reject";
-  return res
-    .type("html")
-    .send(
-      `<!doctype html><html lang="en"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${label} request</title><body><h1>${label} request</h1><p>Confirm your decision to complete the email verification.</p><form method="post"><input type="hidden" name="stepId" value="${value.stepId}"><input type="hidden" name="token" value="${value.token}"><input type="hidden" name="decision" value="${value.decision}"><button type="submit">${label}</button></form></body></html>`
-    );
-});
-
-router.post(
-  "/:sessionId/two-factor/email",
-  express.urlencoded({ extended: false }),
-  async (req, res) => {
-    res.set({
-      "Cache-Control": "no-store",
-      "Referrer-Policy": "no-referrer",
-      "Content-Security-Policy":
-        "default-src 'none'; form-action 'self'; frame-ancestors 'none'",
-    });
-    const { error, value } = schemas.Session.emailDecision.validate(req.body);
-    if (error) return res.status(400).send("Invalid approval link.");
-    const waiting = await agentFn.waitingApproval({
-      sessionId: req.params.sessionId,
-    });
-    if (
-      waiting?.step.action !== "PLATFORM:two_factor" ||
-      waiting.step.id !== value.stepId ||
-      JSON.parse(waiting.step.result).channel !== "email"
-    )
-      return res
-        .status(404)
-        .send("This approval request is no longer pending.");
-    try {
-      await completeTwoFactor(waiting, value.decision, value.token);
-      return res.send(
-        value.decision === "APPROVED"
-          ? "Approved. You can return to your conversation."
-          : "Rejected. The workflow has stopped."
-      );
-    } catch {
-      return res
-        .status(400)
-        .send("This approval link is invalid, expired, or already used.");
-    }
-  }
-);
 
 export default router;

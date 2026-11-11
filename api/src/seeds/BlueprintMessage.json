@@ -1,19 +1,4 @@
 {
   "sequence": 18,
-  "seed": [
-    {
-      "id": "cd179c03-8c57-4ea6-bd04-b336deb6b48f",
-      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "content": "I want to buy new internet subscription",
-      "role": "user",
-      "createdAt": "2025-06-19T06:02:00Z"
-    },
-    {
-      "id": "1249948f-d466-408e-82e6-2d3609a96499",
-      "blueprintId": "ba6f7911-e232-469d-9060-2881852f6e59",
-      "content": "Sure, I can help you with that.",
-      "role": "assistant",
-      "createdAt": "2025-06-19T06:02:01Z"
-    }
-  ]
+  "seed": []
 }

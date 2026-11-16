@@ -5,9 +5,9 @@ import {
   BardIcon,
   ClaudeIcon,
   DeepMindIcon,
-  GreyCollarIcon,
   IbmIcon,
   MetaIcon,
+  NucIcon,
   OpenAIIcon,
 } from "./AIEngineIcons";
 
@@ -21,7 +21,7 @@ const vendorIcons: Record<
   Meta: MetaIcon,
   DeepMind: DeepMindIcon,
   "IBM Watson": IbmIcon,
-  GreyCollar: GreyCollarIcon,
+  nuc: NucIcon,
 };
 
 function AIEngineIcon({

@@ -110,7 +110,7 @@ const BlueprintDrawerLayout = ({
   );
   const [mode, setMode] = useState<BlueprintMode>(selectedItem?.mode ?? "CHAT");
   const [showConnections] = useStorage(
-    "greycollar",
+    "nuc",
     "blueprintdrawerlayout",
     "showconnections",
     false
@@ -157,12 +157,7 @@ const BlueprintDrawerLayout = ({
   };
 
   const setShowConnections = (value: boolean) => {
-    storage.set(
-      "greycollar",
-      "blueprintdrawerlayout",
-      "showconnections",
-      value
-    );
+    storage.set("nuc", "blueprintdrawerlayout", "showconnections", value);
   };
 
   const [reopenRequest] = useEvent<{ requestedAt: number | null }>(

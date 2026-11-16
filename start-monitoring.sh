@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Grey Collar Event Monitoring Stack Startup Script
-echo "🚀 Starting Grey Collar Event Monitoring Stack..."
+# nuc Event Monitoring Stack Startup Script
+echo "🚀 Starting nuc Event Monitoring Stack..."
 
 # Check if Docker is running
 if ! docker info > /dev/null 2>&1; then
@@ -37,7 +37,7 @@ if docker-compose -f docker-compose.monitoring.yml ps | grep -q "Up"; then
     echo "📊 Event Publishing Analytics Dashboard:"
     echo "   Dashboard URL: http://localhost:3006/d/event-publishing-analytics"
     echo ""
-    echo "💡 Make sure your Grey Collar API is running on port 4000 to see metrics!"
+    echo "💡 Make sure your nuc API is running on port 4000 to see metrics!"
     echo ""
     echo "🔄 To stop the monitoring stack, run:"
     echo "   docker-compose -f docker-compose.monitoring.yml down"

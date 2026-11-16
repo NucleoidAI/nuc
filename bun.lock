@@ -3,7 +3,7 @@
   "configVersion": 0,
   "workspaces": {
     "": {
-      "name": "greycollar",
+      "name": "nuc",
       "dependencies": {
         "@aws-sdk/client-ec2": "^3.1085.0",
         "@canmingir/link": "^1.2.95",

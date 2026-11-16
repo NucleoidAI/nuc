@@ -1,6 +1,6 @@
 const config = {
   appId: "10b7bc8c-a49c-4002-b0ec-63599e4b5210",
-  name: "GreyCollar",
+  name: "nuc",
   base: "/dashboard",
   beta: true,
   api: "https://greycollar.nuc.land/api",

@@ -87,7 +87,7 @@ const TeamChatWidget = memo(function ChatWidget({
           agentName: command.get("AGENT").name,
           command: command.get("NAME"),
           createdAt: new Date(),
-          from: "Greycollar",
+          from: "nuc",
         });
         promise = Promise.resolve();
       } else if (selectedMessage.current) {

@@ -66,10 +66,10 @@ if (config.metrics.enabled) {
 
   new HostMetrics({
     meterProvider,
-    name: "greycollar-host-metrics",
+    name: "nuc-host-metrics",
   }).start();
 
-  const meter = metrics.getMeter("greycollar-api", "1.0");
+  const meter = metrics.getMeter("nuc-api", "1.0");
 
   httpMetrics = {
     requestsCounter: meter.createCounter("http_requests_total", {

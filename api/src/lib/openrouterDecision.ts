@@ -15,7 +15,7 @@ export default createSystemOneCompatibleAdapter({
       defaultModel: "~typesafe/jev-latest",
       timeout: Number(process.env.OPENROUTER_DECISION_TIMEOUT_MS) || 30000,
       defaultHeaders: {
-        "X-Title": "GreyCollar",
+        "X-Title": "nuc",
       },
     }),
 }) satisfies DecisionAdapter;

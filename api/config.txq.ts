@@ -1,10 +1,10 @@
 const isLinux = process.platform === "linux";
 const instantClientPath = isLinux
   ? "/app/oracle/instantclient"
-  : "C:\\Users\\Halil\\Desktop\\nucleoid\\greycollar\\oracle\\driver\\instantclient_23_9";
+  : "C:\\Users\\Halil\\Desktop\\nucleoid\\nuc\\oracle\\driver\\instantclient_23_9";
 const walletPath = isLinux
   ? "/app/oracle/wallet"
-  : "C:\\Users\\Halil\\Desktop\\nucleoid\\greycollar\\oracle\\wallet";
+  : "C:\\Users\\Halil\\Desktop\\nucleoid\\nuc\\oracle\\wallet";
 
 const txqConfig = {
   type: "txeventq" as const,

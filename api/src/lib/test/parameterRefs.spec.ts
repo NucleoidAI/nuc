@@ -49,7 +49,7 @@ describe("resolveParameterRefs", () => {
   const source = {
     steps: [
       {
-        action: "GREY:check_product_count",
+        action: "SAP:search",
         parameters: { productId: "btr-123" },
         result: "5",
       },

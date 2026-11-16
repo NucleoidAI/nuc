@@ -30,7 +30,7 @@ export type SampleAgent = {
 };
 
 const SAMPLE_AI_ENGINE_ID = "816642c9-8a97-41d6-88fc-0f369e26646c";
-const SAMPLE_ENGINE_NAME = "GreyCollar";
+const SAMPLE_ENGINE_NAME = "nuc";
 
 export const SAMPLE_AGENTS: SampleAgent[] = [
   {

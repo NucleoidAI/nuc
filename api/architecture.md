@@ -4436,7 +4436,7 @@ Incorrect:
 ```ts
 const config = {
   postgres: {
-    uri: "postgres://api:hunter2@db.internal:5432/greycollar",
+    uri: "postgres://api:hunter2@db.internal:5432/nuc",
   },
 };
 ```
@@ -4461,7 +4461,7 @@ Correct:
 ```ts
 const config = {
   project: {
-    name: "greycollar-api",
+    name: "nuc-api",
     oauth: {
       providers: {
         github: {
@@ -5461,7 +5461,7 @@ async function run({
           ResourceType: "instance",
           Tags: [
             { Key: "Name", Value: name },
-            { Key: "greycollar:teamId", Value: meta.teamId },
+            { Key: "nuc:teamId", Value: meta.teamId },
           ],
         },
       ],
@@ -5482,7 +5482,7 @@ async function run({ parameters: { instanceId }, meta }) {
     new DescribeInstancesCommand({
       InstanceIds: [instanceId],
       Filters: [
-        { Name: "tag:greycollar:teamId", Values: [meta.teamId] },
+        { Name: "tag:nuc:teamId", Values: [meta.teamId] },
       ],
     }),
   );
@@ -5498,7 +5498,7 @@ async function run({ parameters: { instanceId }, meta }) {
 ```
 
 `terminate_vm.ts` needs the mirror check — refuse to terminate an instance whose
-`greycollar:teamId` tag does not match the caller's team. Without it, an
+`nuc:teamId` tag does not match the caller's team. Without it, an
 instance id is enough to destroy another tenant's machine, which is the same
 class of hole as
 [`http/authorize-before-mutating`](#httpauthorize-before-mutating) but with a
@@ -5661,7 +5661,7 @@ Incorrect:
 const client = new S3Client({ region: "us-east-1" });
 
 await client.send(
-  new PutObjectCommand({ Bucket: "greycollar-prod-artifacts", Key: key })
+  new PutObjectCommand({ Bucket: "nuc-prod-artifacts", Key: key })
 );
 ```
 

@@ -1,13 +1,13 @@
 [
 {
   "id": "ba6f7911-e232-469d-9060-2881852f6e59",
-  "title": "Basic Internet Subscription Setup",
-  "description": "Checks port availability at the user's residential address. Presents compatible internet speed packages for user selection. Allocates a port and creates the subscription order. Notifies the user and completes port configuration and physical connection",
-  "skill": "**Internet Subscription — Availability-Gated, Silent Setup**\n\nUse this Blueprint when a new subscription requires inventory validation before proceeding and no user notification is needed after port allocation.\n\nFlow: Retrieve BBK → Check inventory → [No inventory: end] → List speed products → User selects package → Allocate port → Configure port → Connect port to residence.\n\nExits silently after port connection. Exits early if inventory is unavailable.",
+  "title": "Customer Order Setup",
+  "description": "Looks up the customer and checks stock for the requested product. Creates a deal and lets the user confirm the product. Creates the purchase order, notifies the user, opens a setup ticket and sends an SMS confirmation",
+  "skill": "**Customer Order — Stock-Gated Setup**\n\nUse this Blueprint when a customer orders a product that must be in stock before the order proceeds.\n\nFlow: Find customer → Check stock → [Out of stock: end] → Create deal → User selects product → Create purchase order → Notify user → Open setup ticket → Send confirmation SMS.\n\nExits after the confirmation SMS. Exits early if the product is out of stock.",
   "context": {
     "agent": {
-      "name": "subscription_agent",
-      "description": "A agent optimized for subscription tasks, workflow assistance, and context-aware support within the system."
+      "name": "order_agent",
+      "description": "A agent optimized for order tasks, workflow assistance, and context-aware support within the system."
     },
     "knowledge": [
       {
@@ -18,7 +18,7 @@
         "type": "URL"
       },
       {
-        "text": "BBK Number is 3 digits",
+        "text": "Order numbers are 6 digits",
         "type": "TEXT"
       },
       {
@@ -32,7 +32,7 @@
     ],
     "capturedAt": "2025-06-19T06:02:00Z",
     "supervising": null,
-    "userRequest": "I want to buy new internet subscription",
+    "userRequest": "I want to order a new product",
     "referenceBlueprint": null
   },
   "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
@@ -48,10 +48,10 @@
       "type": "NORMAL",
       "createdAt": "2025-06-19T06:02:00Z",
       "properties": {
-        "icon": "mdi:map-marker",
-        "label": "Get BBK No by Address",
-        "action": "TELCO:get_bbk_by_address",
-        "description": "Resolves the BBK number for a given residential address. Identifies the corresponding network access point"
+        "icon": "mdi:account-search",
+        "label": "Find Customer",
+        "action": "HUBSPOT:search",
+        "description": "Looks up the customer record in HubSpot. Identifies the account the order belongs to"
       }
     },
     {
@@ -62,10 +62,10 @@
       "type": "NORMAL",
       "createdAt": "2025-06-19T06:02:00Z",
       "properties": {
-        "icon": "mdi:server",
-        "label": "Get Inventory",
-        "action": "TELCO:get_inventory",
-        "description": "Queries available port inventory at the resolved BBK location. Returns availability status to gate the next workflow step"
+        "icon": "mdi:warehouse",
+        "label": "Check Stock",
+        "action": "SAP:search",
+        "description": "Searches SAP for the requested material. Returns availability status to gate the next workflow step"
       }
     },
     {
@@ -82,7 +82,7 @@
         "icon": "mdi:source-branch",
         "label": "Check if product is available",
         "action": "PLATFORM:decision",
-        "description": "Evaluates inventory availability status. Routes to product selection if available, terminates early if not"
+        "description": "Evaluates stock availability. Routes to deal creation if available, terminates early if not"
       }
     },
     {
@@ -94,7 +94,7 @@
         "icon": "mdi:check",
         "label": "Complete",
         "action": "PLATFORM:complete",
-        "description": "Ends the workflow when no port inventory is available at the user's address"
+        "description": "Ends the workflow when the requested product is out of stock"
       }
     },
     {
@@ -105,10 +105,10 @@
       "type": "NORMAL",
       "createdAt": "2025-06-19T06:02:00Z",
       "properties": {
-        "icon": "mdi:speedometer",
-        "label": "Get Product by Speed",
-        "action": "TELCO:get_product_by_speed",
-        "description": "Fetches the internet product catalog filtered by compatible speed tiers. Prepares available options to present to the user"
+        "icon": "mdi:handshake",
+        "label": "Create Deal",
+        "action": "HUBSPOT:create_deal",
+        "description": "Creates a deal for the customer in the sales pipeline. Prepares available options to present to the user"
       }
     },
     {
@@ -133,10 +133,10 @@
       "type": "NORMAL",
       "createdAt": "2025-06-19T06:02:00Z",
       "properties": {
-        "icon": "mdi:link",
-        "label": "Assign Port",
-        "action": "TELCO:port_allocation",
-        "description": "Reserves a network port for the user's selected product. Ties the port reservation to the user's address"
+        "icon": "mdi:file-document",
+        "label": "Create Purchase Order",
+        "action": "SAP:create_purchase_order",
+        "description": "Creates a purchase order in SAP for the user's selected product"
       }
     },
     {
@@ -148,9 +148,9 @@
       "createdAt": "2025-06-19T06:02:00Z",
       "properties": {
         "icon": "mdi:bell",
-        "label": "Notify Port Allocation",
+        "label": "Notify Order Created",
         "action": "PLATFORM:message_user",
-        "description": "Sends a confirmation notification to the user. Confirms that port allocation has been completed successfully"
+        "description": "Sends a confirmation notification to the user. Confirms that the purchase order has been created"
       }
     },
     {
@@ -161,10 +161,10 @@
       "type": "NORMAL",
       "createdAt": "2025-06-19T06:02:00Z",
       "properties": {
-        "icon": "mdi:settings",
-        "label": "Configure Port",
-        "action": "TELCO:configuration",
-        "description": "Applies network configuration parameters to the allocated port. Makes the port service-ready for physical connection"
+        "icon": "mdi:ticket",
+        "label": "Open Setup Ticket",
+        "action": "ZENDESK:create_ticket",
+        "description": "Opens a Zendesk ticket so the setup team can fulfil the order"
       }
     },
     {
@@ -175,10 +175,10 @@
       "type": "NORMAL",
       "createdAt": "2025-06-19T06:02:00Z",
       "properties": {
-        "icon": "mdi:ethernet",
-        "label": "Connect Port",
-        "action": "TELCO:port_connection",
-        "description": "Establishes the physical network connection to the user's premises. Activates the service at the residential address"
+        "icon": "mdi:message-text",
+        "label": "Send Confirmation SMS",
+        "action": "TWILIO:send_sms",
+        "description": "Sends the customer an SMS confirming the order"
       }
     },
     {
@@ -190,7 +190,7 @@
         "icon": "mdi:check",
         "label": "Complete",
         "action": "PLATFORM:complete",
-        "description": "Marks the entire subscription setup workflow as successfully completed"
+        "description": "Marks the entire order setup workflow as successfully completed"
       }
     }
   ]

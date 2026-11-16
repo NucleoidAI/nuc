@@ -25,7 +25,7 @@ const LandingDialog = () => {
   const CodeImage = "/media/image.png";
 
   const handleClose = () => {
-    storage.set("greycollar", "landinglevel", 1);
+    storage.set("nuc", "landinglevel", 1);
     setOpen(false);
   };
 
@@ -46,10 +46,10 @@ const LandingDialog = () => {
       <DialogContent>
         <Box sx={{ textAlign: "center" }}>
           <Typography variant="h4" sx={{ mt: 1 }}>
-            Greycollar AI Agent
+            nuc AI Agent
           </Typography>
           <Box sx={{ mt: 3 }}>
-            GreyCollar is a Supervised AI Agent for your organization
+            nuc is a Supervised AI Agent for your organization
           </Box>
         </Box>
 

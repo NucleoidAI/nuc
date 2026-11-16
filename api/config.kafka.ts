@@ -1,8 +1,8 @@
 const kafkaConfig = {
   type: "kafka" as const,
-  clientId: "greycollar",
+  clientId: "nuc",
   brokers: ["50.19.4.143:9092"],
-  groupId: "greycollar",
+  groupId: "nuc",
 };
 
 export default kafkaConfig;

@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "api.greycollar.ai",
+      "name": "nuc-api",
       "dependencies": {
         "@aws-sdk/client-ec2": "^3.1085.0",
         "@canmingir/link-express": "^1.7.41",

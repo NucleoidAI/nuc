@@ -2668,7 +2668,7 @@ Incorrect:
 
 ```ts
 const socket = io("http://localhost:3003", { path: "/socket.io" });
-const showApiTab = window.location.hostname !== "greycollar.ai";
+const showApiTab = window.location.hostname !== "nuc.ai";
 ```
 
 Incorrect:
@@ -2677,7 +2677,7 @@ Incorrect:
 const api =
   window.location.hostname === "localhost"
     ? "http://localhost:3000"
-    : "https://api.greycollar.ai";
+    : "https://api.nuc.ai";
 ```
 
 The branch belongs in `config.js`, which is the file the deployment swaps.
@@ -8280,7 +8280,7 @@ Correct:
 {
   title: "Documentation",
   icon: "solar:book-bold",
-  path: "https://docs.greycollar.ai",
+  path: "https://docs.nuc.ai",
   external: true,
 },
 ```

@@ -1,6 +1,6 @@
 const config = {
   project: {
-    name: "greycollar-api",
+    name: "nuc-api",
     version: "0.0.1",
     label: "Team",
     oauth: {
@@ -42,15 +42,15 @@ const config = {
     interval: 15000,
     url: "http://localhost:9091",
     pushGateway: {
-      jobName: "greycollar-database",
+      jobName: "nuc-database",
       instance: "default",
     },
     pushGateWayOpenTelemetry: {
-      jobName: "greycollar-opentelemetry",
+      jobName: "nuc-opentelemetry",
       instance: "default",
     },
     pushGatewayNodeEvents: {
-      jobName: "greycollar-api",
+      jobName: "nuc-api",
       instance: "node-events",
     },
   },

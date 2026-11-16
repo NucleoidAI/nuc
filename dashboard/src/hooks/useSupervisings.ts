@@ -45,15 +45,6 @@ function useSupervisings() {
     return response?.data;
   };
 
-  const resolveSupervising = async (supervisingId: string, answer: string) => {
-    const response = await http.patch(`/supervisings/${supervisingId}/demo`, {
-      answer,
-      status: "ANSWERED",
-    });
-
-    return response?.data;
-  };
-
   const approveBlueprintChat = async ({
     supervisingId,
     decision,
@@ -211,7 +202,6 @@ function useSupervisings() {
   return {
     createSupervising,
     updateSupervising,
-    resolveSupervising,
     submitSupervising,
     blueprintChat,
     approveBlueprintChat,

@@ -7,7 +7,6 @@ oracle/
 .env
 dashboard/dist
 api/dist
-communication/dist
 server_setup/*
 server_setup/.*
 tmp/*
@@ -17,10 +16,8 @@ greycollar_server_setup_v8
 .tunnel-backup
 api/messages/*
 api/src/dataset/*/*.json
-asr-versions/*
 scripts/rule-swipe/*
 # e2e: staged copy of the built api
 .e2e/
-asr-versions/*
 
 /security-report/

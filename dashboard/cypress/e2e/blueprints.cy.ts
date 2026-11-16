@@ -115,11 +115,11 @@ describe("Blueprint Flow", () => {
   it("deletes a node from the flow", function () {
     openBlueprintFlow();
 
-    cy.contains("Get BBK No by Address").should("be.visible");
+    cy.contains("Find Customer").should("be.visible");
 
     cy.getBySel("node-delete-button").first().click();
 
-    cy.contains("Get BBK No by Address").should("not.exist");
+    cy.contains("Find Customer").should("not.exist");
   });
 
   it("saves the flow after editing a node", function () {

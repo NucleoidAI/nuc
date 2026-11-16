@@ -1,5 +1,5 @@
 import Agent from "../../models/Agent";
-import MCPs from "../../mcps/mcps";
+import catalog from "../../mcps";
 import actions from "../../actions";
 import platform from "@canmingir/link-express";
 import { resolveParameterRefs } from "../../lib/parameterRefs";
@@ -28,7 +28,7 @@ const PENDING_STATUS: Partial<
 };
 
 function actionTypeOf(action: string): ActionType {
-  if (MCPs.find((mcp) => mcp.action === action)) return "MCP";
+  if (catalog.find(action)) return "MCP";
 
   switch (action) {
     case "PLATFORM:ask_supervisor":
@@ -36,27 +36,28 @@ function actionTypeOf(action: string): ActionType {
     case "PLATFORM:user_interaction":
       return "INTERACTION";
     case "PLATFORM:customer_approval":
-    case "PLATFORM:two_factor":
       return "APPROVAL";
     case "SUPERVISOR_RESPONDED":
       return "SUPERVISED_RESPONDED";
     default:
-      return "ACTION";
+      return actions.find(action)?.approval ? "APPROVAL" : "ACTION";
   }
 }
 
 function loadAction(action: string, actionType: ActionType) {
+  const definition = actions.find(action);
+
+  if (definition?.run) return definition;
+
   switch (actionType) {
     case "SUPERVISED":
       return require("../../actions/ask_supervisor").default;
     case "INTERACTION":
       return require("../../actions/interaction").default;
     case "APPROVAL":
-      return action === "PLATFORM:two_factor"
-        ? require("../../actions/two_factor").default
-        : require("../../actions/customer_approval").default;
+      return require("../../actions/customer_approval").default;
     case "ACTION":
-      return require(`../../actions/${actions.find(action)?.lib}`).default;
+      return require(`../../actions/${definition?.lib}`).default;
     default:
       return undefined;
   }
@@ -199,7 +200,7 @@ async function step({
     });
   } catch (err: unknown) {
     if (err instanceof Error) {
-      if (action === "PLATFORM:two_factor" && taskId) {
+      if (actions.isExternalApproval(action) && taskId) {
         await taskFn.update({ taskId, status: "FAILED", comment: err.message });
       }
       await taskFn.updateStep({

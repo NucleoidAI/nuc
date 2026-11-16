@@ -30,7 +30,7 @@ import {
 import type { LLMMeta } from "@canmingir/link-express/llm";
 import * as pseudocode from "@canmingir/link-express/pseudocode";
 import Agent from "../../../models/Agent";
-import MCPs from "../../../mcps/mcps";
+import catalog from "../../../mcps";
 import actions from "../../../actions";
 import agentData from "../../agentData";
 import apiSchema from "../../../lib/apiSchema";
@@ -123,7 +123,7 @@ async function finish({
 function definitionOf(action?: string) {
   if (!action) return undefined;
 
-  return MCPs.find((mcp) => mcp.action === action) ?? actions.find(action);
+  return catalog.find(action) ?? actions.find(action);
 }
 
 function boundSelection({

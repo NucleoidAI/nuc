@@ -1,4 +1,5 @@
 import http from "@canmingir/link/platform/http";
+import { loadApiCall } from "../widgets/AgentDevToolWidget/apiSession";
 import { submitError } from "../widgets/AgentDevToolWidget/blueprintInputs";
 import type {
   ApiCall,
@@ -10,6 +11,7 @@ const STEP_POLL_INTERVAL = 1000;
 
 function useBlueprintExecution() {
   const [apiCall, setApiCall] = useState<ApiCall | null>(null);
+  const [resumingStepId, setResumingStepId] = useState<string | null>(null);
   const runRef = useRef(0);
 
   const reset = useCallback(() => {
@@ -32,7 +34,7 @@ function useBlueprintExecution() {
 
       const loadSteps = async (id: string) => {
         const { data } = await http.get<ApiStep[]>(`/tasks/${id}/steps`);
-        patch({ steps: data });
+        patch({ steps: data.map((step) => ({ ...step, taskId: id })) });
       };
 
       const poll = async (id: string) => {
@@ -91,7 +93,78 @@ function useBlueprintExecution() {
     []
   );
 
-  return { apiCall, setApiCall, execute, reset, runRef };
+  const start = useCallback(
+    async (
+      agentId: string,
+      blueprintId: string,
+      variables: Record<string, unknown>
+    ) => {
+      const run = ++runRef.current;
+      const active = () => run === runRef.current;
+
+      setApiCall({ request: variables, steps: [], done: false });
+
+      let taskId: string;
+
+      try {
+        const { data } = await http.post<{ id: string }>("/tasks", {
+          agentId,
+          blueprintId,
+          variables,
+          debug: true,
+        });
+        taskId = data.id;
+      } catch (error) {
+        const response = (error as { response?: { data?: unknown } })?.response;
+        if (active()) {
+          setApiCall((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  done: true,
+                  failed: true,
+                  response:
+                    response?.data ??
+                    (error instanceof Error ? error.message : "Request failed"),
+                }
+              : prev
+          );
+        }
+        return submitError(error);
+      }
+
+      while (active()) {
+        const call = await loadApiCall(taskId).catch(() => null);
+        if (!active()) return;
+        if (call) setApiCall(call);
+        if (call?.done) return;
+        await new Promise((resolve) => setTimeout(resolve, STEP_POLL_INTERVAL));
+      }
+    },
+    []
+  );
+
+  const resumeStep = useCallback(async (step: ApiStep) => {
+    if (!step.taskId) return;
+
+    setResumingStepId(step.id);
+    try {
+      await http.post(`/tasks/${step.taskId}/steps/${step.id}/resume`);
+    } finally {
+      setResumingStepId(null);
+    }
+  }, []);
+
+  return {
+    apiCall,
+    setApiCall,
+    execute,
+    start,
+    reset,
+    runRef,
+    resumeStep,
+    resumingStepId,
+  };
 }
 
 export default useBlueprintExecution;

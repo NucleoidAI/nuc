@@ -125,17 +125,16 @@ async function step({
     // TODO: hallucinationScore will be calculated separately in the future
     const hallucinationScore = knowledgeScore;
 
-    const [steps, { inheritedSteps, agentId, sessionId }] = await Promise.all([
-      taskFn.listSteps({ taskId }),
-      taskFn.get({ taskId }),
-    ]);
+    const [steps, { inheritedSteps, agentId, sessionId, variables }] =
+      await Promise.all([taskFn.listSteps({ taskId }), taskFn.get({ taskId })]);
 
     const priorSteps = steps.filter((s) => s.id !== stepId);
 
     const runParameters = resolveParameterRefs(parameters, {
       steps: priorSteps,
       inherited_steps: inheritedSteps ?? [],
-      session_variables: sessionId ? await sessionVariables({ sessionId }) : {},
+      session_variables:
+        variables ?? (sessionId ? await sessionVariables({ sessionId }) : {}),
       byNode: Object.fromEntries(
         priorSteps.filter((s) => s.nodeId).map((s) => [s.nodeId, s])
       ),
@@ -169,7 +168,7 @@ async function step({
 
     const resultString = stringify(result, actionType);
 
-    if (actionType === "SUPERVISED") {
+    if (actionType === "SUPERVISED" && parameters.sessionId) {
       await session.addConversation({
         sessionId: parameters.sessionId as string,
         agentId: parameters.agentId as string,

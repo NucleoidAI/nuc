@@ -14,6 +14,11 @@ const API_NODE_TYPES = ["START", "END"];
 
 export const API_START_NODE_ID = "api-start";
 export const API_END_NODE_ID = "api-end";
+export const JSON_START_NODE_ID = "json-start";
+
+export const BLUEPRINT_MODES = ["API", "CHAT", "JSON"] as const;
+
+export type BlueprintMode = (typeof BLUEPRINT_MODES)[number];
 
 export function isApiNode(node?: { type?: string }) {
   return API_NODE_TYPES.includes(node?.type ?? "");
@@ -84,8 +89,11 @@ export function withApiNodes(nodes: FlowNode[]): FlowNode[] {
   return [start, ...wired, end];
 }
 
-export function withoutApiNodes(nodes: FlowNode[]): FlowNode[] {
-  const removed = new Set(nodes.filter(isApiNode).map((node) => node.id));
+function withoutNodes(
+  nodes: FlowNode[],
+  matches: (node: FlowNode) => boolean
+): FlowNode[] {
+  const removed = new Set(nodes.filter(matches).map((node) => node.id));
   if (!removed.size) return nodes;
 
   const prune = (refs?: (string | null)[] | null) => {
@@ -104,8 +112,74 @@ export function withoutApiNodes(nodes: FlowNode[]): FlowNode[] {
     }));
 }
 
-export function applyApiNodes(nodes: FlowNode[], enabled: boolean): FlowNode[] {
-  return enabled ? withApiNodes(nodes) : withoutApiNodes(nodes);
+export function withoutApiNodes(nodes: FlowNode[]): FlowNode[] {
+  return withoutNodes(nodes, isApiNode);
+}
+
+export function withJsonNodes(nodes: FlowNode[]): FlowNode[] {
+  const graph = withoutNodes(nodes, (node) => node.type === "END");
+  const existingStart = startNodeOf(graph);
+  const body = graph.filter((node) => node.type !== "START");
+
+  const roots = rootIds(body);
+  const entry = roots.length ? roots : null;
+
+  if (existingStart) {
+    const properties = Object.fromEntries(
+      Object.entries(existingStart.properties ?? {}).filter(
+        ([key]) => key !== "timeout"
+      )
+    );
+
+    return [
+      {
+        ...existingStart,
+        next: successorIds(existingStart).length ? existingStart.next : entry,
+        properties,
+      },
+      ...body,
+    ];
+  }
+
+  return [
+    {
+      id: JSON_START_NODE_ID,
+      type: "START",
+      next: entry,
+      properties: {
+        label: "Input",
+        icon: "mdi:code-json",
+        fields: [],
+        strict: false,
+      },
+    },
+    ...body,
+  ];
+}
+
+export function jsonRequestOf(
+  blueprint: { mode?: string; nodes?: FlowNode[] | null } | null | undefined,
+  variables: Record<string, unknown> | null | undefined
+) {
+  const start =
+    blueprint?.mode === "JSON" ? startNodeOf(blueprint.nodes) : undefined;
+
+  return start
+    ? {
+        nodeId: start.id,
+        body: variables ?? {},
+        comment: "Received JSON input.",
+      }
+    : undefined;
+}
+
+export function applyModeNodes(
+  nodes: FlowNode[],
+  mode: BlueprintMode
+): FlowNode[] {
+  if (mode === "API") return withApiNodes(nodes);
+  if (mode === "JSON") return withJsonNodes(nodes);
+  return withoutApiNodes(nodes);
 }
 
 function requestOf(
@@ -126,10 +200,12 @@ export function omitMissingRequestRefs({
   parameters,
   start,
   steps,
+  variables,
 }: {
   parameters: Record<string, unknown>;
   start?: FlowNode;
   steps: { nodeId?: string | null; result?: unknown }[];
+  variables?: Record<string, unknown>;
 }): Record<string, unknown> {
   if (!start) return parameters;
 
@@ -140,15 +216,21 @@ export function omitMissingRequestRefs({
   );
   if (!optional.size) return parameters;
 
-  const request = requestOf(start, steps);
-  const prefix = `byNode.${start.id}.result.`;
+  const sources: [string, Record<string, unknown>][] = [
+    [`byNode.${start.id}.result.`, requestOf(start, steps)],
+    ...(variables
+      ? [["session_variables.", variables] as [string, Record<string, unknown>]]
+      : []),
+  ];
 
   const isPresent = (value: unknown) => {
     const path = refPathOf(value);
-    if (!path?.startsWith(prefix)) return true;
+    const source = sources.find(([prefix]) => path?.startsWith(prefix));
+    if (!path || !source) return true;
 
+    const [prefix, values] = source;
     const field = path.slice(prefix.length).split(/[.[]/, 1)[0];
-    return !optional.has(field) || field in request;
+    return !optional.has(field) || field in values;
   };
 
   const omit = (values: Record<string, unknown>): Record<string, unknown> =>

@@ -59,6 +59,10 @@ class Task extends Model {
   @Column(DataType.JSON)
   declare inheritedSteps: object[] | null;
 
+  @AllowNull(true)
+  @Column(DataType.JSON)
+  declare variables: Record<string, unknown> | null;
+
   @AllowNull(false)
   @Default(false)
   @Column(DataType.BOOLEAN)

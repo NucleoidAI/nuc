@@ -20,9 +20,9 @@ class Supervising extends Model {
   @Column(DataType.UUID)
   declare id: string;
 
-  @AllowNull(false)
+  @AllowNull(true)
   @Column(DataType.UUID)
-  declare sessionId: string;
+  declare sessionId: string | null;
 
   @AllowNull(true)
   @Column(DataType.UUID)

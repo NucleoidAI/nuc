@@ -3,7 +3,7 @@ import BluePrint, { BlueprintContext } from "../models/Blueprint";
 import BlueprintMessage from "../models/BlueprintMessage";
 import { NotFoundError } from "@canmingir/link-express/error";
 import agentFn from "./agent";
-import { applyApiNodes } from "../lib/apiNodes";
+import { type BlueprintMode, applyModeNodes } from "../lib/apiNodes";
 import * as pseudocode from "@canmingir/link-express/pseudocode";
 
 type NodeType = {
@@ -101,15 +101,18 @@ async function upsert(
   skill?: string,
   context?: BlueprintContext,
   executionMode?: "NORMAL" | "LITE",
-  api?: boolean,
+  mode?: BlueprintMode,
 ) {
   let Blueprint;
 
   const existingBlueprint = await BluePrint.findByPk(id);
 
-  const isApi = api ?? existingBlueprint?.api ?? false;
-  const apiNodes = applyApiNodes(pseudocode.sanitize(nodes) ?? [], isApi);
-  const sanitizedNodes = nodes || isApi ? apiNodes : null;
+  const effectiveMode = mode ?? existingBlueprint?.mode ?? "CHAT";
+  const modeNodes = applyModeNodes(
+    pseudocode.sanitize(nodes) ?? [],
+    effectiveMode,
+  );
+  const sanitizedNodes = nodes || effectiveMode !== "CHAT" ? modeNodes : null;
 
   if (existingBlueprint) {
     await existingBlueprint.update({
@@ -119,7 +122,7 @@ async function upsert(
       nodes: sanitizedNodes,
       ...(blocking !== undefined && { blocking }),
       ...(executionMode !== undefined && { executionMode }),
-      ...(api !== undefined && { api }),
+      ...(mode !== undefined && { mode }),
       ...(skill !== undefined && { skill }),
       ...(context !== undefined && { context }),
     });
@@ -134,7 +137,7 @@ async function upsert(
       nodes: sanitizedNodes,
       ...(blocking !== undefined && { blocking }),
       ...(executionMode !== undefined && { executionMode }),
-      ...(api !== undefined && { api }),
+      ...(mode !== undefined && { mode }),
       ...(skill !== undefined && { skill }),
       ...(context !== undefined && { context }),
     });
@@ -229,7 +232,7 @@ async function patch({
   blocking,
   executionMode,
   skill,
-  api,
+  mode,
 }: {
   blueprintId: string;
   title?: string;
@@ -237,7 +240,7 @@ async function patch({
   blocking?: boolean;
   executionMode?: "NORMAL" | "LITE";
   skill?: string;
-  api?: boolean;
+  mode?: BlueprintMode;
 }) {
   const Blueprint = await BluePrint.findByPk(blueprintId);
 
@@ -251,9 +254,9 @@ async function patch({
     ...(blocking !== undefined && { blocking }),
     ...(executionMode !== undefined && { executionMode }),
     ...(skill !== undefined && { skill }),
-    ...(api !== undefined && {
-      api,
-      nodes: applyApiNodes(Blueprint.nodes ?? [], api),
+    ...(mode !== undefined && {
+      mode,
+      nodes: applyModeNodes(Blueprint.nodes ?? [], mode),
     }),
   });
 

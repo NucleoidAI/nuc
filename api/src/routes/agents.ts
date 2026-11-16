@@ -4,7 +4,9 @@ import Agent from "../models/Agent";
 import BlueprintModel from "../models/Blueprint";
 import Joi from "joi";
 import Session from "../models/Session";
+import Step from "../models/Step";
 import Supervising from "../models/Supervising";
+import Task from "../models/Task";
 import agentFn from "../functions/agent";
 import { event } from "node-event-test-package/client";
 import express from "express";
@@ -144,6 +146,42 @@ router.get("/:agentId/sessions", async (req, res) => {
     .slice(0, 5);
 
   res.json(sorted);
+});
+
+router.get("/:agentId/api-calls", async (req, res) => {
+  const { projectId: teamId } = req.session;
+  const { agentId } = Joi.attempt(
+    req.params,
+    Joi.object({ agentId: Joi.string().guid().required() })
+  );
+
+  const agent = await Agent.findByPk(agentId);
+
+  if (!agent) {
+    return res.status(404).end();
+  }
+
+  if (agent.teamId !== teamId) {
+    return res.status(401).end();
+  }
+
+  const tasks = await Task.findAll({
+    where: { agentId, sessionId: null },
+    include: [
+      {
+        model: Step,
+        as: "steps",
+        where: { action: "PLATFORM:api_request" },
+        attributes: [],
+        required: true,
+      },
+    ],
+    order: [["createdAt", "DESC"]],
+    limit: 5,
+    subQuery: false,
+  });
+
+  res.json(tasks);
 });
 
 router.get("/:agentId/supervisings", async (req, res) => {

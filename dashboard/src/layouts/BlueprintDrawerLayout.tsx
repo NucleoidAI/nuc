@@ -114,6 +114,14 @@ const BlueprintDrawerLayout = ({
     "showconnections",
     false
   );
+  const [debugMode] = useStorage(
+    "nuc",
+    "blueprintdrawerlayout",
+    "debugmode",
+    false
+  );
+  const setDebugMode = (value: boolean) =>
+    storage.set("nuc", "blueprintdrawerlayout", "debugmode", value);
   const [superviseChatOpen, setSuperviseChatOpen] = useState<boolean>(
     !!supervise
   );
@@ -287,6 +295,7 @@ const BlueprintDrawerLayout = ({
         liteMode={liteMode}
         api={api}
         showConnections={showConnections}
+        debugMode={debugMode}
         onSkillChange={setSkill}
         onSkillLoadingChange={setSkillLoading}
         onNodesChange={setLiveNodes}
@@ -439,6 +448,8 @@ const BlueprintDrawerLayout = ({
         api={api}
         setApi={setApi}
         blueprintId={selectedItem?.id}
+        debugMode={debugMode}
+        setDebugMode={setDebugMode}
       />
     </Box>
   );

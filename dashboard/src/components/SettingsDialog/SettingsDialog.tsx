@@ -27,6 +27,8 @@ const SettingsDialog = ({
   api = false,
   setApi,
   blueprintId,
+  debugMode = false,
+  setDebugMode,
 }: {
   showSettings: boolean;
   setShowSettings: (value: boolean) => void;
@@ -39,6 +41,8 @@ const SettingsDialog = ({
   api?: boolean;
   setApi?: (value: boolean) => void;
   blueprintId?: string;
+  debugMode?: boolean;
+  setDebugMode?: (value: boolean) => void;
 }) => {
   const theme = useTheme();
 
@@ -195,6 +199,36 @@ const SettingsDialog = ({
                       ? `POST ${config.api}/execute/${blueprintId}`
                       : "Turning this on adds Request and Response nodes to the flow. Turning it off removes them."}
                   </Typography>
+                </>
+              )}
+
+              {setDebugMode && (
+                <>
+                  <Typography variant="subtitle2" gutterBottom sx={{ mt: 4 }}>
+                    Debug Mode
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mb: 2 }}
+                  >
+                    Shows developer-only controls on the canvas, such as pin
+                    buttons on nodes.
+                  </Typography>
+                  <LinkSwipe
+                    checked={debugMode}
+                    onChange={setDebugMode}
+                    theme={theme}
+                    color="primary"
+                    variant="solid"
+                    showThumbIcon={false}
+                    offLabel="Off"
+                    onLabel="On"
+                    ariaLabel="Debug mode"
+                    width={70}
+                    height={30}
+                    thumbSize={20}
+                  />
                 </>
               )}
             </Box>

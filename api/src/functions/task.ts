@@ -1,10 +1,12 @@
 import Agent from "../models/Agent";
+import Blueprint from "../models/Blueprint";
 import LLMLog from "../models/LLMLog";
 import Step from "../models/Step";
 import Supervising from "../models/Supervising";
 import Task from "../models/Task";
 import { Op, col, fn } from "sequelize";
 import { event } from "@canmingir/link-express/event/client";
+import { pinMockOutputOf, pinOutputModeOf } from "../lib/blueprintNodes";
 import llmLog from "./llmLog";
 
 async function create({
@@ -430,6 +432,43 @@ async function resumePinnedStep({
 
   if (!step || step.status !== "PINNED") {
     throw new Error(`Pinned step not found: ${stepId}`);
+  }
+
+  const task = await Task.findOne({ where: { id: taskId } });
+  const blueprint = task?.blueprintId
+    ? await Blueprint.findByPk(task.blueprintId)
+    : null;
+  const node = blueprint?.nodes?.find(
+    (n: { id: string }) => n.id === step.nodeId,
+  );
+
+  if (pinOutputModeOf(node) === "MOCK") {
+    const mockOutput = pinMockOutputOf(node) ?? "";
+    const comment = "Resumed: using mock output.";
+
+    const [updated] = await Step.update(
+      { status: "COMPLETED", result: mockOutput, comment },
+      { where: { id: stepId, status: "PINNED" } },
+    );
+
+    if (updated === 0) {
+      throw new Error(`Pinned step not found: ${stepId}`);
+    }
+
+    await event.publish("STEP_COMPLETED", {
+      taskId,
+      stepId,
+      action: step.action,
+      parameters: step.parameters,
+      result: mockOutput,
+    });
+
+    return {
+      ...step.toJSON(),
+      status: "COMPLETED",
+      result: mockOutput,
+      comment,
+    };
   }
 
   const comment = "Resumed: dispatching the real request.";

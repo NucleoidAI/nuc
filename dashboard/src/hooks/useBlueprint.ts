@@ -1,3 +1,4 @@
+import type { BlueprintMode } from "../components/ApiNode/apiNodes";
 import { convertToNodesAndEdges } from "../components/BlueprintFlow/flowAdapter";
 import http from "@canmingir/link/platform/http";
 import useApi from "./useApi";
@@ -197,7 +198,7 @@ function useBlueprint() {
     skill?: string,
     context?: BlueprintContext,
     executionMode?: "NORMAL" | "LITE",
-    api?: boolean
+    mode?: BlueprintMode
   ) => {
     if (!blueprintId) {
       blueprintId = uuidv4();
@@ -214,7 +215,7 @@ function useBlueprint() {
       ...(skill !== undefined && { skill }),
       ...(context !== undefined && { context }),
       ...(executionMode !== undefined && { executionMode }),
-      ...(api !== undefined && { api }),
+      ...(mode !== undefined && { mode }),
     });
     if (response?.data) {
       publish("BLUEPRINT_UPSERTED", { Blueprint: response.data });
@@ -227,7 +228,7 @@ function useBlueprint() {
     fields: {
       blocking?: boolean;
       executionMode?: "NORMAL" | "LITE";
-      api?: boolean;
+      mode?: BlueprintMode;
     }
   ) => {
     const response = await http.patch(`/blueprints/${blueprintId}`, fields);

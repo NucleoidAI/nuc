@@ -43,6 +43,9 @@ export const API_TIMEOUT_MAX = 300;
 
 const API_START_NODE_ID = "api-start";
 const API_END_NODE_ID = "api-end";
+const JSON_START_NODE_ID = "json-start";
+
+export type BlueprintMode = "API" | "CHAT" | "JSON";
 const FIELD_NAME = /^[A-Za-z_][A-Za-z0-9_]*$/;
 
 export function isApiNodeType(type?: string) {
@@ -231,10 +234,11 @@ export function withApiNodes(nodes: FlowNode[]): FlowNode[] {
   return [start, ...wired, end];
 }
 
-export function withoutApiNodes(nodes: FlowNode[]): FlowNode[] {
-  const removed = new Set(
-    nodes.filter((node) => isApiNodeType(node.type)).map((node) => node.id)
-  );
+function withoutNodes(
+  nodes: FlowNode[],
+  matches: (node: FlowNode) => boolean
+): FlowNode[] {
+  const removed = new Set(nodes.filter(matches).map((node) => node.id));
   if (!removed.size) return nodes;
 
   const prune = (refs?: string[] | null) => {
@@ -251,4 +255,65 @@ export function withoutApiNodes(nodes: FlowNode[]): FlowNode[] {
       ...("true" in node && { true: prune(node.true) }),
       ...("false" in node && { false: prune(node.false) }),
     }));
+}
+
+export function withoutApiNodes(nodes: FlowNode[]): FlowNode[] {
+  return withoutNodes(nodes, (node) => isApiNodeType(node.type));
+}
+
+export function withJsonNodes(nodes: FlowNode[]): FlowNode[] {
+  const graph = withoutNodes(nodes, (node) => node.type === "END");
+  const existingStart = graph.find((node) => node.type === "START");
+  const body = graph.filter((node) => node.type !== "START");
+
+  const referenced = new Set(body.flatMap(successorIds));
+  const roots = body.map((n) => n.id).filter((id) => !referenced.has(id));
+  const entry = roots.length ? roots : null;
+
+  if (existingStart) {
+    const properties = Object.fromEntries(
+      Object.entries(existingStart.properties ?? {}).filter(
+        ([key]) => key !== "timeout"
+      )
+    );
+
+    return [
+      {
+        ...existingStart,
+        next: successorIds(existingStart).length ? existingStart.next : entry,
+        properties,
+      },
+      ...body,
+    ];
+  }
+
+  return [
+    {
+      id: JSON_START_NODE_ID,
+      type: "START",
+      next: entry,
+      properties: {
+        label: "Input",
+        icon: "mdi:code-json",
+        fields: [],
+        strict: false,
+      },
+    },
+    ...body,
+  ];
+}
+
+export function applyModeNodes(
+  nodes: FlowNode[],
+  mode: BlueprintMode
+): FlowNode[] {
+  if (mode === "API") return withApiNodes(nodes);
+  if (mode === "JSON") return withJsonNodes(nodes);
+  return withoutApiNodes(nodes);
+}
+
+export function modeOfNodes(nodes: { type?: string; nodeType?: string }[]) {
+  const types = new Set(nodes.map((node) => node.nodeType ?? node.type));
+  if (!types.has("START")) return "CHAT";
+  return types.has("END") ? "API" : "JSON";
 }

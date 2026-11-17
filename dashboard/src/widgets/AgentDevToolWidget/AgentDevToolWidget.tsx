@@ -17,7 +17,9 @@ import { Box, Portal, ThemeProvider, Typography } from "@mui/material";
 import { DevTool, SidebarChat } from "@canmingir/link/platform/components";
 import {
   type DevToolBlueprint,
+  errorText,
   inputFieldsOf,
+  modeOf,
   variablesTemplateOf,
 } from "./blueprintInputs";
 import { publish, useEvent } from "@nucleoidai/react-event";
@@ -50,7 +52,10 @@ const AgentDevToolWidget = ({
     apiCall,
     setApiCall,
     execute: executeBlueprint,
+    start: startTask,
     reset: resetApiCall,
+    resumeStep: resumeApiCallStep,
+    resumingStepId: resumingApiCallStepId,
   } = useBlueprintExecution();
 
   useEffect(
@@ -99,6 +104,9 @@ const AgentDevToolWidget = ({
       : [];
     return blueprints.find(({ id }) => id === selectedBlueprint);
   }, [Blueprint, selectedBlueprint]);
+
+  const mode = modeOf(selected);
+  const runsAsTask = Boolean(selected) && mode !== "CHAT";
 
   const inputFields = useMemo(() => inputFieldsOf(selected), [selected]);
   const jsonTemplate = useMemo(() => variablesTemplateOf(selected), [selected]);
@@ -172,11 +180,9 @@ const AgentDevToolWidget = ({
         (session) => session.sessionId === selectedSessionId
       ) as { type?: string } | undefined;
 
-      if (stored?.type === "API" && agentId) {
+      if (stored?.type === "API") {
         runRef.current += 1;
-        const call = await loadApiCall(agentId, selectedSessionId).catch(
-          () => null
-        );
+        const call = await loadApiCall(selectedSessionId).catch(() => null);
         if (call) {
           if (call.blueprintId) setSelectedBlueprint(call.blueprintId);
           setApiCall(call);
@@ -194,7 +200,7 @@ const AgentDevToolWidget = ({
         getSession(selectedSessionId);
       }
     },
-    [storedSessions, agentId, switchSession, getSession, setApiCall]
+    [storedSessions, switchSession, getSession, setApiCall]
   );
 
   const handleNewSession = useCallback(() => {
@@ -205,9 +211,13 @@ const AgentDevToolWidget = ({
   const handleSubmitForm = useCallback(
     async (values: Record<string, unknown>) => {
       if (!selected) return "Select a blueprint first";
+      if (selected.mode === "JSON") {
+        if (!agentId) return "Select an agent first";
+        return startTask(agentId, selected.id, values);
+      }
       return executeBlueprint(selected.id, values);
     },
-    [selected, executeBlueprint]
+    [selected, agentId, executeBlueprint, startTask]
   );
 
   const handleSubmitJson = useCallback(
@@ -216,23 +226,33 @@ const AgentDevToolWidget = ({
         return "Variables must be a JSON object";
       }
 
+      if (selected?.mode === "JSON") {
+        if (!agentId) return "Select an agent first";
+        const errors = await startTask(
+          agentId,
+          selected.id,
+          value as Record<string, unknown>
+        );
+        return errors ? errorText(errors) : undefined;
+      }
+
       try {
         await sendVariables(value as Record<string, unknown>);
       } catch (error) {
         return error instanceof Error ? error.message : "Failed to send JSON";
       }
     },
-    [sendVariables]
+    [selected, agentId, startTask, sendVariables]
   );
 
   const sessionSteps = useSessionSteps({
     agentId,
     sessionId,
-    enabled: open && Boolean(selected) && !selected?.api,
+    enabled: open && Boolean(selected) && !runsAsTask,
   });
 
   const playgroundTitle =
-    (selected?.api ? apiCall?.taskName : sessionSteps.taskName) ?? "Playground";
+    (runsAsTask ? apiCall?.taskName : sessionSteps.taskName) ?? "Playground";
 
   const handleNewUserMessage = async (content: string) => {
     setMessages((prevMessages) => [
@@ -261,8 +281,8 @@ const AgentDevToolWidget = ({
         onSessionSelect={handleSessionSelect}
         onNewSession={handleNewSession}
         renderSession={(session) =>
-          (session as { type?: string }).type === "API" && agentId ? (
-            <ApiSessionView agentId={agentId} sessionId={session.sessionId} />
+          (session as { type?: string }).type === "API" ? (
+            <ApiSessionView taskId={session.sessionId} />
           ) : undefined
         }
         beta={beta}
@@ -343,15 +363,19 @@ const AgentDevToolWidget = ({
               onPresetChange={handleBlueprintChange}
               onNewSession={onNewSession}
               inputFields={inputFields}
-              onSubmitForm={selected?.api ? handleSubmitForm : undefined}
+              onSubmitForm={runsAsTask ? handleSubmitForm : undefined}
               jsonTemplate={jsonTemplate}
               onSubmitJson={
-                selected && !selected.api ? handleSubmitJson : undefined
+                selected && mode !== "API" ? handleSubmitJson : undefined
               }
               presetRequired
               panel={
-                selected?.api ? (
-                  <ApiCallPanel call={apiCall} />
+                runsAsTask ? (
+                  <ApiCallPanel
+                    call={apiCall}
+                    onResume={resumeApiCallStep}
+                    resumingStepId={resumingApiCallStepId}
+                  />
                 ) : (
                   <ChatTimeline
                     messages={messages}
@@ -362,7 +386,15 @@ const AgentDevToolWidget = ({
                   />
                 )
               }
-              inputModes={selected?.api ? ["form"] : ["chat", "json"]}
+              inputModes={
+                mode === "API"
+                  ? ["form"]
+                  : mode === "JSON"
+                  ? inputFields.length
+                    ? ["json", "form"]
+                    : ["json"]
+                  : ["chat", "json"]
+              }
             />
           </ThemeProvider>
         )}

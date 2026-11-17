@@ -9,6 +9,7 @@ import {
   type ApiField,
   apiFieldErrors,
   curlCommand,
+  sampleBody,
 } from "./apiNodes";
 import {
   Alert,
@@ -35,6 +36,7 @@ export default function ApiNodeDrawer({
   open,
   node,
   blueprintId,
+  json = false,
   onClose,
   onSave,
 }: {
@@ -45,6 +47,7 @@ export default function ApiNodeDrawer({
     raw?: { properties?: ApiNodeProperties };
   };
   blueprintId?: string;
+  json?: boolean;
   onClose: () => void;
   onSave: (properties: ApiNodeProperties) => void;
 }) {
@@ -69,9 +72,10 @@ export default function ApiNodeDrawer({
 
   const timeoutValue = Number(timeoutDraft);
   const timeoutInvalid =
-    !Number.isInteger(timeoutValue) ||
-    timeoutValue < 1 ||
-    timeoutValue > API_TIMEOUT_MAX;
+    !json &&
+    (!Number.isInteger(timeoutValue) ||
+      timeoutValue < 1 ||
+      timeoutValue > API_TIMEOUT_MAX);
   const errors = apiFieldErrors(fields);
   const endpoint = `${config.api}/execute/${blueprintId ?? ":blueprintId"}`;
 
@@ -83,7 +87,11 @@ export default function ApiNodeDrawer({
       sx={{ zIndex: (theme) => theme.zIndex.modal + 2 }}
       title={
         <Typography variant="h6">
-          {isStart ? "Request Schema" : "Response Schema"}
+          {isStart
+            ? json
+              ? "Input Schema"
+              : "Request Schema"
+            : "Response Schema"}
         </Typography>
       }
     >
@@ -118,7 +126,42 @@ export default function ApiNodeDrawer({
                 onChange={(event) => setLabel(event.target.value)}
                 fullWidth
               />
-              {isStart ? (
+              {isStart && json ? (
+                <Box>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mb: 1.5 }}
+                  >
+                    The task starts with this JSON payload. Nodes read each
+                    field as <code>session_variables.&lt;field&gt;</code> or
+                    through the Input connections.
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ display: "block", mb: 0.75 }}
+                  >
+                    Example payload
+                  </Typography>
+                  <Box
+                    component="pre"
+                    sx={{
+                      m: 0,
+                      p: 1.25,
+                      borderRadius: 1.5,
+                      border: 1,
+                      borderColor: "divider",
+                      fontFamily: "monospace",
+                      fontSize: 12,
+                      whiteSpace: "pre-wrap",
+                      wordBreak: "break-word",
+                    }}
+                  >
+                    {JSON.stringify(sampleBody(fields), null, 2)}
+                  </Box>
+                </Box>
+              ) : isStart ? (
                 <Box>
                   <Typography
                     variant="caption"
@@ -174,23 +217,27 @@ export default function ApiNodeDrawer({
                   >
                     {strict
                       ? "Requests with fields that are not in the schema fail with 400."
+                      : json
+                      ? "Fields that are not in the schema are kept as session variables."
                       : "Fields that are not in the schema are dropped before the task starts."}
                   </Typography>
                 </Box>
-                <TextField
-                  size="small"
-                  type="number"
-                  label="Timeout (seconds)"
-                  value={timeoutDraft}
-                  onChange={(event) => setTimeoutDraft(event.target.value)}
-                  error={timeoutInvalid}
-                  helperText={
-                    timeoutInvalid
-                      ? `Enter a whole number between 1 and ${API_TIMEOUT_MAX}`
-                      : "The request returns 504 if the task is still running after this."
-                  }
-                  inputProps={{ min: 1, max: API_TIMEOUT_MAX, step: 1 }}
-                />
+                {!json && (
+                  <TextField
+                    size="small"
+                    type="number"
+                    label="Timeout (seconds)"
+                    value={timeoutDraft}
+                    onChange={(event) => setTimeoutDraft(event.target.value)}
+                    error={timeoutInvalid}
+                    helperText={
+                      timeoutInvalid
+                        ? `Enter a whole number between 1 and ${API_TIMEOUT_MAX}`
+                        : "The request returns 504 if the task is still running after this."
+                    }
+                    inputProps={{ min: 1, max: API_TIMEOUT_MAX, step: 1 }}
+                  />
+                )}
               </Stack>
             </Box>
           )}
@@ -207,7 +254,9 @@ export default function ApiNodeDrawer({
             onClick={() =>
               onSave(
                 isStart
-                  ? { label, fields, strict, timeout: timeoutValue }
+                  ? json
+                    ? { label, fields, strict }
+                    : { label, fields, strict, timeout: timeoutValue }
                   : { label, fields }
               )
             }

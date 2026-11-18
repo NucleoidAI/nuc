@@ -43,6 +43,27 @@ This will start three applications simultaneously: Dashboard, API Server and Pro
 
 Learn more at [https://nuc.ai/docs](https://nuc.ai/docs)
 
+## Building on nuc
+
+nuc is published as two npm packages with the same version, so an application can run nuc as a layer of [link](https://github.com/canmingir/link-express) and extend its dashboard:
+
+| Package                     | Contents                                                       | Install into          |
+| --------------------------- | -------------------------------------------------------------- | --------------------- |
+| `@nucleoidai/nuc`           | Compiled API (`api/src`), its typings and `mcp/McpClient`      | the API project       |
+| `@nucleoidai/nuc-dashboard` | Dashboard source (`src`, `public`, `routes.tsx`, `config*.ts`) | the dashboard project |
+
+```ts
+import * as link from "@canmingir/link-express/link";
+import nuc from "@nucleoidai/nuc";
+
+link
+  .init(config)
+  .then((app) => app.use(nuc(config)))
+  .then(link.run);
+```
+
+`bun run build:package` builds both into `npm/nuc` and `npm/nuc-dashboard`. The **Publish** workflow bumps the version, publishes both packages and pushes the version commit.
+
 ## ⚡n8n Integration
 
 nuc can be part of your favorite flow tools like n8n, enabling you to embed supervised AI directly into automated workflows.

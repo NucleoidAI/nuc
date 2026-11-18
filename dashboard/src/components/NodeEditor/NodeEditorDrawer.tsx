@@ -73,6 +73,7 @@ const NodeEditorDrawer = ({
   handoffTargetBlueprintId = "",
   setHandoffTargetBlueprintId,
   availableAgentBlueprints = [],
+  isCompleteNode = false,
 }: {
   parameters?: Record<string, unknown>;
   onParametersChange?: (parameters: Record<string, unknown>) => void;
@@ -212,6 +213,7 @@ const NodeEditorDrawer = ({
   handoffTargetBlueprintId?: string;
   setHandoffTargetBlueprintId?: (id: string) => void;
   availableAgentBlueprints?: Array<{ id: string; title: string }>;
+  isCompleteNode?: boolean;
 }) => {
   const theme = useTheme();
   const [integrationPage, setIntegrationPage] = useState(1);
@@ -808,6 +810,43 @@ const NodeEditorDrawer = ({
     </Stack>
   );
 
+  const completeNodeFields = (
+    <Stack spacing={2}>
+      <TextField
+        label="Label"
+        variant="outlined"
+        fullWidth
+        value={newNodeLabel}
+        onChange={(e) => setNewNodeLabel(e.target.value)}
+        autoComplete="off"
+        inputProps={{
+          "data-cy": "node-label-input",
+          autoComplete: "off",
+          autoCorrect: "off",
+          spellCheck: false,
+        }}
+        sx={{ mt: 1 }}
+      />
+
+      <TextField
+        label="Description"
+        variant="outlined"
+        fullWidth
+        multiline
+        minRows={2}
+        value={newNodeDescription}
+        onChange={(e) => setNewNodeDescription?.(e.target.value)}
+        placeholder={descriptionPlaceholder}
+        autoComplete="off"
+        inputProps={{
+          autoComplete: "off",
+          autoCorrect: "off",
+          spellCheck: false,
+        }}
+      />
+    </Stack>
+  );
+
   const paramsFields = (
     <Stack spacing={2}>
       {usesIntegration && selectedIntegration?.id && onParametersChange ? (
@@ -879,26 +918,34 @@ const NodeEditorDrawer = ({
           height: "100%",
         }}
       >
-        <Tabs
-          value={activeTab}
-          onChange={(_, value) => setActiveTab(value)}
-          sx={{ mb: 2, borderBottom: 1, borderColor: "divider" }}
-        >
-          <Tab label="Node" value="node" />
-          <Tab label="Details" value="details" />
-          <Tab label="Params" value="params" />
-        </Tabs>
+        {!isCompleteNode && (
+          <Tabs
+            value={activeTab}
+            onChange={(_, value) => setActiveTab(value)}
+            sx={{ mb: 2, borderBottom: 1, borderColor: "divider" }}
+          >
+            <Tab label="Node" value="node" />
+            <Tab label="Details" value="details" />
+            <Tab label="Params" value="params" />
+          </Tabs>
+        )}
 
         <Box sx={{ flex: 1, overflowY: "auto" }}>
-          <Box sx={{ display: activeTab === "node" ? "block" : "none" }}>
-            {nodeFields}
-          </Box>
-          <Box sx={{ display: activeTab === "details" ? "block" : "none" }}>
-            {detailsFields}
-          </Box>
-          <Box sx={{ display: activeTab === "params" ? "block" : "none" }}>
-            {paramsFields}
-          </Box>
+          {isCompleteNode ? (
+            completeNodeFields
+          ) : (
+            <>
+              <Box sx={{ display: activeTab === "node" ? "block" : "none" }}>
+                {nodeFields}
+              </Box>
+              <Box sx={{ display: activeTab === "details" ? "block" : "none" }}>
+                {detailsFields}
+              </Box>
+              <Box sx={{ display: activeTab === "params" ? "block" : "none" }}>
+                {paramsFields}
+              </Box>
+            </>
+          )}
         </Box>
 
         <Box

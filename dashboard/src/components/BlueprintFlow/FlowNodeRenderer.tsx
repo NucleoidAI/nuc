@@ -220,8 +220,7 @@ export default function FlowNodeRenderer({
       ? truncateDescription(node.description)
       : node.description,
   };
-  const isReadOnly =
-    isCompleteNode || (!onAdd && !onEdit && !onSwapBranch && !onDelete);
+  const isReadOnly = !onAdd && !onEdit && !onSwapBranch && !onDelete;
   const [contextMenu, setContextMenu] = useState<{
     mouseX: number;
     mouseY: number;
@@ -355,7 +354,7 @@ export default function FlowNodeRenderer({
       <InfoNode node={infoNode} nodeStyle={nodeStyle}>
         {!isReadOnly && (
           <>
-            {!isLocked && (
+            {!isLocked && !isCompleteNode && (
               <ActionButtonWrapper
                 className="anim-hover-shadow"
                 data-cy="node-delete-button"
@@ -367,7 +366,7 @@ export default function FlowNodeRenderer({
                 <Iconify icon="mdi:delete-outline" width={16} height={16} />
               </ActionButtonWrapper>
             )}
-            {onEdit && (
+            {onEdit && !isCompleteNode && (
               <ActionButtonWrapper
                 className="anim-hover-shadow"
                 data-cy="node-edit-button"
@@ -383,7 +382,7 @@ export default function FlowNodeRenderer({
                 <Iconify icon="mdi:lightning-bolt" width={16} height={16} />
               </ForceIndicatorWrapper>
             )}
-            {canAddChild && (
+            {canAddChild && !isCompleteNode && (
               <ActionButtonWrapper
                 className="anim-hover-shadow"
                 data-cy="node-add-button"
@@ -394,7 +393,7 @@ export default function FlowNodeRenderer({
                 <Iconify icon="mdi:plus" width={16} height={16} />
               </ActionButtonWrapper>
             )}
-            {onPin && canPin && (
+            {onPin && canPin && !isCompleteNode && (
               <ActionButtonWrapper
                 className="anim-hover-shadow"
                 data-cy="node-pin-button"
@@ -423,7 +422,7 @@ export default function FlowNodeRenderer({
           sx={{ zIndex: (theme) => theme.zIndex.modal + 3 }}
           slotProps={{ paper: { sx: { minWidth: 180 } } }}
         >
-          {canAddChild && (
+          {canAddChild && !isCompleteNode && (
             <MenuItem
               onClick={(e) => {
                 handleAddClick(e);
@@ -449,7 +448,7 @@ export default function FlowNodeRenderer({
               <ListItemText>Edit node</ListItemText>
             </MenuItem>
           )}
-          {onToggleForce && !isLocked && (
+          {onToggleForce && !isLocked && !isCompleteNode && (
             <MenuItem
               onClick={(e) => {
                 handleToggleForceClick(e);

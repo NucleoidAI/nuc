@@ -4,7 +4,7 @@ import type {
   Question,
   Questions,
 } from "@typesafe-ai/sdk";
-import { ask, choice, noul } from "../../lib/decision";
+import { ask, choice, noul } from "@canmingir/link-express/decision";
 import dataset from "../../dataset";
 import { type Source, isRef } from "@canmingir/link-express/dataset";
 import type { LLMMeta } from "@canmingir/link-express/llm";

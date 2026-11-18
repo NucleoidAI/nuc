@@ -1,5 +1,5 @@
 import type { EntryType, JsonValue } from "@typesafe-ai/sdk";
-import { ask, choice } from "../../lib/decision";
+import { ask, choice } from "@canmingir/link-express/decision";
 import type { ContextMessage } from "./context";
 import type { LLMMeta } from "@canmingir/link-express/llm";
 import Agent from "../../models/Agent";

@@ -4,8 +4,8 @@ import config from "./config";
 import dotenv from "dotenv";
 import { event } from "@canmingir/link-express/event/client";
 import http from "http";
-import models from "./src/models";
 import platform from "@canmingir/link-express";
+import start from "./src/start";
 
 dotenv.config();
 
@@ -47,24 +47,7 @@ platform.init(config).then(async () => {
 
   logger.info("Platform Logger Initialized");
 
-  await models.init();
-
-  const { default: mcpServer } = await import("./src/functions/mcpServer");
-  const mcpEnv = await mcpServer.applyProcessEnv();
-
-  mcpEnv.applied.forEach((entry) => logger.info(`MCP env override: ${entry}`));
-  mcpEnv.skipped.forEach((entry) =>
-    logger.warn(`MCP env override skipped, unknown server: ${entry}`)
-  );
-
-  if (config.metrics.enabled) {
-    event.startPushgateway({
-      url: config.metrics.url,
-      jobName: config.metrics.pushGatewayNodeEvents.jobName,
-      instance: config.metrics.pushGatewayNodeEvents.instance,
-      interval: config.metrics.interval,
-    });
-  }
+  await start(config);
 
   server.listen(process.env.PORT || 4000, () => {
     logger.info(`Server is running on port ${process.env.PORT || 4000}`);

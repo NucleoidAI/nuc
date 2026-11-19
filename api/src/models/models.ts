@@ -6,14 +6,6 @@ async function init() {
   } = await platform.getModules();
   const models = sequelize.models;
 
-  // Blueprint <-> Channel
-  models.Blueprint.hasMany(models.Channel, {
-    foreignKey: "blueprintId",
-  });
-  models.Channel.belongsTo(models.Blueprint, {
-    foreignKey: "blueprintId",
-  });
-
   // Blueprint <-> BlueprintMessage
   models.Blueprint.hasMany(models.BlueprintMessage, {
     foreignKey: "blueprintId",

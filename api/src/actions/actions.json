@@ -154,48 +154,6 @@
     }
   },
   {
-    "action": "PLATFORM:two_factor",
-    "label": "Platform",
-    "lib": "two_factor",
-    "description": "2FA: pause the blueprint for user verification. WhatsApp requires an external API approval.",
-    "icon": "mdi:shield-key",
-    "inputSchema": {
-      "type": "object",
-      "properties": {
-        "channel": {
-          "type": "string",
-          "enum": [
-            "whatsapp"
-          ],
-          "description": "Verification channel: whatsapp."
-        },
-        "recipient": {
-          "type": "string",
-          "description": "Trusted recipient email address or phone number."
-        },
-        "question": {
-          "generated": true,
-          "type": "string",
-          "description": "Approval request shown to the user."
-        }
-      },
-      "required": [
-        "channel",
-        "recipient",
-        "question"
-      ]
-    },
-    "outputSchema": {
-      "type": "object",
-      "properties": {
-        "decision": {
-          "type": "string",
-          "description": "APPROVED after verification; rejection stops the task."
-        }
-      }
-    }
-  },
-  {
     "action": "PLATFORM:complete",
     "label": "Platform",
     "description": "Mark the workflow as complete",

@@ -1,10 +1,11 @@
 import type { EntryType, JsonValue } from "@typesafe-ai/sdk";
-import { ask, choice } from "../../lib/decision";
+import { ask, choice } from "@canmingir/link-express/decision";
 import type { ContextMessage } from "./context";
 import type { LLMMeta } from "@canmingir/link-express/llm";
 import Agent from "../../models/Agent";
 import Step from "../../models/Step";
 import Task from "../../models/Task";
+import actions from "../../actions";
 import dataset from "../../dataset";
 import { generate } from "@canmingir/link-express/llm";
 import platform from "@canmingir/link-express";
@@ -110,12 +111,12 @@ async function replyToApproval({
   sessionId: string;
   content: string;
 } & NonNullable<ReturnType<typeof findStep>>) {
-  if (step.action === "PLATFORM:two_factor") {
+  if (actions.isExternalApproval(step.action)) {
     await session.addConversation({
       sessionId,
       agentId,
       role: "ASSISTANT",
-      content: "Please complete the pending 2FA verification to continue.",
+      content: "Please complete the pending verification to continue.",
     });
     return;
   }
@@ -217,8 +218,8 @@ async function approve({
     throw new Error("No step is waiting for approval");
   }
 
-  if (waiting.step.action === "PLATFORM:two_factor") {
-    throw new Error("Use the 2FA verification endpoint");
+  if (actions.isExternalApproval(waiting.step.action)) {
+    throw new Error("Use the verification endpoint");
   }
 
   if (comment) {

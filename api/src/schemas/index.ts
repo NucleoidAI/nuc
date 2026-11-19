@@ -1,7 +1,6 @@
 import Agent from "./Agent";
 import Blueprint from "./Blueprint";
 import Command from "./Command";
-import Channel from "./Channel";
 import Knowledge from "./Knowledge";
 import MCPProvider from "./MCPProvider";
 import MCPServer from "./MCPServer";
@@ -27,7 +26,6 @@ export default {
   Blueprint,
   MCPProvider,
   MCPServer,
-  Channel,
   StepScore,
   Statistics,
 };

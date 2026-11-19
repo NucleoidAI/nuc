@@ -335,7 +335,7 @@ export default function BlueprintFlow({
         })}
       />
 
-      {!readOnly && (
+      {!readOnly && (showConnections || dragging || nodeDragging) && (
         <NodeConnectionOverlay
           containerRef={flowContainerRef}
           graphData={graphData}

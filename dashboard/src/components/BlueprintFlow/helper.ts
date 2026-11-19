@@ -201,6 +201,19 @@ export function getAncestorNodes(
     .filter((node): node is DefinitionGraphNode => Boolean(node));
 }
 
+export function canConnectNodes(
+  graph: DefinitionGraph,
+  sourceNodeId: string,
+  targetNodeId: string
+): boolean {
+  if (sourceNodeId === targetNodeId) return false;
+  const targetNode = graph.nodes[targetNodeId];
+  if (!targetNode || targetNode.nodeType === "START") return false;
+  const ancestorsOfSource = getAncestorNodes(graph, sourceNodeId);
+  if (ancestorsOfSource.some((n) => n.id === targetNodeId)) return false;
+  return true;
+}
+
 const BY_NODE_REF_PATTERN = /^byNode\.([^.]+)\.result(?:\.(.+))?$/;
 
 export function isRefValue(value: unknown): value is { $ref: string } {

@@ -263,8 +263,14 @@ const NodeEditorWidget = ({
     ])
   );
 
+  const isCompleteNode =
+    editMode &&
+    (editingNode?.action || editingNode?.raw?.properties?.action) ===
+      "PLATFORM:complete";
+
   return (
     <NodeEditorDrawer
+      isCompleteNode={isCompleteNode}
       parameters={parameters}
       onParametersChange={onParametersChange}
       pseudocode={pseudocode}

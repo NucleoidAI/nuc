@@ -46,6 +46,7 @@ export type NodeEditorState = {
   } | null;
   editingNodeId: string | null;
   label: string;
+  description: string;
   instructions: string;
   pseudocodeEnabled: boolean;
   pseudocode: string;

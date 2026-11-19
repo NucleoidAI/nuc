@@ -24,6 +24,7 @@ import {
   addStartNode,
   buildByNodeRef,
   buildDefinitionGraph,
+  canConnectNodes,
   getAncestorNodes,
   isBranchNodeType,
   isSwitchNodeType,
@@ -1839,6 +1840,35 @@ function BlueprintFlowWidget({
     setHasLocalChanges(true);
   };
 
+  const handleConnectNode = (sourceNodeId: string, targetNodeId: string) => {
+    setGraphData((prev) => {
+      if (!prev) return prev;
+      const sourceNode = prev.nodes[sourceNodeId];
+      const targetNode = prev.nodes[targetNodeId];
+      if (!sourceNode || !targetNode) return prev;
+      if (sourceNode.nodeType !== "NORMAL") return prev;
+      if (!canConnectNodes(prev, sourceNodeId, targetNodeId)) return prev;
+
+      const existingNextIds = nextIdsOf(sourceNode);
+      if (existingNextIds.includes(targetNodeId)) return prev;
+
+      const newNextIds = [...existingNextIds, targetNodeId];
+      const currentNodes = { ...prev.nodes };
+      currentNodes[sourceNodeId] = {
+        ...sourceNode,
+        next: newNextIds.length === 1 ? newNextIds[0] : newNextIds,
+        raw: { ...sourceNode.raw, next: newNextIds },
+      };
+
+      const newRoots = prev.roots.includes(targetNodeId)
+        ? prev.roots.filter((id) => id !== targetNodeId)
+        : prev.roots;
+
+      return { ...prev, nodes: currentNodes, roots: newRoots };
+    });
+    setHasLocalChanges(true);
+  };
+
   const handleConnectParameter = ({
     sourceNodeId,
     sourceField,
@@ -2140,6 +2170,7 @@ function BlueprintFlowWidget({
           showConnections={showConnections}
           onConnectParameter={handleConnectParameter}
           onDisconnectParameter={handleDisconnectParameter}
+          onConnectNode={handleConnectNode}
           onOverrideParameter={handleOverrideParameter}
           onToggleForceNode={handleToggleForceNode}
           liteMode={liteMode}

@@ -1,8 +1,9 @@
 {
-  "name": "nuc-api",
+  "name": "@nucleoidai/nuc",
   "version": "1.0.0",
-  "description": "",
   "author": "NucTeam",
+  "license": "Apache-2.0",
+  "description": "Supervised AI Agents",
   "scripts": {
     "prepare": "exit 0",
     "dev": "bun --watch server.ts",

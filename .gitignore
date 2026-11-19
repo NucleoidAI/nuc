@@ -22,3 +22,5 @@ scripts/rule-swipe/*
 .e2e/
 
 /security-report/
+api/logs/
+mcp/logs/

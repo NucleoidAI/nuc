@@ -271,11 +271,11 @@ export default function NodeConnectionOverlay({
   useEffect(() => {
     if (!dragging && !nodeDragging) return;
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const handlePointerMove = (e: PointerEvent) => {
       mousePosRef.current = { x: e.clientX, y: e.clientY };
     };
 
-    const handleMouseUp = (e: MouseEvent) => {
+    const handlePointerUp = (e: PointerEvent) => {
       if (dragging) {
         const dropped = (
           document.elementFromPoint(e.clientX, e.clientY) as HTMLElement | null
@@ -315,11 +315,19 @@ export default function NodeConnectionOverlay({
       }
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseup", handleMouseUp);
+    const handlePointerCancel = () => {
+      mousePosRef.current = null;
+      if (dragging) onDragEnd();
+      if (nodeDragging) onNodeDragEnd?.();
+    };
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointercancel", handlePointerCancel);
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("pointercancel", handlePointerCancel);
     };
   }, [
     dragging,

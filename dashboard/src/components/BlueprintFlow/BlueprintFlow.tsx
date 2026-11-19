@@ -15,7 +15,10 @@ import {
   toInputProperty,
 } from "../ApiNode/apiNodes";
 import { Flow, FlowMiniMap } from "@canmingir/link/platform/components";
-import NodeConnectionOverlay, { type DragState } from "./NodeConnectionOverlay";
+import NodeConnectionOverlay, {
+  type DragState,
+  type NodeDragState,
+} from "./NodeConnectionOverlay";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 type FlowHandle = {
@@ -53,6 +56,7 @@ export default function BlueprintFlow({
   showConnections = false,
   onConnectParameter,
   onDisconnectParameter,
+  onConnectNode,
   onOverrideParameter,
   onToggleForceNode,
   liteMode = false,
@@ -61,6 +65,7 @@ export default function BlueprintFlow({
   const flowContainerRef = useRef<HTMLDivElement>(null);
   const flowRef = useRef<FlowHandle>(null);
   const [dragging, setDragging] = useState<DragState | null>(null);
+  const [nodeDragging, setNodeDragging] = useState<NodeDragState | null>(null);
   const allIntegrations = useAllIntegrations();
 
   useEffect(() => {
@@ -323,17 +328,25 @@ export default function BlueprintFlow({
             setDragging({ sourceNodeId: nodeId, sourceField: field }),
           onToggleForce: readOnly ? undefined : onToggleForceNode,
           onOverrideParameter: readOnly ? undefined : onOverrideParameter,
+          onNodeHandleDragStart: readOnly
+            ? undefined
+            : (nodeId: string) => setNodeDragging({ sourceNodeId: nodeId }),
           liteMode,
         })}
       />
 
-      {!readOnly && showConnections && (
+      {!readOnly && (showConnections || dragging || nodeDragging) && (
         <NodeConnectionOverlay
           containerRef={flowContainerRef}
           graphData={graphData}
-          dragging={dragging}
+          dragging={showConnections ? dragging : null}
+          nodeDragging={nodeDragging}
           onDragEnd={() => setDragging(null)}
+          onNodeDragEnd={() => setNodeDragging(null)}
           onConnect={(binding) => onConnectParameter?.(binding)}
+          onConnectNode={(sourceId, targetId) =>
+            onConnectNode?.(sourceId, targetId)
+          }
           onDisconnect={(targetNodeId, targetField) =>
             onDisconnectParameter?.(targetNodeId, targetField)
           }

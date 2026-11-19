@@ -8,6 +8,7 @@ import {
   ForceBadge,
   ForceIndicatorWrapper,
   HighlightOverlay,
+  NodeConnectHandle,
   NodeWrapper,
   PinnedBadge,
   StatusBadge,
@@ -176,6 +177,7 @@ export default function FlowNodeRenderer({
       field: string,
       value: unknown
     ) => void;
+    onNodeHandleDragStart?: (nodeId: string, e: React.PointerEvent) => void;
     liteMode?: boolean;
     [key: string]: unknown;
   };
@@ -193,6 +195,7 @@ export default function FlowNodeRenderer({
     onHandleDragStart,
     onToggleForce,
     onOverrideParameter,
+    onNodeHandleDragStart,
     liteMode,
   } = nodeStyle || {};
   const isLocked = isApiNode(node);
@@ -284,8 +287,24 @@ export default function FlowNodeRenderer({
       title={isForceNode ? "Force node: action is guaranteed" : undefined}
       onContextMenu={handleContextMenu}
       onMouseDownCapture={handleMouseDownCapture}
+      {...(node.nodeType !== "START"
+        ? { "data-node-connect-target": node.id }
+        : {})}
     >
       {isPinned && <PinnedBadge>Pinned</PinnedBadge>}
+      {!isLocked && !isReadOnly && node.nodeType === "NORMAL" && (
+        <NodeConnectHandle
+          className="node-connect-handle"
+          data-cy="node-connect-handle"
+          data-handle-type="node-connect"
+          title="Drag to connect to another node"
+          onPointerDown={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            onNodeHandleDragStart?.(node.id, e);
+          }}
+        />
+      )}
       {isForceNode && isReadOnly && (
         <ForceIndicatorWrapper
           readonly

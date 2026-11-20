@@ -95,8 +95,6 @@ class Blueprint extends Model {
   declare nodes: any[] | null;
 
   declare agent?: any;
-
-  declare channels?: any[];
 }
 
 export default Blueprint;

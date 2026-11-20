@@ -17,6 +17,10 @@ export interface DragState {
   sourceField: string;
 }
 
+export interface NodeDragState {
+  sourceNodeId: string;
+}
+
 interface PathInfo {
   id: string;
   d: string;
@@ -83,15 +87,21 @@ export default function NodeConnectionOverlay({
   containerRef,
   graphData,
   dragging,
+  nodeDragging,
   onDragEnd,
+  onNodeDragEnd,
   onConnect,
+  onConnectNode,
   onDisconnect,
 }: {
   containerRef: React.RefObject<HTMLDivElement>;
   graphData: DefinitionGraph;
   dragging: DragState | null;
+  nodeDragging?: NodeDragState | null;
   onDragEnd: () => void;
+  onNodeDragEnd?: () => void;
   onConnect: (binding: ParameterBinding) => void;
+  onConnectNode?: (sourceNodeId: string, targetNodeId: string) => void;
   onDisconnect: (targetNodeId: string, targetField: string) => void;
 }) {
   const theme = useTheme();
@@ -185,13 +195,44 @@ export default function NodeConnectionOverlay({
         }
       }
 
+      if (nodeDragging && mousePosRef.current) {
+        const sourceNodeEl = container.querySelector<HTMLElement>(
+          `[data-node-id="${nodeDragging.sourceNodeId}"]`
+        );
+        if (sourceNodeEl) {
+          const s = sourceAnchor(
+            sourceNodeEl.getBoundingClientRect(),
+            containerRect
+          );
+          nextPaths.push({
+            id: "__node_dragging__",
+            d: bezierPath(
+              s.x,
+              s.y,
+              mousePosRef.current.x - containerRect.left,
+              mousePosRef.current.y - containerRect.top
+            ),
+            targetNodeId: "",
+            targetField: "",
+            temp: true,
+          });
+        }
+      }
+
       setPaths(nextPaths);
       rafRef.current = requestAnimationFrame(tick);
     };
 
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [containerRef, graphData, bindings, dragging, directParents]);
+  }, [
+    containerRef,
+    graphData,
+    bindings,
+    dragging,
+    nodeDragging,
+    directParents,
+  ]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -228,40 +269,74 @@ export default function NodeConnectionOverlay({
   }, [containerRef]);
 
   useEffect(() => {
-    if (!dragging) return;
+    if (!dragging && !nodeDragging) return;
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const handlePointerMove = (e: PointerEvent) => {
       mousePosRef.current = { x: e.clientX, y: e.clientY };
     };
 
-    const handleMouseUp = (e: MouseEvent) => {
-      const dropped = (
-        document.elementFromPoint(e.clientX, e.clientY) as HTMLElement | null
-      )?.closest("[data-in-bindable]") as HTMLElement | null;
+    const handlePointerUp = (e: PointerEvent) => {
+      if (dragging) {
+        const dropped = (
+          document.elementFromPoint(e.clientX, e.clientY) as HTMLElement | null
+        )?.closest("[data-in-bindable]") as HTMLElement | null;
 
-      if (dropped) {
-        const { nodeId, field } = dropped.dataset;
-        if (nodeId && field && nodeId !== dragging.sourceNodeId) {
-          onConnect({
-            sourceNodeId: dragging.sourceNodeId,
-            sourceField: dragging.sourceField,
-            targetNodeId: nodeId,
-            targetField: field,
-          });
+        if (dropped) {
+          const { nodeId, field } = dropped.dataset;
+          if (nodeId && field && nodeId !== dragging.sourceNodeId) {
+            onConnect({
+              sourceNodeId: dragging.sourceNodeId,
+              sourceField: dragging.sourceField,
+              targetNodeId: nodeId,
+              targetField: field,
+            });
+          }
         }
+
+        mousePosRef.current = null;
+        onDragEnd();
+        return;
       }
 
-      mousePosRef.current = null;
-      onDragEnd();
+      if (nodeDragging) {
+        const dropped = (
+          document.elementFromPoint(e.clientX, e.clientY) as HTMLElement | null
+        )?.closest("[data-node-connect-target]") as HTMLElement | null;
+
+        if (dropped) {
+          const targetNodeId = dropped.dataset.nodeConnectTarget;
+          if (targetNodeId && targetNodeId !== nodeDragging.sourceNodeId) {
+            onConnectNode?.(nodeDragging.sourceNodeId, targetNodeId);
+          }
+        }
+
+        mousePosRef.current = null;
+        onNodeDragEnd?.();
+      }
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseup", handleMouseUp);
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
+    const handlePointerCancel = () => {
+      mousePosRef.current = null;
+      if (dragging) onDragEnd();
+      if (nodeDragging) onNodeDragEnd?.();
     };
-  }, [dragging, onConnect, onDragEnd]);
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointercancel", handlePointerCancel);
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("pointercancel", handlePointerCancel);
+    };
+  }, [
+    dragging,
+    nodeDragging,
+    onConnect,
+    onConnectNode,
+    onDragEnd,
+    onNodeDragEnd,
+  ]);
 
   return (
     <Box

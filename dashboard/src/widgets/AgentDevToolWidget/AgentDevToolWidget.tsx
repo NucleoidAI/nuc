@@ -135,11 +135,11 @@ const AgentDevToolWidget = ({
   }, [conversations]);
 
   useEffect(() => {
-    if (open && sessionId) {
+    if (sessionId) {
       getSession(sessionId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, sessionId]);
+  }, [sessionId]);
 
   useEffect(() => {
     if (!context) setContextOpen(false);

@@ -511,6 +511,10 @@ async function resumePinnedStep({
         comment,
       };
     }
+
+    throw new Error(
+      `No stored output available for node: ${step.nodeId}. Select Default to run the real action.`,
+    );
   }
 
   const comment = "Resumed: dispatching the real request.";
@@ -665,19 +669,20 @@ async function lastOutputByNode({
   blueprintId: string;
   nodeId: string;
 }) {
-  const tasks = await Task.findAll({
-    where: { blueprintId },
-    attributes: ["id"],
-  });
-
-  if (!tasks.length) return null;
-
   const step = await Step.findOne({
     where: {
-      taskId: tasks.map(({ id }) => id),
       nodeId,
       status: "COMPLETED",
     },
+    include: [
+      {
+        model: Task,
+        as: "task",
+        attributes: [],
+        where: { blueprintId },
+        required: true,
+      },
+    ],
     order: [["createdAt", "DESC"]],
   });
 

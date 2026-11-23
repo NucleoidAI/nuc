@@ -14,7 +14,7 @@ const ConditionNode = z.object({
     pseudocodeEnabled: z.boolean().optional(),
     force: z.boolean().optional(),
     pinned: z.boolean().optional(),
-    pinOutputMode: z.enum(["DEFAULT", "MOCK"]).optional(),
+    pinOutputMode: z.enum(["DEFAULT", "STORED", "MOCK"]).optional(),
     pinMockOutput: z.string().optional(),
   }),
 });
@@ -31,7 +31,7 @@ const NormalNode = z.object({
     pseudocodeEnabled: z.boolean().optional(),
     force: z.boolean().optional(),
     pinned: z.boolean().optional(),
-    pinOutputMode: z.enum(["DEFAULT", "MOCK"]).optional(),
+    pinOutputMode: z.enum(["DEFAULT", "STORED", "MOCK"]).optional(),
     pinMockOutput: z.string().optional(),
     parameters: z.record(z.string(), z.unknown()).optional(),
   }),
@@ -49,7 +49,7 @@ const SwitchNode = z.object({
     pseudocodeEnabled: z.boolean().optional(),
     force: z.boolean().optional(),
     pinned: z.boolean().optional(),
-    pinOutputMode: z.enum(["DEFAULT", "MOCK"]).optional(),
+    pinOutputMode: z.enum(["DEFAULT", "STORED", "MOCK"]).optional(),
     pinMockOutput: z.string().optional(),
     cases: z
       .array(
@@ -76,7 +76,7 @@ const HandoffNode = z.object({
     pseudocodeEnabled: z.boolean().optional(),
     force: z.boolean().optional(),
     pinned: z.boolean().optional(),
-    pinOutputMode: z.enum(["DEFAULT", "MOCK"]).optional(),
+    pinOutputMode: z.enum(["DEFAULT", "STORED", "MOCK"]).optional(),
     pinMockOutput: z.string().optional(),
   }),
 });
@@ -95,7 +95,7 @@ const ApprovalNode = z.object({
     pseudocodeEnabled: z.boolean().optional(),
     force: z.boolean().optional(),
     pinned: z.boolean().optional(),
-    pinOutputMode: z.enum(["DEFAULT", "MOCK"]).optional(),
+    pinOutputMode: z.enum(["DEFAULT", "STORED", "MOCK"]).optional(),
     pinMockOutput: z.string().optional(),
   }),
 });

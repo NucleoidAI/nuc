@@ -87,8 +87,9 @@ export function isPinnedNode(node: any) {
   return node?.properties?.pinned === true;
 }
 
-export function pinOutputModeOf(node: any): "DEFAULT" | "MOCK" {
-  return node?.properties?.pinOutputMode === "MOCK" ? "MOCK" : "DEFAULT";
+export function pinOutputModeOf(node: any): "DEFAULT" | "STORED" | "MOCK" {
+  const mode = node?.properties?.pinOutputMode;
+  return mode === "MOCK" || mode === "STORED" ? mode : "DEFAULT";
 }
 
 export function pinMockOutputOf(node: any): string | undefined {

@@ -454,7 +454,7 @@ export default function FlowNodeRenderer({
               <ListItemText>Add child node</ListItemText>
             </MenuItem>
           )}
-          {onEdit && !isCompleteNode && (
+          {onEdit && (
             <MenuItem
               onClick={(e) => {
                 handleEditClick(e);

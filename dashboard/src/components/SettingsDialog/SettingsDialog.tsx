@@ -35,6 +35,8 @@ const SettingsDialog = ({
   mode = "CHAT",
   setMode,
   blueprintId,
+  debugMode = false,
+  setDebugMode,
 }: {
   showSettings: boolean;
   setShowSettings: (value: boolean) => void;
@@ -47,6 +49,8 @@ const SettingsDialog = ({
   mode?: BlueprintMode;
   setMode?: (value: BlueprintMode) => void;
   blueprintId?: string;
+  debugMode?: boolean;
+  setDebugMode?: (value: boolean) => void;
 }) => {
   const theme = useTheme();
 
@@ -202,6 +206,36 @@ const SettingsDialog = ({
                       ? `POST ${config.api}/execute/${blueprintId}`
                       : MODE_HINTS[mode]}
                   </Typography>
+                </>
+              )}
+
+              {setDebugMode && (
+                <>
+                  <Typography variant="subtitle2" gutterBottom sx={{ mt: 4 }}>
+                    Debug Mode
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mb: 2 }}
+                  >
+                    Shows developer-only controls on the canvas, such as pin
+                    buttons on nodes.
+                  </Typography>
+                  <LinkSwipe
+                    checked={debugMode}
+                    onChange={setDebugMode}
+                    theme={theme}
+                    color="primary"
+                    variant="solid"
+                    showThumbIcon={false}
+                    offLabel="Off"
+                    onLabel="On"
+                    ariaLabel="Debug mode"
+                    width={70}
+                    height={30}
+                    thumbSize={20}
+                  />
                 </>
               )}
             </Box>

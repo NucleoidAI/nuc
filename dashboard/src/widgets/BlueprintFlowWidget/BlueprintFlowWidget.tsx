@@ -3,6 +3,8 @@ import BlueprintFlow from "../../components/BlueprintFlow/BlueprintFlow";
 import BlueprintFlowSkeleton from "../../components/Skeletons/BlueprintFlowSkeleton";
 import NodeEditorWidget from "../NodeEditorWidget/NodeEditorWidget";
 import type { ParameterBinding } from "../../components/BlueprintFlow/NodeConnectionOverlay";
+import PinNodeDialog from "../../components/BlueprintFlow/PinNodeDialog";
+import type { PinNodeProperties } from "../../components/BlueprintFlow/PinNodeDialog";
 import StartNode from "../../components/BlueprintFlow/StartNode/StartNode";
 import type { SwitchCase } from "../../components/BlueprintFlow/helper";
 import { publish } from "@nucleoidai/react-event";
@@ -66,6 +68,10 @@ function graphToNodes(graphData: DefinitionGraph) {
         ...(node.raw?.properties?.force && { force: true }),
         ...(node.raw?.properties?.pinned && {
           pinned: true,
+        }),
+        ...(node.raw?.properties?.pinOutputMode === "MOCK" && {
+          pinOutputMode: "MOCK",
+          pinMockOutput: node.raw?.properties?.pinMockOutput,
         }),
         ...(node.nodeType === "NORMAL" &&
           node.raw?.properties?.parameters &&
@@ -144,6 +150,7 @@ function BlueprintFlowWidget({
   liteMode = false,
   mode,
   showConnections: showConnectionsProp,
+  debugMode = false,
   onDescriptionChange,
   onDescriptionLoadingChange,
   onSkillChange,
@@ -178,6 +185,7 @@ function BlueprintFlowWidget({
   liteMode?: boolean;
   mode?: BlueprintMode;
   showConnections?: boolean;
+  debugMode?: boolean;
   onSave?: () => void;
 }) {
   const [graphData, setGraphData] = useState<DefinitionGraph | null>(null);
@@ -665,29 +673,72 @@ function BlueprintFlowWidget({
     setApiNodeId(null);
   };
 
+  const [pinNodeId, setPinNodeId] = useState<string | null>(null);
+
   const handlePinNodeClick = (node: { id: string }) => {
+    setPinNodeId(node.id);
+  };
+
+  const pinNodeOutputFields = useMemo(() => {
+    const action = pinNodeId
+      ? graphData?.nodes?.[pinNodeId]?.action
+      : undefined;
+    if (!action) return undefined;
+
+    const integration = allIntegrations.find((i) => i.action === action);
+    const outputProperties = integration?.outputSchema?.properties;
+    if (!outputProperties || Object.keys(outputProperties).length === 0) {
+      return undefined;
+    }
+
+    return Object.keys(outputProperties);
+  }, [pinNodeId, graphData, allIntegrations]);
+
+  const handlePinNodeSave = (properties: PinNodeProperties) => {
     setGraphData((prev) => {
-      if (!prev) return prev;
-      const targetNode = prev.nodes[node.id];
+      if (!prev || !pinNodeId) return prev;
+      const targetNode = prev.nodes[pinNodeId];
       if (!targetNode) return prev;
 
-      const wasPinned = Boolean(targetNode.raw?.properties?.pinned);
+      const rest = { ...targetNode.raw?.properties };
+      delete rest.pinMockOutput;
 
       const currentNodes = { ...prev.nodes };
-      currentNodes[node.id] = {
+      currentNodes[pinNodeId] = {
         ...targetNode,
         raw: {
           ...targetNode.raw,
-          properties: {
-            ...targetNode.raw?.properties,
-            pinned: !wasPinned,
-          },
+          properties: { ...rest, ...properties },
         },
       };
 
       return { ...prev, nodes: currentNodes };
     });
     setHasLocalChanges(true);
+    setPinNodeId(null);
+  };
+
+  const handleUnpinNode = () => {
+    setGraphData((prev) => {
+      if (!prev || !pinNodeId) return prev;
+      const targetNode = prev.nodes[pinNodeId];
+      if (!targetNode) return prev;
+
+      const rest = { ...targetNode.raw?.properties };
+      delete rest.pinned;
+      delete rest.pinOutputMode;
+      delete rest.pinMockOutput;
+
+      const currentNodes = { ...prev.nodes };
+      currentNodes[pinNodeId] = {
+        ...targetNode,
+        raw: { ...targetNode.raw, properties: rest },
+      };
+
+      return { ...prev, nodes: currentNodes };
+    });
+    setHasLocalChanges(true);
+    setPinNodeId(null);
   };
 
   const handleEditNodeClick = (node) => {
@@ -2157,7 +2208,7 @@ function BlueprintFlowWidget({
           onFlowChange={handleFlowChange}
           onAddNodeClick={handleAddNodeClick}
           onEditNodeClick={handleEditNodeClick}
-          onPinNodeClick={handlePinNodeClick}
+          onPinNodeClick={debugMode ? handlePinNodeClick : undefined}
           onSwapBranchClick={handleSwapBranch}
           onDeleteNodeClick={handleDeleteNode}
           onSave={handleSaveFlow}
@@ -2185,6 +2236,15 @@ function BlueprintFlowWidget({
         json={mode === "JSON"}
         onClose={() => setApiNodeId(null)}
         onSave={handleApiNodeSave}
+      />
+
+      <PinNodeDialog
+        open={Boolean(pinNodeId && graphData?.nodes?.[pinNodeId])}
+        node={pinNodeId ? graphData?.nodes?.[pinNodeId] : undefined}
+        outputFields={pinNodeOutputFields}
+        onClose={() => setPinNodeId(null)}
+        onSave={handlePinNodeSave}
+        onUnpin={handleUnpinNode}
       />
 
       <NodeEditorWidget

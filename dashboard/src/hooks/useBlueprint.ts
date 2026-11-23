@@ -124,6 +124,30 @@ function useBlueprint() {
     };
   };
 
+  const getNodeLastOutput = (
+    blueprintId: string | undefined,
+    nodeId: string | undefined,
+    enabled: boolean,
+    fetchState: DependencyArray = []
+  ) => {
+    const { data, loading, error, fetch } = Api(
+      () =>
+        enabled && blueprintId && nodeId
+          ? http.get(`/blueprints/${blueprintId}/nodes/${nodeId}/last-output`)
+          : null,
+      [enabled, blueprintId, nodeId, ...fetchState]
+    );
+
+    return {
+      lastOutput: enabled
+        ? (data as { result: string | null; createdAt: string } | null)
+        : null,
+      loading: enabled && loading,
+      error: enabled ? error : null,
+      fetch,
+    };
+  };
+
   const getBlueprintWithId = (id: string, fetchState: DependencyArray = []) => {
     const { data, loading, error, fetch } = Api(
       () => (id ? http.get(`/blueprints/${id}`) : null),
@@ -288,6 +312,7 @@ function useBlueprint() {
     getBlueprintsByAgent,
     getBlueprintWithNode,
     getBlueprintExecutions,
+    getNodeLastOutput,
     createBlueprint,
     upsertBlueprint,
     patchBlueprint,

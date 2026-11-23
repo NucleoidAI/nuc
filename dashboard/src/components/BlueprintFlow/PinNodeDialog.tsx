@@ -101,8 +101,17 @@ export default function PinNodeDialog({
       <DialogTitle>Pin node: {node?.label}</DialogTitle>
       <DialogContent>
         <DialogContentText sx={{ mb: 2 }}>
-          Test runs skip this step and return your mock JSON. Production
-          execution is not affected.
+          {isMock ? (
+            <>
+              Test runs skip this step and return your mock JSON. Production
+              execution is not affected.
+            </>
+          ) : (
+            <>
+              Test runs execute this node normally, using its real output.
+              Production execution is not affected.
+            </>
+          )}
         </DialogContentText>
 
         <Typography variant="subtitle2" sx={{ mb: 1 }}>

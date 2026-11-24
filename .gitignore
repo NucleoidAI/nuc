@@ -7,6 +7,7 @@ oracle/
 .env
 dashboard/dist
 api/dist
+/npm
 server_setup/*
 server_setup/.*
 tmp/*
@@ -21,3 +22,5 @@ scripts/rule-swipe/*
 .e2e/
 
 /security-report/
+api/logs/
+mcp/logs/

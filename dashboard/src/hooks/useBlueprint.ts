@@ -1,3 +1,4 @@
+import type { BlueprintMode } from "../components/ApiNode/apiNodes";
 import { convertToNodesAndEdges } from "../components/BlueprintFlow/flowAdapter";
 import http from "@canmingir/link/platform/http";
 import useApi from "./useApi";
@@ -123,6 +124,30 @@ function useBlueprint() {
     };
   };
 
+  const getNodeLastOutput = (
+    blueprintId: string | undefined,
+    nodeId: string | undefined,
+    enabled: boolean,
+    fetchState: DependencyArray = []
+  ) => {
+    const { data, loading, error, fetch } = Api(
+      () =>
+        enabled && blueprintId && nodeId
+          ? http.get(`/blueprints/${blueprintId}/nodes/${nodeId}/last-output`)
+          : null,
+      [enabled, blueprintId, nodeId, ...fetchState]
+    );
+
+    return {
+      lastOutput: enabled
+        ? (data as { result: string | null; createdAt: string } | null)
+        : null,
+      loading: enabled && loading,
+      error: enabled ? error : null,
+      fetch,
+    };
+  };
+
   const getBlueprintWithId = (id: string, fetchState: DependencyArray = []) => {
     const { data, loading, error, fetch } = Api(
       () => (id ? http.get(`/blueprints/${id}`) : null),
@@ -197,7 +222,7 @@ function useBlueprint() {
     skill?: string,
     context?: BlueprintContext,
     executionMode?: "NORMAL" | "LITE",
-    api?: boolean
+    mode?: BlueprintMode
   ) => {
     if (!blueprintId) {
       blueprintId = uuidv4();
@@ -214,7 +239,7 @@ function useBlueprint() {
       ...(skill !== undefined && { skill }),
       ...(context !== undefined && { context }),
       ...(executionMode !== undefined && { executionMode }),
-      ...(api !== undefined && { api }),
+      ...(mode !== undefined && { mode }),
     });
     if (response?.data) {
       publish("BLUEPRINT_UPSERTED", { Blueprint: response.data });
@@ -227,7 +252,7 @@ function useBlueprint() {
     fields: {
       blocking?: boolean;
       executionMode?: "NORMAL" | "LITE";
-      api?: boolean;
+      mode?: BlueprintMode;
     }
   ) => {
     const response = await http.patch(`/blueprints/${blueprintId}`, fields);
@@ -287,6 +312,7 @@ function useBlueprint() {
     getBlueprintsByAgent,
     getBlueprintWithNode,
     getBlueprintExecutions,
+    getNodeLastOutput,
     createBlueprint,
     upsertBlueprint,
     patchBlueprint,

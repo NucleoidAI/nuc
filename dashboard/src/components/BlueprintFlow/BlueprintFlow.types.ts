@@ -37,6 +37,7 @@ export interface BlueprintFlowProps {
   showConnections?: boolean;
   onConnectParameter?: (binding: ParameterBinding) => void;
   onDisconnectParameter?: (targetNodeId: string, targetField: string) => void;
+  onConnectNode?: (sourceNodeId: string, targetNodeId: string) => void;
   onOverrideParameter?: (nodeId: string, field: string, value: unknown) => void;
   onToggleForceNode?: (node: { id: string }) => void;
   liteMode?: boolean;

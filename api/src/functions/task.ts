@@ -1,10 +1,12 @@
 import Agent from "../models/Agent";
+import Blueprint from "../models/Blueprint";
 import LLMLog from "../models/LLMLog";
 import Step from "../models/Step";
 import Supervising from "../models/Supervising";
 import Task from "../models/Task";
 import { Op, col, fn } from "sequelize";
 import { event } from "@canmingir/link-express/event/client";
+import { pinMockOutputOf, pinOutputModeOf } from "../lib/blueprintNodes";
 import llmLog from "./llmLog";
 
 async function create({
@@ -13,6 +15,7 @@ async function create({
   blueprintId,
   sessionId,
   inheritedSteps,
+  variables,
   request,
   debug = false,
 }: {
@@ -21,7 +24,12 @@ async function create({
   blueprintId?: string;
   sessionId?: string;
   inheritedSteps?: object[];
-  request?: { nodeId: string; body: Record<string, unknown> };
+  variables?: Record<string, unknown>;
+  request?: {
+    nodeId: string;
+    body: Record<string, unknown>;
+    comment?: string;
+  };
   debug?: boolean;
 }) {
   const task = await Task.create({
@@ -31,6 +39,7 @@ async function create({
     blueprintId,
     sessionId,
     inheritedSteps: inheritedSteps?.length ? inheritedSteps : null,
+    variables: variables && Object.keys(variables).length ? variables : null,
     debug,
   });
 
@@ -40,7 +49,7 @@ async function create({
       action: "PLATFORM:api_request",
       parameters: request.body,
       result: JSON.stringify(request.body),
-      comment: "Received API request.",
+      comment: request.comment ?? "Received API request.",
       status: "COMPLETED",
       nodeId: request.nodeId,
     });
@@ -432,6 +441,82 @@ async function resumePinnedStep({
     throw new Error(`Pinned step not found: ${stepId}`);
   }
 
+  const task = await Task.findOne({ where: { id: taskId } });
+  const blueprint = task?.blueprintId
+    ? await Blueprint.findByPk(task.blueprintId)
+    : null;
+  const node = blueprint?.nodes?.find(
+    (n: { id: string }) => n.id === step.nodeId,
+  );
+
+  if (pinOutputModeOf(node) === "MOCK") {
+    const mockOutput = pinMockOutputOf(node) ?? "";
+    const comment = "Resumed: using mock output.";
+
+    const [updated] = await Step.update(
+      { status: "COMPLETED", result: mockOutput, comment },
+      { where: { id: stepId, status: "PINNED" } },
+    );
+
+    if (updated === 0) {
+      throw new Error(`Pinned step not found: ${stepId}`);
+    }
+
+    await event.publish("STEP_COMPLETED", {
+      taskId,
+      stepId,
+      action: step.action,
+      parameters: step.parameters,
+      result: mockOutput,
+    });
+
+    return {
+      ...step.toJSON(),
+      status: "COMPLETED",
+      result: mockOutput,
+      comment,
+    };
+  }
+
+  if (pinOutputModeOf(node) === "STORED" && blueprint?.id && step.nodeId) {
+    const stored = await lastOutputByNode({
+      blueprintId: blueprint.id,
+      nodeId: step.nodeId,
+    });
+
+    if (stored) {
+      const comment = "Resumed: using stored output.";
+
+      const [updated] = await Step.update(
+        { status: "COMPLETED", result: stored.result, comment },
+        { where: { id: stepId, status: "PINNED" } },
+      );
+
+      if (updated === 0) {
+        throw new Error(`Pinned step not found: ${stepId}`);
+      }
+
+      await event.publish("STEP_COMPLETED", {
+        taskId,
+        stepId,
+        action: step.action,
+        parameters: step.parameters,
+        result: stored.result,
+      });
+
+      return {
+        ...step.toJSON(),
+        status: "COMPLETED",
+        result: stored.result,
+        comment,
+      };
+    }
+
+    throw new Error(
+      `No stored output available for node: ${step.nodeId}. Select Default to run the real action.`,
+    );
+  }
+
   const comment = "Resumed: dispatching the real request.";
 
   const [updated] = await Step.update(
@@ -577,6 +662,38 @@ async function lastActivityByTask(taskIds: string[]) {
   }, new Map());
 }
 
+async function lastOutputByNode({
+  blueprintId,
+  nodeId,
+}: {
+  blueprintId: string;
+  nodeId: string;
+}) {
+  const step = await Step.findOne({
+    where: {
+      nodeId,
+      status: "COMPLETED",
+    },
+    include: [
+      {
+        model: Task,
+        as: "task",
+        attributes: [],
+        where: { blueprintId },
+        required: true,
+      },
+    ],
+    order: [["createdAt", "DESC"]],
+  });
+
+  if (!step) return null;
+
+  return {
+    result: step.result ? step.result.toString() : null,
+    createdAt: step.createdAt,
+  };
+}
+
 async function executions({ blueprintId }: { blueprintId: string }) {
   const tasks = await Task.findAll({
     where: { blueprintId },
@@ -631,4 +748,5 @@ export default {
   listSteps,
   logs,
   executions,
+  lastOutputByNode,
 };

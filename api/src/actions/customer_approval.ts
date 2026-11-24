@@ -4,7 +4,7 @@ async function run({
   parameters,
 }: {
   parameters: {
-    sessionId: string;
+    sessionId?: string;
     agentId: string;
     question: string;
   };

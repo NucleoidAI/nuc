@@ -63,6 +63,37 @@ router.get("/:blueprintId/executions", async (req, res) => {
   return res.status(200).json(await task.executions({ blueprintId }));
 });
 
+router.get("/:blueprintId/nodes/:nodeId/last-output", async (req, res) => {
+  const { projectId: teamId } = req.session;
+  const { blueprintId, nodeId } = Joi.attempt(
+    req.params,
+    Joi.object({
+      blueprintId: Joi.string().guid().required(),
+      nodeId: Joi.string().required(),
+    }),
+  );
+
+  const blueprint = await Blueprint.findByPk(blueprintId, {
+    attributes: ["id", "agentId"],
+  });
+
+  if (!blueprint) {
+    return res.status(404).end();
+  }
+
+  const agent = await Agent.findByPk(blueprint.agentId, {
+    attributes: ["teamId"],
+  });
+
+  if (agent?.teamId !== teamId) {
+    return res.status(401).end();
+  }
+
+  return res
+    .status(200)
+    .json(await task.lastOutputByNode({ blueprintId, nodeId }));
+});
+
 router.post("/generate", async (req, res) => {
   const { projectId: teamId } = req.session;
 
@@ -94,7 +125,7 @@ router.put("/:blueprintId", async (req, res) => {
     executionMode,
     skill,
     context,
-    api,
+    mode,
   } = BlueprintSchema.upsert.parse(req.body);
 
   if (agentId) {
@@ -122,7 +153,7 @@ router.put("/:blueprintId", async (req, res) => {
     skill,
     context,
     executionMode,
-    api,
+    mode,
   );
 
   await event.publish("BLUEPRINT_CREATED", {
@@ -134,7 +165,7 @@ router.put("/:blueprintId", async (req, res) => {
 
 router.patch("/:blueprintId", async (req, res) => {
   const { blueprintId } = req.params;
-  const { blocking, executionMode, api } = BlueprintSchema.patch.parse(
+  const { blocking, executionMode, mode } = BlueprintSchema.patch.parse(
     req.body,
   );
 
@@ -142,7 +173,7 @@ router.patch("/:blueprintId", async (req, res) => {
     blueprintId,
     blocking,
     executionMode,
-    api,
+    mode,
   });
 
   res.status(200).json(result);

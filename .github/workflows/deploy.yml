@@ -71,7 +71,7 @@ on:
       DOCKER_USERNAME:
         required: false
       HF_TOKEN:
-        required: true
+        required: false
 
 jobs:
   build-and-push:
@@ -155,6 +155,7 @@ jobs:
       - name: Build
         if: ${{ inputs.run_build }}
         env:
+          HF_ORG: ${{ vars.HF_ORG }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: ${{ inputs.build_command }}
 

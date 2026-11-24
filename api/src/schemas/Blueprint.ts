@@ -1,4 +1,5 @@
 import { ApiFieldsSchema, ApiTimeout } from "./ApiField";
+import { BLUEPRINT_MODES } from "../lib/apiNodes";
 import { z } from "zod";
 
 const Blueprint = {
@@ -8,7 +9,7 @@ const Blueprint = {
     agentId: z.string().uuid(),
     blocking: z.boolean().optional(),
     executionMode: z.enum(["NORMAL", "LITE"]).optional(),
-    api: z.boolean().optional(),
+    mode: z.enum(BLUEPRINT_MODES).optional(),
     skill: z.string().optional(),
     context: z
       .object({
@@ -65,6 +66,8 @@ const Blueprint = {
               targetBlueprintId: z.string().optional(),
               force: z.boolean().optional(),
               pinned: z.boolean().optional(),
+              pinOutputMode: z.enum(["DEFAULT", "STORED", "MOCK"]).optional(),
+              pinMockOutput: z.string().optional(),
               fields: ApiFieldsSchema.optional(),
               strict: z.boolean().optional(),
               timeout: ApiTimeout.optional(),
@@ -100,7 +103,7 @@ const Blueprint = {
   patch: z.object({
     blocking: z.boolean().optional(),
     executionMode: z.enum(["NORMAL", "LITE"]).optional(),
-    api: z.boolean().optional(),
+    mode: z.enum(BLUEPRINT_MODES).optional(),
   }),
   create: z.object({
     history: z

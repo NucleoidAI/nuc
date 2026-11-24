@@ -1,7 +1,9 @@
 {
-  "name": "nuc-dashboard",
-  "private": true,
-  "version": "0.0.0",
+  "name": "@nucleoidai/nuc-dashboard",
+  "version": "1.0.0",
+  "author": "NucTeam",
+  "license": "Apache-2.0",
+  "description": "Supervised AI Agents",
   "type": "module",
   "scripts": {
     "dev": "vite",

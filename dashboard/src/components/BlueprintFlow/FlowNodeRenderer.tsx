@@ -8,6 +8,7 @@ import {
   ForceBadge,
   ForceIndicatorWrapper,
   HighlightOverlay,
+  NodeConnectHandle,
   NodeWrapper,
   PinnedBadge,
   StatusBadge,
@@ -49,6 +50,11 @@ type FlowGraphNode = import("./helper").DefinitionGraphNode & {
 
 const DECISION_ENDPOINT_LAYOUT_VARIANT: "split-icon-panel" | undefined =
   "split-icon-panel";
+
+const ENDPOINT_ACTIONS: Record<string, string> = {
+  START: "PLATFORM:api_request",
+  END: "PLATFORM:api_response",
+};
 
 function NodeHandles({
   node,
@@ -126,7 +132,7 @@ function NodeHandles({
     return (
       <ApiFieldsPanel
         side={isRequest ? "out" : "in"}
-        title={isRequest ? "Request" : "Response"}
+        title={isRequest ? node.label || "Request" : "Response"}
         fields={fields.apiFields}
         handles={isRequest ? outputs : inputs}
         renderLabel={(name) => renderLabel(name, isRequest ? "out" : "in")}
@@ -171,6 +177,7 @@ export default function FlowNodeRenderer({
       field: string,
       value: unknown
     ) => void;
+    onNodeHandleDragStart?: (nodeId: string, e: React.PointerEvent) => void;
     liteMode?: boolean;
     [key: string]: unknown;
   };
@@ -188,6 +195,7 @@ export default function FlowNodeRenderer({
     onHandleDragStart,
     onToggleForce,
     onOverrideParameter,
+    onNodeHandleDragStart,
     liteMode,
   } = nodeStyle || {};
   const isLocked = isApiNode(node);
@@ -210,12 +218,12 @@ export default function FlowNodeRenderer({
   const infoNode = {
     ...node,
     type: node.nodeType,
+    action: node.action ?? ENDPOINT_ACTIONS[node.nodeType],
     description: isDecisionNode
       ? truncateDescription(node.description)
       : node.description,
   };
-  const isReadOnly =
-    isCompleteNode || (!onAdd && !onEdit && !onSwapBranch && !onDelete);
+  const isReadOnly = !onAdd && !onEdit && !onSwapBranch && !onDelete;
   const [contextMenu, setContextMenu] = useState<{
     mouseX: number;
     mouseY: number;
@@ -279,8 +287,24 @@ export default function FlowNodeRenderer({
       title={isForceNode ? "Force node: action is guaranteed" : undefined}
       onContextMenu={handleContextMenu}
       onMouseDownCapture={handleMouseDownCapture}
+      {...(node.nodeType !== "START"
+        ? { "data-node-connect-target": node.id }
+        : {})}
     >
       {isPinned && <PinnedBadge>Pinned</PinnedBadge>}
+      {!isLocked && !isReadOnly && node.nodeType === "NORMAL" && (
+        <NodeConnectHandle
+          className="node-connect-handle"
+          data-cy="node-connect-handle"
+          data-handle-type="node-connect"
+          title="Drag to connect to another node"
+          onPointerDown={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            onNodeHandleDragStart?.(node.id, e);
+          }}
+        />
+      )}
       {isForceNode && isReadOnly && (
         <ForceIndicatorWrapper
           readonly
@@ -349,7 +373,7 @@ export default function FlowNodeRenderer({
       <InfoNode node={infoNode} nodeStyle={nodeStyle}>
         {!isReadOnly && (
           <>
-            {!isLocked && (
+            {!isLocked && !isCompleteNode && (
               <ActionButtonWrapper
                 className="anim-hover-shadow"
                 data-cy="node-delete-button"
@@ -361,7 +385,7 @@ export default function FlowNodeRenderer({
                 <Iconify icon="mdi:delete-outline" width={16} height={16} />
               </ActionButtonWrapper>
             )}
-            {onEdit && (
+            {onEdit && !isCompleteNode && (
               <ActionButtonWrapper
                 className="anim-hover-shadow"
                 data-cy="node-edit-button"
@@ -377,7 +401,7 @@ export default function FlowNodeRenderer({
                 <Iconify icon="mdi:lightning-bolt" width={16} height={16} />
               </ForceIndicatorWrapper>
             )}
-            {canAddChild && (
+            {canAddChild && !isCompleteNode && (
               <ActionButtonWrapper
                 className="anim-hover-shadow"
                 data-cy="node-add-button"
@@ -388,7 +412,7 @@ export default function FlowNodeRenderer({
                 <Iconify icon="mdi:plus" width={16} height={16} />
               </ActionButtonWrapper>
             )}
-            {onPin && canPin && (
+            {onPin && canPin && !isCompleteNode && (
               <ActionButtonWrapper
                 className="anim-hover-shadow"
                 data-cy="node-pin-button"
@@ -417,7 +441,7 @@ export default function FlowNodeRenderer({
           sx={{ zIndex: (theme) => theme.zIndex.modal + 3 }}
           slotProps={{ paper: { sx: { minWidth: 180 } } }}
         >
-          {canAddChild && (
+          {canAddChild && !isCompleteNode && (
             <MenuItem
               onClick={(e) => {
                 handleAddClick(e);
@@ -443,7 +467,7 @@ export default function FlowNodeRenderer({
               <ListItemText>Edit node</ListItemText>
             </MenuItem>
           )}
-          {onToggleForce && !isLocked && (
+          {onToggleForce && !isLocked && !isCompleteNode && (
             <MenuItem
               onClick={(e) => {
                 handleToggleForceClick(e);
@@ -466,7 +490,7 @@ export default function FlowNodeRenderer({
               </ListItemText>
             </MenuItem>
           )}
-          {!isLocked && <Divider />}
+          {!isLocked && !isCompleteNode && <Divider />}
           {!isLocked && (
             <MenuItem
               onClick={(e) => {

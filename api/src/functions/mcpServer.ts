@@ -4,7 +4,7 @@ import {
 } from "@canmingir/link-express/error";
 
 import Agent from "../models/Agent";
-import MCPCatalog from "../mcps/mcps";
+import catalog from "../mcps";
 import MCPProvider from "../models/MCPProvider";
 import MCPServer from "../models/MCPServer";
 import MCPServerAssignment from "../models/MCPServerAssignment";
@@ -68,17 +68,18 @@ async function listTools({ serverId }: { serverId: string }) {
     throw new NotFoundError();
   }
 
-  return MCPCatalog.filter(
-    (tool) => tool.provider === providerInstance.name
-  ).map((tool) => ({
-    id: tool.id,
-    action: tool.action,
-    label: tool.label,
-    description: tool.description,
-    icon: tool.icon,
-    direction: tool.direction,
-    inputSchema: tool.inputSchema,
-  }));
+  return catalog
+    .list()
+    .filter((tool) => tool.provider === providerInstance.name)
+    .map((tool) => ({
+      id: tool.id,
+      action: tool.action,
+      label: tool.label,
+      description: tool.description,
+      icon: tool.icon,
+      direction: tool.direction,
+      inputSchema: tool.inputSchema,
+    }));
 }
 
 async function listServers({ teamId, agentId }: Scope) {

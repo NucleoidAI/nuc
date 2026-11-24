@@ -47,6 +47,7 @@ const INITIAL_NODE_EDITOR: NodeEditorState = {
   parentNode: null,
   editingNodeId: null,
   label: "",
+  description: "",
   instructions: "",
   pseudocodeEnabled: true,
   pseudocode: "",
@@ -507,6 +508,10 @@ function APITab({ agentId }: { agentId: string }) {
         editMode: true,
         editingNodeId: graphNode.id,
         label: graphNode.label || "",
+        description:
+          graphNode.description ||
+          (graphNode.raw?.properties?.description as string) ||
+          "",
         instructions: (graphNode.raw?.properties?.instructions as string) || "",
         pseudocodeEnabled: true,
         pseudocode: (graphNode.raw?.properties?.pseudocode as string) || "",
@@ -590,6 +595,7 @@ function APITab({ agentId }: { agentId: string }) {
       editMode,
       editingNodeId,
       label,
+      description: newNodeDescription,
       instructions,
       pseudocodeEnabled,
       pseudocode,
@@ -605,9 +611,10 @@ function APITab({ agentId }: { agentId: string }) {
         ? "PLATFORM:decision"
         : nodeEditor.integration?.action;
     const description =
-      nodeType === "CONDITION"
+      newNodeDescription.trim() ||
+      (nodeType === "CONDITION"
         ? "A decision node that branches the flow based on conditions."
-        : nodeEditor.integration?.description || "";
+        : nodeEditor.integration?.description || "");
 
     const currentNodes = { ...flowGraphData.nodes };
 
@@ -763,6 +770,10 @@ function APITab({ agentId }: { agentId: string }) {
         newNodeInstructions={nodeEditor.instructions}
         setNewNodeInstructions={(v: string) =>
           setNodeEditor((p) => ({ ...p, instructions: v }))
+        }
+        newNodeDescription={nodeEditor.description}
+        setNewNodeDescription={(v: string) =>
+          setNodeEditor((p) => ({ ...p, description: v }))
         }
         newNodePseudocodeEnabled={nodeEditor.pseudocodeEnabled}
         setNewNodePseudocodeEnabled={handlePseudocodeEnabledChange}

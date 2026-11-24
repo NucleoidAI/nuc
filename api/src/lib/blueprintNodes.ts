@@ -87,6 +87,17 @@ export function isPinnedNode(node: any) {
   return node?.properties?.pinned === true;
 }
 
+export function pinOutputModeOf(node: any): "DEFAULT" | "STORED" | "MOCK" {
+  const mode = node?.properties?.pinOutputMode;
+  return mode === "MOCK" || mode === "STORED" ? mode : "DEFAULT";
+}
+
+export function pinMockOutputOf(node: any): string | undefined {
+  return typeof node?.properties?.pinMockOutput === "string"
+    ? node.properties.pinMockOutput
+    : undefined;
+}
+
 export function forceAllNodes<T extends { properties?: object }>(nodes: T[]) {
   return nodes.map((node) => ({
     ...node,

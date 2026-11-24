@@ -1,4 +1,4 @@
-import { ask, noul } from "../lib/decision";
+import { ask, noul } from "@canmingir/link-express/decision";
 import type { LLMMeta } from "@canmingir/link-express/llm";
 
 const TRUE_THRESHOLD = 0.5;

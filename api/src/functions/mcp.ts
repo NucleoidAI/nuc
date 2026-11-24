@@ -1,5 +1,4 @@
-import MCPs from "../mcps/mcps";
-import { NotFoundError } from "@canmingir/link-express/error";
+import registry from "../mcps";
 import mcpServer from "./mcpServer";
 
 type Scope = {
@@ -15,9 +14,7 @@ async function tools(
   scope: Scope = {},
   { includeMock = true }: { includeMock?: boolean } = {}
 ) {
-  if (!MCPs || MCPs.length === 0) {
-    throw new NotFoundError();
-  }
+  const MCPs = registry.list();
 
   const { teamId, agentId } = scope;
 

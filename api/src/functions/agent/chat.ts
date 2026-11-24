@@ -1,4 +1,4 @@
-import { ask, noul } from "../../lib/decision";
+import { ask, noul } from "@canmingir/link-express/decision";
 import { conversations, knowledge } from "./context";
 import { findStep, replyToApproval } from "./approval";
 import type { EntryType } from "@typesafe-ai/sdk";

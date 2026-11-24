@@ -38,7 +38,7 @@
   "agentId": "00db1bd4-4829-40f2-8b99-d2e42342157e",
   "blocking": true,
   "executionMode": "NORMAL",
-  "api": false,
+  "mode": "CHAT",
   "nodes": [
     {
       "id": "76ccda2d-f11f-408c-8087-66c377600d0b",

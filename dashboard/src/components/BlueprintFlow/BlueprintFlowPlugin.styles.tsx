@@ -555,5 +555,27 @@ export const NodeWrapper = styled("div", {
         "perspective(1500px) rotateX(0deg) rotateY(-10deg) rotateZ(0deg)",
       boxShadow: steppedShadow,
     },
+    "&:hover .node-connect-handle": {
+      opacity: 1,
+    },
   };
 });
+
+export const NodeConnectHandle = styled("div")(({ theme }) => ({
+  position: "absolute",
+  top: "50%",
+  right: "-10px",
+  transform: "translateY(-50%)",
+  width: "16px",
+  height: "16px",
+  borderRadius: "50%",
+  backgroundColor: theme.palette?.background.paper,
+  border: `2px solid ${theme.palette.text.secondary}`,
+  cursor: "crosshair",
+  zIndex: 11,
+  opacity: 0,
+  transition: "opacity 0.15s ease, transform 0.15s ease",
+  "&:hover": {
+    transform: "translateY(-50%) scale(1.25)",
+  },
+}));

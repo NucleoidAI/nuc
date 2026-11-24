@@ -1,5 +1,5 @@
 import type { EntryType, JsonValue } from "@typesafe-ai/sdk";
-import { ask, choice, noul } from "../../lib/decision";
+import { ask, choice, noul } from "@canmingir/link-express/decision";
 import { type ChatHistory, handoffTargets, knowledge } from "./context";
 import type { LLMMeta } from "@canmingir/link-express/llm";
 import blueprintFn from "../blueprint";

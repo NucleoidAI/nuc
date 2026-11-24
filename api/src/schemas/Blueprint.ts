@@ -66,7 +66,7 @@ const Blueprint = {
               targetBlueprintId: z.string().optional(),
               force: z.boolean().optional(),
               pinned: z.boolean().optional(),
-              pinOutputMode: z.enum(["DEFAULT", "MOCK"]).optional(),
+              pinOutputMode: z.enum(["DEFAULT", "STORED", "MOCK"]).optional(),
               pinMockOutput: z.string().optional(),
               fields: ApiFieldsSchema.optional(),
               strict: z.boolean().optional(),

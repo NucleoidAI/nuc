@@ -63,6 +63,37 @@ router.get("/:blueprintId/executions", async (req, res) => {
   return res.status(200).json(await task.executions({ blueprintId }));
 });
 
+router.get("/:blueprintId/nodes/:nodeId/last-output", async (req, res) => {
+  const { projectId: teamId } = req.session;
+  const { blueprintId, nodeId } = Joi.attempt(
+    req.params,
+    Joi.object({
+      blueprintId: Joi.string().guid().required(),
+      nodeId: Joi.string().required(),
+    }),
+  );
+
+  const blueprint = await Blueprint.findByPk(blueprintId, {
+    attributes: ["id", "agentId"],
+  });
+
+  if (!blueprint) {
+    return res.status(404).end();
+  }
+
+  const agent = await Agent.findByPk(blueprint.agentId, {
+    attributes: ["teamId"],
+  });
+
+  if (agent?.teamId !== teamId) {
+    return res.status(401).end();
+  }
+
+  return res
+    .status(200)
+    .json(await task.lastOutputByNode({ blueprintId, nodeId }));
+});
+
 router.post("/generate", async (req, res) => {
   const { projectId: teamId } = req.session;
 

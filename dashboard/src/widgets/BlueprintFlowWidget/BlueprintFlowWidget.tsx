@@ -4,7 +4,6 @@ import BlueprintFlowSkeleton from "../../components/Skeletons/BlueprintFlowSkele
 import NodeEditorWidget from "../NodeEditorWidget/NodeEditorWidget";
 import type { ParameterBinding } from "../../components/BlueprintFlow/NodeConnectionOverlay";
 import PinNodeDialog from "../../components/BlueprintFlow/PinNodeDialog";
-import type { PinNodeProperties } from "../../components/BlueprintFlow/PinNodeDialog";
 import StartNode from "../../components/BlueprintFlow/StartNode/StartNode";
 import type { SwitchCase } from "../../components/BlueprintFlow/helper";
 import { publish } from "@nucleoidai/react-event";
@@ -31,6 +30,10 @@ import {
   isBranchNodeType,
   isSwitchNodeType,
 } from "../../components/BlueprintFlow/helper";
+import type {
+  PinNodeProperties,
+  PinOutputMode,
+} from "../../components/BlueprintFlow/PinNodeDialog";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   calculateDiffStats,
@@ -69,9 +72,11 @@ function graphToNodes(graphData: DefinitionGraph) {
         ...(node.raw?.properties?.pinned && {
           pinned: true,
         }),
-        ...(node.raw?.properties?.pinOutputMode === "MOCK" && {
-          pinOutputMode: "MOCK",
-          pinMockOutput: node.raw?.properties?.pinMockOutput,
+        ...(node.raw?.properties?.pinOutputMode && {
+          pinOutputMode: node.raw.properties.pinOutputMode,
+          ...(node.raw.properties.pinOutputMode === "MOCK" && {
+            pinMockOutput: node.raw?.properties?.pinMockOutput,
+          }),
         }),
         ...(node.nodeType === "NORMAL" &&
           node.raw?.properties?.parameters &&
@@ -208,6 +213,7 @@ function BlueprintFlowWidget({
 
   const {
     getBlueprintWithNode,
+    getNodeLastOutput,
     upsertBlueprint,
     generate,
     generatePseudocode,
@@ -674,9 +680,23 @@ function BlueprintFlowWidget({
   };
 
   const [pinNodeId, setPinNodeId] = useState<string | null>(null);
+  const [pinNodeMode, setPinNodeMode] = useState<PinOutputMode>("DEFAULT");
+  const pinnedBlueprintId = blueprintNodes?.id || blueprint?.id;
+
+  const { lastOutput: pinNodeLastOutput, loading: loadingPinNodeLastOutput } =
+    getNodeLastOutput(
+      pinnedBlueprintId,
+      pinNodeId ?? undefined,
+      pinNodeMode === "STORED"
+    );
 
   const handlePinNodeClick = (node: { id: string }) => {
     setPinNodeId(node.id);
+    const savedMode = graphData?.nodes?.[node.id]?.raw?.properties
+      ?.pinOutputMode as PinOutputMode | undefined;
+    setPinNodeMode(
+      savedMode === "MOCK" || savedMode === "STORED" ? savedMode : "DEFAULT"
+    );
   };
 
   const pinNodeOutputFields = useMemo(() => {
@@ -2242,9 +2262,12 @@ function BlueprintFlowWidget({
         open={Boolean(pinNodeId && graphData?.nodes?.[pinNodeId])}
         node={pinNodeId ? graphData?.nodes?.[pinNodeId] : undefined}
         outputFields={pinNodeOutputFields}
+        lastOutput={pinNodeLastOutput}
+        loadingStoredOutput={loadingPinNodeLastOutput}
         onClose={() => setPinNodeId(null)}
         onSave={handlePinNodeSave}
         onUnpin={handleUnpinNode}
+        onModeChange={setPinNodeMode}
       />
 
       <NodeEditorWidget

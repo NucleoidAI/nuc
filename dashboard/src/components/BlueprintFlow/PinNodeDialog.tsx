@@ -1,3 +1,5 @@
+import HistoryIcon from "@mui/icons-material/History";
+
 import {
   Box,
   Button,
@@ -19,7 +21,10 @@ const FALLBACK_MOCK_OUTPUT = `{
   "result": ""
 }`;
 
-export type PinOutputMode = "DEFAULT" | "MOCK";
+const MONO_FONT =
+  '"JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace';
+
+export type PinOutputMode = "DEFAULT" | "STORED" | "MOCK";
 
 export type PinNodeProperties = {
   pinned: true;
@@ -34,13 +39,30 @@ function blankMockOutput(outputFields?: string[]) {
   return JSON.stringify(skeleton, null, 2);
 }
 
+function formatCapturedAt(createdAt: string) {
+  try {
+    return new Date(createdAt).toLocaleString(undefined, {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  } catch {
+    return createdAt;
+  }
+}
+
 export default function PinNodeDialog({
   open,
   node,
   outputFields,
+  lastOutput,
+  loadingStoredOutput,
   onClose,
   onSave,
   onUnpin,
+  onModeChange,
 }: {
   open: boolean;
   node?: {
@@ -49,17 +71,28 @@ export default function PinNodeDialog({
     raw?: { properties?: Record<string, unknown> };
   };
   outputFields?: string[];
+  lastOutput?: { result: string | null; createdAt: string } | null;
+  loadingStoredOutput?: boolean;
   onClose: () => void;
   onSave: (properties: PinNodeProperties) => void;
   onUnpin: () => void;
+  onModeChange?: (mode: PinOutputMode) => void;
 }) {
   const [mode, setMode] = useState<PinOutputMode>("DEFAULT");
   const [mockDraft, setMockDraft] = useState("");
 
+  const updateMode = (next: PinOutputMode) => {
+    setMode(next);
+    onModeChange?.(next);
+  };
+
   useEffect(() => {
     if (!open || !node) return;
     const properties = node.raw?.properties ?? {};
-    setMode(properties.pinOutputMode === "MOCK" ? "MOCK" : "DEFAULT");
+    const savedMode = properties.pinOutputMode;
+    updateMode(
+      savedMode === "MOCK" || savedMode === "STORED" ? savedMode : "DEFAULT"
+    );
     setMockDraft(
       typeof properties.pinMockOutput === "string" && properties.pinMockOutput
         ? properties.pinMockOutput
@@ -69,6 +102,7 @@ export default function PinNodeDialog({
   }, [open, node]);
 
   const isMock = mode === "MOCK";
+  const isStored = mode === "STORED";
   let jsonError: string | undefined;
   if (isMock) {
     try {
@@ -106,6 +140,11 @@ export default function PinNodeDialog({
               Test runs skip this step and return your mock JSON. Production
               execution is not affected.
             </>
+          ) : isStored ? (
+            <>
+              Test runs skip this step and return its last stored output.
+              Production execution is not affected.
+            </>
           ) : (
             <>
               Test runs execute this node normally, using its real output.
@@ -121,12 +160,17 @@ export default function PinNodeDialog({
           <RadioGroup
             row
             value={mode}
-            onChange={(e) => setMode(e.target.value as PinOutputMode)}
+            onChange={(e) => updateMode(e.target.value as PinOutputMode)}
           >
             <FormControlLabel
               value="DEFAULT"
               control={<Radio />}
               label="Default"
+            />
+            <FormControlLabel
+              value="STORED"
+              control={<Radio />}
+              label="Stored output"
             />
             <FormControlLabel
               value="MOCK"
@@ -135,6 +179,69 @@ export default function PinNodeDialog({
             />
           </RadioGroup>
         </FormControl>
+
+        {isStored && !loadingStoredOutput && (
+          <Box sx={{ mt: 1.5 }}>
+            {lastOutput?.result ? (
+              <>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "baseline",
+                    mb: 1,
+                  }}
+                >
+                  <Typography variant="subtitle2">
+                    Stored output (last execution)
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    Captured {formatCapturedAt(lastOutput.createdAt)}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    p: 1.5,
+                    borderRadius: 1,
+                    bgcolor: "action.hover",
+                    fontFamily: MONO_FONT,
+                    fontSize: 13,
+                    whiteSpace: "pre-wrap",
+                    wordBreak: "break-word",
+                    maxHeight: 320,
+                    overflow: "auto",
+                  }}
+                >
+                  {lastOutput.result}
+                </Box>
+              </>
+            ) : (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  textAlign: "center",
+                  gap: 1,
+                  py: 4,
+                  px: 2,
+                  border: "1px dashed",
+                  borderColor: "divider",
+                  borderRadius: 1,
+                }}
+              >
+                <HistoryIcon color="disabled" />
+                <Typography variant="subtitle2">
+                  No stored output yet
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  This step hasn&apos;t run yet. Run a test once to capture its
+                  output, or use Mock output instead.
+                </Typography>
+              </Box>
+            )}
+          </Box>
+        )}
 
         {isMock && (
           <Box sx={{ mt: 1.5 }}>
@@ -154,8 +261,7 @@ export default function PinNodeDialog({
               inputProps={{
                 "aria-label": "Mock output JSON",
                 style: {
-                  fontFamily:
-                    '"JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace',
+                  fontFamily: MONO_FONT,
                   fontSize: 13,
                 },
               }}

@@ -478,6 +478,45 @@ async function resumePinnedStep({
     };
   }
 
+  if (pinOutputModeOf(node) === "STORED" && blueprint?.id && step.nodeId) {
+    const stored = await lastOutputByNode({
+      blueprintId: blueprint.id,
+      nodeId: step.nodeId,
+    });
+
+    if (stored) {
+      const comment = "Resumed: using stored output.";
+
+      const [updated] = await Step.update(
+        { status: "COMPLETED", result: stored.result, comment },
+        { where: { id: stepId, status: "PINNED" } },
+      );
+
+      if (updated === 0) {
+        throw new Error(`Pinned step not found: ${stepId}`);
+      }
+
+      await event.publish("STEP_COMPLETED", {
+        taskId,
+        stepId,
+        action: step.action,
+        parameters: step.parameters,
+        result: stored.result,
+      });
+
+      return {
+        ...step.toJSON(),
+        status: "COMPLETED",
+        result: stored.result,
+        comment,
+      };
+    }
+
+    throw new Error(
+      `No stored output available for node: ${step.nodeId}. Select Default to run the real action.`,
+    );
+  }
+
   const comment = "Resumed: dispatching the real request.";
 
   const [updated] = await Step.update(
@@ -623,6 +662,38 @@ async function lastActivityByTask(taskIds: string[]) {
   }, new Map());
 }
 
+async function lastOutputByNode({
+  blueprintId,
+  nodeId,
+}: {
+  blueprintId: string;
+  nodeId: string;
+}) {
+  const step = await Step.findOne({
+    where: {
+      nodeId,
+      status: "COMPLETED",
+    },
+    include: [
+      {
+        model: Task,
+        as: "task",
+        attributes: [],
+        where: { blueprintId },
+        required: true,
+      },
+    ],
+    order: [["createdAt", "DESC"]],
+  });
+
+  if (!step) return null;
+
+  return {
+    result: step.result ? step.result.toString() : null,
+    createdAt: step.createdAt,
+  };
+}
+
 async function executions({ blueprintId }: { blueprintId: string }) {
   const tasks = await Task.findAll({
     where: { blueprintId },
@@ -677,4 +748,5 @@ export default {
   listSteps,
   logs,
   executions,
+  lastOutputByNode,
 };

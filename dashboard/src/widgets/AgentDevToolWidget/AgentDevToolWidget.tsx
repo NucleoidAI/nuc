@@ -56,6 +56,8 @@ const AgentDevToolWidget = ({
     reset: resetApiCall,
     resumeStep: resumeApiCallStep,
     resumingStepId: resumingApiCallStepId,
+    decideStep: decideApiCallStep,
+    decidingStepId: decidingApiCallStepId,
   } = useBlueprintExecution();
 
   useEffect(
@@ -375,6 +377,8 @@ const AgentDevToolWidget = ({
                     call={apiCall}
                     onResume={resumeApiCallStep}
                     resumingStepId={resumingApiCallStepId}
+                    onDecide={decideApiCallStep}
+                    decidingStepId={decidingApiCallStepId}
                   />
                 ) : (
                   <ChatTimeline
@@ -383,6 +387,8 @@ const AgentDevToolWidget = ({
                     running={sessionSteps.running}
                     onResume={sessionSteps.resumeStep}
                     resumingStepId={sessionSteps.resumingStepId}
+                    onDecide={sessionSteps.decideStep}
+                    decidingStepId={sessionSteps.decidingStepId}
                   />
                 )
               }

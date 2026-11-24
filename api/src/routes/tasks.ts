@@ -1,11 +1,14 @@
 import Agent from "../models/Agent";
 import Joi from "joi";
 import Task from "../models/Task";
+import actions from "../actions";
+import agentFn from "../functions/agent";
 import apiSchema from "../lib/apiSchema";
 import blueprintFn from "../functions/blueprint";
 import express from "express";
 import { jsonRequestOf, startNodeOf } from "../lib/apiNodes";
 import schemas from "../schemas";
+import sessionFn from "../functions/session";
 import task from "../functions/task";
 
 const router = express.Router();
@@ -292,6 +295,67 @@ router.post("/:taskId/steps/:stepId/resume", async (req, res) => {
       message: err instanceof Error ? err.message : "Failed to resume step",
     });
   }
+});
+
+router.post("/:taskId/steps/:stepId/approval", async (req, res) => {
+  const { projectId: teamId } = req.session;
+  const { taskId, stepId } = Joi.attempt(
+    req.params,
+    Joi.object({
+      taskId: Joi.string()
+        .guid({ version: ["uuidv4"] })
+        .required(),
+      stepId: Joi.string().required(),
+    }),
+  );
+  const { decision, comment } = Joi.attempt(
+    req.body,
+    Joi.object({
+      decision: Joi.string().valid("APPROVED", "REJECTED").required(),
+      comment: Joi.string().optional(),
+    }),
+  );
+
+  const taskInstance = await Task.findOne({
+    where: { id: taskId },
+    include: [
+      {
+        model: Agent,
+        attributes: ["teamId"],
+        required: true,
+      },
+    ],
+  });
+
+  if (!taskInstance) {
+    return res.status(404).end();
+  }
+
+  if (taskInstance.Agent.teamId !== teamId) {
+    return res.status(401).end();
+  }
+
+  const waiting = await agentFn.waitingApproval({ taskId });
+
+  if (!waiting || waiting.step.id !== stepId) {
+    return res.status(404).end();
+  }
+
+  if (actions.isExternalApproval(waiting.step.action)) {
+    return res.status(409).json({ error: "Use the verification endpoint" });
+  }
+
+  if (taskInstance.sessionId) {
+    await sessionFn.logConversation({
+      sessionId: taskInstance.sessionId,
+      role: "USER",
+      content: JSON.stringify({ decision, ...(comment && { comment }) }),
+    });
+  }
+
+  const result = await agentFn.approve({ taskId, decision, comment });
+
+  return res.status(200).json(result);
 });
 
 export default router;

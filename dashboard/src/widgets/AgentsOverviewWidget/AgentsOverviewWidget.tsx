@@ -66,6 +66,7 @@ function SummaryCard({
       {progress !== undefined && (
         <LinearProgress
           variant="determinate"
+          aria-label={label}
           value={Math.min(progress, 100)}
           sx={{
             mt: 1.5,

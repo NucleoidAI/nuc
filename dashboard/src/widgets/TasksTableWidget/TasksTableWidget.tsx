@@ -24,23 +24,30 @@ import {
 } from "@mui/material";
 import { useMemo, useState } from "react";
 
-type TaskStatus = "COMPLETED" | "IN_PROGRESS" | "AWAITING" | "FAILED";
+type TaskStatus =
+  | "COMPLETED"
+  | "IN_PROGRESS"
+  | "AWAITING"
+  | "FAILED"
+  | "PINNED";
 
 const STATUS_LABEL: Record<TaskStatus, string> = {
   COMPLETED: "Completed",
   IN_PROGRESS: "In progress",
   AWAITING: "Awaiting supervision",
   FAILED: "Failed",
+  PINNED: "Pinned",
 };
 
 const STATUS_COLOR: Record<
   TaskStatus,
-  "success" | "error" | "primary" | "warning" | "default"
+  "success" | "error" | "primary" | "warning" | "default" | "secondary"
 > = {
   COMPLETED: "success",
   IN_PROGRESS: "primary",
   AWAITING: "warning",
   FAILED: "error",
+  PINNED: "secondary",
 };
 
 const TASKS_PER_PAGE = 10;

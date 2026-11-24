@@ -114,7 +114,6 @@ function TaskScoresWidget({
           </Box>
         </Stack>
       )}
-      {/* task list */}
       <Box
         sx={{
           display: "grid",
@@ -141,7 +140,6 @@ function TaskScoresWidget({
           <Box
             sx={{
               p: 1,
-              bgcolor: "background.default",
               borderBottom: "1px solid",
               borderColor: "divider",
               flexShrink: 0,
@@ -187,7 +185,6 @@ function TaskScoresWidget({
           <Box
             sx={{
               p: 1,
-              bgcolor: "background.default",
               borderBottom: "1px solid",
               borderColor: "divider",
               flexShrink: 0,

@@ -25,7 +25,7 @@ function Reports() {
           alignItems={{ xs: "flex-start", sm: "center" }}
           justifyContent="space-between"
           spacing={1}
-          sx={{ mb: 1 }}
+          sx={{ mb: 2 }}
         >
           <Typography variant="h4" sx={{ fontWeight: 700 }}>
             Reports

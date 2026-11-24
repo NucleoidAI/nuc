@@ -17,8 +17,16 @@ function Profile({ agentId }: { agentId: string }) {
   const renderAbout = <AgentAbout agent={agent} updateAgent={updateAgent} />;
 
   return (
-    <Stack margin={2} spacing={1}>
-      <Grid container spacing={1}>
+    <Stack
+      margin={2}
+      spacing={1}
+      sx={{
+        height: { xs: "auto", md: "calc(100% - 32px)" },
+        minHeight: 0,
+        overflowY: { xs: "auto", md: "visible" },
+      }}
+    >
+      <Grid container spacing={1} sx={{ flexShrink: 0 }}>
         <Grid
           size={{
             xs: 12,
@@ -40,25 +48,25 @@ function Profile({ agentId }: { agentId: string }) {
           </Stack>
         </Grid>
       </Grid>
-      <Grid container spacing={1}>
-        <Grid
-          size={{
-            xs: 12,
-            md: 6,
-          }}
-        >
-          <Stack spacing={1}>
-            <TaskScoresWidget agentId={agentId} />
+      <Grid
+        container
+        spacing={1}
+        sx={{ flex: { xs: "0 0 auto", md: 1 }, minHeight: 0 }}
+      >
+        <Grid size={{ xs: 12, md: 6 }} sx={{ height: { md: "100%" } }}>
+          <Stack
+            spacing={1}
+            sx={{ mt: 1, height: { xs: "60vh", md: "calc(100% - 8px)" } }}
+          >
+            <TaskScoresWidget agentId={agentId} height="100%" />
           </Stack>
         </Grid>
-        <Grid
-          size={{
-            xs: 12,
-            md: 6,
-          }}
-        >
-          <Stack spacing={1}>
-            <CostWidget agentId={agentId} height="45vh" />
+        <Grid size={{ xs: 12, md: 6 }} sx={{ height: { md: "100%" } }}>
+          <Stack
+            spacing={1}
+            sx={{ mt: 1, height: { xs: "60vh", md: "calc(100% - 8px)" } }}
+          >
+            <CostWidget agentId={agentId} height="100%" />
           </Stack>
         </Grid>
       </Grid>

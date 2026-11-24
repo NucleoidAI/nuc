@@ -1,4 +1,3 @@
-import DebugBadge from "../../components/DebugBadge";
 import { Iconify } from "@canmingir/link/platform/components";
 import ModelPricingDialog from "./ModelPricingDialog";
 import useAgents from "../../hooks/useAgents";
@@ -54,9 +53,6 @@ function pricingKey(provider: string, model: string | null): string {
     .toLowerCase()}`;
 }
 
-// Cost is resolved on the client from the pricing table so edits in the
-// pricing dialog reflect immediately. Provider-reported cost (OpenRouter)
-// always wins over the calculated estimate.
 function resolveLogCost(
   log: LLMLogEntry,
   pricingMap: Map<string, ModelPricing>
@@ -92,7 +88,7 @@ function SummaryCard({
       sx={{
         p: 2,
         minWidth: 0,
-        borderRadius: 1,
+        borderRadius: 2,
         border: "1px solid",
         borderColor: "divider",
       }}
@@ -135,7 +131,7 @@ function TaskUsageAccordion({ usage }: { usage: TaskUsage }) {
     >
       <AccordionSummary
         expandIcon={<Iconify icon="eva:chevron-down-fill" width={18} />}
-        sx={{ px: 1 }}
+        sx={{ px: 1, py: 0.73 }}
       >
         <Stack
           direction="row"
@@ -144,12 +140,9 @@ function TaskUsageAccordion({ usage }: { usage: TaskUsage }) {
           sx={{ width: "100%", pr: 1 }}
         >
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Stack direction="row" alignItems="center" spacing={1}>
-              <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                {task.description}
-              </Typography>
-              {task.debug && <DebugBadge />}
-            </Stack>
+            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+              {task.description}
+            </Typography>
             <Typography variant="caption" color="text.secondary">
               {new Date(task.createdAt).toLocaleString()}
             </Typography>
@@ -451,7 +444,6 @@ function CostWidget({
             <Box
               sx={{
                 p: 1,
-                bgcolor: "background.default",
                 borderBottom: "1px solid",
                 borderColor: "divider",
               }}

@@ -1,4 +1,7 @@
-import type { TimelineStep } from "../widgets/AgentDevToolWidget/StepTimeline";
+import type {
+  ApprovalDecision,
+  TimelineStep,
+} from "../widgets/AgentDevToolWidget/StepTimeline";
 import http from "@canmingir/link/platform/http";
 import { useEffect, useState } from "react";
 
@@ -18,6 +21,8 @@ type SessionSteps = {
   running: boolean;
   resumeStep: (step: TimelineStep) => Promise<void>;
   resumingStepId: string | null;
+  decideStep: (step: TimelineStep, decision: ApprovalDecision) => Promise<void>;
+  decidingStepId: string | null;
 };
 
 const EMPTY_STEPS: TimelineStep[] = [];
@@ -35,12 +40,14 @@ function useSessionSteps({
   const [taskName, setTaskName] = useState<string | null>(null);
   const [running, setRunning] = useState(false);
   const [resumingStepId, setResumingStepId] = useState<string | null>(null);
+  const [decidingStepId, setDecidingStepId] = useState<string | null>(null);
 
   useEffect(() => {
     setSteps(EMPTY_STEPS);
     setTaskName(null);
     setRunning(false);
     setResumingStepId(null);
+    setDecidingStepId(null);
   }, [sessionId]);
 
   useEffect(() => {
@@ -103,7 +110,28 @@ function useSessionSteps({
     }
   };
 
-  return { steps, taskName, running, resumeStep, resumingStepId };
+  const decideStep = async (step: TimelineStep, decision: ApprovalDecision) => {
+    if (!step.taskId) return;
+
+    setDecidingStepId(step.id);
+    try {
+      await http.post(`/tasks/${step.taskId}/steps/${step.id}/approval`, {
+        decision,
+      });
+    } finally {
+      setDecidingStepId(null);
+    }
+  };
+
+  return {
+    steps,
+    taskName,
+    running,
+    resumeStep,
+    resumingStepId,
+    decideStep,
+    decidingStepId,
+  };
 }
 
 export default useSessionSteps;

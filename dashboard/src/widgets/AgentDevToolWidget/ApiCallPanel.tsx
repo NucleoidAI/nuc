@@ -1,7 +1,10 @@
 import { alpha } from "@mui/material/styles";
 
 import { Box, CircularProgress, Stack, Typography } from "@mui/material";
-import StepTimeline, { type TimelineStep } from "./StepTimeline";
+import StepTimeline, {
+  type ApprovalDecision,
+  type TimelineStep,
+} from "./StepTimeline";
 
 export type ApiStep = TimelineStep;
 
@@ -86,10 +89,14 @@ const ApiCallPanel = ({
   call,
   onResume,
   resumingStepId,
+  onDecide,
+  decidingStepId,
 }: {
   call: ApiCall | null;
   onResume?: (step: ApiStep) => void;
   resumingStepId?: string | null;
+  onDecide?: (step: ApiStep, decision: ApprovalDecision) => void;
+  decidingStepId?: string | null;
 }) => {
   if (!call) return null;
 
@@ -130,6 +137,8 @@ const ApiCallPanel = ({
             steps={call.steps}
             onResume={onResume}
             resumingStepId={resumingStepId}
+            onDecide={onDecide}
+            decidingStepId={decidingStepId}
           />
         ) : pending ? (
           <Waiting />

@@ -68,9 +68,11 @@ async function listTools({ serverId }: { serverId: string }) {
     throw new NotFoundError();
   }
 
+  const provider = providerInstance.name.toUpperCase();
+
   return catalog
     .list()
-    .filter((tool) => tool.provider === providerInstance.name)
+    .filter((tool) => tool.provider.toUpperCase() === provider)
     .map((tool) => ({
       id: tool.id,
       action: tool.action,

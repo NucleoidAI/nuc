@@ -1,6 +1,9 @@
 import { AIMessage, HumanMessage } from "@canmingir/link/platform/components";
 import { Box, CircularProgress, Stack, Typography } from "@mui/material";
-import StepTimeline, { type TimelineStep } from "./StepTimeline";
+import StepTimeline, {
+  type ApprovalDecision,
+  type TimelineStep,
+} from "./StepTimeline";
 import { useEffect, useMemo, useRef } from "react";
 
 export type TimelineMessage = {
@@ -61,12 +64,16 @@ const ChatTimeline = ({
   running,
   onResume,
   resumingStepId,
+  onDecide,
+  decidingStepId,
 }: {
   messages: TimelineMessage[];
   steps: TimelineStep[];
   running: boolean;
   onResume?: (step: TimelineStep) => void;
   resumingStepId?: string | null;
+  onDecide?: (step: TimelineStep, decision: ApprovalDecision) => void;
+  decidingStepId?: string | null;
 }) => {
   const endRef = useRef<HTMLDivElement>(null);
   const items = useMemo(() => buildItems(messages, steps), [messages, steps]);
@@ -85,6 +92,8 @@ const ChatTimeline = ({
             steps={item.steps}
             onResume={onResume}
             resumingStepId={resumingStepId}
+            onDecide={onDecide}
+            decidingStepId={decidingStepId}
           />
         ) : item.message.role === "USER" ? (
           <HumanMessage

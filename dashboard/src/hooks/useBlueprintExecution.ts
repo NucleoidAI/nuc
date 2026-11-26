@@ -5,6 +5,7 @@ import type {
   ApiCall,
   ApiStep,
 } from "../widgets/AgentDevToolWidget/ApiCallPanel";
+import type { ApprovalDecision } from "../widgets/AgentDevToolWidget/StepTimeline";
 import { useCallback, useRef, useState } from "react";
 
 const STEP_POLL_INTERVAL = 1000;
@@ -12,6 +13,7 @@ const STEP_POLL_INTERVAL = 1000;
 function useBlueprintExecution() {
   const [apiCall, setApiCall] = useState<ApiCall | null>(null);
   const [resumingStepId, setResumingStepId] = useState<string | null>(null);
+  const [decidingStepId, setDecidingStepId] = useState<string | null>(null);
   const runRef = useRef(0);
 
   const reset = useCallback(() => {
@@ -155,6 +157,22 @@ function useBlueprintExecution() {
     }
   }, []);
 
+  const decideStep = useCallback(
+    async (step: ApiStep, decision: ApprovalDecision) => {
+      if (!step.taskId) return;
+
+      setDecidingStepId(step.id);
+      try {
+        await http.post(`/tasks/${step.taskId}/steps/${step.id}/approval`, {
+          decision,
+        });
+      } finally {
+        setDecidingStepId(null);
+      }
+    },
+    []
+  );
+
   return {
     apiCall,
     setApiCall,
@@ -164,6 +182,8 @@ function useBlueprintExecution() {
     runRef,
     resumeStep,
     resumingStepId,
+    decideStep,
+    decidingStepId,
   };
 }
 

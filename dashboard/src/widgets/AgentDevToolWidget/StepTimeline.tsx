@@ -10,6 +10,8 @@ export type TimelineStep = {
   createdAt: string;
 };
 
+export type ApprovalDecision = "APPROVED" | "REJECTED";
+
 const MONO = '"JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace';
 
 const STEP_COLORS: Record<string, "success" | "error" | "info" | "secondary"> =
@@ -35,15 +37,21 @@ const StepRow = ({
   last,
   onResume,
   resuming,
+  onDecide,
+  deciding,
 }: {
   step: TimelineStep;
   last: boolean;
   onResume?: (step: TimelineStep) => void;
   resuming?: boolean;
+  onDecide?: (step: TimelineStep, decision: ApprovalDecision) => void;
+  deciding?: boolean;
 }) => {
   const color = STEP_COLORS[step.status] ?? "warning";
   const running = step.status === "IN_PROGRESS";
   const isPinned = step.status === "PINNED";
+  const awaitsApproval =
+    step.status === "WAITING_FOR_APPROVAL" && Boolean(step.taskId);
 
   return (
     <Stack
@@ -112,6 +120,30 @@ const StepRow = ({
             {resuming ? "Resuming…" : "Resume"}
           </Button>
         )}
+        {awaitsApproval && onDecide && (
+          <Stack direction="row" spacing={0.75} sx={{ mt: 0.75 }}>
+            <Button
+              size="small"
+              variant="outlined"
+              color="success"
+              disabled={deciding}
+              onClick={() => onDecide(step, "APPROVED")}
+              sx={{ fontSize: 11, py: 0.25, px: 1, minWidth: 0 }}
+            >
+              Approve
+            </Button>
+            <Button
+              size="small"
+              variant="outlined"
+              color="error"
+              disabled={deciding}
+              onClick={() => onDecide(step, "REJECTED")}
+              sx={{ fontSize: 11, py: 0.25, px: 1, minWidth: 0 }}
+            >
+              Decline
+            </Button>
+          </Stack>
+        )}
       </Box>
     </Stack>
   );
@@ -121,10 +153,14 @@ const StepTimeline = ({
   steps,
   onResume,
   resumingStepId,
+  onDecide,
+  decidingStepId,
 }: {
   steps: TimelineStep[];
   onResume?: (step: TimelineStep) => void;
   resumingStepId?: string | null;
+  onDecide?: (step: TimelineStep, decision: ApprovalDecision) => void;
+  decidingStepId?: string | null;
 }) => (
   <Box
     sx={(theme) => ({
@@ -141,6 +177,8 @@ const StepTimeline = ({
         last={index === steps.length - 1}
         onResume={onResume}
         resuming={resumingStepId === step.id}
+        onDecide={onDecide}
+        deciding={decidingStepId === step.id}
       />
     ))}
   </Box>

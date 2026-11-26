@@ -235,60 +235,6 @@
     }
   },
   {
-    "action": "PLATFORM:file_inspector",
-    "label": "Platform",
-    "lib": "file_inspector",
-    "description": "Inspect files or directories using an absolute path. Supports checking existence, reading content, getting metadata, or listing directory entries.",
-    "icon": "mdi:file-search",
-    "inputSchema": {
-      "type": "object",
-      "properties": {
-        "filePath": {
-          "type": "string",
-          "description": "The absolute path to the file or directory."
-        },
-        "operation": {
-          "type": "string",
-          "enum": ["exists", "read", "stat", "list"],
-          "description": "Operation to perform: 'exists' checks if the path exists, 'read' returns file content, 'stat' returns file metadata, 'list' lists directory contents."
-        }
-      },
-      "required": ["filePath"]
-    },
-    "outputSchema": {
-      "type": "object",
-      "properties": {
-        "exists": {
-          "type": "boolean"
-        },
-        "content": {
-          "type": "string"
-        },
-        "isFile": {
-          "type": "boolean"
-        },
-        "isDirectory": {
-          "type": "boolean"
-        },
-        "size": {
-          "type": "number"
-        },
-        "created": {
-          "type": "string"
-        },
-        "modified": {
-          "type": "string"
-        },
-        "entries": {
-          "type": "array"
-        },
-        "error": {
-          "type": "string"
-        }
-      }
-    }
-  },
-  {
     "action": "PLATFORM:create_vm",
     "label": "Platform",
     "lib": "create_vm",

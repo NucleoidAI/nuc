@@ -41,13 +41,13 @@ const STATUS_LABEL: Record<TaskStatus, string> = {
 
 const STATUS_COLOR: Record<
   TaskStatus,
-  "success" | "error" | "primary" | "warning" | "default"
+  "success" | "error" | "primary" | "warning" | "default" | "secondary"
 > = {
   COMPLETED: "success",
   IN_PROGRESS: "primary",
   AWAITING: "warning",
   FAILED: "error",
-  PINNED: "default",
+  PINNED: "secondary",
 };
 
 const TASKS_PER_PAGE = 10;
@@ -146,7 +146,7 @@ function TasksTableWidget({ range }: { range: { from: string; to: string } }) {
   return (
     <Card
       sx={{
-        borderRadius: 1,
+        borderRadius: 2,
         border: "1px solid",
         borderColor: "divider",
         overflow: "hidden",
@@ -157,7 +157,7 @@ function TasksTableWidget({ range }: { range: { from: string; to: string } }) {
         alignItems={{ xs: "flex-start", sm: "center" }}
         justifyContent="space-between"
         spacing={1.5}
-        sx={{ p: 1.5 }}
+        sx={{ p: 2 }}
       >
         <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
           All tasks
@@ -205,7 +205,11 @@ function TasksTableWidget({ range }: { range: { from: string; to: string } }) {
       </Stack>
 
       <Box sx={{ overflowX: "auto" }}>
-        <Table>
+        <Table
+          sx={{
+            "& th, & td": { py: 1.75, px: 2 },
+          }}
+        >
           <TableHead>
             <TableRow>
               <TableCell>Task</TableCell>
@@ -281,7 +285,7 @@ function TasksTableWidget({ range }: { range: { from: string; to: string } }) {
       </Box>
 
       {filteredTasks.length > TASKS_PER_PAGE && (
-        <Stack alignItems="center" sx={{ py: 1.5 }}>
+        <Stack alignItems="center" sx={{ py: 2 }}>
           <Pagination
             count={tasksPageCount}
             page={tasksPage}

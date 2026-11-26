@@ -29,13 +29,13 @@ function TimeRangePicker({
   return (
     <Card
       sx={{
-        borderRadius: 1,
+        borderRadius: 2,
         border: "1px solid",
         borderColor: "divider",
-        p: 1,
+        p: 2,
       }}
     >
-      <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap", gap: 1 }}>
+      <Stack direction="row" spacing={1.5} sx={{ flexWrap: "wrap", gap: 1.5 }}>
         {TIME_RANGES.map((option) => (
           <Button
             key={option}
@@ -52,8 +52,8 @@ function TimeRangePicker({
       {range === "Custom" && (
         <Stack
           direction="row"
-          spacing={1}
-          sx={{ flexWrap: "wrap", gap: 1, mt: 1 }}
+          spacing={1.5}
+          sx={{ flexWrap: "wrap", gap: 1.5, mt: 1.5 }}
         >
           <TextField
             type="date"

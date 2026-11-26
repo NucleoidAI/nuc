@@ -61,7 +61,7 @@ function StepScoresAccordion({
         expandIcon={<Iconify icon="eva:chevron-down-fill" width={18} />}
         sx={{
           px: 1,
-          py: { xs: 0.75, sm: 0 },
+          py: { xs: 0.75, sm: 1 },
           minHeight: 48,
           "&.Mui-expanded": { minHeight: 48 },
           "& .MuiAccordionSummary-content": { my: 0.75 },

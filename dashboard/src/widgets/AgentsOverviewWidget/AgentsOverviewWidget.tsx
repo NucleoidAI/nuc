@@ -1,11 +1,20 @@
 import useTaskStats from "../../hooks/useTaskStats";
 
 import {
+  AssignmentOutlined,
+  CheckCircleOutline,
+  ErrorOutline,
+  HourglassEmptyOutlined,
+  PauseCircleOutline,
+  TokenOutlined,
+} from "@mui/icons-material";
+import {
   Box,
   Card,
   LinearProgress,
   Pagination,
   Stack,
+  type SvgIconProps,
   Table,
   TableBody,
   TableCell,
@@ -13,7 +22,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { useMemo, useState } from "react";
+import { type ComponentType, useMemo, useState } from "react";
 
 const AGENTS_PER_PAGE = 10;
 
@@ -23,22 +32,51 @@ function formatTokens(value: number): string {
   return value.toLocaleString();
 }
 
-function SummaryCard({ label, value }: { label: string; value: string }) {
+function SummaryCard({
+  label,
+  value,
+  icon: Icon,
+  color,
+  progress,
+}: {
+  label: string;
+  value: string;
+  icon: ComponentType<SvgIconProps>;
+  color: string;
+  progress?: number;
+}) {
   return (
     <Card
       sx={{
-        p: 1.5,
-        borderRadius: 1,
+        p: 2,
+        borderRadius: 2,
         border: "1px solid",
         borderColor: "divider",
       }}
     >
-      <Typography variant="body2" color="text.secondary" noWrap>
-        {label}
-      </Typography>
-      <Typography variant="h5" noWrap sx={{ mt: 0.5, fontWeight: 700 }}>
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Typography variant="body1" color="text.secondary" noWrap>
+          {label}
+        </Typography>
+        <Icon sx={{ color, fontSize: 22 }} />
+      </Stack>
+      <Typography variant="h3" noWrap sx={{ mt: 1, fontWeight: 700 }}>
         {value}
       </Typography>
+      {progress !== undefined && (
+        <LinearProgress
+          variant="determinate"
+          aria-label={label}
+          value={Math.min(progress, 100)}
+          sx={{
+            mt: 1.5,
+            height: 4,
+            borderRadius: 1,
+            bgcolor: "action.hover",
+            "& .MuiLinearProgress-bar": { bgcolor: color },
+          }}
+        />
+      )}
     </Card>
   );
 }
@@ -93,38 +131,65 @@ function AgentsOverviewWidget({
         <SummaryCard
           label="Total tasks"
           value={totals.total.toLocaleString()}
+          icon={AssignmentOutlined}
+          color="text.primary"
         />
         <SummaryCard
           label="Completed"
           value={totals.completed.toLocaleString()}
+          icon={CheckCircleOutline}
+          color="success.main"
+          progress={totals.total ? (totals.completed / totals.total) * 100 : 0}
         />
         <SummaryCard
           label="In progress"
           value={totals.inProgress.toLocaleString()}
+          icon={HourglassEmptyOutlined}
+          color="text.primary"
+          progress={totals.total ? (totals.inProgress / totals.total) * 100 : 0}
         />
         <SummaryCard
           label="Awaiting supervision"
           value={totals.awaiting.toLocaleString()}
+          icon={PauseCircleOutline}
+          color="warning.main"
+          progress={totals.total ? (totals.awaiting / totals.total) * 100 : 0}
         />
-        <SummaryCard label="Failed" value={totals.failed.toLocaleString()} />
-        <SummaryCard label="Tokens used" value={formatTokens(totals.tokens)} />
+        <SummaryCard
+          label="Failed"
+          value={totals.failed.toLocaleString()}
+          icon={ErrorOutline}
+          color="error.main"
+          progress={totals.total ? (totals.failed / totals.total) * 100 : 0}
+        />
+        <SummaryCard
+          label="Tokens used"
+          value={formatTokens(totals.tokens)}
+          icon={TokenOutlined}
+          color="text.primary"
+        />
       </Box>
 
       <Card
         sx={{
-          borderRadius: 1,
+          borderRadius: 2,
           border: "1px solid",
           borderColor: "divider",
           overflow: "hidden",
         }}
       >
-        <Box sx={{ p: 1.5, pb: 0 }}>
+        <Box sx={{ p: 2, pb: 0 }}>
           <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
             Agents overview
           </Typography>
         </Box>
         <Box sx={{ overflowX: "auto" }}>
-          <Table sx={{ mt: 1 }}>
+          <Table
+            sx={{
+              mt: 1.5,
+              "& th, & td": { py: 1.75, px: 2 },
+            }}
+          >
             <TableHead>
               <TableRow>
                 <TableCell>Agent</TableCell>
@@ -223,7 +288,7 @@ function AgentsOverviewWidget({
         </Box>
 
         {overview.length > AGENTS_PER_PAGE && (
-          <Stack alignItems="center" sx={{ py: 1.5 }}>
+          <Stack alignItems="center" sx={{ py: 2 }}>
             <Pagination
               count={agentsPageCount}
               page={agentsPage}

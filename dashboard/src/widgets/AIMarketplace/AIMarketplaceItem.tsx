@@ -53,7 +53,7 @@ function AIMarketplaceItem({
           overflow: "hidden",
           ...(isWizardEngine
             ? { height: 120 }
-            : { height: "100%", minHeight: { sm: 180 } }),
+            : { height: "100%", minHeight: { sm: 200 } }),
           ...(isWizardEngine && {
             border: "solid",
             borderWidth: isSelected ? 2 : 1,
@@ -72,7 +72,7 @@ function AIMarketplaceItem({
             ...(isWizardEngine
               ? { width: 68, height: "100%" }
               : {
-                  width: { xs: "100%", sm: 120 },
+                  width: { xs: "100%", sm: 160 },
                   height: "auto",
                   minHeight: { xs: 140, sm: "100%" },
                 }),
@@ -128,7 +128,7 @@ function AIMarketplaceItem({
         <Stack
           direction={"column"}
           sx={{
-            p: isWizardEngine ? 1.25 : 2,
+            p: isWizardEngine ? 1.25 : 3,
             width: "100%",
             textAlign: "left",
             justifyContent: "center",
@@ -145,7 +145,7 @@ function AIMarketplaceItem({
             sx={{
               display: "grid",
               gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-              gap: 1,
+              gap: 1.5,
               width: "100%",
               alignItems: "stretch",
             }}
@@ -191,8 +191,8 @@ function InfoBox({
       justifyContent="center"
       alignItems="center"
       sx={{
-        py: 0.5,
-        px: 0.5,
+        py: 1,
+        px: 1,
         borderRadius: 1,
         border: "1px dashed",
         borderColor: "text.disabled",

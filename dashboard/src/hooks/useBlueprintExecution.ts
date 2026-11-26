@@ -1,3 +1,4 @@
+import type { ApprovalDecision } from "../widgets/AgentDevToolWidget/StepTimeline";
 import http from "@canmingir/link/platform/http";
 import { loadApiCall } from "../widgets/AgentDevToolWidget/apiSession";
 import { submitError } from "../widgets/AgentDevToolWidget/blueprintInputs";
@@ -5,7 +6,6 @@ import type {
   ApiCall,
   ApiStep,
 } from "../widgets/AgentDevToolWidget/ApiCallPanel";
-import type { ApprovalDecision } from "../widgets/AgentDevToolWidget/StepTimeline";
 import { useCallback, useRef, useState } from "react";
 
 const STEP_POLL_INTERVAL = 1000;

@@ -1,8 +1,8 @@
+import http from "@canmingir/link/platform/http";
 import type {
   ApprovalDecision,
   TimelineStep,
 } from "../widgets/AgentDevToolWidget/StepTimeline";
-import http from "@canmingir/link/platform/http";
 import { useEffect, useState } from "react";
 
 const POLL_INTERVAL = 1500;
